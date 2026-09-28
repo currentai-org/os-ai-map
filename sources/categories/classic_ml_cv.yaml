@@ -18,8 +18,8 @@ scoring_recipe:
       reproduced 14 of 16 hand-authored openness scores; the other two were deferred on license
       strings the shared tiers did not name. The second tranche (2026-09-27, 34 products)
       reproduced except for five further deferrals, again all on license strings. The #739 rulings
-      placed five of those seven strings, and those products now compute; dino and
-      segment-anything stay deferred.
+      placed five of those seven strings and the #753 rulings the last two (the DINOv3 and SAM
+      licenses), so every product now computes.
     checker: build/check_rubric.py
   note: >-
     TWO LADDERS for openness. Libraries, toolkits and hosted APIs are typed `software` and climb
@@ -130,36 +130,16 @@ scoring_recipe:
     maintainer license-rulings issue rather than being decided here. #739 placed the Prior Labs
     TabPFN weights licenses and Roboflow's PML-1.0 in `commercial_forbidden`, LGPL-2.1 and BSL-1.0
     (Boost, kept distinct from BSL-1.1) in `osi`, and InsightFace's model license in the software
-    ladder's `noncommercial` tier. Still deferred below: the DINOv3 License and the SAM License
-    (SAM 3 and 3.1). FSL-1.1-MIT, which
+    ladder's `noncommercial` tier. #753 placed Meta's DINOv3 License and SAM License, one text
+    under two names, in `permissive_non_osi`: no user or revenue cap, only trade-control, military
+    and reverse-engineering limits. dino computes 4/open_weights and segment-anything
+    3/open_weights, as hand-assigned. FSL-1.1-MIT, which
     the seed note expected pycaret to need, governs only PyCaret 4.0's pre-releases; the current
     stable release, 3.3.2, is MIT, so pycaret computes, and FSL-1.1-MIT will need a ruling when 4.0
     ships as a stable release. Still in the registry and expected to defer when promoted: the
     Sapiens2 License, the TabFM Non-Commercial License, the Stable AI LimiX code and weights
     licenses, the EXAONE AI Model License NC, Apple's apple-amlr sample-code license, and the
     NVIDIA Source Code License.
-  deferred:
-    dino:
-      because: >-
-        DINOv3, the current release, is under Meta's DINOv3 License (last updated 2025-08-19),
-        which grants use, redistribution and modification with no commercial restriction but bars
-        trade-controlled, military, nuclear, espionage and weapons uses and lets Meta change the
-        terms; every DINOv3 checkpoint on the Hub carries it behind a manual access gate. The name
-        is in no pretrained tier, so the lookup abstains. The recorded 4/open_weights is the
-        `permissive_non_osi` reading (a conduct restriction that caps neither commerce nor scale),
-        which with the documented-not-released corpus and the open pretraining code reaches 4,
-        hand-assigned pending the maintainer's ruling. DINOv2 is Apache-2.0 but superseded, and
-        the current release governs.
-    segment-anything:
-      because: >-
-        SAM 3 and SAM 3.1, the current releases, are under Meta's SAM License (last updated
-        2025-11-19), the same agreement as the DINOv3 License with SAM Materials in place of DINO
-        Materials: commercial use allowed, trade-controlled, military, nuclear, espionage and
-        weapons uses barred, terms changeable by Meta. The name is in no pretrained tier, so the
-        lookup abstains. The recorded 3/open_weights is the `permissive_non_osi` reading, which
-        with fine-tuning-only code falls through to the open-weights rung, hand-assigned pending
-        the maintainer's ruling. SAM and SAM 2 are Apache-2.0 but superseded, and the current
-        release governs.
 products:
 - autogluon
 - h2o-3

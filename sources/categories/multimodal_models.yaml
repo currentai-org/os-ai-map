@@ -19,8 +19,10 @@ scoring_recipe:
     to the #720 ruling. The current release governs openness. The API-only exclusion works across the SKUs
     of one release and never across releases. So the full UI-TARS-1.5, a tier of the release ui-tars is
     scored on, is left out, and Holo3-122B, a hosted size of the earlier Holo3 release, does not bear on
-    holo, whose current release Holo3.1 ships every size as downloadable weights. qwen-omni is deferred
-    below because its current release, Qwen3.5-Omni, is API-only while Qwen3-Omni stays downloadable. UI-TARS-2
+    holo, whose current release Holo3.1 ships every size as downloadable weights. qwen-omni''s current release,
+    Qwen3.5-Omni, is API-only while Qwen3-Omni stays downloadable; it was deferred until #753 ruled that it is
+    scored 1/closed on the current release, with Qwen3-Omni in context and the note and the open line''s lag left
+    to a separate availability attribute under #727. UI-TARS-2
     is newer than UI-TARS-1.5 but has only a technical report, with no weights and no named API model found,
     so ui-tars stays on UI-TARS-1.5, since identity.md excludes unshipped releases. SECOND TRANCHE (2026-09-27),
     same rules. blip is read on xGen-MM v1.5 (BLIP-3), the line''s current understanding release; BLIP3-o
@@ -68,18 +70,10 @@ scoring_recipe:
     3 -> 7, 2 -> 7, 1 -> 3; the widest rungs are 7 of 28 (25%), under the one-third review trigger. perception-lm
     sits at 3, at minicpm-v, on documents, charts and video with the repository''s multi-image training input. blip
     moved from 1 to 2 on xGen-MM''s interleaved multi-image input, with medium confidence because no document
-    benchmark is reported. Custom weights licenses the shared tiers do not name are deferred below and listed
-    for the maintainer''s license-rulings issue. Apart from FAIR-Noncommercial-Research, added for perception-lm,
-    no edit to sources/rubrics/ is made or implied here.'
+    benchmark is reported. Custom weights licenses the shared tiers do not name are deferred and listed for
+    the maintainer''s license-rulings issue; none is deferred now. Apart from FAIR-Noncommercial-Research,
+    added for perception-lm, no edit to sources/rubrics/ is made or implied here.'
   extends: model
-  deferred:
-    qwen-omni:
-      because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Qwen3.5-Omni,
-        is API-only and the ladder computes 1/closed from it; the prior release, Qwen3-Omni, remains distributed
-        under Apache-2.0, and both are recorded (the prior one under components.context and in the sources). Alibaba''s
-        Model Studio also serves Qwen3.8-Omni-Flash, again hosted only. openness.score is left null rather than
-        hand-set because how the map models availability separately from openness, with the open line one generation
-        behind the vendor''s closed frontier, awaits a maintainer ruling from the #720 review.'
 products:
 - minicpm-o
 - nemotron-omni

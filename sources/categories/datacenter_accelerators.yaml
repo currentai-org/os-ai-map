@@ -1,6 +1,12 @@
 name: datacenter_accelerators
 display_name: Datacenter AI accelerators
 description: "Chips, cards and rack systems for training and serving AI models in the datacenter, sold or rented as silicon."
+strapline: >-
+  Closed silicon all the way down. No datacenter accelerator publishes its design, so the most any vendor
+  offers is a public datasheet and a part you can buy or rent, and the frontier chips from NVIDIA, AMD,
+  Google and Cerebras are no more open than the rest. The open part of this layer is software: Tenstorrent's
+  Apache-2.0 stack is the nearest thing to an open accelerator, and the open designs that exist (NVDLA,
+  Gemmini, Vortex) stop short of the datacenter.
 weights:
   adopt: 0.2
   cap: 0.8
@@ -19,11 +25,11 @@ scoring_recipe:
     ROCm) are recorded as `toolchain` and read by no rung, as they are for the edge chipsets.
 
     Expect deferrals at promotion rather than forced scores. A cloud-only generation (AWS
-    Trainium and Inferentia, most of Google's TPU volume) can be rented but not bought, and
-    the ladder's `retail` vocabulary has no value for renting: it is neither `open_market`
-    nor `restricted`. Such a row falls off the chipset rung and is deferred until a shared
-    ruling says whether rentable-as-silicon counts as `buyable`; that ruling belongs in
-    sources/rubrics/hardware.yaml, never in this file. Several Chinese generations have no
+    Trainium and Inferentia, most of Google's TPU volume) can be rented but not bought. The
+    #753 ruling settled it in sources/rubrics/hardware.yaml: rentable silicon counts as
+    buyable, recorded as `retail: rentable`, when anyone can provision an instance or slice of
+    the silicon itself at a published price. A hosted API in front of the silicon is not that,
+    and belongs to inference_code. Several Chinese generations have no
     vendor datasheet at all (their specs rest on press coverage), which answers `brief` or
     abstains and defers the same way.
 
@@ -43,8 +49,7 @@ scoring_recipe:
     IBM publishes no throughput figure for Spyre, and Qualcomm's only fetchable
     document is a two-page product brief. `restricted` is recorded where the vendor itself says
     the part goes only to a select group of customers (d-Matrix Corsair); a rent-only part
-    (Ironwood, Trainium3) records no `retail` at all, because renting has no value in the
-    vocabulary.
+    (Ironwood, Trainium3) records `retail: rentable`, which reads as buyable.
 
     Capability, per unit sold - one package, or one card where the card is the smallest thing
     sold (d-Matrix Corsair and Qualcomm Cloud AI 100 Ultra) - read on dense throughput at 8-bit
@@ -80,22 +85,6 @@ scoring_recipe:
     clusters apart by a factor of about 1.6 to 1.8 in throughput on each side.
   extends: hardware
   deferred:
-    google-tpu-ironwood:
-      because: 'Google offers Ironwood only as rented Cloud TPU capacity, and renting has no
-        value in the `retail` vocabulary, so no `retail` is recorded and the chipset rung cannot
-        match. Google has said it will begin to deliver TPUs to a select group of customers in
-        their own data centers, without naming the generation; if that reaches Ironwood, `retail`
-        becomes `restricted` and the outcome is the same. The
-        recorded 3/documented is the lowest pair this ladder can emit; whether rentable silicon
-        counts as `buyable` is a shared-rubric ruling for sources/rubrics/hardware.yaml.
-        `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
-        them, so answering them would not change the outcome.'
-    aws-trainium3:
-      because: 'Trainium3 can only be rented as EC2 Trn3 capacity and is never sold, and renting
-        has no value in the `retail` vocabulary, so no `retail` is recorded and the chipset rung
-        cannot match. The recorded 3/documented is the lowest pair this ladder can emit; whether
-        rentable silicon counts as `buyable` is a shared-rubric ruling for
-        sources/rubrics/hardware.yaml.'
     d-matrix-corsair:
       because: 'd-Matrix says Corsair "is being made available to select, qualified customers",
         which is `retail: restricted` and so `availability: gated`, and the chipset rung does not

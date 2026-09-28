@@ -6,21 +6,23 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI; covers the code
-    - name: Datalab-Modified-OpenRAIL-M
-      detail: 'the model weights: free for research, personal use and startups below USD 2M funding or revenue,
-        and not usable competitively with Datalab''s API; the Hugging Face card declares the family as openrail'
+    - name: AI-Pubs-Open-RAIL-M-Modified
+      detail: the model weights, datalab-to/chandra-ocr-2, the default checkpoint; free for personal use,
+        research and entities below USD 2M in revenue or funding, and barred to anyone offering a product
+        or service that competes with Datalab's
     source:
       value: public
       detail: datalab-to/chandra carries the inference code and the weights are published
   confidence: high
-  note: 'Chandra''s code is Apache-2.0 and fully public, but the model weights carry a modified OpenRAIL-M
-    license: free for research, personal use, and startups under $2M in funding or revenue, and barred from
-    competing with Datalab''s own API. That revenue threshold and anti-compete clause, on the weights rather
-    than the code, keep this at source-available rather than fully open.'
-  raw: 'license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights: free for research,
-    personal use and startups below USD 2M funding or revenue, and not usable competitively with Datalab''s
-    API; the Hugging Face card declares the family as openrail);source:public(datalab-to/chandra carries the
-    inference code and the weights are published)'
+  note: 'Chandra''s code is Apache-2.0 and fully public, but its model weights carry a modified AI Pubs
+    Open RAIL-M license: free for research, personal use, and startups under $2M in funding or revenue,
+    and barred to anyone whose product competes with Datalab''s. That revenue threshold and anti-compete
+    clause, on the weights rather than the code, keep this at source-available rather than fully open. The
+    license on the weights allows commercial use only below the threshold, so its tier is competition_restricted.'
+  raw: license:Apache-2.0(OSI; covers the code)+AI-Pubs-Open-RAIL-M-Modified(the model weights, datalab-to/chandra-ocr-2,
+    the default checkpoint; free for personal use, research and entities below USD 2M in revenue or funding,
+    and barred to anyone offering a product or service that competes with Datalab's);source:public(datalab-to/chandra
+    carries the inference code and the weights are published)
   last_verified: '2026-09-16'
   sources:
   - url: https://github.com/datalab-to/chandra
@@ -51,6 +53,25 @@ openness:
     content_sha256: 434ef004e178d08e1edb1845c57ae8df0bdfb83858ee4a60a8574efc65276e1b
     establishes:
     - source
+  - url: https://huggingface.co/datalab-to/chandra-ocr-2/raw/main/LICENSE
+    shows: The weights LICENSE is headed "AI PUBS OPEN RAIL-M LICENSE (MODIFIED) / Version 0.1, March 2,
+      2023 (Modified)". Attachment A bars use "for any purpose if You ... generated more than two million
+      US Dollars ($2,000,000) in gross revenue in the prior year, except where Your Use is limited to personal
+      use or research purposes", the same for USD 2M raised, and use by anyone who "provides or otherwise
+      makes available any product or service that competes with any product or service offered by or made
+      available by Licensor".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 126948ded70d791f4223175a8867cb64bd09bf8aeb7084b812393c876fdc6e1c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/datalab-to/chandra/master/chandra/settings.py
+    shows: 'Chandra''s settings default the weights to MODEL_CHECKPOINT: str = "datalab-to/chandra-ocr-2".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: e786a39b74ee45d0434fe2e6beff8a780f3bbaebdb3cc647e598d04a7c514659
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <10K

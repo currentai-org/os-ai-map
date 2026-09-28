@@ -42,11 +42,12 @@ scoring_recipe:
 
     Two were left and neither was a recording defect. `livecodebench`, which has no published
     license at all, now reproduces on the `unstated` rung at 2/restricted: a free download without
-    a grant is not open, and not closed either. The one still deferred is `multipl-e`, which
-    records the repository's BSD-3-with-ML-restriction under the same repository-governs
-    ruling; this ladder has no tier for a license that permits redistribution while bounding
-    what the corpus may be used FOR. That is a rubric gap rather than an open question about
-    the product.
+    a grant is not open, and not closed either. `multipl-e` records the repository's
+    BSD-3-with-ML-restriction under the same repository-governs ruling, applied here to a
+    distribution point that states a conflicting license (the Hub's MIT) rather than none, and
+    the #753 ruling scores it on that reading. It stayed deferred until #753 widened the dataset ladder's
+    `use_bounded` tier to cover a purpose bound as well as a user bound; it now computes
+    3/restricted, down from the hand-assigned 4/open. Nothing is deferred here now.
 
     A tenth, `gpqa`, was corrected rather than deferred: it recorded 4/gated, a pair no rung
     produces, and the ladder's answer of 3 is what the other nine gated corpora on the map
@@ -54,23 +55,6 @@ scoring_recipe:
     pair was unfalsifiable until a ladder existed to falsify it.
 
   extends: dataset
-  deferred:
-    multipl-e:
-      because: >-
-        No longer a recording defect. The owner's ruling of 2026-08-12 is that where a
-        repository license and a distribution-point license differ, the repository license
-        governs, so the modified BSD-3 that used to sit under a `caveat:` key is now recorded
-        under `license` and the MIT on the HF artifact is carried as its detail. The
-        repository LICENSE is headed "BSD 3-Clause License with Machine Learning Restriction"
-        and its clause 4 reads "The contents of this repository may not be used as training
-        data for any machine learning model, including but not limited to neural networks."
-        That is what keeps it deferred: this ladder's tiers turn on redistribution and on
-        commercial use, and it declares none for a license that permits both while bounding
-        what you may use the corpus FOR. `model.yaml` has the word for it, `use_bounded`, and
-        the dataset ladder does not. So the tier lookup abstains, the walk blocks on the first
-        rung that tests a tier, and the recorded 4 stands rather than being replaced by a
-        number nobody derived. Extending the dataset ladder with a use-bounded tier is the fix
-        and it is a rubric change.
 products:
 - humaneval
 - gsm8k

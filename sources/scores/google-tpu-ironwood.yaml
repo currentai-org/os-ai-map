@@ -9,12 +9,16 @@ openness:
     datasheets:
       value: public
       detail: Cloud TPU documentation for TPU7x with per-chip compute, memory and interconnect
+    retail:
+      value: rentable
+      detail: rented as Cloud TPU capacity at a published per-chip-hour price; not sold as a part
   confidence: medium
   note: Google documents Ironwood's per-chip compute, memory and interconnect in its public Cloud TPU documentation.
-    The chip is rented as cloud capacity rather than sold, and this score is provisional until the map rules on
-    rented silicon.
+    Google does not sell the chip; it offers it only as Cloud TPU capacity that anyone can rent at a published
+    price per chip-hour.
   raw: form_factor:chipset(TPU chip offered as Cloud TPU slices; scored as the silicon);datasheets:public(Cloud
-    TPU documentation for TPU7x with per-chip compute, memory and interconnect)
+    TPU documentation for TPU7x with per-chip compute, memory and interconnect);retail:rentable(rented as
+    Cloud TPU capacity at a published per-chip-hour price; not sold as a part)
   last_verified: '2026-09-26'
   sources:
   - url: https://cloud.google.com/tpu/docs/tpu7x
@@ -32,10 +36,14 @@ openness:
     http_status: 200
     content_sha256: 6760c35ea42557bcaf6ed7defbc2b55ee541333f647f087fdaec94ee8702220e
   - url: https://cloud.google.com/tpu/pricing
-    shows: 'Cloud TPU pricing page: TPU capacity priced by region, with a custom-quote path'
-    accessed: '2026-09-26'
+    shows: 'Cloud TPU pricing page: "Prices displayed here are per chip-hour in USD"; the table lists "Ironwood
+      us-central1 Iowa $12.00" on demand, with DWS Flex-start, Calendar Mode and one- and three-year commitment
+      prices.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 565f69e8ec9e75b4a50ad77a0eab6d1f84d018732435ebd73cf09176bcc5ea6e
+    content_sha256: 3db91f1ff2b1469fdc105007e0dc252388102e6f50643046a47f52d0146b7a1b
+    establishes:
+    - retail
 adoption:
   level: null
   reach: null
