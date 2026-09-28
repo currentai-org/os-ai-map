@@ -78398,14 +78398,13 @@
           "org_slug": "perplexity-ai",
           "org": "Perplexity AI",
           "type": "software",
-          "description": "Search-augmented LLM API combining real-time web search with model reasoning to produce sourced, grounded answers. Where a search API returns raw results, this returns a synthesized answer with citations, so an agent gets a research assistant rather than a search engine. It is offered as a developer API alongside the consumer product.",
+          "description": "Perplexity's Sonar API is a search-augmented LLM API that combines real-time web search with model reasoning to produce answers with citations. Where a search API returns raw results, Sonar returns a synthesized, cited answer, and Perplexity's developer platform also offers a separate Search API for raw ranked results. It is offered alongside Perplexity's consumer product.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:Proprietary(API-only);source:closed(Sonar models, search index, ranking all proprietary);managed:cloud SaaS, token + per-request pricing",
             "confidence": "high",
             "note": "Fully closed search-grounded API; no weights, source, or self-host path.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://docs.perplexity.ai/",
@@ -78428,7 +78427,6 @@
             "confidence": "medium",
             "banded_quantity": "Perplexity consumer-app MAU (45M+, aggregator-reported), not API requests or developers",
             "note": "Perplexity publishes no standalone request or developer count for the Sonar API, though its own documentation confirms the API is a core developer surface. Independent reporting puts the parent consumer app at mass scale, but that figure covers app usage rather than API traffic, so the API's traction here is inferred from that platform scale rather than measured directly.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://docs.perplexity.ai/",
@@ -78466,11 +78464,25 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
-          },
-          "version_note": "No standalone usage figure is published for the API, so adoption is read as reported traction rather than the parent platform's consumer numbers. The vendor api-platform page answers 403 to automated fetches and could not be re-read."
+            "date": "2026-09-17",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption",
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "Level 4 rests on an aggregator-reported consumer audience figure that no cited, fetchable source carries. Settling it needs a primary Perplexity disclosure of users or API volume."
+              },
+              {
+                "axis": "openness",
+                "since": "2026-09-28",
+                "reason": "No fetchable page carries the API's license or terms. The docs home establishes nothing about license or source, and the terms page was not reachable from this pass."
+              }
+            ]
+          }
         },
         {
           "slug": "linkup",
@@ -78716,25 +78728,45 @@
           "org_slug": "tavily",
           "org": "Tavily",
           "type": "software",
-          "description": "Search API built for AI agents, returning clean structured results optimized for model consumption rather than human browsing, across search, extract, crawl and map endpoints. It is integrated into LangChain, CrewAI and AutoGen out of the box.",
+          "description": "Tavily Search API is a hosted search service for AI agents and retrieval-augmented generation workflows, returning structured results through search, extract, crawl, map and research endpoints. Its documentation lists integrations with frameworks such as LangChain and CrewAI.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:Proprietary(API-only);source:closed(no self-hostable core; only thin client SDKs are public);managed:cloud SaaS with API keys, credits, rate limits",
             "confidence": "high",
-            "note": "A closed search and scraping API. Only the client SDKs are open; the search service itself is proprietary, with no self-hostable core.",
-            "last_verified": "2026-08-13",
+            "note": "Tavily is sold only as a hosted API, and its terms grant customers no right to the source code behind the service. Only the client libraries are public, under the MIT license, so nothing that runs the search can be self-hosted.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.tavily.com/",
-                "shows": "Hosted Search, Extract, Crawl, Map and Research endpoints behind an API key. Developer Resources lead with \"API Credits Overview - Learn how Tavily API credits work\" and \"Rate Limits - Understand Tavily's rate limits and policies\". The navigation's Open Source group is \"popular open source projects that showcase Tavily's use cases\", i.e. consumers of the API. No self-hosting or source-available option documented.",
-                "accessed": "2026-08-13",
+                "shows": "The documentation home is organized around a hosted API (\"Get an API key\", \"Learn how Tavily API credits work.\", \"Understand Tavily’s rate limits and policies.\"). Searched the body for self-host, on-prem, open source, GitHub and download: none, so no self-hostable build or source is documented.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "1bc9cddc56bca559ab891442291b6e2c633258084e35f89f5313586d043f5204",
+                "content_sha256": "ebe011d2c3092d0f4602c85038c181270e4b62d1ceccc3d37f07444d5ac36c5b",
                 "establishes": [
-                  "license",
                   "source",
                   "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.tavily.com/terms",
+                "shows": "any right to obtain possession of any source code, data or other technical material related to the Services",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a4e6f34077111102514be7bd42e7eab9ca31d2732624bb30afb329de928d3625",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/tavily-ai/tavily-python/master/LICENSE",
+                "shows": "MIT License",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "5487dae77c2e475439bd62828b6c5e4896e79f3f7bcc1dbec10efc59fc8bb77f",
+                "establishes": [
+                  "source"
                 ]
               }
             ],
@@ -78745,22 +78777,22 @@
             "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Tavily's adoption is measured by its developer count rather than by request volume. The company also reports a much higher monthly request volume, but that counts API calls rather than distinct users, so it stands only as corroborating context.",
-            "last_verified": "2026-08-13",
+            "note": "Tavily's adoption is measured by the developer count on its own homepage, a figure the vendor reports itself. Nebius's announcement of its agreement to acquire Tavily gives separate user and SDK download figures, which support the same scale but count different things.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://www.tavily.com/",
-                "shows": "\"Trusted by 2M+ developers around the world\"; stats grid - 300M+ \"monthly requests handled\", Billions of pages \"extracted without downtime\".",
-                "accessed": "2026-08-13",
+                "shows": "Trusted by 2M+ developers around the world",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "987a586cfe2beef1f4c25a7e0cd6876e1898e948b737a62e1061be81d7155236"
+                "content_sha256": "aeac30b96dc8ae777d63c7cf624477725ac7ba81f8ae9b9acae0db4eb55004a0"
               },
               {
                 "url": "https://nebius.com/newsroom/nebius-announces-agreement-to-acquire-tavily-to-add-agentic-search-to-its-ai-cloud-platform",
-                "shows": "Nebius agreement to acquire Tavily, positioning it as agentic search for the Nebius AI cloud. Corroborating enterprise traction; carries no usage figure of its own.",
-                "accessed": "2026-08-13",
+                "shows": "more than one million users",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "75aba5a8ab16b90ffdfbb4e23e31c2839e0688e680e4fec6b9bce1edc47a6f0c"
+                "content_sha256": "0ca1ce0d2ca4b55ec73ac725108e4333f598b0242c120df6198355082f17f92c"
               }
             ]
           },
@@ -78795,9 +78827,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -78806,25 +78838,34 @@
           "org_slug": "exa",
           "org": "Exa",
           "type": "software",
-          "description": "Neural search API that matches on meaning rather than keywords, returning links and full content by semantic similarity. It is particularly strong for finding similar content, research papers and niche topics where keyword search fails, and is positioned as the semantic alternative to more traditional search APIs.",
+          "description": "Exa Search API is a hosted neural search service, formerly known as Metaphor, that matches queries on meaning rather than keywords and ranks results by semantic similarity. A single search request can return links along with page text, highlights or a schema-shaped summary for each result. Exa is offered as a semantic alternative to keyword-based search APIs.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:Proprietary(API-only);source:closed(neural search models + index proprietary; only client SDKs public);managed:cloud SaaS with API keys, usage-based pricing",
             "confidence": "high",
-            "note": "Closed neural-search API; no self-hostable core, the index and ranking models are proprietary.",
-            "last_verified": "2026-08-13",
+            "note": "Exa is sold only as a hosted API, and the search models and index behind it are not published in any form. Only the client libraries are public, under the MIT license, so nothing that runs the search can be self-hosted.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://exa.ai/about",
-                "shows": "\"Exa: The Search Engine for Developers & Custom AI Search Solution\"; \"search for Cursor, Cognition, HubSpot, OpenRouter, Monday.com and over 400,000 developers\"; Websets described as a product on top. No self-hosting, on-premise or source-available option anywhere on the page.",
-                "accessed": "2026-08-13",
+                "shows": "The about page describes a hosted search product reached through \"Pricing\", \"Contact sales\" and \"Sign up\" (\"We power search for Cursor, Cognition, HubSpot, OpenRouter, Monday.com and over 400,000 developers.\"). Searched the body for self-host, on-prem, open source, license and download: none, so no source or self-hostable build is offered.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74",
+                "content_sha256": "5b8391e83a758fee7cd3b0e18803cb6f7cd5a39866841df6a603adb38aeacfab",
                 "establishes": [
                   "license",
-                  "source",
-                  "core-gated"
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/exa-labs/exa-py/master/LICENSE",
+                "shows": "The MIT License (MIT)",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "975311f367d9ce9bf7ac812c442b3c38ffa3992d8c0467db256b6ced5126e834",
+                "establishes": [
+                  "source"
                 ]
               }
             ],
@@ -78836,7 +78877,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Exa's own about page names the customers it serves, including Cursor, Cognition, HubSpot, OpenRouter and Monday.com, and states its developer count directly. No independently published request, query or revenue figure exists, so that vendor-stated count is what the reach here reflects.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://exa.ai/about",
@@ -78878,11 +78918,20 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
-          },
-          "version_note": "Formerly Metaphor."
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "PyPI downloads of the declared exa-py package band at level 4, while the record carries 3 on the vendor's developer count. A change of instrument and level is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
+          }
         },
         {
           "slug": "firecrawl",
@@ -78890,31 +78939,38 @@
           "org_slug": "mendable",
           "org": "Mendable",
           "type": "software",
-          "description": "Web scraping and crawling API built for LLM consumption, turning a URL into clean markdown or structured data while handling JavaScript rendering, pagination and anti-bot measures. It offers scrape, crawl, map, search, batch and agent-extract endpoints, and can run either as a self-hosted deployment or as a hosted service.",
+          "description": "Firecrawl is a web scraping and crawling API built for LLM consumption, turning a URL into clean markdown or structured data while handling JavaScript rendering, pagination and anti-bot measures. It offers scrape, crawl, map, search, batch and agent-extract endpoints. Firecrawl can run as a self-hosted deployment or as a hosted service.",
           "openness": {
             "score": 4,
             "class": "open_core",
             "components": "license:AGPL-3.0(OSI, self-host core);source:public;managed-cloud:firecrawl.dev with 'additional features' beyond OSS = open-core split;core-gated:gated(Fire-engine is closed and its source is in no public repo - the tree ships only a client at apps/api/src/scraper/scrapeURL/engines/fire-engine and .env.example calls FIRE_ENGINE_BETA_URL the fire engine closed beta. Screenshots and page actions are unavailable in the self-hosted stack because both require Fire-engine)",
             "confidence": "high",
             "note": "Firecrawl's AGPL-3.0 core is open, but Fire-engine, its own scraping engine, is not available in any public repository. The source tree includes only a client that connects to a separately provided endpoint, and the self-hosting guide says that screenshots, page actions, agents, browser features and specialty formats require either Fire-engine or Firecrawl Cloud. In other words, part of the product itself is withheld from the published source. That is what makes Firecrawl open core; the managed cloud's additional features would not be enough on their own.",
-            "last_verified": "2026-08-12",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/mendableai/firecrawl/blob/main/LICENSE",
-                "shows": "AGPL-3.0 license text, Sideguide Technologies Inc.",
-                "accessed": "2026-06-04"
+                "url": "https://raw.githubusercontent.com/firecrawl/firecrawl/main/LICENSE",
+                "shows": "GNU AFFERO GENERAL PUBLIC LICENSE",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9b4649365c4f29d8f41301f4cda1e5bd9da51cf1bbb19ab9d568ff57d56e3b33",
+                "establishes": [
+                  "license"
+                ]
               },
               {
                 "url": "https://www.firecrawl.dev/pricing",
-                "shows": "6 paid managed-cloud tiers (Free/Hobby/Standard/Growth/Scale/Enterprise)",
-                "accessed": "2026-06-04"
+                "shows": "Hobby: $19/month billed monthly, or $16/month billed annually",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "cb3e3f61deb62e2b574d058940c8d545984d179e4212948f1f459a6358245329"
               },
               {
                 "url": "https://raw.githubusercontent.com/firecrawl/firecrawl/main/apps/api/.env.example",
-                "shows": "The gate, in the shipped configuration. \"# set if you'd like to use the fire engine closed beta\" immediately above FIRE_ENGINE_BETA_URL=. Two entries later, the product scrape format \"extracts a structured product from a page's HTML via an external product-extraction service; point this at that service's base URL. If unset, requesting the product format returns a warning and no product (same pattern as the audio/video formats and AVGRAB_SERVICE_URL).\"",
-                "accessed": "2026-08-12",
+                "shows": "# set if you'd like to use the fire engine closed beta",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "833dcfe3448829dc86757f7310b538ea8c4c90e8d7703640266920c2a473573e",
+                "content_sha256": "e0bed43309c002fa6b46aafa8283b170e7bc203a87c23853d9a352eead680a8c",
                 "establishes": [
                   "core-gated"
                 ]
@@ -78931,10 +78987,10 @@
               },
               {
                 "url": "https://docs.firecrawl.dev/contributing/self-host",
-                "shows": "What the open build cannot do. Screenshots and page actions: \"Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine.\" Fire-engine and advanced anti-bot behavior must be \"run and configured separately; it is not included.\" Agent, browser, interact and feedback features and the specialty product, menu, audio and video formats require Firecrawl Cloud or a separate external service.",
-                "accessed": "2026-08-12",
+                "shows": "Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "19f3b8f80c3745fbe7a786f55b4c4d435c09294e9b2515928774042076e933b2",
+                "content_sha256": "2437c4c3ad445a0961fb349e91adb7c96a5d02941ec6da57179058fe8b6772ef",
                 "establishes": [
                   "core-gated"
                 ]
@@ -78949,6 +79005,27 @@
                   "license",
                   "source"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/firecrawl/firecrawl/main/README.md",
+                "shows": "Firecrawl is open source under the AGPL-3.0 license. The cloud version at [firecrawl.dev](https://firecrawl.dev) includes additional features:",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a5c4aa0d637d739818486995f789bde3103e8b1e658c481f064c0020e9579543",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/firecrawl/firecrawl/main/apps/api/src/scraper/scrapeURL/engines/fire-engine/scrape.ts",
+                "shows": "config.FIRE_ENGINE_BETA_URL ?? \"<mock-fire-engine-url>\";",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1e7b548edb94a8ca65f2c1c7ab36aa7575d460fe0810e297da657c633a2cbdeb",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -78959,7 +79036,6 @@
             "signal_type": "stars_fallback",
             "confidence": "low",
             "note": "Firecrawl's usage is measured by GitHub stars because neither the repository nor the pricing page publishes a download, request or customer count for its paid API, which sells credits instead. A star is not a use, so real usage is almost certainly greater than the count alone can show for a tool this widely integrated into agent scraping workflows, including LangChain.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/mendableai/firecrawl",
@@ -78992,9 +79068,19 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "The record bands on GitHub stars, but the declared firecrawl-py package now has a PyPI download signal, which takes precedence. Switching the instrument is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
           }
         },
         {
@@ -79321,24 +79407,44 @@
           "org_slug": "apify",
           "org": "Apify",
           "type": "software",
-          "description": "Web scraping and automation platform with a marketplace of tens of thousands of pre-built scrapers, called Actors, targeting specific websites. It provides cloud infrastructure for running them at scale, proxy management and anti-bot handling, plus an MCP server that exposes Actors to agent clients. Crawlee, its crawling framework, is offered alongside the managed platform.",
+          "description": "Apify is a web scraping and automation platform with a marketplace of tens of thousands of pre-built scrapers, called Actors, that target specific websites. It provides cloud infrastructure for running them at scale, proxy management and anti-bot handling, plus an MCP server that exposes Actors to agent clients. Crawlee, Apify's open-source crawling framework, is offered alongside the managed platform.",
           "openness": {
             "score": 2,
             "class": "source_available",
             "components": "platform:proprietary(Apify-Cloud,Actor-store,managed);source:partial(Crawlee SDK published, the platform that runs Actors is not);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK open)",
             "confidence": "high",
-            "note": "Apify's platform and Actor store are proprietary SaaS; Crawlee, its Apache-2.0 scraping library, is an adjacent SDK rather than the platform core, so most of the product's value stays behind the managed cloud. Crawlee's repository is public, but the Actor runtime that runs on the platform is not, which is partial, source-available disclosure rather than open core, which would mean an OSI-licensed core with only paid-tier functionality withheld.",
-            "last_verified": "2026-08-13",
+            "note": "Apify's platform and Actor store are proprietary hosted services, and the runtime that executes Actors is not published. Crawlee, its Apache-2.0 scraping library, has a public repository, but it is an adjacent library rather than the platform core, so the disclosure is partial rather than an open core with a few paid features withheld.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://apify.com",
-                "shows": "Proprietary full-stack platform - Apify Store, Actors (\"Build and run serverless programs\"), Integrations, an MCP server, Anti-blocking and Proxy - with a single \"Open source\" navigation heading holding Crawlee alone. The store now advertises 59,817 Actors, up from the 35,000+ this record carried. No self-hosted Actor runtime is offered.",
-                "accessed": "2026-08-13",
+                "shows": "The homepage presents Apify as a hosted service (\"Apify is a marketplace of ready-to-run tools for AI\", \"Rely on Apify infra\", with \"Pricing\" and \"Contact sales\"), and \"Crawlee\" is the only project listed under \"We love open source\". Searched the body for self-host, on-prem, license and download: none, so no self-hosted platform or platform license is offered.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d",
+                "content_sha256": "661059a88387c5142aaf082797eaf511126319a2ac2c583a63ab10fd31eb9979",
                 "establishes": [
                   "source",
                   "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/apify/crawlee/master/LICENSE.md",
+                "shows": "Apache License\n                           Version 2.0, January 2004",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "37c9b417332af22e146d381766f284649483fb6ece17ca566584bf6adcf89135",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/apify/crawlee/master/README.md",
+                "shows": "This project is licensed under the Apache License 2.0",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "449883255ef29d4e4bfcf2149dc6bdfb5ebf2940e8e99bdfff9650c8936f07a0",
+                "establishes": [
+                  "source"
                 ]
               },
               {
@@ -79361,7 +79467,6 @@
             "signal_type": "usage_volume",
             "confidence": "medium",
             "note": "Named enterprise users such as T-Mobile, Microsoft and Accenture run on the Apify platform, and the open-source Crawlee library draws heavy attention on GitHub. Apify publishes no account, run or API-call count for the platform itself, so adoption here is a judgment made across the platform and Crawlee together rather than one measured figure.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://apify.com",
@@ -79410,9 +79515,19 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "No freshly fetched source supports the level 3 band: apify.com publishes no account, run or API-call count, and the Crawlee repository could not be read from this pass. Settling it needs a countable channel, such as a declared crawlee or apify-client package."
+              }
+            ]
           }
         },
         {
@@ -79518,14 +79633,14 @@
           "org_slug": "jina-ai",
           "org": "Jina AI",
           "type": "software",
-          "description": "URL-to-LLM-input conversion service that turns any web page into clean, structured content optimized for language models. Prefix any URL with r.jina.ai to get markdown output. Simple, fast, and widely integrated into agent workflows as a lightweight alternative to full scraping tools. Reads HTML, PDF and MS-Office documents and captions images. Also offers search (s.jina.ai) and grounding capabilities.",
+          "description": "Jina Reader is a service and open-source codebase that converts a web page into markdown for language models when a URL is prefixed with r.jina.ai. It reads HTML, PDF and Microsoft Office documents and captions images. A companion endpoint, s.jina.ai, searches the web and returns the results as markdown.",
           "openness": {
-            "score": 5,
-            "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core",
+            "score": 4,
+            "class": "open_core",
+            "components": "license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:gated(ReaderLM-v2 and jina-vlm, the models behind image captioning and the readerlm-v2 output, are CC-BY-NC 4.0; commercial use needs the Jina On-Prem license);managed-tier:r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key)",
             "confidence": "high",
-            "note": "Jina Reader is Apache-2.0 throughout, and its paid tiers buy request throughput on the hosted endpoint rather than extra features -- the free tier, a free API key and Premium all get the same PDF, Office, image-captioning and search support, differing only up to 5,000 requests per minute. The published repository omits the MongoDB-backed storage layer the hosted service uses for accounting, but that supports the service rather than the reader itself, so nothing is withheld from the open build.",
-            "last_verified": "2026-08-12",
+            "note": "Jina Reader's service code is Apache-2.0 and self-hostable in a stateless Docker mode, but the models it uses for image captioning and its ReaderLM output, ReaderLM-v2 and jina-vlm, are licensed for non-commercial use only. Commercial use of those features needs the Jina On-Prem license Elastic sells, so part of the product sits outside the open build.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://github.com/jina-ai/reader",
@@ -79533,35 +79648,35 @@
                 "accessed": "2026-06-04"
               },
               {
-                "url": "https://github.com/jina-ai/reader/blob/main/LICENSE",
-                "shows": "the repository LICENSE is the Apache License, Version 2.0, headed \"Copyright 2020-2024 Jina AI Limited\"; the GitHub repo API reports the SPDX id Apache-2.0",
-                "accessed": "2026-08-12",
+                "url": "https://raw.githubusercontent.com/jina-ai/reader/main/LICENSE",
+                "shows": "Apache License",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "ee3aeb6c37d4222522d759df6c7014542880b6af1b55cdc5b3bfb11f160e9210",
                 "establishes": [
                   "license"
-                ],
-                "http_status": 200,
-                "content_sha256": "ee3aeb6c37d4222522d759df6c7014542880b6af1b55cdc5b3bfb11f160e9210"
+                ]
               },
               {
-                "url": "https://github.com/jina-ai/reader/blob/main/README.md",
-                "shows": "the repo is \"the open source branch of the codebase behind https://r.jina.ai and https://s.jina.ai\"; it \"runs in stateless or bucket-cached mode; the MongoDB-backed SaaS storage layer is not included here\"; the 2026-04 entry adds that the oss branch \"runs in stateless mode out of the box, with optional MinIO/S3-compatible bucket caching via docker compose\"",
-                "accessed": "2026-08-12",
+                "url": "https://raw.githubusercontent.com/jina-ai/reader/main/README.md",
+                "shows": "This repository is the open source branch of the codebase behind `https://r.jina.ai` and `https://s.jina.ai`. It runs in stateless or bucket-cached mode; the MongoDB-backed SaaS storage layer is not included here.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "583b250f78916c63a244eeb2903077548bcc39e9245f471947857fe84c70536c",
                 "establishes": [
                   "source",
                   "core-gated"
-                ],
-                "http_status": 200,
-                "content_sha256": "583b250f78916c63a244eeb2903077548bcc39e9245f471947857fe84c70536c"
+                ]
               },
               {
                 "url": "https://jina.ai/reader",
-                "shows": "the pricing and rate-limit table: Reader 20 RPM with no key, 500 RPM with a free API key, 5,000 RPM on Premium, and Search 100/1,000 RPM; the feature list (PDF reading, image captioning, web search) is the same at every tier, so the tiers differ on throughput rather than on features. No enterprise or commercial edition is offered.",
-                "accessed": "2026-08-12",
+                "shows": "The FAQ answers \"Is the Reader API open source?\" with \"The Reader service code is available on the Jina AI GitHub organization.\" and says \"The models used by Reader, including\" ReaderLM-v2 and jina-vlm, \"are licensed CC-BY-NC 4.0, which is not an open-source license\", so \"commercial production use requires a commercial license\", the Jina On-Prem license Elastic sells.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "3a2fe369075bdf0aa29d8e25cf87d0d5bbc0d729ef6d40d98410da2749f73338",
                 "establishes": [
                   "core-gated"
-                ],
-                "http_status": 200,
-                "content_sha256": "90bd4a738a01b7cfba9b2005d7d281aeee056650aced9eab573172dce4f9d188"
+                ]
               }
             ],
             "bucket": "open"
@@ -79607,9 +79722,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -79618,26 +79733,34 @@
           "org_slug": "searxng",
           "org": "SearXNG",
           "type": "software",
-          "description": "Privacy-respecting metasearch engine that aggregates results from many search services without tracking or profiling users. It predates the LLM era and does no inference itself, but exposes a JSON API and runs entirely on self-hosted infrastructure, which is why answer engines and RAG stacks use it as a web-search backend - Open WebUI, Perplexica, Morphic and LibreChat all integrate it as a provider.",
+          "description": "SearXNG is a privacy-respecting metasearch engine that aggregates results from many search services without tracking or profiling users, and a community-run successor to the older searx project. It predates the LLM era and does no inference itself, but exposes a JSON API and runs on self-hosted infrastructure. Answer engines and RAG stacks such as Open WebUI, Perplexica, Morphic and LibreChat integrate it as a web-search provider.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:AGPL-3.0(OSI);source:public(github.com/searxng/searxng);self-host:only(no official SaaS);reproducible-Docker-build;no-proprietary-backend;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source under copyleft AGPL-3.0, complete source public, reproducible official Docker image, no proprietary backend or gated hosted tier - self-hosting (or community public instances) is the only distribution.",
-            "last_verified": "2026-08-13",
+            "note": "The whole project is published under AGPL-3.0 in a public repository, and its README describes a single product with no paid, hosted or enterprise edition. Nothing is withheld from the published source, so running it yourself or using a community-run instance is the only way to use it.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/searxng/searxng",
-                "shows": "\"This project is licensed under the GNU Affero General Public License (AGPL-3.0)\"; repo metadata spdxId AGPL-3.0, \"GNU Affero General Public License v3.0\"; 35,415 stargazers. Root tree carries searx/, searxng_extra/, client/simple, container/, docs/, tests/, utils/ and one LICENSE. No paid tier, hosted service or enterprise directory.",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/searxng/searxng/master/LICENSE",
+                "shows": "GNU AFFERO GENERAL PUBLIC LICENSE",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "c683e257d77e4041db383c7c89ad2537a869f026ce1668825aa8dd93d8c3035c",
+                "content_sha256": "57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6",
                 "establishes": [
-                  "license",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/searxng/searxng/master/README.rst",
+                "shows": "This project is licensed under the GNU Affero General Public License (AGPL-3.0).",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "6a78fb798e890f75c99d2637f83dcdc90bebfdfdc563d24b59b38ef8a673e2ab",
+                "establishes": [
                   "source",
-                  "core-gated",
-                  "self-host"
+                  "core-gated"
                 ]
               }
             ],
@@ -79649,14 +79772,14 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "SearXNG has no download or install channel of its own, so adoption is measured from Docker Hub's pull count for the official searxng/searxng image, averaged over the time since the repository was registered. That average is treated as a floor rather than a precise rate, because a lifetime total understates a growing product whose pull rate has not been flat.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://hub.docker.com/r/searxng/searxng",
-                "shows": "Official image searxng/searxng. Repository payload gives pull_count 71,581,974, star_count 186, status active, date_registered 2021-04-22.",
-                "accessed": "2026-08-13",
+                "url": "https://hub.docker.com/v2/repositories/searxng/searxng",
+                "shows": "\"pull_count\":86964546",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "7a9d29c4bf78123a855e7869aeeb8331951e5c88c7a2d08734a62ff14f60a387"
+                "content_sha256": "69811f33e3c793fee67614fb951af15021796af84ee62549ef385f87ba542d22"
               }
             ]
           },
@@ -79684,11 +79807,10 @@
           "maturity": 3.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
-          },
-          "version_note": "Community-run fork-successor of the older searx project. There is no hosted service; it is distributed for self-hosting alongside a network of community public instances, many of which disable the JSON API. Docker is not a declared artifact here, so the adoption figure is computed in the score note rather than fetched by a signal."
+            "latest_axis_confirmation": "2026-09-28"
+          }
         },
         {
           "slug": "serper",
@@ -79696,21 +79818,21 @@
           "org_slug": "serper",
           "org": "Serper",
           "type": "software",
-          "description": "Google Search API for developers and agents, returning structured search-results-page data including organic results, the knowledge graph and related searches over a simple REST interface. It is positioned on price and latency for high-volume use.",
+          "description": "Serper is a Google Search API for developers that returns structured search-results-page data, including organic results, the knowledge graph and related searches. Besides web search it covers images, news, maps, places, videos, shopping, scholar, patents and autocomplete, and it is sold on per-query pricing and response speed.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:proprietary(API-only);source:closed;managed:Serper-Cloud(key-gated)",
             "confidence": "high",
-            "note": "A proprietary commercial SERP API with no published source and no self-hosting path - the closed counterpart to the open search tooling on this map, alongside Tavily and Exa.",
-            "last_verified": "2026-08-13",
+            "note": "Serper is a proprietary hosted Google Search API with no published source code. It is only available as a key-gated cloud service, with no self-hosted or on-premise option.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://serper.dev",
-                "shows": "Key-gated hosted Google Search API returning structured JSON. \"Get 2,500 free queries\"; pricing \"starting at $0.30 per 1,000 queries\". No license, repository link, self-host or on-premise option.",
-                "accessed": "2026-08-13",
+                "shows": "The homepage sells Google search results as a paid hosted API (\"Get 2,500 free queries\", \"No credit card required\", then \"simply pay for the credits you need\"). Searched the body for self-host, on-prem, open source, GitHub, SDK, download and license: none, so no source, license grant or self-hostable build is offered.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "cbf8b2324e279fbab25e51bde39a73084618b4d43d17bdc061cb6f5060180ba0",
+                "content_sha256": "f086c2fd02d68f0ad595439af5e36e551a653a0435faf51426fbd92fc9c17c07",
                 "establishes": [
                   "license",
                   "source",
@@ -79726,14 +79848,14 @@
             "signal_type": "unknown",
             "confidence": "low",
             "note": "Serper publishes no user, customer or query-volume figure, and its site carries pricing and speed claims rather than usage data. There is no package, repository or registry artifact to measure either, so adoption is left unscored rather than inferred from marketing copy.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://serper.dev",
-                "shows": "\"The World's Fastest and Cheapest Google Search API\"; \"search results in 1-2 seconds, at an unbeatable price starting at $0.30 per 1,000 queries\"; \"Get 2,500 free queries\". No user, customer, developer or query-volume figure appears anywhere on the page.",
-                "accessed": "2026-08-13",
+                "shows": "The homepage publishes pricing (\"starting at $0.30 per 1,000 queries\") but no usage figure. Searched the body for customers, trusted by, developers and users: no customer, developer, user or query-volume count is published.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "cbf8b2324e279fbab25e51bde39a73084618b4d43d17bdc061cb6f5060180ba0"
+                "content_sha256": "f086c2fd02d68f0ad595439af5e36e551a653a0435faf51426fbd92fc9c17c07"
               }
             ]
           },
@@ -79759,9 +79881,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -80009,25 +80131,24 @@
           "org_slug": "google",
           "org": "Google",
           "type": "software",
-          "description": "Google's managed grounding-with-search capability inside Vertex AI, letting an agent ground its responses in real-time Google Search results or in enterprise data through Vertex AI Search. It is tightly integrated with the Gemini models and forms the search-augmented generation path for the wider Vertex AI platform.",
+          "description": "Grounding with Google Search is Google's managed capability for grounding Gemini model responses in real-time Google Search results, offered on the Gemini Enterprise Agent Platform (formerly Vertex AI). A companion option, Grounding with Agent Search, grounds responses in an organization's own website data or documents instead. The capability is tightly integrated with the Gemini models and is the platform's search-augmented generation path.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:proprietary(GCP-managed API);source:closed;managed:Vertex-AI/Gemini-Agent-Platform",
             "confidence": "high",
-            "note": "Fully proprietary Google Cloud managed grounding service; no open source component or self-host. Tied to Gemini + Google Search index.",
-            "last_verified": "2026-08-13",
+            "note": "Grounding with Google Search is offered only as a managed Google Cloud feature for Gemini models, and the documentation describes nothing to download, license or self-host. It depends on Google's own search index, which is not available outside the service.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/grounding/overview",
-                "shows": "\"You can ground supported-model output in Gemini Enterprise Agent Platform in the following ways\", with Grounding with Google Search - \"Connect your model to world knowledge and a wide possible range of topics using results from Google's search engine\" - as one row beside Google Maps, Agent Search, your own search API, RAG, Elasticsearch, Parallel and Exa. No source release, self-host or on-premise option.",
-                "accessed": "2026-08-13",
+                "shows": "The grounding overview documents a managed Google Cloud capability (\"Connect your model to world knowledge and a wide possible range of topics using results from Google's search engine.\"), and the page's only license text covers the documentation itself (\"code samples are licensed under the\" Apache 2.0 License). Searched the body for self-host, download and open source: none, so nothing that runs the grounding service is offered for download or under a license.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "6cdb0c2ef2eb8c68310dc37b3cf5e7dbe6e430ef6f2bf224b95c75c40d326cd4",
+                "content_sha256": "7965a056d70d2bcef0916fbbf3b2e90838f021d223b1f86910ed89dff61c1069",
                 "establishes": [
                   "license",
-                  "source",
-                  "core-gated"
+                  "source"
                 ]
               }
             ],
@@ -80075,9 +80196,9 @@
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
