@@ -1,0 +1,122 @@
+product: reachy-mini
+openness:
+  score: 4
+  class: open_toolchain
+  components:
+    form_factor:
+      value: board
+      detail: a complete desktop robot, sold as a kit
+    schematics:
+      value: published
+      detail: STL meshes of the printed parts are in the repository under a non-commercial CC BY-SA-NC
+        license, and the full STEP files are not released
+    toolchain:
+      value: open
+      detail: driven by the Apache-2.0 SDK and daemon in the same repository
+    retail:
+      value: open_market
+      detail: Wireless and Lite kits from Pollen Robotics' store and through Seeed Studio
+  confidence: high
+  note: The robot's printed parts are published as STL files, but under a non-commercial license and without
+    the full STEP design files, so the design can be read but not freely rebuilt or sold. The software
+    that drives it is Apache-2.0 and builds from source, and the kits are on open sale.
+  raw: form_factor:board(a complete desktop robot, sold as a kit);schematics:published(STL meshes of the
+    printed parts are in the repository under a non-commercial CC BY-SA-NC license, and the full STEP
+    files are not released);toolchain:open(driven by the Apache-2.0 SDK and daemon in the same repository);retail:open_market(Wireless
+    and Lite kits from Pollen Robotics' store and through Seeed Studio)
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/README.md
+    shows: 'README: "This project is licensed under the Apache 2.0 License" and "Hardware design files
+      are licensed under Creative Commons BY-SA-NC."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9d11ffc341acce448974c215d1a69a2b5000de98a92373a129d37ec19b0becd0
+    establishes:
+    - schematics
+    - toolchain
+  - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/docs/source/troubleshooting.md
+    shows: 'FAQ: "The full STEP files havenot been released yet, but we plan to release them in the future.
+      In the meantime, you can find some STL files in the assets folder of the repository."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 1382ee715e7ea711053d007dc16cf4e3df3c4eafac41824d723a678ab8606739
+    establishes:
+    - schematics
+  - url: https://ungh.cc/repos/pollen-robotics/reachy_mini/files/main
+    shows: 'Repository tree: STL meshes of the printed parts (body_top_3dprint.stl, head_front_3dprint.stl,
+      stewart_main_plate_3dprint.stl and others) beside MJCF and URDF models of the robot.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 8b568bfce9b81459933694991a11c0f6fd603f67406752eed8a05957b96970f2
+    establishes:
+    - schematics
+    - form_factor
+  - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/LICENSE
+    shows: 'LICENSE: the Apache License, Version 2.0 text.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 1cd66cd7ef50bb247f43d247f7c2a3259a600d951170e778d75c9278e5680f03
+    establishes:
+    - toolchain
+  - url: https://pollen-robotics.com/reachy-mini/
+    shows: 'Product page: "Reachy Mini Wireless" and "Reachy Mini Lite", each with "Order Now", and "Order
+      via Seeed Studio" outside EU/UK and US/Canada; "Both ship as DIY kits."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 04bd4142a9673e40195d143811d8169522b8214da32adadfb3f73e09ddb45a95
+    establishes:
+    - retail
+    - form_factor
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the SDK repository, which also holds the robot's design meshes. Pollen Robotics
+    publishes no kit sales.
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://ungh.cc/repos/pollen-robotics/reachy_mini
+    shows: 'Repository record for pollen-robotics/reachy_mini: 1,525 stars, description "Reachy Mini''s
+      SDK", pushed 2026-09-25.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: ee0848316bb72b069309ad231099bd638553b890c5b35b4a743fa87e6af6cccc
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: morphology
+  value: Desktop robot with a head on a six-degree-of-freedom Stewart platform (three rotations and three
+    translations), one rotating body joint and two antenna joints, driven by Dynamixel XL330 and XC330
+    servos, with a 120-degree camera, a four-microphone array and a speaker. No arm or gripper.
+  confidence: medium
+  note: Reachy Mini turns its head, body and antennas to look and gesture, but it has no arm or gripper,
+    so it cannot reach for or carry anything. That puts it a step below the SO-101, a single arm that
+    can.
+  relative_to: so-101
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-28'
+    sources:
+    - url: https://huggingface.co/docs/lerobot/main/en/assemble_so101
+      shows: 'LeRobot assembly guide: "our flagship robot, the SO-101"; "The follower arm uses 6x STS3215
+        motors"; joints from Base / Shoulder Yaw through Wrist Pitch to Gripper.'
+      accessed: '2026-09-28'
+      http_status: 200
+      content_sha256: e5953a7f21a3abbf641f2fe0fc7bb29555b7894fca0dc30a19a683c6745c75de
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/docs/source/platforms/reachy_mini/hardware.md
+    shows: 'Hardware datasheet: "Head : 6 dofs (3 rotations & 3 translations)", "Body : 1 rotation", "Antennas
+      : 1 rotation (x2)"; Stewart platform of 6 Dynamixel XL330-M288-T motors; wide-angle camera, mic
+      array and speaker.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 929e508da102d99ceb6e0cad6b6544ec6a033d1a4198aca68b194559e4b58473
+  - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/README.md
+    shows: 'README: "Reachy Mini is an open-source, expressive robot made for hackers and AI builders";
+      Wireless (Raspberry Pi CM4, battery, Wi-Fi) and Lite (USB to a computer) versions.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9d11ffc341acce448974c215d1a69a2b5000de98a92373a129d37ec19b0becd0

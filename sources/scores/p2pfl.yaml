@@ -1,0 +1,123 @@
+product: p2pfl
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: GPL-3.0
+      detail: OSI; the LICENSE.md body is the unmodified GNU GPL version 3 text
+    source:
+      value: public
+      detail: the library, its gRPC and in-memory protocols and its examples
+    core-gated:
+      value: gated
+      detail: the vendor's plan table leaves "Advanced features" out of the free Community (Open Source)
+        plan and includes them in an Enterprise plan it marks as launching soon
+  confidence: high
+  note: P2PFL's library is GPL-3.0, but its maker's own plan table holds back "advanced features" from
+    the free open-source plan for a paid Enterprise plan, which is open core. That plan is still marked
+    as launching soon, and the page does not say which features it withholds.
+  raw: license:GPL-3.0(OSI; the LICENSE.md body is the unmodified GNU GPL version 3 text);source:public(the
+    library, its gRPC and in-memory protocols and its examples);core-gated:gated(the vendor's plan table
+    leaves "Advanced features" out of the free Community (Open Source) plan and includes them in an Enterprise
+    plan it marks as launching soon)
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/HEAD/LICENSE.md
+    shows: 'The LICENSE.md body: the verbatim GNU General Public License, Version 3 text.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986
+    establishes:
+    - license
+  - url: https://api.github.com/repos/p2pfl/p2pfl
+    shows: 'Repository record for p2pfl/p2pfl: license gpl-3.0, not archived, not a fork, pushed 2026-05-09,
+      155 stars.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d4725587e2cb7ebfe9bf728461c5dfec1d0571580f3ea22043be6c6b838ef326
+    establishes:
+    - source
+  - url: https://www.p2pfl.com/
+    shows: 'Plan table: "Community (Open Source)", "Free", with Web UI checked and "Advanced features"
+      and "Priority support" crossed out; "Enterprise", "Contact Us!", with all three checked; "We are
+      launching soon!"; "© Copyright 2024".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 78f55b02cb4c66a0a451aed44456f42ff07f3488f22177720027814a7c1c21fb
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `p2pfl`, the library's own package.
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://pypistats.org/api/packages/p2pfl/recent
+    shows: last_month = 44 downloads for the package `p2pfl`.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 89ba15499577186afda844fc34d481345a17344b0a97272e244183f8a121dd24
+  - url: https://pypi.org/pypi/p2pfl/json
+    shows: PyPI `p2pfl` 0.4.4, uploaded 2025-09-30, repository https://github.com/p2pfl/p2pfl.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: c92b9125c93069d1ec4145bc2c5c96e9c414010c8dbacdbedd13f91bd120cbd7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Peer-to-peer training over gRPC with gossip-based model exchange; optional mutual TLS with node
+    certificates signed by a shared root CA; local differential privacy applied to outgoing updates; in-memory
+    and Ray simulation. Certificate distribution is left to the operator, and the only container is a
+    development Dockerfile.
+  confidence: medium
+  note: P2PFL runs a real federation between machines, with mutual TLS so that only nodes holding certificates
+    from the network's authority can join, and local differential privacy on each update. It leaves distributing
+    those certificates to the operator and ships no deployment tooling for the nodes, which keeps it a
+    step below Flower.
+  relative_to: flower
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-28'
+    sources:
+    - url: https://flower.ai/docs/framework/how-to-authenticate-supernodes.html
+      shows: 'Flower''s SuperNode authentication guide: automatic timestamp-signature authentication,
+        and CLI-managed authentication that restricts which SuperNodes may connect to a SuperLink.'
+      accessed: '2026-09-28'
+      http_status: 200
+      content_sha256: 26d49632114839ffdb0fdaaa933a7b630ac76b8113b2eb5c16d826fc79a79ece
+    - url: https://flower.ai/docs/framework/docker/index.html
+      shows: '"Start your Flower journey with our pre-made Docker images on Docker Hub"; guides to enable
+        TLS and to "Deploy Flower on Multiple Machines with Docker Compose".'
+      accessed: '2026-09-28'
+      http_status: 200
+      content_sha256: 059f28f62aed80af9d761b2766dfba97f9edfd17b516579770f2bfeead48f46b
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/main/docs/source/tutorials/certificates.md
+    shows: 'mTLS guide: each node holds server and client certificates signed by a root CA, and connections
+      are refused without them; "certificate distribution is not something that our library provides out-of-the-box."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 8d8cfaeec1b61282f11b1170e12c8fa766c6ed828a44720c19ce8191643f8866
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/main/docs/source/components/communication.md
+    shows: 'Communication protocols: gRPC between peers with TLS and mutual TLS support, plus in-memory
+      communication for simulations with Ray.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d3c20422612e61bf1434013e75c63fcd9635ea4bf1de7e2dbbd7a4188d524d6f
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/main/p2pfl/learning/compression/dp_strategy.py
+    shows: '"Post-Training Differential Privacy strategy for Local DP": each client clips and adds noise
+      to its own update before it leaves the node.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: cee869c32784b11e7068d29bf3883d92b70193c6e7aab92eac8f352ee8e40278
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/HEAD/README.md
+    shows: 'README: "execution (simulated and in real environments) of Decentralized Federated Learning
+      systems"; Docker instructions are "docker build -t p2pfl ." and "docker run -it --rm p2pfl bash".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: db2d5504515d41fe8f1745114bc486efb62745d2bef91ffcb8d51ad5cf84ab9c
