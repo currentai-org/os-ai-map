@@ -324,7 +324,7 @@ def check_ids_unique(tables: dict[str, list[dict]]) -> None:
 # belong to the gallery tables, which the CMS owns. See the module docstring.
 ENUMS: dict[str, tuple[str, ...]] = {
     "alias_kind": ("product", "organization"),
-    "freshness_basis": ("commit", "verified"),
+    "freshness_basis": ("commit", "verified", "partial"),
     "lineage_relation": ("derived_from", "curated_with", "trains"),
     "capability_relation": ("tier_below", "tier_above", "peer", "anchor"),
     # The three scored axes, from the score schema rather than restated here — a fourth axis
@@ -336,7 +336,9 @@ ENUMS: dict[str, tuple[str, ...]] = {
 # out anyway so a new payload value is a KeyError here rather than a silent pass-through.
 ENUM_MAPS: dict[str, dict[str, str]] = {
     "alias_kind": {"products": "product", "organizations": "organization"},
-    "freshness_basis": {"verified": "verified", "commit": "commit"},
+    # `partial`: some axes confirmed, at least one held in sources/verification_queue.yaml.
+    # Collapsing it to `verified` would claim a confirmation the hold says did not happen.
+    "freshness_basis": {"verified": "verified", "commit": "commit", "partial": "partial"},
     "lineage_relation": {
         "derived_from": "derived_from",
         "curated_with": "curated_with",
