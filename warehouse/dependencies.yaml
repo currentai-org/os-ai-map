@@ -132,16 +132,16 @@ dependencies:
   - warehouse/models/evidence/product_evidence.sql
   - warehouse/models/identity/artifact_identity_edges.sql
   - warehouse/models/observations/product_adoption_current.sql
-  verified_revision: 4
+  verified_revision: 7
   owner: oso
   files:
     model: warehouse/models/signal_github/artifact_state.py
   mirror:
     model_id: fed14549-c660-44fc-a6cc-c859795bde7f
-    revision: 4
-    hash: 7edc4f8225e9261852dd8c0bb7b81b57e438d6b896bcccf7ee02124bba48878a
-    local_sha256: 910b4b2d26b45b341a206fb8c6d2b09c1926101a7ae1bdb39da102ff5697fb48
-    synced_at: '2026-09-15'
+    revision: 7
+    hash: 10a6cfb6636c2f254a16b3e15cfd0249c96898a3abd19b24d9524cfe17b53f23
+    local_sha256: 41b182c78c6d289a27214a0c1b24562a87626ac08779caf05e1d1ef1f760d5e2
+    synced_at: '2026-09-28'
   platform_schedule:
     cron: 0 3 * * 0
     timezone: UTC
@@ -426,20 +426,40 @@ dependencies:
   required_by:
   - build/check_artifacts.py
   - warehouse/models/observations/product_adoption_current.sql
-  verified_revision: 3
+  verified_revision: 5
   owner: oso
   files:
     model: warehouse/models/signal_packages/downloads.sql
   mirror:
     model_id: 444e9e8f-a21c-4de1-a08b-bf4a009dfab5
-    revision: 3
-    hash: 64c19d98eeeb96dc5b9fbc287bfc7a920401051ff1de47ae76f7a3272690f03e
-    local_sha256: 92cec475019eab969c7fe762fe79630afa67bbaaaf756067fd721543b35c9fb4
-    synced_at: '2026-09-20'
+    revision: 5
+    hash: b41f13bd38490de5dd47660ecce1d9edf710af32490445119e8c6d48a93f3c0b
+    local_sha256: 61a09076d6d39dd37edd4bd949eefcd03f38b1abecccb98c39bcebf0b45b3ca1
+    synced_at: '2026-09-28'
   platform_schedule:
     cron: 0 1 * * 0
     timezone: UTC
     last_observed_trigger: SCHEDULED
+- table: currentai.signal_packages.package_metadata
+  purpose: package_release_metadata
+  expected_grain: one row per (product_slug, artifact_kind, package)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/signal_packages/downloads.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/signal_packages/package_metadata.py
+  mirror:
+    model_id: 6a2e4126-0bb4-4627-a83b-d4f28203178f
+    revision: 3
+    hash: 139e571c2470b8af1bb34a09fd0c0a121573f954a9507e180adee0c9575d6898
+    local_sha256: 566076591df0811f76ddf2f199003c96b6009c6406775ef95b5da79237e24424
+    synced_at: '2026-09-28'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
 - table: currentai.signal_packages.downloads_daily
   purpose: package_download_history
   expected_grain: one row per (product_slug, artifact_kind, package, day)

@@ -200,8 +200,10 @@ outside version control, so one can be arbitrarily old while the repo's mirror i
 is what happened to `evidence.product_evidence`: the 2026-09-13 recreation was pushed from a copy
 predating the Phase 2 Unit 2 rename, and its whole diff against the mirror was five lines of the
 rename running backwards. It ran, because `signal_github.repo_state` and
-`signal_huggingface.hub_state` still exist as the compatibility tables the rename left behind, and
-it stamped the retired names into `source_table` on every row it emitted. Nothing failed. The only
+`signal_huggingface.hub_state` still existed then as the compatibility tables the rename left
+behind, and it stamped the retired names into `source_table` on every row it emitted. Nothing
+failed. Both were deleted on 2026-09-28, so a copy that old now fails at release instead of
+running quietly. The only
 visible symptom was the sentinel reporting the contract `missing`, which is accurate about the
 anchor and says nothing about the code.
 

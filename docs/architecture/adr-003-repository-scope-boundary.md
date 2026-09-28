@@ -11,7 +11,7 @@ disposition `frozen-without-producer`, recorded per asset in `warehouse/audits/e
 deployed table is retained and frozen at its last publish, its repo producer removed, and its
 consumers still resolve against it. `long_tail` is not a governed population, and the gates are what
 keep it from becoming one again. The governed inventory holds <!-- count:governed_assets -->36
-governed assets against <!-- count:dependencies -->19 dependency contracts.
+governed assets against <!-- count:dependencies -->20 dependency contracts.
 
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every

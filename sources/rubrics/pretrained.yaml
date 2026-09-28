@@ -14,7 +14,7 @@ openness:
       - Hugging Face model repo with downloadable weight files (safetensors/GGUF)
       - vendor download page or torrent for weights outside the Hub
       - '`pending` only where a release is announced with a date but not yet shipped'
-      machine_signal: signal_huggingface.hub_state (gated, private, files)
+      machine_signal: signal_huggingface.artifact_state (gated, private, files)
     data:
       question: Is the pretraining corpus released, or reconstructible from released scripts?
       # Ruling: docs/reference/openness.md, "`components-listed`: naming every component is
@@ -38,7 +38,7 @@ openness:
       - '`open`: full pretraining pipeline (data prep, training recipe, configs)'
       - '`partial`: inference or fine-tuning code only, which is the common case'
       - '`closed`: no code, or evaluation harness only'
-      machine_signal: partial — repo presence from signal_github.repo_state
+      machine_signal: partial — repo presence from signal_github.artifact_state
     checkpoints:
       question: Are intermediate training checkpoints published?
       values: [open, not-released]
@@ -137,7 +137,7 @@ openness:
       as `mixed` — Qwen 2.5 distributes 3B/72B under the Qwen License, which
       caps the family at use_bounded, while Qwen 3's restrictive Plus/Max
       tiers are never distributed at all, leaving the distributed set Apache.
-      Per-SKU licenses come from signal_huggingface.hub_state, so this is
+      Per-SKU licenses come from signal_huggingface.artifact_state, so this is
       derivable rather than judged.
     normalization:
     - 'compound `code X + model Y`: the MODEL license governs, since it is the
