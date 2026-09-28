@@ -53,7 +53,10 @@ GITHUB_SQL = (
     "CAST(fetched_at AS VARCHAR) AS observed_at, "
     "eligible_asset_downloads AS counter, eligible_asset_count AS asset_count "
     "FROM currentai.signal_github.artifact_state "
-    "WHERE releases_http_status = 200 AND eligible_asset_downloads IS NOT NULL"
+    "WHERE releases_http_status = 200 AND eligible_asset_downloads IS NOT NULL "
+    # A walk stopped at the page cap is a floor, not a total, and an increment between two
+    # floors measures the cap rather than use.
+    "AND NOT COALESCE(release_pages_truncated, false)"
 )
 DOCKER_SQL = (
     "SELECT product_slug, package AS artifact_id, "

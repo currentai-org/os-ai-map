@@ -10,8 +10,8 @@ name: asset-counters
 # sweep, so a reading not captured before the next sweep is gone for good. Coupled to another
 # job, any unrelated failure there would cost a week. Run daily, the capture is idempotent (a
 # reading already recorded adds nothing), so one success between sweeps is enough and a failed
-# day retries itself the next morning. It opens a PR only when a new platform refresh appears,
-# and never a second one for the same refresh.
+# day retries itself the next morning. New readings go to one rolling PR, which updates itself
+# until it merges.
 
 on:
   schedule:
@@ -31,6 +31,14 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --locked
+      - name: Start from the readings a pending PR already holds
+        # The platform table only holds its latest reading, so rows captured into a PR that has
+        # not merged yet exist nowhere else. Fold them in before capturing, or they are lost.
+        run: |
+          if git fetch --quiet origin "asset-counters/pending" 2>/dev/null; then
+            git show "FETCH_HEAD:sources/snapshots/asset_counters.csv" > sources/snapshots/asset_counters.csv
+            echo "Started from the pending branch's history."
+          fi
       - name: Capture any new readings
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
@@ -45,32 +53,35 @@ jobs:
           name: asset-counters
           path: sources/snapshots/asset_counters.csv
           retention-days: 90
-      - name: Open the counters PR
+      - name: Update the one pending counters PR
         env:
           GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        # One rolling branch, force-pushed from main plus the full history each run, so a later
+        # reading always reaches the open PR and a run that pushed but failed to open the PR is
+        # repaired by the next one.
         run: |
-          if [ -z "$(git status --porcelain sources/snapshots/asset_counters.csv)" ]; then
-            echo "No new reading since the last capture."
+          if git diff --quiet HEAD -- sources/snapshots/asset_counters.csv; then
+            echo "Nothing to record beyond main."
             exit 0
           fi
-          NEWEST=$(tail -n +2 sources/snapshots/asset_counters.csv | cut -d, -f4 | sort | tail -1 | cut -c1-10)
-          BRANCH="asset-counters/${NEWEST}"
-          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then
-            echo "A PR for the ${NEWEST} refresh is already open on ${BRANCH}; nothing to add."
-            exit 0
-          fi
+          BRANCH="asset-counters/pending"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
+          git checkout -B "$BRANCH"
           git add sources/snapshots/asset_counters.csv
-          git commit -m "chore(counters): record the ${NEWEST} lifetime counters"
-          git push -u origin "$BRANCH"
+          git commit -m "chore(counters): record new lifetime counter readings"
+          git push --force origin "$BRANCH"
+          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+            echo "Updated the open counters PR."
+            exit 0
+          fi
           {
-            echo "This platform refresh's lifetime counters, appended to"
+            echo "New lifetime counter readings (release assets and Docker pulls), appended to"
             echo "sources/snapshots/asset_counters.csv. Raw readings only; nothing is banded."
+            echo "This PR updates itself until it merges."
             echo
             echo '```'
             cat counters.txt
             echo '```'
           } > pr-body.md
-          gh pr create --title "chore(counters): lifetime counters for the ${NEWEST} refresh" --body-file pr-body.md
+          gh pr create --head "$BRANCH" --title "chore(counters): lifetime counter readings" --body-file pr-body.md
