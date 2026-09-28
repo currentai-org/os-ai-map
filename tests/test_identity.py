@@ -108,3 +108,16 @@ def test_canonical_accepts_bare_arxiv_id():
 
 def test_homepage_domain_drops_www():
     assert I.homepage_domain("https://www.Example.com/x") == "example.com"
+
+
+def test_homebrew_formula_urls_keep_dots_and_version_suffixes():
+    """Formula names carry dots (llama.cpp) and an @version (python@3.12); both are part of the
+    name, so the parsed id, the canonical form and the fold all keep them."""
+    from build.identity import canonical, fold_for_proposal, id_from_url
+
+    assert id_from_url("homebrew", "https://formulae.brew.sh/formula/llama.cpp") == "llama.cpp"
+    assert id_from_url("homebrew", "https://formulae.brew.sh/formula/python@3.12/") == "python@3.12"
+    assert id_from_url("homebrew", "https://formulae.brew.sh/formula/ollama#install") == "ollama"
+    assert id_from_url("homebrew", "https://pypi.org/project/ollama") is None
+    assert canonical("homebrew", "https://formulae.brew.sh/formula/Whisper.cpp") == "whisper.cpp"
+    assert fold_for_proposal("homebrew", "llama.cpp") == "llama.cpp"
