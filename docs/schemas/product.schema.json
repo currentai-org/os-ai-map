@@ -116,6 +116,13 @@
       },
       "description": "The Homebrew formula page (https://formulae.brew.sh/formula/<name>). Routed by the `homebrew` adoption route in sources/signal_routing.yaml, which reads 30-day installs from currentai.signal_packages.package_metadata onto the `install_volume` scale. An install is its own instrument, one per machine, and is never summed with downloads. Declare one only where Homebrew is how the product ships, typically a command-line tool or local runner; a library that ships mainly through PyPI does not declare its formula."
     },
+    "docker": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      },
+      "description": "The Docker Hub repository (https://hub.docker.com/r/<namespace>/<repo>, or https://hub.docker.com/_/<name> for an official image). currentai.signal_packages.package_metadata reads its lifetime pull count, and the weekly counter history in sources/snapshots/asset_counters.csv records it so a monthly figure can be taken as an increment. Declare one only where the image is how the product ships. Pulls from GHCR and quay.io have no public count and are not covered."
+    },
     "go": {
       "type": "array",
       "items": {

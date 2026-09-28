@@ -100,6 +100,7 @@ PATTERNS = [
     ("npm", re.compile(r"npmjs\.com/package/((?:@[\w\-.]+/)?[\w\-.]+)", re.I)),
     ("crates", re.compile(r"crates\.io/crates/([\w\-.]+)", re.I)),
     # Formula names carry dots (llama.cpp) and an optional @version (python@3.12).
+    ("docker", re.compile(r"hub\.docker\.com/r/([\w\-.]+/[\w\-.]+)", re.I)),
     ("homebrew", re.compile(r"formulae\.brew\.sh/(?:api/)?formula/([\w\-.@+]+?)(?:\.json)?(?=[/#?\s\"')]|$)", re.I)),
 ]
 
@@ -257,7 +258,7 @@ def check_token(gh_token: str | None) -> str | None:
 # The kinds `verify` implements a live existence check for. Named rather than inferred, so a
 # new branch there has to be declared here to count as supported.
 _VERIFIABLE = frozenset({"github", "huggingface_model", "huggingface_dataset",
-                         "pypi", "npm", "crates", "homebrew"})
+                         "pypi", "npm", "crates", "homebrew", "docker"})
 
 
 def verify(kind: str, ident: str, gh_token: str | None, hf_token: str | None) -> int:
@@ -276,6 +277,8 @@ def verify(kind: str, ident: str, gh_token: str | None, hf_token: str | None) ->
         return _get(f"https://crates.io/api/v1/crates/{ident}", None)
     if kind == "homebrew":
         return _get(f"https://formulae.brew.sh/api/formula/{ident}.json", None)
+    if kind == "docker":
+        return _get(f"https://hub.docker.com/v2/repositories/{ident}/", None)
     return 0
 
 
@@ -287,6 +290,7 @@ _PUBLIC_URL = {
     "npm": "https://www.npmjs.com/package/{ident}",
     "crates": "https://crates.io/crates/{ident}",
     "homebrew": "https://formulae.brew.sh/formula/{ident}",
+    "docker": "https://hub.docker.com/r/{ident}",
 }
 
 

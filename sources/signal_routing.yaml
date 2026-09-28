@@ -77,6 +77,18 @@ sources:
     filter: artifact_kind = 'homebrew'
     evidence_url: https://formulae.brew.sh/formula/{package}
     bridged: true
+  docker:
+    artifact_key: docker
+    table: currentai.signal_packages.package_metadata
+    key: product_slug
+    filter: artifact_kind = 'docker'
+    evidence_url: https://hub.docker.com/r/{package}
+    bridged: true
+    bridge_note: >
+      Docker Hub serves only a lifetime pull_count, so there is no adoption route yet. The
+      weekly counter history (sources/snapshots/asset_counters.csv, build/snapshot_counters.py)
+      records it so a monthly figure can be taken as an increment once four weekly intervals
+      exist. An interim until the platform supports incremental models (#664).
   semanticscholar:
     artifact_key: arxiv
     table: currentai.signal_semanticscholar.paper_citations

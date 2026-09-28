@@ -129,18 +129,20 @@ dependencies:
   freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - build/check_artifacts.py
+  - build/check_channel_authority.py
+  - build/snapshot_counters.py
   - warehouse/models/evidence/product_evidence.sql
   - warehouse/models/identity/artifact_identity_edges.sql
   - warehouse/models/observations/product_adoption_current.sql
-  verified_revision: 7
+  verified_revision: 8
   owner: oso
   files:
     model: warehouse/models/signal_github/artifact_state.py
   mirror:
     model_id: fed14549-c660-44fc-a6cc-c859795bde7f
-    revision: 7
-    hash: 10a6cfb6636c2f254a16b3e15cfd0249c96898a3abd19b24d9524cfe17b53f23
-    local_sha256: 41b182c78c6d289a27214a0c1b24562a87626ac08779caf05e1d1ef1f760d5e2
+    revision: 8
+    hash: 90c8135b7bda23a8a5f6d32daa1ecd8b2f08bc9b216a1550908d15c0cc7f68e9
+    local_sha256: 82e6b9aaff1f8484d9104985be4826e18007fe01cf42a4707c798ddadfe31539
     synced_at: '2026-09-28'
   platform_schedule:
     cron: 0 3 * * 0
@@ -425,6 +427,7 @@ dependencies:
   freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - build/check_artifacts.py
+  - build/check_channel_authority.py
   - warehouse/models/observations/product_adoption_current.sql
   verified_revision: 5
   owner: oso
@@ -445,17 +448,18 @@ dependencies:
   expected_grain: one row per (product_slug, artifact_kind, package)
   freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
+  - build/snapshot_counters.py
   - warehouse/models/observations/product_adoption_current.sql
   - warehouse/models/signal_packages/downloads.sql
-  verified_revision: 3
+  verified_revision: 4
   owner: oso
   files:
     model: warehouse/models/signal_packages/package_metadata.py
   mirror:
     model_id: 6a2e4126-0bb4-4627-a83b-d4f28203178f
-    revision: 3
-    hash: 139e571c2470b8af1bb34a09fd0c0a121573f954a9507e180adee0c9575d6898
-    local_sha256: 566076591df0811f76ddf2f199003c96b6009c6406775ef95b5da79237e24424
+    revision: 4
+    hash: 257be73f9f34b7e47ba41e1ca535ab17387d953d871a019b1da58ce1a766f007
+    local_sha256: ec280a373c90ccc6860d2ebfd3046dac2574999ded072bff8db4bc03f4a8b63d
     synced_at: '2026-09-28'
   platform_schedule:
     cron: 0 1 * * 0

@@ -70,6 +70,16 @@ jobs:
           set -o pipefail
           uv run python -m build.adoption_freshness --live --apply \
             --queue tier-change-queue.md | tee reconciliation.txt
+      # Interim until the platform supports incremental models (#664): GitHub release asset
+      # downloads and Docker Hub pulls are lifetime counters, so a monthly figure has to be an
+      # increment between weekly readings. Runs here because this job already follows the
+      # Sunday sweep that refreshes both, and already opens the weekly PR that carries it.
+      - name: Capture this week's lifetime counters
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          set -o pipefail
+          uv run python -m build.snapshot_counters --live | tee counters.txt
       - name: The tier-change queue and the binding, whether or not a date moved
         run: |
           {
@@ -81,6 +91,12 @@ jobs:
             echo
             echo '```'
             head -4 reconciliation.txt
+            echo '```'
+            echo
+            echo "### Lifetime counters"
+            echo
+            echo '```'
+            cat counters.txt
             echo '```'
             echo
             echo "### Tier-change queue"
@@ -95,20 +111,21 @@ jobs:
           uv run python -m build.check_verification --verbose
           uv run python -m build.check_redate
           uv run python -m build.check_adoption --strict
+          uv run python -m build.snapshot_counters --check
       - name: Open the re-dating PR
         env:
           GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         run: |
           if [ -z "$(git status --porcelain sources/)" ]; then
-            echo "No adoption date moved; the queue is in the run summary."
+            echo "No adoption date moved and no counter was new; the queue is in the run summary."
             exit 0
           fi
           BRANCH="adoption-freshness/$(date -u +%F)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add sources/scores/ sources/snapshots/observation_snapshots.yaml
-          git commit -m "chore(freshness): re-date adoption where the route measured the recorded band"
+          git add sources/scores/ sources/snapshots/observation_snapshots.yaml sources/snapshots/asset_counters.csv
+          git commit -m "chore(freshness): re-date adoption and record this week's lifetime counters"
           git push -u origin "$BRANCH"
           {
             echo "Adoption dates earned by re-measurement. Each re-dated axis records the"
@@ -118,6 +135,13 @@ jobs:
             echo
             echo '```'
             cat reconciliation.txt
+            echo '```'
+            echo
+            echo "This week's lifetime counters (release assets and Docker pulls), appended to"
+            echo "sources/snapshots/asset_counters.csv:"
+            echo
+            echo '```'
+            cat counters.txt
             echo '```'
           } > pr-body.md
           gh pr create --title "chore(freshness): adoption re-dated from the weekly reconciliation $(date -u +%F)" --body-file pr-body.md --label freshness
