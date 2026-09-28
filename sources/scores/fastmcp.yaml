@@ -14,15 +14,15 @@ openness:
     - no-feature-gated-core
     - maintained-by-Prefect
   confidence: high
-  note: Fully OSI-licensed, no open-core split observed on the repo. The LICENSE is the full Apache-2.0 text,
-    the whole framework - servers, apps and clients - is in the published tree and installs from PyPI with
-    no key, and Prefect maintains it rather than selling a tier of it.
+  note: FastMCP is released under the Apache-2.0 license, and the whole framework, covering servers, apps
+    and clients, is in the public repository and installs from PyPI with no key. Prefect, which maintains
+    it, sells a separate enterprise gateway called Horizon, but no FastMCP feature is held back for it.
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core;maintained-by-Prefect;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://github.com/jlowin/fastmcp
-    shows: Repo page - Apache-2.0 badge, 27,203 stargazers, the whole framework in the tree, maintained by
-      Prefect. No enterprise directory, license key or paid tier.
+    shows: Repo page - Apache-2.0 badge, 27,203 stargazers, the whole framework in the tree, maintained
+      by Prefect. No enterprise directory, license key or paid tier.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6d6f8c232f68238fe065bd4f1feb7c9ea73fe1d5970402aaa6edc4f3d89ae300
@@ -30,12 +30,32 @@ openness:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/jlowin/fastmcp/main/LICENSE
-    shows: The full Apache License, Version 2.0 text.
-    accessed: '2026-08-13'
+    shows: The raw LICENSE file is the full Apache License text, headed "Version 2.0, January 2004", with
+      no added restriction.
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/jlowin/fastmcp/main/pyproject.toml
+    shows: 'pyproject.toml carries the classifier "License :: OSI Approved :: Apache Software License" and
+      names the repository "https://github.com/PrefectHQ/fastmcp".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 3a194dfb2bfe23970ad503741eaff5ce6dbb382a4d52d611221b4d8ebd7284a7
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/jlowin/fastmcp/main/README.md
+    shows: 'The README installs the whole framework from PyPI with "uv add fastmcp" and covers servers,
+      apps and clients. The one paid offering it names is a separate product: "Prefect Horizon" is described
+      as "the enterprise MCP gateway for scaling servers and tools across teams". Searched the body for
+      pricing, license key, premium and subscription: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 5deedd45b58cc1b7c2ab256a0aa2ebec773345e5d7794210bfc33d20231e6f88
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
