@@ -15,46 +15,57 @@ openness:
         detail: credits, rate limits
         raw: cloud SaaS with API keys, credits, rate limits
   confidence: high
-  note: A closed search and scraping API. Only the client SDKs are open; the search service itself is proprietary,
-    with no self-hostable core.
+  note: Tavily is sold only as a hosted API, and its terms grant customers no right to the source code behind
+    the service. Only the client libraries are public, under the MIT license, so nothing that runs the search
+    can be self-hosted.
   raw: license:Proprietary(API-only);source:closed(no self-hostable core; only thin client SDKs are public);managed:cloud
     SaaS with API keys, credits, rate limits
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.tavily.com/
-    shows: Hosted Search, Extract, Crawl, Map and Research endpoints behind an API key. Developer Resources
-      lead with "API Credits Overview - Learn how Tavily API credits work" and "Rate Limits - Understand Tavily's
-      rate limits and policies". The navigation's Open Source group is "popular open source projects that showcase
-      Tavily's use cases", i.e. consumers of the API. No self-hosting or source-available option documented.
-    accessed: '2026-08-13'
+    shows: 'The documentation home is organized around a hosted API ("Get an API key", "Learn how Tavily API credits work.", "Understand Tavily’s rate limits and policies."). Searched the body for self-host, on-prem, open source, GitHub and download: none, so no self-hostable build or source is documented.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 1bc9cddc56bca559ab891442291b6e2c633258084e35f89f5313586d043f5204
+    content_sha256: ebe011d2c3092d0f4602c85038c181270e4b62d1ceccc3d37f07444d5ac36c5b
+    establishes:
+    - source
+    - core-gated
+  - url: https://www.tavily.com/terms
+    shows: any right to obtain possession of any source code, data or other technical material related to
+      the Services
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a4e6f34077111102514be7bd42e7eab9ca31d2732624bb30afb329de928d3625
     establishes:
     - license
     - source
-    - core-gated
+  - url: https://raw.githubusercontent.com/tavily-ai/tavily-python/master/LICENSE
+    shows: MIT License
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 5487dae77c2e475439bd62828b6c5e4896e79f3f7bcc1dbec10efc59fc8bb77f
+    establishes:
+    - source
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Tavily's adoption is measured by its developer count rather than by request volume. The company
-    also reports a much higher monthly request volume, but that counts API calls rather than distinct users,
-    so it stands only as corroborating context.
-  last_verified: '2026-08-13'
+  note: Tavily's adoption is measured by the developer count on its own homepage, a figure the vendor reports
+    itself. Nebius's announcement of its agreement to acquire Tavily gives separate user and SDK download
+    figures, which support the same scale but count different things.
+  last_verified: '2026-09-28'
   sources:
   - url: https://www.tavily.com/
-    shows: '"Trusted by 2M+ developers around the world"; stats grid - 300M+ "monthly requests handled", Billions
-      of pages "extracted without downtime".'
-    accessed: '2026-08-13'
+    shows: Trusted by 2M+ developers around the world
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 987a586cfe2beef1f4c25a7e0cd6876e1898e948b737a62e1061be81d7155236
+    content_sha256: aeac30b96dc8ae777d63c7cf624477725ac7ba81f8ae9b9acae0db4eb55004a0
   - url: https://nebius.com/newsroom/nebius-announces-agreement-to-acquire-tavily-to-add-agentic-search-to-its-ai-cloud-platform
-    shows: Nebius agreement to acquire Tavily, positioning it as agentic search for the Nebius AI cloud. Corroborating
-      enterprise traction; carries no usage figure of its own.
-    accessed: '2026-08-13'
+    shows: more than one million users
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 75aba5a8ab16b90ffdfbb4e23e31c2839e0688e680e4fec6b9bce1edc47a6f0c
+    content_sha256: 0ca1ce0d2ca4b55ec73ac725108e4333f598b0242c120df6198355082f17f92c
 capability:
   score: 4
   basis: feature_matrix
