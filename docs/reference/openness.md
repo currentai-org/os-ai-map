@@ -176,7 +176,7 @@ some users and charges others (Esethu) permits commercial use, bounded, so it si
 `use_bounded`.
 
 **On data, a purpose bound is a 3 too.** The dataset ladder's `use_bounded` covers a bound on what
-the data may be used for as well as a bound on who may use it (ruled on #753). The case is
+the data may be used for as well as a bound on who may use it. The case is
 `multipl-e`: its repository license, `BSD-3-Clause-with-ML-Restriction`, is BSD-3 plus a clause
 barring use of the contents "as training data for any machine learning model". Commercial use
 stands, so the license does not reach 2, and a field-of-use ban fails the Open Definition, so it
@@ -264,15 +264,15 @@ cap who may use the artifact, or at what scale — not on the license family's r
   may use the works nor at what scale. It is, if anything, looser, since it carries no guardrail
   termination clause.
 - **Meta's DINOv3-License and SAM-License** land in `permissive_non_osi` on the model and
-  pretrained ladders (ruled on #753). They are one text under two names: a royalty-free grant to
+  pretrained ladders. They are one text under two names: a royalty-free grant to
   use, redistribute and modify, with no user or revenue cap. The limits are trade-control
   compliance, including military, nuclear, espionage and weapons end uses, and a bar on reverse
-  engineering, which are conduct restrictions of the kind #117 placed here. Meta may amend the
+  engineering, which are conduct restrictions of the acceptable-use kind this tier admits. Meta may amend the
   terms unilaterally; no tier tests amendability, so that stays in the product notes.
 - **Vendor non-commercial model licenses** land in `commercial_forbidden`: NVIDIA OneWay
   Noncommercial, the Prior Labs TabPFN licenses (Prior Labs License 1.1 included, by the ruling),
-  the FLUX non-commercial licenses, the Qwen Research License, Roboflow's PML-1.0 and InsightFace's
-  research-only model license. #753 added the Coqui Public Model License 1.0.0 (xtts), a plain
+  the FLUX non-commercial licenses, the Qwen Research License, Roboflow's PML-1.0, InsightFace's
+  research-only model license, the Coqui Public Model License 1.0.0 (xtts), a plain
   non-commercial grant, and the Boson Higgs TTS 3 Research and Non-Commercial License
   (higgs-audio). The Higgs license's Creator Use Grant does not lift it: the grant lets creators
   publish and monetize content made with the model, and excludes hosting the model, redistributing
@@ -624,7 +624,7 @@ because the source itself is published.
   terms below", needing a commercial license above 100M MAU or USD 20M monthly revenue;
   marker's weights are free below USD 5M funding or revenue and licensed commercially above
   it. Datalab's `chandra` (USD 2M) and `surya` (USD 5M) weights carry the same text, headed "AI
-  PUBS OPEN RAIL-M LICENSE (MODIFIED)" on the Hub, and record it under this name (#753) rather
+  PUBS OPEN RAIL-M LICENSE (MODIFIED)" on the Hub, and record it under this name rather
   than as a vendor-named OpenRAIL variant; the anti-compete clause in the same attachment binds
   at any size. The two other OpenRAIL records on the map, `zentropi-cope` (zentropi-openrail-m) and
   `starcoder2` (BigCode-OpenRAIL-M), are `type: model`, scored by `model.yaml` against its own
@@ -771,7 +771,7 @@ channel was read. Requiring a bare-part purchase would mark almost every SoC in 
 ungated-and-unbuyable, which is the less true answer; the module/board channel *is* the retail
 channel for application-processor silicon, not a stand-in for one.
 
-**Rentable silicon counts as buyable** (ruled on #753). A datacenter part sold only as rented
+**Rentable silicon counts as buyable.** A datacenter part sold only as rented
 capacity is obtained commercially in the form it is sold in, which is the test above, so `retail`
 has a `rentable` value that `availability` reads as `buyable`. It means anyone can provision an
 instance or slice of the silicon itself at a published price: `google-tpu-ironwood` as Cloud TPU

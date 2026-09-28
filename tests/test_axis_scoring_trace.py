@@ -219,12 +219,31 @@ def test_exactly_one_fired_rung_per_scored_product(tables):
     assert set(fired.values()) == {1}
 
 
-def test_deferred_products_emit_a_result_only(tables):
+# The published corpus defers nothing since the #753 rulings (the five deferrals left sit in the
+# preliminary datacenter_accelerators, which the published roster excludes), so the real tables
+# can no longer exercise this path. One real scored product is declined here instead, through
+# the same `deferred` mapping a category's recipe carries, so the assertion still runs against a
+# walk that would otherwise have fired rather than passing on an empty list.
+@pytest.fixture(scope="module")
+def tables_with_a_deferral(inputs, tables):
+    population, scores, variants, deferrals = inputs
+    slug, category = sorted((r["product_slug"], r["category_slug"]) for r in tables["axis_results"]
+                            if r["status"] == "scored")[0]
+    injected = {k: dict(v) for k, v in deferrals.items()}
+    injected.setdefault(category, {})[slug] = {"because": "declined by the test"}
+    return evaluate(
+        population, scores, variants, injected,
+        declaration_version_id=TEST_DVID, source_git_sha=TEST_SHA,
+    ), (slug, category)
+
+
+def test_deferred_products_emit_a_result_only(tables_with_a_deferral):
     """A recipe declining a product is not scoring it: a result row with a reason, and no fact or
     rule rows to imply a walk that did not run."""
+    tables, victim = tables_with_a_deferral
     deferred = [(r["product_slug"], r["category_slug"]) for r in tables["axis_results"]
                 if r["status"] == "deferred"]
-    assert deferred
+    assert victim in deferred
     fact_pairs = {(r["product_slug"], r["category_slug"]) for r in tables["axis_facts"]}
     rule_pairs = {(r["product_slug"], r["category_slug"]) for r in tables["axis_rule_matches"]}
     for pair in deferred:
