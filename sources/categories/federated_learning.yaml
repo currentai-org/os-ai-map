@@ -3,12 +3,12 @@ display_name: Federated learning
 description: >-
   Software that trains, evaluates or queries a shared model across data holders who never pool
   their raw data, moving model updates, aggregates or queries between silos instead of datasets.
-strapline: Openness is high, and the one open-core record is the adoption leader. Thirteen of seventeen products
+strapline: Openness is high, and the adoption leader is open core. Fourteen of nineteen products
   publish a complete OSI-licensed system, but Flower, which draws about two thirds of the category's monthly
   PyPI installs, reserves OIDC login, audit logging and its Helm charts for Flower Enterprise, and Google publishes
   only the device half of its production cross-device platform. Capability splits on reach. Only NVIDIA FLARE
   documents HPC and mobile paths together with federated training measured up to 72 billion parameters, while
-  four of the seventeen simulate federations they do not deploy.
+  four of the nineteen simulate federations they do not deploy.
 weights:
   adopt: 0.5
   cap: 0.5
@@ -21,9 +21,14 @@ scoring_recipe:
   note: 'Inherits the shared software ladder unchanged. Every product is typed software. Two license records
     needed the body rather than the label: Fed-BioMed''s GitHub label reads "other" over a short notice
     granting Apache-2.0 by SPDX identifier, and vantage6''s PyPI record says MIT against an Apache-2.0 LICENSE,
-    so the score follows the LICENSE. Flower is the one open-core record, because its own documentation
+    so the score follows the LICENSE. Flower is open core, because its own documentation
     marks OIDC login, audit logging and the Helm charts as Flower Enterprise features, so it records core-gated:
-    gated and lands on 4. The Federated Compute Platform records source: partial, because Google has not
+    gated and lands on 4. p2pfl is the second open-core record: its plan table withholds "Advanced features"
+    from the free Community plan for an Enterprise plan still marked as launching soon, which reads as gated
+    on the Flower precedent. nebula-dfl names a proprietary Enterprise Edition whose features its own
+    commercial FAQ lists as to be determined, over an AGPL-3.0 tree with no enterprise path, which reads as
+    ungated under the acceptance standard, so it lands on 5. Both readings are the ones the #753 brief
+    proposed, and the maintainer promoted both rows on them. The Federated Compute Platform records source: partial, because Google has not
     published the production server and has removed the reference one, and it lands on 2. No promoted product
     is deferred.
 
@@ -37,7 +42,11 @@ scoring_recipe:
     for those services and at least one privacy mechanism beyond plain aggregation (secure aggregation,
     homomorphic encryption, MPC, differential privacy or a TEE). 3 is a real federation across machines
     over a network that lacks rung 4''s party-identity layer, or covers only one side of the federation
-    or a single model family. 2 is simulation first, where federations are emulated on a machine or cluster
+    or a single model family, or has the identity layer without the deployment tooling. nebula-dfl is the
+    first case: its controller generates every participant''s certificate itself, and its user guide sets up
+    a federation with no step that authenticates or admits participants. p2pfl is the last: its mutual TLS
+    admits only certificate-holding peers, but operators distribute the certificates and start each node
+    themselves, since its CLI marks node launching as coming soon. 2 is simulation first, where federations are emulated on a machine or cluster
     the researcher controls and the product itself calls real deployment out of scope or unfinished, or
     a client for one federated workload that leaves the federation runtime to another product. No product
     in the first tranche sits at 1. nvidia-flare is the top anchor: a Slurm launcher, an Android and iOS
@@ -46,8 +55,8 @@ scoring_recipe:
     other band is recorded against flower, plato-fl (3), fedjax (2), or, for syfthub, pysyft.
 
 
-    Distribution, counted 2026-09-27 over 17 banded products: one at 5, eight at 4, three at 3, five at
-    2 and none at 1. Rung 4 holds 8 of 17 (47%), above the one-third review trigger, with the wording given
+    Distribution, counted 2026-09-28 over 19 banded products: one at 5, eight at 4, five at 3, five at
+    2 and none at 1. Rung 4 holds 8 of 19 (42%), above the one-third review trigger, with the wording given
     above. This is the clustering case, not a loose definition. Each of the eight was checked against all
     three parts of rung 4 (party identity, deployment tooling and a privacy mechanism), and the wording
     demonstrably excludes working networked frameworks: plato-fl and fedtree each run real federations and
@@ -69,6 +78,8 @@ products:
 - rhino-fcp
 - plato-fl
 - fedtree
+- nebula-dfl
+- p2pfl
 - federated-compute-platform
 - tensorflow-federated
 - fedjax
@@ -147,3 +158,11 @@ comments: >-
   host. MetisFL (Clear BSD) and FL4Health (Vector Institute License) wait on the license-rulings
   issue. Flame, FedLab, PaddleFL, Fedlearner, PrimiHub, FedScale, XFL, GFL, FLGo, EasyFL and FLSim
   (iQua) remain candidates for later add-product promotions.
+
+
+  DECENTRALIZED SUB-TYPE, promoted 2026-09-28 on the #753 ruling, which accepted thin adoption for both and
+  adopted the brief's gating readings: nebula-dfl (ungated, 5/open_source) and p2pfl (gated, 4/open_core), each
+  re-verified live that day. Both run real federations between machines and both sit at 3, one below flower,
+  for the reasons given in the rung definitions. NEBULA's physical deployment provisions Raspberry Pi nodes over
+  a Tailscale network from a separate physical-deployment branch, beside the local-process and Docker-container
+  modes its user guide offers.

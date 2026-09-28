@@ -1,0 +1,149 @@
+product: nebula-dfl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI; the LICENSE body is the unmodified GNU AGPL version 3 text
+    source:
+      value: public
+      detail: the frontend, controller and participant core
+    core-gated:
+      value: ungated
+      detail: the proprietary Enterprise Edition is named as a separate commercial offering whose features
+        are "To be determined", and the tree has no enterprise path
+  confidence: high
+  note: NEBULA's frontend, controller and participant core are AGPL-3.0 in one public repository. Its
+    developers offer a proprietary Enterprise Edition beside it, but their commercial FAQ lists its features
+    as not yet determined, and nothing in the repository is held back for it.
+  raw: license:AGPL-3.0(OSI; the LICENSE body is the unmodified GNU AGPL version 3 text);source:public(the
+    frontend, controller and participant core);core-gated:ungated(the proprietary Enterprise Edition is
+    named as a separate commercial offering whose features are "To be determined", and the tree has no
+    enterprise path)
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/LICENSE
+    shows: 'The LICENSE body: the verbatim GNU Affero General Public License, Version 3 text.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://api.github.com/repos/CyberDataLab/nebula
+    shows: 'Repository record for CyberDataLab/nebula: license agpl-3.0, not archived, not a fork, pushed
+      2026-06-29, 82 stars.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 59b582a29009ae3ffd06c56a133601ec63aadbe8127e848e1489471d0090b8d8
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/README.md
+    shows: 'README: "Community Edition — released under the GNU Affero GPL v3.0." and "Enterprise Edition
+      — proprietary license & premium support available."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: f5e1ed315f4a8a78b3e01dc0cfbeaa58ae1f08558787fc1b4a4dd4001933f588
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/docs/_prebuilt/commercial-faq.md
+    shows: 'Commercial FAQ: "Does the commercial edition include extra features? To be determined."; patches
+      "remain under AGPL in the community edition".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 95e3b4dd69e6c83c99c1b6e8341b95d63479206fe5a9cedda7e892e691de9e61
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/CyberDataLab/nebula/files/main
+    shows: 'The 510-file tree of CyberDataLab/nebula at `main`: one root LICENSE, and no ee/, enterprise/,
+      commercial/ or proprietary/ path. Path absence only, paired with the statements cited beside it.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 38ab4c4e6561178d348f97a4576096f640533d414d35bb85b39f549dec824b4a
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `nebula-dfl`, the platform's own package.
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://pypistats.org/api/packages/nebula-dfl/recent
+    shows: last_month = 8 downloads for the package `nebula-dfl`.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 1e8574207cf2033bd16dd90142f9c4e018362b3debbc1a394685f5c313f013a4
+  - url: https://pypi.org/pypi/nebula-dfl/json
+    shows: 'PyPI `nebula-dfl` 1.0.0, uploaded 2025-06-26, summary "NEBULA: A Platform for Decentralized
+      Federated Learning", repository https://github.com/CyberDataLab/nebula.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: cee964c7bc158e9e34eec8feea0939ae6966989cb993af5dd4b8c7ae78b2aae3
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: A web frontend and controller that deploy a federation as local processes, Docker containers
+    or Raspberry Pi nodes joined over a Tailscale network; the controller generates a CA and a certificate
+    for every participant; DP-SGD training through Opacus; simulated attacks, reputation-based defense,
+    mobility and network-condition simulation.
+  confidence: low
+  note: NEBULA can run a federation across real devices as well as emulate one, and it trains with differential
+    privacy. Its controller generates every participant's certificate itself, and the thirteen setup steps
+    in its user guide include none for an organization to admit or authenticate its own node. On that documented
+    evidence it sits a step below Flower; whether the participant runtime enforces certificate admission
+    is not documented.
+  relative_to: flower
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-28'
+    sources:
+    - url: https://flower.ai/docs/framework/how-to-authenticate-supernodes.html
+      shows: 'Flower''s SuperNode authentication guide: automatic timestamp-signature authentication,
+        and CLI-managed authentication that restricts which SuperNodes may connect to a SuperLink.'
+      accessed: '2026-09-28'
+      http_status: 200
+      content_sha256: 26d49632114839ffdb0fdaaa933a7b630ac76b8113b2eb5c16d826fc79a79ece
+    - url: https://flower.ai/docs/framework/docker/index.html
+      shows: '"Start your Flower journey with our pre-made Docker images on Docker Hub"; guides to enable
+        TLS and to "Deploy Flower on Multiple Machines with Docker Compose".'
+      accessed: '2026-09-28'
+      http_status: 200
+      content_sha256: 059f28f62aed80af9d761b2766dfba97f9edfd17b516579770f2bfeead48f46b
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/docs/_prebuilt/userguide.md
+    shows: 'User guide: thirteen scenario-configuration steps, from deployment (Processes, Docker containers
+      or Physical devices) through topology, dataset, training, aggregation, participants, robustness
+      (attacks), defense (reputation) and mobility; none authenticates or admits participants.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: f661f6f1cdddd870b136ccb5908a932c1c5528ecfc615b1e572a6ae08e91e3a8
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/README.md
+    shows: 'README: "NEBULA (previously known as Fedstellar)", developed "in collaboration with the University
+      of Murcia, armasuisse, and the University of Zurich"; features "Topology-agnostic" (star, ring,
+      mesh), "Trustworthiness", "Security" and network "condition simulation"; trustworthiness and fairness
+      metric definitions from AIF360 and HolisticAI.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: f5e1ed315f4a8a78b3e01dc0cfbeaa58ae1f08558787fc1b4a4dd4001933f588
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/nebula/physical/install.sh
+    shows: 'Physical-node installer: provisions a Raspberry Pi running DietPi or Debian 12 to join a Tailscale
+      network and run NEBULA from the physical-deployment branch.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 2e0112071bb5220a89f5af229b9f070ebaac33af028cca1d154f16c7cfaa3049
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/nebula/controller/scenarios.py
+    shows: 'Scenario generation: generate_ca_certificate for the scenario, then generate_certificate for
+      each participant_{i} at its configured IP.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 19db2b2d38dc85e1155f295770f611f26a41b444da7591cc572c793a4cf48950
+  - url: https://raw.githubusercontent.com/CyberDataLab/nebula/main/nebula/core/training/dp.py
+    shows: 'DifferentialPrivacyPlugin: wraps training with Opacus''s PrivacyEngine (noise multiplier,
+      max gradient norm, PRV accountant).'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 28f4f65151d77b5cbb6cb3101802d0f6f86cb15a0fdd0cf2097dda026d939a2b

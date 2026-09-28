@@ -66,12 +66,13 @@ scoring_recipe:
     audio-visual input. Image generation by the unified models (janus, bagel) is recorded in `value` and
     does not raise the band, because it is a second quantity. A benchmark average breaks ties only within
     a rung: OpenCompass stops at 2025-09-17 and has nothing for the GUI or omni rows, and MMMU''s test answers
-    have been public since 2026-02-12. Distribution after the second tranche, 27 banded: 5 -> 4, 4 -> 7,
-    3 -> 6, 2 -> 7, 1 -> 3; the widest rungs are 7 of 27 (26%), under the one-third review trigger. blip
+    have been public since 2026-02-12. Distribution after perception-lm''s promotion, 28 banded: 5 -> 4, 4 -> 7,
+    3 -> 7, 2 -> 7, 1 -> 3; the widest rungs are 7 of 28 (25%), under the one-third review trigger. perception-lm
+    sits at 3, at minicpm-v, on documents, charts and video with the repository''s multi-image training input. blip
     moved from 1 to 2 on xGen-MM''s interleaved multi-image input, with medium confidence because no document
     benchmark is reported. Custom weights licenses the shared tiers do not name are deferred and listed for
-    the maintainer''s license-rulings issue; none is deferred now. No edit to sources/rubrics/ is made or implied
-    here.'
+    the maintainer''s license-rulings issue; none is deferred now. Apart from FAIR-Noncommercial-Research,
+    added for perception-lm, no edit to sources/rubrics/ is made or implied here.'
   extends: model
 products:
 - minicpm-o
@@ -91,6 +92,7 @@ products:
 - cambrian
 - molmo
 - nemotron-vl
+- perception-lm
 - moondream
 - paligemma
 - blip
@@ -146,4 +148,9 @@ comments: 'Proposed in issue #9; seeded from the 2026-09-26 sweep (docs/sweeps/2
   back although it is in scope: Emu3.5 leads with world modeling and generation, and neither its card nor its
   repository gives an understanding benchmark to place it with. No closed row was added, per the seed ruling.
   Second tranche, 2026-09-27: idefics, lfm-vl, north-vision, deepseek-vl and cambrian promoted from the registry,
-  and blip re-read on its current release, xGen-MM (BLIP-3); the other 20 rows stay registry rows.'
+  and blip re-read on its current release, xGen-MM (BLIP-3); the other 20 rows stay registry rows. perception-lm
+  promoted 2026-09-28 on the #753 ruling, which accepted its thin adoption. Its checkpoints carry the FAIR
+  Noncommercial Research License, placed in the model ladder''s commercial_forbidden tier by analogy with the
+  #739 vendor non-commercial ruling, so it computes 2/restricted although Meta releases its own video data and training code.
+  It is read on the one release there is, the 1B, 3B and 8B checkpoints of April 2025, and the Perception Encoder
+  models from the same repository stay out of the row.'

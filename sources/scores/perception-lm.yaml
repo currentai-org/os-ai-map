@@ -1,0 +1,182 @@
+product: perception-lm
+openness:
+  score: 2
+  class: restricted
+  governing_release: plm
+  components:
+    weights:
+      value: open
+      detail: safetensors for all three sizes on the Hub, behind a manual access request
+    data:
+      value: partial
+      detail: Meta releases its human-labeled PLM-Video-Human set (CC-BY-4.0) and the synthetic PLM-Image-Auto
+        and PLM-Video-Auto sets (Llama 3.2 license); the released stage-3 config leaves the data mix as
+        a pointer to Table A2 of the paper, and the dataset registry lists only dummy sets
+    code:
+      value: open
+      detail: the training script, with stage 1, 2 and 3 configs for each of the 1B, 3B and 8B models
+    license:
+    - name: FAIR-Noncommercial-Research
+      detail: the FAIR Noncommercial Research License on every checkpoint, which bars any commercial use
+        of the models or their outputs
+  confidence: high
+  note: Meta publishes the weights, its own training data and the training code, but the checkpoints carry
+    a research license that forbids any commercial use of the models or their outputs, and each download
+    needs Meta's approval. The open recipe does not lift that restriction.
+  raw: weights:open(safetensors for all three sizes on the Hub, behind a manual access request);data:partial(Meta
+    releases its human-labeled PLM-Video-Human set (CC-BY-4.0) and the synthetic PLM-Image-Auto and PLM-Video-Auto
+    sets (Llama 3.2 license); the released stage-3 config leaves the data mix as a pointer to Table A2
+    of the paper, and the dataset registry lists only dummy sets);code:open(the training script, with
+    stage 1, 2 and 3 configs for each of the 1B, 3B and 8B models);license:FAIR-Noncommercial-Research(the
+    FAIR Noncommercial Research License on every checkpoint, which bars any commercial use of the models
+    or their outputs)
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://huggingface.co/api/models/facebook/Perception-LM-8B
+    shows: 'Hub record for Perception-LM-8B: gated "manual", license_name fair-noncommercial-research,
+      four safetensors shards; the gate prompt is the FAIR Noncommercial Research License.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 62de264fda7284f9badc57de20b8f436d22a0e37eba209013ffc0eba52defbfa
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/facebook/Perception-LM-3B
+    shows: 'Hub record for Perception-LM-3B: gated "manual", license_name fair-noncommercial-research,
+      two safetensors shards.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 7dcb0c320e4bbe9b96adb915ec8d6d587ed56ac2c17d6db5a618f8f2f4e30bb3
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/facebook/Perception-LM-1B
+    shows: 'Hub record for Perception-LM-1B: gated "manual", license_name fair-noncommercial-research,
+      model.safetensors.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 4530545675e355383b95e7b6262abd5c171d1c3a4deca50b606600ecf62697c2
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/LICENSE.PLM
+    shows: 'FAIR Noncommercial Research License, last updated April 17, 2025: "You will not use the Research
+      Materials or any outputs or results of the Research Materials in connection with any commercial
+      uses or for any uses other than Noncommercial Research Uses".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: b9ea4f505c0fac36ad16015fc673fb233f30beca3b0f2f0ad0de4d119510be85
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/facebook/PLM-Video-Human
+    shows: 'Hub record for facebook/PLM-Video-Human: public, not gated, license cc-by-4.0.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: ab11002b4ebc750519fd1102ed957ad0c80bd024fa9dcd2a6d0b4c36f3f873b8
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/facebook/PLM-Video-Auto
+    shows: 'Hub record for facebook/PLM-Video-Auto: public, not gated, license llama3.2.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 6780f8a62366e92d69d39e3c3607213c8ce9e522b5c739e375f5175a4be5d09f
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/facebook/PLM-Image-Auto
+    shows: 'Hub record for facebook/PLM-Image-Auto: public, not gated, license llama3.2.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 1f2ea215e419ef0e05fc24651d8ec0a7ae081041df3d63c73be1fb2b3fed1658
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/docs/training.md
+    shows: 'Training guide: "We provide configurations to run warm-up and sft to facilitate reproducibility
+      of PLM training"; torchrun with apps/plm/configs/stage_3/plm_3b.yaml; examples use dummy-datasets.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 843bd3a67aa46bfb2af106581af8ea52aa2cf6be89c8f9b4a89fa28e259df42c
+    establishes:
+    - code
+    - data
+  - url: https://ungh.cc/repos/facebookresearch/perception_models/files/main
+    shows: 'Repository tree: apps/plm/configs/stage_1, stage_2 and stage_3, each with plm_1b.yaml, plm_3b.yaml
+      and plm_8b.yaml, beside apps/plm/configs/datasets.yaml.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 7544769a244061d60bd6fd694270dadd4228801a17f3a4adbfdc7e1a1c6c1c7b
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/configs/stage_3/plm_8b.yaml
+    shows: 'Stage-3 config for the 8B model: "datamix: <Please consider using data split listed in Table
+      A2 of our paper https://arxiv.org/pdf/2504.13180. ...>".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: bccd6d66dd3ae3ad3b4be7cc0a008f2ee2a7757e3e18b22244de00d2c1522e95
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/configs/datasets.yaml
+    shows: 'Dataset registry: entries only for dummy_image, dummy_multi_image, dummy_video, dummy_text
+      and the other apps/plm/dummy_datasets sets.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 7823642110e262bf13300aa0b60dde23fafb86f35f47a6d6c29f6fa09c1a2742
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days, summed across the 1B, 3B and 8B checkpoints,
+    most of them for the 1B model.
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=Perception-LM&limit=100
+    shows: 'Three facebook repositories matching Perception-LM: 1B with 1,265, 8B with 202 and 3B with
+      108 downloads in the trailing 30 days, 1,575 in total.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 5b8851c4bde403d9ea9cf58fc7eb521383b647bc313e38f46dcfcc92fbe578f2
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: image, document, multi-image and video understanding from the repository and paper
+  value: 'Image and document question answering (8B: DocVQA 94.6, ChartQA 85.5) and video understanding
+    across the repository''s video benchmarks (8B: VideoMME 58.3), including fine-grained video QA and region
+    and temporal grounding; the training code supports multi-image input.'
+  confidence: high
+  note: Perception LM reads documents, charts and video and answers fine-grained and grounded questions
+    about what happens in a clip, level with MiniCPM-V.
+  relative_to: minicpm-v
+  relation: at
+  comparison:
+    last_attested: '2026-09-28'
+    sources:
+    - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+      shows: 'MiniCPM-V 4.6 card: "It inherits the strong single-image, multi-image, and video understanding
+        capabilities of MiniCPM-V family"; max_num_frames default 128.'
+      accessed: '2026-09-28'
+      http_status: 200
+      content_sha256: d08f69f90aa371f85fccb9369eb43d9261bed706a9b48e73f0a4553f6a954e50
+  last_verified: '2026-09-28'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/README.md
+    shows: 'PLM section: 1B, 3B and 8B models on Llama-3.2-1B/3B-Instruct and Llama-3.1-8B-Instruct; image
+      results table with DocVQA 94.6 and ChartQA 85.5 for PLM8B; video results table with VideoMME 58.3
+      for PLM8B.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 71b27adcbe99739cfaadc2db86f3c35c3e02f55f543518ffac466da13448529b
+  - url: https://arxiv.org/abs/2504.13180
+    shows: 'PerceptionLM abstract: a model "for transparent research in image and video understanding";
+      "we release 2.8M human-labeled instances of fine-grained video question-answer pairs and spatio-temporally
+      grounded video captions", and PLM-VideoBench.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 8d2a0d76cab3bcd265bc4e06d69ecd8b27c782fba8396afe67617ca016961e8c
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/docs/training.md
+    shows: 'Training guide: "The repo also support text-only, multi-image, image-region, video-region-caption
+      (RCap), video-region-temporal-localization (RTLoc) and video-region-dense-captioning (RDCap) tasks."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 843bd3a67aa46bfb2af106581af8ea52aa2cf6be89c8f9b4a89fa28e259df42c
