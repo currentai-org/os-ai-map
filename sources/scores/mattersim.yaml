@@ -26,22 +26,26 @@ openness:
     content_sha256: b222a569a01bc94712f2385661cb3d6294ec8bedff7aa8ec93b902f4a1005d95
     establishes: [weights, code]
 adoption:
-  level: 1
-  reach: <1K stars
-  signal_type: stars_fallback
-  confidence: medium
-  note: No Hugging Face artifact is declared, so GitHub stars are used as the last-resort signal; the mattersim
-    PyPI package is the channel that actually ships the weights but is not banded here.
-  last_verified: '2026-09-20'
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of mattersim, the declared package that ships the MatterSim checkpoints
+  note: Adoption is measured from PyPI downloads of mattersim, the Microsoft-published package that installs
+    the model and ships its 1M and 5M checkpoints, because PyPI takes precedence over GitHub stars whenever a
+    package is declared. The package had 39,684 downloads in the 30 days to 2026-09-24 against 44,861 in the
+    30 days before, so the level holds across both windows rather than resting on a spike. No Hugging Face
+    artifact is declared.
+  last_verified: '2026-09-24'
   derived_from:
-    observation_snapshot_id: 36a8263258443a39ad870309141f3eac30c15738d33ad4833dd46eefee175fb6
-    source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
-    route_id: github.stargazers_count
-    measured_level: 1
-    measurement_as_of: '2026-09-20'
+    observation_snapshot_id: 2a431741f05c9cc586b2c7db14d01fc2413b766172ad1a36a9a4fa6059bbcc1c
+    source_run_id: cc59d576-0d62-4b01-b9ff-b381d1139f05
+    route_id: pypi.downloads_30d
+    measured_level: 2
+    measurement_as_of: '2026-09-24'
   sources:
   - url: https://api.github.com/repos/microsoft/mattersim
-    shows: 'stargazers_count: 594; archived: false; fork: false.'
+    shows: 'stargazers_count: 594; archived: false; fork: false — recorded so the superseded stars signal stays visible.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: f14ac1ee3b798e78746339f4e75bc28de1706fcb90baa3c89b2291e2879f0248
