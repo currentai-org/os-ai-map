@@ -17421,6 +17421,212 @@
           }
         },
         {
+          "slug": "perception-lm",
+          "product": "Perception LM",
+          "org_slug": "meta",
+          "org": "Meta",
+          "type": "model",
+          "description": "Perception LM (PLM) is Meta FAIR's family of vision-language models for detailed image and video understanding, in 1B, 3B and 8B sizes that pair the Perception Encoder with Llama 3.2 and Llama 3.1 language models. It answers questions about images, documents, charts and video, including fine-grained and spatio-temporally grounded questions about what happens in a clip. Meta released it with its human-labeled video training data and the PLM-VideoBench benchmark.",
+          "openness": {
+            "score": 2,
+            "class": "restricted",
+            "governing_release": "plm",
+            "components": "weights:open(safetensors for all three sizes on the Hub, behind a manual access request);data:partial(Meta releases its human-labeled PLM-Video-Human set (CC-BY-4.0) and the synthetic PLM-Image-Auto and PLM-Video-Auto sets (Llama 3.2 license); the released stage-3 config leaves the data mix as a pointer to Table A2 of the paper, and the dataset registry lists only dummy sets);code:open(the training script, with stage 1, 2 and 3 configs for each of the 1B, 3B and 8B models);license:FAIR-Noncommercial-Research(the FAIR Noncommercial Research License on every checkpoint, which bars any commercial use of the models or their outputs)",
+            "confidence": "high",
+            "note": "Meta publishes the weights, its own training data and the training code, but the checkpoints carry a research license that forbids any commercial use of the models or their outputs, and each download needs Meta's approval. The open recipe does not lift that restriction.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/facebook/Perception-LM-8B",
+                "shows": "Hub record for Perception-LM-8B: gated \"manual\", license_name fair-noncommercial-research, four safetensors shards; the gate prompt is the FAIR Noncommercial Research License.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "62de264fda7284f9badc57de20b8f436d22a0e37eba209013ffc0eba52defbfa",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/facebook/Perception-LM-3B",
+                "shows": "Hub record for Perception-LM-3B: gated \"manual\", license_name fair-noncommercial-research, two safetensors shards.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "7dcb0c320e4bbe9b96adb915ec8d6d587ed56ac2c17d6db5a618f8f2f4e30bb3",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/facebook/Perception-LM-1B",
+                "shows": "Hub record for Perception-LM-1B: gated \"manual\", license_name fair-noncommercial-research, model.safetensors.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "4530545675e355383b95e7b6262abd5c171d1c3a4deca50b606600ecf62697c2",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/perception_models/main/LICENSE.PLM",
+                "shows": "FAIR Noncommercial Research License, last updated April 17, 2025: \"You will not use the Research Materials or any outputs or results of the Research Materials in connection with any commercial uses or for any uses other than Noncommercial Research Uses\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "b9ea4f505c0fac36ad16015fc673fb233f30beca3b0f2f0ad0de4d119510be85",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/facebook/PLM-Video-Human",
+                "shows": "Hub record for facebook/PLM-Video-Human: public, not gated, license cc-by-4.0.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "ab11002b4ebc750519fd1102ed957ad0c80bd024fa9dcd2a6d0b4c36f3f873b8",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/facebook/PLM-Video-Auto",
+                "shows": "Hub record for facebook/PLM-Video-Auto: public, not gated, license llama3.2.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "6780f8a62366e92d69d39e3c3607213c8ce9e522b5c739e375f5175a4be5d09f",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/facebook/PLM-Image-Auto",
+                "shows": "Hub record for facebook/PLM-Image-Auto: public, not gated, license llama3.2.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1f2ea215e419ef0e05fc24651d8ec0a7ae081041df3d63c73be1fb2b3fed1658",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/docs/training.md",
+                "shows": "Training guide: \"We provide configurations to run warm-up and sft to facilitate reproducibility of PLM training\"; torchrun with apps/plm/configs/stage_3/plm_3b.yaml; examples use dummy-datasets.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "843bd3a67aa46bfb2af106581af8ea52aa2cf6be89c8f9b4a89fa28e259df42c",
+                "establishes": [
+                  "code",
+                  "data"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/facebookresearch/perception_models/files/main",
+                "shows": "Repository tree: apps/plm/configs/stage_1, stage_2 and stage_3, each with plm_1b.yaml, plm_3b.yaml and plm_8b.yaml, beside apps/plm/configs/datasets.yaml.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "7544769a244061d60bd6fd694270dadd4228801a17f3a4adbfdc7e1a1c6c1c7b",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/configs/stage_3/plm_8b.yaml",
+                "shows": "Stage-3 config for the 8B model: \"datamix: <Please consider using data split listed in Table A2 of our paper https://arxiv.org/pdf/2504.13180. ...>\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "bccd6d66dd3ae3ad3b4be7cc0a008f2ee2a7757e3e18b22244de00d2c1522e95",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/configs/datasets.yaml",
+                "shows": "Dataset registry: entries only for dummy_image, dummy_multi_image, dummy_video, dummy_text and the other apps/plm/dummy_datasets sets.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "7823642110e262bf13300aa0b60dde23fafb86f35f47a6d6c29f6fa09c1a2742",
+                "establishes": [
+                  "data"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Hugging Face downloads over the trailing 30 days, summed across the 1B, 3B and 8B checkpoints, most of them for the 1B model.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models?author=facebook&search=Perception-LM&limit=100",
+                "shows": "Three facebook repositories matching Perception-LM: 1B with 1,265, 8B with 202 and 3B with 108 downloads in the trailing 30 days, 1,575 in total.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "5b8851c4bde403d9ea9cf58fc7eb521383b647bc313e38f46dcfcc92fbe578f2"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "image, document, multi-image and video understanding from the repository and paper",
+            "value": "Image and document question answering (8B: DocVQA 94.6, ChartQA 85.5) and video understanding across the repository's video benchmarks (8B: VideoMME 58.3), including fine-grained video QA and region and temporal grounding; the training code supports multi-image input.",
+            "confidence": "high",
+            "note": "Perception LM reads documents, charts and video and answers fine-grained and grounded questions about what happens in a clip, level with MiniCPM-V.",
+            "relative_to": "minicpm-v",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-09-28",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md",
+                  "shows": "MiniCPM-V 4.6 card: \"It inherits the strong single-image, multi-image, and video understanding capabilities of MiniCPM-V family\"; max_num_frames default 128.",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "d08f69f90aa371f85fccb9369eb43d9261bed706a9b48e73f0a4553f6a954e50"
+                }
+              ]
+            },
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/perception_models/main/README.md",
+                "shows": "PLM section: 1B, 3B and 8B models on Llama-3.2-1B/3B-Instruct and Llama-3.1-8B-Instruct; image results table with DocVQA 94.6 and ChartQA 85.5 for PLM8B; video results table with VideoMME 58.3 for PLM8B.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "71b27adcbe99739cfaadc2db86f3c35c3e02f55f543518ffac466da13448529b"
+              },
+              {
+                "url": "https://arxiv.org/abs/2504.13180",
+                "shows": "PerceptionLM abstract: a model \"for transparent research in image and video understanding\"; \"we release 2.8M human-labeled instances of fine-grained video question-answer pairs and spatio-temporally grounded video captions\", and PLM-VideoBench.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8d2a0d76cab3bcd265bc4e06d69ecd8b27c782fba8396afe67617ca016961e8c"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/docs/training.md",
+                "shows": "Training guide: \"The repo also support text-only, multi-image, image-region, video-region-caption (RCap), video-region-temporal-localization (RTLoc) and video-region-dense-captioning (RDCap) tasks.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "843bd3a67aa46bfb2af106581af8ea52aa2cf6be89c8f9b4a89fa28e259df42c"
+              }
+            ]
+          },
+          "overall_score": 2.4,
+          "tier": null,
+          "maturity": 2.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-28",
+            "basis": "verified"
+          },
+          "version_note": "The GitHub repository, facebookresearch/perception_models, is not declared: it also releases the Perception Encoder vision models, a separate entry under Apache-2.0 whose license does not cover the PLM checkpoints."
+        },
+        {
           "slug": "moondream",
           "product": "Moondream",
           "org_slug": "m87-labs",
@@ -30733,6 +30939,143 @@
             "basis": "verified"
           },
           "version_note": "The same repository also carries the previous generation, SO-100, which is not a separate entry."
+        },
+        {
+          "slug": "reachy-mini",
+          "product": "Reachy Mini",
+          "org_slug": "pollen-robotics",
+          "org": "Pollen Robotics",
+          "type": "hardware",
+          "description": "Reachy Mini is an expressive desktop robot for building and testing AI apps. Its head rides on a six-degree-of-freedom Stewart platform above a rotating body, with two moving antennas, a wide-angle camera, a four-microphone array and a speaker, and it has no arm or gripper. Pollen Robotics sells it as a kit in a Wireless version with an onboard Raspberry Pi CM4 and a Lite version driven over USB from a computer, programmed through Python and JavaScript SDKs.",
+          "openness": {
+            "score": 3,
+            "class": "documented",
+            "components": "form_factor:board(a complete desktop robot, sold as a kit);schematics:partial(STL meshes of the printed parts, kept as assets of the robot's simulation models; the README puts the hardware design files under CC BY-SA-NC, and the full STEP files are not released);toolchain:open(driven by the Apache-2.0 SDK and daemon in the same repository);retail:open_market(Wireless and Lite kits from Pollen Robotics' store and through Seeed Studio)",
+            "confidence": "high",
+            "note": "Pollen publishes STL meshes of the robot's printed parts for its simulation models, but not the full STEP design files, and it licenses the design files for non-commercial use only. The software that drives the robot is Apache-2.0 and builds from source, and the kits are on open sale.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/README.md",
+                "shows": "README: \"This project is licensed under the Apache 2.0 License\" and \"Hardware design files are licensed under Creative Commons BY-SA-NC.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9d11ffc341acce448974c215d1a69a2b5000de98a92373a129d37ec19b0becd0",
+                "establishes": [
+                  "schematics",
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/docs/source/troubleshooting.md",
+                "shows": "FAQ: \"The full STEP files havenot been released yet, but we plan to release them in the future. In the meantime, you can find some STL files in the assets folder of the repository.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1382ee715e7ea711053d007dc16cf4e3df3c4eafac41824d723a678ab8606739",
+                "establishes": [
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/pollen-robotics/reachy_mini/files/main",
+                "shows": "Repository tree: STL meshes of the printed parts (body_top_3dprint.stl, head_front_3dprint.stl, stewart_main_plate_3dprint.stl and others) in the asset folders of the robot's MJCF and URDF simulation models.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8b568bfce9b81459933694991a11c0f6fd603f67406752eed8a05957b96970f2",
+                "establishes": [
+                  "schematics",
+                  "form_factor"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/LICENSE",
+                "shows": "LICENSE: the Apache License, Version 2.0 text.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1cd66cd7ef50bb247f43d247f7c2a3259a600d951170e778d75c9278e5680f03",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://pollen-robotics.com/reachy-mini/",
+                "shows": "Product page: \"Reachy Mini Wireless\" and \"Reachy Mini Lite\", each with \"Order Now\", and \"Order via Seeed Studio\" outside EU/UK and US/Canada; \"Both ship as DIY kits.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "04bd4142a9673e40195d143811d8169522b8214da32adadfb3f73e09ddb45a95",
+                "establishes": [
+                  "retail",
+                  "form_factor"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "GitHub stars on the SDK repository, which also holds the robot's design meshes. Stars are the only adoption signal recorded.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://ungh.cc/repos/pollen-robotics/reachy_mini",
+                "shows": "Repository record for pollen-robotics/reachy_mini: 1,525 stars, description \"Reachy Mini's SDK\", pushed 2026-09-25.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "ee0848316bb72b069309ad231099bd638553b890c5b35b4a743fa87e6af6cccc"
+              }
+            ]
+          },
+          "capability": {
+            "score": 1,
+            "basis": "feature_matrix",
+            "basis_detail": "morphology",
+            "value": "Desktop robot with a head on a six-degree-of-freedom Stewart platform (three rotations and three translations), one rotating body joint and two antenna joints, driven by Dynamixel XL330 and XC330 servos, with a 120-degree camera, a four-microphone array and a speaker. No arm or gripper.",
+            "confidence": "medium",
+            "note": "Reachy Mini turns its head, body and antennas to look and gesture, but it has no arm or gripper, so it cannot reach for or carry anything. That puts it a step below the SO-101, a single arm that can.",
+            "relative_to": "so-101",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-09-28",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/docs/lerobot/main/en/assemble_so101",
+                  "shows": "LeRobot assembly guide: \"our flagship robot, the SO-101\"; \"The follower arm uses 6x STS3215 motors\"; joints from Base / Shoulder Yaw through Wrist Pitch to Gripper.",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "e5953a7f21a3abbf641f2fe0fc7bb29555b7894fca0dc30a19a683c6745c75de"
+                }
+              ]
+            },
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/docs/source/platforms/reachy_mini/hardware.md",
+                "shows": "Hardware datasheet: \"Head : 6 dofs (3 rotations & 3 translations)\", \"Body : 1 rotation\", \"Antennas : 1 rotation (x2)\"; \"Wide angle camera: 120°\"; base \"1x Custom Dynamixel XC330-M288-PG\", antennas 2x XL330-M077-T, Stewart platform 6x XL330-M288-T; mic array of \"4 PDM MEMS digital mics\"; 5W speaker.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "929e508da102d99ceb6e0cad6b6544ec6a033d1a4198aca68b194559e4b58473"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/README.md",
+                "shows": "README: \"Reachy Mini is an open-source, expressive robot made for hackers and AI builders\"; Wireless (Raspberry Pi CM4, battery, Wi-Fi) and Lite (USB to a computer) versions; user guides for the \"Python SDK\" and \"JavaScript SDK & Web Apps\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9d11ffc341acce448974c215d1a69a2b5000de98a92373a129d37ec19b0becd0"
+              }
+            ]
+          },
+          "overall_score": 1.4,
+          "tier": null,
+          "maturity": 1.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-28",
+            "basis": "verified"
+          },
+          "version_note": "The SDK's PyPI package, `reachy-mini`, is not declared: hardware carries no download scale on the map, and the same package runs the robot's MuJoCo simulation, which needs no robot."
         }
       ]
     },
@@ -55984,6 +56327,337 @@
             "basis": "verified"
           },
           "version_note": "In this category rather than classic_ml_cv: federation is the product, and the tree learner is the payload. The repository's default branch is `cyz-grpc`, and it was last pushed 2025-01-20."
+        },
+        {
+          "slug": "nebula-dfl",
+          "product": "NEBULA",
+          "org_slug": "cyberdatalab",
+          "org": "CyberDataLab",
+          "type": "software",
+          "description": "NEBULA is a platform for decentralized federated learning, formerly called Fedstellar, developed at the University of Murcia with armasuisse and the University of Zurich. A web frontend and a controller set up a federation on star, ring, mesh or custom topologies and deploy it as local processes, Docker containers or physical devices, with a core running on each participant. It adds differential privacy through Opacus, simulated attacks with reputation-based defenses, and trustworthiness metrics.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:AGPL-3.0(OSI; the LICENSE body is the unmodified GNU AGPL version 3 text);source:public(the frontend, controller and participant core);core-gated:ungated(the proprietary Enterprise Edition is named as a separate commercial offering whose features are \"To be determined\", and the tree has no enterprise path)",
+            "confidence": "high",
+            "note": "NEBULA's frontend, controller and participant core are AGPL-3.0 in one public repository. Its developers offer a proprietary Enterprise Edition beside it, but their commercial FAQ lists its features as not yet determined, and nothing in the repository is held back for it.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/LICENSE",
+                "shows": "The LICENSE body: the verbatim GNU Affero General Public License, Version 3 text.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/CyberDataLab/nebula",
+                "shows": "Repository record for CyberDataLab/nebula: license agpl-3.0, not archived, not a fork, pushed 2026-06-29, 82 stars.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "59b582a29009ae3ffd06c56a133601ec63aadbe8127e848e1489471d0090b8d8",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/README.md",
+                "shows": "README: \"Community Edition — released under the GNU Affero GPL v3.0.\" and \"Enterprise Edition — proprietary license & premium support available.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "f5e1ed315f4a8a78b3e01dc0cfbeaa58ae1f08558787fc1b4a4dd4001933f588",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/docs/_prebuilt/commercial-faq.md",
+                "shows": "Commercial FAQ: \"Does the commercial edition include extra features? To be determined.\"; patches \"remain under AGPL in the community edition\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "95e3b4dd69e6c83c99c1b6e8341b95d63479206fe5a9cedda7e892e691de9e61",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/CyberDataLab/nebula/files/main",
+                "shows": "The 510-file tree of CyberDataLab/nebula at `main`: one root LICENSE, and no ee/, enterprise/, commercial/ or proprietary/ path. Path absence only, paired with the statements cited beside it.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "38ab4c4e6561178d348f97a4576096f640533d414d35bb85b39f549dec824b4a",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "PyPI downloads of `nebula-dfl`, the platform's own package.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/nebula-dfl/recent",
+                "shows": "last_month = 8 downloads for the package `nebula-dfl`.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1e8574207cf2033bd16dd90142f9c4e018362b3debbc1a394685f5c313f013a4"
+              },
+              {
+                "url": "https://pypi.org/pypi/nebula-dfl/json",
+                "shows": "PyPI `nebula-dfl` 1.0.0, uploaded 2025-06-26, summary \"NEBULA: A Platform for Decentralized Federated Learning\", repository https://github.com/CyberDataLab/nebula.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "cee964c7bc158e9e34eec8feea0939ae6966989cb993af5dd4b8c7ae78b2aae3"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "federated_learning feature matrix: federation reach (rungs in the category's scoring_recipe.note)",
+            "value": "A web frontend and controller that deploy a federation as local processes, Docker containers or Raspberry Pi nodes joined over a Tailscale network; the controller generates a CA and a certificate for every participant; DP-SGD training through Opacus; simulated attacks, reputation-based defense, mobility and network-condition simulation.",
+            "confidence": "low",
+            "note": "NEBULA can run a federation across real devices as well as emulate one, and it trains with differential privacy. Its controller generates every participant's certificate itself, and the thirteen setup steps in its user guide include none for an organization to admit or authenticate its own node. On that documented evidence it sits a step below Flower; whether the participant runtime enforces certificate admission is not documented.",
+            "relative_to": "flower",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-09-28",
+              "sources": [
+                {
+                  "url": "https://flower.ai/docs/framework/how-to-authenticate-supernodes.html",
+                  "shows": "Flower's SuperNode authentication guide: automatic timestamp-signature authentication, and CLI-managed authentication that restricts which SuperNodes may connect to a SuperLink.",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "26d49632114839ffdb0fdaaa933a7b630ac76b8113b2eb5c16d826fc79a79ece"
+                },
+                {
+                  "url": "https://flower.ai/docs/framework/docker/index.html",
+                  "shows": "\"Start your Flower journey with our pre-made Docker images on Docker Hub\"; guides to enable TLS and to \"Deploy Flower on Multiple Machines with Docker Compose\".",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "059f28f62aed80af9d761b2766dfba97f9edfd17b516579770f2bfeead48f46b"
+                }
+              ]
+            },
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/docs/_prebuilt/userguide.md",
+                "shows": "User guide: thirteen scenario-configuration steps, from deployment (Processes, Docker containers or Physical devices) through topology, dataset, training, aggregation, participants, robustness (attacks), defense (reputation) and mobility; none authenticates or admits participants.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "f661f6f1cdddd870b136ccb5908a932c1c5528ecfc615b1e572a6ae08e91e3a8"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/README.md",
+                "shows": "README: \"NEBULA (previously known as Fedstellar)\", developed \"in collaboration with the University of Murcia, armasuisse, and the University of Zurich\"; features \"Topology-agnostic\" (star, ring, mesh), \"Trustworthiness\", \"Security\" and network \"condition simulation\"; trustworthiness and fairness metric definitions from AIF360 and HolisticAI.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "f5e1ed315f4a8a78b3e01dc0cfbeaa58ae1f08558787fc1b4a4dd4001933f588"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/nebula/physical/install.sh",
+                "shows": "Physical-node installer: provisions a Raspberry Pi running DietPi or Debian 12 to join a Tailscale network and run NEBULA from the physical-deployment branch.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "2e0112071bb5220a89f5af229b9f070ebaac33af028cca1d154f16c7cfaa3049"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/nebula/controller/scenarios.py",
+                "shows": "Scenario generation: generate_ca_certificate for the scenario, then generate_certificate for each participant_{i} at its configured IP.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "19db2b2d38dc85e1155f295770f611f26a41b444da7591cc572c793a4cf48950"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CyberDataLab/nebula/main/nebula/core/training/dp.py",
+                "shows": "DifferentialPrivacyPlugin: wraps training with Opacus's PrivacyEngine (noise multiplier, max gradient norm, PRV accountant).",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "28f4f65151d77b5cbb6cb3101802d0f6f86cb15a0fdd0cf2097dda026d939a2b"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-28",
+            "basis": "verified"
+          },
+          "version_note": "The slug carries a `-dfl` suffix, as the PyPI package does, because the bare name is a common word."
+        },
+        {
+          "slug": "p2pfl",
+          "product": "P2PFL",
+          "org_slug": "p2pfl",
+          "org": "P2PFL",
+          "type": "software",
+          "description": "P2PFL is a Python library for decentralized federated learning, in which peers exchange model updates over a peer-to-peer network with gossip protocols instead of reporting to a central server. The same code runs as an in-memory or Ray simulation or across machines over gRPC, where mutual TLS admits only nodes holding certificates from a shared authority. It trains PyTorch, TensorFlow/Keras and JAX models and can add local differential privacy to outgoing updates.",
+          "openness": {
+            "score": 4,
+            "class": "open_core",
+            "components": "license:GPL-3.0(OSI; the LICENSE.md body is the unmodified GNU GPL version 3 text);source:public(the library, its gRPC and in-memory protocols and its examples);core-gated:gated(the vendor's plan table leaves \"Advanced features\" out of the free Community (Open Source) plan and includes them in an Enterprise plan it marks as launching soon)",
+            "confidence": "high",
+            "note": "P2PFL's library is GPL-3.0, but its maker's own plan table holds back \"advanced features\" from the free open-source plan for a paid Enterprise plan, which is open core. That plan is still marked as launching soon, and the page does not say which features it withholds.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/HEAD/LICENSE.md",
+                "shows": "The LICENSE.md body: the verbatim GNU General Public License, Version 3 text.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/p2pfl/p2pfl",
+                "shows": "Repository record for p2pfl/p2pfl: license gpl-3.0, not archived, not a fork, pushed 2026-05-09, 155 stars.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d4725587e2cb7ebfe9bf728461c5dfec1d0571580f3ea22043be6c6b838ef326",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://www.p2pfl.com/",
+                "shows": "Plan table: \"Community (Open Source)\", \"Free\", with Web UI checked and \"Advanced features\" and \"Priority support\" crossed out; \"Enterprise\", \"Contact Us!\", with all three checked; \"We are launching soon!\"; \"© Copyright 2024\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "78f55b02cb4c66a0a451aed44456f42ff07f3488f22177720027814a7c1c21fb",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "PyPI downloads of `p2pfl`, the library's own package.",
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/p2pfl/recent",
+                "shows": "last_month = 44 downloads for the package `p2pfl`.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "89ba15499577186afda844fc34d481345a17344b0a97272e244183f8a121dd24"
+              },
+              {
+                "url": "https://pypi.org/pypi/p2pfl/json",
+                "shows": "PyPI `p2pfl` 0.4.4, uploaded 2025-09-30, repository https://github.com/p2pfl/p2pfl.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "c92b9125c93069d1ec4145bc2c5c96e9c414010c8dbacdbedd13f91bd120cbd7"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "federated_learning feature matrix: federation reach (rungs in the category's scoring_recipe.note)",
+            "value": "Peer-to-peer training over gRPC with gossip-based model exchange; optional mutual TLS with node certificates signed by a shared root CA; local differential privacy applied to outgoing updates; in-memory and Ray simulation; PyTorch, TensorFlow/Keras and JAX models. Certificate distribution is left to the operator, the CLI marks launching a node and driving a remote node as coming soon, and the repository's only container file is a Dockerfile that opens a shell.",
+            "confidence": "medium",
+            "note": "P2PFL runs a real federation between machines, with mutual TLS so that only nodes holding certificates from the network's authority can join, and local differential privacy on each update. Operators distribute the certificates and start each node themselves, since the command-line node launcher is still marked as coming soon, which keeps it a step below Flower.",
+            "relative_to": "flower",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-09-28",
+              "sources": [
+                {
+                  "url": "https://flower.ai/docs/framework/how-to-authenticate-supernodes.html",
+                  "shows": "Flower's SuperNode authentication guide: automatic timestamp-signature authentication, and CLI-managed authentication that restricts which SuperNodes may connect to a SuperLink.",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "26d49632114839ffdb0fdaaa933a7b630ac76b8113b2eb5c16d826fc79a79ece"
+                },
+                {
+                  "url": "https://flower.ai/docs/framework/docker/index.html",
+                  "shows": "\"Start your Flower journey with our pre-made Docker images on Docker Hub\"; guides to enable TLS and to \"Deploy Flower on Multiple Machines with Docker Compose\".",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "059f28f62aed80af9d761b2766dfba97f9edfd17b516579770f2bfeead48f46b"
+                }
+              ]
+            },
+            "last_verified": "2026-09-28",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/main/docs/source/tutorials/certificates.md",
+                "shows": "mTLS guide: each node holds server and client certificates signed by a root CA, and connections are refused without them; \"certificate distribution is not something that our library provides out-of-the-box.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8d8cfaeec1b61282f11b1170e12c8fa766c6ed828a44720c19ce8191643f8866"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/main/docs/source/components/communication.md",
+                "shows": "Communication protocols: gRPC between peers with TLS and mutual TLS support, plus in-memory communication for simulations with Ray.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d3c20422612e61bf1434013e75c63fcd9635ea4bf1de7e2dbbd7a4188d524d6f"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/main/p2pfl/learning/compression/dp_strategy.py",
+                "shows": "\"Post-Training Differential Privacy strategy for Local DP\": each client clips and adds noise to its own update before it leaves the node.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "cee869c32784b11e7068d29bf3883d92b70193c6e7aab92eac8f352ee8e40278"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/HEAD/README.md",
+                "shows": "README: \"execution (simulated and in real environments) of Decentralized Federated Learning systems, specifically making use of P2P networks and the gossip protocols\"; \"Seamlessly integrate PyTorch, TensorFlow/Keras, and JAX models\"; Docker instructions are \"docker build -t p2pfl .\" and \"docker run -it --rm p2pfl bash\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "db2d5504515d41fe8f1745114bc486efb62745d2bef91ffcb8d51ad5cf84ab9c"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/main/docs/source/tutorials/cli.md",
+                "shows": "CLI commands: `run` is available; `launch` (\"Launch a new node in the p2pfl network\") and `remote` (\"Interact with a remote node in the p2pfl network\") are both marked \"Coming Soon\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a36836d6dc84f42da46c4f9a4208c522be13323852a8a5b5273b7dbbb9918790"
+              },
+              {
+                "url": "https://ungh.cc/repos/p2pfl/p2pfl/files/main",
+                "shows": "The 372-file tree of p2pfl/p2pfl at `main`: the only container or deployment files are the root Dockerfile and .dockerignore, with no compose, Helm, Kubernetes or service files.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "3a4cb5889752832b045b4b6e9c16f10eba6e30f1026725dbc140e28cf2669f70"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/p2pfl/p2pfl/main/Dockerfile",
+                "shows": "Dockerfile: installs the repository with \"uv sync --all-extras --locked\" and defaults to an interactive bash shell.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d970fe7f23fcd8b0cc4a05009a2775dd9ee40ed43dde75082254a086ec007aa8"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-28",
+            "basis": "verified"
+          }
         },
         {
           "slug": "federated-compute-platform",
@@ -116117,6 +116791,17 @@
         "postgres-mcp"
       ]
     },
+    "cyberdatalab": {
+      "slug": "cyberdatalab",
+      "display_name": "CyberDataLab",
+      "type": "unknown",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "nebula-dfl"
+      ]
+    },
     "dadelani": {
       "slug": "dadelani",
       "display_name": "David Adelani",
@@ -118494,6 +119179,7 @@
         "mms-lab-data",
         "musicgen",
         "ogx",
+        "perception-lm",
         "prophet",
         "seamless-m4t",
         "segment-anything",
@@ -119846,6 +120532,17 @@
         "oxen"
       ]
     },
+    "p2pfl": {
+      "slug": "p2pfl",
+      "display_name": "P2PFL",
+      "type": "unknown",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "p2pfl"
+      ]
+    },
     "paddlepaddle": {
       "slug": "paddlepaddle",
       "display_name": "PaddlePaddle",
@@ -120003,6 +120700,17 @@
       "country": "",
       "products": [
         "jojajovai"
+      ]
+    },
+    "pollen-robotics": {
+      "slug": "pollen-robotics",
+      "display_name": "Pollen Robotics",
+      "type": "company",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "reachy-mini"
       ]
     },
     "polyaxon": {
@@ -122368,7 +123076,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1094,
+  "n_total": 1098,
   "generated": "2026-09-28",
   "version": "0.4.0",
   "released": "2026-09-26",
@@ -122381,8 +123089,8 @@
       "total": 61461,
       "matched": 737,
       "overlap": 459,
-      "scored": 1094,
-      "scored_outside": 635,
+      "scored": 1098,
+      "scored_outside": 639,
       "uncategorized": 60724
     },
     "top": [
