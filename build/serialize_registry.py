@@ -79,6 +79,7 @@ ARTIFACT_KINDS = (
     "npm",
     "crates",
     "arxiv",
+    "homebrew",
 )
 LINEAGE_RELATIONS = ("derived_from", "curated_with", "trains")
 

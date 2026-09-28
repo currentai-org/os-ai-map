@@ -169,10 +169,11 @@ rather than borrow another type's scale. That is the same "abstain rather than s
 rule `sources/signal_routing.yaml` states for sources, and it is why the scoring models LEFT
 JOIN the band table rather than defaulting.
 
-### Two scales are per instrument, not per type
+### Some scales are per instrument, not per type
 
-Stars and active users get their own scales, declared **once** on the adoption route that
-produces each in `sources/signal_routing.yaml` rather than in the four type rubrics:
+Stars, active users and Homebrew installs get their own scales, declared **once** on the
+adoption route that produces each in `sources/signal_routing.yaml` rather than in the four type
+rubrics:
 
 | level | stars |
 |---|---|
@@ -181,9 +182,9 @@ produces each in `sources/signal_routing.yaml` rather than in the four type rubr
 | 1 | <1K |
 
 Two reasons they live there. A dataset's downloads run an order below a package's, which is
-why *those* bands are per type — but a star is a star whatever it was given to, and a monthly
-active user is a person whatever they came back to, so each scale is a property of the
-instrument. And declaring one once is the only way to avoid four copies of a number that must
+why *those* bands are per type. But a star is a star whatever it was given to, a monthly
+active user is a person whatever they came back to, and a Homebrew install is one machine
+whatever it installed, so each scale is a property of the instrument. And declaring one once is the only way to avoid four copies of a number that must
 not drift.
 
 **Capped at 3, and the cap is enforced rather than trusted.** Stars measure attention rather
@@ -192,7 +193,26 @@ than use, so a stars-derived band may never claim levels 4 or 5 however large th
 a level-4 stars band fails the serializer instead of quietly publishing one. The corpus
 already respects this: no `stars_fallback` product records 4 or 5.
 
-The three thresholds are round numbers on the instrument, not a summary of the corpus, and the
+**Homebrew installs sit exactly one order of magnitude below the software download scale**
+(a ruling, not a measurement of the corpus):
+
+| level | installs in 30 days |
+|---|---|
+| 5 | >1M |
+| 4 | 100K-1M |
+| 3 | 10K-100K |
+| 2 | 1K-10K |
+| 1 | <1K |
+
+An install is one `brew install` on one machine, with none of the CI jobs and mirrors a registry
+download count carries, which is why the scale is lower and why the two are never summed. The
+count does include installs pulled in as a dependency of another formula: `ggml` read 15,446
+installs against 207 by request on 2026-09-28, because `llama.cpp` and `whisper.cpp` install
+it. Declare a `homebrew` artifact only where Homebrew is how the product ships, which usually
+means a command-line tool or a local runner. A library that ships mainly through PyPI does not
+declare its formula.
+
+The three stars thresholds are round numbers on the instrument, not a summary of the corpus, and the
 corpus is read against them rather than the other way round. Measured 2026-09-20: of the 169
 `stars_fallback` products, 167 quote a star count in their evidence, and every one of those 167
 sits inside the band its recorded level names — medians of 211, 3,181 and 24,216 stars for
@@ -264,7 +284,8 @@ how much weight it carries:
 
 | `signal_type` | what it is | machine-re-derivable? |
 |---|---|---|
-| `usage_volume` | a download or install count | **yes**, where the artifact is declared |
+| `usage_volume` | a registry download count | **yes**, where the artifact is declared |
+| `install_volume` | Homebrew installs in 30 days. **Its own scale**, one order below downloads | **yes**, where a formula is declared |
 | `active_users` | vendor-disclosed MAU or WAU. **Its own scale**, sharing the download thresholds | no |
 | `reported_traction` | a credible vendor or third-party claim, with **no count behind it**. A word vocabulary, never a number | no |
 | `stars_fallback` | GitHub stars. Last resort, and **capped at level 3** | yes, once stars are banded |
@@ -279,6 +300,9 @@ load-bearing rule in this guide:
   number. See the vocabulary below.
 - An `active_users` band claims a count of people, on the scale above. It may be compared only
   against another user count.
+- An `install_volume` band claims a count of Homebrew installs. It is never added to a download
+  count or compared with one: an install is one machine, while a download count carries CI jobs
+  and mirrors.
 
 ### Authority is declared, not inferred
 

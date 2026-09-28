@@ -102,7 +102,7 @@ WITH observations AS (
 
   -- Package registry 30-day downloads, per declared package, across all three registries.
   -- artifact_kind is PROJECTED, never literal: the source carries pypi / npm / crates per row and
-  -- §4.3 fixes the channel vocabulary as github|huggingface|pypi|npm|crates|other, so the one
+  -- §4.3 fixes the channel vocabulary as github|huggingface|pypi|npm|crates|homebrew|other, so the one
   -- column maps straight through to both. observed_at is the last day of download data in the
   -- window (the source windows counts rather than stamping a fetch time).
   --
@@ -127,8 +127,30 @@ WITH observations AS (
 
   UNION ALL
 
+  -- Homebrew 30-day installs, per declared formula (#718). A separate metric, `installs`, never
+  -- `downloads`: an install is one `brew install` on one machine, and the map bands it on its own
+  -- scale (the `homebrew.installs_30d` route in sources/signal_routing.yaml). The figure sums
+  -- every install variant of the formula and includes installs pulled in as a dependency.
+  -- observed_at is the fetch time, since Homebrew publishes a rolling window with no end date.
+  SELECT
+    product_slug,
+    'homebrew'                                     AS channel,
+    'homebrew'                                     AS artifact_kind,
+    package                                        AS artifact_id,
+    'installs'                                     AS metric_type,
+    CAST(installs_30d AS BIGINT)                   AS raw_value,
+    'installs'                                     AS unit,
+    30                                             AS measurement_window_days,
+    CAST(fetched_at AS TIMESTAMP)                  AS observed_at,
+    'signal_packages'                              AS source_dataset,
+    'currentai.signal_packages.package_metadata'   AS source_table
+  FROM currentai.signal_packages.package_metadata
+  WHERE artifact_kind = 'homebrew' AND http_status = 200 AND installs_30d IS NOT NULL
+
+  UNION ALL
+
   -- Semantic Scholar citations, per arxiv paper. channel is 'other' (§4.3 fixes the channel
-  -- vocabulary to github|huggingface|pypi|npm|crates|other); the arxiv identity is carried by
+  -- vocabulary to github|huggingface|pypi|npm|crates|homebrew|other); the arxiv identity is carried by
   -- artifact_kind='arxiv' and artifact_id.
   SELECT
     product_slug,

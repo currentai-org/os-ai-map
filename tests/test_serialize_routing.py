@@ -185,6 +185,7 @@ def test_routes_are_in_the_declared_precedence_order(tables):
         "semanticscholar.citation_count",
         "npm.downloads_30d",
         "crates.downloads_30d",
+        "homebrew.installs_30d",
         "active_users",
         "github.stargazers_count",
         "reported_traction",
@@ -242,6 +243,8 @@ def test_semantic_field_values_reach_the_tables(adoption, tables):
     assert tables["adoption_aggregation_rules"] == [
         {"aggregation_rule_id": "sum_usage_across_artifacts", "method": "sum",
          "scope": "artifacts", "applies_to_instrument": "usage_volume"},
+        {"aggregation_rule_id": "sum_installs_across_artifacts", "method": "sum",
+         "scope": "artifacts", "applies_to_instrument": "install_volume"},
         {"aggregation_rule_id": "sum_stars_across_artifacts", "method": "sum",
          "scope": "artifacts", "applies_to_instrument": "stars_fallback"},
     ]
@@ -409,6 +412,28 @@ def test_a_band_set_absent_from_adoption_bands_is_an_error(routing, rubrics, cat
             route.pop("bands", None)
     _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("route:stars_fallback" in e and "adoption_bands" in e for e in errors), errors
+
+
+def test_an_install_route_that_loses_its_bands_is_an_error(routing, rubrics, categories):
+    """The same integrity for Homebrew installs: `install_volume` is route-scaled by name, so a
+    route that loses its `bands` still emits `route:install_volume` and fails, rather than
+    dropping out of the join and leaving every declared formula unbanded without a word."""
+    bad = copy.deepcopy(routing)
+    for route in bad["dimensions"]["adoption"]["routes"]:
+        if route.get("signal_type") == "install_volume":
+            route.pop("bands", None)
+    _, errors, _ = build_routing(bad, rubrics, categories)
+    assert any("route:install_volume" in e and "adoption_bands" in e for e in errors), errors
+
+
+def test_the_install_route_ranks_after_every_download_route(tables):
+    """A product that declares a formula beside a PyPI, npm or crates package is measured on
+    its download route: installs are a different instrument, never a better one."""
+    order = [r["route_id"] for r in tables["adoption_routes"]]
+    install = order.index("homebrew.installs_30d")
+    for route_id in ("pypi.downloads_30d", "npm.downloads_30d", "crates.downloads_30d"):
+        assert order.index(route_id) < install
+    assert install < order.index("github.stargazers_count")
 
 
 def test_authority_is_read_from_the_yaml_not_a_constant(routing, rubrics, categories):

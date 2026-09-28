@@ -231,12 +231,13 @@
         "signal_type": {
           "enum": [
             "active_users",
+            "install_volume",
             "usage_volume",
             "reported_traction",
             "stars_fallback",
             "unknown"
           ],
-          "description": "WHICH INSTRUMENT the band was read with. Capability's `basis` is the same concept under a different name and a different vocabulary, because the two axes were built at different times; openness's equivalent is the category's ladder, which is why openness carries no such field. `active_users` and `usage_volume` are measured figures, `reported_traction` is a vendor's or a tracker's claim rather than a count, `stars_fallback` is repository popularity standing in for usage, `unknown` is an abstention. The distinction is enforced rather than descriptive: build/validate.py rejects `stars_fallback` above level 3, because stars measure attention rather than use. Measured 2026-08-08: usage_volume 237, reported_traction 108, stars_fallback 84, active_users 23, unknown 20. Also the `Signal` row in the product detail panel."
+          "description": "WHICH INSTRUMENT the band was read with. Capability's `basis` is the same concept under a different name and a different vocabulary, because the two axes were built at different times; openness's equivalent is the category's ladder, which is why openness carries no such field. `active_users`, `usage_volume` and `install_volume` are measured figures (`install_volume` counts Homebrew installs, one per machine, on its own scale an order of magnitude below downloads), `reported_traction` is a vendor's or a tracker's claim rather than a count, `stars_fallback` is repository popularity standing in for usage, `unknown` is an abstention. The distinction is enforced rather than descriptive: build/validate.py rejects `stars_fallback` above level 3, because stars measure attention rather than use. Measured 2026-08-08: usage_volume 237, reported_traction 108, stars_fallback 84, active_users 23, unknown 20. Also the `Signal` row in the product detail panel."
         },
         "banded_quantity": {
           "type": [

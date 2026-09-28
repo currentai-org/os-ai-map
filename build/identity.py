@@ -50,6 +50,7 @@ KINDS = (
     "crates",
     "arxiv",
     "homepage",
+    "homebrew",
 )
 
 #: An arXiv id, old-style (category/number) or new-style (YYMM.NNNNN[N]), with an
@@ -87,6 +88,11 @@ _URL = {
         r"^(?:https?://)?(?:www\.)?npmjs\.com/package/((?:@[^/\s]+/)?[^/\s#?]+)/?(?:[#?].*)?$", re.I
     ),
     "crates": re.compile(r"^(?:https?://)?crates\.io/crates/([^/\s#?]+)/?(?:[#?].*)?$", re.I),
+    # A Homebrew formula page. Formula names are lowercase by Homebrew convention and may carry
+    # dots (llama.cpp, whisper.cpp) and an @version suffix (python@3.12).
+    "homebrew": re.compile(
+        r"^(?:https?://)?formulae\.brew\.sh/formula/([^/\s#?]+)/?(?:[#?].*)?$", re.I
+    ),
     "arxiv": re.compile(
         r"^(?:arxiv:|(?:https?://)?arxiv\.org/(?:abs|pdf)/)"
         r"([a-z\-]+/\d{7}|\d{4}\.\d{4,5})(?:v\d+)?(?:[#?].*)?$",
@@ -141,6 +147,8 @@ def canonical(kind: str, ident_or_url: str) -> str:
     if kind == "npm":
         return ident.lower()
     if kind == "crates":
+        return ident.lower()
+    if kind == "homebrew":
         return ident.lower()
     if kind == "arxiv":
         ident = ident.removeprefix("arxiv:").removeprefix("ARXIV:")

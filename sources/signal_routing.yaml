@@ -70,6 +70,13 @@ sources:
       `not_primary_channel` — the crate is a Rust SDK for a Go runtime — so it is excluded
       from the banded sum and falls through to its next route. The route is live regardless;
       the exclusion is a curation fact applied one layer up.
+  homebrew:
+    artifact_key: homebrew
+    table: currentai.signal_packages.package_metadata
+    key: product_slug
+    filter: artifact_kind = 'homebrew'
+    evidence_url: https://formulae.brew.sh/formula/{package}
+    bridged: true
   semanticscholar:
     artifact_key: arxiv
     table: currentai.signal_semanticscholar.paper_citations
@@ -263,6 +270,28 @@ dimensions:
         through to its next route — a curation fact applied one layer up, not a property
         of this route. Declared, while unbridged, so a crates-only product was unmeasured
         on its authoritative route rather than scored on stars.
+    - source: homebrew
+      column: installs_30d
+      signal_type: install_volume
+      authority: authoritative
+      confidence: high
+      note: >
+        Homebrew formula installs in the trailing 30 days, summed over install variants
+        (`ollama` and `ollama --HEAD` are one formula). An install is one `brew install` on
+        one machine, with none of the CI jobs and mirrors a registry download count carries,
+        so it is its own instrument on its own scale and is never added to download counts.
+        It does include installs pulled in as a dependency of another formula, which is why
+        a library like `ggml` reads high on installs and low on installs by request.
+        Declare a `homebrew` artifact only where Homebrew is how the product ships.
+      # Ruling (Carl, 2026-09-28, #718): its own metric, one order of magnitude below the
+      # software download scale.
+      unit: Homebrew installs in the trailing 30 days, summed across declared formulae
+      bands:
+      - {level: 5, above: 1000000, reach: '>1M installs'}
+      - {level: 4, above: 100000, reach: 100K-1M installs}
+      - {level: 3, above: 10000, reach: 10K-100K installs}
+      - {level: 2, above: 1000, reach: 1K-10K installs}
+      - {level: 1, above: -1, reach: <1K installs}
     - source: null
       signal_type: active_users
       authority: authoritative
@@ -301,7 +330,7 @@ dimensions:
       note: >
         Last resort, and explicitly last. Stars measure attention, not use, and
         the rubric already ranks this below every real usage signal.
-      # Ruling: docs/reference/adoption.md, "Two scales are per instrument, not per type".
+      # Ruling: docs/reference/adoption.md, "Some scales are per instrument, not per type".
       cap: 3
       cap_because: >
         Stars measure attention, not use, so a stars-derived band may never claim
@@ -342,6 +371,13 @@ dimensions:
       note: >
         A model family ships several SKUs. The map's unit is the family, so
         downloads sum across its artifacts rather than taking the largest.
+    - rule_id: sum_installs_across_artifacts
+      method: sum
+      scope: artifacts
+      applies_to_instrument: install_volume
+      note: >
+        A product that ships several formulae sums their installs, for the same reason
+        downloads sum: the map's unit is the product.
     - rule_id: sum_stars_across_artifacts
       method: sum
       scope: artifacts

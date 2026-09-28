@@ -125,7 +125,7 @@ def parse_timestamp(value: object) -> datetime | None:
 # routes against it, and a sibling copy in either is exactly the drift this module exists to
 # stop: `mystery` compiled an eighth route with no error until both read the same set.
 SIGNAL_TYPES = frozenset(
-    {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
+    {"active_users", "install_volume", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
 )
 
 # The routable subset: the instruments a routing route or an aggregation rule may declare.
