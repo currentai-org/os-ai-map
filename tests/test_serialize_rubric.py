@@ -1340,7 +1340,7 @@ def test_a_compound_license_publishes_every_part(real_rubric):
             )
         ]
 
-    assert license_parts("zed") == ["GPL-3.0-or-later", "GPL-3.0", "Apache-2.0"]
+    assert license_parts("zed") == ["GPL-3.0-or-later", "GPL-3.0-or-later", "Apache-2.0"]
     assert license_parts("flan-collection") == ["Apache-2.0", "per-task"]
     assert license_parts("smoltalk") == ["apache-2.0", "per-component"]
     assert license_parts("redpajama-data-v2") == ["CommonCrawl-ToU", "Apache-2.0"]

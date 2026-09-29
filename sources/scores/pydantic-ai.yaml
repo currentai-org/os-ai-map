@@ -20,7 +20,7 @@ openness:
     ee or commercial directory anywhere in the tree. Logfire, the vendor's paid observability platform,
     is a separate product sold beside the library rather than a piece cut out of it, so nothing in the agent
     library itself is withheld.
-  last_verified: '2026-08-11'
+  last_verified: '2026-09-29'
   raw: license:MIT(library);commercial:Pydantic-Logfire;source:public;core-gated:ungated(every package in
     pydantic/pydantic-ai is MIT with no enterprise directory; Logfire and the AI Gateway are separately
     sold services)
@@ -28,6 +28,40 @@ openness:
   - url: https://github.com/pydantic/pydantic-ai
     shows: MIT, ~17.8k stars, Logfire integration
     accessed: '2026-06-17'
+  - url: https://raw.githubusercontent.com/pydantic/pydantic-ai/main/LICENSE
+    shows: 'The root LICENSE file is the MIT text: "The MIT License (MIT)" with "Copyright (c) Pydantic
+      Services Inc. 2024 to present".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bc0e89738f36944c8106e1947c3d69631f9c33b8f1bcb60ec4f89d677d2dfcf4
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/pydantic/pydantic-ai/main/pydantic_ai_slim/LICENSE
+    shows: 'The pydantic_ai_slim package carries its own LICENSE with the same MIT text: "The MIT License
+      (MIT)" and "Copyright (c) Pydantic Services Inc. 2024 to present".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bc0e89738f36944c8106e1947c3d69631f9c33b8f1bcb60ec4f89d677d2dfcf4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pydantic/pydantic-ai/main/README.md
+    shows: 'The README presents Logfire and the Gateway as separate products beside the library: "is the
+      AI observability platform that sees your whole app, not just the LLM calls" and "the Gateway self-hosts
+      if you would rather"; also "No flagship feature is locked to one vendor."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 518369670ea0a105252618e453e6f14462dcfa179ce9c391ea7f3f764830a5bf
+  - url: https://pydantic.dev/pricing
+    shows: 'The pricing page, headed "Transparent pricing for AI teams", sells Logfire observability tiers
+      plus "Full AI Gateway access (add-on)"; searched the body for "Pydantic AI": it appears only in product
+      navigation, footer and contact-form lists and in "Trace agent runs from prompt through tool calls",
+      never as a priced tier.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 989aca462bbe1331e3f82d4e6b8936191396979edb7e34f7c054e34fc9d66be1
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/pydantic/pydantic-ai/git/trees/main?recursive=1
     shows: 'Full untruncated recursive tree, 2,664 entries. Six LICENSE files: root, clai/, examples/, pydantic_ai_slim/,
       pydantic_evals/, pydantic_graph/. No enterprise/, ee/, commercial/ or proprietary/ path anywhere.'
@@ -37,25 +71,6 @@ openness:
     establishes:
     - source
     - core-gated
-  - url: https://api.github.com/repos/pydantic/pydantic-ai
-    shows: 'Repo metadata: language Python, license spdx_id MIT, size 226,885 KB, 19,231 stars, default
-      branch main.'
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: cbcef7945209b5d388a82b4e47f8701f4b290056d54cf07b03c4371a549cfa63
-    establishes:
-    - license
-    - source
-  - url: https://pydantic.dev/pricing
-    shows: Titled 'Pydantic Logfire Pricing', strapline '10M logs/spans/metrics free. Every feature. Any
-      tier.' Tiers are Personal $0, Team $49/mo, Growth $249/mo, Enterprise custom, and they sell observability
-      seats, projects, record volume, data retention and AI Gateway markup. Pydantic AI is listed as a separate
-      product in the nav. No paid tier of the agent library.
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 6e8c4ca400d450e2778aa9118d97bbb16339e7132fbc5358ac424fc0b2de615f
-    establishes:
-    - core-gated
 adoption:
   level: 5
   signal_type: usage_volume
@@ -64,7 +79,6 @@ adoption:
     is transitive, pulled in as a dependency of other packages and by CI systems rather than reflecting
     direct developer choice, so the reading is directional.
   reach: '>10M'
-  last_verified: '2026-08-12'
   sources:
   - url: https://pypistats.org/api/packages/pydantic-ai/recent
     shows: 15,835,159 downloads in the trailing 30 days for pydantic-ai
@@ -81,7 +95,6 @@ capability:
     comparison, one tier below LlamaIndex.
   relative_to: llama-index
   relation: one_below
-  last_verified: '2026-08-13'
   sources:
   - url: https://pypi.org/pypi/pydantic-ai/json
     shows: pydantic-ai 2.32.0 is the current release; the metadata carries no license field

@@ -20,7 +20,7 @@ openness:
     finds no enterprise, ee or commercial directory anywhere in the tree. LangSmith, sold separately for
     observability, evaluation and deployment, adds nothing the published packages lack, so a paid product
     beside the framework does not gate its core.
-  last_verified: '2026-08-11'
+  last_verified: '2026-09-29'
   raw: license:MIT(langchain-core,langgraph,integrations);commercial:LangSmith-platform/cloud;source:public;core-gated:ungated(every
     package in langchain-ai/langchain is MIT with no enterprise directory; LangSmith is a separately sold
     observability and deployment platform)
@@ -31,48 +31,45 @@ openness:
     accessed: '2026-08-15'
     http_status: 200
     content_sha256: f9f08233e79671352cde6213292e41dccb696701aad815b5729bb0cab5bae23c
-  - url: https://www.langchain.com/langchain
-    shows: The vendor product page, which sells LangSmith and LangGraph Platform beside the open framework
-      and claims no framework capability the MIT packages lack. That is the distinction between 5/open_source
-      and 4/open_core, so it establishes core-gated.
-    accessed: '2026-08-15'
+  - url: https://raw.githubusercontent.com/langchain-ai/langchain/master/LICENSE
+    shows: 'The root LICENSE of the public langchain-ai/langchain repository is the MIT License: "MIT License"
+      and "Copyright (c) LangChain, Inc." followed by "Permission is hereby granted, free of charge, to
+      any person obtaining a copy".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 25d06ee0dfddbf95fa3601fc54c8ca9de0411006d19da25b84984631572dc625
-  - url: https://rvernica.github.io/2026/03/langchain-license
-    shows: Third-party post examining LangChain's licensing across its packages. Corroborates the MIT reading;
-      establishes no dimension on its own.
-    accessed: '2026-08-15'
-    http_status: 200
-    content_sha256: 59fa71fd65c20a6af1ffafe39b3f80693148bb7bde4b5fd34d27b168ed2ef664
-  - url: https://api.github.com/repos/langchain-ai/langchain/git/trees/master?recursive=1
-    shows: 'Full untruncated recursive tree, 3,587 entries. Only license files are the root LICENSE and
-      per-package copies under libs/: core, langchain, langchain_v1, model-profiles, seventeen partners/*,
-      standard-tests, text-splitters. No enterprise/, ee/, commercial/ or proprietary/ path. Top-level directories
-      are .devcontainer, .github, .vscode, libs.'
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: e7134bbd4a5c72cadbf4fe408abcb6e831722dedef5047dc77b40df1f7b64acf
-    establishes:
-    - source
-    - core-gated
-  - url: https://api.github.com/repos/langchain-ai/langchain
-    shows: 'Repo metadata: default_branch master, language Python, license spdx_id MIT, size 588,758 KB,
-      143,996 stars.'
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 5f39a6a46f09552389609f7e4efe5d2516881c7dbacba6fc4a77f830841c5d14
+    content_sha256: 4ec67e4ca6e6721dba849b2ca82261597c86a61ee214bbf21416006b7b2d0478
     establishes:
     - license
     - source
-  - url: https://www.langchain.com/pricing
-    shows: 'Page is titled ''LangSmith Plans and Pricing'' and prices only LangSmith: Developer $0/seat,
-      Plus $39/seat, Enterprise custom, plus metered LangChain Compute Units ($1.50/LCU) and Storage Units
-      ($1.00/LSU) for Deployment, Fleet, Engine, Sandboxes and LLM Gateway. The nav lists langchain, langgraph
-      and deepagents separately under ''Open Source Frameworks''. No paid tier of the langchain library
-      itself.'
-    accessed: '2026-08-11'
+  - url: https://pypi.org/pypi/langchain/json
+    shows: 'The PyPI metadata for langchain carries the classifier "License :: OSI Approved :: MIT License".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 55f457245dd637cd290edc1ea6be35168b134d6cd1d401ca0a72e7c3867861e2
+    content_sha256: 4e3cc44ce0a1d17ee90e119334f8f2f5adbbaf8a2be0642ca40f1be8b59891b6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/langchain-ai/langchain/master/README.md
+    shows: The README says the framework runs alone, "While the LangChain framework can be used standalone",
+      and lists LangSmith separately for "Agent evals, observability, and debugging for LLM apps".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9e6d706b38215c6979ef398ba72181b0f9099b8150f317c4c221877456c2dc2e
+    establishes:
+    - core-gated
+  - url: https://www.langchain.com/langchain
+    shows: 'The vendor page titles the product "Open Source AI Agent Framework for Any Model"; searched
+      the body for a paid framework tier or license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6ce92206cfc7ecb7cfb1feda7fd3e7b5cb823d53d92ddfd3693c4a42b9e4242b
+    establishes:
+    - core-gated
+  - url: https://www.langchain.com/pricing
+    shows: 'The pricing page is titled "LangSmith Plans and Pricing" and lists langchain only under "Open
+      Source"; searched the body for a paid tier of the langchain library itself: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dbd56ee2fb1f94614328ad133b4f777e6408936cab4c9510ecd91d5ffca2c228
     establishes:
     - core-gated
 adoption:
@@ -116,15 +113,22 @@ capability:
     model/tool integrations. No single benchmark for the framework; rated on feature breadth.'
   relative_to: openhands
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/langchain-ai/langchain
     shows: chains, agents and the integration ecosystem published in full under MIT; no benchmark figure
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: c2a714ca3bc041a1a18ff41605038677ed3bf1d53672c068d264c82c55474c93
-  - url: https://www.langchain.com/langchain
-    shows: framework positioning across chains, agents and integrations; no benchmark figure
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/langchain-ai/langchain/master/README.md
+    shows: The README describes "LangChain is a framework for building agents and LLM-powered applications"
+      and lists LangGraph, Deep Agents and integrations as companion packages.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6b144fcd51683f9f980b6dcd8e765114bfe4b1556dafa7af141c6a1a1e0d4344
+    content_sha256: 9e6d706b38215c6979ef398ba72181b0f9099b8150f317c4c221877456c2dc2e
+  - url: https://www.langchain.com/langchain
+    shows: The vendor page describes LangChain as "the open source framework with pre-built agent architectures
+      and 1,000+ integrations"; no benchmark figure is published.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6ce92206cfc7ecb7cfb1feda7fd3e7b5cb823d53d92ddfd3693c4a42b9e4242b

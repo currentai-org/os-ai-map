@@ -5,7 +5,8 @@ openness:
   components:
     license:
     - name: BSL-1.1
-      detail: non-OSI:single-machine + no-compete, Change-Date 2027-07-20 -> Apache-2.0
+      detail: non-OSI:single-machine + no-compete, rolling Change-Date four years after each merge and no
+        earlier than 2027-07-20 -> Apache-2.0
     source:
       value: public
     context:
@@ -14,18 +15,36 @@ openness:
   confidence: high
   note: Source-available under BSL 1.1, not open source; production use is license-restricted with paid
     enterprise tiers.
-  raw: license:BSL-1.1(non-OSI:single-machine + no-compete, Change-Date 2027-07-20 -> Apache-2.0);commercial:Scale/Enterprise;source:public
-  last_verified: '2026-08-13'
+  raw: license:BSL-1.1(non-OSI:single-machine + no-compete, rolling Change-Date four years after each merge
+    and no earlier than 2027-07-20 -> Apache-2.0);commercial:Scale/Enterprise;source:public
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/pathwaycom/pathway
-    shows: 'README - "Pathway Live Data Framework is distributed on a BSL 1.1 License which allows for
-      unlimited non-commercial use"; full source published, GitHub shows a bare License entry with no
-      SPDX badge; 62.5k stars, 1.7k forks'
+    shows: README - "Pathway Live Data Framework is distributed on a BSL 1.1 License which allows for unlimited
+      non-commercial use"; full source published, GitHub shows a bare License entry with no SPDX badge;
+      62.5k stars, 1.7k forks
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b77f0060e04a3861c07bc55bd8e7e643e3a6a7b122b2811dc359a34a2b3e3b98
     establishes:
     - license
+    - source
+  - url: https://raw.githubusercontent.com/pathwaycom/pathway/main/LICENSE.txt
+    shows: The LICENSE.txt is a BSL 1.1 text whose grant allows production use only "on only one machine,
+      physical or virtual" and excludes a "Stream Data Processing Service", converting to "Apache License,
+      Version 2.0" on the Change Date.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 240b35905eaee0a18fb08f0f3526d799764abef521fb28eed9afcf74acd95dc7
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pathwaycom/pathway/main/README.md
+    shows: The README license section says BSL 1.1 "which allows for unlimited non-commercial use" and "converts
+      to Open Source (Apache 2.0 License) after 4 years", with the full source published in the repository.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06e6dfa28104f249f65b04db4d87a1daeaa8e155c908687c5ae0947844fdb612
+    establishes:
     - source
 adoption:
   level: 2
@@ -56,7 +75,7 @@ capability:
   note: Stronger on streaming/incremental infra than LLM-orchestration breadth.
   relative_to: openhands
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/pathwaycom/pathway
     shows: unified batch and streaming incremental dataflow on a Rust engine, real-time RAG with continuously
@@ -64,3 +83,16 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b77f0060e04a3861c07bc55bd8e7e643e3a6a7b122b2811dc359a34a2b3e3b98
+  - url: https://raw.githubusercontent.com/pathwaycom/pathway/main/README.md
+    shows: The README describes a "scalable Rust engine" for a "unified engine for batch and streaming",
+      a "more than 300 different data sources" Airbyte connector, and "distributed Kubernetes deployment";
+      it states no benchmark figure.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06e6dfa28104f249f65b04db4d87a1daeaa8e155c908687c5ae0947844fdb612
+  - url: https://raw.githubusercontent.com/pathwaycom/pathway/main/README.md
+    shows: The README describes an "in-memory real-time Vector Index" and RAG applications "with your live
+      documents", plus an LLM extension with wrappers, parsers, embedders and splitters.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06e6dfa28104f249f65b04db4d87a1daeaa8e155c908687c5ae0947844fdb612

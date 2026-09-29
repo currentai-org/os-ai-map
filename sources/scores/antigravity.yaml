@@ -11,31 +11,32 @@ openness:
     self-host:
       value: 'no'
   confidence: high
-  note: Proprietary Google agentic dev platform; free in preview but not open source. The platform is not
-    locked to Google models - the launch post offers model optionality across Gemini 3 Pro, Anthropic's
-    Claude Sonnet 4.5 and OpenAI's GPT-OSS - but that is a claim about model choice rather than about source,
-    so the closed score is unaffected.
+  note: Antigravity is a Google service used under Google's own terms, with downloadable apps but no published
+    source and no way to self-host. Its free individual plan and its support for third-party models do not
+    change that, since neither opens the platform's code.
   raw: source:closed;license:proprietary(Google product, free public preview);self-host:no
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://antigravity.google
-    shows: Google Antigravity product page listing Antigravity 2.0, Antigravity CLI, Antigravity IDE and
-      Antigravity SDK as downloads; no source repository, no self-host option
-    accessed: '2026-08-13'
+  - url: https://antigravity.google/terms
+    shows: The Antigravity terms page says use of the service is governed by "these Google Antigravity Additional
+      Terms of Service" on top of the Google Terms of Service, a proprietary service agreement with no open
+      source license; searched the body for open source license and found only "third party or open source
+      model" as a model-choice remark.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 96024d0a91af2e097dae10889426ccd8dee8e96fe0c325a253f41c3184b78f94
+    content_sha256: 66076e97c7a816877475b3fa4f2f287b8b5197d7cbbbd66143a14dcd4daafe82
+    establishes:
+    - license
+  - url: https://antigravity.google/product
+    shows: 'The product page offers the desktop app, CLI, IDE and SDK as downloads, describing "The fully-featured,
+      agentic IDE" and "Simple Python scripts to iterate on agentic applications"; searched the body for
+      source code, repository, open source, self-host and on-prem: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dfabce8e39dcbe95b5fdcc8f487bcae2d9e9865c0f6fbf644cbb9bd9c88cbc58
     establishes:
     - source
     - self-host
-  - url: https://developers.googleblog.com/all-the-news-from-the-google-io-2026-developer-keynote/
-    shows: Google's own I/O 2026 keynote announcement of Antigravity 2.0 desktop app/CLI/SDK as a proprietary
-      agentic dev platform
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 3f9c7a15abc0f90ccec2858e6571dba8680ed7b9dbe8ff6b9775b4c00d5fe16f
-    establishes:
-    - license
-    - source
 adoption:
   level: null
   reach: null
@@ -45,36 +46,47 @@ adoption:
     there is no honest adoption signal to read. Google's own developer-highlights post describes the Antigravity
     ecosystem, the 2.0 desktop app and Managed Agents in the Gemini API without giving a download, install,
     developer or active-user count anywhere.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-developer-highlights/
-    shows: Antigravity 2.0, the CLI/IDE/SDK ecosystem and Managed Agents described in full, with no download,
-      install, developer or active-user figure published
-    accessed: '2026-08-13'
+    shows: 'Google''s I/O 2026 developer highlights describe "the launch of a new Google Antigravity 2.0
+      desktop application" and its CLI, IDE and SDK; searched the body for download, install, developer
+      and active-user counts: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b003a2e7c13ca9d2b45a79edcd9ecad71a58311615e9208d226debdfb34d4fc4
+    content_sha256: cd8f343847073ed49c665ada677bd2138d5d9105ba0ba2a25352506c5101dbaf
 capability:
   score: 4
   basis: feature_matrix
   relative_to: openhands
   relation: one_below
-  value: Multi-agent orchestration (plan/code/test-in-browser/deploy), Agent Manager, Gemini 3.5 Flash
-    backbone, deep Google-surface integration, desktop app + CLI + SDK; no first-party SWE-bench number
-    published for the platform itself
+  value: Multi-agent orchestration across plan, code, browser testing and deployment, an Agent Manager,
+    Managed Agents in the Gemini API, model choice across Gemini, Claude and gpt-oss, deep Google-surface
+    integration, and desktop app, CLI, IDE and SDK; no first-party SWE-bench number published for the platform
+    itself
   confidence: medium
   note: Antigravity has broad agentic features but no published SWE-bench score, so it is rated on feature
     set alone. That leaves it one step below OpenHands, which has a verified benchmark result.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://developers.googleblog.com/build-with-google-antigravity-our-new-agentic-development-platform/
-    shows: agentic development platform on macOS, Windows and Linux with model optionality across Gemini
-      3 Pro, Anthropic Claude Sonnet 4.5 and OpenAI GPT-OSS; no benchmark figure
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 38fe41223997a8d3b59e69cf2e90e69cd75a3cdcc41b1cfea5fce7be8ccc5122
   - url: https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-developer-highlights/
-    shows: Antigravity 2.0 desktop application, Managed Agents in the Gemini API, agent deployment across
-      developer surfaces; no benchmark figure
-    accessed: '2026-08-13'
+    shows: 'The I/O 2026 highlights describe the 2.0 desktop application, CLI and SDK, and "Managed Agents
+      in the Gemini API" that are "powered by the Antigravity agent harness"; searched the body for SWE-bench
+      and benchmark figures for the platform: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b003a2e7c13ca9d2b45a79edcd9ecad71a58311615e9208d226debdfb34d4fc4
+    content_sha256: cd8f343847073ed49c665ada677bd2138d5d9105ba0ba2a25352506c5101dbaf
+  - url: https://developers.googleblog.com/build-with-google-antigravity-our-new-agentic-development-platform/
+    shows: 'The launch post describes an agentic platform "compatible with MacOS, Windows, and Linux" with
+      model choice across Gemini, Claude and GPT-OSS; searched the body for SWE-bench and benchmark figures:
+      none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9ebe7d068d064794d11e7d0b645dee141543fdffd7379e6c7541bf3ff0426c5a
+  - url: https://antigravity.google/product
+    shows: 'The product page describes an agent-first surface that will "orchestrate multiple subagents
+      across all your environments" plus the desktop app, CLI, SDK and IDE with "the agent manager"; searched
+      the body for SWE-bench and benchmark figures: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dfabce8e39dcbe95b5fdcc8f487bcae2d9e9865c0f6fbf644cbb9bd9c88cbc58

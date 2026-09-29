@@ -17,7 +17,7 @@ openness:
   confidence: high
   note: Fully MIT, run from source, no commercial layer.
   raw: license:MIT(OSI);source:public;self-host:primary;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/FoundationAgents/OpenManus
     shows: MIT license, full public source run from a clone, 58.0k stars and 10.1k forks; no managed tier
@@ -30,6 +30,30 @@ openness:
     - source
     - core-gated
     - self-host
+  - url: https://raw.githubusercontent.com/FoundationAgents/OpenManus/main/LICENSE
+    shows: 'The LICENSE file is the standard MIT text: "MIT License" and "Permission is hereby granted,
+      free of charge, to any person obtaining a copy".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 79e3e521bf15d45421cdb731ed66ea66ff56c429e02a18a20e9f8958a3d1efcc
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/FoundationAgents/OpenManus/main/README.md
+    shows: 'The README installs from a public clone: "git clone https://github.com/FoundationAgents/OpenManus.git"
+      then "pip install -r requirements.txt"; it is run from source.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 47782e69584033d58236b5447fc61fd054170374d0c46ccdb863dad417423b57
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/FoundationAgents/OpenManus/main/README.md
+    shows: 'Searched the README for enterprise, pricing, hosted and paid tiers: none; it describes only
+      local setup, with "One line for run OpenManus".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 47782e69584033d58236b5447fc61fd054170374d0c46ccdb863dad417423b57
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -65,13 +89,15 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: single autonomous agent loop; tool use; browser automation; computer-use actions; planning; MCP; experimental
-    RL branch
+  value: general agent with tool use; browser automation through a default Browser Use MCP server; MCP tool
+    mode; data-analysis agent; multi-agent flow mode; separate RL tuning project
   confidence: medium
-  note: Capable demo agent but narrower and less battle-tested than the framework peers.
+  note: OpenManus is a general agent with tool use, browser automation through Browser Use and an MCP mode,
+    but it ships as a project run from a clone and publishes no benchmark results. OpenHands offers a broader,
+    more battle-tested agent, so OpenManus sits two tiers below it.
   relative_to: openhands
   relation: two_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/FoundationAgents/OpenManus
     shows: autonomous agent loop, tool use, browser automation, computer-use actions, planning and MCP;
@@ -79,3 +105,9 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2a17f167f94af597232f75409c7f245da12720900fa84396f1bfb97e6f3d4b18
+  - url: https://raw.githubusercontent.com/FoundationAgents/OpenManus/main/README.md
+    shows: 'The README documents a general agent with MCP and browser tools: "OpenManus starts Browser Use
+      CLI 3.0 as a default MCP server" and "For MCP tool version, you can run".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 47782e69584033d58236b5447fc61fd054170374d0c46ccdb863dad417423b57
