@@ -93473,15 +93473,46 @@
           "org_slug": "pytorch-foundation",
           "org": "PyTorch Foundation (Linux Foundation)",
           "type": "software",
-          "description": "PyTorch is a Python library for tensor computation with GPU acceleration and deep neural networks built on a tape-based autograd system. Originally developed at Meta, it is now governed by the PyTorch Foundation under the Linux Foundation, and it is widely used for training and serving deep learning models across research and production.",
+          "description": "PyTorch is a Python package for tensor computation with GPU acceleration and for deep neural networks built on a tape-based autograd system. It works alongside Python libraries such as NumPy, SciPy and Cython, and provides distributed training across multiple GPUs and machines.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:BSD-3-Clause(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "PyTorch is released under a BSD-3-Clause license carrying copyright lines from Meta and other contributing institutions, and the full source is public in this unarchived repository. The README describes the whole library with no paid, enterprise or hosted tier beside it, so the core is ungated.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/pytorch/pytorch@main/LICENSE",
+                "shows": "The LICENSE file in pytorch/pytorch carries the BSD 3-Clause conditions, including \"Redistributions of source code must retain the above copyright\" and \"Neither the names of Facebook, Deepmind Technologies, NYU, NEC Laboratories America\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/torch/json",
+                "shows": "PyPI page text carries the project README: \"PyTorch has a BSD-style license, as found in the [LICENSE](LICENSE) file.\" and the license expression lists \"BSD-3-Clause\" among the bundled component licenses.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "12620a689ae61b70596486dfb3db7f393060f28cad092db7f2d52ec0449bede7",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/torch/json",
+                "shows": "The README build guide tells readers to fetch the public source tree with \"git clone https://github.com/pytorch/pytorch\". Searched the body for paid tier, enterprise edition and hosted tier: the only \"Enterprise\" is Visual Studio Enterprise in the Windows build notes.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "12620a689ae61b70596486dfb3db7f393060f28cad092db7f2d52ec0449bede7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/pytorch/pytorch/blob/main/LICENSE",
                 "shows": "LICENSE body carries the three BSD 3-Clause conditions and the 'Neither the names ... may be used to endorse' clause, under per-contributor copyright lines (Facebook, Idiap, Deepmind, NEC, NYU and others)",
@@ -93490,27 +93521,6 @@
                 "content_sha256": "bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/pytorch/pytorch",
-                "shows": "Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for pytorch/pytorch.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "e1981405fed40203958accf42f2755e7cea4144205812c78602a69faca875ada",
-                "establishes": [
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/README.md",
-                "shows": "README describes the whole package - tensor computation with GPU acceleration and tape-based autograd - plus build-from-source instructions. No paid, enterprise or hosted PyTorch tier appears; the one 'Enterprise' string is Visual Studio Enterprise in the Windows build notes.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "6f993564b6d153b2adf82d9d434e57374766da4bf398269f4fe358fcf9dd4115",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -93541,8 +93551,29 @@
             "note": "Defines the model-training layer alongside TensorFlow.",
             "relative_to": "tensorflow",
             "relation": "at",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/torch/json",
+                "shows": "PyPI page for torch carries the project README, which says \"PyTorch is a Python package that provides two high-level features\" including \"Tensor computation (like NumPy) with strong GPU acceleration\" and \"Deep neural networks built on a tape-based autograd system\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "12620a689ae61b70596486dfb3db7f393060f28cad092db7f2d52ec0449bede7"
+              },
+              {
+                "url": "https://pytorch.org/tutorials/beginner/dist_overview.html",
+                "shows": "Distributed overview tutorial advises \"Use DistributedDataParallel (DDP), if your model fits in a single GPU but you want to easily scale up training using multiple GPUs\" and links guides for FSDP2, tensor parallel and pipeline parallelism.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "58557ad71106a286819a32c729fcda625efe64d6f4576dc23d9ed774e3c07760"
+              },
+              {
+                "url": "https://docs.pytorch.org/docs/2.14/index.html",
+                "shows": "The 2.14 documentation index lists reference pages for \"torch.autograd\", \"torch.nn\", \"torch.compiler\" and \"Distributed communication package - torch.distributed\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d9d8b5e962260052f4b8fc9fcc05ed67c8c087829cc7d0d87b1abf12a1130ce9"
+              },
               {
                 "url": "https://github.com/pytorch/pytorch",
                 "shows": "README still describes tensor computation with strong GPU acceleration and deep neural networks on a tape-based autograd system",
@@ -93557,9 +93588,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -93568,15 +93599,45 @@
           "org_slug": "google",
           "org": "Google",
           "type": "software",
-          "description": "TensorFlow is an end-to-end platform for machine learning, offering stable Python and C++ APIs for building and deploying models across CPUs, GPUs and TPUs. It was developed by Google Brain and remains maintained by Google with broad community involvement, and it powers large-scale research and production deployments.",
+          "description": "TensorFlow is an end-to-end machine learning platform with Python APIs for building, training and deploying models across CPUs, GPUs and TPUs, including mobile and edge devices. It was originally developed by the Google Brain team.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0 licensed with full public source. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "Apache-2.0 licensed with full public source. The install guide offers pip, Docker and source builds with no paid, enterprise or hosted tier beside them, so the core is ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/tensorflow/json",
+                "shows": "PyPI metadata lists the license as \"Apache 2.0\" and the classifier \"License :: OSI Approved :: Apache Software License\"; its \"Download\" link points to the public GitHub tags page for tensorflow/tensorflow.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "1131276b5df32f5396ed0b860a5b53f1a84f6e7339a7acc5373bab41433330a8",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://www.tensorflow.org/install/source",
+                "shows": "The build-from-source guide tells readers to run \"git clone https://github.com/tensorflow/tensorflow.git\" to get the public source tree.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "abb162d1b5fa7ffcdbce58e7ab46e0131e8544759eab4cd6dfc89c29b452b6c6",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://www.tensorflow.org/install",
+                "shows": "Install page offers \"Download a pip package, run in a Docker container, or build from source.\" Searched the body for license key, enterprise, paid tier and subscription: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "a0603efa99511c839eb2309c0ec23ea91ec9a53b9a3e207545cbedc47b1434ec",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/tensorflow/tensorflow",
                 "shows": "Repo page still shows the Apache-2.0 license and the full public source tree",
@@ -93586,28 +93647,6 @@
                 "establishes": [
                   "license",
                   "source"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/tensorflow/tensorflow",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for tensorflow/tensorflow.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "5c74a6282c5bd341f6f639dbfaf5a864961ba351877dcd7e6770a4b2f6936ce1",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/tensorflow/tensorflow/master/README.md",
-                "shows": "README describes the end-to-end ML platform and its install paths (pip, Docker, source build). No paid tier, hosted edition or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "cd490686cd4ad6355aff49d75431f2cc00a101c61f60c3065b7c88cab7f557a4",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -93636,8 +93675,29 @@
             "value": "Foundational ML platform: numerical computation graph engine, neural network training, multi-device (CPU/GPU/TPU) and edge deployment.",
             "confidence": "high",
             "note": "Defines the model-training layer alongside PyTorch.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://www.tensorflow.org/",
+                "shows": "Home page describes \"An end-to-end open source machine learning platform for everyone.\" and lists deployment on \"mobile and edge devices such as Android, iOS, Raspberry Pi, and Edge TPU.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "14c0ae672907330637f8ca790f4c398e6d084312433b3904af5dd0bba96c99da"
+              },
+              {
+                "url": "https://www.tensorflow.org/guide/distributed_training",
+                "shows": "Distributed training guide: TensorFlow API to \"distribute training across multiple GPUs, multiple machines, or TPUs\" with minimal code changes.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "1d45423c3148a55731f2447175536ec91968bc9835a1e627aef255adcfa1576c"
+              },
+              {
+                "url": "https://pypi.org/pypi/tensorflow/json",
+                "shows": "PyPI description states that \"Its flexible architecture allows easy deployment of computation\" across CPUs, GPUs and TPUs, \"from desktops to clusters\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "1131276b5df32f5396ed0b860a5b53f1a84f6e7339a7acc5373bab41433330a8"
+              },
               {
                 "url": "https://github.com/tensorflow/tensorflow",
                 "shows": "README still describes an end-to-end ML platform with stable Python and C++ APIs across CPU, GPU and TPU",
@@ -93652,9 +93712,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -93670,8 +93730,48 @@
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0 licensed with full public source. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/jax-ml/jax@main/LICENSE",
+                "shows": "The LICENSE file in the jax-ml/jax repository is the full text of the \"Apache License\" \"Version 2.0, January 2004\", so the code is Apache-2.0 licensed.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/jax-ml/jax@main/README.md",
+                "shows": "The README describes JAX as \"a Python library for accelerator-oriented array computation and program transformation\" installed with pip. Searched the body for paid, enterprise, hosted, license key and self-host: none, so no gated tier sits beside the library.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d87694b9a8f2c5ac1704bf0e1d4299c4cd7bc317fac59de9433bf094f161302f",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://docs.jax.dev/en/latest/developer.html",
+                "shows": "The Building from source page tells readers to \"First, obtain the JAX source code\" with git clone from the jax-ml/jax repository, so the source is public.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "dc01c9ccfe5e19c148568ad3ee975c5268c60c2053271c1dd504f9595cfd73e6",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/jax/json",
+                "shows": "PyPI metadata for the jax package lists the license as \"Apache-2.0\" and the homepage as \"https://github.com/jax-ml/jax\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e4d0e51d7a350fe55077fea975bfd7674ccfbf856d9ddc0432e068cfc25d4816",
+                "establishes": [
+                  "license"
+                ]
+              },
               {
                 "url": "https://github.com/jax-ml/jax",
                 "shows": "Repo page still shows the Apache-2.0 license and the full public source tree",
@@ -93681,28 +93781,6 @@
                 "establishes": [
                   "license",
                   "source"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/jax-ml/jax",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for jax-ml/jax.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "72dabce31266110e57c3b7c416f6acef6644030058ec928ea37f384d8bfb3ed5",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/jax-ml/jax/main/README.md",
-                "shows": "README describes JAX as a Python library for accelerator-oriented array computation and program transformation, installable from PyPI. No paid tier or hosted edition appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "d87694b9a8f2c5ac1704bf0e1d4299c4cd7bc317fac59de9433bf094f161302f",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -93731,8 +93809,15 @@
             "value": "Composable function transforms over array code: autodiff, XLA JIT compilation for GPU/TPU, vectorization; foundation of a major ML ecosystem.",
             "confidence": "high",
             "note": "Defines the functional/accelerated-compute layer for ML research.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/jax-ml/jax@main/README.md",
+                "shows": "The README lists automatic differentiation, compilation with XLA, and vectorization: \"By composing `jax.vmap` with `jax.grad` and `jax.jit`, we can get efficient\" per-example gradients, and scaling modes for \"thousands of devices\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d87694b9a8f2c5ac1704bf0e1d4299c4cd7bc317fac59de9433bf094f161302f"
+              },
               {
                 "url": "https://github.com/jax-ml/jax",
                 "shows": "README still describes accelerator-oriented array computation and program transformation - autodiff, XLA JIT, vectorization",
@@ -93747,9 +93832,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -93758,15 +93843,27 @@
           "org_slug": "google",
           "org": "Google",
           "type": "software",
-          "description": "Keras is a high-level deep learning framework billed as 'Deep Learning for humans'; Keras 3 is multi-backend, running on JAX, TensorFlow, PyTorch, and OpenVINO (inference only). It is maintained by the keras-team organization, closely tied to Google. It provides an accessible API for building and training models while letting users choose the underlying backend.",
+          "description": "Keras is a high-level deep learning framework tagged \"Deep Learning for humans\"; Keras 3 is multi-backend, running on JAX, TensorFlow, PyTorch, and OpenVINO (inference only). It provides an accessible API for building and training models while letting users choose the underlying backend. It is maintained by the keras-team organization.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0 licensed with full public source. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "Apache-2.0 licensed with full public source. The package documentation describes the whole library with no paid, enterprise or hosted tier beside it, so the core is ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/keras/json",
+                "shows": "PyPI registry metadata for keras declares the license \"Apache License 2.0\" and lists a source distribution, keras-3.15.1.tar.gz. The package description opens \"Keras 3 is a multi-backend deep learning framework\" and documents the whole library, installed with pip, with no paid, hosted or enterprise edition (searched the body for enterprise, pricing, paid and hosted: none in the product text).",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ba6f7ddc7c6845fc565e98a30c1a79877ca578ca2db1be4744eef8d03ae496e3",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/keras-team/keras",
                 "shows": "Repo page still shows the Apache-2.0 license and the full public source tree",
@@ -93776,28 +93873,6 @@
                 "establishes": [
                   "license",
                   "source"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/keras-team/keras",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for keras-team/keras.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "f1199bec1ce7bc499381b2642d2eb769b53e7cc1f638841fc1afb819ea1d9e04",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/keras-team/keras/master/README.md",
-                "shows": "README describes Keras 3 as a multi-backend deep learning framework over JAX, TensorFlow, PyTorch and OpenVINO, installed with pip. No paid tier or hosted edition appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "40b7d47ea7fa5b58b1250f330c08e351b746f3105b011edac1b2da03409715f1",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -93826,8 +93901,22 @@
             "value": "High-level multi-backend deep learning API for building/training models over JAX, TensorFlow, PyTorch, and OpenVINO.",
             "confidence": "high",
             "note": "Central API layer but sits atop lower-level frameworks rather than defining the compute layer.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/keras/json",
+                "shows": "PyPI package description for keras: \"Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ba6f7ddc7c6845fc565e98a30c1a79877ca578ca2db1be4744eef8d03ae496e3"
+              },
+              {
+                "url": "https://keras.io/",
+                "shows": "The Keras site describes the library as \"Keras is a deep learning API designed for human beings, not machines.\" and offers the same API over JAX, TensorFlow and PyTorch backends.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ca8e86cd4d97881b5e905c6ce9f5c7a6f35579271357a10e4bafee029746d4ef"
+              },
               {
                 "url": "https://github.com/keras-team/keras",
                 "shows": "README still describes Keras 3 as a multi-backend deep learning framework over JAX, TensorFlow, PyTorch and OpenVINO",
@@ -93842,9 +93931,9 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -93860,8 +93949,48 @@
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0 licensed with full public source. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/google/flax@main/LICENSE",
+                "shows": "The LICENSE file is the full text of the \"Apache License\" \"Version 2.0, January 2004\", so the code is Apache-2.0 licensed.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "25e8791da26f7e74c4baf19eafd7d137b64a46952ef840ed01c172b680cf4046",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/google/flax@main/README.md",
+                "shows": "The README describes Flax as \"a high-performance neural network library and ecosystem for\" JAX. Searched the body for paid, enterprise, hosted, license key and self-host: none, so no gated tier sits beside the library.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b20519acb9540abd14ba4e7ff2419e435c6bec19bcdb9ac65adcc846176943c3",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/flax/json",
+                "shows": "PyPI metadata for flax lists the classifier \"License :: OSI Approved :: Apache Software License\" and the homepage \"https://github.com/google/flax\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "5e6207c949a21044c14a6cba4e7a6236e8c0e0796de9e70ac14bcb7b17fde71f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://flax.readthedocs.io/en/latest/contributing.html",
+                "shows": "The contributing guide tells readers to \"fork the Flax repository by clicking the\" fork button on GitHub, so the source is public.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2c017e837b38118957cf6430bc2289f4e52b819c32ecedcb9e33555821a286a0",
+                "establishes": [
+                  "source"
+                ]
+              },
               {
                 "url": "https://github.com/google/flax",
                 "shows": "Repo page still shows the Apache-2.0 license and the full public source tree",
@@ -93871,28 +94000,6 @@
                 "establishes": [
                   "license",
                   "source"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/google/flax",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for google/flax.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "ffd6f9e2cc70a06a4e878eeccdf471c312a540c83147fcbf58ec4a17acb392d2",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/google/flax/main/README.md",
-                "shows": "README describes Flax as a neural network library and ecosystem for JAX, including the Flax NNX API, installed from PyPI. No paid tier or hosted edition appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "7ace6342f93e247b1b5e229bca173edd5388de9b63f6d38fd066cab9618af88c",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -93923,8 +94030,15 @@
             "note": "Key NN layer for the JAX ecosystem but built atop JAX rather than foundational itself.",
             "relative_to": "jax",
             "relation": "one_below",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/google/flax@main/README.md",
+                "shows": "The README lists the Flax NNX neural network API with Linear, Conv, BatchNorm, attention and recurrent cells, plus \"replicated training, serialization and checkpointing, metrics, prefetching on device\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b20519acb9540abd14ba4e7ff2419e435c6bec19bcdb9ac65adcc846176943c3"
+              },
               {
                 "url": "https://github.com/google/flax",
                 "shows": "README still describes a neural network library and ecosystem for JAX, including the Flax NNX API",
@@ -93939,9 +94053,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -93950,15 +94064,27 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Transformers is a model-definition framework for machine learning across text, vision, audio and multimodal models, covering both inference and training. Maintained by Hugging Face, it provides a unified API to load and run over a million pretrained checkpoints from the Hugging Face Hub, and is the interface most published model weights are consumed through.",
+          "description": "Transformers is a model-definition framework for machine learning across text, vision, audio, video and multimodal models, covering both inference and training. It provides a unified API to load and run pretrained checkpoints from the Hugging Face Hub, and its model definitions are reused by training frameworks, inference engines and adjacent libraries such as llama.cpp and mlx. Hugging Face maintains it.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "The LICENSE file is the standard, unmodified Apache 2.0 text, and the repository is public and unarchived. The README describes the whole library with no paid, enterprise or hosted tier beside it, so the source is public and the core is ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The library is licensed under Apache-2.0 and its source is public. The README describes the whole library with no paid, enterprise or hosted tier beside it, so nothing in the core is withheld.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/transformers/json",
+                "shows": "PyPI metadata for transformers lists the license as \"Apache 2.0 License\", and the embedded README opens with \"Licensed under the Apache License, Version 2.0\". It tells readers to \"Install Transformers from source\" with \"git clone https://github.com/huggingface/transformers.git\", so the source is public. The README describes the whole library, \"Transformers acts as the model-definition framework for state-of-the-art machine learning\", and its only Enterprise reference is an image link to \"https://huggingface.co/enterprise\", the separate Hugging Face Enterprise Hub. Searched the README for paid, pro tier, license key, open source and self-host: no library feature is withheld.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "4e9f04e629116fed2d48d0895e35cde6f79740e1b08214c61687de27735edc57",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/transformers/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -93967,28 +94093,6 @@
                 "content_sha256": "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/transformers",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/transformers.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "6fd1abbb2e578f93f5830520a47ea3851eb14e05b0f60a359f3445871c6db845",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/transformers/main/README.md",
-                "shows": "README describes Transformers as the model-definition framework for inference and training. Its only 'Enterprise' string is a banner link to the separate Hugging Face Enterprise Hub subscription, not a feature withheld from the library.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "4882b6ecd6e7c866ca7a7d2c3517eca22d6ef8fce18601958e19092cb63afd51",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94016,9 +94120,23 @@
             "basis": "feature_matrix",
             "value": "Unified framework for defining, loading, fine-tuning, and running 1M+ pretrained models across text, vision, audio, and multimodal tasks.",
             "confidence": "high",
-            "note": "Centralizes model definitions across training frameworks and inference engines; foundational to the ecosystem.",
-            "last_verified": "2026-08-13",
+            "note": "Transformers centralizes model definitions so that training frameworks, inference engines and adjacent libraries can share them, and it supplies pipelines, a trainer and text generation on top. This makes it foundational to the open model ecosystem.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://huggingface.co/docs/transformers/en/index",
+                "shows": "The Transformers documentation home says \"Transformers acts as the model-definition framework for state-of-the-art machine learning models in text, computer vision, audio, video, and multimodal models, for both inference and training.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ef4c8d4860aeb898903bd8e636df2285b3119b02d723e977270973aafbeb151c"
+              },
+              {
+                "url": "https://pypi.org/pypi/transformers/json",
+                "shows": "The PyPI README states \"Transformers acts as the model-definition framework for state-of-the-art machine learning with text, computer\" vision, audio, video and multimodal models, and that \"There are over 1M+ Transformers [model checkpoints]\" on the Hub.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "4e9f04e629116fed2d48d0895e35cde6f79740e1b08214c61687de27735edc57"
+              },
               {
                 "url": "https://github.com/huggingface/transformers",
                 "shows": "README still describes the model-definition framework for text, vision, audio, video and multimodal models, for inference and training",
@@ -94033,9 +94151,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94050,9 +94168,40 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/datasets@main/LICENSE",
+                "shows": "LICENSE file is the Apache License text, headed \"Version 2.0, January 2004\", with \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\" and no added terms.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/datasets@main/README.md",
+                "shows": "README gives the development install from the public repository, \"datasets @ git+https://github.com/huggingface/datasets.git\", for the whole library. Searched the body for enterprise, pricing, paid and license key: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b44ee0cc106481037c92a7a3e045ee12c288c6f9963329081ff6e6744e39f344",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/datasets/json",
+                "shows": "PyPI metadata lists \"License :: OSI Approved :: Apache Software License\" and the license field \"Apache 2.0\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "f595e3cc04afd94c63ef318c0d4941c3c6105ae7f05ed64b3429cc45376cb990",
+                "establishes": [
+                  "license"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/datasets/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94061,28 +94210,6 @@
                 "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/datasets",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/datasets.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "6c179f069db6c71b8f8c93f9e0b14a42f6e473d0e8b6640f976ae4721556f86e",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/datasets/main/README.md",
-                "shows": "README describes one-line dataloaders and efficient preprocessing across formats and modalities. No paid tier or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "29908587cbd9c4f062d01573ec58e909822c58b5a8a5664045fe0c968639a399",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94108,11 +94235,18 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Data loading and preprocessing library: one-line dataset loading from the Hub plus fast manipulation of multi-format, multi-modal data with streaming.",
+            "value": "Data loading and preprocessing library: one-line dataset loading from the Hub plus fast, cached manipulation of multi-format, multi-modal data with streaming and memory-mapped Arrow storage.",
             "confidence": "high",
             "note": "Broad and central to data pipelines but scoped to data handling rather than modeling.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/datasets@main/README.md",
+                "shows": "README describes \"one-line dataloaders for many public datasets\" and \"efficient data pre-processing\", with streaming, \"Apache Arrow backend\" memory-mapped storage and \"Multi-framework interoperability\" across NumPy, Pandas, Polars, PyTorch, TensorFlow and JAX.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b44ee0cc106481037c92a7a3e045ee12c288c6f9963329081ff6e6744e39f344"
+              },
               {
                 "url": "https://github.com/huggingface/datasets",
                 "shows": "README still describes one-line dataloaders and efficient preprocessing across text, image, audio, video and 3D medical data with streaming",
@@ -94127,9 +94261,9 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94138,15 +94272,55 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Diffusers is a PyTorch library from Hugging Face providing pretrained diffusion models for generating images, audio, and 3D molecular structures. It offers ready-to-use inference pipelines, interchangeable noise schedulers, and pretrained models that serve as building blocks for custom diffusion systems. It is Hugging Face's primary library for diffusion-based generative models.",
+          "description": "Diffusers is a PyTorch library from Hugging Face providing pretrained diffusion models for generating images, video, audio, and 3D molecular structures. It offers ready-to-use inference pipelines, interchangeable noise schedulers, and pretrained models that serve as building blocks for custom diffusion systems. It is Hugging Face's primary library for diffusion-based generative models.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and the README describes the whole library with no paid, enterprise or hosted tier beside it, so the source is public and the core ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/LICENSE",
+                "shows": "LICENSE is the Apache License text, headed \"Apache License\" and \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "f9e2070c247517b1ddf65f7b11b393484a18da91a958fd18a97bd0f241c3125c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/README.md",
+                "shows": "README header reads \"Licensed under the Apache License, Version 2.0\" and the file is served from the public huggingface/diffusers repository.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "7983ae4d23ec43664c587027d7462ba8a742ddff784430dfb7fd3cea8ba5523c",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/README.md",
+                "shows": "README says \"Diffusers offers three core components\": pipelines, schedulers and pretrained models. Searched the body for enterprise, paid, pricing, subscription, license key, hosted, self-host and on-prem: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "7983ae4d23ec43664c587027d7462ba8a742ddff784430dfb7fd3cea8ba5523c",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/diffusers/json",
+                "shows": "PyPI metadata lists \"License :: OSI Approved :: Apache Software License\" for the diffusers package.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "bd4549499e090bf5bf57d2da7335c8a8b9f6b37c2e27d47bdfb8192001bdbabb",
+                "establishes": [
+                  "license"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/diffusers/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94155,28 +94329,6 @@
                 "content_sha256": "f9e2070c247517b1ddf65f7b11b393484a18da91a958fd18a97bd0f241c3125c",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/diffusers",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/diffusers.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "412f3191f7fa2dc5cd16af1376786163518107b3d813af380c9d9fb992a13d48",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/diffusers/main/README.md",
-                "shows": "README describes the three core components - pipelines, schedulers and pretrained models - as the whole toolbox. No paid tier or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "c5cdf07c057b50eab0850bc8ae3501559eb53ca27cdb99c86f1039ee99fc762e",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94202,11 +94354,25 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Diffusion-model toolkit: inference pipelines, swappable schedulers, and pretrained models for image, audio, and 3D generation.",
+            "value": "Diffusion-model toolkit: inference pipelines, swappable schedulers, and pretrained models for image, video, audio, and 3D generation, with offloading, quantization and torch.compile optimizations.",
             "confidence": "high",
-            "note": "Deep but domain-specific to diffusion/generative models rather than general-purpose ML.",
-            "last_verified": "2026-08-13",
+            "note": "Diffusers covers image, video, audio and 3D generation through ready-made pipelines, interchangeable schedulers and pretrained models, plus memory optimizations such as offloading and quantization. It is deep but specific to diffusion and generative models rather than general-purpose machine learning.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://huggingface.co/docs/diffusers/index",
+                "shows": "Docs home says \"Diffusers is a library of state-of-the-art pretrained diffusion models for generating videos, images, and audio.\" and lists \"offloading and quantization\" optimizations and torch.compile support.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "26103783dab6f09de9608b2b14184a4f7f4de8e2824b54cd1f74f195b90a7423"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/README.md",
+                "shows": "README says \"Diffusers is the go-to library for state-of-the-art pretrained diffusion models for generating images, audio, and even 3D structures of molecules\" and lists pipelines, schedulers and pretrained models as its three core components.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "7983ae4d23ec43664c587027d7462ba8a742ddff784430dfb7fd3cea8ba5523c"
+              },
               {
                 "url": "https://github.com/huggingface/diffusers",
                 "shows": "README still describes pipelines, interchangeable schedulers and pretrained diffusion models for image, audio and 3D generation",
@@ -94221,9 +94387,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94232,15 +94398,45 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Accelerate is a Hugging Face PyTorch library that runs raw PyTorch training scripts across CPUs, multiple GPUs and TPUs with mixed precision, adding only a few lines of code. It abstracts the boilerplate of distributed setup and device placement while leaving the training loop under the caller's control, and provides a CLI for configuration. Other Hugging Face libraries use it as their distributed-training backbone.",
+          "description": "Accelerate is a Hugging Face PyTorch library that runs raw PyTorch training scripts across CPUs, multiple GPUs and TPUs with mixed precision, adding only a few lines of code. It abstracts the boilerplate of distributed setup and device placement while leaving the training loop under the caller's control, and provides a CLI for configuration.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file contains the standard, unmodified Apache 2.0 text. The repository is public and active, and the README describes the full library without a separate paid, enterprise or hosted tier. The source is public and the core is ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/accelerate/json",
+                "shows": "PyPI metadata for accelerate carries the classifier \"License :: OSI Approved :: Apache Software License\" and the bundled README opens with \"Licensed under the Apache License, Version 2.0\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ec98b6588f981261bb9fd0f4bde8693db08fb3a30e13ecb98d7ee5e041478f7a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/docs/accelerate/basic_tutorials/install",
+                "shows": "Install guide gives \"pip install git+https://github.com/huggingface/accelerate\" and says \"an editable version can be installed from a locally-cloned version of the repository\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c59c6c29b566170800e018c09ab06e654be8ff788a3ac9768c56960c1a69a06e",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/accelerate/json",
+                "shows": "PyPI package README says \"Accelerate abstracts exactly and only the boilerplate code related to multi-GPUs/TPU/fp16\" and describes the whole library and its CLI. Searched the body for enterprise, pricing, paid, subscription and license key: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ec98b6588f981261bb9fd0f4bde8693db08fb3a30e13ecb98d7ee5e041478f7a",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/accelerate/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94249,28 +94445,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/accelerate",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/accelerate.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "7d9a27c9bd3a34515344fb3ac3a62dcaef796904b93d3a8e735d934cdfd719bc",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/accelerate/main/README.md",
-                "shows": "README describes running raw PyTorch training on any device with a few lines changed, and the accelerate CLI. No paid tier or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "c201cf5121bea21d8c0d9621803d50379b85facb2bc5719e11d181d595d93a53",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94315,9 +94489,9 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-31",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94326,15 +94500,55 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Gradio is a Python package for quickly building web demos and applications around machine-learning models, APIs or arbitrary Python functions, without JavaScript, CSS or web-hosting knowledge. It provides the Interface, Blocks and ChatInterface classes plus built-in public sharing of demos. Originally an independent project, it is now maintained under Hugging Face, which acquired it.",
+          "description": "Gradio is a Python package for quickly building web demos and applications around machine-learning models, APIs or arbitrary Python functions, without JavaScript, CSS or web-hosting knowledge. It provides the Interface, Blocks and ChatInterface classes plus built-in public sharing of demos.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "Gradio is released under Apache-2.0, an OSI-approved license, and its README describes the whole library with no paid, enterprise or hosted tier beside it. The source is published in a public repository and as a downloadable source distribution, so no part of the core is gated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/gradio/json",
+                "shows": "PyPI metadata for gradio gives the license expression as \"Apache-2.0\" and the README states \"Gradio is licensed under the Apache License 2.0 found in the\"; the release is published as a source distribution and a wheel.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/project/gradio/",
+                "shows": "The PyPI project page states \"licensed under the Apache License 2.0 found in the\" LICENSE file in the root directory.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "9da34cc8560a26b06615c97728275929013dc61b3bcfb50940879dc4e6c94df7",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/gradio/json",
+                "shows": "PyPI JSON lists an sdist file named \"gradio-6.28.0.tar.gz\" beside the wheel, so the source is publicly downloadable; the README says \"please create an [issue on GitHub]\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/gradio/json",
+                "shows": "The README describes the whole library as \"Gradio is an open-source Python package that allows you to quickly\" build ML demos, and mentions no paid, enterprise or hosted tier. Searched the README for enterprise, pricing, license key and paid: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/gradio-app/gradio/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94343,28 +94557,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/gradio-app/gradio",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for gradio-app/gradio.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "80cfc754aaa0de21c5de39eb1fd75744abd6e99e8f25abe34de7e07bca600c11",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/gradio-app/gradio/main/README.md",
-                "shows": "README describes Gradio as an open-source Python package for building and sharing ML web apps, including the free share link. No paid tier or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "cada2d22c597b1f6a4e483dab1662c9697bdc09fdc39cc116e59ae3039eb36e5",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94376,7 +94568,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Adoption is measured by PyPI downloads of the gradio package. Gradio is the default framework for building ML demos and interfaces and the standard backend for Hugging Face Spaces, giving its download volume a structural role across the ecosystem beyond individual experimentation.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://pepy.tech/projects/gradio",
@@ -94393,8 +94584,15 @@
             "value": "UI/demo framework: build shareable web interfaces and chatbots for ML models and Python functions with no frontend code.",
             "confidence": "high",
             "note": "Broad and widely used for demos and apps but scoped to the interface layer, not model training.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/gradio/json",
+                "shows": "README for the current release: \"Gradio includes another high-level class, `gr.ChatInterface`, which is specifically designed to create Chatbot UIs\" alongside Interface for demos and Blocks for custom layouts, with public share links and no JavaScript, CSS or web hosting experience needed.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f"
+              },
               {
                 "url": "https://github.com/gradio-app/gradio",
                 "shows": "README still describes building and sharing web demos and apps for ML models and Python functions with no frontend code",
@@ -94409,8 +94607,18 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "Adoption re-band after the 5 Oct reconciliation: pypi.downloads_30d measures level 4 against the recorded 5, so the axis is settled by the batch re-band, dated from a scheduled observation run."
+              }
+            ]
           }
         },
         {
@@ -94419,15 +94627,48 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Safetensors is a file format and library for storing and loading tensors safely, designed as an alternative to Python pickle that avoids arbitrary code execution and supports fast zero-copy loading. It is implemented in Rust with Python bindings and works across PyTorch, TensorFlow and other frameworks. Hugging Face maintains it and publishes model weights in it.",
+          "description": "Safetensors is a file format and library for storing and loading tensors safely, designed as an alternative to Python pickle that avoids arbitrary code execution and supports fast zero-copy loading. It is implemented in Rust with Python bindings and provides loaders for PyTorch, TensorFlow, Flax, NumPy and PaddlePaddle. Hugging Face maintains it.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE body is verbatim Apache License 2.0; full Rust/Python source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "Both the Rust crate and the Python package are released under Apache-2.0, and the README gives build-from-source steps for the whole library. It mentions no paid, enterprise or hosted tier, so nothing is withheld from the public source.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/safetensors@main/LICENSE",
+                "shows": "LICENSE file is the Apache License Version 2.0 text, headed \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/safetensors@main/README.md",
+                "shows": "README ends with \"License: Apache-2.0\" and gives build-from-source steps (\"For the sources, you need Rust\"). Searched the body for enterprise, paid, pricing, license key and hosted: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://crates.io/api/v1/crates/safetensors",
+                "shows": "crates.io metadata lists the crate under \"license\":\"Apache-2.0\" with \"repository\":\"https://github.com/huggingface/safetensors\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "7ffebe334404e0667bda18692544550b2713dcb0dc254e16269020a95d29ef45",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/safetensors/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94436,28 +94677,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/safetensors",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/safetensors.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "cabd125cead9ddc0b6735319d9e47c1fdebc9eaa4b85966a18888d13a9d2b491",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/safetensors/main/README.md",
-                "shows": "README describes the format and both the Rust crate and the Python package as published. No paid tier or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94485,9 +94704,23 @@
             "basis": "feature_matrix",
             "value": "Secure, zero-copy tensor serialization format and library used cross-framework.",
             "confidence": "high",
-            "note": "Narrow scope (storage format) but central as the default Hub weight format.",
-            "last_verified": "2026-08-13",
+            "note": "Safetensors is a storage format rather than a training or inference framework, so its scope is narrow. Within that scope it offers safe loading, zero-copy reads, lazy loading of individual tensors and bfloat16/fp8 support, with loaders for five frameworks.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://huggingface.co/docs/safetensors/main/en/index",
+                "shows": "Documentation states \"Safetensors is a new simple format for storing tensors safely (as opposed to pickle) and that is still fast (zero-copy)\" and has separate API pages for Torch, Tensorflow, PaddlePaddle, Flax and Numpy.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d15ef5bbd13ad5bff207478b9ef8f50bdced9c0b789ff197cdad7ac47ecfa9b8"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/safetensors@main/README.md",
+                "shows": "README describes the format as one \"for storing tensors safely (as opposed to pickle)\", with a comparison table covering safety, zero-copy, lazy loading, layout control and bfloat16/fp8 support.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13"
+              },
               {
                 "url": "https://github.com/huggingface/safetensors",
                 "shows": "README still describes a safe, zero-copy tensor format with both Rust and Python implementations",
@@ -94502,9 +94735,9 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94513,15 +94746,47 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Tokenizers is a library providing fast implementations of modern tokenization algorithms including Byte-Pair Encoding, WordPiece, and Unigram. It is written in Rust with bindings for Python, Node.js, and Ruby, and emphasizes high-throughput training and inference. Maintained by Hugging Face, it underpins tokenization in the Transformers library and many production NLP pipelines.",
+          "description": "Tokenizers is a library providing fast implementations of modern tokenization algorithms including Byte-Pair Encoding, WordPiece, and Unigram. It is written in Rust with bindings for Python and Node.js, and emphasizes high-throughput training and inference. Maintained by Hugging Face, it is a direct dependency of the Transformers library.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE body is verbatim Apache License 2.0; full Rust/Python source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The repository carries the unmodified Apache License 2.0 and the full Rust and Python source is public. The README describes the whole library with no paid, enterprise or hosted tier beside it, so nothing in the core is withheld.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/tokenizers@main/LICENSE",
+                "shows": "The repository LICENSE file is the Apache License, Version 2.0 text (\"Grant of Copyright License. Subject to the terms and conditions of\").",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/tokenizers@main/README.md",
+                "shows": "The README presents the whole library, \"The SOTA tokenization library on all languages, all models, all hardwares.\", with the Rust engine and Python and Node.js bindings. Searched the body for paid, enterprise, hosted and cloud: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "f29b06e71a2f168ec20c93139b1d2e1f944999fe8763890ec30412d320616355",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/tokenizers/json",
+                "shows": "PyPI metadata for tokenizers carries the classifier \"License :: OSI Approved :: Apache Software License\" and a Source link to the huggingface/tokenizers repository.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b28cedba8822d284a93af448c82a215880f942de3e2ace71b9d4b2716d151315",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/tokenizers/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94530,28 +94795,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/tokenizers",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/tokenizers.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "e501dafd4cc582b859aef9635a2fda2841304166b690c48c32d5ef91a48b0a33",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/tokenizers/main/README.md",
-                "shows": "README lists the trainable BPE/WordPiece/Unigram implementations and the Rust/Python/Node/Ruby bindings as published. No paid tier appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "3f468113e6783aa06593399ea4bae20321eb778a1be7ed028db33fc7228c3ef5",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94579,9 +94822,30 @@
             "basis": "feature_matrix",
             "value": "Foundational, fast multi-algorithm tokenization with training, normalization, and pre/post-processing.",
             "confidence": "high",
-            "note": "Broad feature set and central dependency of the Transformers ecosystem.",
-            "last_verified": "2026-08-13",
+            "note": "Tokenizers trains new vocabularies and runs BPE, WordPiece and Unigram tokenization in Rust, with alignment-tracking normalization and truncation, padding and special-token processing. The Transformers library depends on it directly.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/tokenizers/json",
+                "shows": "The PyPI page for tokenizers says \"Extremely fast (both training and tokenization), thanks to the Rust implementation.\" and \"Normalization comes with alignments tracking.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b28cedba8822d284a93af448c82a215880f942de3e2ace71b9d4b2716d151315"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/tokenizers@main/README.md",
+                "shows": "The README lists Rust as the \"reference implementation\" beside Python and Node.js bindings, and describes the tk-train crate as \"The `Trainer` trait, every concrete `*Trainer`\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "f29b06e71a2f168ec20c93139b1d2e1f944999fe8763890ec30412d320616355"
+              },
+              {
+                "url": "https://pypi.org/pypi/transformers/json",
+                "shows": "The PyPI metadata for transformers lists a hard dependency on the tokenizers package: \"tokenizers<0.24.0,>=0.23.1\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "4e9f04e629116fed2d48d0895e35cde6f79740e1b08214c61687de27735edc57"
+              },
               {
                 "url": "https://github.com/huggingface/tokenizers",
                 "shows": "README still lists trainable BPE/WordPiece/Unigram tokenizers with normalization and alignment tracking, in Rust with multi-language bindings",
@@ -94596,9 +94860,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94607,15 +94871,46 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "huggingface_hub is the official Python client for the Hugging Face Hub, enabling programmatic downloading and uploading of files, repository management, running inference, and search across models, datasets, and Spaces. It serves as the integration layer that other ML libraries use to host and retrieve content on the Hub. It is maintained by Hugging Face.",
+          "description": "huggingface_hub is the official Python client and hf command-line tool for the Hugging Face Hub, enabling programmatic downloading and uploading of files, repository management, running inference and jobs, and search across models, datasets, and Spaces. It serves as the integration layer that other ML libraries use to host and retrieve content on the Hub. It is maintained by Hugging Face.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE body is verbatim Apache License 2.0; full source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file is the unmodified Apache 2.0 text and the repository accepts outside contributions. The README describes one package covering the CLI and the Python library with no paid or enterprise tier beside it; the hosted Hub it connects to is a separate service.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/LICENSE",
+                "shows": "LICENSE file carries the standard Apache License text, including the grant \"you may not use this file except in compliance with the License\" and the heading \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/huggingface-hub/json",
+                "shows": "PyPI metadata for huggingface-hub lists \"license\":\"Apache-2.0\" and the classifier \"License :: OSI Approved :: Apache Software License\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "05442c841ee99b4aeff436e523f3218131ea22dacefa9b8d06c87ac3fc27552c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/README.md",
+                "shows": "README invites outside work on the repository: \"Everyone is welcome to contribute, and we value everybody's contribution.\" and links a contribution guide; searched for paid, enterprise, license key and hosted-tier language beside the library: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ef11081839bdea72c6ae7be4832e4d4c94ef76e5888b0ddd935850c675e7d91a",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/huggingface_hub/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94624,28 +94919,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/huggingface_hub",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/huggingface_hub.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "bd299eb186b7f7db4ed5ea0a70236932134a007dbecfc1a9bf45ea9709c48bf9",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/huggingface_hub/main/README.md",
-                "shows": "README describes the official CLI and Python client for the Hub - up/download, repo management, inference, search - as published. The paid product is the Hub subscription, not this client.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "8c77b9f44339ce377dea262879ee735e34aa8491ad65727d5db1e35c96a3dce3",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94671,11 +94944,25 @@
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": "Foundational client for Hub up/download, repo management, inference, and library integration.",
+            "value": "Foundational client and hf CLI for Hub up/download, repository management, inference, jobs, search, and library integration.",
             "confidence": "high",
-            "note": "Central dependency across the Hugging Face ecosystem.",
-            "last_verified": "2026-08-13",
+            "note": "The package covers downloads, uploads, repository management, inference, jobs and search through both a CLI and a Python library. Other open source ML libraries integrate with the Hub through it, which makes it a shared dependency across the ecosystem.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/README.md",
+                "shows": "README describes the library as \"The official CLI and Python client for the Hugging Face Hub\", covering downloads, uploads, repository management, inference, jobs and search in \"one package\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ef11081839bdea72c6ae7be4832e4d4c94ef76e5888b0ddd935850c675e7d91a"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/README.md",
+                "shows": "README describes library integration: \"We're partnering with cool open source ML libraries to provide free model hosting and versioning.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ef11081839bdea72c6ae7be4832e4d4c94ef76e5888b0ddd935850c675e7d91a"
+              },
               {
                 "url": "https://github.com/huggingface/huggingface_hub",
                 "shows": "README still describes the official CLI and Python client for Hub up/download, repo management, inference and search",
@@ -94690,9 +94977,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94707,9 +94994,21 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE body is verbatim Apache License 2.0; full source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The library is licensed under Apache-2.0 and its source is public. The README describes the whole library with no paid, enterprise or hosted tier beside it, so nothing in the core is withheld.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/optimum/json",
+                "shows": "PyPI metadata for optimum lists the classifier \"License :: OSI Approved :: Apache Software License\", and the embedded README opens with \"Licensed under the Apache License, Version 2.0\". It gives the install route \"python -m pip install git+https://github.com/huggingface/optimum.git\", so the source is public. The README describes the whole library, \"Optimum is an extension of Transformers\", with pip extras per accelerator and no paid tier. Searched the README for paid, enterprise, license key, self-host and open source: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "f9703863b5791f236554fd37845df9071f082d3dab6df800b750eef9a4e29172",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/huggingface/optimum/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94718,28 +95017,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/huggingface/optimum",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for huggingface/optimum.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "4dfd78eeb42d96c58ab0e09ab27b84c31860e1ca3ba780f596b8f714cb0b6831",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/huggingface/optimum/main/README.md",
-                "shows": "README describes Optimum as an extension of Transformers, Diffusers, TIMM and Sentence-Transformers with per-accelerator extras, all pip-installable. No paid tier appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "da4ec25313652b0fa242d042107b2d04d2e09c71cb0ba401a926a586af42caac",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94767,11 +95044,25 @@
             "basis": "feature_matrix",
             "value": "Hardware-targeted optimization, export, and quantization across multiple accelerators/runtimes.",
             "confidence": "high",
-            "note": "Broad multi-backend optimization layer, though dependent on the core Transformers stack.",
+            "note": "Optimum covers model export, quantization and accelerated training and inference across ONNX Runtime, OpenVINO, ExecuTorch, Intel Gaudi, AWS Trainium and Inferentia, and TensorRT-LLM. It is an extension of Transformers and depends on it, so it sits a step below Transformers.",
             "relative_to": "transformers",
             "relation": "one_below",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/optimum/json",
+                "shows": "The PyPI README says \"Optimum provides multiple tools to export and run optimized models on various ecosystems\", listing ONNX Runtime, OpenVINO, ExecuTorch, Intel Gaudi, AWS Inferentia and NVIDIA TensorRT-LLM, and \"Optimum provides wrappers around the original Transformers\" Trainer for training on Gaudi and Trainium.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "f9703863b5791f236554fd37845df9071f082d3dab6df800b750eef9a4e29172"
+              },
+              {
+                "url": "https://huggingface.co/docs/optimum/index",
+                "shows": "The Optimum docs home says \"Optimum is an extension of\" Transformers that provides \"a set of performance optimization tools to train and run models on targeted hardware with maximum efficiency.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "305339e27e44520c42f53d2781b57a6d9ead1f3419ca961046aa34fd1f96c7dd"
+              },
               {
                 "url": "https://github.com/huggingface/optimum",
                 "shows": "README still describes hardware-targeted optimization, export and quantization across ONNX Runtime, OpenVINO, Gaudi, Trainium/Inferentia and TensorRT-LLM",
@@ -94786,9 +95077,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94797,15 +95088,48 @@
           "org_slug": "google",
           "org": "Google",
           "type": "software",
-          "description": "SentencePiece is an unsupervised text tokenizer and detokenizer that implements subword units (Byte-Pair Encoding and unigram language model) directly from raw text, without language-specific pre-tokenization. It treats input as a stream of Unicode characters, enabling a language-independent, end-to-end pipeline useful for languages without clear word boundaries. It is developed and maintained by Google.",
+          "description": "SentencePiece is an unsupervised text tokenizer and detokenizer that implements subword units (Byte-Pair Encoding and unigram language model) directly from raw text, without language-specific pre-tokenization. It treats input as a stream of Unicode characters, enabling a language-independent, end-to-end pipeline useful for languages without clear word boundaries. The project is hosted under Google's GitHub organization and describes itself as not an official Google product.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "LICENSE body is verbatim Apache License 2.0; full C++/Python source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file is the full Apache License 2.0 text, and the C++ and Python source is public. The README describes the whole library with no paid, enterprise or hosted tier beside it, and no model weights or license keys are needed, so nothing in the core is gated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/google/sentencepiece@master/LICENSE",
+                "shows": "The file is the full Apache License, \"Version 2.0, January 2004\" text, including the appendix \"APPENDIX: How to apply the Apache License to your work.\" with no added terms.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/google/sentencepiece@master/README.md",
+                "shows": "The README states \"SentencePiece is licensed under the [Apache 2.0 License](LICENSE).\" and links a \"Command Line Interface (CLI) & Build Guide (CMake)\" for building the public source; searched the body for paid, enterprise, hosted, license key and subscription: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "348dac366fe872b74e3a6e35b620b890324199724704c91dc3ef962a138e9c13",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/sentencepiece/json",
+                "shows": "The PyPI metadata lists \"license_expression\": \"Apache-2.0\" for sentencepiece and a project URL to the public repository \"https://github.com/google/sentencepiece\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "7f00b188528ebf9877b000385251f1fd12fcc8c1bfb43569dbbe021e7d910aa2",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
               {
                 "url": "https://github.com/google/sentencepiece/blob/master/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94814,28 +95138,6 @@
                 "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/google/sentencepiece",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for google/sentencepiece.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "433ee1c45af86e6f88565cb5eae7e26958436ddb9385128411e474e697eac2e9",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/google/sentencepiece/master/README.md",
-                "shows": "README describes the unsupervised subword tokenizer/detokenizer, with the C++ build and the Python wheel both published. No paid tier appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "d5b3b8f0b79151e24069dfc10f68b1441ab91853a04afe4cb993379efa7bd7d6",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94861,11 +95163,18 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Language-independent subword tokenization (BPE/unigram) trained directly from raw text.",
+            "value": "Language-independent subword tokenization (BPE/unigram) trained directly from raw text, with subword sampling and a zero-dependency C++ runtime.",
             "confidence": "high",
             "note": "Widely used tokenizer underpinning many LLM and NMT models, though narrow in scope.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/google/sentencepiece@master/README.md",
+                "shows": "The README describes BPE and unigram tokenizers trained \"directly from raw sentences\" giving a \"purely end-to-end, language-independent pipeline\", subword sampling (Subword Regularization, BPE-Dropout), and a zero-dependency C++20 Lite runtime.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "348dac366fe872b74e3a6e35b620b890324199724704c91dc3ef962a138e9c13"
+              },
               {
                 "url": "https://github.com/google/sentencepiece",
                 "shows": "README still describes language-independent subword tokenization (BPE and unigram) trained from raw text",
@@ -94880,9 +95189,9 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94891,15 +95200,47 @@
           "org_slug": "lf-ai-and-data",
           "org": "LF AI & Data (Linux Foundation)",
           "type": "software",
-          "description": "ONNX (Open Neural Network Exchange) is an open standard format and specification for representing machine learning models, defining an extensible computation graph model plus built-in operators and standard data types. It enables interoperability so models can move between frameworks like PyTorch, TensorFlow, and scikit-learn. It is governed under the Linux Foundation as part of LF AI & Data.",
+          "description": "ONNX (Open Neural Network Exchange) is an open standard format and specification for representing machine learning models, defining an extensible computation graph model plus built-in operators and standard data types. It enables interoperability so models can move between frameworks, tools, runtimes and compilers. It is governed under the Linux Foundation as part of LF AI & Data.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0 license body confirmed; full source public on GitHub. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file contains the standard, unmodified Apache 2.0 text. The repository is public and the README describes the whole library with no paid, enterprise or hosted tier beside it, so the source is public and the core is ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/onnx/onnx@main/LICENSE",
+                "shows": "LICENSE file is the Apache License text: \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\" under \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/onnx/onnx@main/README.md",
+                "shows": "README states \"ONNX provides an open source format for AI models, both deep learning and traditional ML\" and closes with \"Apache License v2.0\". Searched the body for paid, enterprise, commercial, hosted and license key: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2573d7296850bb289c4f16cbe8e5ebf994a03baad34b9ad33a5685694f8761f2",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/onnx/onnx@main/README.md",
+                "shows": "README invites outside participation: \"We encourage you to open\" issues, and describes ONNX as \"a community project\"; the repository is public. Searched the body for paid, enterprise, commercial and hosted tiers: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2573d7296850bb289c4f16cbe8e5ebf994a03baad34b9ad33a5685694f8761f2",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/onnx/onnx/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -94908,28 +95249,6 @@
                 "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/onnx/onnx",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for onnx/onnx.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "4920d88b95ed8977195f77607a139ced5200353110e98f9596c178e3dab72c21",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/onnx/onnx/main/README.md",
-                "shows": "README describes the open format, computation-graph model and built-in operators as an open ecosystem under LF AI & Data. No paid tier appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "11b444d407b1e6c33af8d0b0090a72c06704cf15f80999d02fd3c1740064ecfe",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -94957,9 +95276,23 @@
             "basis": "feature_matrix",
             "value": "Foundational open model-exchange format and operator spec underpinning cross-framework interoperability.",
             "confidence": "high",
-            "note": "Defines the graph model, operators, and data types used as the de-facto interchange standard.",
-            "last_verified": "2026-08-13",
+            "note": "ONNX defines the extensible computation graph, the built-in operators and the standard data types that frameworks, tools, runtimes and compilers use to exchange models, with a focus on inference.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/onnx/onnx@main/README.md",
+                "shows": "README: ONNX \"defines an extensible computation graph model, as well as definitions of built-in operators and standard\" data types, with a focus on \"the capabilities needed for inferencing (scoring)\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2573d7296850bb289c4f16cbe8e5ebf994a03baad34b9ad33a5685694f8761f2"
+              },
+              {
+                "url": "https://onnx.ai/",
+                "shows": "Project homepage calls ONNX \"The open standard for machine learning interoperability\" and says ONNX defines \"a common set of operators - the building blocks of machine learning and deep learning models - and a common file format\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "af77ebe7526cefe89f7ca196aa42717cd9c699b6fe3b8b44973f66ccca367564"
+              },
               {
                 "url": "https://github.com/onnx/onnx",
                 "shows": "README still describes an open format with an extensible computation graph and built-in operators as a cross-framework interchange standard",
@@ -94974,9 +95307,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -94991,9 +95324,40 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "MIT license body confirmed (Tillet/OpenAI copyright); full source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The LICENSE file is the standard MIT text, and the full source is public. The README describes the whole library with no paid, enterprise or hosted tier beside it, so the core is ungated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/triton-lang/triton@main/LICENSE",
+                "shows": "The LICENSE file carries the MIT permission grant: \"Permission is hereby granted, free of charge, to any person obtaining\" the software, with \"Copyright 2020-2022 OpenAI\" beside Philippe Tillet.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "92640fb97222fd0a698ff28ce0c3782c172623f8d6c609b557636a80f28fb946",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/triton-lang/triton@main/README.md",
+                "shows": "README of the development repository: \"The aim of Triton is to provide an open-source environment to write fast code at higher productivity than CUDA\", installable with \"pip install triton\" or from source. Searched the body for enterprise, paid, commercial, license key and hosted: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "413986ca3fdc97bdc41eb999011df694bf3cb85ffee054c140e6a318dcb8b205",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/triton/json",
+                "shows": "PyPI package metadata for triton declares license \"MIT\" and summary \"A language and compiler for custom Deep Learning operations\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "063c67e2c4a1bf2b7cfb9781eaf5eb5a0cd83a1ad2aec974d20a23cb81500fc7",
+                "establishes": [
+                  "license"
+                ]
+              },
               {
                 "url": "https://github.com/triton-lang/triton/blob/main/LICENSE",
                 "shows": "LICENSE file is the verbatim MIT License text, Copyright 2018-2020 Philippe Tillet / 2020-2022 OpenAI",
@@ -95002,28 +95366,6 @@
                 "content_sha256": "92640fb97222fd0a698ff28ce0c3782c172623f8d6c609b557636a80f28fb946",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/triton-lang/triton",
-                "shows": "Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for triton-lang/triton.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "67d686999f89636e1157a54de6fc702c4a06466e2092fd112b37c36fdb50a937",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/triton-lang/triton/main/README.md",
-                "shows": "README describes the language and MLIR-based compiler and points at the public nightly wheels. No paid tier or feature-gated build appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "091b198c18d6c8433ba83f848af0f5e022cf82004e87c845f486180dd1c840f6",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -95051,9 +95393,30 @@
             "basis": "feature_matrix",
             "value": "GPU kernel language and MLIR-based compiler for custom high-performance deep-learning operators.",
             "confidence": "high",
-            "note": "Foundational kernel-authoring layer (e.g. PyTorch inductor backend) across NVIDIA/AMD GPUs.",
-            "last_verified": "2026-08-13",
+            "note": "Triton is the kernel-authoring layer that PyTorch's inductor compiler uses to generate code for NVIDIA and AMD GPUs. It targets both vendors' hardware, while CPU support is still under development.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/triton-lang/triton@main/README.md",
+                "shows": "README compatibility section lists \"NVIDIA GPUs (Compute Capability 8.0+)\" and \"AMD GPUs (ROCm 6.2+)\", with CPUs \"Under development\"; it describes \"a language and compiler for writing highly efficient custom Deep-Learning primitives\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "413986ca3fdc97bdc41eb999011df694bf3cb85ffee054c140e6a318dcb8b205"
+              },
+              {
+                "url": "https://triton-lang.org/main/index.html",
+                "shows": "Documentation home: Triton \"is a language and compiler for parallel programming\" providing \"a Python-based programming environment for productively writing custom DNN compute kernels\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "fc578c0d7e0d39f550925c0f2e7a407f7c8bcbbfa5948b2461b00c9593ddf811"
+              },
+              {
+                "url": "https://pytorch.org/blog/pytorch-2-0-release/",
+                "shows": "PyTorch 2.0 release post: \"For NVIDIA and AMD GPUs, it uses OpenAI Triton as a key building block.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "086053a4de41ee3e630ae8b9724397eea6787cec12b66dfab8919b1eca6a046c"
+              },
               {
                 "url": "https://github.com/triton-lang/triton",
                 "shows": "README still describes the GPU kernel language and MLIR-based compiler, with public nightly wheels",
@@ -95068,9 +95431,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -95079,15 +95442,46 @@
           "org_slug": "microsoft",
           "org": "Microsoft",
           "type": "software",
-          "description": "DeepSpeed is a deep-learning optimization library for efficient distributed training and inference of very large models. It provides system-level innovations including ZeRO memory optimization, ZeRO-Infinity, 3D parallelism, and mixture-of-experts support, and has powered training of models like BLOOM (176B) and Megatron-Turing NLG (530B). It is maintained by Microsoft and integrates with Hugging Face Transformers, PyTorch Lightning, and others.",
+          "description": "DeepSpeed is a deep-learning optimization library for efficient distributed training and inference of very large models. It provides ZeRO memory optimization, ZeRO-Infinity, 3D parallelism, Ulysses sequence parallelism and mixture-of-experts support, and has been used to train models such as BLOOM (176B) and Megatron-Turing NLG (530B). It integrates with Hugging Face Transformers, Accelerate and PyTorch Lightning.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0 license body confirmed; full source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "note": "The repository is public under the standard Apache-2.0 license text. The README presents the whole library, installed from PyPI, with no paid, enterprise or hosted tier beside it.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/deepspeedai/DeepSpeed@master/LICENSE",
+                "shows": "The LICENSE file is the Apache License, \"Version 2.0, January 2004\", with the standard \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\" text.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/deepspeedai/DeepSpeed@master/README.md",
+                "shows": "README installs the whole library with \"The quickest way to get started with DeepSpeed is via pip\" and describes no enterprise, paid or license-key tier. Searched the body for enterprise, commercial, paid and license key: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e2f2dad685784770f1cd1fe72ba3be22788864ddf9234a899b75fb7dbdd15151",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/deepspeed/json",
+                "shows": "PyPI metadata lists \"Apache Software License 2.0\" and the source link \"https://github.com/deepspeedai/DeepSpeed\" for the deepspeed package.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "562778af943003c9b606952b6dc219d90cc6c0d3f9cc10f13a594dbddd01a118",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
               {
                 "url": "https://github.com/deepspeedai/DeepSpeed/blob/master/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -95096,28 +95490,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/deepspeedai/DeepSpeed",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for deepspeedai/DeepSpeed.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "8e789386652fe49fc9c73d51af9b8dffabf04e2e5cd04123f28e7a0afb43791d",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/deepspeedai/DeepSpeed/master/README.md",
-                "shows": "README describes the training and inference optimization stack - ZeRO, 3D parallelism, MoE - with everything installed from the public package. No paid tier appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "d206dd2d2ed67d0b39a60dc18161fb66c6e290ac4f05e6ed9a0467e5b80b75a2",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -95145,9 +95517,23 @@
             "basis": "feature_matrix",
             "value": "Large-scale distributed training/inference optimization library (ZeRO, 3D parallelism, MoE).",
             "confidence": "high",
-            "note": "Foundational scale-out training stack used for many of the largest published models.",
-            "last_verified": "2026-08-13",
+            "note": "DeepSpeed's ZeRO memory partitioning, 3D parallelism and mixture-of-experts support have been used to train models such as BLOOM (176B) and Megatron-Turing NLG (530B). It is also the distributed backend integrated into Hugging Face Transformers, Accelerate and Lightning.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/deepspeedai/DeepSpeed@master/README.md",
+                "shows": "README says \"These innovations include ZeRO, ZeRO-Infinity, 3D-Parallelism, Ulysses Sequence Parallelism, DeepSpeed-MoE, etc.\" and lists models trained with it including \"BLOOM (176B)\" and \"Megatron-Turing NLG (530B)\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e2f2dad685784770f1cd1fe72ba3be22788864ddf9234a899b75fb7dbdd15151"
+              },
+              {
+                "url": "https://deepspeed.readthedocs.io/en/latest/",
+                "shows": "DeepSpeed 0.19.8 documentation covers \"Training API\", \"Inference API\", \"ZeRO\", \"Mixture of Experts (DeepSpeed MoE)\", \"Pipeline Parallelism\" and \"Automatic Tensor Parallel Training\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "4baf28deb1db7408b12de919c1fac2d4585c87c3e50d850239b2bd86330f0d97"
+              },
               {
                 "url": "https://github.com/deepspeedai/DeepSpeed",
                 "shows": "README still describes ZeRO, ZeRO-Infinity, 3D parallelism and MoE, and the models it trained",
@@ -95162,9 +95548,9 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -95179,9 +95565,30 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "OpenVINO's Apache-2.0 license is confirmed against the file body, and the full source is public in the unarchived repository. The README describes the whole toolkit with no paid, enterprise or hosted tier beside it, so the core is ungated.",
-            "last_verified": "2026-08-13",
+            "note": "OpenVINO is released under Apache-2.0, and the full source is in a public repository. The README describes the whole toolkit, installable with pip, with no paid, enterprise or hosted tier beside it, so nothing in the core is gated.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/openvinotoolkit/openvino/master/LICENSE",
+                "shows": "LICENSE file is the Apache License Version 2.0 text, with the section header \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\" and no added terms.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openvinotoolkit/openvino/master/README.md",
+                "shows": "README calls it \"Open-source software toolkit for optimizing and deploying deep learning models.\" and says \"OpenVINO™ Toolkit is licensed under [Apache License Version 2.0](LICENSE).\" Searched the body for paid, premium, subscription, license key and commercial: none; the only \"enterprise\" string is inside the third-party LLMWare integration blurb.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "8bb5835c8674f04a67a326e0136ff4b2913500a1c78cd1e1b154cef5c73f9684",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/openvinotoolkit/openvino/blob/master/LICENSE",
                 "shows": "LICENSE file is the verbatim Apache License Version 2.0 text",
@@ -95190,28 +95597,6 @@
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/openvinotoolkit/openvino",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for openvinotoolkit/openvino.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "ce0884d89b27d8f08bd8b5544d4c63f3a40bebd3be2474e199d0ddfe1d6174e7",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/openvinotoolkit/openvino/master/README.md",
-                "shows": "README describes the inference optimization and deployment toolkit and its distribution channels (PyPI, npm, conda-forge, Homebrew). Its only 'enterprise' string sits inside a third-party integration blurb for LLMWare, not an OpenVINO tier.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "7e8b6d2d0411cfcd3b0dfc143253fe2da2693a87c19c0191f4b8a0d309fe6388",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -95256,9 +95641,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-31",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -95267,15 +95652,47 @@
           "org_slug": "ggml-org-georgi-gerganov",
           "org": "ggml-org (Georgi Gerganov)",
           "type": "software",
-          "description": "GGML is a low-level C tensor library for machine learning with no third-party dependencies, zero runtime memory allocations, integer quantization support, automatic differentiation, and optimizers. It runs cross-platform and is the tensor backend behind llama.cpp and whisper.cpp. It is maintained by ggml.ai / Georgi Gerganov; much active development now occurs in the dependent llama.cpp and whisper.cpp repos.",
+          "description": "GGML is a low-level C tensor library for machine learning with no third-party dependencies, zero runtime memory allocations, integer quantization support, automatic differentiation, and optimizers. It runs cross-platform and is the tensor backend behind llama.cpp and whisper.cpp. It is maintained by ggml.ai, the company founded by Georgi Gerganov and now part of Hugging Face; much active development now occurs in the dependent llama.cpp and whisper.cpp repos.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "MIT license body confirmed (Copyright 2023-2026 The ggml authors); full source public. The repository is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and the core ungated.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/LICENSE",
+                "shows": "LICENSE is the verbatim MIT License text: \"Copyright (c) 2023-2026 The ggml authors\" and \"Permission is hereby granted, free of charge, to any person obtaining a copy\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/README.md",
+                "shows": "README gives the build-from-source route (\"git clone https://github.com/ggml-org/ggml\"), describes a \"Plain C/C++ implementation without any dependencies\", and lists no paid, enterprise or hosted tier; core changes are directed to the public llama.cpp repository.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "359c498c79a326f621323e44fd3d3470a1ec635b0031206f35ad5e85a4b830c7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://ggml.ai",
+                "shows": "Project site states \"The library and related projects are freely available under the MIT license\" and that \"In the future we may choose to develop extensions that are licensed for commercial use\"; no commercial extension is described as existing.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e56cd6840826b4bd12c7db10bc75f11c64cf5f41d1a58200130ce155045da0fc",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              },
               {
                 "url": "https://github.com/ggml-org/ggml/blob/master/LICENSE",
                 "shows": "LICENSE file is the verbatim MIT License text, Copyright (c) 2023-2026 The ggml authors",
@@ -95284,28 +95701,6 @@
                 "content_sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
                 "establishes": [
                   "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/ggml-org/ggml",
-                "shows": "Repo metadata - license spdx_id MIT, private false, archived false, default branch master - for ggml-org/ggml.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "423079352e1cdc8f27b9b0efb85470546ebee8ecc4832e646d64e6e5fdf99c8d",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/ggml-org/ggml/master/README.md",
-                "shows": "README describes the tensor library's feature list - quantization, autodiff, optimizers, no third-party dependencies - and notes that some development now happens in the llama.cpp and whisper.cpp repos. No paid tier appears.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "8bd38148d910179bf2f0975121ce27ee25c5e7457ce214331aad895123ad9105",
-                "establishes": [
-                  "source",
-                  "core-gated"
                 ]
               }
             ],
@@ -95338,11 +95733,32 @@
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": "Dependency-free C tensor library with quantization and autodiff; backbone of llama.cpp/whisper.cpp inference.",
+            "value": "Dependency-free C/C++ tensor library with 2- to 8-bit integer quantization, broad CPU/GPU/NPU backend support and built-in training optimizers; the tensor backend of llama.cpp/whisper.cpp inference.",
             "confidence": "high",
             "note": "Foundational low-level runtime enabling efficient on-device LLM/ASR inference.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/README.md",
+                "shows": "README describes a \"Tensor library for machine learning\" with \"Plain C/C++ implementation without any dependencies\", \"2- to 8-bit integer quantization, plus MXFP4 and NVFP4 microscaling formats\" and \"Broad backend support - CPU, GPU, NPU, and browser\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "359c498c79a326f621323e44fd3d3470a1ec635b0031206f35ad5e85a4b830c7"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/include/ggml-opt.h",
+                "shows": "The ggml-opt.h header exposes training support: \"GGML_OPT_OPTIMIZER_TYPE_ADAMW\" and \"GGML_OPT_OPTIMIZER_TYPE_SGD\" optimizers, with a \"opt_period\" gradient-accumulation setting.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+              },
+              {
+                "url": "https://ggml.ai",
+                "shows": "Site describes ggml as \"a tensor library for machine learning to enable large models and high performance on\" commodity hardware, \"used by\" llama.cpp and whisper.cpp.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e56cd6840826b4bd12c7db10bc75f11c64cf5f41d1a58200130ce155045da0fc"
+              },
               {
                 "url": "https://github.com/ggml-org/ggml",
                 "shows": "README still describes a dependency-free C tensor library with integer quantization, autodiff and optimizers, backing llama.cpp and whisper.cpp",
@@ -95357,9 +95773,9 @@
           "maturity": 3.8,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-27",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -95368,14 +95784,13 @@
           "org_slug": "tattle",
           "org": "Tattle",
           "type": "software",
-          "description": "Feluda is a configurable engine by Tattle for analysing multilingual, multimodal content (images, text, video), built around a modular 'operators' plugin architecture. It supports vector embeddings, hash-based search, text extraction from images, and entity extraction. It is open infrastructure for analysing misinformation and social-media content, particularly in Indian-language contexts.",
+          "description": "Feluda is a configurable engine by Tattle for analyzing multilingual, multimodal content (images, text, video), built around a modular 'operators' plugin architecture. It supports vector embeddings, hash-based search, text extraction from images, and entity extraction. It was built for analyzing social-media content, particularly in Indian-language contexts.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:GPL-3.0(OSI copyleft);source:public;core-gated:ungated(all nine analysis operators ship in operators/ under the one GPL-3.0 license. Tattle offers no hosted edition and no paid tier)",
             "confidence": "high",
             "note": "Feluda is GPL-3.0 licensed with the full source public, and every operator the engine ships lives in the same repository under that license. Tattle runs no hosted edition, pricing page or enterprise tier, and the README's one mention of a paid alternative, Google's Cloud Vision API, is something Feluda helps users avoid rather than a feature it withholds.",
-            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/tattle-made/feluda",
@@ -95430,8 +95845,29 @@
             "value": "Configurable multilingual/multimodal content-analysis engine with modular operators: vector embeddings, hash-based search, image text extraction, entity extraction.",
             "confidence": "high",
             "note": "Flexible modular engine focused on multimodal content analysis.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://pypi.org/pypi/feluda/json",
+                "shows": "The package README lists what the engine enables: \"Support for hash-based search using pHash.\" and \"Entity extraction from text and images and indexing into the engine.\" alongside vector embeddings and text extraction from images.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "6c27cee1427082a8d9378fa5b3b183d7ddbcc0bd8fbff66b1e97e33e30c55f71"
+              },
+              {
+                "url": "https://tattle-made.github.io/feluda/",
+                "shows": "The documentation home says \"Feluda is a configurable engine for analysing multi-lingual and multi-modal content\" and lists \"Easy to extend with custom operators\" among its key features, covering text, images, audio and video.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "15c160804d94f149dded714a1150bc6adaf6d444b5c95faaf8b15216bddaaae6"
+              },
+              {
+                "url": "https://tattle-made.github.io/feluda/api/operators.html",
+                "shows": "The operators reference lists eight operators: \"ImageVecRep-Resnet Operator\", \"DetectLewdImages Operator\", \"DetectTextInImage Operator\", \"VidVecRep Operator\", \"VideoHash Operator\", \"Classify Video Zero Shot Operator\", \"Cluster Embeddings Operator\" and \"Dimension Reduction Operator\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ac433c155501c7a41f6f34f212186f64427f2217657ee00876a7773557cb334c"
+              },
               {
                 "url": "https://github.com/tattle-made/feluda",
                 "shows": "README still describes the modular operator engine - embeddings, hash search, image text extraction, entity extraction",
@@ -95446,9 +95882,19 @@
           "maturity": 1.8,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "date": "2026-09-27",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-29",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "The core-gated dimension is not established: no cited page says all eight operators ship in the public repository under the one GPL-3.0 license, and the CLIP, ResNet and Sentence-Transformers weights the other operators load were never license-checked. Settling it needs the repository tree and LICENSE.md cited, plus a license check on those weights."
+              }
+            ]
           }
         },
         {
