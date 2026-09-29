@@ -18,17 +18,18 @@ openness:
         value: none
         detail: the OSS toolkit; Protect AI's platform is separate
   confidence: high
-  note: 'Fully open source: MIT-licensed, complete source, self-hostable. (Protect AI''s commercial platform
-    is a separate product; this is the standalone OSS toolkit.)'
+  note: LLM Guard is released under the MIT license with its complete Python source, and it installs from
+    PyPI or runs as a self-hosted API. None of its documented scanners depends on an enterprise build, a
+    license key or a hosted service.
   raw: license:MIT(OSI);source:public(full Python implementation);self-host:yes;service:none(the OSS toolkit;
     Protect AI's platform is separate);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/protectai/llm-guard
-    shows: 'Repo metadata records license spdxId - MIT. README calls it ''an open source solution'',
-      documents installing and customizing it yourself and deploying it as an API, and enumerates the
-      prompt and output scanners in the published package; there is no enterprise directory, commercial
-      edition or license key on the page.'
+    shows: Repo metadata records license spdxId - MIT. README calls it 'an open source solution', documents
+      installing and customizing it yourself and deploying it as an API, and enumerates the prompt and output
+      scanners in the published package; there is no enterprise directory, commercial edition or license
+      key on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4
@@ -36,6 +37,31 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://pypi.org/pypi/llm-guard/json
+    shows: 'The PyPI JSON for the llm-guard package (version 0.3.16) carries the full license text, which
+      opens "The MIT License (MIT)" with "Copyright (c) Protect AI. All rights reserved.", and lists its
+      repository as "https://github.com/protectai/llm-guard". The embedded README says "LLM Guard is an
+      open source solution", installs with "pip install llm-guard", notes "Base functionality requires a
+      limited number of libraries" and links a guide to "Deploy LLM Guard as" an API. Searched the body
+      for enterprise, license key, commercial and on-prem: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c8ac01e7005a8a69389aa814df1be574b44fa8b708f8841ca1e5d6efd61d6ce9
+    establishes:
+    - license
+    - source
+    - core-gated
+    - self-host
+  - url: https://protectai.github.io/llm-guard/
+    shows: The LLM Guard documentation site lists tutorials for "Secure RAG with Langchain" and "Secure
+      Agents with Langchain", input and output scanner pages, and API pages including "Deployment" and "API
+      Reference", and repeats that "LLM Guard is an open source solution."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b27ebe6937b8bd3478ea2ab5330dfe71f38e77a29a86b904dd26adde59dda875
+    establishes:
+    - source
+    - self-host
 adoption:
   level: 3
   reach: 100K-1M
@@ -69,14 +95,22 @@ capability:
     Guardrails, which adds both on top of a similar scanner set.
   relative_to: nemo-guardrails
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/protectai/llm-guard
-    shows: 'README lists the prompt scanners (Anonymize, BanCode, BanCompetitors, BanSubstrings, BanTopics,
+    shows: README lists the prompt scanners (Anonymize, BanCode, BanCompetitors, BanSubstrings, BanTopics,
       Code, Gibberish, InvisibleText, Language, PromptInjection, Regex, Secrets, Sentiment, TokenLimit,
       Toxicity) and the output scanners (BanCode, BanCompetitors, BanSubstrings, BanTopics, Bias, Code,
-      Deanonymize, JSON, ...), and frames the toolkit as sanitization, detection of harmful language,
-      prevention of data leakage and resistance to prompt injection.'
+      Deanonymize, JSON, ...), and frames the toolkit as sanitization, detection of harmful language, prevention
+      of data leakage and resistance to prompt injection.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4
+  - url: https://pypi.org/pypi/llm-guard/json
+    shows: The PyPI README for llm-guard lists prompt scanners including "PromptInjection", "Anonymize",
+      "Secrets" and "Toxicity", and output scanners including "Deanonymize", "MaliciousURLs", "FactualConsistency"
+      and "Sensitive", and describes the package as "offering sanitization, detection of harmful language,
+      prevention of data leakage, and resistance against prompt" injection attacks.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c8ac01e7005a8a69389aa814df1be574b44fa8b708f8841ca1e5d6efd61d6ce9

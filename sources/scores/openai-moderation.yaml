@@ -14,32 +14,41 @@ openness:
       access:
         value: free moderation endpoint
   confidence: high
-  note: Closed, API-only hosted classifier; no weights or source. The documentation URL redirects to developers.openai.com
-    and the page renders client-side, so the reading is taken from the markdown edition of the same document,
-    cited beside it.
+  note: A closed classifier offered only as a hosted OpenAI API endpoint. No model weights, source code
+    or self-hostable build is released, and use falls under OpenAI's API terms.
   raw: service:proprietary hosted API(no weights, no self-host);access:free moderation endpoint;source:closed;license:proprietary
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://platform.openai.com/docs/guides/moderation
-    shows: Still resolves, now via a 301 to developers.openai.com/api/docs/guides/moderation. The page is
-      client-rendered, so the readable body is the markdown edition cited below.
-    accessed: '2026-08-13'
+    shows: The old platform.openai.com guide URL now redirects to developers.openai.com and renders the
+      same guide, which says "Use OpenAI moderation models to detect harmful content in text and images"
+      and "The moderation endpoint is free to use".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2f5e205846ca303482c9e7af37053f59ec2cb5a01bd71bdb5f10bacf2847260a
+    content_sha256: b68be7fe2b32951f48e5ffc079bc622ea27458e1b5a220d0ce901937152163e0
     establishes:
     - source
     - license
   - url: https://developers.openai.com/api/docs/guides/moderation.md
-    shows: 'Markdown edition of the cited guide. The product is an endpoint - ''Use OpenAI moderation
-      models to detect harmful content in text and images'' via the moderation endpoint or alongside a
-      generated response - with no weights, no download and no self-hostable implementation offered. Use is
-      governed by OpenAI''s API terms; ''The moderation endpoint is free to use''.'
-    accessed: '2026-08-13'
+    shows: 'The markdown edition of OpenAI''s moderation guide describes a hosted endpoint: "Use OpenAI
+      moderation models to detect harmful content in text and images" through "the moderation endpoint"
+      or alongside a generated response, and "The moderation endpoint is free to use". Searched the body
+      for open source, self-host, download, weights, license and Hugging Face: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205
+    content_sha256: 4fc5e80b25e7539d4689d6c931e3e19d1341b55e92aa7ecb236afe8b0ee57540
     establishes:
     - source
     - license
+  - url: https://developers.openai.com/api/reference/resources/moderations.md
+    shows: The API reference documents the endpoint as a single hosted call, post /moderations, which "Classifies
+      if text and/or image inputs are potentially harmful." and takes a model parameter listing omni-moderation-latest
+      and the older text-moderation models.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 03979e2364f42dd4b2c2f3af3f8c473f24536dbf6fe7f56cae2dcdce9841da9a
+    establishes:
+    - source
 adoption:
   level: 4
   signal_type: reported_traction
@@ -49,7 +58,6 @@ adoption:
   note: 'OpenAI publishes no request volume, developer count or customer count for this endpoint. The reading
     instead reflects standing: this is the free default moderation filter available to OpenAI''s entire
     developer base, a credible claim but not a measured one.'
-  last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/api/docs/guides/moderation.md
     shows: Guide documents the endpoint and states it is free to use. No usage figure of any kind appears
@@ -64,15 +72,23 @@ capability:
   value: Multi-category text (and image) moderation aligned to OpenAI's content policy; convenient but
     fixed taxonomy.
   confidence: low
-  note: Convenient broad-category moderation; fixed policy, no customization vs policy-conditioned models.
-  last_verified: '2026-08-13'
+  note: The endpoint scores text and images against thirteen fixed categories and accepts no custom policy,
+    unlike policy-conditioned models that reason over a policy the user writes. It does not classify audio.
+  last_verified: '2026-09-29'
   sources:
   - url: https://developers.openai.com/api/docs/guides/moderation.md
-    shows: 'omni-moderation-latest ''accepts text and image inputs. It doesn''t classify audio.'' Thirteen
-      fixed categories - harassment, harassment/threatening, hate, hate/threatening, illicit,
-      illicit/violent, self-harm, self-harm/intent, self-harm/instructions, sexual, sexual/minors, violence,
-      violence/graphic - of which six apply to images and the rest to text only. No mechanism for supplying
-      your own policy.'
-    accessed: '2026-08-13'
+    shows: The guide says the omni-moderation-latest "model accepts text and image inputs. It doesn't classify
+      audio." Its category table lists thirteen fixed categories, from harassment and hate through illicit,
+      self-harm, sexual and violence, with "Categories marked as" text only not supporting images, and warns
+      that "custom policies that rely on" category scores "may need recalibration over time"; there is no
+      option for supplying a custom policy.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205
+    content_sha256: 4fc5e80b25e7539d4689d6c931e3e19d1341b55e92aa7ecb236afe8b0ee57540
+  - url: https://developers.openai.com/api/reference/resources/moderations.md
+    shows: The API reference documents the endpoint as a single hosted call, post /moderations, which "Classifies
+      if text and/or image inputs are potentially harmful." and takes a model parameter listing omni-moderation-latest
+      and the older text-moderation models.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 03979e2364f42dd4b2c2f3af3f8c473f24536dbf6fe7f56cae2dcdce9841da9a

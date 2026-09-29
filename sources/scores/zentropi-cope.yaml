@@ -14,20 +14,33 @@ openness:
         value: Gemma-2-9B
         detail: LoRA
   confidence: medium
-  note: Open weights and self-hostable, but under an OpenRAIL-M license with use restrictions (e.g. surveillance),
-    which is not OSI-approved, so open_weights (3).
+  note: Zentropi publishes CoPE's LoRA adapter for self-hosting on the Gemma 2 base, behind a click-through
+    form that asks for contact information. Its OpenRAIL-M license prohibits uses such as surveillance and
+    is not OSI-approved, which makes this an open-weights release rather than open source.
   raw: weights:open(zentropi-ai/cope-a-9b on HF);base:Gemma-2-9B(LoRA);license:zentropi-openrail-m(OpenRAIL-M,
     use-restricted, NOT OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/zentropi-ai/cope-a-9b
-    shows: 'Repo header reads License - zentropi-openrail-m and cardData records license - other with
-      license_name - zentropi-openrail-m. The repo is publicly accessible behind a contact-information
-      gate rather than a private one, and ships adapter_model.safetensors; the card tells developers to
-      download google/gemma2-9b and merge the CoPE adapter.'
-    accessed: '2026-08-13'
+    shows: The model page header says "You need to agree to share your contact information to access this
+      model", the card tells developers to "Merge with the cope adapter (i.e., this model)" on the Gemma
+      base, lists "Surveillance applications" under Prohibited Uses alongside "Other restrictions as enumerated
+      in our", which links to the openrail-m license, and says "As an open model, CoPE can also be self-hosted
+      on your infrastructure".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e7c97fc6e5b6b3a70d5662a77352da9fbafbb6869e4b1b7e11a189b23170854c
+    content_sha256: 4ed1811362a409d22a463acbabc28a84788368f8274da61cee5135f7ae7c9aea
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/zentropi-ai/cope-a-9b
+    shows: The Hugging Face API record for zentropi-ai/cope-a-9b lists the file "adapter_model.safetensors"
+      among its siblings, carries the tag "base_model:finetune:google/gemma-2-9b", and records the license
+      as "zentropi-openrail-m" under a custom license tag "license:other", with gated set to auto (a click-through
+      contact-information gate rather than a private repo).
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c707031ba805bf91fecfd80fec4f64dac041372da615ddcc1fe9202e2f548fef
     establishes:
     - weights
     - license
@@ -38,7 +51,6 @@ adoption:
   note: Zentropi CoPE is a ROOST Model Community partner model, distributed through the RMC. It ships as
     a LoRA adapter merged into a Gemma base rather than pulled directly, so no meaningful download count
     exists, and Zentropi publishes no other usage figure.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/zentropi-ai/cope-a-9b
     shows: 23 likes; downloads 0 over the trailing 30 days; no usage figure published anywhere on the card.
@@ -51,19 +63,29 @@ capability:
   basis_detail: steerable bring-your-own-policy
   relative_to: gpt-oss-safeguard
   relation: at
-  value: 'Policy-adaptive labeling: evaluates content against arbitrary natural-language policies rather
-    than a fixed taxonomy, with strong F1 across hate, sexual, violence, harassment, self-harm, and toxicity.'
+  value: Policy-adaptive binary labeling that evaluates content against an arbitrary natural-language policy
+    rather than a fixed taxonomy, with F1 results reported for hate speech, toxicity, sexual content, self-harm
+    and harassment.
   confidence: low
-  note: Like gpt-oss-safeguard, Zentropi CoPE evaluates content against an arbitrary supplied policy rather
-    than a fixed taxonomy, with F1 results reported across the harm areas it covers. The two are the same
-    shape of product, matching each other rather than one leading the other.
-  last_verified: '2026-08-13'
+  note: Like gpt-oss-safeguard, CoPE evaluates content against an arbitrary policy the user writes rather
+    than a fixed taxonomy, and its card reports F1 results for hate speech, toxicity, sexual content, self-harm
+    and harassment. It returns only a binary label, which puts it level with gpt-oss-safeguard rather than
+    ahead.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/zentropi-ai/cope-a-9b
-    shows: Card lists 'Policy-adaptive content evaluation', 'Steerable (no fixed taxonomy/definitions)' and
-      binary classification against a supplied policy, with training coverage across hate speech, sexual
-      content, self-harm, harassment and toxicity; evaluation is largely on internal held-out policies
-      besides the Ethos hate-speech benchmark.
-    accessed: '2026-08-13'
+    shows: 'The model card lists "Policy-adaptive content evaluation" and "Steerable (no fixed taxonomy/definitions)",
+      says the model "can accept any arbitrary content policy", describes output as "Binary classification
+      only (i.e., presence/absence of matching labels)", and gives F1 tables headed "Hate Speech Classification",
+      "Toxic Speech Classification", "Sexual Content Classification", "Self-Harm Content Classification"
+      and "Harassment Classification". Searched the card for violence and violent: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e7c97fc6e5b6b3a70d5662a77352da9fbafbb6869e4b1b7e11a189b23170854c
+    content_sha256: 4ed1811362a409d22a463acbabc28a84788368f8274da61cee5135f7ae7c9aea
+  - url: https://arxiv.org/abs/2512.18027
+    shows: The arXiv abstract for CoPE describes "a policy-steerable small language model capable of fast
+      and accurate content labeling" and says "When evaluated across seven different harm areas, CoPE exhibits
+      equal or superior accuracy to frontier models at only 1% of their size".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 175f52f37f4b8b3a46ac153ef2def7ebe86e2923b94800acc239434dd8165853

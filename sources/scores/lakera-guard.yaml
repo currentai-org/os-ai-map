@@ -10,62 +10,101 @@ openness:
     context:
       service:
         value: proprietary SaaS API
-        detail: no self-host
+        detail: self-hosted container on an enterprise license
       note:
         value: vendor Lakera acquired by Check Point Nov 2025
   confidence: high
-  note: Closed SaaS security product; no weights or source. (Lakera also runs the public Gandalf prompt-injection
-    game, but Guard itself is proprietary.) The site is structured around a three-product platform - Workforce
-    AI Security, AI Agent Security and AI Red Teaming - and no longer mentions the Check Point acquisition
-    on the front page; neither moves the score.
-  raw: service:proprietary SaaS API(no self-host);note:vendor Lakera acquired by Check Point Nov 2025;source:closed;license:proprietary
-  last_verified: '2026-08-13'
+  note: Lakera Guard, now sold by Check Point as AI Guardrails, is proprietary, with no published source
+    code or model weights. It runs as a hosted API or as a self-hosted container that needs an enterprise
+    license and registry credentials from Check Point, so self-hosting does not open it up.
+  raw: service:proprietary SaaS API(self-hosted container on an enterprise license);note:vendor Lakera acquired
+    by Check Point Nov 2025;source:closed;license:proprietary
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.lakera.ai/
-    shows: 'Commercial platform sold through ''Book a demo'' and ''Talk to Sales'', described under
-      Integration & Scale as ''Easy deployment and scaling'', ''API-first architecture'', ''Cloud-native
-      deployment''. No source repository, no weights and no self-hostable build is offered anywhere on the
-      site.'
-    accessed: '2026-08-13'
+    shows: 'Commercial site sold through "Book a demo" with "Learning from 1M+ hackers around the world"
+      as its only large figure; searched the body for open source, GitHub repository and license: no source
+      release or open license is offered.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 1e50a96183f0473f391e93b4aa6ee75f89fd614e1f04ff657b6a84e35bc96631
     establishes:
     - source
     - license
+  - url: https://docs.lakera.ai/docs/selfhosting.md
+    shows: 'The self-hosting page says "Self-hosting Check Point AI Guardrails allows organizations to keep
+      all data within" their own infrastructure, that the product "is available as a fully managed" SaaS
+      or self-hosted deployment, and that self-hosters need an AI Guardrails Enterprise license and "Container
+      registry credentials (provided by Check Point)". Searched the body for open source, GitHub and Apache:
+      none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: aba12379d8175421c7ed9af53bba1419ca5ca81c5d1532e26415914e2a23afcb
+    establishes:
+    - source
+    - license
+    - self-host
+  - url: https://docs.lakera.ai/docs/api
+    shows: 'The API reference says "The public Guard SaaS API uses API keys to authenticate requests" and
+      that "Self-hosted deployments of the Guard API do not use authorization so do not need API keys."
+      Searched the body for open source and Apache: none, and its only GitHub links point to GitHub''s own
+      documentation on commit hashes.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b1472e7646fd2c2133aef337cff987b6285e74c0b2a4d4b55740e0350a3254f1
+    establishes:
+    - self-host
 adoption:
   level: 2
   signal_type: reported_traction
   confidence: low
   banded_quantity: a '1M+ hackers' figure from the Gandalf game and 1,000 Slack members, neither of which
     counts users of the product
-  note: Lakera publishes no customer count, request volume or revenue figure. The only figures on its site
-    measure a separate game and a community, not use of the product itself, so the reading reflects Lakera's
-    standing as an established prompt-injection-defense vendor rather than any published count.
-  last_verified: '2026-08-13'
+  note: Lakera publishes no customer count, request volume or revenue figure, and the only large figures
+    on its site count players of its Gandalf game and members of its community, not users of the product.
+    Its reach is inferred from its standing as an established prompt-injection-defense vendor rather than
+    from any published count.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.lakera.ai/
-    shows: 'Claims ''Trusted by the world''s leading AI companies'' and ''trusted by industry leaders, from
-      Fortune 500 companies to startups'' with unattributed pull-quotes, and no customer count anywhere.
-      The only figures are ''Learning from 1M+ hackers around the world'' and a Slack community ''With over
-      1,000 members''.'
-    accessed: '2026-08-13'
+    shows: The home page claims "trusted by industry leaders, from Fortune 500 companies to startups" and
+      gives no customer count; its only figures are "Learning from 1M+ hackers around the world" (the Gandalf
+      game) and a Slack community "With over 1,000 members".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 1e50a96183f0473f391e93b4aa6ee75f89fd614e1f04ff657b6a84e35bc96631
+  - url: https://www.checkpoint.com/press-releases/check-point-acquires-lakera-to-deliver-end-to-end-ai-security-for-enterprises/
+    shows: Check Point's acquisition release says "Lakera is trusted by Fortune 500 enterprises worldwide"
+      without a customer count or usage figure.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3be03cdd502f6732b924e6894a0dd454cf1c885a5545de5cf37cf58d4614853a
 capability:
   score: 4
   basis: feature_matrix
   basis_detail: defense coverage
-  value: Real-time prompt-injection, jailbreak, data-leakage, and content-risk defense for LLM apps.
+  value: Real-time prompt-injection, jailbreak, data-leakage, content, malicious-link and agent-behavior
+    screening for LLM apps and agents.
   confidence: low
-  note: Category-defining prompt-injection defense; strong coverage, now part of Check Point's platform.
-    The runtime defense now sits beside a red-teaming product and a workforce/shadow-AI product.
-  last_verified: '2026-08-13'
+  note: The Guard API screens prompts, model outputs, tool calls and tool descriptions for prompt attacks,
+    data leakage, content violations, malicious links and off-policy agent behavior, with custom guardrails
+    on top. Check Point now sells it as AI Guardrails, the runtime layer of its AI Agent Security product,
+    which adds agent discovery and risk assessment.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.lakera.ai/
-    shows: 'AI Agent Security is described as ''Runtime protection for AI applications'' with ''Real-time
-      threat detection'', ''Prompt attack prevention'' and ''Data leakage protection''; the risks listed
-      are prompt injection attacks, AI data leaks, toxic content generation, indirect prompt injection and
-      multilingual/multimodal attacks, at ''sub-50 ms runtime latency''.'
+    shows: AI Agent Security is described as 'Runtime protection for AI applications' with 'Real-time threat
+      detection', 'Prompt attack prevention' and 'Data leakage protection'; the risks listed are prompt
+      injection attacks, AI data leaks, toxic content generation, indirect prompt injection and multilingual/multimodal
+      attacks, at 'sub-50 ms runtime latency'.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1e50a96183f0473f391e93b4aa6ee75f89fd614e1f04ff657b6a84e35bc96631
+  - url: https://docs.lakera.ai/guard.md
+    shows: The AI Agent Security introduction says AI Guardrails provides "real-time detection and flagging
+      of prompt attacks, data leakage, content violations, and off-policy agent behavior through the Guard
+      API" and screens for malicious links and custom threats, with the runtime layer "available standalone
+      for teams that want to embed Check Point's detection directly into their own AI applications."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3b2a677b08d8d24c1b185103eca9b95a279f6a0ed0e3ac7babe2bf7847c33099

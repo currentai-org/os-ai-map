@@ -18,19 +18,19 @@ openness:
       service:
         value: none
   confidence: high
-  note: NeMo Guardrails is Apache-2.0, with the complete source public and self-hostable as a library, CLI,
-    Docker image or server, and no proprietary tier. GitHub's license classifier reports NOASSERTION because
-    of how the LICENSE file's SPDX header is formatted, not because the license has changed.
+  note: NeMo Guardrails is Apache-2.0, with the complete source public and self-hostable as a Python library,
+    CLI, Docker image or server. Its safety rails can use the application's own LLM, community models or
+    third-party services as the checker, so NVIDIA's safety models and the separately packaged Guardrails
+    microservice are optional rather than required.
   raw: license:Apache-2.0(OSI);source:public(full Python implementation);self-host:yes(library/CLI/Docker/server);service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/NVIDIA/NeMo-Guardrails
-    shows: 'Redirects to NVIDIA-NeMo/Guardrails. README states ''The NeMo Guardrails library is licensed
-      under the Apache License, Version 2.0'' and describes it as ''an open-source toolkit for easily
-      adding programmable guardrails to LLM-based conversational applications'', installable and runnable
-      yourself. Repo metadata reports spdxId NOASSERTION, which is GitHub failing to classify the file
-      rather than a different license. No enterprise directory, commercial edition or license key on the
-      page.'
+    shows: Redirects to NVIDIA-NeMo/Guardrails. README states 'The NeMo Guardrails library is licensed under
+      the Apache License, Version 2.0' and describes it as 'an open-source toolkit for easily adding programmable
+      guardrails to LLM-based conversational applications', installable and runnable yourself. Repo metadata
+      reports spdxId NOASSERTION, which is GitHub failing to classify the file rather than a different license.
+      No enterprise directory, commercial edition or license key on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb
@@ -39,12 +39,43 @@ openness:
     - core-gated
     - license
   - url: https://raw.githubusercontent.com/NVIDIA/NeMo-Guardrails/develop/LICENSE.md
-    shows: 'The LICENSE.md body, read rather than the classifier label. It opens with two SPDX lines - "SPDX-FileCopyrightText: Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES" and "SPDX-License-Identifier: Apache-2.0" - above the Apache License 2.0 boilerplate. The SPDX header is what the classifier cannot match.'
+    shows: 'The LICENSE.md body, read rather than the classifier label. It opens with two SPDX lines - "SPDX-FileCopyrightText:
+      Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES" and "SPDX-License-Identifier: Apache-2.0" - above
+      the Apache License 2.0 boilerplate. The SPDX header is what the classifier cannot match.'
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: 7c137905972e6199e4120716851edf334e211008c0ef3693eb269578b8a2ac2a
     establishes:
     - license
+  - url: https://pypi.org/pypi/nemoguardrails/json
+    shows: 'The PyPI JSON for the nemoguardrails package (version 0.24.1) sets the license expression to
+      "Apache-2.0" and points its repository URL at "https://github.com/NVIDIA-NeMo/Guardrails". The embedded
+      README says "NVIDIA NeMo Guardrails library is an open-source toolkit for easily adding" guardrails,
+      closes with "The NeMo Guardrails library is licensed under the" Apache License, Version 2.0, and documents
+      self-hosting: "You can use the NeMo Guardrails library CLI to start a guardrails server" and "To start
+      a guardrails server, you can also use a Docker container." Searched the body for enterprise, license
+      key and commercial edition: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a62315b9bb10006edd9d28ebf3c9909a07410e0a7afefe448e4509e1e2ea9c9e
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://docs.nvidia.com/nemo/guardrails/
+    shows: The NVIDIA docs overview describes the library as "an open-source Python package for adding programmable
+      guardrails to LLM-based applications", distributed as a PyPI package for a "Self-managed Python environment".
+      It lists content-safety approaches beginning with "Use the LLM itself to check inputs and outputs
+      for harmful content" alongside community models and third-party APIs, so NVIDIA's own safety models
+      are one option among several. The separate "NVIDIA NeMo Guardrails microservice provides a production-ready
+      container image built on top of the same guardrails configuration model."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b87ba020d852bb6a325ef0a8971d23feac52c89563b2c1e260a047310cae09e1
+    establishes:
+    - core-gated
+    - source
+    - self-host
 adoption:
   level: 3
   reach: 100K-1M
@@ -74,16 +105,26 @@ capability:
   value: Programmable rails for I/O moderation, dialog/topic control, retrieval filtering, and tool-use
     control via Colang; multi-provider.
   confidence: medium
-  note: One of the most feature-complete open guardrail orchestration layers; the Colang policy language
-    adds flexibility beyond simple scanners, and two other products in this category are rated relative
-    to it.
-  last_verified: '2026-08-13'
+  note: Beyond checking inputs and outputs, it applies rails to retrieved content and tool calls, and its
+    Colang language scripts whole dialog flows, which goes further than scanners that only inspect individual
+    messages.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/NVIDIA/NeMo-Guardrails
     shows: README describes programmable guardrails for LLM applications, with dialog rails operating on
-      canonical-form messages via the Colang Guide, fact-checking and output moderation over retrieval
-      pipelines, keeping an assistant on topic, and deciding whether an action should be executed - that
-      is I/O moderation, dialog control, retrieval filtering and tool-use control.
+      canonical-form messages via the Colang Guide, fact-checking and output moderation over retrieval pipelines,
+      keeping an assistant on topic, and deciding whether an action should be executed - that is I/O moderation,
+      dialog control, retrieval filtering and tool-use control.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb
+  - url: https://docs.nvidia.com/nemo/guardrails/
+    shows: The NVIDIA docs overview says "Input, retrieval, dialog, execution, and output rails run at different
+      stages of an LLM interaction" and that "Colang defines conversational flows, guardrail logic, and
+      event-driven behavior." Its use cases cover content safety, jailbreak detection, topic control ("Control
+      what topics the bot can and cannot discuss"), PII masking and agentic security ("Execute rails that
+      validate tool inputs and outputs before and after invocation"), and it lets teams "Combine built-in
+      guardrails, NVIDIA safety models, community models, third-party APIs, and custom Python actions."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b87ba020d852bb6a325ef0a8971d23feac52c89563b2c1e260a047310cae09e1

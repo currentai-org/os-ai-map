@@ -12,33 +12,49 @@ openness:
     - name: Llama-4-Community
       detail: NOT OSI
   confidence: medium
-  note: Open weights under Meta's Llama 4 Community License, which is use-restricted and not OSI-approved,
-    so open_weights (3) like the rest of the Llama family.
+  note: Weights for both sizes download after an access request under Meta's Llama 4 Community License,
+    which restricts use and is not OSI-approved. The card describes the training mix of public and synthetic
+    data but does not release it.
   raw: weights:open(Llama-Prompt-Guard-2-86M/22M on HF);data:not-released;license:Llama-4-Community(NOT
     OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
-    shows: 'Repo shows License - llama4 and carries the full LLAMA 4 COMMUNITY LICENSE AGREEMENT text,
-      including the 700 million monthly active user threshold above which a separate Meta license is
-      required. Gated manual, with model.safetensors downloadable on acceptance. The card publishes no
-      training set and declares no datasets.'
-    accessed: '2026-08-13'
+    shows: The model card carries the Llama 4 license text, which requires a separate Meta license where
+      users exceed "greater than 700 million monthly active users in the preceding calendar month". It describes
+      the training data only in prose, "The training dataset is a mix of open-source datasets reflecting
+      benign data from the web" plus "our own synthetic injections and data from red-teaming earlier versions
+      of Prompt Guard", and links no dataset release; the only training-related link is a cookbook notebook,
+      "Access our tutorial for fine-tuning Prompt Guard on custom datasets", not the data Meta trained on.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2b82c90d52e77871e862698d8e3fd040a85c707fb7e2fda394446ab5a17ee62a
+    content_sha256: 69dec46358d28d331c2cc9cea7da478fabfa00a61157a87f72b751989a888ba6
+    establishes:
+    - data
+    - license
+  - url: https://huggingface.co/api/models/meta-llama/Llama-Prompt-Guard-2-86M
+    shows: 'The Hugging Face API record for meta-llama/Llama-Prompt-Guard-2-86M tags the repo "license:other"
+      with license_name llama4, embeds the "LLAMA 4 COMMUNITY LICENSE AGREEMENT" as its gated prompt, sets
+      gated to manual behind a form ending "By clicking Submit below I accept the terms of the license",
+      and lists "model.safetensors" among its files. Searched the body for datasets and dataset: tags: none,
+      so no training set is declared.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9cb45bafef59bc99ad7d6276aabfb2349a99b91acf429217d0d26c77a652be16
     establishes:
     - weights
     - data
     - license
-  - url: https://huggingface.co/api/models/meta-llama/Llama-Prompt-Guard-2-86M
-    shows: cardData records license - other with license_name - llama4; gated - manual; siblings list
-      model.safetensors; no datasets key.
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/meta-llama/Llama-Prompt-Guard-2-22M
+    shows: The Hugging Face API record for meta-llama/Llama-Prompt-Guard-2-22M tags it "license:other" under
+      the "LLAMA 4 COMMUNITY LICENSE AGREEMENT" gated prompt, sets gated to manual, and lists "model.safetensors"
+      among its files, so the smaller checkpoint ships downloadable weights on the same terms as the 86M
+      model.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8dbd4ab1eb0ead190135b8aa992de63edc25bb3f7437f18243f2f278a560a0b6
+    content_sha256: 45295e482b003c4396b8de3ee33cdfebfe33fa85b9c00ac353ef1f7da35965f4
     establishes:
     - weights
-    - data
     - license
 adoption:
   level: 3
@@ -64,18 +80,29 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: injection detection + latency
-  value: Dedicated prompt-injection/jailbreak detection at 99.8% AUC and 97.5% recall at 1% FPR (English),
-    8 languages, sub-100ms latency; narrow but best-in-class at its job.
+  value: Dedicated prompt-injection and jailbreak classifier with 0.998 AUC and 97.5% recall at 1% FPR in
+    English, evaluated in 8 languages, at 92 ms per 512-token classification on an A100; narrow in scope,
+    flagging known attack patterns only.
   confidence: medium
-  note: Specialized injection/jailbreak classifier with strong accuracy and very low latency; complements
-    full-taxonomy guards.
-  last_verified: '2026-08-13'
+  note: Llama Prompt Guard 2 detects prompt injection and jailbreaks with high recall at a low false-positive
+    rate and classifies a prompt in under 100 ms on an A100. It flags only known attack patterns, so it
+    complements a full-taxonomy content guard rather than replacing it.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
-    shows: 'Card evaluation table gives Llama Prompt Guard 2 86M an English AUC of .998, recall at 1% FPR
-      of 97.5%, multilingual AUC .995 and 92.4 ms per classification on an A100; the 22M variant is listed
-      at .995/88.7% and 19.3 ms. Repo is tagged 8 languages, and the card frames the task as prompt
-      injection and jailbreak detection.'
-    accessed: '2026-08-13'
+    shows: The card frames the models as detecting "explicit, known attack patterns, labeling prompts as"
+      benign or malicious, with a table of "AUC (English)", "Recall @ 1% FPR (English)" and "Latency per
+      classification (A100 GPU, 512 tokens)" where the 86M model reads ".998", "97.5%" and "92.4 ms" and
+      the 22M model "88.7%" and "19.3 ms". It states "Both Llama Prompt Guard 2 models support a 512-token
+      context window" and were evaluated in "English, French, German, Hindi, Italian, Portuguese, Spanish,
+      and Thai".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2b82c90d52e77871e862698d8e3fd040a85c707fb7e2fda394446ab5a17ee62a
+    content_sha256: 69dec46358d28d331c2cc9cea7da478fabfa00a61157a87f72b751989a888ba6
+  - url: https://pypi.org/pypi/llamafirewall/json
+    shows: The PyPI record for llamafirewall lists PromptGuard 2 among its core components as "A fast, lightweight
+      BERT-style classifier that detects direct prompt injection attempts" and wires it in through "Initialize
+      LlamaFirewall with Prompt Guard scanner".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9ccffac883a917c5f23d22a32e901e17f655ba95890fbe79897a212b9476b629

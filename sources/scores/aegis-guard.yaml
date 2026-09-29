@@ -13,35 +13,64 @@ openness:
     - name: Llama-2-Community
       detail: NOT OSI
   confidence: medium
-  note: Open-weights at the adapter level but the LlamaGuard base is access-gated through Meta and the license
-    is the non-OSI Llama 2 Community License, so it lands at open_weights (3) with a gating caveat.
+  note: NVIDIA publishes the adapter weights on Hugging Face without an access gate, under the Llama 2 Community
+    License, which carries use restrictions and is not OSI-approved. The adapter runs on top of Meta's LlamaGuard-7b,
+    whose download needs Meta's approval, and the Aegis training dataset is released separately under CC-BY-4.0.
   raw: weights:adapter-open(HF) but base LlamaGuard gated via Meta access;data:Aegis safety dataset documented;license:Llama-2-Community(NOT
     OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
-    shows: 'License section reads ''The use of this model is governed by the Llama 2 Community License
-      Agreement''. The repo is not gated and carries adapter_model.safetensors, so the adapter is
-      downloadable; the model is a parameter-efficient tune of Llama Guard, whose own repo is
-      access-gated. cardData declares datasets - nvidia/Aegis-AI-Content-Safety-Dataset-1.0, covering the
-      13-category taxonomy.'
-    accessed: '2026-08-13'
+    shows: The model page's card reads "The use of this model is governed by the" Llama 2 Community License
+      Agreement and describes the adapter as "a parameter efficient instruction tuned version of" Llama
+      Guard, trained on NVIDIA's content safety dataset covering "13 critical safety risk categories".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ab9c3aa2d2819e023f40b2ca113420822607685ae6cbd87be35b088e52507eeb
+    content_sha256: 266d68b65ec2b55ea4aed88dc2f1238a4266f2e9b431e0b2d6db03450fefb2fa
     establishes:
     - weights
-    - data
     - license
   - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0/raw/main/README.md
-    shows: Card front matter records license - llama2 and datasets - nvidia/Aegis-AI-Content-Safety-Dataset-1.0;
-      the body describes a parameter-efficient instruction-tuned Llama Guard over Nvidia's taxonomy of 13
-      critical safety risk categories.
-    accessed: '2026-08-13'
+    shows: The model card states "The use of this model is governed by the" Llama 2 Community License Agreement,
+      describes the model as "a parameter efficient instruction tuned version of" Llama Guard based on Llama2-7B,
+      and says the adapter was trained with PEFT and "the training and validation code from the" Llama recipes
+      repository.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 83a52739aa090021f29f2669a534a4a52e9983ccd8ed2096df5401422cd355ff
     establishes:
     - weights
+    - license
+    - code
+  - url: https://huggingface.co/api/models/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
+    shows: The Hugging Face API record for the Defensive adapter carries the tags "license:llama2" and "dataset:nvidia/Aegis-AI-Content-Safety-Dataset-1.0",
+      sets gated to false, and lists the downloadable weights file "adapter_model.safetensors"; its PEFT
+      config points the adapter at a base of "models--meta-llama--LlamaGuard-7b".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2027e92ca3f614efe444be03443de2ca09af6d444f7f1f19525a8cc52c62ee55
+    establishes:
+    - weights
     - data
+    - license
+  - url: https://huggingface.co/api/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-1.0
+    shows: The Hugging Face API record for the training dataset carries the tag "license:cc-by-4.0", lists
+      two parquet files including "Content Moderation Extracted Annotations 02.08.24_train_release_0418_v1.parquet",
+      and describes it as "an open-source content safety dataset (CC-BY-4.0)".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d175c4483a52eb2e0e6107145c38a71b09f42c49b8d042ede5478c492d37e95d
+    establishes:
+    - data
+  - url: https://huggingface.co/api/models/meta-llama/LlamaGuard-7b
+    shows: The Hugging Face API record for Meta's base model meta-llama/LlamaGuard-7b carries the tag "license:llama2"
+      and marks the repository gated with the value manual, so the base weights the adapter loads require
+      Meta's access approval; the record's tags include "text-generation-inference".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 26393ac5f4ec005bbdce2cfeeb0158ece2b506eebdd97eb2dbd7cf5ee360bb37
+    establishes:
+    - weights
     - license
 adoption:
   level: 1
@@ -65,22 +94,41 @@ adoption:
     http_status: 200
     content_sha256: 63af8d1b3273ece735a12d45d7af3ca11b05e70dd39076ab6f2c9bb3cfc607a7
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
   basis_detail: risk coverage
   relative_to: llama-guard
-  relation: at
-  value: 13 critical safety risk categories across prompts and responses, with an open safety dataset
-    and a defensive/permissive variant pair.
+  relation: one_below
+  value: 13 critical safety risk categories plus a needs-caution label, with custom categories accepted
+    in the prompt; trained for English prompt classification, with response classification by template,
+    and published as defensive and permissive variants beside an open safety dataset.
   confidence: low
-  note: 'Aegis is a parameter-efficient tune of Llama Guard, documented with a public training dataset,
-    and covers a taxonomy of the same order: 13 categories against Llama Guard''s 14. That places it alongside
-    its base model rather than ahead of or behind it.'
-  last_verified: '2026-08-13'
+  note: Aegis covers 13 risk categories and accepts custom categories in the prompt, but it was trained
+    only to classify English prompts, labeling responses through the same template. Llama Guard 3 classifies
+    prompts and responses across 14 categories in eight languages and also screens tool calls, so Aegis
+    sits a step below it.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
-    shows: Card describes Llama Nemotron Safety Guard Defensive V1 as an instruction-tuned Llama Guard
-      covering Nvidia's taxonomy of 13 critical safety risk categories.
-    accessed: '2026-08-13'
+    shows: The model page's card reads "The use of this model is governed by the" Llama 2 Community License
+      Agreement and describes the adapter as "a parameter efficient instruction tuned version of" Llama
+      Guard, trained on NVIDIA's content safety dataset covering "13 critical safety risk categories".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ab9c3aa2d2819e023f40b2ca113420822607685ae6cbd87be35b088e52507eeb
+    content_sha256: 266d68b65ec2b55ea4aed88dc2f1238a4266f2e9b431e0b2d6db03450fefb2fa
+  - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0/raw/main/README.md
+    shows: The model card says the safety policy used for training contains "13 critically unsafe risk categories,
+      a safe category and a" needs-caution category, and that "Novel safety risk categories and policy can
+      be provided in the instruction", but warns "Model has only been trained to perform prompt classification
+      since the annotations were not available at turn level"; the front matter lists only language en,
+      and the evaluation tables compare it with "Llama Guard Base".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 83a52739aa090021f29f2669a534a4a52e9983ccd8ed2096df5401422cd355ff
+  - url: https://huggingface.co/api/models/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Permissive-1.0
+    shows: The Hugging Face API record for the companion adapter "nvidia/Aegis-AI-Content-Safety-LlamaGuard-Permissive-1.0"
+      carries the same tag "dataset:nvidia/Aegis-AI-Content-Safety-Dataset-1.0" and ships its own "adapter_model.safetensors",
+      so NVIDIA still publishes a permissive variant beside the defensive one.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 11b0e921135ab592535c1b015c3e384681375758a5c30ce399ffc52c2f40ae18

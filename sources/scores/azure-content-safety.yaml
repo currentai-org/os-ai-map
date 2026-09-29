@@ -10,28 +10,50 @@ openness:
     context:
       service:
         value: proprietary managed Azure service
-        detail: no self-host
+        detail: metered preview containers, cloud-connected
       features:
         value: text/image moderation
         detail: prompt shields, groundedness
         raw: text/image moderation, prompt shields, groundedness
   confidence: high
-  note: Closed managed cloud service; no weights or source.
-  raw: service:proprietary managed Azure service(no self-host);features:text/image moderation, prompt shields,
-    groundedness;source:closed;license:proprietary
-  last_verified: '2026-08-13'
+  note: Microsoft runs this as a proprietary Azure service and publishes no source code or model weights.
+    Preview containers can run the text, image and Prompt Shields checks on customer hardware, but they
+    are licensed only while connected to Azure for metering.
+  raw: service:proprietary managed Azure service(metered preview containers, cloud-connected);features:text/image
+    moderation, prompt shields, groundedness;source:closed;license:proprietary
+  last_verified: '2026-09-29'
   sources:
   - url: https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety
-    shows: 'Sold as an Azure service on consumption pricing - ''Flexible pricing to meet your needs'',
-      ''Pay for only what you use - no upfront costs'' priced on analysis volume. The word self-host does
-      not appear anywhere on the page, no source repository is linked, and use is governed by the Azure
-      product terms rather than any published license.'
+    shows: Sold as an Azure service on consumption pricing - 'Flexible pricing to meet your needs', 'Pay
+      for only what you use - no upfront costs' priced on analysis volume. The word self-host does not appear
+      anywhere on the page, no source repository is linked, and use is governed by the Azure product terms
+      rather than any published license.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c
     establishes:
     - source
     - license
+  - url: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/how-to/containers/container-overview
+    shows: Microsoft's container guide says "Containers let you use a subset of the Azure AI Content Safety
+      features in your own environment", covering analyze text, analyze image and Prompt Shields, notes
+      that "The content safety container is available in public preview", and states that "Content safety
+      containers aren't licensed to run without being connected to Azure for metering."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 05c8f6e0f9b1370f1a1a959269bd1783a53cd47666965d7168b70873a548efa3
+    establishes:
+    - license
+    - self-host
+  - url: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/overview
+    shows: 'The service overview lists "An Azure subscription" among the prerequisites and says "All of
+      these capabilities are handled by the Studio and its backend". Searched the body for open source,
+      self-host and license: none, and the only GitHub links point to the documentation repository.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a91c1a2f9230e2395f6b7b9c3c64b81849eaeb48e87373314cdbaac7a4a56d8c
+    establishes:
+    - source
 adoption:
   level: 3
   signal_type: reported_traction
@@ -41,7 +63,6 @@ adoption:
   note: Microsoft positions this as the default content-safety layer in front of the Azure AI customer base,
     which is what the reading reflects. The company publishes no customer count, request volume or developer
     count for the service, so this is a credible claim about standing rather than a measured figure.
-  last_verified: '2026-08-13'
   sources:
   - url: https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety
     shows: Product and pricing page. No usage figure of any kind appears on it.
@@ -52,18 +73,32 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: feature coverage
-  value: Text and image moderation, prompt-shield jailbreak/injection detection, and groundedness detection
-    in one managed service.
+  value: Text and image moderation, Prompt Shields for direct and indirect prompt injection, groundedness
+    detection, protected-material detection, an agent task-adherence check and custom categories in one
+    managed service.
   confidence: low
-  note: Broad managed feature set (moderation + prompt shields + groundedness); strong coverage, closed.
-    Protected-material detection for copyrighted text and code sits alongside the three the value names.
-  last_verified: '2026-08-13'
+  note: One service covers harm-category moderation for text and images, prompt-injection defense, groundedness
+    checks, protected-material detection and a task-adherence check for AI agents. Groundedness, task adherence
+    and custom categories are still in preview, and the protected-material, groundedness and custom-category
+    models work in English only.
+  last_verified: '2026-09-29'
   sources:
   - url: https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety
-    shows: 'Page lists blocking harmful inputs and outputs across violence, hate, sexual and self-harm for
-      text and images; custom AI filters; ''Identify and mitigate both direct and indirect threats with
-      prompt shields''; ''Identify and correct generative AI hallucinations ... with groundedness
-      detection''; and protected-material detection for copyrighted text and code.'
-    accessed: '2026-08-13'
+    shows: 'The product page says "Identify and mitigate both direct and indirect threats with prompt shields"
+      and "Pinpoint copyrighted content and provide sources for preexisting text and code with protected
+      material detection". Searched the body for customer counts, request volumes and developer counts:
+      none; the page names individual customer stories only.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c
+    content_sha256: 3a16cffa46ea8b2ec4015342633d54410e3019a8e6419bec18b1e339beaf10d5
+  - url: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/overview
+    shows: The service overview lists Prompt Shields, which "Scans text for the risk of a User input attack
+      on a Large Language Model", groundedness detection marked preview, protected material text detection,
+      a "Task adherence API" that "Detects when tool use by AI agents is misaligned, unintended, or premature
+      in the context of a user interaction", analyze text and image APIs that scan "for sexual content,
+      violence, hate, and self harm with multi-severity levels", and custom categories in preview. It adds
+      that the models for protected material, groundedness detection and custom categories "work with English
+      only".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a91c1a2f9230e2395f6b7b9c3c64b81849eaeb48e87373314cdbaac7a4a56d8c
