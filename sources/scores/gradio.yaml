@@ -13,12 +13,46 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: Gradio is released under Apache-2.0, an OSI-approved license, and its README describes the whole
+    library with no paid, enterprise or hosted tier beside it. The source is published in a public repository
+    and as a downloadable source distribution, so no part of the core is gated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/gradio/json
+    shows: PyPI metadata for gradio gives the license expression as "Apache-2.0" and the README states "Gradio
+      is licensed under the Apache License 2.0 found in the"; the release is published as a source distribution
+      and a wheel.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f
+    establishes:
+    - license
+  - url: https://pypi.org/project/gradio/
+    shows: The PyPI project page states "licensed under the Apache License 2.0 found in the" LICENSE file
+      in the root directory.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9da34cc8560a26b06615c97728275929013dc61b3bcfb50940879dc4e6c94df7
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/gradio/json
+    shows: PyPI JSON lists an sdist file named "gradio-6.28.0.tar.gz" beside the wheel, so the source is
+      publicly downloadable; the README says "please create an [issue on GitHub]".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/gradio/json
+    shows: 'The README describes the whole library as "Gradio is an open-source Python package that allows
+      you to quickly" build ML demos, and mentions no paid, enterprise or hosted tier. Searched the README
+      for enterprise, pricing, license key and paid: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f
+    establishes:
+    - core-gated
   - url: https://github.com/gradio-app/gradio/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +60,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/gradio-app/gradio
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for gradio-app/gradio.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 80cfc754aaa0de21c5de39eb1fd75744abd6e99e8f25abe34de7e07bca600c11
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/gradio-app/gradio/main/README.md
-    shows: README describes Gradio as an open-source Python package for building and sharing ML web apps,
-      including the free share link. No paid tier or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: cada2d22c597b1f6a4e483dab1662c9697bdc09fdc39cc116e59ae3039eb36e5
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -52,7 +68,6 @@ adoption:
   note: Adoption is measured by PyPI downloads of the gradio package. Gradio is the default framework for
     building ML demos and interfaces and the standard backend for Hugging Face Spaces, giving its download
     volume a structural role across the ecosystem beyond individual experimentation.
-  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/gradio
     shows: 15,829,897 downloads in the last 30 days for gradio
@@ -66,8 +81,15 @@ capability:
     with no frontend code.'
   confidence: high
   note: Broad and widely used for demos and apps but scoped to the interface layer, not model training.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/gradio/json
+    shows: 'README for the current release: "Gradio includes another high-level class, `gr.ChatInterface`,
+      which is specifically designed to create Chatbot UIs" alongside Interface for demos and Blocks for
+      custom layouts, with public share links and no JavaScript, CSS or web hosting experience needed.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 337a37c57fb0f2dd69fccb893854617d4012b32d2c81d9f6bbd01a7e1b03c68f
   - url: https://github.com/gradio-app/gradio
     shows: README still describes building and sharing web demos and apps for ML models and Python functions
       with no frontend code

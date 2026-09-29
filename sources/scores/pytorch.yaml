@@ -17,8 +17,36 @@ openness:
     institutions, and the full source is public in this unarchived repository. The README describes the
     whole library with no paid, enterprise or hosted tier beside it, so the core is ungated.
   raw: license:BSD-3-Clause(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/pytorch/pytorch@main/LICENSE
+    shows: The LICENSE file in pytorch/pytorch carries the BSD 3-Clause conditions, including "Redistributions
+      of source code must retain the above copyright" and "Neither the names of Facebook, Deepmind Technologies,
+      NYU, NEC Laboratories America".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/torch/json
+    shows: 'PyPI page text carries the project README: "PyTorch has a BSD-style license, as found in the
+      [LICENSE](LICENSE) file." and the license expression lists "BSD-3-Clause" among the bundled component
+      licenses.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 12620a689ae61b70596486dfb3db7f393060f28cad092db7f2d52ec0449bede7
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/torch/json
+    shows: 'The README build guide tells readers to fetch the public source tree with "git clone https://github.com/pytorch/pytorch".
+      Searched the body for paid tier, enterprise edition and hosted tier: the only "Enterprise" is Visual
+      Studio Enterprise in the Windows build notes.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 12620a689ae61b70596486dfb3db7f393060f28cad092db7f2d52ec0449bede7
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/pytorch/pytorch/blob/main/LICENSE
     shows: LICENSE body carries the three BSD 3-Clause conditions and the 'Neither the names ... may be
       used to endorse' clause, under per-contributor copyright lines (Facebook, Idiap, Deepmind, NEC, NYU
@@ -28,24 +56,6 @@ openness:
     content_sha256: bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43
     establishes:
     - license
-  - url: https://api.github.com/repos/pytorch/pytorch
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main
-      - for pytorch/pytorch.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e1981405fed40203958accf42f2755e7cea4144205812c78602a69faca875ada
-    establishes:
-    - source
-  - url: https://raw.githubusercontent.com/pytorch/pytorch/main/README.md
-    shows: README describes the whole package - tensor computation with GPU acceleration and tape-based
-      autograd - plus build-from-source instructions. No paid, enterprise or hosted PyTorch tier appears;
-      the one 'Enterprise' string is Visual Studio Enterprise in the Windows build notes.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 6f993564b6d153b2adf82d9d434e57374766da4bf398269f4fe358fcf9dd4115
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -75,8 +85,28 @@ capability:
   note: Defines the model-training layer alongside TensorFlow.
   relative_to: tensorflow
   relation: at
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/torch/json
+    shows: PyPI page for torch carries the project README, which says "PyTorch is a Python package that
+      provides two high-level features" including "Tensor computation (like NumPy) with strong GPU acceleration"
+      and "Deep neural networks built on a tape-based autograd system".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 12620a689ae61b70596486dfb3db7f393060f28cad092db7f2d52ec0449bede7
+  - url: https://pytorch.org/tutorials/beginner/dist_overview.html
+    shows: Distributed overview tutorial advises "Use DistributedDataParallel (DDP), if your model fits
+      in a single GPU but you want to easily scale up training using multiple GPUs" and links guides for
+      FSDP2, tensor parallel and pipeline parallelism.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 58557ad71106a286819a32c729fcda625efe64d6f4576dc23d9ed774e3c07760
+  - url: https://docs.pytorch.org/docs/2.14/index.html
+    shows: The 2.14 documentation index lists reference pages for "torch.autograd", "torch.nn", "torch.compiler"
+      and "Distributed communication package - torch.distributed".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d9d8b5e962260052f4b8fc9fcc05ed67c8c087829cc7d0d87b1abf12a1130ce9
   - url: https://github.com/pytorch/pytorch
     shows: README still describes tensor computation with strong GPU acceleration and deep neural networks
       on a tape-based autograd system
