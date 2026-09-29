@@ -23,16 +23,27 @@ openness:
   raw: weights:open(Apache-2.0, on HF);data:closed(no training corpus released);code:partial(inference/usage
     + chat template; no training pipeline or post-training/SFT data);license:Apache-2.0(OSI permissive,
     no use restrictions)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
-    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
-      BF16 weights download without a barrier; the card documents quickstart, tool-calling and agentic-coding
-      usage only, with no post-training pipeline and no SFT/DPO/RL mixture named or released'
-    accessed: '2026-08-13'
+    shows: 'Model card lists "Training Stage: Pretraining & Post-training" and covers quickstart and agentic-coding
+      usage; searched the body for training corpus, post-training data, SFT recipe and training pipeline:
+      none released.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 37afad5c82173e287aaa519b3d2e02b1c45f681e80f5564ee5df7d4cb53a8c18
-    establishes: [weights, data, code, license]
+    content_sha256: 889b449f503d11faf993175f186ce6ec810513a0311b03b7a4c174692811c532
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Coder-480B-A35B-Instruct
+    shows: Hub API record for "Qwen/Qwen3-Coder-480B-A35B-Instruct" carries the tag "license:apache-2.0",
+      with safetensors weights and the repo not gated.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ea4544d41d79d50915fee83703f438fb7e160a70d2adf8ca7e3c9e83675add48
+    establishes:
+    - weights
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -61,10 +72,9 @@ capability:
   value: Vendor positions agentic coding comparable to Claude Sonnet class; 480B-A35B MoE, repository-scale long
     context; non-thinking mode
   confidence: medium
-  note: Strong open-weight coding model (Claude Sonnet-class agentic coding per vendor card), a notch below
-    2026 frontier coders (DeepSeek-V4-Pro, Kimi K2.6, GLM-5.1). The HF card is vendor-reported and no independent
-    SWE-bench number was captured this run, so the reading carries medium confidence.
-  last_verified: '2026-08-13'
+  note: Qwen's model card says the model achieves results comparable to Claude Sonnet on agentic coding
+    among open models; the claim is vendor-reported and no independent SWE-bench result is cited. It sits
+    a step below current frontier coding models.
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
     shows: vendor claim of results "comparable to Claude Sonnet" on agentic coding and agentic browser-use

@@ -19,7 +19,6 @@ openness:
   note: The repository is licensed under Apache-2.0, and the published tree includes the C++ runtime and
     kernels themselves rather than a stub, so nothing is held back from the source. NVIDIA sells NIM and
     enterprise support as separate products beside it.
-  last_verified: '2026-08-09'
   raw: license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency
     appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not
     a license restriction)
@@ -52,12 +51,12 @@ adoption:
   level: 3
   signal_type: reported_traction
   confidence: high
-  banded_quantity: GitHub stars (14,342), not a download or user count
+  banded_quantity: GitHub stars (14,730), not a download or user count
   note: 'Independent comparisons frame TensorRT-LLM as the specialist choice: the highest raw throughput
     on standardized NVIDIA fleets, but narrower reach than vLLM or SGLang because of its compilation overhead
     and single-vendor lock-in. No standalone user or download count exists, so the rating reflects that
     specialized, GPU-locked production use rather than a broad count.'
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/NVIDIA/TensorRT-LLM
     shows: '"stargazerCount":14342'
@@ -65,19 +64,18 @@ adoption:
     http_status: 200
     content_sha256: 87877124e60b1a5c40de3751936a63c4115d35e77f50eb5ab8c97a3b3040392f
   - url: https://www.yottalabs.ai/post/best-llm-inference-engines-in-2026-vllm-tensorrt-llm-tgi-and-sglang-compared
-    shows: Because TensorRT-LLM is built specifically for NVIDIA hardware, it can achieve extremely high
-      performance in environments where infrastructure is standardized around NVIDIA GPU clusters. However,
-      this hardware specialization can also make it less flexible for teams running heterogeneous infrastructure
-      across multiple cloud environments.
-    accessed: '2026-08-09'
+    shows: The page says "Because TensorRT-LLM is built specifically for NVIDIA hardware, it can achieve
+      extremely high performance in environments where infrastructure is standardized around NVIDIA GPU
+      clusters."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2dd2a7be8b7c2ab74dabcf22d78060c60aa02da30e9bf444012183d785623630
+    content_sha256: 59a29aaf8aca5cb46fd1c5633783fa8c4c640fab7adaf385a7903ea8bd2143b0
   - url: https://theaiengineer.substack.com/p/vllm-vs-ollama-vs-sglang-vs-tensorrt
-    shows: TensorRT-LLM squeezes maximum performance from NVIDIA hardware but demands 1-2 weeks of setup
-      time and locks you into a single vendor.
-    accessed: '2026-08-09'
+    shows: The article says TensorRT-LLM "squeezes maximum performance from NVIDIA hardware but demands
+      1-2 weeks of setup time and locks you into a single vendor."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 931f05f8e2a99f4622d2b98f83552baa9de4763001425203042ba02d6717b97e
+    content_sha256: 530cec99acc45178c7904b96996558abc6ebd43d6b2f2145ded58b96925befce
 capability:
   score: 5
   basis: benchmark
@@ -88,7 +86,7 @@ capability:
     GPT-J test than the prior round. An independent H100 benchmark on Llama 3.3 70B puts it ahead of vLLM
     and SGLang on raw throughput, though with a cold start of about 28 minutes against roughly a minute
     for the others.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.hpcwire.com/2024/03/28/mlperf-inference-4-0-results-showcase-genai-nvidia-still-dominates/
     shows: delivered nearly 3x more performance on the GPT-J test compared to the prior round thanks to
@@ -96,8 +94,15 @@ capability:
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: 8488691654e14b11e3568fa9aae7ab4172163f0450be5b0458fb35b890ba4fb5
-  - url: https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/
-    shows: Use TensorRT-LLM if you have a single model in long-term production and throughput is paramount.
-    accessed: '2026-08-09'
+  - url: https://developer.nvidia.com/blog/nvidia-h200-tensor-core-gpus-and-nvidia-tensorrt-llm-set-mlperf-llm-inference-records/
+    shows: NVIDIA's MLPerf Inference v4.0 post has a section headed "TensorRT-LLM nearly triples LLM inference
+      performance" and says H100 "nearly tripled performance on the GPT-J LLM test."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d67aacbe60d243508c0f49bdd6f4b74bcb5460dbdcf73e0cdbf50dc1cb802d30
+    content_sha256: f7bc63f9e94ee59dbdeb4ea02d0d20df757d49282cb6f7f22826d45f8a79ae3e
+  - url: https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/
+    shows: The benchmark guide recommends TensorRT-LLM "if you have a single model in long-term production
+      and throughput is paramount" and lists its engine build at "~28 minutes (engine compilation)"
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9724bf6f025b33e3bd73f52eebe8f8a36659c1724c58cab63f41097fea537786

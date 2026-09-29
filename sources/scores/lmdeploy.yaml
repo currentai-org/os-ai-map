@@ -21,7 +21,7 @@ openness:
   note: The repository is public and active, and the LICENSE body is the unmodified Apache-2.0 text. Its
     README and repo page name no enterprise or paid tier for LMDeploy itself, so nothing is withheld from
     the published source.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   raw: license:Apache-2.0(OSI);source:public(InternLM/lmdeploy);no-feature-gated-core;quantization:weight-only+kv(AWQ/W4A16);core-gated:ungated
   sources:
   - url: https://github.com/InternLM/lmdeploy
@@ -36,12 +36,24 @@ openness:
     http_status: 200
     content_sha256: 1e930c9fd3268bc1a45d9385f5a110db3c0630d22de33ad91590086188f5c984
   - url: https://raw.githubusercontent.com/InternLM/lmdeploy/main/LICENSE
-    shows: Apache License Version 2.0, January 2004, http://www.apache.org/licenses/
-    accessed: '2026-08-09'
+    shows: The LICENSE file is the Apache License, "Apache License" "Version 2.0, January 2004" with "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
     establishes:
     - license
     http_status: 200
     content_sha256: 811e05b43b0d985814c7ffd0a1d0b93e9166e6f0271245d540302505734528ba
+  - url: https://raw.githubusercontent.com/InternLM/lmdeploy/main/README.md
+    shows: 'The README states "This project is released under the [Apache 2.0 license](LICENSE)." and describes
+      two engines: "LMDeploy has developed two inference engines - [TurboMind]"; searched for enterprise,
+      paid, license key and non-commercial: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    - source
+    - core_gated
+    http_status: 200
+    content_sha256: ccce7062646133a4186ecea91c07b708fcd3fb48ee05809cf1cb601f5936fd65
 adoption:
   level: 2
   reach: 10K-100K
@@ -99,7 +111,7 @@ capability:
     feature set: continuous batching, quantization and broad model coverage. Its own claim of higher throughput
     than vLLM is a vendor self-benchmark, so the placement instead reflects vLLM''s independent MLPerf submission
     and wider architecture coverage.'
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/InternLM/lmdeploy
     shows: TurboMind and PyTorch engine descriptions; persistent batching, blocked KV cache, AWQ/W4A16 weight-only
@@ -107,3 +119,11 @@ capability:
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: 1e930c9fd3268bc1a45d9385f5a110db3c0630d22de33ad91590086188f5c984
+  - url: https://raw.githubusercontent.com/InternLM/lmdeploy/main/README.md
+    shows: 'README feature list: "persistent batch(a.k.a. continuous batching), blocked KV cache, dynamic
+      split&fuse, tensor parallelism" and "LMDeploy supports weight-only and k/v quantization, and the 4-bit
+      inference performance is 2.4x higher than FP16"; it lists "InternVL3.5 (1B-241BA28B)" among supported
+      models.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ccce7062646133a4186ecea91c07b708fcd3fb48ee05809cf1cb601f5936fd65

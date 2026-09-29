@@ -18,37 +18,63 @@ openness:
         value: Qwen3.5
   confidence: high
   note: MIT-licensed open weights on a Qwen 3.5 base, but no open training data or recipe, so open weights
-    rather than open source. The repository is now served under the org ornith-ai rather than deepreinforce-ai;
-    the declared URL still resolves.
+    rather than open source.
   raw: weights:open(MIT);base:Qwen3.5;data:closed;recipe:closed;license:MIT(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
-    shows: '`license:mit` and `"gated":false`; `Qwen3_5ForConditionalGeneration` architecture; safetensors
-      weights; no training data and no recipe published; repo now served as ornith-ai/Ornith-1.0-9B'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/ornith-ai/Ornith-1.0-9B/raw/main/README.md
+    shows: 'Raw model card README: "MIT licensed, globally accessible, and free from regional limitations."
+      and "post-trained on top of Gemma 4 and Qwen 3.5". Searched the body for training data, dataset, recipe,
+      technical report and code repository links: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f2dce9e8bb7989a0b62e72f438d129d927af9aeed17a1016842828e12ce2148e
-    establishes: [weights, data, recipe, license]
+    content_sha256: fc6164ad80e63c2ea7e4f75d0694a3ebc095ef42537efe23ff3f4bddb6940b8a
+    establishes:
+    - license
+    - data
+    - recipe
+  - url: https://huggingface.co/ornith-ai/Ornith-1.0-9B
+    shows: 'Model page: "MIT licensed, globally accessible, and free from regional limitations." with the
+      Qwen3_5ForConditionalGeneration architecture; searched the body for training data, dataset and recipe
+      links: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ccb652eae5a4891cf78404c54d7ad489b90d80dfece3a225e8278a7e8d9e73f5
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B
+    shows: 'API record for ornith-ai/Ornith-1.0-9B, served for the declared deepreinforce-ai path: 963,330
+      downloads over the trailing 30 days; tags include license:mit, qwen3_5 and safetensors; the record
+      also carries the sample prompt "Explain quantum computing in simple terms."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f010d2daba3ba64fd6e18fd4c333145e37a164566efec5ea2e7a03a12978a9d
+    establishes:
+    - weights
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Adoption is read as the summed Hugging Face downloads across Ornith's two declared repositories,
-    the base model and its GGUF build, taken from the Hugging Face API rather than the rendered model card.
-  last_verified: '2026-08-14'
+  note: Adoption is measured as Hugging Face downloads summed across Ornith's two declared repositories,
+    the base model and its GGUF build.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B
-    shows: 2,383,936 downloads in the trailing 30 days (repo now served as ornith-ai/Ornith-1.0-9B)
-    accessed: '2026-08-14'
+    shows: 'API record for ornith-ai/Ornith-1.0-9B, served for the declared deepreinforce-ai path: 963,330
+      downloads over the trailing 30 days; tags include license:mit, qwen3_5 and safetensors; the record
+      also carries the sample prompt "Explain quantum computing in simple terms."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8aee69ec2c62ebb5bc23e29e79c8aabd73508b3546591f84b856060971ea4047
+    content_sha256: 9f010d2daba3ba64fd6e18fd4c333145e37a164566efec5ea2e7a03a12978a9d
   - url: https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B-GGUF
-    shows: 4,594,817 downloads in the trailing 30 days (repo now served as ornith-ai/Ornith-1.0-9B-GGUF)
-    accessed: '2026-08-14'
+    shows: 'API record for ornith-ai/Ornith-1.0-9B-GGUF, served for the declared deepreinforce-ai path:
+      2,666,462 downloads over the trailing 30 days; the record also carries the sample prompt "Explain
+      quantum computing in simple terms."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a2b3db90e293353fb7ee493242b87c9fc37408e13a233ff484dc6af1ee9434b6
+    content_sha256: bdb955f70983177c75cb5118ef39fb3605abbe95490b801184e6deca868f1079
 capability:
   score: 4
   basis: benchmark
@@ -56,15 +82,16 @@ capability:
   value: SWE-Bench Verified 69.4, SWE-Bench Pro 42.9, Terminal-Bench 2.1 ~43 (Terminus-2) / ~40.6 (Claude
     Code); agentic coding with reasoning and tool-calling
   confidence: medium
-  note: Strong agentic-coding scores for a 9B model, competitive within the category but below the frontier
-    coders; the figures are vendor-reported on a model card that also lists SWE-bench Multilingual 52.0
-    and Claw-Eval 63.1. The additional Terminal-Bench figures reported for it are not in that index and
-    cannot be independently confirmed.
-  last_verified: '2026-08-13'
+  note: Ornith 1.0 9B is vendor-reported at 69.4 on SWE-bench Verified, 42.9 on SWE-bench Pro and 43.1 on
+    Terminal-Bench 2.1 with Terminus-2, all from its own model card. Those results are strong for a 9B model
+    but sit below the frontier coding models.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
-    shows: 'model-index - SWE-bench/SWE-bench_Verified 69.4 (% resolved), ScaleAI/SWE-bench_Pro 42.9,
-      SWE-bench/SWE-bench_Multilingual 52, claw-eval/Claw-Eval 63.1; no Terminal-Bench row'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/ornith-ai/Ornith-1.0-9B/raw/main/README.md
+    shows: 'Model card results table: Terminal-Bench 2.1 with Terminus-2 at 43.1 and Claude Code at 40.6,
+      SWE-bench Verified 69.4, SWE-bench Pro 42.9, SWE-bench Multilingual 52, Claw-eval Avg 63.1; the card
+      claims "achieving state-of-the-art performance among open-source models of comparable size" and describes
+      a reasoning model with tool-call parsing.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f2dce9e8bb7989a0b62e72f438d129d927af9aeed17a1016842828e12ce2148e
+    content_sha256: fc6164ad80e63c2ea7e4f75d0694a3ebc095ef42537efe23ff3f4bddb6940b8a

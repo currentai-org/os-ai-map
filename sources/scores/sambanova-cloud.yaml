@@ -50,30 +50,33 @@ adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
-  banded_quantity: third-party routed token volume via OpenRouter (~1.65B tokens on one day), not users
-  note: OpenRouter's SambaNova provider page shows real third-party token volume across the models it routes
-    there, corroborating traffic beyond vendor marketing. SambaNova publishes no standalone user or customer
-    count, so this reading is observed traffic rather than a banded usage figure.
-  last_verified: '2026-08-09'
+  banded_quantity: third-party routed token volume via OpenRouter (~1.07B tokens on 2026-09-28), not users
+  note: OpenRouter's provider page for SambaNova charts daily tokens processed on the models routed to SambaNova
+    there. SambaNova publishes no user or customer count, so this third-party traffic is the only usage
+    measure found, and it covers only what is routed through OpenRouter.
+  last_verified: '2026-09-29'
   sources:
   - url: https://openrouter.ai/provider/sambanova
-    shows: 'Tokens processed on OpenRouter time series for SambaNova-routed models, e.g. 2026-08-09: google/gemma-4-31b-it
-      ~1,094,432,018; openai/gpt-oss-120b ~343,850,246; minimax/minimax-m2.7 ~107,023,059 tokens'
-    accessed: '2026-08-09'
+    shows: OpenRouter provider page for SambaNova has a "Tokens processed on OpenRouter" chart and states
+      "Access 7 models served by SambaNova through the OpenRouter unified API"; the embedded daily series
+      for 2026-09-28 sums to about 1.07B tokens, led by openai/gpt-oss-120b at about 584M, and 2026-09-27
+      to about 0.75B.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 38e3683b096b1c73bd4ee48310ecf86adb3984c6a75b704101a91b74f0053c2a
+    content_sha256: b92546ac949744e28e3c4bc8c00249f6102a5e9c25f14ec227a0f2e5470bb823
   - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
-    shows: public SambaNova Cloud with free try-it inference; positioned as commercial inference provider
-    accessed: '2026-08-09'
+    shows: 'SambaNova blog offers free trial inference on SambaNova Cloud: "Try our blazing fast inference
+      performance for yourself for free at" cloud.sambanova.ai, alongside its SN40L benchmark tables.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef
+    content_sha256: b3ab8ad03bf2a681c53a4c9f06c2ce9be5a15cf40cf243dfcab8115a68ecbfdc
 capability:
   score: 4
   basis: feature_matrix
-  value: SambaNova's own SN40L benchmark reports Llama 3.1 405B at 129 output tok/s, 70B at 457 tok/s, and
-    8B at 1,042 tok/s, all at full 16-bit precision. Per Artificial Analysis (checked today), SambaNova
-    currently serves 9 models via its API; the fastest is gpt-oss-120b at roughly 724 output tok/s, with
-    Llama 3.3 70B at roughly 290 tok/s.
+  value: Per Artificial Analysis (checked 2026-09-29), SambaNova currently serves 9 models via its API;
+    the fastest is gpt-oss-120b at roughly 727 output tok/s, with Llama 3.3 70B at roughly 278 tok/s. SambaNova's
+    own September 2024 SN40L benchmark reported Llama 3.1 405B at 129 output tok/s, 70B at 457 tok/s and
+    8B at 1,042 tok/s, all at full 16-bit precision.
   confidence: medium
   note: SambaNova's own SN40L benchmarks and Artificial Analysis's independent measurements both show strong
     per-token throughput across the models it serves. Its served-model catalog is narrower than the largest
@@ -83,17 +86,18 @@ capability:
     ladder exists for this category and no peer comparison is recorded for this product; score reflects
     specialized-hardware throughput leadership offset by a narrower served-model breadth than the largest
     multi-tenant inference clouds.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
-    shows: Llama 3.1 Instruct 405B 129, 70B 457, 8B 1042 (output tokens/sec, SambaNova 16-bit column of
-      Table 1)
-    accessed: '2026-08-09'
+    shows: SambaNova blog reports Llama 3.1 405B at "129 output tokens/second/user"; Table 1 lists the SambaNova
+      16-bit column at 457 for Llama 3.1 70B and 1042 for 8B.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef
+    content_sha256: b3ab8ad03bf2a681c53a4c9f06c2ce9be5a15cf40cf243dfcab8115a68ecbfdc
   - url: https://artificialanalysis.ai/providers/sambanova
-    shows: 'Fastest # 1 gpt-oss-120b (low) 724 t/s # 2 gpt-oss-120b (high) 706 t/s # 3 MiniMax-M2.7 381
-      t/s # 4 Llama 3.3 70B 290 t/s # 5 Gemma 4 31B 203 t/s'
-    accessed: '2026-08-09'
+    shows: Artificial Analysis lists SambaNova with "9 models, each with different intelligence, performance,
+      and pricing characteristics" and states "the fastest models are gpt-oss-120b (low) (727 t/s), gpt-oss-120b
+      (high) (709 t/s), and MiniMax-M2.7 (397 t/s)"; the model table lists Llama 3.3 70B at 278 output tokens/s.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ef754ce317fc3e8eaa147ffac4ab8ae69b2b9206665f017faece64d442cfb557
+    content_sha256: f0d3d0c25c89be75fab7a64e404e73cef1de1134a96ce8c4869f682b0c998e0a

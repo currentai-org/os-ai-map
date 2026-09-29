@@ -20,20 +20,47 @@ openness:
   raw: 'license:Open-WebUI-License(BSD-3-Clause-based + non-OSI branding clause: branding may not be removed
     above 50 end-users/30d without enterprise license or written permission);source:public;enterprise-tier:commercial
     license to remove branding'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/open-webui/open-webui/blob/main/LICENSE
     shows: BSD-3-Clause-derived license with Section 4 branding-retention clause (<=50 users/30d), non-OSI
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5f1bd74c48bf13ab0f82e177ad9e637313b92533d20ead2593d49347a47fc232
-    establishes: [license]
+    establishes:
+    - license
   - url: https://github.com/open-webui/open-webui
     shows: v0.9.6 latest release, self-hosted AI interface
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 20c55ae4ba907a112dd497bbb3be0c1d90a0a6b1da197981c631cb55711a9357
-    establishes: [source]
+    establishes:
+    - source
+  - url: https://pypi.org/project/open-webui/
+    shows: 'PyPI project page: "This project contains code under multiple licenses." and "Other/Proprietary
+      License" in the classifiers; the release ships a source distribution (open_webui-0.11.4.tar.gz) published
+      from github.com/open-webui/open-webui.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 421d52ddc2982febafa18822ab68195f0617ced319db3c0eeb5fddfe6e8e84c7
+    establishes:
+    - license
+    - source
+  - url: https://docs.openwebui.com/license/
+    shows: 'License page: branding requirements "only apply to larger deployments (50+ users, aggregate)";
+      "The original BSD-3 license continues to apply for all contributions made to the codebase up to and
+      including release v0.6.5."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: df6c699c46d35277b8de101cdd402a46ca1691f3bf1855cf357348eac14db200
+    establishes:
+    - license
+  - url: https://docs.openwebui.com/enterprise/
+    shows: 'Enterprise page: "Enterprise License Required" for white-labeling, rebranding or enterprise-exclusive
+      offerings like Terminals; standard internal use with original branding intact is free.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2ceb567751dd444b77af58e40efbc434e8793b467f97811121c72487f60435e3
 adoption:
   level: 3
   reach: 100K-1M
@@ -41,7 +68,6 @@ adoption:
   confidence: high
   note: Open WebUI's adoption is measured as PyPI downloads of the open-webui package over a trailing 30
     days, a direct installation count rather than a stars-based attention signal.
-  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/open-webui/recent
     shows: 879,127 downloads in the trailing 30 days for open-webui
@@ -51,20 +77,25 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: model breadth (Ollama + any OpenAI-compatible API, multi-model conversations); RAG (9 vector
-    DB options, 15+ web-search providers); multimodal (STT/TTS, image gen via DALL-E/Gemini/ComfyUI/A1111);
-    multi-user (RBAC, groups, LDAP/SCIM/SSO); plugins (Pipelines framework)
+  value: model breadth (Ollama, OpenAI, Anthropic and any OpenAI-compatible API, side-by-side multi-model
+    chats); RAG (13 vector databases, hybrid search, 8 extraction engines); multimodal (voice and image
+    generation via GPT-Image, Gemini, ComfyUI); multi-user (RBAC, groups, LDAP/SCIM/SSO); plugins (Pipelines,
+    Tools, MCP and OpenAPI servers)
   confidence: high
-  note: 'Open WebUI has the broadest feature surface among open self-hosted chat UIs: model breadth, retrieval-augmented
-    generation, multimodal input and output, a plugin system and multi-user support with enterprise authentication.
-    The plugin surface alone spans Filters, Actions, Pipes, Tools and Skills, reachable over MCP and OpenAPI
-    tool servers. That combination puts it at the top of the self-hosted field, short of the category''s
-    overall frontier.'
-  last_verified: '2026-08-13'
+  note: Open WebUI covers model breadth, retrieval-augmented generation, multimodal input and output, a
+    plugin system and multi-user support with enterprise authentication. Its Pipelines plugin system is
+    complemented by MCP and OpenAPI tool servers.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/open-webui/open-webui
-    shows: 'feature list: RAG with 9 vector DBs, multimodal voice/image, RBAC/LDAP/SCIM/SSO, Pipelines
-      plugins'
+    shows: 'feature list: RAG with 9 vector DBs, multimodal voice/image, RBAC/LDAP/SCIM/SSO, Pipelines plugins'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 20c55ae4ba907a112dd497bbb3be0c1d90a0a6b1da197981c631cb55711a9357
+  - url: https://docs.openwebui.com/features/
+    shows: 'Features page: "13 vector databases" ChromaDB and PGVector officially maintained, plus non-core
+      integrations; RBAC, SSO/OIDC/LDAP and "SCIM 2.0"; Pipelines, MCP and OpenAPI servers; "Chat with Ollama,
+      OpenAI, Anthropic, or any OpenAI-compatible provider from a single interface."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f18639f86b140da071da659d2a10eee8cfd60649366cc3fbceb075314224328
