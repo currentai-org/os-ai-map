@@ -20,30 +20,55 @@ openness:
     a use-restricting license, so restricted rather than open weights.'
   raw: weights:open(downloadable on HF);data:closed;code:closed(no training pipeline);license:Mistral-AI-Non-Production-License(MNPL,
     non-OSI, research/testing only; commercial license on demand)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://mistral.ai/news/codestral/
-    shows: '"Codestral is a 22B open-weight model licensed under the new Mistral AI Non-Production License,
-      which means that you can use it for research and testing purposes. Codestral can be downloaded on
-      HuggingFace ... Commercial licenses are also available on demand"'
-    accessed: '2026-08-13'
+    shows: 'Launch post: "a 22B open-weight model licensed under the new" Mistral AI Non-Production License,
+      "which means that you can use it for research and testing purposes" and "Codestral can be downloaded
+      on" Hugging Face. Searched the body for training data, dataset and source code releases: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 068821e05bc46044fe6e2c54a8eb26bc649a95e5c5b6553120fea28f50af06a1
-    establishes: [weights, data, code, license]
-  - url: https://mistral.ai/news/codestral-25-08/
-    shows: Codestral 25.08 update; API, VPC and on-prem deployment for regulated environments
-    accessed: '2026-08-13'
+    content_sha256: 2f7a741a16e5df9a9a7cb01044750594993a898830d1722781c950f3697a62af
+    establishes:
+    - weights
+    - license
+    - data
+    - code
+  - url: https://mistral.ai/news/codestral/
+    shows: 'Launch post: "Commercial licenses are also available on demand"'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6739bba09a1875fdc80ac9da3e4597fa3c301fb0bf2fabeedf9d799a9f490961
+    content_sha256: 2f7a741a16e5df9a9a7cb01044750594993a898830d1722781c950f3697a62af
+    establishes:
+    - license
+  - url: https://huggingface.co/mistralai/Codestral-22B-v0.1/raw/main/README.md
+    shows: 'Model card front matter "license_name: mnpl" and body "Codestral-22B-v0.1 is released under
+      the `MNLP-0.1` license." Searched the card for training data, dataset, training code and pipeline:
+      none published.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 08ee9323f0fb57b58b5aebc2be3a1c7f0e19968d576941b8585ad393adc42a89
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://mistral.ai/licenses/MNPL-0.1.md
+    shows: 'License text: "You shall not supply the Mistral Models or Derivatives in the course of a commercial
+      activity" and use is limited to "testing, research, Personal, or evaluation purposes in Non-Production
+      Environments".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1c3ad900aadcfb8a6846aa57bb2672e8af060e9f802e09ec2c54f44751be173e
+    establishes:
+    - license
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
-  note: Codestral serves as the default fill-in-the-middle and completion backend in IDE assistants such
-    as Continue and Tabnine and in Mistral's own coding stack. Mistral reports version-over-version gains
-    in completion acceptance but no download or user count, so this reading reflects how widely the model
-    is embedded rather than a verified figure.
-  last_verified: '2026-08-13'
+  note: Codestral is integrated into IDE assistants such as Continue and Tabnine, into LlamaIndex and LangChain,
+    and into Mistral's own coding stack. Mistral reports version-over-version gains in completion acceptance
+    but publishes no download or user count, so this reading reflects how widely the model is embedded rather
+    than a verified figure.
   sources:
   - url: https://mistral.ai/news/codestral-25-08/
     shows: '"+30% increase in accepted completions, +10% more retained code after suggestion, 50% fewer
@@ -59,26 +84,16 @@ capability:
     context; Codestral-2405 22B HumanEval 81.1%, MBPP 78.2%, RepoBench 34.0%, 32k context. Strong on
     completion and FIM, but a code-completion specialist rather than an agentic coder
   confidence: medium
-  note: Strong code-completion specialist for its size, but a narrow FIM model, mid-tier on a chat/agentic
-    capability axis where the comparison set is 2026 frontier agentic coders. No SWE-bench figure for Codestral
-    appears on any Mistral page, so the mid-tier agentic placement is based on the completion and FIM benchmarks
-    rather than on an agentic score.
-  last_verified: '2026-08-14'
+  note: Codestral is a strong code-completion specialist for its size, but it is a narrow fill-in-the-middle
+    model. No SWE-bench result for Codestral appears on any Mistral page, so its placement below current
+    agentic coding models is based on the completion and fill-in-the-middle benchmarks.
+  last_verified: '2026-09-29'
   sources:
   - url: https://mistral.ai/news/codestral-2501
-    shows: 'Codestral 25.01 launch post, benchmarks published as HTML tables in the body. Codestral-2501
-      row - 256k context, HumanEval 86.6%, MBPP 80.2%, CruxEval 55.5%, LiveCodeBench 37.9%, RepoBench
-      38.0%, Spider 66.5%, CanItEdit 50.5%, HumanEval average 71.4%, HumanEvalFIM average 85.9%.
-      Codestral-2405 22B row - 32k context, HumanEval 81.1%, MBPP 78.2%, RepoBench 34.0%, HumanEvalFIM
-      average 82.1%. No MBPP 91.2% and no SWE-bench figure anywhere on the page.'
-    accessed: '2026-08-14'
+    shows: 'Codestral 25.01 post: "We have benchmarked the new Codestral with the leading sub-100B parameter
+      coding models"; tables give Codestral-2501 (256k context, HumanEval "86.6%", MBPP "80.2%", RepoBench
+      "38.0%", HumanEvalFIM average "85.9%") and Codestral-2405 22B (32k context, HumanEval "81.1%", MBPP
+      "78.2%"). Searched the body for SWE-bench: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 442684d0e806d2790eda5f92c08368c4bca58f20722cfd79b95ed8c848856999
-  - url: https://mistral.ai/news/codestral/
-    shows: 'names the benchmark suite (HumanEval pass@1, MBPP sanitised pass@1, CruxEval, RepoBench EM,
-      Spider, six-language HumanEval, FIM) and the claim that "Codestral outperforms all other models in
-      RepoBench" with its 32k context; the scores themselves are chart images and are not in the fetched
-      body'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 068821e05bc46044fe6e2c54a8eb26bc649a95e5c5b6553120fea28f50af06a1
+    content_sha256: 82758f4ea304a252337020db5623c2b0ea69433b4a3b37b66517cfe294a55cc9

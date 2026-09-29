@@ -22,17 +22,37 @@ openness:
     itself reduce its openness.'
   raw: weights:open(downloadable);data:closed;code:partial(no training pipeline);license:Llama-3.1-Community(non-OSI;
     700M-MAU commercial cap + use policy)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
-    shows: '`license:llama3.1` in the repo tags; the license body on the card reads "greater than 700 million
-      monthly active users in the preceding calendar month, you must request a license from Meta"; repo
-      state reads `"gated":"manual"`, an access request rather than a barrier to obtaining the weights;
-      no training pipeline and no post-training mixture published'
-    accessed: '2026-08-13'
+    shows: Model card and repo tags show `license:llama3.1`; the license body reads "is greater than 700
+      million monthly active users in the preceding calendar month, you must request a license from Meta";
+      the repository is gated ("gated":"manual" in the API record, not on this page), and the card lists
+      no training pipeline.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c95e41dd3f7871aa29a1abb48185c47eb2c4f012bf7881cdfb9a2d02c2d32afd
-    establishes: [weights, data, code, license]
+    content_sha256: 769fb495d78813453d2bcfccc27139eee3db96adb6248230d56c3e5e4a559932
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
+    shows: 'Model card: "Llama 3.1 was pretrained on ~15 trillion tokens of data from publicly available
+      sources" and the fine-tuning data "includes publicly available instruction datasets, as well as over
+      25M synthetically generated examples"; the corpora themselves are not released. Searched the body
+      for a training pipeline, training code or post-training data release: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 769fb495d78813453d2bcfccc27139eee3db96adb6248230d56c3e5e4a559932
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-8B-Instruct
+    shows: API record lists "id":"meta-llama/Llama-3.1-8B-Instruct" with "gated":"manual" and "downloads":6135791.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c7eb6de43623accdbfde429581fc84d2cf467b4f37fdfd10f6038c825e0fe7ad
+    establishes:
+    - weights
 adoption:
   level: 4
   reach: 1M-10M
@@ -63,11 +83,13 @@ capability:
   note: A competent 2024-generation 8B chat model, a long way below the 2026 frontier and below the larger
     Llama 3.1 SKUs. The card's benchmark table gives Llama 3.1 8B Instruct MMLU 69.4 (5-shot, macro_avg/acc)
     against 83.6 for the 70B and 87.3 for the 405B, and publishes no reasoning or agentic frontier scores.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
-    shows: 'benchmark table - MMLU (5-shot, macro_avg/acc) 69.4 for Llama 3.1 8B Instruct, 83.6 for 70B,
-      87.3 for 405B; 128k context, multilingual chat'
-    accessed: '2026-08-13'
+    shows: 'Benchmark table lists MMLU (5-shot, macro_avg/acc) for Llama 3.1 8B Instruct, 70B and 405B,
+      with a context length of 128k; "The tuned versions use supervised fine-tuning (SFT) and reinforcement
+      learning with human feedback (RLHF)". Searched the body for reasoning or agentic benchmark scores:
+      none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c95e41dd3f7871aa29a1abb48185c47eb2c4f012bf7881cdfb9a2d02c2d32afd
+    content_sha256: 769fb495d78813453d2bcfccc27139eee3db96adb6248230d56c3e5e4a559932

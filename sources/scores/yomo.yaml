@@ -25,7 +25,7 @@ openness:
     is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with no
     second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo neither
     references nor requires);full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/yomorun/yomo/blob/main/Cargo.toml
     shows: license = "Apache-2.0", name = "yomo", version = "2.0.4"
@@ -55,16 +55,54 @@ openness:
     - source
     - core-gated
   - url: https://vivgrid.com/
-    shows: Vivgrid sells "serverless LLM function calling that lets enterprise AI agents run their tools in
-      the cloud - with observability, evaluation, and globally distributed inference built in", with a free
-      tier and $200/month in credits for maintainers of approved open-source projects. The landing page does
-      not mention YoMo at all, so what is sold is a hosted platform beside the framework rather than a piece
-      of it.
+    shows: Vivgrid sells "serverless LLM function calling that lets enterprise AI agents run their tools
+      in the cloud - with observability, evaluation, and globally distributed inference built in", with
+      a free tier and $200/month in credits for maintainers of approved open-source projects. The landing
+      page does not mention YoMo at all, so what is sold is a hosted platform beside the framework rather
+      than a piece of it.
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: e9a351d735ab01dd0784220cfe5f2b9f97af9afc0e18a75352761f5ac5809482
     establishes:
     - core-gated
+  - url: https://docs.rs/crate/yomo/latest/source/Cargo.toml
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: e88180518041767774ac5c4c3e684260d790edf9ba75cf459d4da2a0a963a7bf
+    shows: The published crate manifest of yomo, browsed on docs.rs, declares the license as "Apache-2.0"
+      and the repository as "https://github.com/yomorun/yomo", with the crate description "A QUIC-based
+      runtime for AI-LLM tool routing and serverless execution".
+  - url: https://docs.rs/crate/yomo/2.1.3/source/README.md
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 3eddad2de4f2b7756cb17b0a39eeb1800bf9e6ae6dee9fbeaa931db5376eae12
+    shows: The README of the published yomo 2.1.3 crate ends with a License section reading "[Apache License
+      2.0](http://www.apache.org/licenses/LICENSE-2.0.html)".
+  - url: https://docs.rs/crate/yomo/2.1.3/source/src/
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 74d0ff64bf462842674f038f7e502ab8f9f28b88f444139eb2b43825fc3bda4e
+    shows: 'The docs.rs source browser for yomo 2.1.3 lists the runtime under src/: "agent_loop.rs", "auth.rs",
+      "router.rs", "serverless.rs", "tls.rs", "tool_invoker.rs", "zipper.rs", "llm_provider" and "model_api_provider",
+      so routing, the serverless host, tool invocation, auth and transport ship in the crate, and the description
+      reads "A QUIC-based runtime for AI-LLM tool routing and serverless execution". Searched the listing
+      for a second license, enterprise or license-key module: none.'
+  - url: https://vivgrid.com/
+    accessed: '2026-09-29'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 4a483dde8a578dcd9369054b6478cab3d2f43beed5b8f9ca9b345aa159f3e1e7
+    shows: 'Vivgrid describes itself as "serverless LLM function calling that lets enterprise AI agents
+      run their tools in the cloud", a hosted platform; it offers "Maintainers of approved open-source projects
+      can request $200/month in free credits." Searched the body for self-host, on-prem and license: none.'
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -96,7 +134,7 @@ capability:
     system it connects to. Scoring what a product reaches on an agent''s behalf does not apply to something
     that decides where code executes instead, so no capability score is assigned rather than one being forced
     to fit.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/yomorun/yomo
     shows: 'Repo page - "Serverless AI Agent Framework with Geo-distributed Edge AI Infra", section "Focuses
@@ -106,3 +144,12 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b2383bbd1d926f9454c1a9a4feba1245a79938a0057fca8463a934ebfb4bb052
+  - url: https://yomo.run/
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: db2c5f0c7b89fef4adaa461b5884aac03d49589ee5dd75949e017594ff91ef31
+    shows: 'The YoMo docs introduction is titled "Open source Serverless LLM Function Calling framework
+      for AI agents" and lists features "Implement llm function callings by TypeScript or Go" and "Expose
+      llm function calling as MCP server", so YoMo hosts and runs the functions rather than connecting to
+      an external system on an agent''s behalf. Searched the body for adapter, connector and integration
+      catalog: none.'
