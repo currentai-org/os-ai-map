@@ -28,7 +28,7 @@ openness:
   raw: license:Proprietary;source:closed;service:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic
     Worker Loader - no self-host of the isolate/container plane);open-part:Sandbox SDK only (@cloudflare/sandbox
     Apache-2.0, cloudflare/sandbox-sdk on GitHub);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/cloudflare/sandbox-sdk
     shows: Apache-2.0 SDK; runs on Cloudflare Containers/Workers/Durable Objects (managed edge)
@@ -37,10 +37,10 @@ openness:
     shows: Dynamic Worker Loader open beta, isolate sandboxing, post-beta $0.002/worker/day pricing
     accessed: '2026-06-04'
   - url: https://blog.cloudflare.com/dynamic-workers/
-    shows: 'Dynamic Worker Loader is an API by which a Cloudflare Worker instantiates another Worker in
-      its own sandbox, running on Cloudflare''s platform; open beta to all paid Workers users; priced
-      at $0.002 per unique Worker loaded per day on top of normal Workers CPU and invocation charges.
-      No self-hosted deployment of the isolate or container plane is offered.'
+    shows: Dynamic Worker Loader is an API by which a Cloudflare Worker instantiates another Worker in its
+      own sandbox, running on Cloudflare's platform; open beta to all paid Workers users; priced at $0.002
+      per unique Worker loaded per day on top of normal Workers CPU and invocation charges. No self-hosted
+      deployment of the isolate or container plane is offered.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: cdc47b64a241214658a4c701464ca4f358d099314884db539eae4077c8f7e632
@@ -48,22 +48,47 @@ openness:
     - source
     - license
   - url: https://api.github.com/repos/cloudflare/sandbox-sdk
-    shows: 'Repository public and unarchived, described as "Run sandboxed code environments on
-      Cloudflare''s edge network"; license reported as NOASSERTION because the root LICENSE is a
-      pointer file.'
+    shows: Repository public and unarchived, described as "Run sandboxed code environments on Cloudflare's
+      edge network"; license reported as NOASSERTION because the root LICENSE is a pointer file.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: e7830b0a5afa9835b918215a3d8dcb9a0cbaafd50277ec378850cd9a5ef71d97
     establishes:
     - source
   - url: https://raw.githubusercontent.com/cloudflare/sandbox-sdk/main/packages/sandbox/LICENSE
-    shows: The verbatim Apache License 2.0 body, governing the published SDK package that the root
-      LICENSE pointer names.
-    accessed: '2026-08-13'
+    shows: The published SDK package LICENSE is the verbatim "Apache License" text, "Version 2.0, January
+      2004", governing only the client SDK.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a
+  - url: https://www.cloudflare.com/terms/
+    shows: Cloudflare Self-Serve Subscription Agreement bars customers from the right to "reverse engineer
+      the Services" and states that the "computer code (including source code or object code), products,
+      software, services" of the Service "are protected by all relevant intellectual property and proprietary
+      rights and applicable laws", with "Cloudflare reserves all rights to the Materials not granted expressly
+      in this Agreement".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 72ddf4639e105c68cb8de1de145dab46df34ca7193fdd7cb5a23f5857bc60184
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/cloudflare/workerd/main/README.md
+    shows: The open-source workerd README warns that it "is not a hardened sandbox" and "on its own does
+      not contain suitable defense-in-depth", while the Cloudflare Workers hosting service "uses many additional
+      layers of defense-in-depth", so the self-hostable runtime is not the hardened isolate plane the managed
+      service runs.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7657997fb92fc96d196af245c473c5460e386ec3e2ac3ec1fa7f05d69de12a6f
     establishes:
     - source
+  - url: https://registry.npmjs.org/@cloudflare%2Fsandbox
+    shows: npm registry metadata for the package, described as "A sandboxed environment for running commands"
+      with the repository "git+https://github.com/cloudflare/sandbox-sdk.git" and the license "Apache-2.0".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 49c4088846ec2ff7050b3ff3b9a81477cd9355332da7cc44ca43bec4f88a07a0
 adoption:
   level: 4
   reach: 1M-10M
@@ -73,28 +98,28 @@ adoption:
     a trailing month ending 2026-08-09. Package downloads include the usual CI and mirror inflation, and
     the only other adoption signal, a single customer's execution-request volume during Dynamic Workers'
     open beta, counts requests rather than distinct users.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare/sandbox
     shows: ~533,043 downloads May 4-Jun 2 2026
     accessed: '2026-06-04'
   - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare%2Fsandbox
-    shows: 1,136,848 downloads of package @cloudflare/sandbox over the window start 2026-07-11 to end
-      2026-08-09. The scoped name is URL-encoded because the npm point endpoint requires it.
-    accessed: '2026-08-14'
+    shows: '{"downloads":2284513,"start":"2026-08-29","end":"2026-09-27","package":"@cloudflare/sandbox"}'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9c5768fa01c5619f3ed03c46dbe53bb7ecb2b6c02aa71d84e3ea9cd0333eefb6
+    content_sha256: 5c81602f139cd88c0140ec58323fb8e036a1ed987f73320b4ccfbb2091bfd8c1
   - url: https://registry.npmjs.org/@cloudflare%2Fsandbox
-    shows: 'Registry metadata for the package - repository git+https://github.com/cloudflare/sandbox-sdk.git,
-      homepage github.com/cloudflare/sandbox-sdk#readme, described as "A sandboxed environment for
-      running commands", latest 0.12.5. Confirms the package is the product''s own SDK rather than a
-      same-name match.'
-    accessed: '2026-08-14'
+    shows: npm registry metadata for the package, described as "A sandboxed environment for running commands"
+      with the repository "git+https://github.com/cloudflare/sandbox-sdk.git" and the license "Apache-2.0".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b46b9f358e9acc9826481dd6d7beef825389e073f4ff6da370446ab706897765
+    content_sha256: 49c4088846ec2ff7050b3ff3b9a81477cd9355332da7cc44ca43bec4f88a07a0
   - url: https://blog.cloudflare.com/dynamic-workers/
-    shows: open beta to all paid Workers users; Zite millions of execution requests/day
-    accessed: '2026-06-04'
+    shows: Launch post quoting the CTO of Zite that "Zite now services millions of execution requests daily
+      thanks to Dynamic Workers."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e3c2ec0d86e9e7e3f1dd3060f1030460190bafa040c21623505e14643b71e0fe
 capability:
   score: 4
   basis: feature_matrix
@@ -104,38 +129,47 @@ capability:
     container sandbox; persistence:Durable Objects-backed state; scale:edge-global, unlimited dynamic
     workers
   confidence: medium
-  note: 'Dynamic Workers'' JS/TS-only isolates start in milliseconds, roughly 100 times the density of containers,
-    but that speed does not carry over to the general-purpose Sandbox SDK that actually runs arbitrary code:
-    independent benchmarks put its cold start at several seconds. Dynamic Workers itself remains in open
-    beta, with only per-customer scale evidence rather than a published limit.'
-  last_verified: '2026-08-13'
+  note: Dynamic Workers' JavaScript and TypeScript isolates start in a few milliseconds and use a few megabytes
+    of memory, but that speed does not carry over to the Sandbox SDK, which runs arbitrary code in containers
+    that Cloudflare's own launch post says take hundreds of milliseconds to boot. Dynamic Workers is in
+    open beta, and its only scale evidence is one customer's reported request volume rather than a published
+    limit.
+  last_verified: '2026-09-29'
   sources:
   - url: https://blog.cloudflare.com/dynamic-workers/
-    shows: V8 isolate sandboxing, ~ms start, 100x faster/100x more memory-efficient than containers
-    accessed: '2026-06-04'
+    shows: Launch post saying of containers that "containers are expensive and slow to start, taking hundreds
+      of milliseconds to boot", and that platforms "can also block or intercept any network requests" from
+      generated code.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e3c2ec0d86e9e7e3f1dd3060f1030460190bafa040c21623505e14643b71e0fe
+  - url: https://blog.cloudflare.com/dynamic-workers/
+    shows: Launch post stating "Dynamic Worker Loader has no such limits" on global concurrent sandboxes
+      and sandbox creation rate, and "An isolate takes a few milliseconds to start and uses a few megabytes
+      of memory."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e3c2ec0d86e9e7e3f1dd3060f1030460190bafa040c21623505e14643b71e0fe
   - url: https://github.com/cloudflare/sandbox-sdk
     shows: 'container-backed sandbox: run commands, manage files, background processes, expose services'
     accessed: '2026-06-04'
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): container-backed sandbox
-      median time-to-interactive ~1760ms sequential / ~4290ms burst @100 concurrent; 18th of 19 providers'
-    accessed: '2026-07-09'
-  - url: https://blog.cloudflare.com/dynamic-workers/
-    shows: V8 isolate sandboxing with ms-scale start and ~100x the memory efficiency of containers;
-      no limit on global concurrent sandboxes or creation rate; network access blockable or
-      interceptable per loaded Worker.
-    accessed: '2026-08-13'
+    shows: ComputeSDK sandbox benchmarks page, described as "Independently verified sandbox benchmarks run
+      on a recurring schedule." and carrying a "Sandbox Burst TTI" leaderboard that lists Cloudflare among
+      the providers.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: cdc47b64a241214658a4c701464ca4f358d099314884db539eae4077c8f7e632
+    content_sha256: 0f453e7ab471e8b9c112995fbd291672e66deb9fe71a73fa7f4415f825401aa8
   - url: https://api.github.com/repos/cloudflare/sandbox-sdk
-    shows: 'Repository active and unarchived, described as "Run sandboxed code environments on
-      Cloudflare''s edge network" - the container-backed path for arbitrary code.'
+    shows: Repository active and unarchived, described as "Run sandboxed code environments on Cloudflare's
+      edge network" - the container-backed path for arbitrary code.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: e7830b0a5afa9835b918215a3d8dcb9a0cbaafd50277ec378850cd9a5ef71d97
-  - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07 across 24 providers - Cloudflare median
-      4.42s, P95 5.63s, P99 5.77s, 100% success, composite 50.8; 21st of 24 by median.'
-    accessed: '2026-08-13'
+  - url: https://developers.cloudflare.com/sandbox/concepts/architecture/
+    shows: Sandbox SDK architecture page stating "Sandbox SDK combines Workers, Durable Objects, and Containers
+      for secure code execution." across a client SDK layer, a Durable Object layer and a container runtime
+      layer.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: cbb96170184f9c48e5c5f0a9834e15ab2a87a083132581c8a632f0cdc6e42e85
+    content_sha256: 1f44e0c22d87b6fe2b1adb6eec4172a2b25a13bde9ed5a682d3cb155f914f661

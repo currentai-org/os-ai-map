@@ -22,21 +22,20 @@ openness:
     a different product; Lambda itself is not self-hostable.
   raw: license:Proprietary;service:proprietary AWS-only SaaS (no self-host);underlying-microVM:Firecracker
     is Apache-2.0 OSS but the Lambda control/data plane is closed;weights:n/a;source:closed
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
     shows: Firecracker microVM powers Lambda; Lambda is AWS-managed proprietary service
     accessed: '2026-06-04'
   - url: https://aws.amazon.com/lambda/faqs/
-    shows: 'Lambda is sold only as an AWS-run service. Deployment is "package and deploy functions as .zip
-      file archives that you can upload directly through the console, CLI, or SDKs, or as container images",
-      with no self-hosted distribution and no published source for the service; the page carries no license
-      other than AWS terms. The MicroVMs section states Lambda MicroVMs are "built on the same Firecracker
-      virtualization powering 15 trillion+ monthly Lambda Function invocations", which is the open substrate
-      under a closed service rather than an open Lambda.'
-    accessed: '2026-08-13'
+    shows: 'FAQ page describes Lambda only as an AWS-run service where functions are deployed as "package
+      and deploy functions as .zip file archives that you can upload directly through the console, CLI,
+      or SDKs, or as container images". Searched the body for self-host, open source and license: none;
+      no source or self-hosted distribution is offered, and MicroVMs are "Built on the same Firecracker
+      virtualization powering 15 trillion+ monthly Lambda Function invocations".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b6e63c3e539a8940cacba06291d5f8b3288b75182d4051c745d40664fcbd4cba
+    content_sha256: 68fcb7db89cbc2e9e6ede978b54a3a9e0cd87a6675b2c628dca61a4ae6deec25
     establishes:
     - license
     - source
@@ -49,44 +48,55 @@ adoption:
     beyond what any package or download count could show. Lambda has no package, repository or registry
     entry to count independently, and AWS's disclosed figures describe general serverless usage rather than
     agent code execution specifically.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
-    shows: trillions of executions / hundreds of thousands of active customers monthly
-    accessed: '2026-06-04'
-  - url: https://aws.amazon.com/lambda/faqs/
-    shows: '"Built on the same Firecracker virtualization powering 15 trillion+ monthly Lambda Function
-      invocations". AWS publishes no customer or developer count on this page.'
-    accessed: '2026-08-13'
+    shows: Blog post states "Lambda processes trillions of executions for hundreds of thousands of active
+      customers every month", the adoption disclosure.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b6e63c3e539a8940cacba06291d5f8b3288b75182d4051c745d40664fcbd4cba
+    content_sha256: bd567a389ad8848f808c5a93d19a83332349433a05de29c15c607a5e360a5b06
+  - url: https://aws.amazon.com/lambda/faqs/
+    shows: FAQ page says Lambda MicroVMs are "Built on the same Firecracker virtualization powering 15 trillion+
+      monthly Lambda Function invocations"; it publishes no customer or developer count (searched for customers,
+      active customers, developers).
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 68fcb7db89cbc2e9e6ede978b54a3a9e0cd87a6675b2c628dca61a4ae6deec25
 capability:
   score: 5
   basis: feature_matrix
   value: isolation:Firecracker microVM (per-invocation hardware-virtualized, KVM) - strongest isolation
     tier, ~125ms VM start, ~5MiB/VM; cold-start:ms-to-sub-second; runtime breadth:very high (managed runtimes
-    Node/Python/Java/Go/Ruby/.NET + custom runtimes/container images, arbitrary code); persistence:stateless+attachable
-    storage (EFS, /tmp); scale:trillions of executions/mo, effectively unbounded autoscale
+    Node/Python/Java/Go/Ruby/.NET/PowerShell + custom runtimes/container images, arbitrary code); persistence:stateless
+    functions with attachable storage (EFS, /tmp), Lambda MicroVMs preserve state up to 8 hours; scale:15
+    trillion+ invocations/mo, 1000 concurrent executions added every 10 seconds
   confidence: high
-  note: AWS Lambda runs code in most major languages natively, and any other language through a Runtime
-    API, isolating every invocation in its own Firecracker microVM. Lambda MicroVMs extend that isolation
-    to AI- and agent-generated code with near-instant resume and persistent state, making it the broadest
-    and most isolated platform in the category.
-  last_verified: '2026-08-14'
+  note: AWS Lambda runs code in seven languages natively and any other through a Runtime API, isolating
+    each function in its own Firecracker microVM. Lambda MicroVMs extend that isolation to user- and AI-generated
+    code with near-instant resume and persistent state, on a service with a long production record at very
+    large scale.
+  last_verified: '2026-09-29'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
-    shows: Firecracker microVM isolation, ~125ms start, ~5MiB/VM, trillions of executions
-    accessed: '2026-06-04'
-  - url: https://aws.amazon.com/lambda/faqs/
-    shows: '"AWS Lambda natively supports Java, Go, PowerShell, Node.js, C#, Python, and Ruby code, and
-      provides a Runtime API which allows you to use any additional programming languages"; functions deploy
-      "as .zip file archives ... or as container images. Both methods provide the same execution environment";
-      "Each AWS Lambda function runs in its own isolated environment"; functions scale "at a rate of up
-      to 1000 concurrent executions every 10 seconds". Lambda MicroVMs "combines VM-level isolation, near-instant
-      launch and resume, and state persistence across interactions ... purpose-built for workloads that
-      execute user- or AI-generated code", built on "the same Firecracker virtualization powering 15 trillion+
-      monthly Lambda Function invocations", persisting state up to 8 hours with containers up to 32 GB memory
-      and 16 vCPUs on Amazon Linux 2023.'
-    accessed: '2026-08-14'
+    shows: Blog post states Firecracker "can launch a microVM in as little as 125 ms today" and "consumes
+      about 5 MiB of memory per microVM", and that Lambda processes "trillions of executions for hundreds
+      of thousands of active customers every month".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f75cb1da877f31f25f580f27df64810d86cf59c98f0fdad546b0aec9aaa13e0d
+    content_sha256: bd567a389ad8848f808c5a93d19a83332349433a05de29c15c607a5e360a5b06
+  - url: https://aws.amazon.com/lambda/faqs/
+    shows: 'FAQ page lists supported languages and isolation: "AWS Lambda natively supports Java, Go, PowerShell,
+      Node.js, C#, Python, and Ruby code" with a Runtime API for others, states "Each AWS Lambda function
+      runs in its own isolated environment", and says functions scale "at a rate of up to 1000 concurrent
+      executions every 10 seconds".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 68fcb7db89cbc2e9e6ede978b54a3a9e0cd87a6675b2c628dca61a4ae6deec25
+  - url: https://aws.amazon.com/lambda/faqs/
+    shows: FAQ page describes Lambda MicroVMs as one that "combines VM-level isolation, near-instant launch
+      and resume, and state persistence across interactions", preserving suspended state "for up to 8 hours"
+      and supporting "up to 32 GB of memory and 16 vCPUs" for containers "run on Amazon Linux 2023".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 68fcb7db89cbc2e9e6ede978b54a3a9e0cd87a6675b2c628dca61a4ae6deec25

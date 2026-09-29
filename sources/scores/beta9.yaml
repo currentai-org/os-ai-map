@@ -27,7 +27,7 @@ openness:
     (proprietary);core-gated:ungated(the whole AGPL-3.0 stack is in the repo - gateway, scheduler, worker,
     proto, deploy manifests and even the billing service - with no second license file and no license-key
     module, and Beam sells concurrency, seats and retention on the hosted cloud)
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/beam-cloud/beta9
     shows: AGPL-3.0 license; open source serverless AI runtime; engine powering managed Beam cloud (beam.cloud)
@@ -53,16 +53,51 @@ openness:
     - license
     - source
   - url: https://www.beam.cloud/pricing
-    shows: 'Three tiers - Developer ($0 + usage), Team ($89/mo + usage), Growth (contact). They differ on
-      concurrency, seats and log retention: 5 vs 50 vs 1,000+ concurrent GPU containers, 1 vs 3 vs unlimited
-      seats, 30-day vs 1-year retention. No feature is named as absent from the open source, and the page
-      states "We also offer a self-hosted product which runs entirely in your own environment, ensuring
-      that no data leaves your VPC."'
-    accessed: '2026-08-12'
+    shows: The Beam pricing page sells tiers that differ on "GPU Concurrency", "Log Retention" and seats
+      ("3 seats included, $25 per additional seat"), and adds "We also offer a self-hosted product which
+      runs entirely in your own environment".
+    accessed: '2026-09-29'
     http_status: 200
+    content_sha256: 880d5abc4fe254fd3ca3945b133e0637c230ca7f3ea159a16a2556cc5b313a60
     establishes:
     - core-gated
-    content_sha256: c4923b4b478215eaa2d47106d6bf04b8537651d823ec50da432a935539d7356f
+  - url: https://raw.githubusercontent.com/beam-cloud/beta9/main/LICENSE
+    shows: The repository root LICENSE is the full text of the "GNU AFFERO GENERAL PUBLIC LICENSE" at "Version
+      3, 19 November 2007".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 20b067f86de375aae6db0f283ab2e65de24d537733b89bd58432c101259d84cf
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/beam-cloud/beta9/main/README.md
+    shows: 'The public README describes Beam as "a fast, open-source runtime for serverless AI workloads",
+      links an "https://img.shields.io/badge/License-AGPL-green" badge, and says "You can self-host Beta9
+      for free or choose managed cloud hosting through Beam."; searched the body for enterprise, license
+      key, commercial and proprietary: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0a48300cb1d66a7517fa9c65c2d2bb4b8e0af9b8734ac2e1d18b1bbe1ebc1ac0
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/beam-cloud/beta9/main/go.mod
+    shows: The server go.mod declares "module github.com/beam-cloud/beta9" and its first-party dependencies
+      are ordinary public modules such as "github.com/beam-cloud/clip v0.0.0-20260926163325-4f8dd04be284";
+      no private module or license-key package is listed.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ed282344e9b5c2121cb09ea50c08b3d067d88c388148525946e662dc40809cd1
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/beam-cloud/clip/master/LICENSE
+    shows: The clip dependency that beta9 imports is under the "MIT License" with "Copyright (c) 2024 beam.cloud",
+      so this first-party dependency is OSI-licensed.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7ebf6ef591d3a8347a9af2b64f8bc89b541da023a84543da0b914eb6123fbe08
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -99,26 +134,26 @@ capability:
   basis: feature_matrix
   relative_to: firecracker
   relation: two_below
-  value: isolation:container (serverless containers, not VM/microVM per repo description); cold-start:fast
-    container launch; language/runtime breadth:Python AI workloads + GPU (4090/H100); persistence:volume
+  value: isolation:container (non-root serverless containers, not VM/microVM); cold-start:containers under
+    a second, sandboxes 1-3 seconds; language/runtime breadth:Python AI workloads + GPU (4090/H100); persistence:volume
     storage; scale:parallelize across hundreds of containers + autoscaling
   confidence: medium
-  note: Beta9 is a serverless container runtime with GPU support, distributed volumes, autoscaling and a
-    sandbox primitive for model-generated code, and independent benchmarks show its containers launching
-    in well under a second. It isolates workloads at the container level rather than with a VM or microVM,
-    two tiers below Firecracker despite that competitive launch speed.
-  last_verified: '2026-08-13'
+  note: Beta9 is a serverless container runtime with GPU support, persistent volumes, autoscaling and a
+    sandbox primitive for model-generated code, and it launches containers in under a second. It isolates
+    workloads at the container level rather than in a VM or microVM, which puts it two steps below Firecracker
+    despite that launch speed.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/beam-cloud/beta9
     shows: 'serverless runtime: rapid container launches, parallelize across hundreds of containers, GPU
       support, volume storage, sandboxes'
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/beam-cloud/beta9/main/README.md
-    shows: 'Features are fast cold starts ("Launch containers in under a second using a custom container
+    shows: Features are fast cold starts ("Launch containers in under a second using a custom container
       runtime, scheduler, and embedded caching"), fan-out to hundreds of containers, scale-to-zero, mounted
       distributed volumes, and GPU support (4090s, H100s, or bring your own). A Sandbox primitive spins
       up isolated containers to run LLM-generated code. No VM, microVM or application-kernel isolation tier
-      is named anywhere.'
+      is named anywhere.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0a48300cb1d66a7517fa9c65c2d2bb4b8e0af9b8734ac2e1d18b1bbe1ebc1ac0
@@ -132,3 +167,22 @@ capability:
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): Beam (managed beta9)
       median time-to-interactive ~380ms sequential / ~810ms burst @100 concurrent; 8th of 19 providers'
     accessed: '2026-07-09'
+  - url: https://docs.beam.cloud/v2/getting-started/introduction
+    shows: Introduction page says "Beam runs it in containers that launch in under a second" and lists functions,
+      endpoints, task queues, sandboxes and GPU inference as workloads.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 702fd16da3efe456a0ce47d862c41e73945eefb0043c7c2aa6a0d988e0c2383d
+  - url: https://docs.beam.cloud/v2/sandbox/overview
+    shows: Sandbox overview describes "ultra-fast, Python-native environments for running any workload -
+      with GPUs, networking, and persistent storage - in seconds" and states "Sandboxes cold boot in 1–3
+      seconds, even with dependencies included."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d5c1ae8972f8cf4a4078cbb7a7df1a36fbae845cff586b0ff3e631bf14913c13
+  - url: https://www.beam.cloud/pricing
+    shows: Pricing FAQ says "Workloads are isolated from one another and run in non-root containers." and
+      that a self-hosted product "runs entirely in your own environment".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 880d5abc4fe254fd3ca3945b133e0637c230ca7f3ea159a16a2556cc5b313a60

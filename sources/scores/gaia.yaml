@@ -24,25 +24,28 @@ openness:
   raw: license:not-clearly-stated-on-card(the Hub API cardData carries no license key and no license tag;
     the card states only the no-resharing condition, and the paper states no release terms);questions:public(val);answers:held-out(300-Q
     test,private);access:HF-gated(accept-terms,anti-resharing)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/gaia-benchmark/GAIA
-    shows: 'the page still says "You need to agree to share your contact information to access this
-      dataset" and the extra_gated_prompt is the no-resharing condition; the card reads "Each level is
-      divided into a fully public dev set for validation, and a test set with private answers and
-      metadata"'
-    accessed: '2026-08-13'
+    shows: The page shows the access gate "You need to agree to share your contact information to access
+      this dataset", and the card reads "Each level is divided into a fully public dev set for validation,
+      and a test set with private answers and metadata".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: db2f9196afc95ff3e58042682b3678a03b5ab33e19646c7b2116bf7cf3fbf0aa
-    establishes: [access, answers]
+    content_sha256: e3ad0949706035be7bf5bd6cdcd2d5e945a16e121f435dc067376cd4c2ef57eb
+    establishes:
+    - access
+    - answers
   - url: https://huggingface.co/api/datasets/gaia-benchmark/GAIA
-    shows: cardData carries no license key and the tags array carries no license tag; gating is auto with
-      a no-resharing condition
-    accessed: '2026-08-13'
+    shows: 'The dataset API reports gating as auto and carries the prompt "To avoid contamination and data
+      leakage, you agree to not reshare this dataset outside of a gated or private repository on the HF
+      hub."; searched cardData and the tags array for a license key or license tag: none.'
+    accessed: '2026-09-29'
     establishes:
     - license
+    - access
     http_status: 200
-    content_sha256: 5d4136f5a5bd062a5a4fec58ae69c4f7e40c2f91d8a298117e1b3fb1f754dc3a
+    content_sha256: cb4a58315a7db66ee5ed2d25a439400441b5b7d626888e0483b921931190207a
 adoption:
   level: 3
   signal_type: usage_volume
@@ -72,13 +75,12 @@ capability:
     is an end-to-end agentic-assistant benchmark: 466 real-world questions across three difficulty levels
     that require multi-step tool use, live browsing and multimodal files, each graded against one checkable
     answer.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2311.12983
-    shows: '"GAIA - a benchmark for General AI Assistants"; the abstract still reads "we devise 466
-      questions and their answer. We release our questions while retaining answers to 300 of them to
-      power a leader-board", and still reports "human respondents obtain 92% vs. 15% for GPT-4 equipped
-      with plugins" over reasoning, multi-modality, web browsing and tool use'
-    accessed: '2026-08-13'
+    shows: 'The abstract page is titled "GAIA: a benchmark for General AI Assistants" and reads "we devise
+      466 questions and their answer. We release our questions while retaining answers to 300 of them to
+      power a leader-board"; searched the body for a leaderboard score table or usage figures: none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: fcebc315ea72ccad1c615e354c5218f6d34ef6ad1d5bfa0fafc15b04fa435e9e

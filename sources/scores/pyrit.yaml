@@ -17,15 +17,16 @@ openness:
       service:
         value: none
   confidence: high
-  note: 'Fully open source: MIT-licensed automation framework, self-hostable, no proprietary tier.'
+  note: PyRIT is released under the MIT license, with its full source published and installable from PyPI
+    or a local container. No paid tier, enterprise build or license key gates any part of the framework.
   raw: license:MIT(OSI);source:public(full Python framework);self-host:yes;service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/microsoft/PyRIT
-    shows: 'Repo metadata records license spdxId - MIT. README describes PyRIT as ''an open source
-      framework built to empower security professionals and engineers to proactively identify risks in
-      generative AI systems'' and points at the docs site for install and use; no hosted tier, no
-      enterprise directory and no license key on the page.'
+    shows: Repo metadata records license spdxId - MIT. README describes PyRIT as 'an open source framework
+      built to empower security professionals and engineers to proactively identify risks in generative
+      AI systems' and points at the docs site for install and use; no hosted tier, no enterprise directory
+      and no license key on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 01dbf8952a2e317f65ccfaacc72ff4da657369b277aa8cd92d1b529af35dbd0a
@@ -33,6 +34,44 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://pypi.org/project/pyrit/
+    shows: 'The PyPI project page for pyrit 1.1.0 (released Sep 4, 2026, author "Microsoft AI Red Team")
+      lists "License expression" as "MIT", offers a "Source distribution for pyrit 1.1.0" as pyrit-1.1.0.tar.gz
+      alongside the wheel, and carries the project README describing "The Python Risk Identification Tool
+      for generative AI (PyRIT) is an open source" framework. Searched the body for enterprise, license
+      key and commercial: none; the only paid match is a PyPI sponsor link.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d1e1aa9c8d8c596875ed36a12ecf4709879cd462c31f7d6e26cc2f447f15372a
+    establishes:
+    - license
+    - source
+  - url: https://microsoft.github.io/PyRIT/1.1.0/getting-started/install
+    shows: 'The PyRIT install page offers user installs where "User installations" come from the "latest
+      stable release" on PyPI, and contributor routes that "Install from source with uv in editable mode"
+      against the "latest development code" on the main branch, plus a "Pre-configured container with JupyterLab"
+      for local use. Searched the body for enterprise, license key, pricing and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: db4d775b221d5ea0ac71e6f04298ba0209d7cd67893b6d80b85c965a733aa04a
+    establishes:
+    - source
+    - self-host
+    - core-gated
+  - url: https://microsoft.github.io/PyRIT/1.1.0/
+    shows: 'The PyRIT 1.1.0 documentation home describes "a flexible, extensible framework for assessing
+      the security and safety of generative AI systems at scale", with "Run multi-turn attack strategies
+      like Crescendo, TAP, and Skeleton Key against AI systems", "Run standardized evaluation scenarios
+      at large scale", a local GUI started with "serves webapp on http://localhost:8000/", targets spanning
+      "Test OpenAI, Azure, Anthropic, Google, HuggingFace, custom HTTP endpoints or WebSockets", and scoring
+      with "true/false, Likert scale, classification, and custom scorers". Install is "pip install pyrit";
+      searched the body for enterprise, license key, pricing and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 229f5578c775ba632dfa5c6d2cb69f28a35411af05da051aa61e715a788887db
+    establishes:
+    - core-gated
+    - self-host
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -58,13 +97,14 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: red-team coverage
-  value: Automated adversarial prompting, attack-strategy orchestration, and scoring to identify harms
-    across providers.
+  value: Automated single- and multi-turn attack strategies, scenario-based evaluation and scoring against
+    targets across providers, driven from Python, a command-line scanner or a local GUI.
   confidence: medium
-  note: A leading open red-teaming harness; strong automation and scoring, and multi-provider. The README
-    is now a pointer at the docs site and no longer names the pieces, so the reading comes from the shipped
-    modules in the package listing instead.
-  last_verified: '2026-08-13'
+  note: PyRIT automates multi-turn attacks such as Crescendo and TAP, runs standardized harm scenarios at
+    scale, and scores responses with LLM-based, classifier or custom scorers. It works against targets from
+    OpenAI, Azure, Anthropic and Google to Hugging Face models and custom HTTP endpoints, and adds a command-line
+    scanner and a GUI for human-led red teaming.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/microsoft/PyRIT
     shows: README describes 'an open source framework built to empower security professionals and engineers
@@ -81,3 +121,14 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d297705f9544fd3110ef50f9d507ec0009463771d1e11294457b448af9f50876
+  - url: https://microsoft.github.io/PyRIT/1.1.0/
+    shows: 'The PyRIT 1.1.0 documentation home describes "a flexible, extensible framework for assessing
+      the security and safety of generative AI systems at scale", with "Run multi-turn attack strategies
+      like Crescendo, TAP, and Skeleton Key against AI systems", "Run standardized evaluation scenarios
+      at large scale", a local GUI started with "serves webapp on http://localhost:8000/", targets spanning
+      "Test OpenAI, Azure, Anthropic, Google, HuggingFace, custom HTTP endpoints or WebSockets", and scoring
+      with "true/false, Likert scale, classification, and custom scorers". Install is "pip install pyrit";
+      searched the body for enterprise, license key, pricing and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 229f5578c775ba632dfa5c6d2cb69f28a35411af05da051aa61e715a788887db

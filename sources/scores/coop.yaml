@@ -17,15 +17,17 @@ openness:
       service:
         value: none
   confidence: high
-  note: 'Fully open source: Apache-2.0 self-hosted moderation review console from ROOST.'
+  note: The whole application, including the HMA hash-matching service it runs beside, is in the public
+    repository and runs on your own infrastructure with Docker Compose, with no paid edition or license
+    key. ROOST runs no hosted service of its own; third parties such as Musubi offer one.
   raw: license:Apache-2.0(OSI);source:public(github.com/roostorg/coop);self-host:yes;service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/roostorg/coop
-    shows: 'Repo metadata records license spdxId - Apache-2.0. README says ''Coop is free and open source
-      so your data stays within your infrastructure'', that the codebase is ''auditable, with no hidden
-      logic and no vendor lock-in'', and runs it ''with a single command using Docker Compose''. No paid
-      tier, enterprise directory or license key on the page.'
+    shows: Repo metadata records license spdxId - Apache-2.0. README says 'Coop is free and open source
+      so your data stays within your infrastructure', that the codebase is 'auditable, with no hidden logic
+      and no vendor lock-in', and runs it 'with a single command using Docker Compose'. No paid tier, enterprise
+      directory or license key on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 62edfbfeecfc59d655ad77f82b7494dbc384e39a620032d8cc40a4c33c4a746a
@@ -33,6 +35,58 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://cdn.jsdelivr.net/gh/roostorg/coop@main/LICENSE
+    shows: The LICENSE file at the head of roostorg/coop main is the Apache License text, opening "Apache
+      License" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+    - source
+  - url: https://cdn.jsdelivr.net/gh/roostorg/coop@main/README.md
+    shows: 'The repository README describes "the open source review and moderation tool from" ROOST, says
+      "Coop is free and open source so your data stays within your infrastructure" and that the codebase
+      is auditable, "with no hidden logic and no vendor lock-in". It adds "Run Coop with a single command
+      using Docker Compose". Searched the body for enterprise, license key, paid and pricing: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b1756d264b04c45779fb5adb85301da48e3190ec147f470a7ca1226ee1127755
+    establishes:
+    - source
+    - core-gated
+    - self-host
+  - url: https://cdn.jsdelivr.net/gh/roostorg/coop@main/package.json
+    shows: The root package.json of the Coop monorepo sets the license field to Apache-2.0 and its up script
+      runs "docker compose up --detach postgres clickhouse hma scylla redis", starting the HMA hash-matching
+      service locally with the rest of the stack.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3d39c37a216d01e172275e238a6e64d3f4294e15953e1744d51edb1f740a563b
+    establishes:
+    - license
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/roostorg/coop@main/docs/development/docker.md
+    shows: 'The Docker guide in the Coop repository says prebuilt images "are published to the GitHub Container
+      Registry on every push to" main, and that one command runs the full stack locally: "Pull the published
+      images and run the full stack locally with a single command". Searched the body for enterprise, license
+      key and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d3c172f05412e781da4e132120c9ffba974dcbb9f4bb378836fe42652b7cf4e1
+    establishes:
+    - self-host
+    - core-gated
+  - url: https://roost.tools/coop/
+    shows: ROOST's Coop page calls it "An open source review and moderation platform for anything that requires
+      decisions at scale" and says it is "Self-hosted, privacy-preserving, and built with reviewer wellbeing
+      in mind". It notes "Coop can also be run as a managed service by third-party providers", naming Musubi
+      as one that "offers a hosted version today".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b2dbc51fc43e7e60daab7dd9c5848173e3971c1b8fa790e21635297918db5b48
+    establishes:
+    - self-host
 adoption:
   level: 3
   reach: niche
@@ -44,7 +98,6 @@ adoption:
     including Notion, carried over when Coop was open-sourced from Cove, and the 1.0 announcement names
     a community messaging platform and an unnamed large-scale adopter. The repository''s own production
     list is empty, so these deployments are known only through ROOST''s announcements, not the codebase.'
-  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/roostorg/coop
     shows: stargazerCount 77 for roostorg/coop. The README's 'Used in production' section reads 'Coop is
@@ -75,21 +128,38 @@ capability:
     child-safety workflows (HMA hash matching, NCMEC reporting) and OpenAI Moderation / Google Content
     Safety integrations.
   confidence: low
-  note: Broad moderation-console feature set, now on the v1.0 line (announced June 2026); functional and
-    proven at named deployments but still young.
-  last_verified: '2026-08-13'
+  note: Coop covers the review, routing, automation and reporting workflow a trust and safety team runs,
+    including child-safety reporting to NCMEC. It reached its 1.0 release only months after its first public
+    version, so its production record is short.
+  last_verified: '2026-09-29'
   sources:
   - url: https://roost.tools/coop/
-    shows: 'Key Features list queue management with role-based access and routing rules, manual and
-      automatic actions with complete audit logging, analytics, and review across any policy category. The
-      child-safety workflow is described as ''hash matching via HMA, NCMEC CyberTipline reporting, and
-      integrations with Google Content Safety API and OpenAI Moderation API''.'
-    accessed: '2026-08-13'
+    shows: ROOST's Coop page lists review across any policy category, with the child-safety workflow adding
+      "hash matching via HMA, NCMEC CyberTipline reporting, and integrations with Google Content Safety
+      API and OpenAI Moderation API". Flagged content "flows into review queues", with "Role-based access
+      controls and routing rules", and users can "Build rules for automation using your signals or route
+      content to manual review".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 107c5a12d16f85a5870be5b947ab7acf6beb0214251f7e3c6829a4e3f8de37dc
+    content_sha256: b2dbc51fc43e7e60daab7dd9c5848173e3971c1b8fa790e21635297918db5b48
   - url: https://github.com/roostorg/coop
     shows: README lists Review Console, Content Processing, Analytics, Rules Engine and 'Simple REST and
       GraphQL APIs for seamless platform integration'.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 62edfbfeecfc59d655ad77f82b7494dbc384e39a620032d8cc40a4c33c4a746a
+  - url: https://cdn.jsdelivr.net/gh/roostorg/coop@main/README.md
+    shows: The repository README lists a Review Console, Content Processing, Analytics ("Detailed insights
+      into moderation effectiveness and trends"), a Rules Engine ("Automated content evaluation against
+      customizable policies") and "Simple REST and GraphQL APIs for seamless platform integration".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b1756d264b04c45779fb5adb85301da48e3190ec147f470a7ca1226ee1127755
+  - url: https://roost.tools/blog/coop-1-0-world-s-first-free-open-source-child-safety-infrastructure-for-every-platform/
+    shows: ROOST's Coop 1.0 announcement, dated June 09, 2026, says Coop v0 shipped "in February, and now,
+      after months of development" and describes 1.0 as a content review and enforcement system "that any
+      organization can configure, self-host, and build on", adding that it "processes content review workflows
+      at scale".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 45641445132c89749fadcf241f092ed306c234e675fd37c54aba1038d15ce8ec

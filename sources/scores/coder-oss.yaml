@@ -26,7 +26,7 @@ openness:
     paid features for large teams under separate Coder enterprise license;core-gated:gated(the enterprise/
     tree - audit logs, groups/RBAC, AI seat tracking - is governed by LICENSE.enterprise rather than the
     AGPL root, and that license forbids circumventing the license key protecting those features)
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/coder/coder
     shows: AGPL-3.0 Community Edition + Premium paid tier (compare-plans), self-hosted workspaces
@@ -43,24 +43,35 @@ openness:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/coder/coder/main/LICENSE.enterprise
-    shows: 'Scopes itself to "any software and associated documentation files under Coder Technologies Inc.’s
-      ("Coder") directory named "enterprise"", and states under Limitations: "You may not move, change,
-      disable, or circumvent the license key functionality in the software, and you may not remove or obscure
-      any functionality in the software that is protected by the license key." Production use additionally
-      requires agreement to Coder’s Terms of Service.'
-    accessed: '2026-08-12'
+    shows: 'The enterprise license applies to software under the directory named "enterprise" and forbids
+      working around the key: "You may not move, change, disable, or circumvent the license key functionality".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: b8768592764cbd705a1a314ff5359f422c8febb38d9f0cc476ad041829d9fe58
     establishes:
     - core-gated
   - url: https://raw.githubusercontent.com/coder/coder/main/LICENSE
-    shows: Root license is the GNU Affero General Public License v3, verbatim, governing everything the
-      enterprise carve-out does not name.
-    accessed: '2026-08-12'
+    shows: The root license file is the AGPL text, headed "GNU AFFERO GENERAL PUBLIC LICENSE" and "Version
+      3, 19 November 2007".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/coder/coder/main/enterprise/aiseats/tracker.go
+    shows: Publicly served source file under the enterprise directory of the repository, whose comment reads
+      "SeatTracker records current AI seat state for users."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 48c6106d4f8923bb044ba43db3ce8814c40328901cfb21f22d3f34e5b11e4b90
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/coder/coder/main/README.md
+    shows: The README points to the paid tier with "Learn about paid features built for large teams" and
+      states "Dedicated support is included in Coder Premium."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 587c16e54ad78db8e2f83fa1d34f19d885d8dd055403eea72c51e71dd64abed9
 adoption:
   level: 3
   signal_type: stars_fallback
@@ -105,15 +116,28 @@ capability:
     VM, container or Kubernetes pod, so isolation and cold start depend on the backing template rather than
     a purpose-built sandbox. Coder Agents runs the agent loop in the control plane rather than the workspace,
     which is a governance feature rather than an isolation improvement.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/coder/coder
     shows: Terraform-defined persistent workspaces, Wireguard tunnel, AI-agent workspace support
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/coder/coder/main/README.md
-    shows: Terraform-defined workspaces on EC2 VMs, Kubernetes pods or Docker containers; Wireguard
-      tunnel; idle shutdown; Coder Agents executing the agent loop in the control plane with no LLM
-      credentials in workspaces, plus centralized model governance and audit logging.
-    accessed: '2026-08-13'
+    shows: The README says "Workspaces are defined with Terraform, connected through a secure Wireguard®
+      tunnel, and automatically shut down when not used" and that "Coder Agents runs a native AI coding
+      agent whose loop executes in the control plane on your infrastructure, with no API keys in workspaces."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ce14cf14d213dee2fb26716b51cd2c048d622909497f81941f7ef68b1d3752aa
+    content_sha256: 587c16e54ad78db8e2f83fa1d34f19d885d8dd055403eea72c51e71dd64abed9
+  - url: https://coder.com/docs/user-guides/workspace-lifecycle
+    shows: The workspace lifecycle page states "Persistent resources stay provisioned when the workspace
+      is stopped" and "ephemeral resources are destroyed and recreated on restart".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6f052fb76585222d62db658e03e52c2b3b983d74f708c6f3e29a2342f366d914
+  - url: https://coder.com/docs/admin/templates
+    shows: The templates docs index describes "Create a Coder template with Terraform to define the infrastructure
+      for your workspaces." and template settings that control how "workspaces autostart, autostop, and
+      stay available".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 250f4b550c24848b16e18ed18397d1dba175098e855764a963e5f61a8a1aace9

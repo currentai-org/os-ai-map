@@ -12,16 +12,36 @@ openness:
   confidence: high
   note: ODC-BY, ungated, fully documented pool and training mixes.
   raw: license:ODC-BY;gated:false;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/allenai/dolma3_pool
-    shows: ODC-BY license, ungated, dataset card
-    accessed: '2026-08-13'
+    shows: HF dataset page for allenai/dolma3_pool renders the dataset card, stating "Dolma 3 is licensed
+      under the Open Data Commons Attribution License v1.0 (ODC-By)" and "The Dolma 3 pool is a dataset
+      of over 9 trillion tokens".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d1714d7409ac779557da778b8d5606328407b6e94bd5d633ab009c37eb8ce685
+    content_sha256: bb751f671fad5132eb550e8d2d0cf4c5091955aeeef1d44c008fa623f1e25281
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/datasets/allenai/dolma3_pool/raw/main/README.md
+    shows: 'Raw dataset card front matter lists "license: odc-by" and the body states "Dolma 3 is licensed
+      under the Open Data Commons Attribution License v1.0 (ODC-By)" with a documentation overview of the
+      pool, its sources and loading instructions.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7a43fb286ca2d57f6e44fbc109b7208a778d59a7f6e3c8a52ccd4f172d4e0ab1
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/allenai/dolma3_pool
+    shows: Hub API JSON for allenai/dolma3_pool has the gated field set to false (not gated) and tags "license:odc-by",
+      "size_categories:10B<n<100B" and "arxiv:2512.13961".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 24ebcced95dbd6375e799270f411a2fca3958f52f5a386be414a39185ca035ac
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 3
@@ -51,10 +71,19 @@ capability:
   confidence: high
   note: The current (2025) corpus behind OLMo 3, the strongest fully-open base and thinking models; uses
     documented quality-aware upsampling and data-mix ablations.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://allenai.org/blog/olmo3
-    shows: Dolma 3 trains all OLMo 3 variants; OLMo 3-Base 32B is the strongest fully-open base model
-    accessed: '2026-08-13'
+    shows: Ai2 Olmo 3 blog states "Together, Dolma 3 and Dolci give Olmo 3 a fully open data curriculum
+      from first token to final post-trained checkpoint" and "Olmo 3-Base 32B outperforms other fully open
+      base models".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705
+  - url: https://arxiv.org/abs/2512.13961
+    shows: arXiv abstract for the Olmo 3 paper says "We introduce Olmo 3, a family of state-of-the-art,
+      fully-open language models at the 7B and 32B parameter scales" and "Our flagship model, Olmo 3 Think
+      32B, is the strongest fully-open thinking model released to-date".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4e1fda180f7b798ae53a767034226dbfb4efa16dee7630644c853cd2d5172c51

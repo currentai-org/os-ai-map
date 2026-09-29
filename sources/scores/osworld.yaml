@@ -16,9 +16,9 @@ openness:
     - execution-based eval harness + 369-task environment public
     - multi-platform (VMware/VirtualBox/Docker/AWS)
   confidence: high
-  last_verified: '2026-08-13'
-  note: Apache-2.0, full harness + environment public. Scored as the evaluation harness; the bundled 369-task
-    set is also openly redistributable.
+  last_verified: '2026-09-29'
+  note: The harness and its virtual-machine environment are public under Apache-2.0, and the bundled 369-task
+    set is openly redistributable as well.
   raw: license:Apache-2.0(OSI);source:public(github.com/xlang-ai/OSWorld);execution-based eval harness +
     369-task environment public; multi-platform (VMware/VirtualBox/Docker/AWS);core-gated:ungated(full harness
     runs locally on VMware, VirtualBox or Docker, no paid tier)
@@ -30,8 +30,11 @@ openness:
     - license
     - source
   - url: https://os-world.github.io/
-    shows: 369 tasks (361 excl. Google Drive), real-computer execution-based evaluation
-    accessed: '2026-06-04'
+    shows: The project site says "369 computer tasks involving real web and desktop apps in open domains"
+      and notes 8 Google Drive tasks can be excluded ("361 tasks") due to network dependencies.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516
   - url: https://raw.githubusercontent.com/xlang-ai/OSWorld/main/README.md
     shows: README carries the Apache-2.0 badge and gives full setup instructions for running the benchmark
       locally under VMware, VirtualBox, or Docker with KVM. AWS and Azure appear only as optional providers
@@ -58,6 +61,32 @@ openness:
     establishes:
     - source
     - core-gated
+  - url: https://pypi.org/pypi/desktop-env/json
+    shows: 'The PyPI record for desktop-env, the harness environment package, carries the classifier "License
+      :: OSI Approved :: Apache Software License" and its README shows the Apache-2.0 badge.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: adcece1557e7643e006bec11f2dd7bf01a1615dab206a5a48493111694d4f56f
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/desktop-env/json
+    shows: The PyPI README announces "We released our [paper](https://arxiv.org/abs/2404.07972), [environment
+      and benchmark](https://github.com/xlang-ai/OSWorld)" and lets users install the environment with "pip
+      install desktop-env".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: adcece1557e7643e006bec11f2dd7bf01a1615dab206a5a48493111694d4f56f
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/desktop-env/json
+    shows: 'Searched the README for paid tier or license key: none. Local setup is described for VMware,
+      with "features such as parallelism and macOS on Apple chips might not be well-supported" under VirtualBox
+      and a Docker option "for hosting virtual machines".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: adcece1557e7643e006bec11f2dd7bf01a1615dab206a5a48493111694d4f56f
+    establishes:
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
@@ -67,7 +96,6 @@ adoption:
     among others, which is the strongest adoption signal available for a harness like this. It is run by
     a concentrated set of frontier labs and agent teams rather than by a broad install base, so this reading
     stays directional, and GitHub stars corroborate only loosely alongside it.
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-sonnet-4-6
     shows: The Sonnet 4.6 release post reports OSWorld results and charts Sonnet's progress on it across
@@ -95,22 +123,26 @@ capability:
     trajectories; model-backend breadth: any VLM/LLM agent (Operator, GPT, Gemini, Claude, UI-TARS, Agent-S,
     Qwen, CogAgent baselines); reproducibility: multi-platform virtualization (VMware/VirtualBox/Docker/AWS)'
   confidence: high
-  last_verified: '2026-08-13'
-  note: 'Frontier-defining on the computer-use and agentic axis. Execution-based evaluation in a real environment
-    is the hardest eval modality, and OSWorld is its reference harness: 369 tasks (361 excluding the eight
-    Google Drive ones), 134 execution-based evaluation functions, and multi-platform virtualization across
-    VMware, VirtualBox, Docker and AWS.'
+  last_verified: '2026-09-29'
+  note: OSWorld scores computer-use agents by executing their full trajectories in a real desktop environment
+    rather than by multiple choice, across 369 tasks and 134 evaluation functions on Ubuntu, Windows and
+    macOS. It runs under VMware, VirtualBox, Docker or AWS, and frontier computer-use launches report results
+    on it.
   sources:
   - url: https://os-world.github.io/
-    shows: 369 execution-based real-computer tasks, multi-OS, agent-trajectory evaluation
-    accessed: '2026-06-04'
+    shows: The site describes OSWorld as "supporting task setup, execution-based evaluation, and interactive
+      learning across operating systems" with "369 computer tasks involving real web and desktop apps in
+      open domains" and a 361-task option for excluding Google Drive tasks.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516
   - url: https://github.com/xlang-ai/OSWorld
     shows: harness + baselines for Operator/GPT/Gemini/Claude/UI-TARS/Agent-S
     accessed: '2026-06-04'
   - url: https://osworld-v1.xlang.ai/
-    shows: 369 tasks with an official note that the 8 Google Drive tasks may be excluded for a 361-task
-      run; 134 execution-based evaluation functions; 'reliable, reproducible setup and evaluation scripts'.
-    accessed: '2026-08-13'
+    shows: The site says it evaluates "LLM and VLM from open-source representatives such as UI-TARS, Agent-S,
+      Qwen, Mixtral" alongside closed models, covering Ubuntu, Windows and macOS.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516
   - url: https://raw.githubusercontent.com/xlang-ai/OSWorld/main/README.md
@@ -119,3 +151,9 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 83b8684c2f4ac4f31996b8b4752195fcb6cc5429f89d92398177b9b721d787fc
+  - url: https://pypi.org/pypi/desktop-env/json
+    shows: The PyPI-hosted README says "Alternatively, you can install the environment without any benchmark
+      tasks" with "pip install desktop-env", and lists VMware, VirtualBox, Docker and AWS providers.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: adcece1557e7643e006bec11f2dd7bf01a1615dab206a5a48493111694d4f56f

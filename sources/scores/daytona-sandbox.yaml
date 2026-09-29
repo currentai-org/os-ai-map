@@ -78,7 +78,6 @@ adoption:
   note: Adoption is read from monthly PyPI downloads of the daytona package, confirmed as the product's
     own SDK. The count is only narrowly above where a smaller number would read differently, close enough
     that ordinary month-to-month variance could change it, so confidence stays moderate rather than high.
-  last_verified: '2026-08-14'
   sources:
   - url: https://pypistats.org/packages/daytona
     shows: ~8,313,410 downloads last month
@@ -99,36 +98,31 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: isolation:dedicated kernel/filesystem/network stack per sandbox ('full composable computer'),
-    Linux container by default with opt-in Linux VM and Windows VM classes; cold-start:<90ms (container
-    class); language/runtime breadth:Python+TypeScript+JS; persistence:fork, pause/resume and memory
-    snapshots on VM sandboxes; scale:elastic
+  value: isolation:dedicated kernel/filesystem/network stack per sandbox ('full composable computer'), Linux
+    container by default with opt-in Linux VM, Windows VM, GPU and macOS classes; cold-start:<90ms (container
+    class); language/runtime breadth:Python+TypeScript+JS; persistence:fork, pause/resume and memory snapshots
+    on VM sandboxes, GPU sandboxes ephemeral; scale:elastic
   confidence: high
   note: Each Daytona sandbox gets a dedicated kernel, filesystem and network stack, and independent benchmarks
     confirm well-under-a-second cold starts for the default container class. Daytona names no microVM or
     gVisor-style isolation, so isolation is limited to OCI and Docker compatibility, and fork, pause and
     resume apply only to a separate, opt-in VM tier.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://daytona.io/docs/en/sandboxes
-    shows: '"Daytona provides full composable computers - sandboxes - for AI agents. Sandboxes are
-      isolated runtime environments you can manage programmatically to run code."; "Each sandbox runs in
-      isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and
-      disk."; "Sandboxes run as Linux containers by default. Daytona also provides VM sandboxes with a
-      dedicated Linux VM or Windows operating system, and GPU sandboxes"; runtime comparison table rows
-      Container (default, <90ms, dynamic builds, Docker images), Linux VM and Windows; "GPU sandboxes are
-      ephemeral"; fork, pause/resume and snapshot-from-sandbox are documented sandbox operations'
-    accessed: '2026-08-14'
+    shows: Sandboxes page stating "Each sandbox runs in isolation, giving it a dedicated kernel, filesystem,
+      network stack, and allocated vCPU, RAM, and disk." and "GPU sandboxes are ephemeral and support up
+      to"; its runtime table lists "<90ms" for the default Linux container, and "Fork", "Pause/resume" and
+      "Memory snapshots" for the Linux VM and Windows runtimes.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c44edb2f1ea133bbd4a5de0e11e65be6011be0716c0e82232c86b846f3052de3
+    content_sha256: 06cc5374c81e13a84a203f9eba18d4456100df4f34c6dbc8deff5853d1264e16
   - url: https://daytona.io/docs/
-    shows: 'docs index - "Sandboxes - for AI agents with complete isolation, a dedicated kernel,
-      filesystem, network stack, and allocated vCPU, RAM, and disk", "spinning up in under 90ms from code
-      to execution and running any code in Python, TypeScript, and JavaScript. Built on OCI/Docker"
-      compatibility'
-    accessed: '2026-08-14'
+    shows: Docs index stating "spinning up in under 90ms from code to execution and running any code in
+      Python, TypeScript, and JavaScript. Built on OCI/Docker compatibility".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1244f92fdcfaa0323932987dc27599fec1fda593bd65f65795a4efb43d6b3fc3
+    content_sha256: 2b8a6e6ba672947f4695e3f66c977b347595cb2c954284e4520dfdc5513191c7
   - url: https://github.com/daytonaio/daytona
     shows: The repo behind the isolation and spin-up claims is a README stub carrying neither, which is
       why the docs are cited for them instead.
@@ -137,3 +131,10 @@ capability:
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
       ~140ms sequential / ~710ms burst @100 concurrent; 4th-fastest of 19 providers'
     accessed: '2026-07-09'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/burst-tti
+    shows: ComputeSDK burst benchmark page describing "Compare sandbox startup times for E2B, Modal, Vercel,
+      Blaxel, Daytona, Hopx, Namespace, Cloudflare, and more in a 100-sandbox burst." with a Daytona row
+      reporting "0.34s" median.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 23f8f273921590d3f06e28ada188f3c4a1ed4c74cf594f91c4559ff36e2d0daa

@@ -16,12 +16,12 @@ openness:
     data or the fine-tuning pipeline behind it. That places it among models that ship permissive weights
     without a training recipe, rather than among fully open releases.
   raw: weights:open(gpt-oss-safeguard-20b/120b on HF);data:not-released;license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/openai/gpt-oss-safeguard-20b
-    shows: 'Repo shows License - apache-2.0, ungated, with safetensors shards downloadable. The card
-      documents the 20b and 120b variants and their use, and says nothing about training data - no
-      dataset link, no mixture, and no datasets key in cardData.'
+    shows: Repo shows License - apache-2.0, ungated, with safetensors shards downloadable. The card documents
+      the 20b and 120b variants and their use, and says nothing about training data - no dataset link, no
+      mixture, and no datasets key in cardData.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4dce270a5eb178984beab90b786af8b82d7ab7bf7d73ede5712dd1f06beca1ce
@@ -30,13 +30,36 @@ openness:
     - data
     - license
   - url: https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md
-    shows: Raw card front matter records license - apache-2.0 and base_model - openai/gpt-oss-20b, with no
-      datasets key; the body has no training-data section.
-    accessed: '2026-08-13'
+    shows: 'The raw 20b model card front matter records "license: apache-2.0" and "base_model_relation:
+      finetune" on openai/gpt-oss-20b, and the highlights call it a "Permissive Apache 2.0 license" that
+      lets users "Build freely without copyleft restrictions or patent risk". Searched the card for dataset
+      and training data: none, so no training data is published or linked.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9
     establishes:
     - data
+    - license
+  - url: https://huggingface.co/api/models/openai/gpt-oss-safeguard-20b
+    shows: 'The Hugging Face API record for openai/gpt-oss-safeguard-20b carries the tag "license:apache-2.0",
+      is not gated, and lists downloadable weight shards such as "model-00001-of-00002.safetensors". Searched
+      the body for dataset and datasets: none, so no training dataset is declared.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 075f018553848607eb5690468ac267d72a124581667ad0636b40aed2744ecab9
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/openai/gpt-oss-safeguard-120b
+    shows: 'The Hugging Face API record for openai/gpt-oss-safeguard-120b carries the tag "license:apache-2.0"
+      and lists weight shards such as "model-00001-of-00014.safetensors", so the larger variant is published
+      under the same license. Searched the body for dataset: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a808710f8daebb6f5c94df420f6234189c679da53cf0242da6b65b820c7cb445
+    establishes:
+    - weights
     - license
 adoption:
   level: 3
@@ -46,7 +69,6 @@ adoption:
   note: Adoption is measured by Hugging Face downloads for the one artifact OpenAI has declared for the
     20b size, openai/gpt-oss-safeguard-20b. No other channel is declared for the model, so this single download
     count is the only visible measure of its use.
-  last_verified: '2026-08-12'
   sources:
   - url: https://huggingface.co/api/models/openai/gpt-oss-safeguard-20b
     shows: 100,632 downloads in the trailing 30 days for openai/gpt-oss-safeguard-20b
@@ -60,15 +82,33 @@ capability:
   value: Policy-conditioned safety reasoning (bring-your-own-policy), reasoned decisions rather than just
     scores, configurable reasoning effort; 20b and 120b.
   confidence: medium
-  note: 'A different shape from fixed classifiers: reasons over an arbitrary supplied policy, which generalizes
-    to novel categories at some latency cost.'
-  last_verified: '2026-08-13'
+  note: gpt-oss-safeguard reasons over a policy the user writes rather than a fixed taxonomy, so it can
+    be applied to new products and categories with minimal engineering, and it exposes its reasoning. OpenAI's
+    own guide notes that traditional classifiers have lower latency and cost less to run.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/openai/gpt-oss-safeguard-20b
-    shows: Card describes gpt-oss-safeguard-120b and gpt-oss-safeguard-20b as 'safety reasoning models
-      built-upon gpt-oss' that classify against a policy you supply, with a 'Bring your own policy' feature
-      that 'interprets your written policy, so it generalizes across products and use cases', and reasoned
-      rather than bare-label decisions.
+    shows: Card describes gpt-oss-safeguard-120b and gpt-oss-safeguard-20b as 'safety reasoning models built-upon
+      gpt-oss' that classify against a policy you supply, with a 'Bring your own policy' feature that 'interprets
+      your written policy, so it generalizes across products and use cases', and reasoned rather than bare-label
+      decisions.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4dce270a5eb178984beab90b786af8b82d7ab7bf7d73ede5712dd1f06beca1ce
+  - url: https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md
+    shows: The model card describes the pair as "safety reasoning models built-upon gpt-oss" that "classify
+      text content based on safety policies that you provide", with a bring-your-own-policy feature that
+      "Interprets your written policy, so it generalizes across products and use cases with minimal engineering",
+      decisions that "Gain complete access to the model’s reasoning process", a setting to "adjust the reasoning
+      effort (low, medium, high) based on your specific use case and latency needs", and both sizes, "gpt-oss-safeguard-120b
+      and gpt-oss-safeguard-20b".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9
+  - url: https://cookbook.openai.com/articles/gpt-oss-safeguard-guide
+    shows: 'The OpenAI Cookbook user guide, which says "ROOST and OpenAI have prepared a guide that explains
+      how to write policy prompts", notes the trade-off against fixed classifiers: "Traditional classifiers
+      have lower latency and cost less to sample from than gpt-oss-safeguard".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cc5e58df7c1d73803f8b5323e9e79bb1f3c32b41b5956b747cfdb38f44dad5b9

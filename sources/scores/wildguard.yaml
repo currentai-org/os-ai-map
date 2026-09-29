@@ -19,18 +19,18 @@ openness:
       base:
         value: Mistral-7B
   confidence: medium
-  note: WildGuard ships open weights under Apache-2.0 with the WildGuardMix training corpus published, more
-    than most guardrail models release. But the repository publishes only an inference package, not the
-    fine-tuning pipeline that produced the model, which keeps this at open weights rather than fully open.
+  note: WildGuard's weights are released under Apache-2.0, and its WildGuardMix training corpus is published
+    alongside them, both behind an automatic click-through agreement to Ai2's responsible-use guidelines.
+    The published code is an inference package rather than the fine-tuning pipeline that produced the model,
+    which makes this an open-weights release rather than a fully open model.
   raw: weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);code:partial(inference/serving
     package only; no training pipeline);base:Mistral-7B;license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/allenai/wildguard
-    shows: 'Repo shows License - apache-2.0 and a dataset tag allenai/wildguardmix, gated auto (access
-      granted on accepting the AI2 Responsible Use policy), with safetensors and pytorch_model shards
-      downloadable. cardData declares datasets - allenai/wildguardmix, which is the published training
-      corpus.'
+    shows: Repo shows License - apache-2.0 and a dataset tag allenai/wildguardmix, gated auto (access granted
+      on accepting the AI2 Responsible Use policy), with safetensors and pytorch_model shards downloadable.
+      cardData declares datasets - allenai/wildguardmix, which is the published training corpus.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: e3ea0e4834fe03c2d117e52296aa840d649fe4e08b4674b294aaf680a286eb05
@@ -59,6 +59,38 @@ openness:
     content_sha256: e9b46a0e3e74792e8cebe692f444607e21767d1888a2ade3785d3657fd33c699
     establishes:
     - code
+  - url: https://huggingface.co/api/models/allenai/wildguard
+    shows: 'The Hugging Face API record for allenai/wildguard carries the tag "license:apache-2.0" and the
+      training-set tag "dataset:allenai/wildguardmix", lists downloadable weight shards such as "model-00001-of-00002.safetensors",
+      and is gated automatically: "Access to this model is automatically granted upon accepting the" AI2
+      Responsible Use Guidelines, with a form checkbox reading "I agree to use this model for research purposes
+      in accordance with the AI2 Responsible Use Guidelines".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1896e959cd6ededd417d2f83fe9f6924559e345457070ba89c9639d68a4935ad
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/datasets/allenai/wildguardmix
+    shows: The Hugging Face API record for the allenai/wildguardmix dataset publishes the "Dataset Card
+      for WildGuardMix" with its training split at "train/wildguard_train.parquet" and test split at "test/wildguard_test.parquet",
+      under the tag "license:odc-by", behind the same automatic access gate.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2c81c078542ff9ca4d60ef3f46ac151679dab386befdeee1c05a7863c2f18a58
+    establishes:
+    - data
+  - url: https://pypi.org/pypi/wildguard/json
+    shows: 'The PyPI record for the wildguard package describes it as "WildGuard safety classification inference",
+      and its README documents only loading and classifying ("Support for both VLLM and HuggingFace backends")
+      plus a guard-filter example, linking home to the allenai/wildguard repository. Searched the package
+      description for train, fine-tune and SFT: none, so the published code is an inference package without
+      the training pipeline.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f8590731a92beed79d42ec128798554ae2de2316f085584600fd92e8759609fd
+    establishes:
+    - code
 adoption:
   level: 3
   reach: 100K-1M
@@ -84,16 +116,21 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: joint detection + benchmarks
-  value: Joint prompt-harm, response-harm, and refusal detection across 13 subcategories; reported above
-    GPT-4 and prior open baselines, with low over-blocking on benign traffic.
+  value: Joint prompt-harm, response-harm, and refusal detection across 13 risk subcategories; the card
+    reports higher F1 than Llama Guard 2 and Aegis Guard on all three tasks, parity with GPT-4, and a lead
+    over GPT-4 on adversarial prompts.
   confidence: medium
-  note: Strong precision and low over-refusal; the joint refusal-detection head is a useful differentiator.
-  last_verified: '2026-08-13'
+  note: WildGuard judges prompt harm, response harm and refusal in a single pass, and its card reports higher
+    F1 than Llama Guard 2 and Aegis Guard on all three tasks. Refusal detection is what separates it from
+    harm-only classifiers, and the card reports its widest lead there.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/allenai/wildguard
-    shows: Card describes a one-stop moderation tool detecting prompt harm, response harm and model
-      refusal across 13 risk subcategories, reported above GPT-4 on the paper's moderation benchmarks;
-      tagged classifier, safety, moderation and arxiv 2406.18495.
-    accessed: '2026-08-13'
+    shows: The model card describes "an open one-stop moderation model that achieves three goals" covering
+      harm in prompts, harm in responses and refusal evaluation, with risk categories "consisting of total
+      13 subcategories". It reports that WildGuard "outperforms the strongest existing open-source baselines
+      (including Llama-Guard2 and Aegis-Guard) on F1 scores across all three tasks" and "matches GPT-4 across
+      tasks, and surpasses GPT-4 by up to 4.8% on adversarial prompt harmfulness".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e3ea0e4834fe03c2d117e52296aa840d649fe4e08b4674b294aaf680a286eb05
+    content_sha256: f77127f8f1cf0417d3f8819523363bb8993a4de1c0dd063ca68cf194fa8b5204

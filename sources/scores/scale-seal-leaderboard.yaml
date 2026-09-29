@@ -24,33 +24,50 @@ openness:
   raw: data:closed(proprietary held-out prompt sets, ~1,000 examples/domain, deliberately unpublished to
     prevent contamination/training-set leakage);datasheet:no(methodology described but examples not redistributable);license:none(not
     distributed);access:held-out(results visible on leaderboard, dataset not downloadable)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://scale.com/blog/leaderboard
-    shows: '"Leaderboard Integrity - Unlike most public benchmarks, Scale''s proprietary datasets will
-      remain private and unpublished, ensuring they cannot be exploited or incorporated into model
-      training data." No download link, no license statement and no dataset card anywhere on the page'
-    accessed: '2026-08-13'
+    shows: 'Announces the SEAL Leaderboards and states "proprietary datasets will remain private and unpublished,
+      ensuring they cannot be exploited or incorporated into model training data". Searched the body for
+      download, license and dataset card: no download link, license statement or dataset card.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 59832825730511bdf912b6a3b54fb8c3d3ffb817f4c6a8a03558880ad9277cdb
-    establishes: [license, access, datasheet, data]
+    content_sha256: 11f5478d21b6849fcc365756357977bb094208ec53ad3f3c2dcadff7bc4e7d5a
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
-  note: SEAL is a widely referenced, expert-driven private leaderboard, cited across the LLM evaluation
-    community as a contamination-resistant ranking, with broad press and industry attention. No download
-    or usage count is published, since the evaluation data is held out by design, so adoption here is read
-    from that standing as an industry reference rather than from a measured usage figure.
-  last_verified: '2026-08-13'
+  note: SEAL is Scale's private leaderboard suite, built on held-out evaluation data, and Scale reports
+    that model developers cite its benchmarks in major model releases and system cards. No download or usage
+    count is published, because the data is held out by design, so the only adoption evidence is Scale's
+    own account of that citation.
+  last_verified: '2026-09-29'
   sources:
   - url: https://scale.com/blog/leaderboard
-    shows: SEAL positioned as a trusted frontier-model leaderboard answering "Contamination & Overfitting"
-      and "Inconsistent Reporting" in model comparison; no download, user or submission count is published
-      anywhere on the page
-    accessed: '2026-08-13'
+    shows: 'SEAL is positioned as a frontier-model leaderboard answering "Inconsistent Reporting: There
+      is a lack of consistency in model comparisons and reliability in how eval results are reported" in
+      model comparison; searched the body for downloads, users, submissions and usage counts and found none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 59832825730511bdf912b6a3b54fb8c3d3ffb817f4c6a8a03558880ad9277cdb
+    content_sha256: 11f5478d21b6849fcc365756357977bb094208ec53ad3f3c2dcadff7bc4e7d5a
+  - url: https://scale.com/blog/scale-labs
+    shows: Scale states that SEAL, "launched in 2023, cemented Scale’s authority in benchmarking frontier
+      AI systems, with leading labs citing SEAL benchmarks across major model releases and system cards",
+      a vendor-reported uptake claim with no usage count.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3d7a696d9d2e5a4962bf5bf6bb3937f087cda8121af62f2d4f28db221395a34a
+  - url: https://scale.com/leaderboard
+    shows: The leaderboard hub reports "20+" benchmarks and "100+" models evaluated "From leading AI labs
+      including OpenAI, Anthropic, Google, Meta, and open-source contributors", a participation count and
+      not a usage count.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9a72db6b947f02625d12ca2fe0c55ddd605da8b35dd440ba55d60e39b37309ed
 capability:
   score: null
   basis: n/a
@@ -58,11 +75,13 @@ capability:
   confidence: high
   note: Capability is not a meaningful axis for an eval dataset, so it is left unscored; openness and adoption
     carry this category.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://scale.com/blog/leaderboard
-    shows: the scored artifact is the private held-out prompt sets behind the leaderboard; the page
-      ranks models rather than describing any capability of the prompt sets themselves
-    accessed: '2026-08-13'
+    shows: 'The post says the SEAL Leaderboards "rank frontier LLMs using curated private datasets" and
+      lists initial domains Coding, Instruction Following, Math and Multilinguality; the page ranks models
+      and describes no capability of the prompt sets. Searched the body for accuracy, SOTA and benchmark
+      scores of the corpus: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 59832825730511bdf912b6a3b54fb8c3d3ffb817f4c6a8a03558880ad9277cdb
+    content_sha256: 11f5478d21b6849fcc365756357977bb094208ec53ad3f3c2dcadff7bc4e7d5a

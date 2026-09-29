@@ -12,16 +12,27 @@ openness:
   confidence: high
   note: Ungated, Apache-2.0 licensed, with a complete dataset card.
   raw: license:apache-2.0;gated:false;card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/datasets/CohereLabs/aya_collection
-    shows: Card describing 114+ languages, templated/translated subsets, Apache-2.0, ungated
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/datasets/CohereLabs/aya_collection/raw/main/README.md
+    shows: 'Raw dataset card front matter and licensing section, stating "license: apache-2.0" and "This
+      dataset can be used for any purpose, whether academic or commercial, under the terms of the" Apache
+      2.0 License, and a summary of "513 million instances of prompts and completions covering a wide range
+      of tasks"'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 92f9332bd6c9af1a301f6b2c5fc17c8a52d6d07d571bd1fa8d3c61af470cf51a
+    content_sha256: 2f7cbdd9c396f88047a69569e71141ba6c8c520133f7451d078dbc75f934c0fa
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/CohereLabs/aya_collection
+    shows: Hub API record for the dataset whose JSON carries a gated field set to false (public, ungated)
+      and the tags "license:apache-2.0" and "task_categories:text-classification"
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f0af1937b40bda4e222ab4b9ad5d52ec85e33ac462452fdedc0ce1e371cc83e9
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 3
@@ -49,24 +60,37 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Aya Collection is documented as the training data behind Aya 101, Aya 23 and Aya Expanse, whose
-    paper reports the 8B and 32B beating Gemma 2, Qwen 2.5 and Llama 3.1 in their size classes, with win
-    rates up to 76.6%. No primary Aya Expanse source names Aya Collection as its training data; the link
-    comes only from a secondary write-up.
-  last_verified: '2026-08-14'
+  note: Aya 101 and Aya 23 are both documented as fine-tuned on the Aya Collection, and the Aya 23 paper
+    reports it outperforming Gemma, Mistral and Mixtral on a wide range of tasks. The Aya Expanse paper
+    reports win rates of up to 76.6% for its 8B and 32B models against Gemma 2, Qwen 2.5 and Llama 3.1,
+    but no primary Aya Expanse source names this collection as its training data.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2412.04261
-    shows: 'Aya Expanse paper abstract - "Aya Expanse 8B and 32B outperform leading open-weight models in
-      their respective parameter classes, including Gemma 2, Qwen 2.5, and Llama 3.1, achieving up to a
-      76.6% win-rate" on Arena-Hard-Auto translated into 23 languages, and "Aya Expanse 32B outperforms
-      Llama 3.1 70B ... achieving a 54.0% win-rate"'
-    accessed: '2026-08-14'
+    shows: 'Aya Expanse paper abstract stating "Aya Expanse 8B and 32B outperform leading open-weight models
+      in their respective parameter classes, including Gemma 2, Qwen 2.5, and Llama 3.1, achieving up to
+      a 76.6% win-rate"; searched the body for Aya Collection and aya_collection: none'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 061c6359ac9b1a00d36b521f7179ec338370ca420d44d3b0c4254aa4b518baa0
   - url: https://huggingface.co/blog/aya-expanse
-    shows: Reports the Aya Expanse 8B only, with "win rates ranging from 60.4% to 70.6%" against Gemma 2
-      9B, Llama 3.1 8B and Ministral 8B
-    accessed: '2026-07-04'
-  - url: https://ritvik19.medium.com/papers-explained-151-aya-23-d01605c3ee80
-    shows: Aya Collection (513M examples, 114+ langs) feeds Aya 101 and Aya 23/Expanse instruction data
-    accessed: '2026-07-04'
+    shows: Aya Expanse blog reporting Aya Expanse 8B with "win rates ranging from 60.4% to 70.6%" and mentioning
+      "Aya 101" accompanied by the Aya Collection, without saying the collection trained Aya Expanse
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ff6f5b021f43f305d39433b432f76d6735884998717332b3d4229023d5e605df
+  - url: https://arxiv.org/abs/2405.15032
+    shows: Aya 23 report abstract stating it focuses on "pairing a highly performant pre-trained model with
+      the recently released Aya collection" and that "Aya 23 outperforms both previous massively multilingual
+      models like Aya 101 for the languages it covers, as well as widely used models like Gemma, Mistral
+      and Mixtral"
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 33ea865cf627c3360d1431f3b8490c8cdc2ee20b53169e7f5ae4ed582552af00
+  - url: https://arxiv.org/abs/2402.06619
+    shows: Aya Collection paper abstract stating "we create the most extensive multilingual collection to
+      date, comprising 513 million instances through templating and translating existing datasets across
+      114 languages"
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1e2a29c05299288fd80887881659de70ecf94c2c520d2b05992a0ec29895079b

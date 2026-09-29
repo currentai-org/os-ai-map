@@ -13,16 +13,35 @@ openness:
   confidence: high
   note: ODC-BY licensed and ungated with a full dataset card, though some subsets carry non-commercial licenses.
   raw: license:odc-by(mixed subset licenses incl CC-BY-NC);access:ungated;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/allenai/tulu-3-sft-mixture
-    shows: ODC-BY-1.0 license, ~939k rows, dataset card
-    accessed: '2026-08-13'
+    shows: The dataset page is publicly served with a card that says "The Tulu 3 SFT mixture was used to
+      train the" Tulu 3 model series.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 579445329317f747a4780e6e767577245dca7492ec5911d20cb1f7eb63f33995
+    content_sha256: baa277931175e20bfc11daa4ecb65e0e991abcceee9d55c7ac4c4bf6e4d87426
     establishes:
     - availability
     - documentation
+    - license
+  - url: https://huggingface.co/datasets/allenai/tulu-3-sft-mixture/raw/main/README.md
+    shows: 'The raw dataset card gives the license as "license: odc-by", and its note says "different licenses
+      apply to subsets of the data. Some portions of the dataset are non-commercial."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1b6fff37d3f206b70086d9d65015a75dfb98b603a99af7330b0d44cd198464d6
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/allenai/tulu-3-sft-mixture
+    shows: The Hub API metadata is public and ungated (a gated field set to false), with tags including
+      "license:odc-by" and "multilinguality:multilingual".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 832ab22ba96d615f3b453fbb724de8c0b19022664290306d6eaecf2f79c3fca4
+    establishes:
+    - availability
     - license
 adoption:
   level: 3
@@ -50,20 +69,21 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Current multi-org SFT default (Marin, SmolLM3, OLMo 2) with SOTA open-recipe claims, but a reused
-    component rather than the head-to-head leader; Dolci now leads the fully-open frontier. The Tulu 3 listing
-    claims results surpassing the instruct versions of Llama 3.1, Qwen 2.5, Mistral and GPT-4o-mini.
+  note: The Tulu 3 paper reports that models post-trained with this mixture and the wider Tulu 3 recipe
+    surpass the instruct versions of Llama 3.1, Qwen 2.5 and Mistral as well as GPT-4o-mini, and Marin 8B
+    Instruct also uses it for supervised fine-tuning. Ai2's newer Dolci suite, not this mixture, post-trains
+    Olmo 3-Think 32B, which Ai2 reports as the strongest fully open thinking model.
   relative_to: dolci
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2411.15124
-    shows: The Tulu 3 recipe surpasses instruct versions of Llama 3.1, Qwen 2.5, and GPT-4o-mini
-    accessed: '2026-08-13'
+    shows: The Tulu 3 paper abstract reports models "surpassing the instruct versions of Llama 3.1, Qwen 2.5, Mistral, and even closed models such as GPT-4o-mini and Claude 3.5-Haiku."
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: b09d632f6108756e4a3fc59de2fb15acc5cd1152a2b873d90eba51008e6ee883
   - url: https://huggingface.co/marin-community/marin-8b-instruct
-    shows: Marin 8B Instruct lists tulu-3-sft-mixture among its SFT sources
-    accessed: '2026-08-13'
+    shows: The Marin 8B Instruct card says it is an "SFT-only model. It was trained on the following datasets:" and links allenai/tulu-3-sft-mixture.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d39bfdb79bd31d571df1d9c13a14ce4de34aad157b467c76ef8956aaf4daa3c4
+    content_sha256: 4d5903a895a09fcb5ea65a73a3889c1e3fc9dc75325eaf9e120c9610bdd7bc0a

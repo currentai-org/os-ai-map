@@ -18,16 +18,36 @@ openness:
     reuse but forbids commercial use. Because the Open Definition treats non-commercial-only data as not
     fully open, that leaves PersonaHub between open and gated.
   raw: license:cc-by-nc-sa-4.0(non-commercial);card:present;ungated:yes;scope:~370M personas+seed samples
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/proj-persona/PersonaHub
-    shows: CC-BY-NC-SA-4.0 license, ungated card, persona counts and paper reference
-    accessed: '2026-08-13'
+    shows: PersonaHub dataset page, public with no access-request gate (its embedded page data reports gated
+      false), showing the license "cc-by-nc-sa-4.0" and the paper "Scaling Synthetic Data Creation with
+      1,000,000,000 Personas".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ba3b1050f4cfb80e1c51b85446a89c39ae931a5ddf8f3a4c5018191c8cfae3b2
+    content_sha256: 57a0432c3dc0ce4dc7481a75bcd73682c9afcba0ff2849c28cf42ebb193be2f9
     establishes:
     - availability
     - documentation
+    - license
+  - url: https://huggingface.co/datasets/proj-persona/PersonaHub/raw/main/README.md
+    shows: 'Raw card of PersonaHub with a YAML header stating "license: cc-by-nc-sa-4.0" and a data release
+      section listing "370,000,000 elite personas (added in Feb 2025)" and "200,000 personas (early preview)".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1aae1391a961025c6c2d94100c91e27e443a8a8e859507bf8d15016d45b3963c
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/proj-persona/PersonaHub
+    shows: Hub API record for proj-persona/PersonaHub, listing the tag "license:cc-by-nc-sa-4.0" and a description
+      of "a collection of 1 billion diverse personas".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9d6b13e44bd09833f3df03be7f1c921d11837ad0510f7a029035bd9e2ec66e3a
+    establishes:
+    - availability
     - license
 adoption:
   level: 2
@@ -59,19 +79,18 @@ capability:
     math problems, reaching about 65% on MATH and matching GPT-4-turbo-preview. Its impact runs mostly through
     datasets built on its method, such as Tulu 3's persona-math mixture, rather than through direct large-scale
     use of the personas themselves, unlike SmolTalk, FineWeb-Edu and DCLM-Baseline.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2406.20094
-    shows: 'Persona Hub paper full text. The result is in the body: Qwen2-7B fine-tuned on the 1.07M synthesized
-      math instances is evaluated by greedy decoding, and "our approach allows a 7B LLM to achieve 65% on MATH,
-      matching the performance of gpt-4-turbo-preview", with Figure 9 scaling accuracy against the number of
-      synthetic instances. The arXiv abstract page describes the use case without the score.'
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: df49d01d1289417319eccd9ebac1ddf5ce2b383a1b833ad9e821c15667517ea0
   - url: https://huggingface.co/datasets/allenai/tulu-3-sft-personas-math
-    shows: Card - 149,960 synthetic math examples built by expanding the persona methodology of Ge et al.
-      2024
-    accessed: '2026-08-13'
+    shows: Tulu 3 persona-math dataset page whose card says "we expand the methodology in" the PersonaHub
+      paper "by using personas" and lists "149960" examples.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b192c8e7cccf4ec42ca301dae9d281a8b91a232671312f48244be43da03d8f03
+    content_sha256: 6dce1217848cd5fffa265e3e21981419418dcee4e72cb9ac74d8e2f48d190e03
+  - url: https://arxiv.org/html/2406.20094
+    shows: Paper HTML says "our approach allows a 7B LLM to achieve 65% on MATH" and describes fine-tuning
+      Qwen2-7B on "1.07 million math problems and evaluate its greedy decoding outputs on the above two
+      test sets".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 70046a168e685e59518d88e5cd9065623d2478db105d95fcbc0ce03a43de0ec2

@@ -13,14 +13,15 @@ openness:
   confidence: high
   note: Dataset card is rich but downloads require agreeing to share contact information (auto gate).
   raw: license:follows mC4 + OSCAR-2301 terms;gated:auto(contact-info agreement);card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/uonlp/CulturaX
-    shows: Card with 6.3T tokens/167 languages, mC4+OSCAR license inheritance, gated access requiring contact-info
-      agreement
-    accessed: '2026-08-13'
+    shows: Dataset page for uonlp/CulturaX states "The licence terms for CulturaX strictly follows those
+      of" mC4 and OSCAR, and the gate reads "You need to agree to share your contact information to access
+      this dataset".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1e7d2a97ad8518497c6637294ba43c027060694462ff17f155c1c872efd01bbd
+    content_sha256: c3bf1080f977357890b8a0c6b457e931f93e35bde6df2bf97122d2f9f8aa2a71
     establishes:
     - availability
     - documentation
@@ -51,11 +52,12 @@ capability:
   basis_detail: superseded
   value: null
   confidence: high
-  note: A strong 2023-24 default multilingual corpus, but explicitly beaten by FineWeb-2 in controlled per-language
-    ablations. CulturaX is a 6.3T-token, 167-language corpus built from mC4 and OSCAR.
+  note: CulturaX merges and cleans mC4 and OSCAR into one multilingual corpus, but the FineWeb-2 dataset
+    card reports that FineWeb-2 outperforms it, along with CC-100, mC4 and HPLT, on FineTasks ablations
+    across nine languages.
   relative_to: fineweb-2
   relation: two_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
     shows: FineWeb-2 outperforms CulturaX across diverse languages on FineTasks
@@ -67,3 +69,15 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1e7d2a97ad8518497c6637294ba43c027060694462ff17f155c1c872efd01bbd
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md
+    shows: FineWeb2 card says it "outperforms other popular pretraining datasets covering multiple languages
+      (such as CC-100, mC4, CulturaX or HPLT" in its ablations.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090
+  - url: https://arxiv.org/abs/2309.09400
+    shows: CulturaX paper abstract page describes a dataset of "6.3 trillion tokens in 167 languages, tailored
+      for LLM development".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c77d3113037f8d012720393bd95190dc3625e76c10a1e1fdb77a88ddd45300a2

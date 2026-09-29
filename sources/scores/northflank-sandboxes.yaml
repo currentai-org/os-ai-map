@@ -16,28 +16,35 @@ openness:
       isolation:
         value: microVM
   confidence: high
-  note: Proprietary managed deployment/sandbox platform; no open source runtime published. Sandboxes run
-    on Northflank Cloud or inside a customer VPC with no source release and no self-hostable runtime, and
-    the microVM layer is built on third-party projects (Kata Containers, gVisor) rather than anything Northflank
-    publishes.
+  note: Northflank publishes no source for its sandbox platform. Sandboxes run on Northflank Cloud, inside
+    a customer VPC or on premises as a commercial deployment option, and the microVM layer is built on third-party
+    open projects, Kata Containers and gVisor, rather than on anything Northflank releases.
   raw: license:Proprietary;service:proprietary(Northflank managed SaaS);source:closed;isolation:microVM;no
     self-hostable open runtime
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://northflank.com/
-    shows: Northflank Sandboxes = secure microVM sandbox for untrusted/code-gen execution; proprietary
-      commercial SaaS
-    accessed: '2026-08-13'
+    shows: Homepage of the commercial Northflank platform, headed "One governed path from AI-generated code
+      to production, across any cloud, VPC, or on premises." with no source repository or license offered;
+      the body has no open source, self-host, license or proprietary terms, and its only GitHub mention
+      is the integration line "Works with GitHub, GitLab and Bitbucket".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e45e80af144a4bf67b989939802974b1ae2262eb317cc2eb9d9e6ef670304352
-    establishes: [source, license]
+    content_sha256: 1d26339dd6b80ea181c5668598c2579ea1a276dbdeec583fc4f8d3b2f1b294dd
+    establishes:
+    - source
+    - license
   - url: https://northflank.com/product/sandboxes
-    shows: Sandboxes run on Northflank infrastructure or inside a customer VPC; Kata Containers and gVisor
-      named as the isolation layer; no self-hostable runtime or source offered
-    accessed: '2026-08-13'
+    shows: Sandboxes product page states "Run Northflank sandboxes on our infrastructure or inside your
+      own VPC." and names "Kata Containers or gVisor" as isolation; the body has no open source, self-host
+      or license terms, and its only GitHub mention is the integration line "Works with GitHub, GitLab and
+      Bitbucket", so no source release or open runtime is offered.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0976a4c6d9b2bf28425711a51fface149fdb2d09a945e6af29c7b36fe346f1fb
-    establishes: [source, license]
+    content_sha256: c97bee26d3d271de0f641346e6f7420a7bf45fec4c09e5154eb4a133831fd70e
+    establishes:
+    - source
+    - license
 adoption:
   level: 3
   signal_type: reported_traction
@@ -47,44 +54,52 @@ adoption:
     whole product, not Sandboxes specifically — and the newer Sandboxes feature is read against that base
     instead. Its one Sandboxes-specific claim, a monthly count of microVMs run, is a vendor figure with
     no countable artifact behind it, so no reach is recorded.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://northflank.com/
-    shows: 2,000+ start-ups and enterprises, 100k+ developers in production, 130B+ requests, millions of
-      containers, 330+ availability zones (platform-level)
-    accessed: '2026-08-13'
+    shows: 'Homepage platform-level figures: "Trusted by 2,000+" start-ups and enterprises and "Developers
+      in production" (100k+), with no Sandboxes-specific usage figure.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e45e80af144a4bf67b989939802974b1ae2262eb317cc2eb9d9e6ef670304352
+    content_sha256: 1d26339dd6b80ea181c5668598c2579ea1a276dbdeec583fc4f8d3b2f1b294dd
   - url: https://northflank.com/product/sandboxes
-    shows: Sandboxes-specific claim of millions of microVMs run monthly since 2021; SOC 2 Type 2 and HIPAA
-      badges; no per-customer or per-session usage figure
-    accessed: '2026-08-13'
+    shows: Sandboxes page claims "running millions of microVMs monthly since 2021" and "Run 10,000+ isolated
+      workloads", vendor figures with no per-customer or per-session usage count.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0976a4c6d9b2bf28425711a51fface149fdb2d09a945e6af29c7b36fe346f1fb
+    content_sha256: c97bee26d3d271de0f641346e6f7420a7bf45fec4c09e5154eb4a133831fd70e
 capability:
   score: 4
   basis: feature_matrix
-  value: 'isolation: microVM (hardware-isolated, top tier) plus secure containers; cold-start: ~200ms
-    microVM spin-up; language/runtime breadth: arbitrary containers/runtimes (broad); persistence: stateful
-    workloads / long-running agents supported; scale: multi-cloud, 330+ AZs, millions of containers'
+  value: 'isolation: microVM (hardware-isolated, top tier) plus secure containers; cold-start: microVM boot
+    in under a second; language/runtime breadth: arbitrary containers/runtimes (broad); persistence: ephemeral
+    or persistent sandboxes with attachable volumes, no forced time limit; scale: multi-cloud, 330+ AZs,
+    millions of containers'
   confidence: medium
-  note: Northflank Sandboxes uses microVM isolation via Kata Containers and gVisor, boots in under a second,
-    and can deploy inside a customer VPC; independent ComputeSDK benchmarks confirm a 0.25-second median
-    cold start, third among 24 providers. Isolation and latency are top-tier, but it sits just below the
-    frontier on sandbox-specific scale against the dedicated leaders.
-  last_verified: '2026-08-13'
+  note: Northflank Sandboxes runs each workload in its own microVM through Kata Containers or gVisor, boots
+    a microVM in under a second, supports ephemeral or persistent sandboxes with no forced time limit, and
+    can deploy inside a customer VPC. Its isolation and start-up speed match the leading sandbox platforms,
+    but its evidence of scale is platform-wide rather than specific to sandboxes.
+  last_verified: '2026-09-29'
   sources:
   - url: https://northflank.com/
-    shows: microVM 200ms isolation, untrusted code at scale, millions of containers, 330+ AZs
-    accessed: '2026-08-13'
+    shows: Homepage environment animation lists "microVM 200ms" among platform events next to "Bring Your
+      Own Cloud", and a customer testimonial cites "Compliant Cloud via BYOC and optional on-prem deployment".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e45e80af144a4bf67b989939802974b1ae2262eb317cc2eb9d9e6ef670304352
+    content_sha256: 1d26339dd6b80ea181c5668598c2579ea1a276dbdeec583fc4f8d3b2f1b294dd
   - url: https://northflank.com/product/sandboxes
-    shows: Kata Containers and gVisor isolation, microVM boot in under a second, no forced session time
-      limits, bring-your-own-cloud VPC deployment
-    accessed: '2026-08-13'
+    shows: 'Sandboxes page: "Boot a microVM in under a second" with "Every workload runs in its own microVM
+      with Kata Containers or gVisor." and "Sandboxes can be ephemeral or persistent."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0976a4c6d9b2bf28425711a51fface149fdb2d09a945e6af29c7b36fe346f1fb
+    content_sha256: c97bee26d3d271de0f641346e6f7420a7bf45fec4c09e5154eb4a133831fd70e
+  - url: https://northflank.com/product/sandboxes
+    shows: 'Sandboxes page: "No forced time limits—run for seconds or weeks" and "Bring-your-own-cloud deployment
+      in your VPC or use our managed infrastructure."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c97bee26d3d271de0f641346e6f7420a7bf45fec4c09e5154eb4a133831fd70e
   - url: https://www.computesdk.com/benchmarks/sandboxes/
     shows: 'ComputeSDK TTI leaderboard (independent, 2026-08-07 run, 24 providers): Northflank median time-to-interactive
       0.25s, P95 0.29s, P99 0.30s, 100% success; 3rd by composite score'
