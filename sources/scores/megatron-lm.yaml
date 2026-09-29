@@ -155,47 +155,33 @@ capability:
     ~175B GPT-3 from 96 to 4,608 H100 GPUs.'
   confidence: high
   note: Megatron-LM provides reference-grade infrastructure for large-scale transformer training, composing
-    data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4, and
-    has been benchmarked at 462B parameters across thousands of H100 GPUs. No MLPerf Training submission
-    has been independently verified for the library itself, so this is judged on that feature set and NVIDIA's
-    own scaling benchmarks.
-  last_verified: '2026-08-13'
+    data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4. NVIDIA's
+    own benchmarks reach 462B parameters across thousands of H100 GPUs, though those results were measured
+    without training to convergence.
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/NVIDIA/Megatron-LM
+  - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md
     shows: 'The README describes Megatron Core as providing "transformer building blocks, advanced parallelism
-      strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4), and model
-      architectures". Under Performance Benchmarking: "The codebase efficiently trains models from 2B to
-      462B parameters across thousands of GPUs" at up to 47% Model FLOP Utilization (MFU) on H100 clusters,
-      with Key Results listing a "6,144 H100 GPUs" heading against "Successfully benchmarked 462B parameter
-      model training." and "Superlinear scaling: MFU increases from 41% to 47–48% with model size." The
-      strong-scaling paragraph scales a GPT-3 model of slightly more than 175 billion parameters from 96
-      H100 GPUs to 4,608 GPUs at a fixed batch size of 1,152 sequences, MFU falling 47% to 42%. Results
-      are noted as measured without training to convergence.'
-    accessed: '2026-08-13'
+      strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)". Under Performance
+      Benchmarking: "The codebase efficiently trains models from 2B to 462B parameters across thousands
+      of GPUs", and "Successfully benchmarked 462B parameter model training." on 6,144 H100 GPUs; the strong-scaling
+      test takes "from 96 H100 GPUs to 4,608 GPUs" on a GPT-3 model of slightly more than 175 billion parameters.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 85c0d4238ff0e5fc4b96219981648f8ae09941fc6939bc6f0ba81e34fb3b2874
+    content_sha256: 9da0af3c6ccb7fb9dae98930e369293d5872dce1ca9fc22e506d302a83d5f91f
   - url: https://developer.nvidia.com/megatron-core
-    shows: 'NVIDIA''s own scaling documentation: "In the weak scaling experiments below, with GPT models
-      ranging from 2 billion to 462 billion parameters, Megatron Core demonstrates superlinear scaling up
-      to 6144 H100 GPUs." A weak-scaling table follows with rows from 2.1B to 509B parameters carrying tensor/pipeline/data-parallel
-      sizes, GPU counts, per-GPU teraFLOP/s, MFU (42-50%) and aggregate petaFLOP/s. The strong-scaling paragraph
-      states near-linear scaling of a 177 billion parameter GPT-3 from 96 to 4608 H100 GPUs at a fixed 1152-sequence
-      batch. Feature text names "tensor, sequence, pipeline, context, and MoE expert parallelism", activation
-      checkpointing, distributed optimizers and distributed checkpointing, resiliency (automatic restart,
-      fault/hang detection), and "features like FP8 mixed precision and advanced parallelism"; it also cites
-      Nemotron-4 340B trained at up to 6K+ H100 GPU scale.'
-    accessed: '2026-08-09'
+    shows: 'NVIDIA product page: "Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs" on
+      GPT models from 2 billion to 462 billion parameters, and "near linear scaling from 96 to 4608 H100
+      GPUs" for a 177 billion parameter GPT-3 model. Feature text lists "automatic restart, fault/hang detection"
+      resiliency and "FP8 mixed precision and advanced parallelism".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 03e35b28e69d3dc08983e285e3e7fb7f7a989af9a6c49b31cbebab3d6d9b4e68
+    content_sha256: a01d49ee9e7309373a691ecc455e4a92b63f1feb90c63806a882d794e3b066b7
   - url: https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html
-    shows: 'The Parallelism Strategies Guide opens "Megatron Core supports multiple parallelism strategies
-      that can be combined to efficiently train models from billions to trillions of parameters across thousands
-      of GPUs." Its overview table enumerates six: Data Parallelism (DP), Tensor Parallelism (TP), Pipeline
-      Parallelism (PP), Context Parallelism (CP), Expert Parallelism (EP) and Fully-Sharded Data Parallelism
-      (Megatron-FSDP), each with an objective and a use case. Each section gives the actual flags — --tensor-model-parallel-size,
-      --pipeline-model-parallel-size, --context-parallel-size, --expert-model-parallel-size, --use-megatron-fsdp
-      with ZeRO-1/2/3 sharding strategies, --sequence-parallel — and states that sequence parallelism must
-      be enabled when EP is combined with TP. This is the composability claim, documented rather than asserted.'
-    accessed: '2026-08-09'
+    shows: The Parallelism Strategies Guide opens "Megatron Core supports multiple parallelism strategies
+      that can be combined to efficiently train models from billions to tr" and its overview table lists
+      Fully-Sharded Data Parallelism (Megatron-FSDP) alongside data, tensor, pipeline, context and expert
+      parallelism; the flag "--sequence-parallel" is documented as required when combining TP with EP.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: cc5b5cf00b32cac4b1d59e9c2482f19cafba61e4b9ce17c2b22d4497471daac0
+    content_sha256: 693c481667ce97084369d0ae72c577d362284ad9edb4ad59f9d311138db9aab0
