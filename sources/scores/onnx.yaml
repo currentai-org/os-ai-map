@@ -13,12 +13,40 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 license body confirmed; full source public on GitHub. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The LICENSE file contains the standard, unmodified Apache 2.0 text. The repository is public and
+    the README describes the whole library with no paid, enterprise or hosted tier beside it, so the source
+    is public and the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/onnx/onnx@main/LICENSE
+    shows: 'LICENSE file is the Apache License text: "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION"
+      under "Version 2.0, January 2004".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/onnx/onnx@main/README.md
+    shows: 'README states "ONNX provides an open source format for AI models, both deep learning and traditional
+      ML" and closes with "Apache License v2.0". Searched the body for paid, enterprise, commercial, hosted
+      and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2573d7296850bb289c4f16cbe8e5ebf994a03baad34b9ad33a5685694f8761f2
+    establishes:
+    - license
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/onnx/onnx@main/README.md
+    shows: 'README invites outside participation: "We encourage you to open" issues, and describes ONNX
+      as "a community project"; the repository is public. Searched the body for paid, enterprise, commercial
+      and hosted tiers: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2573d7296850bb289c4f16cbe8e5ebf994a03baad34b9ad33a5685694f8761f2
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/onnx/onnx/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +54,6 @@ openness:
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://api.github.com/repos/onnx/onnx
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for onnx/onnx.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 4920d88b95ed8977195f77607a139ced5200353110e98f9596c178e3dab72c21
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/onnx/onnx/main/README.md
-    shows: README describes the open format, computation-graph model and built-in operators as an open ecosystem
-      under LF AI & Data. No paid tier appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 11b444d407b1e6c33af8d0b0090a72c06704cf15f80999d02fd3c1740064ecfe
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -70,9 +80,23 @@ capability:
   basis: feature_matrix
   value: Foundational open model-exchange format and operator spec underpinning cross-framework interoperability.
   confidence: high
-  note: Defines the graph model, operators, and data types used as the de-facto interchange standard.
-  last_verified: '2026-08-13'
+  note: ONNX defines the extensible computation graph, the built-in operators and the standard data types
+    that frameworks, tools, runtimes and compilers use to exchange models, with a focus on inference.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/onnx/onnx@main/README.md
+    shows: 'README: ONNX "defines an extensible computation graph model, as well as definitions of built-in
+      operators and standard" data types, with a focus on "the capabilities needed for inferencing (scoring)".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2573d7296850bb289c4f16cbe8e5ebf994a03baad34b9ad33a5685694f8761f2
+  - url: https://onnx.ai/
+    shows: Project homepage calls ONNX "The open standard for machine learning interoperability" and says
+      ONNX defines "a common set of operators - the building blocks of machine learning and deep learning
+      models - and a common file format".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: af77ebe7526cefe89f7ca196aa42717cd9c699b6fe3b8b44973f66ccca367564
   - url: https://github.com/onnx/onnx
     shows: README still describes an open format with an extensible computation graph and built-in operators
       as a cross-framework interchange standard

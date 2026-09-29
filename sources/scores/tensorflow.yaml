@@ -13,12 +13,35 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 licensed with full public source. The repository is public and unarchived, and the README
-    describes the whole library with no paid, enterprise or hosted tier beside it, so source is public and
-    the core ungated.
+  note: Apache-2.0 licensed with full public source. The install guide offers pip, Docker and source builds
+    with no paid, enterprise or hosted tier beside them, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/tensorflow/json
+    shows: 'PyPI metadata lists the license as "Apache 2.0" and the classifier "License :: OSI Approved
+      :: Apache Software License"; its "Download" link points to the public GitHub tags page for tensorflow/tensorflow.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1131276b5df32f5396ed0b860a5b53f1a84f6e7339a7acc5373bab41433330a8
+    establishes:
+    - license
+  - url: https://www.tensorflow.org/install/source
+    shows: The build-from-source guide tells readers to run "git clone https://github.com/tensorflow/tensorflow.git"
+      to get the public source tree.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: abb162d1b5fa7ffcdbce58e7ab46e0131e8544759eab4cd6dfc89c29b452b6c6
+    establishes:
+    - source
+  - url: https://www.tensorflow.org/install
+    shows: 'Install page offers "Download a pip package, run in a Docker container, or build from source."
+      Searched the body for license key, enterprise, paid tier and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a0603efa99511c839eb2309c0ec23ea91ec9a53b9a3e207545cbedc47b1434ec
+    establishes:
+    - core-gated
   - url: https://github.com/tensorflow/tensorflow
     shows: Repo page still shows the Apache-2.0 license and the full public source tree
     accessed: '2026-08-13'
@@ -27,24 +50,6 @@ openness:
     establishes:
     - license
     - source
-  - url: https://api.github.com/repos/tensorflow/tensorflow
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
-      - for tensorflow/tensorflow.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 5c74a6282c5bd341f6f639dbfaf5a864961ba351877dcd7e6770a4b2f6936ce1
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/tensorflow/tensorflow/master/README.md
-    shows: README describes the end-to-end ML platform and its install paths (pip, Docker, source build).
-      No paid tier, hosted edition or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: cd490686cd4ad6355aff49d75431f2cc00a101c61f60c3065b7c88cab7f557a4
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -73,8 +78,26 @@ capability:
     (CPU/GPU/TPU) and edge deployment.'
   confidence: high
   note: Defines the model-training layer alongside PyTorch.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://www.tensorflow.org/
+    shows: Home page describes "An end-to-end open source machine learning platform for everyone." and lists
+      deployment on "mobile and edge devices such as Android, iOS, Raspberry Pi, and Edge TPU."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 14c0ae672907330637f8ca790f4c398e6d084312433b3904af5dd0bba96c99da
+  - url: https://www.tensorflow.org/guide/distributed_training
+    shows: 'Distributed training guide: TensorFlow API to "distribute training across multiple GPUs, multiple
+      machines, or TPUs" with minimal code changes.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1d45423c3148a55731f2447175536ec91968bc9835a1e627aef255adcfa1576c
+  - url: https://pypi.org/pypi/tensorflow/json
+    shows: PyPI description states that "Its flexible architecture allows easy deployment of computation"
+      across CPUs, GPUs and TPUs, "from desktops to clusters".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1131276b5df32f5396ed0b860a5b53f1a84f6e7339a7acc5373bab41433330a8
   - url: https://github.com/tensorflow/tensorflow
     shows: README still describes an end-to-end ML platform with stable Python and C++ APIs across CPU,
       GPU and TPU

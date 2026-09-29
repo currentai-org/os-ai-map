@@ -13,12 +13,38 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full Rust/Python source public. The repository is public
-    and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside
-    it, so source is public and the core ungated.
+  note: Both the Rust crate and the Python package are released under Apache-2.0, and the README gives build-from-source
+    steps for the whole library. It mentions no paid, enterprise or hosted tier, so nothing is withheld
+    from the public source.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/safetensors@main/LICENSE
+    shows: LICENSE file is the Apache License Version 2.0 text, headed "TERMS AND CONDITIONS FOR USE, REPRODUCTION,
+      AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/huggingface/safetensors@main/README.md
+    shows: 'README ends with "License: Apache-2.0" and gives build-from-source steps ("For the sources,
+      you need Rust"). Searched the body for enterprise, paid, pricing, license key and hosted: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://crates.io/api/v1/crates/safetensors
+    shows: crates.io metadata lists the crate under "license":"Apache-2.0" with "repository":"https://github.com/huggingface/safetensors".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7ffebe334404e0667bda18692544550b2713dcb0dc254e16269020a95d29ef45
+    establishes:
+    - license
+    - source
   - url: https://github.com/huggingface/safetensors/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +52,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/safetensors
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/safetensors.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: cabd125cead9ddc0b6735319d9e47c1fdebc9eaa4b85966a18888d13a9d2b491
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/safetensors/main/README.md
-    shows: README describes the format and both the Rust crate and the Python package as published. No paid
-      tier or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -69,9 +77,24 @@ capability:
   basis: feature_matrix
   value: Secure, zero-copy tensor serialization format and library used cross-framework.
   confidence: high
-  note: Narrow scope (storage format) but central as the default Hub weight format.
-  last_verified: '2026-08-13'
+  note: Safetensors is a storage format rather than a training or inference framework, so its scope is narrow.
+    Within that scope it offers safe loading, zero-copy reads, lazy loading of individual tensors and bfloat16/fp8
+    support, with loaders for five frameworks.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/docs/safetensors/main/en/index
+    shows: Documentation states "Safetensors is a new simple format for storing tensors safely (as opposed
+      to pickle) and that is still fast (zero-copy)" and has separate API pages for Torch, Tensorflow, PaddlePaddle,
+      Flax and Numpy.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d15ef5bbd13ad5bff207478b9ef8f50bdced9c0b789ff197cdad7ac47ecfa9b8
+  - url: https://cdn.jsdelivr.net/gh/huggingface/safetensors@main/README.md
+    shows: README describes the format as one "for storing tensors safely (as opposed to pickle)", with
+      a comparison table covering safety, zero-copy, lazy loading, layout control and bfloat16/fp8 support.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0a932f120de5c2477b286cae5517b6fec5e1d3ed64a19b99ccfc0a8504db7b13
   - url: https://github.com/huggingface/safetensors
     shows: README still describes a safe, zero-copy tensor format with both Rust and Python implementations
     accessed: '2026-08-13'

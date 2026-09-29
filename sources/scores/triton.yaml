@@ -13,12 +13,37 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: MIT license body confirmed (Tillet/OpenAI copyright); full source public. The repository is public
-    and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside
-    it, so source is public and the core ungated.
+  note: The LICENSE file is the standard MIT text, and the full source is public. The README describes the
+    whole library with no paid, enterprise or hosted tier beside it, so the core is ungated.
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/triton-lang/triton@main/LICENSE
+    shows: 'The LICENSE file carries the MIT permission grant: "Permission is hereby granted, free of charge,
+      to any person obtaining" the software, with "Copyright 2020-2022 OpenAI" beside Philippe Tillet.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 92640fb97222fd0a698ff28ce0c3782c172623f8d6c609b557636a80f28fb946
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/triton-lang/triton@main/README.md
+    shows: 'README of the development repository: "The aim of Triton is to provide an open-source environment
+      to write fast code at higher productivity than CUDA", installable with "pip install triton" or from
+      source. Searched the body for enterprise, paid, commercial, license key and hosted: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 413986ca3fdc97bdc41eb999011df694bf3cb85ffee054c140e6a318dcb8b205
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/triton/json
+    shows: PyPI package metadata for triton declares license "MIT" and summary "A language and compiler
+      for custom Deep Learning operations".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 063c67e2c4a1bf2b7cfb9781eaf5eb5a0cd83a1ad2aec974d20a23cb81500fc7
+    establishes:
+    - license
   - url: https://github.com/triton-lang/triton/blob/main/LICENSE
     shows: LICENSE file is the verbatim MIT License text, Copyright 2018-2020 Philippe Tillet / 2020-2022
       OpenAI
@@ -27,24 +52,6 @@ openness:
     content_sha256: 92640fb97222fd0a698ff28ce0c3782c172623f8d6c609b557636a80f28fb946
     establishes:
     - license
-  - url: https://api.github.com/repos/triton-lang/triton
-    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for
-      triton-lang/triton.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 67d686999f89636e1157a54de6fc702c4a06466e2092fd112b37c36fdb50a937
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/triton-lang/triton/main/README.md
-    shows: README describes the language and MLIR-based compiler and points at the public nightly wheels.
-      No paid tier or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 091b198c18d6c8433ba83f848af0f5e022cf82004e87c845f486180dd1c840f6
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -71,9 +78,29 @@ capability:
   basis: feature_matrix
   value: GPU kernel language and MLIR-based compiler for custom high-performance deep-learning operators.
   confidence: high
-  note: Foundational kernel-authoring layer (e.g. PyTorch inductor backend) across NVIDIA/AMD GPUs.
-  last_verified: '2026-08-13'
+  note: Triton is the kernel-authoring layer that PyTorch's inductor compiler uses to generate code for
+    NVIDIA and AMD GPUs. It targets both vendors' hardware, while CPU support is still under development.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/triton-lang/triton@main/README.md
+    shows: README compatibility section lists "NVIDIA GPUs (Compute Capability 8.0+)" and "AMD GPUs (ROCm
+      6.2+)", with CPUs "Under development"; it describes "a language and compiler for writing highly efficient
+      custom Deep-Learning primitives".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 413986ca3fdc97bdc41eb999011df694bf3cb85ffee054c140e6a318dcb8b205
+  - url: https://triton-lang.org/main/index.html
+    shows: 'Documentation home: Triton "is a language and compiler for parallel programming" providing "a
+      Python-based programming environment for productively writing custom DNN compute kernels".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fc578c0d7e0d39f550925c0f2e7a407f7c8bcbbfa5948b2461b00c9593ddf811
+  - url: https://pytorch.org/blog/pytorch-2-0-release/
+    shows: 'PyTorch 2.0 release post: "For NVIDIA and AMD GPUs, it uses OpenAI Triton as a key building
+      block."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 086053a4de41ee3e630ae8b9724397eea6787cec12b66dfab8919b1eca6a046c
   - url: https://github.com/triton-lang/triton
     shows: README still describes the GPU kernel language and MLIR-based compiler, with public nightly wheels
     accessed: '2026-08-13'

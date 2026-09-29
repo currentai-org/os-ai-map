@@ -13,12 +13,37 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The LICENSE file contains the standard, unmodified Apache 2.0 text. The repository is public and
+    active, and the README describes the full library without a separate paid, enterprise or hosted tier.
+    The source is public and the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/accelerate/json
+    shows: 'PyPI metadata for accelerate carries the classifier "License :: OSI Approved :: Apache Software
+      License" and the bundled README opens with "Licensed under the Apache License, Version 2.0".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ec98b6588f981261bb9fd0f4bde8693db08fb3a30e13ecb98d7ee5e041478f7a
+    establishes:
+    - license
+  - url: https://huggingface.co/docs/accelerate/basic_tutorials/install
+    shows: Install guide gives "pip install git+https://github.com/huggingface/accelerate" and says "an
+      editable version can be installed from a locally-cloned version of the repository".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c59c6c29b566170800e018c09ab06e654be8ff788a3ac9768c56960c1a69a06e
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/accelerate/json
+    shows: 'PyPI package README says "Accelerate abstracts exactly and only the boilerplate code related
+      to multi-GPUs/TPU/fp16" and describes the whole library and its CLI. Searched the body for enterprise,
+      pricing, paid, subscription and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ec98b6588f981261bb9fd0f4bde8693db08fb3a30e13ecb98d7ee5e041478f7a
+    establishes:
+    - core-gated
   - url: https://github.com/huggingface/accelerate/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +51,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/accelerate
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/accelerate.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 7d9a27c9bd3a34515344fb3ac3a62dcaef796904b93d3a8e735d934cdfd719bc
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/accelerate/main/README.md
-    shows: README describes running raw PyTorch training on any device with a few lines changed, and the
-      accelerate CLI. No paid tier or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: c201cf5121bea21d8c0d9621803d50379b85facb2bc5719e11d181d595d93a53
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
