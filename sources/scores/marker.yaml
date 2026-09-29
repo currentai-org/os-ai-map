@@ -82,19 +82,21 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: multi-format document understanding with layout, tables and equations'
-  value: PDF, image, Office and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and
-    equation recognition, OCR and optional LLM-assisted refinement.
+  value: PDF, image, Office, HTML and EPUB conversion to Markdown, JSON and HTML with layout analysis, table
+    and equation recognition, OCR and optional LLM-assisted refinement.
   relative_to: docling
-  relation: at
+  relation: one_below
   confidence: medium
-  note: 'Marker''s layout, tables, equations and reading order all come through into Markdown and JSON.
-    Its capability matches Docling''s: Docling also accepts audio, video and XML, but that is about how
-    many kinds of document it can take in, not how much of one it recovers.'
-  last_verified: '2026-08-13'
+  note: Marker's layout, tables, equations and reading order all come through into Markdown and JSON. It
+    stops short of Docling, whose extractor also returns the fields a user defines in a template; Marker's
+    converters rebuild the whole document or only its tables, with no step for returning user-defined fields.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/datalab-to/marker/master/README.md
-    shows: README documents conversion of PDFs, images, Office documents and EPUB to Markdown, JSON and HTML,
-      with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.
-    accessed: '2026-08-30'
+    shows: The raw README states "Marker converts documents to markdown, JSON, chunks, and HTML quickly
+      and accurately", "Converts PDF, image, PPTX, DOCX, XLSX, HTML, EPUB files in all languages" and "Formats
+      tables, forms, equations, inline math, links, references, and code blocks", and lists its converters
+      as "One of `marker.converters.pdf.PdfConverter` (default) or `marker.converters.table.TableConverter`".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4
