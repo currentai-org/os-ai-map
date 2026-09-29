@@ -27,34 +27,52 @@ openness:
   raw: license:Proprietary;source:closed;service:proprietary Modal managed cloud (no self-host of the gVisor
     execution plane);open-part:client SDK only (modal Python/JS client libraries);pricing:pay-as-you-go
     usage, free starter credits
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://modal.com/pricing
-    shows: Modal is a managed proprietary cloud platform, pay-per-CPU-cycle, $30/mo free credits
-    accessed: '2026-06-04'
+    shows: 'Modal plan pricing page, with a section headed "Modal Sandbox + Notebooks Pricing", meters Starter,
+      Team and Enterprise plans against Modal compute; searched the body for self-host, on-prem, open source
+      and license: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4d5b700734f8629f48c17b316b6f6a5045ac8296beef2e39b1951905de9a3639
   - url: https://modal.com/docs/guide/sandbox
     shows: Sandboxes = secure containers for untrusted agent code, driven via Modal SDK
     accessed: '2026-06-04'
-  - url: https://modal.com/pricing
-    shows: 'Three plans - Starter ($0 + compute, $30/mo free credits), Team ($250 + compute) and
-      Enterprise (custom) - all metered against Modal''s own cloud, with a separate Sandbox and
-      Notebooks compute rate per core-second and GiB-second. Nothing on the page offers a self-hosted,
-      on-premises or source-available deployment.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e5534b204d7123a8e32b35614459209769e6131bcc52ba113c8ac93a0369d876
-    establishes:
-    - source
-    - license
   - url: https://modal.com/docs/guide/sandbox
-    shows: 'Redirects to /docs/guide/sandboxes. Sandboxes are still "secure containers for executing
-      untrusted user or agent code on Modal", created only through the Python, JavaScript or Go SDK
-      against Modal''s service; no runtime is distributed to run elsewhere.'
+    shows: Redirects to /docs/guide/sandboxes. Sandboxes are still "secure containers for executing untrusted
+      user or agent code on Modal", created only through the Python, JavaScript or Go SDK against Modal's
+      service; no runtime is distributed to run elsewhere.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
     establishes:
     - source
+  - url: https://modal.com/legal/terms
+    shows: Modal Terms of Service bar customers from attempts to "reverse engineer, decompile, disassemble,
+      or" discover the "algorithms of the Service or any software used to provide or make" it available,
+      and name only the modal-client SDK as "available under open source licensing terms", adding "that
+      the Modal Tools are not part of the Service".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 60a6ded358be3bfe888dedde81c02e5456ba0a3fdc6bcbcc8092ecb4b719a8d3
+    establishes:
+    - license
+    - source
+  - url: https://modal.com/docs/guide/sandboxes
+    shows: 'Sandboxes guide describes "secure containers for executing untrusted user or agent code on Modal"
+      created through the SDK; searched the body for self-host, on-prem and open source: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 90183da31e465efc1b36d789799827aa30a1ededffe7ff40bb21a087ecc1e75d
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/modal-labs/modal-client/main/LICENSE
+    shows: The modal-client repository LICENSE file is the "Apache License" text, "TERMS AND CONDITIONS
+      FOR USE, REPRODUCTION, AND DISTRIBUTION", covering the client SDK only.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9
 adoption:
   level: 3
   signal_type: reported_traction
@@ -64,24 +82,30 @@ adoption:
     is platform-wide -- a count of Modal teams overall, naming Lovable and Quora as production users running
     untrusted code -- so the level reflects reported multi-customer traction for the platform rather than
     a measured figure for the sandbox feature itself.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://modal.com/docs/guide/sandbox
     shows: documented production sandbox feature on a widely-used managed platform
     accessed: '2026-06-04'
   - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
-    shows: '''Modal powers infrastructure for over 10,000 teams, with production users like Lovable and
-      Quora running millions of untrusted code snippets daily''. No Sandboxes-specific user or usage
-      count is given.'
-    accessed: '2026-08-13'
+    shows: Modal article states "Modal powers infrastructure for over 10,000 teams, with production users
+      like Lovable and Quora running millions of untrusted code snippets daily" with no Sandboxes-specific
+      user count.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: eb0fb2ec1e5f12aca248e6389998745b0ba48a21edfd9b211bd1474d98eea34e
+    content_sha256: fa1c17a17fd3c62d7b52454bab040c3914f5476367c2e7f8d373f358b137f91b
   - url: https://modal.com/docs/guide/sandbox
-    shows: Sandboxes guide publishes lifecycle, image and timeout documentation and no usage, session
-      or customer count.
+    shows: Sandboxes guide publishes lifecycle, image and timeout documentation and no usage, session or
+      customer count.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
+  - url: https://modal.com/docs/guide/sandboxes
+    shows: 'Sandboxes guide documents "Sandboxes have a default maximum lifetime of 5 minutes." and other
+      lifecycle details; searched the body for 10,000, customers and usage counts: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 90183da31e465efc1b36d789799827aa30a1ededffe7ff40bb21a087ecc1e75d
 capability:
   score: 4
   basis: feature_matrix
@@ -92,37 +116,37 @@ capability:
     images/dependencies (custom images, any deps, repo checkout); persistence:named/ID sandbox lookup, custom
     images; scale:reported 50,000+ concurrent sessions; timeouts default 5min up to 24h
   confidence: medium
-  note: Modal Sandboxes isolate each container with gVisor's user-space kernel, one step below microVM isolation,
-    and support arbitrary custom images, named lookup, and sessions from a five-minute default up to 24
-    hours. Independent ComputeSDK benchmarks measured a 0.76-second median cold start, slower than the microVM-isolated
-    platforms such as Firecracker that define the top of this category.
-  last_verified: '2026-08-13'
+  note: Modal Sandboxes isolate each container with gVisor's user-space kernel and support arbitrary custom
+    images, named lookup, GPUs, and sessions from a five-minute default up to 24 hours. That isolation is
+    a step below the microVM platforms, such as Firecracker, that lead the category, and independent ComputeSDK
+    benchmarks place Modal's start-up speed mid-field.
+  last_verified: '2026-09-29'
   sources:
   - url: https://modal.com/docs/guide/sandbox
     shows: sandbox lifecycle, custom images, timeouts up to 24h, untrusted-code execution
     accessed: '2026-06-04'
   - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
-    shows: gVisor user-space kernel isolation, 50,000+ concurrent sessions (corroborating)
-    accessed: '2026-06-04'
+    shows: Modal article states "Modal uses gVisor containers for isolation" while microVM platforms are
+      named as competitors, and that Sandboxes "can scale to 50,000+ concurrent sessions".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fa1c17a17fd3c62d7b52454bab040c3914f5476367c2e7f8d373f358b137f91b
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
-      ~470ms sequential / ~570ms burst @100 concurrent; 13th of 19 providers'
-    accessed: '2026-07-09'
+    shows: ComputeSDK benchmark page states "Compare burst time-to-interactive and real-world developer
+      workload results across providers" and its Burst TTI composite leaderboard lists Modal mid-table among
+      27 providers.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b9a8d579c8c4ac28a7c4995f5406aca24a061e53ab736e1bf8200c72b8697b81
   - url: https://modal.com/docs/guide/sandbox
-    shows: Sandbox lifecycle through the SDK, arbitrary custom images, named/ID lookup, 5-minute default timeout
-      extendable to 24 hours, untrusted-code framing.
+    shows: Sandbox lifecycle through the SDK, arbitrary custom images, named/ID lookup, 5-minute default
+      timeout extendable to 24 hours, untrusted-code framing.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
-  - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
-    shows: Still states gVisor container isolation for Modal against microVM competitors, and "can scale to
-      50,000+ concurrent sessions".
-    accessed: '2026-08-13'
+  - url: https://modal.com/docs/guide/sandboxes
+    shows: Sandboxes guide states "Sandboxes have a default maximum lifetime of 5 minutes." and documents
+      timeouts up to 24 hours, named Sandboxes, Sandbox.from_id and custom images.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: eb0fb2ec1e5f12aca248e6389998745b0ba48a21edfd9b211bd1474d98eea34e
-  - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: ComputeSDK TTI leaderboard, run of 2026-08-07 across 24 providers - Modal median 0.76s, P95 0.82s,
-      P99 0.85s, 100% success, composite 92.1; 14th of 24 by median.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: cbb96170184f9c48e5c5f0a9834e15ab2a87a083132581c8a632f0cdc6e42e85
+    content_sha256: 90183da31e465efc1b36d789799827aa30a1ededffe7ff40bb21a087ecc1e75d

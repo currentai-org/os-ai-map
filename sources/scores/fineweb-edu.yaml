@@ -15,16 +15,34 @@ openness:
   confidence: high
   note: Permissive ODC-BY license with ungated download and full dataset card.
   raw: license:ODC-BY;gated:false;dataset_card:present;format:parquet
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu
-    shows: Dataset card present, ODC-BY license, public ungated download
-    accessed: '2026-08-13'
+    shows: Dataset page renders the license sentence "Open Data Commons Attribution License (ODC-By) v1.0"
+      on the card.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 129ceef57c14b00a83f0b837a4693a7d3c30fef2fc8e56a4b0839be39d99e519
+    content_sha256: 7072f2c3b1025fe69c2fe04b2857b3f05ac269ee80d08ff4170664f0b368d6e9
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/raw/main/README.md
+    shows: 'Raw card opens with front matter "license: odc-by" and describes "1.3 trillion tokens of the
+      finest educational data". Searched the card for extra_gated and access-request text: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a0cc8998a20499432b28b6575f3046b714938eb8e11b8d59a1d25ddf3716061e
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-edu
+    shows: Hub API record lists "task_categories:text-generation" and "license:odc-by" and "format:parquet"
+      among its tags, with gated, private and disabled all false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0e735be502a35e264289e2244d7d264b6fa69dff704966fc6805db763860ba4b
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 4
@@ -52,25 +70,34 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: Dominates FineWeb and all peers on MMLU/ARC, matching full FineWeb with ~10x fewer tokens; current
-    default web corpus for SmolLM2/3 and Apertus.
-  last_verified: '2026-08-13'
+  note: FineWeb-Edu raises MMLU and ARC well above unfiltered FineWeb, and matches the MMLU score of the
+    Matrix corpus with almost 10x fewer tokens. SmolLM2 and SmolLM3 both use it as a core web component
+    alongside DCLM.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2406.17557
-    shows: 'FineWeb paper full text. The token-efficiency figure is in the body: "On MMLU, FineWeb-Edu can match
-      the final performance of Matrix with almost 10x fewer tokens, demonstrating the effectiveness of classifiers
-      trained on LLM annotations for large-scale data" - and Fig. 16 compares FineWeb-Edu with other open web
-      datasets on nine benchmarks at 1.71B parameters over 350B tokens. The arXiv abstract page gives the MMLU
-      and ARC claim without the multiple.'
-    accessed: '2026-09-11'
+  - url: https://arxiv.org/abs/2406.17557
+    shows: arXiv abstract for the FineWeb paper states "LLMs pretrained on FineWeb-Edu exhibit dramatically
+      better performance on knowledge- and reasoning-intensive benchmarks like MMLU and ARC".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ae632bd6618d2566e708962670f27ab1fbc5ba9bc8de3acaceee8fbda85fbdd4
-  - url: https://arxiv.org/pdf/2502.02737
-    shows: 'SmolLM2 paper full text. FineWeb-Edu is named as a training component and measured against DCLM:
-      Table 1 evaluates models trained on each for 350B tokens, "FineWeb-Edu achieves higher scores on the educational
-      benchmarks MMLU, ARC, and OpenBookQA, while DCLM performs better on HellaSwag and CommonsenseQA", and the
-      released mixture uses "a 60% FineWeb-Edu and 40% DCLM mix". The arXiv abstract page names no component
-      dataset.'
-    accessed: '2026-09-11'
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da
+  - url: https://arxiv.org/html/2406.17557
+    shows: FineWeb paper HTML says "On MMLU, FineWeb-Edu can match the final performance of Matrix with
+      almost 10x fewer tokens, demonstrating the effectiveness of classifiers trained on LLM annotations
+      for large-scale data filtering" and that "ARC score goes from 46% to 57%".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a95fbda201d21cd25c89e949636373d36c288bd2d287e3cabd208e2041ea36d3
+    content_sha256: 059d9418f0a111cdc55c9057dc1595a03ba392abc5e2140832635a520192dc99
+  - url: https://arxiv.org/html/2502.02737
+    shows: SmolLM2 paper HTML says "We find that FineWeb-Edu achieves higher scores on the educational benchmarks
+      MMLU, ARC, and OpenBookQA, while DCLM performs better on HellaSwag and CommonsenseQA" and "we found
+      that a 60% FineWeb-Edu and 40% DCLM mix works well".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6a1e79bcd781f4e49bf6b1302a2137463307a0851be149f4121df92fefcb893f
+  - url: https://huggingface.co/blog/smollm3
+    shows: 'SmolLM3 blog lists the stage-one web mixture as "Web: 85% (12% multilingual) - FineWeb-Edu,
+      DCLM, FineWeb2 and FineWeb2-HQ".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e17656c951c0be264075263bc9d98d9d897225bdbe8506d4f32c7e2e9d7547da

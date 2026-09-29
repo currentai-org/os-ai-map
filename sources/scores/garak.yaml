@@ -16,15 +16,15 @@ openness:
       service:
         value: none
   confidence: high
-  note: 'Fully open source: Apache-2.0 scanner, self-hostable, no proprietary tier.'
+  note: garak's complete source is public under Apache-2.0, and it installs from PyPI or from source and
+    runs locally. Nothing in it depends on a paid tier or a hosted service.
   raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/NVIDIA/garak
-    shows: 'Repo metadata records license spdxId - Apache-2.0. The README is a command-line Get Started
-      for running the scanner locally against your own model endpoints; there is no hosted tier, no
-      enterprise directory and no license key on the page, so nothing is withheld from the published
-      source.'
+    shows: Repo metadata records license spdxId - Apache-2.0. The README is a command-line Get Started for
+      running the scanner locally against your own model endpoints; there is no hosted tier, no enterprise
+      directory and no license key on the page, so nothing is withheld from the published source.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: f6e2381a1b6aa6ca3b136e1885221df7b0bd8b2bbf131cca5c1546794bc30177
@@ -32,6 +32,37 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://api.deps.dev/v3/projects/github.com%2Fnvidia%2Fgarak
+    shows: The deps.dev project record for the GitHub repository github.com/nvidia/garak, described as "the
+      LLM vulnerability scanner", lists the repository license as "Apache-2.0" and records the repository
+      key "github.com/nvidia/garak", so the source is public on GitHub under Apache-2.0.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e42cb830905cc3cf5a5195f2c1874b86b71ae04d4b370c73a997b0966d7b8e83
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/garak/json
+    shows: 'The PyPI project description for garak 0.17.0 calls it a free tool ("s a free tool. We love
+      developing it and are always interested in adding functionality") and documents installing it locally
+      with "python -m pip install -U garak" or by cloning the source and running "python -m pip install
+      -e .", then pointing it at a local Hugging Face model, as in "python3 -m garak --target_type huggingface
+      --target_name gpt2". Searched the description for enterprise, license key, paid and hosted: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 43526e70f60cee6f28c1787c4456580ddcd7454aa10c5c08628d7f62fa2fe68d
+    establishes:
+    - core-gated
+    - self-host
+    - source
+  - url: https://garak.ai/
+    shows: The garak homepage states "garak is open-source software and actively updated, by both NVIDIA
+      and the community" and links to the "garak code on github".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fa80b42c4561314ab148154b6370b16d28c98b34dce23314a75990c635e20356
+    establishes:
+    - source
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -60,8 +91,10 @@ capability:
   value: Large library of vulnerability probes (hallucination, leakage, injection, misinformation, toxicity,
     jailbreaks) across many model providers.
   confidence: medium
-  note: Broadest open library of LLM vulnerability probes; multi-provider coverage.
-  last_verified: '2026-08-13'
+  note: garak ships probes for hallucination, data leakage, prompt injection, misinformation, toxicity and
+    jailbreaks, combining static, dynamic and adaptive attacks. It runs them against Hugging Face models,
+    the OpenAI API, AWS Bedrock, litellm and generic REST endpoints.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/NVIDIA/garak
     shows: README states 'garak probes for hallucination, data leakage, prompt injection, misinformation,
@@ -70,3 +103,12 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: f6e2381a1b6aa6ca3b136e1885221df7b0bd8b2bbf131cca5c1546794bc30177
+  - url: https://pypi.org/pypi/garak/json
+    shows: The PyPI project description says garak "probes for hallucination, data leakage, prompt injection,
+      misinformation, toxicity generation, jailbreaks, and many other weaknesses" and that "It combines
+      static, dynamic, and adaptive probes to explore this." Its LLM support list covers "hugging face hub"
+      generative models, "chat & continuation models" via the OpenAI API, "foundation models" on AWS Bedrock,
+      litellm and "pretty much anything accessible via REST".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 43526e70f60cee6f28c1787c4456580ddcd7454aa10c5c08628d7f62fa2fe68d

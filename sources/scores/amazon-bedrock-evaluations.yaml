@@ -16,26 +16,32 @@ openness:
         value: pay-as-you-go
         detail: judge-model inference + AWS-managed human workforce
   confidence: high
-  last_verified: '2026-08-13'
-  note: Proprietary AWS managed service; no source, no self-host, runs as billed Bedrock evaluation jobs.
+  last_verified: '2026-09-29'
+  note: Amazon Bedrock Evaluations is a proprietary AWS managed service with no published source code. It
+    runs only as evaluation jobs billed through Bedrock, with no self-hosted option.
   raw: license:proprietary(AWS managed service);source:closed;deployment:cloud-only(AWS-hosted eval jobs,
     S3 I/O);billing:pay-as-you-go(judge-model inference + AWS-managed human workforce)
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html
-    shows: managed Bedrock service running automatic/judge/human eval jobs on AWS, CORS S3 I/O, CloudTrail
-      events
-    accessed: '2026-06-04'
-  - url: https://aws.amazon.com/bedrock/evaluations/
-    shows: AWS-hosted feature, AWS-managed human evaluator workforce option, directs to pricing page
-    accessed: '2026-06-04'
-  - url: https://aws.amazon.com/bedrock/evaluations/
-    shows: An AWS-hosted evaluation capability inside Amazon Bedrock, offering LLM-as-a-Judge, programmatic
-      and human evaluation, with AWS able to 'engage a team managed by AWS to perform the human evaluation'.
-      The page links to Bedrock pricing. No source code, repository or self-host option is mentioned anywhere
-      on it, and no license is offered.
-    accessed: '2026-08-13'
+    shows: 'The AWS user guide describes a managed Bedrock service that runs evaluation jobs, saying "Required
+      Cross Origin Resource Sharing (CORS) permissions on S3 buckets" and "CloudTrail management events
+      in model evaluation jobs". Searched the body for self-host, on-prem, open source and license: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 497a0b9715a40cf67566a85976e07341a9a1c944621d678bd70c463be217b863
+    content_sha256: f5062fd221528a88b0d896a6c8f365f769cff0be0a427611263bd9a3a3dd9d39
+  - url: https://aws.amazon.com/bedrock/evaluations/
+    shows: The page describes "Amazon Bedrock provides evaluation tools for you to accelerate adoption of
+      generative AI applications" and lists no repository, download or license terms.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b5b5597c4a254b83d66705ae18c785590d7a35119b0865da6f46a373d973cfe8
+  - url: https://aws.amazon.com/bedrock/evaluations/
+    shows: 'The AWS product page says "you can engage a team managed by AWS to perform the human evaluation"
+      and offers LLM-as-a-Judge, programmatic and human evaluation. Searched the body for self-host, open
+      source, license and github: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b5b5597c4a254b83d66705ae18c785590d7a35119b0865da6f46a373d973cfe8
     establishes:
     - source
     - license
@@ -43,7 +49,6 @@ adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
-  last_verified: '2026-08-13'
   banded_quantity: Amazon Bedrock platform footprint, not the Evaluations feature
   note: Amazon Bedrock Evaluations has been generally available since 2025-03-20, but AWS publishes no separate
     usage or job-count figure for the feature itself. As a closed service with no repository or download
@@ -71,28 +76,29 @@ capability:
     UX (helpfulness/coherence/relevance), instruction-compliance, safety (harmfulness/stereotyping/refusal);
     model-backend breadth = Bedrock + external/on-prem via BYO responses.'
   confidence: medium
-  last_verified: '2026-08-13'
-  note: A broad managed eval suite covering models, RAG and agents, with judge, programmatic and human grading
-    modes, four families of metrics, and portability through bring-your-own responses. Comprehensive, but
-    a custom-dataset eval product rather than a standardized public benchmark leaderboard.
+  last_verified: '2026-09-29'
+  note: Bedrock Evaluations covers models and RAG systems with judge-model, programmatic and human grading,
+    four families of metrics, and bring-your-own inference responses for models hosted elsewhere. It evaluates
+    custom datasets rather than running a standardized public benchmark leaderboard.
   sources:
   - url: https://aws.amazon.com/bedrock/evaluations/
     shows: model eval (LLM-as-judge/programmatic/human) + RAG eval (retrieval, retrieve-and-generate)
       with safety/quality metrics
     accessed: '2026-06-04'
   - url: https://aws.amazon.com/bedrock/evaluations/
-    shows: LLM-as-a-Judge over custom prompt datasets, programmatic metrics including BERTScore and F1,
-      human evaluation with your own or an AWS-managed workforce, and both retrieval and retrieve-and-generate
-      RAG evaluation.
-    accessed: '2026-08-13'
+    shows: Model evaluation uses "Use an LLM as a Judge to evaluate model outputs using your custom prompt
+      datasets" plus programmatic BERT Score and F1 metrics, human evaluation with "your own workforce or
+      have AWS manage your evaluations", and both RAG retrieval and retrieve-and-generate evaluation.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 497a0b9715a40cf67566a85976e07341a9a1c944621d678bd70c463be217b863
+    content_sha256: b5b5597c4a254b83d66705ae18c785590d7a35119b0865da6f46a373d973cfe8
   - url: https://aws.amazon.com/blogs/machine-learning/evaluate-models-or-rag-systems-using-amazon-bedrock-evaluations-now-generally-available/
-    shows: The four metric areas (quality, user experience, instruction compliance, safety) and the citation
-      precision and coverage metrics are documented.
-    accessed: '2026-08-13'
+    shows: 'The post documents citation metrics: "Citation precision measures how accurately a RAG system
+      cites its sources" and lists built-in metrics such as Builtin.FollowingInstructions, Builtin.Harmfulness,
+      Builtin.Stereotyping and Builtin.Refusal.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5dc48da40f91c8b507c404bbe1f85f434c9afd8ede884216e6b57512636f92e5
+    content_sha256: d627b8e3f6d5d6d17542cf6c19f87aeb1509badce13f8d6d61a8ae90f4335ef4
   - url: https://aws.amazon.com/blogs/machine-learning/evaluate-models-or-rag-systems-using-amazon-bedrock-evaluations-now-generally-available/
     shows: four metric areas (quality/UX/instruction-compliance/safety) and citation precision/coverage
       metrics

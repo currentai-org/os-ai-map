@@ -16,14 +16,15 @@ openness:
       service:
         value: none
   confidence: high
-  note: 'Fully open source: MIT-licensed standardized red-teaming evaluation framework, self-hostable.'
+  note: The whole framework, including its attack implementations, evaluation pipeline and judging classifiers,
+    is published and runs on the user's own machines or cluster.
   raw: license:MIT(OSI);source:public;self-host:yes;service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/centerforaisafety/HarmBench
-    shows: 'Repo metadata records license spdxId - MIT. The whole framework is in the public repo and the
+    shows: Repo metadata records license spdxId - MIT. The whole framework is in the public repo and the
       README is a Quick Start for running it yourself; there is no enterprise or commercial edition, no
-      paid tier and no license key anywhere in the page, so nothing is withheld from the published source.'
+      paid tier and no license key anywhere in the page, so nothing is withheld from the published source.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a9b480ae0dbe5f731b3811a985674be8c1834a11b8870e8d6725e1b493edad7f
@@ -31,6 +32,37 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://cdn.jsdelivr.net/gh/centerforaisafety/HarmBench@main/LICENSE
+    shows: The jsDelivr mirror of the repository's LICENSE file on the main branch is the standard MIT text,
+      opening "MIT License" and "Copyright (c) 2024 centerforaisafety" followed by "Permission is hereby
+      granted, free of charge, to any person obtaining a copy".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fe29c68dd1216e81e98a6069165e1c720757b23bbcaa6c0cb8f9a957bdaaca80
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/centerforaisafety/HarmBench@main/README.md
+    shows: 'The jsDelivr mirror of the repository README on the main branch describes "A fast, scalable,
+      and open-source framework for evaluating automated red teaming methods and LLM attacks/defenses" and
+      installs it by cloning the public repo with "git clone https://github.com/centerforaisafety/HarmBench.git";
+      the pipeline runs locally or on your own cluster ("steps of the pipeline are sequentially run on the
+      current machine"). Searched the body for enterprise, license key, paid, pricing and commercial: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: baae4a0b64b61812e61a162eafb2ed344edbc151f57dd99c4af063e3d0efec5d
+    establishes:
+    - source
+    - core-gated
+    - self-host
+  - url: https://huggingface.co/api/models/cais/HarmBench-Llama-2-13b-cls
+    shows: The Hugging Face API record for the official HarmBench text classifier "cais/HarmBench-Llama-2-13b-cls"
+      carries the tag "license:mit" and reports it as not gated, so the classifier used in the evaluation
+      step is freely downloadable.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5312088e0b6e90afa81a7f07eeaf6de1249d77f8deb7f87e25d8b37280541048
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -60,13 +92,29 @@ capability:
   value: A standardized pipeline spanning 18 automated attack methods and 33 target models, enabling rigorous
     attack/defense comparison and co-development.
   confidence: medium
-  note: The reference standardized harness for comparing red-team attacks and defenses; research-grade breadth.
-  last_verified: '2026-08-13'
+  note: HarmBench runs one pipeline in both directions, scoring red-team methods against a set of models
+    or models against a set of attacks, and releases the classifiers that judge the outputs.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/centerforaisafety/HarmBench
-    shows: README describes 'a fast, scalable, and open-source framework for evaluating automated red
-      teaming methods and LLM attacks/defenses' and records the initial release as covering 33 evaluated
-      LLMs and 18 red teaming methods.
+    shows: README describes 'a fast, scalable, and open-source framework for evaluating automated red teaming
+      methods and LLM attacks/defenses' and records the initial release as covering 33 evaluated LLMs and
+      18 red teaming methods.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a9b480ae0dbe5f731b3811a985674be8c1834a11b8870e8d6725e1b493edad7f
+  - url: https://arxiv.org/abs/2402.04249
+    shows: The arXiv abstract for the HarmBench paper says "Using HarmBench, we conduct a large-scale comparison
+      of 18 red teaming methods and 33 target LLMs and defenses, yielding novel insights" and that it demonstrates
+      "how HarmBench enables codevelopment of attacks and defenses".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 12a2da799c9743474a69ba1aed1906ce1560a1456a835915bb567303206491be
+  - url: https://cdn.jsdelivr.net/gh/centerforaisafety/HarmBench@main/README.md
+    shows: 'The jsDelivr mirror of the repository README lists the "Initial release of HarmBench with 33
+      evaluated LLMs and 18 red teaming methods" and says there are "two primary ways to use HarmBench:
+      (1) evaluating red teaming methods against a set of LLMs, and (2) evaluating LLMs against a set of
+      red teaming methods".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: baae4a0b64b61812e61a162eafb2ed344edbc151f57dd99c4af063e3d0efec5d

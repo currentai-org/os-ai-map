@@ -18,11 +18,11 @@ openness:
       model:
         value: OpenGuardrails-Text-2510 open weights Apache-2.0
   confidence: high
-  note: Both the guardrails platform and the safety model are Apache-2.0 and self-hostable, including on-prem
-    deployment, with nothing withheld from the published source.
+  note: The OGR protocol, its reference runtimes and SDKs, and the OpenGuardrails-Text safety model are
+    published under Apache-2.0 and run without the vendor's service. The vendor's own detection runtime
+    and console are a separate commercial product, sold as SaaS or as a licensed private deployment.
   raw: license:Apache-2.0(OSI) for both platform and model;source:public;self-host:yes(on-prem/private);model:OpenGuardrails-Text-2510
     open weights Apache-2.0;core-gated:ungated
-  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openguardrails/openguardrails
     shows: 'Repo metadata records license spdxId - Apache-2.0 and the README closes ''License. Apache-2.0''.
@@ -53,7 +53,6 @@ adoption:
   confidence: low
   note: OpenGuardrails is early-stage, so GitHub stars are the only available adoption signal, and a star
     is not a use. It does publish SDKs to PyPI and npm, so a download figure may become available later.
-  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openguardrails/openguardrails
     shows: stargazerCount 24 for openguardrails/openguardrails; no download, install or customer figure
@@ -69,20 +68,38 @@ capability:
     components) covering content safety, prompt injection/jailbreak, code-interpreter abuse, and data
     leakage across 119 languages.
   confidence: low
-  note: OpenGuardrails pairs an open safety model with an on-prem platform and broad multilingual coverage,
-    as the paper describes. Since publication, the repository has repositioned itself as a vendor-neutral
-    protocol and benchmark that does not build detection capability itself, so what it ships today differs
-    from the model and platform described above.
-  last_verified: '2026-08-13'
+  note: OpenGuardrails pairs an open safety model, covering content safety and prompt attacks across 119
+    languages, with a guardrail platform that runs as a gateway or API service, as the paper describes.
+    The platform is now sold as a commercial runtime, while the open repository carries the OGR protocol,
+    reference runtimes and a detector benchmark.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2510.19169
-    shows: 'Abstract (v2, revised 29 Oct 2025) presents OpenGuardrails as ''the first fully open-source
-      platform that unifies large-model-based safety detection, manipulation defense, and deployable
-      guardrail infrastructure'', covering content-safety violations, model-manipulation attacks including
-      prompt injection, jailbreaks and code-interpreter abuse, and data leakage. It records Configurable
-      Policy Adaptation, a unified LLM-based guard architecture, a 14B base compressed to 3.3B via GPTQ,
-      support for 119 languages, deployment as a secure gateway or API service, and Apache 2.0 for all
-      models, datasets and deployment scripts.'
-    accessed: '2026-08-13'
+    shows: The arXiv abstract presents OpenGuardrails as the "first fully open-source platform that unifies
+      large-model-based safety detection, manipulation defense, and deployable guardrail infrastructure",
+      covering "content-safety violations such as harmful or explicit text generation", "model-manipulation
+      attacks including prompt injection, jailbreaks, and code-interpreter abuse", and "data leakage involving
+      sensitive or private information". It adds that "The system supports 119 languages" and "can be deployed
+      as a secure gateway or API-based service for enterprise use".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 97ec399725a27452a94b88ff57ed91fcad24d13ec2afac82ba80079c7da58020
+  - url: https://huggingface.co/openguardrails/OpenGuardrails-Text-2510/raw/main/README.md
+    shows: The model card describes "a 3.3B-parameter quantized large language model for" content safety
+      detection and prompt attack prevention that "effectively performs both" content safety classification
+      and prompt manipulation defense, "including prompt injections, jailbreaks, and code abuse attempts".
+      It says the model "Supports" "119 languages and dialects" and was "fine-tuned from a 14B dense model
+      and quantized via GPTQ to 3.3B parameters".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a29862da7ddeb655a352db0aef1149e5052149cb94ddb4cc1f26d768e3199b20
+  - url: https://openguardrails.com
+    shows: The vendor homepage now sells OpenGuardrails as a commercial runtime and names only the OGR protocol
+      as open, saying "The runtime is commercial, but the contract it serves is not" and "The product is
+      commercial; the contract never will be". On-premises use is the paid enterprise tier, "Private deployment,
+      annual license. OpenGuardrails in your infrastructure", described as "It is the SaaS product, not
+      a lesser edition" with a "Commercial license with support and an SLA, priced on fleet size." The hosted
+      plans state "There is no free tier".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f7c77afb996614fabe7ecaab9402f78c463c0042d478bdc565b0c7b02643c933

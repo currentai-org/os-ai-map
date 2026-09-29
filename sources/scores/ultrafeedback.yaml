@@ -19,16 +19,36 @@ openness:
   confidence: high
   note: Publicly downloadable and ungated under the permissive MIT license.
   raw: license:mit;card:present;ungated:yes;rows:63,967;size:940MB
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/openbmb/UltraFeedback
-    shows: MIT license, ungated card, 63,967 rows / 940 MB
-    accessed: '2026-08-13'
+    shows: The dataset page renders the card text "UltraFeedback is a large-scale, fine-grained, diverse
+      preference dataset, used for training powerful reward models and critic models" and the sentence "We
+      sample 63,967 instructions from 6 public available".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5ce3ca7575d61afebaf8d5f3712353fae7d50edb6ee0a07ed58ec9ae83b66250
+    content_sha256: f5287bf030f094c137b00ba64839194b95cc420df671ebc2663f170576e1c732
+    establishes:
+    - documentation
+  - url: https://huggingface.co/datasets/openbmb/UltraFeedback/raw/main/README.md
+    shows: 'The raw card has front matter "license: mit" and says "UltraFeedback is a **large-scale, fine-grained,
+      diverse preference dataset**, used for training powerful reward models and critic models", with sections
+      on instruction, model and principle sampling; "We sample 63,967 instructions from 6 public available
+      and high-quality datasets".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 70a22b5659215ab738b9dfd0dc6bd40d3bb040bf846b4e34955358f30625a4f7
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/openbmb/UltraFeedback
+    shows: The Hub API JSON marks the dataset public and not gated (a false gated flag) and carries the
+      tag "license:mit" beside a description reading "large-scale, fine-grained, diverse preference dataset".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ba2cd0654cb67f8c1009ed9bae438b819c4a02791e0b149df8701df0f56f51f8
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 2
@@ -37,7 +57,6 @@ adoption:
   confidence: high
   note: Adoption is measured by Hugging Face downloads of openbmb/UltraFeedback, the only usage channel
     on record for UltraFeedback.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/openbmb/UltraFeedback
     shows: 5,456 downloads in the trailing 30 days for openbmb/UltraFeedback
@@ -50,20 +69,27 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: Clean documented DPO before/after (Zephyr MT-Bench 6.64->7.34); its pipeline is the template for
-    Tulu 3 / OLMo 2 preference data, with cleaned subsets still in use.
-  last_verified: '2026-08-13'
+  note: In the Zephyr ablation, DPO on UltraFeedback lifts MT-Bench from 6.64 to 7.00, and the final Zephyr
+    model reaches 7.34. Its annotation pipeline is the template for the Tulu 3 and OLMo 2 preference data,
+    and a decontaminated subset appears in Tulu 3's preference mixture.
+  last_verified: '2026-09-29'
   sources:
   - url: https://ar5iv.labs.arxiv.org/html/2310.16944
-    shows: 'Zephyr: DPO on ultrafeedback_binarized lifts MT-Bench 6.64->7.00, final model 7.34'
-    accessed: '2026-08-13'
+    shows: Zephyr paper (ar5iv) Table 3 is titled "Ablation of different alignment methods on the base Mistral
+      7B model" with MT-Bench cells "6.64" for SFT only and "7.00" for DPO plus SFT, Table 2 lists Zephyr
+      7B at "7.34", and the text says "fine-tunes the base model directly with DPO for one epoch on UltraFeedback".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a7a4e8be5d00f66bb16d3da7601dc4c207327b353dd110257d4ab8137dc7475b
-  - url: https://arxiv.org/pdf/2411.15124
-    shows: 'Tulu 3 paper full text. The lineage is in the body: the SFT mixture includes "a decontaminated subset
-      of UltraFeedback", the preference stage works "by adapting and advancing the UltraFeedback pipeline", and
-      the released prompt sets are named tulu-3-sft-prompts-ultrafeedback and tulu-3-wildchat-ultrafeedback,
-      with Figure 7 giving the pipeline. The arXiv abstract page does not mention UltraFeedback.'
-    accessed: '2026-09-11'
+    content_sha256: 35fed64c70a03f23c5201dbce6f050bd2d2b50562a1a86bd0902f83e5fd28e1c
+  - url: https://arxiv.org/html/2411.15124
+    shows: Tulu 3 paper HTML says "We also include a decontaminated subset of UltraFeedback" in the SFT
+      mixture and builds preferences "by adapting and advancing the UltraFeedback pipeline".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 79bed1ef4ce4bb332f43bdc87d60709e644560f8f3bb6d14913a473cc82c251f
+    content_sha256: 330a1251fb3c625bf35693f0d1d50f971301d98c3de51a7ecbc34d7cc058e773
+  - url: https://arxiv.org/html/2501.00656
+    shows: OLMo 2 paper HTML says "The core strategy of the Tülu 3 pipeline for PreFT is building upon and
+      scaling the UltraFeedback pipeline".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e490acda07ad9be4bdb133ea3307883883fa8f9b5ceaa14fa62348636932d1c7

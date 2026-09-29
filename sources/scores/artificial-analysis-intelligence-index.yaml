@@ -5,7 +5,8 @@ openness:
   components:
     source:
       value: partial
-      detail: Stirrup covers one of ten evals; the Index pipeline does not ship
+      detail: Stirrup covers two of the ten evals (AA-Briefcase, GDPval-AA); the Index pipeline does not
+        ship
     free_text:
     - the full Intelligence Index harness is not open
     context:
@@ -20,54 +21,66 @@ openness:
         detail: maintains internal copies of all eval datasets
       harness:
         value: partial-open
-        detail: Stirrup MIT, used for the agentic GDPval-AA eval only, 413 stars
+        detail: Stirrup MIT, used for the agentic AA-Briefcase and GDPval-AA evals
   confidence: high
-  last_verified: '2026-08-13'
-  note: Artificial Analysis publishes its full methodology and releases Stirrup, the MIT-licensed harness
-    behind several of its evaluations, as open components. But the Index pipeline itself, its internal copies
-    of every evaluation dataset, and its grader configuration are not published, which keeps it source-available
-    rather than fully open source.
-  raw: platform:closed(proprietary benchmarking site + methodology); source:partial(Stirrup covers one of
-    ten evals; the Index pipeline does not ship); methodology:documented(public methodology page, per-eval
-    breakdown, temp/token params); datasets:closed(maintains internal copies of all eval datasets); harness:partial-open(Stirrup
-    MIT, used for the agentic GDPval-AA eval only, 413 stars); the full Intelligence Index harness is not
-    open
+  last_verified: '2026-09-29'
+  note: Artificial Analysis publishes its full methodology and releases Stirrup, an MIT-licensed agent harness
+    that runs two of the Index's ten evaluations, as an open component. But the Index pipeline itself and
+    its internal copies of every evaluation dataset are not published, which keeps it source-available rather
+    than fully open source.
+  raw: platform:closed(proprietary benchmarking site + methodology); source:partial(Stirrup covers two of
+    the ten evals (AA-Briefcase, GDPval-AA); the Index pipeline does not ship); methodology:documented(public
+    methodology page, per-eval breakdown, temp/token params); datasets:closed(maintains internal copies
+    of all eval datasets); harness:partial-open(Stirrup MIT, used for the agentic AA-Briefcase and GDPval-AA
+    evals); the full Intelligence Index harness is not open
   sources:
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: v4.0.4 (Mar 2026), 10-eval composite, internal copies of all datasets, standardized params
-      (proprietary pipeline + open Stirrup harness for GDPval-AA)
-    accessed: '2026-06-04'
+    shows: 'Methodology v4.3.2: "We maintain internal copies of all evaluation datasets" and "All models
+      are run using our open source agentic harness" for agentic evals; the Index pipeline itself is not
+      published. Searched the body for a pipeline repository: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
+    establishes:
+    - source
   - url: https://github.com/ArtificialAnalysis/Stirrup
     shows: Stirrup MIT-licensed agent harness, 413 stars (the only open component)
     accessed: '2026-06-04'
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: Intelligence Index v4.1.1, nine evals across four unequally weighted categories - Agents 34%,
-      Coding 24%, Scientific Reasoning 24%, General 18% - namely GDPval-AA v2, tau-cubed Banking, Terminal-Bench
-      v2.1, SciCode, AA-LCR, AA-Omniscience, Humanity's Last Exam, GPQA Diamond and CritPt. 'We maintain
-      internal copies of all evaluation datasets'. Stirrup is named as 'our open source agentic harness'
-      for GDPval-AA v2, AA-Briefcase and Harvey LAB-AA. The Index pipeline itself is not published.
-    accessed: '2026-08-13'
+    shows: 'Artificial Analysis Intelligence Index v4.3.2 "incorporates 10 evaluations: AA-Briefcase v1.1,
+      GDPval-AA v2.1, AutomationBench-AA, Terminal-Bench 4.0, SciCode, AA-LCR v1.1, AA-Omniscience, Humanity"
+      and is a weighted average across four categories: "Agents (30%), Coding (20%), Scientific Reasoning
+      (20%) and General (30%)".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 28dbab4467e0dcf4f509bfb51f365af7f28526b02ca02fae9e86e7689e9bd521
+    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
     establishes:
     - source
   - url: https://api.github.com/repos/ArtificialAnalysis/Stirrup/license
-    shows: GitHub's license endpoint reports spdx_id MIT for ArtificialAnalysis/Stirrup - the one open
-      component - and returns the MIT text as the LICENSE body. 546 stars.
+    shows: GitHub's license endpoint reports spdx_id MIT for ArtificialAnalysis/Stirrup - the one open component
+      - and returns the MIT text as the LICENSE body. 546 stars.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b12e30fb50593e509e2cdf8b84a1b1b606ae70afd8bc0ae9ba9aa5827ec1d569
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/stirrup/json
+    shows: 'PyPI metadata for the stirrup package (Artificial Analysis) carries the classifier "License
+      :: OSI Approved :: MIT License" and a license text beginning "MIT License  Copyright (c) 2025 Artificial
+      Analysis".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d75cafa40f46b3799b2b9348222d8f6e0c5353333760bae397411fb99dfcf859
     establishes:
     - source
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  last_verified: '2026-08-13'
-  note: The Intelligence Index is widely cited as a reference standard in frontier model coverage, referenced
-    by vendors at launch and used elsewhere in this map's own capability scoring, for example for Grok 4.20
-    and Gemini 3.5 Flash. Artificial Analysis publishes no unique-visitor or subscriber count, so this reflects
-    citation reach rather than a usage figure.
+  last_verified: '2026-09-29'
+  note: The Intelligence Index is widely cited in frontier model coverage, and Artificial Analysis says
+    it is publicly referenced by leading AI labs, publications and institutions. It publishes no unique-visitor
+    or subscriber count, so this reflects citation reach rather than a usage figure.
   sources:
   - url: https://artificialanalysis.ai/
     shows: live Intelligence Index leaderboard positioned as the cross-model standard reference
@@ -76,42 +89,59 @@ adoption:
     shows: independent standardized index cited as the reference methodology
     accessed: '2026-06-04'
   - url: https://artificialanalysis.ai/
-    shows: The live cross-model Intelligence Index leaderboard carries no unique-visitor, subscriber or
-      usage count.
-    accessed: '2026-08-13'
+    shows: 'The live leaderboard headed "Independent analysis of AI" ranks models on Intelligence Index
+      v4.3.2 with "28 of 679 models" shown. Searched the body for unique visitors, subscribers and monthly
+      active users: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e718e2c4fbe94a1de20e00a9a37353d06ba75508ba735617100bb73bf2d68636
+    content_sha256: 58edc16109f09b494ac1af4547c4f33df69f53df3bb461f62e92b4d75804cd2b
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: Methodology v4.1.1, published in full as the reference for the index. No adoption or traffic
-      figure appears on it.
-    accessed: '2026-08-13'
+    shows: 'Methodology v4.3.2 describes an index that is "a helpful synthesis of overall language model
+      intelligence" with standardized parameters and internal dataset copies. Searched the body for unique
+      visitors, subscribers and monthly active users: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 28dbab4467e0dcf4f509bfb51f365af7f28526b02ca02fae9e86e7689e9bd521
+    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
+  - url: https://artificialanalysis.ai/about
+    shows: The company describes itself as "the independent benchmarking company for AI" and says it is
+      "Publicly referenced by the leading AI labs, publications, and institutions".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8da90d5c12a5fd9fa3a9daa2e223c3ecc2df0fe8a2e2b8782502822ff1cc7dfe
 capability:
   score: 4
   basis: feature_matrix
-  value: 'benchmark/task coverage: 9-eval composite (v4.1.1) across Agents/Coding/Scientific Reasoning/General
-    (GDPval-AA v2, tau-cubed Banking, Terminal-Bench v2.1, SciCode, AA-LCR, AA-Omniscience, HLE, GPQA
-    Diamond, CritPt); model-backend breadth: 150+ models scored independently; agentic-eval support: yes
-    (GDPval-AA v2 via Stirrup, Terminal-Bench, tau-cubed); reproducibility: standardized params + internal
-    dataset copies (contamination-resistant) but not externally reproducible'
+  value: 'benchmark/task coverage: 10-eval composite (v4.3.2) across Agents/Coding/Scientific Reasoning/General
+    (AA-Briefcase v1.1, GDPval-AA v2.1, AutomationBench-AA, Terminal-Bench 4.0, SciCode, AA-LCR v1.1, AA-Omniscience,
+    HLE, GDP.pdf, CritPt); model-backend breadth: every major model family, several hundred models listed
+    on the leaderboard; agentic-eval support: yes (AA-Briefcase and GDPval-AA via Stirrup, Terminal-Bench
+    4.0, AutomationBench-AA); reproducibility: standardized params + internal dataset copies (contamination-resistant)
+    but not externally reproducible'
   confidence: high
-  last_verified: '2026-08-13'
-  note: The Intelligence Index spans agentic, coding, general and scientific evals, with standardized parameters
-    and internal dataset copies that resist contamination. It falls short of the top because it is a curated
-    methodology, not an open harness, and held-out, proprietary running limits reproducibility.
+  last_verified: '2026-09-29'
+  note: The Intelligence Index spans agentic, coding, general and scientific evaluations, run with standardized
+    parameters on internal dataset copies that resist contamination. It is a curated methodology rather
+    than an open harness, and because Artificial Analysis runs every evaluation privately, outsiders cannot
+    reproduce the scores.
   sources:
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: 10-eval composite, 4 equal-weighted categories, standardized params, internal dataset copies
-    accessed: '2026-06-04'
-  - url: https://artificialanalysis.ai/
-    shows: 150+ models ranked on the Intelligence Index
-    accessed: '2026-06-04'
-  - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: 'Intelligence Index v4.1.1: nine evals - GDPval-AA v2, tau-cubed Banking, Terminal-Bench v2.1,
-      SciCode, AA-LCR, AA-Omniscience, HLE, GPQA Diamond, CritPt - across Agents 34%, Coding 24%, Scientific
-      Reasoning 24%, General 18%. Standardized params and internal dataset copies; Stirrup is the open
-      agentic harness behind GDPval-AA v2, AA-Briefcase and Harvey LAB-AA.'
-    accessed: '2026-08-13'
+    shows: Methodology v4.3.2 lists 10 evaluations weighted "Agents (30%), Coding (20%), Scientific Reasoning
+      (20%) and General (30%)" and states "We maintain internal copies of all evaluation datasets" with
+      a section of general testing parameters for all evals.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 28dbab4467e0dcf4f509bfb51f365af7f28526b02ca02fae9e86e7689e9bd521
+    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
+  - url: https://artificialanalysis.ai/
+    shows: The homepage leaderboard for Intelligence Index v4.3.2 shows a model list filtered as "28 of
+      679 models" and states "Independent analysis of AI".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 58edc16109f09b494ac1af4547c4f33df69f53df3bb461f62e92b4d75804cd2b
+  - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
+    shows: 'Artificial Analysis Intelligence Index v4.3.2 "incorporates 10 evaluations: AA-Briefcase v1.1,
+      GDPval-AA v2.1, AutomationBench-AA, Terminal-Bench 4.0, SciCode, AA-LCR v1.1, AA-Omniscience, Humanity"
+      and is a weighted average across four categories: "Agents (30%), Coding (20%), Scientific Reasoning
+      (20%) and General (30%)".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724

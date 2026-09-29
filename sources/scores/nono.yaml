@@ -26,18 +26,19 @@ openness:
   raw: license:Apache-2.0(OSI);source:public(full Rust implementation, self-hostable);distribution:curl
     / Homebrew / Debian-Ubuntu-Fedora-Arch-RHEL-openSUSE-Nix + FFI bindings (nono-py, nono-ts, nono-go);service:none(standalone
     CLI/library, no proprietary backend);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/LICENSE
-    shows: Verbatim Apache License 2.0 body at repository head
-    accessed: '2026-08-13'
+    shows: Full Apache License text, headed "Apache License" and "Version 2.0, January 2004", with "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION" at repository head.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 7310e9389f298b89bb2f90ac4b6081ed5b6a1c4a7b8547df5d52966a57cb0929
     establishes:
     - license
   - url: https://api.github.com/repos/nolabs-ai/nono
-    shows: 'Repository metadata - nolabs-ai/nono, language Rust, license spdx_id Apache-2.0, public and
-      not archived, 3,644 stars, 241 forks, last push 2026-08-13'
+    shows: Repository metadata - nolabs-ai/nono, language Rust, license spdx_id Apache-2.0, public and not
+      archived, 3,644 stars, 241 forks, last push 2026-08-13
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6b7060b790a56fb537cbaae122f68a2a333e795f8022e640de096fb96b6fb463
@@ -45,14 +46,12 @@ openness:
     - license
     - source
   - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/README.md
-    shows: 'Install with curl or Homebrew, with Debian/Ubuntu, Fedora, Arch, RHEL, openSUSE, WSL2 and
-      Nix linked; the profile system, brokered tool sandboxes, credential proxy and L7 endpoint filtering
-      are documented as ordinary features; FFI bindings for Rust, Python, TypeScript and Go published as
-      nono-py, nono-ts and nono-go; registry namespace migrated from always-further to nolabs-ai; the
-      License section reads Apache-2.0. No paid tier, license key or hosted dependency is described.'
-    accessed: '2026-08-13'
+    shows: 'README documents building from source, "The project provides a Nix flake with two outputs" including
+      "builds from source using" buildRustPackage, and a License section reading "Apache-2.0". Searched
+      for enterprise, license key, commercial, paid, pricing and cloud-only: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 040dc4d074176f2aa875923f07e90b15a2c66748a8f293b8acb00018b8b5c8e2
+    content_sha256: faa2519229c8527b6000da51c1786a077cdbe5aac426c12465ce860cdf2075fd
     establishes:
     - source
     - core-gated
@@ -91,26 +90,34 @@ capability:
   basis_detail: feature coverage (cross-platform least-privilege agent sandboxing)
   value: Least-privilege agent sandboxing across macOS / Linux / Windows with near-zero startup, FFI bindings
     for Rust / Python / TypeScript / Go, and an agent registry. Lighter-weight than the microVM-based sandboxes
-    (E2B, Firecracker) but with the widest local-platform coverage and lowest setup friction.
+    (E2B, Firecracker), with no daemon, container or VM to set up.
   confidence: medium
   note: nono enforces least-privilege sandboxing through OS-level kernel allow-lists across Linux, macOS
     and Windows, giving each tool its own child sandbox with credential proxying, an audit log and signed
     provenance. Because the mechanism is an allow-list rather than a virtual machine, its isolation is lighter
     than the microVM-based sandboxes above it, though setup is close to instant.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://nono.sh
-    shows: 'Kernel isolation for Linux, macOS and Windows; ephemeral micro sandboxes with zero setup and
-      zero latency; per-language OS/Python/Node.js/Go sandboxes; brokered tool execution with scoped
-      credentials and L7 endpoint policy; hash-chained audit log sealed with a SHA-256 Merkle root;
-      undo/rollback snapshots; Sigstore provenance; registry linked'
-    accessed: '2026-08-13'
+    shows: Homepage lists "Kernel isolation for Linux, macOS" and Windows and states "Security-relevant
+      events are hash-chained into an audit record sealed with a SHA-256 Merkle root, and the sandbox is
+      destroyed when the invocation exits."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: adfa836384380e3230dd2c78b2efebc4226ea759ca39134d809a514210b4d542
+    content_sha256: ab5242baa17ec930ab4098ab71f0c09409be9dcbcfd8198ca24fbe41b3d6801f
+  - url: https://nono.sh
+    shows: Homepage lists "Kernel isolation for Linux, macOS" and Windows and states "Security-relevant
+      events are hash-chained into an audit record sealed with a SHA-256 Merkle root, and the sandbox is
+      destroyed when the invocation exits."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ab5242baa17ec930ab4098ab71f0c09409be9dcbcfd8198ca24fbe41b3d6801f
   - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/README.md
-    shows: '"no daemon, no container, no VM, and no disk space usage" with a least-privilege sandbox
-      enforced out of the box on macOS, Linux and Windows (WSL2); FFI bindings for Rust, Python,
-      TypeScript and Go; profiles pulled from the nono registry and composable as JSON'
-    accessed: '2026-08-13'
+    shows: README states "no daemon, no container, no VM, and no disk space usage" and "Out of the box,
+      nono enforces a least-privilege sandbox and supports macOS, Linux, and Windows (WSL2)"; nono can put
+      delegated tools in "their own isolated command sandboxes" with credentials via "nono's credential
+      proxy" and "L7 filtering"; provides "FFI bindings for Rust, Python, TypeScript, and Go"; profiles
+      are pulled from registry.nono.sh.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 040dc4d074176f2aa875923f07e90b15a2c66748a8f293b8acb00018b8b5c8e2
+    content_sha256: faa2519229c8527b6000da51c1786a077cdbe5aac426c12465ce860cdf2075fd

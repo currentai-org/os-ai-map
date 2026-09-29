@@ -16,17 +16,17 @@ openness:
       service:
         value: none
   confidence: high
-  note: 'Fully open source: Apache-2.0 red-teaming framework, self-hostable. Confident AI sells a hosted
-    place for red-teaming results to live, but that is a separate product beside an ungated core rather
-    than functionality withheld from it.'
+  note: DeepTeam's full source is published under Apache-2.0 and runs locally. Confident AI sells a hosted
+    platform for viewing red-teaming results, but it is a separate product and nothing is withheld from
+    the framework.
   raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/confident-ai/deepteam
-    shows: 'Repo metadata records license spdxId - Apache-2.0. README states DeepTeam ''runs locally on
-      your machine and is built on DeepEval, the open-source LLM evaluation framework''; the hosted
-      Confident AI offering is pitched as somewhere for results to live, not as a tier that unlocks the
-      framework. No enterprise directory, commercial edition or license key on the page.'
+    shows: Repo metadata records license spdxId - Apache-2.0. README states DeepTeam 'runs locally on your
+      machine and is built on DeepEval, the open-source LLM evaluation framework'; the hosted Confident
+      AI offering is pitched as somewhere for results to live, not as a tier that unlocks the framework.
+      No enterprise directory, commercial edition or license key on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36
@@ -34,6 +34,36 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://pypi.org/pypi/deepteam/json
+    shows: 'PyPI metadata for deepteam 1.0.9 carries the classifier "License :: OSI Approved :: Apache Software
+      License", lists the sdist "deepteam-1.0.9.tar.gz", and the long description calls it an "open-source
+      red teaming framework for LLM systems" that "is licensed under Apache 2.0".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 115cc7ae978429e646256354eb6a18155f6912bcc6600d630fc370aca9f961c3
+    establishes:
+    - license
+    - source
+  - url: https://trydeepteam.com
+    shows: The DeepTeam homepage FAQ answers "DeepTeam is the open-source red teaming framework, while Confident
+      AI is the enterprise platform" that adds managed assessments and dashboards, and the footer reads
+      "Open-source LLM red teaming framework. Apache 2.0 licensed."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 321a3cc75a5d21c03c959bf79cd3fc7663fd8a1ffef79e94d9407462bc7024bd
+    establishes:
+    - core-gated
+    - license
+  - url: https://trydeepteam.com/docs/getting-started
+    shows: The getting-started page describes Confident AI as "the cloud solution for DeepTeam and DeepEval"
+      for viewing results centrally, while red teaming results can be converted to a dataframe or "saving
+      it locally for any downstream tasks you may have".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: eb61c4c8ef4b978bcd66c3fc5dcd3c6908c76e674de0540ff954477c70424777
+    establishes:
+    - core-gated
+    - self-host
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -60,12 +90,15 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: vuln + standards coverage
-  value: 50+ vulnerability checks and 20+ attack methods (jailbreak, injection, multi-turn) mapped to
-    OWASP Top 10 for LLMs, NIST AI RMF, and MITRE ATLAS, plus production guardrails.
+  value: 50+ vulnerability checks and 20+ single-turn and multi-turn attack methods (jailbreak, prompt injection,
+    encoding) mapped to OWASP Top 10 for LLMs and for Agents, NIST AI RMF, MITRE ATLAS, BeaverTails and
+    Aegis, plus 7 runtime guardrails.
   confidence: medium
-  note: Strong standards alignment (OWASP/NIST/MITRE) and broad attack coverage; also ships runtime guardrails.
-    The framework also maps to OWASP Top 10 for Agents 2026.
-  last_verified: '2026-08-13'
+  note: DeepTeam maps its checks and attacks to the main published AI security taxonomies, including the
+    OWASP lists for LLM and agent applications, NIST AI RMF and MITRE ATLAS, and its attacks cover both
+    single-turn and multi-turn jailbreaks. Runtime guardrails for model inputs and outputs ship in the same
+    package.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/confident-ai/deepteam
     shows: README lists '50+ ready-to-use vulnerabilities', '20+ research-backed adversarial attack methods
@@ -74,3 +107,17 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36
+  - url: https://pypi.org/pypi/deepteam/json
+    shows: The README on PyPI lists "50+ ready-to-use" vulnerabilities and "20+ research-backed" attack
+      "methods for both single-turn and multi-turn" red teaming, maps to "OWASP Top 10 for LLMs 2025", "OWASP
+      Top 10 for Agents 2026", NIST AI RMF, MITRE ATLAS, BeaverTails and Aegis, and offers "7 production-ready"
+      guardrails.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 115cc7ae978429e646256354eb6a18155f6912bcc6600d630fc370aca9f961c3
+  - url: https://trydeepteam.com
+    shows: The homepage lists "OWASP Top 10 for LLMs, MITRE ATLAS, NIST AI RMF, EU AI Act" plus "safety
+      benchmark datasets like BeaverTails and Aegis" among the frameworks DeepTeam maps to.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 321a3cc75a5d21c03c959bf79cd3fc7663fd8a1ffef79e94d9407462bc7024bd
