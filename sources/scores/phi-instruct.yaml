@@ -20,16 +20,35 @@ openness:
     so this is open weights rather than open source.
   raw: weights:open(MIT, on HF);data:closed(synthetic-heavy training data undisclosed);code:closed(no training
     pipeline);license:MIT(OSI permissive)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/microsoft/Phi-4-mini-instruct
-    shows: '`license:mit` in the repo tags and `"gated":false` in the embedded repo state, so the 3.8B
-      weights download without a barrier; the card describes the data mixture in prose and publishes
-      neither the corpus nor any training or post-training code'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/microsoft/Phi-4-mini-instruct
+    shows: 'Repo tags include "license:mit"; the file list has "model-00001-of-00002.safetensors" and no
+      training pipeline. Searched the file list for train and pipeline code: only sample_finetune.py.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1d856731bfdfa8199bb220cceeb0a64573e508f641c3a472902e4f6ff785cf3a
-    establishes: [weights, data, code, license]
+    content_sha256: 6a0fb1e6b171e16a17245a574bb58ef46d39009069e521253e467a639b1bc22b
+    establishes:
+    - weights
+    - code
+  - url: https://huggingface.co/microsoft/Phi-4-mini-instruct/raw/main/LICENSE
+    shows: 'LICENSE file is the MIT License: "Permission is hereby granted, free of charge, to any person
+      obtaining a copy".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fa8235e5b48faca34e3ca98cf4f694ef08bd216d28b58071a1f85b1d50cb814d
+    establishes:
+    - license
+  - url: https://huggingface.co/microsoft/Phi-4-mini-instruct/raw/main/README.md
+    shows: 'Model card describes the data mixture in prose: "training data includes a wide variety of sources,
+      totaling 5 trillion tokens"; it links no corpus or training pipeline. Searched the body for released
+      dataset and training code: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c4f34916182a3ee87d95d00c92847cfa687ab21dc338a577275f0c34cf0e1dfd
+    establishes:
+    - data
+    - code
 adoption:
   level: 3
   reach: 100K-1M
@@ -55,14 +74,15 @@ capability:
   basis_detail: MMLU-Pro/GPQA
   value: MMLU 67.3, MMLU-Pro 52.8, GPQA 25.2, GSM8K 88.6, MATH 64.0 (overall 63.5)
   confidence: high
-  note: Strong-for-size 3.8B with good math (GSM8K 88.6) but low GPQA (25.2) and overall well below 2026
-    frontier chat models; small-model tier on a frontier-anchored scale.
-  last_verified: '2026-08-13'
+  note: Phi-4-mini-instruct is strong on math for a 3.8B model (GSM8K 88.6) but weak on graduate-level science
+    questions (GPQA 25.2), and it trails GPT-4o-mini overall on the model card's quality table. It sits
+    well below current frontier chat models.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/microsoft/Phi-4-mini-instruct
-    shows: 'quality table, Phi-4 mini-Ins column - MMLU (5-shot) 67.3, MMLU-Pro (0-shot, CoT) 52.8, GPQA
-      (0-shot, CoT) 25.2, GSM8K (8-shot, CoT) 88.6, MATH (0-shot, CoT) 64.0, Overall 63.5; GPT-4o-mini
-      column Overall 75.5'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/microsoft/Phi-4-mini-instruct/raw/main/README.md
+    shows: 'Quality table, Phi-4 mini-Ins column: "MMLU-Pro (0-shot, CoT)" 52.8, "GPQA (0-shot, CoT)" 25.2,
+      Overall 63.5 against 75.5 for GPT-4o-mini; the card says "the model with only 3.8B-param achieves
+      a similar level of multilingual language understanding" as larger models.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1d856731bfdfa8199bb220cceeb0a64573e508f641c3a472902e4f6ff785cf3a
+    content_sha256: c4f34916182a3ee87d95d00c92847cfa687ab21dc338a577275f0c34cf0e1dfd

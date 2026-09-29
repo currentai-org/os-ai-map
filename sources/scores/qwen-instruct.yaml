@@ -19,16 +19,36 @@ openness:
     so this is open weights rather than open source.
   raw: weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/chat template; no training pipeline
     or SFT/RLHF data);license:Apache-2.0(OSI permissive)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
-    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
-      14.7B BF16 weights download without a barrier; the card carries a quickstart and chat template only,
-      with no post-training pipeline or SFT/RLHF mixture'
-    accessed: '2026-08-13'
+    shows: 'Repo page state: "license:apache-2.0" tag; "This repo contains the instruction-tuned 14B Qwen2.5
+      model"'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d
-    establishes: [weights, data, code, license]
+    content_sha256: 7fd5ec4da480f84e9005867d867a5723f54028cb611c3e3461e1b73c3e1f70af
+    establishes:
+    - weights
+  - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/raw/main/README.md
+    shows: 'Model card front matter declares "license: apache-2.0" with a "license_link" to the repo LICENSE;
+      the card lists "Training Stage: Pretraining & Post-training" and gives a transformers quickstart only.
+      Searched the body for SFT, RLHF, training data and dataset: no post-training data or training pipeline
+      is published.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7ea9d73d5e0a0381121db8bfb04dee739c7b8d3c6cb25af7121e75c9d7cac94c
+    establishes:
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/raw/main/LICENSE
+    shows: The repo LICENSE file is the standard Apache text, headed "Apache License" and "Version 2.0,
+      January 2004".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -56,13 +76,21 @@ capability:
   value: General-purpose 14B instruct; vendor reports gains in coding, math, instruction-following and long-text
     vs predecessor; detailed scores in Qwen2.5 blog
   confidence: medium
-  note: Capable mid-size (14B) 2024 general chat model, strong for its size but well below the 2026 frontier
-    and below larger Qwen2.5/3 SKUs. The HF card does not inline MMLU or MMLU-Pro numbers, so the reading
-    is based on size and class, with medium confidence.
-  last_verified: '2026-08-13'
+  note: Qwen2.5-14B-Instruct is a mid-size 2024 general chat model. The Qwen2.5 blog reports MMLU-Pro 63.7
+    and IFEval 81.0 for it, close to GPT-4o-mini and ahead of Gemma2-27B-IT on MMLU-Pro, but it sits well
+    below the current frontier and below the larger Qwen2.5 models.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
-    shows: 14B instruct general-chat model card, vendor capability claims; defers benchmarks to Qwen2.5 blog
-    accessed: '2026-08-13'
+    shows: 'Model card page for the 14B instruct SKU: "This repo contains the instruction-tuned 14B Qwen2.5
+      model" with vendor capability claims; benchmark tables are in the Qwen2.5 blog.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d
+    content_sha256: 7fd5ec4da480f84e9005867d867a5723f54028cb611c3e3461e1b73c3e1f70af
+  - url: https://qwenlm.github.io/blog/qwen2.5-llm/
+    shows: 'Qwen2.5 blog instruct table: "MMLU-Pro 52.8 55.5 63.1 64.8 63.7 69.0" and "IFeval strict-prompt
+      59.9 77.1 80.4 74.9 81.0 79.5" (Qwen2.5-14B-Instruct is the fifth column); "Qwen2.5-14B-Instruct,
+      along with our API model, Qwen-Turbo, also deliver competitive results across all benchmarks".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0d5651d2c4e49d3dd58c3988127d04a14e787cda9d7f9e4881e1f6a4d3f44fef

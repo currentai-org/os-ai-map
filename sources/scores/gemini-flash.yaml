@@ -19,30 +19,50 @@ openness:
     tier.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(Gemini app/Search/API/enterprise, no downloadable
     weights)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://ai.google.dev/gemini-api/terms
+    shows: 'Gemini API Additional Terms prohibit users from taking model weights: "You also may not attempt
+      to reverse engineer, extract or replicate any component of the Services, including the underlying
+      data or models (e.g., parameter weights)."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 611f1a863b5867e6e7acc8d11961571f8cfe89990d7b84157e44611898252402
+    establishes:
+    - weights
+    - license
+  - url: https://deepmind.google/models/model-cards/gemini-3-5-flash/
+    shows: 'Model card for Gemini 3.5 Flash: "Our models are available to downstream providers via an application
+      program interface (API) and subject to relevant terms of use." Searched the body for download, weights,
+      open source and license: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f7299497c885558bd6d4fc5d03090dfe4b779edae65eaf591d8b882bae3f1dcc
+    establishes:
+    - weights
+    - data
+    - code
+    - license
   - url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/
-    shows: proprietary launch across Gemini app/Search/API/enterprise, no open weights and no corpus or
-      training code
-    accessed: '2026-08-13'
+    shows: 'Gemini 3.5 launch post: "3.5 Flash is available today to billions of people globally" through
+      the Gemini app, AI Mode, Antigravity, the Gemini API and enterprise products. Searched the body for
+      open weights, download, license and source code: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: bcfcef8f1a7ca1f6a43f67d199a3686d96f50a066e159a5e464bc2107a47e5bd
-    establishes: [weights, data, code, license]
-  - url: https://deepmind.google/models/gemini/
-    shows: DeepMind's model index lists Gemini under the API and app products and files Gemma separately
-      under an "Open models" heading; no weight download for Gemini
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e2cdef7176ad7a1743962bc074f7b4bbe003b3f84f35f53d76858e22f1e92c24
+    content_sha256: b4e6b245a966e4c950d69c94e5dae532f87d7684d1160da91aee52afa161b16c
+    establishes:
+    - weights
+    - data
+    - code
+    - license
 adoption:
   level: 5
   reach: '>10M users'
   signal_type: active_users
   confidence: medium
-  note: Flash is Google's high-volume, low-cost tier, powering the Gemini app and AI Mode in Search alongside
-    heavy API and Vertex traffic. Adoption is read from the Gemini app's reported active-user count rather
-    than a Flash-specific figure, since Google publishes none for Flash alone.
-  last_verified: '2026-08-13'
+  note: Gemini 3.5 Flash powers the Gemini app and AI Mode in Search. Adoption is read from the Gemini app's
+    reported active-user count rather than a Flash-specific figure, since Google publishes none for Flash
+    alone.
   sources:
   - url: https://techcrunch.com/2026/02/04/googles-gemini-app-has-surpassed-750m-monthly-active-users/
     shows: '"Google''s Gemini app has surpassed 750M monthly active users"'
@@ -61,9 +81,9 @@ capability:
   value: Terminal-Bench 2.1 76.2%, MCP Atlas 83.6%, CharXiv Reasoning 84.2%, GDPval-AA 1656 Elo; reported to lead
     Opus 4.7 and GPT-5.5 on several agentic/multimodal suites
   confidence: high
-  note: Frontier tier, at the top right of the Artificial Analysis Intelligence Index and level with the
-    frontier flagships. Figures are Google-reported.
-  last_verified: '2026-08-13'
+  note: Google's launch post reports Gemini 3.5 Flash outperforming Gemini 3.1 Pro on Terminal-Bench 2.1
+    (76.2%), GDPval-AA (1656 Elo) and MCP Atlas (83.6%); these are Google's own figures. Google now labels
+    3.5 Flash a legacy Flash model, and newer Flash releases have replaced it.
   sources:
   - url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/
     shows: '"outperforming Gemini 3.1 Pro on challenging coding and agentic benchmarks like Terminal-Bench

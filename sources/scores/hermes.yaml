@@ -26,22 +26,37 @@ openness:
     proprietary and only inference code ships, which keeps the family at open weights rather than higher.'
   raw: weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample
     corpus);code:partial(inference only);license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/NousResearch/Hermes-4.3-36B
-    shows: 'the governing release - `license:apache-2.0` in the repo tags, `"gated":false`, and
-      `base_model:ByteDance-Seed/Seed-OSS-36B-Base`; the card publishes prompt format and benchmarks only,
-      with no post-training mixture and no training code'
-    accessed: '2026-08-13'
+    shows: 'The governing release card carries the repo tag "license:apache-2.0" and the base model tag
+      "base_model:ByteDance-Seed/Seed-OSS-36B-Base"; searched the body for post-training mixture, training
+      code and recipe release: only a benchmark table and prompt format are published, with no post-training
+      data or training code.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b93017fa014e25a8da29d2b18da45299384163ce102bb20fad3cbb08fedf5a74
-    establishes: [weights, license, post-training-data, code]
+    content_sha256: 75244cf0b441a2dfef2c3341825ba5fac0a9dfa49b73718c25ca1d129f103c89
+    establishes:
+    - weights
+    - license
+    - post-training-data
+    - code
+  - url: https://huggingface.co/api/models/NousResearch/Hermes-4.3-36B
+    shows: The Hugging Face API record for the governing release lists "license:apache-2.0", "base_model:ByteDance-Seed/Seed-OSS-36B-Base"
+      and "gated":false, so the weights download without an access gate.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 760225901e093fedfd8dcaf5174d151fe656d36dd0028db480d2aa1a970bb72e
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/NousResearch/Hermes-4-405B-FP8
-    shows: the Llama-based build of the same recipe - `license:llama3`, base Meta-Llama/Llama-3.1-405B;
-      the SKU whose terms do NOT govern, because a user wanting Apache takes the Seed-OSS or Qwen build
-    accessed: '2026-08-13'
+    shows: The Llama-based build of the same recipe is tagged "license:llama3" with "base_model:meta-llama/Llama-3.1-405B";
+      it is the build whose terms do not govern, because a user wanting Apache terms takes the Seed-OSS
+      or Qwen build.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a81364e2616072fb9ef1adfb28a40d4b81396aa552b2f08eefb6415ac3fbf15a
+    content_sha256: 121241d58d38ec935015c7b977bc10b757671fd9016ce5d2f9321577df51bbda
 adoption:
   level: 2
   reach: 10K-100K
@@ -78,7 +93,6 @@ capability:
   note: The strongest Hermes 4 checkpoint is near-frontier on math and knowledge for an open instruct model,
     scoring 61.4 on LiveCodeBench v6. Its coding still trails the 2026 frontier coders such as DeepSeek-V4,
     Qwen3.6 and Kimi, which keeps it a step below the top tier.
-  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/pdf/2508.18255
     shows: 'Hermes 4 technical report, 405B reasoning column - MATH-500 96.2, AIME''24 81.9, AIME''25
