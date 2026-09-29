@@ -14,7 +14,7 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: Apache-2.0 and fully public, and Apache-2.0 is an OSI license, so this is open source.
   raw: license:Apache-2.0(OSI);source:public(GitHub);no feature-gated core;core-gated:ungated
   sources:
@@ -30,21 +30,32 @@ openness:
     establishes:
     - license
   - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
-    shows: README installs the platform with `pip install -U opencompass` or editable from a clone and
-      runs evaluations locally against local weights or model APIs; all dataset and model configs ship
-      inside the package. CompassRank and CompassHub are free public leaderboard and dataset sites beside
-      it. No pricing, enterprise edition, paid tier or license key appears in the README.
+    shows: README installs the platform with `pip install -U opencompass` or editable from a clone and runs
+      evaluations locally against local weights or model APIs; all dataset and model configs ship inside
+      the package. CompassRank and CompassHub are free public leaderboard and dataset sites beside it. No
+      pricing, enterprise edition, paid tier or license key appears in the README.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 9c9258560278da5596691646e561998a38f663b67ec448a34ada47a5f2b4119c
     establishes:
     - source
     - core-gated
+  - url: https://pypi.org/pypi/opencompass/json
+    shows: PyPI metadata for opencompass 0.5.4 lists the license as "Apache License 2.0"; the packaged README
+      offers a source install via "git clone https://github.com/open-compass/opencompass opencompass" and
+      a plain "pip install -U opencompass" with no enterprise, pricing, paid tier or license key wording
+      anywhere in the body.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ea5f881389d153a7211d1684d5137e331e376f8bd54f3bfae1b8bd60b845f4e1
+    establishes:
+    - license
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
-  last_verified: '2026-08-13'
   banded_quantity: GitHub stars (7,299) and framework distribution breadth
   note: OpenCompass is widely used in the China and Hugging Face ecosystems, with broad dataset and backend
     coverage and a GitHub star footprint to match. A PyPI package named opencompass is genuinely this project's,
@@ -73,10 +84,10 @@ capability:
   confidence: medium
   relative_to: lm-evaluation-harness
   relation: one_below
-  last_verified: '2026-08-13'
-  note: Very broad multi-benchmark coverage and backend breadth, sitting just below lm-eval as the standardization
-    reference - strong, but not the single de-facto global standard. The README claims 100+ datasets and
-    lists Hugging Face, LMDeploy, vLLM and API backends as install extras.
+  last_verified: '2026-09-29'
+  note: OpenCompass documents well over a hundred supported datasets and runs models through Hugging Face,
+    LMDeploy, vLLM or hosted APIs, with both objective and subjective scoring. It sits a step below lm-evaluation-harness,
+    which has been used to report results in hundreds of papers and is the more established reference.
   sources:
   - url: https://github.com/open-compass/opencompass
     shows: 100+ datasets, 20+ HF + API model backends
@@ -87,3 +98,16 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 9c9258560278da5596691646e561998a38f663b67ec448a34ada47a5f2b4119c
+  - url: https://pypi.org/pypi/opencompass/json
+    shows: The packaged README lists "Pre-support for 20+ HuggingFace and API models, a model evaluation
+      scheme of 70+ datasets with about 400,000 questions", offers install extras for lmdeploy, vllm, api
+      and full, and says it "does not really discriminate between open-source models and API models".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ea5f881389d153a7211d1684d5137e331e376f8bd54f3bfae1b8bd60b845f4e1
+  - url: https://opencompass.readthedocs.io/en/latest/dataset_statistics.html
+    shows: The dataset statistics page states "we have listed all the datasets supported by OpenCompass"
+      in a table of names, categories, papers and recommended configs.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 439ada47189fb4acd50eb62c12fe086577ac99005a6f00e49e6c7592c2dc615c

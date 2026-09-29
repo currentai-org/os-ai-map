@@ -7,10 +7,10 @@ openness:
       value: partial
     license-terms:
     - name: Proprietary
-      detail: free for OSS/prototypes, commercial license required for for-profit production(charge beyond
-        10k API req/mo
-      raw: Proprietary, free for OSS/prototypes, commercial license required for for-profit production(charge
-        beyond 10k API req/mo)
+      detail: free for prototypes and proofs of concept, commercial license required for for-profit production
+        use
+      raw: Proprietary, free for prototypes and proofs of concept, commercial license required for for-profit
+        production use
     context:
       public-repo:
         value: webcontainer-core is MIT but issue-tracker only
@@ -29,31 +29,48 @@ openness:
     requires a paid license, while prototypes and proofs of concept do not, keeping the product source-available
     rather than open despite the MIT label on the repository people find first.
   raw: source:partial;public-repo:webcontainer-core is MIT but issue-tracker only (no runtime source);actual-runtime:proprietary(StackBlitz);license-terms:Proprietary,
-    free for OSS/prototypes, commercial license required for for-profit production(charge beyond 10k API
-    req/mo);distribution:@webcontainer/api npm (proprietary binary)
-  last_verified: '2026-08-13'
+    free for prototypes and proofs of concept, commercial license required for for-profit production use;distribution:@webcontainer/api
+    npm (proprietary binary)
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/stackblitz/webcontainer-core
     shows: MIT repo is a central hub for issues/bug reports, not the runtime implementation
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ce5ff93731e216464b087350af07f7dd155ce5e4b8ae9188f88dedc7d5c14518
-    establishes: [source]
+    establishes:
+    - source
   - url: https://registry.npmjs.org/@webcontainer/api
     shows: '@webcontainer/api is the published client package for the runtime, pointing back at stackblitz/webcontainer-core;
       the package manifest carries MIT while the runtime it calls is a StackBlitz-hosted service'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d14b05851da03cc3ae27e09ec5143439740b9debb99d09233e1f903faf9fd366
-    establishes: [source]
+    establishes:
+    - source
   - url: https://webcontainers.io/enterprise
-    shows: prototypes and proofs of concept require no commercial license, but production use of the API
-      in a commercial for-profit setting does, and access may be revoked for use in violation of those
-      terms; no request-count threshold is stated
-    accessed: '2026-08-13'
+    shows: The commercial usage page says "Licensing is required for" production usage of the API in a commercial,
+      for-profit setting, and "Prototypes or POCs do not require a commercial license".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 40ef1df1874e3ea160f0facfcfca4e2179de739cbd7ac86efdfa00f6779b1d6d
-    establishes: [license-terms]
+    establishes:
+    - license-terms
+  - url: https://raw.githubusercontent.com/stackblitz/webcontainer-core/main/README.md
+    shows: The webcontainer-core README says the repository "serves as a central hub for the GitHub issues
+      and bug reports related to WebContainers" and sends readers to webcontainers.io for documentation;
+      it contains no runtime source or build instructions.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5d98ddd1c43360de3c745865ab9a1e39573d40439da026db1d8d9de8d90a3859
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/stackblitz/webcontainer-core/main/LICENSE
+    shows: The webcontainer-core LICENSE file is the "MIT License" with "Copyright (c) 2021 StackBlitz",
+      covering only the issue-tracker repository.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ee305ecd38f422dc1738637ca15a40e875b7f68e0abcc28cff7fe36f337bebcf
 adoption:
   level: 3
   signal_type: reported_traction
@@ -62,7 +79,6 @@ adoption:
     Scrimba, egghead.io and Xata for in-browser coding. Neither StackBlitz nor webcontainers.io discloses
     a download, user or session figure, so the reading comes from those integrations alone; the npm client's
     download count is not used, since npm is not the product's own channel.
-  last_verified: '2026-08-13'
   sources:
   - url: https://webcontainers.io/
     shows: WebContainers used by SvelteKit, Astro, Scrimba, egghead.io, Xata, Suborbital, re-tune and
@@ -78,13 +94,34 @@ capability:
     npm ecosystem, JS/TS focused, plus arbitrary WASM (narrow vs general Linux sandboxes); persistence:
     per-session in-browser; scale: runs on the end-user''s device (no server cost, no server scale)'
   confidence: medium
-  note: Unique in-browser execution with instant start and zero server cost, but Node/JS-only and not a
-    general-purpose server-side code sandbox for arbitrary languages, a different (narrower) capability
-    profile than microVM/container peers. Mid-tier within deployment.
-  last_verified: '2026-08-13'
+  note: WebContainers runs code inside the browser tab with an instant start and no server cost, but it
+    is limited to Node.js and JavaScript rather than serving as a general-purpose server-side sandbox for
+    arbitrary languages. That narrower profile places it behind the microVM and container sandboxes that
+    run any Linux workload.
+  last_verified: '2026-09-29'
   sources:
   - url: https://webcontainers.io/
-    shows: runs Node.js/npm and WASM fully in-browser, 'up to 10x faster than local', any modern framework
-    accessed: '2026-08-13'
+    shows: The homepage lists "Run Wasm out of the box" and "Run the native versions of" npm, pnpm and yarn
+      in the browser.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 9b41968dec5ce3c459e6f6cf23a757f6db3d3b9b9d12169a6da573f12d8358df
+  - url: https://webcontainers.io/guides/introduction
+    shows: The introduction says WebContainers are "a browser-based runtime for executing Node.js applications
+      and operating system commands, entirely inside your browser tab" and lists "spinning up the entire
+      dev environment in milliseconds".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ffde04dfcd635dd7fe5d280916bc6081ab9e3c87819e74974edfbf17e171a1ff
+  - url: https://webcontainers.io/guides/introduction
+    shows: The introduction says "Compute is done locally. No paying by the minute for cloud VMs." and "Scales
+      to millions."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ffde04dfcd635dd7fe5d280916bc6081ab9e3c87819e74974edfbf17e171a1ff
+  - url: https://webcontainers.io/guides/working-with-the-file-system
+    shows: The file system guide says the API gives "access to work with a virtual file system, right in
+      memory".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1846620a8a45216ad87b4f91b89f3f592dc71b931ba678d13816ebdb8b19971c

@@ -12,64 +12,76 @@ openness:
     - managed-only(no self-host)
     - being deprecated Nov 2026
   confidence: high
-  last_verified: '2026-08-13'
-  note: Closed hosted SaaS bound to the OpenAI platform; not the MIT-licensed openai/evals repo (that is
-    scored separately).
+  last_verified: '2026-09-29'
+  note: The Evals API and dashboard are a closed hosted service that runs only on the OpenAI platform, with
+    no published source. The MIT-licensed openai/evals repository is a separate product on the map.
   raw: license:Proprietary(SaaS, OpenAI-platform-only);source:closed;managed-only(no self-host); being deprecated
     Nov 2026
   sources:
   - url: https://developers.openai.com/api/docs/guides/evals
-    shows: hosted proprietary Evals API + dashboard on OpenAI platform; sunset dates (read-only Oct 31
-      2026, shutdown Nov 30 2026)
+    shows: hosted proprietary Evals API + dashboard on OpenAI platform; sunset dates (read-only Oct 31 2026,
+      shutdown Nov 30 2026)
     accessed: '2026-06-04'
   - url: https://developers.openai.com/api/docs/guides/evals
-    shows: The guide states 'OpenAI is deprecating the Evals platform' and 'Evals will become read-only
-      for existing users on October 31, 2026, and the platform is scheduled to shut down on November 30,
-      2026', and points new users at Datasets instead. It is documented purely as a hosted surface of the
-      OpenAI API - no repository, no self-hostable implementation and no license to any evaluation code
-      is offered anywhere on the page.
-    accessed: '2026-08-13'
+    shows: The guide focuses on "configuring evals programmatically using the" Evals API (linked to the
+      OpenAI API reference) or the OpenAI dashboard, and states "OpenAI is deprecating the Evals platform"
+      and "Evals will become read-only for existing users on October 31, 2026, and the platform is scheduled
+      to shut down on November 30, 2026". No repository, self-hostable build or license for the Evals platform
+      appears on the page; its only self-host link is a nav entry for Agents sandboxes.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 97f7c685f89228fcbcfc2374f139ed6daade56bb81d42d2a6d525ce2eb666c10
+    content_sha256: 5d53ddd828d5220f56d6a0725a7cc78fe5b5f79ad4fe2aa95338545761550249
     establishes:
     - source
     - license
+  - url: https://developers.openai.com/api/docs/deprecations
+    shows: The deprecations page states "Oct 31, 2026" existing evals become read-only and "The Evals dashboard
+      and API are scheduled to shut down" on Nov 30, 2026.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 977978ad22d313edce3f70b71baf7fbc19824eb2e01d1949acf172199ef61d46
 adoption:
   level: null
   reach: null
   signal_type: unknown
   confidence: low
-  last_verified: '2026-08-13'
-  note: OpenAI publishes no usage figures for the Evals API/dashboard specifically, and the product is being
-    sunset, so there is no honest adoption signal to report.
+  last_verified: '2026-09-29'
+  note: OpenAI publishes no usage figures for the Evals API or dashboard specifically, and with the product
+    being sunset there is no other signal that could take the place of one.
   sources:
   - url: https://developers.openai.com/api/docs/guides/evals
     shows: no usage/customer figures; product on sunset path
     accessed: '2026-06-04'
   - url: https://developers.openai.com/api/docs/guides/evals
-    shows: The guide publishes no eval-run count, no customer count and no developer count for the Evals
-      platform, and the deprecation notice adds none. Nothing bandable appears on it.
-    accessed: '2026-08-13'
+    shows: 'Searched the body for a customer count, developer count or eval run count: none. The only status
+      line is "OpenAI is deprecating the Evals platform", with no usage figure.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 97f7c685f89228fcbcfc2374f139ed6daade56bb81d42d2a6d525ce2eb666c10
+    content_sha256: 5d53ddd828d5220f56d6a0725a7cc78fe5b5f79ad4fe2aa95338545761550249
 capability:
   score: 2
   basis: feature_matrix
-  value: Criteria-based grading (string-match + custom + model graders), JSONL/inline datasets with schema
-    validation, runs vs Chat Completions/Responses, async with webhooks, dashboard + token/cost reporting.
-    Locked to OpenAI models; no multi-backend support; no standardized academic benchmark suite; being
-    deprecated.
+  value: Criteria-based grading (string-match, text-similarity, model and Python-code graders), JSONL/inline
+    datasets with a JSON schema, runs against Chat Completions or Responses prompts, and a dashboard for
+    configuring evals and reviewing results. Tied to OpenAI models; no multi-backend support; no standardized
+    academic benchmark suite; being deprecated.
   confidence: medium
-  last_verified: '2026-08-13'
-  note: A convenient managed eval surface for people already using OpenAI models, but narrow - single provider,
-    no benchmark library - and on a published deprecation path rather than a frontier harness.
+  last_verified: '2026-09-29'
+  note: The Evals API gives developers already on OpenAI a managed way to grade prompts against their own
+    datasets. It works only with OpenAI models, ships no benchmark library, and is being deprecated.
   sources:
   - url: https://developers.openai.com/api/docs/guides/evals
     shows: grading methods, dataset upload, run execution vs OpenAI APIs, dashboard + cost analysis
     accessed: '2026-06-04'
   - url: https://developers.openai.com/api/docs/guides/evals
-    shows: Criteria-based grading against OpenAI models only, dataset upload, runs and a dashboard; no multi-provider
-      backend and no standardized benchmark suite. Read-only from 2026-10-31, shut down 2026-11-30.
-    accessed: '2026-08-13'
+    shows: The guide says the graders "determine if the model output is correct" and that evals can be configured
+      "in the OpenAI dashboard"; runs take a Chat Completions messages array or a Responses input.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 97f7c685f89228fcbcfc2374f139ed6daade56bb81d42d2a6d525ce2eb666c10
+    content_sha256: 5d53ddd828d5220f56d6a0725a7cc78fe5b5f79ad4fe2aa95338545761550249
+  - url: https://developers.openai.com/api/docs/guides/graders
+    shows: The graders guide says "Graders are specified in JSON format, and there are several types" including
+      String check, Text similarity, Score model grader and Python code execution.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b8fb3c775f08b328b61abca7d632ee8c53c185483cbe60984ee0c1ccfdce1456

@@ -18,7 +18,7 @@ openness:
         value: Stanford CRFM
         detail: academic
   confidence: high
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: Fully OSI (Apache-2.0); framework, standardized data formats, web UI, and leaderboards all public.
     HELM is in maintenance mode, which slows the code without withdrawing or gating any of it.
   raw: license:Apache-2.0(OSI);source:public(framework + standardized datasets + web UI + leaderboard code);governance:Stanford
@@ -29,8 +29,8 @@ openness:
       v0.5.16; 2.8k stars
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/stanford-crfm/helm/license
-    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for stanford-crfm/helm and returns the
-      Apache-2.0 text as the LICENSE body.
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for stanford-crfm/helm and returns the Apache-2.0
+      text as the LICENSE body.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5cfe39272d6f06a2ce38e0a41f119b99e0fc77c9f548b3347cabab9aa55bac07
@@ -47,11 +47,44 @@ openness:
     establishes:
     - source
     - core-gated
+  - url: https://pypi.org/pypi/crfm-helm/json
+    shows: 'PyPI metadata for crfm-helm 0.5.16 gives license "Apache License 2.0" with the classifier "License
+      :: OSI Approved :: Apache Software License", and the description calls HELM "an open source Python
+      framework created by the" Stanford Center for Research on Foundation Models, listing a "Web UI for
+      inspecting individual prompts and responses". Searched the metadata for pricing, paid tier, enterprise
+      edition, license key and non-commercial: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 002c18ddbf1b7b1c29f1aa611309e4d4aa0b43d639dbe51dd3e57635b6d429b6
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://crfm-helm.readthedocs.io/en/latest/maintenance_mode/
+    shows: Maintenance policy page says HELM entered maintenance mode on June 1, 2026, and that "The HELM
+      code and leaderboards will continue to be available as open-source resources for the community." while
+      "no new features will be added to HELM".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b3298a8b587906810f41a945aa8be28705a58d3cb64d27c6dec99a0b5fdebfe1
+    establishes:
+    - source
+  - url: https://crfm-helm.readthedocs.io/en/latest/reproducing_leaderboards/
+    shows: 'Reproducing Leaderboards page says "You can use the HELM package to rerun evaluation runs and
+      recreate a specific public leaderboard." and points to the run-entry and schema files in the public
+      repository at "https://github.com/stanford-crfm/helm/tree/main/src/helm/benchmark/presentation" and
+      "https://github.com/stanford-crfm/helm/tree/main/src/helm/benchmark/static"; searched the page for
+      API key, paid and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b86093071c20b448cab83d645aa9523736bdf8b2592c365cac33cf519a1c3df1
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
-  last_verified: '2026-08-13'
   banded_quantity: research citations and hosted-leaderboard use; crfm-helm on PyPI at ~3,142 a month understates
     reach rather than measuring it
   note: 'HELM''s reach shows up in research citation and use of its hosted leaderboards, not in package
@@ -80,14 +113,14 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: 'Broadest standardized benchmark/task coverage in the category: multiple holistic leaderboards
+  value: 'One of the broadest standardized benchmark and task sets in the category: holistic leaderboards
     across text (Capabilities, Safety, ToRR table-reasoning), vision-language (VHELM), text-to-image (HEIM),
-    medical (MedHELM), audio, and enterprise; unified model access across OpenAI/Anthropic/Google/etc.;
+    medical (MedHELM) and audio, plus an enterprise benchmark; unified model access across OpenAI/Anthropic/Google/etc.;
     metrics beyond accuracy; standardized reproducible format + web UI.'
   confidence: high
   relative_to: inspect-ai
   relation: at
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: HELM runs the same holistic leaderboard family across text, vision-language, text-to-image, table
     reasoning, medical and audio, one of the broadest standardized benchmark sets in the category. It has
     less agentic-eval support than Inspect AI, but wider benchmark and modality coverage, which keeps the
@@ -98,9 +131,30 @@ capability:
       (MMLU-Pro/GPQA/IFEval/WildBench)
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/stanford-crfm/helm/main/README.md
-    shows: standardized scenario/adapter/metric framework with a web leaderboard UI; leaderboards span
-      text (Capabilities, Safety, ToRR), vision-language (VHELM), text-to-image (HEIM), medical (MedHELM),
-      audio and enterprise benchmarks; maintenance-mode notice dated 2026-06-01.
+    shows: standardized scenario/adapter/metric framework with a web leaderboard UI; leaderboards span text
+      (Capabilities, Safety, ToRR), vision-language (VHELM), text-to-image (HEIM), medical (MedHELM), audio
+      and enterprise benchmarks; maintenance-mode notice dated 2026-06-01.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 465390a907127138096869b49fd79c817392f5404d23d98161d881f2e408a303
+  - url: https://pypi.org/pypi/crfm-helm/json
+    shows: The package description lists leaderboards for HELM Capabilities, HELM Safety, VHELM, HEIM, ToRR,
+      MedHELM and audio models, and says the framework offers "Models from various providers accessible
+      through a unified interface".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 002c18ddbf1b7b1c29f1aa611309e4d4aa0b43d639dbe51dd3e57635b6d429b6
+  - url: https://crfm-helm.readthedocs.io/en/latest/
+    shows: Docs home lists leaderboards HELM Capabilities, HELM Safety and VHELM, and says the framework
+      offers "Models from various providers accessible through a unified interface" and "Metrics for measuring
+      various aspects beyond accuracy".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 151898115a286c0ee2e46a3126d7f1d61bb73411d4adb54d7947a992f73f619d
+  - url: https://crfm-helm.readthedocs.io/en/latest/maintenance_mode/
+    shows: Maintenance policy page says HELM entered maintenance mode on June 1, 2026, and that "The HELM
+      code and leaderboards will continue to be available as open-source resources for the community." while
+      "no new features will be added to HELM".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b3298a8b587906810f41a945aa8be28705a58d3cb64d27c6dec99a0b5fdebfe1

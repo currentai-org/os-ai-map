@@ -23,25 +23,25 @@ openness:
     The project''s site is documentation only, with no pricing page, hosted offering or sign-up, so there
     is no managed tier for any part of the core to be gated behind.'
   raw: license:Apache-2.0(OSI);source:public(Go execd + multi-language SDKs);runtimes:Docker/Kubernetes;no-managed-tier-observed;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
     shows: Apache-2.0 license; general-purpose AI-agent sandbox; Docker/K8s runtimes; multi-language SDKs;
       self-host
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/LICENSE
-    shows: The verbatim Apache License 2.0, complete and with no appended notices, exceptions or additional
-      terms.
-    accessed: '2026-08-13'
+    shows: The root LICENSE file is the unmodified Apache License, opening "TERMS AND CONDITIONS FOR USE,
+      REPRODUCTION, AND DISTRIBUTION", with no appended exceptions or additional terms.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a
     establishes:
     - license
   - url: https://api.github.com/repos/opensandbox-group/OpenSandbox/git/trees/main?recursive=1
-    shows: 'Untruncated recursive tree, 2,642 entries. Ten LICENSE paths, all Apache-2.0 copies of the root
+    shows: Untruncated recursive tree, 2,642 entries. Ten LICENSE paths, all Apache-2.0 copies of the root
       placed beside the CLI, the server and each SDK. The whole product is public - server/, components/,
       kubernetes/, cli/, sdks/, specs/, sandboxes/ - and there is no ee/, enterprise/, commercial/ or proprietary/
-      path.'
+      path.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 96de8bab4273bb81e622ba457def36967e0d815a7a41cf1bb10d19efc170334e
@@ -49,9 +49,9 @@ openness:
     - source
     - core-gated
   - url: https://api.github.com/repos/opensandbox-group/OpenSandbox
-    shows: 'Repo metadata - license spdx_id Apache-2.0, default branch main, not archived, pushed 2026-08-13,
+    shows: Repo metadata - license spdx_id Apache-2.0, default branch main, not archived, pushed 2026-08-13,
       homepage open-sandbox.ai. The repository now lives under the opensandbox-group org; the alibaba/OpenSandbox
-      path redirects here and returns an identical body.'
+      path redirects here and returns an identical body.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 013a649819f1ef44a2bf21c8d0db9288478dcf4e98595bc9fcc60fcee159f9f5
@@ -59,14 +59,40 @@ openness:
     - license
     - source
   - url: https://open-sandbox.ai
-    shows: 'The project site is documentation only - getting started, guides, SDK and API references, specs,
-      CLI, components, Kubernetes and migration guides. It offers no hosted service, pricing page, sign-up
-      or enterprise edition, and its footer reads "Released under the Apache 2.0 License."'
-    accessed: '2026-08-13'
+    shows: 'The project site is documentation only and its footer reads "Released under the Apache 2.0 License.";
+      searched the body for pricing, sign up and enterprise: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0470380f7fd841e3a5ffc9705480d1c600ddc82e81b49f53adc443a8c597c706
+    content_sha256: aa71c5744c4086fb4db5947514d973d415b6ee797e011fe3d498340d4dd2707d
     establishes:
     - core-gated
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/README.md
+    shows: 'The README states "This project is open source under the [Apache 2.0 License](LICENSE)." and
+      documents self-hosting via "uvx opensandbox-server init-config ~/.sandbox.toml --example docker";
+      searched the body for enterprise, license key, commercial, pricing, paid, cloud-only and proprietary:
+      none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f7da736b39d2e6bf92f4c4ba81065b1ba4479dfb09a91abde616ce1e9d041490
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/pyproject.toml
+    shows: 'The server package manifest declares the public control plane, "FastAPI control plane for OpenSandbox
+      that manages sandbox lifecycle", with "License :: OSI Approved :: Apache Software License".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cead7fc669db4ca916bbec9f7aa2c78011add3632c7de28437dfe16df66f1c8f
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/components/execd/go.mod
+    shows: The execd component is public Go source, its manifest declaring "module github.com/alibaba/opensandbox/execd".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b45a7b8289f9ddcc0634aaa41fdd6cc6821bd975f1ba3d1f536fa609fab0ec01
+    establishes:
+    - source
 adoption:
   level: 3
   reach: '>10K stars'
@@ -94,17 +120,19 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'isolation:pluggable secure runtimes - gVisor (runsc), Kata QEMU (full VM), Kata Firecracker
-    (microVM), Kata CLH, with runc as fallback, selected once at server level; cold-start:vendor planning
-    estimates only (~550ms gVisor, ~625ms Kata/Firecracker), no independent measurement;
-    language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor);
-    persistence:file ops; scale:K8s'
+  value: isolation:pluggable secure runtimes - gVisor (runsc), Kata QEMU (full VM), Kata Firecracker (microVM),
+    Kata CLH, with runc as fallback, selected once at server level; optional Fast Sandbox backend runs template-backed
+    Firecracker microVMs on Kubernetes; cold-start:vendor-published figures only, secure-runtime startup
+    overhead ~10-50ms gVisor, ~125ms Kata Firecracker, ~500ms Kata QEMU, and Fast Sandbox serial create
+    p50 97ms from single-host runs, no independent measurement; language/runtime breadth:Python/TS/Kotlin-Java/Go/C#
+    SDKs, unified sandbox API, MCP server (Claude Code/Cursor); persistence:file ops, pause/resume and snapshots
+    (OCI rootfs commit on Kubernetes); scale:K8s
   confidence: medium
   note: 'OpenSandbox ships working, not merely proposed, support for pluggable secure runtimes: gVisor,
     three Kata Containers backends and plain runc as fallback. It does not install those runtimes itself,
     so the microVM tier depends on infrastructure the operator supplies, and its cold-start figures are
     the project''s own planning estimates rather than an independent measurement.'
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/opensandbox_server/services/runtime_resolver.py
     shows: 'SecureRuntimeResolver as shipped code: Docker runtime map (gvisor -> runsc, kata -> kata-runtime)
@@ -113,3 +141,41 @@ capability:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 3193ac44cebe3e45435273bd49487b21878d4b338e71adce5671df9cbd33164e
+  - url: https://open-sandbox.ai/guides/secure-container
+    shows: The secure-container guide says "OpenSandbox supports the following secure runtime types through
+      server-level configuration" and lists gvisor, kata, firecracker and empty (runc), and that "The secure
+      runtime is configured once at the server level by administrators".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c7018d90c3c1ee80bc9c48d4f41e113f45266d438e2f4ce6ae584beebd1cd972
+  - url: https://open-sandbox.ai/guides/secure-container
+    shows: The secure-container guide states the server "validates the configured runtime at startup and
+      will refuse to start if the runtime is unavailable", so the isolation tier depends on operator-supplied
+      runtimes.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c7018d90c3c1ee80bc9c48d4f41e113f45266d438e2f4ce6ae584beebd1cd972
+  - url: https://open-sandbox.ai/guides/pause-resume
+    shows: 'The pause-resume guide describes Kubernetes-backed persistence: "Resume restores the sandbox
+      from that image" after pause commits the root filesystem as an OCI image.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 21c03f81575a1e0fba153f50e7a659ef8c8194c38d030a771304fc4f74528226
+  - url: https://open-sandbox.ai/architecture/fast-sandbox/performance
+    shows: The performance page reports Firecracker create timings measured on one host, noting "single-run
+      observations, not tuned benchmark medians", with serial create-to-ready p50 97 ms.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 69bbbc0d65dcd38cfe25c50e5e5a40e440a78c08ec9ffecd02dc7aab6b7adb0c
+  - url: https://open-sandbox.ai/architecture/fast-sandbox/firecracker
+    shows: The Firecracker page says "Each sandbox then runs as a real KVM virtual machine inside the Fastlet
+      pod network namespace".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f1bd8e8034763e0fe960bdb08ece49623295568cccc4edc0214b5c47db1ef63
+  - url: https://open-sandbox.ai/sdks/
+    shows: The SDK index says "OpenSandbox provides five sandbox SDKs for lifecycle management, command
+      execution, file operations, and resource metrics".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 343fb8d730a883625e0cacd0ac9c020f82a4fc6a79253c2854495c1336f6167a

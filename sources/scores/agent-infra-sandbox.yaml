@@ -17,19 +17,19 @@ openness:
       packaging:
         value: self-hostable Docker image + K8s deploy examples
   confidence: high
-  note: Apache-2.0, fully self-hostable single-container runtime; no separate proprietary/managed tier gating
-    the core.
+  note: Agent Infra Sandbox is Apache-2.0 and self-hostable in full as a single container, with no proprietary
+    or managed tier sold beside it.
   raw: license:Apache-2.0(OSI);source:public(GitHub);packaging:self-hostable Docker image + K8s deploy examples;no
     feature-gated core observed;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/agent-infra/sandbox
     shows: Apache-2.0 license, single-Docker-container all-in-one agent sandbox, self-hostable
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/agent-infra/sandbox
-    shows: 'Repository metadata - public (private false), not archived, license spdx_id Apache-2.0,
-      described as an all-in-one sandbox combining Browser, Shell, File, MCP and VSCode Server in a
-      single Docker container.'
+    shows: Repository metadata - public (private false), not archived, license spdx_id Apache-2.0, described
+      as an all-in-one sandbox combining Browser, Shell, File, MCP and VSCode Server in a single Docker
+      container.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: c9fbadf39d95ad4dda225e4d17cd7bb45c460b5aa21e0b87619242c9ec867a25
@@ -37,18 +37,19 @@ openness:
     - source
     - license
   - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/LICENSE
-    shows: The verbatim Apache License 2.0 body, with no added terms or field-of-use restrictions.
-    accessed: '2026-08-13'
+    shows: The LICENSE file is the standard "Apache License" text, headed "Version 2.0, January 2004", with
+      no added field-of-use terms.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
   - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/README.md
-    shows: 'Single ``docker run ghcr.io/agent-infra/sandbox`` quick start plus Docker Compose and
-      Kubernetes Deployment manifests; Python, TypeScript and Go SDKs; closes with "AIO Sandbox is
-      released under the Apache License 2.0". No paid tier, hosted plan or license key is mentioned
-      anywhere in the document.'
-    accessed: '2026-08-13'
+    shows: 'Closing section of the README states "AIO Sandbox is released under the [Apache License 2.0](LICENSE)."
+      Searched the body for license key, commercial, pricing, paid and hosted plan: none; the only "enterprise"
+      hit is a container registry hostname, and the optional SANDBOX_API_KEY is a self-set access secret
+      ("Without SANDBOX_API_KEY, services remain open"), not a vendor license.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 0fe34cd605e492c4c93f760e9caefd194f9c8ec7cfc3d4d4a927a1ac1613e51c
     establishes:
@@ -78,21 +79,36 @@ capability:
   score: 3
   basis: feature_matrix
   value: isolation:single Docker container (process/namespace, weaker than microVM/gVisor); runtime breadth:high
-    (Python+Node sandboxes, browser/VNC, shell, Jupyter, VSCode, MCP servers); persistence:session-persistent
-    within container; scale:K8s high-density deploy examples but no published concurrency limit
+    (Python+Node sandboxes, browser/VNC, shell, Jupyter, VSCode, MCP servers); persistence:workspace volume
+    in the Compose example, otherwise container-local; scale:Kubernetes Deployment example (2 replicas,
+    per-pod CPU and memory limits), no published concurrency limit
   confidence: medium
-  note: Unusually broad multi-modal feature set (browser+shell+file+MCP+IDE in one) but isolation is container-level
-    only, below the Firecracker/gVisor isolation strength of the frontier deployment runtimes. The quick
-    start relaxes isolation further still, running with seccomp unconfined.
-  last_verified: '2026-08-13'
+  note: Agent Infra Sandbox bundles a browser, shell, file service, Jupyter, an IDE and MCP servers in one
+    container, a broader feature set than most sandboxes offer. Its isolation is only that of a Docker container,
+    weaker than Firecracker's microVMs or gVisor, and the quick start relaxes it further by running with
+    seccomp unconfined.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/agent-infra/sandbox
     shows: 'feature list: Browser/VNC, Shell, File, MCP, Jupyter, VSCode in one Docker container'
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/README.md
-    shows: Browser/VNC, Terminal, File, VSCode Server, Jupyter and MCP services in one container behind
-      a shared filesystem; Docker Compose and Kubernetes Deployment examples; no concurrency limit or
-      isolation primitive beyond the container is published.
-    accessed: '2026-08-13'
+    shows: README overview says the sandbox "combines Browser, Shell, File, MCP operations, and VSCode Server
+      in a single Docker container" and that "All components run in the same container with a shared filesystem",
+      with Jupyter and VNC listed among the interfaces.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fe34cd605e492c4c93f760e9caefd194f9c8ec7cfc3d4d4a927a1ac1613e51c
+  - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/README.md
+    shows: 'README quick start and Compose example run the container with "--security-opt seccomp=unconfined",
+      and the Kubernetes example is a Deployment with "replicas: 2" and per-pod memory and CPU limits; Searched
+      the body for gVisor, Firecracker, microVM and concurrency limit: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fe34cd605e492c4c93f760e9caefd194f9c8ec7cfc3d4d4a927a1ac1613e51c
+  - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/README.md
+    shows: README Compose example mounts a named volume with "sandbox_data:/home/gem/workspace" for the
+      workspace, and installs are offered for Python, TypeScript and Go SDKs including "go get github.com/agent-infra/sandbox-sdk-go".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 0fe34cd605e492c4c93f760e9caefd194f9c8ec7cfc3d4d4a927a1ac1613e51c
