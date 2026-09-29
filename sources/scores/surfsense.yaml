@@ -7,35 +7,38 @@ openness:
     - name: Apache-2.0
       detail: OSI, everything outside the proprietary directory
     - name: BSL-1.1
-      detail: Business Source License 1.1 - surfsense_backend/app/proprietary
+      detail: Business Source License 1.1 - surfsense_backend/app/proprietary (crawler engine and platform
+        extractors, published in the tree)
     source:
       value: public
       detail: github.com/MODSetter/SurfSense
     self-host:
       value: primary
-      detail: Docker/Compose
+      detail: Desktop app runs on the user's own machine; the Docker stack in the repo is community-supported
     core-gated:
       value: ungated
     free_text:
     - no-feature-gated-core-found
   confidence: high
-  note: 'SurfSense''s license is a compound: everything outside surfsense_backend/app/proprietary is Apache-2.0,
-    but that directory, covering the live-data connectors, carries the Business Source License 1.1, which
-    restricts running it competitively. The whole tree is still public, and self-hosting the entire product
-    remains free.'
+  note: Everything outside surfsense_backend/app/proprietary is Apache-2.0. That directory holds the web
+    crawler engine and the platform extractors behind the paid scraper plugins, and carries the Business
+    Source License 1.1, which bars offering it to third parties as a commercial or hosted service. The whole
+    tree is public, and the paid license adds only those plugins and priority support, so the app itself
+    stays free to run and build.
   raw: license:Apache-2.0(OSI, everything outside the proprietary directory)+BSL-1.1(Business Source License
-    1.1 - surfsense_backend/app/proprietary);source:public(github.com/MODSetter/SurfSense);self-host:primary(Docker/Compose);no-feature-gated-core-found;core-gated:ungated
-  last_verified: '2026-08-14'
+    1.1 - surfsense_backend/app/proprietary (crawler engine and platform extractors, published in the tree));source:public(github.com/MODSetter/SurfSense);self-host:primary(Desktop
+    app runs on the user's own machine; the Docker stack in the repo is community-supported);no-feature-gated-core-found;core-gated:ungated
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/MODSetter/SurfSense/blob/main/LICENSE
     shows: Apache License 2.0
     accessed: '2026-06-17'
   - url: https://raw.githubusercontent.com/MODSetter/SurfSense/main/LICENSE
-    shows: 'Root LICENSE, read rather than assumed. ''Portions of this software are licensed as follows -
+    shows: Root LICENSE, read rather than assumed. 'Portions of this software are licensed as follows -
       All content that resides under the "surfsense_backend/app/proprietary/" directory of this repository
       is licensed under the Business Source License 1.1 as defined in "surfsense_backend/app/proprietary/LICENSE".
       ... Content outside of the above-mentioned directory is available under the Apache License, Version
-      2.0'', followed by the full Apache text. Two governing licenses, one repository.'
+      2.0', followed by the full Apache text. Two governing licenses, one repository.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: b2392d46b23884d3731d9780c8948458acf74d10b47b8475d5b7baa467e9cf24
@@ -50,10 +53,10 @@ openness:
     establishes:
     - source
   - url: https://github.com/MODSetter/SurfSense
-    shows: 'Repository page, 15,906 stars. GitHub records the license as spdxId NOASSERTION / ''Other'',
-      which is GitHub declining to classify the split LICENSE file. The page still reads ''self-hosting
-      stays free and open source'' and ''Self-hosted installs run with billing off'', so nothing is
-      withheld from the published tree for a paid tier.'
+    shows: Repository page, 15,906 stars. GitHub records the license as spdxId NOASSERTION / 'Other', which
+      is GitHub declining to classify the split LICENSE file. The page still reads 'self-hosting stays free
+      and open source' and 'Self-hosted installs run with billing off', so nothing is withheld from the
+      published tree for a paid tier.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 66cf56f96c8a0d50d5d3bffc5d2d10755b086e4b46ad5bcc73d02ad605b5a8aa
@@ -61,6 +64,55 @@ openness:
     - source
     - core-gated
     - self-host
+  - url: https://cdn.jsdelivr.net/gh/MODSetter/SurfSense@main/LICENSE
+    shows: Root LICENSE served through the jsDelivr mirror of the main branch. It says everything under
+      the "surfsense_backend/app/proprietary/" directory "is licensed under the Business Source License
+      1.1" and that content outside that directory "is available under the Apache License, Version 2.0",
+      followed by the full Apache text. Two governing licenses, one repository.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b2392d46b23884d3731d9780c8948458acf74d10b47b8475d5b7baa467e9cf24
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/MODSetter/SurfSense@main/surfsense_backend/app/proprietary/LICENSE
+    shows: Business Source License 1.1 for the proprietary directory, whose Additional Use Grant allows
+      production use "provided such use does not include offering the Licensed Work" to third parties as
+      a commercial product or hosted service. The Change License is "Apache License, Version 2.0", effective
+      four years after each version is released.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e66fec41714af0eccaf7943f2e5f9893410f83bb850761783a0b455c4b713548
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/MODSetter/SurfSense@main/surfsense_backend/app/proprietary/__init__.py
+    shows: 'Package docstring of the BSL directory in the public tree: everything under it is licensed separately
+      from the Apache-2.0 project root, and the package holds "the in-house undetectable crawler engine
+      and (future) platform-specific actors".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 09e6f62bdb4f227ecf977383ffc34c626cf4ad7d79018c3fdc4271994f5407c2
+    establishes:
+    - source
+  - url: https://cdn.jsdelivr.net/gh/MODSetter/SurfSense@main/README.md
+    shows: 'Current README: "SurfSense is a free, open-source desktop app for the documents you already
+      have". On licensing it says "A licence adds plugins and priority support and gates nothing else",
+      and that the Docker stack in this repo stays open source and installable but is "community-supported:
+      no SLA and no hosted service behind it." The desktop app is the supported path for new users.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 115704e9a0b9ef0e76968856553cccd60687497297dc3f7b8c95f78358673bb4
+    establishes:
+    - source
+    - core-gated
+    - self-host
+  - url: https://www.surfsense.com/pricing
+    shows: 'Pricing page: "The source is public" and "self-building is free too", while a paid licence adds
+      the scraper plugins and priority support; "No plugin ships in version 2.0".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 53f13bcf17934adb9719e2ff10362674f4fe5e274049747891c4dfc951ac4613
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -94,7 +146,6 @@ capability:
     to Reddit, YouTube, Instagram, TikTok, Amazon, Walmart, Google Maps, Google Search and Indeed, reachable
     over one REST API or an MCP server, plus scheduled and event-triggered agents. Most of that breadth
     comes from the README rather than independent verification.
-  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/MODSetter/SurfSense
     shows: 'feature/connector matrix: 100+ LLMs, 27+ connectors, hybrid RAG, multimodal gen, RBAC collab'

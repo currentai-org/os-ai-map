@@ -15,43 +15,76 @@ openness:
   governing_release: gpt-5-line
   confidence: high
   note: 'GPT-5 has no downloadable weights, no published training data, and no published training code:
-    it is served only through the OpenAI API and ChatGPT. That has held for every release across the line,
-    from the original GPT-5 through the current governing release, GPT-5.5 Instant.'
+    it is served only through the OpenAI API and ChatGPT. The later releases, GPT-5.5 and GPT-5.6, and the
+    GPT-6 family that followed in September 2026 are listed as proprietary in the same way.'
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API + ChatGPT only)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://en.wikipedia.org/wiki/GPT-5
-    shows: GPT-5 "launched on August 7, 2025 ... publicly accessible to users of the chatbot ... Microsoft
-      Copilot as well as to developers through the OpenAI API"; no weights, corpus or training code released
-    accessed: '2026-08-13'
+    shows: 'Wikipedia GPT-5 article: infobox license field reads "[[Proprietary software|Proprietary]]"
+      and the lead says GPT-5 "It is publicly accessible to users of the" chatbot products and developers
+      through the API, i.e. hosted access only. Searched the body for open weights release, training data
+      release, published training code and source code: none offered.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: cb63d94def8c6dc56a6a6eb59885619dd73c7e347e63f3f589ac6cfa951f2a3e
-    establishes: [weights, data, code, license]
-  - url: https://techcrunch.com/2026/05/05/openai-releases-gpt-5-5-instant-a-new-default-model-for-chatgpt/
-    shows: '"OpenAI releases GPT-5.5 Instant, a new default model for ChatGPT" - the current governing
-      release of the line, still proprietary'
-    accessed: '2026-08-13'
+    content_sha256: ae59bb8606a4e0cbc8210af070f29989249bd0f6b447699f975d74fc4132716c
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://en.wikipedia.org/wiki/GPT-6
+    shows: 'Wikipedia GPT-6 article: infobox license "[[Proprietary software|Proprietary]]"; GPT-6 is an
+      OpenAI model family with Astra released "to the general public on September 4, 2026" and Sol and Luna
+      on September 22, 2026. Searched the body for open weights, training data release, published code and
+      open source: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d6c2a3b6ecc1adffc3d49faefb7b75463466d0886f85e62a41564d6cb94781f9
+    content_sha256: f0184c50b215db933184047bb396a6c67d512570228375b8eed2fa9cefe5b9b1
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://en.wikipedia.org/wiki/GPT-5.6
+    shows: 'Wikipedia GPT-5.6 article: infobox license "[[Proprietary software|Proprietary]]", predecessor
+      GPT-5.5, successor GPT-6; "Luna, Terra, and Sol" variants. Searched the body for open weights, training
+      data release, published code and open source: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3c7886b1b36189548950ec88e5179a4baa38d3884d9e12730b95e2ce3e00ef11
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://platform.openai.com/docs/models/gpt-5
+    shows: 'OpenAI API docs model page for GPT-5 describes API model snapshots ("Snapshots let you lock
+      in a specific version of the model so that performance and behavior remain consistent"), i.e. a hosted
+      API model. Searched the body for download, open weights, license, training data and source code: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c8855d162551f292e60ace56ceda7feff3a28d163b7b02e76a3fba5e10c70a2f
+    establishes:
+    - weights
+    - code
 adoption:
   level: 5
   reach: '>10M users'
   signal_type: active_users
   confidence: high
-  note: GPT-5 is the default model behind ChatGPT for logged-in users, so its usage is attributed to the
-    ChatGPT surface it powers rather than to a standalone GPT-5 download or install count. ChatGPT's own
-    reported active-user numbers are comfortably mass-market, though they describe the surface as a whole
-    rather than GPT-5 specifically.
-  last_verified: '2026-08-13'
+  note: GPT-5 was the default model behind ChatGPT for logged-in users after its August 2025 launch, so
+    its usage is attributed to the ChatGPT surface rather than to a standalone download or install count.
+    ChatGPT's user numbers describe the product as a whole rather than GPT-5 alone, and its engine is now
+    GPT-6 Astra.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://almcorp.com/blog/chatgpt-900-million-weekly-active-users/
-    shows: '"ChatGPT crossed 900 million weekly active users in February 2026" with a growth timeline'
-    accessed: '2026-08-13'
+  - url: https://en.wikipedia.org/wiki/ChatGPT
+    shows: Wikipedia ChatGPT article reports that "In February 2026, ChatGPT reached 900 million weekly
+      active users." and lists GPT-6 September 2026 as the current release with Luna, Sol and Astra versions.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 36a725f2b702f9589be963dce5c0bd331512809aa07a9f7997fce3949f718acc
-  - url: https://www.demandsage.com/chatgpt-statistics/
-    shows: ChatGPT usage statistics aggregator. Returns HTTP 403 to a plain fetch.
-    accessed: '2026-06-04'
+    content_sha256: 20aef6f58af05130fb63aef689b8fdb0094f905fe80bc1dede53ba6b4cb91f0b
 capability:
   score: 5
   basis: benchmark
@@ -59,10 +92,8 @@ capability:
   value: null
   confidence: high
   note: OpenAI reported SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% without tools and Aider Polyglot
-    88% at launch, frontier-tier coding and reasoning, though the figures are vendor-reported. Artificial
-    Analysis rates the plain GPT-5 (high) at 35, but the line's current flagship, GPT-5.6 Sol (max), scores
-    61 on the same recalibrated index.
-  last_verified: '2026-08-14'
+    88% at launch, which were frontier-tier results at the time; the figures are vendor-reported. OpenAI
+    has since released GPT-5.6 and GPT-6.
   sources:
   - url: https://cdn.openai.com/gpt-5-system-card.pdf
     shows: 'OpenAI GPT-5 system card - "The SWE-Bench result in the GPT-5 launch blog post (74.9%), was

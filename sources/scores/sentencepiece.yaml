@@ -13,12 +13,40 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full C++/Python source public. The repository is public
-    and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside
-    it, so source is public and the core ungated.
+  note: The LICENSE file is the full Apache License 2.0 text, and the C++ and Python source is public. The
+    README describes the whole library with no paid, enterprise or hosted tier beside it, and no model weights
+    or license keys are needed, so nothing in the core is gated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/google/sentencepiece@master/LICENSE
+    shows: 'The file is the full Apache License, "Version 2.0, January 2004" text, including the appendix
+      "APPENDIX: How to apply the Apache License to your work." with no added terms.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/google/sentencepiece@master/README.md
+    shows: 'The README states "SentencePiece is licensed under the [Apache 2.0 License](LICENSE)." and links
+      a "Command Line Interface (CLI) & Build Guide (CMake)" for building the public source; searched the
+      body for paid, enterprise, hosted, license key and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 348dac366fe872b74e3a6e35b620b890324199724704c91dc3ef962a138e9c13
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/sentencepiece/json
+    shows: 'The PyPI metadata lists "license_expression": "Apache-2.0" for sentencepiece and a project URL
+      to the public repository "https://github.com/google/sentencepiece".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7f00b188528ebf9877b000385251f1fd12fcc8c1bfb43569dbbe021e7d910aa2
+    establishes:
+    - license
+    - source
   - url: https://github.com/google/sentencepiece/blob/master/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +54,6 @@ openness:
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://api.github.com/repos/google/sentencepiece
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
-      - for google/sentencepiece.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 433ee1c45af86e6f88565cb5eae7e26958436ddb9385128411e474e697eac2e9
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/google/sentencepiece/master/README.md
-    shows: README describes the unsupervised subword tokenizer/detokenizer, with the C++ build and the Python
-      wheel both published. No paid tier appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: d5b3b8f0b79151e24069dfc10f68b1441ab91853a04afe4cb993379efa7bd7d6
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -69,11 +79,19 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: Language-independent subword tokenization (BPE/unigram) trained directly from raw text.
+  value: Language-independent subword tokenization (BPE/unigram) trained directly from raw text, with subword
+    sampling and a zero-dependency C++ runtime.
   confidence: high
   note: Widely used tokenizer underpinning many LLM and NMT models, though narrow in scope.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/google/sentencepiece@master/README.md
+    shows: The README describes BPE and unigram tokenizers trained "directly from raw sentences" giving
+      a "purely end-to-end, language-independent pipeline", subword sampling (Subword Regularization, BPE-Dropout),
+      and a zero-dependency C++20 Lite runtime.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 348dac366fe872b74e3a6e35b620b890324199724704c91dc3ef962a138e9c13
   - url: https://github.com/google/sentencepiece
     shows: README still describes language-independent subword tokenization (BPE and unigram) trained from
       raw text

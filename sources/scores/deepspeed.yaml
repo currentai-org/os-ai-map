@@ -13,12 +13,37 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 license body confirmed; full source public. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The repository is public under the standard Apache-2.0 license text. The README presents the whole
+    library, installed from PyPI, with no paid, enterprise or hosted tier beside it.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/deepspeedai/DeepSpeed@master/LICENSE
+    shows: The LICENSE file is the Apache License, "Version 2.0, January 2004", with the standard "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION" text.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/deepspeedai/DeepSpeed@master/README.md
+    shows: 'README installs the whole library with "The quickest way to get started with DeepSpeed is via
+      pip" and describes no enterprise, paid or license-key tier. Searched the body for enterprise, commercial,
+      paid and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e2f2dad685784770f1cd1fe72ba3be22788864ddf9234a899b75fb7dbdd15151
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/deepspeed/json
+    shows: PyPI metadata lists "Apache Software License 2.0" and the source link "https://github.com/deepspeedai/DeepSpeed"
+      for the deepspeed package.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 562778af943003c9b606952b6dc219d90cc6c0d3f9cc10f13a594dbddd01a118
+    establishes:
+    - license
+    - source
   - url: https://github.com/deepspeedai/DeepSpeed/blob/master/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +51,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/deepspeedai/DeepSpeed
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
-      - for deepspeedai/DeepSpeed.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 8e789386652fe49fc9c73d51af9b8dffabf04e2e5cd04123f28e7a0afb43791d
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/deepspeedai/DeepSpeed/master/README.md
-    shows: README describes the training and inference optimization stack - ZeRO, 3D parallelism, MoE -
-      with everything installed from the public package. No paid tier appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: d206dd2d2ed67d0b39a60dc18161fb66c6e290ac4f05e6ed9a0467e5b80b75a2
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -68,9 +75,24 @@ capability:
   basis: feature_matrix
   value: Large-scale distributed training/inference optimization library (ZeRO, 3D parallelism, MoE).
   confidence: high
-  note: Foundational scale-out training stack used for many of the largest published models.
-  last_verified: '2026-08-13'
+  note: DeepSpeed's ZeRO memory partitioning, 3D parallelism and mixture-of-experts support have been used
+    to train models such as BLOOM (176B) and Megatron-Turing NLG (530B). It is also the distributed backend
+    integrated into Hugging Face Transformers, Accelerate and Lightning.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/deepspeedai/DeepSpeed@master/README.md
+    shows: README says "These innovations include ZeRO, ZeRO-Infinity, 3D-Parallelism, Ulysses Sequence
+      Parallelism, DeepSpeed-MoE, etc." and lists models trained with it including "BLOOM (176B)" and "Megatron-Turing
+      NLG (530B)".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e2f2dad685784770f1cd1fe72ba3be22788864ddf9234a899b75fb7dbdd15151
+  - url: https://deepspeed.readthedocs.io/en/latest/
+    shows: DeepSpeed 0.19.8 documentation covers "Training API", "Inference API", "ZeRO", "Mixture of Experts
+      (DeepSpeed MoE)", "Pipeline Parallelism" and "Automatic Tensor Parallel Training".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4baf28deb1db7408b12de919c1fac2d4585c87c3e50d850239b2bd86330f0d97
   - url: https://github.com/deepspeedai/DeepSpeed
     shows: README still describes ZeRO, ZeRO-Infinity, 3D parallelism and MoE, and the models it trained
     accessed: '2026-08-13'

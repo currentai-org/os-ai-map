@@ -4,26 +4,25 @@ openness:
   class: closed
   confidence: high
   components:
-    source:
-      value: closed
     license:
     - name: Proprietary
-    context:
-      client:
-        value: proprietary
-      deployment:
-        value: single-tenant SaaS
-  note: Glean Assistant is a proprietary enterprise SaaS, no public source, no open-core/self-host OSS tier.
-    Closed.
-  raw: client:proprietary;deployment:single-tenant SaaS;source:closed;license:Proprietary
-  last_verified: '2026-08-13'
+    source:
+      value: closed
+  note: Glean Assistant is proprietary software sold as a hosted service. Glean publishes no source and
+    no self-hosted open-source edition.
+  raw: source:closed;license:Proprietary
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.glean.com/product/assistant
-    shows: Proprietary SaaS enterprise assistant; RAG over Enterprise Graph; not open source
-    accessed: '2026-08-13'
+    shows: 'Product page for a hosted assistant; it offers "Delegate work to an AI coworker that understands
+      your business" and no downloadable or licensed build. Searched the body for self-host, on-prem, open
+      source, open-source and license: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f2e15c53fc7b232e230b621651471a9ea9e685bd75b21cfd637782f53b2c85e2
-    establishes: [license, source]
+    content_sha256: adb3b6c24a21347298483e16acbd97f68576bf17db958e3f71cfe39fa4bd9696
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   signal_type: reported_traction
@@ -34,31 +33,44 @@ adoption:
     its enterprise deployment footprint, but publishes no seat or user count for the assistant itself. Revenue
     and deployment breadth of that scale imply enterprise use in the low millions of seats, though confidence
     stays medium without a direct count.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.glean.com/press/glean-surpasses-300m-arr-unrivaled-enterprise-context-fuels-ai-adoption
-    shows: $300M ARR (May 2026); Fortune 500 count ~doubled YoY; 85%+ across 5+ depts; 45% wDAU/wMAU;
-      28 countries
-    accessed: '2026-08-13'
+    shows: 'Press release dated May 28, 2026: "Glean today announced it reached $300 million in annual recurring
+      revenue (ARR)"; "Fortune 500 customers nearly doubled year over year"; "85%+ of customers use Glean
+      across 5+ departments".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 52a6d2d5de1b42056375fa6f5a1864f466556d33d6535946babd27e955dcd6f8
+    content_sha256: 3c13c86eba9f819d71bc485e6a12178b33fa7f9f86bc83f84585ddcb4af25599
 capability:
   score: 4
   basis: feature_matrix
-  value: 'enterprise chat-UI feature set: model breadth (Model Hub, multiple frontier LLMs + adaptive
-    model selection); RAG (Enterprise Graph over 100+ connectors); multimodal output (images/slides/interactive
-    pages); plugins/actions (workflow triggers, record updates, Skills); multi-user/enterprise (single-tenant,
-    permissions-aware); strong across all five ui_api chat-UI axes; plus agentic sub-agent orchestration'
+  value: 'enterprise chat-UI feature set: model breadth (Model Hub with 40+ open and proprietary LLMs and
+    auto routing); RAG (company-context retrieval over 250+ connectors); multimodal output (slide decks,
+    podcasts, interactive dashboards and pages); plugins/actions (multi-step workflows, Skills, actions
+    across systems); multi-user/enterprise (shared chats, source-system permissions enforced on every read
+    and write); plus agentic sub-agent orchestration'
   confidence: high
-  note: Glean Assistant combines a multi-model hub, deep enterprise RAG, multimodal output, workflow actions
-    and permissions-aware multi-user support, making it one of the most feature-complete enterprise assistants
-    in the category. That places it at the top for enterprise use, just short of an unambiguous category
-    frontier-definer.
-  last_verified: '2026-08-13'
+  note: Glean Assistant combines a multi-model hub, retrieval across hundreds of enterprise connectors,
+    slide, podcast and dashboard output, workflow actions and permissions-aware shared chats.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.glean.com/product/assistant
-    shows: Model Hub multi-LLM, Enterprise Graph RAG over 100+ connectors, multimodal output, task execution/actions,
-      agentic sub-agents
-    accessed: '2026-08-13'
+    shows: 'Assistant product page: "Glean offers more than 250 connectors"; "coordinates sub-agents to
+      work in parallel"; "Automate recurring work with Skills and actions"; "Generate content across formats,
+      from slide decks to podcasts".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f2e15c53fc7b232e230b621651471a9ea9e685bd75b21cfd637782f53b2c85e2
+    content_sha256: adb3b6c24a21347298483e16acbd97f68576bf17db958e3f71cfe39fa4bd9696
+  - url: https://www.glean.com/platform/model-hub
+    shows: 'Model Hub page: "Glean’s Model Hub gives teams 40+ open and proprietary LLMs, with auto routing
+      and controls for access, safety, and spend."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2a22a3b396434abce93b3be0de1e89d4ccf7913e67d191cc78e597db8d53be7a
+  - url: https://www.glean.com/security
+    shows: 'Security page: "Enforce source-system permissions on every read and write; an agent should not
+      automatically access everything the user can."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 546f3d4d73da9a378be9612366d5e47d9735974d7fa8df979037e33cbf0a253d

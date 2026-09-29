@@ -29,7 +29,6 @@ openness:
     repository has an enterprise directory or license key gating the source.'
   raw: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);core-gated:ungated(billing
     and feature-flag APIs are optional and external; no enterprise directory, no license key);models:open-weight;hosted-tier:paid(managed-enclaves)
-  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/OpenSecretCloud/Maple
     shows: MIT-licensed Maple client (Tauri/Rust/TS), active; multi-platform
@@ -80,7 +79,6 @@ adoption:
   note: Launched Jan 2025; vendor reports "5x user growth in the last six months", >90% month-over-month
     paid retention, and "billions of tokens" in year one, but no absolute user count is published. Self-reported
     figures only, hence low confidence.
-  last_verified: '2026-08-13'
   sources:
   - url: https://blog.trymaple.ai/one-year-of-private-ai-how-maple-ai-made-encryption-easy/
     shows: launch date (Jan 2025); 5x growth, >90% retention, billions of tokens processed
@@ -90,16 +88,29 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'models: 6+ open-weight (gpt-oss-120b, kimi-k2.5, deepseek-r1, llama-3.3-70b, qwen3-vl, gemma-3);
-    E2EE chat in TEEs with remote attestation; image/vision (gated to paid tiers); voice/transcription; OpenAI-compatible
-    API (Maple Proxy); platforms: web/iOS/Android/macOS/desktop; teams/multi-seat'
+  value: 'models: open-weight models only; end-to-end encrypted chat in confidential computing environments
+    with cryptographic attestation; image/vision (gated to paid tiers); voice; document upload; live web
+    search; OpenAI-compatible API (Maple Proxy); platforms: web plus apps for major platforms; team plans'
   confidence: medium
-  note: Broad multi-model, multi-platform private chat with vision, API, and teams. Short of top because
-    it is a focused private-chat product without a confirmed agentic tool-use/web-browsing ecosystem.
-  last_verified: '2026-08-13'
+  note: Maple runs several open-weight models with image analysis, voice, document upload and live web search
+    in end-to-end encrypted chat, and adds Team plans and a drop-in API through Maple Proxy. It remains
+    a focused private-chat product without a documented agentic tool-use ecosystem beyond web search.
+  last_verified: '2026-09-29'
   sources:
   - url: https://blog.trymaple.ai/maple-ai-model-guide-with-example-prompts/
-    shows: 'model lineup (open-weight) and tier/feature structure'
-    accessed: '2026-08-13'
+    shows: 'the page lists the models "gpt-oss-120b", "kimi-k2.5", "deepseek-r1-0528", "llama-3.3-70b",
+      "qwen3-vl-30b" and "leon-se/gemma-3-27b-it-fp8-dynamic", says "Image processing requires more processing
+      power. Starter+ plans help us cover these costs" for image models, links "Introducing Maple Proxy:
+      OpenAI-Compatible API Access to Private LLMs", says the models run "in confidential computing environments
+      with end-to-end encryption", and carries a banner "This guide is outdated. Do not use info until it
+      has been updated for the latest models"'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0c33f2b44860412ef7a73cb1e61efeb63e9fde94a8e105ce50133de42eb4eca9
+    content_sha256: ab23485e40d06dea377eb3ccfc1279c4dc95ffd546412f55a3fc5373f3c630dc
+  - url: https://blog.trymaple.ai/one-year-of-private-ai-how-maple-ai-made-encryption-easy/
+    shows: the first-year recap says "In our first year, we shipped voice, document upload, live web search,
+      cutting-edge reasoning models, and apps for major platforms" alongside "Team plans for organizations,
+      and the Maple Proxy API", and "The right to verify means cryptographic attestation"
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4c79a3ca07a69fa7e08f65f8a65eb84feeda090e2ff5c63e054d78f2aa62fab3

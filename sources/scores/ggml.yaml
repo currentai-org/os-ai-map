@@ -17,8 +17,36 @@ openness:
     is public and unarchived, and the README describes the whole library with no paid, enterprise or hosted
     tier beside it, so source is public and the core ungated.
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/LICENSE
+    shows: 'LICENSE is the verbatim MIT License text: "Copyright (c) 2023-2026 The ggml authors" and "Permission
+      is hereby granted, free of charge, to any person obtaining a copy".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/README.md
+    shows: README gives the build-from-source route ("git clone https://github.com/ggml-org/ggml"), describes
+      a "Plain C/C++ implementation without any dependencies", and lists no paid, enterprise or hosted tier;
+      core changes are directed to the public llama.cpp repository.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 359c498c79a326f621323e44fd3d3470a1ec635b0031206f35ad5e85a4b830c7
+    establishes:
+    - source
+    - core-gated
+  - url: https://ggml.ai
+    shows: Project site states "The library and related projects are freely available under the MIT license"
+      and that "In the future we may choose to develop extensions that are licensed for commercial use";
+      no commercial extension is described as existing.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e56cd6840826b4bd12c7db10bc75f11c64cf5f41d1a58200130ce155045da0fc
+    establishes:
+    - license
+    - core-gated
   - url: https://github.com/ggml-org/ggml/blob/master/LICENSE
     shows: LICENSE file is the verbatim MIT License text, Copyright (c) 2023-2026 The ggml authors
     accessed: '2026-08-13'
@@ -26,25 +54,6 @@ openness:
     content_sha256: 94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d
     establishes:
     - license
-  - url: https://api.github.com/repos/ggml-org/ggml
-    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch master - for
-      ggml-org/ggml.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 423079352e1cdc8f27b9b0efb85470546ebee8ecc4832e646d64e6e5fdf99c8d
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/ggml-org/ggml/master/README.md
-    shows: README describes the tensor library's feature list - quantization, autodiff, optimizers, no third-party
-      dependencies - and notes that some development now happens in the llama.cpp and whisper.cpp repos.
-      No paid tier appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 8bd38148d910179bf2f0975121ce27ee25c5e7457ce214331aad895123ad9105
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -74,12 +83,31 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: Dependency-free C tensor library with quantization and autodiff; backbone of llama.cpp/whisper.cpp
-    inference.
+  value: Dependency-free C/C++ tensor library with 2- to 8-bit integer quantization, broad CPU/GPU/NPU backend
+    support and built-in training optimizers; the tensor backend of llama.cpp/whisper.cpp inference.
   confidence: high
   note: Foundational low-level runtime enabling efficient on-device LLM/ASR inference.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/README.md
+    shows: README describes a "Tensor library for machine learning" with "Plain C/C++ implementation without
+      any dependencies", "2- to 8-bit integer quantization, plus MXFP4 and NVFP4 microscaling formats" and
+      "Broad backend support - CPU, GPU, NPU, and browser".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 359c498c79a326f621323e44fd3d3470a1ec635b0031206f35ad5e85a4b830c7
+  - url: https://cdn.jsdelivr.net/gh/ggml-org/ggml@master/include/ggml-opt.h
+    shows: 'The ggml-opt.h header exposes training support: "GGML_OPT_OPTIMIZER_TYPE_ADAMW" and "GGML_OPT_OPTIMIZER_TYPE_SGD"
+      optimizers, with a "opt_period" gradient-accumulation setting.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2
+  - url: https://ggml.ai
+    shows: Site describes ggml as "a tensor library for machine learning to enable large models and high
+      performance on" commodity hardware, "used by" llama.cpp and whisper.cpp.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e56cd6840826b4bd12c7db10bc75f11c64cf5f41d1a58200130ce155045da0fc
   - url: https://github.com/ggml-org/ggml
     shows: README still describes a dependency-free C tensor library with integer quantization, autodiff
       and optimizers, backing llama.cpp and whisper.cpp

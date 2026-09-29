@@ -58,8 +58,21 @@ adoption:
   confidence: medium
   note: README states production use at Hugging Face and explicitly recommends vLLM/SGLang/llama.cpp/MLX
     going forward, confirming a real but sunsetting footprint.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/docs/text-generation-inference/index
+    shows: The docs index says "Text Generation Inference is used in production by multiple projects, such
+      as" and lists Hugging Chat and nat.dev; it also says the engines "which we contribute to and recommend
+      using going forward" are vllm, SGLang, llama.cpp and MLX.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2978947ed6c3edb506c7de2d824e5a38f58a5c4cf8871661123f39697ed7252b
+  - url: https://raw.githubusercontent.com/huggingface/text-generation-inference/main/README.md
+    shows: The main-branch README says "Used in production at [Hugging Face](https://huggingface.co)" and
+      "text-generation-inference is now in maintenance mode.", and recommends vllm and SGLang going forward.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cc6b8a68200acc247cbd1d3cf5ca6c54b5b043040cc6193b58ff16afd80ee040
   - url: https://github.com/huggingface/text-generation-inference
     shows: '''Used in production at Hugging Face to power Hugging Chat, the Inference API and Inference
       Endpoints.'' and ''This approach is now adopted by downstream inference engines, which we contribute
@@ -80,8 +93,24 @@ capability:
     tracing and Prometheus metrics, while vLLM and SGLang keep advancing. That holds it mid-pack rather
     than at the frontier.'
   basis_detail: README-documented feature set
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/docs/text-generation-inference/index
+    shows: The docs index lists "Production ready (distributed tracing with Open Telemetry, Prometheus metrics)",
+      "Tensor Parallelism for faster inference on multiple GPUs", "Continuous batching of incoming requests
+      for increased total throughput" and "Token streaming using Server-Sent Events (SSE)"; it also says
+      "text-generation-inference is now in maintenance mode."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2978947ed6c3edb506c7de2d824e5a38f58a5c4cf8871661123f39697ed7252b
+  - url: https://raw.githubusercontent.com/huggingface/text-generation-inference/main/README.md
+    shows: The main-branch README lists "Continuous batching of incoming requests for increased total throughput",
+      "Tensor Parallelism for faster inference on multiple GPUs", "Token streaming using Server-Sent Events
+      (SSE)", Flash Attention, and "distributed tracing with Open Telemetry, Prometheus metrics", with quantization
+      via bitsandbytes, EETQ and AWQ.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cc6b8a68200acc247cbd1d3cf5ca6c54b5b043040cc6193b58ff16afd80ee040
   - url: https://github.com/huggingface/text-generation-inference
     shows: README documents continuous batching, tensor parallelism, Flash Attention, token streaming, GPTQ/AWQ/EETQ
       quantization, OpenTelemetry tracing, Prometheus metrics

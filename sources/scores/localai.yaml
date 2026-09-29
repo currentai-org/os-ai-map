@@ -14,19 +14,25 @@ openness:
     - no-feature-gated-core
   confidence: high
   note: Fully MIT; single repo, no gated tier or enterprise SKU found on the repo page.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   sources:
   - url: https://raw.githubusercontent.com/mudler/LocalAI/master/LICENSE
-    shows: 'MIT License
-
-
-      Copyright (c) 2023-2025 Ettore Di Giacinto (mudler@localai.io)'
-    accessed: '2026-08-09'
+    shows: The LICENSE file reads "MIT License" and "Copyright (c) 2023-2025 Ettore Di Giacinto (mudler@localai.io)".
+    accessed: '2026-09-29'
     establishes:
     - license
     http_status: 200
     content_sha256: 56bef7ba54ae4e4477b9effe34b6e6cadc1b0bcfaacc5be503096a1ce0a9d391
+  - url: https://raw.githubusercontent.com/mudler/LocalAI/master/README.md
+    shows: The README calls LocalAI "is the open-source AI engine" and states "MIT - Author Ettore Di Giacinto
+      <mudler@localai.io>" under License, with no paid tier or gated feature mentioned.
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core_gated
+    http_status: 200
+    content_sha256: ebb0b428c816cc72ea82c9fdb215a7156e289408014f15f3b36214cea0bc6cde
   - url: https://github.com/mudler/LocalAI
     shows: public GitHub repository; README lists all backends, multimodal support, agents/RAG/MCP as built
       into the single open-source project with no mention of a paid tier or gated feature
@@ -41,17 +47,18 @@ adoption:
   signal_type: usage_volume
   confidence: medium
   note: LocalAI ships as a Docker image and publishes no first-party PyPI or npm package, so Docker Hub
-    pulls, counted since the image's first release on 2023-03-18, are the channel that actually measures
-    its distribution. That cumulative pull count is a lifetime average rather than a trailing 30-day figure,
-    so it should be read as a floor on current adoption rather than a snapshot of it.
-  last_verified: '2026-08-13'
+    pulls are the channel that actually measures its distribution. The pull count is cumulative over the
+    image's lifetime rather than a trailing 30-day figure, so it should be read as a floor on current adoption
+    rather than a snapshot of it.
+  last_verified: '2026-09-29'
   reach: 100K-1M
   sources:
   - url: https://hub.docker.com/v2/repositories/localai/localai/
-    shows: 6,411,259 cumulative pulls of localai/localai
-    accessed: '2026-08-13'
+    shows: Docker Hub API record for localai/localai, described as "LocalAI is the free, Open Source OpenAI
+      alternative", reports a cumulative pull count of 8.25 million (date_registered 2024-01-03).
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7d0a2bfff9c13e1e35ac9bb191c5e493cd13534596c8eae77131eb576adbfbb3
+    content_sha256: 7577b43836bfda7a35ba1fa607a458ad2c20b5641d939d722cdd10a5847e2465
 capability:
   score: 5
   basis: feature_matrix
@@ -63,8 +70,16 @@ capability:
     llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX and MLX-VLM. It offers drop-in OpenAI,
     Anthropic and ElevenLabs API compatibility across every backend, runs CPU-only, and bundles agents with
     tool use, RAG and MCP.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/mudler/LocalAI/master/README.md
+    shows: 'The README lists "LocalAI supports **60+ backends** including llama.cpp, vLLM, SGLang, transformers,
+      whisper.cpp, diffusers, MLX, MLX-VLM" and "Drop-in API compatibility**: OpenAI, Anthropic, and ElevenLabs
+      APIs across every backend" and "Built-in AI agents**: autonomous agents with tool use, RAG, MCP, and
+      skills".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ebb0b428c816cc72ea82c9fdb215a7156e289408014f15f3b36214cea0bc6cde
   - url: https://github.com/mudler/LocalAI
     shows: 'LocalAI supports 60+ backends including llama.cpp, vLLM, SGLang, transformers, whisper.cpp,
       diffusers, MLX...; Drop-in API compatibility: OpenAI, Anthropic, and ElevenLabs APIs across every

@@ -20,14 +20,41 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public, Docker-deployable for self-hosting - a true
     open generative-search UI.
   raw: license:Apache-2.0(OSI);source:public(github.com/miurla/morphic);self-host:primary(Docker);no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/miurla/morphic
     shows: Apache-2.0 license; ~8.9k stars; open generative-UI answer engine
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d271530fdca4b3edc16dc167a838dcd51505e1487810ccd1bea701df45c626eb
-    establishes: [license, source, core-gated]
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/miurla/morphic@main/LICENSE
+    shows: Repository LICENSE file opens with "Apache License" and "Version 2.0, January 2004", the full
+      Apache 2.0 text.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c37ff657f7b001c478e4354f055e352c9ea078c8b70071b8e0fa693efae569e0
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/miurla/morphic@main/README.md
+    shows: README closes with "This project is licensed under the Apache License 2.0" and lists "Docker
+      deployment ready" among the features; the Docker Compose steps say it starts "PostgreSQL, Redis, SearXNG,
+      and Morphic automatically" with no paid search key needed.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 41ef9f8eb9100138c049a9401ac7a6ecfd2dee740fe75d96991fe19cc4fded5f
+    establishes:
+    - source
+    - core-gated
+  - url: https://morphic.sh
+    shows: Vendor homepage (redirects to www.morphic.sh) says "Fully open source. Deploy your own instance,
+      contribute features, or inspect every line of code." and links to GitHub; it names no license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6c86857073b2f5e9451ba16fd0a23454ad4573d972a2511e25a428aa02b2ed3a
 adoption:
   level: 2
   signal_type: stars_fallback
@@ -52,17 +79,34 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'model breadth: OpenAI/Anthropic/Google/Ollama; search backends: Tavily/SearXNG/Brave/Exa; generative
-    UI: rich inline components from streamed JSON; chat history + shareable URLs; file upload; guest mode;
-    multi-user: limited'
+  value: 'model breadth: OpenAI/Anthropic/Google/Ollama/Vercel AI Gateway/OpenAI-compatible; search backends:
+    Tavily/SearXNG/Brave/Exa; search modes: Quick/Adaptive; generative UI: rich inline components from streamed
+    JSON; chat history + shareable URLs; file upload; guest mode; multi-user: limited'
   confidence: medium
   note: Distinctive generative-UI answer surface with multi-provider/multi-search support, but scoped to
     search-and-answer rather than the full chat-UI feature set (lighter on multimodal, plugins, enterprise
     auth). Mid-tier for the category.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/miurla/morphic
-    shows: 'feature set: generative UI, multi-provider, multi-search, history, sharing, file upload, guest mode'
+    shows: 'feature set: generative UI, multi-provider, multi-search, history, sharing, file upload, guest
+      mode'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d271530fdca4b3edc16dc167a838dcd51505e1487810ccd1bea701df45c626eb
+  - url: https://cdn.jsdelivr.net/gh/miurla/morphic@main/README.md
+    shows: 'README feature list names "Generative UI" answers with "rich inline components (source-credited
+      images, grids, headings) live from a streamed JSON spec", "Search modes: Quick and Adaptive", "Multiple
+      search providers (Tavily, SearXNG, Brave, Exa)", "Model selector with dynamic provider detection (OpenAI,
+      Anthropic, Google, Ollama", chat history, share URLs, "File upload support" and "Guest mode for anonymous
+      usage".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 41ef9f8eb9100138c049a9401ac7a6ecfd2dee740fe75d96991fe19cc4fded5f
+  - url: https://morphic.sh
+    shows: Vendor homepage lists "Two Search Modes" (quick and adaptive) and "Generative Answers" with "Ask
+      anything and get a complete, cited answer"; it does not list history, sharing, file upload, guest
+      mode or model and search-provider breadth.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6c86857073b2f5e9451ba16fd0a23454ad4573d972a2511e25a428aa02b2ed3a
