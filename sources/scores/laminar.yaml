@@ -1,7 +1,7 @@
 product: laminar
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
@@ -10,24 +10,36 @@ openness:
       value: public
       detail: Rust core + TS UI
     core-gated:
-      value: ungated
+      value: gated
+      detail: the self-hosting docs say Signals, signal event clusters, and email and Slack alerts require
+        an enterprise license key (LMNR_LICENSE_KEY); the repo LICENSE.md is Apache-2.0 with no ee/ directory,
+        and the Slack integration for self-hosters brokers through Laminar Cloud with that key
     free_text:
-    - no feature-gated core observed in repo
-    - managed Laminar Cloud is hosting not a gated tier
+    - Signals, signal event clusters and email and Slack alerts on a self-hosted instance need an enterprise
+      license key
+    - tracing, evals, datasets, SQL query and dashboards run on the Apache-2.0 self-hosted build without
+      a key
+    - managed Laminar Cloud is hosting
     context:
       SDKs:
         value: Apache-2.0
   confidence: medium
-  note: Repo and SDKs Apache-2.0 with full source; a hosted cloud exists but no enterprise-gated module
-    split was visible in the repo (less explicit open-core boundary than Langfuse/LangWatch).
-  raw: license:Apache-2.0(OSI);source:public(Rust core + TS UI);SDKs:Apache-2.0;no feature-gated core observed
-    in repo;managed Laminar Cloud is hosting not a gated tier;core-gated:ungated
-  last_verified: '2026-08-13'
+  note: Laminar's source is Apache-2.0 and public, and tracing, evals, datasets and SQL query run when self-hosted
+    without a key. Signals, signal event clusters and email and Slack alerts on a self-hosted instance need
+    an enterprise license key from Laminar, which is why Laminar is open core rather than fully open source.
+  raw: license:Apache-2.0(OSI);source:public(Rust core + TS UI);core-gated:gated(the self-hosting docs say
+    Signals, signal event clusters, and email and Slack alerts require an enterprise license key (LMNR_LICENSE_KEY);
+    the repo LICENSE.md is Apache-2.0 with no ee/ directory, and the Slack integration for self-hosters
+    brokers through Laminar Cloud with that key);SDKs:Apache-2.0;Signals, signal event clusters and email
+    and Slack alerts on a self-hosted instance need an enterprise license key;tracing, evals, datasets,
+    SQL query and dashboards run on the Apache-2.0 self-hosted build without a key;managed Laminar Cloud
+    is hosting
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
-    shows: 'Repository page. The license sidebar resolves LICENSE.md to Apache-2.0 (spdxId "Apache-2.0"),
+    shows: Repository page. The license sidebar resolves LICENSE.md to Apache-2.0 (spdxId "Apache-2.0"),
       there is no ee/ or enterprise directory in the root listing, and the root carries docker-compose.yml
-      plus four variants (full, local-build, local-dev, local-dev-full), which is the self-host path.'
+      plus four variants (full, local-build, local-dev, local-dev-full), which is the self-host path.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 49fb50ae757fad987cecba03257c1e834fa1499bd5e561efbb43c46e2e6e5b53
@@ -35,14 +47,47 @@ openness:
     - license
     - source
     - core_gated
-  - url: https://pypi.org/project/lmnr/
-    shows: lmnr 0.7.59, "Python SDK for Laminar", uploaded 11 Aug 2026, with the License expression field
-      reading Apache-2.0.
-    accessed: '2026-08-13'
+  - url: https://docs.laminar.sh/hosting-options
+    shows: Self-hosting options page, whose note says "Signals, signal event clusters, and email and Slack
+      alerts require an enterprise license key" and whose Helm plus license option "Unlocks Signals, signal
+      event clusters, and email and Slack alerts".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2197e2955a8f64b22acde34f813ef826a56e03a4c18742751588cadadcd66275
+    content_sha256: 81c40030ba1d64de9e5afec74e473845de4bb12f0b40c1fad9bbacdd07975597
+    establishes:
+    - core-gated
+  - url: https://docs.laminar.sh/self-hosting/configuration
+    shows: Self-hosting configuration reference, whose Slack section says the instance "authenticates to
+      the broker with an" enterprise license key set in laminar.yaml.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2b4280f8b1f45dadcfb9b6603c56158113734aecb39204ef4cc39e329157a7c6
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/lmnr-ai/lmnr/main/LICENSE.md
+    shows: The repository LICENSE.md is the unmodified text of the "Apache License" "Version 2.0, January
+      2004", with no separate enterprise license text in the file.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1a685639e91804f1cd605a42f27b7440d5db02ba63daa289a1854f8ac87e6bdf
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/lmnr-ai/lmnr/main/README.md
+    shows: README self-hosting section, which tells readers to "clone the repo and start the services with
+      docker compose".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bb0c1b4fc91768417baed12e52d4c2580bbacb1307024f1f328c428cba4a5d3f
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/lmnr-ai/lmnr/main/frontend/lib/features/features.ts
+    shows: Feature-flag source in the public frontend; the Slack broker path is enabled only when "process.env.SLACK_BROKER_URL
+      && !!process.env.LMNR_LICENSE_KEY" holds.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 915234fa2470919402cca74aa7b2ffc7c168e9897285521cf091dfe0a27a6edc
+    establishes:
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
@@ -64,22 +109,35 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'Has: OTel-native tracing (Vercel AI SDK, Browser Use, LangChain, OpenAI/Anthropic/Gemini); evals
-    (SDK+CLI, CI/CD); datasets + annotation UI; SQL query over traces; dashboards. Lighter on: prompt
-    versioning/management and explicit cost tracking (not surfaced in repo).'
+  value: 'Has: OTel-native tracing; evals against datasets (SDK, CLI, CI); datasets built from production
+    traces with labeling; playground that replays spans with swapped prompts or models; LLM cost tracking;
+    realtime traces, full-text search, SQL access from UI, CLI or MCP; custom dashboards. Lighter on: explicit
+    prompt versioning/management (not surfaced on the docs home).'
   confidence: medium
   relative_to: langfuse
   relation: one_below
   note: Laminar covers OpenTelemetry-native tracing, evaluations run from its SDK, CLI and CI, datasets
-    with an annotation UI, and a distinctive SQL-over-traces query and dashboard layer. It does not surface
-    prompt versioning or explicit cost tracking in the repository, which keeps it a step behind Langfuse
-    and MLflow on breadth.
-  last_verified: '2026-08-13'
+    built from production traces with labeling, LLM cost tracking, and a SQL query and dashboard layer over
+    traces. It does not surface explicit prompt versioning, which keeps it a step behind Langfuse on breadth.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
-    shows: 'README feature checklist - "Evals. Unopinionated, extensible SDK and CLI for running evals
-      locally or in CI/CD pipeline", "UI for visualizing evals and comparing results", and "Query traces,
-      spans, metrics, and events with SQL". No prompt-versioning or prompt-management item appears.'
+    shows: README feature checklist - "Evals. Unopinionated, extensible SDK and CLI for running evals locally
+      or in CI/CD pipeline", "UI for visualizing evals and comparing results", and "Query traces, spans,
+      metrics, and events with SQL". No prompt-versioning or prompt-management item appears.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 49fb50ae757fad987cecba03257c1e834fa1499bd5e561efbb43c46e2e6e5b53
+  - url: https://docs.laminar.sh
+    shows: 'Docs home: "Run evals against datasets locally or in CI. Catch regressions before they ship."
+      and "Build evaluation datasets from production traces." plus "Realtime traces, full-text search, raw
+      SQL access from the UI, CLI, or MCP, and custom dashboards."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a822906bc8b9f7a291e61580cf9b0a84f76c93df2e813d0baeb1bf0be09f3a58
+  - url: https://docs.laminar.sh
+    shows: 'Docs home: "Replay any traced span. Swap prompts or models and compare results side by side."
+      and the sidebar lists "LLM cost tracking".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a822906bc8b9f7a291e61580cf9b0a84f76c93df2e813d0baeb1bf0be09f3a58

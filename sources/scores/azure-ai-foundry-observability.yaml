@@ -40,7 +40,6 @@ adoption:
   note: Azure AI Foundry Observability is a feature surface within Microsoft's larger Foundry platform,
     and Microsoft publishes no separate usage figure for it. The reading instead reflects the reach of Microsoft
     Foundry as a platform, not a measured count of people using this observability capability itself.
-  last_verified: '2026-08-13'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/observability
     shows: The concept page, read for a usage figure and containing none - no customer count, no account
@@ -52,24 +51,33 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: tracing (OTel distributed tracing of LLM calls, tool invocations, agent decisions, cross-agent
-    handoffs; inputs/outputs/latency/token usage via Azure Monitor App Insights) + monitoring + evaluations;
-    auto-instrumentation across Semantic Kernel, LangChain, LangGraph, OpenAI Agents SDK. Strong tracing
-    + framework breadth; prompt mgmt/datasets/annotation not evidenced as first-class native features.
+  value: tracing (OTel distributed tracing of LLM calls, tool invocations, agent decisions and inter-service
+    dependencies via Azure Monitor Application Insights) + monitoring + evaluations (built-in quality, RAG,
+    safety and agent evaluators plus custom evaluators); tracing for Microsoft Agent Framework, LangChain,
+    LangGraph and the OpenAI Agents SDK. Strong tracing + framework breadth; prompt mgmt/datasets/annotation
+    not evidenced as first-class native features.
   confidence: medium
   relative_to: langfuse
   relation: one_below
   note: Azure AI Foundry Observability covers tracing, monitoring and evaluation with auto-instrumentation
     for major agent frameworks, but prompt management, datasets and annotation are not documented as native
     features, leaving it a step behind Langfuse.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/observability
-    shows: '"Core observability capabilities - Microsoft Foundry provides three core capabilities", the
-      first being Evaluation, whose "Evaluators measure the quality, safety, and reliability" of outputs,
-      and tracing covering "agent decisions, and inter-service dependencies. Built on OpenTelemetry
-      standards and integrated with Azure Monitor Application Insights". Quality gates are described as
-      something you build into CI/CD rather than a product surface here.'
-    accessed: '2026-08-13'
+    shows: 'Concept page: "Microsoft Foundry provides three core capabilities that work together to deliver
+      comprehensive observability across the AI application lifecycle" with evaluators for "agent-specific
+      metrics (tool call accuracy, task completion)" and tracing "Built on OpenTelemetry standards and integrated
+      with Azure Monitor Application Insights", supporting "LangChain, LangGraph, the OpenAI Agents SDK,
+      and the Microsoft Agent Framework". Searched the body for prompt management and annotation as native
+      features: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 89958f27a9aa92d81ff30f582a0fdfe2cc644e985006beb9a5c47efcfb3b4f95
+    content_sha256: 74ad73c98704f8066e1c07ee2d5ba72ec78ad4d44372d93b54bd0902678dbd97
+  - url: https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/trace-agent-framework
+    shows: 'Tracing how-to: "Agents built with either framework automatically emit traces when tracing is
+      enabled for your Foundry project" covers Microsoft Agent Framework and Semantic Kernel, and "Tracing
+      integration for LangChain and LangGraph is currently available only in Python."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a0d8f7e120a71333a8def8c7796eaadc5b9da1674752cca64a27bd026cf5ce9e

@@ -17,23 +17,14 @@ openness:
         value: Comet-cloud-hosting
         detail: not a gated core
   confidence: high
-  note: Apache-2.0, full platform self-hostable; cloud is managed hosting rather than a feature-gated proprietary
-    core.
+  note: Opik's server, web application and evaluation components are Apache-2.0 licensed, and the README
+    says the full platform can be self-hosted with no Enterprise sales conversation required. Comet's self-hosting
+    overview says a self-hosted install includes all Opik features, including tracing and evaluation, but
+    not user management.
   raw: license:Apache-2.0(OSI);source:public;self-hostable-full-stack;commercial:Comet-cloud-hosting(not
     a gated core);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://pypi.org/project/opik/
-    shows: 'opik 2.2.28 on PyPI. The long description states "Apache-2.0 licensed, free to self-host the
-      full platform", and its FAQ answers "Is Opik open source?" with "Opik is licensed under Apache 2.0.
-      Its server, web application, and core observability and evaluation components" are covered.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 0b8d9de89c8ceb800ddeecb3f899db4ddf5dcc355ca1f8f56cc79bc01b92bd97
-    establishes:
-    - license
-    - source
-    - core_gated
   - url: https://github.com/comet-ml/opik
     shows: Repository README, carrying the same statement - "Apache-2.0 licensed, free to self-host the
       full platform" - alongside the tracing, LLM-as-a-judge, dataset and integration sections. 21,353 stars.
@@ -44,6 +35,34 @@ openness:
     - license
     - source
     - core_gated
+  - url: https://raw.githubusercontent.com/comet-ml/opik/main/LICENSE
+    shows: Repository LICENSE file, the full Apache License, Version 2.0 text with "Copyright (c) Comet
+      ML, Inc".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0236cf0195e033d15c120e610d44943e8e478ffed5d60fbba1b5a6b96e778a47
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/comet-ml/opik/main/README.md
+    shows: Repository README stating "Opik is licensed under Apache 2.0." and that the platform is "Apache-2.0
+      licensed, free to self-host the full platform" with the server, web application and evaluation components
+      self-hostable "without a commercial license".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f4fffa79c792d196ae93d61ea7a3c503ff16821007543bb2ffda8b4ae3fcf716
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://www.comet.com/docs/opik/self-host/overview
+    shows: Self-hosting overview page saying that when self-hosting "you get access to all Opik features
+      including tracing, evaluation, etc but without user management features".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2cb3cb095c877a8c55b265c39d7c97932f5bceaddb52c44dff3d8c3291e283a7
+    establishes:
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -75,19 +94,38 @@ capability:
   basis: feature_matrix
   relative_to: langfuse
   relation: at
-  value: tracing(OTel-native + 70+ integrations), evals(datasets/experiments, pytest CI/CD), LLM-as-judge
-    metrics(hallucination/moderation/relevance/context-precision), prompt playground, datasets, cost tracking
+  value: tracing(OTel-native + many framework integrations), evals(datasets/experiments, pytest CI/CD),
+    LLM-as-judge metrics(hallucination/moderation/relevance/context-precision), prompt playground, datasets,
+    cost tracking
   confidence: high
-  note: Opik covers OpenTelemetry-native tracing across more than 70 integrations, datasets and experiments
+  note: Opik covers OpenTelemetry-native tracing across many framework integrations, datasets and experiments
     with pytest-driven CI, LLM-as-judge metrics for hallucination, moderation, relevance and context precision,
     a prompt playground, and cost tracking. That matches the feature sets of Langfuse and MLflow, while
-    Arize AX's closed platform remains ahead of the category on capability.
-  last_verified: '2026-08-13'
+    Arize AX, a closed platform, goes further.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/comet-ml/opik
-    shows: 'README sections - "Track all LLM calls and traces with detailed context during development and
+    shows: README sections - "Track all LLM calls and traces with detailed context during development and
       in production", LLM-as-a-judge scoring, "Annotate traces and spans with feedback scores", datasets
-      and "Extensive 3rd-party integrations for easy observability".'
+      and "Extensive 3rd-party integrations for easy observability".
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 081be18d9854c64b346cca6bab84ff3285205f5d499bf70b1af100ee86380262
+  - url: https://pypi.org/project/opik/
+    shows: 'PyPI page for opik: "any language with an OpenTelemetry SDK" can send traces to Opik, and evaluations
+      integrate into CI/CD through PyTest.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a29a840c112e82088fad67087899deac53291a1ce6008f73e25e7610dddd086e
+  - url: https://pypi.org/project/opik/
+    shows: 'PyPI page for opik: "any language with an OpenTelemetry SDK" can send traces to Opik, and evaluations
+      integrate into CI/CD through PyTest.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a29a840c112e82088fad67087899deac53291a1ce6008f73e25e7610dddd086e
+  - url: https://www.comet.com/docs/opik/
+    shows: 'Docs home: "Deploy on your own infrastructure with Docker locally or Kubernetes at scale." and
+      the navigation lists Cost tracking among the logging topics.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c1814d1f1b677771173eca4ddf89376b511bd7fd529a3c6957bc031278f2cf19

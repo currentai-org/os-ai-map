@@ -19,18 +19,26 @@ openness:
     data via OpenTelemetry and OpenLLMetry, open standards consumed by a closed product.
   raw: platform:proprietary-SaaS(Grail-powered, Davis AI);license:commercial;ingestion:OpenTelemetry+OpenLLMetry(via
     Traceloop)+GenAI-semconv(open standards, not open product);source:closed
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
-    shows: 'Documentation for the capability - "Use Dynatrace with Traceloop OpenLLMetry, OpenTelemetry
-      with GenAI semantic conventions, or OpenInference" to observe AI-powered cloud applications
-      end-to-end. Those are ingestion formats. Nothing on the page publishes source for Dynatrace itself
-      or offers a build of it.'
-    accessed: '2026-08-13'
+  - url: https://docs.dynatrace.com/docs/license
+    shows: 'License page: "Dynatrace Platform Subscription (DPS) is a consumption-based licensing model
+      designed for flexibility." so the product is sold under a commercial subscription. Searched the body
+      for open source: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 594c5bae5c4e3a24a31f1a178341d2798725bd57ad74112c38e0fbaa78bf0225
+    content_sha256: e8adf49e408b0f858d869681e56f4d142dfa656dfe38c417480c3c1138217c6a
     establishes:
     - license
+  - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
+    shows: 'Docs page: "Monitor and debug Agent interactions such as function calling, LLM calls, tool-use,
+      RAG, and resolve performance, latency, cost, and reliability issues." Dynatrace scores quality with
+      "online LLM-as-a-judge evaluations" and offers the open-source dt-evals CLI; the page describes no
+      self-hosted or on-premises Dynatrace distribution and no published Dynatrace source code.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2fee06ddbb4689ff1296528e7ad40335694141042822ab1540b35a2063eeca98
+    establishes:
     - source
 adoption:
   level: null
@@ -40,36 +48,46 @@ adoption:
   note: Dynatrace publishes no usage figures specific to AI Observability, and the documentation confirms
     only that the feature exists, with no customer, account or ingestion-volume count. Rather than infer
     adoption from Dynatrace as a platform, the map leaves this product unscored.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
-    shows: The capability's documentation, read for a usage figure and containing none. It describes what
-      the product monitors - token consumption, latency, availability, errors, model drift and service
-      fees across Amazon Bedrock, NVIDIA NIM, Ollama and others - and never how many people use it.
-    accessed: '2026-08-13'
+    shows: 'The capability documentation, read for a usage figure and containing none: it says the feature
+      is used "to monitor performance (token consumption, latency, availability, and errors) at scale" and
+      never states a customer, account or user count. Searched the body for customers, adoption, million
+      and billion: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 594c5bae5c4e3a24a31f1a178341d2798725bd57ad74112c38e0fbaa78bf0225
+    content_sha256: 2fee06ddbb4689ff1296528e7ad40335694141042822ab1540b35a2063eeca98
 capability:
   score: 4
   basis: feature_matrix
   value: tracing(end-to-end prompt-flow tracing/debugging, root-cause, prompt latency + model-level metrics);
-    cost(predictive cost mgmt via Davis AI, token/service-fee tracking, no-sampling full capture); OTel
-    + OpenLLMetry(Traceloop) + GenAI semconv; providers OpenAI/Bedrock/NIM/Ollama/Gemini/Azure AI Foundry
-    + LangChain/CrewAI. Lacks dedicated eval/LLM-as-judge + prompt-versioning depth.
+    cost(token/service-fee tracking and consumption monitoring); evaluation(online LLM-as-a-judge scoring
+    of production traces, open-source dt-evals CLI with 10+ built-in judge evaluators, custom judges, CI
+    quality gates, score drift tracking, scores linked back to source traces); OTel + OpenLLMetry(Traceloop)
+    + OpenInference + GenAI semconv; providers OpenAI/Anthropic/Gemini/Bedrock/Azure AI Foundry/Vertex AI/NIM/Ollama.
+    No prompt versioning, datasets or prompt playground found in the docs.
   confidence: medium
   relative_to: langfuse
   relation: at
-  note: Dynatrace pairs end-to-end tracing with Davis AI cost management and broad provider coverage across
-    OpenAI, Bedrock, NIM, Ollama, Gemini and Azure AI Foundry, built on OpenTelemetry and OpenLLMetry. It
-    lacks the dedicated evaluation, LLM-as-judge and prompt-versioning depth of evaluation-first tools,
-    keeping it level with Langfuse.
-  last_verified: '2026-08-13'
+  note: Dynatrace pairs end-to-end tracing and cost tracking with online LLM-as-a-judge evaluation of production
+    traces, through the open-source dt-evals CLI with more than 10 built-in judges, custom judges, CI quality
+    gates and drift tracking. It documents no prompt versioning, datasets or prompt playground, which Langfuse
+    bundles with its evaluation, so the two are level.
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
-    shows: 'Documentation - trace "LLM calls, tool-use, RAG, and resolve performance, latency, cost, and
-      reliability issues"; Cost covers "Token usage, service fees, or overall resource consumption";
-      drift is anticipated by "monitoring input data stationarity"; and providers named include Amazon
-      Bedrock, NVIDIA NIM and Ollama.'
-    accessed: '2026-08-13'
+    shows: Documentation for the capability - scoring is described as "Score the quality, safety, and relevance
+      of GenAI and agent responses with online LLM-as-a-judge evaluations", the open-source dt-evals CLI
+      "includes more than 10 built-in LLM judge evaluators", tracing covers "Trace prompt flows from initial
+      request to final response", and Cost is "Token usage, service fees, or overall resource consumption".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 594c5bae5c4e3a24a31f1a178341d2798725bd57ad74112c38e0fbaa78bf0225
+    content_sha256: 2fee06ddbb4689ff1296528e7ad40335694141042822ab1540b35a2063eeca98
+  - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability/get-started/llm-judge-evaluation
+    shows: Tutorial page - covers "How to add a custom LLM-as-a-judge evaluator alongside the built-in catalog"
+      and "How to automate recurring runs and gate a CI pipeline on quality", with results pivoting from
+      any low score to the source trace.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3790eeb381e42208e893ea8fc6591f19c067d66c7436c019b6673ccd13c13e6e

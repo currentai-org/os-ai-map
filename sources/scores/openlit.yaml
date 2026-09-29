@@ -17,13 +17,13 @@ openness:
   note: Fully Apache-2.0, OpenTelemetry-native, no feature-gated core; vendor-neutral by design (exports
     to any OTel backend).
   raw: license:Apache-2.0(OSI);source:public;OTel-native SDKs(Python/TS/Go);no enterprise-gated core observed;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/openlit/openlit
-    shows: 'Repository page. License resolves to Apache-2.0 (spdxId "Apache-2.0"); the README strapline
-      reads "OpenTelemetry-native LLM Observability, GPU Monitoring, Guardrails, Evaluations, Prompt
-      Management, Vault, Playground" and the root listing includes docker-compose.yml with no ee/ or
-      enterprise directory beside it. 2,686 stars.'
+    shows: Repository page. License resolves to Apache-2.0 (spdxId "Apache-2.0"); the README strapline reads
+      "OpenTelemetry-native LLM Observability, GPU Monitoring, Guardrails, Evaluations, Prompt Management,
+      Vault, Playground" and the root listing includes docker-compose.yml with no ee/ or enterprise directory
+      beside it. 2,686 stars.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 97eb864c78858527d9aa2996af235c33c964c5fb443591012c16eb2ef8d6b31a
@@ -31,6 +31,40 @@ openness:
     - license
     - source
     - core_gated
+  - url: https://openlit.io/pricing
+    shows: 'Pricing page: "OpenLIT OSS is free to self-host under Apache 2.0 with no license key and no
+      per-trace fee." and "Apache 2.0 licensed OpenLIT platform".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2f8301a211dea711d6aa8ccf1a6234140022ce946e368ae62c44cb123bc688b5
+    establishes:
+    - license
+    - core-gated
+  - url: https://pypi.org/pypi/openlit/json
+    shows: 'PyPI metadata for openlit: "License :: OSI Approved :: Apache Software License" and license
+      "Apache-2.0".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 95ba7a8cefc7cd0709fedb2dbee9640651260da30554b39eebbd3ad9e7f54876
+    establishes:
+    - license
+  - url: https://docs.openlit.io/latest/openlit/installation
+    shows: 'Self-host docs: "OpenLIT is open source and is lightweight to self-host." with Docker Compose
+      and Helm deployment steps and no license key or enterprise build mentioned.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d992300968b7a05631779493e730958c79b1b4ca7a50820e307e07f4fdc21af0
+    establishes:
+    - source
+  - url: https://openlit.io/
+    shows: 'Home page: "Core platform Apache 2.0 licensed" and "Inspect the code, self-host for free with
+      no license key"; also labels an eBPF controller as Enterprise.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 162ca29fc849c8bd5397af53c4930cee9639232b477f039159b1a13677692431
+    establishes:
+    - license
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M
@@ -55,22 +89,42 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Has: OTel-native tracing+metrics (LLMs, vector DBs, GPUs); 11 built-in eval types (hallucination/bias/toxicity);
-    Prompt Hub (versioning); cost tracking incl custom/fine-tuned pricing; guardrails; secrets Vault;
-    50+ provider/framework integrations.'
+  value: 'Has: OTel-native tracing+metrics (LLMs, agents, vector DBs, GPUs); built-in and custom LLM-as-a-judge
+    evaluators with programmatic CI evals; Prompt Hub (versioning); OpenGround model comparison; cost tracking;
+    SDK guardrails; secrets Vault; rule engine; 90+ LLM and agent framework integrations.'
   confidence: high
   relative_to: langfuse
   relation: at
-  note: OpenLIT covers OpenTelemetry-native tracing and metrics for LLMs, vector databases and GPUs, eleven
-    built-in evaluation types, a versioned Prompt Hub, cost tracking, guardrails and a secrets vault, with
-    integrations across more than fifty providers and frameworks. That breadth keeps it level with Langfuse.
-  last_verified: '2026-08-13'
+  note: OpenLIT covers OpenTelemetry-native tracing and metrics for LLMs, agents, vector databases and GPUs,
+    LLM-as-a-judge and programmatic evaluations, a versioned Prompt Hub, cost tracking, guardrails and a
+    secrets vault, with integrations across more than ninety providers and frameworks. That breadth keeps
+    it level with Langfuse.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/openlit/openlit
-    shows: 'README strapline - "OpenTelemetry-native LLM Observability, GPU Monitoring, Guardrails,
-      Evaluations, Prompt Management, Vault, Playground" - and a section headed "Observability, Evaluations,
-      Rule Engine, Guardrails, Prompts, Vault, Playground", with integrations across 50+ LLM providers and
-      vector databases.'
+    shows: README strapline - "OpenTelemetry-native LLM Observability, GPU Monitoring, Guardrails, Evaluations,
+      Prompt Management, Vault, Playground" - and a section headed "Observability, Evaluations, Rule Engine,
+      Guardrails, Prompts, Vault, Playground", with integrations across 50+ LLM providers and vector databases.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 97eb864c78858527d9aa2996af235c33c964c5fb443591012c16eb2ef8d6b31a
+  - url: https://docs.openlit.io/
+    shows: 'Docs overview: "OpenLIT is an open-source AI Engineering platform for LLM observability, evaluations,
+      prompt management, and cost tracking - built on OpenTelemetry, fully self-hostable." plus Prompt Hub,
+      OpenGround, Rule Engine, Vault and Evaluations in navigation.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 25e19f13ad97df12361ec036bae5baa6d5800a0f366054ae612f164d5ce21917
+  - url: https://docs.openlit.io/latest/openlit/evaluations/overview
+    shows: 'Evaluations page: "Score production traces with an LLM-as-a-judge, enable built-in or custom
+      evaluators, schedule Auto Evaluation, and review pass-rate analytics".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 82cabe558c42601e66d346d4ab3f3c1e9a4cc55b9e480aeb23b6b2137fd2ea46
+  - url: https://openlit.io/pricing
+    shows: 'Pricing OSS feature list: "Prompt versioning", "Encrypted storage (AES-256-GCM)", "Built-in
+      guards in SDK (LLM and regex)" and "GPU utilization, memory, temperature, and power visibility." all
+      listed as included in free OSS.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2f8301a211dea711d6aa8ccf1a6234140022ce946e368ae62c44cb123bc688b5

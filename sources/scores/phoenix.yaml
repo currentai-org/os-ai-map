@@ -20,26 +20,43 @@ openness:
     rather than open source.
   raw: 'license:Elastic-License-2.0(ELv2, non-OSI: prohibits offering as a managed/hosted service to third
     parties);source:public;self-hostable;commercial:Arize-AX-SaaS-is-separate-closed-product'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Arize-ai/phoenix/blob/main/LICENSE
-    shows: 'Elastic License 2.0 (ELv2) full text, read rather than assumed. It opens "Elastic License 2.0
+    shows: Elastic License 2.0 (ELv2) full text, read rather than assumed. It opens "Elastic License 2.0
       (ELv2)" and its Limitations state "You may not provide the software to third parties as a hosted or
       managed service, where the service provides users with access to any substantial set of the features
-      or functionality of the software." That is the non-OSI restriction the record scores on.'
+      or functionality of the software." That is the non-OSI restriction the record scores on.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1c5916f5112e30e92f291002bb02cf4f4851c9d1dbdf3360f9f745b7de2d775f
     establishes:
     - license
-  - url: https://arize.com/phoenix/
-    shows: The vendor page, which markets Phoenix as "The open-source platform for agent development and
-      evaluation" while its own OSS Community block reads "ELv2 licensed. 10k+ GitHub stars." Self-hosting
-      is a first-class path - "Self-Host ... your data on your own infrastructure" and a Helm/Kubernetes
-      deployment option - so the published source is what you run.
-    accessed: '2026-08-13'
+  - url: https://arize.com/docs/phoenix/self-hosting/license
+    shows: 'License page: Phoenix is released under the "Elastic License 2.0 (ELv2)" by Arize AI; "Self-hosting
+      on your own infrastructure or in your cloud account is free and fully permitted." and "There are no
+      feature gates — Phoenix is a fully open-source platform."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 01c6f8260364929b913065905be2539960548046b2fec5c1442e8135495fee73
+    content_sha256: d2f825bd9520dbac715c78e9e8ae1da9e5bee57d28da2f17a8a065e937cbbce7
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/arize-phoenix/json
+    shows: 'PyPI metadata for arize-phoenix: license field "Elastic-2.0" and a Source project URL of "https://github.com/Arize-ai/phoenix",
+      so the source is published in a public repository.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 661a0199c996afbdd83aab053fd562624df28e7164cac2f0b6f4e87a87c9742b
+    establishes:
+    - license
+    - source
+  - url: https://arize.com/phoenix/
+    shows: 'Vendor page: "ELv2 licensed. 10k+ GitHub stars. Built in the open with contributions from teams
+      building production agents." and a separate Arize AX product offered as a "Managed AI engineering
+      platform" beside the self-hostable Phoenix.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 346cbd5099ed823c57a42deec9b0ea15808ac71c2b2f44076c34ddd67d37aa84
     establishes:
     - license
     - source
@@ -73,19 +90,52 @@ capability:
   basis: feature_matrix
   relative_to: langfuse
   relation: at
-  value: tracing(OTel-native), evals(LLM-as-judge response+retrieval), datasets/experiments, prompt management+playground,
-    cost/latency, broad framework integrations (OpenAI/Claude/LangGraph/LlamaIndex/CrewAI)
+  value: tracing(OTel-native), evals(LLM-as-judge and code evaluators), datasets/experiments, prompt management+playground,
+    latency/token-usage/cost monitoring, integrations (LlamaIndex, LangChain, OpenAI, DSPy, Mastra, Vercel
+    AI SDK)
   confidence: high
   note: 'Phoenix is a full-coverage observability and evaluation platform: tracing, LLM-as-judge evaluation
     of both responses and retrieval, datasets and experiments, prompt management and a playground, cost
     and latency tracking, and broad framework integrations. That covers every dimension this category grades
     and puts it level with MLflow and Langfuse.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Arize-ai/phoenix
-    shows: 'README feature list - Tracing "using OpenTelemetry-based instrumentation", Evaluation with
-      "response and retrieval evals", Playground and Prompt Management, plus the arize-phoenix-evals and
-      arize-phoenix-otel packages.'
+    shows: README feature list - Tracing "using OpenTelemetry-based instrumentation", Evaluation with "response
+      and retrieval evals", Playground and Prompt Management, plus the arize-phoenix-evals and arize-phoenix-otel
+      packages.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: dcf536b4e91cd985fcd5c380bc4a342f500937963f342456abfbab1b06d0977a
+  - url: https://arize.com/docs/phoenix/tracing/llm-traces
+    shows: 'Tracing docs: "Phoenix traces AI applications, via OpenTelemetry and has first-class integrations
+      with LlamaIndex, LangChain, OpenAI, and others." plus cards for "Monitor latency, token usage, and
+      error rates" and "Score your traces with LLM-as-a-judge evaluators".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 77aa64513805cadaf1954acfc23ed65e1ae166fb4bd7ce6a6e654db03b4b4dbf
+  - url: https://arize.com/docs/phoenix/evaluation/llm-evals
+    shows: 'Evaluation docs: "Python and TypeScript SDKs for running evaluations against Phoenix traces,
+      datasets, or any data source." and evaluators include code-based checks and "LLM-as-a-judge evaluators".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fb3a5877ad9955b97dab5f1b3abf230eb44616f3b0216ba6ca82c758de631d28
+  - url: https://arize.com/docs/phoenix/datasets-and-experiments/overview-datasets
+    shows: 'Datasets and experiments overview: "Experiments and evaluations solve this, helping distill
+      the indeterminism of LLMs into tangible feedback that helps you ship more reliable product." and "Understand
+      whether an update is an improvement or a regression".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: be0b796c7e68ca03c302c86f4450de3523a8f553d9d3f3e02c5c59d7c8bd24ea
+  - url: https://arize.com/docs/phoenix/prompt-engineering/overview-prompts
+    shows: 'Prompt docs: "Prompt management allows you to create, store, and modify prompts for interacting
+      with LLMs." and a "Prompt Playground" section.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c50988a60d2d9f888693424af01ebda96af4677f9afe47ce7d211fd719054aed
+  - url: https://arize.com/docs/phoenix
+    shows: 'Docs home: a "Phoenix Prompt Playground" figure and a card "Measure quality with LLM-as-a-judge
+      and custom evaluators".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9c4bbd985f2c3e7aec3c17fc4c34e467e252defa41876018d3c5ea89f3e3c02a

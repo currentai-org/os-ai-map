@@ -27,7 +27,6 @@ openness:
     - with no ee/ or enterprise directory, no second license and no license-key check, and the vendor's
     FAQ says Langtrace Cloud is not charged for);SDKs=Apache-2.0(OSI);OTel-built;hosted Langtrace Cloud
     tier exists
-  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/Scale3-Labs/langtrace
     shows: AGPL-3.0 app license, Apache-2.0 SDKs, OTel-based observability
@@ -103,23 +102,32 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'Has: OTel-native real-time tracing (LLMs, frameworks, vector DBs); evaluations; latency/cost/usage
-    analytics; broad integrations (OpenAI/Anthropic/Cohere, LangChain/LlamaIndex, Pinecone/Chroma/Weaviate).
-    Lighter/unclear on: prompt versioning and dataset/annotation workflows.'
+  value: 'Has: OTel-native real-time tracing (LLMs, frameworks, vector DBs); evaluations and compare-evaluations;
+    latency/cost/usage analytics; prompt management with a prompt registry API; annotations; model playground;
+    broad integrations (OpenAI/Anthropic/Cohere, LangChain/LlamaIndex, Pinecone/Chroma/Weaviate). Lighter/unclear
+    on: dataset workflows.'
   confidence: medium
   relative_to: langfuse
   relation: one_below
   note: Langtrace provides real-time OpenTelemetry-native tracing across LLMs, frameworks and vector databases,
-    with evaluations, latency, cost and usage analytics and broad integrations spanning OpenAI, Anthropic
-    and Cohere, LangChain and LlamaIndex, and Pinecone, Chroma and Weaviate. Prompt versioning and dataset
-    or annotation workflows are thinner or unclear, which keeps it a step behind Langfuse.
-  last_verified: '2026-08-13'
+    with evaluations, prompt management through a registry API, annotations, a model playground, and cost
+    and usage analytics. Its evaluations run on manually annotated datasets and compare results across models,
+    with no automated judge-based scoring in the documentation, which keeps it a step behind Langfuse.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Scale3-Labs/langtrace
-    shows: 'Repository description - "observability tool for LLM applications, providing real-time tracing,
-      evaluations and metrics for popular LLMs, LLM frameworks, vectorDBs and more" - with repository
-      topics including datasets, evaluations, llmops and observability. The README Features list itself
-      names Open Telemetry Support, Real-time Monitoring, Performance Insights and Debug Tools.'
+    shows: Repository description - "observability tool for LLM applications, providing real-time tracing,
+      evaluations and metrics for popular LLMs, LLM frameworks, vectorDBs and more" - with repository topics
+      including datasets, evaluations, llmops and observability. The README Features list itself names Open
+      Telemetry Support, Real-time Monitoring, Performance Insights and Debug Tools.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 566f5f6da833515e176c3f3d080e772a4c9f5cbeb9816dd4048fc7977969c981
+  - url: https://docs.langtrace.ai/introduction
+    shows: 'Docs introduction: "is an open-source observability tool that collects and analyze traces in
+      order to help you improve your LLM apps", traces are "based on the OpenTelemetry standard", and the
+      navigation lists "Manage Prompts", "Prompt Registry APIs", "Evaluations", "Compare Evaluations", "Annotations"
+      and "Model Playground".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f8b7e4bfde64e723cd659cc99ad003657fd06c21a539504f93720197fd44e336
