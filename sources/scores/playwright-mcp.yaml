@@ -19,11 +19,11 @@ openness:
     text, and the whole server is in the tree and installed as a single npm package with no key, no enterprise
     directory and no hosted tier sold beside it.
   raw: license:Apache-2.0(OSI);source:public(Microsoft repo);no-feature-gated-core;no-managed-tier;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/microsoft/playwright-mcp
-    shows: Repo page - Apache-2.0 license badge, full server source, npm install instructions for the MCP clients.
-      No paid tier, license key or enterprise directory.
+    shows: Repo page - Apache-2.0 license badge, full server source, npm install instructions for the MCP
+      clients. No paid tier, license key or enterprise directory.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 798fec7303430fec1d0b5046dbac0a4da612ae0c8518a72a41c5b70cad0d4478
@@ -37,6 +37,33 @@ openness:
     content_sha256: 9a7110fc2d2f964038e5dc49128f908f29f47a574c961cba16085914e879cbda
     establishes:
     - license
+  - url: https://cdn.jsdelivr.net/npm/@playwright/mcp@latest/LICENSE
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 9a7110fc2d2f964038e5dc49128f908f29f47a574c961cba16085914e879cbda
+    shows: The LICENSE shipped in the npm package is the full text of the "Apache License" header and "Version
+      2.0, January 2004", matching the recorded digest of the repo LICENSE.
+  - url: https://registry.npmjs.org/@playwright/mcp/latest
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: 5ed54ea353ae670554fd1f620ec5aaf9c431fe35f58f6aca332e3134119f51bc
+    shows: The npm registry record for @playwright/mcp declares "license":"Apache-2.0", author "Microsoft
+      Corporation" and repository "git+https://github.com/microsoft/playwright-mcp.git", with dependencies
+      only on the playwright packages.
+  - url: https://cdn.jsdelivr.net/npm/@playwright/mcp@latest/README.md
+    accessed: '2026-09-29'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: b33aa71a13d655e96e6b736d0c9de1e5ddea52f205916ca20b876387ff830e87
+    shows: 'The package README installs the server with "npx @playwright/mcp@latest --config path/to/config.json"
+      and describes it as "This package provides MCP interface into Playwright." Searched the body for license
+      key, api key, enterprise, paid, pricing, subscription and hosted: none.'
 adoption:
   level: 5
   reach: '>10M'
