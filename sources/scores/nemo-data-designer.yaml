@@ -25,41 +25,36 @@ openness:
     the published framework runs locally against any configured inference provider);core-gated:ungated(the
     NeMo Platform adds infrastructure around the published library rather than withholding generation from
     it);the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://docs.nvidia.com/nemo/microservices/latest/data-designer/index.html
-    shows: NVIDIA's own NeMo microservices documentation for Data Designer states that "The service is built
-      on the open-source NVIDIA NeMo Data Designer library" and links to github.com/NVIDIA-NeMo/DataDesigner.
-      The library is installed locally to build configurations; the microservice is one way to execute them.
-    accessed: '2026-08-11'
-    establishes:
-    - source
-    http_status: 200
-    content_sha256: 868882858fce660935ad86c90e3183ec166b1025b0d0a3433d7bcd1b2054e142
   - url: https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/LICENSE
-    shows: Apache License Version 2.0, January 2004
-    accessed: '2026-08-11'
+    shows: 'Apache license text: "Apache License" and "Version 2.0, January 2004".'
+    accessed: '2026-09-29'
     establishes:
     - license
     http_status: 200
     content_sha256: 7125890f056a1f2420972f199adde9a972767906d9558c0df6a77434cb2cc576
   - url: https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/README.md
-    shows: README titled "NeMo Data Designer" with an Apache-2.0 badge. Quick Start is "pip install data-designer".
-      Describes the full generation framework -- statistical samplers, dependency-aware column generation,
-      Python/SQL/custom validators, LLM-as-a-judge scoring, preview mode -- and refers to "slow self-hosted
-      endpoints", so the published package runs against any configured inference provider rather than requiring
-      an NVIDIA hosted service.
-    accessed: '2026-08-11'
+    shows: 'README badge "License-Apache_2.0", install step "pip install data-designer", and "Validate and
+      score outputs** with Python, SQL, custom validators, and LLM judges"; searched the body for license
+      key, enterprise, and hosted-only requirement: none (model providers are user-configured API keys).'
+    accessed: '2026-09-29'
     establishes:
     - license
     - source
+    - core-gated
     http_status: 200
-    content_sha256: 9accba59e9b3c83360b79d4d70b4fe6b5df275e44c294d38b1ab6a6c892d5b8e
-  - url: https://techcrunch.com/2025/03/19/nvidia-reportedly-acquires-synthetic-data-startup-gretel/
-    shows: NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices.
-      Third-party summary, retained only for the acquisition history, and not relied on for any recorded
-      key.
-    accessed: '2026-07-21'
+    content_sha256: 4bb47fc0259d0c10fc31bd2fccf4e73da1bb6cb55113cd97da50f32f50703273
+  - url: https://docs.nvidia.com/nemo/microservices/latest/data-designer/index.html
+    shows: 'NVIDIA NeMo microservices docs (served from archive.docs.nvidia.com): "The service is built
+      on the open-source" NVIDIA NeMo Data Designer library; comparison table lists "Local Python process",
+      "Direct API calls to any OpenAI-compatible endpoint" and "Distributed job execution with monitoring".'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: c786b6389632951c10a52b50e676035be36e048932edaf46d9dfb4b5d9979b47
   - url: https://github.com/NVIDIA-NeMo/DataDesigner
     shows: Apache-2.0, 2.1k stars, packages/ ships data-designer-config, data-designer-engine and data-designer;
       README documents pip install data-designer and local generation against NVIDIA Build, OpenAI or OpenRouter
@@ -100,17 +95,23 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: Synthetic-data generation for structured and unstructured data, building domain-specific datasets
-    from scratch for training and evaluating specialized agents.
+  value: Generates text, structured data and images from scratch or seed data with samplers, dependency-aware
+    columns, validators and judge scoring, for building and evaluating specialized agents.
   confidence: medium
   note: A capable synthetic-data engine, scored on its current NVIDIA-productized form. The transformation
     and augmentation workflows and the differential-privacy heritage from Gretel no longer appear on the
     NVIDIA page, so they do not count toward the score.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.nvidia.com/en-us/ai-data-science/products/nemo/
-    shows: NeMo Data Designer is described as creating domain-specific synthetic datasets from scratch
-      for building and evaluating specialized agents
-    accessed: '2026-08-13'
+    shows: 'NVIDIA NeMo product page lists NeMo Data Designer: "synthetic datasets from scratch for building
+      and evaluating specialized agents."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 99f7a56d165b1dc6fbf406d9899f3864fe58b80f0eb7d31fcf306649b885272b
+    content_sha256: 34d0407c619913ad050d67de6f6f847c0e6c39188fd641d2cf2c595e2d79ff87
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/README.md
+    shows: README says Data Designer generates "text, structured data, and images" "using samplers, LLMs,
+      image models, or existing seed datasets".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4bb47fc0259d0c10fc31bd2fccf4e73da1bb6cb55113cd97da50f32f50703273

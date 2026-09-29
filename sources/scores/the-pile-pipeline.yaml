@@ -19,8 +19,26 @@ openness:
   confidence: high
   note: Fully OSI-licensed (MIT), full source public.
   raw: license:MIT(OSI);source:public(EleutherAI/the-pile);governance:EleutherAI;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/EleutherAI/the-pile/master/LICENSE
+    shows: LICENSE text begins "MIT License" and "Copyright (c) 2020 EleutherAI" and grants "Permission
+      is hereby granted, free of charge, to any person obtaining a copy".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: a806e42547620dffbc2ec0333322c8b3523b4af11e059be14ef81aa5b1ae021f
+  - url: https://raw.githubusercontent.com/EleutherAI/the-pile/master/README.md
+    shows: 'README gives install and replication steps from the repo: "pip install -e ." then "python the_pile/pile.py
+      --interleave_output 30 --using pile_reprod"; it states "This repository is for replicating or making
+      variants of the Pile." Searched the body for paid tier, enterprise, license key and hosted-only: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 808e3b8cd6a49ea20c6e129740c591f3bae3897f8dd8b7cca9b40a40a1590b30
   - url: https://github.com/EleutherAI/the-pile/blob/master/LICENSE
     shows: MIT License text
     accessed: '2026-08-13'
@@ -28,16 +46,6 @@ openness:
     - license
     http_status: 200
     content_sha256: a806e42547620dffbc2ec0333322c8b3523b4af11e059be14ef81aa5b1ae021f
-  - url: https://raw.githubusercontent.com/EleutherAI/the-pile/master/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 808e3b8cd6a49ea20c6e129740c591f3bae3897f8dd8b7cca9b40a40a1590b30
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -62,15 +70,15 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: Assemble, weight/upsample, and format the 22-component Pile corpus; historically important, now
-    dated.
+  value: Assemble, weight/upsample, and format the 22-component Pile corpus.
   confidence: medium
-  note: Origin-node construction pipeline; not actively developed.
-  last_verified: '2026-08-13'
+  note: Construction pipeline for one corpus, the Pile, rather than a general-purpose curation toolkit.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/EleutherAI/the-pile/master/README.md
-    shows: README is replication code for the 22-component Pile, with the per-component weight and
-      epoch table; it directs dataset users elsewhere
-    accessed: '2026-08-13'
+    shows: 'README is replication code for the Pile: "This repository is for replicating or making variants
+      of the Pile." with a component table ending "Total" at "1254.20 GiB", and the line "IF YOU ARE HERE
+      TO USE THE PILE DATASET, THIS REPO IS PROBABLY NOT WHAT YOU ARE LOOKING FOR."'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 808e3b8cd6a49ea20c6e129740c591f3bae3897f8dd8b7cca9b40a40a1590b30

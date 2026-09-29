@@ -15,8 +15,26 @@ openness:
   confidence: high
   note: Fully OSI-licensed (Apache-2.0), full source public.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/LICENSE
+    shows: LICENSE file holds the text "Apache License" "Version 2.0, January 2004" with "TERMS AND CONDITIONS
+      FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md
+    shows: 'README states "Licensed under the Apache License, Version 2.0" and documents building and running
+      the whole pipeline from the repo ("Here we provide code to run exact and fuzzy" deduplication); searched
+      the body for enterprise, license key, paid tier and non-commercial: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169
   - url: https://github.com/togethercomputer/RedPajama-Data/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -24,16 +42,6 @@ openness:
     - license
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-  - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -61,12 +69,15 @@ capability:
   value: 'Three-stage pipeline: quality classifiers, quality-signal + dedup annotation (perplexity, toxicity,
     importance weights), and exact + fuzzy dedup (bloom/LSH); produced the 30T-token RedPajama-v2.'
   confidence: medium
-  note: Comprehensive quality-signal pipeline; produced a frontier-scale open corpus, but dormant.
-  last_verified: '2026-08-13'
+  note: Comprehensive quality-signal pipeline that produced a frontier-scale open corpus.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md
-    shows: README documents the RedPajama-v2 quality-signal annotations and the exact plus fuzzy
-      dedup stages over 30T tokens
-    accessed: '2026-08-13'
+    shows: 'README documents quality signals and dedup: "Here we provide code to run exact and fuzzy" deduplication,
+      "Exact Deduplication using a Bloomfilter", "Fuzzy Deduplication with Locality Sensitive Hashing",
+      quality signal "ccnet_perplexity", "rps_doc_ml_wikiref_score" classifier, importance weights and "rps_doc_ldnoobw_words"
+      blocklist; title "an Open Dataset with 30 Trillion Tokens" and languages "English, German, French,
+      Italian, Spanish".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169
