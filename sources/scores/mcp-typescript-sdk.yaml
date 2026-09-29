@@ -20,9 +20,10 @@ openness:
         detail: documentation other than the specifications; not read by the openness ladder, which scores
           the artifact the product ships
   confidence: high
-  note: 'Open source under the Model Context Protocol project''s dual transition license: Apache-2.0 for
-    new code and specification contributions, MIT retained where authors have not consented to relicensing.
-    Both code licenses are OSI-approved, and the source installs from npm with no feature-gated core.'
+  note: The MCP TypeScript SDK carries the Model Context Protocol project's transition license, with Apache-2.0
+    for new code and MIT kept for earlier contributions whose authors have not agreed to relicense, and
+    both are OSI-approved. The whole SDK is in the public repository and installs from npm with no key or
+    paid tier.
   raw: license:Apache-2.0(OSI, new code)+MIT(OSI, legacy contributions not yet relicensed);docs:CC-BY-4.0(documentation
     other than the specifications; not read by the openness ladder, which scores the artifact the product ships);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-09-28'
@@ -43,8 +44,9 @@ openness:
     establishes:
     - license
   - url: https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/package.json
-    shows: 'package.json declares no bare SPDX id: beside "description": "Model Context Protocol implementation
-      for TypeScript", its license field reads "SEE LICENSE IN LICENSE".'
+    shows: 'The repository root package.json is the private workspace root, not a published package: beside
+      "description": "Model Context Protocol implementation for TypeScript", its license field reads "SEE
+      LICENSE IN LICENSE".'
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: 154e5e4b5dd7800a0d6de39af3e02997635ab3e538ca986eba5b396de3d26a7a
@@ -71,6 +73,15 @@ openness:
     - license
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/packages/server/package.json
+    shows: 'The published server package declares "name": "@modelcontextprotocol/server" with "license":
+      "MIT" in its metadata, so npm reports MIT while the repository LICENSE carries the Apache-2.0 transition
+      terms.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 16cb963efd2045df6303427749357cf1eb751673401fbbc7c2b6f938f9fba8b7
+    establishes:
+    - license
 adoption:
   level: 5
   signal_type: usage_volume
