@@ -16,42 +16,72 @@ openness:
       scores:
         value: toxicity + related attributes
   confidence: high
-  note: Closed, API-only hosted classifier with no weights or public source. The service is sunsetting and
-    going out of service after 2026, but that is a fact about availability rather than about openness, so
-    the closed score stands.
+  note: Closed, API-only hosted classifier with no weights or public source, used under Google's API terms,
+    which forbid extracting its source code. The service is sunsetting and goes out of service after 2026,
+    which is a fact about availability rather than about openness.
   raw: service:proprietary hosted API by Jigsaw/Google(no weights, no self-host);access:free with quota;scores:toxicity
     + related attributes;source:closed;license:proprietary
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://perspectiveapi.com/
-    shows: 'Jigsaw''s hosted API, governed by its own API Terms with no source or self-hostable
-      implementation offered anywhere on the site; access is by quota, and the page handles usage and
-      increased-quota requests. It now opens ''Important Notice - Perspective API is sunsetting and service
-      is officially ending after 2026'', with ''The service will remain active until December 31, 2026''
-      and no migration support.'
-    accessed: '2026-08-13'
+    shows: 'Perspective''s own site is a sunset notice for a hosted service: "Perspective API is sunsetting
+      and service is officially ending after 2026", "The service will remain active until December 31, 2026",
+      and "Usage requests will be addressed until February 2026". Searched the body for github, open source,
+      license, self-host and download: no source repository, license grant or self-hostable build is offered;
+      the only terms linked are Google''s site and API terms.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f
     establishes:
     - source
+  - url: https://developers.google.com/terms/
+    shows: 'The Google APIs Terms of Service, which the Perspective site links as its API Terms, grant no
+      ownership or source: "you do not acquire ownership of any rights in our APIs" and users may not "Reverse
+      engineer or attempt to extract the source code from any API or any related software".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4e38cfa3884d9573c1eecc0b9ba350f42e8e17ef110933db24f2e98e3c22a4ff
+    establishes:
     - license
+    - source
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
   banded_quantity: none published; Jigsaw has never published a usage figure
-  note: 'Jigsaw has never published a usage figure for Perspective, so its reach is read from its long-standing,
-    widely cited use in comment moderation. That describes years of established use rather than where the
-    product stands today: Google is sunsetting the API, which goes out of service after 2026, citing falling
-    demand for a standalone tool in this area.'
-  last_verified: '2026-08-13'
+  note: 'Jigsaw''s own site publishes no usage figure for Perspective, so its reach is read from years of
+    broad, widely reported use in comment moderation by news publishers and platforms. That describes established
+    use rather than where the product stands today: Google is sunsetting the API, which goes out of service
+    after 2026, citing falling demand for a standalone tool in this area.'
+  last_verified: '2026-09-29'
   sources:
   - url: https://perspectiveapi.com/
-    shows: Sunset announcement and transition period. No usage figure of any kind - no request volume, no
-      customer count, no developer count - appears on the page.
-    accessed: '2026-08-13'
+    shows: 'Perspective''s own site is now a sunset notice: "Over the years, Perspective has grown from
+      an experimental tool into a helpful solution for publishers and platforms" and "AI capabilities have
+      evolved, and there is now less demand for a standalone tool specific to this area". Searched the body
+      for million, requests per, partners, customers and developers: no usage figure of any kind appears.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f
+  - url: https://www.lassomoderation.com/blog/what-is-perspective-api/
+    shows: 'A third-party moderation vendor''s overview describes long-standing broad use: "For nearly a
+      decade, platforms like the New York Times and Reddit have relied on the Perspective API to keep toxic
+      comments in check" and "the API has grown to serve over 1,000 partners across news publishers, social
+      platforms, gaming communities, and educational tools", with the service "Sunsetting after December
+      31, 2026".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 177d5a304ab27e277afa4f1ebe32f891a338edaeaaab6b5a7967baf39759478e
+  - url: https://en.wikipedia.org/wiki/Perspective_API
+    shows: 'Wikipedia''s Jigsaw article (Perspective API redirects to its Perspective section) records the
+      2017 launch and early deployment: "In February 2017, Jigsaw and Google launched the free Perspective"
+      API as "a new tool for web publishers to identify toxic comments that can undermine a civil exchange
+      of ideas", with The New York Times, The Guardian, The Economist and Wikipedia named as "launch partners
+      included", and "Jigsaw stated that it was sunsetting the Perspective API (with the service ending
+      after 2026)".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1d96328dfb6464a7dc69740d3facbb12e534706b02bfa1cb407878310a2caf46
 capability:
   score: 3
   basis: feature_matrix
@@ -59,29 +89,24 @@ capability:
   value: Scores toxicity and related attributes (insult, threat, profanity, identity attack) for text,
     multilingual; established but a fixed attribute set.
   confidence: low
-  note: Perspective scores toxicity and four related attributes (insult, threat, profanity, identity attack)
-    across many languages, with a small and stable production attribute set. That set is narrower than a
-    full safety taxonomy or a policy-conditioned model that reasons over an open set of categories a user
-    defines.
-  last_verified: '2026-08-14'
+  note: Perspective scores toxicity, severe toxicity, insult, threat, profanity and identity attack across
+    many languages, from a small and stable production attribute set. That set is narrower than a full safety
+    taxonomy or a policy-conditioned model that reasons over an open set of categories a user defines.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://perspectiveapi.com/
-    shows: Sunset notice only. The toxicity and attribute scoring the value describes is no longer
-      documented anywhere on this page.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f
   - url: https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1
-    shows: 'the API''s own discovery document, live at 200 - a comment-scoring service whose requests
-      carry "language(s) of the comment and context", accepting "Both ISO and BCP-47 language codes",
-      with per-comment language detection'
-    accessed: '2026-08-14'
+    shows: 'The API''s own discovery document describes a hosted comment-scoring service: "The Perspective
+      Comment Analyzer API provides information about the potential impact of a comment on a conversation",
+      with requests carrying "The language(s) of the comment and context. If none are specified, we attempt
+      to automatically detect the language" and "Specification of requested attributes".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 57ec1f01254148fb14e4c2ee0642749dcaa9a62e4b2476fcf7aca73878519e37
+    content_sha256: f228209540d7999cd6e48d2b9bd0ceb85094cb337f9775edf40f63a0675621b5
   - url: https://www.lassomoderation.com/blog/perspective-api-toxicity/
-    shows: '"The production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY,
-      THREAT) are stable and well-tested", with experimental attributes beyond them; and "Google
-      announced that Perspective API will sunset after December 31, 2026"'
-    accessed: '2026-08-14'
+    shows: 'A third-party moderation vendor''s guide lists the production attribute set: "The production
+      attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY, THREAT) are stable and
+      well-tested", plus "experimental attributes like ATTACK_ON_COMMENTER, INFLAMMATORY, SPAM, and OBSCENE",
+      and notes "Google announced that Perspective API will sunset after December 31, 2026".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 229db4df846ebea0130a8c5c50d601a63e315d90e42975c75f407bb0d4433702
+    content_sha256: 58a8532960568ec182a4bacbcc14b5c95fb263cfc2cba3854a4990731a9419d0

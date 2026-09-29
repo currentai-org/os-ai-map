@@ -12,29 +12,30 @@ openness:
     - name: Gemma
       detail: NOT OSI, use-restricted
   confidence: medium
-  note: Open weights under the Gemma license, which carries use restrictions and is not OSI-approved. Gemma
-    terms are treated as open weights rather than open source throughout this map, which is the class ShieldGemma
-    falls into.
+  note: Google publishes the weights under the Gemma license, which carries use restrictions and is not
+    OSI-approved. The fine-tuning data, described as synthetic internal data plus public datasets, is not
+    released.
   raw: weights:open(shieldgemma 2B/9B/27B on HF);data:not-released;license:Gemma(NOT OSI, use-restricted)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/google/shieldgemma-2b
-    shows: 'Repo shows License - gemma, gated manual, and two safetensors shards, so the weights are
-      downloadable after accepting the Gemma terms. The card describes the models as ''available in English
-      with open weights'' and declares no training datasets.'
-    accessed: '2026-08-13'
+    shows: 'The model card describes the models as "available in English with open weights, including models
+      of 3 sizes: 2B, 9B and 27B parameters" and says only that they were "fine-tuned on synthetically generated
+      internal data and" public datasets, linking no training data release.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c4fa465c0ca19e904d98a1169315bb9db23a7eacdb58ddbaeb30f4a44bfcc9a0
+    content_sha256: 99422389d1a53993a4b579d6cd59264fd6dfcc01f8f59965cb822fb53003046f
     establishes:
     - weights
     - data
-    - license
   - url: https://huggingface.co/api/models/google/shieldgemma-2b
-    shows: tags include license:gemma; gated - manual; siblings list model-00001-of-00002.safetensors and
-      model-00002-of-00002.safetensors; cardData carries no datasets key.
-    accessed: '2026-08-13'
+    shows: The Hugging Face API record for google/shieldgemma-2b carries the tag "license:gemma", is gated
+      for manual approval, and lists the weights as "model-00001-of-00002.safetensors" and "model-00002-of-00002.safetensors";
+      its gating prompt says "you’re required to review and agree to Google’s usage license" and its cardData
+      declares no datasets.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4feb99736791295afcb2cbb848f16a5dfd7f0f335135e8978f08e1180daa2251
+    content_sha256: 4eeabaa62a37a412534ed1e8b7d5bb68c3643aec8c52a13c33cd48443f0c2846
     establishes:
     - weights
     - data
@@ -47,7 +48,6 @@ adoption:
   note: Adoption is measured by Hugging Face downloads for google/shieldgemma-2b, one of three published
     sizes. Most use of the model likely happens through Google's Gemma tooling rather than through direct
     downloads of this checkpoint, so the figure counts only part of its use.
-  last_verified: '2026-08-12'
   sources:
   - url: https://huggingface.co/api/models/google/shieldgemma-2b
     shows: 4,761 downloads in the trailing 30 days for google/shieldgemma-2b
@@ -63,15 +63,17 @@ capability:
   value: Four harm categories (sexual, dangerous, hate, harassment), yes/no policy classifier in 2B/9B/27B;
     narrower taxonomy than Llama Guard but multiple sizes.
   confidence: medium
-  note: ShieldGemma classifies four harm categories in three sizes (2B, 9B and 27B), well short of Llama
-    Guard's fourteen categories or Granite Guardian's taxonomy. That narrower coverage puts it a step below
-    Llama Guard.
-  last_verified: '2026-08-13'
+  note: ShieldGemma screens prompts and responses against four harm categories in English, in 2B, 9B and
+    27B sizes. Llama Guard covers fourteen categories in eight languages, so ShieldGemma's narrower coverage
+    sits below it.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/google/shieldgemma-2b
-    shows: Card describes 'a series of safety content moderation models built upon Gemma 2 that target four
-      harm categories (sexually explicit, dangerous content, hate, and harassment)', in 2B, 9B and 27B
-      sizes, English only.
-    accessed: '2026-08-13'
+    shows: The model card says ShieldGemma is "a series of safety content moderation models built upon"
+      Gemma 2 "that target four harm categories (sexually explicit, dangerous content, hate, and harassment)",
+      and its chat template asks whether "a user prompt is in violation of the defined safety policies"
+      or whether "an AI response to a prompt is in violation of the defined safety policies", answering
+      "Your answer must start with 'Yes' or 'No'".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c4fa465c0ca19e904d98a1169315bb9db23a7eacdb58ddbaeb30f4a44bfcc9a0
+    content_sha256: 99422389d1a53993a4b579d6cd59264fd6dfcc01f8f59965cb822fb53003046f

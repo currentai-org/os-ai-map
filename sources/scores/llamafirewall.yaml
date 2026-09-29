@@ -93,17 +93,16 @@ capability:
   value: 'Layered, agent-focused defenses: jailbreak/injection detection (Prompt Guard 2), agent-alignment/goal-hijack
     checks, and insecure-code filtering (CodeShield) in one real-time firewall.'
   confidence: medium
-  note: One of the few guardrail systems aimed specifically at agent security, with alignment checks and
-    code filtering beyond I/O moderation. The PurpleLlama root README does not name LlamaFirewall or the
-    alignment checks - its component table lists only the Llama Guard family, Prompt Guard and Code Shield
-    - so the LlamaFirewall directory README is the source that carries the scanner list.
-  last_verified: '2026-08-13'
+  note: LlamaFirewall is aimed at agent security rather than chat moderation alone. Beyond screening inputs
+    for injection, it audits an agent's reasoning for goal hijacking and scans the code an agent writes
+    before it runs.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/meta-llama/PurpleLlama
-    shows: Root README describes Purple Llama as an umbrella project and tables its components - Cyber
-      Security Eval under MIT, the Llama Guard family and Prompt Guard under Llama Community licenses, and
-      Code Shield under MIT, which it describes as inference-time filtering of insecure generated code,
-      code-interpreter abuse prevention and secure command execution. It does not mention LlamaFirewall.
+    shows: Root README describes Purple Llama as an umbrella project and tables its components - Cyber Security
+      Eval under MIT, the Llama Guard family and Prompt Guard under Llama Community licenses, and Code Shield
+      under MIT, which it describes as inference-time filtering of insecure generated code, code-interpreter
+      abuse prevention and secure command execution. It does not mention LlamaFirewall.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 507ec485f07e6b4ebe6f32218b9a72c84f01c769127022fe77a496b41c10669b
@@ -114,3 +113,14 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 9bf4c794eae9870c6d9403490949eec85568c275229775f9477a72e48b679d12
+  - url: https://pypi.org/pypi/llamafirewall/json
+    shows: The PyPI JSON for llamafirewall 1.0.3 carries the package README, which describes the harness
+      as combining "PromptGuardScanner, AlignmentCheckScanner, CodeShieldScanner, and customizable regex
+      filters", built "for low-latency environments with support for high-throughput pipelines", with PromptGuard
+      2 a classifier that "detects direct prompt injection attempts", AlignmentCheck built to "detect goal
+      hijacking, indirect prompt injections, and signs of agent misalignment", and CodeShield a static analysis
+      engine that "examines LLM-generated code for security issues in real time". It notes that for the
+      alignment check scanner "you will need to set up the Together API key in your environment".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9ccffac883a917c5f23d22a32e901e17f655ba95890fbe79897a212b9476b629
