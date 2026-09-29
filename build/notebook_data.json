@@ -60880,7 +60880,6 @@
             "signal_type": "usage_volume",
             "confidence": "medium",
             "note": "No direct download count exists for llama.cpp, so adoption is read from ecosystem centrality instead: the Hugging Face Hub documents GGUF usage separately for llama.cpp, Ollama, LM Studio and GPT4All, and GitHub stars have grown steadily. A widely repeated claim that GGUF accounts for most quantized models on Hugging Face is excluded here because no cited source states it.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://github.com/ggml-org/llama.cpp",
@@ -60905,7 +60904,7 @@
             "confidence": "high",
             "note": "llama.cpp is the frontier for portable, CPU and consumer-hardware inference and for quantization breadth, rather than the datacenter-GPU throughput frontier occupied by vLLM, SGLang and TensorRT-LLM, which is what keeps it a step below them.",
             "basis_detail": "README backend/quantization matrix plus the models doc,; no benchmark submission exists for the engine itself",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/ggml-org/llama.cpp",
@@ -60915,9 +60914,16 @@
                 "content_sha256": "2354d46dd6ccad587f322f2750973f0d0c720e00e63510e20ff2324c23e0464f"
               },
               {
-                "url": "https://github.com/ggml-org/llama.cpp/blob/master/docs/models.md",
-                "shows": "\"The Hugging Face platform hosts [thousands of models]\" compatible with llama.cpp",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/master/README.md",
+                "shows": "README backend table lists \"Metal\", \"CUDA\", \"HIP\", \"Vulkan\", \"SYCL\", \"WebGPU\" and \"OpenVINO [In Progress]\" backends; the description lists \"1.5-bit, 2-bit, 3-bit, 4-bit, 5-bit, 6-bit, and 8-bit integer quantization for faster inference and reduced memory use\"; it links the \"llama-server REST API\", offers \"Launch OpenAI-compatible API server\" and credits libraries \"used by multimodal subsystem\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e58520857253729851cc02313883c9d2a8b2ae86abe212aaf1bcbd7db8bfefb4"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/master/docs/models.md",
+                "shows": "The models doc says \"The [Hugging Face](https://huggingface.co) platform hosts [thousands of models]\" compatible with llama.cpp, and requires \"the model to be stored in the [GGUF](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md) file format\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "aaa614d738bedabed1e748b901476e45eb228fbcf6b50d5880eafceccdea8e86"
               }
@@ -60928,11 +60934,20 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-22"
-          },
-          "version_note": "The prior claim that llama.cpp underpins Ollama, LM Studio, and GPT4All no longer appears in the README, so it was dropped; the Hugging Face Hub documents those tools' GGUF support separately."
+            "date": "2026-09-22",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-29",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "The adoption reconciliation lists this as a route disagreement: the record reads level 4 on usage volume, while the applicable route measures level 3 on GitHub stars. It is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
+          }
         },
         {
           "slug": "text-generation-inference",
@@ -60978,8 +60993,22 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "README states production use at Hugging Face and explicitly recommends vLLM/SGLang/llama.cpp/MLX going forward, confirming a real but sunsetting footprint.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://huggingface.co/docs/text-generation-inference/index",
+                "shows": "The docs index says \"Text Generation Inference is used in production by multiple projects, such as\" and lists Hugging Chat and nat.dev; it also says the engines \"which we contribute to and recommend using going forward\" are vllm, SGLang, llama.cpp and MLX.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2978947ed6c3edb506c7de2d824e5a38f58a5c4cf8871661123f39697ed7252b"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/text-generation-inference/main/README.md",
+                "shows": "The main-branch README says \"Used in production at [Hugging Face](https://huggingface.co)\" and \"text-generation-inference is now in maintenance mode.\", and recommends vllm and SGLang going forward.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "cc6b8a68200acc247cbd1d3cf5ca6c54b5b043040cc6193b58ff16afd80ee040"
+              },
               {
                 "url": "https://github.com/huggingface/text-generation-inference",
                 "shows": "'Used in production at Hugging Face to power Hugging Chat, the Inference API and Inference Endpoints.' and 'This approach is now adopted by downstream inference engines, which we contribute to and recommend using going forward: vllm, SGLang, as well as local engines with inter-compatibility such as llama.cpp or MLX.'",
@@ -60996,8 +61025,22 @@
             "confidence": "medium",
             "note": "Development has stopped: the repository is archived and the feature set is frozen at continuous batching, tensor parallelism, Flash Attention, token streaming, GPTQ/AWQ/EETQ quantization, OpenTelemetry tracing and Prometheus metrics, while vLLM and SGLang keep advancing. That holds it mid-pack rather than at the frontier.",
             "basis_detail": "README-documented feature set",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://huggingface.co/docs/text-generation-inference/index",
+                "shows": "The docs index lists \"Production ready (distributed tracing with Open Telemetry, Prometheus metrics)\", \"Tensor Parallelism for faster inference on multiple GPUs\", \"Continuous batching of incoming requests for increased total throughput\" and \"Token streaming using Server-Sent Events (SSE)\"; it also says \"text-generation-inference is now in maintenance mode.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2978947ed6c3edb506c7de2d824e5a38f58a5c4cf8871661123f39697ed7252b"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/text-generation-inference/main/README.md",
+                "shows": "The main-branch README lists \"Continuous batching of incoming requests for increased total throughput\", \"Tensor Parallelism for faster inference on multiple GPUs\", \"Token streaming using Server-Sent Events (SSE)\", Flash Attention, and \"distributed tracing with Open Telemetry, Prometheus metrics\", with quantization via bitsandbytes, EETQ and AWQ.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "cc6b8a68200acc247cbd1d3cf5ca6c54b5b043040cc6193b58ff16afd80ee040"
+              },
               {
                 "url": "https://github.com/huggingface/text-generation-inference",
                 "shows": "README documents continuous batching, tensor parallelism, Flash Attention, token streaming, GPTQ/AWQ/EETQ quantization, OpenTelemetry tracing, Prometheus metrics",
@@ -61019,11 +61062,11 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-22",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-22"
+            "latest_axis_confirmation": "2026-09-29"
           },
-          "version_note": "The project is archived, so this entry is verified against the final release rather than an active repository."
+          "version_note": "The project is archived, so the entry is read against its final release rather than an active repository."
         },
         {
           "slug": "onnx-runtime",
@@ -61038,12 +61081,22 @@
             "components": "license:MIT(OSI);source:public(Microsoft);no proprietary core; plugin execution providers (CUDA/WebGPU/etc.) in-repo;core-gated:ungated",
             "confidence": "high",
             "note": "Fully MIT-licensed open source from Microsoft, with no feature-gated tier.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/microsoft/onnxruntime/blob/main/LICENSE",
                 "shows": "MIT License, Copyright (c) Microsoft Corporation, with standard MIT permission and warranty-disclaimer text",
                 "accessed": "2026-08-09",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/main/LICENSE",
+                "shows": "The LICENSE file reads \"MIT License\" followed by \"Copyright (c) Microsoft Corporation\" and the standard MIT permission grant.",
+                "accessed": "2026-09-29",
                 "establishes": [
                   "license"
                 ],
@@ -61060,6 +61113,17 @@
                 ],
                 "http_status": 200,
                 "content_sha256": "c990b0204dbf31be685520fe465bb57dd8210e4e03f27011a6fa26305970386a"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/main/README.md",
+                "shows": "The README states \"This project is licensed under the [MIT License](LICENSE).\" and describes the repository as a cross-platform accelerator with no separate paid or gated tier mentioned.",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "d9de78283cf00a77f907f2183fb8df1dda8706b79e4ab3517f2a06c6de0c6a4c"
               }
             ],
             "bucket": "open"
@@ -61085,17 +61149,17 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "execution-provider and framework coverage",
-            "value": "Execution providers across CPU, GPU, IoT/edge/mobile and cloud: default CPU, NVIDIA CUDA and TensorRT, Intel OpenVINO and DNNL, AMD MIGraphX and ROCm, DirectML, WebGPU, XNNPACK, CoreML, Qualcomm QNN, Android NNAPI, Huawei CANN, Xilinx Vitis-AI, Arm NN and Arm Compute Library, Rockchip NPU and TVM. Runs models exported from PyTorch, TensorFlow/Keras and classical ML libraries through the ONNX interchange format.",
+            "value": "Execution providers across CPU, GPU, IoT/edge/mobile and cloud. In production: default CPU, NVIDIA CUDA and TensorRT, Intel OpenVINO and DNNL, AMD MIGraphX, DirectML, WebGPU, XNNPACK, Qualcomm QNN and Android NNAPI. In preview: CoreML, Huawei CANN, Xilinx Vitis-AI, Arm NN, Arm Compute Library, Rockchip NPU and TVM. AMD ROCm is deprecated. Runs models exported from PyTorch, TensorFlow/Keras and classical ML libraries through the ONNX interchange format.",
             "confidence": "medium",
-            "note": "ONNX Runtime covers an unusually broad set of execution providers across CPU, GPU, IoT, edge, mobile and cloud, but purpose-built serving engines hold the frontier for transformer throughput. The one MLPerf row naming ONNX Runtime is a continuous-integration submission entered by MLCommons itself, not a benchmark result for the product.",
-            "last_verified": "2026-08-09",
+            "note": "ONNX Runtime covers a broad set of execution providers across CPU, GPU, IoT, edge, mobile and cloud, though several are still in preview and AMD ROCm is deprecated. It is a general-purpose runtime for inference and training rather than a dedicated LLM serving engine.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://onnxruntime.ai/docs/execution-providers/",
-                "shows": "\"Summary of supported Execution Providers\" table listing \"NVIDIA TensorRT\", \"Qualcomm QNN\", \"AMD MIGraphX\" and \"Android Neural Networks API\" among CPU, GPU, IoT/Edge/Mobile and Other targets.",
-                "accessed": "2026-08-09",
+                "shows": "The page has a \"Summary of supported Execution Providers\" table listing \"NVIDIA TensorRT\", \"Qualcomm QNN\", \"AMD MIGraphX\" and \"Android Neural Networks API\" among its targets.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "fd1004db78728df63f4862319583f77f26a533312478901406ee3b59931ae8e7"
+                "content_sha256": "8d1b80c7672acb23c240e2b5ffb64f4d1e2752eee09361d487e9651b8c297065"
               }
             ]
           },
@@ -61104,9 +61168,9 @@
           "maturity": 4.5,
           "mature": true,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -61122,7 +61186,7 @@
             "components": "license:Apache-2.0(OSI);source:public(InternLM/lmdeploy);no-feature-gated-core;quantization:weight-only+kv(AWQ/W4A16);core-gated:ungated",
             "confidence": "high",
             "note": "The repository is public and active, and the LICENSE body is the unmodified Apache-2.0 text. Its README and repo page name no enterprise or paid tier for LMDeploy itself, so nothing is withheld from the published source.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/InternLM/lmdeploy",
@@ -61138,13 +61202,25 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/InternLM/lmdeploy/main/LICENSE",
-                "shows": "Apache License Version 2.0, January 2004, http://www.apache.org/licenses/",
-                "accessed": "2026-08-09",
+                "shows": "The LICENSE file is the Apache License, \"Apache License\" \"Version 2.0, January 2004\" with \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\".",
+                "accessed": "2026-09-29",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
                 "content_sha256": "811e05b43b0d985814c7ffd0a1d0b93e9166e6f0271245d540302505734528ba"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/InternLM/lmdeploy/main/README.md",
+                "shows": "The README states \"This project is released under the [Apache 2.0 license](LICENSE).\" and describes two engines: \"LMDeploy has developed two inference engines - [TurboMind]\"; searched for enterprise, paid, license key and non-commercial: none.",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core_gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "ccce7062646133a4186ecea91c07b708fcd3fb48ee05809cf1cb601f5936fd65"
               }
             ],
             "bucket": "open"
@@ -61202,7 +61278,7 @@
             "value": "TurboMind + PyTorch engines; persistent/continuous batching, blocked KV cache, weight-only + kv (AWQ/W4A16) quantization, tensor parallelism, broad LLM + VLM architecture coverage; vendor-reported 4-bit inference ~2.4x FP16",
             "confidence": "medium",
             "note": "LMDeploy's TurboMind and PyTorch engines put it one tier below vLLM, with a comparable production feature set: continuous batching, quantization and broad model coverage. Its own claim of higher throughput than vLLM is a vendor self-benchmark, so the placement instead reflects vLLM's independent MLPerf submission and wider architecture coverage.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/InternLM/lmdeploy",
@@ -61210,6 +61286,13 @@
                 "accessed": "2026-08-09",
                 "http_status": 200,
                 "content_sha256": "1e930c9fd3268bc1a45d9385f5a110db3c0630d22de33ad91590086188f5c984"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/InternLM/lmdeploy/main/README.md",
+                "shows": "README feature list: \"persistent batch(a.k.a. continuous batching), blocked KV cache, dynamic split&fuse, tensor parallelism\" and \"LMDeploy supports weight-only and k/v quantization, and the 4-bit inference performance is 2.4x higher than FP16\"; it lists \"InternVL3.5 (1B-241BA28B)\" among supported models.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ccce7062646133a4186ecea91c07b708fcd3fb48ee05809cf1cb601f5936fd65"
               }
             ]
           },
@@ -61218,9 +61301,9 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -61236,7 +61319,6 @@
             "components": "license:Apache-2.0(OSI)+MIT(OSI, for llama.cpp/whisper.cpp deltas);source:public(mozilla-ai/llamafile);no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "llamafile is licensed under Apache-2.0, with MIT covering its llama.cpp and whisper.cpp deltas. The source is public and the core carries no proprietary tier.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://github.com/mozilla-ai/llamafile",
@@ -61292,25 +61374,39 @@
           "capability": {
             "score": 3,
             "basis": "feature_matrix",
-            "value": "Single-file cross-platform (Cosmopolitan Libc) llama.cpp-based local inference; CPU inference plus GPU acceleration via Metal (macOS ARM64) and CUDA (Linux; Windows GPU still unsupported), GGUF external-weight loading, a bundled llama.cpp server mode (`--server`) and TUI chat, plus whisperfile for speech-to-text; portability is the differentiator, not peak throughput.",
+            "value": "Single-file cross-platform (Cosmopolitan Libc) llama.cpp-based local inference; CPU inference plus GPU acceleration via Metal (macOS ARM64), CUDA (Linux, Windows), ROCm/HIP and Vulkan (Windows support documented as best-effort), GGUF external-weight loading, a bundled llama.cpp server mode (`--server`) and TUI chat, plus whisperfile for speech-to-text; portability is the differentiator, not peak throughput.",
             "confidence": "medium",
-            "note": "Optimized for portability and zero-install local inference rather than datacenter throughput. Because it is built on llama.cpp it has none of the continuous-batching or tensor-parallel server scaling that vLLM offers, which places it mid-tier on an axis whose frontier is the high-throughput serving engines.",
+            "note": "Optimized for portability and zero-install local inference rather than datacenter serving throughput. GPU acceleration covers Apple Metal, NVIDIA, AMD and Vulkan, with the AMD and Windows paths documented as best-effort, which places it mid-tier among inference engines.",
             "basis_detail": "single-file cross-platform local inference feature set and its build-migration changelog",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md",
-                "shows": "combining llama.cpp with Cosmopolitan Libc into one framework...single-file executable...runs locally on most operating systems and CPU architectures, with no installation; llamafile also includes whisperfile",
-                "accessed": "2026-08-09",
+                "shows": "The README says the project combines llama.cpp with Cosmopolitan Libc into one framework that collapses \"all the complexity of LLMs down to\" a single-file executable that runs \"locally on most operating systems and CPU architectures, with no installation\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ec541178249a9a080700f3bcfe638f78e4f19fdb149abed019a096197da8c254"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md",
+                "shows": "The README also describes \"a single-file speech-to-text tool built on\" whisper.cpp and says larger models can run with \"external weights/models(GGUF)\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "ec541178249a9a080700f3bcfe638f78e4f19fdb149abed019a096197da8c254"
               },
               {
                 "url": "https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README_0.10.0.md",
-                "shows": "added Metal support: GPU on MacOS ARM64...Brought back cuda support on Linux...added TUI support: you can now directly chat with the chosen LLM from the terminal, or run the llama.cpp server using the --server parameter...What's missing: GPU support for Windows (and for whisperfile)",
-                "accessed": "2026-08-09",
+                "shows": "The 0.10.0 notes (a historical snapshot, superseded by the Supported Systems page) list \"added Metal support: GPU on MacOS ARM64\", \"added TUI support\", the llama.cpp server via the \"--server\" parameter, and, as then missing, \"GPU support for Windows (and for whisperfile)\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "2c25302802ccb7a3efd6d29871d306e1aade35ff5a0b052fe96de8cb64f121e6"
+              },
+              {
+                "url": "https://docs.mozilla.ai/llamafile/reference/support",
+                "shows": "The Supported Systems page says \"llamafile ships GPU acceleration for Apple Metal, NVIDIA, AMD, and Vulkan\" and that \"treat the AMD and Windows paths in particular as best-effort\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d12020ba840d530fad41447b101236857361b39bbe8af3159cdc3f60aabf269f"
               }
             ]
           },
@@ -61319,9 +61415,19 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "date": "2026-09-27",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-29",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "The 'source' (public) and 'core-gated' (ungated) dimensions rest only on the undated github.com repo-page entry (403 via proxy, accessed 2026-08-09). A fresh dated fetch of the repo page, or a maintainer decision to accept the warehouse artifact_state (2026-09-28) for those two dimensions, would settle it. License component is freshly established (LICENSE and README, 2026-09-29); no value moves and openness last_verified must not advance past 2026-08-09."
+              }
+            ]
           }
         },
         {
@@ -61392,17 +61498,24 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "500+ open-model coverage out of the box, OpenAI-compatible serving, multi-vendor GPU support (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, cloud deployment; designed as high-performance inference + hardware-abstraction layer",
+            "value": "Hundreds of open models served out of the box through OpenAI-compatible endpoints, multi-vendor GPU support (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, deployment on any cloud; designed as high-performance inference + hardware-abstraction layer",
             "confidence": "medium",
-            "note": "MAX serves more than 500 Hugging Face models across NVIDIA, AMD and Apple GPUs and CPUs through an OpenAI-compatible API, with custom kernel authoring in Mojo. No MLPerf or Artificial Analysis benchmark exists for it, though, so this reading comes from that feature set rather than an independent benchmark.",
-            "last_verified": "2026-08-09",
+            "note": "MAX serves hundreds of open models, including DeepSeek, Gemma and Qwen, across NVIDIA, AMD and Apple GPUs and CPUs through an OpenAI-compatible API, with custom kernel authoring in Mojo. The speed comparison in its documentation is Modular's own, against vLLM, and no MLPerf or Artificial Analysis result is cited, so no independent benchmark supports its performance.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://docs.modular.com/max/intro",
-                "shows": "High-performance, portable serving: Serve 500+ AI models from Hugging Face using our OpenAI-compatible REST API with industry-leading performance across GPUs and CPUs.",
-                "accessed": "2026-08-09",
+                "shows": "The intro page says MAX serves open models through an OpenAI-compatible endpoint: \"Deploy DeepSeek, Gemma, Qwen, and hundreds more with an OpenAI-compatible endpoint on NVIDIA or AMD and on any cloud.\" It also says \"The same MAX package runs on NVIDIA, AMD, and Apple silicon\". The earlier 500+ model count is no longer stated on the page.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "c8b5a6c86da68a79746c87b4ed9be1f1908445baed1df5bc507cfcfa84a024a7"
+                "content_sha256": "bd80b430d9d537cc2573b391019d1699421f77e9be3bc26eb5b7c12ce33c158b"
+              },
+              {
+                "url": "https://docs.modular.com/max/models",
+                "shows": "The supported-models page lists architectures: \"The table below lists all the model architectures currently supported by MAX.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "8dcf27942eec8782c1096d99aec2b675f819a0ecf92d69420fbecb98bc653337"
               },
               {
                 "url": "https://github.com/modular/modular",
@@ -61418,9 +61531,9 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "The repository source and MAX/Mojo usage carry different licenses; the openness score follows the usage terms rather than the repository file."
         },
@@ -61436,18 +61549,18 @@
             "class": "closed",
             "components": "engine:proprietary(LPU stack);source:closed;access:managed-cloud-API-only;license:Proprietary",
             "confidence": "high",
-            "note": "GroqCloud is a managed API service. The groq GitHub org publishes client SDKs, eval tools and demo apps, but no repository for the inference engine itself, and the marketing site's terms of use grant a license only to the website, not to GroqCloud or the LPU stack.",
-            "last_verified": "2026-08-09",
+            "note": "GroqCloud is a managed API service. The groq GitHub org publishes client SDKs, eval tools and demo apps, but no repository for the inference engine itself. The GroqCloud services agreement grants only a limited right to use the service and forbids extracting its source code, and the marketing site's terms of use grant a license only to the website.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://console.groq.com/docs/overview",
-                "shows": "Fast LLM inference, OpenAI-compatible. Simple to integrate, easy to scale. Start building in minutes.",
-                "accessed": "2026-08-09",
+                "shows": "The docs overview describes GroqCloud as a hosted API and gives the page description \"Fast LLM inference, OpenAI-compatible. Simple to integrate, easy to scale. Start building in minutes.\" with no self-hosting or downloadable engine.",
+                "accessed": "2026-09-29",
                 "establishes": [
                   "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "e87155fbb05e4a59be11731cd4dfa982bf75d276b406831e818b04b2b0cbc462"
+                "content_sha256": "16977149e42017b6cd10380c636fd7facc7ff3c20a48ef7cf252ed7d3482e875"
               },
               {
                 "url": "https://github.com/orgs/groq/repositories",
@@ -61461,14 +61574,25 @@
                 "content_sha256": "64931de00967470292200f2344c7b5699d51536d44037c8e1fe66e154471ea3f"
               },
               {
+                "url": "https://console.groq.com/docs/legal/services-agreement",
+                "shows": "The GroqCloud services agreement grants only \"non-exclusive, non-transferable, and limited right to access and use the Cloud Services\" and bars customers from any attempt \"to extract any or all of the source code of, the Cloud Services\".",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "ccffee5f375bd05065839611d8e52bacbb10cae30c87ddbfa78b02bd478df570"
+              },
+              {
                 "url": "https://groq.com/terms-of-use",
-                "shows": "Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, license to access and use the Websites for your personal, non-commercial use only.",
-                "accessed": "2026-08-09",
+                "shows": "The website terms grant a license to the Websites only: \"license to access and use the Websites for your personal, non-commercial use only.\"",
+                "accessed": "2026-09-29",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
-                "content_sha256": "21489e876fc1d2fd71a7824cfc0423de8270c0e31e9b36f382345d5a433e9191"
+                "content_sha256": "c37d1a4d0ce2d7764e34b8e4e3e95b8b01b76d2a2beb3c5b08a99efa193a1ca2"
               }
             ],
             "bucket": "closed"
@@ -61479,14 +61603,14 @@
             "confidence": "medium",
             "banded_quantity": "a vendor-reported developer count (5M+, June 2026)",
             "note": "Groq's own homepage names no enterprise customers, so adoption is read instead from a developer count the company reported in a press release. That figure is self-reported and has not been independently corroborated.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://groq.com/newsroom/groq-raises-usd650m-to-scale-its-ai-inference-cloud-business",
-                "shows": "Today, Groq operates 13 data centers across North America, Europe, the Middle East and APAC. The company serves more than five million developers and thousands of AI-native companies that consume trillions of tokens each week.",
-                "accessed": "2026-08-09",
+                "shows": "The funding press release says \"The company serves more than five million developers and thousands of AI-native companies that consume trillions of tokens each week.\" This is a company statement with no independent count.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "1f70e10c01dbc7a8f8d88d31e2770fbc7c355715c5c23c4a059daf3f008010c7"
+                "content_sha256": "bb0c582bf48b9db0b1b457e8ebd8bf899fda98137e92561df3b335333f35ce1e"
               }
             ]
           },
@@ -61494,17 +61618,17 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "ArtificialAnalysis(provider-speed)",
-            "value": "On Artificial Analysis's gpt-oss-120b (high) provider benchmark, Groq measures 476.8 output tokens/sec, ranking 3rd of 18 API providers behind Cerebras (1,942.0 t/s) and SambaNova (705.7 t/s) -- still solidly in the purpose-built-silicon speed-frontier class rather than the GPU-hosted majority of the field.",
+            "value": "On Artificial Analysis's gpt-oss-120b (high) provider benchmark, Groq measures 473.2 output tokens/sec, ranking 3rd of 18 API providers behind Cerebras (1,759.4 t/s) and SambaNova (709.4 t/s), in the purpose-built-silicon speed-frontier class rather than the GPU-hosted majority of the field.",
             "confidence": "medium",
-            "note": "Groq measures 476.8 output tokens per second on Artificial Analysis's gpt-oss-120b provider benchmark, third of 18 providers behind Cerebras at 1,942 tokens per second and SambaNova at 705.7. That still puts it in the purpose-built-silicon speed class rather than among the GPU-hosted majority of providers.",
-            "last_verified": "2026-08-09",
+            "note": "Groq measures 473 output tokens per second on Artificial Analysis's gpt-oss-120b provider benchmark, third of 18 providers behind Cerebras and SambaNova. All three top providers run custom silicon rather than general-purpose GPUs.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/models/gpt-oss-120b/providers",
-                "shows": "the top providers are Cerebras (1,942.0 t/s), SambaNova (705.7 t/s), and Groq (476.8 t/s). Speed varies significantly across providers, with a 5011% difference between the fastest and slowest.",
-                "accessed": "2026-08-09",
+                "shows": "The gpt-oss-120b (high) provider page states \"the top providers are Cerebras (1,759.4 t/s), SambaNova (709.4 t/s), and Groq (473.2 t/s). Speed varies significantly across providers, with a 3223% difference between the fastest and slowest.\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "082d6179bce956957d776b3d9543cb423760838a29999065f98bf22788d5514b"
+                "content_sha256": "29a213e659fc5fa72c4c0228e0e417b3efe29432697c1575be7c2b5d27e45497"
               }
             ]
           },
@@ -61513,7 +61637,7 @@
           "maturity": 4.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-29",
             "basis": "verified"
           }
         },
@@ -61560,15 +61684,15 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "banded_quantity": "named customer testimonials, not a developer or usage count",
-            "note": "Cerebras discloses no developer or user count for Inference; the page instead features named customer testimonials from GSK, Perplexity, AlphaSense and DeepLearning.AI. That reported enterprise traction is a smaller disclosed footprint than Groq's published developer count, but it is the only adoption signal Cerebras makes public.",
-            "last_verified": "2026-08-09",
+            "note": "Cerebras discloses no developer or user count for Inference. The page instead carries customer quotes attributed to GSK, Perplexity and AlphaSense, along with one from Andrew Ng of DeepLearning.AI; none gives a usage figure.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.cerebras.ai/inference",
-                "shows": "customer testimonials from GSK (\"With Cerebras' inference speed, GSK is developing innovative AI applications\"), Perplexity, and AlphaSense (Raj Neervannan, CTO and co-founder); no aggregate developer or user count published",
-                "accessed": "2026-08-09",
+                "shows": "Customer testimonials appear on the page, including \"With Cerebras’ inference speed, GSK is developing innovative AI applications\", quotes credited to the \"CTO and co-founder, Perplexity\" and \"CTO and co-founder, AlphaSense\", and a quote from Andrew Ng, \"Founder, DeepLearning.AI\"; no aggregate developer or user count found.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "9a05b0d50b9143eec65f3870509a93ff64b9959d1c4e7ddbc98540d8c222240e"
+                "content_sha256": "8a72485ce953a6576c9d5470d2965978caac92a6bd04df335d51dc8cc7b41f24"
               }
             ]
           },
@@ -61576,24 +61700,17 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "ArtificialAnalysis(provider-speed)",
-            "value": "Fastest provider on the Artificial Analysis gpt-oss-120b provider leaderboard at ~1,942 output tokens/sec today (next-fastest SambaNova ~705.7 t/s, ~2.75x; Groq ~476.8 t/s 3rd); vendor claims up to 15x faster than NVIDIA GPUs.",
+            "value": "Fastest provider on the Artificial Analysis gpt-oss-120b provider leaderboard at ~1,759 output tokens/sec today (next-fastest SambaNova ~709.4 t/s, ~2.5x; Groq ~473.2 t/s 3rd).",
             "confidence": "high",
-            "note": "Cerebras is the fastest provider on Artificial Analysis's gpt-oss-120b provider leaderboard, at roughly 1,942 output tokens per second, about 2.75 times the next-fastest provider, SambaNova, with Groq third. That leaderboard is the closest hosted-inference analog to MLPerf, and Cerebras also claims speeds up to 15x faster than NVIDIA GPUs, a vendor figure not independently verified.",
-            "last_verified": "2026-08-09",
+            "note": "Cerebras is the fastest provider on Artificial Analysis's gpt-oss-120b provider leaderboard, at roughly 1,759 output tokens per second, about 2.5 times the next-fastest provider, SambaNova, with Groq third. The ranking covers a single model and comes from Artificial Analysis's measurements rather than on Cerebras's own claims.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/models/gpt-oss-120b/providers",
-                "shows": "Fastest # 1 Cerebras 1,942.0 t/s # 2 SambaNova 705.7 t/s # 3 Groq 476.8 t/s # 4 Google Vertex 395.8 t/s # 5 Azure 323.2 t/s",
-                "accessed": "2026-08-09",
+                "shows": "The gpt-oss-120b provider page states \"the top providers are Cerebras (1,759.4 t/s), SambaNova (709.4 t/s), and Groq (473.2 t/s)\" for output speed across 18 providers.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "082d6179bce956957d776b3d9543cb423760838a29999065f98bf22788d5514b"
-              },
-              {
-                "url": "https://www.cerebras.ai/inference",
-                "shows": "Get instant access to inference that's up to 15x faster than NVIDIA GPUs",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "9a05b0d50b9143eec65f3870509a93ff64b9959d1c4e7ddbc98540d8c222240e"
+                "content_sha256": "29a213e659fc5fa72c4c0228e0e417b3efe29432697c1575be7c2b5d27e45497"
               }
             ]
           },
@@ -61602,9 +61719,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -61642,14 +61759,14 @@
             "confidence": "medium",
             "banded_quantity": "named high-volume production customers, not a user count",
             "note": "Fireworks names a roster of high-volume production customers, including Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora, Cresta and StackBlitz, each represented by a case study rather than a disclosed usage number. No customer discloses a request or user count, so it is that breadth of named customers, not a figure, that supports the rating.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://fireworks.ai/",
-                "shows": "customer logos and quotes for Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora, Cresta, StackBlitz; Notion (Sarah Sachs, AI Lead): \"we reduced latency from about 2 seconds to 350 milliseconds\"; Quora (Spencer Chan, Product Lead): \"we noticed a 3x speedup in response time\"",
-                "accessed": "2026-08-09",
+                "shows": "The homepage carries customer stories naming Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora, Cresta and StackBlitz; Notion says \"we reduced latency from about 2 seconds to 350 milliseconds\" and Quora says \"we noticed a 3x speedup in response time\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "fb2b63596a1d37e0698d82968f712fa5a2e8421785b76b6302634a2cef3b552e"
+                "content_sha256": "d04169e7235b48afeb0273b43147a4473ec42efbb1016ada349725fcde289630"
               }
             ]
           },
@@ -61657,31 +61774,31 @@
             "score": 4,
             "basis": "benchmark",
             "basis_detail": "ArtificialAnalysis(provider page)",
-            "value": "Serves 10 models on Artificial Analysis, topping out at 459 output tokens/sec (Nemotron 3.5 Lightning BF16), then MiniMax-M2.7 at 206 t/s and DeepSeek V4 Flash at 115 t/s; best time-to-first-token 0.93s (Kimi K2.6). AA notes a 448% spread between its fastest and slowest model. That peak sits below the wafer/LPU speed frontier on the same site's gpt-oss-120b board - Cerebras 1,820.3, SambaNova 701.3, Groq 475.9 - and around the GPU-class providers, which is what places this at 4 rather than 5. Customer case studies: Notion ~2s -> 350ms latency (Sarah Sachs, AI Lead), Quora 3x speedup (Spencer Chan, Product Lead).",
+            "value": "Serves 10 models on Artificial Analysis. The fastest are Nemotron 3.5 Lightning (BF16) at 355 output tokens/sec, DeepSeek V4.1 Flash (max) at 347 t/s and GLM-5.3 (max) at 234 t/s; AA notes a 97% difference between the fastest and slowest. For reference, the same site's gpt-oss-120b board (a different model) shows Cerebras 1,759.4, SambaNova 709.4 and Groq 473.2 t/s, and Fireworks has no entry on that board, so the two figures are not a like-for-like comparison. Customer case studies: Notion ~2s -> 350ms latency (Sarah Sachs, AI Lead), Quora 3x speedup (Spencer Chan, Product Lead).",
             "confidence": "medium",
-            "note": "Fireworks' FireAttention kernels put it at the top of GPU-based inference, just behind the wafer-scale and LPU chips on the comparable gpt-oss-120b speed board. Fireworks does not appear on that board itself, so the reading comes from its own Artificial Analysis provider page instead.",
-            "last_verified": "2026-08-13",
+            "note": "Artificial Analysis measures Fireworks' fastest model among the 10 it lists, Nemotron 3.5 Lightning (BF16), at 355 output tokens per second. Fireworks has no entry on the gpt-oss-120b speed board, where Groq, SambaNova and Cerebras post 473 to 1,759 tokens per second on a different model, so the two sets of figures are not directly comparable.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/providers/fireworks",
-                "shows": "10 models served; output speed 459 t/s (Nemotron 3.5 Lightning BF16), 206 t/s (MiniMax-M2.7), 115 t/s (DeepSeek V4 Flash), 107 t/s (Kimi K2.6); latency 0.93s best (Kimi K2.6); \"448% difference between the fastest and slowest\"",
-                "accessed": "2026-08-13",
+                "shows": "The provider page lists 10 models and says \"For output speed, the fastest models are Nemotron 3.5 Lightning (BF16) (355 t/s), DeepSeek V4.1 Flash (max) (347 t/s), and GLM-5.3 (max) (234 t/s)\" with \"a 97% difference between the fastest and slowest\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "7eb36fe33f25847786dcfc510fb3783d4447d433122bf1f0b895bdc53912fb7d"
+                "content_sha256": "786e202f293923c82976894a272875c5bb7358e0a0b2b5f251dfb8eca8cb80e1"
               },
               {
                 "url": "https://artificialanalysis.ai/models/gpt-oss-120b/providers",
-                "shows": "The speed frontier: Cerebras 1,820.3, SambaNova 701.3, Groq 475.9, Google Vertex 362.7, Azure 310.5 output t/s, and no Fireworks entry.",
-                "accessed": "2026-08-13",
+                "shows": "The gpt-oss-120b board says \"the top providers are Cerebras (1,759.4 t/s), SambaNova (709.4 t/s), and Groq (473.2 t/s)\"; searched the body for Fireworks and found it only in the provider-logo list, not as a speed entry.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "5071ab85b53372112bbdfe4b54e7e94e570db319d44f626ae098d9d3538a20ca"
+                "content_sha256": "29a213e659fc5fa72c4c0228e0e417b3efe29432697c1575be7c2b5d27e45497"
               },
               {
                 "url": "https://fireworks.ai/",
-                "shows": "Notion (Sarah Sachs, AI Lead): \"we reduced latency from about 2 seconds to 350 milliseconds\"; Quora (Spencer Chan, Product Lead): \"we noticed a 3x speedup in response time\"",
-                "accessed": "2026-08-09",
+                "shows": "The homepage carries customer stories where Notion says \"we reduced latency from about 2 seconds to 350 milliseconds\" and Quora says \"we noticed a 3x speedup in response time\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "fb2b63596a1d37e0698d82968f712fa5a2e8421785b76b6302634a2cef3b552e"
+                "content_sha256": "d04169e7235b48afeb0273b43147a4473ec42efbb1016ada349725fcde289630"
               }
             ]
           },
@@ -61690,9 +61807,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -61747,15 +61864,15 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Together's homepage features a named-customer case study on Cursor and a hero logo row naming Salesforce, ElevenLabs, Cohere, DeepMind, Mozilla and Decagon. No developer or user count is disclosed, so adoption is read from that reported enterprise breadth rather than a measured figure.",
-            "last_verified": "2026-08-09",
+            "note": "Together's homepage features a named-customer case study on Cursor and a hero logo row naming Salesforce, ElevenLabs, DeepMind, Mozilla and Decagon. No developer or user count is disclosed, so adoption is read from that reported enterprise breadth rather than a measured figure.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.together.ai/",
-                "shows": "story-card title \"How Cursor partnered with Together AI to deliver real-time, low-latency inference at scale\"; hero logo images salesforce_black.svg, elevenlabs_black.svg, cohere_black.svg, deepmind_black.svg, mozilla_black.svg, and a Decagon story card",
-                "accessed": "2026-08-09",
+                "shows": "Homepage carries the story-card title \"How Cursor partnered with Together AI to deliver real-time, low-latency inference at scale\" and hero logo images \"salesforce_black.svg\", \"elevenlabs_black.svg\", \"deepmind_black.svg\", \"mozilla_black.svg\" and \"decagon_black.svg\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "01642a4551d5959bef7bc36272391a197b5a4a949228d3dd0fa40c134c1c7d9b"
+                "content_sha256": "32400bc09a5a0cee24e96bb3709f025c4cc3e16f55a0d0352b85350ec40efe5d"
               }
             ]
           },
@@ -61764,23 +61881,23 @@
             "basis": "feature_matrix",
             "value": "FlashAttention-4 is 1.1-1.3x faster than cuDNN 9.13 and 2.1-2.7x faster than Triton on B200/Blackwell (up to 1605 TFLOPs/s, 71% utilization); ATLAS delivers up to 4x faster LLM inference; serverless, batch, and dedicated serving across a large open-model catalog.",
             "confidence": "low",
-            "note": "Together's FlashAttention-4 and ATLAS research report faster kernels than cuDNN and Triton, and higher inference throughput overall. These are vendor-reported benchmarks rather than an independently verified submission, since Artificial Analysis's public provider board could not be checked directly.",
+            "note": "Together's FlashAttention-4 and ATLAS posts report attention kernels faster than cuDNN and Triton and up to 4x faster LLM inference. Both are Together's own benchmarks, and no independent benchmark is cited for its serving.",
             "basis_detail": "vendor-reported kernel/decoding research benchmarks; no independent throughput benchmark for Together's service was reproducible from a static fetch",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.together.ai/blog/flashattention-4",
-                "shows": "\"FlashAttention-4 is 1.1-1.3x faster than cuDNN 9.13 and 2.1-2.7x faster than Triton\"; \"it reaches up to 1605 TFLOPs/s (71% utilization)\"",
-                "accessed": "2026-08-09",
+                "shows": "The FlashAttention-4 post reports \"FlashAttention-4 is 1.1-1.3x faster than cuDNN 9.13 and 2.1-2.7x faster than Triton\" and \"(71% utilization)\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "56f9759a8ee6805d3c19d7ea1fe42e9d6e07d3e9f8ec393a21642314f78e6d11"
+                "content_sha256": "eb802f66edd326df2e1b6b94ecdcfe0ec1efb2c2d5891618d4c999e9d6102f9e"
               },
               {
                 "url": "https://www.together.ai/blog/adaptive-learning-speculator-system-atlas",
-                "shows": "\"ATLAS delivers up to 4x faster LLM inference, powered by Together Turbo's latest research.\"",
-                "accessed": "2026-08-09",
+                "shows": "The ATLAS post states \"ATLAS delivers up to 4x faster LLM inference, powered by Together Turbo\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "5ff6dc8bb9eb8c6e6433a86ade355a686e02861a8cf68975e0d40510a344812a"
+                "content_sha256": "9114902952eab93c79d84eb2a2a4a3f73bfbb67e4fd525afdecd9d5fd58ece08"
               }
             ]
           },
@@ -61789,9 +61906,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -61879,14 +61996,14 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "AWS publishes no customer count, download count or usage figure for Neuron, and names no customers. What the page does show is integration breadth: native PyTorch and JAX support, plus Hugging Face Transformers, Optimum Neuron, vLLM, PyTorch Lightning and TorchTitan, without requiring code changes.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://aws.amazon.com/ai/machine-learning/neuron/",
-                "shows": "PyTorch and JAX natively, plus HuggingFace, vLLM, PyTorch Lightning, TorchTitan and Optimum Neuron, \"without modifying your code\". No customer count, download count, usage figure or named customer anywhere on the page.",
-                "accessed": "2026-08-13",
+                "shows": "The page says Neuron works \"natively with PyTorch and JAX frameworks and with ML libraries such as HuggingFace, vLLM, PyTorch Lightning\" and trains with \"HuggingFace Optimum Neuron, PyTorch Lightning, and TorchTitan\". It gives no customer count, download count or named customer; searched the body for customer, Anthropic, million and users.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "4ccd6ea8ed04015f8c2729eec22575613ca21e969c4ff77b7483f5dfcec65965"
+                "content_sha256": "02559dd86132755c3cabd455fffcf2e3dcf4a3886ea2281f5ff3b3f58aafd409"
               }
             ]
           },
@@ -61897,14 +62014,21 @@
             "confidence": "medium",
             "note": "Neuron delivers a server-class inference feature set on native PyTorch and JAX, but only for AWS's own Inferentia and Trainium hardware, and no MLPerf Inference benchmark result has been published for it.",
             "basis_detail": "vLLM V1 API on Trainium/Inferentia with Expert Parallelism, disaggregated inference, speculative decoding; native PyTorch + JAX; compiler/runtime/profiler stack",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/what-is-neuron.html",
-                "shows": "The runtime supports Expert Parallelism for MoE models, disaggregated inference architectures, and speculative decoding.",
-                "accessed": "2026-08-09",
+                "shows": "The page says \"The runtime supports Expert Parallelism for MoE models, disaggregated inference architectures, and speculative decoding.\" and \"Full compatibility with vLLM V1 APIs\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "90da4eb80e63d2f5c59c07687ca155346e84934ec7ae17861aada8ecb7d66b0b"
+                "content_sha256": "b04ce793b1c474499f58f1950e6d5e424db41efbd02286a9b58113291eaa5652"
+              },
+              {
+                "url": "https://aws.amazon.com/ai/machine-learning/neuron/",
+                "shows": "The page says \"Standard vLLM V1 APIs work on Trainium and Inferentia with out-of-the-box high performance with features like Expert Parallelism, disaggregated inference, and speculative decoding\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "02559dd86132755c3cabd455fffcf2e3dcf4a3886ea2281f5ff3b3f58aafd409"
               }
             ]
           },
@@ -61913,9 +62037,9 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -61952,14 +62076,14 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "Google publishes no standalone usage figure for the Pathways runtime itself, though it powers Google's own internal and Cloud TPU inference through AI Hypercomputer and GKE. Adoption is instead read from reported managed-cloud traction, including a named customer account from Osmos describing a scaled Trillium/JetStream production deployment.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://cloud.google.com/blog/products/compute/ai-hypercomputer-inference-updates-for-google-cloud-tpu-and-gpu",
-                "shows": "Osmos is building the world's first AI Data Engineer...We have vLLM and JetStream in scaled production deployment on Trillium and are able to achieve industry leading performance",
-                "accessed": "2026-08-09",
+                "shows": "The post reports a named customer account: \"Osmos is building the world's first AI Data Engineer\" and \"We have vLLM and JetStream in scaled production deployment on Trillium\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "c21814ce1f3a4410ec55e9c89c47a6c08660189070eb9adf144ebc591301a5e0"
+                "content_sha256": "5df3075b750f293dca8990091cd75c18860149e47c42b17343ab775ac15da778"
               }
             ]
           },
@@ -61970,14 +62094,14 @@
             "confidence": "medium",
             "note": "High-throughput multi-host TPU inference: Google reports 1,703 tokens per second on Llama 3.1 405B running on Trillium, and roughly 3x the inference per dollar of TPU v5e, with multi-host disaggregated serving. Strong, but TPU-locked, and the figures are Google's own rather than an independent MLPerf submission for the runtime itself.",
             "basis_detail": "vendor-reported multi-host TPU inference throughput and cost figures for the Pathways/JetStream stack",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://cloud.google.com/blog/products/compute/ai-hypercomputer-inference-updates-for-google-cloud-tpu-and-gpu",
-                "shows": "With multi-host inference, JetStream achieves 1703 token/s on Llama 3.1 405B on Trillium. This translates to three times more inference per dollar compared to TPU v5e.",
-                "accessed": "2026-08-09",
+                "shows": "The post reports that \"With multi-host inference, JetStream achieves 1703 token/s on Llama 3.1 405B on Trillium. This translates to three times more inference per dollar compared to TPU v5e.\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "c21814ce1f3a4410ec55e9c89c47a6c08660189070eb9adf144ebc591301a5e0"
+                "content_sha256": "5df3075b750f293dca8990091cd75c18860149e47c42b17343ab775ac15da778"
               }
             ]
           },
@@ -61986,9 +62110,9 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -62027,21 +62151,21 @@
             "signal_type": "active_users",
             "confidence": "medium",
             "note": "Core ML ships as a system framework across iOS, iPadOS, macOS, tvOS, watchOS and visionOS, reaching the full installed base of Apple hardware rather than a discrete set of developers. The adoption figure is Apple's own count of active devices from its earnings calls, which counts hardware rather than actual invocations of Core ML.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://docs.developer.apple.com/tutorials/data/documentation/coreml/mlmodel.md",
                 "shows": "\"availability\" : [ \"iOS: 11.0.0 -\", \"iPadOS: 11.0.0 -\", \"macCatalyst: 13.1.0 -\", \"macOS: 10.13.0 -\", \"tvOS: 11.0.0 -\", \"visionOS: 1.0.0 -\", \"watchOS: 4.0.0 -\" ]",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "721795be9387719d53e03068029104df427354744e5a818009dabd9ddb1ca774"
+                "content_sha256": "c97b8affe0e22d110e76479378c65d72d0817d906d8c1d1c9d06ab0acebce171"
               },
               {
                 "url": "https://sixcolors.com/post/2026/07/one-last-time-this-is-tim-transcript-of-apples-q3-2026-financial-call/",
-                "shows": "installed base of over two and a half billion active devices has reached another all-time high across all major product categories and geographic segments",
-                "accessed": "2026-08-09",
+                "shows": "The Q3 2026 earnings call transcript has Apple stating an \"installed base of over two and a half billion active devices has reached another all-time high\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "933db5de1791777e14a3baeb18db29269b1d490dc17fff3dfeb1d4bd2317dc5f"
+                "content_sha256": "7565306f89143b6453e47536a9df9460d4c7b48437773ce885cdd87b160b6c7a"
               }
             ]
           },
@@ -62054,19 +62178,19 @@
             "confidence": "medium",
             "note": "Best in class for on-device and edge inference, with Neural Engine acceleration, quantization and palettization, and broad coverage of converted models, but constrained to Apple silicon and to on-device scale. That places it one tier below the large-scale server engines, of which vLLM holds the top capability score in this category.",
             "basis_detail": "Apple's own CoreML and coremltools documentation: multi-device execution (CPU/GPU/Neural Engine), a compute-plan API for per-layer device placement, and a compression toolkit (quantization, palettization, pruning) whose documentation set carries dedicated optimization walkthroughs for ResNet50, an OPT transformer, and Stable Diffusion (linked from the optimization overview; the walkthrough pages themselves were not fetched).",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://docs.developer.apple.com/tutorials/data/documentation/coreml.md",
-                "shows": "leveraging the CPU, GPU, and Neural Engine while minimizing its memory footprint and power consumption",
-                "accessed": "2026-08-09",
+                "shows": "The Core ML documentation home page says the framework runs models \"leveraging the CPU, GPU, and Neural Engine while minimizing its memory footprint and power consumption\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "a2aa644242309dfefa82b7e0c4b739e5a086622f7d5e395f31e30f48e7948f25"
+                "content_sha256": "faf6f5a3418634937fc1d7d25b6caf759fb34200d623488912b255d52ee762af"
               },
               {
                 "url": "https://apple.github.io/coremltools/docs-guides/source/opt-overview.html",
-                "shows": "Core ML supports INT4 and INT8 quantization options for weights and INT8 for activations.",
-                "accessed": "2026-08-09",
+                "shows": "The coremltools optimization overview states \"Core ML supports INT4 and INT8 quantization options for weights and INT8 for activations.\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "0090388772039bb5338c2d0332a0349a3832c41a2bf098774786197670a58adf"
               }
@@ -62077,9 +62201,9 @@
           "maturity": 4.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -62122,48 +62246,48 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "banded_quantity": "third-party routed token volume via OpenRouter (~1.65B tokens on one day), not users",
-            "note": "OpenRouter's SambaNova provider page shows real third-party token volume across the models it routes there, corroborating traffic beyond vendor marketing. SambaNova publishes no standalone user or customer count, so this reading is observed traffic rather than a banded usage figure.",
-            "last_verified": "2026-08-09",
+            "banded_quantity": "third-party routed token volume via OpenRouter (~1.07B tokens on 2026-09-28), not users",
+            "note": "OpenRouter's provider page for SambaNova charts daily tokens processed on the models routed to SambaNova there. SambaNova publishes no user or customer count, so this third-party traffic is the only usage measure found, and it covers only what is routed through OpenRouter.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://openrouter.ai/provider/sambanova",
-                "shows": "Tokens processed on OpenRouter time series for SambaNova-routed models, e.g. 2026-08-09: google/gemma-4-31b-it ~1,094,432,018; openai/gpt-oss-120b ~343,850,246; minimax/minimax-m2.7 ~107,023,059 tokens",
-                "accessed": "2026-08-09",
+                "shows": "OpenRouter provider page for SambaNova has a \"Tokens processed on OpenRouter\" chart and states \"Access 7 models served by SambaNova through the OpenRouter unified API\"; the embedded daily series for 2026-09-28 sums to about 1.07B tokens, led by openai/gpt-oss-120b at about 584M, and 2026-09-27 to about 0.75B.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "38e3683b096b1c73bd4ee48310ecf86adb3984c6a75b704101a91b74f0053c2a"
+                "content_sha256": "b92546ac949744e28e3c4bc8c00249f6102a5e9c25f14ec227a0f2e5470bb823"
               },
               {
                 "url": "https://sambanova.ai/blog/sn40l-chip-best-inference-solution",
-                "shows": "public SambaNova Cloud with free try-it inference; positioned as commercial inference provider",
-                "accessed": "2026-08-09",
+                "shows": "SambaNova blog offers free trial inference on SambaNova Cloud: \"Try our blazing fast inference performance for yourself for free at\" cloud.sambanova.ai, alongside its SN40L benchmark tables.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef"
+                "content_sha256": "b3ab8ad03bf2a681c53a4c9f06c2ce9be5a15cf40cf243dfcab8115a68ecbfdc"
               }
             ]
           },
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "SambaNova's own SN40L benchmark reports Llama 3.1 405B at 129 output tok/s, 70B at 457 tok/s, and 8B at 1,042 tok/s, all at full 16-bit precision. Per Artificial Analysis (checked today), SambaNova currently serves 9 models via its API; the fastest is gpt-oss-120b at roughly 724 output tok/s, with Llama 3.3 70B at roughly 290 tok/s.",
+            "value": "Per Artificial Analysis (checked 2026-09-29), SambaNova currently serves 9 models via its API; the fastest is gpt-oss-120b at roughly 727 output tok/s, with Llama 3.3 70B at roughly 278 tok/s. SambaNova's own September 2024 SN40L benchmark reported Llama 3.1 405B at 129 output tok/s, 70B at 457 tok/s and 8B at 1,042 tok/s, all at full 16-bit precision.",
             "confidence": "medium",
             "note": "SambaNova's own SN40L benchmarks and Artificial Analysis's independent measurements both show strong per-token throughput across the models it serves. Its served-model catalog is narrower than the largest multi-tenant inference clouds, which is the constraint keeping it a step behind them.",
             "basis_detail": "Vendor SN40L throughput benchmark against named competitor silicon, corroborated by Artificial Analysis' independent, currently-live ranking across the models SambaNova now serves. No capability ladder exists for this category and no peer comparison is recorded for this product; score reflects specialized-hardware throughput leadership offset by a narrower served-model breadth than the largest multi-tenant inference clouds.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://sambanova.ai/blog/sn40l-chip-best-inference-solution",
-                "shows": "Llama 3.1 Instruct 405B 129, 70B 457, 8B 1042 (output tokens/sec, SambaNova 16-bit column of Table 1)",
-                "accessed": "2026-08-09",
+                "shows": "SambaNova blog reports Llama 3.1 405B at \"129 output tokens/second/user\"; Table 1 lists the SambaNova 16-bit column at 457 for Llama 3.1 70B and 1042 for 8B.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef"
+                "content_sha256": "b3ab8ad03bf2a681c53a4c9f06c2ce9be5a15cf40cf243dfcab8115a68ecbfdc"
               },
               {
                 "url": "https://artificialanalysis.ai/providers/sambanova",
-                "shows": "Fastest # 1 gpt-oss-120b (low) 724 t/s # 2 gpt-oss-120b (high) 706 t/s # 3 MiniMax-M2.7 381 t/s # 4 Llama 3.3 70B 290 t/s # 5 Gemma 4 31B 203 t/s",
-                "accessed": "2026-08-09",
+                "shows": "Artificial Analysis lists SambaNova with \"9 models, each with different intelligence, performance, and pricing characteristics\" and states \"the fastest models are gpt-oss-120b (low) (727 t/s), gpt-oss-120b (high) (709 t/s), and MiniMax-M2.7 (397 t/s)\"; the model table lists Llama 3.3 70B at 278 output tokens/s.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "ef754ce317fc3e8eaa147ffac4ab8ae69b2b9206665f017faece64d442cfb557"
+                "content_sha256": "f0d3d0c25c89be75fab7a64e404e73cef1de1134a96ce8c4869f682b0c998e0a"
               }
             ]
           },
@@ -62172,11 +62296,10 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
-          },
-          "version_note": "The SambaNova Cloud API reference URL cited previously now 404s, so the OpenAI-compatible endpoint claim carries over from the prior read rather than a fresh one."
+            "latest_axis_confirmation": "2026-09-29"
+          }
         },
         {
           "slug": "qualcomm-ai-engine-direct",
@@ -62191,7 +62314,6 @@
             "components": "source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed as a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly quic/ai-engine-direct-helper -- a convenience API layer that requires the proprietary SDK libraries)",
             "confidence": "high",
             "note": "Qualcomm publishes no source for the QNN/Qualcomm AI Runtime SDK; it ships only as an EULA-gated binary from the Qualcomm Software Center. A BSD-3-Clause convenience wrapper, qai-appbuilder (formerly ai-engine-direct-helper), still requires libraries from that same proprietary SDK, so it does not open the engine underneath.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/qualcomm/qai-appbuilder",
@@ -62220,28 +62342,28 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "Qualcomm AI Engine Direct reaches developers through integration rather than direct download: LiteRT, ExecuTorch and ONNX Runtime each ship it as their Qualcomm NPU backend. Qualcomm publishes no developer, device or download figure of its own, so the reading is drawn from that integration breadth rather than a reported number.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://docs.pytorch.org/executorch/stable/backends-qualcomm.html",
-                "shows": "Currently, this ExecuTorch Backend can delegate AI computations to Hexagon processors and Adreno GPU through Qualcomm AI Engine Direct APIs.",
-                "accessed": "2026-08-09",
+                "shows": "The ExecuTorch Qualcomm backend page says \"this ExecuTorch Backend can delegate AI computations to Hexagon processors and Adreno GPU through Qualcomm AI Engine Direct APIs\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "a1db58d1668040eb2fbd74e2603ffb30ebdd374c4965e8aaf47bc7f57efbb4c6"
+                "content_sha256": "ba4e96d1d6ae8d3218984e10e4fecf9a12fb7c501515d66e4bda18c0485029e8"
               },
               {
                 "url": "https://ai.google.dev/edge/litert/android/npu/qualcomm",
-                "shows": "essential to running inference on the NPU for your LiteRT model on-device. Supported devices include: Snapdragon 8 Gen 1 (SM8450) Snapdragon 8 Gen 2 (SM8550) Snapdragon 8 Gen 3 (SM8650) Snapdragon 8 Elite (SM8750) and more",
-                "accessed": "2026-08-09",
+                "shows": "The LiteRT Qualcomm NPU page documents \"The Qualcomm AI Engine Direct Delegate enables users to run LiteRT models\" and lists supported devices including \"Snapdragon 8 Elite (SM8750)\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "2efeb7e8877f9e5926c0a8e0a0c137537affb5af44c4023640bfbde88b28ad5b"
+                "content_sha256": "fc1d4fa6a274f97d457d9df4ce240c56eddf50d70fc79214559c0f4d7cabb7af"
               },
               {
                 "url": "https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html",
-                "shows": "The QNN Execution Provider for ONNX Runtime enables hardware accelerated execution on Qualcomm chipsets. It uses the Qualcomm AI Engine Direct SDK (QNN SDK) to construct a QNN graph from an ONNX model",
-                "accessed": "2026-08-09",
+                "shows": "The ONNX Runtime QNN page says \"The QNN Execution Provider for ONNX Runtime enables hardware accelerated execution on Qualcomm chipsets\" and \"It uses the Qualcomm AI Engine Direct SDK (QNN SDK) to construct a QNN graph from an ONNX model\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "9fbdb7fa74354b535635c49be474146586864062027b4762055ae70d743910a6"
+                "content_sha256": "a4f10b738984d6ed9a242f0ece7f6747c9439971182b804dbbbd01448edf51a3"
               }
             ]
           },
@@ -62252,21 +62374,21 @@
             "confidence": "medium",
             "note": "Qualcomm AI Engine Direct provides a unified API across the Hexagon NPU, Adreno GPU and Kryo CPU, with quantized on-device LLM and VLM inference, and LiteRT, ExecuTorch and ONNX Runtime all delegate to it as their Qualcomm NPU backend. It remains Snapdragon-locked and edge-scale, well short of the server-class engines that lead the field.",
             "basis_detail": "Read from current vendor and integrator documentation rather than a benchmark row: unified low-level API surface, multi-accelerator coverage, AOT and on-device compilation, and measured NPU speedups reported by the LiteRT integration.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://docs.pytorch.org/executorch/stable/backends-qualcomm.html",
-                "shows": "Qualcomm AI Engine Direct is designed to provide unified, low-level APIs for AI development. Developers can interact with various accelerators on Qualcomm SoCs with these set of APIs, including Kryo CPU, Adreno GPU, and Hexagon processors.",
-                "accessed": "2026-08-09",
+                "shows": "The ExecuTorch Qualcomm backend page says \"Qualcomm AI Engine Direct is designed to provide unified, low-level APIs for AI development\" and that developers can interact with \"Kryo CPU, Adreno GPU, and Hexagon processors\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "a1db58d1668040eb2fbd74e2603ffb30ebdd374c4965e8aaf47bc7f57efbb4c6"
+                "content_sha256": "86e552aad9f7d6cbe827609092686d09dfc1789d320df505f966106d7a637f3e"
               },
               {
                 "url": "https://developers.googleblog.com/unlocking-peak-performance-on-qualcomm-npu-with-litert/",
-                "shows": "You can now deploy your model seamlessly across all supported devices, with either ahead-of-time (AOT) or on-device compilation. ... the NPU acceleration provides up to a 100x speedup over CPU and a 10x speedup over GPU ... achieving SOTA performance for models like Gemma and FastVLM",
-                "accessed": "2026-08-09",
+                "shows": "The Google Developers blog says LiteRT models deploy \"either ahead-of-time (AOT) or on-device compilation\" and reports \"up to 100x speedup over CPU\" on the Qualcomm NPU, with Gemma and FastVLM as example models.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "4b6bf6e071a45140b9d222f2e35a6e480289f87e0d7bb5eb44a95947c1038f4a"
+                "content_sha256": "32972d14f48bcb463423a10b4af347f21adc4f47bd8b1a6d41f4753934e86f06"
               }
             ]
           },
@@ -62275,11 +62397,20 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "No source dated in this run states the SDK's own source or license terms. The raw README/LICENSE only cover the BSD-3-Clause qai-appbuilder wrapper (components.context.open-wrapper) and show the SDK is a separate download. Would be settled by the Qualcomm AI Runtime SDK EULA or Software Center license page (read by a maintainer with browser access), or by the github.com qai- appbuilder page fetching 200 again. last_verified stays 2026-08-13; value unchanged (score 1, closed)."
+              }
+            ]
           },
-          "version_note": "Qualcomm's own docs and Software Center pages render as JavaScript shells and could not be read directly, so the SDK's behavior was confirmed from the integrating projects' documentation."
+          "version_note": "Qualcomm's own documentation and Software Center pages could not be read, so the entry draws on the documentation of the projects that integrate the SDK."
         },
         {
           "slug": "vllm",
@@ -62358,14 +62489,14 @@
             "value": "PagedAttention with continuous batching, prefix caching and chunked prefill; tensor, pipeline, data, expert and context parallelism for distributed inference; speculative decoding; FP8 and other quantization; multi-LoRA; an OpenAI-compatible API server; 200+ model architectures.",
             "confidence": "high",
             "note": "vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, including a multi-node Llama 3.1 405B run at 97-98% scaling efficiency, and it supports more than 200 model architectures on Hugging Face. It is the reference point for capability in this category, against which the other engines here are described.",
-            "last_verified": "2026-08-31",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://rocm.blogs.amd.com/artificial-intelligence/mlperf-inference-v6.0/README.html",
-                "shows": "AMD Instinct MI355X MLPerf Inference v6.0 submission; \"tuning experiments were conducted on vLLM parameters and used to refine the scheduler configurations\", and the Llama 3.1 405B multi-node run used \"an AMD MLPerf Stack with vLLM\" at 97-98% scaling efficiency.",
-                "accessed": "2026-08-09",
+                "shows": "AMD Instinct MI355X MLPerf Inference v6.0 submission; \"tuning experiments were conducted on vLLM parameters and used to refine the scheduler configurations\", and the Llama 3.1 405B multi-node run used \"an AMD MLPerf Stack with\" vLLM at \"98% scaling efficiency\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "91705e11f8905706f022c434c23e982a8e5720edecdee78eacc4bc9d0b2bcfdc"
+                "content_sha256": "bb6d89311e822ae632f6a6c87896b57ff349877bfc6b774ae67ae7e6cb3b0705"
               },
               {
                 "url": "https://github.com/vllm-project/vllm",
@@ -62376,8 +62507,8 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
-                "shows": "README feature list: PagedAttention, continuous batching, prefix caching, chunked prefill, speculative decoding, FP8 quantization, multi-LoRA, an OpenAI-compatible API server, and \"200+ model architectures\".",
-                "accessed": "2026-08-31",
+                "shows": "README feature list: \"Continuous batching of incoming requests, chunked prefill, prefix caching\", \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\", \"OpenAI-compatible API server, plus Anthropic Messages API and gRPC support\", \"Efficient multi-LoRA support for dense and MoE layers\", and \"vLLM seamlessly supports 200+ model architectures on Hugging Face\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
               }
@@ -62388,9 +62519,9 @@
           "maturity": 4.5,
           "mature": true,
           "freshness": {
-            "date": "2026-08-31",
+            "date": "2026-09-15",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -62406,7 +62537,6 @@
             "components": "license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise directory among its top-level directories, and no paid tier that withholds features; the project offers enterprise consulting and sponsorship only);governance:LMSYS/PyTorch-ecosystem(community)",
             "confidence": "high",
             "note": "SGLang is Apache-2.0 throughout, with no functionality withheld from the published source. The repository has no enterprise directory, license-key gate or closed dependency; what SGLang sells commercially is consulting and sponsorship, not withheld features.",
-            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://github.com/sgl-project/sglang",
@@ -62421,13 +62551,34 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/sgl-project/sglang/main/LICENSE",
-                "shows": "Apache License Version 2.0, January 2004",
-                "accessed": "2026-08-11",
+                "shows": "LICENSE file of the repository; begins \"Apache License\" and \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-29",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
                 "content_sha256": "1495e1e757ef4d0925a2350563cf5754bb23c51701a8ec4fb3c5cdcbedae6747"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/sgl-project/sglang/main/python/pyproject.toml",
+                "shows": "Python package metadata declares the license as \"License :: OSI Approved :: Apache Software License\" with the \"LICENSE\" file.",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "4ce16273292579a4790dea351f9f69dc2dbf8b6afdc3ec01fca8416ea0ef7022"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/sgl-project/sglang/main/README.md",
+                "shows": "README on hosting and commercial offer: \"SGLang is currently hosted under the non-profit open-source organization\" LMSYS, the news item \"SGLang Joins PyTorch Ecosystem: Efficient LLM Serving Engine\", and the only commercial line is \"technical consulting, sponsorship opportunities, or partnership inquiries\".",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "0dc41a02fb7d12818d8a9f5ebc2af38e56ec84b7163e344af6b0f3d7590d31c8"
               }
             ],
             "bucket": "open"
@@ -62438,7 +62589,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "SGLang's own GitHub page and a third-party deployment guide both describe it as running at very large scale across major operators' GPU fleets, with xAI, NVIDIA, AMD, LinkedIn, Cursor and major cloud providers named as users. That is a heavy but operator-concentrated footprint rather than a broad public figure, since no daily-user or install-base count is published for it.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://github.com/sgl-project/sglang",
@@ -62465,14 +62615,21 @@
             "confidence": "high",
             "note": "An independent H100 benchmark on Llama-3.3-70B put SGLang and vLLM within a few percent of each other on throughput and latency. vLLM remains the broader-purpose default, while SGLang is the stronger choice for shared-prefix workloads.",
             "basis_detail": "RadixAttention prefix-KV reuse, zero-overhead CPU scheduler, prefill-decode disaggregation, speculative decoding, structured outputs, and broad hardware support (NVIDIA/AMD/Intel/TPU/Ascend), corroborated by a 2026 third-party H100 benchmark against vLLM and TensorRT-LLM.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/",
-                "shows": "vLLM ... 1,850 tok/s 120 ms ... SGLang Shared-prefix workloads, low latency 1,920 tok/s 112 ms",
-                "accessed": "2026-08-09",
+                "shows": "Benchmark table: vLLM \"General use, broad model support\" at \"1,850 tok/s\" and \"120 ms\"; SGLang \"Shared-prefix workloads, low latency\" at \"1,920 tok/s\" and \"112 ms\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "d67aacbe60d243508c0f49bdd6f4b74bcb5460dbdcf73e0cdbf50dc1cb802d30"
+                "content_sha256": "9724bf6f025b33e3bd73f52eebe8f8a36659c1724c58cab63f41097fea537786"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/sgl-project/sglang/main/README.md",
+                "shows": "README feature list: \"Provides efficient serving with RadixAttention for prefix caching, a zero-overhead CPU scheduler, prefill-decode disaggregation, speculative decoding\" and \"Runs on NVIDIA GPUs (GB200/B300/H100/A100/Spark/5090), AMD GPUs (MI355/MI300), Intel Xeon CPUs, Google TPUs, Ascend NPUs, and more.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "0dc41a02fb7d12818d8a9f5ebc2af38e56ec84b7163e344af6b0f3d7590d31c8"
               },
               {
                 "url": "https://github.com/sgl-project/sglang",
@@ -62488,9 +62645,24 @@
           "maturity": 4.5,
           "mature": true,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-11"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption",
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "The adoption reconciliation lists this as a route disagreement: the record reads level 4 on usage volume, while the applicable route measures level 3 on GitHub stars. It is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              },
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "python/pyproject.toml lists nvidia-cutlass-dsl and nvidia-mathdx, two NVIDIA packages under proprietary licenses, in the required dependencies rather than an optional extra, while the note says the repository has no closed dependency. Settled by a ruling on whether those required packages gate the core (5/open_source vs 4/open_core), with the note rewritten to match."
+              }
+            ]
           }
         },
         {
@@ -62506,7 +62678,6 @@
             "components": "license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)",
             "confidence": "high",
             "note": "The repository is licensed under Apache-2.0, and the published tree includes the C++ runtime and kernels themselves rather than a stub, so nothing is held back from the source. NVIDIA sells NIM and enterprise support as separate products beside it.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/TensorRT-LLM",
@@ -62545,9 +62716,9 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "high",
-            "banded_quantity": "GitHub stars (14,342), not a download or user count",
+            "banded_quantity": "GitHub stars (14,730), not a download or user count",
             "note": "Independent comparisons frame TensorRT-LLM as the specialist choice: the highest raw throughput on standardized NVIDIA fleets, but narrower reach than vLLM or SGLang because of its compilation overhead and single-vendor lock-in. No standalone user or download count exists, so the rating reflects that specialized, GPU-locked production use rather than a broad count.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/TensorRT-LLM",
@@ -62558,17 +62729,17 @@
               },
               {
                 "url": "https://www.yottalabs.ai/post/best-llm-inference-engines-in-2026-vllm-tensorrt-llm-tgi-and-sglang-compared",
-                "shows": "Because TensorRT-LLM is built specifically for NVIDIA hardware, it can achieve extremely high performance in environments where infrastructure is standardized around NVIDIA GPU clusters. However, this hardware specialization can also make it less flexible for teams running heterogeneous infrastructure across multiple cloud environments.",
-                "accessed": "2026-08-09",
+                "shows": "The page says \"Because TensorRT-LLM is built specifically for NVIDIA hardware, it can achieve extremely high performance in environments where infrastructure is standardized around NVIDIA GPU clusters.\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "2dd2a7be8b7c2ab74dabcf22d78060c60aa02da30e9bf444012183d785623630"
+                "content_sha256": "59a29aaf8aca5cb46fd1c5633783fa8c4c640fab7adaf385a7903ea8bd2143b0"
               },
               {
                 "url": "https://theaiengineer.substack.com/p/vllm-vs-ollama-vs-sglang-vs-tensorrt",
-                "shows": "TensorRT-LLM squeezes maximum performance from NVIDIA hardware but demands 1-2 weeks of setup time and locks you into a single vendor.",
-                "accessed": "2026-08-09",
+                "shows": "The article says TensorRT-LLM \"squeezes maximum performance from NVIDIA hardware but demands 1-2 weeks of setup time and locks you into a single vendor.\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "931f05f8e2a99f4622d2b98f83552baa9de4763001425203042ba02d6717b97e"
+                "content_sha256": "530cec99acc45178c7904b96996558abc6ebd43d6b2f2145ded58b96925befce"
               }
             ]
           },
@@ -62579,7 +62750,7 @@
             "value": null,
             "confidence": "high",
             "note": "NVIDIA's MLPerf Inference v4.0 recap credits TensorRT-LLM with nearly 3x more throughput on the GPT-J test than the prior round. An independent H100 benchmark on Llama 3.3 70B puts it ahead of vLLM and SGLang on raw throughput, though with a cold start of about 28 minutes against roughly a minute for the others.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.hpcwire.com/2024/03/28/mlperf-inference-4-0-results-showcase-genai-nvidia-still-dominates/",
@@ -62589,11 +62760,18 @@
                 "content_sha256": "8488691654e14b11e3568fa9aae7ab4172163f0450be5b0458fb35b890ba4fb5"
               },
               {
-                "url": "https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/",
-                "shows": "Use TensorRT-LLM if you have a single model in long-term production and throughput is paramount.",
-                "accessed": "2026-08-09",
+                "url": "https://developer.nvidia.com/blog/nvidia-h200-tensor-core-gpus-and-nvidia-tensorrt-llm-set-mlperf-llm-inference-records/",
+                "shows": "NVIDIA's MLPerf Inference v4.0 post has a section headed \"TensorRT-LLM nearly triples LLM inference performance\" and says H100 \"nearly tripled performance on the GPT-J LLM test.\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "d67aacbe60d243508c0f49bdd6f4b74bcb5460dbdcf73e0cdbf50dc1cb802d30"
+                "content_sha256": "f7bc63f9e94ee59dbdeb4ea02d0d20df757d49282cb6f7f22826d45f8a79ae3e"
+              },
+              {
+                "url": "https://www.spheron.network/blog/vllm-vs-tensorrt-llm-vs-sglang-benchmarks/",
+                "shows": "The benchmark guide recommends TensorRT-LLM \"if you have a single model in long-term production and throughput is paramount\" and lists its engine build at \"~28 minutes (engine compilation)\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "9724bf6f025b33e3bd73f52eebe8f8a36659c1724c58cab63f41097fea537786"
               }
             ]
           },
@@ -62602,8 +62780,18 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "core_gated (ungated vs gated) cannot be established: the default build links a prebuilt, source- less internal_cutlass_kernels static library; a maintainer ruling on whether that counts as gating (5/open_source vs 4/open_core) would settle it. License and source dimensions stay dated."
+              }
+            ]
           }
         },
         {
@@ -62619,17 +62807,28 @@
             "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "Fully MIT; single repo, no gated tier or enterprise SKU found on the repo page.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/mudler/LocalAI/master/LICENSE",
-                "shows": "MIT License\n\nCopyright (c) 2023-2025 Ettore Di Giacinto (mudler@localai.io)",
-                "accessed": "2026-08-09",
+                "shows": "The LICENSE file reads \"MIT License\" and \"Copyright (c) 2023-2025 Ettore Di Giacinto (mudler@localai.io)\".",
+                "accessed": "2026-09-29",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
                 "content_sha256": "56bef7ba54ae4e4477b9effe34b6e6cadc1b0bcfaacc5be503096a1ce0a9d391"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mudler/LocalAI/master/README.md",
+                "shows": "The README calls LocalAI \"is the open-source AI engine\" and states \"MIT - Author Ettore Di Giacinto <mudler@localai.io>\" under License, with no paid tier or gated feature mentioned.",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "source",
+                  "core_gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "ebb0b428c816cc72ea82c9fdb215a7156e289408014f15f3b36214cea0bc6cde"
               },
               {
                 "url": "https://github.com/mudler/LocalAI",
@@ -62649,16 +62848,16 @@
             "level": 3,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "LocalAI ships as a Docker image and publishes no first-party PyPI or npm package, so Docker Hub pulls, counted since the image's first release on 2023-03-18, are the channel that actually measures its distribution. That cumulative pull count is a lifetime average rather than a trailing 30-day figure, so it should be read as a floor on current adoption rather than a snapshot of it.",
-            "last_verified": "2026-08-13",
+            "note": "LocalAI ships as a Docker image and publishes no first-party PyPI or npm package, so Docker Hub pulls are the channel that actually measures its distribution. The pull count is cumulative over the image's lifetime rather than a trailing 30-day figure, so it should be read as a floor on current adoption rather than a snapshot of it.",
+            "last_verified": "2026-09-29",
             "reach": "100K-1M",
             "sources": [
               {
                 "url": "https://hub.docker.com/v2/repositories/localai/localai/",
-                "shows": "6,411,259 cumulative pulls of localai/localai",
-                "accessed": "2026-08-13",
+                "shows": "Docker Hub API record for localai/localai, described as \"LocalAI is the free, Open Source OpenAI alternative\", reports a cumulative pull count of 8.25 million (date_registered 2024-01-03).",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "7d0a2bfff9c13e1e35ac9bb191c5e493cd13534596c8eae77131eb576adbfbb3"
+                "content_sha256": "7577b43836bfda7a35ba1fa607a458ad2c20b5641d939d722cdd10a5847e2465"
               }
             ]
           },
@@ -62668,8 +62867,15 @@
             "value": "text/vision/voice/image/video models; 60+ backends (llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX, MLX-VLM, and more); drop-in OpenAI, Anthropic, and ElevenLabs API compatibility; CPU-only capable; built-in agents + RAG + MCP",
             "confidence": "high",
             "note": "LocalAI runs text, vision, voice, image and video models across more than 60 backends, including llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX and MLX-VLM. It offers drop-in OpenAI, Anthropic and ElevenLabs API compatibility across every backend, runs CPU-only, and bundles agents with tool use, RAG and MCP.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/mudler/LocalAI/master/README.md",
+                "shows": "The README lists \"LocalAI supports **60+ backends** including llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX, MLX-VLM\" and \"Drop-in API compatibility**: OpenAI, Anthropic, and ElevenLabs APIs across every backend\" and \"Built-in AI agents**: autonomous agents with tool use, RAG, MCP, and skills\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ebb0b428c816cc72ea82c9fdb215a7156e289408014f15f3b36214cea0bc6cde"
+              },
               {
                 "url": "https://github.com/mudler/LocalAI",
                 "shows": "LocalAI supports 60+ backends including llama.cpp, vLLM, SGLang, transformers, whisper.cpp, diffusers, MLX...; Drop-in API compatibility: OpenAI, Anthropic, and ElevenLabs APIs across every backend; Built-in AI agents: autonomous agents with tool use, RAG, MCP, and skills",
@@ -62684,9 +62890,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "date": "2026-09-29",
+            "basis": "verified"
           }
         },
         {
@@ -62695,15 +62900,36 @@
           "org_slug": "antirez",
           "org": "antirez (Salvatore Sanfilippo)",
           "type": "software",
-          "description": "ds4 (DwarfStar 4) is a native local LLM inference engine by antirez (Salvatore Sanfilippo), optimized first for DeepSeek V4 Flash and deliberately narrow: it serves one model at a time. The self-contained C/CUDA/Objective-C engine builds on llama.cpp/GGML, adding model loading, prompt rendering, tool calling, and KV state streaming to RAM and SSD. It ships an HTTP server with OpenAI-compatible endpoints and a coding agent.",
+          "description": "ds4 (DwarfStar 4) is a native local LLM inference engine by antirez (Salvatore Sanfilippo), optimized first for DeepSeek V4 Flash and deliberately narrow rather than a general GGUF runner. It also runs DeepSeek V4.1 Flash, GLM 5.x and Qwen3.8 Flash Next. The C/CUDA/Objective-C engine draws on llama.cpp/GGML kernels and quantization formats, adding model loading, prompt rendering, tool calling, and KV state streaming to RAM and SSD. It ships an HTTP server with OpenAI-style and Anthropic-style endpoints and a coding agent.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:MIT(OSI);source:public;no feature-gated core;built on ggml/llama.cpp;core-gated:ungated",
+            "components": "license:MIT(OSI);source:public;no feature-gated core;adapts some ggml/llama.cpp source (GGUF quant layouts, CPU quant/dot logic, kernels) under MIT, does not link GGML;core-gated:ungated",
             "confidence": "high",
             "note": "MIT-licensed native inference engine; full C/CUDA/Obj-C source public, no proprietary tier.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/antirez/ds4/main/LICENSE",
+                "shows": "The repository LICENSE file is the MIT License text, opening with \"MIT License\" and \"Copyright (c) 2026 The ds4.c authors\" and \"Copyright (c) 2023-2026 The ggml authors\".",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "4a8a1358f5b048627d71e4988de0bafd386f4988991929629e6cb9e29b7b9b2f"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/antirez/ds4/main/README.md",
+                "shows": "The README describes the full engine source in the repository, saying \"The code is self-contained and deliberately narrow, not a general GGUF runner\" and \"Some source-level pieces are retained or adapted here under the MIT license\"; a search for enterprise, commercial, license key and hosted found nothing gating the engine.",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "d61ff9a3153916ab88917cbfab0ca1a8c2e42b138b71a1ca0d74d05f391ff113"
+              },
               {
                 "url": "https://github.com/antirez/ds4/blob/main/LICENSE",
                 "shows": "MIT License, Copyright (c) 2026 The ds4.c authors, Copyright (c) 2023-2026 The ggml authors",
@@ -62748,12 +62974,26 @@
           "capability": {
             "score": 3,
             "basis": "feature_matrix",
-            "value": "Backends: Metal/CUDA/ROCm; DeepSeek V4 Flash/PRO specialization; OpenAI-compatible HTTP server; RAM + SSD KV streaming; integrated coding agent. No MLPerf submission.",
+            "value": "Backends: Metal/CUDA/ROCm; DeepSeek V4 Flash/PRO, V4.1 Flash, GLM 5.x and Qwen3.8 Flash Next support; OpenAI-style and Anthropic-style HTTP server; RAM + SSD KV streaming; multi-machine tensor parallel over RDMA; speculative decoding; integrated coding agent. No MLPerf submission.",
             "confidence": "medium",
-            "note": "ds4 is a specialized engine built for a single model family rather than general-purpose serving. It has neither the model breadth of llama.cpp nor the datacenter throughput of frontier serving engines.",
+            "note": "ds4 is a narrow engine that runs a short list of chosen open-weight models rather than a general GGUF runner. It has neither the model breadth of llama.cpp nor the datacenter throughput of frontier serving engines.",
             "basis_detail": "feature matrix; no benchmark or MLPerf submission",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/antirez/ds4/main/README.md",
+                "shows": "The README says the engine is \"deliberately narrow, not a general GGUF runner\" and that \"model loading, prompt rendering, tool calls, KV state, the HTTP server, and the coding agent are built and tested together\"; it lists Metal, CUDA and ROCm targets and DeepSeek V4, GLM and Qwen model support.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d61ff9a3153916ab88917cbfab0ca1a8c2e42b138b71a1ca0d74d05f391ff113"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/antirez/ds4/main/docs/SERVER.md",
+                "shows": "The serving guide lists \"POST /v1/chat/completions\" as \"OpenAI-style chat\" and \"POST /v1/messages\" as \"Anthropic-style messages\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "14e92c35f8e6c1db1a39f5e30676180ba753dfc1134a589e590a8307aba5e5dd"
+              },
               {
                 "url": "https://github.com/antirez/ds4",
                 "shows": "README states the engine is \"deliberately narrow, not a general GGUF runner. Model loading, prompt rendering, tool calls, KV state, the HTTP server, and the coding agent are built and tested together\"; confirms Metal/CUDA/ROCm backends and DeepSeek 4 Flash/PRO focus",
@@ -62768,11 +63008,11 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-27",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-29"
           },
-          "version_note": "The project has no tagged releases and is built from source, so this entry is verified against the repository head rather than a release."
+          "version_note": "The project has no tagged releases and is built from source, so the entry is read against the repository head rather than a release."
         },
         {
           "slug": "xllm",
