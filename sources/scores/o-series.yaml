@@ -15,31 +15,40 @@ openness:
   confidence: high
   note: Proprietary OpenAI reasoning models; no weights, data, or code released.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API+ChatGPT only)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://en.wikipedia.org/wiki/OpenAI_o3
-    shows: o3-mini released 2025-01-31, o3 and o4-mini 2025-04-16, o3-pro 2025-06-10; served through
-      ChatGPT tiers and the API, with no weights, corpus or code published
-    accessed: '2026-08-13'
+    shows: 'Article on the o3 family, describing o3-mini as a "specialized alternative" to o1 for "technical
+      domains requiring precision and speed" and the models as offered through ChatGPT and the API. Searched
+      the body for open-source, open weights, weights, license and code release: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 47314bbf2b7d69b81230804757e9225ccce4b8142114fed9ee41958d59d128e9
-    establishes: [weights, data, code, license]
-  - url: https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf
-    shows: '"OpenAI o3 and o4-mini System Card, OpenAI April 16, 2025" - still live and still the primary
-      release document; a safety card rather than a weights or data release'
-    accessed: '2026-08-13'
+    content_sha256: 71f9edfaf0c01fa92382a6425254769a8f32b7be93ab109994b5835c5096201b
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://platform.openai.com/docs/models/o3
+    shows: 'o3 API model page: "o3 is a well-rounded and powerful model across domains". Searched the body
+      for weights, open-weight, open source and license: none; the model is offered only as a hosted API
+      endpoint.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 32d7ca19fff2ed0dc2d06f84e3143900bbd7898bb6f443c094477fb4ce0fc4ab
+    content_sha256: 883e119f729ae636f2a217799067c9f1f51390a6fa392d5f39703300f3c45642
+    establishes:
+    - weights
+    - data
+    - code
+    - license
 adoption:
   level: 5
   reach: '>10M users'
   signal_type: active_users
   confidence: medium
-  note: o3 and o4-mini were rolled out as selectable models inside ChatGPT, across the Plus, Pro and some
-    free tiers, plus the API. Adoption is read from the ChatGPT surface these models power rather than from
-    a standalone o3 count, and while GPT-5.x has since replaced them as the default, they remain used at
-    scale within that surface.
-  last_verified: '2026-08-13'
+  note: o3 and o4-mini were offered across ChatGPT tiers as well as the API, and OpenAI publishes no per-model
+    usage count, so the reading was taken from the ChatGPT surface rather than a standalone figure. Both
+    have since been retired from ChatGPT; o3 remains available in the API.
   sources:
   - url: https://en.wikipedia.org/wiki/OpenAI_o3
     shows: '"OpenAI released o3-mini to all ChatGPT users (including free-tier) and some API users";
@@ -54,10 +63,9 @@ capability:
   value: 'o3: SWE-bench Verified 71.7%, GPQA Diamond 87.7%, Codeforces Elo 2727; o4-mini: AIME 2025 99.5% pass@1
     with Python tool, GPQA ~81%'
   confidence: high
-  note: The o-series was frontier-class reasoning at its April 2025 launch, state of the art on Codeforces,
-    SWE-bench and MMMU. It has since been surpassed by GPT-5.x, Opus 4.8 at 88.6% on SWE-bench, and Gemini
-    3.5, keeping it a step behind the current frontier.
-  last_verified: '2026-08-13'
+  note: OpenAI reported 87.7% on GPQA Diamond and 71.7% on SWE-bench Verified for o3 at its April 2025 launch,
+    results that placed it at the frontier for reasoning models at the time. OpenAI now lists GPT-5 as its
+    successor, so the family sits a step behind the current frontier.
   sources:
   - url: https://en.wikipedia.org/wiki/OpenAI_o3
     shows: '"o3 achieved a score of 87.7% on the GPQA Diamond benchmark"; "On SWE-bench Verified ... o3

@@ -16,13 +16,13 @@ openness:
     license:
     - name: NVIDIA-Nemotron-Open-Model-License
       detail: permissive,commercial,non-OSI
-  note: 'NVIDIA releases the weights, post-training data and training recipes under its own non-OSI Nemotron
-    Open Model License, unusually open for a post-trained model. The pretraining side is thinner than NVIDIA''s
-    ''fully open'' framing suggests: the specialized corpus is real data, but the code corpus ships only
-    metadata describing it, not the corpus itself.'
+  note: 'NVIDIA releases the weights, post-training data and training recipes. Nano and Super ship under
+    its own non-OSI Nemotron Open Model License and Ultra under the non-OSI OpenMDW License 1.1, and both
+    permit commercial use. The pretraining side is thinner than NVIDIA''s ''fully open'' framing suggests:
+    the specialized corpus is real data, but the code corpus ships only metadata describing it, and Ultra''s
+    code, math and multilingual data require gated approval.'
   raw: weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data;
     pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
-  last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
     shows: Nemotron 3 Nano/Super/Ultra family; the Data section still lists Nemotron-SFT-Data ("Collection
@@ -95,11 +95,10 @@ capability:
   value: 'Nemotron 3 Super (per NVIDIA tech report): SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools)
     79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B'
   confidence: high
-  note: Nemotron 3 Super, the family's flagship SKU, is frontier-tier among open instruct models; the smaller
-    Nano SKU performs well below it. NVIDIA's own comparison table puts Qwen3.5-122B-A10B above Super on
-    the same benchmarks (SWE-Bench 66.40, MMLU-Pro 86.70), so Super is not the top-performing open-weight
-    model in that comparison.
-  last_verified: '2026-08-13'
+  note: Nemotron 3 Ultra, the family's largest model, sits in the same frontier tier as recent open models
+    such as GLM-5.1, Kimi-K2.6 and DeepSeek-V4 in NVIDIA's own comparison, ahead on some benchmarks and
+    behind on others; it trails them on SWE-Bench Verified (70.7 against 73.5 to 76.2). Super and Nano perform
+    below it.
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
     shows: Nemotron 3 reasoning/agentic positioning - Nano "more accurate than GPT-OSS-20B and

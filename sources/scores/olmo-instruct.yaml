@@ -24,52 +24,59 @@ openness:
     checkpoints on the same open recipe, which does not change the class.'
   raw: weights:open(Apache-2.0);data:open(Dolma 3 pretraining + open post-training mixtures);code:open(OLMo
     + open-instruct);checkpoints:open;license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct
-    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
-      7B Instruct weights download without a barrier'
-    accessed: '2026-08-13'
+    shows: The model card is licensed under "Apache 2.0. It is intended for research and educational use"
+      and its embedded repo state carries "gated":false, so the weights download without a barrier.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1a758290064264b9ee98545b3c04bd94d6d04399779c763fddf59b1450b97e18
-    establishes: [weights, license]
+    content_sha256: 2688836a8b6658e91b0f14eb4b2a3f90bd5fcff9a89d20a4a99eebaae779a909
+    establishes:
+    - weights
+    - license
   - url: https://allenai.org/blog/olmo3
-    shows: 'the model flow is published in full - "every stage, checkpoint, dataset, and dependency required
-      to create and modify it"; Models / Tech Report / Code / API / Demo links, with Code pointing at
-      github.com/allenai/open-instruct; the 12/12 update adds Olmo 3.1 Instruct 32B on the same recipe'
-    accessed: '2026-08-13'
+    shows: The post defines the model flow as "every stage, checkpoint, dataset, and dependency required
+      to create and modify it", links Open Instruct for code, and says "Together, Dolma 3 and Dolci give
+      Olmo 3 a fully open data curriculum".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
-    establishes: [data, code, checkpoints]
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705
+    establishes:
+    - data
+    - code
+    - checkpoints
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: Adoption is measured as Hugging Face downloads for the declared Olmo-3-7B-Instruct release; the
-    newer 32B Instruct checkpoint returns no usable download figure, so it is excluded rather than assumed
-    to be zero. That volume trails the category's Qwen and Llama instruct lines, consistent with a fully
-    open, research-oriented model still building a practitioner audience.
-  last_verified: '2026-08-13'
+  note: Adoption is measured as Hugging Face downloads for the declared Olmo-3-7B-Instruct release. The
+    declared 32B checkpoint returns no usable download figure, so it is excluded rather than assumed to
+    be zero.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct
-    shows: 450,053 downloads in the trailing 30 days for allenai/Olmo-3-7B-Instruct
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/allenai/Olmo-3-7B-Instruct
+    shows: 'API record for allenai/Olmo-3-7B-Instruct: "downloads":459446,"likes":151,"modelId":"allenai/Olmo-3-7B-Instruct"
+      (30-day downloads; the repo is not private).'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1a758290064264b9ee98545b3c04bd94d6d04399779c763fddf59b1450b97e18
+    content_sha256: faf664938b47e044796af5ced792bc2430985fc7fb77bd435eb77515adadfac6
 capability:
   score: 4
   basis: benchmark
   basis_detail: IFEval/AlpacaEval/MMLU
   value: OLMo 3-Instruct 7B ties or surpasses Qwen 2.5, Gemma 3 and Llama 3.1 at its scale
   confidence: high
-  note: The strongest fully open chat line, competitive with same-scale open-weight instruct models but
-    below the 2026 frontier, which is where a 5 sits.
-  last_verified: '2026-08-13'
+  note: Ai2's evaluations show Olmo 3 Instruct tying or surpassing Qwen 2.5, Gemma 3 and Llama 3.1 at similar
+    scale and competing with the Qwen 3 family, and the 3.1 32B Instruct is described by Ai2 as the strongest
+    fully open 32B-scale instruct model. It is a fully open line that stays below the current frontier of
+    proprietary and largest open-weight models.
+  last_verified: '2026-09-29'
   sources:
   - url: https://allenai.org/blog/olmo3
-    shows: '"Olmo 3-Instruct ties or surpasses Qwen 2.5, Gemma 3, and Llama 3.1 in our evaluations, and
-      competes with the Qwen 3 family at similar scale"'
-    accessed: '2026-08-13'
+    shows: The post reports "Olmo 3-Instruct ties or surpasses Qwen 2.5, Gemma 3, and Llama 3.1 in our evaluations,
+      and competes with the Qwen 3 family at similar scale".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705

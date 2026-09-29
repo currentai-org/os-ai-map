@@ -13,29 +13,43 @@ openness:
     - name: Proprietary
       detail: API-only
   confidence: high
-  note: 'Closed by construction and stable across generations: Google''s own model index files Gemini under
-    API and app access while listing Gemma separately under ''Open models,'' so the line is drawn by the
-    vendor rather than inferred. Gemini 3 Pro, the current GA Pro release, ships the same way.'
+  note: Google files Gemini under API and app access and lists Gemma separately as its open models, so the
+    vendor draws the closed line itself. The Gemini API terms bar extracting or replicating the underlying
+    models, including parameter weights, and the current Pro release, Gemini 3.1 Pro, is offered the same
+    way.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://deepmind.google/models/gemini/
-    shows: Google's model index lists Gemini under API and app access and files Gemma separately under a
-      heading of "Open models", with no weight download for Gemini
-    accessed: '2026-08-13'
+    shows: DeepMind's Gemini page lists "Gemini 3.1 Pro" with the line "Best for complex tasks and bringing
+      creative concepts to life" and "3.5 Pro coming soon", and files Gemma separately under "Open models";
+      no weight download is offered for Gemini.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e2cdef7176ad7a1743962bc074f7b4bbe003b3f84f35f53d76858e22f1e92c24
-    establishes: [weights, data, code, license]
+    content_sha256: b8752ad3c6924fffe7c77655d38693fb48464bec2217a482e5b6dd708c177bb8
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://ai.google.dev/gemini-api/terms
+    shows: Gemini API Additional Terms state "You also may not attempt to reverse engineer, extract or replicate
+      any component of the Services", including "parameter weights".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f88850865bf7bdbbae4dcc17b28d1240d63e0b8bfb992d1d79e963988463559c
+    establishes:
+    - weights
+    - license
 adoption:
   level: 5
   signal_type: reported_traction
   confidence: medium
   banded_quantity: the Gemini app, AI Studio, API and Vertex surfaces the Pro tier powers, not a per-model
     count
-  note: Gemini Pro reaches users through the Gemini API, AI Studio, Vertex AI and the Gemini apps, whose
-    combined reach is mass-market. That reading is attributed to the surfaces the Pro tier powers rather
-    than to a standalone per-model count, so it is directional rather than an exact figure.
-  last_verified: '2026-08-13'
+  note: Gemini Pro is offered through the Gemini API, Google AI Studio, the Gemini app and Google's enterprise
+    agent platform. Google publishes no per-model usage or user figure for Pro, so this reading is a judgment
+    from the surfaces it powers rather than a measured count.
   sources:
   - url: https://deepmind.google/models/gemini/
     shows: Pro tier offered across the Gemini app, Google AI Studio, the Gemini API and Vertex AI; no
@@ -49,10 +63,10 @@ capability:
   basis_detail: GPQA-Diamond/HLE/SWE-bench Verified/LiveCodeBench Pro
   value: null
   confidence: medium
-  note: Gemini 3.1 Pro leads Sonnet 4.6, Opus 4.6 and GPT-5.2 on Humanity's Last Exam, GPQA Diamond, ARC-AGI-2,
-    Terminal-Bench and LiveCodeBench Pro, per DeepMind's own benchmark table. It trails Opus 4.6 on SWE-bench
-    Verified (80.6% versus 80.8%), and no independent LMArena placement is available to confirm the comparison.
-  last_verified: '2026-08-14'
+  note: DeepMind's benchmark table shows Gemini 3.1 Pro ahead of Sonnet 4.6, Opus 4.6 and GPT-5.2 on Humanity's
+    Last Exam, GPQA Diamond, ARC-AGI-2, Terminal-Bench and LiveCodeBench Pro, and behind Opus 4.6 on SWE-bench
+    Verified (80.6% versus 80.8%). Those comparison models have since been superseded, and no independent
+    LMArena placement is available.
   sources:
   - url: https://deepmind.google/models/gemini/pro/
     shows: 'DeepMind''s Gemini Pro page, Performance table in body text. Gemini 3.1 Pro (Thinking High) -
