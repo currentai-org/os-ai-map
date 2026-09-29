@@ -13,12 +13,26 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: The LICENSE file is the standard, unmodified Apache 2.0 text, and the repository is public and unarchived.
-    The README describes the whole library with no paid, enterprise or hosted tier beside it, so the source
-    is public and the core is ungated.
+  note: The library is licensed under Apache-2.0 and its source is public. The README describes the whole
+    library with no paid, enterprise or hosted tier beside it, so nothing in the core is withheld.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/transformers/json
+    shows: 'PyPI metadata for transformers lists the license as "Apache 2.0 License", and the embedded README
+      opens with "Licensed under the Apache License, Version 2.0". It tells readers to "Install Transformers
+      from source" with "git clone https://github.com/huggingface/transformers.git", so the source is public.
+      The README describes the whole library, "Transformers acts as the model-definition framework for state-of-the-art
+      machine learning", and its only Enterprise reference is an image link to "https://huggingface.co/enterprise",
+      the separate Hugging Face Enterprise Hub. Searched the README for paid, pro tier, license key, open
+      source and self-host: no library feature is withheld.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4e9f04e629116fed2d48d0895e35cde6f79740e1b08214c61687de27735edc57
+    establishes:
+    - license
+    - source
+    - core-gated
   - url: https://github.com/huggingface/transformers/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,25 +40,6 @@ openness:
     content_sha256: 77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/transformers
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/transformers.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 6fd1abbb2e578f93f5830520a47ea3851eb14e05b0f60a359f3445871c6db845
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/transformers/main/README.md
-    shows: README describes Transformers as the model-definition framework for inference and training. Its
-      only 'Enterprise' string is a banner link to the separate Hugging Face Enterprise Hub subscription,
-      not a feature withheld from the library.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 4882b6ecd6e7c866ca7a7d2c3517eca22d6ef8fce18601958e19092cb63afd51
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -70,10 +65,25 @@ capability:
   value: Unified framework for defining, loading, fine-tuning, and running 1M+ pretrained models across
     text, vision, audio, and multimodal tasks.
   confidence: high
-  note: Centralizes model definitions across training frameworks and inference engines; foundational to
-    the ecosystem.
-  last_verified: '2026-08-13'
+  note: Transformers centralizes model definitions so that training frameworks, inference engines and adjacent
+    libraries can share them, and it supplies pipelines, a trainer and text generation on top. This makes
+    it foundational to the open model ecosystem.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/docs/transformers/en/index
+    shows: The Transformers documentation home says "Transformers acts as the model-definition framework
+      for state-of-the-art machine learning models in text, computer vision, audio, video, and multimodal
+      models, for both inference and training."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef4c8d4860aeb898903bd8e636df2285b3119b02d723e977270973aafbeb151c
+  - url: https://pypi.org/pypi/transformers/json
+    shows: The PyPI README states "Transformers acts as the model-definition framework for state-of-the-art
+      machine learning with text, computer" vision, audio, video and multimodal models, and that "There
+      are over 1M+ Transformers [model checkpoints]" on the Hub.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4e9f04e629116fed2d48d0895e35cde6f79740e1b08214c61687de27735edc57
   - url: https://github.com/huggingface/transformers
     shows: README still describes the model-definition framework for text, vision, audio, video and multimodal
       models, for inference and training
