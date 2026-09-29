@@ -99,18 +99,25 @@ capability:
   confidence: medium
   relative_to: opencompass
   relation: one_below
-  last_verified: '2026-08-13'
-  note: 'BigCodeBench is a rigorous but single-purpose code-generation benchmark, narrower in scope than
-    the multi-task harnesses it is measured against: a step below OpenCompass, and behind lm-evaluation-harness
-    on the same ground.'
+  last_verified: '2026-09-29'
+  note: BigCodeBench scores code generation by executing more than a thousand library-heavy programming
+    tasks, split into Complete and Instruct variants. Because it covers code generation only, it sits a
+    step below OpenCompass and further behind lm-evaluation-harness, both of which span many kinds of task.
   sources:
   - url: https://github.com/bigcode-project/bigcodebench
     shows: 1140 tasks, Complete/Instruct splits, execution-based eval
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/bigcode-project/bigcodebench/main/README.md
-    shows: '''a new benchmark for code generation with 1140 software-engineering-oriented programming
-      tasks''; Complete and Instruct splits described; generation and execution-based grading run through
-      `--split [complete|instruct]`.'
+    shows: '''a new benchmark for code generation with 1140 software-engineering-oriented programming tasks'';
+      Complete and Instruct splits described; generation and execution-based grading run through `--split
+      [complete|instruct]`.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4aa8cbfa3111e92db886583d554a3c9e8f14561d47261d6441c069835e3bdc28
+  - url: https://pypi.org/pypi/bigcodebench/json
+    shows: The packaged README says "a new benchmark for code generation with 1140 software-engineering-oriented
+      programming tasks", describes two splits, Complete and Instruct, and shows an evaluation command with
+      "--split [complete|instruct]" and "--subset [full|hard]".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2d204cbd35b7a67b66ebfce9113d47433341eb4dcbc106502c18da05f14256ec
