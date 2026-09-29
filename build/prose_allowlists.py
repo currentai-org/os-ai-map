@@ -39,7 +39,6 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("cruxeval", "adoption"),
     ("google-coral-dev-board", "adoption"),
     ("kimi", "adoption"),
-    ("localai", "adoption"),
     ("mmmu", "openness"),
     ("n8n", "adoption"),
     ("open-llm-leaderboard", "adoption"),

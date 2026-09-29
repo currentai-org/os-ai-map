@@ -81541,7 +81541,7 @@
             "components": "license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev behind a COMPOSIO_API_KEY with no self-host option documented)",
             "confidence": "high",
             "note": "Composio's SDKs and provider adapters are MIT-licensed and public, but the toolkit-execution engine, the app catalog and OAuth management run only on Composio's own servers, with no self-hosting option documented. The published tree contains no server or auth service, and every path to running a tool requires a hosted API key, which is what makes this open core rather than open source.",
-            "last_verified": "2026-08-12",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/ComposioHQ/composio",
@@ -81550,11 +81550,13 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/ComposioHQ/composio/next/README.md",
-                "shows": "\"Create a session for a user, hand its tools to your agent, and let the agent take action across 1000+ apps. Grab a COMPOSIO_API_KEY from the dashboard (dashboard.composio.dev/settings) first.\" Also offers a hosted MCP endpoint per session - \"Pass mcp: true to composio.create() and point Claude, Cursor, or any MCP client at session.mcp.url\". Every path to running a tool goes through the hosted platform and a key issued by it.",
-                "accessed": "2026-08-12",
+                "shows": "The README says \"This is the Composio SDK monorepo. It contains:\" and lists the TypeScript SDK, the Python SDK, a CLI and provider adapters; it says \"Grab a `COMPOSIO_API_KEY` from the [dashboard](https://dashboard.composio.dev/settings) first.\" and ends \"MIT. See [LICENSE](LICENSE).\"",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "8c723e06bec36f55f3aaff4e2933834856a87dff5f6acd94f0a091b85457d94f",
+                "content_sha256": "4dda711b7fb9d50ce6bc7bbfb86a1e9b04b816e8b89ee8b11e7139211816cf34",
                 "establishes": [
+                  "license",
+                  "source",
                   "core-gated"
                 ]
               },
@@ -81570,10 +81572,10 @@
               },
               {
                 "url": "https://docs.composio.dev/docs/welcome",
-                "shows": "Documents the REST API served at https://backend.composio.dev/api/v3.1, \"Composio-managed auth\" as the default in which \"the agent connects accounts at runtime through the session\", and session creation via composio.create(user_id) against that hosted API. No self-hosting or on-premise deployment option is documented anywhere in it.",
-                "accessed": "2026-08-12",
+                "shows": "The docs welcome page describes the product as \"Give your agents tools, managed authentication, and secure execution.\" Searched the body for self-host, self host, on-prem and on prem: none.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "c9a2887c9a76300f53c2cb609c7e038457703b9629fb2e5ef8197454114571cf",
+                "content_sha256": "d31362b8a0b06ff033fad6e0d04fc8d050b49a3ab30c5e2d996b67dedfb732b1",
                 "establishes": [
                   "core-gated"
                 ]
@@ -81588,6 +81590,16 @@
                   "license",
                   "source"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ComposioHQ/composio/next/LICENSE",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "558da505ef85e06792d746b50b03845a7af36ac75eb2eb94d388cda598c6e9f9",
+                "shows": "The repository LICENSE is the plain MIT License text headed \"MIT License\" and \"Copyright (c) 2025 Sampark Inc.\"."
               }
             ],
             "bucket": "open"
@@ -81631,9 +81643,9 @@
           "maturity": 3.8,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "Whether the source component should read partial rather than public is flagged as an open question for a future review."
         },
@@ -82107,7 +82119,6 @@
             "components": "license:Proprietary(API-only managed browser infra);source:closed(cloud browser fleet/session infra);note:companion Stagehand SDK IS open source (Apache/MIT) but the Browserbase service being scored is the closed managed platform",
             "confidence": "high",
             "note": "The product scored here is the managed browser-infrastructure service, which is closed and proprietary. The companion Stagehand SDK is open source, but it is a client to the service rather than the service itself, so it does not make the scored platform open.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://docs.browserbase.com/",
@@ -82179,9 +82190,19 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-24",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "Read 2026-09-29: the Stagehand repository LICENSE and README are MIT, and the docs page 'Managed vs self-hosted' contrasts Browserbase's managed sessions with running your own Chromium. No fetched vendor page states the platform's license or that its source is closed, and the terms page carries no license text, so Proprietary and closed source rest on absence alone. Settled by a vendor statement of the platform's license or source, such as terms of service or an open-source page."
+              }
+            ]
           }
         },
         {
@@ -82292,7 +82313,6 @@
             "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "The server is MIT-licensed, first-party and ships with no feature-gated core. GitHub's hosted Remote GitHub MCP Server is a managed endpoint for that same server rather than a paid tier holding features back; it offers the same toolset, configured by an HTTP header rather than a command-line flag.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/github/github-mcp-server/main/LICENSE",
@@ -82359,9 +82379,19 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-27",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "Read 2026-09-29: the LICENSE at github/github-mcp-server main is the MIT License (digest unchanged) and the README documents building the whole server from source. But the README now lists toolsets that exist only on the hosted server - 'Additional Toolsets in Remote GitHub MCP Server' names copilot, copilot_spaces and github_support_docs_search - which does not match the recorded reading that the hosted endpoint offers the same toolset. Whether those hosted-only toolsets move core-gated is an update-product decision, and the axis stays undated until it is made."
+              }
+            ]
           }
         },
         {
@@ -82377,7 +82407,6 @@
             "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "The server is MIT-licensed, first-party and ships with no feature-gated core. Notion also runs a hosted MCP endpoint, but that is a managed deployment of the same server rather than a tier that withholds tools from it.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/LICENSE",
@@ -82444,9 +82473,19 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-26"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-26",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "Read 2026-09-29: the LICENSE and package.json are MIT, but the README now calls the repository 'no longer actively maintained or supported' and its feature table lists capabilities the hosted Remote Notion MCP has and this server lacks - semantic search ('Keyword search only'), AI Connector search ('Not available') and Markdown-native page editing ('Limited to two page-content tools'). That does not match the recorded reading that the hosted endpoint is a managed deployment of the same server withholding nothing, so core-gated cannot be re-dated at ungated. Whether it moves is an update-product decision."
+              }
+            ]
           }
         },
         {
@@ -82462,7 +82501,7 @@
             "components": "license:Apache-2.0(OSI);source:public(Microsoft repo);no-feature-gated-core;no-managed-tier;core-gated:ungated",
             "confidence": "high",
             "note": "Fully OSI-licensed Microsoft repo, no open-core split. The LICENSE resolves to the full Apache-2.0 text, and the whole server is in the tree and installed as a single npm package with no key, no enterprise directory and no hosted tier sold beside it.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/microsoft/playwright-mcp",
@@ -82484,6 +82523,37 @@
                 "establishes": [
                   "license"
                 ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/npm/@playwright/mcp@latest/LICENSE",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "9a7110fc2d2f964038e5dc49128f908f29f47a574c961cba16085914e879cbda",
+                "shows": "The LICENSE shipped in the npm package is the full text of the \"Apache License\" header and \"Version 2.0, January 2004\", matching the recorded digest of the repo LICENSE."
+              },
+              {
+                "url": "https://registry.npmjs.org/@playwright/mcp/latest",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "5ed54ea353ae670554fd1f620ec5aaf9c431fe35f58f6aca332e3134119f51bc",
+                "shows": "The npm registry record for @playwright/mcp declares \"license\":\"Apache-2.0\", author \"Microsoft Corporation\" and repository \"git+https://github.com/microsoft/playwright-mcp.git\", with dependencies only on the playwright packages."
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/npm/@playwright/mcp@latest/README.md",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "b33aa71a13d655e96e6b736d0c9de1e5ddea52f205916ca20b876387ff830e87",
+                "shows": "The package README installs the server with \"npx @playwright/mcp@latest --config path/to/config.json\" and describes it as \"This package provides MCP interface into Playwright.\" Searched the body for license key, api key, enterprise, paid, pricing, subscription and hosted: none."
               }
             ],
             "bucket": "open"
@@ -82534,9 +82604,9 @@
           "maturity": 4.2,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-26"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -82552,7 +82622,7 @@
             "components": "license:MIT(OSI, library core fully open);source:public;managed-tier:Browser-Use-Cloud(proxies/stealth/captcha/hosted browsers, proprietary);core-gated:ungated(one MIT LICENSE and no ee/ path. The pricing page prices hosted capacity only and states that cloud usage and the open-source browser-use Python library are separate products with different APIs. The four modules reading BROWSER_USE_API_KEY - browser/cloud sandbox skills and llm/browser_use - are published clients to that hosted product and the local agent needs no key)",
             "confidence": "high",
             "note": "The MIT-licensed repository has no enterprise or commercial directory, and the vendor's pricing page states that its hosted cloud and the open-source library are separate products with different APIs. The four modules that read a BROWSER_USE_API_KEY are clients to that hosted service, not a withheld feature; the local agent runs with any LLM and no key at all.",
-            "last_verified": "2026-08-12",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/browser-use/browser-use",
@@ -82583,13 +82653,34 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/browser-use/browser-use/main/CLOUD.md",
-                "shows": "Describes Browser Use Cloud as \"the fully hosted product made by Browser Use made for users to automate web-based tasks\", billed per usage through an API key, with its own v2 REST API at api.browser-use.com, hosted Sessions and Browsers, cloud Browser Profiles and a chromium fork carrying \"proprietary optimizations\". All of it is hosted infrastructure sold beside the library; none of it is a feature removed from the MIT library, which drives a local browser with any LLM.",
-                "accessed": "2026-08-12",
+                "shows": "CLOUD.md describes Browser Use Cloud as \"the fully hosted product made by Browser Use made for users to automate web-based tasks\", a separate hosted product with its own API key.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "8340abd8d96d663fd25427c446555a29f7478b698ceab3831ef1e8b5a4706e3f",
+                "content_sha256": "79311397125367265ee92c378373f6c2153cc3a43d1ae87f9ce6103a0d03405e",
                 "establishes": [
                   "core-gated"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/browser-use/browser-use/main/LICENSE",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "135c57671b0ee957669b05a0ca00cc06f645496d351e2e732832c6e276da9a5e",
+                "shows": "The LICENSE is the plain MIT License text headed \"MIT License\" and \"Copyright (c) 2024 Gregor Zunic\"."
+              },
+              {
+                "url": "https://raw.githubusercontent.com/browser-use/browser-use/main/README.md",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "0cf61424017e5d88361b33dcbc6e1326c9eb52a1501e857caebe92b80f78f64f",
+                "shows": "The README offers the library as a local path - \"Run the Browser Use agent locally from Python, with your choice of model and a local or cloud browser:\" - and names the hosted services as optional - \"For either optional Browser Use service, get a [Browser Use API key]\"."
               }
             ],
             "bucket": "open"
@@ -82649,9 +82740,9 @@
           "maturity": 4.2,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -82839,12 +82930,12 @@
             "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "Fully MIT, no feature-gated core. The LICENSE is the plain MIT License, the whole Go server ships in the tree and installs from npm or Docker with no key, and the maintainer sells nothing beside it - no hosted tier, enterprise directory or second license.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/LICENSE",
-                "shows": "Plain MIT License text: \"Copyright (c) 2025 Dmitrii Korotovskii\".",
-                "accessed": "2026-08-13",
+                "shows": "The LICENSE is the plain MIT License text headed \"MIT License\" and \"Copyright (c) 2025 Dmitrii Korotovskii\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "c9c83612abe6c352b95a2fc1146638accdd5b348b21cdef333cc78f756e22397",
                 "establishes": [
@@ -82861,6 +82952,18 @@
                   "source",
                   "core-gated"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/README.md",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "fe5c4cb415eaa4cab4c52dd679214defa2067cc2550bf9b0e7fc39dac9595efd",
+                "shows": "The README describes a \"Model Context Protocol (MCP) server for Slack Workspaces.\" and closes with \"Licensed under MIT - see [LICENSE](LICENSE) file.\" Searched the body for pricing, paid, subscription, license key and hosted: none."
               }
             ],
             "bucket": "open"
@@ -82871,7 +82974,6 @@
             "confidence": "medium",
             "note": "Adoption is measured by npm downloads of slack-mcp-server, whose registry metadata points at korotovsky/slack-mcp-server. A same-named PyPI package is an unedited template and a different thing entirely, so only the npm figure is counted here.",
             "reach": "100K-1M",
-            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/slack-mcp-server",
@@ -82906,9 +83008,19 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-29",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "The adoption reconciliation lists this as a route disagreement: the record reads level 3 on npm downloads, while the applicable route measures level 2 on GitHub stars. It is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
           },
           "version_note": "There is no first-party Slack MCP server; the original reference server was archived, and this is the maintained community one. The PyPI package of the same name is an unedited template and is not this product, so adoption reads the npm package."
         },
@@ -82925,7 +83037,7 @@
             "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "Fully MIT, no feature-gated core. Despite the \"Pro\" in the product name there is no paid edition - the whole server, index tuning and health checks included, ships in the tree and runs from PyPI or the crystaldba/postgres-mcp Docker image with only a DATABASE_URI, and there is no license key, second license or enterprise directory.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/crystaldba/postgres-mcp/main/LICENSE",
@@ -82947,6 +83059,18 @@
                   "source",
                   "core-gated"
                 ]
+              },
+              {
+                "url": "https://pypi.org/pypi/postgres-mcp/json",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "cfb5aa68a5b43f582d13e43445f53ee86b54587bfacf4d73d8d116ca7e056392",
+                "shows": "The PyPI metadata for postgres-mcp 0.3.0 carries the project README, which shows a \"License: MIT\" badge and describes the server as \"is an open source Model Context Protocol (MCP) server built to support you\" with installs by \"pipx install postgres-mcp\" or the Docker image; the only key mentioned is an OPENAI_API_KEY for the optional experimental LLM index tuning (\"you must provide an OpenAI API key\"), and no license key, paid edition or enterprise build appears."
               }
             ],
             "bucket": "open"
@@ -82992,9 +83116,9 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "The original reference Postgres server was archived read-only in May 2025 and only did read-only queries, so this is the maintained successor. \"Pro\" is part of the product name rather than a paid edition; there is no second tier."
         },
@@ -83011,12 +83135,12 @@
             "components": "license:Apache-2.0(OSI, new code under the monorepo's transition LICENSE)+MIT(OSI, legacy contributions not yet relicensed; also what this server's own README states);docs:CC-BY-4.0(documentation other than the specifications; not read by the openness ladder, which scores the artifact the product ships);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
             "note": "The server's README calls it MIT-licensed, but the monorepo's actual LICENSE file is the MCP project's transition text: Apache-2.0 for new code, MIT retained for legacy contributions, and CC-BY-4.0 for documentation. Every license in play is OSI-approved and nothing is withheld from the published tree, so the server is fully open under either statement.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/LICENSE",
-                "shows": "The monorepo LICENSE, digest byte-identical to the MCP spec repo's: \"The MCP project is undergoing a licensing transition from the MIT License to the Apache License, Version 2.0. All new code and specification contributions to the project are licensed under Apache-2.0. Documentation contributions (excluding specifications) are licensed under CC-BY-4.0. Contributions made by authors who originally licensed their work under the MIT License and who have not yet granted explicit permission to relicense remain licensed under the MIT License.\" Followed by the full Apache-2.0 text.",
-                "accessed": "2026-08-13",
+                "shows": "The monorepo LICENSE reads \"The MCP project is undergoing a licensing transition from the MIT License to the Apache License, Version 2.0\" and \"Contributions made by authors who originally licensed their work under the MIT License and who have not yet granted explicit permission to relicense remain licensed under the MIT License.\" It is followed by the full Apache-2.0 text.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
                 "establishes": [
@@ -83025,8 +83149,8 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/README.md",
-                "shows": "License section - \"This MCP server is licensed under the MIT License. This means you are free to use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For more details, please see the LICENSE file in the project repository.\" The whole server ships here and installs as @modelcontextprotocol/server-filesystem; nothing is withheld and there is no paid tier.",
-                "accessed": "2026-08-13",
+                "shows": "The server README opens \"Node.js server implementing Model Context Protocol (MCP) for filesystem operations.\" and its License section says \"This MCP server is licensed under the MIT License.\" Searched the body for pricing, paid, subscription, license key and hosted: none.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "df276d57efc04b85fa1e8163fe1aa3d5b11d5b2a7de5ec51ba083e5cb04019cd",
                 "establishes": [
@@ -83089,9 +83213,9 @@
           "maturity": 3.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-26"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -83382,7 +83506,7 @@
             "components": "license:Apache-2.0(declared in Cargo.toml+README);source:public;core-gated:ungated(the whole runtime is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with no second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo neither references nor requires);full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional",
             "confidence": "medium",
             "note": "Cargo.toml and the README's License section both declare Apache-2.0, but no LICENSE file sits at the repository root, so the GitHub API reports the license as null. Nothing is withheld - routing, the serverless host, tool invocation, auth and transport all live in src/ with no paid tier or license key - and Vivgrid's separate hosted platform neither mentions YoMo nor is mentioned by it.",
-            "last_verified": "2026-08-12",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/yomorun/yomo/blob/main/Cargo.toml",
@@ -83424,6 +83548,47 @@
                 "establishes": [
                   "core-gated"
                 ]
+              },
+              {
+                "url": "https://docs.rs/crate/yomo/latest/source/Cargo.toml",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "e88180518041767774ac5c4c3e684260d790edf9ba75cf459d4da2a0a963a7bf",
+                "shows": "The published crate manifest of yomo, browsed on docs.rs, declares the license as \"Apache-2.0\" and the repository as \"https://github.com/yomorun/yomo\", with the crate description \"A QUIC-based runtime for AI-LLM tool routing and serverless execution\"."
+              },
+              {
+                "url": "https://docs.rs/crate/yomo/2.1.3/source/README.md",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "3eddad2de4f2b7756cb17b0a39eeb1800bf9e6ae6dee9fbeaa931db5376eae12",
+                "shows": "The README of the published yomo 2.1.3 crate ends with a License section reading \"[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)\"."
+              },
+              {
+                "url": "https://docs.rs/crate/yomo/2.1.3/source/src/",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "74d0ff64bf462842674f038f7e502ab8f9f28b88f444139eb2b43825fc3bda4e",
+                "shows": "The docs.rs source browser for yomo 2.1.3 lists the runtime under src/: \"agent_loop.rs\", \"auth.rs\", \"router.rs\", \"serverless.rs\", \"tls.rs\", \"tool_invoker.rs\", \"zipper.rs\", \"llm_provider\" and \"model_api_provider\", so routing, the serverless host, tool invocation, auth and transport ship in the crate, and the description reads \"A QUIC-based runtime for AI-LLM tool routing and serverless execution\". Searched the listing for a second license, enterprise or license-key module: none."
+              },
+              {
+                "url": "https://vivgrid.com/",
+                "accessed": "2026-09-29",
+                "establishes": [
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "4a483dde8a578dcd9369054b6478cab3d2f43beed5b8f9ca9b345aa159f3e1e7",
+                "shows": "Vivgrid describes itself as \"serverless LLM function calling that lets enterprise AI agents run their tools in the cloud\", a hosted platform; it offers \"Maintainers of approved open-source projects can request $200/month in free credits.\" Searched the body for self-host, on-prem and license: none."
               }
             ],
             "bucket": "open"
@@ -83451,7 +83616,7 @@
             "value": null,
             "confidence": "high",
             "note": "YoMo is not an adapter: it is a serverless runtime that determines where a function runs, not what system it connects to. Scoring what a product reaches on an agent's behalf does not apply to something that decides where code executes instead, so no capability score is assigned rather than one being forced to fit.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/yomorun/yomo",
@@ -83459,6 +83624,13 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "b2383bbd1d926f9454c1a9a4feba1245a79938a0057fca8463a934ebfb4bb052"
+              },
+              {
+                "url": "https://yomo.run/",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "db2c5f0c7b89fef4adaa461b5884aac03d49589ee5dd75949e017594ff91ef31",
+                "shows": "The YoMo docs introduction is titled \"Open source Serverless LLM Function Calling framework for AI agents\" and lists features \"Implement llm function callings by TypeScript or Go\" and \"Expose llm function calling as MCP server\", so YoMo hosts and runs the functions rather than connecting to an external system on an agent's behalf. Searched the body for adapter, connector and integration catalog: none."
               }
             ]
           },
@@ -83467,9 +83639,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-09-27",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "A framework and runtime for the agent-tooling layer rather than a model. The terms are declared in Cargo.toml and the README rather than in a license file on the default branch, which is why the GitHub API reports none; one does resolve on the master branch, so the two branches disagree and the openness record should say which governs. Backed by Vivgrid, which operates a separate managed platform."
         }
