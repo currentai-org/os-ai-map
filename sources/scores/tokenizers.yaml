@@ -13,12 +13,39 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full Rust/Python source public. The repository is public
-    and unarchived, and the README describes the whole library with no paid, enterprise or hosted tier beside
-    it, so source is public and the core ungated.
+  note: The repository carries the unmodified Apache License 2.0 and the full Rust and Python source is
+    public. The README describes the whole library with no paid, enterprise or hosted tier beside it, so
+    nothing in the core is withheld.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/tokenizers@main/LICENSE
+    shows: The repository LICENSE file is the Apache License, Version 2.0 text ("Grant of Copyright License.
+      Subject to the terms and conditions of").
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/huggingface/tokenizers@main/README.md
+    shows: 'The README presents the whole library, "The SOTA tokenization library on all languages, all
+      models, all hardwares.", with the Rust engine and Python and Node.js bindings. Searched the body for
+      paid, enterprise, hosted and cloud: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f29b06e71a2f168ec20c93139b1d2e1f944999fe8763890ec30412d320616355
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/tokenizers/json
+    shows: 'PyPI metadata for tokenizers carries the classifier "License :: OSI Approved :: Apache Software
+      License" and a Source link to the huggingface/tokenizers repository.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b28cedba8822d284a93af448c82a215880f942de3e2ace71b9d4b2716d151315
+    establishes:
+    - license
+    - source
   - url: https://github.com/huggingface/tokenizers/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +53,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/tokenizers
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/tokenizers.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e501dafd4cc582b859aef9635a2fda2841304166b690c48c32d5ef91a48b0a33
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/tokenizers/main/README.md
-    shows: README lists the trainable BPE/WordPiece/Unigram implementations and the Rust/Python/Node/Ruby
-      bindings as published. No paid tier appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 3f468113e6783aa06593399ea4bae20321eb778a1be7ed028db33fc7228c3ef5
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -68,9 +77,28 @@ capability:
   basis: feature_matrix
   value: Foundational, fast multi-algorithm tokenization with training, normalization, and pre/post-processing.
   confidence: high
-  note: Broad feature set and central dependency of the Transformers ecosystem.
-  last_verified: '2026-08-13'
+  note: Tokenizers trains new vocabularies and runs BPE, WordPiece and Unigram tokenization in Rust, with
+    alignment-tracking normalization and truncation, padding and special-token processing. The Transformers
+    library depends on it directly.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/tokenizers/json
+    shows: The PyPI page for tokenizers says "Extremely fast (both training and tokenization), thanks to
+      the Rust implementation." and "Normalization comes with alignments tracking."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b28cedba8822d284a93af448c82a215880f942de3e2ace71b9d4b2716d151315
+  - url: https://cdn.jsdelivr.net/gh/huggingface/tokenizers@main/README.md
+    shows: The README lists Rust as the "reference implementation" beside Python and Node.js bindings, and
+      describes the tk-train crate as "The `Trainer` trait, every concrete `*Trainer`".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f29b06e71a2f168ec20c93139b1d2e1f944999fe8763890ec30412d320616355
+  - url: https://pypi.org/pypi/transformers/json
+    shows: 'The PyPI metadata for transformers lists a hard dependency on the tokenizers package: "tokenizers<0.24.0,>=0.23.1".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4e9f04e629116fed2d48d0895e35cde6f79740e1b08214c61687de27735edc57
   - url: https://github.com/huggingface/tokenizers
     shows: README still lists trainable BPE/WordPiece/Unigram tokenizers with normalization and alignment
       tracking, in Rust with multi-language bindings

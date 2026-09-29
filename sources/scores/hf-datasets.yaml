@@ -13,12 +13,37 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public, and the
+    README describes the whole library with no paid, enterprise or hosted tier beside it, so source is public
+    and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/datasets@main/LICENSE
+    shows: LICENSE file is the Apache License text, headed "Version 2.0, January 2004", with "TERMS AND
+      CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION" and no added terms.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/huggingface/datasets@main/README.md
+    shows: 'README gives the development install from the public repository, "datasets @ git+https://github.com/huggingface/datasets.git",
+      for the whole library. Searched the body for enterprise, pricing, paid and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b44ee0cc106481037c92a7a3e045ee12c288c6f9963329081ff6e6744e39f344
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/datasets/json
+    shows: 'PyPI metadata lists "License :: OSI Approved :: Apache Software License" and the license field
+      "Apache 2.0".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f595e3cc04afd94c63ef318c0d4941c3c6105ae7f05ed64b3429cc45376cb990
+    establishes:
+    - license
   - url: https://github.com/huggingface/datasets/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +51,6 @@ openness:
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/datasets
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/datasets.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 6c179f069db6c71b8f8c93f9e0b14a42f6e473d0e8b6640f976ae4721556f86e
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/datasets/main/README.md
-    shows: README describes one-line dataloaders and efficient preprocessing across formats and modalities.
-      No paid tier or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 29908587cbd9c4f062d01573ec58e909822c58b5a8a5664045fe0c968639a399
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -66,12 +73,19 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Data loading and preprocessing library: one-line dataset loading from the Hub plus fast manipulation
-    of multi-format, multi-modal data with streaming.'
+  value: 'Data loading and preprocessing library: one-line dataset loading from the Hub plus fast, cached
+    manipulation of multi-format, multi-modal data with streaming and memory-mapped Arrow storage.'
   confidence: high
   note: Broad and central to data pipelines but scoped to data handling rather than modeling.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/datasets@main/README.md
+    shows: README describes "one-line dataloaders for many public datasets" and "efficient data pre-processing",
+      with streaming, "Apache Arrow backend" memory-mapped storage and "Multi-framework interoperability"
+      across NumPy, Pandas, Polars, PyTorch, TensorFlow and JAX.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b44ee0cc106481037c92a7a3e045ee12c288c6f9963329081ff6e6744e39f344
   - url: https://github.com/huggingface/datasets
     shows: README still describes one-line dataloaders and efficient preprocessing across text, image, audio,
       video and 3D medical data with streaming

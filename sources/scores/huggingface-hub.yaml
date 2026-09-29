@@ -13,12 +13,38 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full source public. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The LICENSE file is the unmodified Apache 2.0 text and the repository accepts outside contributions.
+    The README describes one package covering the CLI and the Python library with no paid or enterprise
+    tier beside it; the hosted Hub it connects to is a separate service.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/LICENSE
+    shows: LICENSE file carries the standard Apache License text, including the grant "you may not use this
+      file except in compliance with the License" and the heading "Version 2.0, January 2004".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/huggingface-hub/json
+    shows: 'PyPI metadata for huggingface-hub lists "license":"Apache-2.0" and the classifier "License ::
+      OSI Approved :: Apache Software License".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 05442c841ee99b4aeff436e523f3218131ea22dacefa9b8d06c87ac3fc27552c
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/README.md
+    shows: 'README invites outside work on the repository: "Everyone is welcome to contribute, and we value
+      everybody''s contribution." and links a contribution guide; searched for paid, enterprise, license
+      key and hosted-tier language beside the library: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef11081839bdea72c6ae7be4832e4d4c94ef76e5888b0ddd935850c675e7d91a
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/huggingface/huggingface_hub/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +52,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/huggingface_hub
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/huggingface_hub.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: bd299eb186b7f7db4ed5ea0a70236932134a007dbecfc1a9bf45ea9709c48bf9
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/huggingface_hub/main/README.md
-    shows: README describes the official CLI and Python client for the Hub - up/download, repo management,
-      inference, search - as published. The paid product is the Hub subscription, not this client.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 8c77b9f44339ce377dea262879ee735e34aa8491ad65727d5db1e35c96a3dce3
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -66,11 +74,26 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: Foundational client for Hub up/download, repo management, inference, and library integration.
+  value: Foundational client and hf CLI for Hub up/download, repository management, inference, jobs, search,
+    and library integration.
   confidence: high
-  note: Central dependency across the Hugging Face ecosystem.
-  last_verified: '2026-08-13'
+  note: The package covers downloads, uploads, repository management, inference, jobs and search through
+    both a CLI and a Python library. Other open source ML libraries integrate with the Hub through it, which
+    makes it a shared dependency across the ecosystem.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/README.md
+    shows: README describes the library as "The official CLI and Python client for the Hugging Face Hub",
+      covering downloads, uploads, repository management, inference, jobs and search in "one package".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef11081839bdea72c6ae7be4832e4d4c94ef76e5888b0ddd935850c675e7d91a
+  - url: https://cdn.jsdelivr.net/gh/huggingface/huggingface_hub@main/README.md
+    shows: 'README describes library integration: "We''re partnering with cool open source ML libraries
+      to provide free model hosting and versioning."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef11081839bdea72c6ae7be4832e4d4c94ef76e5888b0ddd935850c675e7d91a
   - url: https://github.com/huggingface/huggingface_hub
     shows: README still describes the official CLI and Python client for Hub up/download, repo management,
       inference and search
