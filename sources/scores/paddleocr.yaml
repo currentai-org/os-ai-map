@@ -61,30 +61,30 @@ adoption:
     http_status: 200
     content_sha256: a37091b620cc47c50d92f8c644849828d40b6fa2653f03a7de2352d21540344c
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
   value: text detection and recognition across 100+ languages; table, formula and seal recognition; a document-parsing
-    pipeline emitting Markdown and JSON; PaddleOCR-VL as the vision-language parsing model on top
+    pipeline emitting Markdown and JSON; PaddleOCR-VL as the vision-language parsing model on top; PP-ChatOCRv4
+    key-information extraction returning the fields a user names
   confidence: medium
   relative_to: docling
   relation: at
   comparison:
-    last_attested: '2026-09-16'
+    last_attested: '2026-09-29'
     sources:
-    - url: https://github.com/docling-project/docling
-      shows: Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and
-        lossless JSON with layout and reading order preserved, which is the amount of a document surviving
-        that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images
-        - is on the same page and is recorded here for completeness; it is NOT the property the comparison
-        turns on, because the recipe excludes input breadth by name.
-      accessed: '2026-09-16'
+    - url: https://docling-project.github.io/docling/_generated/examples/extraction/
+      shows: The Information extraction example states "Docling provides the capability of extracting information,
+        i.e. structured data, from unstructured documents." and that the user supplies a template "either
+        as a dictionary or as a Pydantic model, and Docling will return" the extracted data; its "Using
+        a dict template" example returns a bill number and a total of "3949.75" from an invoice.
+      accessed: '2026-09-29'
       http_status: 200
-      content_sha256: 69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5
-  note: PaddleOCR's parsing pipeline emits Markdown and JSON with tables, formulas and seals recovered,
-    matching Docling's structure-preserving output. Its support for more than 100 languages does not raise
-    this further, since language breadth measures how many documents it can process, not how much structure
-    survives within one.
-  last_verified: '2026-09-16'
+      content_sha256: 2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db
+  note: PaddleOCR's PP-ChatOCRv4 pipeline returns the fields a user names from a document, on top of a parsing
+    pipeline that emits Markdown and JSON with tables, formulas and seals recovered, which matches Docling's
+    template-driven extraction. Its support for more than 100 languages is not what places it here, since
+    language breadth measures how many documents it can process, not how much of one survives.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/PaddlePaddle/PaddleOCR
     shows: Repository page and README describing multilingual text detection and recognition, table, equation
@@ -92,3 +92,18 @@ capability:
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: 3e737e1ad11e6ed5c27f82917d5e89114164c65dce29e4257479f970159530e0
+  - url: https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/main/README.md
+    shows: The raw README states "PaddleOCR converts PDF documents and images into structured, LLM-ready
+      data (JSON/Markdown)" and that "additional dependencies for document parsing and information extraction
+      can be installed as needed".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 63d76041f1dcb84e1dd141d45dc8dec5d86a3e357fe98bf8432ad2721c0ced90
+  - url: https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/main/docs/version3.x/pipeline_usage/PP-ChatOCRv4.en.md
+    shows: 'The PP-ChatOCRv4-doc tutorial describes a pipeline built "to address complex document information
+      extraction challenges such as layout analysis, rare characters, multi-page PDFs, tables, and seal
+      text recognition", imports it with "from paddleocr import PPChatOCRv4Doc", passes the fields wanted
+      as "key_list=[" and prints the extracted field as "{''chat_res'': {''驾驶室准乘人数'': ''2''}}".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b7b4233138ada431e8c294f37de99a47e6bebcc8ad8b32f13175af949e5acbf0
