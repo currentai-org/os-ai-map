@@ -13,63 +13,59 @@ openness:
     core-gated:
       value: gated
       detail: NOTICE and platform/app/ee/LICENSE.md put platform/app/ee under the LangWatch Enterprise License,
-        covering SSO, SCIM, audit-log reading, governance, webhooks, billing, licensing, managed providers
-        and back-office admin, each of which "verifies a license at runtime before it can be used"
-    free_text:
-    - enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/ require commercial license
-      for production
+        covering single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing, billing
+        and back-office tooling, each of which "verifies a license at runtime before it can be used"
   confidence: high
   note: LangWatch's core platform is Apache-2.0 and its SDKs are MIT, but the platform/app/ee directory,
-    covering single sign-on, SCIM, audit logging, governance and billing, is licensed separately under the
-    LangWatch Enterprise License and checks that license at runtime. That gated directory is what makes
-    this open core rather than fully open source.
+    covering single sign-on, SCIM, audit logging and billing, is licensed separately under the LangWatch
+    Enterprise License and checks that license at runtime. That gated directory is what makes this open
+    core rather than fully open source.
   raw: license:Apache-2.0(core)+MIT(SDKs);source:public;core-gated:gated(NOTICE and platform/app/ee/LICENSE.md
-    put platform/app/ee under the LangWatch Enterprise License, covering SSO, SCIM, audit-log reading, governance,
-    webhooks, billing, licensing, managed providers and back-office admin, each of which "verifies a license
-    at runtime before it can be used");enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/
-    require commercial license for production
-  last_verified: '2026-08-12'
+    put platform/app/ee under the LangWatch Enterprise License, covering single sign-on, SCIM provisioning,
+    audit logging, gateway webhooks, licensing, billing and back-office tooling, each of which "verifies
+    a license at runtime before it can be used")
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/langwatch/langwatch
     shows: Apache-2.0 core, MIT SDKs, langwatch/ee/ enterprise modules requiring commercial license
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/langwatch/langwatch/main/NOTICE
-    shows: 'The license split, stated by the vendor per directory: "This product is licensed under the Apache
-      License, Version 2.0 (see LICENSE.md), with the following components separately licensed in their
-      respective directories: platform/app/ee/ LangWatch Enterprise License (platform/app/ee/LICENSE.md);
-      sdks/typescript/ MIT; sdks/python/ MIT; mcp/typescript/ MIT." So the tier-setting licenses are Apache-2.0
-      and MIT, and the gate is one named directory.'
-    accessed: '2026-08-12'
+    shows: 'The vendor NOTICE states the license split: "This product is licensed under the Apache License,
+      Version 2.0" with "platform/app/ee/      LangWatch Enterprise License" and MIT for "sdks/python/"
+      and "sdks/typescript/".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 6043f1be6c0235c2cbdd141b57ddae9fbe849851d27acc1acae62c3f7b4d65ab
     establishes:
     - license
     - core-gated
   - url: https://raw.githubusercontent.com/langwatch/langwatch/main/platform/app/ee/LICENSE.md
-    shows: The LangWatch Enterprise License. "The Enterprise Software implements the enterprise capabilities
-      of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing,
-      billing, and back-office tooling. The enterprise capabilities are the surfaces the software enables
-      only for licensed deployments; each verifies a license at runtime before it can be used." It adds
-      that some keep recording on an unlicensed deployment so no history is lost, audit logging in particular,
-      and that "Reading, exporting, or otherwise making use of what they record is the enterprise capability,
-      and that is what a license is required for."
-    accessed: '2026-08-12'
+    shows: The enterprise license says "each verifies a license at runtime before it can be used" and that
+      "Enabling or using an enterprise capability in production requires a valid LangWatch Enterprise License".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 5b46ca052ab5745b2b61296f74c97077034a28365012f9b82f1eab56a5cf73be
     establishes:
     - core-gated
-  - url: https://api.github.com/repos/langwatch/langwatch/contents/platform/app/ee
-    shows: 'What the enterprise license actually covers, listed rather than characterized: admin, audit-log,
-      billing, event-sourcing, governance, licensing, managed-providers, saas, scim, sso, webhooks, plus
-      LICENSE.md and README.md. The rest of the repository - cmd, pkg, platform, packages, sdks, mcp, charts,
-      infra, services, plugins - carries no second license, so the published Apache-2.0 tree is otherwise
-      the whole product.'
-    accessed: '2026-08-12'
+  - url: https://raw.githubusercontent.com/langwatch/langwatch/main/README.md
+    shows: The README calls LangWatch "the open-source platform for AI in production", says "LangWatch is
+      Apache 2.0." and that "The enterprise modules under" platform/app/ee/ "need a commercial license in
+      production, and the SDKs are MIT."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b9c9257050a63157226d9b55b4303f6822091dead93c9468e7927a2f33c2842e
+    content_sha256: 1c31389f92c137dec86adf54e37f9986424dfc4d9f356aa84110c3bf40766a2d
     establishes:
-    - core-gated
+    - license
     - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/langwatch/langwatch/main/sdks/python/LICENSE
+    shows: The Python SDK license file grants use of the software "free of charge, to any person obtaining
+      a copy of this software" and "to deal in the Software without restriction", the MIT terms.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 622f40f711a5904338b4637c114ea02b8aeee5c051854f0670fbcf5475605242
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -100,21 +96,48 @@ capability:
   basis: feature_matrix
   relative_to: langfuse
   relation: at
-  value: 'Has: OTel/OTLP-native tracing; LLM evals (offline + production monitoring); agent simulations/scenario
-    testing; prompt management with GitHub integration; dataset creation + annotation; AI Gateway (cost
-    control, failover); broad framework/provider integrations.'
+  value: 'Has: OTel/OTLP-native tracing; LLM evals (offline experiments + online production monitoring);
+    agent simulations/scenario testing; versioned prompt management; dataset creation + annotation; AI Gateway
+    (virtual keys, budgets, provider routing); broad framework/provider integrations.'
   confidence: high
-  note: LangWatch covers OpenTelemetry-native tracing, offline evaluation and production monitoring, prompt
-    management with GitHub integration, dataset creation and annotation, cost control through a built-in
-    AI gateway with failover, and broad framework and provider integrations, plus distinctive agent simulation
-    and scenario testing. That matches Langfuse's feature set without going beyond it.
-  last_verified: '2026-08-13'
+  note: LangWatch covers OpenTelemetry-native tracing, offline experiments and online production monitoring,
+    versioned prompt management, dataset creation and annotation, and a built-in AI gateway with virtual
+    keys and budgets, plus distinctive agent simulation against a simulated user. That matches Langfuse's
+    feature set without going beyond it.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/langwatch/langwatch
-    shows: 'README - "The platform for LLM evaluations and AI agent testing. We help teams test, simulate,
+    shows: README - "The platform for LLM evaluations and AI agent testing. We help teams test, simulate,
       evaluate, and monitor LLM-powered agents end-to-end", with headline sections for "End-to-end agent
       simulations" ("Run realistic scenarios against your full stack") and "Eval + observability + prompts
-      in one loop".'
+      in one loop".
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 01df8119b46f1e2956eacd00810976a4eadec3399e5a5dacd7ccc1685482e057
+  - url: https://langwatch.ai/docs/introduction
+    shows: 'Docs introduction: "Tracing, evaluations, agent testing, prompt management and more", "experiments
+      on datasets, and monitors on production traffic.", "multi-turn conversations against your agent with
+      a simulated user." and "versioned prompts your code loads at runtime."; navigation lists AI Gateway,
+      Annotations, Datasets and Online Evaluation.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 651914c4f36d1fd758fbc45303f51d3d3465e5fe94c2cf7f7a69519c25568849
+  - url: https://langwatch.ai/docs/integration/opentelemetry/guide
+    shows: 'OpenTelemetry guide: "LangWatch provides a standard OpenTelemetry Protocol (OTLP) endpoint for
+      receiving traces:" and "LangWatch works with any OpenTelemetry-compatible instrumentation library."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ff441f071c6e68ef4a74642f494ab6c13296c94e0c74109b582d2fe3cdacd571
+  - url: https://langwatch.ai/docs/ai-gateway/overview
+    shows: 'AI Gateway overview: "One OpenAI- and Anthropic-compatible endpoint for every LLM call in your
+      company, with provider keys kept in LangWatch, a virtual key per application, team or person, budgets
+      that block or warn, and a trace for every request."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dd1e769955c896f162cfaa483617fe3272f0ecdbaccf13e5948e02da6dd81e0c
+  - url: https://langwatch.ai/docs/prompt-management/overview
+    shows: 'Prompt management overview: "LangWatch’s prompt management system helps you organize, version,
+      and optimize your AI prompts across your application."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 99342c58b276a4eb91c1fac27e14fc9ddaf84e937aed9244ad34eb1199248c5d

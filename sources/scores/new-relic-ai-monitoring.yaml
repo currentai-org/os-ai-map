@@ -20,16 +20,25 @@ openness:
     no source published. Support for ingesting OpenTelemetry data does not make the product itself open.
   raw: platform:proprietary-SaaS(closed);license:commercial(Standard/Pro/Enterprise tiers);ingestion:OpenTelemetry-compatible(open
     standard, not open product);source:closed
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://newrelic.com/platform/ai-monitoring
-    shows: 'The AI Monitoring product page, sold as one capability among Federated Logs, SAP Monitoring,
-      AIOps, Pipeline Control and the rest of the hosted platform. OpenTelemetry appears in the capability
-      list as "Collect metrics, logs, and traces from any source", which is an ingestion route rather than
-      an open product. No repository, license text or self-hosted distribution is offered anywhere on it.'
-    accessed: '2026-08-13'
+  - url: https://newrelic.com/platform/ai-observability
+    shows: 'Product page for a hosted platform module: "tracking request tokens used and setting custom
+      alerts". Searched the visible copy for self-host and on-prem: none; the open source and license strings
+      in the body are script and navigation boilerplate, not a repository or license offer.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b3986cb976b800306128a110c6c6aa9adf8ba4162020b7f0b9a1fe56b23591eb
+    content_sha256: a476dcf271c29fa3bc762278874a1aadc7b883acfdf5e3ad8ffab8d25b0e7d22
+    establishes:
+    - license
+    - source
+  - url: https://docs.newrelic.com/docs/ai-monitoring/intro-to-ai-monitoring/
+    shows: 'Docs intro: "AI monitoring is our solution for application monitoring (APM) for AI." and "Parse
+      information about completion, prompt, and response tokens". Searched the body for self-host, open
+      source and license: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 94967cfd2fda09600c608a60d95fee56d9d837047356899169354499af53fcf2
     establishes:
     - license
     - source
@@ -41,7 +50,6 @@ adoption:
   note: New Relic AI Monitoring is a module of the wider New Relic platform, so adoption reflects the platform's
     own reported reach - third-party estimates of its user and business base - rather than a count of the
     module itself. New Relic publishes no customer or usage figure specific to the module.
-  last_verified: '2026-08-14'
   sources:
   - url: https://newrelic.com/platform/ai-monitoring
     shows: AI Monitoring module of the broad New Relic observability platform; enterprise tiers
@@ -58,23 +66,33 @@ capability:
   score: 4
   basis: feature_matrix
   value: tracing(full AI-stack distributed tracing, MCP request lifecycle, agent/tool call latency); cost(token
-    usage tracking + alerts, model cost/perf/quality comparison); quality(bias/hallucination/toxicity
-    detection, response analysis, user feedback); OTel + OpenAI/Pinecone/LangChain integrations; 'no new
-    instrumentation'. Lacks dedicated prompt-versioning/dataset-eval depth of eval-first tools.
+    usage tracking + alerts, model cost/perf/quality comparison); quality(bias/hallucination/toxicity detection,
+    response analysis, user feedback); built-in OpenAI/Pinecone/LangChain integrations. Lacks dedicated
+    prompt-versioning/dataset-eval depth of eval-first tools.
   confidence: medium
   relative_to: langfuse
   relation: at
   note: New Relic AI Monitoring covers full-stack AI tracing, including the MCP request lifecycle and tool-call
-    latency, token cost tracking, and quality detection for bias, hallucination and toxicity, with integrations
-    across OpenTelemetry, OpenAI, Pinecone and LangChain. It lacks the prompt-versioning and dataset-evaluation
-    depth of evaluation-first tools, keeping it level with Langfuse.
-  last_verified: '2026-08-13'
+    latency, token cost tracking, and quality detection for bias, hallucination and toxicity, with built-in
+    integrations for OpenAI, Pinecone and LangChain. It lacks the prompt-versioning and dataset-evaluation
+    depth of evaluation-first tools, but tracing, cost and quality checks in one view put it level with
+    Langfuse.
+  last_verified: '2026-09-29'
   sources:
   - url: https://newrelic.com/platform/ai-monitoring
-    shows: 'Page copy - a summary of AI metrics "from response time and quality, to tokens, APM golden
-      signals, and infrastructure"; "Spot and solve issues like bias, hallucination, and toxicity with
-      complete visibility"; and "Monitor and control costs easily by tracking request tokens used and
-      setting custom alerts", with model comparison beside it.'
-    accessed: '2026-08-13'
+    shows: The AI Monitoring product page (redirected to the AI Observability page) lists "Use built-in
+      integrations for models like OpenAI, vector data like Pinecone, and frameworks like LangChain", "Take
+      advantage of New Relic AI observability capabilities. No new instrumentation needed.", "the entire
+      Model Context Protocol (MCP) request lifecycle automatically.", "Spot and solve issues like bias,
+      hallucination, and toxicity", and "by tracking request tokens used and setting custom alerts". OpenTelemetry
+      appears only in site navigation there, not as an AI integration.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b3986cb976b800306128a110c6c6aa9adf8ba4162020b7f0b9a1fe56b23591eb
+    content_sha256: a476dcf271c29fa3bc762278874a1aadc7b883acfdf5e3ad8ffab8d25b0e7d22
+  - url: https://docs.newrelic.com/docs/ai-monitoring/intro-to-ai-monitoring/
+    shows: The AI monitoring introduction says the agent can "Parse information about completion, prompt,
+      and response tokens" and "Correlate negative or positive feedback about a response from your end users",
+      with supported models "from vendors like OpenAI, Bedrock and DeepSeek".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 94967cfd2fda09600c608a60d95fee56d9d837047356899169354499af53fcf2

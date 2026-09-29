@@ -26,21 +26,8 @@ openness:
   raw: license:Apache-2.0(OSI, whylogs + LangKit + open sourced platform);source:public(github.com/whylabs);core-gated:ungated(nothing
     is withheld - the company ceased operations and open sourced the platform on closure);hosted-SaaS:discontinued;status:company-ceased-ops,
     platform open sourced on closure
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://whylabs.ai/langkit
-    shows: 'The closure notice, in the vendor''s own words - "WhyLabs, Inc. is discontinuing operations",
-      followed by "The complete WhyLabs platform has been open sourced to help support next iterations of
-      AI observability research" and, on LangKit, "The open source toolkit for monitoring LLMs, langkit
-      will continue to help teams monitor and secure LLMs while preserving privacy." Nothing is withheld,
-      because there is no longer a commercial product to withhold it for.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: b4acd691502a61b4b41def20a690009fcb52dafe41632bfca375174083e7987c
-    establishes:
-    - license
-    - source
-    - core_gated
   - url: https://github.com/whylabs/whylogs
     shows: Repository page. GitHub resolves the LICENSE to Apache-2.0 and the README carries an Apache 2
       badge; the source tree is public. 2,830 stars.
@@ -50,6 +37,34 @@ openness:
     establishes:
     - license
     - source
+  - url: https://whylabs.ai/langkit
+    shows: 'Closure notice: "WhyLabs, Inc. is discontinuing operations." The linked text "complete WhyLabs
+      platform has been open sourced" continues "to help support next iterations of AI observability research."
+      It links the open sourced platform at github.com/whylabs/whylabs-oss. Searched the body for pricing,
+      enterprise and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: adbf5a4a6cc1f9384bc44b99fad58dfb4c7e2f661aea70d8937da35fd1efed3b
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/whylogs/json
+    shows: 'PyPI metadata for whylogs 1.6.4 (released 2024-12-03): "Apache-2.0" with the classifier "License
+      :: OSI Approved :: Apache Software License"; summary "Profile and monitor your ML data pipeline end-to-end".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fbec852af8570db44d1196269bb5cce3c6b5b1bdcbafd7c9830a077347500b8
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/langkit/json
+    shows: 'PyPI metadata for langkit: "Apache-2.0" with the classifier "License :: OSI Approved :: Apache
+      Software License"; summary "A language toolkit for monitoring LLM interactions" listing "sentiment
+      analysis" and "toxicity analysis" and "prompt injection".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b034297d35a444d6d68532a3062110c983cc546577f194490a6712059ce96b25
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -83,19 +98,34 @@ capability:
   relation: two_below
   value: 'whylogs(data logging/profiling, drift + data-quality monitoring, privacy-preserving) + LangKit(LLM
     text-quality/safety metrics: sentiment, toxicity, prompt-injection signals). No live tracing backend,
-    no eval-experiment/prompt-mgmt platform (open sourced but unmaintained). Narrow vs anchor C4 tools.'
+    no eval-experiment/prompt-mgmt platform (open sourced but unmaintained). Narrow compared with Langfuse
+    and the other tracing-and-evaluation platforms.'
   confidence: medium
   note: 'WhyLabs is a pair of monitoring libraries, not a full tracing, evaluation and prompt platform:
     whylogs profiles data for drift, and LangKit adds LLM safety metrics such as toxicity and prompt-injection
     detection. Both have been unmaintained since the company shutdown, with no tracing backend or prompt-management
     surface, leaving it well behind Langfuse.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/whylabs/whylogs
-    shows: 'README describes a data-logging and profiling library with integrations for AWS S3, Apache
-      Airflow, Apache Spark and MLflow, designed to run "typically in a distributed environment, such as
-      Ray or Apache Spark". There is no tracing backend, prompt-management or eval-experiment surface in
-      it. The repository''s last push was in January 2025.'
+    shows: README describes a data-logging and profiling library with integrations for AWS S3, Apache Airflow,
+      Apache Spark and MLflow, designed to run "typically in a distributed environment, such as Ray or Apache
+      Spark". There is no tracing backend, prompt-management or eval-experiment surface in it. The repository's
+      last push was in January 2025.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6054065fb6574c29c0ab15224a78c5c40cf274a60e749cdf9437442184a0e61e
+  - url: https://pypi.org/pypi/whylogs/json
+    shows: 'PyPI metadata for whylogs 1.6.4 released 2024-12-03 with summary "Profile and monitor your ML
+      data pipeline end-to-end"; the latest release is that one, so the library has had no newer release.
+      Searched the description for tracing backend and prompt management: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fbec852af8570db44d1196269bb5cce3c6b5b1bdcbafd7c9830a077347500b8
+  - url: https://pypi.org/pypi/langkit/json
+    shows: 'PyPI metadata for langkit: "Apache-2.0" with the classifier "License :: OSI Approved :: Apache
+      Software License"; summary "A language toolkit for monitoring LLM interactions" listing "sentiment
+      analysis" and "toxicity analysis" and "prompt injection".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b034297d35a444d6d68532a3062110c983cc546577f194490a6712059ce96b25
