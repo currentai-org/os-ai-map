@@ -17,51 +17,71 @@ openness:
         value: API/tool only
         detail: no self-host, no open runtime
   confidence: high
-  note: Fully proprietary managed code-execution sandbox; OpenAI does not document the isolation mechanism
-    or release any runtime.
+  note: Code Interpreter is a proprietary managed service. OpenAI releases no runtime and offers no self-hosted
+    version, and it documents no isolation mechanism beyond calling each container a sandboxed virtual machine.
   raw: license:Proprietary;service:proprietary(OpenAI-managed sandbox);source:closed;isolation:undisclosed;access:API/tool
     only(no self-host, no open runtime)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
-    shows: Code Interpreter runs Python in a proprietary OpenAI-managed sandbox; $0.03/session; isolation
-      details not disclosed
-    accessed: '2026-08-13'
+  - url: https://developers.openai.com/api/docs/guides/tools-code-interpreter
+    shows: 'Code Interpreter is reached only through the OpenAI API as a container: "A container is a fully
+      sandboxed virtual machine that the model can run Python code in." The body carries no license text
+      for the tool; its only self-hosted and open-source strings are site navigation labels ("Self-hosted
+      sandboxes" for the Agents API, "Codex for Open Source"), and no Code Interpreter runtime or source
+      is offered.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9c2dc0fa7b2b74463b00061310a8438c7f286b463dbac261c2c426f0b6bd8dea
-    establishes: [source, license]
+    content_sha256: b694ba50db48378df37b665d0f7d32479b97a874c26decec6a876cc94d103a58
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M users
   signal_type: active_users
   confidence: low
-  note: Code Interpreter ships inside ChatGPT's advanced data analysis feature and the Assistants and Responses
-    APIs, riding a ChatGPT surface with roughly 1B weekly users. OpenAI discloses no standalone usage figure
-    for the tool itself, so adoption is read conservatively from that surface, on the assumption that only
-    a fraction of ChatGPT users invoke code execution.
-  last_verified: '2026-08-13'
+  note: Code Interpreter ships inside ChatGPT's advanced data analysis feature and the Responses, Chat Completions
+    and Assistants APIs, riding ChatGPT's mass-market weekly audience. OpenAI discloses no standalone usage
+    figure for the tool itself, so adoption is read conservatively from that surface, on the assumption
+    that only a fraction of ChatGPT users invoke code execution.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
-    shows: Code Interpreter is a first-class tool in the Assistants/Responses API and underlies ChatGPT
-      data analysis (the surface that drives usage); no usage figure published
-    accessed: '2026-08-13'
+  - url: https://developers.openai.com/api/docs/guides/tools-code-interpreter
+    shows: 'The guide, subtitled "Allow models to write and run Python to solve problems.", publishes no
+      usage figure for the tool; searched the body for weekly users, monthly users, active users and customers:
+      none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9c2dc0fa7b2b74463b00061310a8438c7f286b463dbac261c2c426f0b6bd8dea
+    content_sha256: b694ba50db48378df37b665d0f7d32479b97a874c26decec6a876cc94d103a58
+  - url: https://en.wikipedia.org/wiki/ChatGPT
+    shows: The ChatGPT article states that "ChatGPT reached 900 million weekly active users" in February
+      2026, the surface Code Interpreter ships in.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ae4932efb90de03c544893a5bba2a071db3cc65dbe72becc935d46e375b7ec93
 capability:
   score: 3
   basis: feature_matrix
-  value: 'isolation: undisclosed managed sandbox; cold-start: per-session (1hr persistence within session);
-    language/runtime breadth: Python only; persistence: per-session file workspace, 512MB file handling;
-    scale: OpenAI infra'
+  value: 'isolation: managed sandbox virtual machine, isolation technology undisclosed; cold-start: per-container
+    (expires after 20 minutes unused); language/runtime breadth: Python only; persistence: per-container
+    file workspace, ephemeral, memory tiers 1-64 GB; scale: OpenAI infra'
   confidence: low
-  note: Code Interpreter is a reliable Python-only sandbox with iterative retry on failing code, but it
-    is single-language, session-scoped, and OpenAI documents no isolation mechanism or scaling internals.
-    That narrower, less transparent design keeps it behind general-purpose deployment sandboxes that isolate
-    a wider range of runtimes.
-  last_verified: '2026-08-13'
+  note: Code Interpreter is a Python-only sandbox that lets a model retry failing code, with containers
+    of up to 64 GB of memory, but each container is ephemeral and OpenAI documents neither its isolation
+    technology nor its scaling internals. That narrower, less transparent design keeps it behind general-purpose
+    sandboxes that isolate a wider range of runtimes.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
-    shows: Python sandbox, iterative code retry, 512MB files, 1-hour session
-    accessed: '2026-08-13'
+  - url: https://developers.openai.com/api/docs/guides/tools-code-interpreter
+    shows: The guide says the tool lets models "write and run Python code in a sandboxed environment" and
+      that "A container expires if it is not used for 20 minutes", with memory tiers of "1g" (default),
+      "4g", "16g" or "64g".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9c2dc0fa7b2b74463b00061310a8438c7f286b463dbac261c2c426f0b6bd8dea
+    content_sha256: b694ba50db48378df37b665d0f7d32479b97a874c26decec6a876cc94d103a58
+  - url: https://developers.openai.com/api/docs/pricing
+    shows: The pricing page lists "1 GB $0.03, 4 GB $0.12, 16 GB $0.48, 64 GB $1.92 per 20-minute session
+      per container." for Hosted Shell and Code Interpreter.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e4a9e273042d144501558701273c32bb7c241d05c45e105fff16785dcf52e229

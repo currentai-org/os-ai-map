@@ -18,10 +18,10 @@ openness:
         detail: OpenInfra Foundation
         raw: open community (OpenInfra Foundation)
   confidence: high
-  note: Fully Apache-2.0, source public, vendor-neutral open-foundation governance, no managed-tier gating
-    from the project itself.
+  note: Kata Containers is Apache-2.0 with its full source public, and the OpenInfra Foundation governs
+    it as a vendor-neutral project. The project sells no managed tier that could gate any part of it.
   raw: license:Apache-2.0(OSI);source:public;governance:open community (OpenInfra Foundation);no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/kata-containers/kata-containers
     shows: Apache-2.0 license; lightweight VMs with container UX + VM isolation; v3.31.0 (May 19 2026)
@@ -35,9 +35,9 @@ openness:
     establishes:
     - license
   - url: https://api.github.com/repos/kata-containers/kata-containers/git/trees/main
-    shows: 'Untruncated default-branch tree, 32 entries. One LICENSE. src/ carries the whole product - runtime,
+    shows: Untruncated default-branch tree, 32 entries. One LICENSE. src/ carries the whole product - runtime,
       runtime-rs, agent and the Dragonball VMM - with tools/, tests/, ci/ and docs/ beside it, and there
-      is no ee/, enterprise/, commercial/ or proprietary/ path.'
+      is no ee/, enterprise/, commercial/ or proprietary/ path.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: c8e654e4818032043bfab3a07af19009b590049a79c5eb46db251d69211c5548
@@ -45,8 +45,8 @@ openness:
     - source
     - core-gated
   - url: https://api.github.com/repos/kata-containers/kata-containers
-    shows: 'Repo metadata - language Rust, license spdx_id Apache-2.0, default branch main, not archived,
-      pushed 2026-08-13, 8,531 stars, 1,431 forks.'
+    shows: Repo metadata - language Rust, license spdx_id Apache-2.0, default branch main, not archived,
+      pushed 2026-08-13, 8,531 stars, 1,431 forks.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 098b629b7fa0ad04cdaea38763ad46b2092eddffc7bf0b1a4ca60c7b4320f9ce
@@ -54,13 +54,35 @@ openness:
     - license
     - source
   - url: https://katacontainers.io/
-    shows: '"The Kata Containers community is stewarded by the Open Infrastructure Foundation... The code
-      is hosted at GitHub under the Apache 2 license." The site offers documentation, releases, mailing
-      lists and a user survey, and sells no product, subscription or supported edition of its own.'
-    accessed: '2026-08-13'
+    shows: 'The project site says "The code is hosted at GitHub under the Apache 2 license." and "stewarded
+      by the Open Infrastructure Foundation". Searched the body for enterprise, commercial, pricing, paid
+      and license key: none, and it offers no product or edition for sale.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: dcd594a9b40c82506bd48ff80bebc1f2af084e3f7ab1054edc88ee74e7b024e6
+    content_sha256: 071d14e26dd93fb194015bb0138dd0392a4fae95d4aaf420aa2b538c7f0d55f6
     establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/kata-containers/kata-containers@main/LICENSE
+    shows: The file is the verbatim Apache License 2.0, opening "Apache License" and "Version 2.0, January
+      2004" and ending with the standard "limitations under the License." clause, with no added exceptions
+      or terms.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/kata-containers/kata-containers@main/README.md
+    shows: 'The README states "The code is licensed under the Apache 2.0 license." and lists runtime, agent
+      and Dragonball VMM as core components in the repository, with no separate paid edition named. Searched
+      for enterprise, license key, commercial, pricing, paid and cloud-only: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 326a9123397a42cd6b56acfce60884c119f5b70250f2ec62ae3bde877ff03895
+    establishes:
+    - license
+    - source
     - core-gated
 adoption:
   level: 3
@@ -71,7 +93,6 @@ adoption:
     Baidu naming it in production across several cloud services. The project publishes no download, install
     or user count and ships as release tarballs and a Helm chart rather than a countable registry, so GitHub
     stars serve only as corroboration.
-  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
     shows: standard implementation of lightweight VM containers; integrated runtime; 8k stars
@@ -109,23 +130,43 @@ capability:
     Cloud Hypervisor, Firecracker, Dragonball or StratoVirt - integrated with Kubernetes via a containerd
     shimv2 shim across x86_64, aarch64, ppc64le and s390x. Its cold start runs higher than the microVM and
     userspace frontier, putting it a step below Firecracker, which defines that frontier here.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/kata-containers/kata-containers
-    shows: lightweight VMs performing like containers with VM workload-isolation/security; integrated
-      with Firecracker
+    shows: lightweight VMs performing like containers with VM workload-isolation/security; integrated with
+      Firecracker
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/README.md
-    shows: 'Lightweight VMs "that feel and perform like containers, but provide the workload isolation and
-      security advantages of VMs", on x86_64/amd64, aarch64, ppc64le and s390x. Core components are a containerd
-      shimv2 runtime (Go and Rust), an in-VM agent, and the optional built-in Dragonball VMM.'
-    accessed: '2026-08-13'
+    shows: The README lists a runtime "providing a containerd shimv2 runtime implementation" and supported
+      architectures including "| `s390x` | [IBM](https://www.ibm.com) Z & LinuxONE SIE |" and ppc64le.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 326a9123397a42cd6b56acfce60884c119f5b70250f2ec62ae3bde877ff03895
   - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/docs/hypervisors.md
-    shows: 'Five supported hypervisors - Cloud Hypervisor, Firecracker, QEMU, Dragonball and StratoVirt -
-      selected per runtime through a configuration file. QEMU is the only one with GPU, Intel TDX and AMD
-      SEV-SNP support, and is where the project focuses its GPU runtimes.'
-    accessed: '2026-08-13'
+    shows: The hypervisors doc lists supported VMMs including "|[Firecracker](#firecracker) | rust | `aarch64`,
+      `x86_64` |" and "|StratoVirt | rust | `aarch64`, `x86_64` |" alongside QEMU, Cloud Hypervisor and
+      Dragonball.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: bdc51950b28822cdcbe98525bfd5156482bed2b1b9be420c9e92a8964bf246bb
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/docs/design/virtualization.md
+    shows: The virtualization design doc compares hypervisors on start time, rating "| Startup Latency |
+      Good | Excellent | Excellent | Best |" for QEMU, Cloud Hypervisor, Firecracker and Dragonball, and
+      recommends "| Fastest startup time | Dragonball, Firecracker |".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 38433d4c9196800418ca40b764f5f0b9a7eb0cb5fdc7f8632c47a1886d572e41
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/docs/design/architecture/README.md
+    shows: 'The architecture doc says each container creation goes through a VM boot: "The hypervisor creates
+      and starts (_boots_) a VM using the" guest assets, and "The [agent](#agent) is started as part of
+      the VM boot." before the workload is spawned.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5a48c237fb00f97d4a1dbd327c9fcac4d6d350ced41c19d3c1072a105dce657b
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/docs/how-to/what-is-vm-templating-and-how-do-I-use-it.md
+    shows: The VM templating how-to exists to cut that boot cost, saying it can help if you "care a lot
+      about container" startup speed and that it "speeds up Kata Containers creation by as much as" 38.68
+      percent.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06e59405bf7e9011be22acc95b764651067b2bc9f49d55bc598609d5dbdf24fd

@@ -17,19 +17,19 @@ openness:
     also sells hosted cloud inference alongside the engine, but that is a separate service rather than a
     capability withheld from the open core.
   raw: license:MIT;source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/ollama/ollama/main/LICENSE
-    shows: Verbatim MIT License body at repository head, "Copyright (c) Ollama", with the standard
-      permission and warranty-disclaimer clauses and no added restriction
-    accessed: '2026-08-13'
+    shows: The repository LICENSE is the "MIT License" with "Copyright (c) Ollama" and the grant "to use,
+      copy, modify, merge, publish, distribute, sublicense, and/or sell" copies, with no added restriction.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 5934ed2ce0d15154bcdb9c85203210abac0da4314af34081e36df4599f90b226
     establishes:
     - license
   - url: https://api.github.com/repos/ollama/ollama
-    shows: 'Repository metadata - full_name ollama/ollama, language Go, license spdx_id MIT, public and
-      not archived, 178,451 stars, 17,389 forks, last push 2026-08-12'
+    shows: Repository metadata - full_name ollama/ollama, language Go, license spdx_id MIT, public and not
+      archived, 178,451 stars, 17,389 forks, last push 2026-08-12
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0ad0ab0ce97a4ce4719036b4fdb8f5f45aa4715474a69519f5caea1b75317529
@@ -37,23 +37,31 @@ openness:
     - license
     - source
   - url: https://raw.githubusercontent.com/ollama/ollama/main/README.md
-    shows: 'The whole engine is distributed free from the repository and vendor site - install scripts
-      and manual installers for macOS, Windows and Linux, the official ollama/ollama Docker Hub image,
-      the local REST API on port 11434, agent integrations launched from the CLI, and ollama-python and
-      ollama-js listed under Libraries as clients. No paid tier, license key or enterprise-only build
-      is described anywhere in it.'
-    accessed: '2026-08-13'
+    shows: 'The README lists free install paths for macOS, Windows and Linux (for example "curl -fsSL https://ollama.com/install.sh
+      | sh"), links "[Building from source](https://github.com/ollama/ollama/blob/main/docs/development.md)"
+      in the public ollama/ollama repository, and states "The official [Ollama Docker image](https://hub.docker.com/r/ollama/ollama)
+      `ollama/ollama` is available on Docker Hub."; searched the body for enterprise, license key, licence,
+      paid, pricing and commercial: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 38f94429ec63c78f2c87dc47ff2bbba91bd93edd697c638b9daa7eda3ae5adb2
+    content_sha256: 09c456b8f3e2fca486f6961e07494f424ec6f998cfd0b23ebde099bc028a47de
     establishes:
     - source
     - core-gated
   - url: https://ollama.com/
-    shows: Vendor site offering a free download plus paid hosted cloud models in the United States,
-      Europe and Singapore; the cloud service is sold alongside the local engine, not as an unlock for it
-    accessed: '2026-08-13'
+    shows: The vendor home page states "Local models are always free." and separately sells cloud usage,
+      so hosted inference is a paid service alongside the local engine.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 248e9cfea29aaf02d293e026585105f066bc7fef58f5a3b476137ce286df2b25
+    content_sha256: 2f81a8693eadb32d04dee3cc679fbe391c7a0284b205fa3edc22f1fa75108478
+    establishes:
+    - core-gated
+  - url: https://ollama.com/pricing
+    shows: The pricing page lists a Free plan at "$0" with "Run models locally" and a Download button, with
+      paid plans described as "Use any cloud model with pay-as-you-go usage credits." for cloud models.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5bcc708b9d37666c319d875cf9781cbeadc627f775a4904b1526203171ce460c
     establishes:
     - core-gated
 adoption:
@@ -65,7 +73,6 @@ adoption:
     by GitHub stars on the engine repository. The PyPI package named ollama is a client for talking to a
     local server, not the product's primary distribution channel, so its own download count is not used
     and there is no other package to measure adoption from.
-  last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/ollama/ollama
     shows: 'Repository metadata - 178,451 stars, 17,389 forks, language Go, last push 2026-08-12, not
@@ -98,18 +105,25 @@ capability:
     and JavaScript clients, with a model library spanning Llama, Qwen, Gemma, DeepSeek and gpt-oss and CLI
     launches for coding agents. No benchmark result is published for the runtime itself, so this reading
     comes from feature and model breadth rather than measured performance.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/ollama/ollama/main/README.md
-    shows: 'One-command run, local REST API on port 11434 with an OpenAI-compatible chat endpoint,
-      Python and JavaScript clients, and CLI agent integrations for Claude Code, Codex, Copilot CLI,
-      Droid, OpenCode and OpenClaw'
-    accessed: '2026-08-13'
+    shows: The README documents the REST API on "http://localhost:11434/api/chat", Python and JavaScript
+      clients, and "ollama launch claude" plus integrations for Claude Code, Codex, Copilot CLI, DeepSeek
+      Harness, Droid and OpenCode.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 38f94429ec63c78f2c87dc47ff2bbba91bd93edd697c638b9daa7eda3ae5adb2
+    content_sha256: 09c456b8f3e2fca486f6961e07494f424ec6f998cfd0b23ebde099bc028a47de
   - url: https://ollama.com/library
-    shows: 233 model families listed, spanning Llama, Qwen, Gemma, DeepSeek, Mistral, Phi and gpt-oss,
-      with tool, thinking, vision, embedding and cloud tags per entry
-    accessed: '2026-08-13'
+    shows: The library page, described as "Browse Ollama's library of models.", links 240 models including
+      "/library/gpt-oss", "/library/gemma4" and "/library/deepseek-r1", with per-entry tag labels such as
+      "thinking", "vision" and "embedding".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e602829d3b1ae7b33596a5a8aaa131b5ad6737f0c8bf9c0cb4ee2e523d123637
+    content_sha256: 9c8429672b5684a199596780c94073316d8872421e771c785d9245510fdc9b21
+  - url: https://docs.ollama.com/api/openai-compatibility
+    shows: The API docs page has an OpenAI compatibility section showing "Simple /v1/chat/completions example"
+      against the local server at "localhost:11434/v1/chat/completions".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 133432714625b6af2f7ecce487038cb87731c76b3b8a8c47443b9a894545646c
