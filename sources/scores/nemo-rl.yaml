@@ -98,20 +98,19 @@ capability:
     backends DTensor (TP/SP/PP/CP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP);
     SGLang backend, speculative decoding, long-context training.'
   confidence: high
-  note: 'NeMo-RL offers frontier-tier scale and parallelism for RL post-training: DTensor and Megatron Core
-    backends covering tensor, sequence, pipeline, context and six-dimensional parallelism, plus broad method
-    coverage across GRPO, GSPO, DAPO, SFT, DPO, distillation and reward modeling. That capability is strong
-    even though adoption is still small.'
-  last_verified: '2026-08-09'
+  note: NeMo-RL covers GRPO, GSPO, DAPO, PPO, DPO, SFT, on-policy distillation and reward modeling, and
+    trains through PyTorch FSDP2 or Megatron Core with tensor, pipeline, context, sequence and expert parallelism.
+    Its Megatron Core backend gives it the same large-scale parallelism as Megatron-LM, along with SGLang
+    rollout and speculative decoding for faster generation.
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/NVIDIA-NeMo/RL
-    shows: README's Features list includes "Learning Algorithms - GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and
-      On-policy distillation", a Table of Contents with RM (reward modeling) Single-Node/Multi-node sections,
-      "Advanced Parallelism with DTensor... PyTorch FSDP2, TP, CP, and SP... (through NeMo AutoModel)",
-      "Larger Model Support with Longer Sequences - Performant parallelisms with Megatron Core (TP/PP/CP/SP/EP/FSDP)
-      (through NeMo Megatron Bridge)", plus SGLang Inference, Speculative Decoding and GDPO Support news
-      entries, all matching what is recorded here. No 'PPO' string and no 'H100' or 'B200' string appear
-      anywhere in the README; only GB200 container support is named.
-    accessed: '2026-08-09'
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/RL/main/README.md
+    shows: The README Features list includes "GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and On-policy distillation.",
+      "PyTorch FSDP2, TP, CP, and SP for efficient training", "Performant parallelisms with Megatron Core
+      (TP/PP/CP/SP/EP/FSDP)", "SGLang rollout support for optimized inference.", "Speculative Decoding support
+      for rollout acceleration and training", a "GDPO Support" news entry and an RM (reward modeling) section
+      in its Table of Contents. The README also newly names PPO, MOPD and X-Token off-policy distillation,
+      which the recorded value omits.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 48c6b50635105e2e5b8e806fa38dd4a4b230fb21d4cd4da8c97df45bbcae76a6
+    content_sha256: 10d7760e13480e5701113529aab38b5d7c3e03faccd0243872016acf8f7660d0

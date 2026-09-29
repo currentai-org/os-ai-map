@@ -17,21 +17,46 @@ openness:
         value: community
         detail: ByteDance-Seed origin
   confidence: high
-  note: Apache-2.0 as unmodified boilerplate license text; the full training/rollout source ships in the
-    public repo (recipe/ is a public verl-project/verl-recipe submodule); no paid or enterprise tier withholds
-    any method from the published source.
-  last_verified: '2026-08-09'
+  note: verl is released under the unmodified Apache-2.0 license, and its training and rollout code is in
+    a public repository. Nothing the README documents, including the algorithms and training backends, sits
+    behind a paid or enterprise edition.
+  last_verified: '2026-09-28'
   raw: license:Apache-2.0(OSI);source:public;governance:community(ByteDance-Seed origin);no feature-gated
     core;core-gated:ungated
   sources:
   - url: https://raw.githubusercontent.com/volcengine/verl/main/LICENSE
-    shows: 202-line, 11,358-byte plain-text Apache License, Version 2.0 (January 2004), unmodified through
-      Section 9 and the appendix. The appendix still carries the unfilled boilerplate placeholder "Copyright
-      [yyyy] [name of copyright owner]" followed by "Licensed under the Apache License, Version 2.0 (the
-      "License")" -- no added use restriction or field-of-use clause.
-    accessed: '2026-08-09'
+    shows: The LICENSE file is the Apache License text; its appendix still carries the unfilled placeholder
+      "Copyright [yyyy] [name of copyright owner]" followed by "Licensed under the Apache License, Version
+      2.0 (the "License");" with no added use restriction.
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/volcengine/verl/main/README.md
+    shows: 'The README says "verl is the open-source version of" the HybridFlow paper, describes it as "a
+      flexible, efficient and production-ready RL training library for large language models (LLMs)", and
+      lists the full training and rollout feature set with no paid, enterprise or hosted tier; searched
+      for enterprise, commercial, paid and premium: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/volcengine/verl/main/pyproject.toml
+    shows: 'The pyproject describes the package as "verl: Volcano Engine Reinforcement Learning for LLM"
+      and its license field reads "Apache-2.0"; there is no separate closed distribution.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 2678d596a12b07719e4958a8f4adf0c151ea9642600b46d861e43e24d30c612b
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/verl/json
+    shows: 'PyPI metadata for verl reports "license": "Apache-2.0" and author "Bytedance - Seed - MLSys".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 105c278adafc1fea8925e92ce6bc0e231122100ae8f4f7834f52572cba67f5e5
     establishes:
     - license
   - url: https://github.com/volcengine/verl
@@ -45,40 +70,6 @@ openness:
     establishes:
     - source
     - license
-  - url: https://raw.githubusercontent.com/volcengine/verl/main/README.md
-    shows: README states verl "is a RL training library initiated by ByteDance Seed team and maintained
-      by the verl community" and calls it "the open-source version of" HybridFlow. Key Features lists FSDP/FSDP2/Megatron-LM
-      for training and vLLM/SGLang/HF Transformers for rollout, full method coverage (PPO, GRPO, GSPO, ReMax,
-      REINFORCE++, RLOO, PRIME, DAPO, DrGRPO, KL_Cov & Clip_Cov, SFT), and states verl "Scales up to 671B
-      models and hundreds of GPUs with expert parallelism." The file names no paid, enterprise or hosted
-      tier and gates no listed feature behind one.
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: a6c46bb67d246942d214cb590e0d7d10bc51256f613a5625687d5fcf32714fe6
-    establishes:
-    - source
-    - core-gated
-  - url: https://raw.githubusercontent.com/volcengine/verl/main/pyproject.toml
-    shows: '[project] declares name = "verl", license = {text = "Apache-2.0"}, description = "verl: Volcano
-      Engine Reinforcement Learning for LLM", requires-python = ">=3.10", built via setuptools; dependencies/optional-dependencies/authors/urls
-      are marked dynamic (read from files elsewhere in the repo) rather than split into a separate closed
-      distribution.'
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: 7a3ec747eec04a3166e432a637aea82eece898d756206bcbe92ccc54d5c3f6ee
-    establishes:
-    - license
-    - source
-  - url: https://pypi.org/project/verl/
-    shows: 'Sidebar reads: Author "Bytedance - Seed - MLSys"; License "Apache-2.0"; Requires Python ">=3.10";
-      Provides Extra: test, prime, geo, gpu, math, vllm, sglang, trl, mcore, trtllm -- no enterprise, commercial
-      or premium extra.'
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: 11546e97698efa7517a23168dff5fef9536c8f5623248aeca676ee5a795db8df
-    establishes:
-    - license
-    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
@@ -106,16 +97,19 @@ capability:
     hybrid-controller; multiple FSDP/Megatron backends; SGLang/vLLM rollout; used to train frontier reasoning
     models at scale.'
   confidence: high
-  note: verl covers the broadest range of modern RL algorithms in this category -- PPO, GRPO, RLOO, ReMax,
-    REINFORCE++, GSPO, PRIME, DAPO and DrGRPO, alongside SFT and DPO -- built on the HybridFlow hybrid controller,
-    with FSDP and Megatron backends and SGLang or vLLM rollout, and it has trained production frontier reasoning
-    models. Its capability matches Megatron-LM's.
+  note: verl supports a wide range of reinforcement-learning algorithms, including PPO, GRPO, RLOO, ReMax,
+    REINFORCE++, GSPO, PRIME, DAPO and DrGRPO alongside supervised fine-tuning. It is built on the HybridFlow
+    hybrid controller with FSDP and Megatron training backends and vLLM or SGLang rollout, scales to 671B-parameter
+    models, and was used to train ByteDance's Seed-Thinking-v1.5, which puts it level with Megatron-LM.
   relative_to: megatron-lm
   relation: at
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/volcengine/verl
-    shows: PPO/GRPO/RLOO/GSPO/PRIME/DAPO/DrGRPO methods; HybridFlow; used for Seed-Thinking-v1.5 / Doubao
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/volcengine/verl/main/README.md
+    shows: The README lists "Scales up to 671B models and hundreds of GPUs" with FSDP, FSDP2 and Megatron-LM
+      training, vLLM and SGLang rollout, and "Reinforcement learning with [PPO](examples/ppo_trainer/)"
+      alongside GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME, DAPO and DrGRPO plus supervised fine-tuning;
+      it also reports that "Seed-Thinking-v1.5" was trained with verl.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 688a8ac24500b080f64a3e5518022fd2832873e1894198e538e49ebbdeeda821
+    content_sha256: ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d

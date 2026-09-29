@@ -16,43 +16,33 @@ openness:
       maintainer:
         value: Lightning-AI
   confidence: high
-  note: Apache-2.0, full source public. The library's own README describes itself as unrestricted for enterprise
-    use; Lightning AI's separate Studios platform is hosted compute, not a gated core.
-  last_verified: '2026-08-09'
+  note: LitGPT is released under Apache-2.0 with the full source public. Its README describes the library
+    as unrestricted for enterprise use and documents no paid tier or feature held back from it.
+  last_verified: '2026-09-28'
   raw: license:Apache-2.0(OSI);source:public;maintainer:Lightning-AI;no feature-gated core;core-gated:ungated
   sources:
-  - url: https://github.com/Lightning-AI/litgpt
-    shows: The repository's top-level file listing (16 items) is .devcontainer, .github, .lightning/workflows,
-      config_hub, extensions, litgpt, tests, tutorials plus .gitignore, .pre-commit-config.yaml, CITATION.cff,
-      CODE_OF_CONDUCT.md, CONTRIBUTING.md, LICENSE.md, README.md, and pyproject.toml, with no enterprise,
-      commercial, or paid-tier directory. The repo's own classifier reads spdxId "Apache-2.0". The rendered
-      README's feature checklist states "Enterprise ready - Apache 2.0 for unlimited enterprise use." and
-      "Developer friendly - Easy debugging with no abstraction layers and single file implementations."
-    accessed: '2026-08-09'
+  - url: https://raw.githubusercontent.com/Lightning-AI/litgpt/main/README.md
+    shows: The README gives the public clone command "git clone https://github.com/Lightning-AI/litgpt"
+      and states "LitGPT is released under the [Apache 2.0]". It separately advertises Lightning AI's hosted
+      platform ("Over 340,000 developers use [Lightning Cloud]" with "[GPUs]" priced "from $0.19") and optional
+      "Run on Studios" buttons, but every install, finetune, pretrain and serve command runs from the open
+      package; a search for license-key, edition, premium and subscription language found none, so no library
+      feature is gated.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 5e66cbea2d8c5ea68045b684031e57e7209374f7320ebaff1f1ddb1032e8178d
+    content_sha256: 744e606018a856aed48a4ec0c72c65d3dc083b33ed779f9761db754288d3be97
     establishes:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/Lightning-AI/litgpt/main/LICENSE.md
-    shows: The fetched body is the full Apache License, Version 2.0 (the standard TERMS AND CONDITIONS FOR
-      USE, REPRODUCTION, AND DISTRIBUTION text through the appendix), with the boilerplate appendix completed
-      as "Copyright [2023] Lightning AI" and "Licensed under the Apache License, Version 2.0 (the "License")".
-      No other license or third-party carve-out appears in the file.
-    accessed: '2026-08-09'
+    shows: The file is the full Apache License, Version 2.0 with the appendix completed as "Copyright [2023]
+      Lightning AI" and "Licensed under the Apache License, Version 2.0 (the "License");". No other license
+      appears in it.
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: ab89ceca19ca531005699095ca542f982fac92efd82f954f49ac17aa99a37cda
     establishes:
     - license
-  - url: https://lightning.ai/pricing
-    shows: The fetched HTML is a client-rendered SPA shell (a boot splash and a bare div#root) with no server-rendered
-      pricing tiers. The page's meta description reads "The all-in-one platform for AI development. Code
-      together. Prototype. Train. Scale. Serve. From your browser - with zero setup.", describing Lightning
-      AI's hosted compute platform rather than any LitGPT-specific feature. Corroborating only; it does
-      not itself settle core-gated.
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: 4ab6c08da06acf15b4ed318465efd2d9de4b82f7e6c19ded7d27c540976f4e8a
 adoption:
   level: 2
   reach: 10K-100K
@@ -78,28 +68,30 @@ capability:
   value: 'Methods: full finetuning, LoRA, QLoRA, Adapter/Adapter v2, pretraining + continued pretraining;
     Flash Attention, FSDP, fp4/8/16/32 quantization; 1-1000+ GPU/TPU. No PPO/GRPO/DPO RL post-training.'
   confidence: medium
-  note: Solid PEFT and pretraining recipes with a clean from-scratch implementation, but no RLHF/preference
-    post-training methods (no PPO/GRPO/DPO) and oriented to readable single-model recipes rather than frontier-scale
-    demonstration. Mid-tier within the category on demonstrated method breadth.
-  last_verified: '2026-08-09'
+  note: LitGPT offers pretraining and fine-tuning recipes, including full fine-tuning, LoRA, QLoRA and Adapter
+    methods, over readable from-scratch model implementations, with FSDP and Flash Attention for multi-GPU
+    training. It documents no preference or reinforcement-learning methods such as DPO, PPO or GRPO, which
+    leaves it behind post-training libraries such as TRL and Axolotl.
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/Lightning-AI/litgpt
-    shows: 'The ''State-of-the-art features'' checklist states "State-of-the-art optimizations: Flash Attention
-      v2, multi-GPU support via fully-sharded data parallelism, optional CPU offloading, and TPU and XLA
-      support.", "Reduce compute requirements with low-precision settings: FP16, BF16, and FP16/FP32 mixed.",
-      "Lower memory requirements with quantization: 4-bit floats, 8-bit integers, and double quantization.",
-      and "Parameter-efficient finetuning: LoRA, QLoRA, Adapter, and Adapter v2." The ASCII banner separately
-      reads "Reduce GPU memory (fp4/8/16/32)" against "1-1000+ GPUs/TPUs". A case-insensitive search of
-      the fetched body for PPO, DPO, and GRPO returns no genuine hits (the only ''PPO'' match is the substring
-      inside the word ''SUPPORT''), confirming no RLHF/preference post-training methods are documented.'
-    accessed: '2026-08-09'
+  - url: https://raw.githubusercontent.com/Lightning-AI/litgpt/main/README.md
+    shows: 'The README lists "Parameter-efficient finetuning: [LoRA](tutorials/finetune_lora.md), [QLoRA](tutorials/finetune_lora.md),
+      [Adapter](tutorials/finetune_adapter.md), and [Adapter v2](tutorials/finetune_adapter.md)." plus "Flash
+      Attention v2, multi-GPU support via fully-sharded data parallelism" and the banner "1-1000+ GPUs/TPUs".
+      Searched the body for RLHF, DPO, PPO, GRPO and preference: only substring hits inside unrelated words
+      (support), no preference post-training method.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 5e66cbea2d8c5ea68045b684031e57e7209374f7320ebaff1f1ddb1032e8178d
-  - url: https://github.com/Lightning-AI/litgpt/tree/main/tutorials
-    shows: The tutorials directory listing includes finetune_full.md, finetune_lora.md, finetune_adapter.md,
-      pretrain.md, pretrain_tinyllama.md, deploy.md, inference.md, quantize.md, and evaluation.md, so full,
-      LoRA, QLoRA, and Adapter finetuning, plus pretraining and deployment, are each backed by a dedicated
-      tutorial rather than only the README checklist's claim.
-    accessed: '2026-08-09'
+    content_sha256: 744e606018a856aed48a4ec0c72c65d3dc083b33ed779f9761db754288d3be97
+  - url: https://raw.githubusercontent.com/Lightning-AI/litgpt/main/tutorials/finetune_lora.md
+    shows: The LoRA tutorial is titled "Finetuning with LoRA / QLoRA" and describes 4-bit QLoRA-style quantization
+      enabled with a flag.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 1042c6e2eb96403857f3bf99054046c61cbd1c47f1791740d519d250eab6ac85
+    content_sha256: b317a4f5ebe98fa9a583b2b1c72cd3c32502c83e7718f2fa09ff0d3f84bc151a
+  - url: https://raw.githubusercontent.com/Lightning-AI/litgpt/main/tutorials/pretrain.md
+    shows: 'The pretraining tutorial states "This document explains how to pretrain LLMs using LitGPT."
+      Searched the body for RLHF, DPO, PPO and GRPO: only substring hits inside unrelated words.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d66b742855188945e522096440930104ca119ec71787c6d8d1dbca4677eb63dc

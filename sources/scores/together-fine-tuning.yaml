@@ -51,20 +51,25 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: 'No standalone usage figure exists for Together''s fine-tuning service: no jobs run, no customers
-    tuning, no models fine-tuned, no developer count. A vendor case study describes one customer moving
-    to daily iteration with improved accuracy, but a single anecdote is not enough to read a level from,
-    so the service is left unscored.'
-  last_verified: '2026-08-13'
+  note: Together publishes no usage figures for its fine-tuning service, such as jobs run, customers tuning
+    or models fine-tuned. A vendor case study describes one customer's faster iteration and improved accuracy,
+    but a single anecdote says little about how widely the service is used, so the map leaves it unscored.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
-    shows: managed FT feature; no aggregate usage figures disclosed
-    accessed: '2026-08-13'
+    shows: 'Managed fine-tuning overview: "Together AI handles the full lifecycle: data upload, training,
+      hosting, and inference" and "Serve your fine-tuned model on a dedicated endpoint or download it for
+      local use." Searched the body for jobs run, customers, developers, users and usage counts: none found.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 3599bf70a8882121d318f1b18ae496ae3fe1ff72802ad75736df882681e6affa
+    content_sha256: 9cb2836f5b4e1d219979a503b205073720586d51485661b786acf42e0f9c0f7c
   - url: https://www.together.ai/fine-tuning
-    shows: FT product page; case-study traction (daily iteration, 77%->87% accuracy)
-    accessed: '2026-06-04'
+    shows: 'Product page carries one customer testimonial, "move from weekly to daily iteration, cut costs
+      by 2–3×, and improve accuracy from 77% to 87%." Searched the body for customer counts, jobs run, models
+      fine-tuned and developer counts: none found.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 0763c4b6744a71a778e78bc87ea62e1a15548f0ca1effa2e589d420019ef2cf9
 capability:
   score: 4
   basis: feature_matrix
@@ -72,31 +77,36 @@ capability:
     FT; demonstrated tuning of 100B+ open models (DeepSeek-V3, Qwen3-235B). Managed end-to-end (prep ->
     train -> dedicated-endpoint serve).'
   confidence: medium
-  note: Together Fine-Tuning offers LoRA and full-parameter fine-tuning, preference, function-calling, reasoning
-    and vision-language tuning, including demonstrated LoRA tuning above 100B parameters on DeepSeek-V3
-    and Qwen3-235B. It exposes no training-scale or precision controls, offering open-model scale beyond
-    most managed services but the same limited depth as OpenAI and Azure.
-  last_verified: '2026-08-09'
+  note: Together Fine-Tuning offers LoRA and full-parameter tuning with supervised, preference, function-calling,
+    reasoning and vision-language methods on open-weight models, with full-parameter tuning up to 70B-class
+    models and LoRA on much larger ones. It runs as a managed service rather than exposing a training framework,
+    so it offers breadth of methods without the parallelism and precision controls of Megatron-LM.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
-    shows: Lists the supported methods -- LoRA, full fine-tuning, "Preference fine-tuning Align a model
-      with rankings over preferred and dispreferred responses using DPO," "Function calling Train a model
-      to invoke tools and structured functions reliably," and "Reasoning fine-tuning Train a reasoning model
-      with chain-of-thought data" -- with results served "on a dedicated endpoint."
-    accessed: '2026-08-09'
+    shows: 'Managed fine-tuning overview: "Together AI handles the full lifecycle: data upload, training,
+      hosting, and inference" and lists supervised, "Align a model with rankings over preferred and dispreferred
+      responses using DPO.", vision-language, "Train a model to invoke tools and structured functions reliably."
+      and "Train a reasoning model with chain-of-thought data." methods, plus "Choose how much of the model
+      to update, and tune LoRA’s rank and target modules." Searched the body for jobs run, customers, developers
+      and usage counts: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 1fd545fcd22d170fe6afd4d2901dd6f5b8884c7484d4d22dee4a707f980c1e2d
+    content_sha256: 9cb2836f5b4e1d219979a503b205073720586d51485661b786acf42e0f9c0f7c
   - url: https://www.together.ai/fine-tuning
-    shows: '"Fine-tune 100B+ models (DeepSeek-V3, Qwen3-235B) that break other platforms, with the reliability
-      to experiment rapidly."'
-    accessed: '2026-08-09'
+    shows: The product page states "Fine-tune 100B+ models (DeepSeek-V3, Qwen3-235B) that break other platforms,
+      with the reliability to experiment rapidly." Reinforcement learning and quantization appear in an
+      "Advanced model shaping capabilities" block headed "For teams pushing models beyond standard fine-tuning",
+      which lists "Apply FP8 and NVFP4 quantization to push the limits of model efficiency" and "Leverage
+      PyTorch-based reinforcement learning to shape model policies". Multi-GPU and extended-context training
+      are named only in the page's structured-data description, not in its visible copy.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 98bb93bbfc58c847cb4fc614e7b2a38ae6215e2976ca1ce11e86c98647c1cac8
+    content_sha256: 0763c4b6744a71a778e78bc87ea62e1a15548f0ca1effa2e589d420019ef2cf9
   - url: https://docs.together.ai/docs/fine-tuning/supported-models
-    shows: Two separate tables, headed "LoRA fine-tuning" and "Full fine-tuning," list every fine-tunable
-      base model; the LoRA table includes deepseek-ai/DeepSeek-V4-Flash and Qwen/Qwen3.5-397B-A17B, while
-      the Full fine-tuning table tops out at meta-llama/Llama-3.3-70B-Instruct-Reference -- full-parameter
-      tuning does not reach the largest MoE releases that LoRA does.
-    accessed: '2026-08-09'
+    shows: Supported-models page has separate LoRA and full fine-tuning tables; the LoRA table lists "deepseek-ai/DeepSeek-V4-Flash"
+      and "Qwen/Qwen3.5-397B-A17B", while the full fine-tuning table lists nothing larger than "meta-llama/Llama-3.3-70B-Instruct-Reference"
+      and Mixtral-8x7B.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 451d4451f4c2bb7c4197125e51147af9b7e0dfc79ea2c340d4baccc596413cc7
+    content_sha256: 2c7295bebd2080b22e0033688b58d0416d83ed0a961ca8fc5e100bc98be8fd27
