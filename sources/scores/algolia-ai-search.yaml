@@ -16,39 +16,60 @@ openness:
       managed:
         value: Algolia-Cloud
   confidence: high
-  note: Closed proprietary hosted search engine; only client/UI integration libraries are open. Core ranking/index
-    engine is not OSS or self-hostable.
+  note: Algolia's search engine runs only as a hosted service under a subscription agreement, and its source
+    is neither published nor offered for self-hosting. The code Algolia does publish as open source is client-side,
+    such as the MIT-licensed InstantSearch UI library, and contains no search engine.
   raw: license:proprietary(SaaS, API-first);source:closed(search engine core);oss:client/UI-libraries-only(InstantSearch);managed:Algolia-Cloud
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://www.algolia.com/products/ai-search/
-    shows: Hosted API-first search platform with NeuralSearch hybrid retrieval, AI ranking and personalization.
-      No self-host, on-premise or source-available option for the engine; the open libraries are client-side
-      UI only.
-    accessed: '2026-08-13'
+    shows: 'The AI Search page presents a hosted API: "Algolia AI Search is an API-first solution that combines
+      keyword and semantic techniques to deliver fast, relevant results". Searched the body for self-host,
+      on-prem, source-available and license: none; its open-source mentions are a navigation link and a
+      contact entry for Algolia''s open-source program.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350
+    content_sha256: 6361ce22e30bfd68878e221033e6505ecf0148fcc59270c09b2a0f0590875c14
     establishes:
     - license
     - source
     - core-gated
+  - url: https://www.algolia.com/policies/terms/
+    shows: 'Algolia''s terms of service are a subscription to a hosted service: the agreement is "made for
+      the purpose of granting Subscriber a limited subscription to use Algolia" hosted search, the subscriber
+      "shall not reverse engineer, decompile, translate, disassemble or otherwise attempt to extract any
+      or all of the source code of the Services", and the open source Algolia offers is described as "certain
+      language specific codes that enable easy communication with Algolia Software".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d449414cb8409c65ce1dc19a69faad6ec2c000faa61477300ce2be9e6b785f7f
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/algolia/instantsearch/master/LICENSE
+    shows: 'The open code Algolia publishes is client-side: its InstantSearch UI library carries "The MIT
+      License (MIT)" with "Copyright (c) 2015-present Algolia, Inc.", and ships no search engine.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 1e605499213e06118cc81abc00b32bbb33ead185d9b0e190f2662588e8806f02
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Algolia's adoption is measured by the volume of end-user queries running through its hosted search
-    across companies such as Stripe, Decathlon and Ubisoft, not by the number of paying accounts. That query
-    volume is why the reading sits high; the smaller, direct B2B customer count on its own would read lower.
-  last_verified: '2026-08-13'
+  note: Algolia is measured by the end-user queries its hosted search serves for companies such as Stripe,
+    Decathlon and Ubisoft, since each paying account puts the engine in front of a whole site's visitors.
+    Its customer count counts businesses rather than the people searching through them, and on its own would
+    place it lower.
   sources:
   - url: https://www.algolia.com/products/ai-search/
-    shows: '"More than 18,000 customers in 150+ countries trust Algolia"; "Algolia processes more than 1 billion
-      queries every 5 seconds, with an average response time under 20 milliseconds"; Stripe, Decathlon and
-      Ubisoft named.'
-    accessed: '2026-08-13'
+    shows: The AI Search page carries "More than 18,000 customers in 150+ countries trust Algolia" and "Algolia
+      processes more than 1 billion queries every 5 seconds, with an average response time under 20 milliseconds",
+      beside a logo strip that includes Stripe, Decathlon and Ubisoft; further down it says Algolia is "processing
+      over two trillion queries each year".
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350
+    content_sha256: 6361ce22e30bfd68878e221033e6505ecf0148fcc59270c09b2a0f0590875c14
 capability:
   score: 4
   basis: feature_matrix
