@@ -30,39 +30,38 @@ openness:
     execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution
     the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev behind a COMPOSIO_API_KEY
     with no self-host option documented)
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/ComposioHQ/composio
     shows: MIT LICENSE, public SDK source, 1000+ toolkits, ~28.6k stars
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/ComposioHQ/composio/next/README.md
-    shows: '"Create a session for a user, hand its tools to your agent, and let the agent take action across
-      1000+ apps. Grab a COMPOSIO_API_KEY from the dashboard (dashboard.composio.dev/settings) first." Also
-      offers a hosted MCP endpoint per session - "Pass mcp: true to composio.create() and point Claude, Cursor,
-      or any MCP client at session.mcp.url". Every path to running a tool goes through the hosted platform
-      and a key issued by it.'
-    accessed: '2026-08-12'
+    shows: The README says "This is the Composio SDK monorepo. It contains:" and lists the TypeScript SDK,
+      the Python SDK, a CLI and provider adapters; it says "Grab a `COMPOSIO_API_KEY` from the [dashboard](https://dashboard.composio.dev/settings)
+      first." and ends "MIT. See [LICENSE](LICENSE)."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8c723e06bec36f55f3aaff4e2933834856a87dff5f6acd94f0a091b85457d94f
+    content_sha256: 4dda711b7fb9d50ce6bc7bbfb86a1e9b04b816e8b89ee8b11e7139211816cf34
     establishes:
+    - license
+    - source
     - core-gated
   - url: https://api.github.com/repos/ComposioHQ/composio/contents/ts/packages
-    shows: 'The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core, experimental,
-      json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The python/ tree is the
-      same shape - composio plus providers. There is no server, no toolkit runtime and no auth service anywhere
-      in the repository, which is the functionality the paid platform holds.'
+    shows: 'The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core,
+      experimental, json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The
+      python/ tree is the same shape - composio plus providers. There is no server, no toolkit runtime and
+      no auth service anywhere in the repository, which is the functionality the paid platform holds.'
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239
     establishes:
     - core-gated
   - url: https://docs.composio.dev/docs/welcome
-    shows: Documents the REST API served at https://backend.composio.dev/api/v3.1, "Composio-managed auth"
-      as the default in which "the agent connects accounts at runtime through the session", and session creation
-      via composio.create(user_id) against that hosted API. No self-hosting or on-premise deployment option
-      is documented anywhere in it.
-    accessed: '2026-08-12'
+    shows: 'The docs welcome page describes the product as "Give your agents tools, managed authentication,
+      and secure execution." Searched the body for self-host, self host, on-prem and on prem: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c9a2887c9a76300f53c2cb609c7e038457703b9629fb2e5ef8197454114571cf
+    content_sha256: d31362b8a0b06ff033fad6e0d04fc8d050b49a3ab30c5e2d996b67dedfb732b1
     establishes:
     - core-gated
   - url: https://api.github.com/repos/ComposioHQ/composio
@@ -75,6 +74,14 @@ openness:
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/ComposioHQ/composio/next/LICENSE
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 558da505ef85e06792d746b50b03845a7af36ac75eb2eb94d388cda598c6e9f9
+    shows: The repository LICENSE is the plain MIT License text headed "MIT License" and "Copyright (c)
+      2025 Sampark Inc.".
 adoption:
   level: 3
   reach: 100K-1M
