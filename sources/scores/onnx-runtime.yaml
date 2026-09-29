@@ -16,7 +16,7 @@ openness:
     - plugin execution providers (CUDA/WebGPU/etc.) in-repo
   confidence: high
   note: Fully MIT-licensed open source from Microsoft, with no feature-gated tier.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   raw: license:MIT(OSI);source:public(Microsoft);no proprietary core; plugin execution providers (CUDA/WebGPU/etc.)
     in-repo;core-gated:ungated
   sources:
@@ -24,6 +24,14 @@ openness:
     shows: MIT License, Copyright (c) Microsoft Corporation, with standard MIT permission and warranty-disclaimer
       text
     accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c
+  - url: https://raw.githubusercontent.com/microsoft/onnxruntime/main/LICENSE
+    shows: The LICENSE file reads "MIT License" followed by "Copyright (c) Microsoft Corporation" and the
+      standard MIT permission grant.
+    accessed: '2026-09-29'
     establishes:
     - license
     http_status: 200
@@ -38,6 +46,15 @@ openness:
     - core-gated
     http_status: 200
     content_sha256: c990b0204dbf31be685520fe465bb57dd8210e4e03f27011a6fa26305970386a
+  - url: https://raw.githubusercontent.com/microsoft/onnxruntime/main/README.md
+    shows: The README states "This project is licensed under the [MIT License](LICENSE)." and describes
+      the repository as a cross-platform accelerator with no separate paid or gated tier mentioned.
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: d9de78283cf00a77f907f2183fb8df1dda8706b79e4ab3517f2a06c6de0c6a4c
 adoption:
   level: 5
   reach: '>10M'
@@ -62,20 +79,20 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: execution-provider and framework coverage
-  value: 'Execution providers across CPU, GPU, IoT/edge/mobile and cloud: default CPU, NVIDIA CUDA and TensorRT,
-    Intel OpenVINO and DNNL, AMD MIGraphX and ROCm, DirectML, WebGPU, XNNPACK, CoreML, Qualcomm QNN, Android
-    NNAPI, Huawei CANN, Xilinx Vitis-AI, Arm NN and Arm Compute Library, Rockchip NPU and TVM. Runs models
-    exported from PyTorch, TensorFlow/Keras and classical ML libraries through the ONNX interchange format.'
+  value: 'Execution providers across CPU, GPU, IoT/edge/mobile and cloud. In production: default CPU, NVIDIA
+    CUDA and TensorRT, Intel OpenVINO and DNNL, AMD MIGraphX, DirectML, WebGPU, XNNPACK, Qualcomm QNN and
+    Android NNAPI. In preview: CoreML, Huawei CANN, Xilinx Vitis-AI, Arm NN, Arm Compute Library, Rockchip
+    NPU and TVM. AMD ROCm is deprecated. Runs models exported from PyTorch, TensorFlow/Keras and classical
+    ML libraries through the ONNX interchange format.'
   confidence: medium
-  note: ONNX Runtime covers an unusually broad set of execution providers across CPU, GPU, IoT, edge, mobile
-    and cloud, but purpose-built serving engines hold the frontier for transformer throughput. The one MLPerf
-    row naming ONNX Runtime is a continuous-integration submission entered by MLCommons itself, not a benchmark
-    result for the product.
-  last_verified: '2026-08-09'
+  note: ONNX Runtime covers a broad set of execution providers across CPU, GPU, IoT, edge, mobile and cloud,
+    though several are still in preview and AMD ROCm is deprecated. It is a general-purpose runtime for
+    inference and training rather than a dedicated LLM serving engine.
+  last_verified: '2026-09-29'
   sources:
   - url: https://onnxruntime.ai/docs/execution-providers/
-    shows: '"Summary of supported Execution Providers" table listing "NVIDIA TensorRT", "Qualcomm QNN",
-      "AMD MIGraphX" and "Android Neural Networks API" among CPU, GPU, IoT/Edge/Mobile and Other targets.'
-    accessed: '2026-08-09'
+    shows: The page has a "Summary of supported Execution Providers" table listing "NVIDIA TensorRT", "Qualcomm
+      QNN", "AMD MIGraphX" and "Android Neural Networks API" among its targets.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: fd1004db78728df63f4862319583f77f26a533312478901406ee3b59931ae8e7
+    content_sha256: 8d1b80c7672acb23c240e2b5ffb64f4d1e2752eee09361d487e9651b8c297065

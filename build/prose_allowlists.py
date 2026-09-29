@@ -40,7 +40,6 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("google-coral-dev-board", "adoption"),
     ("khoj", "openness"),
     ("kimi", "adoption"),
-    ("localai", "adoption"),
     ("mmmu", "openness"),
     ("n8n", "adoption"),
     ("open-llm-leaderboard", "adoption"),
