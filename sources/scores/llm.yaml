@@ -16,17 +16,48 @@ openness:
     - plugin-extensible
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 verified against LICENSE body; full source public; CLI/library with no gated tier (model
-    providers need their own API keys, external to the tool).
+  note: The full source is public, and the tool installs from PyPI or Homebrew with no gated tier. Model
+    providers require their own API keys, which sit outside the tool.
   raw: license:Apache-2.0(OSI);source:public(GitHub);PyPI;plugin-extensible;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/simonw/llm/blob/main/LICENSE
     shows: Apache License 2.0 full text
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-    establishes: [license, source, core-gated]
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/simonw/llm@main/LICENSE
+    shows: Repository LICENSE file on the main branch, headed "Apache License" and "Version 2.0, January
+      2004", with the section "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/simonw/llm@main/pyproject.toml
+    shows: Project metadata for version 0.36 declaring the license as "Apache-2.0" and describing the package
+      as "CLI utility and Python library for interacting with Large Language Models"; the runtime dependency
+      list holds open-source packages such as click, openai, pydantic, sqlite-utils, PyYAML and pluggy,
+      with no proprietary or license-key dependency.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f7a4cfc7ab4c5f6f85748a8619816bddd89724a9c77cf7a26c9b042eabab587a
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/simonw/llm@main/README.md
+    shows: Repository README opening with "A CLI tool and Python library for interacting with" many models
+      and install steps "pip install llm", "brew install llm" and "uv tool install llm"; a search for enterprise,
+      license key, pricing, subscription, premium and proprietary found nothing.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c810fea78fcf11034f47be88266aeec79818f5a17332326d5a9cec96c423c92b
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M
@@ -61,16 +92,26 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'Model breadth: 100+ remote and local models via plugins; embeddings; prompt templates; SQLite logging
-    of prompts/responses; Python API. CLI/library surface, not a full chat UI.'
+  value: 'Model breadth: dozens of remote and local models via plugins; embeddings; prompt templates and
+    fragments; structured extraction from text and images; tool execution; SQLite logging of prompts/responses;
+    Python API. CLI/library surface, not a full chat UI.'
   confidence: high
-  note: 'Strong on model breadth and extensibility, but a developer CLI and library rather than a multi-user
-    surface: it lacks the built-in RAG, multimodal and authentication stack of the leading products in this
-    category, hence 3.'
-  last_verified: '2026-08-13'
+  note: Plugins give it access to many remote and local models, and it adds embeddings, tools and structured
+    extraction from text and images. It is a developer command-line tool and library rather than a multi-user
+    chat interface.
+  last_verified: '2026-09-29'
   sources:
   - url: https://llm.datasette.io/
-    shows: 'docs: unified CLI/Python API for remote+local models, plugins, embeddings, templates, SQLite logging'
-    accessed: '2026-08-13'
+    shows: Docs home page describing LLM as "A CLI tool and Python library for interacting with" many models,
+      "both via remote APIs and with models that can be installed and run on your own machine", with "Store
+      prompts and responses in SQLite", "Generate and store embeddings", "Extract structured content from
+      text and images" and "Grant models the ability to execute tools".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a968a014b0352985c81409e511e9b395af8aaca2ab9540b3c035c73281b00257
+    content_sha256: 6bb05328d7e56231af1d64f05ef3ba36c372f969d041c55a314b02c9a5051b40
+  - url: https://llm.datasette.io/en/stable/plugins/directory.html
+    shows: Plugin directory page with sections headed "Local models", "Remote APIs", "Fragments and template
+      loaders" and "Embedding models".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0d59c376d7c496907878625e10708004aaab94c2932d460718cca5d57277ad80

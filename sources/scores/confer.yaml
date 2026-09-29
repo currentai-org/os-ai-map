@@ -24,7 +24,6 @@ openness:
     declare one, so the license tier is unstated.
   raw: license:none-declared(no LICENSE file in either public repo);source:partial(confer-proxy + confer-image
     public,client-app private);self-host:no(depends on vendor attestation infra);models:open source(undisclosed)
-  last_verified: '2026-08-13'
   sources:
   - url: https://confer.to/blog/2026/01/private-inference/
     shows: architecture (TEE, Noise pipes, dm-verity, reproducible nix/mkosi builds, transparency log); names
@@ -46,7 +45,6 @@ adoption:
   note: Young product (repos created Dec 2025, launched late 2025/early 2026); ~70-75 stars per repo and
     a reported partnership "bringing foundational AI privacy to Meta", but no user/usage numbers. Notability
     is driven mainly by the founder's reputation.
-  last_verified: '2026-08-13'
   sources:
   - url: https://confer.to/blog/
     shows: product positioning and feature timeline (memory, encrypted folders, connectors, Meta partnership)
@@ -56,16 +54,62 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'E2EE chat with TEE inference; remote attestation + reproducible builds + transparency log; encrypted
-    chat history (passkey-derived keys); encrypted folders; cross-conversation memory; emerging connectors;
-    models: multiple open source (task-routed via vLLM, names undisclosed); self-host: no; web client'
+  value: 'E2EE chat with TEE inference; remote attestation + dm-verity + transparency log; encrypted chat
+    history (passkey-derived keys); encrypted folders with folder files and document search; cross-conversation
+    memory; client-side connectors (Google Drive, Gmail, Google Calendar); confidential workers that run
+    code and produce files; images and web search; models: open weights, names undisclosed; web and iOS
+    clients'
   confidence: medium
-  note: Strong, genuinely novel on the privacy/crypto dimension, but a relatively standard chat feature
-    set, no self-hosting, and undisclosed models cap it at mid-tier.
-  last_verified: '2026-08-13'
+  note: Confer combines end-to-end encrypted chat, inference inside attested confidential VMs, encrypted
+    memory and folders, client-side connectors and confidential workers that run code. Its chat features
+    are otherwise conventional, and the open-weight models it uses are not named.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://confer.to/
+    shows: Homepage describes the product as "A complete AI assistant — writing, images, web search, memory."
+      and its structured data lists the operating systems as "Web, iOS".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bd59e7ee6643e0177100f7b983304f061f552cbb512a588f77ff3a50558f2e55
   - url: https://confer.to/blog/2026/01/private-inference/
-    shows: 'feature set: E2EE chat, TEE inference, attestation, transparency log, encrypted history'
-    accessed: '2026-08-13'
+    shows: 'Post describing inference inside a confidential VM: "Your prompts are encrypted from your device
+      directly into the TEE" using Noise Pipes, with remote attestation, dm-verity and a transparency log.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: c657ba8cd2a6fcfd54906f3148074e622151ad1b77490f54976a09c865eecf1e
+  - url: https://confer.to/blog/2026/03/encrypted-meta/
+    shows: Post says "Confer’s technology has been built on top of open weight models."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3873f7be882835f55891106c3125187bd0508838918829143bf1fa4f85891f19
+  - url: https://confer.to/blog/2026/03/encrypted-memory/
+    shows: 'Post announcing cross-conversation memory: "Confer now has memory, and it works differently."
+      Facts are stored encrypted with passkey-derived keys.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2a35c33a0c45569c3280c7497be225ebe3023d8370de65cc4ed5ff0c0f429787
+  - url: https://confer.to/blog/2026/04/connectors/
+    shows: 'Post announcing client-side connectors: "Confer now supports connectors" for Google Drive, Gmail
+      and Google Calendar, run on the device.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 887409d8203ccf26e5375e718cebeaa4d181349420d09e35cc7946ca8d3b41fd
+  - url: https://confer.to/blog/2026/08/private-ai-document-search/
+    shows: 'Post announcing folder files: "You can add PDFs, Word documents, presentations, spreadsheets,
+      HTML, Markdown, or plain text to a folder" with search and inference inside the attested TEE.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1f3f4a4380b846c7d285fc18e65eba12678fef8a7fa8e6b021a6341843f494b8
+  - url: https://confer.to/blog/2026/09/confidential-workers-for-private-ai/
+    shows: Post introducing confidential workers, TEE-backed Linux VMs where "The model can write and run
+      programs, copy an attachment into the workspace" and return completed files such as PDFs, spreadsheets
+      and presentations.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 754edb6cc7da8f81a9607d407f3b27403c3ceee926808f5dcc40346b318c71cf
+  - url: https://confer.to/blog/
+    shows: Blog index listing posts including "Confidential workers for private AI", plus encrypted folders,
+      memory, connectors, folder files and confidential workers, dated January to September 2026.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7fb77356abe8a124828f0956a89ee47f40172cd4879c20fcddf254897dc892c7

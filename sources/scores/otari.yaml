@@ -20,20 +20,51 @@ openness:
     alongside a complete open core is not the same as gating: nothing in the source is withheld or paywalled.'
   raw: license:Apache-2.0(OSI, core);source:public;self-host:yes(Docker Compose);service:hosted Otari.ai
     platform on the same core
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/mozilla-ai/otari
     shows: Apache-2.0; OpenAI-compatible gateway; self-host via Docker Compose
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 7cf4779a42242702718ade1f98eeb9497fe4f66ff73f3e4152a94c1bdfc34a2d
-    establishes: [license, source, self-host]
-  - url: https://blog.mozilla.ai/otari-own-your-ai-stack/
-    shows: OSS gateway plus hosted Otari.ai platform on the same foundation
-    accessed: '2026-08-13'
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://cdn.jsdelivr.net/gh/mozilla-ai/otari@main/LICENSE
+    shows: The LICENSE file in the repository is the Apache License, Version 2.0, with the notice "Copyright
+      2026 Mozilla.ai" and "Licensed under the Apache License, Version 2.0".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5d1fcdbda28aa66fc5bc302de38da6cb2fd9632118d909d47d1d27e6734ea938
-    establishes: [self-host]
+    content_sha256: 1e14c0a6ef99f7be39b327ae1ee922d03d176fabcaae8913317b7c13cf21fb96
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/mozilla-ai/otari@main/README.md
+    shows: The README ends with the license line "Apache 2.0. See [LICENSE](LICENSE)." and says "Run Otari
+      standalone with your own database and provider keys, or connect a data plane to [otari.ai](https://otari.ai)."
+      and gives a "docker compose up -d" setup.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fe063ec9da00cae95e0c14af83e80118d3fede541880996bfefc7463197f935
+    establishes:
+    - source
+    - self-host
+  - url: https://cdn.jsdelivr.net/gh/mozilla-ai/otari@main/docs/modes.md
+    shows: The runtime modes page says standalone "serves the full API, stores keys, budgets, and usage
+      locally" and that "Multi-provider fallback is therefore available without otari.ai when you configure
+      a policy."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e272a74e87c2af2fa9585c1ad0202eeba2d419ad2dd39cb2e63a193387195cdc
+    establishes:
+    - self-host
+  - url: https://cdn.jsdelivr.net/gh/mozilla-ai/otari@main/pyproject.toml
+    shows: The project file was searched for proprietary, commercial, enterprise, paid and premium licensing
+      terms and shows none; its only license mention is "with the SIL OFL text the license requires to travel
+      with it" for a bundled font.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c47c1e8e838dc5d029a571e5f1879908a9b157ae877ca742c0d94775d8435484
 adoption:
   level: 1
   reach: <1K stars
@@ -60,13 +91,20 @@ capability:
   basis: feature_matrix
   value: null
   confidence: medium
-  note: Otari is an OpenAI-compatible gateway to more than 40 providers, with virtual keys, budgets, usage
-    tracking and sandboxed server-side code execution. Its provider coverage is narrower than LiteLLM's,
-    and no standard benchmark applies to a gateway.
-  last_verified: '2026-08-13'
+  note: Otari is an OpenAI-compatible gateway to many providers behind one API, with virtual keys, per-user
+    budgets, usage tracking and sandboxed server-side code execution.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/mozilla-ai/otari
     shows: 40+ providers, virtual keys, budgets, usage tracking, sandboxed code execution
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 7cf4779a42242702718ade1f98eeb9497fe4f66ff73f3e4152a94c1bdfc34a2d
+  - url: https://blog.mozilla.ai/otari-own-your-ai-stack/
+    shows: 'Launch post feature lists: "Virtual API keys: Hashed, named, optionally-expiring keys bound
+      to a user", "Usage and spend tracking: Real-time cost calculation across providers", "Sandboxed code
+      execution. A Docker-isolated Python REPL, invoked server-side when a model needs to run code", and
+      "Per-user spending caps with configurable reset windows".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8c7a3671876d7e02ed029bd5bf4c79b31a15d69794fc68b137ccee7404762386

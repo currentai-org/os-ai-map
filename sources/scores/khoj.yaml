@@ -17,25 +17,45 @@ openness:
     free_text:
     - cloud-tier-sunset-2026-04(no remaining feature-gating)
   confidence: high
-  note: OSI-licensed (AGPL-3.0), full source public, self-hostable via Docker or pip. The paid Khoj Cloud
-    tier was discontinued 2026-04-15 and the team frames self-hosting as the complete replacement, so the
-    earlier open-core characteristics no longer apply to the shipping product.
+  note: Khoj is licensed under AGPL-3.0, its source is public, and it runs self-hosted through Docker or
+    pip. The hosted Khoj Cloud service has been shut down, so no part of the shipping product sits behind
+    a paid tier.
   raw: license:AGPL-3.0(OSI);source:public(github.com/khoj-ai/khoj);self-host:primary(Docker+pip);cloud-tier-sunset-2026-04(no
     remaining feature-gating);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/khoj-ai/khoj
     shows: AGPL-3.0 license; ~35k stars; self-hostable AI personal assistant
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: db4fcbf157408d6f2bc8bbff78fc4dbf8811e5d8de928dbc384ef504d90a3307
-    establishes: [license, source]
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/khoj/json
+    shows: PyPI metadata lists a source distribution "filename":"khoj-1.42.10.tar.gz" and the link "Code":"https://github.com/khoj-ai/khoj".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 331236abe7fec410edc28a7decc1eb689b0a666beba041af61378f751367d885
+    establishes:
+    - license
+    - source
+  - url: https://docs.khoj.dev/get-started/setup
+    shows: The self-host guide begins "You can install the Khoj server using either" Docker or pip and describes
+      no paid, enterprise or license-key tier.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2a5eb877547edac7d30d9bc8164eadfc3c582618a0e800840f5abe4647f3b50b
+    establishes:
+    - self-host
   - url: https://app.khoj.dev/
-    shows: official notice that Khoj Cloud was sunset 2026-04-15 and Khoj "remains fully open source"
-    accessed: '2026-08-13'
+    shows: The notice reads "We made the difficult decision to shut down the hosted service." and says Khoj
+      remains "fully open-source" for self-hosting.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 220d598757e6cc36dd5658b19a8460dddef1ae2c157c00b333406086c2399cdb
-    establishes: [core-gated]
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
@@ -59,16 +79,65 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'model breadth: OpenAI/Anthropic/Gemini/Llama/Qwen/Mistral/DeepSeek + local Ollama; RAG over personal
-    docs (PDF/Markdown/org-mode/Word/Notion/images); multimodal: image gen + voice/TTS; agents with custom
-    knowledge bases; scheduled automations + deep research; multi-user server; clients: browser/Obsidian/Emacs/desktop/mobile/WhatsApp'
+  value: 'chat models: OpenAI, Anthropic, Gemini and OpenAI-compatible local servers (Ollama, vLLM, LM Studio,
+    llama.cpp); RAG over personal docs (PDF/Markdown/org-mode/Word/plaintext/Notion/GitHub repos); online
+    search; Python code execution; image generation; voice chat; custom agents; scheduled automations delivered
+    by email; multi-user server; clients: browser/Obsidian/Emacs/desktop'
   confidence: medium
-  note: Broad feature surface across providers, personal RAG, agents, automations, multimodality and many
-    client integrations - on par with the leading open self-hosted assistants. Top-tier for the category.
-  last_verified: '2026-08-13'
+  note: Khoj combines multi-provider and local chat models, retrieval over personal documents, online search,
+    code execution, image generation, voice, custom agents and scheduled automations in one self-hosted
+    server, with browser, Obsidian, Emacs and desktop clients. The WhatsApp bot depends on the discontinued
+    Khoj Cloud, and the documentation describes agents as custom system prompts rather than full workflow
+    builders.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/khoj-ai/khoj
     shows: 'feature set: multi-provider, personal-doc RAG, agents, automations, multimodal, multi-client'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: db4fcbf157408d6f2bc8bbff78fc4dbf8811e5d8de928dbc384ef504d90a3307
+  - url: https://docs.khoj.dev/features/all-features
+    shows: The feature overview lists "Index your Org-mode, Markdown, PDF, plaintext files, Github repos
+      and Notion pages" and "Interact from your Web Browser, Emacs, Obsidian, Desktop app or even Whatsapp".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5cedc6b7d8971eb80ae09da1117e5293390109f88f8e8bee292b87c677132c9c
+  - url: https://docs.khoj.dev/get-started/setup
+    shows: 'The setup guide covers chat models: "Khoj supports local and online chat models." with OpenAI,
+      Anthropic, Gemini, offline and Ollama options, and OpenAI-compatible servers like vLLM and LMStudio.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2a5eb877547edac7d30d9bc8164eadfc3c582618a0e800840f5abe4647f3b50b
+  - url: https://docs.khoj.dev/features/agents
+    shows: 'Agents page: "You can use agents to setup custom system prompts with Khoj." Server hosts can
+      make agents available to all users on the server.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 44521d8a8930c00465b69e7f4add01f3add31e345afb4ad1a70f6f6834a7724d
+  - url: https://docs.khoj.dev/features/automations
+    shows: 'Automations page: "schedule repeated jobs for Khoj to do on your behalf" with results sent by
+      email; self-hosting needs Resend and authentication set up.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 495dd8562565c42bc9836c7185571918a6065fe7ca1db99169d2feaae54a3c18
+  - url: https://docs.khoj.dev/features/code_execution
+    shows: 'Code execution page: "Khoj can generate and run simple Python code as well."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1fd841bb7c4f9852baf52ed1e32bd27f6aa03c5e9e44a6c8de75c4e3db9e16e8
+  - url: https://docs.khoj.dev/features/image_generation
+    shows: 'Image generation page: "You can use Khoj to generate images from text prompts."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ad81707804b9d3fa8fa3f9d3deb58f21898ef296d7e4771016f30ca89d909a6f
+  - url: https://docs.khoj.dev/features/voice-chat
+    shows: 'Voice page: "You can talk to Khoj using your voice." on the web, desktop and Obsidian apps.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2fd676b93d8ba785c8c816a44a878096657c8aad5c510149a5ec9833e14b1e63
+  - url: https://docs.khoj.dev/features/online_search
+    shows: 'Online search page: "Khoj will research on the internet to ground its responses"; self-hosted
+      setups use searxng, Serper, Firecrawl or Exa.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 55ee76ba9c90b595ee8c91052d49975acdeb064eae17c3ab9d2ce615077a87c0

@@ -17,14 +17,45 @@ openness:
     end to end.
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core(self-hostable SvelteKit app, MongoDB
     backend);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/huggingface/chat-ui
     shows: Apache-2.0; 'open source codebase powering HuggingChat'; v0.10.0
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0cbbac9afb1712501473af2b9295db8f4961ff9c354bd584268c7e0632dcb16e
-    establishes: [license, source, core-gated]
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/huggingface/chat-ui@main/LICENSE
+    shows: 'The repository LICENSE file (served from the jsDelivr mirror of huggingface/chat-ui at main)
+      is the Apache License text: "Licensed under the Apache License, Version 2.0" and "Version 2.0, January
+      2004".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 79a690466d619ec16e3b05dea75fc591c3f4b767394ffc24389927cf38717f65
+    establishes:
+    - license
+  - url: https://huggingface.co/docs/chat-ui/index
+    shows: 'Chat UI docs home: "Open source chat interface with support for tools, multimodal inputs, and
+      intelligent routing across models." Setup is npm install and npm run dev with an OpenAI-compatible
+      endpoint. Searched the body for license key, enterprise edition, paid plan and non-commercial: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3c347874b81effafa4288badbb96a12254a88527dac36eaf47e1e72459f7f0c7
+    establishes:
+    - source
+    - core-gated
+  - url: https://huggingface.co/docs/chat-ui/installation/local
+    shows: 'Running Locally guide: "Chat UI will discover available models automatically from your endpoint."
+      with MongoDB as the only database and a production build via npm run build. No key, account or paid
+      tier is required to self-host.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d5423497de76567eed60157d047a4854dc465e1679afb5b6bfa6a215aa977c2c
+    establishes:
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
@@ -34,24 +65,27 @@ adoption:
     on social media and trade press relayed, not a page Hugging Face published itself. The hosted product
     was later retired and relaunched as HuggingChat Omni, and the self-hosted repository draws a much smaller
     following, leaving that vendor statement as the only reach figure available.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.thelettertwo.com/2025/07/01/hugging-face-ends-huggingchat-teases-more-integrated-future/
-    shows: '"HuggingChat has supported over 20 open-source models ... helped more than 1 million users,
-      and powered over 100,000 assistants", attributed in the piece to Victor Mustar, Head of Product at
-      Hugging Face, posted on X. A vendor statement relayed by trade press, not a first-party HF page.'
-    accessed: '2026-08-14'
+    shows: 'Trade-press piece on the July 2025 HuggingChat wind-down: "helped more than 1 million users,
+      and powered over 100,000 assistants", a vendor statement relayed by the outlet, not a first-party
+      HF page.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 22a0b23a57da41e6b797221a021a0e983d712a1e83d5f627f4d054e2cad1af1f
+    content_sha256: 16845e65de2e3bec1b311ce4508951a170a70846a927f5f506e9fcd15571ea99
   - url: https://api.github.com/repos/huggingface/chat-ui
-    shows: 'GitHub API for huggingface/chat-ui - 10,885 stars, 1,659 forks, 97 watchers, Apache-2.0. The
-      self-host base, countable; the hosted product publishes no user count.'
+    shows: GitHub API for huggingface/chat-ui - 10,885 stars, 1,659 forks, 97 watchers, Apache-2.0. The
+      self-host base, countable; the hosted product publishes no user count.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 6d747b9d62c3f934f264a45520c0d3fa92dbed7cc02b3e5223b4af244857fc06
   - url: https://huggingface.co/chat
-    shows: live HuggingChat Omni interface, Omni router, 123+ open source models, MCP
-    accessed: '2026-06-04'
+    shows: 'Live HuggingChat page: "Welcome to HuggingChat, the chat app powered by open source AI models."
+      and the model picker. Searched for a user count: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fb3c2f05568c2546a11d84a71b8acac9ff63dfb78e987613ee8315f834988329
   - url: https://www.startuphub.ai/ai-news/startup-news/2025/hugging-face-closes-huggingchat-to-make-way-for-next-generation-ai-tools
     shows: Sunset write-up. Carries no user or assistant figure.
     accessed: '2026-06-04'
@@ -60,23 +94,58 @@ capability:
   basis: feature_matrix
   relative_to: open-webui
   relation: one_below
-  value: model breadth (115-123 open models via 15 inference providers, Omni smart-router on Arch-Router-1.5B);
-    multimodal input; MCP tools; OpenAI-compatible API; multi-user (hosted). Current branch removed legacy
-    provider-specific integrations and GGUF discovery
+  value: model breadth (many models on hosted HuggingChat; any OpenAI-compatible endpoint when self-hosted,
+    such as Hugging Face Inference Providers, Ollama, llama.cpp or OpenRouter); Omni router that picks a
+    route by image input or active MCP tools; multimodal image input; MCP tools; voice transcription; optional
+    OpenID login
   confidence: medium
-  note: HuggingChat pairs broad model access, smart routing and MCP support, but the rebuilt v0.10 branch
-    dropped the RAG and provider integrations the legacy branch had, leaving a leaner self-host feature
-    surface than Open WebUI or LibreChat. That places it one step below Open WebUI in this category.
-  last_verified: '2026-08-13'
+  note: HuggingChat pairs broad model access, route-based model selection and MCP tool calling, but the
+    self-host build has no document retrieval and connects to models only through OpenAI-compatible endpoints,
+    a leaner feature surface than Open WebUI or LibreChat. That places it one step below Open WebUI in this
+    category.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/huggingface/chat-ui
-    shows: OpenAI-compatible API, MCP tools, multimodal, Omni routing; legacy provider integrations +
-      GGUF discovery removed
+    shows: OpenAI-compatible API, MCP tools, multimodal, Omni routing; legacy provider integrations + GGUF
+      discovery removed
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0cbbac9afb1712501473af2b9295db8f4961ff9c354bd584268c7e0632dcb16e
   - url: https://huggingface.co/chat
-    shows: Omni router selecting among 123+ open models, MCP enabled
-    accessed: '2026-08-13'
+    shows: 'Live HuggingChat page: "You can also choose from any available open source models to chat with
+      directly." plus the Omni router and a model picker.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e6ad542f9d8a280e654288ef5a9612e2c012aee06fac852ffba12c756708534f
+    content_sha256: fb3c2f05568c2546a11d84a71b8acac9ff63dfb78e987613ee8315f834988329
+  - url: https://huggingface.co/docs/chat-ui/index
+    shows: 'Chat UI docs home: "Open source chat interface with support for tools, multimodal inputs, and
+      intelligent routing across models." Setup is npm install and npm run dev with an OpenAI-compatible
+      endpoint. Searched the body for license key, enterprise edition, paid plan and non-commercial: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3c347874b81effafa4288badbb96a12254a88527dac36eaf47e1e72459f7f0c7
+  - url: https://huggingface.co/docs/chat-ui/developing/architecture
+    shows: 'Architecture page: "Chat UI provides a simple interface connecting LLMs to external tools via
+      MCP." Lists "OpenAI-compatible only" model access and routing by local heuristics; no retrieval or
+      document-store component in the code map.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 67c0399b8ecba3625470d21e2a9561e21f739f00d04aba15000bbadcde5a8e3c
+  - url: https://huggingface.co/docs/chat-ui/configuration/mcp-tools
+    shows: 'MCP Tools page: "Chat UI supports tool calling via the" Model Context Protocol, with admin-configured
+      base servers and user-added servers from the UI, plus "User Token Forwarding" for Hugging Face logins.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef3f54dec0e20e853dcefd31625f543934bf8168f82d9f7ee8c75fcc6a6bf922
+  - url: https://huggingface.co/docs/chat-ui/configuration/llm-router
+    shows: 'LLM Router page: "Route selection runs locally as a synchronous heuristic" with default, multimodal
+      and agentic routes and fallback models.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4afb14d2be3b0c117daaa3873976998fac3a8e32f5cfbde7c96b8efc1b539120
+  - url: https://huggingface.co/docs/chat-ui/configuration/overview
+    shows: 'Configuration page: "Chat UI connects to any OpenAI-compatible API endpoint" with optional "Voice
+      Transcription" (Whisper) and OpenID Connect login.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6c31777681239ec8907ea03f02a6e288ca2071c8c11c6e7c9bd56575b7fb2b76
