@@ -14,7 +14,6 @@ openness:
     free_text:
     - no feature-gated core observed (acquired by OpenAI, stated to remain MIT/open source)
   confidence: high
-  last_verified: '2026-08-13'
   note: MIT-licensed and fully public, and MIT is an OSI license, so this is open source. OpenAI now owns
     the project, which does not change the license the code ships under.
   raw: license:MIT(OSI);source:public(GitHub);no feature-gated core observed (acquired by OpenAI, stated
@@ -69,23 +68,42 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'broad eval + security: prompt/model testing, side-by-side model comparison, red-teaming/vulnerability
-    scanning, CI/CD integration, caching/live-reload; agentic + app eval plus a security dimension peers
-    lack'
+  value: 'broad eval + security: prompt/model/RAG testing, side-by-side model comparison, red-teaming/vulnerability
+    scanning, code scanning of pull requests, CI/CD integration, caching/live-reload'
   confidence: high
   relative_to: lm-evaluation-harness
   relation: one_below
-  last_verified: '2026-08-13'
-  note: Very broad eval coverage plus a distinctive red-teaming and security axis. Top-tier for application
-    evaluation, though below the academic-benchmark standardization references such as lm-evaluation-harness
-    on raw benchmark coverage.
+  last_verified: '2026-09-29'
+  note: Broad eval coverage for LLM applications, including prompt and model testing, RAG pipeline evaluation,
+    side-by-side model comparison, CI/CD automation, and red teaming with vulnerability scanning. It sits
+    below academic-benchmark standardization references such as lm-evaluation-harness on raw benchmark coverage.
   sources:
   - url: https://github.com/promptfoo/promptfoo
     shows: eval + red-teaming + model comparison + CI/CD features
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/promptfoo/promptfoo/main/README.md
-    shows: README lists red teaming and vulnerability scanning, side-by-side model comparison across OpenAI/Anthropic/Azure/Bedrock/Ollama,
-      CI/CD automation, and 'live reload and caching' - the same feature set this reading reflects.
-    accessed: '2026-08-13'
+    shows: README describes "a CLI and library for evaluating and red-teaming LLM-based apps" and lists
+      "automated evaluations", "red teaming", "side-by-side (OpenAI, Anthropic, Azure, Bedrock, Ollama"
+      model comparison, and "CI/CD" automation, plus "Fast, with features like live reload and caching"
+      and a "code scanning" review of pull requests.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 426270e1b7c45d0bf456b1284cdc1af055218db73869864b9590b1e0bdaab5cb
+    content_sha256: 0b6031de6f2062786eb2dd858c80c6c0e4a2109f9c21a2ea02bea51343814d6a
+  - url: https://www.promptfoo.dev/docs/intro/
+    shows: Docs intro lists "Test and evaluate your prompts, models, and RAG pipelines" and states "promptfoo
+      is fast, with quality-of-life features like live reloads and caching."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e46f9d471911997c54f1c814a05c447552000a2cef58a70dc8bc297490919848
+  - url: https://www.promptfoo.dev/docs/getting-started/
+    shows: Getting started guide says "The YAML configuration format runs each prompt through a series of
+      test cases" and uses a promptfooconfig.yaml file.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5e1b900acff4c6c917bd8e85b018a89c2aff092613fc0bf536504bacd7b0de13
+  - url: https://www.promptfoo.dev/docs/usage/node-package/
+    shows: Node package page says "Integrate LLM testing into Node.js apps" with promptfoo's evaluate()
+      function.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a3f14b8a8971d118e397004d716f1fb957c9a5d50b7903673c43d66327379da8

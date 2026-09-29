@@ -15,10 +15,10 @@ openness:
     - harness+inference+eval code public
     - no feature-gated core
   confidence: high
-  last_verified: '2026-08-13'
-  note: The harness is MIT-licensed and its full source is public, and MIT is an OSI license, so this is
-    open source. The product declares the SWE-bench/SWE-bench repository, with the cited princeton-nlp path
-    redirecting there, and the README ships the whole harness with no paid tier.
+  last_verified: '2026-09-29'
+  note: The harness is MIT-licensed with its full source public, and MIT is an OSI license, so this is open
+    source. The README documents building it from source and running the evaluation locally, lists no paid
+    tier or license key, and states that the Multimodal split is fully open for local evaluation.
   raw: license:MIT(OSI);source:public(GitHub);harness+inference+eval code public;no feature-gated core;core-gated:ungated
   sources:
   - url: https://pypi.org/project/swebench/
@@ -35,15 +35,33 @@ openness:
     content_sha256: ca9d720a1e08b9205f4ed097936eaba48dab795f7e848fe8721c508664289871
     establishes:
     - license
-  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
-    shows: README carries the MIT badge, closes with 'MIT license. Check LICENSE.md', and documents building
-      the harness from source and running containerized Docker evaluation on the reader's own machine.
-      No pricing, enterprise edition, paid tier or license key appears anywhere in it. The only held-back
-      piece is the SWE-bench Multimodal test split, whose grading runs through the free sb-cli service -
-      a contamination control on one split, not a commercial gate on the harness.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE
+    shows: The LICENSE file opens with "MIT License" and grants "Permission is hereby granted, free of charge,
+      to any person obtaining a copy" of the software, with the right to "use, copy, modify, merge, publish,
+      distribute, sublicense, and/or sell" it.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f
+    content_sha256: 2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/swebench/json
+    shows: 'PyPI metadata for swebench lists the license as "MIT License" and carries the classifier "License
+      :: OSI Approved :: MIT License".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e0596a0b822981603cabe809173b7e0d3fb6f80003de74bff3357bd90b02ab00
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
+    shows: README carries the MIT badge, closes with "MIT license. Check `LICENSE.md`.", and documents building
+      the harness from source ("pip install -e .") and running Docker evaluation locally with "swebench
+      eval verified". No pricing, enterprise edition, paid tier or license key appears in it (searched for
+      pricing, enterprise, paid, license key). The Multimodal news item states "SWE-bench Multimodal v2
+      is now fully open source, with 480 tasks available for local evaluation"; sb-cli and Modal are listed
+      only as optional cloud alternatives.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa
     establishes:
     - source
     - core-gated
@@ -79,22 +97,36 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: 'agentic-coding eval standard: real GitHub-issue patch generation + test-based verification;
-    Verified/Lite/Multimodal/Pro splits; broad model-backend support; reference implementation for the
-    most-cited coding benchmark'
+  value: 'agentic-coding eval harness: real GitHub-issue patch generation + test-based verification in Docker;
+    Verified/Lite/Multimodal splits; model inference with mini-SWE-agent; Modal and sb-cli cloud evaluation'
   confidence: high
-  last_verified: '2026-08-13'
-  note: 'The reference harness for the benchmark every lab reports against, and the frontier-definer for
-    agentic and coding evaluation: patch generation against real GitHub issues, containerized test-based
-    grading, and the Verified, Lite and Multimodal splits, all documented in the repo README.'
+  last_verified: '2026-09-29'
+  note: The harness applies model-generated patches to real GitHub issues and grades them by running each
+    repository's tests in a Docker container. It documents Verified, Lite and Multimodal splits, and Modal
+    and sb-cli cloud evaluation.
   sources:
   - url: https://github.com/princeton-nlp/SWE-bench
     shows: harness runs models on real GitHub issues with test-based verification; multimodal split
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
-    shows: harness generates patches for real GitHub issues and grades them by running the repository's
-      own tests in Docker; SWE-bench Verified, Lite and Multimodal splits documented; Modal cloud execution
-      offered as an alternative backend.
-    accessed: '2026-08-13'
+    shows: 'README documents Verified, Lite and Multimodal datasets and the eval command: "swebench eval
+      multimodal --gold", "swebench infer verified -m gpt-5 -o preds -w 8        # generate predictions
+      with mini-SWE-agent", and "Running SWE-bench evaluation on [Modal](https://modal.com/)" as a cloud
+      option.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f
+    content_sha256: 06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa
+  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/docs/guides/evaluation.md
+    shows: Evaluation guide states "SWE-bench evaluates models by applying their generated patches to real-world
+      repositories and running the repository's tests to verify if the issue is resolved" in "a containerized
+      Docker environment", and documents Modal and sb-cli cloud evaluation.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 770c8d6c45d507cd40a74297c2c7d779a5ab1f4f82da8a1a9dfae4d6bb03ff6e
+  - url: https://huggingface.co/datasets/SWE-bench/SWE-bench/raw/main/README.md
+    shows: Hugging Face dataset card says "The dataset collects 2,294 Issue-Pull Request pairs from 12 popular
+      Python repositories" and "Evaluation is performed by unit test verification using post-PR behavior
+      as the reference solution."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6433ee353e763e5c1e6f3e9ef4e9872d7f2e9639effc2e52cc5521f419444764

@@ -5,14 +5,14 @@ openness:
   components:
     license:
     - name: proprietary
-      detail: the Vals Index platform and its held-out sets
+      detail: the Vals Index and its held-out test sets
     - name: AGPL-3.0
       detail: OSI, vals-ai/Valkyrie
     - name: MIT
       detail: OSI, vals-ai/model-library
     source:
       value: partial
-      detail: harness repos public, Index runtime and datasets do not ship
+      detail: harness repos public, held-out test sets not published
     context:
       benchmarks:
         value: proprietary/private-held-out
@@ -21,14 +21,13 @@ openness:
         value: published
         detail: Valkyrie AGPL-3.0 + model-library MIT
   confidence: high
-  note: 'Vals AI is a proprietary evaluation platform, but part of its infrastructure is open: Valkyrie,
-    its agentic-benchmark harness, ships under AGPL-3.0, and its model library, a provider-agnostic API
-    gateway, ships under MIT. The Vals Index runtime has no self-hostable version, and the held-out test
-    sets behind its scores are never published, keeping the source partial rather than closed.'
-  raw: license:proprietary(the Vals Index platform and its held-out sets)+AGPL-3.0(OSI, vals-ai/Valkyrie)+MIT(OSI,
-    vals-ai/model-library);source:partial(harness repos public, Index runtime and datasets do not ship);benchmarks:proprietary/private-held-out(Vals
+  note: 'Vals AI is a proprietary evaluation service, but part of its infrastructure is open: Valkyrie,
+    its agentic-benchmark harness, is AGPL-3.0, and its model library, a provider-agnostic API gateway,
+    is MIT. The test sets behind its scores are held privately and never published.'
+  raw: license:proprietary(the Vals Index and its held-out test sets)+AGPL-3.0(OSI, vals-ai/Valkyrie)+MIT(OSI,
+    vals-ai/model-library);source:partial(harness repos public, held-out test sets not published);benchmarks:proprietary/private-held-out(Vals
     Index on non-public datasets);eval-harness:published(Valkyrie AGPL-3.0 + model-library MIT)
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.vals.ai
     shows: proprietary SaaS eval platform, 'proprietary benchmarks' require contact, no GitHub/self-host
@@ -45,22 +44,10 @@ openness:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: deb010de89092a2071bc5e3e8168d9b85e7bfa3887d7105476aba611c90234fc
-  - url: https://www.vals.ai/about
-    shows: '''We have built, and even open-sourced, the infrastructure we rely on to run these evaluations
-      reproducibly and at scale across labs. This includes Valkyrie, a distributed system to run agentic
-      benchmarks, and our model library, a free standard API to call models with.'' Beside it, ''Scores
-      are based on our privately held test sets to preserve the integrity and signal of our results'' -
-      the harness ships, the sets and the Index runtime do not.'
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: b90f2049e69c80ab973b902ea1524b11f79ea594d00ebf24b6d1fae7c7a7342a
-    establishes:
-    - source
-    - license
   - url: https://api.github.com/repos/vals-ai/valkyrie
-    shows: 'Repo metadata for vals-ai/Valkyrie - license spdx_id AGPL-3.0, public, not archived, 31 stars,
-      pushed 2026-08-14, described as ''Scalable, cloud-native infrastructure for evaluating AI agents
-      across any benchmark''. A live published harness rather than an abandoned mirror.'
+    shows: Repo metadata for vals-ai/Valkyrie - license spdx_id AGPL-3.0, public, not archived, 31 stars,
+      pushed 2026-08-14, described as 'Scalable, cloud-native infrastructure for evaluating AI agents across
+      any benchmark'. A live published harness rather than an abandoned mirror.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 6d480b6159ce4afd19ac71b172d88324af29308273bca24f45f25d047eb8f540
@@ -68,11 +55,59 @@ openness:
     - license
     - source
   - url: https://api.github.com/repos/vals-ai/model-library
-    shows: 'Repo metadata for vals-ai/model-library - license spdx_id MIT, public, not archived, 21 stars,
-      pushed 2026-07-30, ''Simple provider agnostic LLM gateway''.'
+    shows: Repo metadata for vals-ai/model-library - license spdx_id MIT, public, not archived, 21 stars,
+      pushed 2026-07-30, 'Simple provider agnostic LLM gateway'.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 10bd99910f93875f3779f9bbc24e8e8778cc6278fb66499ce753ef3cbfc8894e
+    establishes:
+    - license
+    - source
+  - url: https://www.vals.ai/about
+    shows: 'The About page says the evaluations run on held-out sets and that the run infrastructure is
+      public: "Scores are based on our privately held test sets to preserve the integrity and signal of
+      our results." and "We have built, and even open-sourced, the infrastructure we rely on to run these
+      evaluations reproducibly and at scale across labs." The harness ships; the test sets do not.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 642675dd3ff13e5bcdb5a1dd1863036223117bd35fc104b9654cb0cf3f2e0df7
+    establishes:
+    - source
+    - license
+  - url: https://www.vals.ai/benchmarks
+    shows: 'The benchmarks page tags the Vals Index "Proprietary" and describes its own sets as private:
+      "Private question-answer benchmark over Canadian court-cases." and "A private benchmark evaluating
+      understanding of long-context credit agreements".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/vals-ai/Valkyrie/main/LICENSE
+    shows: Raw LICENSE of vals-ai/Valkyrie is the full text of "GNU AFFERO GENERAL PUBLIC LICENSE" "Version
+      3, 19 November 2007", so the harness is AGPL-3.0.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/vals-ai/Valkyrie/main/docs/HOSTED_MODE.md
+    shows: 'Valkyrie docs describe a self-hosted mode that needs no Vals service: "Run your own infrastructure
+      end-to-end, including your own tracker service deployment." Hosted mode is an option that uses "a
+      Descope API key" from Vals; self-hosting is the alternative.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 517810d897e108b3a97364f36a073b4eb08b220a3e639dafcbbbd3b5acd8225c
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/vals-ai/model-library/main/LICENSE
+    shows: Raw LICENSE of vals-ai/model-library is the "MIT License" with "Copyright (c) 2025 Vals AI, Inc.",
+      so the model library is MIT.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c7a99fe28ed4ff01da6aa71fc6853ed11eae6092dba8bfd336ea142cfddab1a0
     establishes:
     - license
     - source
@@ -81,14 +116,12 @@ adoption:
   signal_type: reported_traction
   confidence: medium
   note: Vals AI's benchmarks page tracks models across the Vals Index, a Multimodal Index and vertical suites
-    spanning law, finance, healthcare, math and coding, with scores cited across third-party coverage and
-    a partnership with Legaltech Hub on industry studies. Vals publishes no user, traffic or customer count,
-    so this reflects citation as a benchmark authority rather than a measured usage figure.
-  last_verified: '2026-08-13'
+    spanning law, finance, healthcare, math and coding. Vals publishes no user, traffic or customer count,
+    so this reflects its standing as a benchmark provider rather than a measured usage figure.
   sources:
   - url: https://www.vals.ai/benchmarks
-    shows: live multi-domain leaderboards (Vals Index, Multimodal Index) tracking 24+ frontier models,
-      updated June 2026
+    shows: live multi-domain leaderboards (Vals Index, Multimodal Index) tracking 24+ frontier models, updated
+      June 2026
     accessed: '2026-06-04'
   - url: https://www.vals.ai/benchmarks
     shows: 43 models tested; Vals Index, RSI Index and Vals Multimodal Index plus legal, finance, healthcare,
@@ -97,19 +130,27 @@ adoption:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 68b57a0a93207cd98932ef7bb54e1e638db27450bbb70d5e8fb6cae4841d5a6f
+  - url: https://www.vals.ai/benchmarks
+    shows: The leaderboard index lists the Vals Index, Vals RSI Index, Web Search Index and Vals Multimodal
+      Index plus legal, finance, healthcare, math, science, education, voice, coding, games and social mobility
+      suites, e.g. "Evaluating agents on legal research tasks across diverse areas of US law". It gives
+      per-benchmark model counts only; a search for customers and users finds no usage, traffic or customer
+      figure.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Coverage: 6+ domain verticals (finance/law/healthcare/coding/math/tax incl. TaxEval, CorpFin,
-    MedCode, LegalBench); model-backend breadth = all major frontier labs; reproducibility via private
-    held-out sets (anti-leakage); agentic-eval support (Finance Agent v2). Pointwise scoring + composite
-    indices.'
+  value: 'Coverage: finance, legal, healthcare, coding, math, education, security and games suites, including
+    CorpFin, MedCode and LegalBench; models from several frontier labs; many benchmarks on private held-out
+    test sets; agentic evaluation (Finance Agent v2); composite indices (Vals Index, RSI Index, Multimodal
+    Index).'
   confidence: medium
-  last_verified: '2026-08-13'
-  note: Vals AI is a leading independent blind-benchmark suite with deep vertical coverage, including cybersecurity,
-    games and agentic evaluation such as Finance Agent v2, but its fixed, proprietary task set keeps it
-    from becoming a standard others reproduce. Its Valkyrie and model-library repositories have since been
-    published, but the Index remains unhostable, keeping it narrower than a general harness.
+  last_verified: '2026-09-29'
+  note: Vals AI covers finance, legal, healthcare, math, science, education, coding, security and games
+    suites, plus the Vals Index, RSI Index and Multimodal Index. Many of them run on privately held test
+    sets that outsiders cannot rerun, though the Valkyrie and model-library repositories are published.
   sources:
   - url: https://www.vals.ai
     shows: Vals Index + Multimodal Index + domain benchmarks (finance/law/healthcare/coding/math/education)
@@ -124,3 +165,25 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 303bde67a1b32448cbe8de1ef60414a71472450740363231f8cdda41ef4423db
+  - url: https://www.vals.ai/benchmarks
+    shows: The benchmarks page covers finance ("Evaluating agents on core financial analyst tasks", "A private
+      benchmark evaluating understanding of long-context credit agreements"), healthcare ("Can models support
+      the medical billing process?"), legal ("Evaluating agents on legal research tasks across diverse areas
+      of US law"), math, science, education, coding, security ("Can AI agents find security bugs and patch
+      them?") and games, alongside the composite Vals Index, RSI Index and Multimodal Index, and lists the
+      suites "CorpFin v2", "MedCode", "LegalBench" and "Finance Agent v2".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e
+  - url: https://www.vals.ai
+    shows: The home page states "run all of our own evaluations and create many of our benchmarks" and shows
+      new model releases from several labs each "evaluated across our benchmark suite".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 69231c016623c2d4263edd27fc7cb34c0fdb8c4c1aba507398ef8cf6632b8e3c
+  - url: https://www.vals.ai/about
+    shows: The About page says "Scores are based on our privately held test sets to preserve the integrity
+      and signal of our results." and "This prevents training to the test set, unlike in open-source benchmarks."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 642675dd3ff13e5bcdb5a1dd1863036223117bd35fc104b9654cb0cf3f2e0df7
