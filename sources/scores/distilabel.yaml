@@ -20,8 +20,36 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core.
   raw: license:Apache-2.0(OSI);source:public(argilla-io/distilabel);governance:Argilla/Hugging Face;no feature-gated
     core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/argilla-io/distilabel/main/LICENSE
+    shows: LICENSE text reads "Apache License" and "Version 2.0, January 2004" followed by "TERMS AND CONDITIONS
+      FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c7fe111b594f1e5d0e20edc35c8779490c76125484987b241c07ebac93c25ed7
+  - url: https://raw.githubusercontent.com/argilla-io/distilabel/main/README.md
+    shows: 'README says "A group of community members have recently joined the GitHub project as collaborators
+      to maintain the project" and installs with "pip install distilabel --upgrade" from PyPI. Searched
+      the body for enterprise, license key and paid: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: f69c2e49527588ee013624892d47237f1995b48fb1b85efc3075ca1ee69c07a8
+  - url: https://raw.githubusercontent.com/argilla-io/distilabel/main/pyproject.toml
+    shows: 'pyproject.toml describes "Distilabel is an AI Feedback (AIF) framework for building datasets
+      with and for LLMs." and declares the license as "Apache-2.0". Searched the body for enterprise, license
+      key and paid: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    - core-gated
+    http_status: 200
+    content_sha256: 7c3bb564b6ac9ed5bf6bf396eee9115f20d0b88fde6681e47234536d675be0b0
   - url: https://github.com/argilla-io/distilabel/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -29,16 +57,6 @@ openness:
     - license
     http_status: 200
     content_sha256: c7fe111b594f1e5d0e20edc35c8779490c76125484987b241c07ebac93c25ed7
-  - url: https://raw.githubusercontent.com/argilla-io/distilabel/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: f69c2e49527588ee013624892d47237f1995b48fb1b85efc3075ca1ee69c07a8
 adoption:
   level: 2
   reach: 10K-100K
@@ -64,24 +82,25 @@ capability:
   score: 4
   basis: training_value
   basis_detail: downstream proxy
-  value: No benchmark of the tool itself; inferred from controlled downstream results. Notus-7B-v1 (identical
-    Zephyr recipe, only the preference data recurated with distilabel) reaches 91.42 AlpacaEval vs Zephyr-7B-beta's
-    90.60; a distilabel-curated Orca-DPO set (46% of the data) beats full-data DPO on the Nous suite (54.04
-    vs 53.51).
+  value: 'No benchmark of the tool itself; inferred from downstream results. Notus-7B-v1 (Zephyr recipe,
+    only the preference data changed: UltraFeedback re-curated by Argilla, the team building distilabel)
+    reaches 91.42 AlpacaEval vs Zephyr-7B-beta''s 90.60; a distilabel-curated Orca-DPO set (46% of the samples)
+    beats full-data DPO on the Nous suite (54.04 vs 53.51).'
   confidence: medium
-  note: 'Indirect proxy: tool quality inferred from models where distilabel-curated data was the only changed
-    variable. Confidence capped because there is no head-to-head against other synthetic-data frameworks.'
-  last_verified: '2026-08-13'
+  note: 'Indirect proxy: tool quality inferred from models trained on data curated with the tool. Confidence
+    capped because there is no head-to-head against other synthetic-data frameworks.'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/argilla/notus-7b-v1
-    shows: 'Notus-7b-v1 (distilabel-recurated UltraFeedback) - 91.42 AlpacaEval against Zephyr-7b-beta
-      90.60 in the model card table'
-    accessed: '2026-08-13'
+    shows: Model card table row for the Notus model gives AlpacaEval "91.42" and the Zephyr-7b-β row gives
+      "90.60", with "we invested time understanding and deep-diving into the UltraFeedback dataset" in the
+      text.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: fe893fded6c16772e768c3f9f3339edeafaa93a6bce6a36c592c983806fbe416
+    content_sha256: a051f245d3e39ce253215d56e00befb0f3c97635fb6934281a5f7e06173c9c18
   - url: https://huggingface.co/argilla/distilabeled-Hermes-2.5-Mistral-7B
-    shows: 'distilabel Orca-DPO curation, a 54% reduction in samples - 54.04 Nous average against 53.51
-      for the original full-data recipe'
-    accessed: '2026-08-13'
+    shows: Model card says "5,922</code> instead of <code>12,859</code> samples (54% reduction)" and reports
+      Nous averages "54.04" and "53.51".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 47a0ab9d93584d24398e807b4fecea91e51ec22880141059eb97e4df0277986b
+    content_sha256: 14bd62c424107f61cb70d3e7f5a4ecae5d53ec58ed86a1ae7be86976e2342fb2

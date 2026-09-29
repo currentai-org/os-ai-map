@@ -22,8 +22,35 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core or managed gate.
   raw: license:Apache-2.0(OSI);source:public(huggingface/datatrove);governance:Hugging Face;no feature-gated
     core;managed-tier:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/huggingface/datatrove/main/LICENSE
+    shows: LICENSE file is the "Apache License" "Version 2.0, January 2004" text.
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/huggingface/datatrove/main/pyproject.toml
+    shows: 'pyproject.toml declares "Apache-2.0" as the license and the classifier "License :: OSI Approved
+      :: Apache Software License". Searched the body for enterprise, license key and paid tier: none; optional
+      extras list only public packages such as "vllm>=0.10.0".'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: e9676dab75291b66ce2de93f297d78c0caa8f8fe8bd311e34a7fb7b13cc1479f
+  - url: https://raw.githubusercontent.com/huggingface/datatrove/main/README.md
+    shows: 'README install section says "Requires Python 3.10+." and installs every extra from the repo
+      with `uv sync --extra all`, and states "DataTrove processing pipelines are platform-agnostic, running
+      out of the box locally or on a slurm cluster". Searched the body for enterprise, paid tier, license
+      key and managed service: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 65add2bcb9e8405396d81f2b6b7ae97a08afe67fc454c4508a11acf0122f5860
   - url: https://github.com/huggingface/datatrove/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -31,16 +58,6 @@ openness:
     - license
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-  - url: https://raw.githubusercontent.com/huggingface/datatrove/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 65add2bcb9e8405396d81f2b6b7ae97a08afe67fc454c4508a11acf0122f5860
 adoption:
   level: 2
   reach: 10K-100K
@@ -63,21 +80,18 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  value: FineWeb-Edu, the corpus datatrove builds, is the top public dataset in the FineWeb 1.82B-param
-    ablation (~44.5% aggregate over 8 tasks, above RefinedWeb, C4, The Pile, Dolma, RedPajama); the educational
-    filter lifts MMLU ~33->37 and ARC ~46->57.
+  value: The FineWeb paper reports that FineWeb produces better-performing LLMs than other open pretraining
+    datasets and that FineWeb-Edu lifts knowledge and reasoning benchmarks such as MMLU and ARC.
   confidence: high
-  note: 'Benchmark-anchored on the corpus datatrove builds, as a proxy for the tool itself: FineWeb-Edu
-    leads the public pretraining corpora on the FineWeb ablation suite. The arXiv abstract supports that
-    ranking claim; the per-task ablation figures recorded here are plotted in the paper rather than printed
-    on the abstract page.'
-  last_verified: '2026-08-13'
+  note: Datatrove is judged through the corpus it builds, since the library has no benchmark of its own.
+    The FineWeb paper reports that corpus outperforming other open pretraining datasets.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2406.17557
-    shows: FineWeb abstract - FineWeb produces better-performing LLMs than other open pretraining
-      datasets, and FineWeb-Edu lifts knowledge and reasoning benchmarks such as MMLU and ARC
-      dramatically. The per-task ablation figures behind the aggregate are plots in the paper
-      rather than text on this page.
-    accessed: '2026-08-13'
+    shows: 'FineWeb abstract: "we introduce FineWeb, a 15-trillion token dataset derived from 96 Common
+      Crawl snapshots that produces better-performing LLMs than other open pretraining datasets" and "FineWeb-Edu
+      exhibit dramatically better performance on knowledge- and reasoning-intensive benchmarks like MMLU
+      and ARC"; it says "we publicly release our data curation codebase".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da
