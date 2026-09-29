@@ -143,11 +143,18 @@ def test_status_is_always_in_the_allowed_set(rows):
     assert {r["status"] for r in rows} <= {"confirmed", "held"}
 
 
-def test_deliberate_dated_null_stays_confirmed(rows):
+def test_deliberate_dated_null_stays_confirmed(rows, inputs):
+    """A null is a finding, so it is confirmed and dated like any value. The one exception is a
+    null whose only source could not be re-read: it is held in the verification queue, and then
+    it must read as held, not confirmed (openai-internal-evals rests on a compressed PDF)."""
+    held = inputs[2]
     nulls = [r for r in rows if r["recorded_value"] is None]
     assert nulls  # capability n/a and abstained adoption exist in the corpus
     for row in nulls:
-        assert row["status"] == "confirmed" and row["last_verified"]
+        if row["axis"] in {e["axis"] for e in held.get(row["product_slug"], [])}:
+            assert row["status"] == "held" and not row["last_verified"]
+        else:
+            assert row["status"] == "confirmed" and row["last_verified"]
 
 
 def test_every_confirmed_row_is_dated_and_sourced(rows):

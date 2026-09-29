@@ -97,10 +97,16 @@ def product_state(
             axes[axis] = "abstained"
         else:
             axes[axis] = "open"
+    # Holds are per axis (`{slug: {axis: {since, because}}}`): a hold settles only the axis it
+    # names, so a product with one held axis and another stale one is not done. An entry that
+    # names no axis is the older whole-product shape (`{slug: {because: ...}}`) and settles all.
+    held_axes = set(held[slug]) & set(AXES) if slug in held else set()
+    if slug in held and not held_axes:
+        held_axes = set(AXES)
     return {
         "axes": axes,
         "held": slug in held,
-        "done": slug in held or all(v not in ("open", "stale") for v in axes.values()),
+        "done": all(v not in ("open", "stale") or a in held_axes for a, v in axes.items()),
     }
 
 
