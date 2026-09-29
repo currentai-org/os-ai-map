@@ -39382,17 +39382,49 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public(github.com/docling-project/docling);self-host:primary;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
-            "note": "MIT, local-first document parsing, fully self-hostable with integrated open-weight models.",
-            "last_verified": "2026-08-13",
+            "note": "Docling's code is MIT-licensed and public, and it runs entirely on the user's own machines, including air-gapped ones. Its layout and table-structure models are published on Hugging Face under the permissive Apache-2.0 and CDLA-Permissive-2.0 licenses, so nothing it needs to run is held back.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/docling-project/docling/main/LICENSE",
-                "shows": "Plain MIT License text: \"Copyright (c) 2024 International Business Machines\".",
-                "accessed": "2026-08-13",
+                "shows": "The raw LICENSE is the standard MIT text, \"Copyright The Docling Contributors\", granting \"Permission is hereby granted, free of charge, to any person obtaining a copy\" with no added restriction.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "9816fb12b11c33c552f4e8621879d0da493be47c0f86be785b53a2cf7f7ae4c6",
+                "content_sha256": "edb765d1e3e60d0c7a7d5fba5f2bb2c3c29f7465cecb5c22cf1185c884954e4c",
                 "establishes": [
                   "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/docling-project/docling/main/README.md",
+                "shows": "The raw README states \"The Docling codebase is under MIT license.\" and lists \"Local execution capabilities for sensitive data and air-gapped environments\" and running \"Docling as a service\" through docling-serve. Searched the body for enterprise, pricing, paid, subscription and license key: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "4f55583e9c57442b635a2bdf0c718a9919752a73a18b710b0b5cb57ef23c0aed",
+                "establishes": [
+                  "source",
+                  "self-host",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/docling-project/docling-layout-heron",
+                "shows": "Hugging Face model record for Docling's Heron layout model, \"docling-project/docling-layout-heron\", tagged \"license:apache-2.0\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "cdfd79c8c6b6f9dc558a0f67999b1ab23610edd4bcb9ace8fa6a8667a6a2a64e",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/docling-project/docling-models",
+                "shows": "Hugging Face model record for \"docling-project/docling-models\", the table-structure weights, tagged \"license:cdla-permissive-2.0\" and \"license:apache-2.0\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "14b894ec6ae7e1e1387d368a766d28c24a1f79fdf9329e29522f873d46e5b071",
+                "establishes": [
+                  "core-gated"
                 ]
               },
               {
@@ -39415,7 +39447,6 @@
             "confidence": "medium",
             "note": "Docling's adoption is measured by PyPI downloads of the docling package by itself. A separate package, docling-core, adds further downloads that are not included in this count.",
             "reach": ">10M",
-            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://pypistats.org/api/packages/docling/recent",
@@ -39427,13 +39458,34 @@
             ]
           },
           "capability": {
-            "score": 4,
+            "score": 5,
             "basis": "feature_matrix",
-            "value": "parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/WAV/MP3/WebVTT/email/images/LaTeX and video -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless JSON; layout + reading-order; table-structure recognition; formula/code extraction; image classification; OCR; VLM and ASR models; application-specific XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server",
+            "value": "parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/ODF/Apple Pages/WAV/MP3/WebVTT/email/images/LaTeX and video -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless JSON; layout + reading-order; table-structure recognition; formula/code extraction; image classification; chart understanding; OCR; VLM and ASR models; application-specific XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server; template-driven field extraction (PDF/images)",
             "confidence": "high",
-            "note": "Docling parses the widest range of input formats in the category - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - into Markdown, HTML or lossless JSON with layout and reading order preserved. It recovers structure faithfully but assigns no meaning to it: extracting typed entities or running models trained on a customer's own document types are capabilities it lacks.",
-            "last_verified": "2026-08-13",
+            "note": "Docling parses PDF, Office, HTML, EPUB, audio, video and image inputs into Markdown, HTML or lossless JSON with layout, reading order and table structure preserved. Its extractor goes further, returning the fields a user defines in a dictionary or Pydantic template, such as an invoice's bill number and total, from PDFs and images.",
+            "last_verified": "2026-09-29",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/docling-project/docling/main/README.md",
+                "shows": "The raw README feature list: \"Advanced PDF understanding incl. page layout, reading order, table structure, code, formulas, image classification, and more\", export to \"Markdown, HTML, WebVTT, DocLang\", \"Extensive OCR support for scanned PDFs and images\", \"Audio support with Automatic Speech Recognition (ASR) models\", \"Parsing of video files (MP4, AVI, MOV, MKV, and WebM)\", \"Parsing of ODF (OpenDocument Format) files\" and \"Chart understanding (Barchart, Piechart, LinePlot)\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "4f55583e9c57442b635a2bdf0c718a9919752a73a18b710b0b5cb57ef23c0aed"
+              },
+              {
+                "url": "https://docling-project.github.io/docling/_generated/examples/extraction/",
+                "shows": "The Information extraction example states \"Docling provides the capability of extracting information, i.e. structured data, from unstructured documents.\" and that the user supplies a template \"either as a dictionary or as a Pydantic model, and Docling will return\" the extracted data; its \"Using a dict template\" example returns a bill number and a total of \"3949.75\" from an invoice.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/docling-project/docling/main/docling/document_extractor.py",
+                "shows": "The package source defines the extractor as a \"Standalone extractor class.\" whose public API is \"`extract(...) -> ExtractionResult`\" and which imports \"from docling.pipeline.extraction_vlm_pipeline import ExtractionVlmPipeline\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "8cafee5a5b667caf7b5002cf4527be97037255b2574a1e0f7e737271e97fdf5a"
+              },
               {
                 "url": "https://github.com/docling-project/docling",
                 "shows": "Feature list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, WAV, MP3, WebVTT, Box Notes, EML/MSG, images, LaTeX, DocLang and plain text input; \"Advanced PDF understanding incl. page layout, reading order, table structure, code, formulas, image classification\"; export to Markdown, HTML, WebVTT, DocLang, DocTags and lossless JSON; \"Extensive OCR support for scanned PDFs and images\"; VLM support; \"Audio support with Automatic Speech Recognition (ASR) models\"; \"Connect to any agent using the MCP server\"; video parsing under What's new.",
@@ -39443,14 +39495,24 @@
               }
             ]
           },
-          "overall_score": 4.6,
+          "overall_score": 5.0,
           "tier": "leading",
-          "maturity": 4.6,
+          "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "date": "2026-09-28",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-29",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "PyPI downloads of the declared docling package now measure one band lower than the record carries. The change is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
           },
           "version_note": "Originated at IBM Research, inducted into the Linux Foundation AI & Data Foundation (Docling Project) on 2025-04-29 under community governance."
         },
@@ -39512,26 +39574,26 @@
             ]
           },
           "capability": {
-            "score": 4,
+            "score": 5,
             "basis": "feature_matrix",
-            "value": "text detection and recognition across 100+ languages; table, formula and seal recognition; a document-parsing pipeline emitting Markdown and JSON; PaddleOCR-VL as the vision-language parsing model on top",
+            "value": "text detection and recognition across 100+ languages; table, formula and seal recognition; a document-parsing pipeline emitting Markdown and JSON; PaddleOCR-VL as the vision-language parsing model on top; PP-ChatOCRv4 key-information extraction returning the fields a user names",
             "confidence": "medium",
             "relative_to": "docling",
             "relation": "at",
             "comparison": {
-              "last_attested": "2026-09-16",
+              "last_attested": "2026-09-29",
               "sources": [
                 {
-                  "url": "https://github.com/docling-project/docling",
-                  "shows": "Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and lossless JSON with layout and reading order preserved, which is the amount of a document surviving that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the same page and is recorded here for completeness; it is NOT the property the comparison turns on, because the recipe excludes input breadth by name.",
-                  "accessed": "2026-09-16",
+                  "url": "https://docling-project.github.io/docling/_generated/examples/extraction/",
+                  "shows": "The Information extraction example states \"Docling provides the capability of extracting information, i.e. structured data, from unstructured documents.\" and that the user supplies a template \"either as a dictionary or as a Pydantic model, and Docling will return\" the extracted data; its \"Using a dict template\" example returns a bill number and a total of \"3949.75\" from an invoice.",
+                  "accessed": "2026-09-29",
                   "http_status": 200,
-                  "content_sha256": "69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5"
+                  "content_sha256": "2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db"
                 }
               ]
             },
-            "note": "PaddleOCR's parsing pipeline emits Markdown and JSON with tables, formulas and seals recovered, matching Docling's structure-preserving output. Its support for more than 100 languages does not raise this further, since language breadth measures how many documents it can process, not how much structure survives within one.",
-            "last_verified": "2026-09-16",
+            "note": "PaddleOCR's PP-ChatOCRv4 pipeline returns the fields a user names from a document, on top of a parsing pipeline that emits Markdown and JSON with tables, formulas and seals recovered, which matches Docling's template-driven extraction. Its support for more than 100 languages is not what places it here, since language breadth measures how many documents it can process, not how much of one survives.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/PaddlePaddle/PaddleOCR",
@@ -39539,17 +39601,31 @@
                 "accessed": "2026-09-16",
                 "http_status": 200,
                 "content_sha256": "3e737e1ad11e6ed5c27f82917d5e89114164c65dce29e4257479f970159530e0"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/main/README.md",
+                "shows": "The raw README states \"PaddleOCR converts PDF documents and images into structured, LLM-ready data (JSON/Markdown)\" and that \"additional dependencies for document parsing and information extraction can be installed as needed\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "63d76041f1dcb84e1dd141d45dc8dec5d86a3e357fe98bf8432ad2721c0ced90"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/main/docs/version3.x/pipeline_usage/PP-ChatOCRv4.en.md",
+                "shows": "The PP-ChatOCRv4-doc tutorial describes a pipeline built \"to address complex document information extraction challenges such as layout analysis, rare characters, multi-page PDFs, tables, and seal text recognition\", imports it with \"from paddleocr import PPChatOCRv4Doc\", passes the fields wanted as \"key_list=[\" and prints the extracted field as \"{'chat_res': {'驾驶室准乘人数': '2'}}\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "b7b4233138ada431e8c294f37de99a47e6bebcc8ad8b32f13175af949e5acbf0"
               }
             ]
           },
-          "overall_score": 4.0,
+          "overall_score": 4.4,
           "tier": "strong",
-          "maturity": 4.0,
+          "maturity": 4.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-16",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -39643,21 +39719,21 @@
             "value": "PDF and image to Markdown, HTML and JSON with layout preserved: reading order, tables, forms, handwriting and mathematical notation; served as open weights and as a hosted API",
             "confidence": "medium",
             "relative_to": "docling",
-            "relation": "at",
+            "relation": "one_below",
             "comparison": {
-              "last_attested": "2026-09-16",
+              "last_attested": "2026-09-29",
               "sources": [
                 {
-                  "url": "https://github.com/docling-project/docling",
-                  "shows": "Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and lossless JSON with layout and reading order preserved, which is the amount of a document surviving that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the same page and is recorded here for completeness; it is NOT the property the comparison turns on, because the recipe excludes input breadth by name.",
-                  "accessed": "2026-09-16",
+                  "url": "https://docling-project.github.io/docling/_generated/examples/extraction/",
+                  "shows": "The Information extraction example states \"Docling provides the capability of extracting information, i.e. structured data, from unstructured documents.\" and that the user supplies a template \"either as a dictionary or as a Pydantic model, and Docling will return\" the extracted data; its \"Using a dict template\" example returns a bill number and a total of \"3949.75\" from an invoice.",
+                  "accessed": "2026-09-29",
                   "http_status": 200,
-                  "content_sha256": "69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5"
+                  "content_sha256": "2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db"
                 }
               ]
             },
-            "note": "Chandra recovers reading order, tables, forms, handwriting and mathematical notation into Markdown and JSON, matching Docling's structure-preserving output; Docling's wider range of accepted input formats is a separate measure from how much of one document survives conversion. Chandra currently leads the olmOCR-Bench leaderboard, ahead of olmOCR itself.",
-            "last_verified": "2026-09-16",
+            "note": "Chandra recovers reading order, tables, forms, handwriting and mathematical notation into Markdown, HTML and JSON, but stops short of Docling, whose extractor also returns the fields a user defines in a template. It tops the olmOCR-Bench leaderboard, ahead of olmOCR itself.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/datalab-to/chandra",
@@ -39665,6 +39741,13 @@
                 "accessed": "2026-09-16",
                 "http_status": 200,
                 "content_sha256": "354fcec9a84da801ccdd7c6e70f100ed24a14b5ac0691e2d410b8ec5a7dc4446"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/chandra/master/README.md",
+                "shows": "The raw README describes \"a state of the art OCR model that converts images and PDFs into structured HTML/Markdown/JSON while preserving layout information\" and lists \"Tops external olmocr benchmark and significant improvement in internal multilingual benchmarks\", \"Reconstructs forms accurately, including checkboxes\" and \"Strong performance with tables, math, and complex layouts\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "edf170f70a20673559d6551e621bb5d5969a0b439d82125eca5ad6bec599b9fa"
               }
             ]
           },
@@ -39675,7 +39758,7 @@
           "freshness": {
             "date": "2026-09-16",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "The code and the weights carry different licences; see the openness note."
         },
@@ -39760,17 +39843,17 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and equations",
-            "value": "PDF, image, Office and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
+            "value": "PDF, image, Office, HTML and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
             "relative_to": "docling",
-            "relation": "at",
+            "relation": "one_below",
             "confidence": "medium",
-            "note": "Marker's layout, tables, equations and reading order all come through into Markdown and JSON. Its capability matches Docling's: Docling also accepts audio, video and XML, but that is about how many kinds of document it can take in, not how much of one it recovers.",
-            "last_verified": "2026-08-13",
+            "note": "Marker's layout, tables, equations and reading order all come through into Markdown and JSON. It stops short of Docling, whose extractor also returns the fields a user defines in a template; Marker's converters rebuild the whole document or only its tables, with no step for returning user-defined fields.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
-                "shows": "README documents conversion of PDFs, images, Office documents and EPUB to Markdown, JSON and HTML, with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
-                "accessed": "2026-08-30",
+                "shows": "The raw README states \"Marker converts documents to markdown, JSON, chunks, and HTML quickly and accurately\", \"Converts PDF, image, PPTX, DOCX, XLSX, HTML, EPUB files in all languages\" and \"Formats tables, forms, equations, inline math, links, references, and code blocks\", and lists its converters as \"One of `marker.converters.pdf.PdfConverter` (default) or `marker.converters.table.TableConverter`\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4"
               }
@@ -39781,9 +39864,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-30",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -39857,19 +39940,26 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and formulas",
-            "value": "PDF and Office document extraction to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
+            "value": "MinerU 4.0: PDF and image parsing across four quality tiers, from fast native parsing to VLM parsing, with tables, formulas, figures, complex layouts and OCR for scanned pages; Office, OpenDocument, EPUB, OFD, HTML and CSV parsed natively; one document model rendered as Markdown, HTML, LaTeX, DOCX or structured JSON content lists.",
             "relative_to": "docling",
-            "relation": "at",
+            "relation": "one_below",
             "confidence": "medium",
-            "note": "MinerU recovers layout, tables, formulas and reading order into Markdown and JSON, matching Docling's output; Docling's wider input-format support does not affect how much of one document survives conversion. MinerU leads the OmniDocBench leaderboard at 93.04 against olmOCR's 85.74, though that benchmark is maintained by MinerU's own team.",
-            "last_verified": "2026-08-13",
+            "note": "MinerU parses PDFs and images into one document model that keeps tables, formulas, figures and page layout, rendered as Markdown, HTML or structured JSON, but stops short of Docling, which can also return the fields a user defines in a template. Its MinerU2.5-Pro model ranks fourth on OmniDocBench, a benchmark maintained by MinerU's own team.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
-                "shows": "README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and equation recognition, and OCR for scanned pages.",
-                "accessed": "2026-08-30",
+                "shows": "The raw README for MinerU 4.0 lists input formats \"PDF, images, DOC/DOCX, PPT/PPTX, XLS/XLSX, RTF, ODT/ODS/ODP, EPUB\", says \"one document model supports nine rendering targets: Markdown, HTML, LaTeX, DOCX, EPUB, PDF, Structured Content, and Content List V1/V2\", offers \"Basic for OCR and model-based parsing\", and calls MinerU \"especially useful when documents contain OCR text, tables, formulas, figures, or complex page layouts\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358"
+                "content_sha256": "69c967e98536be101b5dc3420703d28cc1e0250eeca3b5bf156b060ac4ccfacb"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/OmniDocBench/main/README.md",
+                "shows": "The OmniDocBench README, published by OpenDataLab, ranks \"Comprehensive evaluation of document parsing on OmniDocBench (v1.6_full)\" with \"TeleOCR\" first at \"96.91\", then \"OvisOCR2\" at \"96.47\", \"PaddleOCR-VL-1.6\" at \"96.34\" and \"MinerU2.5-Pro\" at \"95.75\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "a799f3dabee0d8e2be9f990fc325c3fefadb8d7f8d0cf56148406547d495a3ad"
               }
             ]
           },
@@ -39878,9 +39968,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-30",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "OpenDataLab is a project identity under Shanghai AI Laboratory, whose contact address the GitHub org publishes as OpenDataLab@pjlab.org.cn, so the record is filed under the lab rather than under a separate org."
         },
@@ -39896,17 +39986,38 @@
             "class": "open_source",
             "components": "license:MIT(OSI; repo LICENSE + pyproject, PyPI field null);source:public;no-feature-gated-core;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully MIT; optional Azure/LLM features are pluggable, not gating. Azure Document Intelligence and Azure Content Understanding are optional install extras - the `[az-doc-intel]` and `[az-content-understanding]` groups - sitting beside built-in offline converters, so the conversion the product exists to do runs entirely in the published package and core-gated stays ungated.",
-            "last_verified": "2026-08-13",
+            "note": "MarkItDown is MIT-licensed, with its full source public on GitHub. Its document converters run locally; the Azure Document Intelligence and Azure Content Understanding integrations are optional extras that call billable cloud services, and the core conversion does not need them.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/LICENSE",
-                "shows": "Plain MIT License text: \"Copyright (c) Microsoft Corporation\".",
-                "accessed": "2026-08-13",
+                "shows": "The raw LICENSE is the standard MIT text, \"Copyright (c) Microsoft Corporation\", granting \"Permission is hereby granted, free of charge, to any person obtaining a copy\" with no added restriction.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
                 "establishes": [
                   "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/packages/markitdown/pyproject.toml",
+                "shows": "The package manifest for \"Utility tool for converting various files to Markdown\" declares the license as \"MIT\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "68275854fef84923b1a62fce9d7f366ef7073232edfe5ba0b930a6f6cc02b4a8",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/README.md",
+                "shows": "The raw README installs from source with \"pip install -e 'packages/markitdown[all]'\" and compares converters: built-in ones do \"Offline, format-specific extraction\" at \"Local compute only\", while the Azure integrations are optional extras (\"Installs dependencies for Azure Document Intelligence\") billed as \"Billable Azure API calls\". Searched the body for enterprise, pricing, subscription and license key: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9f9dc0e582d066e8ac671a1f63b3a73c70a7be9909e8be51a7f5aeb5a7c04af2",
+                "establishes": [
+                  "source",
+                  "core-gated"
                 ]
               },
               {
@@ -39943,11 +40054,18 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "converts PDF/DOCX/PPTX/XLSX/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown; CLI + Python API + Docker; plugins; optional Azure Doc Intelligence + LLM vision",
+            "value": "converts PDF/DOCX/PPTX/XLSX/Outlook/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown keeping headings, lists, tables and links; CLI + Python API + Docker; plugins incl. LLM-vision OCR; optional Azure Document Intelligence and Azure Content Understanding",
             "confidence": "medium",
-            "note": "Broadest format coverage among RAG ingestion tools; lighter on deep layout parsing than Docling.",
-            "last_verified": "2026-08-13",
+            "note": "MarkItDown converts Office files, PDFs, HTML, images, audio and other formats into Markdown that keeps headings, lists, tables and links for language models to read. Its built-in converters do format-specific extraction, leaving layout analysis of scanned or complex PDFs to the optional Azure services, and typed fields come only from Azure Content Understanding.",
+            "last_verified": "2026-09-28",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/README.md",
+                "shows": "The raw README describes \"a focus on preserving important document structure and content as Markdown (including: headings, lists, tables, links, etc.)\", lists \"ZIP files (iterates over contents)\", \"Images (EXIF metadata and OCR)\" and \"Audio (EXIF metadata and speech transcription)\", documents plugins including \"The `markitdown-ocr` plugin adds OCR support to PDF, DOCX, PPTX, and XLSX converters\", and its comparison table gives built-in converters \"Offline, format-specific extraction\" with structured fields \"Not available\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9f9dc0e582d066e8ac671a1f63b3a73c70a7be9909e8be51a7f5aeb5a7c04af2"
+              },
               {
                 "url": "https://github.com/microsoft/markitdown",
                 "shows": "Format list - PDF, Office documents, images (OCR), audio (speech transcription), HTML, text-based formats (CSV, JSON, XML), \"ZIP files (iterates over contents)\", YouTube URLs, EPubs. Optional extras `[audio-transcription]`, `[youtube-transcription]`, `[az-doc-intel]`, `[az-content-understanding]`; a Plugins section; a Dockerfile in the root tree.",
@@ -39962,9 +40080,9 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -40134,29 +40252,39 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public(allenai/olmocr);governance:Allen Institute for AI;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
-            "last_verified": "2026-08-13",
+            "note": "olmOCR's code is Apache-2.0 and public, and the olmOCR-2 model weights it runs are published under Apache-2.0 as well. The whole pipeline installs and runs from the public repository, with no paid edition beside it.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/allenai/olmocr/blob/main/LICENSE",
-                "shows": "Apache License Version 2.0 text",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/allenai/olmocr/main/LICENSE",
+                "shows": "The raw LICENSE is the full Apache License text, \"Apache License Version 2.0, January 2004\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3",
                 "establishes": [
                   "license"
-                ],
-                "http_status": 200,
-                "content_sha256": "62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3"
+                ]
               },
               {
                 "url": "https://raw.githubusercontent.com/allenai/olmocr/main/README.md",
-                "shows": "README documents the whole pipeline building and installing from the published repo; no paid tier, enterprise edition or license key appears anywhere in it, so nothing is withheld from the source",
-                "accessed": "2026-08-13",
+                "shows": "The raw README installs the pipeline with \"pip install olmocr\", points at training code (\"SFT Finetuning code for Qwen2.5-VL\"), runs the model locally with \"vllm serve allenai/olmOCR-2-7B-1025-FP8\" and states the project \"is licensed under [Apache 2.0]\". Searched the body for enterprise, subscription and license key: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3",
                 "establishes": [
                   "source",
                   "core-gated"
-                ],
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/allenai/olmOCR-2-7B-1025-FP8",
+                "shows": "Hugging Face model record for \"allenai/olmOCR-2-7B-1025-FP8\", the olmOCR-2 weights the README's examples run, tagged \"license:apache-2.0\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3"
+                "content_sha256": "48f35ecbca99b06d2961092643a2324d6efcd4653bcfb6d96def21070a6ad586",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -40181,24 +40309,24 @@
           "capability": {
             "score": 4,
             "basis": "benchmark",
-            "value": "olmOCR v0.4.0 scores 82.4 on olmOCR-Bench, ahead of Marker 1.10.1 (76.1), MinerU 2.5.4 (75.2) and Mistral OCR (72.0), but now behind Chandra OCR 0.1.0 (83.1) and Infinity-Parser 7B (82.5); on the third-party OmniDocBench it is mid-pack (85.74), behind MinerU-2.5 (93.04), Gemini 3 Pro (92.91) and GPT-5.2 (86.59).",
+            "value": "olmOCR v0.4.0 scores 82.4 on olmOCR-Bench, ahead of Marker 1.10.1 (76.1), MinerU 2.5.4 (75.2) and Mistral OCR (72.0), but behind Chandra OCR 0.1.0 (83.1) and Infinity-Parser 7B (82.5); on OmniDocBench v1.6 it scores 85.74, in the lower half of a board led by TeleOCR (96.91), with MinerU2.5-Pro at 95.75.",
             "confidence": "high",
-            "note": "olmOCR's pipeline emits linearized text with reading order and tables recovered from PDFs, but it does not emit typed entities that a customer defines, which a higher score would need. As corroboration, olmOCR scores 82.4 on its own olmOCR-Bench, ahead of MinerU's 75.2, and sits mid-pack on the third-party OmniDocBench, near the frontier without leading it.",
-            "last_verified": "2026-08-13",
+            "note": "olmOCR's pipeline turns PDFs and images into text with reading order, tables and equations recovered, but it does not emit typed entities a customer defines. As corroboration, it scores 82.4 on its own olmOCR-Bench, ahead of MinerU's 75.2 but behind Chandra's 83.1, and 85.74 on OpenDataLab's OmniDocBench, where it sits in the lower half of a board led by TeleOCR at 96.91.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/allenai/olmocr/main/README.md",
-                "shows": "olmOCR-Bench table in the README - olmOCR v0.4.0 scores 82.4, ahead of Marker 1.10.1 76.1, MinerU 2.5.4 75.2 and Mistral OCR 72.0, but now behind Chandra OCR 0.1.0 83.1 and Infinity-Parser 7B 82.5. GPT-4o has been dropped from the table.",
-                "accessed": "2026-08-13",
+                "shows": "The raw README lists \"Support for equations, tables, handwriting, and complex formatting\" and \"Automatically removes headers and footers\", and its olmOCR-Bench table gives \"Chandra OCR 0.1.0*\" at \"83.1±0.9\", \"Infinity-Parser 7B*\" at \"82.5±?\", olmOCR v0.4.0 at \"82.4±1.1\", and Marker, MinerU and Mistral OCR at \"76.1±1.1\", \"75.2±1.1\" and \"72.0±1.1\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3"
               },
               {
                 "url": "https://raw.githubusercontent.com/opendatalab/OmniDocBench/main/README.md",
-                "shows": "OmniDocBench leaderboard - olmOCR 85.74 overall, mid-pack behind MinerU-2.5 93.04, Gemini 3 Pro 92.91 and GPT-5.2 86.59, and level with Mistral OCR 85.66",
-                "accessed": "2026-08-13",
+                "shows": "The OmniDocBench README table \"Comprehensive evaluation of document parsing on OmniDocBench (v1.6_full)\" is led by \"TeleOCR\" at \"96.91\", has \"MinerU2.5-Pro\" at \"95.75\" and \"MinerU-2.5\" at \"93.04\", and lists \"olmOCR\" at \"85.74\", below GPT-5.2 at \"86.59\" and above \"Mistral OCR\" at \"85.66\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "1c3f6f7e0dc6027e96161fd368f68b41b1e797b2329a4decbefdd4f2d2ec31eb"
+                "content_sha256": "a799f3dabee0d8e2be9f990fc325c3fefadb8d7f8d0cf56148406547d495a3ad"
               }
             ]
           },
@@ -40207,9 +40335,9 @@
           "maturity": 2.8,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Feeds the Dolma 3 PDF-extraction path and ships its own olmOCR-Bench suite."
         },
@@ -40633,28 +40761,35 @@
             "value": "pretrained processors for forms, invoices, receipts and identity documents plus custom processors trained on a customer's own document types; extraction to typed entities rather than text; human-in-the-loop review built into the platform",
             "confidence": "medium",
             "relative_to": "docling",
-            "relation": "one_above",
+            "relation": "at",
             "comparison": {
-              "last_attested": "2026-09-16",
+              "last_attested": "2026-09-29",
               "sources": [
                 {
-                  "url": "https://github.com/docling-project/docling",
-                  "shows": "Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and lossless JSON with layout and reading order preserved, which is the amount of a document surviving that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the same page and is recorded here for completeness; it is NOT the property the comparison turns on, because the recipe excludes input breadth by name.",
-                  "accessed": "2026-09-16",
+                  "url": "https://docling-project.github.io/docling/_generated/examples/extraction/",
+                  "shows": "The Information extraction example states \"Docling provides the capability of extracting information, i.e. structured data, from unstructured documents.\" and that the user supplies a template \"either as a dictionary or as a Pydantic model, and Docling will return\" the extracted data; its \"Using a dict template\" example returns a bill number and a total of \"3949.75\" from an invoice.",
+                  "accessed": "2026-09-29",
                   "http_status": 200,
-                  "content_sha256": "69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5"
+                  "content_sha256": "2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db"
                 }
               ]
             },
-            "note": "Google Document AI's custom processors return typed entities that a customer defines, such as an invoice total or a field on a form they trained the processor on, rather than just the position of text on the page. That is a step beyond Docling, which recovers structure faithfully but assigns no meaning to it.",
-            "last_verified": "2026-09-16",
+            "note": "Google Document AI's custom processors return typed entities that a customer defines, such as an invoice total or a field on a form they trained the processor on, rather than just the position of text on the page. Docling matches it through its template-driven extractor, which returns the fields a user defines without training anything on the user's own forms.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://cloud.google.com/document-ai",
-                "shows": "Google Cloud's Document AI product page, describing a platform of pretrained and custom processors that extract structured entities from documents. Establishes a managed Google Cloud service with no published implementation.",
-                "accessed": "2026-09-16",
+                "shows": "Google Cloud's Document AI product page lists a \"Custom extractor\" priced under \"Extract structures and entities from documents\" and says custom classifier and splitter processors can be \"trained from the ground up using your own documents and custom classes\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4"
+                "content_sha256": "ccaaf653a984f7c1cd3a821b41e79a0895751d858ade06637699fda681eb3201"
+              },
+              {
+                "url": "https://cloud.google.com/document-ai/docs/custom-extractor-overview",
+                "shows": "The custom extractor overview states \"Custom extractor extracts entities from documents of a particular type.\" and that its goal is \"to enable Document AI users to build custom entity extraction solutions for new document types for which no pre-trained processors are available\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "241a1352b2b53dbaad64c88f02ed1b34b3abd25387d03ed1222c0d81a133fe73"
               }
             ]
           },
@@ -40664,7 +40799,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-16",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
