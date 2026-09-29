@@ -24,8 +24,8 @@ openness:
   confidence: medium
   note: MIT is the declared license, but the canonical Hugging Face repository is disabled under a DMCA
     takedown over AMC/AIME problem rights, so the corpus is no longer distributed from its primary registry.
-    Undistributed data counts as closed regardless of the license, though mirrors and eval harnesses still
-    embed the problems, so the closed score is worth revisiting if the takedown is resolved.
+    Data that is not distributed counts as closed whatever its license, although mirrors and eval harnesses
+    still embed the problems.
   raw: license:MIT(declared);access:closed(canonical HF repo access-disabled under a DMCA takedown);data:NOT
     downloadable from canonical HF repo (access disabled, DMCA takedown);datasheet:present(card still documents
     schema);redistributability:BLOCKED on the primary registry;problems sourced from AMC/AIME competitions,
@@ -45,30 +45,51 @@ openness:
     - datasheet
 adoption:
   level: 4
-  signal_type: reported_traction
+  signal_type: usage_volume
   confidence: medium
-  banded_quantity: all-time downloads (1,034,712) of a takedown-walled repo now reporting 0 in the trailing
-    30 days
-  note: MATH is one of the most-cited math-reasoning benchmarks; with its canonical Hugging Face repository
-    walled off by a takedown, adoption is read from that citation standing rather than a download count.
-    OLMo 3's model card lists MATH in its evaluation table alongside AIME 2024/2025, GPQA, MMLU, IFEval
-    and LiveCodeBench, evidence that a frontier open model reports it as a headline metric.
-  last_verified: '2026-08-13'
+  banded_quantity: 30-day downloads of the declared EleutherAI/hendrycks_math mirror (205,807 in the warehouse
+    at 2026-09-27; 183,494 on the Hub API at 2026-09-29)
+  note: MATH is measured by Hugging Face downloads of the EleutherAI/hendrycks_math mirror, the distribution
+    the product declares. The canonical hendrycks/competition_math repository is disabled and reports no
+    downloads in the trailing 30 days, so it is not counted. The paper is cited thousands of times on Semantic
+    Scholar, and OLMo 3's model card lists MATH in its evaluation table beside AIME 2024/2025, GPQA, MMLU,
+    IFEval and LiveCodeBench.
+  last_verified: '2026-09-29'
+  reach: 100K-1M
   sources:
   - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct/raw/main/README.md
-    shows: 'evaluation table row "| **Math** | MATH | 65.1 | 79.6 | 87.3 | 82.3 | 91.6 | 71.0 | 30.1
-      | 21.9 | 67.3 |", reported beside AIME 2024, AIME 2025, OMEGA, BigBenchHard, GPQA, MMLU, IFEval,
-      LiveCodeBench v3 and others - MATH carried as a headline metric in a frontier open model release'
-    accessed: '2026-08-13'
+    shows: evaluation table row "| **Math** | MATH | 65.1 | 79.6 | 87.3 | 82.3 | 91.6 | 71.0 | 30.1 | 21.9
+      | 67.3 |", reported beside AIME 2024, AIME 2025, OMEGA, BigBenchHard, GPQA, MMLU, IFEval, LiveCodeBench
+      v3 and others - MATH carried as a headline metric in a frontier open model release
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 9c7c873ea9bd506db7800e61a0535302106bdc393d72b0d2341197330d25a7fe
   - url: https://huggingface.co/datasets/hendrycks/competition_math
-    shows: the access-disabled page and its DMCA notice; carries the `license:mit` tag and the card, and
-      reports 0 downloads in the trailing 30 days. This is what rules out treating a download count as the
-      adoption signal; it establishes nothing about release-report standing
-    accessed: '2026-08-13'
+    shows: The canonical dataset page reads "Access to this dataset has been disabled"; its embedded metadata
+      reports 0 downloads in the trailing 30 days and 1,034,712 all-time.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 361599c5136cbd9d8bf46f6ac47b56594c406e411fee9413d1ab4c529d06bb01
+    content_sha256: a00f98cdea7039dc9ce50ccf1612d9bb89218bf6e309ff720b6ff9ad661b05e8
+  - url: https://huggingface.co/api/datasets/hendrycks/competition_math
+    shows: The Hub API record for the canonical repo, whose description reads "Each problem in MATH has
+      a full step-by-step solution", reports 0 downloads in the trailing 30 days (downloads field) and disabled
+      true.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ee162cb49151d00dc982f2a8867a1c533bfa625bad9688e345993fff8a56abc6
+  - url: https://huggingface.co/api/datasets/EleutherAI/hendrycks_math
+    shows: The Hub API record for the declared EleutherAI mirror, whose description reads "MATH dataset
+      from https://github.com/hendrycks/math", is not disabled and reports 183,494 downloads in the trailing
+      30 days (downloads field).
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a43ea01473493546adae373858ddab169972d697fd4fd87bead9e03b47232957
+  - url: https://api.semanticscholar.org/graph/v1/paper/arXiv:2103.03874?fields=title,citationCount
+    shows: 'The Semantic Scholar record for the MATH paper reads "Measuring Mathematical Problem Solving
+      With the MATH Dataset" with "citationCount": 6499.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 832a954979f9955f88078db73bb8cac16a6667222865e831f7fc1a288b8e50b8
 capability:
   score: null
   basis: n/a

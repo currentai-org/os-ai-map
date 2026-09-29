@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 
 from build.check_adoption import collect, declared_scales, scale_for
+from build.check_freshness import held_axes
 from build.validate import load_sources
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -239,6 +240,10 @@ def test_the_benchmark_corpora_refreshed_on_2026_08_12_are_on_scale(sources):
         # pins the floor rather than the day.
         floor = "2026-09-01" if slug == "gsm8k" else "2026-08-12"
         stamped = adoption.get("last_verified")
+        # A hold recorded in the verification queue is a deliberate loss of the date, not a
+        # date quietly disappearing.
+        if (slug, "adoption") in held_axes():
+            continue
         if not stamped or str(stamped) < floor:
             offences.append(
                 f"{slug}: last_verified {stamped!r} is missing or older than its {floor} refresh"

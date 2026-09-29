@@ -14,10 +14,10 @@ openness:
     free_text:
     - no managed tier
   confidence: high
-  last_verified: '2026-08-13'
-  note: Fully MIT-licensed, and MIT is an OSI license; purely a reference-implementation library with no
-    gated core. The repo is frozen and its README carries only a deprecation notice, but a frozen repo is
-    still a published one, so the source is still public and the core still ungated.
+  last_verified: '2026-09-29'
+  note: The code is MIT-licensed and public, and MIT is an OSI license. The repository is deprecated and
+    not actively maintained, but the README describes a plain reference library with no paid tier, managed
+    service or license key beside it.
   raw: license:MIT(OSI);source:public(reference eval implementations); no managed tier;core-gated:ungated
   sources:
   - url: https://github.com/openai/simple-evals
@@ -31,12 +31,23 @@ openness:
     content_sha256: 42b64dab65f25affe35be4e3c5b7442f1caa0041bcc2a9148313fec222311ee1
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/openai/simple-evals/main/LICENSE
+    shows: 'The repository LICENSE file is the MIT License: "MIT License" followed by "Permission is hereby
+      granted, free of charge, to any person obtaining a copy" of the software, with the copyright held
+      by OpenAI.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d831db55645e47ca8e491c5a0e37f1ee744d7b10bf5aa8d50146c795ac0176c0
+    establishes:
+    - license
   - url: https://raw.githubusercontent.com/openai/simple-evals/main/README.md
-    shows: 'README opens with a deprecation notice - ''July 2025: simple-evals will no longer be updated
-      for new models or benchmark results. The repo will continue to host reference implementations for
-      HealthBench, BrowseComp, and SimpleQA'' - and the eval scripts are in the repo. No paid tier, managed
-      service or license key is offered anywhere in it.'
-    accessed: '2026-08-13'
+    shows: 'The README opens with a deprecation notice, "will no longer be updated for new models or benchmark
+      results", and calls the library open source: "We are open sourcing it so we can be transparent about
+      the accuracy numbers we''re publishing alongside our latest models". Run instructions use the repo
+      directly ("python -m simple-evals.simple_evals --model <model_name> --examples <num_examples>") and
+      setup needs only pip packages such as "pip install openai". Searched the README for a paid tier, managed
+      service, hosted edition and license key and found none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f
     establishes:
@@ -49,8 +60,7 @@ adoption:
   confidence: low
   note: simple-evals is run from source with no pip distribution, so there is no download signal, leaving
     GitHub stars as the only measure available, and a star is not a use. The project is also deprecated
-    and frozen, maintained now only as a reference for a few specific benchmarks (HealthBench, BrowseComp,
-    SimpleQA) rather than as a live harness.
+    and not actively maintained.
   last_verified: '2026-09-27'
   derived_from:
     observation_snapshot_id: 2a431741f05c9cc586b2c7db14d01fc2413b766172ad1a36a9a4fa6059bbcc1c
@@ -68,29 +78,33 @@ adoption:
     http_status: 200
     content_sha256: 91a1314636db06ee60fa04ca1863ba4ad41c3c983ba78ded50711dc579678a1b
   - url: https://raw.githubusercontent.com/openai/simple-evals/main/README.md
-    shows: deprecation notice still first in the README; only HealthBench, BrowseComp and SimpleQA reference
-      implementations remain maintained
+    shows: 'The README opens with a deprecation notice: "will no longer be updated for new models or benchmark
+      results", and "The repo will continue to host reference implementations for" HealthBench, BrowseComp
+      and SimpleQA.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f
 capability:
   score: 2
   basis: feature_matrix
-  value: ~9 bundled benchmarks, zero-shot/CoT only; no plugin task system, no agentic-eval support, no
-    model-backend abstraction beyond direct API calls; deprecated/frozen.
+  value: Nine bundled benchmarks (MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp, HealthBench)
+    with an emphasis on the zero-shot, chain-of-thought setting; sampler interfaces for the OpenAI and Claude
+    APIs only; not actively maintained and not accepting new evals.
   confidence: medium
-  last_verified: '2026-08-13'
-  note: 'simple-evals is a deliberately minimal reference harness, now frozen: the README lists nine bundled
-    benchmarks and says the repository is not actively maintained and accepts no new evals. Its coverage
-    and feature set are narrow next to category leaders such as HELM, Inspect AI and lm-evaluation-harness.'
+  last_verified: '2026-09-29'
+  note: 'simple-evals is a lightweight reference library: the README lists nine bundled benchmarks and sampler
+    interfaces for only the OpenAI and Claude APIs. It says the repository is not actively maintained and
+    is not accepting new evals.'
   sources:
   - url: https://github.com/openai/simple-evals
     shows: bundled benchmark list (MMLU/MATH/GPQA/HumanEval/HealthBench/etc.); zero-shot CoT approach
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/openai/simple-evals/main/README.md
-    shows: bundled benchmarks MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp and HealthBench,
-      each with its upstream license; 'We will not be actively maintaining this repository ... we're not
-      accepting new evals'.
-    accessed: '2026-08-13'
+    shows: 'The README lists the bundled evals and their upstream licenses (MMLU, MATH, GPQA, DROP, MGSM,
+      HumanEval, SimpleQA, BrowseComp, HealthBench), says the library emphasizes "the *zero-shot, chain-of-thought*
+      setting", that "We will not be actively maintaining this repository and monitoring PRs and Issues",
+      and that "we''re not accepting new evals". Samplers cover only the OpenAI and Claude APIs: "We have
+      implemented sampling interfaces for the following language model APIs".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f
