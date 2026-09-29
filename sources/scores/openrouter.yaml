@@ -15,14 +15,38 @@ openness:
   note: 'A proprietary hosted routing gateway with no published source and no self-hosting: the closed counterpart
     to open gateways such as LiteLLM.'
   raw: license:proprietary(hosted gateway);source:closed(SDK present, core service closed);self-host:none
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://openrouter.ai/
     shows: hosted unified API gateway across 400+ models/60+ providers; proprietary service (no self-host)
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1feed682beaf51d79877ead5ea6e0255cd3adc23e264f8ba99fa47bd6886d4db
-    establishes: [license, source, self-host]
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://openrouter.ai/terms
+    shows: 'Terms of service forbid "reverse engineering or otherwise attempting to discover the source
+      code of any portion of the Service" and state that the Materials "are the property of OpenRouter or
+      our third-party licensors". Searched the body for self-host, on-prem, open source and open-source:
+      none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8d1278108d70c3a2670f09a1088e0b5d6f92659e5169dc4f31664e6d5aea732e
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://openrouter.ai/
+    shows: 'Homepage describes a hosted service: "Generate anything through a single, unified interface.
+      All major models in one place." Searched the body for self-host, on-prem and license offers: none
+      (the only open-source mention describes a third-party coding agent).'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5d6c810713f85f185cff4fb2ad8abf27bf97653ea9e1e4c91691057f2bcc3063
+    establishes:
+    - self-host
 adoption:
   level: 5
   reach: '>10M'
@@ -31,7 +55,7 @@ adoption:
   note: Adoption is measured by OpenRouter's own reported user count, disclosed on its homepage, which clears
     the mass-market threshold. Because the vendor does not say whether that count is active or cumulative,
     it is read as a usage-volume signal rather than an active-user one.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://openrouter.ai/
     shows: 'vendor headline: 100T monthly tokens, 8M+ global users, 400+ models / 60+ providers'
@@ -44,22 +68,44 @@ adoption:
   - url: https://techcrunch.com/2026/05/26/openrouter-more-than-doubles-valuation-to-1-3b-in-a-year/
     shows: corroborates ~100T tokens/mo and $1.3B valuation (May 2026)
     accessed: '2026-06-04'
+  - url: https://openrouter.ai/
+    shows: 'Homepage stat tiles: "10M+" Global Users, "500T+" Monthly Tokens, "80+" Providers and "500+"
+      Models, beside "All major models in one place."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5d6c810713f85f185cff4fb2ad8abf27bf97653ea9e1e4c91691057f2bcc3063
 capability:
   score: 5
   basis: feature_matrix
-  value: 'gateway matrix: provider/model coverage 400+ models across 60+ providers (category-leading breadth);
-    automatic routing/fallback/load-balancing across providers; per-request cost tracking + credits; auth/keys
-    + data policies; OpenAI-compatible drop-in API; provider/model ranking analytics. Hits every gateway
-    feature-matrix dimension at the top of the category.'
+  value: 'gateway matrix: coverage across many models and providers; automatic routing and fallback across
+    providers; prepaid credits billing; data policies; OpenAI-compatible drop-in API; provider and model
+    rankings'
   confidence: high
-  note: 'Frontier-defining for the gateway slot: the broadest provider coverage plus routing and fallback
-    at the largest measured token scale, and the closed benchmark that LiteLLM approaches on the open side.
-    The homepage stat tiles now read 200T+ monthly tokens, 400+ models and 70+ providers, so the breadth
-    that made this the gateway frontier is if anything wider.'
-  last_verified: '2026-08-13'
+  note: OpenRouter offers models from many providers behind one OpenAI-compatible API, with automatic routing
+    and fallback, prepaid billing and provider and model rankings. It is a closed hosted service; LiteLLM
+    is the comparable gateway that can be self-hosted.
+  last_verified: '2026-09-29'
   sources:
   - url: https://openrouter.ai/
     shows: 400+ models, 60+ providers, routing/fallback, cost tracking, OpenAI-compat
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1feed682beaf51d79877ead5ea6e0255cd3adc23e264f8ba99fa47bd6886d4db
+  - url: https://openrouter.ai/
+    shows: Homepage lists "Fall back to other providers when one goes down." and "Protect your organization
+      with fine grained data policies." alongside the stat tile "500+" Models and "80+" Providers, with
+      a Rankings page in the navigation.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5d6c810713f85f185cff4fb2ad8abf27bf97653ea9e1e4c91691057f2bcc3063
+  - url: https://openrouter.ai/docs/quickstart
+    shows: Quickstart says "It handles fallbacks automatically and picks the most cost-effective option
+      for each request." and "You can also use the OpenAI SDK pointed at OpenRouter as a drop-in replacement."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5351dab99d2fea966c483d747d617d012f27e94812474ff54796a4fd3193e08a
+  - url: https://openrouter.ai/pricing
+    shows: 'Pricing page describes prepaid credits: "Buy credits" and usage "deducted from your credits".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4cf795d8e6389336ac35f2d5a74cfa7d886b40f4c218f02cf170aea4ee66f557

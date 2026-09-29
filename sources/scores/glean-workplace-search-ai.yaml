@@ -15,46 +15,66 @@ openness:
         value: single-tenant SaaS
   note: Glean Search is proprietary enterprise SaaS; no public source, no OSS/self-host tier. Closed.
   raw: client:proprietary;deployment:single-tenant SaaS;source:closed;license:Proprietary
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.glean.com/product/overview
-    shows: Glean Search as proprietary single-tenant SaaS enterprise search on Enterprise Graph
-    accessed: '2026-08-13'
+    shows: 'Platform page (the overview URL redirects to /platform) sells a commercial product: "Built for
+      enterprise AI." and "Get a demo" are its calls to action. Searched the body for self-host, open source,
+      license and download: no source release or self-host tier.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f63d474cd4cb4f0e53714d488cc01782f3908fea6393ae8ccd8d3d46a8cb0eed
-    establishes: [license, source]
+    content_sha256: f411c9116e8c38434a77dbf65ddfd629c1e921c7f3ae45d385070b1e622357bc
+    establishes:
+    - license
+    - source
+  - url: https://www.glean.com/security
+    shows: 'Customer story on the security page says the company chose Glean for "the ability to host Glean
+      within its own cloud tenant", so the vendor software is deployed only as a hosted or customer-cloud
+      service. Searched the body for self-host, open source and license: no source or license offer.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 546f3d4d73da9a378be9612366d5e47d9735974d7fa8df979037e33cbf0a253d
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  banded_quantity: the same Glean platform ARR and seat base as the Assistant record, not an independent
-    measurement
+  banded_quantity: Glean platform annual recurring revenue ($300M, May 2026) and deployment breadth, not
+    a seat count
   note: Glean Search runs on the same platform as Glean Assistant and carries the same adoption reading
     rather than an independent one, because no separate user count exists for Search alone. Glean discloses
     broad growth in revenue, enterprise customers and cross-department use, but not a raw seat count, so
     the figure here is reported growth rather than a direct measurement.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.glean.com/press/glean-surpasses-300m-arr-unrivaled-enterprise-context-fuels-ai-adoption
-    shows: $300M ARR; Fortune 500 count ~doubled YoY; 85%+ across 5+ depts; search is platform foundation
-    accessed: '2026-08-13'
+    shows: 'Press release: "Glean today announced it reached $300 million in annual recurring revenue (ARR)",
+      "nearly doubling its Fortune 500 customer count year over year", and "85%+ of customers use Glean
+      across 5+ departments".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 52a6d2d5de1b42056375fa6f5a1864f466556d33d6535946babd27e955dcd6f8
+    content_sha256: 3c13c86eba9f819d71bc485e6a12178b33fa7f9f86bc83f84585ddcb4af25599
 capability:
   score: 4
   basis: feature_matrix
-  value: 'enterprise search feature set: 100+ connector breadth (Slack/Teams/Zoom/ServiceNow/Zendesk/GitHub/...);
-    Enterprise Graph + Personal Graph relevance/personalization; hybrid (semantic+keyword) search; permissions-aware
-    results; single-tenant security; AI-assistant-grounding output'
+  value: 'enterprise search feature set: more than 250 connectors; Enterprise Graph relevance mapping; permission-aware
+    ranked results through search and chat APIs; AI-assistant-grounding output'
   confidence: high
-  note: Glean's enterprise search combines Enterprise Graph and Personal Graph relevance with hybrid semantic
-    and keyword search across more than 100 connectors, and every result and agent action is permissions-aware.
-    That is a top-tier feature set, but no single capability clearly leads the category.
-  last_verified: '2026-08-13'
+  note: Glean's enterprise search combines an Enterprise Graph with search across a large connector library,
+    and its results respect each user's permissions.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.glean.com/product/overview
-    shows: Enterprise Graph + Personal Graph, hybrid search, 100+ connectors, permissions-aware enterprise
-      search
-    accessed: '2026-08-13'
+    shows: 'Platform page: "Glean offers more than 250 connectors" and "the Enterprise Graph maps relationships
+      and processes", with search indexing company data.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f63d474cd4cb4f0e53714d488cc01782f3908fea6393ae8ccd8d3d46a8cb0eed
+    content_sha256: f411c9116e8c38434a77dbf65ddfd629c1e921c7f3ae45d385070b1e622357bc
+  - url: https://developers.glean.com/
+    shows: 'Developer page: "Enterprise search over 100+ connected sources — ranked, permission-aware, and
+      fast, from one query."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a28040a2e816f413f753092409d9f8d2e11bf941bb15654785153adcb0354bab

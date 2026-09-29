@@ -38,7 +38,6 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("compar-ia", "adoption"),
     ("cruxeval", "adoption"),
     ("google-coral-dev-board", "adoption"),
-    ("khoj", "openness"),
     ("kimi", "adoption"),
     ("mmmu", "openness"),
     ("n8n", "adoption"),

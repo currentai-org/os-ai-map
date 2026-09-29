@@ -16,14 +16,35 @@ openness:
   note: Fully MIT. The repository ships the whole application - installers for Windows, Windows ARM, macOS
     and Ubuntu plus the Python client - with nothing withheld and no paid tier.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/nomic-ai/gpt4all
     shows: MIT, ~77.4k stars, LocalDocs RAG + local API server
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: bbb3dd69d40e1e84ba10e9677b3f9a71cf6b4347c84825ec18e42e6fb3fb15cb
-    establishes: [license, source, core-gated]
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/gpt4all/json
+    shows: 'The PyPI record for the gpt4all Python bindings lists the classifier "License :: OSI Approved
+      :: MIT License" and a source-code link to "https://github.com/nomic-ai/gpt4all/tree/main/gpt4all-bindings/python".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 50784d4702a943b67e63fe4d3cce47bffcd72ccdcb481b5c000f9b473fb57085
+    establishes:
+    - license
+    - source
+  - url: https://nomic.ai/gpt4all
+    shows: The GPT4All page answers "Is GPT4All free to use?" with "Yes, GPT4All is completely free and
+      open-source. You can download and run it on your computer at no cost, with no subscription fees or
+      API charges."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4a0f3f1a0e818b9cfd29a71b840e5f624253aaf3551635c53c7e2634f82a3860
+    establishes:
+    - core-gated
 adoption:
   level: 2
   signal_type: usage_volume
@@ -32,7 +53,6 @@ adoption:
     two published distribution channels. Because a real download signal exists, it is used instead of the
     GitHub star count, which reads higher than actual use here.
   reach: 10K-100K
-  last_verified: '2026-08-12'
   sources:
   - url: https://pypistats.org/api/packages/gpt4all/recent
     shows: 58,808 downloads in the trailing 30 days for gpt4all
@@ -47,13 +67,37 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: chat UI; LocalDocs private RAG; OpenAI-compatible local server; Vulkan GPU
+  value: chat UI; LocalDocs private RAG; OpenAI-compatible local server; Python SDK; CPU, Metal and GPU
+    inference
   confidence: medium
   note: Solid core but behind faster-moving peers on newest-model support due to the maintenance slowdown.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/nomic-ai/gpt4all
     shows: 'feature set: chat, LocalDocs, local server'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: bbb3dd69d40e1e84ba10e9677b3f9a71cf6b4347c84825ec18e42e6fb3fb15cb
+  - url: https://docs.gpt4all.io/gpt4all_api_server/home.html
+    shows: The API Server page states "GPT4All provides a local API server that allows you to run LLMs over
+      an HTTP API." and lists OpenAI API Compatibility and LocalDocs Integration as key features.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a11007976db40a9807cc1f50f8f5061831a01d25297055b0768b8f316581c96c
+  - url: https://docs.gpt4all.io/gpt4all_desktop/localdocs.html
+    shows: The LocalDocs page says the feature "brings the information you have from files on-device into
+      your LLM chats - " privately, indexing a folder with on-device embedding models.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 14c489c805121d4559decd3cd7269830144c93b5ddd7e43f1daf5dac6739519d
+  - url: https://docs.gpt4all.io/gpt4all_help/faq.html
+    shows: The FAQ states "GPT4All can run on CPU, Metal (Apple Silicon M1+), and GPU."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: be2b23647878043124fc35a70bc9e24cc37b680e680d9b4a4d6b2eecd2998e4b
+  - url: https://docs.gpt4all.io/
+    shows: The documentation home describes a desktop application with "No API calls or GPUs required -
+      you can just download the application and " a Python SDK installed with pip.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f5f5de2e0c3c96d1b62fbd3014778ef4b3b53c0ad0f264d1ae0bb3cbf1e33469
