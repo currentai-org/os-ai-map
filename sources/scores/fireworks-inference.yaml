@@ -40,48 +40,49 @@ adoption:
     Sourcegraph, UiPath, Quora, Cresta and StackBlitz, each represented by a case study rather than a disclosed
     usage number. No customer discloses a request or user count, so it is that breadth of named customers,
     not a figure, that supports the rating.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://fireworks.ai/
-    shows: 'customer logos and quotes for Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora, Cresta, StackBlitz;
-      Notion (Sarah Sachs, AI Lead): "we reduced latency from about 2 seconds to 350 milliseconds"; Quora
-      (Spencer Chan, Product Lead): "we noticed a 3x speedup in response time"'
-    accessed: '2026-08-09'
+    shows: The homepage carries customer stories naming Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora,
+      Cresta and StackBlitz; Notion says "we reduced latency from about 2 seconds to 350 milliseconds" and
+      Quora says "we noticed a 3x speedup in response time".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: fb2b63596a1d37e0698d82968f712fa5a2e8421785b76b6302634a2cef3b552e
+    content_sha256: d04169e7235b48afeb0273b43147a4473ec42efbb1016ada349725fcde289630
 capability:
   score: 4
   basis: benchmark
   basis_detail: ArtificialAnalysis(provider page)
-  value: 'Serves 10 models on Artificial Analysis, topping out at 459 output tokens/sec (Nemotron 3.5 Lightning
-    BF16), then MiniMax-M2.7 at 206 t/s and DeepSeek V4 Flash at 115 t/s; best time-to-first-token 0.93s
-    (Kimi K2.6). AA notes a 448% spread between its fastest and slowest model. That peak sits below the
-    wafer/LPU speed frontier on the same site''s gpt-oss-120b board - Cerebras 1,820.3, SambaNova 701.3,
-    Groq 475.9 - and around the GPU-class providers, which is what places this at 4 rather than 5. Customer
-    case studies: Notion ~2s -> 350ms latency (Sarah Sachs, AI Lead), Quora 3x speedup (Spencer Chan, Product
-    Lead).'
+  value: 'Serves 10 models on Artificial Analysis. The fastest are Nemotron 3.5 Lightning (BF16) at 355
+    output tokens/sec, DeepSeek V4.1 Flash (max) at 347 t/s and GLM-5.3 (max) at 234 t/s; AA notes a 97%
+    difference between the fastest and slowest. For reference, the same site''s gpt-oss-120b board (a different
+    model) shows Cerebras 1,759.4, SambaNova 709.4 and Groq 473.2 t/s, and Fireworks has no entry on that
+    board, so the two figures are not a like-for-like comparison. Customer case studies: Notion ~2s -> 350ms
+    latency (Sarah Sachs, AI Lead), Quora 3x speedup (Spencer Chan, Product Lead).'
   confidence: medium
-  note: Fireworks' FireAttention kernels put it at the top of GPU-based inference, just behind the wafer-scale
-    and LPU chips on the comparable gpt-oss-120b speed board. Fireworks does not appear on that board itself,
-    so the reading comes from its own Artificial Analysis provider page instead.
-  last_verified: '2026-08-13'
+  note: Artificial Analysis measures Fireworks' fastest model among the 10 it lists, Nemotron 3.5 Lightning
+    (BF16), at 355 output tokens per second. Fireworks has no entry on the gpt-oss-120b speed board, where
+    Groq, SambaNova and Cerebras post 473 to 1,759 tokens per second on a different model, so the two sets
+    of figures are not directly comparable.
+  last_verified: '2026-09-29'
   sources:
   - url: https://artificialanalysis.ai/providers/fireworks
-    shows: 10 models served; output speed 459 t/s (Nemotron 3.5 Lightning BF16), 206 t/s (MiniMax-M2.7),
-      115 t/s (DeepSeek V4 Flash), 107 t/s (Kimi K2.6); latency 0.93s best (Kimi K2.6); "448% difference
-      between the fastest and slowest"
-    accessed: '2026-08-13'
+    shows: The provider page lists 10 models and says "For output speed, the fastest models are Nemotron
+      3.5 Lightning (BF16) (355 t/s), DeepSeek V4.1 Flash (max) (347 t/s), and GLM-5.3 (max) (234 t/s)"
+      with "a 97% difference between the fastest and slowest".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7eb36fe33f25847786dcfc510fb3783d4447d433122bf1f0b895bdc53912fb7d
+    content_sha256: 786e202f293923c82976894a272875c5bb7358e0a0b2b5f251dfb8eca8cb80e1
   - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
-    shows: 'The speed frontier: Cerebras 1,820.3, SambaNova 701.3, Groq 475.9, Google Vertex 362.7, Azure
-      310.5 output t/s, and no Fireworks entry.'
-    accessed: '2026-08-13'
+    shows: The gpt-oss-120b board says "the top providers are Cerebras (1,759.4 t/s), SambaNova (709.4 t/s),
+      and Groq (473.2 t/s)"; searched the body for Fireworks and found it only in the provider-logo list,
+      not as a speed entry.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5071ab85b53372112bbdfe4b54e7e94e570db319d44f626ae098d9d3538a20ca
+    content_sha256: 29a213e659fc5fa72c4c0228e0e417b3efe29432697c1575be7c2b5d27e45497
   - url: https://fireworks.ai/
-    shows: 'Notion (Sarah Sachs, AI Lead): "we reduced latency from about 2 seconds to 350 milliseconds";
-      Quora (Spencer Chan, Product Lead): "we noticed a 3x speedup in response time"'
-    accessed: '2026-08-09'
+    shows: The homepage carries customer stories where Notion says "we reduced latency from about 2 seconds
+      to 350 milliseconds" and Quora says "we noticed a 3x speedup in response time".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: fb2b63596a1d37e0698d82968f712fa5a2e8421785b76b6302634a2cef3b552e
+    content_sha256: d04169e7235b48afeb0273b43147a4473ec42efbb1016ada349725fcde289630

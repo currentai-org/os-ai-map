@@ -80,21 +80,30 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 500+ open-model coverage out of the box, OpenAI-compatible serving, multi-vendor GPU support
-    (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, cloud deployment; designed as high-performance
-    inference + hardware-abstraction layer
+  value: Hundreds of open models served out of the box through OpenAI-compatible endpoints, multi-vendor
+    GPU support (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, deployment on any cloud; designed
+    as high-performance inference + hardware-abstraction layer
   confidence: medium
-  note: MAX serves more than 500 Hugging Face models across NVIDIA, AMD and Apple GPUs and CPUs through
-    an OpenAI-compatible API, with custom kernel authoring in Mojo. No MLPerf or Artificial Analysis benchmark
-    exists for it, though, so this reading comes from that feature set rather than an independent benchmark.
-  last_verified: '2026-08-09'
+  note: MAX serves hundreds of open models, including DeepSeek, Gemma and Qwen, across NVIDIA, AMD and Apple
+    GPUs and CPUs through an OpenAI-compatible API, with custom kernel authoring in Mojo. The speed comparison
+    in its documentation is Modular's own, against vLLM, and no MLPerf or Artificial Analysis result is
+    cited, so no independent benchmark supports its performance.
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.modular.com/max/intro
-    shows: 'High-performance, portable serving: Serve 500+ AI models from Hugging Face using our OpenAI-compatible
-      REST API with industry-leading performance across GPUs and CPUs.'
-    accessed: '2026-08-09'
+    shows: 'The intro page says MAX serves open models through an OpenAI-compatible endpoint: "Deploy DeepSeek,
+      Gemma, Qwen, and hundreds more with an OpenAI-compatible endpoint on NVIDIA or AMD and on any cloud."
+      It also says "The same MAX package runs on NVIDIA, AMD, and Apple silicon". The earlier 500+ model
+      count is no longer stated on the page.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c8b5a6c86da68a79746c87b4ed9be1f1908445baed1df5bc507cfcfa84a024a7
+    content_sha256: bd80b430d9d537cc2573b391019d1699421f77e9be3bc26eb5b7c12ce33c158b
+  - url: https://docs.modular.com/max/models
+    shows: 'The supported-models page lists architectures: "The table below lists all the model architectures
+      currently supported by MAX."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8dcf27942eec8782c1096d99aec2b675f819a0ecf92d69420fbecb98bc653337
   - url: https://github.com/modular/modular
     shows: We have separate containers for NVIDIA and AMD GPU environments, and a unified container that
       works with both.
