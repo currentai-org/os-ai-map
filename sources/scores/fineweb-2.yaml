@@ -15,16 +15,35 @@ openness:
   confidence: high
   note: Permissive ODC-BY license, ungated, with a dataset card spanning 1000+ languages.
   raw: license:ODC-BY;gated:false;dataset_card:present;languages:1000+
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
-    shows: Dataset page exists on public hub, ODC-BY, 1000+ languages
-    accessed: '2026-08-13'
+    shows: Public Hub page for the dataset says "available under the permissive" ODC-By 1.0 license and
+      "over 1000" languages.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1932389936b358f00cb2ee418ade6b262e8676edb77998b570447c926b6fe7b9
+    content_sha256: 9e58ba8a24810be2e1503c46ce0f85215c0a9fc3032ffd33946795f551624b58
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md
+    shows: 'Raw card front matter sets "license: odc-by" and the license section says "Open Data Commons
+      Attribution License (ODC-By) v1.0"; searched for extra_gated, gated: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090
     establishes:
     - availability
     - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-2
+    shows: Hub API record for HuggingFaceFW/fineweb-2 has its gated field false and private false, and its
+      card description reads "A sparkling update with 1000s of languages".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a03adb5677f53808c4edef6f53f4d5d75c85118a734d66dec253f9ff8cd4bbc0
+    establishes:
+    - availability
     - license
 adoption:
   level: 3
@@ -52,21 +71,31 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Primary web corpus for Apertus 8B/70B (2025), 1811 languages; the current multilingual default,
-    and its HQ variant leads multilingual data-selection work. Its card reports FineTasks wins over CulturaX,
-    mC4, CC-100 and HPLT, and Apertus is trained on 15T tokens at 8B and 70B.
-  last_verified: '2026-08-13'
+  note: FineWeb-2 is the multilingual web source for Apertus, which was pretrained on 15T tokens covering
+    1811 languages. The dataset card reports that FineWeb-2 outperforms CC-100, mC4, CulturaX and HPLT on
+    FineTasks in ablations across nine languages.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2509.14233
-    shows: 'Apertus paper full text. The attribution is in the body: "We train our model on 15T tokens from 1811
-      languages during pretraining, taken from the FineWeb-2 web crawl dataset", with FineWeb-2 also carrying
-      the URL-ranking and multilingual toxicity filtering the paper runs, and Appendix G giving the FineWeb-2
-      language distribution. The arXiv abstract page gives the token and language counts without naming the corpus.'
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: 692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
     shows: FineWeb-2 outperforms CulturaX/mC4/CC-100/HPLT on FineTasks in controlled ablations
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1932389936b358f00cb2ee418ade6b262e8676edb77998b570447c926b6fe7b9
+  - url: https://arxiv.org/html/2509.14233
+    shows: 'Apertus paper HTML full text: "on 15T tokens from 1811 languages during pretraining, taken from
+      the FineWeb-2 web crawl dataset".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6ad1502a227952703e14cf9456eab6a53a00c206238c96524df9b85b90010ea3
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md
+    shows: Card says FineWeb2 "outperforms other popular pretraining datasets covering multiple languages
+      (such as CC-100, mC4, CulturaX or HPLT".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090
+  - url: https://arxiv.org/abs/2506.20920
+    shows: Abstract page of the FineWeb2 paper says "We extensively ablate our pipeline design choices on
+      a set of nine diverse languages".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2fa36ac3fe12314c485ed6cf1ab80c08d4f9edfb82a4d10867265a3fd1d6a66d

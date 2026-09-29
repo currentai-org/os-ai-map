@@ -12,16 +12,33 @@ openness:
   confidence: high
   note: ODC-BY, ungated, full dataset card.
   raw: license:ODC-BY;gated:false;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceTB/finemath
-    shows: ODC-BY license, ungated, dataset card
-    accessed: '2026-08-13'
+    shows: 'The rendered dataset page shows the FineMath card with the sections "Dataset curation" and "Decontamination"
+      plus the line "Use one of the available configs". Searched the body for Request access: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 87c966a146400047c9e611ee52409d5bec6232079c0f2954bd23d9143f3f3acd
+    content_sha256: 389c3f3db1e6fe68aa8139f4e7e18cd5852155e8e243da3fa1ef0ee12931cc2a
+    establishes:
+    - documentation
+  - url: https://huggingface.co/datasets/HuggingFaceTB/finemath/raw/main/README.md
+    shows: 'The raw card front matter reads "license: odc-by" and the body says "The dataset is released
+      in two versions".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 77b9162c99fc6b5944da8793f18fb99c3b520ab7cdce0cc67ec8a1e47871da61
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/HuggingFaceTB/finemath
+    shows: The Hub API record lists the dataset files as "finemath-3plus/train-00000-of-00128.parquet",
+      carries the tag "license:odc-by" and reports private and gated as false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f845e9306ce780c3b944c9255a0b8d0645a5d1bbdc79d44e46aa407293b00c11
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 3
@@ -49,17 +66,21 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: Leads controlled math ablations (FineMath-4+ ~2x GSM8K and ~6x MATH over InfiMM-WebMath, beats OpenWebMath);
-    current 2025 default in SmolLM3, Apertus, Marin, and OLMo 3.
-  last_verified: '2026-08-13'
+  note: FineMath-4+ achieves about a 2x improvement on GSM8K and a 6x improvement on MATH over InfiMM-WebMath
+    in the SmolLM2 annealing ablations, and every FineMath subset outperforms OpenWebMath and InfiMM-WebMath
+    on GSM8K, MATH and MMLU-STEM.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/datasets/HuggingFaceTB/finemath
-    shows: FineMath-4+ achieves ~2x GSM8K and ~6x MATH over InfiMM-WebMath and beats OpenWebMath
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 87c966a146400047c9e611ee52409d5bec6232079c0f2954bd23d9143f3f3acd
   - url: https://arxiv.org/html/2502.02737v1
-    shows: SmolLM2 paper details the FineMath ablation vs OpenWebMath/InfiMM-WebMath
-    accessed: '2026-08-13'
+    shows: The SmolLM2 paper reports "FineMath4+ achieves a 2x improvement on GSM8K and a 6x improvement
+      on MATH compared to InfiMM-WebMath" and "All FineMath subsets consistently outperform OWM and InfiMM-WebMath
+      on GSM8K, MATH, and MMLU-STEM".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: be627c24bbc0d0c4084648798877bced224b189e12ca4c03a2e25e277986fbbb
+    content_sha256: 6a1e79bcd781f4e49bf6b1302a2137463307a0851be149f4121df92fefcb893f
+  - url: https://huggingface.co/datasets/HuggingFaceTB/finemath/raw/main/README.md
+    shows: The card reports "FineMath-4+ demonstrates superior performance compared to both FineMath-3+
+      and InfiWebMath-4+ on GSM8k and MATH" and describes "34B tokens" in FineMath-3+.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 77b9162c99fc6b5944da8793f18fb99c3b520ab7cdce0cc67ec8a1e47871da61

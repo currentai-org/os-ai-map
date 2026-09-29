@@ -15,16 +15,35 @@ openness:
   confidence: high
   note: Permissive ODC-BY license with ungated download and a full dataset card.
   raw: license:ODC-BY;gated:false;dataset_card:present;format:parquet
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb
-    shows: Dataset card present, ODC-BY license, public ungated download
-    accessed: '2026-08-13'
+    shows: Hugging Face dataset page for HuggingFaceFW/fineweb rendering the card, with the license "Open
+      Data Commons Attribution License (ODC-By) v1.0".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b0ff0817716949392d60da6d371225b56d8acf7ad74a01f590facffc399dfb69
+    content_sha256: a26b73d1cadb32d2eee7a26d4fc29c5b0b0a4596c0ce3e2bb7ad413d6abc74ef
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb/raw/main/README.md
+    shows: Raw dataset card README for HuggingFaceFW/fineweb, which lists "- **License:** Open Data Commons
+      Attribution License (ODC-By) v1.0" as its license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2fb3e49e8aa62a7429b07b557cc49d578292174843fb6aa561b5fbe6afbff01c
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb
+    shows: Hub API record for HuggingFaceFW/fineweb listing the tags "task_categories:text-generation" and
+      "language:en" and "license:odc-by" for the dataset, so the license is ODC-By and the gated field is
+      false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f1c3e9309826f922ffc9955cf61627433fdc026a9e6e7dbf65395dd374bd3e79
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 4
@@ -52,17 +71,26 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: The FineWeb paper's 1.7B ablation beats C4, RefinedWeb, RedPajama, Dolma, The Pile, and OSCAR; but
-    its FineWeb-Edu subset is the preferred quality source.
+  note: FineWeb outperforms C4, RefinedWeb, RedPajama2, Dolma, The Pile and SlimPajama in the paper's matched
+    1.71B-parameter ablations. FineWeb-Edu, its educational-quality subset, scores well above it on MMLU,
+    ARC and OpenBookQA.
   relative_to: fineweb-edu
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2406.17557
-    shows: FineWeb paper full text. The per-corpus ablation compares FineWeb against RefinedWeb (500B tokens),
-      C4 (172B tokens), the Common Crawl-based part of Dolma 1.6 (3T) and 1.7 (1.2T), The Pile (340B), SlimPajama
-      (627B) and the deduplicated RedPajama2 (20T), all trained at 1.71B parameters on matched token budgets
-      with the nanotron library. The arXiv abstract page carries the headline claim and none of the table.
-    accessed: '2026-09-11'
+  - url: https://arxiv.org/abs/2406.17557
+    shows: arXiv abstract for the FineWeb paper describes "a 15-trillion token dataset derived from 96 Common
+      Crawl snapshots that produces better-performing LLMs than other open pretraining datasets".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ae632bd6618d2566e708962670f27ab1fbc5ba9bc8de3acaceee8fbda85fbdd4
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da
+  - url: https://arxiv.org/html/2406.17557
+    shows: FineWeb paper HTML compares FineWeb in Fig. 10 against datasets including "the deduplicated variant
+      of RedPajama2" and "Colossal-OSCAR (850B tokens)", reports that "FineWeb shows strong performance
+      and FineWeb-Edu (detailed below) outperforms all other open datasets we compared on our aggregate
+      group of tasks", and says FineWeb-Edu "outperforms all openly accessible web-based datasets on a number
+      of reasoning- and knowledge-intensive benchmarks such as MMLU, ARC, and OpenBookQA by a significant
+      margin".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 059d9418f0a111cdc55c9057dc1595a03ba392abc5e2140832635a520192dc99

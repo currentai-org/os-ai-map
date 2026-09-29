@@ -12,7 +12,7 @@ openness:
   confidence: high
   note: MIT-licensed, ungated, full dataset card.
   raw: license:MIT;gated:false;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceH4/ultrachat_200k
     shows: MIT license, ungated access, dataset card
@@ -22,6 +22,24 @@ openness:
     establishes:
     - availability
     - documentation
+    - license
+  - url: https://huggingface.co/datasets/HuggingFaceH4/ultrachat_200k/raw/main/README.md
+    shows: 'The raw dataset card declares "license: mit" in its front matter, describes the dataset as "a
+      heavily filtered version of the" UltraChat dataset with a structure section, and has no gating notice.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d2b3bf76702b85b28172f4dd971ae80c03348cd3fee518c7e6e6f4d43dd33431
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/HuggingFaceH4/ultrachat_200k
+    shows: Hub API record for the dataset, whose description opens "Dataset Card for UltraChat 200k", lists
+      the tag "license:mit" and reports it as public and not gated.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1f05557ee90364ba135cfe9f5ce9deb6e8f1ebecc3dd63361c14bdd11e6f46cd
+    establishes:
+    - availability
     - license
 adoption:
   level: 3
@@ -51,15 +69,23 @@ capability:
   confidence: high
   note: Clean SFT before/after in the Zephyr paper (MT-Bench ~6.64), but dropped from 2024-25 default SFT
     mixes (absent from SmolTalk and Tulu 3).
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://ar5iv.labs.arxiv.org/html/2310.16944
-    shows: 'Zephyr: dSFT on UltraChat reaches MT-Bench 6.64'
-    accessed: '2026-08-13'
+    shows: The Zephyr paper states "We first use dSFT, based on the UltraChat" dataset, and its ablation
+      table lists dSFT-1 at "6.64" MT-Bench.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a7a4e8be5d00f66bb16d3da7601dc4c207327b353dd110257d4ab8137dc7475b
+    content_sha256: 35fed64c70a03f23c5201dbce6f050bd2d2b50562a1a86bd0902f83e5fd28e1c
   - url: https://huggingface.co/datasets/allenai/tulu-3-sft-mixture
-    shows: UltraChat-200k is not used as an SFT source in Tulu 3
-    accessed: '2026-08-13'
+    shows: 'The Tulu 3 SFT mixture card says "It contains 939,344 samples from the following sets" and lists
+      FLAN v2, No Robots, "WildChat GPT-4" and others. Searched the body for UltraChat and ultrachat: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 579445329317f747a4780e6e767577245dca7492ec5911d20cb1f7eb63f33995
+    content_sha256: 1b6fff37d3f206b70086d9d65015a75dfb98b603a99af7330b0d44cd198464d6
+  - url: https://huggingface.co/datasets/HuggingFaceTB/smoltalk/raw/main/README.md
+    shows: 'The SmolTalk card says "we enhanced our SFT mix by incorporating public datasets to strengthen
+      specific capabilities" such as math and coding. Searched the body for UltraChat and ultrachat: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b6ff197df18e272fe15361db889638f9679b8443f299034137b5234acd8d3487

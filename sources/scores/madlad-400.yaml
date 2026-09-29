@@ -13,15 +13,24 @@ openness:
   confidence: high
   note: Ungated with a permissive open-data license and a complete dataset card.
   raw: license:odc-by(API tag; card cites CC-BY-4.0);gated:false;card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/api/datasets/allenai/MADLAD-400
-    shows: gated = false, license = odc-by
-    accessed: '2026-08-13'
+    shows: The Hub API record for allenai/MADLAD-400 lists tags "task_categories:text-generation" and "license:odc-by"
+      and reports the dataset as public and not gated.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1162ab9cfd6417a623db287ab85d6a899e320430c9c166e8e055e34e8e1ea457
+    content_sha256: b8a9fb10f3a69e5f242cf71dec4c58b58ca23321d8e02e6a92bef01adf611555
     establishes:
     - availability
+    - license
+  - url: https://huggingface.co/datasets/allenai/MADLAD-400/raw/main/README.md
+    shows: 'The raw card front matter reads "license: odc-by" and its License section says "This data is
+      released with the" CC-BY-4.0 license, alongside sections on filtering and a language audit.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2b4c5f115d0a4bb4a5e0a2f5f41d792b5b9d37d07f66535afd16ec8c613a9f86
+    establishes:
     - documentation
     - license
 adoption:
@@ -50,13 +59,21 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: 'Underpins Google''s MADLAD-400 machine-translation models (10.7B/8B, 2023), which are competitive
-    with NLLB-54B: the 10.7B averages 31.8 BLEU against NLLB-54B''s 32.7 on WMT across 400+ languages. That
-    is a strong documented downstream training result rather than a current lead.'
-  last_verified: '2026-08-13'
+  note: Google trained 3B, 7.2B and 10.7B translation models on this corpus plus other public data, and
+    the 10.7B model, trained on 250 billion tokens covering over 450 languages, is reported as competitive
+    with much larger models. That is a strong documented downstream result rather than a current lead.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://proceedings.neurips.cc/paper_files/paper/2023/file/d49042a5d49818711c401d34172f9900-Paper-Datasets_and_Benchmarks.pdf
-    shows: MADLAD-400 10.7B MT model averages 31.8 BLEU vs NLLB-54B's 32.7 across 400+ languages
-    accessed: '2026-08-13'
+  - url: https://arxiv.org/abs/2309.04662
+    shows: The arXiv abstract says the authors "train and release a 10.7B-parameter multilingual machine
+      translation model on 250 billion tokens" and find it "competitive with models that are significantly
+      larger".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: cbab6f50a7c4b77f7d0e5f0f1fb6e93c99e27da4e66b8f983653360b6a093ce6
+    content_sha256: cb1cf5cf7d81116101ed39918823cb0f8315bb00c6b5522f8c967180f57939e3
+  - url: https://huggingface.co/google/madlad400-10b-mt/raw/main/README.md
+    shows: The Google MADLAD-400-10B-MT model card says the model was "trained on 250 billion tokens covering
+      over 450 languages" and "It is competitive with models that are significantly larger."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: eefbae9d05e4152e59c07692c306fae1e0e6467377136c7cc236a80dcb7f6bb4
