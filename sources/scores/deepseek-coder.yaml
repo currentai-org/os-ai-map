@@ -23,22 +23,49 @@ openness:
   raw: weights:open(downloadable on HF);data:closed;code:open(MIT, repo code);model-license:DeepSeek-Model-License(non-OSI;
     Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.; commercial allowed
     but use-based restrictions must propagate to derivatives)
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
-    shows: 'License section - "This code repository is licensed under the MIT License. The use of DeepSeek-Coder-V2
-      Base/Instruct models is subject to the Model License"; `"gated":false` in the embedded repo state, so
-      the 236B-A21B MoE weights download without a barrier; no training corpus published on the card'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct/raw/main/README.md
+    shows: 'Model card License section: "This code repository is licensed under" the MIT License and "The
+      use of DeepSeek-Coder-V2 Base/Instruct models is subject to" the Model License; "supports commercial
+      use". Searched the body for a training-data release: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 84a8982c532466f685c721096ac025186d86d74e9dd22eeed64588c3f56ac577
-    establishes: [weights, data, license]
+    content_sha256: 03d0e09a66eb18e4829ab91f29df9b9afd6bf18b11f0cd25819fca00f4d2f7c8
+    establishes:
+    - code
+    - data
+    - weights
+  - url: https://raw.githubusercontent.com/deepseek-ai/DeepSeek-Coder-V2/main/LICENSE-MODEL
+    shows: 'DeepSeek License Agreement Version 1.0 (23 October 2023), a custom non-OSI license: it "added
+      use-based restrictions not permitting the use of the model in very specific scenarios" and Attachment
+      A bars use "For military use in any way"; derivatives must carry the same restrictions ("MUST be included
+      as an enforceable provision"), while the grant is a "royalty-free" copyright license to "distribute
+      the Complementary Material, the Model, and Derivatives of the Model" with no field-of-use ban on commercial
+      use.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a3a0e9449cb691a12f4de1d03725fd41326614fdeaf5d80b28c51187da0bed0e
+    establishes:
+    - model-license
+  - url: https://raw.githubusercontent.com/deepseek-ai/DeepSeek-Coder-V2/main/LICENSE-CODE
+    shows: 'LICENSE-CODE is the MIT License: "Permission is hereby granted, free of charge, to any person
+      obtaining a copy" of the software, including the right to "sell" copies, so the repository code is
+      OSI-licensed.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6e4c38e1172f42fdbff13edf9a7a017679fb82b0fde415a3e8b3c31c6ed4a4e4
+    establishes:
+    - code
   - url: https://github.com/deepseek-ai/DeepSeek-Coder-V2/blob/main/LICENSE-MODEL
-    shows: 'DEEPSEEK LICENSE AGREEMENT Version 1.0, 23 October 2023 - preamble states it "added use-based
-      restrictions"; Attachment A carries them; non-OSI custom license'
+    shows: DEEPSEEK LICENSE AGREEMENT Version 1.0, 23 October 2023 - preamble states it "added use-based
+      restrictions"; Attachment A carries them; non-OSI custom license
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a3a0e9449cb691a12f4de1d03725fd41326614fdeaf5d80b28c51187da0bed0e
-    establishes: [code, model-license]
+    establishes:
+    - code
+    - model-license
 adoption:
   level: 3
   reach: 100K-1M

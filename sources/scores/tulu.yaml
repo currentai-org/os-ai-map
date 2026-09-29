@@ -29,28 +29,53 @@ openness:
     and the OLMES eval framework, which keeps this at open weights rather than open source.'
   raw: weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct
     Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B
-    shows: '`license:llama3.1` in the repo tags, so the checkpoint ships under the Llama 3.1 Community
-      License Agreement rather than Ai2''s own terms; `"gated":false`, so the weights download without
-      a barrier; base meta-llama/Llama-3.1-8B'
-    accessed: '2026-08-13'
+    shows: Model card tags include "license:llama3.1" and the card names the "Llama 3.1 Community License
+      Agreement".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f74ddccb2a10fdac503d87abba4052b9e28d8ad7eaa1798bec479f32abe9a126
-    establishes: [weights, license]
+    content_sha256: 3d52658ec496b13e81a2a82ddb9b955989c6bd7b2bd1754481c4b5c10931cc59
+    establishes:
+    - weights
+    - license
   - url: https://allenai.org/blog/tulu-3
-    shows: fully-transparent post-training release -- open data + data mixes, training code/recipe, eval framework,
-      and weights
-    accessed: '2026-08-13'
+    shows: Ai2 describes Tulu 3 as a release of "fully open-source data, code, and recipes."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 300f60775e3b5486566281c4cfdc6f64d47fb606d793213805315ef65713c3ad
-    establishes: [post-training-data, recipe]
+    content_sha256: ddf28909fb6817b239be529a45ce5e2bb5d9867db0366e665212c97d34f0b5a2
+    establishes:
+    - recipe
+  - url: https://huggingface.co/datasets/allenai/tulu-3-sft-mixture
+    shows: The SFT mixture card states "ODC-BY-1.0 license; different licenses apply to subsets of the data."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b3c37e706b0231e9c396ba25621b72fe5d40e7be7aa81176882c2511c0a111bc
+    establishes:
+    - post-training-data
+  - url: https://raw.githubusercontent.com/allenai/open-instruct/main/README.md
+    shows: The open-instruct README says the repo releases "Code for DPO, preference finetuning and reinforcement
+      learning with verifiable rewards (RLVR)." and points to OLMES, "which we used for TÜLU 3".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 506b8d1cfa7060c50ca30e5df5f9f98980f0b7a4b7a92feb0d0a89a1e535e751
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/allenai/open-instruct/main/LICENSE
+    shows: The open-instruct LICENSE file is the "Apache License" text, "Version 2.0, January 2004".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b998a796c55d006a974a48c73aa32674e6901e8d49aa98d74722e0c1063b40b6
+    establishes:
+    - code
   - url: https://github.com/allenai/open-instruct
     shows: Apache-2.0; Tulu 3 SFT/DPO/RLVR post-training framework + decontamination tools
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 7bf1c8b05e23c3ecf58a94c3c915b01cc583640175a53965f21c066190726818
-    establishes: [code]
+    establishes:
+    - code
 adoption:
   level: 2
   reach: 10K-100K

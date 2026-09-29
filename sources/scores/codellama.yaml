@@ -21,15 +21,42 @@ openness:
     outright.
   raw: weights:open(downloadable on HF);data:closed;code:partial(inference utils, no training pipeline);license:Llama-2-Community(custom
     Meta license, non-OSI; AUP + commercial conditions)
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
-    shows: '`license:llama2` in the repo tags with `licenseFilePath - LICENSE`; `"gated":false` in the embedded
-      repo state, so the 13B safetensors download without a barrier; transformers usage snippet only, no
-      training or fine-tuning pipeline and no corpus'
-    accessed: '2026-08-13'
+    shows: 'Model card for 13B-Instruct. Repo tags include "license:llama2" and "gated":false, so the safetensors
+      download without a barrier. The Training Data section says "trained and fine-tuned using the same
+      data as Llama 2 with different weights", so no corpus is released; the card gives only transformers
+      usage snippets. Searched the body for a training pipeline, corpus release and fine-tuning scripts:
+      none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5c5c6c663591dbb96606babd8813dac5fb1f5e16fba6d5b4ade5c26914dda19c
-    establishes: [weights, data, code, license]
+    content_sha256: 38b2e23fdc109848b1ebe6d76f00fe27c25be1a1c8cdf984b9f83a80232a00f3
+    establishes:
+    - weights
+    - data
+  - url: https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf/raw/main/LICENSE
+    shows: The LICENSE file in the model repo is the "LLAMA 2 COMMUNITY LICENSE AGREEMENT" with a "non-exclusive,
+      worldwide, non-" transferable royalty-free grant, an Acceptable Use Policy, a bar on using outputs
+      to improve other LLMs, and a "greater than 700 million monthly active users" condition; custom Meta
+      license, not OSI-approved.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8c17c2ebb0ea011be9981cc3922db8ca8fa61e828c5d3f44cb6ae342bf80460b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/meta-llama/codellama/main/README.md
+    shows: 'README of meta-llama/codellama says "This release includes model weights and starting code for
+      pretrained and fine-tuned Llama language models" and "This repository is intended as a minimal example
+      to load" Code Llama models "and run inference"; the run instructions cover only example_completion.py,
+      example_infilling.py and example_instructions.py via torchrun. Searched the README for a training
+      pipeline, pretraining or fine-tuning scripts and data preparation code: none, so the code is inference-only
+      starting code.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2683e58a65e8fd64993c3dc10a6a8d15a00d2c8fccf49578f3d5858b8ed8af41
+    establishes:
+    - code
 adoption:
   level: 3
   reach: 100K-1M
