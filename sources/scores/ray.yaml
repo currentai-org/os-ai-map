@@ -12,22 +12,61 @@ openness:
     core-gated:
       value: ungated
       detail: a full 11,885-entry tree carries one Apache-2.0 LICENSE and no enterprise/ or ee/ path, no
-        license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature the open
-        project lacks
+        license-key machinery and no closed dependency; Anyscale's faster proprietary Anyscale Runtime is
+        a separate, Ray-API-compatible product sold beside the open project, not a part of it withheld
     context:
       commercial-tier:
-        value: Anyscale managed SaaS on top
+        value: Anyscale managed platform and proprietary Anyscale Runtime on top
   confidence: high
   note: Ray's entire core is published under Apache-2.0, and a full scan of the repository finds no enterprise,
-    ee or commercial path behind it. Anyscale sells managed infrastructure beside the open project without
-    claiming any Ray capability the open source lacks, and Ray is governed by the PyTorch Foundation rather
-    than by Anyscale.
-  raw: license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed SaaS
-    on top;core-gated:ungated(a full 11,885-entry tree carries one Apache-2.0 LICENSE and no enterprise/
-    or ee/ path, no license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature
-    the open project lacks)
-  last_verified: '2026-08-12'
+    ee or commercial path behind it. Anyscale sells a managed platform and its own faster Anyscale Runtime
+    as separate products beside the open project, and Ray is governed by the PyTorch Foundation rather than
+    by Anyscale.
+  raw: license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed platform
+    and proprietary Anyscale Runtime on top;core-gated:ungated(a full 11,885-entry tree carries one Apache-2.0
+    LICENSE and no enterprise/ or ee/ path, no license-key machinery and no closed dependency; Anyscale's
+    faster proprietary Anyscale Runtime is a separate, Ray-API-compatible product sold beside the open project,
+    not a part of it withheld)
+  last_verified: '2026-09-28'
   sources:
+  - url: https://raw.githubusercontent.com/ray-project/ray/master/LICENSE
+    shows: 'The root LICENSE file is the Apache License text, "Version 2.0, January 2004", followed by notices
+      for adapted third-party code under permissive licenses, for example "https://github.com/openai (MIT
+      License)". Searched the body for GPL, non-commercial and Creative Commons: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: cc68f9a408c8edf33c900f645846a7d8388a23e4b92a4a9fce7499c372b2acc0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ray-project/ray/master/README.rst
+    shows: 'The README describes Ray as "a unified framework for scaling AI and Python applications" made
+      of "a core distributed runtime and a set of AI libraries for simplifying ML compute", listing Data,
+      Train, Tune, RLlib and Serve. Searched the body for enterprise, commercial, paid, premium, proprietary
+      and license key: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 94df2acbdfdc95f867ce205d63da33480db909359e6235d9bb3c912fb6a11e87
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/ray-project/ray/master/python/setup.py
+    shows: 'The package build script reads its license from "LICENSE.txt", and the base install requirements
+      are open packages such as "msgpack >= 1.0.0, < 2.0.0" and "protobuf>=3.20.3". Searched the body for
+      anyscale, enterprise, proprietary and license key: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 6ceccb634b77e09c8ae00636e7d5599a47c64bd4d2bc37e4353d26aae06aa4e5
+    establishes:
+    - license
+    - core-gated
+  - url: https://pypi.org/pypi/ray/json
+    shows: PyPI metadata for the ray package reports "license":"Apache 2.0" and the summary "Ray provides
+      a simple, universal API for building distributed applications".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 737091256971b0bbd57527e9a103ad7252dde91039194494a7d5680a499b360f
+    establishes:
+    - license
   - url: https://github.com/ray-project/ray
     shows: 'Repository page for ray-project/ray: ''Apache-2.0 license'' in the sidebar, 43.5k stars, 7.9k
       forks, public and unarchived. Establishes the licence and that the source is public.'
@@ -35,22 +74,32 @@ openness:
     http_status: 200
     content_sha256: 38ab6ca22a4d5273082141c8ff950643c69a198237830e1c2bf386812b66dffd
   - url: https://www.anyscale.com/product/open-source/ray
-    shows: 'Anyscale positions its offering as managed infrastructure, not a fuller Ray: "Scale on any cloud
-      or private data centers, bare metal, Kubernetes cluster - Ray runs anywhere. Or choose Anyscale, and
-      leave the infrastructure to us." The page makes no claim that open-source Ray lacks a feature the
-      paid platform adds.'
-    accessed: '2026-08-12'
+    shows: 'Anyscale''s Ray page presents its product as managed infrastructure beside a Ray that runs anywhere:
+      "Public cloud, private data centers, bare metal, Kubernetes cluster — Ray runs anywhere. Or choose
+      Anyscale, and leave the infrastructure to us."'
+    accessed: '2026-09-28'
     http_status: 200
     establishes:
     - core-gated
-    content_sha256: f128508e406bc5e9b53c90fa4a7fdda0d5b84d33bfdc1d796efbdd639bd9a143
-  - url: https://www.anyscale.com/blog/ray-by-anyscale-joins-pytorch-foundation
-    shows: Anyscale's announcement that Ray moved under the PyTorch Foundation. Establishes the governance
-      reading — the managed platform is sold by a company that does not control the project — rather than
-      any licence or source dimension.
-    accessed: '2026-08-15'
+    content_sha256: 09db51a7530be5d45ec6506b5f21ca56d92927d9191fc381f96463b120f77413
+  - url: https://www.anyscale.com/blog/announcing-anyscale-runtime-powered-by-ray
+    shows: 'Anyscale''s announcement of the Anyscale Runtime, a separate runtime it describes as "fully
+      compliant with Ray APIs" and benchmarks against the open project: "it took 772 seconds on open-source
+      Ray vs. 431 seconds on Anyscale Runtime".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: dee281e95cf45b5db576e3f37867e8d9ebe26987edf764b5499dc588e1877156
+    content_sha256: 53609b070978484c203344430c23a351a47bbacb6c739ccf75546cf52943cec0
+    establishes:
+    - core-gated
+  - url: https://www.anyscale.com/blog/ray-by-anyscale-joins-pytorch-foundation
+    shows: Anyscale's announcement that "Ray, the open-source distributed compute framework for AI is joining
+      the PyTorch Foundation, part of The Linux Foundation." Its founders write "We started Anyscale in
+      2019 to develop and commercialize Ray."
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9b39817f49ff61e0bbeed2f9ab09242bf3033943f23a42387ca5137edab59082
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/ray-project/ray/git/trees/master?recursive=1
     shows: Full untruncated recursive tree of the default branch master, 11,885 entries. The only license
       paths are the root LICENSE, python/LICENSE.txt and three vendored third-party licenses (dacite, pathspec,
