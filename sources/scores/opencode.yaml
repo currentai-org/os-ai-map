@@ -13,12 +13,29 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'Fully MIT: the repo publishes the whole TUI agent and calls itself "the open source AI coding agent",
-    the npm registry metadata for opencode-ai declares the same MIT license on the shipped package, and
-    there is no paid tier, enterprise directory or license key.'
+  note: Opencode is MIT licensed, and the repository publishes the whole terminal agent, which calls itself
+    "the open source AI coding agent"; the npm package declares the same license. Its enterprise package
+    is MIT licensed as well, and no paid tier or license key gates the agent.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/anomalyco/opencode/dev/LICENSE
+    shows: 'The repository LICENSE file is the MIT License text: "MIT License" and "Permission is hereby
+      granted, free of charge, to any person obtaining a copy".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/anomalyco/opencode/dev/README.md
+    shows: 'The repository README describes the project as "open source AI coding agent" with no paid tier
+      or license key mentioned; searched for enterprise, license key and ee: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 400890a3082e225c440561825270a911cd7df90a9f64f85166aed330201e50ba
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/sst/opencode
     shows: MIT license, full public source for the TUI agent, 197.0k stars and 25.3k forks; no paid tier
       or enterprise directory
@@ -29,13 +46,6 @@ openness:
     - license
     - source
     - core-gated
-  - url: https://registry.npmjs.org/opencode-ai/latest
-    shows: 'npm registry metadata for the shipped package declares license MIT, version 1.18.18'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: a01e0e41c50cba02474e38738ecbc30cdeda03d5065011fde0e24b19ac25f0ee
-    establishes:
-    - license
 adoption:
   level: 4
   signal_type: usage_volume
@@ -77,11 +87,18 @@ capability:
   confidence: high
   note: Matches/exceeds the coding-agent peers on breadth, with standout provider-neutrality and TUI/LSP
     polish.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://opencode.ai/
-    shows: LSP auto-loading, multi-session parallel agents, shareable session links, GitHub Copilot and
-      ChatGPT Plus/Pro sign-in, 75+ LLM providers through Models.dev including local models
-    accessed: '2026-08-13'
+    shows: The product homepage lists "Automatically loads the right LSPs for the LLM", "Start multiple
+      agents in parallel on the same project", "Share a link to any session for reference or to debug" and
+      "75+ LLM providers through Models.dev, including local models".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0c5c8e749036f4eb053caf0744e3ed724d900bd3a830acc61d686c8b3e2e9bb4
+    content_sha256: 19b0fe9208a4c7924c12c552c98a612347c4bcdfd7fd21911b27a73a070fbc0a
+  - url: https://opencode.ai/docs/server/
+    shows: The server docs page says "runs a headless HTTP server that exposes an OpenAPI endpoint that
+      an opencode client can use".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 287f59b25d06546ec5447383d3286cca24ee773c99eefd30fa8fc88cb5b78e57

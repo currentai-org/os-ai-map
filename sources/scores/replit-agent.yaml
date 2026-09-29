@@ -11,26 +11,30 @@ openness:
     self-host:
       value: 'no'
   confidence: high
-  note: 'Replit Agent is a proprietary cloud agent embedded in Replit''s hosted IDE, with no source distribution
-    and no self-hosting path. Replit''s own documentation describes it entirely inside the hosted platform:
-    deployments, machines, a hosted database, Replit Auth and SSO, workspace security and monetization.'
+  note: Replit Agent is a proprietary service that runs only inside Replit's hosted platform, and the terms
+    grant users access to it rather than any right to the software. No source is published and there is
+    no way to run it outside Replit.
   raw: source:closed;license:proprietary(Replit cloud SaaS);self-host:no
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://replit.com/agent
-    shows: 'Replit Agent proprietary AI app-building product within Replit''s cloud platform. Not re-fetchable
-      - replit.com answers 403 to a non-browser request.'
-    accessed: '2026-06-04'
-  - url: https://docs.replit.com/replitai/agent
-    shows: Replit Agent documented wholly inside the hosted platform - plan mode, agent modes, publishing
-      and deployments, machines, hosted database, Replit Auth and SSO, security centre, monetization;
-      no source download and no self-host option
-    accessed: '2026-08-13'
+  - url: https://replit.com/terms
+    shows: Replit terms of service state "Replit owns and retains all right, title, and interest in and
+      to the Service and related software" and forbid "reverse-engineering any part of the Service"; no
+      open-source license or source release is granted.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: fea523117f7e54c88a71104477f8a78bf31b51eca32490e04cb0b5821b3c8602
+    content_sha256: 90e3155947d7e3e9dc61282cea136717f34e27dcc64674a66071a26d4f0411fd
     establishes:
     - source
     - license
+  - url: https://docs.replit.com/replitai/agent
+    shows: 'Replit Agent docs describe a hosted service where "Agent writes code, sets up infrastructure,
+      and tests the result" inside the Project Editor. Searched the body for self-host, on-prem, download
+      and open source: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1572228e1b72ac6dd03ef64716a9322474fd6de0dc6a85b704412c16098aba3d
+    establishes:
     - self-host
 adoption:
   level: 4
@@ -41,14 +45,14 @@ adoption:
     usage pricing, but that count spans the whole platform rather than agent-specific active use. Because
     the platform figure could overstate the agent's own reach, this reading sits conservatively rather than
     at the level the raw platform number would otherwise suggest.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://sacra.com/c/replit/
-    shows: Replit user base 22.5M in April 2023, 40M+ by September 2025 and 50M+ by March 2026, users
-      from 85% of the Fortune 500, growth attributed to usage-based agent pricing
-    accessed: '2026-08-13'
+    shows: Sacra reports "by March 2026 to 50M+, with users from 85% of the Fortune 500 on the platform",
+      a platform-wide registered user figure rather than an agent-specific count.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a8eab5636cb6e6a8b89c8ad3879c33bc7b531a0b1491760933217162abf4c8dc
+    content_sha256: b957386caa6c501b50d3f70992f42bd2aa20b5417fe094e358fc76cb53b7308e
 capability:
   score: 3
   basis: feature_matrix
@@ -59,11 +63,12 @@ capability:
     SWE tasks. It publishes no first-party benchmark, so this reads from its feature set.
   relative_to: openhands
   relation: two_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.replit.com/replitai/agent
-    shows: plan mode, agent modes, model selector, app testing, publishing and deployments, agent skills,
-      automations, web search, task board and artifact types; no benchmark figure published
-    accessed: '2026-08-13'
+    shows: 'Replit Agent docs say Agent "sets up your project, creates applications, checks its work, and
+      fixes problems along the way", with Plan mode and Free, Power and Max modes; searched for SWE-bench,
+      GAIA and benchmark: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: fea523117f7e54c88a71104477f8a78bf31b51eca32490e04cb0b5821b3c8602
+    content_sha256: 1572228e1b72ac6dd03ef64716a9322474fd6de0dc6a85b704412c16098aba3d

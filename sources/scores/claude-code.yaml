@@ -20,32 +20,35 @@ openness:
   note: Claude Code requires an Anthropic subscription or Console account, and its repository publishes
     only plugins, examples and documentation; LICENSE.md is a bare all-rights-reserved notice, with no source
     for the CLI or agent itself. The published Agent SDK is a client that talks to this same closed service,
-    so it does not change the license class.
-  last_verified: '2026-08-11'
+    so it does not open the product.
+  last_verified: '2026-09-29'
   raw: license:Proprietary(closed-source CLI/app, requires Claude subscription or Console account);model:Claude(proprietary,
     API-only);note:Agent SDK published but the product is closed SaaS;source:closed(anthropics/claude-code
     ships plugins, examples and scripts; no runtime source and LICENSE.md is all-rights-reserved)
   sources:
-  - url: https://code.claude.com/docs/en/overview
-    shows: requires Claude subscription or Anthropic Console account; proprietary surfaces
-    accessed: '2026-06-04'
-  - url: https://api.github.com/repos/anthropics/claude-code/contents/
-    shows: 'Root listing of anthropics/claude-code: .claude-plugin, .claude, .devcontainer, .gitattributes,
-      .github, .gitignore, .vscode, CHANGELOG.md, LICENSE.md, README.md, SECURITY.md, Script, demo.gif,
-      examples, feed.xml, plugins, scripts. No source tree for the CLI agent.'
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 10b1c0faab05f24403d0fb3a36ba019adeb35572a1e312612c78b0aecddd8c48
-    establishes:
-    - source
   - url: https://raw.githubusercontent.com/anthropics/claude-code/main/LICENSE.md
-    shows: 'Entire file: "(c) Anthropic PBC. All rights reserved. Use is subject to Anthropic''s Commercial
-      Terms of Service." No grant to the source.'
-    accessed: '2026-08-11'
+    shows: The entire LICENSE.md is a bare notice, "© Anthropic PBC. All rights reserved. Use is subject
+      to Anthropic's [Commercial Terms of Service]", with no open-source grant.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 728158fd1037143fad6907e8fa34804177e598b7326519503fe83cafdef849e6
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/anthropics/claude-code/main/README.md
+    shows: 'The repository README describes installation of a prebuilt binary and says "This repository
+      includes several Claude Code plugins that extend functionality with custom commands and agents." Searched
+      for build-from-source or contributing-code instructions: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: aa0d8b80ac083e1591be0789273f447058cc9187b4331634a5614155da27778d
+    establishes:
+    - source
+  - url: https://code.claude.com/docs/en/overview
+    shows: The official overview says Claude Code needs paid access, with "requires a claude.ai subscription."
+      for the desktop app and an "Anthropic Console" account as the other route.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7f995be767269db5cfd38227c57b5f68deb6a94c8d6bf1c774f0d89fd1bdd87a
 adoption:
   level: 4
   signal_type: reported_traction
@@ -54,7 +57,6 @@ adoption:
   note: Anthropic reports business subscriptions to Claude Code roughly quadrupling over the year, with
     enterprise now accounting for more than half of its revenue. No developer or user count is published,
     so adoption here is read from that commercial scale, which points to a very large developer base.
-  last_verified: '2026-08-13'
   sources:
   - url: https://code.claude.com/docs/en/overview
     shows: broad multi-surface paid product across terminal, VS Code, desktop app, web, Slack and mobile;
@@ -71,29 +73,25 @@ capability:
   score: 5
   basis: benchmark
   basis_detail: SWE-bench Verified
-  value: Backed by frontier Claude Opus models leading SWE-bench Verified (Claude Opus 4.8 ~88.6%, 4.7
-    ~87.6%); Claude Code is the reference agent harness for these scores.
+  value: Backed by Anthropic Claude models that lead SWE-bench Verified (Opus 4.8 0.886, Opus 4.7 0.876;
+    Claude Fable 5 tops the board at 0.950); Claude Code is the agent harness Anthropic ships its Opus models
+    in.
   confidence: high
-  note: Claude Code pairs Anthropic's frontier Claude Opus models, which lead SWE-bench Verified at 88.6%
-    for Opus 4.8 and 87.6% for Opus 4.7, with a mature agent harness spanning sub-agents, hooks, MCP tool
-    support and scheduled runs. Independent rankings place it first among coding agents on SWE-bench Verified
-    and code-quality metrics, one of the very few products defining this category's frontier.
-  last_verified: '2026-08-13'
+  note: Claude Code pairs Anthropic's frontier Claude models, which hold the top places on SWE-bench Verified,
+    with a mature agent harness spanning sub-agents, hooks, MCP tool support and scheduled runs. Few coding
+    agents combine that model quality with that breadth of tooling, which puts it among the products that
+    define this category's frontier.
+  last_verified: '2026-09-29'
   sources:
   - url: https://llm-stats.com/benchmarks/swe-bench-verified
-    shows: 'Claude Opus 4.8 88.6% / 4.7 87.6% lead SWE-bench Verified. Not re-fetchable - the host now
-      answers a bot-check interstitial instead of the leaderboard.'
-    accessed: '2026-06-04'
+    shows: The SWE-Bench Verified leaderboard page states "Currently, Claude Fable 5 by Anthropic leads"
+      at 0.950, and lists Claude Opus 4.8 at 0.886 and Opus 4.7 at 0.876.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 813b5a731d2aed06d68c9d2080ea268f7b844c9832f864aa04215e687b6f5824
   - url: https://www.anthropic.com/news/claude-opus-4-8
-    shows: 'Anthropic primary announcement of Claude Opus 4.8, the headline coding model behind Claude
-      Code, stating improvements across benchmarks and a dynamic-workflows feature in Claude Code. The
-      benchmark table itself is not in the fetched HTML.'
-    accessed: '2026-08-13'
+    shows: Anthropic announces Claude Opus 4.8 and says it "allows Claude to take on even bigger tasks in
+      Claude Code" through dynamic workflows running parallel subagents.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 706d4252cc67e84ce245aaa45820e79f2740491824a24c03c412e04a5c0735c9
-  - url: https://www.marktechpost.com/2026/05/15/best-ai-agents-for-software-development-ranked-a-benchmark-driven-look-at-the-current-field/
-    shows: 'ranks Claude Code first of the field - SWE-bench Verified 87.6% on Opus 4.7 and 80.8% on Opus
-      4.6, Terminal-Bench 2.0 69.4%, and describes it as the leader on code-quality metrics'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 23bf3425bd6189ef3102febb9729c3b872e4ed016743245201473178cf140f44
+    content_sha256: b50a76be551ca5bbc5532eea53c3cfb0fdf368fa271d7126f12982580a28587f

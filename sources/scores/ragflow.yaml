@@ -20,7 +20,7 @@ openness:
   confidence: high
   note: Apache-2.0 self-hostable engine; cloud is the commercial tier.
   raw: license:Apache-2.0(OSI);source:public;self-host:primary(Docker);commercial:cloud/enterprise(separate);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/infiniflow/ragflow
     shows: Apache-2.0 license, full engine source published for Docker Compose self-hosting, 87.9k stars
@@ -33,27 +33,52 @@ openness:
     - source
     - core-gated
     - self-host
+  - url: https://raw.githubusercontent.com/infiniflow/ragflow/main/LICENSE
+    shows: 'The LICENSE file is the unmodified Apache License text, with no additional restriction or commercial-use
+      clause: "Apache License" and "Version 2.0, January 2004".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/infiniflow/ragflow/main/README.md
+    shows: 'The README documents running the full service from a public source checkout: "Launch Service
+      from Source for Development" and "Clone the source code and install Python dependencies".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e321e3b65b92b34121e96d147fe9145e1e428ec1453e3cbbf4426fab09d701ad
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/infiniflow/ragflow/main/README.md
+    shows: 'The README badge names the license, "License-Apache--2.0", and the hosted service is offered
+      separately: "Try our cloud service at". Searched the body for paid, pricing, subscription, license
+      key, enterprise edition and ee/: none; its edition table lists Docker image variants only.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e321e3b65b92b34121e96d147fe9145e1e428ec1453e3cbbf4426fab09d701ad
+    establishes:
+    - core-gated
 adoption:
   level: 3
   signal_type: usage_volume
   confidence: medium
-  note: RAGFlow ships as a Docker Compose stack, and ragflow-sdk on PyPI is only an API client rather than
-    the server, so it counts as a minor component of distribution. This reading combines Docker Hub pulls
-    since 2023-12-12 with ragflow-sdk downloads, but the Docker figure is a lifetime average rather than
-    a current monthly rate, so this level is a floor rather than a ceiling.
+  note: RAGFlow ships as a Docker Compose stack, so Docker Hub image pulls are the main distribution signal,
+    and the ragflow-sdk package on PyPI is only an API client rather than the server. The pull count is
+    a cumulative total since the image was published, so it understates the current pace of use.
   reach: 100K-1M
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://hub.docker.com/v2/repositories/infiniflow/ragflow/
-    shows: 3,590,166 cumulative pulls of infiniflow/ragflow
-    accessed: '2026-08-13'
+    shows: Docker Hub lists a cumulative pull count for the image, "pull_count" ":3843434," with the description
+      "Try our cloud service at" and "Retrieval-Augmented Generation".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 095ef0ed513ee365aae263321c77599f65537b6f30a29eea5e584be1231b937b
+    content_sha256: a2cea63a0ba1e063e27767a37a3865bdf30d6a6f81d2f7ae3004b168eacd4d27
   - url: https://pypistats.org/api/packages/ragflow-sdk/recent
-    shows: 17,046 downloads in the trailing 30 days for ragflow-sdk
-    accessed: '2026-08-13'
+    shows: '{"data":{"last_day":750,"last_month":19603,"last_week":3553},"package":"ragflow-sdk","type":"recent_downloads"}'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 465245cf97ae8442f7e3a072ca91a6df1c2d135be904b006807329b1381eaec5
+    content_sha256: 41af3956bbf3606178b3271e3396cb0bb2624dbb00e1c0af520618557a094665
 capability:
   score: 4
   basis: feature_matrix
@@ -62,12 +87,19 @@ capability:
   confidence: medium
   note: Opinionated, document-centric RAG application; deeper parsing than general frameworks, narrower
     scope.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/infiniflow/ragflow
-    shows: 'README key features - deep document understanding based knowledge extraction from unstructured
+    shows: README key features - deep document understanding based knowledge extraction from unstructured
       data with complicated formats, template chunking, grounded citations, hybrid retrieval; no benchmark
-      figure'
+      figure
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 422092c80c54b42068521ade4409e5dab0fabe4995ef0062bd7ebe3c47703f0b
+  - url: https://raw.githubusercontent.com/infiniflow/ragflow/main/README.md
+    shows: 'The README key features list document understanding, template chunking, grounded citations,
+      fused re-ranking recall and agent capabilities, with no benchmark figure: "Template-based chunking"
+      and "Grounded citations with reduced hallucinations".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e321e3b65b92b34121e96d147fe9145e1e428ec1453e3cbbf4426fab09d701ad

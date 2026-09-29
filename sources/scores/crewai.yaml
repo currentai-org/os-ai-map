@@ -25,7 +25,7 @@ openness:
     full 29,439-entry tree carries one MIT LICENSE and no ee/ or separately licensed directory; the enterprise-named
     paths are docs images and an MIT CLI client that points at an AMP URL, and the paid product is the AMP
     platform sold beside the framework)
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/crewAIInc/crewAI/blob/main/LICENSE
     shows: The LICENSE file is the verbatim MIT License text, 'Copyright (c) 2025 crewAI, Inc.', granting
@@ -40,13 +40,56 @@ openness:
     accessed: '2026-08-15'
     http_status: 200
     content_sha256: e7c36b53ae08d9fde46868e43805e1017c38c1d4ee829759149424855880bd90
-  - url: https://crewai.com/open-source
-    shows: The vendor's own open-source page, positioning the MIT framework alongside the CrewAI AMP platform
-      sold beside it. It names no framework capability withheld from the published source, which is what
-      the ungated reading is based on.
-    accessed: '2026-08-15'
+  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/LICENSE
+    shows: 'The root LICENSE file is the MIT License text: "Copyright (c) 2025 crewAI, Inc." and permission
+      "to use, copy, modify, merge, publish".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 52c338024b064380955ad504fce2b1c51e5a1f486fc973b155f9a3b0fc883f92
+    content_sha256: 28868731966f4aa37f02879839aabc797137e27ddde4e274ef9cf965f9a71774
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/README.md
+    shows: The README states "CrewAI is released under the [MIT License](https://github.com/crewAIInc/crewAI/blob/main/LICENSE)."
+      in its License section.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b0f39843f93676b12883d5821a34555e2146e62bd2c42dc12733fc41222de013
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/lib/crewai/pyproject.toml
+    shows: 'The framework package manifest is served from the public repository: "Cutting-edge framework
+      for orchestrating role-playing, autonomous AI agents", depending on "crewai-core==1.15.23" and "crewai-cli==1.15.23".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ddaa494f4e7ce371ccb558a97e737069d8705765b970cb539f70ec4ec9ac9629
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/lib/cli/src/crewai_cli/enterprise/main.py
+    shows: 'The enterprise-named module is a CLI client: "class EnterpriseConfigureCommand(BaseCommand)"
+      fetches OAuth settings from an "enterprise_url" and unlocks no framework code; searched for a license-key
+      check: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1aa0884e17e7743c1bd59a209a1c0bb7bf8b731054544b3de0f68e263fbaada9
+    establishes:
+    - core-gated
+  - url: https://www.crewai.com/pricing
+    shows: 'Pricing lists Basic (Free) and Enterprise (Custom); Enterprise adds "Governance from the start:
+      SSO, RBAC, workload identity, PII redaction, and policies" and "Deploy on CrewAI cloud, your own VPC,
+      or your own infrastructure", naming no framework capability withheld.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a4d807ad359d1a26849fa3c1332c8741d908227afe0249d29cfd554ebe4c71a6
+    establishes:
+    - core-gated
+  - url: https://crewai.com/open-source
+    shows: The vendor open-source page headed "Why CrewAI Open Source?" presents the framework with "100s
+      of open-source tools out of the box".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fbdbcd4c2f3f3be03cb730a527ad1868afe053b9973461a4b9d3e2b6b15f265a
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/crewAIInc/crewAI/git/trees/main?recursive=1
     shows: Full untruncated recursive tree, 29,439 entries. The only license path is the root LICENSE. The
       enterprise-named paths are docs/images/enterprise/*.png, lib/cli/src/crewai_cli/enterprise/ and its
@@ -57,34 +100,6 @@ openness:
     establishes:
     - source
     - core-gated
-  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/lib/cli/src/crewai_cli/enterprise/main.py
-    shows: The enterprise-named module is a 125-line CLI client, MIT like the rest of the repo. EnterpriseConfigureCommand.configure(enterprise_url)
-      does an HTTP GET of {enterprise_url}/auth/parameters and writes the returned OAuth2 settings locally.
-      It unlocks nothing and checks no license key.
-    accessed: '2026-08-12'
-    http_status: 200
-    content_sha256: 1aa0884e17e7743c1bd59a209a1c0bb7bf8b731054544b3de0f68e263fbaada9
-    establishes:
-    - core-gated
-  - url: https://www.crewai.com/pricing
-    shows: Tiers are Basic (free) and Enterprise (custom). What Enterprise adds is platform and governance
-      - SSO, RBAC, workload identity, PII redaction, policies, deployment to "CrewAI cloud, your own VPC,
-      or your own infrastructure", onboarding and support - against a Basic tier described by visual editor,
-      AI copilot, GitHub integration and 50 monthly executions. The page describes a "unified build and
-      runtime platform" and nowhere claims a capability missing from the open-source Python framework.
-    accessed: '2026-08-12'
-    http_status: 200
-    establishes:
-    - core-gated
-    content_sha256: b12952e2b24c6ef1f1edd337c5f6734b8550c24818a9607b0e235c248cdd5946
-  - url: https://api.github.com/repos/crewAIInc/crewAI
-    shows: 'Repo metadata: language Python, license spdx_id MIT, 56,955 stars, default branch main.'
-    accessed: '2026-08-12'
-    http_status: 200
-    content_sha256: 113f333e1c053035a0d80ff08353001838a2bde9d83c1b53c46b3e5f9d82bbaf
-    establishes:
-    - license
-    - source
 adoption:
   level: 5
   reach: '>10M'
@@ -128,7 +143,7 @@ capability:
     library.
   relative_to: openhands
   relation: two_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/crewaiinc/crewai
     shows: role-based crews and flows orchestration, MIT, 57.0k stars and 8.1k forks; no benchmark figure
@@ -136,8 +151,15 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2535bc7ee27f2bc320060b916a2ce4d605881887d8d8a818bf6499021f3888b4
-  - url: https://docs.crewai.com/en/concepts/agents
-    shows: the agent abstraction documented for the framework
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/README.md
+    shows: 'The README describes "Crews**: Optimize for autonomy and collaborative intelligence with role-based
+      AI agents." plus event-driven Flows; no benchmark score is published there.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f07582cd8cfc84af600859799013ca172d3a4ece72936fc21e1736f25728c216
+    content_sha256: b0f39843f93676b12883d5821a34555e2146e62bd2c42dc12733fc41222de013
+  - url: https://docs.crewai.com/en/concepts/agents
+    shows: The agents concept page is titled "Agents - CrewAI" and gives a "Detailed guide on creating and
+      managing agents within the CrewAI framework."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d9ae45ef8b9f786b5537c2d060a69e33ec112ce00e6559ee09bec4342495dc56

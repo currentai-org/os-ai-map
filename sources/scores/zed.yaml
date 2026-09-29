@@ -6,7 +6,7 @@ openness:
     license:
     - name: GPL-3.0-or-later
       detail: editor
-    - name: GPL-3.0
+    - name: GPL-3.0-or-later
       detail: collab-server, crates/collab/LICENSE-GPL
     - name: Apache-2.0
       detail: GPUI
@@ -25,14 +25,57 @@ openness:
     Apache-2.0, with no separate enterprise directory anywhere in the repository. Personal use is free and
     unlimited with external API keys; the paid Pro and Business tiers sell Zed-hosted model inference and
     an admin dashboard, not any part of the editor.
-  last_verified: '2026-08-14'
-  raw: license:GPL-3.0-or-later(editor)+GPL-3.0(collab-server, crates/collab/LICENSE-GPL)+Apache-2.0(GPUI);source:public;commercial:Zed-Pro/Business(hosted
+  last_verified: '2026-09-29'
+  raw: license:GPL-3.0-or-later(editor)+GPL-3.0-or-later(collab-server, crates/collab/LICENSE-GPL)+Apache-2.0(GPUI);source:public;commercial:Zed-Pro/Business(hosted
     AI);core-gated:ungated(the whole editor and the collab server are in the repo under GPL/Apache; Pro
     and Business sell Zed-hosted model inference and a hosted admin dashboard)
   sources:
   - url: https://github.com/zed-industries/zed
     shows: Rust, ~85k stars, GPL/AGPL/Apache licensing
     accessed: '2026-06-18'
+  - url: https://raw.githubusercontent.com/zed-industries/zed/main/README.md
+    shows: The README says "Zed source code is licensed primarily under GPL-3.0-or-later, with Apache-2.0
+      components where marked" and links "Building Zed for Linux" build instructions for the public source
+      tree.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0a1b8417d31d53dfd6b4f1c5cc1a1a6f7ae6d3ac044bdb1938bd49cbd09d8198
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/zed-industries/zed/main/LICENSE-GPL
+    shows: Root LICENSE-GPL carries the full GPL-3.0 text headed "GNU GENERAL PUBLIC LICENSE".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0aa0322ea494da441088e4d9144c6720bf99d9e2e1eefcd29d1f58b19b5c4246
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zed-industries/zed/main/LICENSE-APACHE
+    shows: 'Root LICENSE-APACHE is the Apache License text, starting "Licensed under the Apache License,
+      Version 2.0 (the "License")". Searched for AGPL in the README and GPL text: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 752daf2fb234ca4a1fa372c073fe127f44b7b90fd2529ae44273a64f9d53da7a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zed-industries/zed/main/crates/collab/Cargo.toml
+    shows: The collab server crate manifest in the public repo lists "GPL-3.0-or-later" as its license,
+      beside "edition.workspace = true", so the server is GPL too.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8fa314bf1cee4244645be5ac3385158ecd2768148bc9aa651cbc71d584d430b4
+    establishes:
+    - license
+    - source
+  - url: https://zed.dev/pricing
+    shows: The pricing FAQ says "Since Zed is open source, these controls govern Zed's hosted services specifically"
+      and the free tier gives "Unlimited use with your API keys or external agents like Claude Agent, Codex
+      CLI, and more".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 24eb8da30ab7c631674fe54556128becb6a3f591f4c3d9b0d415dba316ac1fa1
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/zed-industries/zed/git/trees/main?recursive=1
     shows: Full untruncated recursive tree, 5,130 entries. Root LICENSE-GPL and LICENSE-APACHE; every crate
       under crates/ carries one or the other, including crates/collab/LICENSE-GPL (the collaboration server)
@@ -44,67 +87,11 @@ openness:
     establishes:
     - source
     - core-gated
-  - url: https://raw.githubusercontent.com/zed-industries/zed/main/LICENSE-GPL
-    shows: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - the full GPL-3.0 text, 34,357 bytes.
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 0aa0322ea494da441088e4d9144c6720bf99d9e2e1eefcd29d1f58b19b5c4246
-    establishes:
-    - license
-  - url: https://zed.dev/pricing
-    shows: 'Personal $0 forever: ''2,000 accepted edit predictions'', ''Unlimited use with your API keys
-      or external agents like Claude Agent, Codex CLI''. Pro $10/mo: unlimited edit predictions, $5 of tokens,
-      Zed-hosted models. Business $30/seat: org-wide AI model policies, data governance controls, RBAC.
-      FAQ: ''Since Zed is open source, these controls govern Zed''s hosted services specifically'', admin
-      surface at dashboard.zed.dev, and ''Can I use Zed without the AI features? Yes!'''
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 796fbd20feb7c00a566b339283d030bd20a732b9ff87cf014388901240808e47
-    establishes:
-    - core-gated
-  - url: https://api.github.com/repos/zed-industries/zed/git/trees/main?recursive=1
-    shows: 'Fresh untruncated recursive tree, 5,137 entries, `truncated: false`. Root LICENSE-APACHE and
-      LICENSE-GPL; 215 paths ending LICENSE-GPL and 47 ending LICENSE-APACHE; crates/collab/LICENSE-GPL
-      present. ZERO paths containing AGPL anywhere in the tree, which is what retires the recorded
-      AGPL-3.0 part. No ee/, enterprise/, commercial/ or proprietary/ top-level path.'
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: b4b1bae1f5cc440be4f4504e083189189e72cec5a7a244bdcfbdfdb861ebe686
-    establishes:
-    - source
-    - core-gated
-  - url: https://api.github.com/repos/zed-industries/zed/contents/crates/collab
-    shows: 'Direct listing of the collaboration server crate - .env.toml, Cargo.toml, LICENSE-GPL,
-      README.md, k8s, migrations.sqlite, migrations, seed.default.json, seed, src, tests. The license file
-      beside the server''s own source is LICENSE-GPL, not an AGPL file.'
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: d1aaad2e00be0ae0922250300da6b26fea77556310d50a208303a977a2ac7698
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/zed-industries/zed/main/LICENSE-GPL
-    shows: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - the full GPL-3.0 text, 34,357 bytes.
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 0aa0322ea494da441088e4d9144c6720bf99d9e2e1eefcd29d1f58b19b5c4246
-    establishes:
-    - license
-  - url: https://zed.dev/pricing
-    shows: 'Personal $0 forever with ''Unlimited use with your API keys or external agents''; Pro and
-      Business sell Zed-hosted models and an org admin surface; ''Since Zed is open source, these
-      controls govern Zed''s hosted services specifically''.'
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 7085628172e55cfa8c6b771d3fa4aff936ae01d9f49553cbc6b455c4c131da31
-    establishes:
-    - core-gated
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
   note: A widely-used released editor with paid Pro/Business tiers, but no public install count.
-  last_verified: '2026-08-13'
   sources:
   - url: https://zed.dev/pricing
     shows: Personal $0 forever, Pro $10 per month, Business per seat; released product with direct download
@@ -119,16 +106,18 @@ capability:
     inline assistant; multi-model BYO-key + hosted; MCP; external agents via ACP; multiplayer; native Rust perf
   confidence: high
   note: Full AI-editor feature set on par with Cursor/Windsurf, model-agnostic.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://zed.dev
-    shows: agentic editing, Zeta2 edit prediction, ACP and MCP support, multi-model
-    accessed: '2026-08-13'
+    shows: The homepage says "Zed natively supports agentic editing, enabling fluent collaboration between
+      humans and AI", "Run multiple threads of your favorite agents across several projects so you never
+      leave your flow", and "Powered by Zeta2, our open-weight language model".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 06b014cee60d72b411e248741a4bd9166857912f1e74642b822b2784ea359dcd
-  - url: https://zed.dev/pricing
-    shows: 'free tier includes "unlimited use with your API keys or external agents like Claude Agent,
-      Codex CLI, and more"; paid tiers sell Zed-hosted models'
-    accessed: '2026-08-13'
+    content_sha256: c1da0692ca7f3150aeba7e23610a94a61d6bd877595564528f1141edcfa5f9ce
+  - url: https://zed.dev
+    shows: The homepage says "Bring agents like Claude Agent, Codex, or OpenCode via ACP" and "Connect MCP
+      servers for extending the agent", and lists an "Inline Assistant".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7085628172e55cfa8c6b771d3fa4aff936ae01d9f49553cbc6b455c4c131da31
+    content_sha256: c1da0692ca7f3150aeba7e23610a94a61d6bd877595564528f1141edcfa5f9ce

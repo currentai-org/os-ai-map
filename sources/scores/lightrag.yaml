@@ -16,7 +16,7 @@ openness:
   note: 'Fully MIT: the repo publishes the full retrieval stack including the API server and web UI, with
     no hosted tier, enterprise directory or license key, so the core is ungated as well as OSI-licensed.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/HKUDS/LightRAG
     shows: MIT license, full public source including the API server and web UI, 38.8k stars and 5.5k forks;
@@ -26,6 +26,23 @@ openness:
     content_sha256: 1cbe377f14534aec72c3b0c2f6b7c1c913c2d88f8b8618fa617dc16cbbd0376f
     establishes:
     - license
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/HKUDS/LightRAG/main/LICENSE
+    shows: 'The LICENSE file is the standard MIT text: "MIT License" and "Permission is hereby granted,
+      free of charge, to any person obtaining a copy" with no added restrictions.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0c16924564059e493c86854574660a47ed1dcc2a476ba7b5f949d3f2f73a1984
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/HKUDS/LightRAG/main/README.md
+    shows: 'The README documents the API server and admin console with "document management, knowledge-graph
+      exploration, and query debugging"; searched the body for enterprise, license key and paid: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7b394a331a17be0fe27b14800984c0abba94dba6f08e4f14f89a4e762cd350a5
+    establishes:
     - source
     - core-gated
 adoption:
@@ -51,13 +68,15 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: dual-level (local+global) graph retrieval; KG construction; incremental updates; naive/local/global/hybrid
-    query; pluggable storage; multimodal parsing; API + web UI
+  value: dual-level (local+global) graph retrieval; KG construction; incremental updates and selective deletion;
+    naive/local/global/hybrid/mix query; pluggable storage; multimodal parsing; API + web UI
   confidence: medium
-  note: Deeper and more efficient than GraphRAG for graph-RAG; narrower than general orchestrators.
+  note: LightRAG builds a knowledge graph with dual-level retrieval, supports incremental updates and several
+    query modes, and ships an API server and web UI. Its feature set is comparable to GraphRAG, while general-purpose
+    orchestrators cover far more than graph RAG.
   relative_to: graphrag
   relation: at
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/HKUDS/LightRAG
     shows: dual-level retrieval, knowledge-graph construction, incremental updates, naive/local/global/hybrid
@@ -65,3 +84,9 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1cbe377f14534aec72c3b0c2f6b7c1c913c2d88f8b8618fa617dc16cbbd0376f
+  - url: https://raw.githubusercontent.com/HKUDS/LightRAG/main/README.md
+    shows: The README describes "dual-level retrieval mechanism" and lists "Incremental Updates & Selective
+      Deletion", "Multiple Storage Backends", and query modes "hybrid", "naive" and "mix".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7b394a331a17be0fe27b14800984c0abba94dba6f08e4f14f89a4e762cd350a5

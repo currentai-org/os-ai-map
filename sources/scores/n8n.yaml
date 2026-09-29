@@ -15,26 +15,37 @@ openness:
   confidence: high
   note: 'Source-available fair-code, not OSI open source: the license restricts commercial/hosted use.'
   raw: 'license:Sustainable-Use-License(fair-code,non-OSI: internal-use-only,no-resale/SaaS)+n8n-Enterprise-License;source:public;commercial:n8n-Cloud/Enterprise'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://docs.n8n.io/sustainable-use-license/
-    shows: 'n8n uses the Sustainable Use License and the n8n Enterprise License, both based on the fair-code
-      model; proprietary licenses available for enterprise customers'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 2080cf2a55a89c1a71cf6cede6d1cc77c40482445ccbbf2815fe663a1b8c7ea1
-    establishes:
-    - license
   - url: https://github.com/n8n-io/n8n
-    shows: 'README - "n8n is fair-code distributed under the Sustainable Use License and n8n Enterprise
-      License", with "Source Available - always visible source code" and self-hosting; LICENSE.md and
-      LICENSE_EE.md both at the repo root; 200.5k stars, 60.1k forks'
+    shows: README - "n8n is fair-code distributed under the Sustainable Use License and n8n Enterprise License",
+      with "Source Available - always visible source code" and self-hosting; LICENSE.md and LICENSE_EE.md
+      both at the repo root; 200.5k stars, 60.1k forks
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 401fa8ebb2138b1d37bac9d107d02abc95c48a41333cf64231cd59ab1ff29e0a
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/n8n-io/n8n/master/LICENSE.md
+    shows: The LICENSE.md says most code is under the Sustainable Use License, permitting use "only for
+      your own internal business purposes or for non-commercial or personal use", while files with ".ee."
+      in their name are NOT licensed under it and need an Enterprise License.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d2f621f59aa4c10eab79b6333e59d9d3d5b53307dcfd16dbd75e40e679e84965
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/n8n-io/n8n/master/README.md
+    shows: The README states "n8n is [fair-code](https://faircode.io) distributed under the [Sustainable
+      Use License]" and lists "Source Available" with "Always visible source code", plus "Self-Hostable"
+      deployment.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 75c64f04b8b1e7d435496f6ebd2dbf3ea5ff7d3ff3d944d7fcf98cf1a7df2242
+    establishes:
+    - source
+    - license
 adoption:
   level: 4
   signal_type: usage_volume
@@ -44,29 +55,29 @@ adoption:
     distribution channels. The cumulative Docker figure understates the current pace, so the level is a
     floor rather than a ceiling.
   reach: 1M-10M
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://hub.docker.com/v2/repositories/n8nio/n8n/
-    shows: 246,014,721 cumulative pulls of n8nio/n8n
-    accessed: '2026-08-12'
+    shows: The Docker Hub API reports for n8nio/n8n "pull_count":265295062,"last_updated":"2026-09-29T00:54:51.665446Z".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 443317d706fae67fc827690787da7558d2d7538e95937279b26f6aecf727eb43
+    content_sha256: be55d5a749393f8c0c478209b07676dd44a10d55c5f2c582521c408b2afb20a6
   - url: https://api.npmjs.org/downloads/point/last-month/n8n
-    shows: 393,738 downloads in the trailing 30 days
-    accessed: '2026-08-12'
+    shows: '"downloads":399795,"start":"2026-08-29","end":"2026-09-27","package":"n8n"'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4d8af9b72a5edf2b987040b3944f4741405d95144b1e9e7bfc57d4e142e9b88e
+    content_sha256: 73b67497cede1eac380b0491124aae0e9d56df9f4198307d5ed197b706d6c17e
 capability:
   score: 4
   basis: feature_matrix
-  value: visual node-based workflow builder; 400+ integrations; native AI/LLM + agent nodes (LangChain); custom
-    JS/Python code; webhooks/triggers/scheduling; self-host or cloud; RBAC (gated)
+  value: visual node-based workflow builder; 1500+ integrations; native AI/LLM + agent nodes (LangChain);
+    custom JS/Python code; webhooks/triggers/scheduling; self-host or cloud; RBAC (gated)
   confidence: medium
   note: Broad automation/iPaaS scope with AI as one native layer; wider but shallower on pure agent depth
     than the dedicated frameworks. At dify and langflow, the other visual builders on this map.
   relative_to: dify
   relation: at
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/n8n-io/n8n
     shows: '''The Platform for AI Agents and Workflow Automation'' - visual canvas with custom code, integration
@@ -74,3 +85,9 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 401fa8ebb2138b1d37bac9d107d02abc95c48a41333cf64231cd59ab1ff29e0a
+  - url: https://raw.githubusercontent.com/n8n-io/n8n/master/README.md
+    shows: The README titles n8n "The Platform for AI Agents and Workflow Automation" and lists "1500+ integrations",
+      "Combine visual building with JavaScript, Python, and npm packages" and self-hosting or cloud.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 75c64f04b8b1e7d435496f6ebd2dbf3ea5ff7d3ff3d944d7fcf98cf1a7df2242

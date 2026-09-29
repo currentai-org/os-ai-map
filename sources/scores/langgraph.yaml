@@ -16,52 +16,41 @@ openness:
       commercial:
         value: LangGraph-Platform/LangSmith
   confidence: high
-  note: 'LangGraph''s core is MIT-licensed and self-hostable, but the Agent Server runtime that serves it
-    is not: it ships as the closed-source, Elastic-2.0-licensed langgraph-api package, and self-hosting
-    it needs a LangGraph Cloud license key that phones home for verification. That withheld runtime keeps
-    LangGraph at open core rather than fully open source.'
-  last_verified: '2026-08-11'
+  note: LangGraph's core is MIT-licensed and its source is public, but the Agent Server runtime that serves
+    it ships as the separate langgraph-api package under the source-available Elastic License 2.0, and self-hosting
+    it needs a license key verified over the network. That gated runtime keeps LangGraph short of fully
+    open source.
+  last_verified: '2026-09-29'
   raw: license:MIT(core);commercial:LangGraph-Platform/LangSmith;source:public;core-gated:gated(the Agent
     Server runtime ships as the closed Elastic-2.0 langgraph-api package and self-hosting it needs LANGGRAPH_CLOUD_LICENSE_KEY)
   sources:
   - url: https://github.com/langchain-ai/langgraph
     shows: MIT, ~35k stars, low-level agent orchestration
     accessed: '2026-06-17'
-  - url: https://api.github.com/repos/langchain-ai/langgraph/git/trees/main?recursive=1
-    shows: Full untruncated recursive tree, 830 entries. Nine LICENSE files, all per-package copies under
-      libs/ (checkpoint, checkpoint-postgres, checkpoint-sqlite, cli, langgraph, prebuilt, sdk-py). No enterprise/,
-      ee/, commercial/ or proprietary/ path. No langgraph-api package in the repo.
-    accessed: '2026-08-11'
+  - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/LICENSE
+    shows: The repository LICENSE file is the MIT License, granting "Permission is hereby granted, free
+      of charge" for the LangChain, Inc. code, published openly on the main branch.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a29fd5a048f53cd110621fed9104115a05a53794ed22efd2e9c8b3cd87feb58a
-    establishes:
-    - source
-    - core-gated
-  - url: https://api.github.com/repos/langchain-ai/langgraph
-    shows: 'Repo metadata: language Python, license spdx_id MIT, size 525,434 KB, 39,468 stars, default
-      branch main.'
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 3797d83a83dcae7eb9a908437b557a3e92f41f35ee27468bac41b26b0932b486
+    content_sha256: d9bb52f2e3540d60ff50d8f0f5b6ba649b7fd346948c4c3d086c8afb120763c7
     establishes:
     - license
     - source
   - url: https://pypi.org/pypi/langgraph-api/json
-    shows: info.license is 'Elastic-2.0' for langgraph-api 0.12.3, the Agent Server runtime. For comparison
-      https://pypi.org/pypi/langgraph/json reports license_expression 'MIT' for langgraph 1.2.11.
-    accessed: '2026-08-11'
+    shows: The PyPI page of the langgraph-api Agent Server runtime package states "Elastic License 2.0 -
+      see the" LICENSE file, a source-available non-OSI license.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9b0cf909b75e5ac85e25166ec0d2fea489a06793fd1d85105a36117fc7675db7
+    content_sha256: de7c11adb399940dd8e0d791a74ad472791791994247123b6e4b16f5ce397124
     establishes:
     - core-gated
   - url: https://docs.langchain.com/langsmith/deploy-standalone-server
-    shows: 'Self-hosted standalone Agent Server environment variables include ''LANGGRAPH_CLOUD_LICENSE_KEY:
-      LangSmith license key. This will be used to authenticate ONCE at server start up'' and ''Egress to
-      https://beacon.langchain.com from your network. This is required for license verification and usage
-      reporting if not running in air-gapped mode.'''
-    accessed: '2026-08-11'
+    shows: 'The self-hosting docs list a license key for the standalone server: "LangSmith license key.
+      This will be used to authenticate ONCE at server start up" and "required for license verification
+      and usage reporting if not running in air-gapped mode".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d3b1665df2fa581b34a27961ce638a89da8df6eeb1783d01c7ebb928eb25a9c0
+    content_sha256: bbaf706f531acf928b9ddc5a64ff324408fcc39041059a9d6682b1b4d3b95419
     establishes:
     - core-gated
 adoption:
@@ -92,12 +81,30 @@ capability:
     subgraphs
   confidence: high
   note: Deepest durable-execution control among the orchestration peers.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/langchain-ai/langgraph
-    shows: 'README - durable execution resuming from where a run left off, human-in-the-loop state inspection
-      and modification, streaming, memory and persistence, branching and subgraphs; 39.6k stars, 6.7k
-      forks'
+    shows: README - durable execution resuming from where a run left off, human-in-the-loop state inspection
+      and modification, streaming, memory and persistence, branching and subgraphs; 39.6k stars, 6.7k forks
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4847084ec4e801eb4c1e92f49a88b9b2a4d0452f320d4e8ec3b44c9f0f7c67cb
+  - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+    shows: 'README describes durable execution and oversight: "automatically resuming from exactly where
+      they left off" and "inspecting and modifying agent state at any point during execution", plus "Comprehensive
+      memory".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  - url: https://docs.langchain.com/oss/python/langgraph/streaming
+    shows: The LangGraph docs carry a dedicated page titled "Streaming - Docs by LangChain" under the Capabilities
+      section.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5445551b7af75481fa53e52058a56de845b1fc5b8dfd2a0427bd56f925d02a85
+  - url: https://docs.langchain.com/oss/python/langgraph/use-subgraphs
+    shows: The LangGraph docs carry a dedicated subgraphs guide with the header link "/oss/python/langgraph/use-subgraphs"
+      and the nav item titled "Subgraphs".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6ae572843ab9cb49131b08162d4bbe9055f34797f336bf8115d43514fb130cb6
