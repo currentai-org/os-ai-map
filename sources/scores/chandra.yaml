@@ -101,28 +101,34 @@ capability:
     and mathematical notation; served as open weights and as a hosted API'
   confidence: medium
   relative_to: docling
-  relation: at
+  relation: one_below
   comparison:
-    last_attested: '2026-09-16'
+    last_attested: '2026-09-29'
     sources:
-    - url: https://github.com/docling-project/docling
-      shows: Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and
-        lossless JSON with layout and reading order preserved, which is the amount of a document surviving
-        that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images
-        - is on the same page and is recorded here for completeness; it is NOT the property the comparison
-        turns on, because the recipe excludes input breadth by name.
-      accessed: '2026-09-16'
+    - url: https://docling-project.github.io/docling/_generated/examples/extraction/
+      shows: The Information extraction example states "Docling provides the capability of extracting information,
+        i.e. structured data, from unstructured documents." and that the user supplies a template "either
+        as a dictionary or as a Pydantic model, and Docling will return" the extracted data; its "Using
+        a dict template" example returns a bill number and a total of "3949.75" from an invoice.
+      accessed: '2026-09-29'
       http_status: 200
-      content_sha256: 69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5
-  note: Chandra recovers reading order, tables, forms, handwriting and mathematical notation into Markdown
-    and JSON, matching Docling's structure-preserving output; Docling's wider range of accepted input formats
-    is a separate measure from how much of one document survives conversion. Chandra currently leads the
-    olmOCR-Bench leaderboard, ahead of olmOCR itself.
-  last_verified: '2026-09-16'
+      content_sha256: 2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db
+  note: Chandra recovers reading order, tables, forms, handwriting and mathematical notation into Markdown,
+    HTML and JSON, one band below Docling, whose extractor also returns the fields a user defines in a template.
+    It tops the olmOCR-Bench leaderboard, ahead of olmOCR itself.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/datalab-to/chandra
-    shows: Repository page and README describing PDF and image conversion to Markdown, HTML and JSON with layout,
-      tables, forms, handwriting and mathematical notation.
+    shows: Repository page and README describing PDF and image conversion to Markdown, HTML and JSON with
+      layout, tables, forms, handwriting and mathematical notation.
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: 354fcec9a84da801ccdd7c6e70f100ed24a14b5ac0691e2d410b8ec5a7dc4446
+  - url: https://raw.githubusercontent.com/datalab-to/chandra/master/README.md
+    shows: The raw README describes "a state of the art OCR model that converts images and PDFs into structured
+      HTML/Markdown/JSON while preserving layout information" and lists "Tops external olmocr benchmark
+      and significant improvement in internal multilingual benchmarks", "Reconstructs forms accurately,
+      including checkboxes" and "Strong performance with tables, math, and complex layouts".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: edf170f70a20673559d6551e621bb5d5969a0b439d82125eca5ad6bec599b9fa

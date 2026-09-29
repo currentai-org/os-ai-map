@@ -81,7 +81,7 @@ adoption:
     http_status: 200
     content_sha256: c81ce393cb034f9bc8db666fdff640be75b337519a7dee035dee389236c80bc9
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
   value: parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/ODF/Apple Pages/WAV/MP3/WebVTT/email/images/LaTeX and video
     -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless JSON; layout + reading-order; table-structure recognition;
@@ -89,9 +89,10 @@ capability:
     XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server; template-driven field extraction (PDF/images)
   confidence: high
   note: Docling parses PDF, Office, HTML, EPUB, audio, video and image inputs into Markdown, HTML or lossless
-    JSON with layout, reading order and table structure preserved. Its extractor also returns fields a user
-    defines in a dictionary or Pydantic template, such as a bill number and total, though only from PDFs
-    and images.
+    JSON with layout, reading order and table structure preserved. Its extractor goes further, returning
+    the fields a user defines in a dictionary or Pydantic template, such as an invoice's bill number and
+    total, from PDFs and images.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/docling-project/docling/main/README.md
     shows: 'The raw README feature list: "Advanced PDF understanding incl. page layout, reading order, table
@@ -99,7 +100,7 @@ capability:
       "Extensive OCR support for scanned PDFs and images", "Audio support with Automatic Speech Recognition
       (ASR) models", "Parsing of video files (MP4, AVI, MOV, MKV, and WebM)", "Parsing of ODF (OpenDocument
       Format) files" and "Chart understanding (Barchart, Piechart, LinePlot)".'
-    accessed: '2026-09-28'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 4f55583e9c57442b635a2bdf0c718a9919752a73a18b710b0b5cb57ef23c0aed
   - url: https://docling-project.github.io/docling/_generated/examples/extraction/
@@ -110,6 +111,13 @@ capability:
     accessed: '2026-09-29'
     http_status: 200
     content_sha256: 2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db
+  - url: https://raw.githubusercontent.com/docling-project/docling/main/docling/document_extractor.py
+    shows: The package source defines the extractor as a "Standalone extractor class." whose public API
+      is "`extract(...) -> ExtractionResult`" and which imports "from docling.pipeline.extraction_vlm_pipeline
+      import ExtractionVlmPipeline".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8cafee5a5b667caf7b5002cf4527be97037255b2574a1e0f7e737271e97fdf5a
   - url: https://github.com/docling-project/docling
     shows: Feature list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, WAV, MP3, WebVTT, Box Notes, EML/MSG, images,
       LaTeX, DocLang and plain text input; "Advanced PDF understanding incl. page layout, reading order,
