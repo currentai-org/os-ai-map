@@ -14,17 +14,35 @@ openness:
   confidence: high
   note: Ungated; newly created subsets are Apache-2.0, incorporated public datasets keep their own licenses.
   raw: access:ungated;license:apache-2.0(new-subsets)+per-component;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceTB/smoltalk
-    shows: ungated, mixed licensing documented on card
-    accessed: '2026-08-13'
+    shows: Dataset page renders the card, including "This is a synthetic dataset designed for supervised
+      finetuning (SFT) of LLMs".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a406e598a0b07d4604d81da7c04f376eab3c3078a6ed9458dae6344a0d3df958
+    content_sha256: 658a17172b75ffef7a7ef7d25b0fe007d254f698c970717b9b4917343ef30a44
     establishes:
-    - availability
+    - documentation
+  - url: https://huggingface.co/datasets/HuggingFaceTB/smoltalk/raw/main/README.md
+    shows: Raw dataset card for SmolTalk states "All the new datasets (Smol-Magpie-Ultra, Smol-contraints,
+      Smol-rewrite, Smol-summarize) are licensed under" Apache 2.0 and "please refer to the original dataset
+      for the license" for the existing public datasets, and has a "Dataset composition" section.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b6ff197df18e272fe15361db889638f9679b8443f299034137b5234acd8d3487
+    establishes:
     - documentation
     - license
+  - url: https://huggingface.co/api/datasets/HuggingFaceTB/smoltalk
+    shows: Hub API record for HuggingFaceTB/smoltalk has the gated field set to false and private set to
+      false, and its description reads "This is a synthetic dataset designed for supervised finetuning (SFT)
+      of LLMs".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a9ecbfa7dabb8aec8b723c417369c41ac48265807bdb0b05177bbe73f4b6bddf
+    establishes:
+    - availability
 adoption:
   level: 3
   reach: 10K-100K
@@ -51,17 +69,25 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: Leads head-to-head SFT-mixture ablations (beats OpenHermes-2.5, UltraChat, MagPie-Pro) and is the
-    current default across SmolLM2/3 and Marin 8B Instruct.
-  last_verified: '2026-08-13'
+  note: In the SmolLM2 paper's comparison, fine-tuning on SmolTalk beats OpenHermes-2.5, UltraChat and MagPie-Pro,
+    and the mixture trains the SmolLM2 instruct models and is one of the supervised fine-tuning sets in
+    Marin 8B Instruct. Its successor SmolTalk2 carries SmolLM3's post-training.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/html/2502.02737v1
-    shows: 'SmolLM2 paper: SmolTalk surpasses OpenHermes-2.5, UltraChat, and MagPie-Pro'
-    accessed: '2026-08-13'
+    shows: SmolLM2 paper section 5.1 says "Our dataset outperforms MagPie-Pro on most benchmarks, and largely
+      surpasses OpenHermes2.5 and UltraChat" on IFEval and MT-Bench.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: be627c24bbc0d0c4084648798877bced224b189e12ca4c03a2e25e277986fbbb
+    content_sha256: 6a1e79bcd781f4e49bf6b1302a2137463307a0851be149f4121df92fefcb893f
   - url: https://huggingface.co/marin-community/marin-8b-instruct
-    shows: Marin 8B Instruct lists SmolTalk in its SFT mix
-    accessed: '2026-08-13'
+    shows: Marin 8B Instruct model page lists "HuggingFaceTB/smoltalk" among its SFT datasets, alongside
+      "allenai/tulu-3-sft-mixture".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d39bfdb79bd31d571df1d9c13a14ce4de34aad157b467c76ef8956aaf4daa3c4
+    content_sha256: ab99ddca4de7c5b4dc2137441c543d117985a3719fbcee69a8d667abbc2b4980
+  - url: https://huggingface.co/datasets/HuggingFaceTB/smoltalk2/raw/main/README.md
+    shows: SmolTalk2 card says its subsets "correspond to the three phases of Post-Training for" SmolLM3-3B.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8bdc71dea7688d0b57e7eeb463f468641b460e5e512b2c57f8b45a070588b2c7

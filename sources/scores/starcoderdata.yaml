@@ -13,16 +13,27 @@ openness:
   confidence: high
   note: Terms-gated like its parent The Stack v1; permissively licensed source files.
   raw: license:permissive(SPDX per file);gated:terms-acceptance;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/bigcode/starcoderdata
-    shows: gated (auto) access with terms, dataset card
-    accessed: '2026-08-13'
+    shows: The dataset card page is gated with "You need to agree to share your contact information to access
+      this dataset", describes the corpus as "This is the dataset used for training StarCoder and StarCoderBase",
+      and quotes The Stack terms that "The Stack is a collection of source code from repositories with various
+      licenses".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4d46742a06f9fcbd830d3b2e5628ef54a4057e0ec4744bca64d266bad9953717
+    content_sha256: e13bc19ca992663857aff537a84b4daa5b72c715a0f39941f362f4b3ebfc630a
     establishes:
     - availability
     - documentation
+  - url: https://arxiv.org/abs/2305.06161
+    shows: The StarCoder paper abstract says "StarCoderBase is trained on 1 trillion tokens sourced from
+      The Stack, a large collection of permissively licensed GitHub repositories" (the parent corpus of
+      StarCoderData).
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 275d870a85e4c04a873fe551a9701e80d8f0f72a680c162ae054b7176cde2633
+    establishes:
     - license
 adoption:
   level: 3
@@ -55,7 +66,7 @@ capability:
     been functionally superseded by The Stack v2, which is four times its size, and by Stack-Edu.
   relative_to: the-stack-v2
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/allenai/OLMoE-mix-0924
     shows: Mix statistics - Starcoder contributes 101B tokens (78.7M docs) to the OLMoE-mix-0924 pretraining
@@ -64,8 +75,14 @@ capability:
     http_status: 200
     content_sha256: d651c52f7dcdbb3df49d24e4eef3f0f013667db773e903415d2e543c698c5a7b
   - url: https://arxiv.org/abs/2402.19173
-    shows: Abstract - The Stack v2 is 4x larger than the first StarCoder dataset, and StarCoder2 supersedes
-      the StarCoder lineage
-    accessed: '2026-08-13'
+    shows: The StarCoder2 paper abstract says the dataset "results in a training set that is 4x larger than
+      the first StarCoder dataset", so the Stack v2 lineage is larger than StarCoderData.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 1be42d8177c7f4a82830445b6292e49204520395a26f84de16249eb580609856
+  - url: https://huggingface.co/datasets/allenai/OLMoE-mix-0924/raw/main/README.md
+    shows: The OLMoE-mix card lists Starcoder as a component with "| [Starcoder](https://huggingface.co/datasets/bigcode/starcoderdata)
+      | 101 B" tokens in the pretraining mix.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 12dae81339357859dfd1fa1bb88e4263fe1538d7c46971eebec51a317e9a6870

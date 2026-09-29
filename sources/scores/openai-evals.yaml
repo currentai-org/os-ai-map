@@ -18,7 +18,7 @@ openness:
       - name: mixed
         detail: CC/CC0/Apache for bundled data
   confidence: high
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: Framework code is fully OSI (MIT); the included eval datasets carry their own open licenses, which
     is standard for a harness. GitHub's own detector reports NOASSERTION because of the appended per-dataset
     section, which is a detector artifact rather than a second license over the framework code.
@@ -32,9 +32,9 @@ openness:
     shows: open framework for evaluating LLMs with open benchmark registry; MIT badge; 18.6k stars
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/openai/evals/main/LICENSE.md
-    shows: 'LICENSE.md opens ''MIT License / Copyright (c) 2023 OpenAI'' with the full unmodified MIT
-      body, then ''NOTE: This license applies to all parts of this repository except for the datasets
-      specified below'' followed by the per-dataset license table.'
+    shows: 'LICENSE.md opens ''MIT License / Copyright (c) 2023 OpenAI'' with the full unmodified MIT body,
+      then ''NOTE: This license applies to all parts of this repository except for the datasets specified
+      below'' followed by the per-dataset license table.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 055f213a5784ecbe4d24df5f539bd134490e327d5e83c51c2ba4e9d5cf308757
@@ -50,6 +50,31 @@ openness:
     content_sha256: f0b50bd53e2fbc81be774a6bfb0cf20997aa7509bd22925ae779a87d57c7c914
     establishes:
     - source
+    - core-gated
+  - url: https://pypi.org/pypi/evals/json
+    shows: The packaged README states "you are agreeing to make your evaluation logic and data under the
+      same MIT license as this repository" for contributions.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 37e9429dba386cd3e50f08d5e05750d500eaa4b2ea485b6c6437df6514d6430f
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/evals/json
+    shows: The packaged README says "Our evals registry is stored using" Git-LFS and that installing from
+      the cloned repo uses "pip install -e ." so the framework and registry run from source.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 37e9429dba386cd3e50f08d5e05750d500eaa4b2ea485b6c6437df6514d6430f
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/evals/json
+    shows: 'The packaged README says "To run evals, you will need to set up and specify your" OpenAI API
+      key and warns of API costs; it mentions no paid edition, enterprise build or license key (searched
+      the body for enterprise, license key, paid tier: none).'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 37e9429dba386cd3e50f08d5e05750d500eaa4b2ea485b6c6437df6514d6430f
+    establishes:
     - core-gated
 adoption:
   level: 3
@@ -80,23 +105,30 @@ capability:
   score: 3
   basis: feature_matrix
   value: Open benchmark registry + custom-eval authoring (completion-fn + eval templates); model-graded
-    and exact/fuzzy-match graders. Coverage breadth modest vs lm-eval-harness/HELM; no built-in agentic-eval
+    and exact/fuzzy-match graders. Coverage breadth modest vs lm-evaluation-harness; no built-in agentic-eval
     harness; maintenance has slowed.
   confidence: medium
   relative_to: lm-evaluation-harness
   relation: two_below
-  last_verified: '2026-08-13'
-  note: A solid general-purpose authoring framework - the README describes a registry of evals plus custom-eval
-    authoring - but not frontier on task coverage, backend breadth or agentic-eval support next to category
-    leaders such as lm-evaluation-harness, and its maintenance has slowed.
+  last_verified: '2026-09-29'
+  note: OpenAI Evals pairs a registry of evals with custom-eval authoring and model-graded scoring. Its
+    task coverage, backend breadth and agentic support are well behind lm-evaluation-harness, and maintenance
+    has slowed.
   sources:
   - url: https://github.com/openai/evals
     shows: framework + registry of benchmarks, custom eval authoring, model-graded grading
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/openai/evals/main/README.md
     shows: 'README: ''We offer an existing registry of evals to test different dimensions of OpenAI models
-      and the ability to write your own custom evals''; private evals over your own data supported. No
-      agentic-eval harness and no multi-backend abstraction described.'
+      and the ability to write your own custom evals''; private evals over your own data supported. No agentic-eval
+      harness and no multi-backend abstraction described.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: f0b50bd53e2fbc81be774a6bfb0cf20997aa7509bd22925ae779a87d57c7c914
+  - url: https://pypi.org/pypi/evals/json
+    shows: The packaged README says "We offer an existing registry of evals to test different dimensions
+      of OpenAI models" and supports custom and model-graded evals plus a Completion Function Protocol for
+      "prompt chains or tool-using agents".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 37e9429dba386cd3e50f08d5e05750d500eaa4b2ea485b6c6437df6514d6430f

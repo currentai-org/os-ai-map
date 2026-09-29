@@ -10,24 +10,43 @@ openness:
     dataset_card:
       value: legacy-repo-only
   confidence: medium
-  note: The corpus downloads freely from the deduplicated Hugging Face repository, though the original loading-script
-    repo and its mirrors are no longer live. Licensing defers to each subset's own terms, and Books3 has
-    since been withdrawn from circulation.
+  note: The corpus downloads freely and ungated from the deduplicated Hugging Face repository. The original
+    repository now holds only a dataset card and a loading script, and licensing defers to each subset's
+    own terms.
   raw: access:ungated;license:mixed-per-subset;dataset_card:legacy-repo-only
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/EleutherAI/the_pile_deduplicated
-    shows: hosts the working parquet data (451 GB), ungated
-    accessed: '2026-08-13'
+    shows: Dataset page for "EleutherAI/the_pile_deduplicated" showing "No dataset card yet" beside the
+      parquet files, with 134318121 rows (451 GB) served for download.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 145a48d02a24e18319785e4b8848a4c8e889a1c90bb2068ddea1c3a5c8fc7a20
+    content_sha256: f9b31f2aaf7e0c9ca742d94abea6206ef7eda6f5775c9ec9fe270012513c408b
     establishes:
     - availability
   - url: https://huggingface.co/datasets/EleutherAI/pile
-    shows: 'legacy card: per-subset licensing, loading script only'
-    accessed: '2026-08-13'
+    shows: Legacy repo page shows license other and a viewer notice that "The viewer is disabled because
+      this dataset repo requires arbitrary Python code execution."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 58e374c699b8ce290e307ffbf5a5ae0ebeb2dbc90f0ef7a20e84f724cd461f11
+    content_sha256: dae47dfa83416d632a88fc475d81ba209a3d27fc2a9edde36b48d929aec8c571
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/EleutherAI/the_pile_deduplicated
+    shows: Hub API record for the deduplicated repository, which reports gated and disabled as false and
+      lists parquet shards such as "data/train-00000-of-01650-f70471ee3deb09c0.parquet".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e76a2dcc06194aea2e2631fab342b5540f5ca4560af9129146be070dc7428c13
+    establishes:
+    - availability
+  - url: https://huggingface.co/datasets/EleutherAI/pile/raw/main/README.md
+    shows: 'Raw legacy dataset card declares "license: other" and says "Please refer to the specific license
+      depending on the subset you use:" listing only PubMed Central under MIT.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c2bcc1690aa3462a54f78a352bc408ced9c282de428db8db2e8dccdb8c4df938
     establishes:
     - license
     - documentation
@@ -62,15 +81,22 @@ capability:
     Cerebras-GPT), but dated and beaten by modern web corpora in FineWeb ablations.
   relative_to: fineweb
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2304.03208
-    shows: The Pile trained GPT-NeoX-20B, GPT-J, Pythia, and Cerebras-GPT
-    accessed: '2026-08-13'
+  - url: https://arxiv.org/html/2406.17557
+    shows: FineWeb paper says the FineWeb model "outperforms all other open datasets we compared on our
+      aggregate group of tasks", and its comparison set lists "The Pile (340B tokens)".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 49194d92e1053d71540ec7b71bfe73507def09eb409c0f5d560ea5b8923b0aa9
-  - url: https://arxiv.org/html/2406.17557v1
-    shows: FineWeb outperforms The Pile in its ablation
-    accessed: '2026-08-13'
+    content_sha256: 059d9418f0a111cdc55c9057dc1595a03ba392abc5e2140832635a520192dc99
+  - url: https://arxiv.org/abs/2204.06745
+    shows: GPT-NeoX-20B abstract says it is "a 20 billion parameter autoregressive language model trained
+      on the Pile".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 28d264b3ae7dbd20cd0a2c49daaaff89df04fc2a503eca83adf13afac90cd7d1
+    content_sha256: d7042654945df03334dded4158c1d3c3db11e7c37063f2ccccdd550976dfe249
+  - url: https://arxiv.org/abs/2304.03208
+    shows: Cerebras-GPT abstract says "We train Cerebras-GPT models on the Eleuther Pile dataset".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a794112278a98a6e9498176e3e94fc7d18a20e0ddd4863a433ae71c1e3085ce2
