@@ -52,29 +52,35 @@ capability:
     review built into the platform
   confidence: medium
   relative_to: docling
-  relation: one_above
+  relation: at
   comparison:
-    last_attested: '2026-09-16'
+    last_attested: '2026-09-29'
     sources:
-    - url: https://github.com/docling-project/docling
-      shows: Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and
-        lossless JSON with layout and reading order preserved, which is the amount of a document surviving
-        that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images
-        - is on the same page and is recorded here for completeness; it is NOT the property the comparison
-        turns on, because the recipe excludes input breadth by name.
-      accessed: '2026-09-16'
+    - url: https://docling-project.github.io/docling/_generated/examples/extraction/
+      shows: The Information extraction example states "Docling provides the capability of extracting information,
+        i.e. structured data, from unstructured documents." and that the user supplies a template "either
+        as a dictionary or as a Pydantic model, and Docling will return" the extracted data; its "Using
+        a dict template" example returns a bill number and a total of "3949.75" from an invoice.
+      accessed: '2026-09-29'
       http_status: 200
-      content_sha256: 69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5
+      content_sha256: 2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db
   note: Google Document AI's custom processors return typed entities that a customer defines, such as an
     invoice total or a field on a form they trained the processor on, rather than just the position of text
-    on the page. That is a step beyond Docling, which recovers structure faithfully but assigns no meaning
-    to it.
-  last_verified: '2026-09-16'
+    on the page. Docling matches it through its template-driven extractor, which returns the fields a user
+    defines without training anything on the user's own forms.
+  last_verified: '2026-09-29'
   sources:
   - url: https://cloud.google.com/document-ai
-    shows: Google Cloud's Document AI product page, describing a platform of pretrained and custom processors
-      that extract structured entities from documents. Establishes a managed Google Cloud service with no published
-      implementation.
-    accessed: '2026-09-16'
+    shows: Google Cloud's Document AI product page lists a "Custom extractor" priced under "Extract structures
+      and entities from documents" and says custom classifier and splitter processors can be "trained from
+      the ground up using your own documents and custom classes".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4
+    content_sha256: ccaaf653a984f7c1cd3a821b41e79a0895751d858ade06637699fda681eb3201
+  - url: https://cloud.google.com/document-ai/docs/custom-extractor-overview
+    shows: The custom extractor overview states "Custom extractor extracts entities from documents of a
+      particular type." and that its goal is "to enable Document AI users to build custom entity extraction
+      solutions for new document types for which no pre-trained processors are available".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 241a1352b2b53dbaad64c88f02ed1b34b3abd25387d03ed1222c0d81a133fe73
