@@ -27,13 +27,12 @@ openness:
       raw: module (M.2 Key B+M accelerator card, also sold as bare silicon)
   confidence: high
   note: 'The Hailo-8 is proprietary silicon: HailoRT''s runtime libraries are open source (MIT, with hailonet
-    under LGPL 2.1), but the Dataflow Compiler needed to prepare models for the chip is closed and requires
-    registering as a Hailo customer. Hailo publishes no schematics, and its only public documentation is
-    a brief data sheet rather than a full design reference.'
+    under LGPL 2.1), but the Dataflow Compiler needed to prepare models for the chip is closed and available
+    to non-customers only by contacting Hailo. Hailo publishes no schematics, and its only public documentation
+    is a brief data sheet rather than a full design reference.'
   raw: schematics:none;toolchain:partial (open runtime (HailoRT) + closed/registration Dataflow Compiler);datasheets:brief
     (public briefs);blobs:required (proprietary silicon + firmware);retail:open_market (global modules);form_factor:module
     (M.2 Key B+M accelerator card, also sold as bare silicon)
-  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/
     shows: 'official product page: form factors, frameworks, software suite. Not re-fetchable - hailo.ai
@@ -77,11 +76,9 @@ adoption:
   signal_type: reported_traction
   confidence: high
   banded_quantity: a vendor-reported user count (100K+) that is not re-derivable — hailo.ai answers 403
-  note: Hailo-8 modules are stocked by independent distributors across three continents, including Waveshare,
-    Geniatech, AAEON/UP and Advantech, and HailoRT remains an active open-source project. Hailo also reports
-    a large user base, but only the vendor publishes that figure, so distributor and developer activity
-    are the evidence used here instead.
-  last_verified: '2026-08-14'
+  note: Hailo-8 modules are stocked by independent distributors including Waveshare, Geniatech, AAEON/UP
+    and Advantech, and HailoRT remains an active open-source project. Hailo also cites a large user base,
+    but that figure comes only from the vendor.
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/
     shows: vendor claim of >100K users and hundreds of customer products. Not re-fetchable - hailo.ai answers
@@ -113,21 +110,29 @@ capability:
   note: The Hailo-8 delivers 26 TOPS of CNN-focused inference at the edge, limited to models that fit its
     on-die memory. The newer Hailo-10H adds a DDR interface and generative-model support that the Hailo-8
     lacks, keeping it a step below the frontier of the category.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/
-    shows: 26 TOPS, 2.5W typical, on-die memory. Not re-fetchable - hailo.ai answers HTTP 403 to every automated
-      request - so it keeps its recorded read
-    accessed: '2026-06-22'
-  - url: https://www.geniatech.com/product/aim-m-h8/
-    shows: 'spec table - "AI performance 26 TOPS(INT8)", "AI Model Frameworks Supported TensorFlow,
-      TensorFlow Lite,Keras,PyTorch&ONNX", "Memory Processor integration", M.2 Key M, PCIe Gen3'
-    accessed: '2026-08-14'
+    shows: 'Hailo product page: "26 TOPS Performance with Fully Integrated Memory – No External DRAM Required"
+      and "Best-in-class power efficiency with typical power consumption of 2.5W".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1014072e0b7ecd5bf4e9abaa4d3bba3bb667102c7f32fd85294ef0b89b6dee03
+    content_sha256: 687e0b32d03bc516993c29533eb176c5af414a0c9dd78e4ca307a264338a525c
+  - url: https://www.geniatech.com/product/aim-m-h8/
+    shows: 'Geniatech spec table: "Geniatech AIM-M-H8 is an M.2 AI acceleration module powered by the Hailo-8
+      NPU", with "AI performance" of "26 TOPS(INT8)" and memory listed as "Processor integration".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: aa13f59c90e3328f7bf8e0c3e97e12bf06cdae942440b07ff4bda326ec610d1c
   - url: https://www.waveshare.com/hailo-8.htm
-    shows: '"AI performance 26 TOPS", "Power consumption 2.5W (Typ.) 8.65W (Max.)", "Interface PCIe
-      Gen3, 4-lane"'
+    shows: '"AI performance 26 TOPS", "Power consumption 2.5W (Typ.) 8.65W (Max.)", "Interface PCIe Gen3,
+      4-lane"'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027
+  - url: https://hailo.ai/products/ai-accelerators/hailo-10h-ai-accelerator/
+    shows: 'Hailo-10H page: "The Hailo-10H is a high-performance edge AI accelerator designed to bring immersive
+      generative AI capabilities directly to edge devices" with "40 TOPS (INT4)" and "LPDDR4/4X" memory.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6e62e5f84ca99b0a0ec4b2ac3968615afc10cecc8f0ba719ea9a394a2688cd88

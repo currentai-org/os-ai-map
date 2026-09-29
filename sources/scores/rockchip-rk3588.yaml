@@ -25,15 +25,13 @@ openness:
       detail: application-processor SoC, not a board
       raw: chipset (application-processor SoC, not a board)
   confidence: high
-  note: Rockchip publishes a full technical reference manual and datasheet with no registration or NDA,
-    unusually complete for this class of chip. But the RKNN toolkit that targets its NPU ships under Rockchip's
-    own proprietary license, which bars reverse engineering, and its DDR, BL31 and OPTEE boot firmware ship
-    as prebuilt binaries rather than source.
+  note: Rockchip publishes a brief datasheet for the RK3588. The RKNN toolkit that targets its NPU ships
+    under Rockchip's own license, which bars reverse engineering, and its DDR, BL31 and OPTEE boot firmware
+    ship as prebuilt binaries rather than source.
   raw: toolchain:partial (NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs, rknpu kernel
     driver open);datasheets:public (full TRM + datasheet public, no NDA);blobs:required (proprietary GPU/NPU
     firmware);retail:distributor (commercial through Rockchip's module and board partners);form_factor:chipset
     (application-processor SoC, not a board)
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.rock-chips.com/uploads/pdf/2022.8.26/192/RK3588%20Brief%20Datasheet.pdf
     shows: Rockchip's own RK3588 brief datasheet, downloadable from rock-chips.com with no registration
@@ -81,11 +79,9 @@ adoption:
   signal_type: reported_traction
   confidence: high
   banded_quantity: the multi-vendor SBC set the SoC powers, not units shipped of the chip
-  note: Powers a very large multi-vendor set of SBCs and modules (Orange Pi, Radxa, Khadas, FriendlyELEC,
-    Firefly), widely available at retail and broadly supported in community Linux. The Armbian community
-    comparison tabulates five RK3588/RK3588S boards from five different vendors, three of which (orange-pi-5,
-    radxa-rock-5b, khadas-edge2) are separately on this map and separately confirmed on sale.
-  last_verified: '2026-08-13'
+  note: Powers a large multi-vendor set of single-board computers and modules, including Orange Pi, Radxa,
+    Khadas, FriendlyELEC and Firefly, and is broadly supported in community Linux. Armbian's community comparison
+    tabulates five RK3588 and RK3588S boards from five different vendors.
   sources:
   - url: https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/
     shows: comparison table of Khadas Edge 2 Pro, NanoPi R6S, Radxa Rock5B, Mekotronics R58 Mini and
@@ -96,22 +92,27 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 6 TOPS triple-core NPU (INT4-TF32); up to 32GB LPDDR4x/LPDDR5 (board-dependent); runs quantized
-    on-device LLMs via RKNN-LLM
+  value: 6 TOPS triple-core NPU (INT4-TF32); runs quantized on-device LLMs via RKNN-LLM
   confidence: high
-  note: Rockchip's 6 TOPS NPU actually runs generative workloads on-chip, with the RKLLM toolkit shipping
-    working demos for models such as Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B and DeepSeek-OCR. That keeps
-    the SoC itself a step above the individual boards built on it.
-  last_verified: '2026-08-13'
+  note: Rockchip's 6 TOPS NPU runs generative workloads on-chip, with the RKLLM toolkit shipping demos for
+    models such as Qwen2.5-VL-3B, InternVL3-1B and DeepSeek-OCR.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/airockchip/rknn-llm
-    shows: rkllm-toolkit and rkllm-runtime for the Rockchip NPU, with RK3588 Series listed and w8a8
-      demos for Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B and DeepSeek-OCR
+    shows: rkllm-toolkit and rkllm-runtime for the Rockchip NPU, with RK3588 Series listed and w8a8 demos
+      for Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B and DeepSeek-OCR
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 142f5003024aefe672326a42bce336888f7cacc10cc0ec89ca17d5f05b357cb2
   - url: https://www.rock-chips.com/a/en/products/RK35_Series/2022/0926/1660.html
-    shows: '"6TOPS NPU, triple core, support int4/int8/int16/FP16/BF16/TF32 acceleration"'
-    accessed: '2026-08-13'
+    shows: 'Rockchip page: "6TOPS NPU ，triple core, support  int4/int8/int16/FP16/BF16/TF32 acceleration"
+      and "8nm process, quad-core Cortex-A76 + quad-core Cortex-A55"'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: b5ca75ad042e019b490b1627bd74996fe02a72a320a1d292db2accd549e0dd71
+  - url: https://raw.githubusercontent.com/airockchip/rknn-llm/main/README.md
+    shows: 'rknn-llm README: "RKLLM Runtime provides C/C++ programming interfaces for Rockchip NPU platform"
+      and lists "RK3588 Series", "InternVL2-1B/InternVL3-1B", "DeepSeekOCR"'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b1f258d927ad3a0ea7033f96865abbc1371127b0176d8e77636d22602f51e0d8
