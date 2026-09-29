@@ -14,7 +14,7 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: MIT-licensed and fully public, and MIT is an OSI license, so this is open source.
   raw: license:MIT(OSI);source:public(GitHub);no feature-gated core;core-gated:ungated
   sources:
@@ -31,14 +31,32 @@ openness:
     - license
   - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md
     shows: README documents installing from the repo and running `lm-eval` locally against local weights,
-      vLLM, and commercial APIs; the whole task library ships in `lm_eval/tasks`. Nothing in the 53KB
-      of it mentions pricing, a paid tier, an enterprise edition or a license key - the only commercial
-      reference is that the harness can call third-party model APIs.
+      vLLM, and commercial APIs; the whole task library ships in `lm_eval/tasks`. Nothing in the 53KB of
+      it mentions pricing, a paid tier, an enterprise edition or a license key - the only commercial reference
+      is that the harness can call third-party model APIs.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 506dc91c553911a23ab89991f5de9d3dcb1d0b97a896da232089d2e93a4387cf
     establishes:
     - source
+    - core-gated
+  - url: https://pypi.org/pypi/lm-eval/json
+    shows: PyPI metadata for lm-eval 0.4.13 lists the license as "MIT" and the packaged README tells users
+      to install from source with "git clone --depth 1 https://github.com/EleutherAI/lm-evaluation-harness"
+      and pip install -e.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 705690e204994d2ba60cfa7f092f5d64ab66c8bb71989364511be25d39a62791
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/lm-eval/json
+    shows: 'Searched the metadata and README for pricing, enterprise and license key: none; the only commercial
+      mention is "Support for commercial APIs including" OpenAI, for evaluating third-party hosted models.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 705690e204994d2ba60cfa7f092f5d64ab66c8bb71989364511be25d39a62791
+    establishes:
     - core-gated
 adoption:
   level: 4
@@ -76,14 +94,14 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: 60+ standard academic benchmarks with hundreds of subtasks; broadest model-backend breadth (HF
-    Transformers, vLLM, OpenAI, Anthropic, SGLang, NeMo, Megatron-LM, local servers); reproducibility/standardization
-    (powers Open LLM Leaderboard)
+  value: '60+ standard academic benchmarks with hundreds of subtasks; model-backend breadth: HF Transformers,
+    vLLM, OpenAI, Anthropic, SGLang, NeMo, Megatron-LM, local servers; reproducibility/standardization (powered
+    the Open LLM Leaderboard)'
   confidence: high
-  last_verified: '2026-08-13'
-  note: The widest task and backend coverage in the category, and the standardization reference for LLM
-    evaluation. The README states 'Over 60 standard academic benchmarks for LLMs, with hundreds of subtasks
-    and variants implemented', and lists the spread of model backends behind them.
+  last_verified: '2026-09-29'
+  note: More than 60 academic benchmarks with hundreds of subtasks run through one interface over Hugging
+    Face Transformers, vLLM, SGLang, NeMo, Megatron-LM, hosted APIs and local servers. The harness powered
+    the Open LLM Leaderboard and has been used in hundreds of papers to report reproducible benchmark numbers.
   sources:
   - url: https://github.com/EleutherAI/lm-evaluation-harness
     shows: 60+ benchmarks, multi-backend support, Open LLM Leaderboard backend
@@ -95,3 +113,22 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 506dc91c553911a23ab89991f5de9d3dcb1d0b97a896da232089d2e93a4387cf
+  - url: https://pypi.org/pypi/lm-eval/json
+    shows: The packaged README describes the harness as offering "Over 60 standard academic benchmarks for
+      LLMs, with hundreds of subtasks and variants implemented" and says it has been used in "hundreds of
+      papers".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 705690e204994d2ba60cfa7f092f5d64ab66c8bb71989364511be25d39a62791
+  - url: https://pypi.org/pypi/lm-eval/json
+    shows: The packaged README lists backends with "Support for commercial APIs including" OpenAI and TextSynth,
+      vLLM and SGLang support, and NVIDIA NeMo and Megatron-DeepSpeed integrations.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 705690e204994d2ba60cfa7f092f5d64ab66c8bb71989364511be25d39a62791
+  - url: https://pypi.org/pypi/lm-eval/json
+    shows: 'The packaged README says the Open LLM Leaderboard tasks ship in the repo: "Open LLM Leaderboard
+      tasks have been added ! You can find them under the" leaderboard folder.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 705690e204994d2ba60cfa7f092f5d64ab66c8bb71989364511be25d39a62791
