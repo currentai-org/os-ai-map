@@ -19,8 +19,35 @@ openness:
   confidence: high
   note: Fully OSI-licensed (Apache-2.0), full source public. Vendor-backed but not gated.
   raw: license:Apache-2.0(OSI);source:public(NVIDIA/NeMo-Curator);governance:NVIDIA;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Curator/main/LICENSE
+    shows: 'LICENSE is the Apache License text: "Apache License" and "APPENDIX: How to apply the Apache
+      License to your work."'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 5ec35ae50c7dd084f7e18d375305012159dccf9bb77ddb3f488061d7fc2abdef
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Curator/main/README.md
+    shows: 'README states "NeMo Curator is released under the **Apache License 2.0**" and documents install
+      from the published repo. Searched the body for enterprise, paid tier, license key, proprietary and
+      non-commercial: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 5566f79f9b7dab43257604985b133039e4027438ed9dd959170c26b3077942ce
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Curator/main/pyproject.toml
+    shows: 'pyproject.toml declares "License :: OSI Approved :: Apache Software License". Searched the body
+      for enterprise, license key, non-commercial and proprietary: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    - core-gated
+    http_status: 200
+    content_sha256: 90cfdc30fd3ecef1871aad88cf86fdb339e2b2e39471fd7693c4985d4e1de269
   - url: https://github.com/NVIDIA/NeMo-Curator/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -28,16 +55,6 @@ openness:
     - license
     http_status: 200
     content_sha256: 5ec35ae50c7dd084f7e18d375305012159dccf9bb77ddb3f488061d7fc2abdef
-  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Curator/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 5566f79f9b7dab43257604985b133039e4027438ed9dd959170c26b3077942ce
 adoption:
   level: 1
   reach: <10K
@@ -62,18 +79,18 @@ capability:
   basis: benchmark
   relative_to: dclm
   relation: at
-  value: Nemotron-CC, built with NeMo Curator, beats DCLM by +5.6 MMLU (59.0 vs 53.4) for its HQ subset
-    at 8B/1T tokens; a 15T-token long-horizon run reached 70.3 MMLU vs Llama 3.1 8B's 65.3 while retaining
-    ~4x more unique tokens than DCLM/FineWeb-Edu.
+  value: Nemotron-CC, built with NeMo Curator, has a high-quality subset that improves MMLU by 5.6 points
+    over DCLM at 8B parameters and 1T tokens. The full 6.3T-token set matches DCLM on MMLU with four times
+    more unique real tokens, and an 8B model trained on 15T tokens beats Llama 3.1 8B by 5 MMLU points.
   confidence: high
-  note: 'Benchmark-anchored on the output corpus (proxy): Nemotron-CC matches or beats the DCLM/FineWeb-Edu
-    frontier, especially at long-horizon token budgets.'
-  last_verified: '2026-08-13'
+  note: NeMo Curator is judged through Nemotron-CC, the corpus built with it, since the toolkit has no benchmark
+    of its own. The Nemotron-CC paper reports its high-quality subset improving MMLU over DCLM, which puts
+    the toolkit level with DCLM.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2412.02595
-    shows: Nemotron-CC abstract - a high-quality subset improves MMLU by 5.6 over DCLM at 8B/1T, the
-      full 6.3T-token set matches DCLM on MMLU with four times more unique real tokens, and an 8B
-      model trained on 15T tokens beats Llama 3.1 8B by +5 MMLU
-    accessed: '2026-08-13'
+    shows: 'Nemotron-CC abstract: "a high-quality subset of our data improves MMLU by 5.6 over DCLM" and
+      its full dataset has "four times more unique real tokens than DCLM".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 4231d6de42496ec9f36b44c8be8bc791367ccbe5e5c41439d7e6077eebd0df98

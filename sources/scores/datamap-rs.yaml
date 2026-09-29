@@ -20,8 +20,27 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public.
   raw: license:Apache-2.0(OSI);source:public(allenai/datamap-rs);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/allenai/datamap-rs/main/LICENSE
+    shows: LICENSE file carries the license text headed "Apache License" and "Version 2.0, January 2004"
+      followed by "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/allenai/datamap-rs/main/README.md
+    shows: 'README describes a Rust toolkit that builds from the published repo: "Clone the repository"
+      then "cargo build --release" producing "The binary will be available at `target/release/datamap`".
+      Searched the body for enterprise, license key, paid, pricing and subscription: none; the only optional
+      external download is the "lid176.bin" FastText model used by tests and some example configs.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 56ec67f99ee8e28d93af11b16afd262ec865f0b5a7bceb9a70b149f6946ca611
   - url: https://github.com/allenai/datamap-rs/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -29,16 +48,6 @@ openness:
     - license
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-  - url: https://raw.githubusercontent.com/allenai/datamap-rs/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 56ec67f99ee8e28d93af11b16afd262ec865f0b5a7bceb9a70b149f6946ca611
 adoption:
   level: 1
   reach: <1K stars
@@ -63,14 +72,20 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: Single-purpose JSONL map/filter/annotate cleaning stage; focused, not a full pipeline.
+  value: 'Rust toolkit for large JSONL corpora: a configurable map/filter/annotate pipeline plus reshard,
+    reservoir sample, partition, group-and-deduplicate, shuffle and count commands. Designed for local file
+    processing; the README advises against streaming remote sources.'
   confidence: medium
-  note: Covers one stage of the Dolma 3 toolchain, cleaning, rather than a full pipeline.
-  last_verified: '2026-08-13'
+  note: Covers the data-processing steps around corpus cleaning and deduplication rather than model training
+    or a full end-to-end data platform.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/allenai/datamap-rs/main/README.md
-    shows: README documents a Rust JSONL map/filter/annotate pipeline with configurable per-document
-      processors, still one cleaning stage rather than a full pipeline
-    accessed: '2026-08-13'
+    shows: 'README opens with "A high-performance data processing pipeline for large-scale datasets built
+      in Rust" and says "DataMap is a Rust-based toolkit designed for efficient processing, filtering, and
+      transformation of large text datasets, primarily in JSONL format", with commands Map, Reshard, Reservoir
+      Sample, Discrete Partition, Range Partition, Group, GroupFilter, Shuffle and Count. Searched the body
+      for Dolma: none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 56ec67f99ee8e28d93af11b16afd262ec865f0b5a7bceb9a70b149f6946ca611

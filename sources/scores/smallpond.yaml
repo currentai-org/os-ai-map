@@ -19,8 +19,26 @@ openness:
   confidence: high
   note: Fully OSI-licensed (MIT), full source public.
   raw: license:MIT(OSI);source:public(deepseek-ai/smallpond);governance:DeepSeek;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/deepseek-ai/smallpond/main/LICENSE
+    shows: 'LICENSE is the MIT text: "Copyright 2025 DeepSeek" and "Permission is hereby granted, free of
+      charge, to any person obtaining a copy of this software".'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: afdfb05d986ee753149860dcddbc7a20121a38165de7ef6bb522ddd028234752
+  - url: https://raw.githubusercontent.com/deepseek-ai/smallpond/main/README.md
+    shows: 'README states "This project is licensed under the [MIT License](LICENSE)." and installs with
+      "pip install smallpond"; searched the body for enterprise, paid, license key, hosted and cloud service:
+      none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 8ad6562a5fec22837fbab87a5047d66acd2b31f5901e9e1221daade507c1af4e
   - url: https://github.com/deepseek-ai/smallpond/blob/main/LICENSE
     shows: MIT License text (Copyright 2025 DeepSeek)
     accessed: '2026-08-13'
@@ -28,16 +46,6 @@ openness:
     - license
     http_status: 200
     content_sha256: afdfb05d986ee753149860dcddbc7a20121a38165de7ef6bb522ddd028234752
-  - url: https://raw.githubusercontent.com/deepseek-ai/smallpond/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 8ad6562a5fec22837fbab87a5047d66acd2b31f5901e9e1221daade507c1af4e
 adoption:
   level: 1
   reach: <10K
@@ -60,14 +68,16 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: Distributed preprocessing on DuckDB + 3FS for PB-scale data; capable but early-stage and unmaintained.
+  value: Distributed preprocessing on DuckDB + 3FS for PB-scale data.
   confidence: medium
-  note: Promising design, but not proven on downstream corpora and dormant.
-  last_verified: '2026-08-13'
+  note: smallpond distributes DuckDB processing over 3FS, and its authors report a GraySort run that sorted
+    110.5 TiB in about 30 minutes. The README documents no corpus or model built with the framework.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/deepseek-ai/smallpond/main/README.md
-    shows: README documents DuckDB- and 3FS-backed distributed processing scaling to PB, with a
-      GraySort result; no commit to the repo since March 2025
-    accessed: '2026-08-13'
+    shows: README describes smallpond as "A lightweight data processing framework built on [DuckDB] and
+      [3FS]." with "Scalable to handle PB-scale datasets" and reports "The benchmark sorted 110.5TiB of
+      data in 30 minutes and 14 seconds" on a 3FS cluster.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 8ad6562a5fec22837fbab87a5047d66acd2b31f5901e9e1221daade507c1af4e

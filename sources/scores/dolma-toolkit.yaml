@@ -20,8 +20,36 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public.
   raw: license:Apache-2.0(OSI);source:public(allenai/dolma);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/allenai/dolma/main/LICENSE
+    shows: LICENSE file text reads "Apache License", "Version 2.0, January 2004" and "TERMS AND CONDITIONS
+      FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/allenai/dolma/main/README.md
+    shows: 'README states "this repo contains the source code for the Dolma Toolkit" and "To install, simply
+      type `pip install dolma` in your terminal." Searched the body for enterprise, license key, paid tier
+      and non-commercial: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: a4abd5c5baf3f9f57eb09e1332daeb3168d4d23429d6c474f8c9c57e908b144e
+  - url: https://raw.githubusercontent.com/allenai/dolma/main/pyproject.toml
+    shows: 'pyproject.toml declares license = { text = "Apache-2.0" } and the classifier "License :: OSI
+      Approved :: Apache Software License"; dependencies are ordinary PyPI packages. Searched the body for
+      enterprise, license key and non-commercial: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    - core-gated
+    http_status: 200
+    content_sha256: 50a54085f680b6264014541acb15df132dcf49bb7b06ff4cfecbbdb91a6c3292
   - url: https://github.com/allenai/dolma/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -29,25 +57,12 @@ openness:
     - license
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-  - url: https://raw.githubusercontent.com/allenai/dolma/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: a4abd5c5baf3f9f57eb09e1332daeb3168d4d23429d6c474f8c9c57e908b144e
 adoption:
   level: 1
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: PyPI downloads for the dolma package are the published usage signal for this tool. It is the curation
-    toolkit behind the Dolma corpus and the OLMo model family, so its importance runs well ahead of that
-    count.
-  last_verified: '2026-08-13'
+  note: PyPI downloads for the dolma package are the published usage signal for this tool.
   sources:
   - url: https://pypistats.org/api/packages/dolma/recent
     shows: 4,390 downloads in the trailing 30 days for dolma
@@ -59,13 +74,12 @@ capability:
   basis: benchmark
   relative_to: datatrove
   relation: two_below
-  value: Dolma, the corpus the toolkit builds, scores 35.0 CORE on DataComp-LM (7B-1x), below RefinedWeb
-    (36.9) and well under DCLM-baseline, and is among the lower performers in the FineWeb ablation. A
-    foundational, fully-documented open pipeline whose released output sits a tier below the current curation
-    frontier.
+  value: Dolma-V1, the corpus the toolkit builds, scores 35.0 CORE on DataComp-LM at the 7B-1x scale, below
+    RedPajama (35.3) and RefinedWeb (36.9).
   confidence: high
-  note: 'Benchmark-anchored on the corpus the toolkit builds, as a proxy for the tool: capable and fully
-    open, but the released Dolma corpus trails the datatrove and NeMo Curator frontier on DataComp-LM.'
+  note: The Dolma toolkit is judged through the corpus it builds, since the toolkit has no benchmark of
+    its own. That corpus scores below RedPajama and RefinedWeb on DataComp-LM, which places the toolkit
+    two tiers below datatrove.
   last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/html/2406.11794v3

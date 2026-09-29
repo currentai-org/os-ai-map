@@ -20,8 +20,26 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public.
   raw: license:Apache-2.0(OSI);source:public(allenai/duplodocus);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/allenai/duplodocus/main/LICENSE
+    shows: LICENSE file carries the header "Apache License" and "Version 2.0, January 2004" followed by
+      "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/allenai/duplodocus/main/README.md
+    shows: 'README documents "Build from Source" with "cargo build --release" and four strategies for "exact
+      and fuzzy (MinHash) document deduplication tool, natively implemented in Rust"; searched the body
+      for paid, enterprise, license key and weights: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 18f8045f83995f2cd9063ac47b100f510a1295c8a4fa3313cfccdadc1a328bf1
   - url: https://github.com/allenai/duplodocus/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -29,16 +47,6 @@ openness:
     - license
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-  - url: https://raw.githubusercontent.com/allenai/duplodocus/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 18f8045f83995f2cd9063ac47b100f510a1295c8a4fa3313cfccdadc1a328bf1
 adoption:
   level: 1
   reach: <1K stars
@@ -65,12 +73,13 @@ capability:
   basis: feature_matrix
   value: Exact + fuzzy MinHash-LSH deduplication; focused single-purpose tool.
   confidence: medium
-  note: Covers one stage of the Dolma 3 toolchain, deduplication, rather than a full pipeline.
-  last_verified: '2026-08-13'
+  note: Covers a single task, deduplication, rather than a full pipeline.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/allenai/duplodocus/main/README.md
-    shows: README documents exact and MinHash-LSH fuzzy deduplication in memory- and disk-based
-      variants, a single-purpose dedup tool
-    accessed: '2026-08-13'
+    shows: README lists four strategies (Exact + Memory, Exact + Disk, MinHash + Memory, MinHash + Disk)
+      and "Identifies near-duplicates using MinHash LSH based on" Lee et al. 2021, "Removes documents with
+      identical content using fast hash-based matching".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 18f8045f83995f2cd9063ac47b100f510a1295c8a4fa3313cfccdadc1a328bf1
