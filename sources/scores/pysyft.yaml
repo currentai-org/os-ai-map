@@ -22,7 +22,7 @@ openness:
     - eleven syft-* packages under packages/ plus syft_client under one Apache-2.0 license - and PySyft
     runs on cloud storage the user already has rather than on an OpenMined-operated plane. No enterprise
     path and no license key in the tree)
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-28'
   sources:
   - url: https://github.com/OpenMined/PySyft
     shows: Apache-2.0 license, public source, 9.9k stars
@@ -42,15 +42,51 @@ openness:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md
-    shows: License badge and closing section both give Apache License 2.0. The description is that "PySyft
-      lets data scientists submit computations which are ran by data owners on private data - all through
-      cloud storage their organizations already use (Google Drive, Microsoft 365, etc.). No new infrastructure
-      required." No hosted OpenMined service, paid tier or enterprise edition appears anywhere in it.
-    accessed: '2026-08-12'
+    shows: 'README carries the badge "License: Apache 2.0" and the closing link "Apache License 2.0", and
+      says computations run "all through cloud storage their organizations already use" with "No new infrastructure
+      required." Its closing section says "OpenMined is a non-profit foundation". Searched the body for
+      enterprise, pricing, paid and license key: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: ee46bfd7bbc137089c7779d4f3e6a227dccb9ceb3bc2bda65013b0cd2c8f6f4e
+    content_sha256: 8dc2faf73082d9ef5a7116ba3c05252b0c746ddf423a19bc44664d45c0d3593b
     establishes:
     - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/OpenMined/PySyft/dev/LICENSE
+    shows: The root LICENSE file on the dev branch is the standard "Apache License" text, "Version 2.0,
+      January 2004".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: eea804b994920f37e33c21f48af6c3f2909e3687af59627d60ed725c6b7b8b24
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/OpenMined/PySyft/files/dev
+    shows: 'The public file listing of the dev branch carries the workspace packages, among them "packages/syft-enclave/README.md"
+      and "packages/syft-permissions/pyproject.toml", beside one root "LICENSE". Searched every path for
+      ee/, enterprise/, commercial/ and a second LICENSE file: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 551fb11c4222162e0df83b3e3d8b3cebe86dbea6a1637057ea609c8a8f79f018
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/OpenMined/PySyft/dev/pyproject.toml
+    shows: 'pyproject.toml describes the package as "privacy-preserving data science over file-based transports"
+      and lists runtime dependencies including Google API clients, workspace syft packages and "syft-crypto-python>=0.1.2b2";
+      searched for an enterprise extra or license-key dependency: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 16c38087d921b121076f382fa3b2680b106ba474c6a991c69f4669eec2bc7298
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/syft-crypto-python/json
+    shows: 'PyPI metadata for syft-crypto-python, the one OpenMined runtime dependency built outside the
+      PySyft tree, reads "Python bindings for the Syft crypto protocol" with the classifier "License ::
+      OSI Approved :: Apache Software License".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9179cf3099af9b9c28e246f03f48fa1fbd7c030e0a0954a9665874d33d977ffc
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -59,7 +95,6 @@ adoption:
   confidence: medium
   note: GitHub stars are one adoption signal for PySyft; they cap low because a star is not a use. PyPI
     downloads of the syft package are the other signal, and both point to the same reading of usage.
-  last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/OpenMined/PySyft
     shows: stargazers_count = 9937 for OpenMined/PySyft
