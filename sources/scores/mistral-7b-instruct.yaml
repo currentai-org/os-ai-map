@@ -19,16 +19,27 @@ openness:
     weights rather than open source.
   raw: weights:open(Apache-2.0, on HF);data:closed;code:closed(no training/post-training pipeline);license:Apache-2.0(OSI
     permissive)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
-    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
-      7B weights download without a barrier; the card describes the instruction fine-tune in prose and
-      publishes neither the mixture nor any training or post-training code'
-    accessed: '2026-08-13'
+    shows: Hugging Face model page. The card says "instruct fine-tuned version of the Mistral-7B-v0.2" and
+      the repo tags include "license:apache-2.0"; the embedded state has "gated":false (weights ungated).
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: daadeec0ca458ae992f1e880dde598177bfd5998c9a2b01ab4d407ca0ec29c9f
-    establishes: [weights, data, code, license]
+    content_sha256: 329eb80b246d9064d3a206a7484f27bc8367516de237cd9df7bab0e48d017e48
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2/raw/main/README.md
+    shows: 'Raw model card. It states "The Mistral-7B-Instruct-v0.2 Large Language Model (LLM) is an instruct
+      fine-tuned version of the Mistral-7B-v0.2." and points to the paper and release blog for details.
+      Searched the body for dataset, training data, training code and fine-tuning recipe: none published.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: aa431f0f615eae0a34b895020db5ad43ae287b460d1300b5ee225a3f50ff2343
+    establishes:
+    - data
+    - code
 adoption:
   level: 4
   reach: 1M-10M
@@ -58,29 +69,29 @@ capability:
   value: Mistral 7B Instruct v0.2 MT-Bench 7.6 (Mistral-reported); underlying Mistral 7B base MMLU 60.1%;
     v0.1-Instruct MT-Bench 6.84. 2023-era 7B chat quality
   confidence: medium
-  note: Mistral 7B Instruct was excellent for a 7B in 2023-24 but sits well below the 2026 frontier and
-    below modern small instruct models such as Phi-4-mini and Qwen 3.x small. Its MT-Bench score of 7.6
-    is specific to v0.2 from Mistral's own La Plateforme post - the paper's Table 3 gives v0.1-Instruct
-    6.84 - and the 60.1% MMLU figure belongs to the Mistral 7B base model, not this instruct tune.
-  last_verified: '2026-08-14'
+  note: Mistral reports 7.6 on MT-Bench for v0.2, and the Mistral 7B paper gives 6.84 for the original v0.1
+    instruct model, which it says outperformed all 7B models on that benchmark. Later Mistral 7B releases
+    have replaced this version.
+  last_verified: '2026-09-29'
   sources:
   - url: https://mistral.ai/news/la-plateforme
-    shows: 'Mistral''s La Plateforme launch post - "Mistral-tiny. Our most cost-effective endpoint
-      currently serves Mistral 7B Instruct v0.2, a new minor release of Mistral 7B Instruct. Mistral-tiny
-      only works in English. It obtains 7.6 on MT-Bench."'
-    accessed: '2026-08-14'
+    shows: 'La Plateforme launch post: "Mistral-tiny only works in English. It obtains 7.6 on MT-Bench."
+      and "a new minor release of Mistral 7B Instruct".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0a9a105ac8f1c7ff38d6a307e7ae2d87e0950d40f5b2042c9b3196dee7a162e3
-  - url: https://arxiv.org/pdf/2310.06825
-    shows: 'Mistral 7B paper full text. Table 2 gives the BASE model at MMLU 60.1%, HellaSwag 81.3%,
-      WinoGrande 75.3%; Table 3 gives "Mistral 7B Instruct" (v0.1) an MT-Bench of 6.84 +/- 0.07. Neither
-      table covers the v0.2 instruct tune.'
-    accessed: '2026-08-14'
+    content_sha256: fc8573aea29d83162f061344279904f935bb2efa15f4ca052c3636aab6709423
+  - url: https://arxiv.org/html/2310.06825
+    shows: Mistral 7B paper (HTML full text). The instruction-tuning section says "exhibits superior performance
+      compared to all 7B models on MT-Bench" for the original Mistral 7B Instruct (v0.1; 6.84 in the table),
+      and the base-model comparison table is captioned "Comparison of Mistral 7B with Llama"; neither table
+      covers the v0.2 instruct tune.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: dfbac4e7035344b305c947481f2e7e8a02f7a24a563917eb6e47f6591d14c5ae
+    content_sha256: be98d3cf8c6dcc980414ffcc48a96bb2ed4aa411af9c0621ddba3de54d286e15
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
-    shows: 7B instruct model card, 32k context; links arxiv:2310.06825 "Mistral 7B", the base-model paper.
-      No benchmark table on the card.
-    accessed: '2026-08-13'
+    shows: Model card page. It describes the model as an "instruct fine-tuned version of the Mistral-7B-v0.2"
+      with a "32k context window (vs 8k context in v0.1)" and names Mistral-7B-Instruct-v0.3 as the newer
+      version.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: daadeec0ca458ae992f1e880dde598177bfd5998c9a2b01ab4d407ca0ec29c9f
+    content_sha256: 329eb80b246d9064d3a206a7484f27bc8367516de237cd9df7bab0e48d017e48

@@ -20,12 +20,11 @@ openness:
       base:
         value: TinyLlama-1.1B
         detail: open, 3T-token pretrain documented
-  note: 'TinyLlama-Chat is unusually transparent for a chat model: an open 1.1B base with a documented 3-trillion-token
-    pretrain, and post-training on named public datasets, UltraChat for supervised fine-tuning and UltraFeedback
-    for DPO alignment. Weights, base, code and post-training data are all released under Apache-2.0.'
+  note: TinyLlama-Chat builds on an open 1.1B base with a documented 3-trillion-token pretraining run, and
+    its post-training uses named public datasets, UltraChat for supervised fine-tuning and UltraFeedback
+    for DPO alignment. Weights, base, code and post-training data are all released under Apache-2.0.
   raw: weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training-data:open(SFT
     on UltraChat + DPO on UltraFeedback, both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
     shows: '`license:apache-2.0` in the repo tags and `"gated":false`; base TinyLlama-1.1B; SFT on
@@ -61,14 +60,21 @@ capability:
   basis_detail: MMLU
   value: 1.1B Llama-2-era model; intended for lightweight/edge use, not competitive on 2026 capability benchmarks
   confidence: high
-  note: Intentionally tiny (1.1B, 2023 Llama-2 architecture). Its value is footprint and openness rather
-    than capability, and it was never built to compete against a 2026 frontier comparison set on reasoning
-    or coding suites.
-  last_verified: '2026-08-13'
+  note: TinyLlama-Chat is a 1.1B model on the 2023 Llama 2 architecture, and its model card publishes no
+    benchmark table. Its base checkpoint scores 26.04 on MMLU (5-shot), so the model sits far below current
+    frontier chat models.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
-    shows: 1.1B params, Llama 2 architecture, 3 trillion pretraining tokens, chat-optimized lightweight
-      model; no benchmark table on the card
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0/raw/main/README.md
+    shows: 'Chat card: 1.1B parameters, "exactly the same architecture and tokenizer as Llama 2", pretrained
+      on 3 trillion tokens; the card publishes no benchmark table (searched the body for MMLU, benchmark,
+      leaderboard: none).'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 84460b9051e509ac5cb87f3db20f42b11d54c2b4c50519dd905cbd9c4452d75c
+    content_sha256: 6f620f661ce3f8425b49301b64a642aa7451ce9fbd3b8115e899de59147121c8
+  - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T/raw/main/README.md
+    shows: 'Base card for "TinyLlama-1.1B-intermediate-step-1431k-3T", the checkpoint the chat model is
+      tuned from: Open LLM Leaderboard rows "MMLU (5-Shot)" 26.04 and "GSM8k (5-shot)" 1.44.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c0d498c0a79ea7ce201c55cbdc36c59c2e26ea1656abbe13c815d8b69e70b6c9

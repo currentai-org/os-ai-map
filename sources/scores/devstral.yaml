@@ -25,39 +25,44 @@ openness:
   raw: weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/serving; no training or post-training
     data);license:Modified-MIT(non-OSI, resolved most-restrictive across the governing release's SKUs (Devstral
     2 123B))+Apache-2.0(OSI, Devstral Small 2 24B SKU only)
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512
-    shows: 'License section - "This model is licensed under the Apache 2.0 License"; `"gated":false`; 24B
-      FP8 instruct SKU of the governing Devstral 2 release'
-    accessed: '2026-08-14'
+  - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512/raw/main/README.md
+    shows: 'Model card README: "Apache 2.0 License**: Open-source license allowing usage and modification
+      for both commercial and non-commercial purposes." and "This model is licensed under the [Apache 2.0
+      License]". Searched the body for training data, dataset and corpus: none; only inference and serving
+      code is referenced (vLLM, mistral_common, the Mistral Vibe CLI), no training code or post-training
+      data.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 88ca78ebd3f6ed759fa46ab95df1a679f2d12bcbba0a89eb9085f739bfa020cf
+    content_sha256: e1aa7a24bc4845a11cf8defacd723a67fe5cc551ca9311e0276933d9176f55d7
     establishes:
     - weights
     - data
     - code
-  - url: https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512
-    shows: 'License section - "This model is licensed under a Modified MIT License"; `license:other` in
-      the repo tags with a LICENSE file; `"gated":false`; the flagship SKU of the governing release'
-    accessed: '2026-08-14'
+  - url: https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512/raw/main/LICENSE
+    shows: 'LICENSE file, "Modified MIT License": "You are not authorized to exercise any rights under this
+      license if the global consolidated monthly revenue of your company (or that of your employer) exceeds
+      $20 million" - a revenue ceiling, so not OSI.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b92dd3fc7b4007eb52c04fa5a335eec6ab71fb8a8951e24dffdd416ce0ac4779
+    content_sha256: 867daee3b68e4e9392c9767fec4f099096fa6ad67adfc9c24020494e97766778
+    establishes:
+    - license
+  - url: https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512
+    shows: 'Model page for the 123B flagship: the tag list includes "license:other", and the page text reads
+      "This model is licensed under a" followed by a link to the Modified MIT License file.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fc39b891e0e2f5e4ac56d4b181c1c2780a3fd6178f3992d72f051458f7b93428
     establishes:
     - license
   - url: https://huggingface.co/api/models?search=Devstral&sort=createdAt&direction=-1&limit=30
-    shows: 'Hub search for Devstral, newest first. No first-party mistralai repo newer than the 2512 pair
-      appears - everything above them is a community quantization, GGUF conversion or LoRA - so Devstral 2
-      (2512) is still the governing release.'
-    accessed: '2026-08-14'
+    shows: 'Hub search for Devstral, newest first: no first-party "mistralai/Devstral" repo newer than the
+      2512 pair appears; newer entries are community quantizations, GGUF conversions and LoRAs such as "Devstral-Small-2-24B-Instruct-2512-GGUF".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 840cd47d88b06a76305589d42f49d190c05b642fc4439261569f33aff4274e68
-  - url: https://huggingface.co/mistralai/Devstral-Small-2507
-    shows: live card; license=apache-2.0; 24B agentic coding model; SWE-bench Verified 53.6%; superseded
-      by the 2512 release
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60
+    content_sha256: 7ac57cc4ed91dd75124f864c3d1e735bb8012fb1928437004e9cae6d61258e33
 adoption:
   level: 3
   reach: 100K-1M
@@ -98,20 +103,25 @@ capability:
   value: Devstral 2 123B SWE-bench Verified 72.2% / SWE-bench Multilingual 61.3% / Terminal-Bench 2 32.6%;
     Devstral Small 2 24B 68.0% / 55.7% / 22.5%
   confidence: high
-  note: Devstral 2's 123B model scores 72.2% on SWE-bench Verified, in line with Qwen3-Coder and ahead of
-    Ornith, while the smaller 24B model scores 68.0%. Kimi and GLM score higher on the same kind of benchmark,
-    which is what keeps Devstral a step below the frontier rather than at it.
-  last_verified: '2026-08-14'
+  note: Devstral 2's 123B model scores 72.2% on SWE-bench Verified on its model card, ahead of Qwen3 Coder
+    Plus, Kimi K2 Thinking and GLM 4.6, while the smaller 24B model scores 68.0%. DeepSeek v3.2 and the
+    proprietary models on the same table score higher, and Mistral's newer Medium 3.5 model has replaced
+    Devstral 2 as its coding model, which keeps Devstral a step below the frontier.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512
-    shows: 'Benchmark Results table - Devstral 2 123B SWE Bench Verified 72.2% / SWE Bench Multilingual
-      61.3% / Terminal Bench 2 32.6%; Devstral Small 2 24B 68.0% / 55.7% / 22.5%'
-    accessed: '2026-08-14'
+  - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512/raw/main/README.md
+    shows: 'Benchmark Results table in the model card: the "Devstral 2" row reads "72.2%" on SWE Bench Verified,
+      "61.3%" on SWE Bench Multilingual and "32.6%" on Terminal Bench 2; "Devstral Small 2" reads "68.0%",
+      "55.7%" and "22.5%"; competitor rows include "Kimi K2 Thinking", "GLM 4.6" and "DeepSeek v3.2", with
+      "Claude Sonnet 4.5" at "77.2%"; the footnote reads "Benchmark results presented are based on publicly
+      reported values for competitor models".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 88ca78ebd3f6ed759fa46ab95df1a679f2d12bcbba0a89eb9085f739bfa020cf
-  - url: https://huggingface.co/mistralai/Devstral-Small-2507
-    shows: 'SWE-bench Verified table: Devstral Small 1.1 = 53.6% under the OpenHands scaffold, against
-      46.8 for Devstral Small 1.0 and 42.2 for DeepSWE; the superseded release the old score read'
-    accessed: '2026-08-13'
+    content_sha256: e1aa7a24bc4845a11cf8defacd723a67fe5cc551ca9311e0276933d9176f55d7
+  - url: https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/raw/main/README.md
+    shows: 'Vendor card for a newer model: "Mistral Medium 3.5 supersedes all our previous coding models,
+      namely Devstral, across all benchmarks" and "It scores **91.4%** on τ³-Telecom and **77.6%** on SWE-Bench
+      Verified."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60
+    content_sha256: 6d14ac4dba5a4c8b3d652ea67742ee1b41e424772194b8088cd62603d5032465

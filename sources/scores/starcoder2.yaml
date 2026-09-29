@@ -20,29 +20,43 @@ openness:
         detail: The Stack v2
   confidence: high
   note: StarCoder2 publishes its weights, its full training corpus (The Stack v2) and the self-alignment
-    pipeline behind the instruct checkpoint, more than most comparable models disclose. Its BigCode-OpenRAIL-M
-    license restricts what the model can be used for rather than who can use it commercially, and because
-    that license is not OSI-approved, it stays at open weights rather than a fully open release.
+    pipeline behind the instruct checkpoint. Its BigCode-OpenRAIL-M license restricts what the model can
+    be used for rather than who can use it commercially, and because that license is not OSI-approved, it
+    stays at open weights rather than a fully open release.
   raw: weights:open;data:open(self-oss-instruct-sc2-exec-filter-50k + 7 documented intermediate datasets);code:open(starcoder2-self-align
     pipeline on GitHub);base-data:open(The Stack v2);license:BigCode-OpenRAIL-M(open but RAIL behavioral-use
     restrictions, not OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
-    shows: '"the very first entirely self-aligned code Large Language Model (LLM) trained with a fully
-      permissive and transparent pipeline"; Code bigcode-project/starcoder2-self-align and Dataset
-      bigcode/self-oss-instruct-sc2-exec-filter-50k named on the card, plus a Full Data Pipeline section;
-      `license:bigcode-openrail-m` in the repo tags and `"gated":false`'
-    accessed: '2026-08-13'
+    shows: Model card calls it the "very first entirely self-aligned code Large Language Model (LLM) trained
+      with a fully permissive and transparent pipeline" and says "Our open-source pipeline uses StarCoder2-15B
+      to generate thousands of instruction-response pairs"; it links Code bigcode-project/starcoder2-self-align
+      and Dataset bigcode/self-oss-instruct-sc2-exec-filter-50k, and says "We provide intermediate datasets
+      for every step of the pipeline".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 09525fc2fe12437d9ea3c62a6d23a1394dc51b750a268d956ebdac20bf07e302
-    establishes: [weights, data, code, license]
+    content_sha256: d5699f85d99b7446cd0424e604a6e681937e350ccd578bb67ea977f609c0678b
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models/bigcode/starcoder2-15b-instruct-v0.1
+    shows: Hugging Face API record for the instruct model shows "gated":false, the tag "license:bigcode-openrail-m",
+      and the tag "dataset:bigcode/self-oss-instruct-sc2-exec-filter-50k".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1cd5176846400b06c80efe5f41dc8d6f20197093f38e82da6e6bb8f7767f812b
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/bigcode/starcoder2-15b
-    shows: base StarCoder2 trained on the open The Stack v2; `license:bigcode-openrail-m`; `"gated":false`
-    accessed: '2026-08-13'
+    shows: 'Base model card: "StarCoder2-15B model is a 15B parameter model trained on 600+ programming
+      languages from" The Stack v2, and "The model is licensed under the BigCode OpenRAIL-M v1 license agreement."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 53ead6b9c586adb9dc60a183daaf29ea6d4509a20f2f2872729784fd69ffc177
-    establishes: [data]
+    content_sha256: 1e3e84fc1c1ab8bbd478fac8a410e1cdbe11bbbd108207246e76567ac4393849
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -75,14 +89,14 @@ capability:
   basis_detail: HumanEval
   value: StarCoder2-15B-Instruct-v0.1 HumanEval pass@1 72.6% (HumanEval+ 63.4%)
   confidence: high
-  note: Strong HumanEval for a fully-open 16B in 2024 (best fully-self-aligned code model at release), but
-    HumanEval is saturated and the model is below 2026 frontier coders on harder agentic benchmarks (SWE-bench).
-    Mid-tier.
-  last_verified: '2026-08-13'
+  note: The model card reports HumanEval pass@1 of 72.6 and HumanEval+ of 63.4 and calls it the first entirely
+    self-aligned code model trained with a fully permissive and transparent pipeline. It reports no agentic
+    coding results, and it sits below current frontier coding models.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
-    shows: 'model-index - HumanEval pass@1 72.6, HumanEval+ pass@1 63.4; the card evaluates on EvalPlus,
-      LiveCodeBench and DS-1000'
-    accessed: '2026-08-13'
+    shows: 'Card title "StarCoder2-Instruct: Fully Transparent and Permissive Self-Alignment for Code Generation"
+      with a model-index giving HumanEval pass@1 72.6 and HumanEval+ pass@1 63.4.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 09525fc2fe12437d9ea3c62a6d23a1394dc51b750a268d956ebdac20bf07e302
+    content_sha256: d5699f85d99b7446cd0424e604a6e681937e350ccd578bb67ea977f609c0678b
