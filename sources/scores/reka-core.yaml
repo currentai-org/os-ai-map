@@ -14,17 +14,43 @@ openness:
     - name: Proprietary
       detail: API/on-prem, no weights
   confidence: high
-  note: Proprietary multimodal model; API/on-prem/on-device deployment but no downloadable weights.
-  last_verified: '2026-08-13'
+  note: Reka launched Core as a proprietary multimodal model for API, on-premises and on-device deployment,
+    with no downloadable weights. Its technical report describes training data drawn from public and proprietary
+    or licensed datasets, and neither the corpus nor the training code is released.
+  last_verified: '2026-09-29'
   raw: weights:closed;data:closed(mix of public+licensed proprietary);code:closed;license:Proprietary(API/on-prem,
     no weights)
   sources:
   - url: https://reka.ai/news/reka-core-our-frontier-class-multimodal-language-model
-    shows: Reka Core via API/on-prem/on-device, proprietary, no open weights, no corpus named
-    accessed: '2026-08-13'
+    shows: 'The April 15, 2024 launch page says "Core, like our other models, is available via API, on-premises,
+      or on-device to satisfy the deployment constraints of our customers and partners" and gives no download
+      link or model license; searched the body for weights, download and license: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5f05afb2d4412aecd3d07342cfc5c011eedb8e2182d165bb33f3e55d5753d7e0
-    establishes: [weights, data, code, license]
+    content_sha256: 024b1220f7b411d0c61180abed36c43af7656c484d61739afdc95f666b5bf761
+    establishes:
+    - weights
+    - code
+    - license
+  - url: https://arxiv.org/html/2404.12387v1
+    shows: 'The Reka technical report says "The training data comprises a mixture of publicly available
+      and proprietary/licensed datasets with a dataset knowledge cutoff of November 2023" and releases no
+      corpus or training code; searched the body for dataset release and training code download: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3e7a376fdd0164d2405007484d32fa0a984748353002e9f9242009c46f388c08
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=RekaAI
+    shows: 'The Hugging Face model listing for the RekaAI author returns only Flash and Edge repositories,
+      such as "RekaAI/reka-flash-3.1-rekaquant-q3_k_s" and "RekaAI/reka-edge-2603"; searched the listing
+      for reka-core: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 34c1299edea840f838db935beee45f29221a19fdfb765dcf972ec38415453cf4
+    establishes:
+    - weights
 adoption:
   level: 2
   signal_type: reported_traction
@@ -32,7 +58,6 @@ adoption:
   note: Reka Core is distributed through Reka's own API as well as Snowflake Cortex and Oracle Cloud Marketplace,
     but no usage has been disclosed through any of those channels, so the reading here is directional rather
     than measured. The Snowflake and Oracle listings are not established by the launch page cited here.
-  last_verified: '2026-08-13'
   sources:
   - url: https://reka.ai/news/reka-core-our-frontier-class-multimodal-language-model
     shows: availability via API/on-prem/on-device; no user, customer or request count published
@@ -50,12 +75,18 @@ capability:
     wins over Claude 3 Opus on multimodal human evaluation and Gemini Ultra on video, though those comparisons
     are Reka's own launch claims rather than independent benchmarks. Two years on, that positioning is well
     behind the 2026 frontier.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://reka.ai/news/reka-core-our-frontier-class-multimodal-language-model
-    shows: '"Core is comparable to GPT-4V on MMMU, outperforms Claude-3 Opus on our multimodal human
-      evaluation conducted by an independent third party, and surpasses Gemini Ultra on video tasks",
-      dated Apr 15, 2024.'
-    accessed: '2026-08-13'
+    shows: The launch page states "Core is comparable to GPT-4V on MMMU, outperforms Claude-3 Opus on our
+      multimodal human evaluation conducted by an independent third party, and surpasses Gemini Ultra on
+      video tasks", dated "Apr 15, 2024".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5f05afb2d4412aecd3d07342cfc5c011eedb8e2182d165bb33f3e55d5753d7e0
+    content_sha256: 024b1220f7b411d0c61180abed36c43af7656c484d61739afdc95f666b5bf761
+  - url: https://arxiv.org/html/2404.12387v1
+    shows: The technical report says that on image question answering benchmarks such as MMMU and VQAv2
+      Reka Core "performs competitively to GPT4-V".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3e7a376fdd0164d2405007484d32fa0a984748353002e9f9242009c46f388c08

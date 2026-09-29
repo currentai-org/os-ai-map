@@ -17,7 +17,7 @@ openness:
     - name: Apache-2.0
       detail: OSI
   confidence: high
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: RWKV publishes Apache-2.0 weights and open training code, plus a machine-readable index naming every
     training-data component with a resolvable link, category and citation. But the corpus itself is not
     released, mixing proportions are withheld, one component is gated and another's version unresolved,
@@ -26,22 +26,22 @@ openness:
     links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/datasets/RWKV/RWKV-World-Listing/raw/main/train.csv
-    shows: Header `Dataset;Category;Categories;Citation;Version;URL;Notes`; every source named with a resolvable
-      link. Notes defer exact sampling to unpublished supplementary material ("see wiki.txt in the supplementary
-      material for exact" amounts) and include the unresolved question "peS2o - Which version out of the
-      3?".
-    accessed: '2026-08-13'
+    shows: The component index opens with the header "Dataset;Category;Categories;Citation;Version;URL;Notes"
+      and gives each component a resolvable URL, but defers sampling to unpublished material ("see wiki.txt
+      in the supplementary material for exact amounts"), flags OSCAR as "gated" and leaves peS2o unresolved
+      ("Which version out of the 3?").
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: b017936cd892fab763f650c6d9ee11cb375faaa0240f4ee313866960310ab03d
     establishes:
     - data
   - url: https://huggingface.co/api/datasets/Goose-World/RWKV-World-v3
-    shows: '`gated: false`, `private: false`, 217 downloads. Files are `index/train.jsonl`, `train.csv`,
-      `100k/subsample_100k.jsonl`, `1m/subsample_1m.jsonl`, two READMEs and one figure. No corpus shards,
-      which is what holds `data` at components-listed.'
-    accessed: '2026-08-13'
+    shows: The dataset API describes the repo as "an itemised and annotated list of the RWKV World v3 corpus"
+      tagged "license:apache-2.0"; gated and private are both false, and the files are only index/train.jsonl,
+      train.csv, the 100k and 1m subsample JSONL files, two READMEs and one figure, with no corpus shards.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6eb12fd74e2421f22bc9efd63151490f6aecffd043ae57b0470cef84171db5e7
+    content_sha256: 51934aa0a20d3b9a5bb58b6f1be5c724a47dbf5d97c283ff1b3d22f92b585a14
     establishes:
     - data
   - url: https://api.github.com/repos/BlinkDL/RWKV-LM
@@ -53,21 +53,41 @@ openness:
     establishes:
     - code
   - url: https://huggingface.co/api/models/BlinkDL/rwkv-7-world
-    shows: '`gated: false`, `private: false`, card license `apache-2.0`, 4,537 downloads. Weight files downloadable
-      as `RWKV-x070-World-{0.1B,0.4B,1.5B}-*.pth` - the only source on file that establishes open weights.'
-    accessed: '2026-08-13'
+    shows: The model API for BlinkDL/rwkv-7-world is tagged "license:apache-2.0" with gated and private
+      both false, and lists downloadable weight files including "RWKV-x070-World-2.9B-v3-20250211-ctx4096.pth"
+      and "RWKV-x070-World-1.5B-v3-20250127-ctx4096.pth".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 3bcb5837ccdeac036c4d7ba6df9f10c98462c0d01eda7321c3005492ef352da5
+    content_sha256: ba7cc466ab334c54a8a3cb04fea7a22f47f2f1fe323573539003fad3fe71c6c3
     establishes:
     - weights
     - license
   - url: https://arxiv.org/abs/2503.14456
-    shows: 'RWKV-7 Goose paper abstract: "we also present an extended open source 3.1 trillion token multilingual
-      corpus". No arXiv ancillary files are attached, so the supplementary material the dataset notes point
-      to is not obtainable from the paper either.'
-    accessed: '2026-08-13'
+    shows: The RWKV-7 Goose abstract says "we release our models and dataset component listing at" the RWKV
+      Hugging Face org "and our training and inference code at" github.com/RWKV/RWKV-LM, "all under the
+      Apache 2.0 License", and describes "an extended open source 3.1 trillion token multilingual corpus".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 40573f508270ee99b48e0ad83a2ed56fbc500141d00e931910bfaabb2dad6323
+    establishes:
+    - code
+    - license
+  - url: https://huggingface.co/api/models/BlinkDL/rwkv7-g1
+    shows: The model API for BlinkDL/rwkv7-g1, the line the RWKV-7 World card now points users to, is tagged
+      "license:apache-2.0" with gated and private both false, and lists weight files up to "rwkv7-g1j-13.3b-20260831-ctx16384.pth".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c4e64325c770fb8c2be18a224b7532b655cae0c39bad6e5455689b27e5d625f3
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/BlinkDL/rwkv7-g1/raw/main/README.md
+    shows: 'The RWKV7-G1 card says "These are BASE models (pretrained with web/code/synthetic + instruction/chat/reasoning
+      data)" and points to "Training: https://github.com/BlinkDL/RWKV-LM" for training code; it gives no
+      itemized listing of the added synthetic and instruction data.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9045954e42589b5cb642e3370ba2e9da7c35ff8b2c48845ef23d0a9c854d8fc3
 adoption:
   level: 1
   signal_type: usage_volume
@@ -96,20 +116,36 @@ adoption:
     http_status: 200
     content_sha256: 5d732a40ffed05782e80c9a78279b3070f74a4fa261b85d81e202ab57d8384ad
 capability:
-  score: 4
+  score: 2
   basis: benchmark
   basis_detail: RWKV-7 Goose (arXiv:2503.14456)
-  value: 'RWKV-7 ''Goose'' 2.9B: claimed 3B SoTA multilingual and matching 3B SoTA English on far fewer training
-    tokens; MMLU rose to ~43% across generations'
+  value: RWKV-7 World 2.9B - MMLU 54.6% (1.5B 44.8%), with a claimed 3B-class multilingual lead on far fewer
+    training tokens; the G1 successor line reaches 13.3B
   confidence: medium
-  note: Strong intelligence-per-token for its size via a linear-time RNN architecture; not at frontier absolute
-    capability. The paper makes a 3B-scale multilingual claim and an efficiency argument and makes no frontier-scale
-    claim at all, which is the shape of a 4 rather than a 5 here.
-  last_verified: '2026-08-13'
+  note: RWKV-7 World 2.9B reports 54.6% on MMLU, and its paper presents it as leading the 3B class on multilingual
+    tasks with far fewer training tokens, through a linear-time recurrent architecture. That still sits
+    well below mid-size transformer models such as InternLM2.5-7B at 71.6 and Yi-34B at 76.3, and the newer
+    G1 line, up to 13.3B parameters, ships without a vendor benchmark table.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2503.14456
-    shows: RWKV-7 Goose paper - 3B SoTA-multilingual claims on far fewer training tokens, and the
-      extended 3.1-trillion-token multilingual corpus
-    accessed: '2026-08-13'
+    shows: The abstract says the "2.9 billion parameter language model achieves a new 3B SoTA on multilingual
+      tasks and matches the current 3B SoTA on English language downstream performance", trained "on dramatically
+      fewer tokens than other top models".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 40573f508270ee99b48e0ad83a2ed56fbc500141d00e931910bfaabb2dad6323
+  - url: https://huggingface.co/BlinkDL/rwkv-7-world/raw/main/README.md
+    shows: The RWKV-7 World card reports "rwkv7-v3-2.9b 54.56% (rwkv6-v2.1-3.1b 32.38%)" and "rwkv7-v3-1.5b
+      44.84% (rwkv6-v2.1-1.6b 26.34%)" on its MMLU eval, and tells users to "Please upgrade to https://huggingface.co/BlinkDL/rwkv7-g1"
+      as better in all aspects.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 15eea8973f70b036ccacaeeecae9e5be7b0d4e3a415d0c63bc9977f58edd08a6
+  - url: https://huggingface.co/BlinkDL/rwkv7-g1/raw/main/README.md
+    shows: The RWKV7-G1 card lists sizes up to "13.3B = L61-D4096" and points to UncheatableEval rather
+      than publishing a benchmark table ("check https://huggingface.co/spaces/Jellyfish042/UncheatableEval
+      to see their performance at language modeling").
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9045954e42589b5cb642e3370ba2e9da7c35ff8b2c48845ef23d0a9c854d8fc3

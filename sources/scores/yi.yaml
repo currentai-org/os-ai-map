@@ -18,30 +18,76 @@ openness:
   confidence: high
   note: Permissive Apache-2.0 weights, but the training data and the full training code are not released,
     so this is open weights rather than open source.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0, on HF);data:closed(pretraining corpus not released);code:partial(inference/usage
     examples; no training pipeline);license:Apache-2.0(OSI, permissive, no use restrictions)
   sources:
   - url: https://huggingface.co/01-ai/Yi-1.5-34B
-    shows: license apache-2.0, 34B base model (base vs chat variants listed), downloadable weights,
-      no training corpus named on the card
-    accessed: '2026-08-13'
+    shows: Yi-1.5-34B model page. The card says the model is "continuously pre-trained on Yi with a high-quality
+      corpus of 500B tokens" without naming or linking any dataset, and the page carries the tag "license:apache-2.0".
+      The page metadata records the repo as not gated; searched for agree to share and access request, none.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: cf578a970ea0b9b37672d9b81f62bc3f4aa2a1ca2cc4003a5029c527e12fb607
-    establishes: [weights, data, license]
+    content_sha256: 42345626ea2c7bd0cec1339cb04db05d3e02807d8dc9fec198264dba2ae14d3f
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://huggingface.co/01-ai/Yi-1.5-9B
-    shows: license apache-2.0, 9B base model, base/chat variants listed
-    accessed: '2026-08-13'
+    shows: Yi-1.5-9B model page, same card text, with the tag "license:apache-2.0" and the line "Yi-1.5-9B
+      is the top performer among similarly sized open-source models" under base models. The page metadata
+      records the repo as not gated.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8258a7b7c45c12462ce06b6dbba59a490d97a10313e9cc6feb72f5cfbf418fbb
-    establishes: [weights, license]
+    content_sha256: 70fe27897927d0f98b83c24cd8caa6ff83ceb213f4ddf46a3cd1267e06a596e9
+    establishes:
+    - weights
+    - license
   - url: https://api.github.com/repos/01-ai/Yi-1.5
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 561 stars, last pushed
-      2024-11-11. Usage examples only, no training pipeline, which is what holds `code` at partial.'
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 561 stars, last pushed 2024-11-11.
+      Usage examples only, no training pipeline, which is what holds `code` at partial.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b67e948fb9e43e6b4a83bd0a41b17a0c3f333274720211f6b6b38f5fa1513a4f
-    establishes: [code]
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/01-ai/Yi-1.5-34B
+    shows: Hugging Face API record for 01-ai/Yi-1.5-34B lists the weight shard "model-00001-of-00015.safetensors"
+      through 00015 and the tag "license:apache-2.0"; the gated and private fields are both false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e71985820ca4b119d3e10c1d554c29112dad50346ff5605d4e106267ce0f6e19
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/01-ai/Yi-1.5@main/
+    shows: jsDelivr listing of the 01-ai/Yi-1.5 GitHub repo at main. The top level holds only "/gh/01-ai/Yi-1.5@main/LICENSE",
+      "/gh/01-ai/Yi-1.5@main/NOTICE", "/gh/01-ai/Yi-1.5@main/README.md", "/gh/01-ai/Yi-1.5@main/demo/" and
+      "/gh/01-ai/Yi-1.5@main/requirements.txt", with no training or data-preparation code.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8182cc3671086a237d8c646ea7e97c491817e59d5526d6b225051e135d0b01f7
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/01-ai/Yi-1.5@main/README.md
+    shows: Yi-1.5 repo README (via jsDelivr). It covers inference, Ollama, vLLM and a web demo, and for
+      training points to third-party tools - "These frameworks all support fine-tuning the Yi series models"
+      - with no pretraining pipeline. It states "The code and weights of the Yi-1.5 series models are distributed
+      under the" Apache 2.0 license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3cd6a16a32032c79674f7b808adb61f8fe153945b20b95af34885b509f68a90e
+    establishes:
+    - code
+    - license
+  - url: https://cdn.jsdelivr.net/gh/01-ai/Yi-1.5@main/LICENSE
+    shows: LICENSE file in the Yi-1.5 repo (via jsDelivr) is the standard Apache License text, "TERMS AND
+      CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION", with no added use restrictions.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 10K-100K
@@ -50,7 +96,6 @@ adoption:
   note: Adoption is measured as Hugging Face downloads for the single declared checkpoint, 01-ai/Yi-1.5-34B.
     Yi is a 2024-era family now well behind the Qwen, Llama and DeepSeek generations, and its downloads
     have fallen off accordingly.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/01-ai/Yi-1.5-34B
     shows: 10,283 downloads in the trailing 30 days for 01-ai/Yi-1.5-34B
@@ -60,26 +105,26 @@ adoption:
 capability:
   score: 2
   basis: benchmark
-  basis_detail: MMLU/GSM8K
-  value: 'Yi-34B base - MMLU 76.3, BBH 54.3, C-Eval 81.4. Competitive in the 2024 mid-size class.'
+  basis_detail: MMLU/BBH/C-Eval
+  value: Yi-34B base - MMLU 76.3, BBH 54.3, C-Eval 81.4. Competitive in the 2023-2024 mid-size class.
   confidence: medium
-  note: Yi-34B, the 2023 base model, scores 76.3 on MMLU, 54.3 on BBH and 81.4 on C-Eval - competitive for
-    its time but well below 2026 frontier models like DeepSeek-V4 and Qwen 3.6, alongside Falcon 3 among
-    dated-generation families. These figures come from the original tech report; no source publishes a benchmark
-    table for the newer Yi-1.5-34B, the family's current release.
-  last_verified: '2026-08-14'
+  note: Yi-34B, the original 2023 base model, scores 76.3 on MMLU, 54.3 on BBH and 81.4 on C-Eval in its
+    tech report, competitive for its time but well below current DeepSeek and Qwen releases and comparable
+    to Falcon 3. The Yi-1.5 model cards show base-model benchmarks only as charts, so the published figures
+    are for Yi-34B rather than Yi-1.5-34B.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/html/2403.04652v1
-    shows: 'Yi tech report full text. Table 2, "Overall performance on grouped academic benchmarks
-      compared to open-source base models", Yi-34B row - MMLU 76.3, BBH 54.3, C-Eval 81.4. Yi-6B row
-      63.2 / 42.8 / 72.0. These are Yi-34B figures, not Yi-1.5-34B.'
-    accessed: '2026-08-14'
+    shows: Yi tech report full text. Table 2, "Overall performance on grouped academic benchmarks compared
+      to open-source base models", gives the Yi 34B row as MMLU "76.3", BBH "54.3" and C-Eval "81.4". These
+      are Yi-34B figures, not Yi-1.5-34B.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d3233c6470af203bed646b708278c9c60fc96edb9170dc5cade6be8f945a464a
+    content_sha256: 96ba6f05bb71271f09a0edf2cd94acfef3439eaa1424a7f6ee9945bbb194c7ab
   - url: https://arxiv.org/abs/2403.04652
-    shows: Yi foundation-models tech report. The abstract states "Our base models achieve strong performance
+    shows: Yi foundation-models tech report abstract. It states "Our base models achieve strong performance
       on a wide range of benchmarks like MMLU" but carries none of the recorded figures.
-    accessed: '2026-08-13'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 4363a0464da4eaa37bbec1a2fdb2e6ac134ccac26184e2e0089c47a601c927e3
   - url: https://github.com/01-ai/Yi-1.5
@@ -89,3 +134,16 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 56e1ad80901e3a4bccc2edf102da9d65fdb64b07a905d012bec1520b532389c7
+  - url: https://cdn.jsdelivr.net/gh/01-ai/Yi-1.5@main/README.md
+    shows: Yi-1.5 repo README (via jsDelivr) carries no benchmark table; it says "For model details and
+      benchmarks, see" the Hugging Face model card collection.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3cd6a16a32032c79674f7b808adb61f8fe153945b20b95af34885b509f68a90e
+  - url: https://huggingface.co/01-ai/Yi-1.5-34B/raw/main/README.md
+    shows: Yi-1.5-34B raw model card. Under base models it says "Yi-1.5-34B is on par with or excels beyond
+      larger models in some benchmarks" and shows the results only as an image, with no benchmark figures
+      in the text.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5b245685718cc62faa5a588e87ccc215532ff93bb2a6f24f1fd698445432b460

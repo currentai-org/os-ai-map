@@ -25,26 +25,58 @@ openness:
     Commercial License'': free for academic work and free for commercial use, but only once an application
     form has been approved. That application step on the weights, together with a pretraining corpus that
     is not released, is what keeps this at open weights rather than open source.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(custom 'Free Commercial License', academic free, commercial use free but requires an
     application form);data:closed(pretraining corpus not released);code:open(Apache-2.0 training/inference
     code on GitHub);license:Apache-2.0(code, OSI) + custom weights license(non-OSI, application step)
   sources:
   - url: https://huggingface.co/internlm/internlm2_5-7b
-    shows: 'model card - "The code is licensed under Apache-2.0, while model weights are fully open for
-      academic research and also allow free commercial usage. To apply for a commercial license,
-      please fill in the application form"; no pretraining corpus named.'
-    accessed: '2026-08-13'
+    shows: Model card license section - "The code is licensed under Apache-2.0, while model weights are
+      fully open for academic research and also allow" free commercial usage, and "To apply for a commercial
+      license, please fill in the" application form. No pretraining corpus is named or linked.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8d71d439e2086817346ef1242fc67601625f48b65f721a49de9c9924f15115be
-    establishes: [weights, data, license]
+    content_sha256: e964011c52745b7a39155a6e8fbfe98ef7da040b155750d690faf168a044db9a
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://api.github.com/repos/InternLM/InternLM
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 7,264 stars, description
-      "Official release of InternLM series (InternLM, InternLM2, InternLM2.5, InternLM3)".'
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 7,264 stars, description "Official
+      release of InternLM series (InternLM, InternLM2, InternLM2.5, InternLM3)".'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: f40dc8f221c151cc9037c8cd9c14e12aa39f4c2aedea70cabd44d06961a12470
-    establishes: [code]
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/internlm/internlm2_5-7b
+    shows: Hub API record for internlm/internlm2_5-7b with gated false and private false, weight shards
+      "model-00001-of-00002.safetensors" and "model-00002-of-00002.safetensors" listed. The record carries
+      no license tag.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06ef8dba5a9b4cf2c7d9bba9de6383dbd5e1c7a0f56c2286129d439f9d476b98
+    establishes:
+    - weights
+  - url: https://huggingface.co/internlm/internlm2_5-7b/raw/main/README.md
+    shows: 'Raw model card - "The code is licensed under Apache-2.0, while model weights are fully open
+      for academic research and also allow" free commercial use on application, and the corpus is described
+      only as "InternLM2.5 leverages a large amount of synthetic data". Searched the card for dataset: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 563681ef1d4f2197049289c43791182223bce07c560ebacd9244a32d39d3fdb9
+    establishes:
+    - data
+    - license
+  - url: https://pypi.org/pypi/InternEvo/json
+    shows: PyPI record for InternEvo, InternLM's training framework, summarized as "an open-sourced lightweight
+      training framework aims to support model pre-training without the need for extensive dependencies".
+      The record declares no license field.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 877eb632f4c0caaf66e592b87e3924d81fee8af71741646bcb9985f3b7d09a3d
+    establishes:
+    - code
 adoption:
   level: 1
   reach: <10K
@@ -73,17 +105,25 @@ capability:
   note: InternLM2.5-7B scores 71.6 on MMLU (5-shot, OpenCompass), matching Yi-1.5-9B and beating Llama-3-8B's
     66.4, with a 1M-token context. That places it beside Falcon 3 and Yi-1.5 among small models from the
     same generation, well below the 2026 frontier.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/internlm/internlm2_5-7b
-    shows: 'OpenCompass benchmark table - InternLM2.5-7B MMLU 71.6, against InternLM2-7B 65.8,
-      LLaMA3-8B 66.4 and Yi-1.5-9B 71.6.'
-    accessed: '2026-08-13'
+    shows: Model card benchmark section - "We have evaluated InternLM2.5 on several important benchmarks
+      using the open-source evaluation tool" OpenCompass; the table row reports MMLU 71.6 for InternLM2.5-7B
+      against 65.8 for InternLM2-7B, 66.4 for LLaMA3-8B and 71.6 for Yi-1.5-9B.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8d71d439e2086817346ef1242fc67601625f48b65f721a49de9c9924f15115be
+    content_sha256: e964011c52745b7a39155a6e8fbfe98ef7da040b155750d690faf168a044db9a
   - url: https://raw.githubusercontent.com/InternLM/InternLM/main/model_cards/internlm2.5_7b.md
-    shows: InternLM2.5-7B base model card, MMLU 71.6 (OpenCompass). Cited previously as a github.com
-      blob URL; the raw form is what the fetcher reads and what the digest is taken over.
+    shows: InternLM2.5-7B base model card, MMLU 71.6 (OpenCompass). Cited previously as a github.com blob
+      URL; the raw form is what the fetcher reads and what the digest is taken over.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 02664377594685e484707f0a11519473cebe0f851ad4c224e1790128bf681693
+  - url: https://huggingface.co/internlm/internlm2_5-7b/raw/main/README.md
+    shows: Raw model card table - "| MMLU      | 71.6           | 65.8         | 66.4      | 71.6      |"
+      under the header "| Benchmark | InternLM2.5-7B | InternLM2-7B | LLaMA3-8B | Yi-1.5-9B |", results
+      "obtained from" OpenCompass.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 563681ef1d4f2197049289c43791182223bce07c560ebacd9244a32d39d3fdb9

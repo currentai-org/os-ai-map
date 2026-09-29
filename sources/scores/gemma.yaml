@@ -15,41 +15,106 @@ openness:
       detail: OSI,but no open data/code
   governing_release: gemma-4
   confidence: medium
-  note: 'Gemma 4 ships under Apache-2.0 and is ungated on Hugging Face, a relicense from the earlier Gemma
-    License''s Prohibited Use Policy that held Gemma 2 and 3 back. Because the current release governs,
-    the family reads as open weights: the model card describes the pretraining mixture without releasing
-    it and links no training pipeline, so data and code stay closed.'
-  last_verified: '2026-08-13'
+  note: Gemma 4 ships under Apache-2.0 and is ungated on Hugging Face, unlike Gemma 2 and 3, which remain
+    gated under the Gemma License and its Prohibited Use Policy. The model card describes the pretraining
+    mixture without releasing it and links no training pipeline, so Gemma 4 is an open-weights release rather
+    than a fully open model.
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)
   sources:
   - url: https://huggingface.co/google/gemma-4-31B-it/raw/main/README.md
-    shows: 'front matter `license: apache-2.0` with `license_link` to ai.google.dev/gemma/docs/gemma_4_license;
-      a Model Data section describing the pretraining mixture as "web documents, code, images, audio,
-      with a cutoff date of January 2025" without releasing it; no training-pipeline repository linked.'
-    accessed: '2026-08-13'
+    shows: 'Front matter "license: apache-2.0" with a license_link to ai.google.dev; the card says "This
+      release includes open-weights models in both pre-trained and instruction-tuned variants" and describes
+      the pretraining mixture as "web documents, code, images, audio, with a cutoff date of January 2025"
+      without releasing it. Searched for a training-pipeline or pretraining-code repository: none linked,
+      only the google-gemma GitHub organization and inference snippets.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: e209f5c435b1e66055bd6d7c29185103ae8d2027a03a96b359335154f206b82b
-    establishes: [weights, data, code, license]
+    establishes:
+    - weights
+    - data
+    - code
+    - license
   - url: https://huggingface.co/api/models/google/gemma-4-31B-it
-    shows: 'card license `apache-2.0`, `gated: false`, `private: false`, 9,915,701 downloads. The
-      Gemma 4 SKUs are ungated, unlike the Gemma 2 and 3 repos which are still `gated: manual`.'
-    accessed: '2026-08-13'
+    shows: Hub record for google/gemma-4-31B-it carries the tag "license:apache-2.0" with the card license_link
+      "https://ai.google.dev/gemma/docs/gemma_4_license"; the gated and private flags are both false, so
+      the weights download without an access request.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 708691572354c890c5b1cd409d2dd9c8824773712ee2e44d8d6acdcbe62ca113
-    establishes: [weights, license]
+    content_sha256: 169f9cdb5436e9ff45f6cb6be91afd166da82993d06fe7fb8d8d874237169397
+    establishes:
+    - weights
+    - license
   - url: https://ai.google.dev/gemma/docs/gemma_4_license
-    shows: The Gemma 4 license URL redirects to ai.google.dev/gemma/apache_2, which is what settles
-      the relicensing rather than a Gemma Terms of Use page.
-    accessed: '2026-08-13'
+    shows: 'The Gemma 4 license link redirects to ai.google.dev/gemma/apache_2, canonical "https://ai.google.dev/gemma/apache_2",
+      titled "Apache License 2.0", which carries the standard Apache text rather than a Gemma Terms of Use
+      page. Searched the license body for prohibited use and Gemma Terms: they appear only as site navigation
+      links.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b68286e35c25d3293e8013e7d988db561ba8100c1cc5308988640c948d60e193
-    establishes: [license]
+    content_sha256: 9c85a840216c10e165c3992289fa79cebc16643410d1bbc6c993c3ee3b4788b1
+    establishes:
+    - license
   - url: https://ai.google.dev/gemma/docs/releases
-    shows: Gemma 4 sizes and release dates. It carries no Apache-2.0 statement for the models - the only
-      Apache text on the page is the site footer covering code samples.
-    accessed: '2026-08-13'
+    shows: Release log listing Gemma 4 "in E2B, E4B, 31B and 26B A4B sizes" on March 31, 2026 and Gemma
+      4 12B Unified on June 3, 2026. It carries no license statement for the models; the only Apache text
+      is the site footer covering code samples.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1bba6e91a79dd4550686b2372bd3515627156c92e56776b15ef672931b9ecc33
+    content_sha256: efb37c2f38d3b48c01c97b1489a4f198f005235adfccc06ad8edbe906e06dc40
+  - url: https://huggingface.co/api/models/google/gemma-4-26B-A4B-it
+    shows: Hub record for "google/gemma-4-26B-A4B-it" carries the tag "license:apache-2.0" with gated and
+      private both false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 85dae1332c65ddcf3e7b3da5c504a4f3960edfdeb4879e8bcf3d7ee190a7f2be
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/google/gemma-4-12B-it
+    shows: Hub record for google/gemma-4-12B-it, the June 2026 12B Unified release, tagged "base_model:finetune:google/gemma-4-12B"
+      and "license:apache-2.0", with gated and private both false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b63840986971a1b6b2fb2843a1e18a2766511f9ce678a1a5e5656d3b79b6de9b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/google/gemma-4-31B
+    shows: Hub record for the pretrained base google/gemma-4-31B carries the tag "license:apache-2.0" and
+      the license_link "https://ai.google.dev/gemma/docs/gemma_4_license", with gated and private both false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06ab5110db09b819eb3a0552ec75afc2417eff0eeb85960ea41d04524d674326
+    establishes:
+    - weights
+    - license
+  - url: https://arxiv.org/abs/2607.02770
+    shows: 'Gemma 4 Technical Report abstract: "We introduce Gemma 4, a new generation of open-weight, natively
+      multimodal language models in the Gemma model family." Searched the abstract page for dataset release,
+      training code and open-source: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fc97116015bd163da02faa06f98816a03b96f1fe8bb68e49dd669027632fe90
+  - url: https://huggingface.co/api/models/google/gemma-4-E2B-it
+    shows: Hub record for google/gemma-4-E2B-it, tagged "base_model:finetune:google/gemma-4-E2B" and "license:apache-2.0",
+      with the gated and private flags both false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 13714a8a11baec57c31566863f4566470abfca352f0b53b675b144d84466e8e7
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/google/gemma-4-E4B-it
+    shows: Hub record for google/gemma-4-E4B-it, tagged "base_model:finetune:google/gemma-4-E4B" and "license:apache-2.0",
+      with the gated and private flags both false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 83ffcb608981ce57850c9bbb5d598e079083ca3b2c28eaa0c41026d2fc2f4992
+    establishes:
+    - weights
+    - license
 adoption:
   level: 5
   reach: '>10M'
@@ -97,35 +162,44 @@ adoption:
     http_status: 200
     content_sha256: 9a7a52ed6eaeeb36aafabd7d6b42f330d746b3f885b78fd37229ccf4bb1cae37
 capability:
-  score: 5
+  score: 4
   basis: benchmark
-  basis_detail: model-card evaluation table (MMLU Pro / GPQA Diamond / AIME / LiveCodeBench)
+  basis_detail: Artificial Analysis Intelligence Index; model-card evaluation table
   value: 'gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%,
     LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native
     only on E2B/E4B/12B'
   confidence: medium
-  note: Gemma 4 scores MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 89.2% without tools, LiveCodeBench v6 80.0%
-    and MMMU Pro 76.9%; the 31B flagship handles text and image, with audio limited to the smaller E2B,
-    E4B and 12B variants. It ranks 60th of 391 on the Arena leaderboard, behind several open models including
-    GLM's latest release, placing it near rather than at the frontier of open models.
-  last_verified: '2026-08-14'
+  note: Gemma 4 31B scores 19 on Artificial Analysis's Intelligence Index, well behind the highest-scoring
+    open-weight releases from DeepSeek and GLM. Its model card reports 85.2% on MMLU Pro, 84.3% on GPQA
+    Diamond and 80.0% on LiveCodeBench v6, and on the Arena text leaderboard it trails more than a dozen
+    openly licensed models, which places it near rather than at the frontier of open models.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/google/gemma-4-31B-it
-    shows: '"Gemma 4 models are multimodal, handling text and image input (with audio supported on E2B,
-      E4B, and 12B) and generating text output"; evaluation table, 31B column - MMLU Pro 85.2%, AIME 2026
-      (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3%, MMMLU 88.4%, MMMU Pro 76.9%,
-      MATH-Vision 85.6%. Neither "Arena" nor "LMArena" appears on the card.'
-    accessed: '2026-08-14'
+    shows: 'Rendered model card: "Gemma 4 models are multimodal, handling text and image input (with audio
+      supported on E2B, E4B, and 12B) and generating text output"; the evaluation table, 31B column, lists
+      MMLU Pro 85.2%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3% and MMMU Pro
+      76.9%.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7b0c0a8c018346ca266733edf3dae57f2b34fc3abe4cd4e57730ec9276c874ab
+    content_sha256: 2f1a8471f508307be32aa25eb86f4f048c3a7d25678fa77d1f5523675b2524e8
   - url: https://arena.ai/leaderboard/text
-    shows: 'successor to lmarena.ai, which 301s here - "gemma-4-31b", Google, Apache 2.0, rank 60 at
-      1451 +/-8, with gemma-4-26b-a4b at rank 80; several openly-licensed models rank above it. Does not
-      support a top-tier Arena claim.'
-    accessed: '2026-08-14'
+    shows: Text leaderboard entry "gemma-4-31b" linking to "https://aistudio.google.com/app/prompts/new_chat?model=gemma-4-31b-it"
+      from Google, license Apache 2.0, now rank 73 at a rating near 1453 among 409 listed models; fifteen
+      openly licensed models rank above it, including glm-5.3-max, deepseek-v4.1-flash-max and kimi-k3-max.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 14ae18a07dd83608b55f1bbb8e73355f68ea9091ce3af5c8e2e8942fc943d164
+    content_sha256: 9ed3f1d6b94f5bc78c54e42cfefc838b70732a1bcf8b9d75ba5bbb2700914cfe
   - url: https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud
-    shows: Gemma 4 availability on Google Cloud. Carries no multimodal statement and no Arena ranking, so
-      it establishes neither the multimodal claim nor the Arena ranking it was cited for.
-    accessed: '2026-06-17'
+    shows: 'Google Cloud availability post: "Built from the same research as Gemini 3 and released under
+      a commercially permissive Apache 2.0 license". It carries no benchmark figures and no Arena ranking.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: def84691d9a3e1c4abce00ff3672b0bf40bbbfeaf1d492ca7f6589deec0df979
+  - url: https://artificialanalysis.ai/models/gemma-4-31b
+    shows: 'Artificial Analysis page on Intelligence Index v4.3.2: "Gemma 4 31B (Reasoning) scores 19 on
+      the Artificial Analysis Intelligence Index, placing it well above average among comparable models
+      (median: 8)".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 887c8b8f10c32b585be9e17de00b04ad84da8bf50758a94a955f9044dc2f15a3

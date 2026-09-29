@@ -14,7 +14,8 @@ openness:
       value: open
       detail: all training scripts + configuration files at github.com/langtech-bsc/alia
     checkpoints:
-      value: not-released
+      value: open
+      detail: partially pretrained revisions tagged v0.5 and v0.9 on HF
     license:
     - name: Apache-2.0
       detail: OSI
@@ -23,29 +24,108 @@ openness:
     pretraining corpus is documented rather than released or reconstructable. That gap keeps it at open
     weights rather than the open-source tier that OLMo, Pythia and Apertus reach, the last by publishing
     data-reconstruction scripts.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0, safetensors on HF BSC-LT/ALIA-40b);data:components-listed(60+ named
     sources described in the model card, but the pretraining corpus "will not be released or distributed
     to third parties");code:open(all training scripts + configuration files at github.com/langtech-bsc/alia);checkpoints:not-released;license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/BSC-LT/ALIA-40b
-    shows: Apache-2.0 license; downloadable safetensors weights; 40.4B params; 9.37T training tokens; corpus
-      documented across 60+ sources but "will not be released or distributed"; links training code at
-      github.com/langtech-bsc/alia
-    accessed: '2026-08-13'
+    shows: 'Rendered model card states "This model is released under a permissive" Apache 2.0 license, the
+      base model was "pre-trained from scratch on 9.37 trillion tokens", and of the pretraining corpus that
+      it "will not be released or distributed to third parties". Searched the body for intermediate checkpoints:
+      none listed.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 78dd310624fb04983bbc3a17c74419a94aac3f62027e9677bbf76f2fada7e5dc
-    establishes: [weights, data, license, checkpoints]
+    content_sha256: bd38be0f201b86c657d922844c28981599dc66c2e872d1ce4f0ce87ab65c6ff8
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://api.github.com/repos/langtech-bsc/alia
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`. The training scripts and
-      configuration files the model card points at are published.'
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`. The training scripts and configuration
+      files the model card points at are published.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 19e3dcc6b38a51d135d52efe44fc2bfc085971dd2bcd4605e43a75b5585b2cf7
-    establishes: [code]
+    establishes:
+    - code
   - url: https://github.com/langtech-bsc/alia
     shows: open training scripts and configuration files for the ALIA models
     accessed: '2026-06-26'
+  - url: https://huggingface.co/BSC-LT/ALIA-40b/raw/main/README.md
+    shows: 'Raw model card front matter declares "license: apache-2.0"; the card says "Along with the open
+      weights, all training scripts and configuration files are made publicly available", names the "Colossal
+      OSCAR dataset" and other sources in the data section, and states "The dataset will not be released
+      or distributed to third parties." Searched for intermediate checkpoints: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e3cfa5cf7d67fc0992970f4982d88e3f84b1d02558654402c22c5ed2836461cf
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/BSC-LT/ALIA-40b
+    shows: Hugging Face model API for BSC-LT/ALIA-40b reports gated as false, carries the tag "license:apache-2.0",
+      and lists weight shards from "model-00001-of-00017.safetensors" through "model-00017-of-00017.safetensors",
+      alongside declared datasets such as "dataset:oscar-corpus/colossal-oscar-1.0".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 53a73d7a821c6c324bda52aebad651c6d39c5217545b67261e9db7d8d7e22eca
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://cdn.jsdelivr.net/gh/langtech-bsc/alia@main/
+    shows: jsDelivr mirror of the GitHub repository langtech-bsc/alia at main lists the directories "/gh/langtech-bsc/alia@main/configs/",
+      "/gh/langtech-bsc/alia@main/launchers/" and "/gh/langtech-bsc/alia@main/tokenizer/" plus a LICENSE
+      file, so the training code tree is public.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 33400a3ff2734767e26f1958b40c6ff025dc1eca758c73bd6bfb4459eee8b911
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/langtech-bsc/alia@main/README.md
+    shows: 'Repository README (via jsDelivr): "Scripts and configuration files used to pre-train the ALIA
+      language model." It also carries an MIT badge, which conflicts with the Apache-2.0 LICENSE file.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dd6216b3960ec6b9d74acd8572cc192e4c2abb8cff73b7e15b58d0f0f5c977e7
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/langtech-bsc/alia@main/configs/
+    shows: jsDelivr listing of the repository configs directory shows "/gh/langtech-bsc/alia@main/configs/bsc_40b.yaml",
+      "/gh/langtech-bsc/alia@main/configs/bsc_40b_32k.yaml" and "/gh/langtech-bsc/alia@main/configs/40B_quality_data.yaml".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 52b77dec5fe54d9db0fdb4595be717639962df8780ead176437641097064dfd3
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/langtech-bsc/alia@main/LICENSE
+    shows: Repository LICENSE file (via jsDelivr) is the Apache License text, "TERMS AND CONDITIONS FOR
+      USE, REPRODUCTION, AND DISTRIBUTION", Version 2.0.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/BSC-LT/ALIA-40b/refs
+    shows: Hugging Face refs API for BSC-LT/ALIA-40b lists two tagged earlier revisions of the weights repo,
+      "refs/tags/v0.9" (commit "aa8a4ac7f9e18f3c2ea8ec0cc84e7783cd751ac7") and "refs/tags/v0.5" (commit
+      "6c73c6d901b28aa2fbc17f5267f3b0c1f7b62358"), beside the "refs/heads/main" branch.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4c149e9d19aed0dfede1da86fc3db3f6fd9854322a5ca9b5eeb026461cd6f0cd
+    establishes:
+    - checkpoints
+  - url: https://huggingface.co/BSC-LT/ALIA-40b/raw/main/Release%20note%20v0.9.md
+    shows: The v0.9 release note says "the ALIA-40B checkpoint has completed the main pre-training on 8.56
+      trillion tokens" and that this main pre-training "was unfinished in the previous release", so the
+      tagged v0.5 revision is a partially pretrained checkpoint.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 29ada98a360eda009f9c67af9d39310d179d1b4a43e5ca3ff0609346ca8af944
+    establishes:
+    - checkpoints
 adoption:
   level: 1
   reach: <10K
@@ -84,7 +164,6 @@ capability:
   note: ALIA-40B is a serious 40B multilingual base model, but it is smaller than Apertus-70B and below
     the 2026 frontier on reasoning and knowledge. It targets Iberian and European-language coverage rather
     than state-of-the-art capability.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/BSC-LT/ALIA-40b
     shows: 40.43B safetensors parameters, 9.37T training tokens, 35 European languages + 92 programming

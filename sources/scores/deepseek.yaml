@@ -19,44 +19,99 @@ openness:
   note: DeepSeek releases the V4 line's weights under a plain MIT license, but publishes no training corpus
     and only inference and serving code rather than a full training pipeline. This makes DeepSeek an open-weights
     release rather than a fully open model.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(MIT, on HF, both Pro and Flash);data:closed;code:partial(inference/serving; no training
     pipeline or data);license:MIT(permissive, no use restrictions)
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Pro
-    shows: 'card license `mit`, `gated: false`, `private: false`, safetensors weight shards listed,
-      1,385,596 downloads and 5,437 likes.'
-    accessed: '2026-08-13'
+    shows: 'Hub API record for deepseek-ai/DeepSeek-V4-Pro with gated false and private false, the tag "license:mit",
+      and weight shards listed from "model-00001-of-00064.safetensors" onward. Searched the record for gated
+      manual or an access prompt: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c757fe8046a0775a5f9e458b3c9291a0add239d61c8fe2c5201ffd2e260d5af4
-    establishes: [weights, license]
+    content_sha256: 409b510e4f35de8dbc228bf56ca9ebd72dd3d154b014cd8c23cf9d70edbb6c6b
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
-    shows: 'Model card - "This repository and the model weights are licensed under the MIT License";
-      "We pre-train both models on more than 32T diverse and high-quality tokens", which describes
-      the corpus without releasing it.'
-    accessed: '2026-08-13'
+    shows: 'Model card states "This repository and the model weights are licensed under the" MIT License,
+      and describes the corpus without releasing it: "diverse and high-quality tokens, followed by a comprehensive
+      post-training pipeline", after "We pre-train both models on more than" 32T.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e8b054d7e86dd85311b3be80a81e02692a15d40d33d92596a8d72bc354aea9c6
-    establishes: [weights, data, license]
+    content_sha256: 76b98c218049fd5a93ee70f31f5f48b66607d3f64676e6baedd96b6b0be7d03f
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://api.github.com/repos/deepseek-ai/DeepSeek-V3
-    shows: '`private: false`, `archived: false`, license `MIT`, 104,190 stars. Inference and serving
-      code, no pretraining pipeline, which is what holds `code` at partial.'
+    shows: '`private: false`, `archived: false`, license `MIT`, 104,190 stars. Inference and serving code,
+      no pretraining pipeline, which is what holds `code` at partial.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 8d1a25a796adfe7e4302d989666326119c0f701f742fe1746cc66eb9513d63d5
-    establishes: [code]
+    establishes:
+    - code
   - url: https://api-docs.deepseek.com/news/news260424
-    shows: DeepSeek's own V4 release note, describing the line as shipping with 'Open Weights.' It announces
-      weights and serving surfaces but releases no training corpus and no training pipeline.
-    accessed: '2026-08-15'
+    shows: 'DeepSeek''s V4 preview release note, which says "DeepSeek-V4 Preview is officially live & open-sourced!"
+      and links the weights as "Open Weights" on the Hub collection. Searched for a training-data or training-code
+      release: none, only weights, API and a tech report.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4abd1cc878b3dd4a4c4dbee6f1096282785f5b06b699ce49d0ac80d2057cf4b2
+    content_sha256: 6e426025f6a3087c861857708be5ad22fa7266822d8aee7c5219d1fc56d799f1
   - url: https://simonwillison.net/2026/apr/24/deepseek-v4/
-    shows: Third-party write-up of the V4 release recording 'MIT license' over 'open weights'. Corroborates
-      the licence reading; establishes no dimension on its own, being a commentary rather than the artifact.
-    accessed: '2026-08-15'
+    shows: 'Third-party write-up of the V4 release: "They’re using the standard MIT license." Corroborates
+      the license reading and establishes no dimension on its own.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 96927bc65d3c5f9a04b5aa3e6190f8bbbe6cfbc141dfabd1e30f85261fb24a98
+    content_sha256: acc68944f209861462e7a291bd164b81a9924c1b9696be7c213619f283019bd4
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/raw/main/LICENSE
+    shows: The LICENSE file shipped beside the weights is the plain MIT text, "Permission is hereby granted,
+      free of charge, to any person obtaining a copy" with no use, field or scale restriction added.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040
+    establishes:
+    - license
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/raw/main/inference/README.md
+    shows: 'The inference folder in the model repo is titled "Inference code for DeepSeek models" and covers
+      weight conversion and generation ("First convert huggingface model weight files to the format of this
+      project"). Searched for a pretraining script, data preparation or training recipe: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 68dba94f8676578cddff2b0e8861586ef89d1857c6ad29e40bf5f17610b03bdf
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Pro-0813
+    shows: Hub API record for deepseek-ai/DeepSeek-V4-Pro-0813, the official V4-Pro release, with gated
+      false and private false, the tag "license:mit", and shards from "model-00001-of-00066.safetensors"
+      onward.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b8fba2a79a4db4c73882009cbe6a504d8084d5a4dfbd3f752677b0a15aba84d0
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/raw/main/README.md
+    shows: The V4-Pro-0813 card calls it "the official release of" V4-Pro, "superseding the preview version,
+      with greatly enhanced agentic capabilities", and repeats "This repository and the model weights are
+      licensed under the [MIT License](LICENSE)."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 61755d88e95789fcd7a36f50892f97bba977a30fc99d0f2907ab787ed10b0e66
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/raw/main/README.md
+    shows: The V4.1-Flash card, the family's newest release, says it "is trained from scratch on a multimodal
+      corpus comprising" 45T tokens without publishing that corpus, and that "This repository and the model
+      weights are licensed under the [MIT License](LICENSE)."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 347c9db4e5506acb531cbc3b724407ab88e9af8781679152f0823d7bac16d251
+    establishes:
+    - data
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -106,24 +161,53 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: SWE-bench/MMLU-Pro/GPQA
-  value: null
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'DeepSeek-V4.1-Flash - AA Intelligence Index 39 (v4.3.2), #7 of 116 large open-weight models. DeepSeek-V4-Pro-0813
+    - AA Intelligence Index 36, #9 of 116. V4-Pro-Max preview card - SWE-bench Verified 80.6, MMLU-Pro 87.5,
+    GPQA Diamond 90.1, LiveCodeBench 93.5.'
   confidence: high
-  note: SWE-bench Verified 80.6% (trails Claude Opus 4.6 by ~0.2), MMLU-Pro 87.5, GPQA Diamond 90.1, LiveCodeBench
-    Pass@1 93.5 (reported best of any model). V4-Pro-Max described as the strongest open source model available,
-    at/near closed frontier on coding and reasoning.
-  last_verified: '2026-08-13'
+  note: DeepSeek-V4.1-Flash scores 39 on Artificial Analysis's Intelligence Index and the official V4-Pro-0813
+    release scores 36, both among the highest-scoring large open-weight models on the index, though a few
+    open-weight releases such as GLM-5.3 score higher. The V4-Pro preview card reports 80.6 on SWE-bench
+    Verified and 93.5 on LiveCodeBench.
+  last_verified: '2026-09-29'
   sources:
   - url: https://benchlm.ai/models/deepseek-v4-pro-high
-    shows: SWE-bench Verified 80.6, MMLU-Pro 87.5, GPQA Diamond 90.1 and LiveCodeBench Pass@1 93.5 all present.
-    accessed: '2026-08-13'
+    shows: BenchLM profile (the URL now redirects to the V4-Pro-0813 page) still carries the DeepSeek-V4
+      technical-report row "Software Engineering Benchmark Verified" at "80.6%", beside an overall "BenchLM
+      score 64.0 out of 100" for the official release.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 21dd1a4cab515c7b1986a70fb799d4f34e9f4d86467859bddfb2a8895d9cf8fd
+    content_sha256: b417d83475b4d10648226a79aaf7b7cd2bb7de51a6d9d44e5d1d3e1235022448
   - url: https://codersera.com/blog/deepseek-v4-pro-review-benchmarks-pricing-2026/
-    shows: SWE-bench Verified 80.6 and LiveCodeBench 93.5 present; corroborates the benchlm reading.
-    accessed: '2026-08-13'
+    shows: Third-party V4-Pro review listing "80.6% SWE-bench Verified" and a LiveCodeBench row of 93.5%
+      against Claude Opus 4.7 and GPT-5.5; corroborates the preview figures.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0654905390b5684a1e914f5646453f7c86f5d4128ba1e12a44aaf4f737cc4f33
+    content_sha256: a09098404cf738bd2ec9e567c9abbcc261fa35683db2b6020b37995d424726bd
   - url: https://www.morphllm.com/deepseek-v4
     shows: Third-party DeepSeek V4 write-up; the host answers HTTP 429.
     accessed: '2026-06-04'
+  - url: https://artificialanalysis.ai/models/deepseek-v4-pro
+    shows: 'Artificial Analysis page for the official V4-Pro release: "DeepSeek V4 Pro 0813 (Reasoning,
+      Max Effort) scores 36 on the Artificial Analysis Intelligence Index", ranked 9th of the "116 models
+      in this class", which for an open-weights model the page defines as "compared only with other open
+      weights models of the same size class", and it "is amongst the leading models in intelligence".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6cae4cf7b96ac843f560e57baf96afe7867af4d8d7e9ad77fa4746c5be270bf4
+  - url: https://artificialanalysis.ai/models/deepseek-v4-1-flash
+    shows: 'Artificial Analysis page for the newest family member: "DeepSeek V4.1 Flash (Reasoning, Max
+      Effort) scores 39 on the Artificial Analysis Intelligence Index", ranked 7th of the "116 models in
+      this class", which for an open-weights model the page defines as "compared only with other open weights
+      models of the same size class" (Large, over 150B).'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5c041a10609fac091d949feaba156259e410ccf671a23d01be1826ceecbb9d7c
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/raw/main/README.md
+    shows: The V4-Pro preview card's V4-Pro-Max comparison table, with rows "| SWE Verified (Resolved) |
+      **80.8** | - | 80.6 | 80.2 | - | 80.6 |" and "| LiveCodeBench (Pass@1) | 88.8 | - | 91.7 | 89.6 |
+      - | **93.5** |", the primary source for the recorded preview figures.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c4d714818a4d3333542edc7d38ea065825a0cf7aa8fea3605bbd1d1c18e4a610

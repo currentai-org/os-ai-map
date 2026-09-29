@@ -20,40 +20,96 @@ openness:
       detail: OSI
   confidence: high
   note: OLMo publishes Apache-2.0 weights, the full Dolma 3 training corpus, training code and intermediate
-    checkpoints, all ungated and downloadable. It is the reference fully open model line in this category.
-  last_verified: '2026-08-13'
+    checkpoints, all ungated and downloadable, so the whole training run is open to inspection.
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/allenai/dolma
-    shows: '`gated: false`, `private: false`, 2,724 downloads, 1,070 likes, card license `odc-by`.
-      The Dolma corpus is published and ungated.'
-    accessed: '2026-08-13'
+    shows: 'Hugging Face API record for the original Dolma corpus - "Dolma: an Open Corpus of Three Trillion
+      Tokens for Language Model Pretraining Research", tagged "license:odc-by"; gated and private are both
+      false.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 364dbfecfba2f6cc23e7eeb6976c8f47a356d12c3de0ed9e7365c3e4a5bbae38
-    establishes: [data]
+    content_sha256: 46aaa4798d9640ea248f13376832f3bc3b269aa0292c02ace840a14287342cf3
+    establishes:
+    - data
   - url: https://allenai.org/blog/olmo3
-    shows: '"Olmo 3 is pretrained on Dolma 3, a new ~9.3-trillion-token corpus"; "Because the Olmo 3
-      data recipes, training pipeline, and checkpoints are open, independent teams can connect model
-      behavior back to measurable" training decisions; "Olmo 3-Base delivers the strongest performance
-      among fully open base models - where training data, code, and weights are all publicly available".'
-    accessed: '2026-08-13'
+    shows: 'Ai2 release post: Olmo 3 is pretrained on Dolma 3, "a new ~9.3-trillion-token corpus drawn from
+      web pages, science PDFs"; "Because the Olmo 3 data recipes, training pipeline, and checkpoints are
+      open, independent teams can connect model behavior back to measurable properties"; fully open means
+      "where training data, code, and weights are all publicly available".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
-    establishes: [data, code, checkpoints]
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705
+    establishes:
+    - data
+    - code
+    - checkpoints
   - url: https://huggingface.co/allenai/Olmo-3-1025-7B
-    shows: 'OLMo 3 7B base model card: License apache-2.0, safetensors weight files, `isGated: false`.'
-    accessed: '2026-08-13'
+    shows: OLMo 3 7B model page states "The code and model are released under Apache 2.0" and serves the
+      Apache-2.0 7B base weights; the embedded repo data records gated as false. Searched for agree to share
+      and access request - none.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 06da5bb4162473959564b21c20890b82a328eccba9e93f50d50edc2877bc9bad
-    establishes: [weights, license]
+    content_sha256: 0e1c02a42ac9d6352d2f0348d4c6500affc0eead1cc53f23b64a6d040972aa57
+    establishes:
+    - weights
+    - license
   - url: https://api.github.com/repos/allenai/OLMo
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 6,625 stars, description
-      "Modeling, training, eval, and inference code for OLMo" - the training pipeline itself, not
-      an inference wrapper.'
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 6,625 stars, description "Modeling,
+      training, eval, and inference code for OLMo" - the training pipeline itself, not an inference wrapper.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 7110ea1b77f3e0785fdb74ea93c92137a6fe90a031e4865c9a10220baaeae7f7
-    establishes: [code]
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/allenai/Olmo-3-1025-7B
+    shows: Hugging Face API record for allenai/Olmo-3-1025-7B tagged "license:apache-2.0" and "dataset:allenai/dolma3_mix-6T-1025",
+      with safetensors shards such as "model-00001-of-00003.safetensors"; gated and private are false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 266ef79e35db2a501a4f93dea761a0c409adea065c0bbf95b5d03b087bd4f63d
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/allenai/Olmo-3-1125-32B
+    shows: Hugging Face API record for allenai/Olmo-3-1125-32B tagged "license:apache-2.0" and "dataset:allenai/dolma3_mix-5.5T-1125";
+      gated and private are false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8c7cca0f3d1ccf0631f25e47131538ab38e795b2f4aaca29b3e827532dcf1859
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/allenai/Olmo-3-1025-7B/raw/main/README.md
+    shows: 'OLMo 3 7B model card: "We are releasing all code, checkpoints, and associated training details";
+      "For pretraining, the naming convention is"; lists "Core repo (training, inference, fine-tuning etc.):
+      https://github.com/allenai/OLMo-core" and the pretraining launch script "OLMo-3-1025-7B-pretrain-1.py";
+      "The code and model are released under Apache 2.0."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d9f4fad78dd34fac1faee26233a339784b2210fcdd2c22551a43628e5446a952
+    establishes:
+    - code
+    - checkpoints
+    - license
+  - url: https://huggingface.co/api/models/allenai/Olmo-3-1025-7B/refs
+    shows: Hugging Face refs listing for allenai/Olmo-3-1025-7B carries 1,487 branches, including intermediate
+      revisions such as "stage2-step47684-mix-round5-from-2T-ckpt" and "stage3-step10000".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 511db44420b34aa4e8482c4ab1a9cb5b79e832900e4ca2a5c5224b0b5ba12148
+    establishes:
+    - checkpoints
+  - url: https://huggingface.co/datasets/allenai/dolma3_mix-6T/raw/main/README.md
+    shows: 'Dolma 3 Mix (6T) dataset card: "is the collection of data used during the pretraining stage
+      to train the Olmo-3-1125-32B model"; "Dolma 3 mix is licensed under the Open Data Commons Attribution
+      License v1.0 (ODC-By)."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 901a231cdcae33ea8ce765d1bdef7606555780c4a108b0bcf046a65fa5d5adf9
+    establishes:
+    - data
 adoption:
   level: 3
   reach: 100K-1M
@@ -83,17 +139,26 @@ capability:
   score: 4
   basis: benchmark
   basis_detail: MMLU/GPQA/reasoning
-  value: OLMo 3-Think 32B narrows the gap to Qwen3-32B on reasoning at ~6x fewer tokens
+  value: OLMo 3.1 Think 32B tops Qwen3-32B on AIME 2025 (78.1 vs 70.9) but trails it on GPQA (57.5 vs 67.3)
+    and MMLU (86.4 vs 88.8)
   confidence: high
-  note: 'The strongest fully-open base and reasoning model released so far: competitive with Qwen2.5 and
-    Gemma 3 and approaching Qwen3-32B, but still a step below the trillion-parameter open-weight frontier
-    that a 5 would require.'
-  last_verified: '2026-08-13'
+  note: OLMo 3.1 Think 32B beats Qwen3-32B on AIME 2025 but trails it on GPQA and MMLU, and the line as
+    a whole is competitive with Qwen2.5 and Gemma 3. It remains a step below the trillion-parameter open-weight
+    models at the frontier.
+  last_verified: '2026-09-29'
   sources:
   - url: https://allenai.org/blog/olmo3
-    shows: '"the strongest fully open thinking model we''re aware of, narrowing the gap to the best
-      open-weight models of similar scale - such as Qwen 3 32B - while training on roughly 6x fewer
-      tokens"; and "Olmo 3-Base delivers the strongest performance among fully open base models".'
-    accessed: '2026-08-13'
+    shows: 'Ai2 release post: Olmo 3-Think 32B is described as "narrowing the gap to the best open-weight
+      models of similar scale" such as Qwen 3 32B "while training on roughly 6x fewer tokens"; the 12/12
+      update says Olmo 3.1 32B Think "brings substantial gains across math, reasoning, and instruction-following
+      benchmarks".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705
+  - url: https://huggingface.co/allenai/Olmo-3.1-32B-Think/raw/main/README.md
+    shows: 'Olmo 3.1 32B Think model card evaluation table: "| AIME 2025 | 78.1 | 66.2 | 70.7 | 72.5 | 70.9
+      |" (Olmo 3.1 32B Think 78.1 vs Qwen 3 32B 70.9), "| GPQA | 57.5 | 55.7 | 57.6 | 58.1 | 67.3 |" and
+      "| MMLU | 86.4 | 85.3 | 85.2 | 85.4 | 88.8 |" (Qwen 3 32B ahead on both).'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 21de41172077e337ef50d25dd342c331954e228100d442da1a224427055dcfd6

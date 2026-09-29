@@ -13,46 +13,54 @@ openness:
       detail: inference/utils via llama-models, no training code
     license:
     - name: Llama-4-Community
-      detail: 'non-OSI: 700M MAU commercial cap as of Apr 2025 + no-compete/no-train-competing-LLM clause'
+      detail: non-OSI - 700M MAU commercial cap, acceptable-use policy with an EU-domicile exclusion for
+        the multimodal models, Llama naming requirement for derivatives
   governing_release: llama-4-scout-maverick
   confidence: high
-  note: Llama's weights are downloadable, but only under Meta's Llama-4-Community license, which caps commercial
-    use at 700 million monthly active users and adds an acceptable-use policy and naming requirements unchanged
-    since Llama 3.1. That cap still permits commercial use, unlike Mistral's Non-Production terms or CC-BY-NC,
-    which forbid it outright.
-  last_verified: '2026-08-13'
+  note: Llama 4's weights download from Hugging Face once a user accepts Meta's Llama 4 Community License
+    and submits a contact form. The license caps commercial use at 700 million monthly active users and
+    requires derivatives to carry the Llama name, and its acceptable-use policy withholds the multimodal
+    models from individuals and companies based in the EU. That cap still permits commercial use, unlike
+    Mistral's Non-Production terms or CC-BY-NC, which forbid it outright.
+  last_verified: '2026-09-29'
   raw: 'weights:open(downloadable on HF);data:closed;code:partial(inference/utils via llama-models, no training
     code);license:Llama-4-Community(non-OSI: 700M MAU commercial cap as of Apr 2025 + no-compete/no-train-competing-LLM
     clause)'
   sources:
   - url: https://huggingface.co/api/models/meta-llama/Llama-4-Scout-17B-16E
-    shows: '`gated: manual`, `private: false`, safetensors weight shards listed, 18,815 downloads and 261
-      likes; `cardData.license` is `other`, so the Llama-4-Community tier is read from Meta''s text rather
-      than from a Hub label.'
-    accessed: '2026-08-13'
+    shows: 'Hub API record for the Scout base checkpoint: gated is manual and private is false, the file
+      list runs "model-00001-of-00050.safetensors" through fifty shards, the license tag is "license:other",
+      and the gating prompt opens with the "LLAMA 4 COMMUNITY LICENSE AGREEMENT" text effective "April 5,
+      2025".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e902b7aba05eda623d584e2caa969a1066b16e80419943a5a0ac481755976bb5
+    content_sha256: 11e40aa0f387a3f32f45411a41da9934aa81b6ad2003d898b767cb8173182890
     establishes:
     - weights
     - license
   - url: https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E
-    shows: 'Model card carries the LLAMA 4 COMMUNITY LICENSE AGREEMENT in full - "greater than
-      700 million monthly active users in the preceding calendar month, you must request a license
-      from Meta" - and a Training Data section reading "~40 trillion tokens ... from a mix of
-      publicly available, licensed data and information from Meta''s products and services", which
-      describes the corpus without releasing it.'
-    accessed: '2026-08-13'
+    shows: 'Model card carries the Llama 4 Community License in full, including the cap "greater than 700
+      million monthly active users in the preceding calendar month, you must request a license from Meta"
+      and the naming rule "include “Llama” at the beginning of any such AI model name", and describes the
+      corpus without releasing it: "pretrained on ~40 trillion tokens and Llama 4 Maverick was pretrained
+      on ~22 trillion tokens of multimodal data from a mix of publicly available, licensed data and information
+      from Meta’s products and services".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e8b3b57cc7cede76c05200e58d1a7aff1a8ed61c891b62128158d4818516f3c1
-    establishes: [weights, data, license]
+    content_sha256: a53df8aeee2627aaf65668e55883d6325ec8819478215b128126f59bb2cfdaa7
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://api.github.com/repos/meta-llama/llama-models
-    shows: '`private: false`, `archived: false`, description "Utilities intended for use with Llama
-      models", license `NOASSERTION`. Utilities and inference helpers, no pretraining pipeline,
-      which is what holds `code` at partial.'
+    shows: '`private: false`, `archived: false`, description "Utilities intended for use with Llama models",
+      license `NOASSERTION`. Utilities and inference helpers, no pretraining pipeline, which is what holds
+      `code` at partial.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5731f42b1494cd5ef7970a35c272ef5e1c3e0116ab71f8164e2532a38d46a5df
-    establishes: [code]
+    establishes:
+    - code
   - url: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
     shows: Now answers HTTP 400 to a plain request. It was originally cited as a corroborating launch post
       for the release.
@@ -60,18 +68,44 @@ openness:
     http_status: 400
     content_sha256: dd43073cac40b5602838549abd73fee8eb3b94209bc393d4f43b4b0d29b3ffc2
   - url: https://huggingface.co/blog/llama4-release
-    shows: Hugging Face's Llama 4 release post, covering the Scout and Maverick open-weight checkpoints
-      and their 256K context. Establishes that weights are published; the community-licence terms that cap
-      the score are on Meta's licence text, not here.
-    accessed: '2026-08-15'
+    shows: 'Hugging Face release post: "Both Llama 4 Maverick and Llama 4 Scout model weights are available
+      directly on the Hugging Face Hub under the" meta-llama organization, and "This includes both base
+      and instruction tuned variants", behind the condition "You need to accept the license terms on the
+      model card before accessing the weights".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f2cd4b12fc61285671199593233db37efa356c2396ed1e9cb9abf25d16dd51d1
+    content_sha256: 51cac271fb78a0a9e1ce7be0a545ecfa9146f45b5bc2f780c68768fdefdd532b
+    establishes:
+    - weights
   - url: https://royfactory.net/posts/ai/202512/meta-llama4-open-weights-scout-maverick-license/
-    shows: Third-party summary of the Llama 4 open-weights release and its licence terms. Corroborates the
-      open-weights reading; establishes no dimension on its own.
-    accessed: '2026-08-15'
+    shows: Third-party summary of the release and its license, noting the "major threshold clause (700M
+      MAU) you must review before production use"; corroborates the open-weights reading and establishes
+      no dimension on its own.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e77453f8d7c9be49172cca11202702240fa631b0be9e5b1e95ee90f1420cdc73
+    content_sha256: bf1cde6a6e7516870c69f378c75882ef1d8359b9c770994c3f1eadcbd923a6cc
+  - url: https://pypi.org/pypi/llama-models/json
+    shows: 'PyPI record for llama-models, the package built from Meta''s meta-llama/llama-models repository:
+      summary "Llama models", and a README whose code is download and inference tooling ("Example scripts
+      are available in", with the Llama 4 scripts running "models.llama4.scripts.chat_completion"). Searched
+      the README for a pretraining recipe or training script: none, only inference and quantized-inference
+      instructions.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a6b7a07d16f8962b32dacd95e191ad017a17546ee7715e7b8dcf1814919f4285
+    establishes:
+    - code
+  - url: https://www.llama.com/llama4/use-policy/
+    shows: 'Llama 4 Acceptable Use Policy (served from dev.meta.ai after redirect): "With respect to any
+      multimodal models included in Llama 4, the rights granted under Section 1(a) of the Llama 4 Community
+      License Agreement are not being granted to you if you are an individual domiciled in, or a company
+      with a principal place of business in, the European Union" and "This restriction does not apply to
+      end users of a product or service that incorporates any such multimodal models".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6e22c39819164b77213b83dc5935c2a037d2da8815b24224cd6581362f1518ef
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -81,7 +115,6 @@ adoption:
     Llama 3.1 and Llama 4. The older Llama-3.1-8B checkpoint still accounts for most of that reach, even
     though the capability reading is taken on Llama 4 Maverick -- reach and capability sit on different
     releases of the same family.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-405B
     shows: 114,146 downloads in the trailing 30 days for meta-llama/Llama-3.1-405B
@@ -112,25 +145,26 @@ capability:
   score: 3
   basis: benchmark
   basis_detail: Artificial Analysis Intelligence Index
-  value: 'Llama 4 Maverick: AA Intelligence Index 14 (v4.1.1), ranked #26/44, ''below average among
-    other open weight non-reasoning models of similar size'' (median 18). The strongest released
-    member of the tier - Llama 4 Scout scores 10 on the same index, and Behemoth is unreleased.'
+  value: 'Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average
+    among open weight non-reasoning models of similar size (median 12). The strongest released member of
+    the family - Llama 4 Scout scores 8 on the same index, and Behemoth is unreleased.'
   confidence: medium
-  note: Llama 4 Maverick, the strongest released member of the family, scores 14 on Artificial Analysis's
-    Intelligence Index (v4.1.1), ranked 26th of 44 and below the peer median of 18 for open-weight non-reasoning
-    models of similar size. Behemoth was never released, and the index has since been recalibrated, so these
-    numbers are not comparable with earlier versions.
-  last_verified: '2026-08-13'
+  note: Llama 4 Maverick, the strongest released member of the family, scores 10 on Artificial Analysis's
+    Intelligence Index, below the median of 12 for open-weight non-reasoning models of similar size. Llama
+    4 Scout scores lower, and the larger Behemoth model was never released.
+  last_verified: '2026-09-29'
   sources:
   - url: https://artificialanalysis.ai/models/llama-4-maverick
-    shows: 'AA Intelligence Index 14 (v4.1.1), rank #26/44, below average vs open-weight
-      non-reasoning peers of similar size (median 18)'
-    accessed: '2026-08-13'
+    shows: 'Artificial Analysis page for Maverick on Intelligence Index v4.3.2: "Llama 4 Maverick scores
+      10 (estimated) on the Artificial Analysis Intelligence Index, placing it below average among other
+      open weight non-reasoning models of similar size (median: 12)", ranked 25th of 45 in the model summary.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: aaaef3ad229e3bc58c0adbba0e396cbd1ef3609bb41108ec2e841a08781f52f1
+    content_sha256: f04e805c7821a085b08822411af041328cdded1198a05c8bae5912890bf9031c
   - url: https://artificialanalysis.ai/models/llama-4-scout
-    shows: 'AA Intelligence Index 10 (v4.1.1), rank #9/39 - the tier''s other released member,
-      confirming Maverick is the max rather than assuming it'
-    accessed: '2026-08-13'
+    shows: 'Artificial Analysis page for Scout, the family''s other released model: "Llama 4 Scout scores
+      8 (estimated) on the Artificial Analysis Intelligence Index", below Maverick''s 10, so Maverick remains
+      the family''s strongest reading.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f04ff54b8ba3531a07890c68bdc1fdeaea7d5d06bb9e39d1cec28f459735946f
+    content_sha256: 1d32dc830fd24a903212e7ebbd4e09824ae24200ab8704f38c6baf7b35e544e2

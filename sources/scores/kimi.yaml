@@ -24,7 +24,6 @@ openness:
   raw: weights:open(shipped 2026-07-27, ungated, 96 safetensors shards);data:closed;code:partial(inference/deploy
     only; no training data or full pipeline);license:Modified-MIT(non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue
     threshold, plus a prominent-display attribution requirement)
-  last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/moonshotai/Kimi-K3
     shows: '`"gated":false`, `"private":false`, `license:other` in the repo tags with a LICENSE file in the
@@ -79,27 +78,46 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: SWE-bench/Terminal-Bench
+  basis_detail: Terminal-Bench 2.1/DeepSWE
   value: null
   confidence: high
-  note: Kimi K2.6 scores 80.2% on SWE-bench Verified, 58.6% on SWE-bench Pro and 66.7% on Terminal-Bench
-    2.0, reportedly tying GPT-5.5 on coding, and is built for long-horizon agentic work at the scale of
-    300-agent swarms coordinating up to 4,000 steps. Moonshot has not published a comparable benchmark table
-    for K3, the release that now governs the family, so these figures still describe K2.6.
-  last_verified: '2026-08-13'
+  note: Kimi K3 scores 88.3 on Terminal-Bench 2.1, 67.5 on DeepSWE and 93.5 on GPQA Diamond in Moonshot's
+    published evaluation, within a few points of Claude Fable 5 and GPT-5.6 Sol on most rows of the same
+    table and ahead of them on some. The coding results were run with Moonshot's own Kimi Code harness rather
+    than an independent one.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/moonshotai/Kimi-K3/raw/main/README.md
+    shows: K3 model card evaluation table, a K3 column against Claude Fable 5, GPT-5.6 Sol, Claude Opus
+      4.8, GPT-5.5 and GLM-5.2, with the note that on DeepSWE "under which Kimi K3 attains 67.3 with the
+      mini-SWE-agent harness" and that for Terminal-Bench 2.1 "Kimi K3 is evaluated with the Kimi Code harness".
+      K3 rows read GPQA Diamond 93.5, DeepSWE 67.5, Terminal-Bench 2.1 88.3, BrowseComp 91.2 and OSWorld-Verified
+      84.8.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 57de265b5842dfa465c6e73b368b0e15a89b8793b5450528dad577da202cc6fe
+  - url: https://www.kimi.com/blog/kimi-k3
+    shows: K3 announcement carrying the same evaluation table and notes, including "Kimi K3 is evaluated
+      with the Kimi Code harness. For all other models, we report the best score across harnesses".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 52ced971963addc13438619508891d87458559e832fe9468a2e78bbc1b532e19
   - url: https://benchlm.ai/models/kimi-2-6
-    shows: SWE-bench Verified 80.2, SWE-bench Pro 58.6 and Terminal-Bench 2.0 66.7 all present.
-    accessed: '2026-08-13'
+    shows: Third-party page for Kimi K2.6 still listing "Software Engineering Benchmark Verified" at 80.2
+      and SWE-bench Pro at 58.6, both labelled "Provider exact".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8a089b51380afaeda15ef5fe67627073b2e1884249e057ebc6fc67303814b9ff
+    content_sha256: 6189781184f9ae29b6fc79bc6bc73aee2d14424f8ff8ca4f8c5b7bb025fa6fcd
   - url: https://officechai.com/ai/kimi-k2-6-benchmarks/
-    shows: SWE-bench Pro 58.6 present; corroborates the benchlm reading.
-    accessed: '2026-08-13'
+    shows: Press write-up of the K2.6 release - "K2.6 edges out or closely matches GPT-5.4 (xhigh) and Claude
+      Opus 4.6 (max effort)" - naming SWE-Bench Pro 58.6 as the lead result.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c4e7e86f1930be55585443a979493b72e779e299d24f4ee5cf67ed7d31bf735e
+    content_sha256: 4023c0e4161226e11c6ebce4e3855c1767cc1bb3c02f0c92a4cf9ed77f122506
   - url: https://www.kimi.com/blog/kimi-k2-6
-    shows: Moonshot's own K2.6 post, carrying SWE-bench Pro 58.6 and Terminal-Bench 2.0 66.7.
-    accessed: '2026-08-13'
+    shows: 'Moonshot K2.6 post (redirects to kimi.ai), titled "Kimi K2.6 Tech Blog: Advancing Open-Source
+      Coding", with a benchmark sheet listing K2.6 at SWE-Bench Verified 80.2, SWE-Bench Pro 58.6 and Terminal-Bench
+      2.0 66.7, and noting "Terminal-Bench 2.0 scores were obtained with the default agent framework (Terminus-2)".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 95660e3f343a66e5fb81eca6688e3cd6c8fbc68bc5e16d1b1ea0170abcfa4172
+    content_sha256: 57acbdbab34900781ef55c43dd0451ce94a1be22b441775e94c504730fc7e18c
