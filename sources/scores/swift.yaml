@@ -83,7 +83,6 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: Adoption is measured by PyPI downloads of ms-swift, the project's only published package.
-  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/ms-swift/recent
     shows: 122,381 downloads in the trailing 30 days for ms-swift
@@ -98,32 +97,26 @@ capability:
   value: 'Methods: full FT, LoRA/QLoRA/DoRA, SFT, GRPO family (GRPO/DAPO/GSPO/SAPO/CISPO/CHORD/RLOO/Reinforce++),
     preference (DPO/KTO/RM/CPO/SimPO/ORPO), pretraining; 600+ models; integrated quantization/eval/deploy.'
   confidence: high
-  note: SWIFT covers full fine-tuning, LoRA, QLoRA and DoRA, SFT, the GRPO family, preference methods and
-    pretraining across more than 600 models, with quantization, evaluation and deployment built into one
-    pipeline. verl and Megatron-LM demonstrate frontier-scale training that this comprehensive practitioner
-    toolkit does not.
-  last_verified: '2026-08-08'
+  note: SWIFT covers full fine-tuning, LoRA, QLoRA and DoRA, the GRPO family of reinforcement learning methods,
+    preference tuning and pretraining across more than 600 text models, with quantization, evaluation and
+    deployment built into one pipeline. It borrows its large-scale parallelism from Megatron-LM through
+    the Megatron-SWIFT backend rather than developing its own, which places it a step below Megatron-LM.
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/modelscope/ms-swift
-    shows: README 'Supported Training Methods' matrix rows - Pre-training, Supervised Fine-Tuning, GRPO,
-      GKD, PPO, DPO, KTO, Reward Model, CPO, SimPO, ORPO, Embedding, Reranker, Sequence Classification -
-      across Full-Parameter / LoRA / QLoRA / Deepspeed / Multi-Machine / Multimodal columns. Separate Reinforcement
-      Learning table lists GRPO, DAPO, GSPO, SAPO, CISPO, CHORD, RLOO, Reinforce++. Megatron-SWIFT table
-      adds TP/PP/SP/CP/ETP/EP/VPP parallelism with FP8. Lightweight tuning list gives LoRA, QLoRA, DoRA,
-      LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA. Quantization export covers AWQ,
-      GPTQ, FP8, BNB; evaluation runs through EvalScope over 100+ datasets; deployment through vLLM, SGLang
-      and LmDeploy with an OpenAI-compatible interface.
-    accessed: '2026-08-08'
+  - url: https://raw.githubusercontent.com/modelscope/ms-swift/main/README.md
+    shows: README says ms-swift supports "training (pre-training, fine-tuning, human alignment), inference,
+      evaluation, quantization, and deployment for 600+ text-only large models" and lists "LoRA, QLoRA,
+      DoRA, LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA", the GRPO family "GRPO, DAPO,
+      GSPO, SAPO, CISPO, CHORD, RLOO, Reinforce++", preference methods "DPO, KTO, RM, CPO, SimPO, ORPO",
+      and "Megatron parallelism techniques such as TP, PP, CP, EP to accelerate training"; evaluation uses
+      EvalScope with "100+ evaluation datasets" and quantization export covers "AWQ, GPTQ, FP8, and BNB".
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 3ebedde37c3a9b86af0ec620f17352ab2a83cd2fe5570a88944d7dfae7aea582
+    content_sha256: 1a0a46d0a85341cfee243d72c986b7a4d05cb5504a5dcc0a5e4b4b142ae4fb98
   - url: https://swift.readthedocs.io/en/latest/
-    shows: 'Documentation sections corroborating the feature set with worked workflows rather than a claim:
-      ''Pre-training and Fine-tuning'' (Environment Preparation, Pre-training, Fine-tuning, Merge LoRA,
-      Inference, Deployment), ''GRPO'', ''Knowledge Distillation'', ''RLHF'' with sub-sections GRPO, DPO,
-      RM, PPO, KTO, CPO, ORPO, SimPO, plus ''Sampling'', ''Evaluation'', ''Export and Push'' (Merge LoRA,
-      Quantization, Push Model), ''Ray Support'' (Megatron Ray, Swift Ray), ''Reinforced Fine-Tuning'',
-      ''Agent Support'', and a Megatron-SWIFT section covering LoRA Training, Multimodal Models, Mcore Bridge,
-      Megatron GRPO, GKD and Ascend NPU.'
-    accessed: '2026-08-08'
+    shows: Documentation index has a Megatron-SWIFT section whose first page is "Megatron-SWIFT/Quick-start.html",
+      plus "Knowledge Distillation", "Ray Support" and "Reinforced Fine-Tuning" sections, corroborating
+      the README feature set with worked workflow pages.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 09f09e9f63d747c73cb01ef7418fab1cf96f7d74387296df4c657bb6ce5d3e1d
+    content_sha256: 97088f05cf582e1fba7c8079029d7f02817b26ba7adbe07a9ae3364493f103af

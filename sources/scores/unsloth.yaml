@@ -23,7 +23,6 @@ openness:
     multi-GPU support beyond one card, multi-node training and full rather than LoRA-only training -- which
     withholds part of the product itself rather than just hosted convenience. That keeps an otherwise open
     project at open core rather than open source.
-  last_verified: '2026-08-11'
   raw: 'license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);core-gated:gated(unsloth.ai/pricing
     sells Unsloth Pro and Enterprise on capabilities the free open-source tier does not have: the free column
     lists MultiGPU as coming soon while Pro lists Enhanced MultiGPU support and up to 8 GPUs, and Enterprise
@@ -92,16 +91,18 @@ capability:
     models; multiple quant formats. Single-node memory/speed optimization is its frontier edge; less focused
     on multi-node frontier-scale parallelism than Megatron-LM.'
   confidence: high
-  note: Unsloth's custom Triton kernels roughly double training speed and cut VRAM by up to 70%, with MoE
-    training around 12 times faster and 35% less memory. Method coverage is broad too -- full fine-tuning,
-    LoRA, QLoRA, GRPO and FP8 RL, pretraining and embedding fine-tuning across 500+ models -- though the
-    edge is single-node memory and speed rather than the multi-node parallelism Megatron-LM offers.
-  last_verified: '2026-08-09'
+  note: Unsloth's custom Triton kernels make training faster and cut VRAM use, with the largest gains the
+    project reports coming on mixture-of-experts models. Method coverage is broad, spanning full fine-tuning,
+    LoRA, QLoRA, pretraining, GRPO reinforcement learning, DPO preference tuning and embedding fine-tuning,
+    though its edge is memory and speed on one machine rather than the multi-node parallelism Megatron-LM
+    offers.
+  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/unslothai/unsloth/main/README.md
-    shows: States "Train and RL 500+ models up to 2x faster with 70% less VRAM; MoE up to 12x faster" and
-      "Supports LoRA/QLoRA, full fine-tuning, RL, pretraining, 4-bit, 16-bit and FP8", plus GRPO/FP8 reinforcement
-      learning and multi-GPU training support, corroborating what is recorded above.
-    accessed: '2026-08-09'
+    shows: README states "Train LLMs, diffusion, TTS, and embedding models 2× faster with 70% less VRAM"
+      and "Supports [reinforcement learning](https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide),
+      LoRA, QLoRA, full fine tuning, pretraining, RL, GRPO, DPO, and FP8." and "Train **MoE LLMs 12x faster**
+      with 35% less VRAM", plus "Multi GPU setups" support.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 4a4b60c2e95c8ea124998943f1b3b34d219071da2b13ae964844a518fb8c8d75
+    content_sha256: e763fe1699169d57ba2f1516399824e807a52d51f6872d52157de6b3318f01f6

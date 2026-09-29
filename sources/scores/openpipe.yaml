@@ -105,15 +105,34 @@ capability:
     Qwen, Llama, GPT-OSS. Specialist agent-RL focus, not broad-method or large-scale-parallelism training
     infra.'
   confidence: medium
-  note: ART is a focused agent-RL trainer, not general training infrastructure, with no tensor, pipeline
-    or expert parallelism and no MLPerf Training submission behind it. That leaves it well behind Megatron-LM's
-    demonstrated frontier-scale training.
+  note: ART is a focused agent-RL trainer that trains LoRA adapters with GRPO on top of vLLM and Unsloth,
+    and its documentation describes no tensor, pipeline or expert parallelism. That leaves it well behind
+    Megatron-LM, which trains models of hundreds of billions of parameters across thousands of GPUs.
   relative_to: megatron-lm
   relation: two_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/OpenPipe/ART
-    shows: GRPO RL trainer, vLLM/Unsloth integration, Qwen/Llama/GPT-OSS support
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/OpenPipe/ART/main/README.md
+    shows: 'The README describes ART as "an open-source RL framework that improves agent reliability by
+      allowing LLMs to **learn from experience**" built on GRPO, where the server "runs the model''s latest
+      LoRA in vLLM" and trains it with GRPO, and says it "should work with most vLLM/HuggingFace-transformers
+      compatible causal language models". Searched the body for tensor parallel, pipeline parallel, expert
+      parallel, Megatron, MLPerf, multi-GPU, FSDP and DeepSpeed: none found.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 340a37b146e8c7eeaa51fba006027400a4e9bf30f75d3662121135e4e1d7e0f0
+    content_sha256: ea7684d222767b85b9392dbf3dff6f9972bed7802aee7352daad33c0cd9d7773
+  - url: https://art.openpipe.ai/fundamentals/art-backend
+    shows: 'The ART backend page documents ServerlessBackend "train remotely on autoscaling GPUs" and LocalBackend
+      "run your agent and training code on the same machine". Searched the body for tensor parallel, pipeline
+      parallel, expert parallel, Megatron, multi-GPU, FSDP and DeepSpeed: none found.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 87bf8e923078270f7fa5410a55f86d56c8fea2f5d902158ebef78ea88cbada03
+  - url: https://art.openpipe.ai/getting-started/faq
+    shows: 'The FAQ says ART "currently builds on GRPO, an RL algorithm that involves running many agents
+      in parallel and then using the difference in the rewards they achieve as a stable training signal".
+      Searched the body for tensor parallel, pipeline parallel, expert parallel, Megatron, MLPerf, multi-GPU,
+      FSDP and DeepSpeed: none found.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 8811e0462064b5509e97906e22051dae61d71e6279d606374f4b4adedf59b194

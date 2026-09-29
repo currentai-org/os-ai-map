@@ -51829,22 +51829,43 @@
             "basis": "feature_matrix",
             "value": "Methods: SFT, DPO/IPO/KTO/ORPO, PPO, GRPO, reward modeling; parallelism via HF Accelerate (DeepSpeed/FSDP); precision BF16/FP8 via Accelerate; broad method coverage but relies on Accelerate for scale rather than native frontier-scale parallelism like Megatron-LM (the C5 anchor).",
             "confidence": "high",
-            "note": "TRL covers more post-training methods than the other open libraries in this category: SFT, the DPO/IPO/KTO/ORPO preference family, PPO, GRPO and reward modeling. It relies on Hugging Face Accelerate -- DeepSpeed, FSDP, BF16 and FP8 -- for distributed training rather than implementing large-scale parallelism itself, which leaves it a tier behind Megatron-LM.",
-            "last_verified": "2026-08-08",
+            "note": "TRL covers a broad set of post-training methods: supervised fine-tuning, DPO, KTO and ORPO preference training, GRPO and other online methods, PPO, and reward modeling. It hands large-scale distributed training to Hugging Face Accelerate and DeepSpeed rather than implementing its own parallelism, which leaves it a tier behind Megatron-LM.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://huggingface.co/docs/trl/index",
-                "shows": "The \"Taxonomy\" section reads: \"Online methods GRPOTrainer / RLOOTrainer / OnlineDPOTrainer / NashMDTrainer / PPOTrainer / XPOTrainer; Reward modeling RewardTrainer / PRMTrainer; Offline methods SFTTrainer / DPOTrainer / KTOTrainer / BCOTrainer / CPOTrainer / ORPOTrainer; Knowledge distillation GKDTrainer / MiniLLMTrainer\". The Integrations nav lists DeepSpeed, Harbor, Kernels Hub, Liger Kernel, OpenEnv, OpenReward, PEFT, RapidFire AI, Trackio, Unsloth, vLLM: scale is delegated to integrations rather than a native parallelism engine like Megatron-LM's. IPO appears nowhere on the page.",
-                "accessed": "2026-08-08",
+                "shows": "The stable docs index opens its trainer overview with \"Below is an overview of TRL trainers, organized by maturity and method type\" and lists GRPOTrainer, RLOOTrainer, RewardTrainer, SFTTrainer, DPOTrainer, KTOTrainer and DistillationTrainer as stable, with OnlineDPOTrainer, CPOTrainer, ORPOTrainer and GKDTrainer under Experimental. Searched the body for PPOTrainer, FP8 and BF16: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04"
+                "content_sha256": "af0e4b732308d05936499ef6fb3e41aaf58d0a7df171f70b84d66fd986fd1489"
               },
               {
                 "url": "https://raw.githubusercontent.com/huggingface/trl/main/README.md",
-                "shows": "Quick Start states \"Each trainer in TRL is a light wrapper around the Transformers trainer and natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP\", and Highlights state it \"Leverages Accelerate to scale from single GPU to multi-node clusters\" and that \"Full integration with PEFT enables training on large models with modest hardware via quantization and LoRA/QLoRA\", plus an Unsloth integration \"for accelerating training using optimized kernels\". Working SFTTrainer, GRPOTrainer, DPOTrainer, KTOTrainer and RewardTrainer examples follow. No FP8 claim appears in the file.",
-                "accessed": "2026-08-08",
+                "shows": "The README states each trainer \"natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP\" and that TRL \"Leverages [🤗 Accelerate](https://github.com/huggingface/accelerate) to scale from single GPU to multi-node clusters\", with PEFT LoRA/QLoRA and SFTTrainer, GRPOTrainer, DPOTrainer, KTOTrainer and RewardTrainer examples. Searched the body for FP8 and BF16: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c"
+                "content_sha256": "dcca5a59d5978ef5185fd08e7ca513a7218cbc76db9b8db4f20bd5a9d674a20d"
+              },
+              {
+                "url": "https://huggingface.co/docs/trl/dpo_trainer",
+                "shows": "The DPO trainer page documents preference-loss variants and says \"TRL exposes this as <code>loss_type=\"ipo\"</code>\" for the IPO variant.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a14c13f9f5a87cea9ffa73c2b7254b35e817fc242d12c6a546f42305d9291064"
+              },
+              {
+                "url": "https://huggingface.co/docs/trl/distributing_training",
+                "shows": "The distributed-training guide has a \"Multi-Node Training\" section with an \"Accelerate Configuration\" subsection and says to launch distributed training \"by running\" after \"accelerate config\", so scale-out goes through Accelerate.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a6343b6d713739d1e14b567ac97aaadd42a85ce3745a0cf12c304cbddbb64bc2"
+              },
+              {
+                "url": "https://huggingface.co/docs/trl/main/en/ppo_trainer",
+                "shows": "The main-branch PPO page describes \"Trainer for Proximal Policy Optimization (PPO)\" and documents the class at \"trl.experimental.ppo.PPOTrainer\", so PPO is available as an experimental trainer.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d0bb2920b732d70897a3d457efd8fa8e92f188a0b2ce7e84906a7ecab014a69b"
               }
             ]
           },
@@ -51853,11 +51874,11 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "The documented trainer taxonomy marks PPO, ORPO, CPO, BCO, online DPO, and the two distillation trainers experimental, so the method list is not uniformly stable API."
+          "version_note": "The documented trainer list marks PPO, ORPO, CPO, online DPO, and the GKD and MiniLLM distillation trainers experimental, so the method list is not uniformly stable API."
         },
         {
           "slug": "peft",
@@ -51865,7 +51886,7 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "PEFT (Parameter-Efficient Fine-Tuning) is a Hugging Face library that adapts large pretrained models by training a small set of extra parameters instead of the full model. It implements LoRA and its DoRA and QLoRA variants, plus AdaLoRA, IA3, prompt tuning, and prefix tuning, attached to a base model through get_peft_model or Transformers' add_adapter. PEFT also integrates with Diffusers and Accelerate, and TRL builds its reinforcement-learning trainers on top of it.",
+          "description": "PEFT (Parameter-Efficient Fine-Tuning) is a Hugging Face library that adapts large pretrained models by training a small set of extra parameters instead of the full model. It implements LoRA and its DoRA and QLoRA variants, plus AdaLoRA, IA3, prompt tuning, and prefix tuning, attached to a base model through get_peft_model or Transformers' add_adapter. PEFT also integrates with Diffusers and Accelerate, and TRL applies it to RLHF training.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -51938,7 +51959,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Adoption is measured by PyPI downloads of peft, the canonical LoRA and adapter library and a dependency of TRL and most LoRA fine-tuning stacks.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://pypistats.org/api/packages/peft/recent",
@@ -51962,26 +51982,26 @@
             "value": "Methods: LoRA/QLoRA/AdaLoRA/LoHa/LoKr/IA3/prefix-prompt-P-tuning (adapter family); precision: 4/8-bit quant + BF16; parallelism inherited from Accelerate. Deep within parameter-efficient methods but scope is adapters/PEFT only (no full-RLHF-PPO orchestration like TRL/OpenRLHF, no frontier-scale pretraining like Megatron-LM).",
             "confidence": "high",
             "note": "PEFT offers reference-grade depth on parameter-efficient methods -- LoRA, QLoRA, AdaLoRA, LoHa, LoKr, IA3 and prefix or prompt tuning -- with 4- and 8-bit quantization, BF16, and parallelism inherited from Accelerate. Its scope stops at adapters: it does not orchestrate full RLHF the way TRL and OpenRLHF do, and it does not train at frontier scale the way Megatron-LM does.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/huggingface/peft/main/README.md",
-                "shows": "Quickstart wraps a Transformers model with `get_peft_model` and a `LoraConfig`. The PEFT integrations section documents Transformers (\"directly integrated\"), Diffusers (\"conveniently managing different adapters\"), Accelerate (\"distributed training and inference for really big models\"), and TRL (\"PEFT can also be applied to training LLMs with RLHF components such as the ranker and policy\"). The memory table reports full fine-tuning of a 12B model running out of GPU memory versus fitting in 56GB with PEFT-LoRA, and a Stable Diffusion LoRA checkpoint at \"only 8.8MB\".",
-                "accessed": "2026-08-09",
+                "shows": "Quickstart wraps a base model with get_peft_model and a LoraConfig, and the integrations section covers Transformers (\"PEFT is directly integrated with [Transformers]\"), Diffusers (\"conveniently managing different adapters\"), Accelerate (\"distributed training and inference for really big models\") and TRL (\"PEFT can also be applied to training LLMs with RLHF components such as the ranker and policy\"). The memory table lists a 12B model as \"OOM GPU\" for full fine-tuning against \"56GB GPU / 3GB CPU\" with LoRA, and a Stable Diffusion LoRA checkpoint at \"only 8.8MB\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "65958fdf047de668cb2abd1c34dace3082d46680b98ae781b8bd2db38486e13e"
               },
               {
                 "url": "https://raw.githubusercontent.com/huggingface/peft/main/src/peft/utils/peft_types.py",
-                "shows": "The PeftType enum lists over 40 method identifiers today — LORA, ADALORA, IA3, PROMPT_TUNING, PREFIX_TUNING, P_TUNING, BOFT, LOHA, LOKR, OFT, VERA, FOURIERFT, HRA and BONE among the established ones, plus a long tail of recent additions (DELORA, GRALORA, CARTRIDGE, WAVEFT and more). All remain adapter/PEFT-family techniques; none add full-model training orchestration or frontier-scale parallelism.",
-                "accessed": "2026-08-09",
+                "shows": "The PeftType enum, documented as \"Enum class for the different types of adapters in PEFT.\", lists 45 method identifiers, among them \"LORA\", \"ADALORA\", \"IA3\", \"PROMPT_TUNING\", \"PREFIX_TUNING\", \"P_TUNING\", \"LOHA\", \"LOKR\", \"OFT\", \"VERA\" and \"BOFT\", plus newer additions such as \"DELORA\", \"GRALORA\" and \"CARTRIDGE\". All are adapter-family techniques; none add full-model training orchestration or frontier-scale parallelism.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "71fdbfc64825ce5d89a2bd7e81a6cc231bdbfac5cb37e406aa19a9a91881363a"
+                "content_sha256": "44c67b60562eec2ccd5f3a18d5c2c6c00bd7752919710e45eeb751a5ebf5633f"
               },
               {
                 "url": "https://raw.githubusercontent.com/huggingface/peft/main/docs/source/developer_guides/quantization.md",
-                "shows": "The Quantization guide combines PEFT LoRA with 4/8-bit bitsandbytes quantization, AWQ, GPTQ and AQLM, stating \"QLoRA is a method that quantizes a model to 4-bits and then trains it with LoRA\" and that this \"allows you to finetune a 65B parameter model on a single 48GB GPU\". The worked example sets `bnb_4bit_compute_dtype=torch.bfloat16`, matching the recorded value's BF16 precision claim.",
-                "accessed": "2026-08-09",
+                "shows": "The Quantization guide combines PEFT LoRA with bitsandbytes 4-bit quantization, AWQ, GPTQ and AQLM, describing QLoRA as a method \"that quantizes a model to 4-bits and then trains it with LoRA\" and noting \"This method allows you to finetune a 65B parameter model on a single 48GB GPU!\". Its worked example sets \"bnb_4bit_compute_dtype=torch.bfloat16\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "e9425bb1f20db3e8f0ba37a24c6559a688cb8d7a5571e06ddb65b70373e46aa9"
               }
@@ -51992,9 +52012,19 @@
           "maturity": 4.5,
           "mature": true,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "date": "2026-09-23",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "The declared peft package measures a lower band on PyPI downloads than the one recorded, close to the band edge. The change is settled by the adoption re-band after the 5 Oct reconciliation, which re-bands only products that disagree on two consecutive scheduled runs."
+              }
+            ]
           }
         },
         {
@@ -52010,12 +52040,12 @@
             "components": "license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl);core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise directory, no license key and no closed package; the only paid thing offered is dedicated support by email)",
             "confidence": "high",
             "note": "Apache-2.0 across the whole repository, with the full source public and no proprietary managed training service, only third-party cloud deployment templates. Nothing is withheld from the open package: no enterprise directory, no license-key gate, and the only paid offering is dedicated support by email.",
-            "last_verified": "2026-08-11",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/LICENSE",
-                "shows": "The body is the standard, unmodified Apache License, Version 2.0 text, with no custom copyright line or added restriction layered on top.",
-                "accessed": "2026-08-11",
+                "shows": "The file is the standard Apache License text: \"Apache License\" and \"Version 2.0, January 2004\", with the grant of a \"perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable\" license.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
                 "establishes": [
@@ -52023,29 +52053,25 @@
                 ]
               },
               {
-                "url": "https://github.com/axolotl-ai-cloud/axolotl",
-                "shows": "Repo page for Axolotl, licensed Apache-2.0; the README states \"This project is licensed under the Apache 2.0 License.\" Top-level directories are .github, .runpod, .vscode, cicd, deepspeed_configs, devtools, docker, docs, examples, image, scripts, src/axolotl, tests -- no ee/ or enterprise directory, no closed dependency and no license key. The only commercial line is \"Need dedicated support? Please contact wing@axolotl.ai for options\".",
-                "accessed": "2026-08-11",
+                "url": "https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md",
+                "shows": "The README, served from the public repository, states \"Axolotl is a free and open-source tool designed to streamline post-training and fine-tuning\" and \"This project is licensed under the Apache 2.0 License\". It documents no paid tier or license key; searched the body for enterprise, pricing, license key and hosted tier: none. The only commercial line is \"Need dedicated support? Please contact\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "456b92cd6e991d86ddc1919cdd1d3ebf36f9df426d3fe7b721e1085fda6ca35a",
+                "content_sha256": "e568efa58c664035bc770403b1adad578fe43e33e06debbfc8b70f7bdd7fb9a3",
                 "establishes": [
                   "source",
                   "core-gated"
                 ]
               },
               {
-                "url": "https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md",
-                "shows": "Documents pip and Docker installation for self-hosting (uv pip install axolotl; docker run axolotlai/axolotl:main-latest) and lists third-party cloud deployment templates (RunPod, Vast.ai, PRIME Intellect, Modal, Novita, JarvisLabs, Latitude.sh) rather than a first-party managed or paid tier -- corroborates core-gated:ungated, which is not currently recorded as a controlled token on this product.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "fd60c6b8c9062efed362133ececc5f9f6d1b919edfbb616f401eb715c7289f06"
-              },
-              {
                 "url": "https://axolotl.ai/",
-                "shows": "The marketing homepage frames the product as free and open source, self-hostable in your own cloud or Docker/Kubernetes setup, names third-party sponsors (e.g. Modal) rather than a first-party hosted offering, and carries no pricing page -- further corroborates core-gated:ungated.",
-                "accessed": "2026-08-09",
+                "shows": "The homepage describes Axolotl as open source (\"Axolotl is an Open Source tool making fine-tuning AI models faster\") that runs \"in your own cloud, with your own Docker and k8s setup\". Searched the body for pricing and price: none found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "05204e242744d193f1cf4eb56188eeb0ab0f436856e06417842a714bca8a5c7f"
+                "content_sha256": "05204e242744d193f1cf4eb56188eeb0ab0f436856e06417842a714bca8a5c7f",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -52086,15 +52112,15 @@
             "basis": "feature_matrix",
             "value": "Methods: full FT, LoRA, QLoRA, GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism: FSDP1/FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP); precision: BF16/4-8bit. Broadest single-tool method+parallelism matrix in this batch.",
             "confidence": "high",
-            "note": "Axolotl combines a wider span of fine-tuning methods and parallelism strategies in one tool than any of its open-source peers here. It trails Megatron-LM only on demonstrated extreme scale.",
-            "last_verified": "2026-08-13",
+            "note": "Axolotl runs full fine-tuning, LoRA, QLoRA and quantization-aware training, preference methods such as DPO, KTO and ORPO, GRPO reinforcement learning and reward modeling from one configuration file, with FSDP2, DeepSpeed, sequence and expert parallelism and multi-node training through Torchrun or Ray. It trails Megatron-LM on demonstrated scale, publishing no training run near the size of Megatron-LM's multi-thousand-GPU benchmarks.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md",
-                "shows": "Feature/parallelism matrix: full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4), DPO/IPO/KTO/ORPO, GRPO/GDPO, reward and process-reward modelling; FSDP1/FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism, plus newly added Expert Parallelism (EP) and Context Parallelism for hybrid SSM models -- matches or exceeds what capability.value already records.",
-                "accessed": "2026-08-13",
+                "shows": "The README lists the training methods \"Full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4)\" and \"Preference Tuning (DPO, IPO, KTO, ORPO), RL (GRPO, GDPO), and Reward Modelling (RM) / Process Reward Modelling (PRM)\", plus \"Multi-GPU training (FSDP2, DeepSpeed)\" and \"Multi-node training (Torchrun, Ray)\", Sequence Parallelism, ND Parallelism and Expert Parallelism.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "d8d53f43d9f84310e30a793517f369ebc01c78dcf7989676c3841471d1fa1252"
+                "content_sha256": "e568efa58c664035bc770403b1adad578fe43e33e06debbfc8b70f7bdd7fb9a3"
               }
             ]
           },
@@ -52103,9 +52129,9 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -52204,15 +52230,15 @@
             "relation": "one_below",
             "value": "Methods: full FT, LoRA, QLoRA, plus preference/RL tuning; 100+ LLM/VLM architectures; CLI + web UI; multimodal (VLM) support. Broad model coverage and a no-code WebUI distinguish it; parallelism present but headline scale below Megatron-LM anchor.",
             "confidence": "medium",
-            "note": "LlamaFactory's fine-tuning support spans more than 100 LLM and VLM architectures with LoRA, QLoRA and full fine-tuning, DPO and PPO, multimodal models, a CLI and the no-code LLaMA Board web UI: breadth rather than scale. Megatron-LM has trained a 462B-parameter model across 6,144 H100 GPUs, a frontier-scale parallelism LlamaFactory does not claim.",
-            "last_verified": "2026-08-09",
+            "note": "LlamaFactory fine-tunes more than 100 LLM and vision-language models with full-parameter tuning, LoRA and QLoRA, preference and reinforcement methods such as PPO and DPO, and a CLI or the zero-code LLaMA Board web UI. It trails Megatron-LM on scale: it reaches large models through FSDP with QLoRA and an optional Megatron-core backend, while Megatron-LM composes tensor, pipeline, context and expert parallelism and reports training a 462B-parameter model on thousands of GPUs.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/hiyouga/LLaMA-Factory",
-                "shows": "\"Unified Efficient Fine-Tuning of 100+ LLMs\"; README lists LoRA, QLoRA, full-tuning, DPO and PPO, multimodal support and the \"LLaMA Board\" web UI",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/hiyouga/LlamaFactory/main/README.md",
+                "shows": "The README headline reads \"Easily fine-tune 100+ large language models with zero-code\" through a CLI and the LLaMA Board web UI, and lists \"(Continuous) pre-training, (multimodal) supervised fine-tuning, reward modeling, PPO, DPO, KTO, ORPO\" plus \"16-bit full-tuning, freeze-tuning, LoRA\". Its news notes \"fine-tunes a 70B model on 2x24GB GPUs\" with FSDP+QLoRA and \"We support Megatron-core training backend with\" an external adapter.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "25ae5a46952062ba4d6e68fd8a06facd2acff6623c3c397000f36dd780f28a26"
+                "content_sha256": "2d61d3ee9a0b7a099800b17b0be7a8ef034ed9b08f43cb32bdac17642cc823dd"
               }
             ]
           },
@@ -52221,11 +52247,11 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "The project renamed itself from LLaMA-Factory to LlamaFactory during 2026, and the old repository URL 301-redirects to https://github.com/hiyouga/LlamaFactory (same owner, repo id 646410686). The slug stays llama-factory because a slug is immutable once links are built on it, and the former name normalizes onto that same slug; the new name resolves through the llamafactory alias."
+          "version_note": "The project renamed itself from LLaMA-Factory to LlamaFactory in 2026, and the old repository URL redirects to hiyouga/LlamaFactory."
         },
         {
           "slug": "unsloth",
@@ -52233,14 +52259,13 @@
           "org_slug": "unsloth-ai",
           "org": "Unsloth AI",
           "type": "software",
-          "description": "Unsloth is a fine-tuning library that rewrites training kernels in Triton and CUDA so that LoRA, QLoRA, and full fine-tuning runs fit on a single consumer GPU. The project reports roughly twice the training speed and about 70% less VRAM than a standard PyTorch setup. It also covers reinforcement learning (GRPO), pretraining, and quantization, and its kernels slot under Hugging Face's TRL trainers.",
+          "description": "Unsloth is a fine-tuning library that trains language, diffusion, speech and embedding models with custom Triton kernels for faster training and lower VRAM use. Supported methods include LoRA, QLoRA, full fine-tuning, pretraining, GRPO reinforcement learning and DPO preference tuning, and trained models export to formats including GGUF. Unsloth runs as code through Unsloth Core, or through the Unsloth Studio web UI and a desktop app.",
           "openness": {
             "score": 4,
             "class": "open_core",
             "components": "license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);core-gated:gated(unsloth.ai/pricing sells Unsloth Pro and Enterprise on capabilities the free open-source tier does not have: the free column lists MultiGPU as coming soon while Pro lists Enhanced MultiGPU support and up to 8 GPUs, and Enterprise adds multi-node, full training and 5x faster inference; Pro is advertised as 20% less memory than OSS, an explicit comparison against the published package)",
             "confidence": "high",
             "note": "Unsloth's core package is Apache-2.0 and the optional Studio UI is AGPL-3.0, both OSI licenses, with the full source public. But Pro and Enterprise tiers add capabilities the free package lacks -- multi-GPU support beyond one card, multi-node training and full rather than LoRA-only training -- which withholds part of the product itself rather than just hosted convenience. That keeps an otherwise open project at open core rather than open source.",
-            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://github.com/unslothai/unsloth",
@@ -52304,15 +52329,15 @@
             "basis": "feature_matrix",
             "value": "Methods: full FT, LoRA/QLoRA, RL (GRPO, FP8 RL), pretraining, embedding FT; custom Triton kernels delivering ~2x faster / up to 70% less VRAM, MoE training ~12x faster / 35% less VRAM; 500+ supported models; multiple quant formats. Single-node memory/speed optimization is its frontier edge; less focused on multi-node frontier-scale parallelism than Megatron-LM.",
             "confidence": "high",
-            "note": "Unsloth's custom Triton kernels roughly double training speed and cut VRAM by up to 70%, with MoE training around 12 times faster and 35% less memory. Method coverage is broad too -- full fine-tuning, LoRA, QLoRA, GRPO and FP8 RL, pretraining and embedding fine-tuning across 500+ models -- though the edge is single-node memory and speed rather than the multi-node parallelism Megatron-LM offers.",
-            "last_verified": "2026-08-09",
+            "note": "Unsloth's custom Triton kernels make training faster and cut VRAM use, with the largest gains the project reports coming on mixture-of-experts models. Method coverage is broad, spanning full fine-tuning, LoRA, QLoRA, pretraining, GRPO reinforcement learning, DPO preference tuning and embedding fine-tuning, though its edge is memory and speed on one machine rather than the multi-node parallelism Megatron-LM offers.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/unslothai/unsloth/main/README.md",
-                "shows": "States \"Train and RL 500+ models up to 2x faster with 70% less VRAM; MoE up to 12x faster\" and \"Supports LoRA/QLoRA, full fine-tuning, RL, pretraining, 4-bit, 16-bit and FP8\", plus GRPO/FP8 reinforcement learning and multi-GPU training support, corroborating what is recorded above.",
-                "accessed": "2026-08-09",
+                "shows": "README states \"Train LLMs, diffusion, TTS, and embedding models 2× faster with 70% less VRAM\" and \"Supports [reinforcement learning](https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide), LoRA, QLoRA, full fine tuning, pretraining, RL, GRPO, DPO, and FP8.\" and \"Train **MoE LLMs 12x faster** with 35% less VRAM\", plus \"Multi GPU setups\" support.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "4a4b60c2e95c8ea124998943f1b3b34d219071da2b13ae964844a518fb8c8d75"
+                "content_sha256": "e763fe1699169d57ba2f1516399824e807a52d51f6872d52157de6b3318f01f6"
               }
             ]
           },
@@ -52321,9 +52346,19 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-28",
+                "reason": "The core-gated dimension has no fresh support: https://unsloth.ai/pricing (the only source establishing it) returned HTTP 403 on all attempts, as did www.unsloth.ai/pricing, unsloth.ai/pricing/ and unsloth.ai; a 403 says nothing about whether the gate is true. Source and license were re-read and still hold (Apache-2.0 core, AGPL-3.0 Studio, public repo), but the axis cannot be re-dated without the pricing read. Side observation: the README now says \"We support Multi GPU setups\" and the public docs carry Multi-GPU and DDP pages, while the docs page says official multi-GPU support is still to be announced, which is consistent with the recorded gate and does not contradict it."
+              }
+            ]
           }
         },
         {
@@ -52338,9 +52373,30 @@
             "class": "open_source",
             "components": "license:BSD-3-Clause(OSI);source:public(pytorch/torchtune);governance:PyTorch Foundation/Meta;no managed tier;core-gated:ungated",
             "confidence": "high",
-            "note": "BSD-3-Clause, an OSI license, in clean, unmodified three-clause form with no field-of-use or commercial carve-out, worth reading directly since it departs from the category's Apache-2.0 norm. The full source is public at the project's current home, meta-pytorch/torchtune, with no enterprise or pricing tier.",
-            "last_verified": "2026-08-09",
+            "note": "torchtune is released under BSD-3-Clause, an OSI-approved license, in its standard three-clause form with no field-of-use or commercial restriction. The full source is public at meta-pytorch/torchtune, and no enterprise or paid tier sits beside it.",
+            "last_verified": "2026-09-28",
             "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/meta-pytorch/torchtune/main/README.md",
+                "shows": "The raw README of the meta-pytorch/torchtune repository describes source that is publicly readable: \"Hackable training recipes for SFT, knowledge distillation, DPO, PPO, GRPO, and quantization-aware training\", with links into the tree such as \"recipes/ppo_full_finetune_single_device.py\" and \"torchtune/models/qwen3/\", and states \"torchtune is released under the [BSD 3 license](./LICENSE)\". Searched the body for enterprise, pricing, paid, subscription, license key, hosted, premium, commercial and managed: none found, so no gated or paid tier is documented.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "3d5d4969647c1ee61bfa7a9295234ca32ca701442e3b44727cbda58de76f4b95",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/meta-pytorch/torchtune/main/LICENSE",
+                "shows": "The raw LICENSE file is a standard three-clause BSD text headed \"BSD 3-Clause License\", with the ordinary conditions \"Redistributions of source code must retain the above copyright notice\" and no added field-of-use or commercial restriction.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8ef78c2d6e787b103a0548e73ba2cfe68bc469b5b0e6f5e7db649f1312f4f2a6",
+                "establishes": [
+                  "license"
+                ]
+              },
               {
                 "url": "https://github.com/pytorch/torchtune",
                 "shows": "Redirects (final_url https://github.com/meta-pytorch/torchtune) to the repo now hosted under the meta-pytorch GitHub org. Metadata shows \"isArchived\":false and \"visibilityLabel\":\"Public\", license spdxId \"BSD-3-Clause\", 5,794 stargazers and 744 forks. The README opens with \"Torchtune is no longer actively maintained: torchtune development wound down in 2025\" and lists \"Hackable training recipes for SFT, knowledge distillation, DPO, PPO, GRPO, and quantization-aware training\", \"PyTorch FSDP2\" for distributed training, single-device recipes, and a February 2025 note that multi-node training is \"officially open for business in torchtune\". The repository is an ordinary public source tree (recipes, docs, tests, configs) with no enterprise, pricing, or paid-tier directory; the page's own 'enterprise'/'pricing' strings are GitHub's own site navigation, not anything torchtune-specific.",
@@ -52350,16 +52406,6 @@
                 "establishes": [
                   "source",
                   "core-gated"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/meta-pytorch/torchtune/main/LICENSE",
-                "shows": "The full raw LICENSE file is a standard three-clause BSD license: \"BSD 3-Clause License\", copyright \"Copyright 2024 Meta\", the three ordinary conditions (retain the copyright notice in source; reproduce it in binary distributions; the copyright holder's or contributors' names may not be used to endorse or promote derived products without permission), and the standard AS-IS warranty disclaimer. No added field-of-use restriction, commercial carve-out, or non-standard clause beyond the three.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "8ef78c2d6e787b103a0548e73ba2cfe68bc469b5b0e6f5e7db649f1312f4f2a6",
-                "establishes": [
-                  "license"
                 ]
               }
             ],
@@ -52401,15 +52447,15 @@
             "basis": "feature_matrix",
             "value": "Methods: SFT, knowledge distillation, DPO/PPO/GRPO, QAT; parallelism: single-device, multi-device, multi-node, FSDP2; memory-efficiency focus; integrations (HF Hub, W&B). Capability frozen at 2025 wind-down; no FP8/FP4 or newer-method additions; behind actively-developed peers and the Megatron-LM anchor.",
             "confidence": "medium",
-            "note": "Torchtune's feature set has not changed since development wound down, and no newer method or precision mode such as FP8 or FP4 has been added. Memory efficiency remains its focus, which leaves it behind actively developed peers and well behind Megatron-LM.",
-            "last_verified": "2026-08-09",
+            "note": "torchtune provides recipes for supervised fine-tuning, knowledge distillation, DPO, PPO, GRPO and quantization-aware training, with FSDP2 for multi-device and multi-node training. It documents no FP8 or FP4 training and is no longer maintained, which leaves it behind actively developed libraries such as TRL and well behind Megatron-LM.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/pytorch/torchtune",
-                "shows": "The README's feature list still matches the recorded value: \"Hackable training recipes for SFT, knowledge distillation, DPO, PPO, GRPO, and quantization-aware training\", \"PyTorch FSDP2\" for distributed training, single-device recipes, and a February 2025 note that multi-node training is \"officially open for business in torchtune\"; Hugging Face Hub and Weights & Biases integrations are both referenced. No new method, precision mode, or capability has been added since development wound down in 2025.",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/meta-pytorch/torchtune/main/README.md",
+                "shows": "The README feature list gives the documented capabilities: \"Hackable training recipes for SFT, knowledge distillation, DPO, PPO, GRPO, and quantization-aware training\", \"PyTorch FSDP2](https://github.com/pytorch/torchtitan/blob/main/docs/fsdp.md) for distributed training\", multi-node training \"officially [open for business in torchtune]\", and Hugging Face Hub and Weights & Biases integrations. The banner \"Torchtune is no longer actively maintained\" marks the wind-down. Searched the body for FP8 and FP4: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "4de6f2f233818817d48a7a6d6170ed12042a25b7f1bce08037b44c75a8de278b"
+                "content_sha256": "3d5d4969647c1ee61bfa7a9295234ca32ca701442e3b44727cbda58de76f4b95"
               }
             ]
           },
@@ -52418,11 +52464,11 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "The recorded repository path pytorch/torchtune now redirects to meta-pytorch/torchtune; the content is unchanged."
+          "version_note": "The repository moved from pytorch/torchtune to meta-pytorch/torchtune, and the entry is read from the new location."
         },
         {
           "slug": "openrlhf",
@@ -52479,7 +52525,6 @@
             "confidence": "medium",
             "banded_quantity": "named adopters listed in the repository, not a download or user count",
             "note": "OpenRLHF's repository lists named adopters -- Google, ByteDance, Tencent, Alibaba, Baidu, China Telecom, Vivo, Allen AI, NexusFlow and Jülich -- rather than publishing a download count. It reads as a specialist RLHF tool used by research and training teams, and that named-adopter list is the basis used here rather than GitHub stars, which measure attention only.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md",
@@ -52519,9 +52564,19 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-09"
+            "date": "2026-08-31",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-09",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "The recorded band and the applicable route measure different instruments, so the levels neither agree nor disagree. The instrument choice is settled with the other route disagreements after the 5 Oct reconciliation."
+              }
+            ]
           }
         },
         {
@@ -52530,21 +52585,52 @@
           "org_slug": "bytedance-seed-volcano-engine",
           "org": "ByteDance Seed / Volcano Engine",
           "type": "software",
-          "description": "verl (Volcano Engine Reinforcement Learning) is a post-training library for large language models, built on the HybridFlow hybrid-controller architecture from ByteDance Seed and the University of Hong Kong. It targets RLHF and reasoning RL on math and code tasks, implements PPO, GRPO, RLOO, GSPO, and DAPO, and runs on FSDP or Megatron-LM with vLLM and SGLang rollout. ByteDance Seed started the project; the verl community maintains it.",
+          "description": "verl (Volcano Engine Reinforcement Learning) is a post-training library for large language models, built on the HybridFlow hybrid-controller architecture. It targets RLHF and reasoning RL on math and code tasks, implements PPO, GRPO, RLOO, GSPO, and DAPO, and runs on FSDP or Megatron-LM with vLLM and SGLang rollout. ByteDance Seed started the project; the verl community maintains it.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;governance:community(ByteDance-Seed origin);no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0 as unmodified boilerplate license text; the full training/rollout source ships in the public repo (recipe/ is a public verl-project/verl-recipe submodule); no paid or enterprise tier withholds any method from the published source.",
-            "last_verified": "2026-08-09",
+            "note": "verl is released under the unmodified Apache-2.0 license, and its training and rollout code is in a public repository. Nothing the README documents, including the algorithms and training backends, sits behind a paid or enterprise edition.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/volcengine/verl/main/LICENSE",
-                "shows": "202-line, 11,358-byte plain-text Apache License, Version 2.0 (January 2004), unmodified through Section 9 and the appendix. The appendix still carries the unfilled boilerplate placeholder \"Copyright [yyyy] [name of copyright owner]\" followed by \"Licensed under the Apache License, Version 2.0 (the \"License\")\" -- no added use restriction or field-of-use clause.",
-                "accessed": "2026-08-09",
+                "shows": "The LICENSE file is the Apache License text; its appendix still carries the unfilled placeholder \"Copyright [yyyy] [name of copyright owner]\" followed by \"Licensed under the Apache License, Version 2.0 (the \"License\");\" with no added use restriction.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
+                "shows": "The README says \"verl is the open-source version of\" the HybridFlow paper, describes it as \"a flexible, efficient and production-ready RL training library for large language models (LLMs)\", and lists the full training and rollout feature set with no paid, enterprise or hosted tier; searched for enterprise, commercial, paid and premium: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/volcengine/verl/main/pyproject.toml",
+                "shows": "The pyproject describes the package as \"verl: Volcano Engine Reinforcement Learning for LLM\" and its license field reads \"Apache-2.0\"; there is no separate closed distribution.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "2678d596a12b07719e4958a8f4adf0c151ea9642600b46d861e43e24d30c612b",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/verl/json",
+                "shows": "PyPI metadata for verl reports \"license\": \"Apache-2.0\" and author \"Bytedance - Seed - MLSys\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "105c278adafc1fea8925e92ce6bc0e231122100ae8f4f7834f52572cba67f5e5",
                 "establishes": [
                   "license"
                 ]
@@ -52558,39 +52644,6 @@
                 "establishes": [
                   "source",
                   "license"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
-                "shows": "README states verl \"is a RL training library initiated by ByteDance Seed team and maintained by the verl community\" and calls it \"the open-source version of\" HybridFlow. Key Features lists FSDP/FSDP2/Megatron-LM for training and vLLM/SGLang/HF Transformers for rollout, full method coverage (PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME, DAPO, DrGRPO, KL_Cov & Clip_Cov, SFT), and states verl \"Scales up to 671B models and hundreds of GPUs with expert parallelism.\" The file names no paid, enterprise or hosted tier and gates no listed feature behind one.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "a6c46bb67d246942d214cb590e0d7d10bc51256f613a5625687d5fcf32714fe6",
-                "establishes": [
-                  "source",
-                  "core-gated"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/volcengine/verl/main/pyproject.toml",
-                "shows": "[project] declares name = \"verl\", license = {text = \"Apache-2.0\"}, description = \"verl: Volcano Engine Reinforcement Learning for LLM\", requires-python = \">=3.10\", built via setuptools; dependencies/optional-dependencies/authors/urls are marked dynamic (read from files elsewhere in the repo) rather than split into a separate closed distribution.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "7a3ec747eec04a3166e432a637aea82eece898d756206bcbe92ccc54d5c3f6ee",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://pypi.org/project/verl/",
-                "shows": "Sidebar reads: Author \"Bytedance - Seed - MLSys\"; License \"Apache-2.0\"; Requires Python \">=3.10\"; Provides Extra: test, prime, geo, gpu, math, vllm, sglang, trl, mcore, trtllm -- no enterprise, commercial or premium extra.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "11546e97698efa7517a23168dff5fef9536c8f5623248aeca676ee5a795db8df",
-                "establishes": [
-                  "license",
-                  "core-gated"
                 ]
               }
             ],
@@ -52618,17 +52671,17 @@
             "basis": "feature_matrix",
             "value": "Methods: PPO, GRPO, RLOO, ReMax, REINFORCE++, GSPO, PRIME, DAPO, DrGRPO, plus SFT/DPO; HybridFlow hybrid-controller; multiple FSDP/Megatron backends; SGLang/vLLM rollout; used to train frontier reasoning models at scale.",
             "confidence": "high",
-            "note": "verl covers the broadest range of modern RL algorithms in this category -- PPO, GRPO, RLOO, ReMax, REINFORCE++, GSPO, PRIME, DAPO and DrGRPO, alongside SFT and DPO -- built on the HybridFlow hybrid controller, with FSDP and Megatron backends and SGLang or vLLM rollout, and it has trained production frontier reasoning models. Its capability matches Megatron-LM's.",
+            "note": "verl supports a wide range of reinforcement-learning algorithms, including PPO, GRPO, RLOO, ReMax, REINFORCE++, GSPO, PRIME, DAPO and DrGRPO alongside supervised fine-tuning. It is built on the HybridFlow hybrid controller with FSDP and Megatron training backends and vLLM or SGLang rollout, scales to 671B-parameter models, and was used to train ByteDance's Seed-Thinking-v1.5, which puts it level with Megatron-LM.",
             "relative_to": "megatron-lm",
             "relation": "at",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/volcengine/verl",
-                "shows": "PPO/GRPO/RLOO/GSPO/PRIME/DAPO/DrGRPO methods; HybridFlow; used for Seed-Thinking-v1.5 / Doubao",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
+                "shows": "The README lists \"Scales up to 671B models and hundreds of GPUs\" with FSDP, FSDP2 and Megatron-LM training, vLLM and SGLang rollout, and \"Reinforcement learning with [PPO](examples/ppo_trainer/)\" alongside GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME, DAPO and DrGRPO plus supervised fine-tuning; it also reports that \"Seed-Thinking-v1.5\" was trained with verl.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "688a8ac24500b080f64a3e5518022fd2832873e1894198e538e49ebbdeeda821"
+                "content_sha256": "ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d"
               }
             ]
           },
@@ -52637,11 +52690,11 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "The recorded GitHub URL (volcengine/verl) 301-redirects to verl-project/verl following a January 2026 org migration noted in the README; repository content is unchanged."
+          "version_note": "The repository moved from volcengine/verl to the verl-project organization; the original path is still used for evidence."
         },
         {
           "slug": "swift",
@@ -52712,7 +52765,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Adoption is measured by PyPI downloads of ms-swift, the project's only published package.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://pypistats.org/api/packages/ms-swift/recent",
@@ -52730,22 +52782,22 @@
             "relation": "one_below",
             "value": "Methods: full FT, LoRA/QLoRA/DoRA, SFT, GRPO family (GRPO/DAPO/GSPO/SAPO/CISPO/CHORD/RLOO/Reinforce++), preference (DPO/KTO/RM/CPO/SimPO/ORPO), pretraining; 600+ models; integrated quantization/eval/deploy.",
             "confidence": "high",
-            "note": "SWIFT covers full fine-tuning, LoRA, QLoRA and DoRA, SFT, the GRPO family, preference methods and pretraining across more than 600 models, with quantization, evaluation and deployment built into one pipeline. verl and Megatron-LM demonstrate frontier-scale training that this comprehensive practitioner toolkit does not.",
-            "last_verified": "2026-08-08",
+            "note": "SWIFT covers full fine-tuning, LoRA, QLoRA and DoRA, the GRPO family of reinforcement learning methods, preference tuning and pretraining across more than 600 text models, with quantization, evaluation and deployment built into one pipeline. It borrows its large-scale parallelism from Megatron-LM through the Megatron-SWIFT backend rather than developing its own, which places it a step below Megatron-LM.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/modelscope/ms-swift",
-                "shows": "README 'Supported Training Methods' matrix rows - Pre-training, Supervised Fine-Tuning, GRPO, GKD, PPO, DPO, KTO, Reward Model, CPO, SimPO, ORPO, Embedding, Reranker, Sequence Classification - across Full-Parameter / LoRA / QLoRA / Deepspeed / Multi-Machine / Multimodal columns. Separate Reinforcement Learning table lists GRPO, DAPO, GSPO, SAPO, CISPO, CHORD, RLOO, Reinforce++. Megatron-SWIFT table adds TP/PP/SP/CP/ETP/EP/VPP parallelism with FP8. Lightweight tuning list gives LoRA, QLoRA, DoRA, LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA. Quantization export covers AWQ, GPTQ, FP8, BNB; evaluation runs through EvalScope over 100+ datasets; deployment through vLLM, SGLang and LmDeploy with an OpenAI-compatible interface.",
-                "accessed": "2026-08-08",
+                "url": "https://raw.githubusercontent.com/modelscope/ms-swift/main/README.md",
+                "shows": "README says ms-swift supports \"training (pre-training, fine-tuning, human alignment), inference, evaluation, quantization, and deployment for 600+ text-only large models\" and lists \"LoRA, QLoRA, DoRA, LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA\", the GRPO family \"GRPO, DAPO, GSPO, SAPO, CISPO, CHORD, RLOO, Reinforce++\", preference methods \"DPO, KTO, RM, CPO, SimPO, ORPO\", and \"Megatron parallelism techniques such as TP, PP, CP, EP to accelerate training\"; evaluation uses EvalScope with \"100+ evaluation datasets\" and quantization export covers \"AWQ, GPTQ, FP8, and BNB\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "3ebedde37c3a9b86af0ec620f17352ab2a83cd2fe5570a88944d7dfae7aea582"
+                "content_sha256": "1a0a46d0a85341cfee243d72c986b7a4d05cb5504a5dcc0a5e4b4b142ae4fb98"
               },
               {
                 "url": "https://swift.readthedocs.io/en/latest/",
-                "shows": "Documentation sections corroborating the feature set with worked workflows rather than a claim: 'Pre-training and Fine-tuning' (Environment Preparation, Pre-training, Fine-tuning, Merge LoRA, Inference, Deployment), 'GRPO', 'Knowledge Distillation', 'RLHF' with sub-sections GRPO, DPO, RM, PPO, KTO, CPO, ORPO, SimPO, plus 'Sampling', 'Evaluation', 'Export and Push' (Merge LoRA, Quantization, Push Model), 'Ray Support' (Megatron Ray, Swift Ray), 'Reinforced Fine-Tuning', 'Agent Support', and a Megatron-SWIFT section covering LoRA Training, Multimodal Models, Mcore Bridge, Megatron GRPO, GKD and Ascend NPU.",
-                "accessed": "2026-08-08",
+                "shows": "Documentation index has a Megatron-SWIFT section whose first page is \"Megatron-SWIFT/Quick-start.html\", plus \"Knowledge Distillation\", \"Ray Support\" and \"Reinforced Fine-Tuning\" sections, corroborating the README feature set with worked workflow pages.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "09f09e9f63d747c73cb01ef7418fab1cf96f7d74387296df4c657bb6ce5d3e1d"
+                "content_sha256": "97088f05cf582e1fba7c8079029d7f02817b26ba7adbe07a9ae3364493f103af"
               }
             ]
           },
@@ -52754,11 +52806,21 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "date": "2026-09-23",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "The declared ms-swift package measures one band lower on PyPI downloads than recorded. The change is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
           },
-          "version_note": "The repository's About blurb still says 300+ multimodal models while the README says 400+, and the maintainer is named as the ModelScope community on GitHub and the DAMO ModelScope team on PyPI."
+          "version_note": "The maintainer is named as the ModelScope community on GitHub and the DAMO ModelScope team on PyPI."
         },
         {
           "slug": "litgpt",
@@ -52772,15 +52834,15 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;maintainer:Lightning-AI;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0, full source public. The library's own README describes itself as unrestricted for enterprise use; Lightning AI's separate Studios platform is hosted compute, not a gated core.",
-            "last_verified": "2026-08-09",
+            "note": "LitGPT is released under Apache-2.0 with the full source public. Its README describes the library as unrestricted for enterprise use and documents no paid tier or feature held back from it.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/Lightning-AI/litgpt",
-                "shows": "The repository's top-level file listing (16 items) is .devcontainer, .github, .lightning/workflows, config_hub, extensions, litgpt, tests, tutorials plus .gitignore, .pre-commit-config.yaml, CITATION.cff, CODE_OF_CONDUCT.md, CONTRIBUTING.md, LICENSE.md, README.md, and pyproject.toml, with no enterprise, commercial, or paid-tier directory. The repo's own classifier reads spdxId \"Apache-2.0\". The rendered README's feature checklist states \"Enterprise ready - Apache 2.0 for unlimited enterprise use.\" and \"Developer friendly - Easy debugging with no abstraction layers and single file implementations.\"",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/Lightning-AI/litgpt/main/README.md",
+                "shows": "The README gives the public clone command \"git clone https://github.com/Lightning-AI/litgpt\" and states \"LitGPT is released under the [Apache 2.0]\". It separately advertises Lightning AI's hosted platform (\"Over 340,000 developers use [Lightning Cloud]\" with \"[GPUs]\" priced \"from $0.19\") and optional \"Run on Studios\" buttons, but every install, finetune, pretrain and serve command runs from the open package; a search for license-key, edition, premium and subscription language found none, so no library feature is gated.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "5e66cbea2d8c5ea68045b684031e57e7209374f7320ebaff1f1ddb1032e8178d",
+                "content_sha256": "744e606018a856aed48a4ec0c72c65d3dc083b33ed779f9761db754288d3be97",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -52788,20 +52850,13 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/Lightning-AI/litgpt/main/LICENSE.md",
-                "shows": "The fetched body is the full Apache License, Version 2.0 (the standard TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION text through the appendix), with the boilerplate appendix completed as \"Copyright [2023] Lightning AI\" and \"Licensed under the Apache License, Version 2.0 (the \"License\")\". No other license or third-party carve-out appears in the file.",
-                "accessed": "2026-08-09",
+                "shows": "The file is the full Apache License, Version 2.0 with the appendix completed as \"Copyright [2023] Lightning AI\" and \"Licensed under the Apache License, Version 2.0 (the \"License\");\". No other license appears in it.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "ab89ceca19ca531005699095ca542f982fac92efd82f954f49ac17aa99a37cda",
                 "establishes": [
                   "license"
                 ]
-              },
-              {
-                "url": "https://lightning.ai/pricing",
-                "shows": "The fetched HTML is a client-rendered SPA shell (a boot splash and a bare div#root) with no server-rendered pricing tiers. The page's meta description reads \"The all-in-one platform for AI development. Code together. Prototype. Train. Scale. Serve. From your browser - with zero setup.\", describing Lightning AI's hosted compute platform rather than any LitGPT-specific feature. Corroborating only; it does not itself settle core-gated.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "4ab6c08da06acf15b4ed318465efd2d9de4b82f7e6c19ded7d27c540976f4e8a"
               }
             ],
             "bucket": "open"
@@ -52828,22 +52883,29 @@
             "basis": "feature_matrix",
             "value": "Methods: full finetuning, LoRA, QLoRA, Adapter/Adapter v2, pretraining + continued pretraining; Flash Attention, FSDP, fp4/8/16/32 quantization; 1-1000+ GPU/TPU. No PPO/GRPO/DPO RL post-training.",
             "confidence": "medium",
-            "note": "Solid PEFT and pretraining recipes with a clean from-scratch implementation, but no RLHF/preference post-training methods (no PPO/GRPO/DPO) and oriented to readable single-model recipes rather than frontier-scale demonstration. Mid-tier within the category on demonstrated method breadth.",
-            "last_verified": "2026-08-09",
+            "note": "LitGPT offers pretraining and fine-tuning recipes, including full fine-tuning, LoRA, QLoRA and Adapter methods, over readable from-scratch model implementations, with FSDP and Flash Attention for multi-GPU training. It documents no preference or reinforcement-learning methods such as DPO, PPO or GRPO, which leaves it behind post-training libraries such as TRL and Axolotl.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/Lightning-AI/litgpt",
-                "shows": "The 'State-of-the-art features' checklist states \"State-of-the-art optimizations: Flash Attention v2, multi-GPU support via fully-sharded data parallelism, optional CPU offloading, and TPU and XLA support.\", \"Reduce compute requirements with low-precision settings: FP16, BF16, and FP16/FP32 mixed.\", \"Lower memory requirements with quantization: 4-bit floats, 8-bit integers, and double quantization.\", and \"Parameter-efficient finetuning: LoRA, QLoRA, Adapter, and Adapter v2.\" The ASCII banner separately reads \"Reduce GPU memory (fp4/8/16/32)\" against \"1-1000+ GPUs/TPUs\". A case-insensitive search of the fetched body for PPO, DPO, and GRPO returns no genuine hits (the only 'PPO' match is the substring inside the word 'SUPPORT'), confirming no RLHF/preference post-training methods are documented.",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/Lightning-AI/litgpt/main/README.md",
+                "shows": "The README lists \"Parameter-efficient finetuning: [LoRA](tutorials/finetune_lora.md), [QLoRA](tutorials/finetune_lora.md), [Adapter](tutorials/finetune_adapter.md), and [Adapter v2](tutorials/finetune_adapter.md).\" plus \"Flash Attention v2, multi-GPU support via fully-sharded data parallelism\" and the banner \"1-1000+ GPUs/TPUs\". Searched the body for RLHF, DPO, PPO, GRPO and preference: only substring hits inside unrelated words (support), no preference post-training method.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "5e66cbea2d8c5ea68045b684031e57e7209374f7320ebaff1f1ddb1032e8178d"
+                "content_sha256": "744e606018a856aed48a4ec0c72c65d3dc083b33ed779f9761db754288d3be97"
               },
               {
-                "url": "https://github.com/Lightning-AI/litgpt/tree/main/tutorials",
-                "shows": "The tutorials directory listing includes finetune_full.md, finetune_lora.md, finetune_adapter.md, pretrain.md, pretrain_tinyllama.md, deploy.md, inference.md, quantize.md, and evaluation.md, so full, LoRA, QLoRA, and Adapter finetuning, plus pretraining and deployment, are each backed by a dedicated tutorial rather than only the README checklist's claim.",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/Lightning-AI/litgpt/main/tutorials/finetune_lora.md",
+                "shows": "The LoRA tutorial is titled \"Finetuning with LoRA / QLoRA\" and describes 4-bit QLoRA-style quantization enabled with a flag.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "1042c6e2eb96403857f3bf99054046c61cbd1c47f1791740d519d250eab6ac85"
+                "content_sha256": "b317a4f5ebe98fa9a583b2b1c72cd3c32502c83e7718f2fa09ff0d3f84bc151a"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Lightning-AI/litgpt/main/tutorials/pretrain.md",
+                "shows": "The pretraining tutorial states \"This document explains how to pretrain LLMs using LitGPT.\" Searched the body for RLHF, DPO, PPO and GRPO: only substring hits inside unrelated words.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d66b742855188945e522096440930104ca119ec71787c6d8d1dbca4677eb63dc"
               }
             ]
           },
@@ -52852,9 +52914,9 @@
           "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -52863,7 +52925,7 @@
           "org_slug": "nvidia",
           "org": "NVIDIA",
           "type": "software",
-          "description": "NVIDIA's library for reinforcement-learning post-training of language and vision-language models, re-architected from the earlier NeMo Aligner. It implements GRPO, GSPO, DAPO, DPO, SFT, on-policy distillation and reward modeling on DTensor or Megatron Core backends, scaling from a single GPU to thousands across multi-node clusters. NeMo Customizer is a separate managed fine-tuning microservice alongside it.",
+          "description": "NeMo-RL is NVIDIA's library for reinforcement-learning post-training of language and vision-language models, re-architected from the earlier NeMo Aligner. It implements GRPO, GSPO, DAPO, PPO, DPO, SFT, on-policy distillation and reward modeling on DTensor or Megatron Core backends, and runs from a single GPU to multi-node clusters. NeMo Customizer is a separate managed fine-tuning microservice alongside it.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -52935,15 +52997,15 @@
             "basis": "feature_matrix",
             "value": "Methods: GRPO, GSPO, DAPO, GDPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation, reward modeling; backends DTensor (TP/SP/PP/CP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP); SGLang backend, speculative decoding, long-context training.",
             "confidence": "high",
-            "note": "NeMo-RL offers frontier-tier scale and parallelism for RL post-training: DTensor and Megatron Core backends covering tensor, sequence, pipeline, context and six-dimensional parallelism, plus broad method coverage across GRPO, GSPO, DAPO, SFT, DPO, distillation and reward modeling. That capability is strong even though adoption is still small.",
-            "last_verified": "2026-08-09",
+            "note": "NeMo-RL covers GRPO, GSPO, DAPO, PPO, DPO, SFT, on-policy distillation and reward modeling, and trains through PyTorch FSDP2 or Megatron Core with tensor, pipeline, context, sequence and expert parallelism. Its Megatron Core backend gives it the same large-scale parallelism as Megatron-LM, along with SGLang rollout and speculative decoding for faster generation.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/NVIDIA-NeMo/RL",
-                "shows": "README's Features list includes \"Learning Algorithms - GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and On-policy distillation\", a Table of Contents with RM (reward modeling) Single-Node/Multi-node sections, \"Advanced Parallelism with DTensor... PyTorch FSDP2, TP, CP, and SP... (through NeMo AutoModel)\", \"Larger Model Support with Longer Sequences - Performant parallelisms with Megatron Core (TP/PP/CP/SP/EP/FSDP) (through NeMo Megatron Bridge)\", plus SGLang Inference, Speculative Decoding and GDPO Support news entries, all matching what is recorded here. No 'PPO' string and no 'H100' or 'B200' string appear anywhere in the README; only GB200 container support is named.",
-                "accessed": "2026-08-09",
+                "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/RL/main/README.md",
+                "shows": "The README Features list includes \"GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and On-policy distillation.\", \"PyTorch FSDP2, TP, CP, and SP for efficient training\", \"Performant parallelisms with Megatron Core (TP/PP/CP/SP/EP/FSDP)\", \"SGLang rollout support for optimized inference.\", \"Speculative Decoding support for rollout acceleration and training\", a \"GDPO Support\" news entry and an RM (reward modeling) section in its Table of Contents. The README also newly names PPO, MOPD and X-Token off-policy distillation, which the recorded value omits.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "48c6b50635105e2e5b8e806fa38dd4a4b230fb21d4cd4da8c97df45bbcae76a6"
+                "content_sha256": "10d7760e13480e5701113529aab38b5d7c3e03faccd0243872016acf8f7660d0"
               }
             ]
           },
@@ -52952,9 +53014,9 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "NeMo-RL ships from source or NVIDIA's NGC container; the PyPI listing is not used for installation."
         },
@@ -52964,7 +53026,7 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "Trains custom versions of OpenAI's hosted models on OpenAI's own infrastructure, covering supervised fine-tuning, vision fine-tuning, direct preference optimization and reinforcement fine-tuning for reasoning models. Jobs run from the dashboard or the API against gpt-4.1, gpt-4o and o4-mini snapshots. OpenAI is winding the platform down: new sign-ups have stopped, job creation ends in January 2027, and fine-tuned models serve until their base models are deprecated.",
+          "description": "The OpenAI Fine-Tuning API trains custom versions of OpenAI's hosted models on OpenAI's own infrastructure, covering supervised fine-tuning, vision fine-tuning, direct preference optimization and reinforcement fine-tuning for reasoning models. Jobs run against gpt-4.1, gpt-4o and o4-mini snapshots. OpenAI is winding the platform down: new sign-ups have stopped, job creation ends in January 2027, and fine-tuned models serve until their base models are deprecated.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53009,29 +53071,22 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No standalone usage figure is disclosed for the fine-tuning API -- no developer count, no jobs run, no tokens trained. The OpenAI platform broadly serves ~1B+ weekly ChatGPT users, but that surface is not the fine-tuning API and cannot honestly be attributed to it, so no level is assigned rather than one borrowed from the umbrella product.",
-            "last_verified": "2026-08-08",
+            "note": "OpenAI publishes no usage figure for the OpenAI Fine-Tuning API: no developer count, no jobs run and no tokens trained. ChatGPT's audience belongs to a different product and cannot be attributed to this one, so the map leaves adoption unscored rather than borrow a figure from the wider OpenAI platform.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://developers.openai.com/api/docs/pricing",
-                "shows": "A \"Finetuning\" section, \"Prices per 1M tokens.\", carrying the wind-down banner and a Standard/Batch rate table. The visible rows are o4-mini-2025-04-16 at \"$100.00 / hour\" training; the collapsed rows in the body carry training rates for gpt-4.1-2025-04-14 (25), gpt-4.1-mini-2025-04-14 (5), gpt-4.1-nano-2025-04-14 (1.5), gpt-4o-2024-08-06 (25), gpt-4o-mini-2024-07-18 (3), and legacy gpt-3.5-turbo (8) and davinci-002 (6), under the column order Model / Training / Input / Cached input / Output. Rates only: the page publishes no count of users, organizations, jobs, or tokens.",
-                "accessed": "2026-08-08",
+                "shows": "The pricing page has a \"Finetuning\" section carrying the banner \"OpenAI is winding down the fine-tuning platform\" and a rate table with o4-mini-2025-04-16 at \"$100.00 / hour\" training. Searched the body for user, customer, organization and job counts: none, only rates.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "719a2ccda3e73b521bb1246c45710c33836b1a63b3b1f8ab44e918d912bb8ceb"
+                "content_sha256": "e4a9e273042d144501558701273c32bb7c241d05c45e105fff16785dcf52e229"
               },
               {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
-                "shows": "OpenAI's own product documentation for the fine-tuning platform: the optimization workflow, the four supported methods and their base snapshots, and a pointer to the pricing page for billing. It describes who may use the service (\"no longer\\naccessible to new users\") but publishes no figure for how many do.",
-                "accessed": "2026-08-08",
+                "shows": "The guide states \"OpenAI is winding down the fine-tuning platform. The platform is no longer accessible to new users\" and gives no figure for how many people use the service; searched the body for user counts, customer counts and jobs run: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "b4ddee298abe3b5bc100779838be9446bc40d51033810d7e316521f55bed8c7c"
-              },
-              {
-                "url": "https://openai.com/api/pricing/",
-                "shows": "Redirects (final_url https://openai.com/business/pricing/) to \"Business Pricing | OpenAI\", a ChatGPT Business ($20 / user / month) and Enterprise (\"Custom pricing\") plan-comparison page. It carries no API token rates and no fine-tuning content at all — a search of the extracted text for \"fine-tun\" returns zero hits. Recorded to document where the canonical API pricing URL now lands; the rate card lives at developers.openai.com/api/docs/pricing.",
-                "accessed": "2026-08-08",
-                "http_status": 200,
-                "content_sha256": "558ae206f42dba87f8891f585fd7b02c0fbec332e5f7f481702ce1be02baa1ec"
+                "content_sha256": "4881e932fa9793f639679fec51d067814679e32072a9f11c1111ccb6d1eca85b"
               }
             ]
           },
@@ -53041,21 +53096,21 @@
             "value": "Methods exposed: SFT, vision fine-tuning, DPO (preference), reinforcement fine-tuning (RFT) for reasoning models. Tunes frontier closed models (gpt-4.1 family, gpt-4o, o4-mini). Managed end-to-end (data validation, training, hosting, eval).",
             "confidence": "medium",
             "note": "OpenAI's fine-tuning API runs supervised, vision, preference and reinforcement fine-tuning against its own gpt-4.1, gpt-4o and o4-mini models, handled end to end. It exposes no controls over parallelism, precision or training scale, so it offers managed breadth over strong base models rather than the deeper control a training framework gives.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
-                "shows": "\"These are the fine-tuning methods supported in the OpenAI platform today.\" — a four-row table: \"Supervised fine-tuning (SFT)\" with gpt-4.1-2025-04-14, gpt-4.1-mini-2025-04-14, gpt-4.1-nano-2025-04-14; \"Vision fine-tuning\" with gpt-4o-2024-08-06; \"Direct preference optimization\" (DPO) with the same gpt-4.1 trio; and \"Reinforcement fine-tuning (RFT)\", marked \"Reasoning models only\", with o4-mini-2025-04-16. The surrounding text describes the managed loop end to end (upload JSONL, create the job, define a grader for RFT, evaluate) and exposes no parallelism, precision, or training-scale controls.",
-                "accessed": "2026-08-13",
+                "shows": "\"These are the fine-tuning methods supported in the OpenAI platform today.\" Table lists \"Supervised fine-tuning (SFT)\" and \"Direct preference optimization (DPO)\" alongside gpt-4.1 snapshots, \"Vision fine-tuning\" with gpt-4o-2024-08-06, and reinforcement fine-tuning marked \"Reasoning models only\" with o4-mini-2025-04-16. Searched the body for parallelism, precision and training-scale controls: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "484fd60f955c3b8e2eaf2b9c086982516aa3936f6f738dd3dfe8a75514c8c78d"
+                "content_sha256": "4881e932fa9793f639679fec51d067814679e32072a9f11c1111ccb6d1eca85b"
               },
               {
                 "url": "https://developers.openai.com/api/docs/deprecations",
-                "shows": "The \"2026-04-22: Legacy GPT model snapshots\" table lists \"October 23, 2026\" shutdowns for \"o4-mini-2025-04-16\" (replacement gpt-5.6-terra) and gpt-4.1-nano-2025-04-14 (replacement gpt-5.6-luna), and a following table \"We are also removing fine-tuned versions as below\" lists ft-o4-mini-2025-04-16 and ft-gpt-4.1-nano-2025-04-14 on the same date. o4-mini-2025-04-16 is the sole base the guide offers for reinforcement fine-tuning.",
-                "accessed": "2026-08-08",
+                "shows": "The legacy-snapshot table lists o4-mini-2025-04-16 and its fine-tuned version ft-o4-mini-2025-04-16 with shutdown date \"October 23, 2026\", and the self-serve fine-tuning timeline states \"Active existing customers will no longer be able to create new fine-tuning jobs on this date\" for Jan 6, 2027, adding that \"Inference on fine-tuned models will be disabled only when the underlying base model is deprecated\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "f2272ef1a9a1b69c8a2651d2a72771cbbabd13cda9718579678393ae3b2ad86f"
+                "content_sha256": "977978ad22d313edce3f70b71baf7fbc19824eb2e01d1949acf172199ef61d46"
               }
             ]
           },
@@ -53064,9 +53119,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-09-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-09"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Openness was read from the OpenAI Services Agreement, since the service publishes no repository or license file."
         },
@@ -53076,7 +53131,7 @@
           "org_slug": "amazon-web-services",
           "org": "Amazon Web Services",
           "type": "software",
-          "description": "Amazon Bedrock Custom Models is AWS's managed fine-tuning service for Bedrock foundation models, covering supervised fine-tuning, reinforcement fine-tuning, and distillation across Claude 3 Haiku, Meta Llama, and Amazon Titan and Nova. Reinforcement fine-tuning grades responses through AWS Lambda reward functions rather than labeled examples, and a customized model runs only under purchased Provisioned Throughput.",
+          "description": "Amazon Bedrock Custom Models is AWS's managed service for customizing Bedrock foundation models, covering supervised fine-tuning, reinforcement fine-tuning and distillation from a teacher model into a student model. Reinforcement fine-tuning grades responses through reward functions written as AWS Lambda functions rather than labeled examples, and reports training metrics in real time.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53104,13 +53159,13 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No usage figure is disclosed for Bedrock's customization feature -- no jobs run, no count of customers fine-tuning. Bedrock as a whole is widely used, but nothing published is specific to the custom-models and fine-tuning capability, so no level is assigned.",
-            "last_verified": "2026-08-09",
+            "note": "AWS publishes no usage figure for Amazon Bedrock Custom Models: no jobs run and no count of customers customizing models. Nothing AWS publishes about Bedrock as a whole is specific to model customization, so the map leaves adoption unscored rather than borrow a figure from the wider platform.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
-                "shows": "Same page, fetched today, lists the three customization methods and the token/storage billing note but discloses no usage figure for the customization or fine-tuning capability specifically -- no count of jobs run, models customized, or customers using it, and nothing on the page substitutes a number. The null level stands as a deliberate abstention rather than an invented number.",
-                "accessed": "2026-08-09",
+                "shows": "The page lists three customization methods and a billing note that training is charged by \"the number of\" tokens processed and \"model storage charged per month per model\", and reports no usage figure. Searched the body for customers, jobs run, models customized and usage counts: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc"
               }
@@ -53119,17 +53174,17 @@
           "capability": {
             "score": 3,
             "basis": "feature_matrix",
-            "value": "Methods: supervised fine-tuning, reinforcement fine-tuning (custom Lambda reward functions, real-time metrics), distillation (teacher->student). Continued pre-training also offered on select models.",
+            "value": "Methods: supervised fine-tuning, reinforcement fine-tuning (custom Lambda reward functions, real-time metrics), distillation (teacher->student).",
             "confidence": "medium",
-            "note": "Bedrock's method set spans supervised, reinforcement and distillation fine-tuning, but exposes no parallelism, precision or scale controls and no training benchmark. It sits a step below OpenAI's fine-tuning API, whose reinforcement fine-tuning reaches deeper into frontier reasoning models.",
+            "note": "Amazon Bedrock Custom Models covers supervised fine-tuning, reinforcement fine-tuning graded by Lambda reward functions, and distillation, but exposes no parallelism, precision or scale controls and publishes no training benchmark. It sits a step below OpenAI's fine-tuning API, which also offers vision fine-tuning and direct preference optimization on OpenAI's own models.",
             "relative_to": "openai-fine-tuning-api",
             "relation": "one_below",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
-                "shows": "SFT, reinforcement fine-tuning with Lambda reward funcs, distillation",
-                "accessed": "2026-08-13",
+                "shows": "The page lists \"Supervised fine-tuning\", \"Reinforcement fine-tuning\" with reward functions defined \"using AWS Lambda\" and \"real-time metrics\", and \"Distillation\" from a teacher model to a student model. Searched the body for parallelism, precision, benchmark and continued pre-training: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc"
               }
@@ -53140,11 +53195,10 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
-          },
-          "version_note": "AWS states Bedrock is the only fully managed service that can fine-tune Claude models; that is the vendor's own claim, not an independent check."
+            "latest_axis_confirmation": "2026-09-28"
+          }
         },
         {
           "slug": "vertex-ai-tuning",
@@ -53152,7 +53206,7 @@
           "org_slug": "google-cloud",
           "org": "Google Cloud",
           "type": "software",
-          "description": "Vertex AI Tuning is Google Cloud's managed tuning service for Gemini models, offering supervised fine-tuning, preference tuning, and a preview reinforcement fine-tuning method across text, image, audio, document, video, and function-calling data, with datasets as small as about 100 examples. Tuning runs under Vertex AI's own IAM, regional controls, and pipelines, and it is the only route to tuned Gemini weights, which Google does not otherwise release.",
+          "description": "Vertex AI Tuning is Google Cloud's managed tuning service for Gemini models, offering supervised fine-tuning, preference tuning from human feedback, and a preview reinforcement fine-tuning method, with continuous tuning, checkpoints and function-calling tuning. Datasets can be as small as about 100 examples. Tuned models stay on Google Cloud, since Google does not release Gemini weights.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53189,22 +53243,22 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No usage figure is disclosed for Gemini tuning. The pricing page publishes only per-token tuning rates, and the Gemini app's monthly active users belong to a different product and cannot be attributed to this service, so no level is assigned rather than one borrowed from that surface.",
-            "last_verified": "2026-08-09",
+            "note": "Google publishes no usage figures for Gemini tuning, and its pricing page lists only per-token tuning rates. The Gemini app's monthly active users belong to a different product and cannot be attributed to this service, so the map leaves it unscored.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models",
-                "shows": "The tuning documentation is entirely a how-to and reference guide; it contains no count of customers, developers, tuning jobs, or tokens tuned anywhere on the page.",
-                "accessed": "2026-08-09",
+                "shows": "The tuning guide is a how-to and reference page for Gemini tuning: it says \"Agent Platform supports supervised fine-tuning to customize foundational models.\" Searched the body for customers, monthly active, downloads, MAU and tuning jobs: none, so no count of customers, developers, jobs or tokens tuned is published.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad"
+                "content_sha256": "1d5e5d6c11603e7b6798ebb1dad59fda9e3e29af57e8f58538638c1a42302932"
               },
               {
                 "url": "https://cloud.google.com/vertex-ai/generative-ai/pricing",
-                "shows": "The pricing page (redirected today to cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing) lists only per-token rates, e.g. a 'Tuning for 1M training tokens' row at $3.00 for Gemini 2.0 Flash and $1.00 for Gemini 2.0 Flash-Lite. A case-insensitive search of the extracted page text for 'customers', 'users', 'downloads', 'MAU' and 'monthly active' turns up pricing-terms usage and case-study links only, no adoption or usage-count figure for the tuning feature.",
-                "accessed": "2026-08-09",
+                "shows": "The pricing page prices tuning per model: Gemini 3.5 Flash \"Reinforcement Learning fine-tuning\" is listed at \"$0.01 / 1,000 count\", and the per-1M-token table for \"Gemini 2.0 Flash Lite\" has a \"Tuning for training tokens\" row at \"$0.001\". A search of the body for monthly active, MAU, downloads and tuning jobs found none, so it publishes no adoption or usage figure for tuning.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "627809c818d73d58c6f34a5b6d51e098a809335068e5beb25769a27e6c03dd0f"
+                "content_sha256": "fc3c0eea68a9190bcc6866386882e5138778f95ab61011aad18747915e42884e"
               }
             ]
           },
@@ -53213,15 +53267,15 @@
             "basis": "feature_matrix",
             "value": "Methods: supervised fine-tuning and preference tuning (DPO-style) for Gemini; multimodal tuning across text/document/image/audio/video plus function-calling tuning; checkpoint management.",
             "confidence": "medium",
-            "note": "Vertex's Gemini tuning is a black box, with no scale or precision controls and no benchmark result behind any of its methods. That leaves it below the open-source libraries that define scale in this category, even though it covers more tuning methods and modalities than most managed services.",
-            "last_verified": "2026-08-09",
+            "note": "Vertex AI Tuning offers supervised, preference and preview reinforcement fine-tuning on Gemini models, with continuous tuning, checkpoints and function-calling tuning. Google exposes no controls over parallelism, precision or training scale and publishes no training benchmark, so it offers managed breadth rather than the deeper control of a training framework such as Megatron-LM.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models",
-                "shows": "Confirms three tuning methods for Gemini models: \"Supervised fine-tuning\"; \"Preference tuning\", described as \"Gemini Enterprise Agent Platform preference tuning builds on supervised fine-tuning by letting you tune your Gemini models with human feedback data\"; and a nav-listed \"Reinforcement learning fine-tuning\" section carrying a \"Preview\" badge (data-title=\"Preview\"). Also lists \"Tuning checkpoints\" and \"Continuous tuning\". The 'Supported modalities' nav enumerates Text, Document, Image, Audio and Video tuning plus \"Tune function calling\".",
-                "accessed": "2026-08-09",
+                "shows": "Confirms Gemini tuning methods: \"Gemini Enterprise Agent Platform preference tuning builds on supervised fine-tuning by letting you tune your Gemini models with human feedback data\"; also a nav-listed \"Reinforcement learning fine-tuning\" section with a \"Preview\" badge, plus \"Tuning checkpoints\", \"Continuous tuning\" and \"Tune function calling\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad"
+                "content_sha256": "1d5e5d6c11603e7b6798ebb1dad59fda9e3e29af57e8f58538638c1a42302932"
               }
             ]
           },
@@ -53230,9 +53284,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-22",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-22"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Google's documentation now redirects the Vertex AI tuning guide to a \"Gemini Enterprise Agent Platform\" section; this entry still describes the same managed Gemini tuning feature."
         },
@@ -53242,7 +53296,7 @@
           "org_slug": "databricks",
           "org": "Databricks",
           "type": "software",
-          "description": "Mosaic AI Model Training is Databricks' managed service for full fine-tuning and continued pre-training, limited to the Meta Llama 3.1-3.3 family and driven from the databricks_genai SDK or a web UI. Training jobs read data from Unity Catalog and register the resulting weights back to it, so customers keep the trained checkpoint rather than only a hosted endpoint. Databricks has deprecated the service, with removal scheduled for August 14, 2026.",
+          "description": "Mosaic AI Model Training was Databricks' managed service for full fine-tuning and continued pre-training of Meta Llama 3.1 to 3.3 models, driven from the databricks_genai SDK or a web UI. Training jobs read data from Unity Catalog and registered the resulting weights back to it, so customers kept the trained checkpoint. Databricks has ended support for the service and recommends its AI Runtime environment instead.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53277,22 +53331,22 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No usage figure is disclosed for the fine-tuning feature: no jobs run, no customer count. Databricks as a whole is widely used, but nothing published is specific to this capability, so no level is assigned.",
-            "last_verified": "2026-08-09",
+            "note": "Databricks published no usage figure for Mosaic AI Model Training: no jobs run and no customer count. Nothing Databricks publishes about its wider platform is specific to this service, so the map leaves adoption unscored rather than borrow a figure from the platform as a whole.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/",
-                "shows": "The Foundation Model Fine-tuning page discloses no usage, job-count, or customer figures for the feature anywhere in the article; the only forward-looking statement is the admonition that it is deprecated and scheduled for removal on August 14, 2026.",
-                "accessed": "2026-08-09",
+                "shows": "Searched the body of the Foundation Model Fine-tuning page for usage, job-count and customer figures: none found; the only status statement is that the feature \"has reached end of life (EoL) and is no longer supported\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "ef351611643c0c07f2b647c4fd5a9efba16a2f9fa6996691bbbd5f60252ddc69"
+                "content_sha256": "815937801457741af7bfe6faf0aa632527c76c800d245ba6cbd4c477368d1057"
               },
               {
                 "url": "https://www.databricks.com/product/machine-learning/mosaic-ai-training",
-                "shows": "The Databricks Model Training product page carries no customer counts, job counts, or usage figures specific to this fine-tuning capability, only generic cost-comparison marketing language (e.g. lower cost than proprietary LLMs).",
-                "accessed": "2026-08-09",
+                "shows": "Searched the body of the Databricks Model Training product page for customer counts, job counts and usage figures specific to this fine-tuning capability: none found; it carries only marketing copy such as \"Fine-tune an open source LLM or build custom LLMs trained on your enterprise data with Databricks Model Training\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "10de73484f9cfb01a62773d4532c43b6bd55fec51f800d6e0e252884e89451f8"
+                "content_sha256": "2d129d86656b965c9972e6c4151f9fc0e14959833ac504f3c25701f003958abb"
               }
             ]
           },
@@ -53301,15 +53355,15 @@
             "basis": "feature_matrix",
             "value": "Methods: chat-completion FT, instruction FT, continued pre-training. No exposed LoRA/QLoRA/DPO/RLHF or preference methods; no parallelism/precision/scale knobs. Base models limited to the Meta Llama family.",
             "confidence": "medium",
-            "note": "Mosaic exposes no preference or reinforcement-learning methods, no LoRA or QLoRA, and no parallelism, precision or scale controls, with base models limited to the Meta Llama family. That leaves it behind the managed offerings from OpenAI, Vertex and Together, which combine supervised, preference and reinforcement tuning on much larger models.",
-            "last_verified": "2026-08-09",
+            "note": "Mosaic AI Model Training offered chat-completion and instruction fine-tuning and continued pre-training on Meta Llama models, with no preference or reinforcement-learning methods, no LoRA or QLoRA, and no parallelism, precision or scale controls. That left it behind the managed offerings from OpenAI, Vertex and Together, which combine supervised, preference and reinforcement tuning.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/",
-                "shows": "Supported tasks lists exactly three methods, chat completion, instruction fine-tuning, and continued pre-training, with no LoRA, QLoRA, DPO, RLHF or other preference-tuning options mentioned; Supported models lists only Meta Llama 3.1, 3.2 and 3.3 checkpoints (70B/8B and 1B/3B variants), matching the recorded feature-matrix value exactly.",
-                "accessed": "2026-08-09",
+                "shows": "The Foundation Model Fine-tuning page lists exactly three supported tasks, chat completion, instruction fine-tuning and continued pre-training (\"Train your model with additional text data\" for the last), and its supported models table lists only \"meta-llama/Llama-3.3-70B-Instruct\" and other Meta Llama 3.1 and 3.2 checkpoints; searched the body for LoRA, QLoRA, DPO, RLHF and preference tuning: none found. It also carries a warning that the feature \"has reached end of life (EoL) and is no longer supported\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "ef351611643c0c07f2b647c4fd5a9efba16a2f9fa6996691bbbd5f60252ddc69"
+                "content_sha256": "815937801457741af7bfe6faf0aa632527c76c800d245ba6cbd4c477368d1057"
               }
             ]
           },
@@ -53318,9 +53372,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Databricks' own pages call this capability Foundation Model Fine-tuning, part of Databricks Model Training; neither page uses the name Mosaic AI Model Training."
         },
@@ -53330,7 +53384,7 @@
           "org_slug": "microsoft-azure",
           "org": "Microsoft Azure",
           "type": "software",
-          "description": "Azure OpenAI Fine-Tuning is Microsoft's managed fine-tuning service for OpenAI models inside Microsoft Foundry, with a preview tier that also tunes open-weight models. It supports supervised fine-tuning, direct preference optimization, and reinforcement fine-tuning, and wraps each job in Azure-native controls: VNet and private-endpoint isolation, RBAC, and content-safety filtering. Jobs are billed and deployed through Azure.",
+          "description": "Azure OpenAI Fine-Tuning is Microsoft's managed fine-tuning service inside Microsoft Foundry, covering OpenAI models and open-weight models such as Llama, Qwen, Ministral and gpt-oss. It supports supervised fine-tuning, direct preference optimization, and reinforcement fine-tuning, with per-epoch checkpoints and optional automatic deployment. Jobs run under Foundry role-based access controls.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53378,15 +53432,15 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No standalone usage figure is disclosed for Azure OpenAI fine-tuning -- no jobs run, no count of customers tuning. Azure OpenAI is widely deployed across enterprises, but nothing published is specific to the fine-tuning offering, so no level is assigned rather than one borrowed from the umbrella product.",
-            "last_verified": "2026-08-09",
+            "note": "Microsoft publishes no usage figures for this service, such as jobs run or customers tuning models. Azure OpenAI is widely deployed, but nothing published is specific to fine-tuning, so the map leaves this product unscored rather than borrowing a figure from the umbrella service.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning",
-                "shows": "The full article (supported models, methods, regions, RBAC prerequisites, file formats) carries no jobs-run, customer-count, or usage-volume figure anywhere; grepped the cleaned page text for customer/million/thousand/user/download/job-count/adoption terms — the only numeric hits are a joke example (\"About 93 million miles\") inside a sample training file and a recommendation to start with \"50 well-crafted examples,\" neither a usage metric.",
-                "accessed": "2026-08-09",
+                "shows": "The article carries no usage figure; searched the body for customers, users, downloads, jobs run and adoption: the only hits are the sample training line \"About 93 million miles. Just a quick drive, really.\" and the advice \"hundreds, if not thousands, of training examples\", neither a usage metric.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "299941b4f8958f2df22b9939dffabd5315ba61982f4189e335cd55037150aed0"
+                "content_sha256": "c693a48e273962d379f39a2e524773e8ff3500646b91a6c04bac315c9c20f000"
               }
             ]
           },
@@ -53395,15 +53449,15 @@
             "basis": "feature_matrix",
             "value": "Methods: SFT, DPO (preference), RFT (model-grader reward signals) across the gpt-4o/gpt-4.1/o4-mini/gpt-5 frontier line, plus preview SFT on Ministral/Qwen/Llama/gpt-oss. Managed end-to-end (data validation, per-epoch checkpoints, auto-deploy); Standard/Global/Developer training tiers.",
             "confidence": "medium",
-            "note": "Azure OpenAI Fine-Tuning offers the same tuning methods as the OpenAI API it wraps, plus a preview lane for open-weight models, with no controls over parallelism, precision or training scale. That keeps it at managed breadth rather than the deeper control a training framework gives.",
-            "last_verified": "2026-08-09",
+            "note": "Azure OpenAI Fine-Tuning offers supervised and preference tuning on OpenAI models such as gpt-4o, reinforcement fine-tuning on o4-mini, and supervised tuning of open-weight models such as Llama and Qwen, but exposes only batch size, learning rate and epoch count as settings. That gives it managed breadth rather than the deeper control over parallelism and precision that a training framework offers.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning",
-                "shows": "Supported-models table: SFT only for gpt-4o-mini; SFT+DPO for gpt-4o and the gpt-4.1/mini/nano trio; RFT (GA) for o4-mini; RFT (GA, invite-gated) for gpt-5; public-preview SFT for Ministral-3B, Qwen-32B, Llama-3.3-70B-Instruct, and gpt-oss-20b. No parallelism, precision, or training-scale controls are exposed anywhere on the page.",
-                "accessed": "2026-08-09",
+                "shows": "Supported-models table lists gpt-4o with methods \"SFT, DPO\" and o4-mini with \"RFT\" (gpt-5 RFT \"gated and available by invitation only\"), plus SFT on four open-weight models. The only tunable hyperparameters are batch_size, learning_rate_multiplier and n_epochs; searched the body for parallelism, precision, GPU, fp16 and bf16: none found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "299941b4f8958f2df22b9939dffabd5315ba61982f4189e335cd55037150aed0"
+                "content_sha256": "c693a48e273962d379f39a2e524773e8ff3500646b91a6c04bac315c9c20f000"
               }
             ]
           },
@@ -53412,9 +53466,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Openness was read from Microsoft's Product Terms, since the service publishes no license file; the reverse-engineering and weight-exfiltration restriction there covers Foundry Models generally, not fine-tuning specifically."
         },
@@ -53461,20 +53515,22 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No standalone usage figure exists for Together's fine-tuning service: no jobs run, no customers tuning, no models fine-tuned, no developer count. A vendor case study describes one customer moving to daily iteration with improved accuracy, but a single anecdote is not enough to read a level from, so the service is left unscored.",
-            "last_verified": "2026-08-13",
+            "note": "Together publishes no usage figures for its fine-tuning service, such as jobs run, customers tuning or models fine-tuned. A vendor case study describes one customer's faster iteration and improved accuracy, but a single anecdote says little about how widely the service is used, so the map leaves it unscored.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.together.ai/docs/fine-tuning-overview",
-                "shows": "managed FT feature; no aggregate usage figures disclosed",
-                "accessed": "2026-08-13",
+                "shows": "Managed fine-tuning overview: \"Together AI handles the full lifecycle: data upload, training, hosting, and inference\" and \"Serve your fine-tuned model on a dedicated endpoint or download it for local use.\" Searched the body for jobs run, customers, developers, users and usage counts: none found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "3599bf70a8882121d318f1b18ae496ae3fe1ff72802ad75736df882681e6affa"
+                "content_sha256": "9cb2836f5b4e1d219979a503b205073720586d51485661b786acf42e0f9c0f7c"
               },
               {
                 "url": "https://www.together.ai/fine-tuning",
-                "shows": "FT product page; case-study traction (daily iteration, 77%->87% accuracy)",
-                "accessed": "2026-06-04"
+                "shows": "Product page carries one customer testimonial, \"move from weekly to daily iteration, cut costs by 2–3×, and improve accuracy from 77% to 87%.\" Searched the body for customer counts, jobs run, models fine-tuned and developer counts: none found.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "0763c4b6744a71a778e78bc87ea62e1a15548f0ca1effa2e589d420019ef2cf9"
               }
             ]
           },
@@ -53483,29 +53539,29 @@
             "basis": "feature_matrix",
             "value": "Methods: LoRA + full fine-tuning, preference (DPO), function-calling, reasoning, vision-language FT; demonstrated tuning of 100B+ open models (DeepSeek-V3, Qwen3-235B). Managed end-to-end (prep -> train -> dedicated-endpoint serve).",
             "confidence": "medium",
-            "note": "Together Fine-Tuning offers LoRA and full-parameter fine-tuning, preference, function-calling, reasoning and vision-language tuning, including demonstrated LoRA tuning above 100B parameters on DeepSeek-V3 and Qwen3-235B. It exposes no training-scale or precision controls, offering open-model scale beyond most managed services but the same limited depth as OpenAI and Azure.",
-            "last_verified": "2026-08-09",
+            "note": "Together Fine-Tuning offers LoRA and full-parameter tuning with supervised, preference, function-calling, reasoning and vision-language methods on open-weight models, with full-parameter tuning up to 70B-class models and LoRA on much larger ones. It runs as a managed service rather than exposing a training framework, so it offers breadth of methods without the parallelism and precision controls of Megatron-LM.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.together.ai/docs/fine-tuning-overview",
-                "shows": "Lists the supported methods -- LoRA, full fine-tuning, \"Preference fine-tuning Align a model with rankings over preferred and dispreferred responses using DPO,\" \"Function calling Train a model to invoke tools and structured functions reliably,\" and \"Reasoning fine-tuning Train a reasoning model with chain-of-thought data\" -- with results served \"on a dedicated endpoint.\"",
-                "accessed": "2026-08-09",
+                "shows": "Managed fine-tuning overview: \"Together AI handles the full lifecycle: data upload, training, hosting, and inference\" and lists supervised, \"Align a model with rankings over preferred and dispreferred responses using DPO.\", vision-language, \"Train a model to invoke tools and structured functions reliably.\" and \"Train a reasoning model with chain-of-thought data.\" methods, plus \"Choose how much of the model to update, and tune LoRA’s rank and target modules.\" Searched the body for jobs run, customers, developers and usage counts: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "1fd545fcd22d170fe6afd4d2901dd6f5b8884c7484d4d22dee4a707f980c1e2d"
+                "content_sha256": "9cb2836f5b4e1d219979a503b205073720586d51485661b786acf42e0f9c0f7c"
               },
               {
                 "url": "https://www.together.ai/fine-tuning",
-                "shows": "\"Fine-tune 100B+ models (DeepSeek-V3, Qwen3-235B) that break other platforms, with the reliability to experiment rapidly.\"",
-                "accessed": "2026-08-09",
+                "shows": "The product page states \"Fine-tune 100B+ models (DeepSeek-V3, Qwen3-235B) that break other platforms, with the reliability to experiment rapidly.\" Reinforcement learning and quantization appear in an \"Advanced model shaping capabilities\" block headed \"For teams pushing models beyond standard fine-tuning\", which lists \"Apply FP8 and NVFP4 quantization to push the limits of model efficiency\" and \"Leverage PyTorch-based reinforcement learning to shape model policies\". Multi-GPU and extended-context training are named only in the page's structured-data description, not in its visible copy.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "98bb93bbfc58c847cb4fc614e7b2a38ae6215e2976ca1ce11e86c98647c1cac8"
+                "content_sha256": "0763c4b6744a71a778e78bc87ea62e1a15548f0ca1effa2e589d420019ef2cf9"
               },
               {
                 "url": "https://docs.together.ai/docs/fine-tuning/supported-models",
-                "shows": "Two separate tables, headed \"LoRA fine-tuning\" and \"Full fine-tuning,\" list every fine-tunable base model; the LoRA table includes deepseek-ai/DeepSeek-V4-Flash and Qwen/Qwen3.5-397B-A17B, while the Full fine-tuning table tops out at meta-llama/Llama-3.3-70B-Instruct-Reference -- full-parameter tuning does not reach the largest MoE releases that LoRA does.",
-                "accessed": "2026-08-09",
+                "shows": "Supported-models page has separate LoRA and full fine-tuning tables; the LoRA table lists \"deepseek-ai/DeepSeek-V4-Flash\" and \"Qwen/Qwen3.5-397B-A17B\", while the full fine-tuning table lists nothing larger than \"meta-llama/Llama-3.3-70B-Instruct-Reference\" and Mixtral-8x7B.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "451d4451f4c2bb7c4197125e51147af9b7e0dfc79ea2c340d4baccc596413cc7"
+                "content_sha256": "2c7295bebd2080b22e0033688b58d0416d83ed0a961ca8fc5e100bc98be8fd27"
               }
             ]
           },
@@ -53514,9 +53570,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Openness was read from Together AI's Terms of Service, since the fine-tuning docs publish no repository or license file."
         },
@@ -53526,7 +53582,7 @@
           "org_slug": "fireworks-ai",
           "org": "Fireworks AI",
           "type": "software",
-          "description": "Fireworks Fine-Tuning runs managed supervised fine-tuning, DPO and ORPO preference tuning, and reinforcement fine-tuning on open-weight models such as Llama, Mistral, Qwen, and DeepSeek. It produces LoRA adapters, supports warm-starting from a prior checkpoint, and deploys only to a Fireworks on-demand deployment rather than to self-hosted infrastructure. A live-merge deployment matches base-model latency; an unmerged multi-LoRA deployment shares hardware across fine-tunes at some throughput cost.",
+          "description": "Fireworks Fine-Tuning runs managed supervised, DPO and ORPO preference, and reinforcement fine-tuning on open-weight models such as Llama, Mistral, Qwen and DeepSeek, producing LoRA adapters that can warm-start from a prior checkpoint. A Training API adds custom Python training loops on Fireworks-managed GPUs, with full-parameter training on dedicated capacity. Trained models are served only from Fireworks on-demand deployments, either merged into the base model or as multi-LoRA adapters sharing hardware.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53554,39 +53610,53 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "Fireworks discloses no jobs run, customers tuning, models fine-tuned or developer count for its fine-tuning service. It serves substantial inference volume overall, but that figure is not specific to fine-tuning, so no level is assigned rather than borrowed from the wider platform.",
-            "last_verified": "2026-08-13",
+            "note": "Fireworks publishes no usage figures for its fine-tuning service, such as jobs run, customers tuning or models fine-tuned. The platform serves substantial inference volume overall, but none of it is specific to fine-tuning, so the map leaves this product unscored rather than borrowing a figure from the wider platform.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.fireworks.ai/fine-tuning/fine-tuning-models",
-                "shows": "managed FT feature; no usage figures disclosed",
-                "accessed": "2026-08-13",
+                "shows": "Searched the body for customers, developers, trillion, jobs run, monthly active and users: no usage figure for fine-tuning is published; the only \"million\" is a dataset limit of \"3 million dataset examples\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "e8cf985a9c90e195cf32a6724517100978bd2b5eb766afda2ba5e0849b1b09c6"
+                "content_sha256": "8088b094cd7309ecad53d9bb94a6d0bdec7fed3391a144ffcac7010ec13b5036"
               }
             ]
           },
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Methods: SFT, DPO (preference), RFT (reinforcement fine-tuning). LoRA-adapter outputs with warm-start continued training; serves resulting adapters on dedicated deployments. Open base-model catalog.",
+            "value": "Methods: SFT, DPO and ORPO preference, and reinforcement fine-tuning producing LoRA adapters with warm-start continued training; a Training API for custom training loops on Fireworks-managed GPUs, with full-parameter training on dedicated capacity by request; adapters served from dedicated deployments. Open base-model catalog.",
             "confidence": "medium",
-            "note": "Fireworks produces LoRA adapters rather than full fine-tunes, and exposes no controls over training scale or precision. That leaves it short of open-source training frameworks and of Together's larger declared training scale, though it matches other managed services on reinforcement fine-tuning.",
-            "last_verified": "2026-08-09",
+            "note": "Fireworks offers managed supervised, preference and reinforcement fine-tuning that produces LoRA adapters, plus a Training API for custom training loops, with full-parameter training on dedicated GPUs by request. It runs only on Fireworks' cloud and serves trained adapters only from dedicated deployments, which puts it level with managed services such as Tinker and Together rather than with Megatron-LM and the large-scale training frameworks.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.fireworks.ai/fine-tuning/fine-tuning-models",
-                "shows": "Lists SFT, DPO/ORPO, and reinforcement fine-tuning as the managed fine-tuning methods, producing a LoRA model; documents --warm-start-from to continue training from a previous LoRA checkpoint instead of a base model.",
-                "accessed": "2026-08-09",
+                "shows": "The page documents supervised, DPO/ORPO and reinforcement fine-tuning jobs, continued training with \"--warm-start-from\" instead of a base model, and says training a model and deploying it to an on-demand (dedicated) deployment \"is the only supported method for serving trained models\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "c4483c16da58f2730d440ad77a90766717888b7cf86a71fa584dbd437086d189"
+                "content_sha256": "8088b094cd7309ecad53d9bb94a6d0bdec7fed3391a144ffcac7010ec13b5036"
               },
               {
                 "url": "https://docs.fireworks.ai/fine-tuning/deploying-loras.md",
-                "shows": "States that fine-tuned LoRA models, whether created on Fireworks or imported, can only be deployed to on-demand (dedicated) deployments, and that serverless deployment is not supported for LoRA models; describes live-merge (matches base-model latency) and multi-LoRA (shares one deployment across several fine-tunes, at some per-adapter throughput overhead) as the two deployment options.",
-                "accessed": "2026-08-09",
+                "shows": "The page states \"Serverless deployment is not supported for LoRA models\" and compares live merge, which \"Matches the base model (no overhead)\", with multi-LoRA, which has \"Some overhead per request due to dynamic adapter application\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "43f62dbc737cf7a37304d9d5ce6d8afacd9ce561b8aaefa074a0e77470763eb6"
+                "content_sha256": "93f5e5ac13585af6eeda0832be99c4dbfaa4aa0149dcbdd9d9cb4288d19c1936"
+              },
+              {
+                "url": "https://docs.fireworks.ai/fine-tuning/training-api/introduction.md",
+                "shows": "The Training API overview describes \"custom training loops with full Python control over objectives\" on Fireworks-managed GPUs, and says Dedicated Training is for when \"You need full-parameter training\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9faf9598d6ca2ba4bd15a71fe0f02226b93995126cf1460aa477209160afd119"
+              },
+              {
+                "url": "https://docs.fireworks.ai/fine-tuning/training-api/dedicated.md",
+                "shows": "The dedicated training page says to \"Use cookbook recipes with LoRA or full-parameter configurations supported by the selected training shape\" and lists SFT, DPO, ORPO, RL, distillation and custom loops.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "178f031ad5552d8c8691e31fffa5ff1c583cee13f2b9dda657329068da9bd676"
               }
             ]
           },
@@ -53595,9 +53665,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -53606,7 +53676,7 @@
           "org_slug": "mistral-ai",
           "org": "Mistral AI",
           "type": "software",
-          "description": "Mistral's managed fine-tuning service on its Studio platform, offering LoRA-based supervised fine-tuning for text and vision on Mistral Small and Medium, plus a Classifier Factory for classification tasks. Mistral's documentation now files the service under deprecated, legacy features. A separate SDK, mistral-finetune, covers self-hosted training.",
+          "description": "Mistral Fine-Tuning API is Mistral's managed service for training custom versions of its own models, offering LoRA-based supervised fine-tuning for text and vision models plus a Classifier Factory for classification tasks. Supported base models include Mistral Small, Mistral Large, Codestral, Mistral NeMo, Ministral and Pixtral. Mistral's documentation files the service under deprecated, legacy features. A separate open-source SDK, mistral-finetune, covers self-hosted training.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -53664,15 +53734,22 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No standalone usage figure exists for the Mistral fine-tuning API: no jobs run, no customers tuning, no models fine-tuned, no developer count. The wider Mistral platform is widely used, but nothing published is specific to fine-tuning, so no level is assigned rather than inferred from the platform around it.",
-            "last_verified": "2026-08-13",
+            "note": "Mistral publishes no usage figures for the fine-tuning API: no jobs run, customers tuning, models fine-tuned or developer count. The wider Mistral platform is widely used, but nothing published is specific to fine-tuning, so adoption is left unscored rather than inferred from the platform around it.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://mistral.ai/news/customization",
-                "shows": "managed FT feature on La Plateforme; no usage figures disclosed",
-                "accessed": "2026-08-13",
+                "shows": "The launch post presents the managed service on la Plateforme and says \"We use LoRA adapters under the hood to prevent forgetting base model knowledge and allow for efficient serving.\" Searched the body for downloads, jobs run, active users and customer counts for the fine-tuning service: no usage figure found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "8081cad71b6d199007f6cb4c92a0e04250014ddbbc2ff86cf9c019a02de182df"
+                "content_sha256": "58c318ff98bad38fa947da3297a94060fd2700c998a379db8ab0f55aceeae76b"
+              },
+              {
+                "url": "https://docs.mistral.ai/resources/deprecated/finetuning",
+                "shows": "The overview page carries the banner \"This feature is deprecated and is no longer actively supported.\" and lists \"via SFT: supervised fine-tuning, the most common fine-tuning method\" alongside Classifier Factory. Searched the body for DPO, reinforcement and LoRA: none found. Searched for downloads and usage figures: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "46470a03c292885e501cc0eac47752a003fe04575b7578f8f3f3e4e1a03fd290"
               }
             ]
           },
@@ -53681,22 +53758,29 @@
             "basis": "feature_matrix",
             "value": "Methods: LoRA-adapter supervised fine-tuning (text & vision) + Classifier Factory for classification models. Tunable base models limited to Mistral's own (Small/Medium tier). No exposed full-FT/DPO/RFT or scale/precision knobs in the managed API.",
             "confidence": "medium",
-            "note": "Mistral's fine-tuning API offers LoRA-based supervised fine-tuning for text and vision, plus a Classifier Factory, on its own Small and Medium models, with no full fine-tuning, DPO, or reinforcement fine-tuning exposed. That is narrower than the preference- and RL-capable services from OpenAI, Azure, Together and Fireworks.",
-            "last_verified": "2026-08-09",
+            "note": "Mistral's fine-tuning API offers supervised fine-tuning for text and vision, plus a Classifier Factory, on Mistral's own models, with only training steps and learning rate exposed as hyperparameters and no full fine-tuning, DPO, or reinforcement fine-tuning documented. That is narrower than the preference- and RL-capable services from OpenAI, Azure, Together and Fireworks.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.mistral.ai/resources/deprecated/finetuning",
-                "shows": "Confirms the recorded method set verbatim: 'Text and vision general fine-tuning via SFT' and 'Classifier Factory', with no full fine-tune, DPO, or RFT option mentioned; filed under 'Deprecated features > Fine-tuning API (legacy)' with a 'no longer actively supported' banner.",
-                "accessed": "2026-08-09",
+                "shows": "The overview page carries the banner \"This feature is deprecated and is no longer actively supported.\" and lists \"via SFT: supervised fine-tuning, the most common fine-tuning method\" alongside Classifier Factory. Searched the body for DPO, reinforcement and LoRA: none found. Searched for downloads and usage figures: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "b1166812b92559c26498d033ad4e41a700f20c88c2c7fa0cc030ed289467601a"
+                "content_sha256": "46470a03c292885e501cc0eac47752a003fe04575b7578f8f3f3e4e1a03fd290"
               },
               {
                 "url": "https://mistral.ai/pricing/api/",
-                "shows": "The current API catalog itemizes fine-tuning pricing only for 'Classifier API model 3B' and 'Classifier API model 8B'; no catalog card prices general text/vision SFT of Mistral Small or Medium, though the deprecated guide still documents it as a service.",
-                "accessed": "2026-08-09",
+                "shows": "The API price list itemizes fine-tuning only for the classifier entries, for example \"Fine-tune Ministral 3B for classification tasks, like moderation, sentiment analysis, fraud detection, and more.\" with \"minimum fee per fine-tuning job of $4\". Searched the body for DPO, reinforcement and full fine-tuning: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "5f93d1336cc0aaa088e83186586a9cdc65db7afc33f987dca406bef88f9f4f61"
+                "content_sha256": "4a2006f0586c0e3ae22742b58465c3b0275b511ea3cdb35474f57910c022140c"
+              },
+              {
+                "url": "https://docs.mistral.ai/resources/deprecated/finetuning/text_vision_finetuning",
+                "shows": "The Text & Vision fine-tuning guide carries the banner \"This feature is deprecated and is no longer actively supported.\" and lists the tunable models \"open-mistral-7b\", \"mistral-small-latest\", \"codestral-latest\", \"open-mistral-nemo\", \"mistral-large-latest\", \"ministral-8b-latest\", \"ministral-3b-latest\" and \"pixtral-12b-latest\", with \"training_steps\" and \"learning_rate\" as the adjustable hyperparameters; its FAQ says \"For LoRA fine-tuning, we recommend 1e-4 (default) or 1e-5.\" Searched the body for DPO, preference (as a tuning method), reinforcement and full fine-tuning: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "81d09198481586cd3cb7fae284e93272184a0077fc138c214f2ed9b73371fd55"
               }
             ]
           },
@@ -53705,9 +53789,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -53716,7 +53800,7 @@
           "org_slug": "predibase",
           "org": "Predibase",
           "type": "software",
-          "description": "Managed platform for fine-tuning and serving language models, offering supervised fine-tuning, reinforcement fine-tuning with GRPO, and continued pretraining. It deploys as SaaS or inside a customer's own VPC and serves models through LoRAX, the multi-LoRA inference engine its founders publish alongside Ludwig, a declarative ML framework. Rubrik acquired Predibase in June 2025 and runs it within its AI Agent Operations platform.",
+          "description": "Predibase is a managed platform for fine-tuning and serving language models, offering supervised fine-tuning, reinforcement fine-tuning with GRPO, and continued pretraining. It deploys as SaaS or inside a customer's own VPC and serves models through LoRAX, the multi-LoRA inference engine its founders publish alongside Ludwig, a declarative ML framework. Rubrik acquired Predibase in June 2025 and runs it within its AI Agent Operations platform.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -53774,15 +53858,15 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "banded_quantity": "the acquisition value ($100M-$500M, press estimate), not a jobs or customer count",
-            "note": "No jobs-run or customer count is disclosed for the platform itself. What can be reported is traction: Predibase now operates under Rubrik after an acquisition the press valued at $100M-$500M, and its LoRAX serving layer is widely adopted in the open-source community, together supporting a modest level rather than a measured download or customer count.",
-            "last_verified": "2026-08-09",
+            "note": "Predibase does not disclose jobs run or customer counts for the platform. Its only public traction is its acquisition by Rubrik, which the press valued in the hundreds of millions of dollars, and that reflects commercial interest in the company rather than measured use of the platform.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://techcrunch.com/2025/06/25/rubrik-acquires-predibase-to-accelerate-adoption-of-ai-agents/",
-                "shows": "Reports the Rubrik acquisition of Predibase: \"Terms of the deal were not disclosed, though CNBC reported that the deal was between $100 million and $500 million\"; Predibase, founded in 2021 by Devvret Rishi (CEO), Piero Molino (chief science officer) and Travis Addair (CTO), \"has raised more than $28 million in VC money\" from Felicis, Greylock, and Sancus Ventures. No per-platform usage or customer count is given anywhere in the piece.",
-                "accessed": "2026-08-09",
+                "shows": "Reports the Rubrik acquisition of Predibase: \"Terms of the deal were not disclosed, though CNBC reported that the deal was between\" $100 million and $500 million, and that the company \"has raised more than $28 million in VC money\". Searched the body for customer counts, jobs run and usage figures: none given for the platform.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "79b1e31c855d87a0a3b969f6302389217bab304110020e915fc81cd5cec49a4b"
+                "content_sha256": "c430309236c61aa8136d001c65b10c3e6fd717fccb433597b1af233fa1c68df9"
               }
             ]
           },
@@ -53792,7 +53876,6 @@
             "value": "Methods: supervised fine-tuning, reinforcement fine-tuning (first end-to-end RFT platform for LLMs, GRPO-style; learns from outcomes/feedback without heavy data prep), continued pretraining; LoRA + LoRAX multi-adapter serving (hundreds of fine-tuned models per GPU); turbo serving (~2x). Tunes open source base models.",
             "confidence": "medium",
             "note": "Predibase matches the reinforcement-fine-tuning services from OpenAI, Azure and Fireworks, and adds multi-adapter serving that hosts hundreds of fine-tunes per GPU, which those platforms lack. It remains a managed platform with no exposed large-scale training internals, well behind Megatron-LM and the other libraries that publish their own training-scale numbers.",
-            "last_verified": "2026-08-09",
             "sources": [
               {
                 "url": "https://web.archive.org/web/20260107043258/https://docs.predibase.com/",
@@ -53815,9 +53898,19 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "date": "2026-09-23",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-09-28",
+                "reason": "Both cited capability sources are Wayback captures (docs.predibase.com and predibase.com) and both fetches failed with connection resets after 6 attempts each, including a second retry; the live docs.predibase.com and predibase.com return HTTP 403. No fresh, digested read of Predibase's own documentation is possible, so the capability value cannot be re-confirmed. The prior fetch failures say nothing about whether the feature claims are true."
+              }
+            ]
           },
           "version_note": "Predibase's own pages return HTTP 403 and predibase.com now redirects to Rubrik's Agent Cloud page, so the descriptive facts here come from archived captures rather than live vendor documentation."
         },
@@ -53827,7 +53920,7 @@
           "org_slug": "openpipe",
           "org": "OpenPipe",
           "type": "software",
-          "description": "OpenPipe ships the Agent Reinforcement Trainer (ART), a library for post-training agentic LLMs with reinforcement learning (GRPO) and supervised fine-tuning. ART's client-server split lets training run on a self-hosted GPU or through a hosted backend, and OpenPipe sells a managed training and serving platform layered on the library. CoreWeave, which also owns Weights & Biases, acquired OpenPipe in September 2025.",
+          "description": "OpenPipe ships the Agent Reinforcement Trainer (ART), a library for post-training agentic LLMs with reinforcement learning (GRPO) and supervised fine-tuning. ART's client-server split lets training run on a self-hosted GPU or through a hosted backend, and OpenPipe sells a managed training and serving platform layered on the library.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -53911,17 +54004,31 @@
             "basis": "feature_matrix",
             "value": "Methods: multi-step agentic RL via GRPO + SFT; integrates with vLLM/Unsloth backends; supports Qwen, Llama, GPT-OSS. Specialist agent-RL focus, not broad-method or large-scale-parallelism training infra.",
             "confidence": "medium",
-            "note": "ART is a focused agent-RL trainer, not general training infrastructure, with no tensor, pipeline or expert parallelism and no MLPerf Training submission behind it. That leaves it well behind Megatron-LM's demonstrated frontier-scale training.",
+            "note": "ART is a focused agent-RL trainer that trains LoRA adapters with GRPO on top of vLLM and Unsloth, and its documentation describes no tensor, pipeline or expert parallelism. That leaves it well behind Megatron-LM, which trains models of hundreds of billions of parameters across thousands of GPUs.",
             "relative_to": "megatron-lm",
             "relation": "two_below",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/OpenPipe/ART",
-                "shows": "GRPO RL trainer, vLLM/Unsloth integration, Qwen/Llama/GPT-OSS support",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/OpenPipe/ART/main/README.md",
+                "shows": "The README describes ART as \"an open-source RL framework that improves agent reliability by allowing LLMs to **learn from experience**\" built on GRPO, where the server \"runs the model's latest LoRA in vLLM\" and trains it with GRPO, and says it \"should work with most vLLM/HuggingFace-transformers compatible causal language models\". Searched the body for tensor parallel, pipeline parallel, expert parallel, Megatron, MLPerf, multi-GPU, FSDP and DeepSpeed: none found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "340a37b146e8c7eeaa51fba006027400a4e9bf30f75d3662121135e4e1d7e0f0"
+                "content_sha256": "ea7684d222767b85b9392dbf3dff6f9972bed7802aee7352daad33c0cd9d7773"
+              },
+              {
+                "url": "https://art.openpipe.ai/fundamentals/art-backend",
+                "shows": "The ART backend page documents ServerlessBackend \"train remotely on autoscaling GPUs\" and LocalBackend \"run your agent and training code on the same machine\". Searched the body for tensor parallel, pipeline parallel, expert parallel, Megatron, multi-GPU, FSDP and DeepSpeed: none found.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "87bf8e923078270f7fa5410a55f86d56c8fea2f5d902158ebef78ea88cbada03"
+              },
+              {
+                "url": "https://art.openpipe.ai/getting-started/faq",
+                "shows": "The FAQ says ART \"currently builds on GRPO, an RL algorithm that involves running many agents in parallel and then using the difference in the rewards they achieve as a stable training signal\". Searched the body for tensor parallel, pipeline parallel, expert parallel, Megatron, MLPerf, multi-GPU, FSDP and DeepSpeed: none found.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8811e0462064b5509e97906e22051dae61d71e6279d606374f4b4adedf59b194"
               }
             ]
           },
@@ -53930,11 +54037,11 @@
           "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "Scored on ART, the library, not OpenPipe's wider platform surface. Whether the hosted backend gates any ART functionality is the open question behind the openness read, and today's sources do not settle it."
+          "version_note": "Scored on ART, the library, not OpenPipe's wider platform surface."
         },
         {
           "slug": "lamini",
@@ -53990,22 +54097,15 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No independent user, usage or download figure is published for the Lamini platform. The founders' claim of large-scale prior deployment describes their earlier work rather than this product, and the hosted app currently returns an error, so adoption is left unscored rather than inferred from press coverage.",
-            "last_verified": "2026-08-09",
+            "note": "Lamini publishes no usage, customer or download figure for its platform, and the founders' claim of large-scale production deployment describes their earlier careers rather than this product. The only public artifact is a thin API client, so adoption is left unscored rather than inferred from press coverage.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.lamini.ai/about/",
-                "shows": "The \"Who are we?\" section states the team \"shipped LLMs in production to over 1 billion users\" as a claim about the founders' collective prior careers (not the Lamini product's usage), and publishes no download, customer, or active-user count for the Lamini platform itself.",
-                "accessed": "2026-08-09",
+                "shows": "The About page says the founders \"shipped LLMs in production to over 1 billion users\" as a claim about their prior careers, and gives no download, customer or active-user count for the Lamini platform; searched the body for download, customers, users served and active users tied to the product: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "ae4e3cb6142e96a8d8d4834ec89c2ef8a8e466bc4f4ef037ea93de8408207cb1"
-              },
-              {
-                "url": "https://app.lamini.ai/",
-                "shows": "The hosted On-Demand app currently returns HTTP 530 (a Cloudflare origin-unreachable error), so no live usage signal is observable from the product surface itself today.",
-                "accessed": "2026-08-09",
-                "http_status": 530,
-                "content_sha256": "3b97bd2d16d52cb626bef0819b7e53a1df8b86c5ebbf5d878cc2aa4a32b3cac0"
               }
             ]
           },
@@ -54015,21 +54115,28 @@
             "value": null,
             "confidence": "low",
             "note": "Lamini markets memory-tuning with claims of about 95% factual accuracy and 32x compression, but the arXiv paper behind those figures was withdrawn by its own authors, and the closed engine cannot be independently checked. No score is assigned rather than one built on an unverifiable claim.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2406.17642",
-                "shows": "The paper behind Lamini's Mixture of Memory Experts claims (\"Banishing LLM Hallucinations Requires Rethinking Generalization\") was withdrawn by its authors. Submission history: \"[v2] Wed, 3 Sep 2025 08:09:31 UTC (1 KB) (withdrawn)\", with the author's own comment \"I want to revisit some of the experiments in this paper, specifically figure 5.\"",
-                "accessed": "2026-08-09",
+                "shows": "The abstract page for the Lamini memory-tuning paper carries the notice \"This paper has been withdrawn by Gregory Diamos\" and a submission history entry ending \"(withdrawn)\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "4ad5a2463c61076bf1081245010ecdd5df23e229a4d7e1ef2af07dcf11896a8f"
+                "content_sha256": "b5f8d63bd53850abed4b3b7e5f02aeb86de9823a9135e17e87d234febfb4d133"
               },
               {
-                "url": "https://github.com/lamini-ai/lamini",
-                "shows": "The public repository is the API client only; no engine internals, training code, or benchmark harness is published to independently assess Lamini's memory-tuning claims against.",
-                "accessed": "2026-08-09",
+                "url": "https://docs.lamini.ai/about/",
+                "shows": "The About page lists \"95% accuracy on factual tasks\" and \"32x model compression\" as vendor claims for memory tuning, with no benchmark harness or reproduction linked.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "72a5e1ece4af19f550854cc33cad4fd9355d21caeed635457e601aebaf7f8672"
+                "content_sha256": "ae4e3cb6142e96a8d8d4834ec89c2ef8a8e466bc4f4ef037ea93de8408207cb1"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/lamini-ai/lamini/main/README.md",
+                "shows": "The repository README says \"This python package is a client + SDK compatible with the Lamini API\", so only the API client is public; searched for engine, training code and benchmark harness: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "2dc3d9d8d5ee1f60edac0a73fcf7f144a0eb03ae4d676b30db075dca5e3be713"
               }
             ]
           },
@@ -54038,9 +54145,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-22",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-22"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Reported as an AMD acquisition in 2025, but the sources show only a leadership move: co-founder Sharon Zhou and several colleagues joined AMD, while Lamini's own documentation still lists its service tiers as live with no wind-down language."
         },
@@ -54050,7 +54157,7 @@
           "org_slug": "anyscale",
           "org": "Anyscale",
           "type": "software",
-          "description": "Anyscale Fine-Tuning is a managed, Ray-based platform for post-training open-weight language models. It runs LLaMA-Factory, SkyRL, and Ray Train across Ray clusters for continued pretraining, supervised fine-tuning, preference optimization (DPO, KTO, PPO, ORPO), and RLVR or agentic tuning, then serves the checkpoints with multi-LoRA support. Anyscale, founded by Ray's creators at UC Berkeley's RISELab, retired its own fine-tuning library, LLMForge, in favor of these frameworks.",
+          "description": "Anyscale Fine-Tuning is a managed, Ray-based platform for post-training open-weight language models. It runs LLaMA-Factory, SkyRL, and Ray Train across Ray clusters for continued pretraining, supervised fine-tuning, preference optimization (DPO, KTO, PPO, ORPO), and RLVR or agentic tuning, then serves the checkpoints with multi-LoRA support.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -54088,34 +54195,41 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No usage figure is published for Anyscale's fine-tuning feature specifically. LLMForge, Anyscale's own library, was retired, but fine-tuning continues on open frameworks with no separate usage signal published, so the map leaves it unscored.",
-            "last_verified": "2026-08-09",
+            "note": "Anyscale publishes no usage figure for its fine-tuning feature, and the open frameworks it runs publish none that is specific to the platform, so the map leaves this product unscored.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.anyscale.com/llm/fine-tuning",
-                "shows": "Full page covers post-training methods, framework choice, dataset prep, checkpointing, and observability integrations, with no downloads, user, or usage figures anywhere for the fine-tuning capability (checked by reading the full page text).",
-                "accessed": "2026-08-09",
+                "shows": "Searched the body for downloads, users and customers: none found, and the only \"usage\" is VRAM usage; the page describes methods, frameworks and integrations but publishes no usage figure for the fine-tuning capability, and states \"Anyscale supports multiple frameworks for LLM post-training\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "022cbf937adc0b534b52a0ce242b59ed6ffb7245df7b29ef464ad2ef27a8a7ac"
+                "content_sha256": "fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7"
               }
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
-            "value": "Methods: LoRA + full-parameter FT; YAML config; scaling via Ray Train/Ray Data + DeepSpeed/Accelerate. No advanced quantization/algorithm coverage; Anyscale itself cites Axolotl/LLaMA-Factory as providing enhanced functionality, the reason for deprecation.",
+            "value": "Methods: continued pretraining, SFT, full fine-tuning, LoRA and QLoRA, DPO, KTO, ORPO and PPO preference training, and GRPO or DAPO reinforcement learning, run through LLaMA-Factory, SkyRL and Ray Train on Ray clusters with FSDP, DeepSpeed or Megatron backends; multi-LoRA serving.",
             "confidence": "medium",
-            "note": "Anyscale runs LoRA and full-parameter fine-tuning through Ray Train and Ray Data with DeepSpeed or Accelerate, but offers no advanced quantization or algorithm coverage. Anyscale itself cited Axolotl and LLaMA-Factory's broader feature sets as the reason for retiring its own library, LLMForge.",
+            "note": "Anyscale runs full fine-tuning, LoRA and QLoRA, preference methods such as DPO, KTO and ORPO, and GRPO reinforcement learning by running open frameworks, LLaMA-Factory, SkyRL and Ray Train, on Ray clusters. That matches most of Axolotl's method coverage but not its quantization-aware training or sequence parallelism, which places it one step below Axolotl.",
             "relative_to": "axolotl",
-            "relation": "two_below",
-            "last_verified": "2026-08-13",
+            "relation": "one_below",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://www.anyscale.com/library/llmforge",
-                "shows": "LoRA + full FT; OSS alternatives offer quantization/advanced algorithms",
-                "accessed": "2026-08-13",
+                "url": "https://docs.anyscale.com/llm/fine-tuning",
+                "shows": "The page lists post-training capabilities: \"algorithms such as PPO, DPO, KTO, and ORPO, or RLVR with GRPO and DAPO\" and \"full fine-tuning and parameter-efficient methods (LoRA, QLoRA, freeze-tuning)\", with scaling \"compatible with FSDP, DeepSpeed, and Megatron\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "aae241053005347202073ef3f0dde4abf3f6fd24fe922e79980489fee7422105"
+                "content_sha256": "fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7"
+              },
+              {
+                "url": "https://docs.anyscale.com/llm/fine-tuning",
+                "shows": "The page states \"Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory, SkyRL, and Ray Train\" and cautions \"Feature availability and exact configurations can vary by model family and framework.\"",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7"
               }
             ]
           },
@@ -54124,11 +54238,11 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "The score was recorded against LLMForge, Anyscale's own library, which current docs no longer mention; whether the platform's openness basis moved with it is a score question, not a prose one."
+          "version_note": "Anyscale's own fine-tuning library, LLMForge, no longer appears in its documentation, which now describes the platform through the open frameworks it runs."
         },
         {
           "slug": "snowflake-cortex-fine-tuning",
@@ -54136,7 +54250,7 @@
           "org_slug": "snowflake",
           "org": "Snowflake",
           "type": "software",
-          "description": "Snowflake Cortex Fine-Tuning is a fully managed function inside Snowflake Cortex AI that applies parameter-efficient fine-tuning (PEFT) to a fixed list of base models: Llama 3 (8B/70B), Llama 3.1 (8B/70B), Mistral 7B, and Mixtral 8x7B. Training data comes from tables in the customer's account, and both training and inference run on Snowflake compute rather than a third-party platform, billed per token in credits.",
+          "description": "Snowflake Cortex Fine-Tuning is a fully managed function inside Snowflake Cortex AI that applies parameter-efficient fine-tuning (PEFT) to a short, fixed list of supported base models, such as Llama 3.1 8B. Training data comes from tables in the customer's account, and both training and inference run on Snowflake compute rather than a third-party platform, billed per token in credits.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -54164,32 +54278,32 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "note": "No usage or customer-count figure is published for the fine-tuning feature specifically. Snowflake has a large data-platform install base, but nothing about it can honestly be read as a signal for how much this feature is used, so no level is assigned.",
-            "last_verified": "2026-08-09",
+            "note": "Snowflake does not publish how many customers use this fine-tuning feature. Its documentation only describes a view for tracking an account's own usage, so there is no honest way to judge how widely it is used.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning",
-                "shows": "Documents a CORTEX_FINE_TUNING_USAGE_HISTORY account_usage view for tracking a customer's own credit and token consumption, but discloses no aggregate customer count, deployment count, or other usage figure for the fine-tuning feature itself.",
-                "accessed": "2026-08-09",
+                "shows": "Documents the \"CORTEX_FINE_TUNING_USAGE_HISTORY view\" for tracking an account's own consumption; searched the body for customers, customer count, deployments and adoption figures: none found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "3f3f837986ab91b882fc1ffb0b7bae9607b99f4ef906fef09f8e61831cb71944"
+                "content_sha256": "f720caaa43e1e4e37784d745658fd189afb14e39cf2ddaa406ae53fc1690bbfe"
               }
             ]
           },
           "capability": {
             "score": 2,
             "basis": "feature_matrix",
-            "value": "Method: PEFT (single LoRA-class technique) on a fixed allowlist of 6 base models (Llama 3/3.1, Mistral/Mixtral); no full FT, no RLHF/DPO/GRPO, no user-chosen models/scale. Convenience-first managed feature, narrow method/model coverage.",
+            "value": "Method: PEFT (a single LoRA-class technique) on one documented base model, Llama 3.1 8B; no full fine-tuning, no RLHF, DPO or GRPO, and no user choice of model or training scale. A convenience-first managed feature with narrow method and model coverage.",
             "confidence": "medium",
-            "note": "Narrow on every axis this category compares: a single parameter-efficient method of the LoRA class, over a fixed allowlist of six base models (Llama 3 and 3.1, Mistral and Mixtral), with no full fine-tuning, no RLHF, DPO or GRPO, and no user choice of model or training scale. Integrated convenience for Snowflake users rather than a frontier trainer.",
-            "last_verified": "2026-08-09",
+            "note": "Snowflake Cortex Fine-Tuning offers a single parameter-efficient training method on a single documented base model, Llama 3.1 8B, with no full fine-tuning and no reinforcement or preference-based training. That makes it a convenience feature for Snowflake users, well short of managed services such as OpenAI's and Together's that add preference and reinforcement tuning on many more models.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning",
-                "shows": "States that Cortex Fine-tuning lets users leverage parameter-efficient fine-tuning (PEFT) to create customized adaptors, over a fixed set of six base models (llama3-8b, llama3-70b, llama3.1-8b, llama3.1-70b, mistral-7b, mixtral-8x7b); no full fine-tuning, RLHF, DPO, or GRPO option is mentioned anywhere on the page.",
-                "accessed": "2026-08-09",
+                "shows": "Describes \"parameter-efficient fine-tuning (PEFT) to create customized adaptors\" and a base-models table listing only \"llama3.1-8b\"; searched the body for LoRA, RLHF, DPO, full fine-tuning and mixtral: none found.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "3f3f837986ab91b882fc1ffb0b7bae9607b99f4ef906fef09f8e61831cb71944"
+                "content_sha256": "f720caaa43e1e4e37784d745658fd189afb14e39cf2ddaa406ae53fc1690bbfe"
               }
             ]
           },
@@ -54198,9 +54312,9 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -54309,22 +54423,15 @@
             "basis": "feature_matrix",
             "value": "Methods: RL training environments (RLHF/RLAIF, GRPO-style) with async-first microservice design; broad environment coverage (dataset eval GSM8K/MMLU, games, code execution, multimodal); OpenAI-compatible endpoints; debugging tooling (view-run/process). Trainer-agnostic via Axolotl/Tinker.",
             "confidence": "medium",
-            "note": "Capable, well-architected RL-environments layer; mid-tier as a fine-tuning enabler (it orchestrates RL rather than implementing large-scale training itself). Vendor-reported gains (4.6x parallel-task, 2.5x finance) not independently benchmarked.",
-            "last_verified": "2026-08-08",
+            "note": "Atropos ships ready-made environments for dataset evaluation, games, judge-based RLHF and RLAIF, multi-turn RL, code execution and multimodal tasks, and it works with any OpenAI-compatible endpoint. It stops short of training itself: the trainer and inference engine come from elsewhere, such as Axolotl or Tinker, so it enables fine-tuning rather than performing it.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/NousResearch/atropos",
-                "shows": "The rendered README's environment table lists \"Dataset environments\" (\"GSM8K, MMLU, Custom HF Datasets\"), \"Online environments\" (\"Blackjack, Taxi, Text-based games\"), \"RLAIF and RLHF\" (\"LLM Judge/Reward Models\"), \"Multi-Turn RL\", \"Code Execution\" and \"Multimodal\". A \"Trainer Integrations\" section covers Axolotl and Tinker, and the diagram caption notes the trainer and inference engine are not included with the atropos package, with the in-repo example trainer described as a reference example. Tooling includes \"view-run\", process, and \"Offline Data Generation\" via atropos-sft-gen and atropos-dpo-gen, over OpenAI-compatible endpoints. The vendor's own results table reports a \"Berkeley Function Calling Benchmark\" parallel-task improvement of \"4.6x\" and a simple-task move from 21 percent to 51.75 percent, both self-reported and not independently benchmarked. \"GRPO\" does not occur anywhere in the README.",
-                "accessed": "2026-08-08",
+                "url": "https://raw.githubusercontent.com/NousResearch/atropos/main/README.md",
+                "shows": "The README environment table lists \"Dataset environments\" with \"GSM8K, MMLU, Custom HF Datasets\", \"Online environments\" with \"Blackjack, Taxi, Text-based games\", \"RLAIF and RLHF\" with \"LLM Judge/Reward Models\", \"Multi-Turn RL\", \"Code Execution\" and \"Multimodal\". A Trainer Integrations section covers Axolotl and Tinker, and the diagram caption says \"trainer & inference engine not included with the atropos package\". Tooling includes \"View Run (`view-run`)\" and \"Offline Data Generation\" via atropos-sft-gen and atropos-dpo-gen, and \"Atropos natively supports any model provider that adheres to the OpenAI API standard\". Its results table reports \"4.6x\" on parallel tasks and 21% to 51.75% on simple tasks, self-reported. Searched the body for GRPO: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0"
-              },
-              {
-                "url": "https://api.github.com/repos/NousResearch/atropos/releases",
-                "shows": "Four published releases, newest \"tag_name\": \"v0.4.0\" with \"published_at\": \"2026-03-10T04:20:36Z\" and \"prerelease\": false; the others are v0.3.0 (2025-07-16), v0.2.1 and v0.2.0. Together with the repo being archived on 2026-07-04 this establishes that the feature set is frozen at 0.4.0, which is why the capability reading describes a fixed feature set rather than a moving target.",
-                "accessed": "2026-08-08",
-                "http_status": 200,
-                "content_sha256": "c0511134ed5fde41a61e468d93deb8f1c70021d4b4793d9e53490dd60eea488d"
+                "content_sha256": "354055bcc2f72ba94fb5c2b69741c159b89a55bd30f6e20b9b652781cafb9ff6"
               }
             ]
           },
@@ -54333,9 +54440,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-09-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Scored as the RL-environment and orchestration layer that feeds a fine-tuning trainer rather than as a trainer itself, which is the judgment behind its place in this category."
         },
@@ -54402,15 +54509,15 @@
             "level": 2,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Thinking Machines' own Tinker page names Glean/Waldo, Chroma, Lightning Rod Labs, Mantic, Trajectory, MIT, Stanford and Axiom Math as users of the API. The reading comes from those named adopters rather than a download or seat count, since neither is published for this hosted training API.",
-            "last_verified": "2026-08-09",
+            "note": "Thinking Machines names companies and research groups such as Glean, Chroma, MIT and Stanford as users of the API on its own product page. It publishes no download, seat or user count for the hosted service, so named adopters are the only public evidence of use.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://thinkingmachines.ai/tinker/",
-                "shows": "Case-study section now names Glean (Waldo), Chroma (Context-1), Lightning Rod Labs, Mantic, and Trajectory as customers, plus research collaborations credited to MIT, Stanford, and Axiom Math; no aggregate user count, download count, or revenue figure appears anywhere on the page.",
-                "accessed": "2026-08-09",
+                "shows": "Case-study section names Glean (\"Waldo is an agentic search model that hands the reasoning model the tool plan it needs for the job, fast.\"), Chroma, Lightning Rod Labs, Mantic and Trajectory, plus research quotes from MIT, Stanford and Axiom Math (\"AxiomProver is an AI mathematician that conjectures, proves, and verifies its own work in Lean.\"). Searched the body for user count, download count, seat count and revenue: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "074ddd126ca528099724da7fb888763bd391ac412a17279f197d6070b58c9305"
+                "content_sha256": "074ebd24ce4f56602f179ce4c158a5faf082726a096c176b1d81afb8e8116f30"
               }
             ]
           },
@@ -54419,22 +54526,22 @@
             "basis": "feature_matrix",
             "value": "Methods: LoRA training + sampling for RL/eval; broad model breadth (1B-550B incl. large MoE like Qwen3-235B-A22B, DeepSeek, Nemotron); abstracts distributed multi-GPU training behind 4-function API. Largest demonstrated: 550B-class MoE fine-tuning.",
             "confidence": "medium",
-            "note": "Tinker hides distributed multi-GPU training behind a four-function API, covering LoRA training and RL sampling across models up to large mixture-of-experts scale. It stays a step below the top because the service is LoRA-centric, with no full fine-tuning or full RL stack, and the comparison is drawn from that feature set rather than from an MLPerf Training result.",
-            "last_verified": "2026-08-09",
+            "note": "Tinker hides distributed multi-GPU training behind four functions and supports LoRA training and RL sampling on open-weight models, up to very large mixture-of-experts checkpoints. The service is LoRA-only, with no full fine-tuning or full RL stack, which keeps it behind frameworks such as Megatron-LM and verl that train entire models at scale.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://thinkingmachines.ai/tinker/",
-                "shows": "FAQ still states \"Tinker is a flexible API for efficiently fine-tuning open source models with LoRA.\" Current model tiles top out at NVIDIA Nemotron-3-Ultra-550B-A55B-BF16; no full-fine-tuning or full-RL-stack option is described anywhere on the page.",
-                "accessed": "2026-08-09",
+                "shows": "FAQ states \"Tinker is a flexible API for efficiently fine-tuning open source models with LoRA.\" and argues that \"LoRA matches the learning performance of full fine-tuning\". The supported-models list runs from \"Qwen3.5-4B\" up to \"Nemotron-3-Ultra-550B-A55B-BF16\". Searched the body for a full fine-tuning or full RL stack offering: the only full fine-tuning mention is that LoRA comparison.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "074ddd126ca528099724da7fb888763bd391ac412a17279f197d6070b58c9305"
+                "content_sha256": "074ebd24ce4f56602f179ce4c158a5faf082726a096c176b1d81afb8e8116f30"
               },
               {
                 "url": "https://tinker-docs.thinkingmachines.ai/tinker/models/",
-                "shows": "Retired Models page lists a June 12, 2026 retirement batch including Qwen3-235B-A22B-Instruct-2507 and six Llama checkpoints (Llama-3.3-70B-Instruct, Llama-3.1-70B, Llama-3.1-8B, Llama-3.1-8B-Instruct, Llama-3.2-3B, Llama-3.2-1B), confirming the model roster the score's value field cites has shifted since it was last read.",
-                "accessed": "2026-08-09",
+                "shows": "Model table reads \"29 models shown\" and lists Inkling at 975B total parameters and \"Nemotron-3-Ultra-550B-A55B\" at 550B, with a \":peft:\" suffix on the 256K-context Tinker IDs, plus a Retired Models section. Searched the body for full fine-tuning: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "bea511c0ff97bf4647d76b5bef32febec518c2756465f53d64ca757fe44dd610"
+                "content_sha256": "e292f61dda4944506e06d50cda05310fbd2b4f4bffaea84ac8577a9ed930b617"
               }
             ]
           },
@@ -54443,11 +54550,11 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-09-23",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-23"
+            "latest_axis_confirmation": "2026-09-28"
           },
-          "version_note": "The supported-model roster changes often (Llama was dropped in June 2026), so the linked product page is the current list rather than this entry."
+          "version_note": "The supported-model roster changes often, so the linked product page is the current list rather than this entry."
         },
         {
           "slug": "megatron-lm",
@@ -54566,29 +54673,29 @@
             "basis": "feature_matrix",
             "value": "Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4; weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a ~175B GPT-3 from 96 to 4,608 H100 GPUs.",
             "confidence": "high",
-            "note": "Megatron-LM provides reference-grade infrastructure for large-scale transformer training, composing data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4, and has been benchmarked at 462B parameters across thousands of H100 GPUs. No MLPerf Training submission has been independently verified for the library itself, so this is judged on that feature set and NVIDIA's own scaling benchmarks.",
-            "last_verified": "2026-08-13",
+            "note": "Megatron-LM provides reference-grade infrastructure for large-scale transformer training, composing data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4. NVIDIA's own benchmarks reach 462B parameters across thousands of H100 GPUs, though those results were measured without training to convergence.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
-                "url": "https://github.com/NVIDIA/Megatron-LM",
-                "shows": "The README describes Megatron Core as providing \"transformer building blocks, advanced parallelism strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4), and model architectures\". Under Performance Benchmarking: \"The codebase efficiently trains models from 2B to 462B parameters across thousands of GPUs\" at up to 47% Model FLOP Utilization (MFU) on H100 clusters, with Key Results listing a \"6,144 H100 GPUs\" heading against \"Successfully benchmarked 462B parameter model training.\" and \"Superlinear scaling: MFU increases from 41% to 47–48% with model size.\" The strong-scaling paragraph scales a GPT-3 model of slightly more than 175 billion parameters from 96 H100 GPUs to 4,608 GPUs at a fixed batch size of 1,152 sequences, MFU falling 47% to 42%. Results are noted as measured without training to convergence.",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md",
+                "shows": "The README describes Megatron Core as providing \"transformer building blocks, advanced parallelism strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)\". Under Performance Benchmarking: \"The codebase efficiently trains models from 2B to 462B parameters across thousands of GPUs\", and \"Successfully benchmarked 462B parameter model training.\" on 6,144 H100 GPUs; the strong-scaling test takes \"from 96 H100 GPUs to 4,608 GPUs\" on a GPT-3 model of slightly more than 175 billion parameters.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "85c0d4238ff0e5fc4b96219981648f8ae09941fc6939bc6f0ba81e34fb3b2874"
+                "content_sha256": "9da0af3c6ccb7fb9dae98930e369293d5872dce1ca9fc22e506d302a83d5f91f"
               },
               {
                 "url": "https://developer.nvidia.com/megatron-core",
-                "shows": "NVIDIA's own scaling documentation: \"In the weak scaling experiments below, with GPT models ranging from 2 billion to 462 billion parameters, Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs.\" A weak-scaling table follows with rows from 2.1B to 509B parameters carrying tensor/pipeline/data-parallel sizes, GPU counts, per-GPU teraFLOP/s, MFU (42-50%) and aggregate petaFLOP/s. The strong-scaling paragraph states near-linear scaling of a 177 billion parameter GPT-3 from 96 to 4608 H100 GPUs at a fixed 1152-sequence batch. Feature text names \"tensor, sequence, pipeline, context, and MoE expert parallelism\", activation checkpointing, distributed optimizers and distributed checkpointing, resiliency (automatic restart, fault/hang detection), and \"features like FP8 mixed precision and advanced parallelism\"; it also cites Nemotron-4 340B trained at up to 6K+ H100 GPU scale.",
-                "accessed": "2026-08-09",
+                "shows": "NVIDIA product page: \"Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs\" on GPT models from 2 billion to 462 billion parameters, and \"near linear scaling from 96 to 4608 H100 GPUs\" for a 177 billion parameter GPT-3 model. Feature text lists \"automatic restart, fault/hang detection\" resiliency and \"FP8 mixed precision and advanced parallelism\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "03e35b28e69d3dc08983e285e3e7fb7f7a989af9a6c49b31cbebab3d6d9b4e68"
+                "content_sha256": "a01d49ee9e7309373a691ecc455e4a92b63f1feb90c63806a882d794e3b066b7"
               },
               {
                 "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html",
-                "shows": "The Parallelism Strategies Guide opens \"Megatron Core supports multiple parallelism strategies that can be combined to efficiently train models from billions to trillions of parameters across thousands of GPUs.\" Its overview table enumerates six: Data Parallelism (DP), Tensor Parallelism (TP), Pipeline Parallelism (PP), Context Parallelism (CP), Expert Parallelism (EP) and Fully-Sharded Data Parallelism (Megatron-FSDP), each with an objective and a use case. Each section gives the actual flags — --tensor-model-parallel-size, --pipeline-model-parallel-size, --context-parallel-size, --expert-model-parallel-size, --use-megatron-fsdp with ZeRO-1/2/3 sharding strategies, --sequence-parallel — and states that sequence parallelism must be enabled when EP is combined with TP. This is the composability claim, documented rather than asserted.",
-                "accessed": "2026-08-09",
+                "shows": "The Parallelism Strategies Guide opens \"Megatron Core supports multiple parallelism strategies that can be combined to efficiently train models from billions to tr\" and its overview table lists Fully-Sharded Data Parallelism (Megatron-FSDP) alongside data, tensor, pipeline, context and expert parallelism; the flag \"--sequence-parallel\" is documented as required when combining TP with EP.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "cc5b5cf00b32cac4b1d59e9c2482f19cafba61e4b9ce17c2b22d4497471daac0"
+                "content_sha256": "693c481667ce97084369d0ae72c577d362284ad9edb4ad59f9d311138db9aab0"
               }
             ]
           },
@@ -54597,9 +54704,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-16",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "This entry covers both components shipped from the NVIDIA/Megatron-LM repository, and the scores are read against that repository rather than the Megatron Core package alone."
         },
@@ -123286,7 +123393,7 @@
     }
   },
   "n_total": 1098,
-  "generated": "2026-09-28",
+  "generated": "2026-09-29",
   "version": "0.4.0",
   "released": "2026-09-26",
   "contract": 1,
