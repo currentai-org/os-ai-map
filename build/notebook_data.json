@@ -56052,7 +56052,7 @@
             "components": "license:Apache-2.0(OSI permissive);source:public;core-gated:ungated(every runtime piece is published - eleven syft-* packages under packages/ plus syft_client under one Apache-2.0 license - and PySyft runs on cloud storage the user already has rather than on an OpenMined-operated plane. No enterprise path and no license key in the tree)",
             "confidence": "high",
             "note": "PySyft is Apache-2.0 licensed across the whole codebase, and nothing is withheld behind a paywall or license key: OpenMined publishes each of its runtime components under that same license. The product is also architected so there is no central OpenMined-run service to withhold in the first place, since computations run through cloud storage the user already controls.",
-            "last_verified": "2026-08-12",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://github.com/OpenMined/PySyft",
@@ -56077,12 +56077,53 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md",
-                "shows": "License badge and closing section both give Apache License 2.0. The description is that \"PySyft lets data scientists submit computations which are ran by data owners on private data - all through cloud storage their organizations already use (Google Drive, Microsoft 365, etc.). No new infrastructure required.\" No hosted OpenMined service, paid tier or enterprise edition appears anywhere in it.",
-                "accessed": "2026-08-12",
+                "shows": "README carries the badge \"License: Apache 2.0\" and the closing link \"Apache License 2.0\", and says computations run \"all through cloud storage their organizations already use\" with \"No new infrastructure required.\" Its closing section says \"OpenMined is a non-profit foundation\". Searched the body for enterprise, pricing, paid and license key: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "ee46bfd7bbc137089c7779d4f3e6a227dccb9ceb3bc2bda65013b0cd2c8f6f4e",
+                "content_sha256": "8dc2faf73082d9ef5a7116ba3c05252b0c746ddf423a19bc44664d45c0d3593b",
                 "establishes": [
                   "license",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/PySyft/dev/LICENSE",
+                "shows": "The root LICENSE file on the dev branch is the standard \"Apache License\" text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "eea804b994920f37e33c21f48af6c3f2909e3687af59627d60ed725c6b7b8b24",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/OpenMined/PySyft/files/dev",
+                "shows": "The public file listing of the dev branch carries the workspace packages, among them \"packages/syft-enclave/README.md\" and \"packages/syft-permissions/pyproject.toml\", beside one root \"LICENSE\". Searched every path for ee/, enterprise/, commercial/ and a second LICENSE file: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "551fb11c4222162e0df83b3e3d8b3cebe86dbea6a1637057ea609c8a8f79f018",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/PySyft/dev/pyproject.toml",
+                "shows": "pyproject.toml describes the package as \"privacy-preserving data science over file-based transports\" and lists runtime dependencies including Google API clients, workspace syft packages and \"syft-crypto-python>=0.1.2b2\"; searched for an enterprise extra or license-key dependency: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "16c38087d921b121076f382fa3b2680b106ba474c6a991c69f4669eec2bc7298",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/syft-crypto-python/json",
+                "shows": "PyPI metadata for syft-crypto-python, the one OpenMined runtime dependency built outside the PySyft tree, reads \"Python bindings for the Syft crypto protocol\" with the classifier \"License :: OSI Approved :: Apache Software License\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9179cf3099af9b9c28e246f03f48fa1fbd7c030e0a0954a9665874d33d977ffc",
+                "establishes": [
                   "core-gated"
                 ]
               }
@@ -56095,7 +56136,6 @@
             "signal_type": "stars_fallback",
             "confidence": "medium",
             "note": "GitHub stars are one adoption signal for PySyft; they cap low because a star is not a use. PyPI downloads of the syft package are the other signal, and both point to the same reading of usage.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://api.github.com/repos/OpenMined/PySyft",
@@ -56152,9 +56192,19 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "date": "2026-09-27",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "The record bands at level 2 on GitHub stars, while PyPI downloads of the declared syft package, which take precedence, band at level 1. Switching the instrument and level is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
+              }
+            ]
           }
         },
         {
@@ -57432,20 +57482,77 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(github.com/OpenMined/syft-hub-sdk);self-host:yes;service:none",
+            "components": "license:Apache-2.0(OSI);source:public(github.com/OpenMined/syft-hub-sdk);self-host:yes;service:proprietary-hosted(OpenMined runs the accounting service that bills paid network services; the SDK registers with it by default, and free services work without it)",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0 SDK, self-hostable, no proprietary tier. Built on OpenMined's open Syft privacy stack.",
-            "last_verified": "2026-08-13",
+            "note": "SyftHub is open source: the SDK is Apache-2.0 with its source public, and the SyftBox network it runs on publishes its server code, so an operator can run the whole stack. The one closed piece is the OpenMined-run accounting service that bills paid services on the network, which free queries do not need.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://github.com/OpenMined/syft-hub-sdk",
-                "shows": "Apache-2.0 license on the repo, full SDK source published, README \"Build Federated RAG and tap into distributed data sources without centralizing\"; no paid tier or hosted service; 2 stars",
+                "shows": "Apache-2.0 license on the repo, full SDK source published, README \"Build Federated RAG and tap into distributed data sources without centralizing\"; 2 stars",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "da9fd96d31dc48ee86ce0dd364dd6d5dc87906fd6226cad91424cdbce21c6cd2",
                 "establishes": [
                   "license",
                   "source",
+                  "self-host"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-hub-sdk/main/LICENSE",
+                "shows": "The root LICENSE file on main is the standard \"Apache License\" text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "781ca6cd2fe6b71db352281d6aa2cf037563130ef35c38325b7f7847795ded17",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/OpenMined/syft-hub-sdk/files/main",
+                "shows": "The public file listing of main carries the SDK source, among them \"syft_hub/main.py\" and \"syft_hub/clients/accounting_client.py\", beside one root LICENSE.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "303d3f906fec1377d37ffcf969cef0897308beef099b438310c5d00b5481aa93",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-hub-sdk/main/README.md",
+                "shows": "README describes the federated pipeline, in which \"Only relevant snippets were retrieved and shared\", and a section \"Setup accounting for paid models\" noting \"Each new user received $20 upon registration\"; paid services on the network are billed through that account.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d10033fe70e23796084e5e657f4a3677ce137b55ccb4b32887d15dad13e84d0c"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-hub-sdk/main/pyproject.toml",
+                "shows": "pyproject.toml describes the package as \"Python SDK for discovering and using AI models across the SyftBox network\" and declares MIT as its license text, which disagrees with the Apache-2.0 LICENSE file; both are OSI licenses and the score follows the LICENSE.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d3bf59c378584a7d0028aef0fcabda796604fd1a3fb3056e26efbc18c797ca4a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syftbox/main/LICENSE",
+                "shows": "The SyftBox runtime the SDK runs on carries the standard \"Apache License\" text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "self-host"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/OpenMined/syftbox/files/main",
+                "shows": "The SyftBox file listing publishes the server beside the client, with \"docker/Dockerfile.server\" and \"config/server.example.yaml\" in the tree, so an operator can run the network the SDK queries.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "40be7afa9832269b6ad49069109d3dbb73e8ad5a8a60a40573eb61339790aca5",
+                "establishes": [
                   "self-host"
                 ]
               }
@@ -57501,9 +57608,9 @@
           "maturity": 1.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-27",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "Early-stage, created August 2025, and part of OpenMined's wider federated-RAG work."
         }
