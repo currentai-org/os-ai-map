@@ -20,7 +20,6 @@ openness:
     spec and whitepaper. Confident Security sells a managed service, CONFSEC, on top, but it is an optional
     business built around a fully open standard rather than a component withheld from the source.'
   raw: license:Apache-2.0(OSI);source:public(github.com/openpcc/openpcc + spec/whitepaper);reference-impl(Go)+client-SDKs;commercial-managed-service(CONFSEC)separate;core-gated:ungated
-  last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/openpcc/openpcc/main/LICENSE
     shows: Verbatim Apache License 2.0 body at repository head
@@ -75,7 +74,6 @@ adoption:
   note: OpenPCC has drawn early interest as a GitHub project, but no primary source names an outside production
     deployment. The only consumer identified is Confident Security's own CONFSEC service, the vendor rather
     than an adopter, and the reference implementation has had no recent commits.
-  last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/openpcc/openpcc
     shows: 'Repository metadata - 948 stars, 31 forks, public and not archived, last push 2026-01-08,
@@ -102,30 +100,37 @@ capability:
     unlinkable requests over Oblivious HTTP, a transparency verifier, and provider-agnostic model routing
     through Go and C-based clients. It is not scored higher because the project is young, with no documented
     production adopters and no proven scale beyond its own reference deployment.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/openpcc/openpcc/main/README.md
-    shows: 'Technical scope of the reference implementation - "encrypted streaming, hardware attestation,
-      and unlinkable requests"; an OHTTP Gateway operated by the deployment with a third-party OHTTP
-      Relay; a transparency verifier configured with an OIDC identity policy; a Go client plus a C
-      library used as the basis of the Python and JavaScript clients; in-memory services for local
-      development; and OpenAI-format completion requests routed to nodes by model tag.'
-    accessed: '2026-08-13'
+    shows: The OpenPCC README scopes the reference implementation as "enforcing privacy with encrypted streaming,
+      hardware attestation, and unlinkable requests", uses Oblivious HTTP so "compute providers cannot learn
+      about individual user actions", configures a "transparency.DefaultVerifierConfig()" verifier, and
+      routes requests with a tag "to route request to compute nodes that are running the specified model".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 4e62b506e6a848b7b4f98fa0d552ddea86a1d035bed74c3fe94b537b40aa588d
   - url: https://raw.githubusercontent.com/confidentsecurity/confidentcompute/main/README.md
-    shows: compute_boot "is responsible for attesting to the TPM, GPU, and other hardware components" before
-      router_com starts, and compute_worker decrypts each request, sends it to the LLM and encrypts the
-      response.
-    accessed: '2026-08-13'
+    shows: The Confident-Compute README says compute_boot "is responsible for attesting to the TPM, GPU,
+      and other hardware components" and compute_worker "is responsible for decrypting the request, sending
+      it to the LLM, and encrypting the response".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: fb14caa3ada83f783491d898b22311c6cc21520d6f0752b09def6deb9a7bf498
   - url: https://cloudsecurityalliance.org/blog/2025/11/13/introducing-openpcc
-    shows: 'Establishes the standard and the anonymization scheme - OpenPCC "describes a system for
-      inference on private or otherwise sensitive data such that inputs and outputs remain completely
-      hidden from all participants", with an anonymization scheme against API timing, payment and
-      metadata side channels, a whitepaper, and "a fully-featured Apache 2.0 open-source implementation
-      written in Go". It does not itemize TEEs, attestation, transparency logs or client SDKs.'
+    shows: Establishes the standard and the anonymization scheme - OpenPCC "describes a system for inference
+      on private or otherwise sensitive data such that inputs and outputs remain completely hidden from
+      all participants", with an anonymization scheme against API timing, payment and metadata side channels,
+      a whitepaper, and "a fully-featured Apache 2.0 open-source implementation written in Go". It does
+      not itemize TEEs, attestation, transparency logs or client SDKs.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0f654e87b7206fe2a7c703f7549e0ef2eecd94b0dfb3a695b93c14e26b27edd0
+  - url: https://raw.githubusercontent.com/confidentsecurity/confidentcompute/main/compute-images/README.md
+    shows: The compute-images README describes the hardened node image, "The `compute-base` image is the
+      hardened base image used for the CONFSEC compute worker", with dm-verity, dm-crypt, dm-integrity,
+      SELinux and IMA, where the "hardened security measures including SELinux enforcing, ima appraisal,
+      dm-verity are only active at instance provisioning time".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1a2868bde1eb636a1e55d617ef37b639b8b45b0c87662e430ed84742c3b15f98

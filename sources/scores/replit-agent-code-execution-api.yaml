@@ -25,32 +25,62 @@ openness:
   raw: license:Proprietary;source:closed;service:proprietary(Replit managed Autoscale Deployments, no self-host);open-part:third-party
     isolation primitive omegajail(github.com/omegaup/omegajail) + an ARCHIVED thin client (replit-code-exec,
     ISC, read-only since 2025-02-11);no self-hostable execution service
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://replit.com/blog/ai-agents-code-execution
-    shows: Code Execution API uses omegajail (open source unprivileged container sandbox) on Replit's
-      proprietary Autoscale Deployments; replit-code-exec PyPI client; Python-focused
+    shows: Code Execution API uses omegajail (open source unprivileged container sandbox) on Replit's proprietary
+      Autoscale Deployments; replit-code-exec PyPI client; Python-focused
     accessed: '2026-06-04'
   - url: https://github.com/replit/replit-code-exec
     shows: 'Replit code-exec client: stateless API for AI agents, runs untrusted Python in ephemeral unprivileged
-      containers using omegajail (github.com/omegaup/omegajail); ISC license; repo ARCHIVED read-only
-      2025-02-11'
+      containers using omegajail (github.com/omegaup/omegajail); ISC license; repo ARCHIVED read-only 2025-02-11'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 761938cb9ffb598951c50f709e9fc5cd8b258315634a8332267d641c75b7d41b
-    establishes: [source, license]
+    establishes:
+    - source
+    - license
   - url: https://raw.githubusercontent.com/replit/replit-code-exec/main/README.md
-    shows: the client is an interface to a stateless Replit-hosted eval-python API; standing up a copy
-      means forking a Repl and deploying it on Replit Autoscale Deployments, with omegaup/omegajail as
-      the code sandbox, so no off-platform self-hostable service exists
-    accessed: '2026-08-13'
+    shows: 'The client README says the package is "An interface to interact with Replit" and that the only
+      way to stand up a server is to open the eval-python Repl and "Fork it to your" account, then deploy
+      it, noting "This is only compatible with the Autoscale Deployments.", so no off-platform, self-hostable
+      service exists; searched for self-host, on-prem, Docker Compose, enterprise and license key: none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 6a18761274efe9b9002120f29b64bea36c34476550c08be8a930c56be3b3b0a9
-    establishes: [source, license]
+    establishes:
+    - source
   - url: https://blog.replit.com/ai-agents-code-execution
-    shows: 'canonical Replit blog: Code Execution API uses omegajail on Autoscale Deployments, ~100ms,
-      Python-focused (Feb 2024)'
+    shows: 'canonical Replit blog: Code Execution API uses omegajail on Autoscale Deployments, ~100ms, Python-focused
+      (Feb 2024)'
     accessed: '2026-06-04'
+  - url: https://replit.com/terms-of-service
+    shows: 'Replit Terms of Service ownership clause: "Replit owns and retains all right, title, and interest
+      in and to the Service and related software", and "you obtain no rights to the Service or intellectual
+      property rights by implication, estoppel, or otherwise", while the acceptable-use list bars "reverse-engineering
+      any part of the Service", so the hosted execution service is proprietary and closed.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 31747129a77df0520101f4b1db7d116f89ff46a0633bb8f03861406f2c5bde52
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/replit/replit-code-exec/main/LICENSE
+    shows: The client repository LICENSE is the ISC text, "Copyright 2023 Replit" with "Permission to use,
+      copy, modify, and/or distribute this software for any purpose", covering only the thin client library.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ce031667cff8c69454523e6f45978c7f3ff93439776302ff3c3d3539e960c258
+  - url: https://pypi.org/pypi/replit-code-exec/json
+    shows: 'PyPI metadata for the client package: the description says the API executes code "inside an
+      ephemeral" container and "created on the fly running in Replit Deployments using", with "https://github.com/omegaup/omegajail
+      as code sandbox", the license field is "ISC", and setting up a copy means forking a Repl ("Fork it
+      to your" account) then deploying it, "This is only compatible with the Autoscale Deployments."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 271ca1e7ce0ef7396f312a387165972623accc5e1d91f3fde8b55eb834e1c7b9
+    establishes:
+    - source
 adoption:
   level: 4
   reach: 1M-10M
@@ -60,7 +90,6 @@ adoption:
     the wider Replit Agent and platform surface it powers, which runs many live projects on Google Cloud
     Run. Neither Replit nor the API publishes a countable artifact of its own, so the level follows those
     platform figures rather than a verifiable number, and the API alone would likely place lower.
-  last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
     shows: Replit runs >1M live projects (on Cloud Run), primary-source scale signal for the Replit surface
@@ -73,29 +102,33 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'isolation: omegajail unprivileged container (process/container-level, weaker than microVM);
-    cold-start: not recorded - the only figure ever published for it has no surviving readable source;
-    language/runtime breadth: primarily Python, customizable Docker image; persistence: stateless;
-    scale: Replit Autoscale Deployments'
+  value: 'isolation: omegajail unprivileged container (process/container-level, weaker than microVM); cold-start:
+    requests handled in as little as 100ms per the Replit blog (Python math evaluation); language/runtime
+    breadth: primarily Python, customizable Docker image; persistence: stateless; scale: Replit Autoscale
+    Deployments'
   confidence: medium
   note: Replit runs each execution inside an ephemeral, unprivileged container on its own Deployments infrastructure,
     sandboxed by the third-party omegajail project, as a stateless API purpose-built for AI agents with
     a swappable image. Isolation stays at the container level rather than a microVM, the language focus
     is narrow (Python), and sandboxes carry no persistence between calls.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://replit.com/blog/ai-agents-code-execution
-    shows: DEAD SOURCE, retained as a record. Formerly the sole basis for the ~100ms start figure and the
-      discontinued-stateful-Repl note, neither of which the value asserts any more. It answers HTTP 403
-      to every fetch attempt under every header set tried, and the Wayback availability API reports no capture
-      of the post at all.
-    accessed: '2026-06-04'
+    shows: 'Replit blog post on the Code Execution API: "Requests are handled in as little as 100ms and
+      use the" omegajail sandbox, the API is "a stateless API container server that is deployable through"
+      Replit Autoscale Deployments, the image is customizable ("You can easily customize the Docker container
+      image"), it is Python-focused ("This solution works best for simple math evaluation using Python"),
+      and the stateful variant is discontinued ("We''ve concluded this experiment and have decided not to
+      support it at this time.").'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b5fcd7e34d28679ebaede5d7679cfda556f58e0a27921a18a1f94b5ef89ce1ea
   - url: https://pypi.org/pypi/replit-code-exec/json
-    shows: the package's own metadata, an independent channel for the same description - execution "inside
-      an ephemeral unprivileged container created on the fly running in Replit Deployments using omegajail
-      as code sandbox"; summary "A library for interacting with Replit's code-exec API"; carries no latency
-      figure.
-    accessed: '2026-08-14'
+    shows: 'PyPI metadata for the client package: the description says the API executes code "inside an
+      ephemeral" container and "created on the fly running in Replit Deployments using", with "https://github.com/omegaup/omegajail
+      as code sandbox", the license field is "ISC", and setting up a copy means forking a Repl ("Fork it
+      to your" account) then deploying it, "This is only compatible with the Autoscale Deployments."'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 271ca1e7ce0ef7396f312a387165972623accc5e1d91f3fde8b55eb834e1c7b9
   - url: https://raw.githubusercontent.com/replit/replit-code-exec/main/README.md
@@ -105,3 +138,9 @@ capability:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 6a18761274efe9b9002120f29b64bea36c34476550c08be8a930c56be3b3b0a9
+  - url: https://blog.replit.com/ai-agents-code-execution
+    shows: Canonical blog host redirects to the replit.com post and serves the same page, including "Requests
+      are handled in as little as 100ms and use the" omegajail sandbox.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 01b245ec0c56b40eadf8a2fcd4b02826df72447868e53ca0db16f791d1faa184

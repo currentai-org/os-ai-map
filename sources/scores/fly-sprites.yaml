@@ -25,15 +25,27 @@ openness:
   raw: license:Proprietary;service:proprietary(Fly.io managed);source:closed;clients:CLI/REST/JS/Go SDKs
     (client libs only, no open runtime);isolation:Firecracker(Firecracker itself is OSS/AWS, but the Sprites
     product/orchestration is proprietary)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://sprites.dev/
-    shows: Sprites = hardware-isolated Firecracker execution env for arbitrary code; managed service,
-      CLI/REST/JS/Go clients; no self-hostable open runtime
+    shows: Sprites = hardware-isolated Firecracker execution env for arbitrary code; managed service, CLI/REST/JS/Go
+      clients; no self-hostable open runtime
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 76614642c9a97b9d25c56253cdc6446269d1469303a64fc78b49e21e9109b0af
-    establishes: [source, license]
+    establishes:
+    - source
+    - license
+  - url: https://fly.io/legal/terms-of-service/
+    shows: Terms of service state that "Fly.io retains all right, title and interest in and to the Documentation
+      and all software and all Fly.io proprietary information and technology" and that "no license or other
+      rights in the Fly.io Technology are granted to Customer".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 772f133084842a3b02d39258d68849edaf4e7b5ad4c3f474de6216cc21fb1b29
+    establishes:
+    - license
+    - source
 adoption:
   level: 1
   signal_type: reported_traction
@@ -41,7 +53,7 @@ adoption:
   note: Fly.io discloses no user, customer, session or Sprite count for Sprites; the only figures on the
     product page are its per-CPU-hour and per-GB-hour prices. With no usage signal to read, adoption here
     reflects that absence rather than any confirmed traction.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://sprites.dev/
     shows: product live, usage-based pricing ($0.07/CPU-hr); no user/customer figures disclosed
@@ -54,19 +66,26 @@ adoption:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a5c79a56fa16fd2dce61da68579c3473947de20d4ccfe0a698c13b8a23cbb7c9
+  - url: https://fly.io/sprites
+    shows: 'Searched the Sprites product page body for user, customer, session and Sprite counts: none;
+      the only figures are pricing, "CPU at $0.07/CPU-hour, RAM at $0.04375/GB-hour".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 404ea7c40258fbe3aba43031ad70500ec55773916fd9a7617558bd6bc0485181
 capability:
   score: 4
   basis: feature_matrix
-  value: 'isolation: Firecracker microVM (hardware-isolated, strongest tier); cold-start: 1-12s cold,
-    warm restore <1s, checkpoint/restore <1s; persistence: persistent ext4 / 100GB NVMe surviving across
-    sessions (a key differentiator); language/runtime breadth: arbitrary Linux (''any code blob''); scale:
-    Fly.io global infra'
+  value: 'isolation: Firecracker microVM with its own kernel per Sprite (hardware-isolated); cold-start:
+    wakes on the next request, warm Sprites resume quickly and cold ones take longer, no bounded figure
+    published; checkpoints: whole-filesystem snapshots in about a second; persistence: persistent ext4 volume
+    of 100 GB that survives sleep and host moves; language/runtime breadth: full Linux, install any tools;
+    scale: Hero plan allows 100 concurrently running and 100 warm Sprites, cold unlimited'
   confidence: medium
   note: 'Each Sprite is a Firecracker microVM with its own kernel, isolated in hardware, with a persistent
     100 GB volume that survives sleep and moves between hosts, plus live copy-on-write checkpoints. What
     keeps it a step below the frontier is scale: the product is new and unproven against established incumbents,
     and Fly.io no longer publishes a bounded cold-start figure.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://sprites.dev/
     shows: persistent 100 GB ext4/POSIX volume surviving sleep and machine moves, live copy-on-write checkpoint
@@ -76,8 +95,21 @@ capability:
     http_status: 200
     content_sha256: 76614642c9a97b9d25c56253cdc6446269d1469303a64fc78b49e21e9109b0af
   - url: https://fly.io/agents-need-a-computer/
-    shows: each Sprite is a Firecracker microVM with its own kernel and durable Linux filesystem, isolated
-      in hardware from every other Sprite, spinning up in seconds and sleeping when idle
-    accessed: '2026-08-13'
+    shows: 'The page states "A Sprite is exactly that: a Firecracker microVM with its own kernel and a durable
+      Linux filesystem, one agent to a box, isolated in hardware from every other Sprite".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0244a2dd2997a18146c0e9e35a431c2212d77840040698944ae2c2ba7b3e893f
+    content_sha256: c912a83e021a1762d10e518a472e3cfeeed2aa462c0e449061615c1fb4c68c1c
+  - url: https://fly.io/sprites
+    shows: The Sprites page describes "The volume is 100 GB" as a normal POSIX filesystem, checkpoints that
+      "Snapshot the whole filesystem in about a second", and plan limits where "Hero allows 100 concurrently
+      running sprites and 100 warm sprites; cold sprites are unlimited".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 404ea7c40258fbe3aba43031ad70500ec55773916fd9a7617558bd6bc0485181
+  - url: https://docs.sprites.dev/
+    shows: The Sprites docs overview lists isolation as "Hardware-level" with "dedicated microVM", and says
+      "Every Sprite has a persistent, standard ext4 filesystem".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 02206b126220d0f012de36ee1ca46e91b6c6f496a5b534268d0cdce60260b81e

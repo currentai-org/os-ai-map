@@ -5,7 +5,9 @@ openness:
   components:
     license:
     - name: Apache-2.0
-      detail: OSI
+      detail: OSI; the repository roots and the runtime
+    - name: MIT
+      detail: OSI; the Python and JavaScript SDK packages
     source:
       value: public
       detail: SDKs+infra, Terraform self-host
@@ -20,15 +22,17 @@ openness:
         detail: proprietary
         raw: e2b.dev hosted sandbox cloud (proprietary)
   confidence: high
-  note: E2B's SDKs and the infrastructure that runs its hosted cloud are both published under Apache-2.0,
-    with no enterprise or proprietary directory in either repository. The paid tiers add capacity -- more
-    CPU and RAM, longer sessions, more concurrent sandboxes -- rather than any capability withheld from
-    the source, so the managed service runs the same code anyone can self-host.
-  raw: license:Apache-2.0(OSI);source:public(SDKs+infra, Terraform self-host);managed-tier:e2b.dev hosted
-    sandbox cloud (proprietary);core-gated:ungated(the infrastructure powering E2B Cloud is itself published
-    Apache-2.0 as e2b-dev/infra with no carve-out, and the paid tiers are capacity and session-length limits
-    on the hosted service rather than features held back from the source)
-  last_verified: '2026-08-12'
+  note: E2B's SDKs are published under MIT and the runtime behind its hosted cloud under Apache-2.0, and
+    the runtime repository says the same code serves the public cloud, dedicated enterprise deployments
+    and the single-machine Embed package. The paid tiers add capacity and deployment choices -- custom CPU
+    and RAM, longer sessions, more concurrent sandboxes, bring-your-own-cloud deployment -- rather than
+    any capability withheld from the source.
+  raw: license:Apache-2.0(OSI; the repository roots and the runtime)+MIT(OSI; the Python and JavaScript
+    SDK packages);source:public(SDKs+infra, Terraform self-host);managed-tier:e2b.dev hosted sandbox cloud
+    (proprietary);core-gated:ungated(the infrastructure powering E2B Cloud is itself published Apache-2.0
+    as e2b-dev/infra with no carve-out, and the paid tiers are capacity and session-length limits on the
+    hosted service rather than features held back from the source)
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/e2b-dev/E2B
     shows: Apache-2.0 license; open source sandbox infra + Terraform self-host; managed cloud at e2b.dev
@@ -54,15 +58,14 @@ openness:
     establishes:
     - core-gated
   - url: https://e2b.dev/pricing
-    shows: 'Three tiers - Hobby (free + usage), Pro ($150/mo + usage), Ultimate (custom). What Pro adds
-      is capacity, not capability: "Customize your Sandbox CPU & RAM", "Up to 24-hour sandbox session length",
-      "Up to 100 concurrently running sandboxes", "Ability to purchase extra concurrency up to 1,100". The
-      page names no feature absent from the open source and mentions no enterprise edition.'
-    accessed: '2026-08-12'
+    shows: 'The pricing page tiers differ in capacity: Hobby lists "Default sandbox CPU and RAM" and "Sessions
+      up to 1 hour", Pro lists "Custom sandbox CPU and RAM", "Sessions up to 24 hours" and "100 concurrent
+      sandboxes, expandable to 1,100", and Enterprise lists "Custom sizes, plus BYOC deployment".'
+    accessed: '2026-09-29'
     http_status: 200
+    content_sha256: 76c5f4ad4ad8db2d4a358988da63b81d25ffedab5bc7886ee94ee1b93eaec03c
     establishes:
     - core-gated
-    content_sha256: b8dc751df17f9f50aca70e8c64920473d9fb4d4a69c96fa6a6dbf30ee02d8332
   - url: https://api.github.com/repos/e2b-dev/E2B
     shows: 'Repo metadata: language Python, license spdx_id Apache-2.0, 13,357 stars, default branch main.'
     accessed: '2026-08-12'
@@ -71,6 +74,70 @@ openness:
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/e2b-dev/E2B/main/LICENSE
+    shows: The root LICENSE of the e2b-dev/E2B SDK repository is the Apache License, "Version 2.0, January
+      2004", with the standard "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b4ef1bf811cb4095229fb86b574199e467c78f0ac4078cf8be62189e1fbd0818
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/e2b-dev/E2B/main/packages/python-sdk/LICENSE
+    shows: The LICENSE shipped in the Python SDK package directory of e2b-dev/E2B is the "MIT License" with
+      "Copyright (c) 2025 FOUNDRYLABS, INC.", not the Apache-2.0 text at the repository root.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 38db71fd15b98fa0b498f8c5ee705a49570e3111085c277fb89b5ea107ec4dcb
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/e2b-dev/E2B/main/packages/js-sdk/LICENSE
+    shows: The LICENSE in the JavaScript SDK package directory of e2b-dev/E2B is the "MIT License", opening
+      "Permission is hereby granted, free of charge, to any person obtaining a copy of this software".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 567f93024b3b25ae4fde9c4f161c8956e3153f5630e933e9a0115c556eafe429
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/e2b-dev/infra/main/LICENSE
+    shows: The LICENSE of the e2b-dev/infra repository (now served as e2b-dev/runtime) is the Apache License,
+      "Version 2.0, January 2004", byte-identical to the SDK repository root LICENSE.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b4ef1bf811cb4095229fb86b574199e467c78f0ac4078cf8be62189e1fbd0818
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/e2b-dev/infra/main/README.md
+    shows: The infra README calls it "The open-source runtime behind" E2B, describes it as "the complete
+      backend that powers" E2B Cloud including "the control-plane API, the per-node orchestrator that drives
+      Firecracker", says "It is written in Go, licensed under Apache-2.0" and "The same code serves the
+      public cloud, dedicated enterprise deployments, and the single-machine".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3d55d2dd8014bb3f7b3bf0cf6038fc351c5482afa52152fa7499d48765320416
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/e2b-dev/E2B/main/README.md
+    shows: The SDK repository README points self-hosters at the infra repository and states "The infrastructure
+      is deployed using Terraform."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 46c32f7888ac56dfe178d489ae878f6e3049fba16745682aa75e61d2ead6e675
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/e2b-dev/runtime/main/embed/README.md
+    shows: 'The E2B Embed README in the runtime repository offers "A complete E2B, sandboxes included, on
+      one machine you own." via Docker Compose, Terraform on GCP or AWS and Kubernetes, while calling all
+      four "single-machine evaluation packages, not deployment patterns". Searched the body for license
+      key, paid, pricing, commercial and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f37c1d21e44c892484b4e5855ac89bbb8816ac2ec16dba09eac7d75a29fee889
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -111,33 +178,52 @@ capability:
   basis: feature_matrix
   relative_to: firecracker
   relation: one_below
-  value: isolation:VM (Firecracker microVM, strong); cold-start:fast (sub-second class); language/runtime
-    breadth:Python+JS/TS code interpreter + custom templates; persistence:filesystem; scale:1B+ sandboxes
-    started
+  value: isolation:VM (Firecracker-based microVM, strong); cold-start:fast (sub-second class); language/runtime
+    breadth:Python+JS/TS SDKs + custom templates; persistence:filesystem+memory (pause/resume, snapshots);
+    scale:1B+ sandboxes started
   confidence: high
-  note: E2B runs each sandbox on a Firecracker microVM, the strongest isolation tier in the category, with
-    sessions up to 24 hours and configurable CPU and RAM; ComputeSDK's independent benchmark puts its median
-    time-to-interactive at 0.66 seconds, twelfth of 24 providers. That keeps E2B a step below Firecracker,
-    the platform it builds on and the frontier of the category.
-  last_verified: '2026-08-13'
+  note: E2B runs each sandbox as its own Firecracker microVM, with sessions of up to 24 hours on the Pro
+    plan, pause and resume that keeps memory as well as the filesystem, and configurable CPU and RAM. Its
+    isolation comes from Firecracker, the runtime that sets the frontier of the category, and as a managed
+    layer built on that runtime E2B sits a step below it.
+  last_verified: '2026-09-29'
   sources:
   - url: https://e2b.dev/
-    shows: each sandbox powered by Firecracker microVM; 1B+ sandboxes started
-    accessed: '2026-06-04'
+    shows: Homepage says the microVM runtime is "built on Firecracker with dedicated kernels and a custom
+      memory and snapshot layer" and is "Battle-tested across 1B+ sandboxes".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3d2dbdb5be4a90f81f5d6345b105ec2ca7fde60282f77705c17b77bf57549d3f
   - url: https://www.computesdk.com/benchmarks/sandboxes/
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
       ~370ms sequential / ~470ms burst @100 concurrent; 7th-fastest of 19 providers'
     accessed: '2026-07-09'
-  - url: https://e2b.dev/
-    shows: '"Each sandbox is powered by Firecracker, a microVM made to run untrusted workflows." Sessions
-      run up to 24 hours, sandboxes expose configurable CPU and RAM, and the stat band reports 1b+ started
-      sandboxes.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e114307a0c219a70e6e5265f92bd5b72a95e95af472e71f5b974ed91cd07491e
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07, 24 providers. E2B posts a 0.66s median, 0.96s P95,
-      1.02s P99 and 100% success for a composite of 92.1 - 12th by median.'
+    shows: ComputeSDK TTI leaderboard, run of 2026-08-07, 24 providers. E2B posts a 0.66s median, 0.96s
+      P95, 1.02s P99 and 100% success for a composite of 92.1 - 12th by median.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a93049e6dc408dda2d08cbbce798b369c3378ba12289a3a161fe0609b5f29416
+  - url: https://e2b.dev/enterprise
+    shows: Enterprise page says "Every agent session runs in its own Firecracker microVM." with egress control
+      per sandbox.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fbfda6455960bb4165821b529cac90e0ebbd378e1098e092449c80ac6dbd9063
+  - url: https://e2b.dev/docs/sandbox
+    shows: Sandbox docs state "Sandboxes can run continuously for up to 24 hours (Pro) or 1 hour (Base)."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 87c8ab5a11e21bde9aa1e4b7ae49550378ac42d2c93781f9bb8e07ec1378bad0
+  - url: https://e2b.dev/docs/sandbox/persistence
+    shows: Persistence docs say a sandbox can be paused and resumed "from the exact state it was in, including
+      the filesystem and the memory, so running processes and loaded variables survive."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2b84e0c5537492da12914b86ced6bf25e07315f829440f6b95696318fa930099
+  - url: https://e2b.dev/pricing
+    shows: Pricing page lists "Sessions up to 24 hours", "100 concurrent" sandboxes and "Custom sandbox
+      CPU and RAM" for Pro versus "Default sandbox CPU and RAM" on Hobby.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 76c5f4ad4ad8db2d4a358988da63b81d25ffedab5bc7886ee94ee1b93eaec03c

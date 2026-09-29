@@ -22,14 +22,13 @@ openness:
     It is labeled a beta research preview, a maturity statement rather than a gate.
   raw: license:Apache-2.0(OSI);source:public(GitHub);distribution:npm package;no managed/proprietary tier(it
     is a local library, not a service);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/anthropic-experimental/sandbox-runtime
     shows: Apache-2.0 license; OS-level (bubblewrap/seatbelt) sandbox library, no container required
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/anthropic-experimental/sandbox-runtime
-    shows: Repository metadata - public, not archived, license spdx_id Apache-2.0, pushed to the same
-      day.
+    shows: Repository metadata - public, not archived, license spdx_id Apache-2.0, pushed to the same day.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a581f8a50fcd16edbcb883042f3bacdb3b79cd93c44f77a2d7a8160d422f7242
@@ -53,6 +52,32 @@ openness:
     establishes:
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/anthropics/sandbox-runtime/main/LICENSE
+    shows: 'The LICENSE file is the Apache License text: "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND
+      DISTRIBUTION" under "Version 2.0, January 2004", with no added field-of-use terms.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1210bc93eb85dd786c33192d5bcb7153a93922fa99fbc1512af6a7199cb41080
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/anthropics/sandbox-runtime/main/package.json
+    shows: 'The package manifest declares "license": "Apache-2.0" and a public repository at "git+https://github.com/anthropics/sandbox-runtime.git".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c46a58a1b2f3e1851832040a335e18a60bacd8b32e869d612f19139156e200f3
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/anthropics/sandbox-runtime/main/README.md
+    shows: 'The README gives one install command, "npm install -g @anthropic-ai/sandbox-runtime", and describes
+      the tool as "an early open source preview"; searched the body for license key, commercial, pricing,
+      paid and cloud-only: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fc73047110eb89649dc9b6ca110308d1bd6d014273a522709bc0ce15241cc3f3
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -62,7 +87,6 @@ adoption:
     threshold by a razor-thin margin, thin enough that a later fetch could fall short of it. npm pulls also
     overstate real usage through CI and mirror traffic, which matters more for a young research preview
     than an established package.
-  last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@anthropic-ai/sandbox-runtime
     shows: ~558,800 downloads May 4-Jun 2 2026
@@ -87,24 +111,38 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: isolation:OS-level process sandbox (Linux bubblewrap namespaces+seccomp BPF, macOS Seatbelt)
-    - weaker boundary than gVisor/microVM, no kernel isolation; cold-start:near-zero (no container/VM
-    spin-up); runtime breadth:any local process (language-agnostic, host-defined); persistence:n/a (host
-    fs, deny/allow rules); scale:per-host, no managed fleet
+  value: isolation:OS-level process sandbox (Linux bubblewrap namespaces+seccomp BPF, macOS Seatbelt, Windows
+    alpha via dedicated sandbox account + WFP egress filter) - weaker boundary than gVisor/microVM, no kernel
+    isolation; cold-start:near-zero (no container/VM spin-up); runtime breadth:any local process (language-agnostic,
+    host-defined); persistence:n/a (host fs, deny/allow rules); scale:per-host, no managed fleet
   confidence: medium
   note: Sandbox Runtime gives low-overhead, no-container process isolation with fine-grained filesystem
     and network allow/deny rules and pre-built seccomp filters. A process-level sandbox is a weaker security
     boundary than the microVM/gVisor frontier, and seccomp coverage is limited to x64/arm64, with unix sockets
     unrestricted elsewhere and no managed or multi-host mode.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/anthropic-experimental/sandbox-runtime
     shows: bubblewrap+seccomp / sandbox-exec isolation, filesystem+network restriction model, no container
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/anthropic-experimental/sandbox-runtime/main/README.md
-    shows: Native OS primitives (sandbox-exec on macOS, bubblewrap on Linux) plus a filtering proxy;
-      filesystem, network and unix-socket restrictions; seccomp filters limited to x64/arm64 with a
-      warning when unavailable; single-host CLI and library, no fleet or managed tier.
+    shows: Native OS primitives (sandbox-exec on macOS, bubblewrap on Linux) plus a filtering proxy; filesystem,
+      network and unix-socket restrictions; seccomp filters limited to x64/arm64 with a warning when unavailable;
+      single-host CLI and library, no fleet or managed tier.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 9ec3d585692e4bd6aff8dd807784d6d97595bc5fe48d6824ca2dd823c874776b
+  - url: https://raw.githubusercontent.com/anthropics/sandbox-runtime/main/README.md
+    shows: The README describes "native OS sandboxing primitives (`sandbox-exec` on macOS, `bubblewrap`
+      on Linux)" with "proxy-based network filtering" and "without requiring a container", and marks Windows
+      support as alpha.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fc73047110eb89649dc9b6ca110308d1bd6d014273a522709bc0ce15241cc3f3
+  - url: https://raw.githubusercontent.com/anthropics/sandbox-runtime/main/README.md
+    shows: The README says "Blocking uses seccomp filters (x64/arm64 only)" on Linux and that without seccomp
+      "sockets are unrestricted and a warning is shown", and lists Windows as "Alpha" with a bundled srt-win.exe
+      helper.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fc73047110eb89649dc9b6ca110308d1bd6d014273a522709bc0ce15241cc3f3

@@ -20,14 +20,14 @@ openness:
   note: Fully Apache-2.0 with public source and no gated core; AWS-developed but openly governed, and the
     reference example of a fully open source runtime in this category.
   raw: license:Apache-2.0(OSI);source:public(Rust 78.7%);governance:AWS-led open project;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/firecracker-microvm/firecracker
     shows: Apache-2.0 license; powers AWS Lambda and Fargate
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/firecracker-microvm/firecracker
-    shows: 'Repo metadata - license spdx_id Apache-2.0, language Rust, default branch main, archived false,
-      36,040 stars, 2,556 forks, pushed_at 2026-08-13.'
+    shows: Repo metadata - license spdx_id Apache-2.0, language Rust, default branch main, archived false,
+      36,040 stars, 2,556 forks, pushed_at 2026-08-13.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 24fbeceb82447c24182e9d4150686990b775851ca69cfd4ff03a33bbff8cc0d3
@@ -36,15 +36,41 @@ openness:
     - source
   - url: https://raw.githubusercontent.com/firecracker-microvm/firecracker/main/README.md
     shows: '"Firecracker is open sourced under Apache version 2.0." The whole VMM builds from the public
-      tree - "git clone https://github.com/firecracker-microvm/firecracker ... tools/devtool build" -
-      and the README names no enterprise edition, license key or feature held back for a paid tier. It
-      also states Firecracker was developed at AWS to accelerate AWS Lambda and AWS Fargate, and has been
-      integrated into Kata Containers and Flintlock.'
+      tree - "git clone https://github.com/firecracker-microvm/firecracker ... tools/devtool build" - and
+      the README names no enterprise edition, license key or feature held back for a paid tier. It also
+      states Firecracker was developed at AWS to accelerate AWS Lambda and AWS Fargate, and has been integrated
+      into Kata Containers and Flintlock.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5f9d595c536442234bc0d96f68e7e90db412b9d5d82c14db02872e24c75bc46b
     establishes:
     - source
+    - core-gated
+  - url: https://firecracker-microvm.github.io/
+    shows: Project site says "Firecracker is open-sourced under Apache License, version 2.0." and its open
+      source VMM card reads "Build your own microVM infrastructure. Full control, Apache 2.0 licensed."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e001391b533620bcd8bde5c8a01ad058a9a81e19a19f644ecc004a34e004e6bd
+    establishes:
+    - license
+  - url: https://firecracker-microvm.github.io/
+    shows: Project site opens with "Firecracker is an open source virtualization technology that is purpose-built
+      for creating and managing secure, multi-tenant container and function-based services." and links the
+      GitHub repository.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e001391b533620bcd8bde5c8a01ad058a9a81e19a19f644ecc004a34e004e6bd
+    establishes:
+    - source
+  - url: https://firecracker-microvm.github.io/
+    shows: 'Project site separates the "Fully Managed" AWS Lambda MicroVMs service from the open source
+      VMM, whose card reads "Build your own microVM infrastructure. Full control, Apache 2.0 licensed.";
+      searched the body for enterprise and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e001391b533620bcd8bde5c8a01ad058a9a81e19a19f644ecc004a34e004e6bd
+    establishes:
     - core-gated
 adoption:
   level: 5
@@ -54,7 +80,6 @@ adoption:
   note: Firecracker is the microVM engine behind AWS Lambda and Fargate, and is also embedded in Kata Containers,
     Flintlock and E2B. It ships as a binary from GitHub releases rather than a package on any registry,
     so adoption here is read from the scale of the platforms it powers rather than from a download count.
-  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/firecracker-microvm/firecracker
     shows: developed at AWS; powers AWS Lambda and AWS Fargate; integrated into Kata Containers and Flintlock
@@ -85,27 +110,40 @@ capability:
     <5MiB memory overhead per microVM; language/runtime breadth:runs any OCI/container or function workload
     (kernel-level, language-agnostic); scale:powers Lambda/Fargate fleets
   confidence: high
-  note: 'Frontier-definer for the deployment category: hardware-VM isolation at container-like speed/density,
-    the reference microVM that the managed sandbox layer (E2B, others) builds on. Defines the strongest
-    point on the isolation x cold-start x scale matrix.'
-  last_verified: '2026-08-13'
+  note: Firecracker combines hardware-virtualized isolation with container-like startup speed and density,
+    and it is the microVM underneath AWS Lambda and Fargate and managed sandboxes such as E2B. That pairing
+    of isolation strength, startup speed and proven scale is what the rest of the category is compared against.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/firecracker-microvm/firecracker
     shows: lightweight microVMs combining hardware virtualization security with container speed; minimal
       memory footprint/attack surface
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/firecracker-microvm/firecracker/main/README.md
-    shows: 'The VMM "uses the Linux Kernel Virtual Machine (KVM) to create and run microVMs", excludes
-      "unnecessary devices and guest-facing functionality to reduce the memory footprint and attack
-      surface area", and targets "secure, multi-tenant container and function-based services". Language-agnostic
-      at the kernel level rather than tied to a runtime.'
+    shows: The VMM "uses the Linux Kernel Virtual Machine (KVM) to create and run microVMs", excludes "unnecessary
+      devices and guest-facing functionality to reduce the memory footprint and attack surface area", and
+      targets "secure, multi-tenant container and function-based services". Language-agnostic at the kernel
+      level rather than tied to a runtime.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5f9d595c536442234bc0d96f68e7e90db412b9d5d82c14db02872e24c75bc46b
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
-    shows: '"High Performance - You can launch a microVM in as little as 125 ms today"; "Low Overhead -
-      Firecracker consumes about 5 MiB of memory per microVM. You can run thousands of secure VMs ... on
-      the same instance."'
-    accessed: '2026-08-13'
+    shows: AWS launch post states "You can launch a microVM in as little as 125 ms today" and that Firecracker
+      "consumes about 5 MiB of memory per microVM", with Lambda processing "trillions of executions" monthly.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7cdafd809344aa8eed554b59f93f75777655d99a9c7ca6818a645ead6cd8587f
+    content_sha256: 90e3e69a2aebfe1a7ebbfaa8f8fd791dc60822dd362483efff8d28cee9242a6c
+  - url: https://firecracker-microvm.github.io/
+    shows: Project site lists "Only 5 emulated devices. Minimal attack surface with KVM-based isolation."
+      and "Create up to 150 microVMs per second per host." and "Pack thousands on a single server with built-in
+      rate limiters."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e001391b533620bcd8bde5c8a01ad058a9a81e19a19f644ecc004a34e004e6bd
+  - url: https://firecracker-microvm.github.io/
+    shows: Project site says Firecracker "runs in user space and uses the Linux Kernel-based Virtual Machine
+      (KVM) to create microVMs" and that each microVM is isolated by a companion "jailer" program as a second
+      line of defense.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e001391b533620bcd8bde5c8a01ad058a9a81e19a19f644ecc004a34e004e6bd
