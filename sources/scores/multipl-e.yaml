@@ -26,16 +26,17 @@ openness:
   raw: data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E
     repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning
     model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E
-    shows: '`license:mit` in the repo tags; the embedded repo state reads `"gated":false`, so the parquet
-      downloads without a barrier; the card documents the 47 subsets and the prompt/doctests/tests/stop_tokens
-      schema; 33,673 downloads in the trailing 30 days'
-    accessed: '2026-08-13'
+    shows: The Hub page shows the tag "license:mit", the state "gated":false, and the card text "MultiPL-E
+      is a dataset for evaluating large language models for code".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
-    establishes: [license, data, datasheet]
+    content_sha256: c5dca2ca7d2ee5b2db3389560fb5bdb7f7a726fa7e93cdc0a701ba832dd16680
+    establishes:
+    - data
+    - datasheet
   - url: https://github.com/nuprl/MultiPL-E/blob/main/LICENSE
     shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 reads "The
       contents of this repository may not be used as training data for any machine learning model, including
@@ -45,6 +46,14 @@ openness:
     - license
     http_status: 200
     content_sha256: 6891bf32c7df59f0665d45a22bc09224ed122394eae4404048e0e4c7e4bc2f23
+  - url: https://raw.githubusercontent.com/nuprl/MultiPL-E/main/LICENSE
+    shows: The raw LICENSE is headed "BSD 3-Clause License with Machine Learning Restriction" and its clause
+      4 says "may not be used as training data for any".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6891bf32c7df59f0665d45a22bc09224ed122394eae4404048e0e4c7e4bc2f23
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 10K-100K
@@ -71,11 +80,12 @@ capability:
   confidence: high
   note: MultiPL-E is a dataset and translation framework rather than a system with capabilities to measure,
     so capability is left unscored.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E
-    shows: a static set of translated problem prompts and tests across 22-23 languages; no performance,
-      throughput or feature claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+    shows: 'Hugging Face dataset card stating "MultiPL-E is a dataset for evaluating large language models
+      for code" across 22 programming languages, i.e. a static set of translated prompts and tests; searched
+      the body for SOTA, throughput and pass@1: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
+    content_sha256: e0864046086db4ead1df21fb9e66b13f66cc5d96e6acfccf60b4df30c2814bd3
