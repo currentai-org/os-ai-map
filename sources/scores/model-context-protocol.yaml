@@ -34,7 +34,7 @@ openness:
     co-founded Anthropic/Block/OpenAI);core-gated:ungated(spec schema and docs ship in the one LF/AAIF-governed
     repo and every reference SDK is a public modelcontextprotocol repo - there is no vendor tier to withhold
     anything for)
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-28'
   sources:
   - url: https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/LICENSE
     shows: Apache-2.0 (new code/spec) + MIT (legacy) + CC-BY-4.0 (docs) license text
@@ -43,23 +43,34 @@ openness:
     shows: Anthropic origin; donated to Linux Foundation AAIF Dec 2025
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/LICENSE
-    shows: The three-way split, read rather than assumed. New code and specifications are under the Apache
-      License, Version 2.0; documentation other than the specifications is under CC-BY-4.0; contributions made
-      before the transition whose authors did not give relicensing consent remain under the MIT License, with
-      "no rights beyond those granted by the applicable original license" conveyed. Copyright (c) 2024-2025
-      Model Context Protocol a Series of LF Projects, LLC.
-    accessed: '2026-08-12'
+    shows: 'The three-way split: "All new code and specification contributions to the project are licensed
+      under Apache-2.0. Documentation contributions (excluding specifications) are licensed under CC-BY-4.0."
+      Pre-transition work stays MIT, and "No rights beyond those granted by the applicable original license
+      are conveyed for such contributions."'
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
     establishes:
     - license
   - url: https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol
-    shows: Repo metadata for the spec repo. It holds the specification, the protocol schema (TypeScript, emitted
-      as JSON Schema) and the documentation; the reference SDKs are separate repos in the same public org.
-      Nothing is withheld from it and there is no second, differently-licensed tree.
+    shows: Repo metadata for the spec repo. It holds the specification, the protocol schema (TypeScript,
+      emitted as JSON Schema) and the documentation; the reference SDKs are separate repos in the same public
+      org. Nothing is withheld from it and there is no second, differently-licensed tree.
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: 69a785256bb7fd3dde4cb56e056f1917efba60e839afe08f7309a887ac9c8aa6
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/README.md
+    shows: 'The spec repository README lists what it holds - "MCP specification", "MCP protocol schema"
+      and "Official MCP documentation" - with the schema "[defined in TypeScript](schema/2026-07-28/schema.ts)".
+      Its License line still reads "This project is licensed under the [MIT License](LICENSE)." while the
+      LICENSE file carries the transition terms. Searched the body for pricing, paid, enterprise, license
+      key and hosted: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 7e98444c73ed5d923a3b02b1247e9cdf678d31a30cc32b1503bdcd906aa984e2
     establishes:
     - source
     - core-gated
@@ -68,37 +79,37 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: Model Context Protocol is used natively by OpenAI (ChatGPT, the Agents SDK, the Responses API),
-    Google DeepMind's Gemini, Microsoft and AWS. Adoption is measured by downloads of the two reference
-    SDKs, the Python package `mcp` on PyPI and `@modelcontextprotocol/sdk` on npm, both maintained by the
-    same project.
-  last_verified: '2026-08-13'
+  note: OpenAI uses Model Context Protocol across ChatGPT, its Agents SDK and the Responses API, Google
+    DeepMind supports it in Gemini, and Microsoft's Semantic Kernel and Azure OpenAI integrate with it.
+    The protocol has no package of its own, so adoption is measured by downloads of its two reference SDKs,
+    `mcp` on PyPI and the TypeScript SDK's `@modelcontextprotocol/sdk` on npm, each also listed on the map
+    as its own entry.
+  last_verified: '2026-09-28'
   sources:
   - url: https://en.wikipedia.org/wiki/Model_Context_Protocol
-    shows: Adoption by OpenAI, Google DeepMind, Microsoft and AWS; reference SDKs across seven-plus languages;
-      donation to the Linux Foundation.
-    accessed: '2026-08-13'
+    shows: The article states "Following its announcement, the protocol was adopted by major AI providers,
+      including" OpenAI and Google DeepMind, says MCP "can be integrated with" Microsoft "Semantic Kernel"
+      and Azure OpenAI, and records the December 2025 donation to the Agentic AI Foundation.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 53d1b3c1bf371857fef3867e51fbdda5dc4b0a968746d50382ac9938dda69e1b
+    content_sha256: 62c8047c8208e71597dc7544b255376416ec33853e68ce4076e1a4755895ca87
   - url: https://zuplo.com/blog/one-year-of-mcp
-    shows: 'Dated 2025-11-24. "Over 16,000 MCP servers exist in the wild. OpenAI has adopted it across ChatGPT
-      (sort of), their Agents SDK, and their Responses API. Google DeepMind announced MCP support for Gemini.
-      Companies like GitHub, Block, Apollo, Replit, Sourcegraph, Linear, Zapier and many others have integrated
-      it into their platforms." NOT on this page, contrary to what this source previously claimed: any SDK
-      download figure, the number 97M, or a 4,750% growth rate.'
-    accessed: '2026-08-13'
+    shows: 'Dated 2025-11-24: "OpenAI has adopted it across ChatGPT (sort of), their Agents SDK, and their
+      Responses API." and "Google DeepMind announced MCP support for Gemini." It gives no SDK download figure.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: fb54a9906933810c9dfd626a702c5cbd300c0c7fd3e96d1dc55c3637322604cb
+    content_sha256: 1cb695b28b2245fa94a6bbf3340155237036256449424332734018939e9cb780
   - url: https://pypistats.org/api/packages/mcp/recent
-    shows: last_month = 335,363,270 downloads for the reference Python SDK package `mcp`.
-    accessed: '2026-08-13'
+    shows: '"last_month":219043071,"last_week":53929472'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 1a7debd70ebcd757caf055a242507ec284a8172fd0e452e2e0d79999bb79c79f
+    content_sha256: 53bc5970fd7971aed652c908ce3a78b6345400c27931f024cfc99eda55530d42
   - url: https://api.npmjs.org/downloads/point/last-month/@modelcontextprotocol/sdk
-    shows: 198,046,096 downloads for the window 2026-07-11 to 2026-08-09 for the reference TypeScript SDK.
-    accessed: '2026-08-13'
+    shows: The npm downloads API returns "downloads":202740901 for "@modelcontextprotocol/sdk" over the
+      window "start":"2026-08-29","end":"2026-09-27".
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: a5daab95266dd756f2c613e07ac16b5636554268822c6a8c52e7caebcb051610
+    content_sha256: bf8fda6582be87e50889d3b46518d06b8b075ff37e4f6f2921223eb93bb6c3be
 capability:
   score: null
   basis: n/a
