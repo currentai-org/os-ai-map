@@ -11,26 +11,28 @@ openness:
       detail: Rust
     core-gated:
       value: ungated
-      detail: no ee/ path no second license and zero repo-wide hits for enterprise or license key. The two
-        engine features the pricing table marks absent from OSS are both in the open tree - GPU indexing
-        as the lib/gpu crate and resharding across four lib/collection modules with eight consensus tests
-        - so what is sold is control plane rather than engine
+      detail: one LICENSE file and no ee/, enterprise/ or commercial/ path at the repository root or among
+        the lib/ crates. The pricing table marks Shard Splitting absent from open source and the documentation
+        calls resharding Cloud-only, but the code is in lib/collection and turns on with the cluster.resharding_enabled
+        setting, off by default, with no license check. GPU Indexing is marked as included in open source,
+        so what is sold is operations around the engine
     context:
       managed-tier:
         value: Qdrant Cloud
         detail: hosted, paid + free tier
         raw: Qdrant Cloud (hosted, paid + free tier)
   confidence: high
-  note: Qdrant's engine ships entirely under Apache-2.0, with no enterprise, license-key or separately licensed
-    directory anywhere in the repository. The two features the pricing page marks as cloud-only, GPU indexing
-    and shard resharding, are both in the open-source tree, and what the paid Qdrant Cloud tier adds is
-    operational tooling such as SLAs, managed backups and SSO rather than the engine itself.
+  note: Qdrant's engine ships under Apache-2.0 from a repository with one license file and no enterprise
+    directory. Resharding, which the pricing page and documentation reserve for Qdrant Cloud, is in the
+    open source behind a configuration switch that is off by default, and what the paid tier otherwise adds
+    is operations such as SLAs, managed backups and SSO.
   raw: license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid
-    + free tier);core-gated:ungated(no ee/ path no second license and zero repo-wide hits for enterprise
-    or license key. The two engine features the pricing table marks absent from OSS are both in the open
-    tree - GPU indexing as the lib/gpu crate and resharding across four lib/collection modules with eight
-    consensus tests - so what is sold is control plane rather than engine)
-  last_verified: '2026-08-12'
+    + free tier);core-gated:ungated(one LICENSE file and no ee/, enterprise/ or commercial/ path at the
+    repository root or among the lib/ crates. The pricing table marks Shard Splitting absent from open source
+    and the documentation calls resharding Cloud-only, but the code is in lib/collection and turns on with
+    the cluster.resharding_enabled setting, off by default, with no license check. GPU Indexing is marked
+    as included in open source, so what is sold is operations around the engine)
+  last_verified: '2026-09-28'
   sources:
   - url: https://github.com/qdrant/qdrant/blob/master/LICENSE
     shows: Apache-2.0 license text
@@ -61,16 +63,65 @@ openness:
     - source
     - core-gated
   - url: https://qdrant.tech/pricing/
-    shows: 'Read for a mechanism and found none. Its OSS-versus-paid comparison is control plane: no uptime
-      SLA for OSS against 99.5% free tier and 99.9% (99.95% multi-AZ) on Standard/Premium, "custom automation"
-      backups against managed backup and disaster recovery, multi-AZ topology, disk encryption with custom
-      keys on AWS/GCP, and "Enterprise SSO Authentication" on Premium+. It also marks GPU Indexing and Shard
-      Splitting as absent from OSS - both are in the open tree, so those rows describe the managed offering
-      rather than the engine. Hybrid Cloud is "Run managed Qdrant clusters on your own infrastructure";
-      Private Cloud is a "Dedicated, isolated deployment".'
-    accessed: '2026-08-12'
+    shows: The pricing comparison marks "Uptime SLA", "Topology Aware Multi AZ Setup" and "Enterprise SSO
+      Authentication" absent from open source and lists "Custom automation" for its backups. Of the engine
+      rows, "GPU Indexing" is checked for open source and "Shard Splitting" is not; "Cloud Inference" is
+      a hosted embedding service.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: ed19cca4db9f8b796b5a3160cbfc55873d5df934af3c8226be55a0323c148460
+    content_sha256: a035ddb4030687cca9438b823ddeb28701c6effe42d2df1bedb871578abf7193
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/qdrant/qdrant/master/LICENSE
+    shows: The master-branch LICENSE file is the full Apache License text, headed "Apache License" and "Version
+      2.0, January 2004".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 210b508429e913d9de5301f90508bc2cbf5b2281de5b45e607c04d58f0f3bd8f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/qdrant/qdrant/master/README.md
+    shows: 'The README states "Qdrant is licensed under the Apache License, Version 2.0", gives a "docker
+      run -p 6333:6333 qdrant/qdrant" self-hosted start, and names the hosted service as an alternative:
+      "Qdrant is also available as a fully managed" Qdrant Cloud with a free tier. Searched the body for
+      enterprise, license key and commercial license: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: f1455d12252bf40235ad0128d8e98b2cd6d42583e441ac832b01f4daf08df2e4
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/qdrant/qdrant/master/lib/gpu/Cargo.toml
+    shows: The manifest of the lib/gpu crate, the engine's GPU indexing code, declares the crate Apache-2.0
+      with authors "Qdrant Team <info@qdrant.tech>", and its gpu feature pulls in the Vulkan bindings "dep:ash".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 2c91a27b7dd831baa22f0c432cd01e295a569e0f41d7176e544cc44deaabee71
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/qdrant/qdrant/master/lib/collection/src/collection/resharding.rs
+    shows: 'The collection-level resharding implementation, published in the open repository: it defines
+      "pub struct AbortReshardingScope" and documents the consensus operations that "might trigger resharding
+      abort". This is the shard-splitting mechanism the pricing table lists as absent from open source.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 2879ab8739367428cd0698df3b0724f739da80fd2847622a7d5db50e107aa60c
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/qdrant/qdrant/master/src/settings.rs
+    shows: 'The cluster settings carry resharding as a plain configuration flag, "pub resharding_enabled:
+      bool, // disabled by default". Searched the file for license: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: e874f1a86552d8de7ff15a448b1c3882449bd5258675cc75f2257a39271aeaf2
+    establishes:
+    - core-gated
+  - url: https://qdrant.tech/documentation/scaling/distributed_deployment/
+    shows: The distributed-deployment guide says Qdrant Cloud "offers the ability to automatically rebalance
+      and to reshard your collections, which is not available in self-hosted Qdrant".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: dc4b0bfd95c6bc769e64cca1356a7ea94c5a5743d77878f14b1f29640502e91f
     establishes:
     - core-gated
 adoption:

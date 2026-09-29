@@ -15,31 +15,53 @@ openness:
       managed:
         value: Pinecone-Cloud
   confidence: high
-  note: Fully proprietary managed vector DB; no open source core (contrast Milvus/Qdrant which are OSI-licensed).
-    BYOC is still closed-source software run in customer cloud.
+  note: Pinecone is available only as a managed service used under a subscription agreement, and none of
+    its source is published. Its BYOC option places the data plane in the customer's own cloud account,
+    but the software stays closed and Pinecone runs the control plane.
   raw: license:proprietary(SaaS);source:closed;self-host:none(BYOC runs Pinecone-managed in customer VPC,
     not OSS);managed:Pinecone-Cloud
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://www.pinecone.io/pricing/
-    shows: 'Tiers Starter, Builder, Standard and Enterprise, plus BYOC: "Bring-your-own-cloud (BYOC) runs
-      Pinecone in your cloud account and VPC. Pinecone does not need SSH, VPN, or inbound network access
-      to operate the system." Enterprise adds a 99.95% uptime SLA, private endpoints and customer-managed
-      keys. The phrase "open source" does not appear on the page.'
-    accessed: '2026-08-13'
+    shows: 'The pricing page says "Pinecone runs on fully managed infrastructure that scales with you",
+      and its one deployment alternative is BYOC, which "runs Pinecone in your cloud account and VPC". Searched
+      the body for open source, self-host, on-prem and license: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: d686117aacefb4fe49f4977205748e7233f1b2914b875a897642db44761f46dc
+    content_sha256: 95e884cee0ab16e7eb23a57aca3e84fe0f9ae05e469110669aeef03d1ac2430c
     establishes:
     - license
     - source
     - self-host
   - url: https://docs.pinecone.io/guides/get-started/overview
-    shows: Pinecone documented as a fully managed vector database reached through an API key; no source release
-      or self-hostable build offered.
+    shows: Pinecone documented as a fully managed vector database reached through an API key; no source
+      release or self-hostable build offered.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0438b9bbff90bd6f1bc61afe2c4e91234944fa4b2426eb94a6073c33329bc9b4
     establishes:
+    - source
+  - url: https://www.pinecone.io/legal/master-subscription-agreement/
+    shows: 'The Master Subscription Agreement grants a right to use the hosted service, not the software:
+      "Pinecone hereby grants to Customer" the "right to use Services in accordance with the Documentation",
+      and the customer may not "attempt to discover or recreate the source code for, Services".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9de0507434e221e78436ad39a2ce605f2a40e5d30a1b65754bf87ce3954ee0a2
+    establishes:
+    - license
+    - source
+  - url: https://docs.pinecone.io/guides/production/bring-your-own-cloud
+    shows: 'The BYOC guide describes a split deployment in which only the data plane runs in the customer''s
+      account: "The data plane runs entirely in your cloud account within a dedicated VPC", while "The control
+      plane is managed by Pinecone globally and handles index lifecycle management, authentication, billing,
+      and user management". Searched the body for self-managed, self-host, open source and source code:
+      none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 090c1fbd424acbb293d62f989f2d4de0909efc86f63eb9578a96debd621bcbf1
+    establishes:
+    - self-host
     - source
 adoption:
   level: 4
