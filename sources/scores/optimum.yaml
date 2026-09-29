@@ -13,12 +13,25 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full source public. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The library is licensed under Apache-2.0 and its source is public. The README describes the whole
+    library with no paid, enterprise or hosted tier beside it, so nothing in the core is withheld.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/optimum/json
+    shows: 'PyPI metadata for optimum lists the classifier "License :: OSI Approved :: Apache Software License",
+      and the embedded README opens with "Licensed under the Apache License, Version 2.0". It gives the
+      install route "python -m pip install git+https://github.com/huggingface/optimum.git", so the source
+      is public. The README describes the whole library, "Optimum is an extension of Transformers", with
+      pip extras per accelerator and no paid tier. Searched the README for paid, enterprise, license key,
+      self-host and open source: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f9703863b5791f236554fd37845df9071f082d3dab6df800b750eef9a4e29172
+    establishes:
+    - license
+    - source
+    - core-gated
   - url: https://github.com/huggingface/optimum/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +39,6 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/optimum
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/optimum.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 4dfd78eeb42d96c58ab0e09ab27b84c31860e1ca3ba780f596b8f714cb0b6831
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/optimum/main/README.md
-    shows: README describes Optimum as an extension of Transformers, Diffusers, TIMM and Sentence-Transformers
-      with per-accelerator extras, all pip-installable. No paid tier appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: da4ec25313652b0fa242d042107b2d04d2e09c71cb0ba401a926a586af42caac
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -68,11 +63,27 @@ capability:
   basis: feature_matrix
   value: Hardware-targeted optimization, export, and quantization across multiple accelerators/runtimes.
   confidence: high
-  note: Broad multi-backend optimization layer, though dependent on the core Transformers stack.
+  note: Optimum covers model export, quantization and accelerated training and inference across ONNX Runtime,
+    OpenVINO, ExecuTorch, Intel Gaudi, AWS Trainium and Inferentia, and TensorRT-LLM. It is an extension
+    of Transformers and depends on it, so it sits a step below Transformers.
   relative_to: transformers
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://pypi.org/pypi/optimum/json
+    shows: The PyPI README says "Optimum provides multiple tools to export and run optimized models on various
+      ecosystems", listing ONNX Runtime, OpenVINO, ExecuTorch, Intel Gaudi, AWS Inferentia and NVIDIA TensorRT-LLM,
+      and "Optimum provides wrappers around the original Transformers" Trainer for training on Gaudi and
+      Trainium.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f9703863b5791f236554fd37845df9071f082d3dab6df800b750eef9a4e29172
+  - url: https://huggingface.co/docs/optimum/index
+    shows: The Optimum docs home says "Optimum is an extension of" Transformers that provides "a set of
+      performance optimization tools to train and run models on targeted hardware with maximum efficiency."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 305339e27e44520c42f53d2781b57a6d9ead1f3419ca961046aa34fd1f96c7dd
   - url: https://github.com/huggingface/optimum
     shows: README still describes hardware-targeted optimization, export and quantization across ONNX Runtime,
       OpenVINO, Gaudi, Trainium/Inferentia and TensorRT-LLM
