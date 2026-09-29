@@ -17,46 +17,39 @@ openness:
   note: 'Apache-2.0 across the whole repository, with the full source public and no proprietary managed
     training service, only third-party cloud deployment templates. Nothing is withheld from the open package:
     no enterprise directory, no license-key gate, and the only paid offering is dedicated support by email.'
-  last_verified: '2026-08-11'
+  last_verified: '2026-09-28'
   raw: license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl);core-gated:ungated(Apache-2.0 across
     the repo, no ee/ or enterprise directory, no license key and no closed package; the only paid thing
     offered is dedicated support by email)
   sources:
   - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/LICENSE
-    shows: The body is the standard, unmodified Apache License, Version 2.0 text, with no custom copyright
-      line or added restriction layered on top.
-    accessed: '2026-08-11'
+    shows: 'The file is the standard Apache License text: "Apache License" and "Version 2.0, January 2004",
+      with the grant of a "perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable" license.'
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://github.com/axolotl-ai-cloud/axolotl
-    shows: Repo page for Axolotl, licensed Apache-2.0; the README states "This project is licensed under
-      the Apache 2.0 License." Top-level directories are .github, .runpod, .vscode, cicd, deepspeed_configs,
-      devtools, docker, docs, examples, image, scripts, src/axolotl, tests -- no ee/ or enterprise directory,
-      no closed dependency and no license key. The only commercial line is "Need dedicated support? Please
-      contact wing@axolotl.ai for options".
-    accessed: '2026-08-11'
+  - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
+    shows: 'The README, served from the public repository, states "Axolotl is a free and open-source tool
+      designed to streamline post-training and fine-tuning" and "This project is licensed under the Apache
+      2.0 License". It documents no paid tier or license key; searched the body for enterprise, pricing,
+      license key and hosted tier: none. The only commercial line is "Need dedicated support? Please contact".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 456b92cd6e991d86ddc1919cdd1d3ebf36f9df426d3fe7b721e1085fda6ca35a
+    content_sha256: e568efa58c664035bc770403b1adad578fe43e33e06debbfc8b70f7bdd7fb9a3
     establishes:
     - source
     - core-gated
-  - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
-    shows: Documents pip and Docker installation for self-hosting (uv pip install axolotl; docker run axolotlai/axolotl:main-latest)
-      and lists third-party cloud deployment templates (RunPod, Vast.ai, PRIME Intellect, Modal, Novita,
-      JarvisLabs, Latitude.sh) rather than a first-party managed or paid tier -- corroborates core-gated:ungated,
-      which is not currently recorded as a controlled token on this product.
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: fd60c6b8c9062efed362133ececc5f9f6d1b919edfbb616f401eb715c7289f06
   - url: https://axolotl.ai/
-    shows: The marketing homepage frames the product as free and open source, self-hostable in your own
-      cloud or Docker/Kubernetes setup, names third-party sponsors (e.g. Modal) rather than a first-party
-      hosted offering, and carries no pricing page -- further corroborates core-gated:ungated.
-    accessed: '2026-08-09'
+    shows: 'The homepage describes Axolotl as open source ("Axolotl is an Open Source tool making fine-tuning
+      AI models faster") that runs "in your own cloud, with your own Docker and k8s setup". Searched the
+      body for pricing and price: none found.'
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: 05204e242744d193f1cf4eb56188eeb0ab0f436856e06417842a714bca8a5c7f
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
@@ -97,15 +90,18 @@ capability:
     FSDP1/FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP);
     precision: BF16/4-8bit. Broadest single-tool method+parallelism matrix in this batch.'
   confidence: high
-  note: Axolotl combines a wider span of fine-tuning methods and parallelism strategies in one tool than
-    any of its open-source peers here. It trails Megatron-LM only on demonstrated extreme scale.
-  last_verified: '2026-08-13'
+  note: Axolotl runs full fine-tuning, LoRA, QLoRA and quantization-aware training, preference methods such
+    as DPO, KTO and ORPO, GRPO reinforcement learning and reward modeling from one configuration file, with
+    FSDP2, DeepSpeed, sequence and expert parallelism and multi-node training through Torchrun or Ray. It
+    trails Megatron-LM on demonstrated scale, publishing no training run near the size of Megatron-LM's
+    multi-thousand-GPU benchmarks.
+  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
-    shows: 'Feature/parallelism matrix: full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4),
-      DPO/IPO/KTO/ORPO, GRPO/GDPO, reward and process-reward modelling; FSDP1/FSDP2, DeepSpeed, multi-node
-      Torchrun/Ray, Sequence Parallelism, plus newly added Expert Parallelism (EP) and Context Parallelism
-      for hybrid SSM models -- matches or exceeds what capability.value already records.'
-    accessed: '2026-08-13'
+    shows: The README lists the training methods "Full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4)"
+      and "Preference Tuning (DPO, IPO, KTO, ORPO), RL (GRPO, GDPO), and Reward Modelling (RM) / Process
+      Reward Modelling (PRM)", plus "Multi-GPU training (FSDP2, DeepSpeed)" and "Multi-node training (Torchrun,
+      Ray)", Sequence Parallelism, ND Parallelism and Expert Parallelism.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: d8d53f43d9f84310e30a793517f369ebc01c78dcf7989676c3841471d1fa1252
+    content_sha256: e568efa58c664035bc770403b1adad578fe43e33e06debbfc8b70f7bdd7fb9a3

@@ -37,35 +37,36 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No usage figure is disclosed for Bedrock's customization feature -- no jobs run, no count of customers
-    fine-tuning. Bedrock as a whole is widely used, but nothing published is specific to the custom-models
-    and fine-tuning capability, so no level is assigned.
-  last_verified: '2026-08-09'
+  note: 'AWS publishes no usage figure for Amazon Bedrock Custom Models: no jobs run and no count of customers
+    customizing models. Nothing AWS publishes about Bedrock as a whole is specific to model customization,
+    so the map leaves adoption unscored rather than borrow a figure from the wider platform.'
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
-    shows: Same page, fetched today, lists the three customization methods and the token/storage billing
-      note but discloses no usage figure for the customization or fine-tuning capability specifically --
-      no count of jobs run, models customized, or customers using it, and nothing on the page substitutes
-      a number. The null level stands as a deliberate abstention rather than an invented number.
-    accessed: '2026-08-09'
+    shows: 'The page lists three customization methods and a billing note that training is charged by "the
+      number of" tokens processed and "model storage charged per month per model", and reports no usage
+      figure. Searched the body for customers, jobs run, models customized and usage counts: none.'
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc
 capability:
   score: 3
   basis: feature_matrix
-  value: 'Methods: supervised fine-tuning, reinforcement fine-tuning (custom Lambda reward functions,
-    real-time metrics), distillation (teacher->student). Continued pre-training also offered on select
-    models.'
+  value: 'Methods: supervised fine-tuning, reinforcement fine-tuning (custom Lambda reward functions, real-time
+    metrics), distillation (teacher->student).'
   confidence: medium
-  note: Bedrock's method set spans supervised, reinforcement and distillation fine-tuning, but exposes no
-    parallelism, precision or scale controls and no training benchmark. It sits a step below OpenAI's fine-tuning
-    API, whose reinforcement fine-tuning reaches deeper into frontier reasoning models.
+  note: Amazon Bedrock Custom Models covers supervised fine-tuning, reinforcement fine-tuning graded by
+    Lambda reward functions, and distillation, but exposes no parallelism, precision or scale controls and
+    publishes no training benchmark. It sits a step below OpenAI's fine-tuning API, which also offers vision
+    fine-tuning and direct preference optimization on OpenAI's own models.
   relative_to: openai-fine-tuning-api
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
-    shows: SFT, reinforcement fine-tuning with Lambda reward funcs, distillation
-    accessed: '2026-08-13'
+    shows: 'The page lists "Supervised fine-tuning", "Reinforcement fine-tuning" with reward functions defined
+      "using AWS Lambda" and "real-time metrics", and "Distillation" from a teacher model to a student model.
+      Searched the body for parallelism, precision, benchmark and continued pre-training: none.'
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc

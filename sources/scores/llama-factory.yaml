@@ -99,15 +99,19 @@ capability:
     web UI; multimodal (VLM) support. Broad model coverage and a no-code WebUI distinguish it; parallelism
     present but headline scale below Megatron-LM anchor.'
   confidence: medium
-  note: 'LlamaFactory''s fine-tuning support spans more than 100 LLM and VLM architectures with LoRA, QLoRA
-    and full fine-tuning, DPO and PPO, multimodal models, a CLI and the no-code LLaMA Board web UI: breadth
-    rather than scale. Megatron-LM has trained a 462B-parameter model across 6,144 H100 GPUs, a frontier-scale
-    parallelism LlamaFactory does not claim.'
-  last_verified: '2026-08-09'
+  note: 'LlamaFactory fine-tunes more than 100 LLM and vision-language models with full-parameter tuning,
+    LoRA and QLoRA, preference and reinforcement methods such as PPO and DPO, and a CLI or the zero-code
+    LLaMA Board web UI. It trails Megatron-LM on scale: it reaches large models through FSDP with QLoRA
+    and an optional Megatron-core backend, while Megatron-LM composes tensor, pipeline, context and expert
+    parallelism and reports training a 462B-parameter model on thousands of GPUs.'
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/hiyouga/LLaMA-Factory
-    shows: '"Unified Efficient Fine-Tuning of 100+ LLMs"; README lists LoRA, QLoRA, full-tuning, DPO and
-      PPO, multimodal support and the "LLaMA Board" web UI'
-    accessed: '2026-08-09'
+  - url: https://raw.githubusercontent.com/hiyouga/LlamaFactory/main/README.md
+    shows: The README headline reads "Easily fine-tune 100+ large language models with zero-code" through
+      a CLI and the LLaMA Board web UI, and lists "(Continuous) pre-training, (multimodal) supervised fine-tuning,
+      reward modeling, PPO, DPO, KTO, ORPO" plus "16-bit full-tuning, freeze-tuning, LoRA". Its news notes
+      "fine-tunes a 70B model on 2x24GB GPUs" with FSDP+QLoRA and "We support Megatron-core training backend
+      with" an external adapter.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 25ae5a46952062ba4d6e68fd8a06facd2acff6623c3c397000f36dd780f28a26
+    content_sha256: 2d61d3ee9a0b7a099800b17b0be7a8ef034ed9b08f43cb32bdac17642cc823dd

@@ -70,16 +70,27 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: 'No standalone usage figure exists for the Mistral fine-tuning API: no jobs run, no customers tuning,
-    no models fine-tuned, no developer count. The wider Mistral platform is widely used, but nothing published
-    is specific to fine-tuning, so no level is assigned rather than inferred from the platform around it.'
-  last_verified: '2026-08-13'
+  note: 'Mistral publishes no usage figures for the fine-tuning API: no jobs run, customers tuning, models
+    fine-tuned or developer count. The wider Mistral platform is widely used, but nothing published is specific
+    to fine-tuning, so adoption is left unscored rather than inferred from the platform around it.'
+  last_verified: '2026-09-28'
   sources:
   - url: https://mistral.ai/news/customization
-    shows: managed FT feature on La Plateforme; no usage figures disclosed
-    accessed: '2026-08-13'
+    shows: 'The launch post presents the managed service on la Plateforme and says "We use LoRA adapters
+      under the hood to prevent forgetting base model knowledge and allow for efficient serving." Searched
+      the body for downloads, jobs run, active users and customer counts for the fine-tuning service: no
+      usage figure found.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 8081cad71b6d199007f6cb4c92a0e04250014ddbbc2ff86cf9c019a02de182df
+    content_sha256: 58c318ff98bad38fa947da3297a94060fd2700c998a379db8ab0f55aceeae76b
+  - url: https://docs.mistral.ai/resources/deprecated/finetuning
+    shows: 'The overview page carries the banner "This feature is deprecated and is no longer actively supported."
+      and lists "via SFT: supervised fine-tuning, the most common fine-tuning method" alongside Classifier
+      Factory. Searched the body for DPO, reinforcement and LoRA: none found. Searched for downloads and
+      usage figures: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 46470a03c292885e501cc0eac47752a003fe04575b7578f8f3f3e4e1a03fd290
 capability:
   score: 3
   basis: feature_matrix
@@ -87,23 +98,35 @@ capability:
     models. Tunable base models limited to Mistral''s own (Small/Medium tier). No exposed full-FT/DPO/RFT
     or scale/precision knobs in the managed API.'
   confidence: medium
-  note: Mistral's fine-tuning API offers LoRA-based supervised fine-tuning for text and vision, plus a Classifier
-    Factory, on its own Small and Medium models, with no full fine-tuning, DPO, or reinforcement fine-tuning
-    exposed. That is narrower than the preference- and RL-capable services from OpenAI, Azure, Together
-    and Fireworks.
-  last_verified: '2026-08-09'
+  note: Mistral's fine-tuning API offers supervised fine-tuning for text and vision, plus a Classifier Factory,
+    on Mistral's own models, with only training steps and learning rate exposed as hyperparameters and no
+    full fine-tuning, DPO, or reinforcement fine-tuning documented. That is narrower than the preference-
+    and RL-capable services from OpenAI, Azure, Together and Fireworks.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.mistral.ai/resources/deprecated/finetuning
-    shows: 'Confirms the recorded method set verbatim: ''Text and vision general fine-tuning via SFT'' and
-      ''Classifier Factory'', with no full fine-tune, DPO, or RFT option mentioned; filed under ''Deprecated
-      features > Fine-tuning API (legacy)'' with a ''no longer actively supported'' banner.'
-    accessed: '2026-08-09'
+    shows: 'The overview page carries the banner "This feature is deprecated and is no longer actively supported."
+      and lists "via SFT: supervised fine-tuning, the most common fine-tuning method" alongside Classifier
+      Factory. Searched the body for DPO, reinforcement and LoRA: none found. Searched for downloads and
+      usage figures: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: b1166812b92559c26498d033ad4e41a700f20c88c2c7fa0cc030ed289467601a
+    content_sha256: 46470a03c292885e501cc0eac47752a003fe04575b7578f8f3f3e4e1a03fd290
   - url: https://mistral.ai/pricing/api/
-    shows: The current API catalog itemizes fine-tuning pricing only for 'Classifier API model 3B' and 'Classifier
-      API model 8B'; no catalog card prices general text/vision SFT of Mistral Small or Medium, though the
-      deprecated guide still documents it as a service.
-    accessed: '2026-08-09'
+    shows: 'The API price list itemizes fine-tuning only for the classifier entries, for example "Fine-tune
+      Ministral 3B for classification tasks, like moderation, sentiment analysis, fraud detection, and more."
+      with "minimum fee per fine-tuning job of $4". Searched the body for DPO, reinforcement and full fine-tuning:
+      none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 5f93d1336cc0aaa088e83186586a9cdc65db7afc33f987dca406bef88f9f4f61
+    content_sha256: 4a2006f0586c0e3ae22742b58465c3b0275b511ea3cdb35474f57910c022140c
+  - url: https://docs.mistral.ai/resources/deprecated/finetuning/text_vision_finetuning
+    shows: 'The Text & Vision fine-tuning guide carries the banner "This feature is deprecated and is no
+      longer actively supported." and lists the tunable models "open-mistral-7b", "mistral-small-latest",
+      "codestral-latest", "open-mistral-nemo", "mistral-large-latest", "ministral-8b-latest", "ministral-3b-latest"
+      and "pixtral-12b-latest", with "training_steps" and "learning_rate" as the adjustable hyperparameters;
+      its FAQ says "For LoRA fine-tuning, we recommend 1e-4 (default) or 1e-5." Searched the body for DPO,
+      preference (as a tuning method), reinforcement and full fine-tuning: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 81d09198481586cd3cb7fae284e93272184a0077fc138c214f2ed9b73371fd55

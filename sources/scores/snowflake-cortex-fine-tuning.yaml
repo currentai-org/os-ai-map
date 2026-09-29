@@ -46,36 +46,34 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No usage or customer-count figure is published for the fine-tuning feature specifically. Snowflake
-    has a large data-platform install base, but nothing about it can honestly be read as a signal for how
-    much this feature is used, so no level is assigned.
-  last_verified: '2026-08-09'
+  note: Snowflake does not publish how many customers use this fine-tuning feature. Its documentation only
+    describes a view for tracking an account's own usage, so there is no honest way to judge how widely
+    it is used.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
-    shows: Documents a CORTEX_FINE_TUNING_USAGE_HISTORY account_usage view for tracking a customer's own
-      credit and token consumption, but discloses no aggregate customer count, deployment count, or other
-      usage figure for the fine-tuning feature itself.
-    accessed: '2026-08-09'
+    shows: 'Documents the "CORTEX_FINE_TUNING_USAGE_HISTORY view" for tracking an account''s own consumption;
+      searched the body for customers, customer count, deployments and adoption figures: none found.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 3f3f837986ab91b882fc1ffb0b7bae9607b99f4ef906fef09f8e61831cb71944
+    content_sha256: f720caaa43e1e4e37784d745658fd189afb14e39cf2ddaa406ae53fc1690bbfe
 capability:
   score: 2
   basis: feature_matrix
-  value: 'Method: PEFT (single LoRA-class technique) on a fixed allowlist of 6 base models (Llama 3/3.1,
-    Mistral/Mixtral); no full FT, no RLHF/DPO/GRPO, no user-chosen models/scale. Convenience-first managed
-    feature, narrow method/model coverage.'
+  value: 'Method: PEFT (a single LoRA-class technique) on one documented base model, Llama 3.1 8B; no full
+    fine-tuning, no RLHF, DPO or GRPO, and no user choice of model or training scale. A convenience-first
+    managed feature with narrow method and model coverage.'
   confidence: medium
-  note: 'Narrow on every axis this category compares: a single parameter-efficient method of the LoRA class,
-    over a fixed allowlist of six base models (Llama 3 and 3.1, Mistral and Mixtral), with no full fine-tuning,
-    no RLHF, DPO or GRPO, and no user choice of model or training scale. Integrated convenience for Snowflake
-    users rather than a frontier trainer.'
-  last_verified: '2026-08-09'
+  note: Snowflake Cortex Fine-Tuning offers a single parameter-efficient training method on a single documented
+    base model, Llama 3.1 8B, with no full fine-tuning and no reinforcement or preference-based training.
+    That makes it a convenience feature for Snowflake users, well short of managed services such as OpenAI's
+    and Together's that add preference and reinforcement tuning on many more models.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
-    shows: States that Cortex Fine-tuning lets users leverage parameter-efficient fine-tuning (PEFT) to
-      create customized adaptors, over a fixed set of six base models (llama3-8b, llama3-70b, llama3.1-8b,
-      llama3.1-70b, mistral-7b, mixtral-8x7b); no full fine-tuning, RLHF, DPO, or GRPO option is mentioned
-      anywhere on the page.
-    accessed: '2026-08-09'
+    shows: 'Describes "parameter-efficient fine-tuning (PEFT) to create customized adaptors" and a base-models
+      table listing only "llama3.1-8b"; searched the body for LoRA, RLHF, DPO, full fine-tuning and mixtral:
+      none found.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 3f3f837986ab91b882fc1ffb0b7bae9607b99f4ef906fef09f8e61831cb71944
+    content_sha256: f720caaa43e1e4e37784d745658fd189afb14e39cf2ddaa406ae53fc1690bbfe
