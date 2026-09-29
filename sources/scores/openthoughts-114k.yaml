@@ -14,16 +14,34 @@ openness:
   confidence: high
   note: Apache-2.0 licensed, ungated, with dataset card, code repo, and paper.
   raw: license:apache-2.0;access:ungated;dataset_card:present;GitHub repo + paper
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/open-thoughts/OpenThoughts-114k
-    shows: Apache-2.0 license, dataset card, GitHub and arXiv links
-    accessed: '2026-08-13'
+    shows: The dataset page shows the card text "Open synthetic reasoning dataset with 114k high-quality
+      examples covering math, science, code, and puzzles".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4f9e43637623c254b44ba44dc0d82465a353e08c7585e7767a4393dfdf9b0532
+    content_sha256: 4aac4231c1c59f9de9c04e9c7ac9d65b82fcb2cff340564b40c3adf3e69d3c17
     establishes:
     - availability
     - documentation
+  - url: https://huggingface.co/datasets/open-thoughts/OpenThoughts-114k/raw/main/README.md
+    shows: 'The raw dataset card declares "license: apache-2.0" and links the repository "https://github.com/open-thoughts/open-thoughts"
+      and the paper "https://arxiv.org/abs/2506.04178".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 87dd0984b1ae912cd50507327d1358e378b3de07740600895734c939d0a55946
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/open-thoughts/OpenThoughts-114k
+    shows: The Hub API record lists the tags "license:apache-2.0" and "arxiv:2506.04178" and "size_categories:100K<n<1M"
+      for the dataset, with the gated flag false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4a9e9cec4cb5679ba53d06fded23c547c9af9c601905af4f9003d1e10caa2894
+    establishes:
+    - availability
     - license
 adoption:
   level: 4
@@ -32,7 +50,6 @@ adoption:
   confidence: high
   note: Adoption is measured by Hugging Face downloads of the dataset over the trailing month, the only
     usage channel on record for OpenThoughts-114k.
-  last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/datasets/open-thoughts/OpenThoughts-114k
     shows: downloads field = 107,269 in the trailing 30 days; 901 likes; gated false
@@ -45,18 +62,21 @@ capability:
   basis_detail: superseded
   value: null
   confidence: high
-  note: OpenThinker-32B, trained on this dataset, led open-data reasoning models on MATH500 and GPQA-Diamond,
-    scoring 90.6 and 61.6 against LIMO-32B, s1-32B and s1.1-32B. The Open Thoughts team has since superseded
-    it with OpenThoughts3-1.2M, which its own blog now recommends instead.
-  last_verified: '2026-08-13'
+  note: OpenThinker-32B, trained on this dataset, scored 90.6 on MATH500 and 61.6 on GPQA-Diamond, ahead
+    of the open-data models LIMO-32B, s1-32B and s1.1-32B. The Open Thoughts team has since superseded it
+    with OpenThoughts3-1.2M, which its own blog calls the state-of-the-art open-data reasoning dataset.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/open-thoughts/OpenThinker-32B
-    shows: OpenThinker-32B hits MATH500 90.6 / GPQA-D 61.6, leading open-data peers
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: f2cec688bfd7fcdca016290a0c627811fbc7636b5465948855d0e96f9b12f6ae
   - url: https://www.openthoughts.ai/blog/ot3
-    shows: OpenThoughts3-1.2M is the recommended SOTA open-data successor
-    accessed: '2026-08-13'
+    shows: The OpenThoughts3 post states "are the SOTA open-data model and SFT dataset for reasoning models,
+      respectively" and describes scaling "from Bespoke-Stratos-17k to OpenThoughts-114k and then again
+      to OpenThoughts2-1M".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 69832614398381122ecf2756fbf977cda356f34bb039550967717468fd1bf245
+  - url: https://huggingface.co/open-thoughts/OpenThinker-32B/raw/main/README.md
+    shows: The OpenThinker-32B card compares LIMO-32B, s1-32B and s1.1-32B with OpenThinker-32B, listing
+      "|LIMO-32B|0.8k|56.7|49.3|86.6|58.1|60.0|" against "**90.6**|**61.6**".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 40649e3b96bc616ba2bb9ce9cafc78b02661f22a6b7a00fb6b215b043724eca9

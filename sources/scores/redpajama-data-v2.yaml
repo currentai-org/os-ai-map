@@ -15,13 +15,27 @@ openness:
   note: Ungated with a full dataset card; redistributable per Common Crawl ToU with Apache-2.0 processing
     code.
   raw: license:CommonCrawl-ToU+Apache-2.0(code);ungated:yes;dataset_card:yes
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2
-    shows: Common Crawl ToU + Apache-2.0 code license, ungated access, dataset card
-    accessed: '2026-08-13'
+    shows: HF dataset page, public with no access-request gate (its embedded page data reports gated false),
+      shows the card text "RedPajama-V2 is an open dataset for training large language models", "The code
+      used to load and process the dataset is licensed under the Apache 2.0 license." and a pointer to the
+      "Common Crawl Foundation Terms of Use" for the data.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8c7f0238258c2d1ca2d35aa37b7144a08dc0e9cc4629d07219b82cb2fa3ba4cb
+    content_sha256: 8e28af386455dc276c1dac5df78395c17674e0cbe6955f43d823066bef23786e
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2/raw/main/README.md
+    shows: Raw dataset card says "RedPajama-V2 is an open dataset for training large language models" and
+      its License section says "The code used to load and process the dataset is licensed under the Apache
+      2.0 license." and points to the "Common Crawl Foundation Terms of Use" for the data.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e3e85557294bab64e722346d2f11da1f1dc513bf39a9030d93a031cc4d81e7b7
     establishes:
     - availability
     - documentation
@@ -33,7 +47,6 @@ adoption:
   confidence: high
   note: Adoption is measured by Hugging Face downloads of togethercomputer/RedPajama-Data-V2, the only usage
     channel on record for RedPajama-Data-v2.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/togethercomputer/RedPajama-Data-V2
     shows: 5,035 downloads in the trailing 30 days for togethercomputer/RedPajama-Data-V2
@@ -46,24 +59,29 @@ capability:
   basis_detail: superseded
   value: null
   confidence: high
-  note: RedPajama-Data-v2 performs competitively in its own filtered ablation, but FineWeb outperforms it
-    in FineWeb's published comparison. It ships as raw, unfiltered web text with quality signals rather
-    than as a pre-filtered corpus, and the RedPajama-INCITE models trained on it have since been superseded
-    by DCLM and FineWeb.
+  note: RedPajama-Data-v2 performs competitively in its own filtered ablation, second only to RefinedWeb
+    on aggregate scores, but FineWeb outperforms it in FineWeb's matched comparison. It ships as raw, unfiltered
+    web text with quality signals rather than as a pre-filtered corpus.
   relative_to: fineweb
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2411.12372
-    shows: 'RedPajama paper full text. The ablation is in the body: Table 5 varies the C4 and Gopher rule sets
-      over RPv2, and "fuzzy deduplication and filtering with Gopher has the highest aggregated scores across
-      all RPv2 datasets", second only to RefinedWeb on both the average and the normalized average benchmark
-      score. The arXiv abstract page describes the corpus and its quality signals and reports no ablation.'
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: f40ed61d29d59f2f26ffd8cf78ee8177e5e56eca2fd3beb7511d9ceaf53e9fbb
   - url: https://arxiv.org/abs/2406.17557
-    shows: FineWeb outperforms RedPajama2 in the FineWeb ablation
-    accessed: '2026-08-13'
+    shows: FineWeb abstract says "a 15-trillion token dataset derived from 96 Common Crawl snapshots that
+      produces better-performing LLMs than other open pretraining datasets".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da
+  - url: https://arxiv.org/html/2411.12372
+    shows: RedPajama paper HTML reports that "fuzzy deduplication and filtering with Gopher has the highest
+      aggregated scores across all RPv2 datasets" in its filtering ablation.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a0e53e38b45377145f4c9f1b214cef000c9e9aa30fdadbe01cebc5d0f3ea11d9
+  - url: https://arxiv.org/html/2406.17557
+    shows: FineWeb paper HTML lists "the deduplicated variant of RedPajama2" among the datasets compared
+      in Fig. 10 and states that "Base FineWeb shows strong performance" against them, with "Data ablation
+      models all had 1.71B parameters" on matched setups.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 059d9418f0a111cdc55c9057dc1595a03ba392abc5e2140832635a520192dc99
