@@ -11575,46 +11575,74 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "Cohere publishes no call-volume or user figures for Rerank, so adoption is read from distribution: the API is offered directly and resold as a managed service on Azure AI Foundry, AWS SageMaker JumpStart and Oracle GenAI. The `cohere` PyPI package bundles chat, embedding, classification and reranking together, so its downloads are not a proxy for Rerank alone.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://aws.amazon.com/blogs/big-data/enhancing-search-relevancy-with-cohere-rerank-3-5-and-amazon-opensearch-service/",
-                "shows": "\"Enhancing Search Relevancy with Cohere Rerank 3.5 and Amazon OpenSearch Service\", co-written with Cohere. Establishes distribution through OpenSearch; carries no usage figure.",
-                "accessed": "2026-08-13",
+                "shows": "AWS Big Data Blog post \"Enhancing Search Relevancy with Cohere Rerank 3.5 and Amazon OpenSearch Service\", on wiring the model in through \"OpenSearch Service ML connectors which facilitate access to models hosted on third-party ML platforms\". It carries no usage figure.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "5da7eec30262747394e823efb3715dbadd6c7f6d43d2174373dbdd376d6768bb"
+                "content_sha256": "47e74638deee23dfcced4d8c64cd3894b7fbe368e915c37df59bf94c413489bf"
               },
               {
                 "url": "https://ai.azure.com/catalog/models/Cohere-rerank-v3.5",
-                "shows": "Azure AI Foundry catalog, Cohere provider entry - \"Built around large-language-model families such as Command R/R+, Command A, and high-precision Rerank APIs\"; \"Deploy Command or Rerank side-by-side with Azure AI Search\". Establishes availability; carries no usage figure.",
-                "accessed": "2026-08-13",
+                "shows": "Azure AI Foundry catalog, Cohere provider entry: \"high‑precision Rerank APIs, Cohere focuses on enterprise and regulated‑industry use cases\" and \"with Azure AI Search, store embeddings in Azure Vector DBs\". It establishes availability and carries no usage figure.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "39dc99efde987fcac5f5730366364488971b102379f7b362534ce26b49aab623"
+                "content_sha256": "95192dc9a71cf7ced0c38bb13a0cbbe4c77cf81419a629e2249e8daf90dffae7"
               }
             ]
           },
           "capability": {
             "score": 4,
             "basis": "benchmark",
-            "basis_detail": "nDCG@10 over Cohere's in-house 18-language multilingual suite, plus Voyage's independent 93-dataset run",
-            "value": "vendor-claimed SOTA on BEIR and on multilingual retrieval, plus reasoning capability and a 4096-token context, on the 3.5 release; +26.4% on cross-lingual search against the previous Rerank 3, measured by nDCG@10 over an in-house 18-language suite; trained across 100+ languages, with 4.0 shipping fast and pro variants",
+            "basis_detail": "nDCG@10 over Cohere's in-house 18-language suite and BEIR; Voyage's in-house 93-dataset run; Agentset's ELO leaderboard (FiQA, SciFact, PG)",
+            "value": "vendor-claimed SOTA on BEIR and on multilingual retrieval, plus reasoning capability and a 4096-token context, on the 3.5 release; +26.4% on cross-lingual search against the previous Rerank 3, measured by nDCG@10 over an in-house 18-language suite; trained across 100+ languages, with Rerank 4 shipping fast and pro variants, a 32K context and a vendor-claimed lead over Voyage and Jina rerankers",
             "confidence": "medium",
-            "note": "Cohere reports state-of-the-art BEIR and multilingual retrieval results for Rerank 3.5, but no independent reranker leaderboard covers the API. The one external comparison available, Voyage's 93-dataset benchmark, puts rerank-2.5 ahead of Rerank v3.5 by 7.94%, which keeps the score a step below the frontier.",
-            "last_verified": "2026-08-13",
+            "note": "Cohere reports state-of-the-art BEIR and multilingual results for Rerank 3.5 and says Rerank 4 beats Voyage and Jina rerankers on its own benchmarks, and Agentset's independent leaderboard places Rerank 4 Pro second, just behind Zerank 2 and ahead of Voyage rerank-2.5. That leaderboard ranks models by LLM-judged head-to-head wins on only three datasets, so it places Rerank 4 at the competitive frontier alongside those rerankers rather than clearly ahead of them.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://cohere.com/blog/rerank-3pt5",
-                "shows": "\"Cohere's multilingual evaluation suite consists of external datasets covering 18 different languages in a variety of monolingual and cross-lingual settings. Multilingual performance is measured by nDCG@10\"; \"When compared to our previous Rerank 3 model, Rerank 3.5 delivers a +26.4% improvement on cross-lingual search\". NOT on this page: BEIR, or any comparison against embedding-only retrieval.",
-                "accessed": "2026-08-13",
+                "shows": "Rerank 3.5 launch post: \"Multilingual performance is measured by nDCG@10\" over \"external datasets covering 18 different languages in a variety of monolingual and cross-lingual settings\", and against Rerank 3 it reports a \"+26.4% improvement on cross-lingual search\". Searched the body for BEIR: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "cd2f77a145b96ffb93c20e6778b9c61c240fe787d5bb294013034b3ea460f9b1"
+                "content_sha256": "d2207e8cfd6847dddb0951a1a170b92c26bf2b63edf151f4a3ef1e97ca854552"
               },
               {
                 "url": "https://docs.cohere.com/changelog/rerank-v3.5",
-                "shows": "\"Rerank 3.5 has a context length of 4096, SOTA performance on Multilingual Retrieval tasks and Reasoning Capabilities. In addition, Rerank 3.5 has SOTA performance on BEIR and domains such as Finance, E-commerce, Hospitality, Project Management, and Email/Messaging Retrieval tasks.\" No nDCG figure is given here.",
-                "accessed": "2026-08-13",
+                "shows": "Changelog entry: \"Rerank 3.5 has a context length of 4096, SOTA performance on Multilingual Retrieval tasks and Reasoning Capabilities\" and \"Rerank 3.5 has SOTA performance on BEIR and domains such as Finance, E-commerce, Hospitality\". No nDCG figure is given here.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "bc5906343e711e89148a704a2e771f0e3e453737f4b433bdc6d55960675960e1"
+                "content_sha256": "0265f6f2b4471e8d6f09437d5721327ac468e58b6c7aef22b53e1d3cda3517cb"
+              },
+              {
+                "url": "https://cohere.com/blog/rerank-4",
+                "shows": "Rerank 4 launch post: a 32K context window, \"the largest of our Rerank series to date and a four-fold increase over the previous generation\", with Cohere claiming it is \"outperforming the likes of MongoDB’s Voyage models and ElasticSearch’s Jina rerankers in overall search relevance\". The comparison is Cohere's own.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "ef454b57fec1eefa83dec60db7c7f5a6c8a270b496791ffca4cffb74f4708a14"
+              },
+              {
+                "url": "https://docs.cohere.com/docs/rerank-overview",
+                "shows": "Rerank docs overview: \"Cohere’s Rerank models have been trained for performance across 100+ languages.\" The lineup lists Rerank 4.0 in \"(both ‘fast’ and ‘pro’)\" variants alongside Rerank 3.5.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "4f8606bddee9f5363c3439c2a6090814d2d1f1e0b8cb2157e915d0d9386f6425"
+              },
+              {
+                "url": "https://blog.voyageai.com/2025/08/11/rerank-2-5/",
+                "shows": "Voyage rerank-2.5 launch post: \"On our standard suite of 93 retrieval datasets spanning multiple domains, rerank-2.5 and rerank-2.5-lite improve retrieval accuracy by 7.94% and 7.16% over Cohere Rerank v3.5\". It predates Rerank 4.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "cbad3e643dd15dd7c741e229a2951fba322b70cc23c555fea6142aa860aad234"
+              },
+              {
+                "url": "https://agentset.ai/rerankers",
+                "shows": "Agentset reranker leaderboard, last updated February 15, 2026: Cohere Rerank 4 Pro ranks second on ELO, behind Zerank 2 and ahead of Voyage AI Rerank 2.5, over \"FiQA (finance), SciFact (science), and PG (long-form content)\", with PG \"evaluated only with ELO-based LLM judgments\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "ebf90b0e72cae201279c86fd57327beb19549b4d12cdf6cdf395648771f21529"
               }
             ]
           },
@@ -11623,9 +11651,9 @@
           "maturity": 3.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-11",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-11"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
