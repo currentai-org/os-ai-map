@@ -15,18 +15,46 @@ openness:
     free_text:
     - API-only(ERNIE 4.5 was open, 5.x flagship closed)
   confidence: high
-  note: No weights distributed for the 5.x flagship; closed API model.
-  last_verified: '2026-08-13'
+  note: Baidu distributes no weights for the ERNIE 5.x models, which are available only through its own
+    services and API. Training data and code are not published either.
+  last_verified: '2026-09-29'
   raw: weights:closed;data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5
     was open, 5.x flagship closed)
   sources:
   - url: https://huggingface.co/baidu
-    shows: Baidu HF org lists ERNIE-4.5 (21B-A3B-Thinking, VL-28B-A3B, VL-424B-A47B) and the
-      ERNIE-Image models; no ERNIE 5.x repository, so no 5.x weights, corpus or code are distributed
-    accessed: '2026-08-13'
+    shows: 'Baidu Hugging Face organization page lists ERNIE-4.5 and ERNIE-Image repositories such as "baidu/ERNIE-4.5-21B-A3B-Thinking"
+      and "baidu/ERNIE-Image-Turbo"; searched the page for ERNIE-5 and ERNIE 5.1: none, so no 5.x weights,
+      training code, corpus or open license is distributed there.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b5fa7ec28cf52c672179aaa2820dac4f9275bf077c2e87812725e6058c572528
-    establishes: [weights, data, code, license]
+    content_sha256: a79e9e9a57819e8bd9917491468ded63af751f23e4ab2c8b9a28bf31d9b0af5a
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=baidu&search=ERNIE&limit=100
+    shows: 'Hugging Face models API listing of every Baidu repository matching ERNIE returns 30 repositories,
+      all ERNIE-4.5 or ERNIE-Image, e.g. "baidu/ERNIE-4.5-300B-A47B-Base-PT" and "baidu/ERNIE-4.5-VL-424B-A47B-Paddle";
+      searched the listing for ERNIE-5: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 34c1019db4f4269c5a8c74b67002a8708504f2161301a1dc9e25564208c6a1cc
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
+    shows: 'Official ERNIE 5.1 release post directs users to "Visit the official website at https://ernie.baidu.com
+      to chat with the latest ERNIE 5.1 model"; searched the post for Hugging Face, download, open-source
+      and license: none, so the model is offered only as a hosted service.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd
+    establishes:
+    - weights
+    - license
 adoption:
   level: 4
   signal_type: reported_traction
@@ -35,19 +63,27 @@ adoption:
   note: The freshest available signal is Baidu's own app-level MAU for the ERNIE/Wenxiaoyan assistant, not
     a figure specific to ERNIE 5.1, and the models are not on Hugging Face, so there is no download count
     to read instead. Baidu's most recent quarterly release gives no ERNIE MAU at all, only a Baidu App total.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.prnewswire.com/news-releases/baidu-announces-fourth-quarter-and-fiscal-year-2025-results-302698026.html
-    shows: 'Baidu Q4/FY2025 results, released 2026-02-26 - "ERNIE Assistant''s MAU reached 202 million
-      in December 2025"; for scale, "Baidu App''s MAUs reached 679 million in December 2025"'
-    accessed: '2026-08-14'
+    shows: Baidu Q4 and fiscal year 2025 results, released 2026-02-26 - "ERNIE Assistant's MAU reached 202
+      million in December 2025"; for scale, "Baidu App's MAUs reached 679 million in December 2025"
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0c9367297e14ad3eb49187931abcf73a8dbd6e46bd8f6f65c93f57a37f070d92
+    content_sha256: 93f311d4e85b70fff80359a59eac4108ec0885b70d1dc9a6ecb14b53825620e3
   - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: ERNIE 5.1 release and API access. It carries no usage figure.
-    accessed: '2026-08-13'
+    shows: ERNIE 5.1 release post - "Today, we officially release ERNIE 5.1" - with access through the ERNIE
+      website. It carries no usage figure.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd
+  - url: https://www.tradingview.com/news/prnewswire:e50c91827b8b8:0-baidu-announces-second-quarter-2026-results/
+    shows: 'Baidu Q2 2026 results, released 2026-08-18, report "Baidu App''s MAUs reached 644 million in
+      June 2026"; searched the release for ERNIE and MAU of the assistant: no ERNIE Assistant figure, so
+      the December 2025 figure remains the latest.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1bd7bd2c2d23000fb4d46aa452bf3c95eb1efe848b61dc961949e57b88ad3475
 capability:
   score: 5
   basis: benchmark
@@ -60,21 +96,21 @@ capability:
     1,223 on LMArena's search leaderboard, which Baidu reports as fourth globally and first among Chinese
     models. Those rankings come from Baidu's own release post and earnings statements rather than an independent
     leaderboard read, making this a self-reported frontier claim.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html
-    shows: 'Baidu Q1 2026 results, released 2026-05-18 - "Baidu launched ERNIE 5.1 in May 2026 ...
-      Recently on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped
-      the LMArena search leaderboard among Chinese models, ranking fourth globally." No ERNIE MAU figure
-      on this release.'
-    accessed: '2026-08-14'
+    shows: Baidu Q1 2026 results, released 2026-05-18 - "Baidu launched ERNIE 5.1 in May 2026, featuring
+      stronger text capabilities" and "ERNIE 5.1 ranked first among Chinese models on the text leaderboard
+      and topped the LMArena search leaderboard among Chinese models, ranking fourth globally."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 603c8ce34c6397ec899ccd31c017bf24914db82d0fe7de1ace02f07c483e966b
+    content_sha256: 043d8ec0e569cbbea64a2853d0131355439972e3277b5db3681c9362a944983d
   - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: 'official MoE design and training-cost efficiency ("Pre-training Compute Cost at Only 6% of Comparable
-      Models"); "On AIME26 (with tool use) ... ERNIE 5.1 scores 99.6 - second only to Gemini 3.1 Pro"; and
-      states that on May 9, ERNIE 5.1 reached 1,223 to claim 4th place globally and 1st among Chinese models
-      on the Arena Search leaderboard. No #13 Text ranking and no 128K context figure.'
-    accessed: '2026-08-13'
+    shows: Official release post - "using only about 6% of the pre-training cost of comparable models";
+      "On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6";
+      "On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models";
+      and ERNIE 5.1 posted 1,223 "to claim 4th place globally and 1st among Chinese models on the Arena
+      Search leaderboard."
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd

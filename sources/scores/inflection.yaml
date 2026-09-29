@@ -13,25 +13,65 @@ openness:
     - name: Proprietary
       detail: API/enterprise-licensed, no weights
   confidence: high
-  note: Closed proprietary models via API + enterprise licensing; no downloadable weights; fine-tuned models
-    are the customer's alone.
-  last_verified: '2026-08-13'
+  note: Inflection offers its models only through its API and enterprise licenses, with no downloadable
+    weights. Models fine-tuned for a customer belong to that customer, but the base weights, training data
+    and code stay with Inflection.
+  last_verified: '2026-09-29'
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API/enterprise-licensed, no weights)
   sources:
   - url: https://www.maginative.com/article/inflection-ai-unveils-enterprise-offering-with-new-inflection-3-0-models-2/
-    shows: Inflection 3.0 (Pi + Productivity), enterprise/API, proprietary (aggregator source)
-    accessed: '2026-08-13'
+    shows: 'Maginative launch report, October 7, 2024: "Inflection 3.0, the core of the enterprise offering,
+      comprises two distinct models" sold through a paid API, and "Inflection for Enterprise introduces
+      a proprietary fine-tuning system". Searched the body for Hugging Face, download and weights: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6acc709d7ffb36a77621dd0485eacf92e6991be701b47caf1124f698aa233106
+    content_sha256: 554529710e9d03dd82f079c70137bbd1efbc4fd0c8580d2fa9ad7e84a0ac230d
+    establishes:
+    - weights
+    - license
   - url: https://newsroom.intel.com/artificial-intelligence/inflection-ai-intel-launch-enterprise-ai-system
-    shows: 'PRIMARY - "With Inflection for Enterprise, built on Inflection 3.0, enterprise customers
-      can now harness a comprehensive AI solution ... specifically trained on their unique company
-      data", dated October 7, 2024, delivered via Intel Tiber AI Cloud and a Gaudi 3 appliance. No
-      weights, corpus or code released.'
+    shows: PRIMARY - "With Inflection for Enterprise, built on Inflection 3.0, enterprise customers can
+      now harness a comprehensive AI solution ... specifically trained on their unique company data", dated
+      October 7, 2024, delivered via Intel Tiber AI Cloud and a Gaudi 3 appliance. No weights, corpus or
+      code released.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 798e2282b0df8b22355d689cf189d07c49f0f038f8c3b3e2cbd32439a6487b08
-    establishes: [weights, data, code, license]
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://inflection.ai/blog/enterprise
+    shows: 'Vendor launch post, October 7, 2024: Inflection 3.0 is offered as a hosted system and developers
+      reach the model through the "Large Language Model through its new commercial API". Searched the body
+      for download, weights, open source and GitHub: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dd662e98df2eb2bb472b9af04c57cc4c1d2941bd79d605eed1bb75642c016746
+    establishes:
+    - weights
+    - license
+  - url: https://inflection.ai/training-data-transparency-statement
+    shows: 'Vendor training-data statement, last updated December 22, 2025: the company "trains language
+      models using publicly accessible, licensed, and proprietary datasets" and describes them only in summary.
+      No dataset or data-preparation scripts are linked from the page.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 122f03171997841fc96c1eba4008ab76b203ea67f79987ee27b3f90e777d2292
+    establishes:
+    - data
+  - url: https://inflection.ai/labs
+    shows: 'Inflection AI Labs page describes internal work on "fine-tuning pipeline optimizations" and
+      "distillation from our proprietary foundation models". Searched the body for GitHub, repository, open
+      source, download and Hugging Face: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a1ecdc363a924afd2cf17c734912781e1a67684545be3ef053f1ac638eaaae6a
+    establishes:
+    - weights
+    - code
+    - license
 adoption:
   level: 1
   signal_type: reported_traction
@@ -41,7 +81,6 @@ adoption:
     API access, but no usage of any kind -- users, customers or revenue -- has since been disclosed. With
     no published figure to read from, the reading here is a directional placement rather than one confirmed
     by a measured figure.
-  last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/Inflection_AI
     shows: 'March 2024 - "Microsoft acqui-hiring nearly the entirety of its 70-person workforce"; "As
@@ -52,17 +91,26 @@ adoption:
     content_sha256: 45f4ab53fe44a60074658c59bf91d3a11afc8a2f89ff4b7094cb75d25af6f23b
 capability:
   score: 2
-  basis: benchmark
+  basis: feature_matrix
   value: null
   confidence: low
   note: Inflection 3.0 was built for emotional intelligence and productivity rather than leaderboard performance,
     and was never a frontier model even at release. Development halted after Microsoft took most of the
     research team, and no independent benchmark has appeared since, leaving it far behind the 2026 frontier
     models.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.maginative.com/article/inflection-ai-unveils-enterprise-offering-with-new-inflection-3-0-models-2/
-    shows: Pi (EQ) + Productivity positioning, no frontier-benchmark claims
-    accessed: '2026-08-13'
+    shows: Maginative describes the two Inflection 3.0 models by use case - the Productivity model "is optimized
+      for following instructions" - and states that "Both models feature an 8k context window". No benchmark
+      result is reported.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6acc709d7ffb36a77621dd0485eacf92e6991be701b47caf1124f698aa233106
+    content_sha256: 554529710e9d03dd82f079c70137bbd1efbc4fd0c8580d2fa9ad7e84a0ac230d
+  - url: https://openrouter.ai/inflection/inflection-3-productivity
+    shows: 'OpenRouter listing for Inflection 3 Productivity: "Inflection 3 Productivity was released on
+      October 11, 2024" with an 8,000-token context window; no newer Inflection model is listed beside it,
+      only Inflection 3 Pi.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 47fe9717fa7d263c748bf2b4212651af78166a46cbfaf8a51dc0824a6107610c

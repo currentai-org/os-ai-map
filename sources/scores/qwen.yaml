@@ -21,7 +21,6 @@ openness:
     code published. Qwen3.7-Max, the proprietary flagship, is served only through Alibaba Model Studio and
     never distributed, so it does not affect the family's reading; earlier Qwen 2.5 checkpoints carried
     the more restrictive Qwen License Agreement before the move to Apache-2.0.
-  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage
     code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the
     proprietary Plus/Max tiers are API-only and never distributed, so they fall outside this axis)
@@ -76,7 +75,6 @@ adoption:
   note: Adoption is measured as Hugging Face downloads summed across six checkpoints spanning Qwen2.5 through
     the current Qwen3.6 generation. The two Qwen3.6 checkpoints account for most of that total, so the family's
     reach reflects its current release rather than the older 2.5 generation.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen2.5-72B
     shows: 28,852 downloads in the trailing 30 days for Qwen/Qwen2.5-72B
@@ -111,24 +109,43 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: SWE-bench/Terminal-Bench
+  basis_detail: SWE-bench Pro/Terminal-Bench 2.1
   value: null
   confidence: high
-  note: The dense Qwen3.6-27B scores 77.2 on SWE-bench Verified and 59.3 on Terminal-Bench 2.0, reportedly
-    matching Claude Opus 4.5 class while outperforming a 397B mixture-of-experts model on agentic coding.
-    The flagship Qwen3.6-Plus is separately reported to match Claude Opus 4.5 on the same benchmarks, making
-    this a frontier-tier open family.
-  last_verified: '2026-08-13'
+  note: Qwen3.8-Max, the hosted version built on the open-weight Qwen3.8-2.4T-A95B, reports 86.6 on Terminal-Bench
+    2.1 and 67.7 on SWE-bench Pro, within a few points of Claude Opus 4.8 on both, and the dense Qwen3.8-27B
+    reports 73.0 and 61.7. The figures come from Qwen's own model cards rather than an independent evaluation.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.marktechpost.com/2026/04/22/alibaba-qwen-team-releases-qwen3-6-27b-a-dense-open-weight-model-outperforming-397b-moe-on-agentic-coding-benchmarks/
-    shows: Qwen3.6-27B SWE-bench Verified 77.2 and Terminal-Bench 2.0 59.3, outperforming a 397B MoE
-      on agentic coding
+    shows: Qwen3.6-27B SWE-bench Verified 77.2 and Terminal-Bench 2.0 59.3, outperforming a 397B MoE on
+      agentic coding
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5d10a19286f3982ec02173d497e426bed31f755e851f0bffeaf8922e5d3c0560
   - url: https://www.caixinglobal.com/2026-04-02/alibaba-releases-qwen-36-plus-ai-model-with-enhanced-coding-capabilities-102430395.html
-    shows: '"Alibaba Group Holding Ltd. released Qwen 3.6-Plus, a multimodal LLM excelling in agentic
-      coding ... rivals Claude Opus 4.5 on SWE-bench"'
-    accessed: '2026-08-13'
+    shows: Caixin reports that "Qwen 3.6-Plus matches Anthropic’s Claude Opus 4.5 in programming" and "agent
+      benchmarks like SWE-bench and Terminal-Bench 2.0".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2bedc1f72e1880d6ea7f9432814212b5adcacc144efd7cf590bf4f1eb84dde91
+    content_sha256: fba53ea49d4db79188cd7dd9c8a2b22f2df8afb19ba18aba2a375be05eb038a8
+  - url: https://huggingface.co/Qwen/Qwen3.6-27B/raw/main/README.md
+    shows: The Qwen3.6-27B card's benchmark table lists "SWE-bench Verified" at 77.2 and "Terminal-Bench
+      2.0" at 59.3 for the model, with the harness described as "Harbor/Terminus-2 harness; 3h timeout".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bb936d6da51014f1edc9aa4cf9abf28d98695b7616ad56adfeeebfa752051d3d
+  - url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/README.md
+    shows: The Qwen3.8-2.4T-A95B card, whose hosted Qwen3.8-Max "is the official version based on Qwen3.8-2.4T-A95B",
+      has a table comparing "Opus 4.8", "GPT 5.6 Sol (max)" and "Qwen3.8-Max"; the Qwen3.8-Max column reads
+      86.6 on Terminal Bench 2.1 (Opus 4.8 84.6) and 67.7 on SWE-bench Pro (Opus 4.8 69.2).
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7690c680c2d6eb284179ef5dd4db63260d248531cae9087b09b2c2200230f331
+  - url: https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/README.md
+    shows: The card says "Qwen3.8-27B brings these advances to a compact, deployment-friendly dense model",
+      and its text table reports Terminal Bench 2.1 (Terminus) at 73.0 and SWE-bench Pro at 61.7 for the
+      model, against 63.4 and 53.5 for Qwen3.6-27B.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 57e4bdb258ee1a7d2635c5174ebd4e56abe392505cdb5f8bbb356b0dc4293641

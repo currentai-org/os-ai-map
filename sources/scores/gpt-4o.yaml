@@ -13,19 +13,35 @@ openness:
     - name: Proprietary
       detail: API-only
   confidence: high
-  note: 'No downloadable weights: GPT-4o is available only through the OpenAI API and ChatGPT, the same
-    position as the rest of OpenAI''s model line.'
-  last_verified: '2026-08-13'
+  note: GPT-4o is available only through the OpenAI API, with no downloadable weights. OpenAI publishes
+    neither its training data nor its training code.
+  last_verified: '2026-09-29'
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: 'API-only model page - "our most capable model outside of our o-series models", 128,000
-      context window, Oct 01, 2023 knowledge cutoff, text and image input. No weight download, no
-      corpus, no training code.'
-    accessed: '2026-08-13'
+    shows: 'OpenAI API model page describing GPT-4o as "is our versatile, high-intelligence flagship model"
+      that "accepts both text and image inputs, and produces text outputs", sold per token ("Pricing is
+      based on the number of tokens used") and pinned through API snapshots ("Snapshots let you lock in
+      a specific version of the model"). Searched the body for weights, download, open-weight and Hugging
+      Face: none, and no training corpus or training code is published.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0
-    establishes: [weights, data, code, license]
+    content_sha256: 5e7522293db94a851cbd8984e3563468231971964101092a3e7965eb77f23989
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://artificialanalysis.ai/models/gpt-4o
+    shows: Artificial Analysis states "GPT-4o (Nov '24) is a proprietary model and OpenAI has not disclosed
+      the model size or parameter count" and measures it only on the vendor endpoint - "generates output
+      at 167.9 tokens per second (based on OpenAI"; no open-weights provider is listed.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6f03fdd0816e5309785ea4f568cf7e95bed2ed6bbd6817fcb833feb2f29e63d7
+    establishes:
+    - weights
+    - license
 adoption:
   level: 5
   reach: '>10M users'
@@ -35,7 +51,6 @@ adoption:
     adoption here is read from ChatGPT's own weekly active users rather than from a standalone GPT-4o count
     that OpenAI has never published. Those weekly-actives figures come from OpenAI's own announcements rather
     than from an aggregator's estimate.
-  last_verified: '2026-08-14'
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4o
     shows: GPT-4o served as a primary OpenAI API/ChatGPT model; no usage figure published on the page
@@ -55,18 +70,33 @@ adoption:
 capability:
   score: 3
   basis: benchmark
-  basis_detail: MMLU/MMMU
-  value: 'GPT-4o launch-era external figures: MMLU ~88.7, MMMU ~69.1 (NOT confirmed on current OpenAI
-    docs, which carry no benchmark numbers); a 2024 frontier non-reasoning multimodal model.'
+  basis_detail: Artificial Analysis Intelligence Index; MMLU
+  value: 'GPT-4o (Nov ''24 snapshot) - AA Intelligence Index 8 (estimated, v4.3.2), ranked #45/60, below
+    average among non-reasoning models in a similar price tier (median 15). Launch-era MMLU 88.7 against
+    86.5 for GPT-4.'
   confidence: medium
-  note: GPT-4o was frontier in 2024, but the 2026 reasoning frontier, GPT-5 and Gemini 3.5, has since surpassed
-    it. OpenAI's current documentation page names no benchmark figures, and the launch-era MMLU of about
-    88.7 and MMMU of about 69.1 come only from external write-ups with no primary source behind them.
-  last_verified: '2026-08-13'
+  note: GPT-4o was OpenAI's multimodal flagship in 2024 and now sits well below a frontier that includes
+    OpenAI's own GPT-5 and GPT-6 lines. On Artificial Analysis's Intelligence Index it scores below the
+    median for non-reasoning models in its price tier, and OpenAI's model page publishes no benchmark figures.
+  last_verified: '2026-09-29'
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: 'GPT-4o positioned as "our most capable model outside of our o-series models", 128,000
-      context window, text+image; no benchmark figures present anywhere on the page.'
-    accessed: '2026-08-13'
+    shows: OpenAI API model page for GPT-4o with "128,000 context window" and "Oct 01, 2023 knowledge cutoff",
+      described as "our most capable model outside of our o-series models"; the page carries no benchmark
+      figures.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0
+    content_sha256: 5e7522293db94a851cbd8984e3563468231971964101092a3e7965eb77f23989
+  - url: https://artificialanalysis.ai/models/gpt-4o
+    shows: 'Artificial Analysis model page for the November 2024 snapshot - "GPT-4o (Nov ''24) scores 8
+      (estimated) on the Artificial Analysis Intelligence Index, placing it below average among other non-reasoning
+      models in a similar price tier (median: 15)", on "Artificial Analysis Intelligence Index v4.3.2".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d0b1e0e3ea8d5a3fb7e1082250c85fdf6282232a92deb53552de480fbadc8818
+  - url: https://en.wikipedia.org/wiki/GPT-4o
+    shows: Encyclopedia entry recording the launch figure "GPT-4o scored 88.7 on the Massive Multitask Language
+      Understanding" benchmark, against 86.5 for GPT-4.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3db808c5f960dd67b15e4427c01de75f2255dddfb682a1f8b1500515b04b8156
