@@ -20,21 +20,34 @@ openness:
   note: 'Fully open: MIT, ungated, redistributable, comprehensive card.'
   raw: license:MIT(OSI/open,redistributable);access:public(not gated);datasheet:present(comprehensive card+leaderboard);splits:public(test+validation,
     no hidden held-out)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro
-    shows: '`license:mit` in the repo tags; the embedded repo state reads `"gated":false`; the dataset
-      card and leaderboard link still render; 172,078 downloads in the trailing 30 days'
-    accessed: '2026-08-13'
+    shows: The dataset page carries the tag `license:mit`, the card opens with "MMLU-Pro dataset is a more
+      robust and challenging massive multi-task understanding dataset", and it describes an "Expert Review:"
+      step with "rigorous scrutiny by a panel of over ten experts"; the leaderboard link renders.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1f030cb66fe26a245458fdc2e3a5f86fcf1bc00487c96e8e6ed43f4ce76e8686
-    establishes: [license, access, datasheet]
+    content_sha256: 5958f84e2aa7d71b9edba145dffd5536ba4147c6e9827bfb08a25d7676352762
+    establishes:
+    - license
+    - datasheet
   - url: https://arxiv.org/abs/2406.01574
-    shows: the abstract still describes MMLU-Pro as expanding the choice set "from four to ten options"
-      and eliminating trivial and noisy MMLU questions
-    accessed: '2026-08-13'
+    shows: The abstract describes MMLU-Pro as expanding the choice set "from four to ten options" and eliminating
+      trivial and noisy MMLU questions.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 5d7cc32bd5dc2562317f2fa0bcfa6bb9806b0994eb94eb389a93b36346d32118
+  - url: https://huggingface.co/api/datasets/TIGER-Lab/MMLU-Pro
+    shows: The Hugging Face API record for the dataset reads `license:mit` in its tags and `"gated":false`,
+      with test and validation splits and the card text "MMLU-Pro dataset is a more robust and challenging
+      massive multi-task understanding dataset".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0e49c918226c9a3f6348b1cea4f8fc73b78b16bf894fc578c3a987c557cf499d
+    establishes:
+    - access
+    - license
 adoption:
   level: 4
   reach: 100K-1M
@@ -61,11 +74,12 @@ capability:
   value: null
   confidence: high
   note: A dataset is not 'capable', so capability is left unscored; openness and adoption carry this category.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro
-    shows: a static 10-option multiple-choice question corpus; no performance, throughput or feature
-      claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+    shows: 'The page shows a static question corpus with "MMLU-Pro dataset is a more robust and challenging
+      massive multi-task understanding dataset" and a "Downloads last month" panel. Searched the body for
+      throughput, latency, accuracy claims by the dataset itself: none; it is data, not a capable system.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1f030cb66fe26a245458fdc2e3a5f86fcf1bc00487c96e8e6ed43f4ce76e8686
+    content_sha256: 5958f84e2aa7d71b9edba145dffd5536ba4147c6e9827bfb08a25d7676352762

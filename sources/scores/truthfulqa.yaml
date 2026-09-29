@@ -20,21 +20,35 @@ openness:
   note: 'Fully open: Apache-2.0, ungated, redistributable, complete card with creation methodology.'
   raw: license:Apache-2.0(OSI/open,redistributable);access:public(not gated);datasheet:present(card+creation
     methodology+citation);splits:public(817 Qs, two configs, no hidden held-out)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/truthfulqa/truthful_qa
-    shows: '`license:apache-2.0` in the repo tags; the embedded repo state reads `"gated":false`; the
-      dataset card still renders over the generation and multiple_choice configs; 110,844 downloads
-      in the trailing 30 days'
-    accessed: '2026-08-13'
+    shows: The dataset page carries the tag "license:apache-2.0", a card section titled "Curation Rationale"
+      and one titled "Citation Information", and the card opens "TruthfulQA is a benchmark to measure whether
+      a language model is truthful in generating answers to questions"; the embedded repo state has gated
+      false.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e018e2f7364e61424d33ba605be041d268f4fc9f73d0ac969cc10eac6a114db1
-    establishes: [license, access, datasheet]
+    content_sha256: 7c5fd90f2d7f8b004de21293638fd41ecae28a0e3462387c319c3ab7f2def6f1
+    establishes:
+    - license
+    - access
+    - datasheet
   - url: https://arxiv.org/abs/2109.07958
-    shows: the abstract still reads "The benchmark comprises 817 questions that span 38 categories"
-    accessed: '2026-08-13'
+    shows: The abstract reads "The benchmark comprises 817 questions that span 38 categories, including
+      health, law, finance and politics".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 5a2f6d5867ac15485e7be55e49eb1116aaa1b9af6ceb20c12ce936dbcddf7fc3
+  - url: https://huggingface.co/api/datasets/truthfulqa/truthful_qa
+    shows: The API record lists the tag "license:apache-2.0" and the repo files "generation/validation-00000-of-00001.parquet"
+      and "multiple_choice/validation-00000-of-00001.parquet", with gated false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 19d3aa9cb6052dca583364bff4f39c0853d97382b7441380cfa4b9cb98e03f2e
+    establishes:
+    - license
+    - access
 adoption:
   level: 4
   reach: 100K-1M
@@ -61,11 +75,13 @@ capability:
   value: null
   confidence: high
   note: A dataset is not 'capable', so capability is left unscored; openness and adoption carry this category.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/truthfulqa/truthful_qa
-    shows: a static 817-question corpus in generation and multiple_choice configs; no performance,
-      throughput or feature claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+    shows: 'Card summary: "The benchmark comprises 817 questions that span 38 categories, including health,
+      law, finance and politics"; the card makes no performance, throughput or feature claim for the corpus
+      itself beyond the section heading "Supported Tasks and Leaderboards", and the Hub download counter
+      on the page is usage data, not a capability claim.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e018e2f7364e61424d33ba605be041d268f4fc9f73d0ac969cc10eac6a114db1
+    content_sha256: 7c5fd90f2d7f8b004de21293638fd41ecae28a0e3462387c319c3ab7f2def6f1

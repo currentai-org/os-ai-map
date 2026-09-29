@@ -17,7 +17,7 @@ openness:
     (ai2-adapt-dev) is ungated. The underlying task datasets keep their own licenses, though, so the Apache-2.0
     covers the recipe rather than the corpus itself.
   raw: access:ungated(conversion);license:Apache-2.0(recipe)+per-task;dataset_card:partial
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/google-research/FLAN
     shows: Apache-2.0 FLAN v2 recipe
@@ -27,13 +27,46 @@ openness:
     establishes:
     - license
   - url: https://huggingface.co/datasets/ai2-adapt-dev/flan_v2_converted
-    shows: ungated HF conversion used by Tulu/OLMo mixes
-    accessed: '2026-08-13'
+    shows: HF dataset page of the conversion, showing "This is a converted version of the Flan dataset into
+      Tulu SFT training format."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 8e839f096209c4cebcb1c843de2aca9adbbb7ce12aa6710e8b5d36edeea66899
+    content_sha256: c437fe8f4d2bb16e34f846a59fd5f7af7b0187e663457d28caa991cab5ba9b81
+    establishes:
+    - documentation
+  - url: https://huggingface.co/datasets/ai2-adapt-dev/flan_v2_converted/raw/main/README.md
+    shows: Raw card of the Hugging Face conversion. It says "This is a converted version of the Flan dataset
+      into Tulu SFT training format." and refers readers to the original repo "for more information about
+      this dataset and the license".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1ec2eea6ca43b47a76f58a84b6ca14c883c7699a2e38ed18c66ca1c8373b53b0
+    establishes:
+    - documentation
+  - url: https://huggingface.co/api/datasets/ai2-adapt-dev/flan_v2_converted
+    shows: 'Hub API record for the conversion. Searched the body for cardData and license: none, and gated
+      is false. Its description says "The original FLAN dataset needs extensive efforts to be regenerated".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 02c22f0f78611c19799e4fe6907dc7087b0edd492b0699eaf74090f155440c9c
     establishes:
     - availability
-    - documentation
+  - url: https://cdn.jsdelivr.net/gh/google-research/FLAN@main/LICENSE
+    shows: jsDelivr copy of the LICENSE file in the google-research/FLAN GitHub repository, the full Apache
+      License text headed "Apache License" and "Version 2.0, January 2004".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/google-research/FLAN@main/README.md
+    shows: jsDelivr copy of the google-research/FLAN README, saying "The code in this repository is licensed
+      according to the [LICENSE](LICENSE) file." and "This repository contains code to generate instruction
+      tuning dataset collections."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 38a12f7b33784ebcf385436fa9a592074c3ba8d7eaacacf28e6a682786988273
+    establishes:
     - license
 adoption:
   level: 1
@@ -65,18 +98,24 @@ capability:
     a component in Tulu 3, Dolci, and Marin's mixes, but dated as a standalone chat-era recipe. The Flan
     Collection reports Flan-T5 outperforming prior work by 3-17%+ across evaluation settings, and the Dolci
     SFT card still consumes FLAN v2.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/pdf/2301.13688
-    shows: 'Flan Collection paper full text. The per-collection comparison is in the body and in Figure 1: T5-XL-LM
-      finetuned on Flan 2022 is set against the same model finetuned on Flan 2021, P3++ and Super-Natural Instructions,
-      and "P3++" is defined there as all datasets in the Public Pool of Prompts. The arXiv abstract page gives
-      the 3-17%+ headline without the per-collection rows.'
+    shows: 'Flan Collection paper full text. The per-collection comparison is in the body and in Figure
+      1: T5-XL-LM finetuned on Flan 2022 is set against the same model finetuned on Flan 2021, P3++ and
+      Super-Natural Instructions, and "P3++" is defined there as all datasets in the Public Pool of Prompts.
+      The arXiv abstract page gives the 3-17%+ headline without the per-collection rows.'
     accessed: '2026-09-11'
     http_status: 200
     content_sha256: 9b7644ffbe0a2c896fdefa202c79a6020f8a2cb73f655914ff77bdc9b308f5d8
   - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT
-    shows: OLMo 3 Dolci still consumes FLAN v2 (89,981 prompts)
-    accessed: '2026-08-13'
+    shows: Dolci-Instruct-SFT dataset page listing FLAN v2 with "89,981 prompts (Longpre et al., 2023)" among its sources.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 279407557f11985037149eecaef5ef6f9640914162167e53a0f0c4066e3a5baa
+    content_sha256: a183350b62bc36efe580e7de3d1e97e856e51971503ebb15f45a3a7e55d2707e
+  - url: https://arxiv.org/abs/2301.13688
+    shows: arXiv abstract of the Flan Collection paper, stating "we tease apart the effect of design decisions
+      which enable Flan-T5 to outperform prior work by 3-17%+" across evaluation settings.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c87f46d42a0899f9db968728890fa3ac150e8163f206263fee7331d346d0ea77

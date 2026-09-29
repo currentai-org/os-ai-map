@@ -13,15 +13,24 @@ openness:
   note: ODC-BY, ungated, documented pipeline on GitHub. The LLM360 path redirects to the IFM org on the
     Hub, same repo.
   raw: license:ODC-BY;gated:false;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/LLM360/TxT360
-    shows: ODC-BY license, ungated, dataset card
-    accessed: '2026-08-13'
+    shows: Hub page for LLM360/TxT360 (redirects to IFM/TxT360) whose embedded page data carries gated&quot;:false,
+      meaning no access gate, and lists "The collection for K2-V2 models."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 39cc3cbc04b685eb028700bce426cd4777afcddb4124f495d8bbb2f88c21b7b5
+    content_sha256: e6a911e4fcd0bfec8280451e7f7cc50ed56c38d4e418b00db8a18b2312021437
     establishes:
     - availability
+  - url: https://huggingface.co/datasets/LLM360/TxT360/raw/main/README.md
+    shows: 'Raw dataset card with front matter "license: odc-by" and a "TxT360 Performance" section stating
+      "we sampled 1.5T tokens from both FineWeb and TxT360" and "a training ablation on an 8x8B Mixture-of-Experts
+      architecture" with a plot but no numeric scores in the text.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2578c1dad12f4186fa2117bd8e9c777c66d2e0e2942b7f4d4a41c0c654b1a609
+    establishes:
     - documentation
     - license
 adoption:
@@ -31,7 +40,6 @@ adoption:
   confidence: high
   note: Adoption is measured by Hugging Face downloads of IFM/TxT360, the renamed LLM360 organization's
     repository and the only usage channel on record for TxT360.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/LLM360/TxT360
     shows: 9,230 downloads in the trailing 30 days for IFM/TxT360
@@ -47,12 +55,17 @@ capability:
   note: A self-reported controlled ablation beats FineWeb (8x8B MoE, 1.5T tokens) but without published
     numeric scores; trains K2 / K2-V2 (LLM360, 2024-25). The card describes ~5T globally deduplicated tokens
     and a mixing recipe reaching 15T+, and the K2-V2 collection lists it.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/LLM360/TxT360
-    shows: Card - ~5T globally deduplicated tokens across 99 Common Crawl snapshots and 14 non-web sources,
-      a recipe reaching 15T+ tokens, and a 1.5T-token 8x8B MoE ablation against FineWeb reported without
-      numeric scores; listed in the K2-V2 collection
-    accessed: '2026-08-13'
+    shows: Hub page for LLM360/TxT360 (redirects to IFM/TxT360) listing "The collection for K2-V2 models."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 39cc3cbc04b685eb028700bce426cd4777afcddb4124f495d8bbb2f88c21b7b5
+    content_sha256: e6a911e4fcd0bfec8280451e7f7cc50ed56c38d4e418b00db8a18b2312021437
+  - url: https://huggingface.co/datasets/LLM360/TxT360/raw/main/README.md
+    shows: Raw dataset card describing "~5T tokens of high-quality data" from global deduplication, and
+      a recipe that "will create a dataset of 15T+ tokens", with the 1.5T-token FineWeb comparison ablation
+      "on an 8x8B Mixture-of-Experts architecture" shown only as a chart.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2578c1dad12f4186fa2117bd8e9c777c66d2e0e2942b7f4d4a41c0c654b1a609

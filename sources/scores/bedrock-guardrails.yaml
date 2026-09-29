@@ -16,56 +16,81 @@ openness:
         detail: content filters, PII redaction, contextual grounding
         raw: denied topics, content filters, PII redaction, contextual grounding
   confidence: high
-  note: Closed managed cloud service; no weights or source. The ApplyGuardrail API can be pointed at self-hosted
-    models, but that is the managed guardrail reaching outward, not a self-hostable guardrail, so source
-    stays closed.
+  note: Bedrock Guardrails is a closed AWS service used under AWS's service terms, with no published source
+    or downloadable build. The ApplyGuardrail API can screen self-hosted models, but each check is still
+    a call to the guardrail running at AWS.
   raw: service:proprietary managed AWS service(no self-host);features:denied topics, content filters, PII
     redaction, contextual grounding;source:closed;license:proprietary
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://aws.amazon.com/bedrock/guardrails/
-    shows: 'An AWS-run service with no source repository and no self-hostable implementation; use is
-      governed by the AWS service terms rather than a published license. ''The ApplyGuardrail API allows
-      you to use the configurable safeguards offered by Bedrock Guardrails with any foundation model
-      whether hosted on Amazon Bedrock or self-hosted models'' - the guardrail itself still runs at AWS.'
-    accessed: '2026-08-13'
+    shows: 'The product page presents Guardrails as an AWS-run service with no source repository or downloadable
+      build: "The ApplyGuardrail API allows you to use the configurable safeguards offered by Bedrock Guardrails
+      with any foundation model whether hosted on Amazon Bedrock or self-hosted models" - the guardrail
+      itself is called at AWS. Searched the page for open source, license, on-prem and download: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a
+    content_sha256: fb572d138e19646b0d640e9ec952bbd4bc1eb86f4e6af8e50b21343f05273288
     establishes:
     - source
+  - url: https://aws.amazon.com/service-terms/
+    shows: The AWS Service Terms page states that "The Service Terms below govern your use of the Services",
+      so use of Bedrock Guardrails is governed by AWS service terms rather than a published software license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 233c702b58f6d75573e0b132e66863b7e67ff31b2103899b27b5e6ba78a76d8a
+    establishes:
     - license
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
+    shows: 'The user guide describes guardrails as resources created and versioned in an AWS account: "Guardrails
+      can be used directly with FMs during the inference API invocation by specifying the guardrail ID and
+      the version."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 77416a82d64121602b69ebe1f3e02e6569b2dab693f50691fdbf87239da97edc
+    establishes:
+    - source
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
   banded_quantity: named customer logos, not a count of anything
-  note: 'AWS publishes no usage numbers for Bedrock Guardrails, only a short roster of named customers:
-    Chime Financial, KONE, Panorama, Strava, Remitly, and PwC. Reach here is read from that adopter list
-    rather than from any published count.'
-  last_verified: '2026-08-13'
+  note: AWS publishes no customer count or request volume for Bedrock Guardrails, only a short list of named
+    customers on its product page. Its reach is inferred from those named adopters and from its place inside
+    Amazon Bedrock rather than from any published figure.
+  last_verified: '2026-09-29'
   sources:
   - url: https://aws.amazon.com/bedrock/guardrails/
-    shows: Names six customers by logo and quote. No customer count, request volume or developer count
-      appears on the page.
-    accessed: '2026-08-13'
+    shows: 'The product page names six customers and gives no customer count or request volume: "Companies
+      like Chime Financial, KONE, Panorama, Strava, Remitly, and PwC trust Bedrock Guardrails for their
+      AI applications."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a
+    content_sha256: fb572d138e19646b0d640e9ec952bbd4bc1eb86f4e6af8e50b21343f05273288
 capability:
   score: 4
   basis: feature_matrix
   basis_detail: feature coverage
-  value: Denied topics, content filters, PII redaction, word filters, and contextual-grounding checks
-    across any Bedrock model.
+  value: Content and word filters, prompt-attack detection, denied topics, PII redaction, and contextual-grounding
+    and Automated Reasoning checks, applied to text and images across any foundation model.
   confidence: low
-  note: Broad configurable managed guardrail set; strong coverage, closed. Automated Reasoning checks sit
-    as a sixth policy beside the five the value names.
-  last_verified: '2026-08-13'
+  note: Bedrock Guardrails combines six configurable policies in one managed service, including hallucination
+    checks through contextual grounding and Automated Reasoning, and its Standard tier extends content filters
+    and denied topics to code. The checks run only inside AWS, whichever model they screen.
+  last_verified: '2026-09-29'
   sources:
   - url: https://aws.amazon.com/bedrock/guardrails/
-    shows: 'Page lists content moderation (content and word filters), prompt attack detection, topic
-      classification (denied topics), PII redaction (sensitive information filters), and hallucination
-      detection (contextual grounding and Automated Reasoning checks), applied ''consistently across any
-      foundation model''.'
-    accessed: '2026-08-13'
+    shows: The product page lists "six safeguard policies that you can configure" covering "content moderation
+      (content and word filters), prompt attack detection, topic classification (denied topics)", PII redaction
+      and "hallucination detection (contextual grounding and Automated Reasoning checks)", with filters
+      for "harmful text and image content".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a
+    content_sha256: fb572d138e19646b0d640e9ec952bbd4bc1eb86f4e6af8e50b21343f05273288
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html
+    shows: 'The user guide describes the Standard tier extending content filters and denied topics to code:
+      "detection of undesirable content is extended to protection against harmful content introduced within
+      code elements including comments, variable and function names, and string literals."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 77416a82d64121602b69ebe1f3e02e6569b2dab693f50691fdbf87239da97edc

@@ -15,15 +15,36 @@ openness:
   confidence: high
   note: Permissively licensed (ODC-BY), ungated download with a full dataset card and replication toolkit.
   raw: license:ODC-BY;ungated:yes;dataset_card:yes;code:apache-2.0-toolkit
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/allenai/dolma
-    shows: ODC-BY license, ungated access, dataset card, ~3T tokens
-    accessed: '2026-08-13'
+    shows: Hugging Face dataset page for allenai/dolma renders the card ("Dolma is a dataset of 3 trillion
+      tokens from a diverse mix of web content, academic publications, code, books, and encyclopedic materials")
+      with the license tag "odc-by".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f7e7100a96a1c05cd2614c4ac4c2640ebf69f1708b04fce0792435a50d9fdf6f
+    content_sha256: 4af41e8a98c1cd729dd978acb6a2d67e409bbb521fbe679588350e34292f18b8
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/allenai/dolma
+    shows: 'Hub API reports the dataset as not gated and ODC-BY licensed, with tags "license:odc-by" and
+      the dataset description "Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining
+      Research".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 46aaa4798d9640ea248f13376832f3bc3b269aa0292c02ace840a14287342cf3
     establishes:
     - availability
+    - license
+  - url: https://huggingface.co/datasets/allenai/dolma/raw/main/README.md
+    shows: 'Dataset card front matter declares "license: odc-by" and the card describes "Dolma is a dataset
+      of 3 trillion tokens from a diverse mix of web content, academic publications, code, books, and encyclopedic
+      materials."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5379c6cbd2b567c0630578a27e0061346b6b89489e71039d9b2b1d176d414635
+    establishes:
     - documentation
     - license
 adoption:
@@ -56,18 +77,17 @@ capability:
     and Ai2 has since superseded it with Dolma 3.
   relative_to: fineweb
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2406.17557
-    shows: FineWeb paper full text. Dolma enters the comparison as "the Common Crawl-based part of Dolma 1.6
-      (3T tokens) and 1.7 (1.2T tokens)", and both versions appear as rows in the per-corpus ablation figures
-      alongside RefinedWeb, C4, The Pile, SlimPajama and RedPajama2. The arXiv abstract page names no comparison
-      corpus at all.
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: ae632bd6618d2566e708962670f27ab1fbc5ba9bc8de3acaceee8fbda85fbdd4
   - url: https://allenai.org/blog/olmo3
-    shows: Dolma superseded by Dolma 3 for OLMo 3
-    accessed: '2026-08-13'
+    shows: Ai2 Olmo 3 announcement says "Olmo 3 is pretrained on" Dolma 3, "a new ~9.3-trillion-token corpus".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705
+  - url: https://arxiv.org/html/2406.17557
+    shows: 'FineWeb paper HTML lists Dolma among the compared corpora: "the Common Crawl-based part of Dolma
+      1.6 (3T tokens) and 1.7 (1.2T tokens)", and states that the FineWeb model "outperforms all other open
+      datasets we compared on our aggregate group of tasks".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 059d9418f0a111cdc55c9057dc1595a03ba392abc5e2140832635a520192dc99

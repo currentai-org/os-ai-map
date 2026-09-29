@@ -67,17 +67,34 @@ capability:
   basis: feature_matrix
   value: LLM-as-judge win-rate; length-controlled metric; reference-model comparison; leaderboard
   confidence: medium
-  last_verified: '2026-08-13'
-  note: The de-facto standard for its niche, with an influential length-controlled win-rate metric, but
-    narrower in scope than the multi-task harnesses it sits beside.
+  last_verified: '2026-09-29'
+  note: AlpacaEval reports a length-controlled win rate that tracks Chatbot Arena rankings closely, with
+    a public leaderboard and a toolkit for building and analyzing new automatic evaluators. It measures
+    only judge-based instruction-following comparison, which is narrower than the multi-task harnesses it
+    sits beside.
   sources:
   - url: https://github.com/tatsu-lab/alpaca_eval
     shows: AlpacaEval 2.0 LC win-rate
     accessed: '2026-06-17'
   - url: https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/README.md
     shows: '''Length-controlled Win Rates are out and used by default'', raising correlation with Chatbot
-      Arena from 0.93 to 0.98; LLM-as-judge auto-annotator against a reference baseline, plus a public
-      leaderboard and tooling for building and analyzing new automatic evaluators.'
+      Arena from 0.93 to 0.98; LLM-as-judge auto-annotator against a reference baseline, plus a public leaderboard
+      and tooling for building and analyzing new automatic evaluators.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 27576663fb6f13adf5b3adea8d7840f47ffe366fca74177fe6aac92e8b6ff11c
+  - url: https://pypi.org/pypi/alpaca-eval/json
+    shows: The PyPI listing of the alpaca-eval package carries the project README, which says length-controlled
+      win rates "are out and used by default! This increases the correlation with ChatBot Arena from 0.93
+      to 0.98" and lists a "Toolkit for building automatic evaluators" for building and analyzing new evaluators,
+      alongside a leaderboard of common models.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 157745d1943f360176d93df791b0587a7fea01048318625dd38091f8f6589d4b
+  - url: https://tatsu-lab.github.io/alpaca_eval/
+    shows: The leaderboard site is titled "AlpacaEval Leaderboard" and its caution line says "(LC) win rates
+      alleviate length biases of GPT-4, but it may favor models finetuned on its outputs", above a ranked
+      table of models.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 849beef590cc43a8976e37f56f94b045d57ea07a95af45ba1536e8c1346502b8

@@ -14,7 +14,6 @@ openness:
   note: Manually gated behind the NVIDIA Data Agreement for Model Training; synthetic portions may inherit
     generator-model license terms.
   raw: license:NVIDIA-Open-Data;gated:manual(model-training-use);dataset_card:present
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/nvidia/Nemotron-CC-v2
     shows: gated (manual), NVIDIA Open Data License, dataset card
@@ -51,18 +50,19 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: 'Wins against DCLM at a long token horizon: Nemotron-CC-HQ adds 5.6 MMLU over DCLM, and an 8B trained
-    on 15T tokens of it beats Llama 3.1 8B by 5 MMLU. It is the current default for NVIDIA''s Nemotron models,
-    and the Marin retrospective records Marin 8B adopting it as its primary source in later phases.'
-  last_verified: '2026-08-13'
+  note: An 8B model trained for 1T tokens on the high-quality subset scores 5.6 MMLU points above one trained
+    on DCLM. The full dataset only matches DCLM on MMLU but holds about four times as many unique real tokens,
+    and an 8B model trained for 15T tokens, 7.2T of them from it, beats Llama 3.1 8B by 5 MMLU points. Marin
+    8B moved its training mixture to Nemotron-CC in a later phase.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2412.02595
-    shows: Nemotron-CC-HQ improves MMLU by 5.6 over DCLM; an 8B on 15T tokens beats Llama 3.1 8B by +5 MMLU
-    accessed: '2026-08-13'
+    shows: 'arXiv abstract says an 8B model "trained for 15T tokens, of which 7.2T came from our dataset, is better than the Llama 3.1 8B model: +5 on MMLU", and that "using a high-quality subset of our data improves MMLU by 5.6 over DCLM" at 1T tokens while "our full 6.3T token dataset matches DCLM on MMLU".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 4231d6de42496ec9f36b44c8be8bc791367ccbe5e5c41439d7e6077eebd0df98
   - url: https://marin.readthedocs.io/en/latest/reports/marin-8b-retro/
-    shows: Marin 8B adopted Nemotron-CC as its primary source in later phases
-    accessed: '2026-08-13'
+    shows: Marin 8B retrospective says "Because we were running out of DCLM, we transitioned the data from our phase 1 and 2 mixture (DCLM+StarCoder+ProofPile 2) to a new mixture that was" Nemotron-CC and StarCoder.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ef12b7a5e2815e65c6436d4fcadfd69c3d9b78b03718928e0bb19b22cd420f8e
+    content_sha256: cca42bb4d618cf3f82c0ae926e0acac2636765a816ee128d42828a48980e4589

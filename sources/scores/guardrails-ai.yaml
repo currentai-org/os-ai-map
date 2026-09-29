@@ -24,7 +24,6 @@ openness:
     core rather than open source.'
   raw: license:Apache-2.0(OSI) for the framework;source:public;hub:Guardrails Hub validator registry;commercial:hosted/enterprise
     tier;core-gated:gated
-  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/guardrails-ai/guardrails
     shows: Apache-2.0 framework; ~7.1k stars; Guardrails Hub validators; commercial offerings
@@ -89,14 +88,42 @@ capability:
   value: Input/output guards plus a Hub of pre-built validators (PII, toxicity, injection, structure)
     and structured-output enforcement.
   confidence: medium
-  note: Broad validator ecosystem via the Hub; strong on structured-output enforcement in addition to safety
-    checks.
-  last_verified: '2026-08-13'
+  note: Guardrails Hub supplies pre-built validators for toxic language, PII, prompt injection and attempts
+    to get around safeguards, and they combine into input and output guards around a model call. The same
+    framework also enforces structured output against a Pydantic model, so one library covers both safety
+    checks and output format.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/guardrails-ai/guardrails
-    shows: 'README describes Guardrails Hub as ''a collection of pre-built measures of specific types of
-      risks (called validators)'' that ''can be combined together into Input and Output Guards that
-      intercept'' model calls, and says ''Guardrails help you generate structured data from LLMs''.'
+    shows: README describes Guardrails Hub as 'a collection of pre-built measures of specific types of risks
+      (called validators)' that 'can be combined together into Input and Output Guards that intercept' model
+      calls, and says 'Guardrails help you generate structured data from LLMs'.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 588c3dd9130c7fa21b31e21f38302de95d30dd034cda0b3b45bb9984a3505d02
+  - url: https://www.guardrailsai.com/docs
+    shows: The Guardrails documentation introduction says "Guardrails is a Python framework that helps build
+      reliable AI applications by performing two key functions", running guards "that detect, quantify and
+      mitigate the presence of specific types of risks", and "Guardrails help you generate structured data
+      from LLMs." Hub validators "can be combined together into Input and Output Guards that intercept the
+      inputs and outputs of LLMs."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4be5f0438856c26e0a0039810d0d0d32bf76d48580d0bc80bb4ff0e913b141f7
+  - url: https://pypi.org/pypi/guardrails-ai/json
+    shows: The PyPI README for guardrails-ai 0.11.0 describes both jobs. Guards "detect, quantify and mitigate
+      the presence of specific types of risks" and "Guardrails help you generate structured data from LLMs."
+      Hub validators "can be combined together into Input and Output Guards that intercept the inputs and
+      outputs of LLMs", and a Pydantic class can be passed so "the output is formatted to the" requested
+      structure.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9e3b35e6eb3c5d3ae517075bcd35e6c8af796c8d0e82c0fa6d9dbb16ca0ca314
+  - url: https://guardrailsai.com/hub/
+    shows: The Guardrails Hub page lists validators across risk types, including "Validates that the input
+      string does not contain toxic language based on a BERT model.", "Detects personally identifiable information
+      (PII) in text, using Microsoft Presidio.", "Finds prompt injection using the Rebuff prompt library."
+      and "Detects attempts to circumvent safeguards in model conditioning."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f14f84f5851d6b4e4f6b0db1435a0522593b8898d23b333bb90e547d9b70ee5d

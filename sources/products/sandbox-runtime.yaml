@@ -1,12 +1,10 @@
 name: sandbox-runtime
 display_name: sandbox-runtime
 type: software
-description: The Anthropic Sandbox Runtime enforces filesystem, network and unix-socket restrictions on
-  arbitrary local processes without a container, wrapping them in native OS primitives - bubblewrap on
-  Linux, sandbox-exec on macOS - behind a filtering proxy. A CLI named srt and a matching library apply
-  it to agents, local MCP servers and individual shell commands. Anthropic develops it for Claude Code
-  and ships it as a research preview.
+description: The Anthropic Sandbox Runtime enforces filesystem, network and unix-socket restrictions on arbitrary
+  local processes without a container. It uses bubblewrap on Linux and sandbox-exec on macOS, with an alpha
+  Windows backend that runs processes under a dedicated restricted account, and routes network traffic through
+  a filtering proxy. A CLI named srt and a matching library apply it to agents, local MCP servers and shell
+  commands. Anthropic develops it for Claude Code and ships it as a research preview.
 github:
 - url: https://github.com/anthropic-experimental/sandbox-runtime
-comments: The README notes that seccomp filtering is x64/arm64 only and that unix sockets go unrestricted where
-  it is unavailable, so the boundary is weaker on some hosts than the general description implies.

@@ -16,16 +16,36 @@ openness:
   note: Permissive ODC-BY 1.0 license, ungated download, with a dataset card (a public extract of the full
     corpus). The public extract is 600B tokens.
   raw: license:ODC-BY-1.0;gated:false;dataset_card:present;note:public_extract
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/tiiuae/falcon-refinedweb
-    shows: Dataset card, ODC-By 1.0 license, ungated public download
-    accessed: '2026-08-13'
+    shows: The dataset page renders the Falcon RefinedWeb card, which says "This public extract of RefinedWeb
+      contains about 1B instances".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 08bf700c8bdeb26d2404053257124b57f2496294c37581ea5fd3fb2794108b4b
+    content_sha256: 21bdae7a6f1ef948ac1fcea02319c0f0ef2a78daa5859e9ca7cec9c6fd644066
     establishes:
     - availability
     - documentation
+  - url: https://huggingface.co/datasets/tiiuae/falcon-refinedweb/raw/main/README.md
+    shows: The raw dataset card is present and states "Falcon RefinedWeb is a massive English web dataset
+      built by [TII](https://www.tii.ae) and released under an ODC-By 1.0 license." and "This public extract
+      should contain 500-650GT depending on the tokenizer you use".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9fb48c193e133dba64734ad6b432d713fcbe7440a654f8153faa33c0421fda26
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/tiiuae/falcon-refinedweb
+    shows: The Hub API record for "tiiuae/falcon-refinedweb" lists the tag "license:odc-by". The same record
+      reports gated as false (the JSON quote characters prevent quoting that stretch), so the download is
+      ungated.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 75d3b6afa0e0ef4207ee57e8b63f3449910b51b8c0ed78d5fc7afedad8bb9b34
+    establishes:
+    - availability
     - license
 adoption:
   level: 3
@@ -57,7 +77,6 @@ capability:
     (2023-24) but is now a component inside newer pipelines rather than a standalone default.
   relative_to: dclm-baseline
   relation: two_below
-  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2306.01116
     shows: 'RefinedWeb: filtered/deduplicated web alone outperforms models trained on The Pile'

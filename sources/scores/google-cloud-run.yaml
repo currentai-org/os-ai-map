@@ -18,26 +18,55 @@ openness:
         detail: open source, github.com/google/gvisor) but the Cloud Run product/control-plane is proprietary
         raw: gVisor(open source, github.com/google/gvisor) but the Cloud Run product/control-plane is proprietary
   confidence: high
-  note: Proprietary managed serverless platform; only the underlying gVisor sandbox runtime is OSS, not
-    Cloud Run itself.
+  note: Cloud Run is a proprietary managed service with no self-hosted release. gVisor, one of its isolation
+    layers, is open source but is a separate product.
   raw: license:Proprietary;service:proprietary(Google SaaS);source:closed;isolation-runtime:gVisor(open
     source, github.com/google/gvisor) but the Cloud Run product/control-plane is proprietary;managed-only(no
     self-host)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://cloud.google.com/run
-    shows: Cloud Run described as fully-managed Google serverless container product (proprietary SaaS)
-    accessed: '2026-08-13'
+    shows: The Cloud Run product page lists "Any language, any library, any binary" and says "GPU instances
+      start in 5 seconds and scale to zero."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f41bd86fa912bee53e3335a5b3edb117cd78a067931b0b9af50aa3de0b8571c8
-    establishes: [source, license]
+    content_sha256: 3471af1aa616f7ca55fd735cd1a849ac3e973bfaef90e5e0e37e7084f1a31c12
   - url: https://github.com/google/gvisor
     shows: gVisor (Cloud Run's isolation runtime) is the open source component, distinct from the closed
       product
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 339661507268dd04b1d14b0ed4f58fc72ca4180285157c49d2256e7aba2de94c
-    establishes: [source]
+    establishes:
+    - source
+  - url: https://cloud.google.com/terms/
+    shows: The Google Cloud Terms of Service define GCP Services as "the then-current services described
+      at" the Services Summary and, in section 3.3, bar customers from copying or creating a "derivative
+      work of the Services; (b) reverse engineer," or attempting to "extract any or all of the source code
+      of, the Services".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 98e9016f59b77b7feedba316517d1fcd77c9b6fdd7d6334c3119bfe886060394
+    establishes:
+    - license
+    - source
+  - url: https://cloud.google.com/terms/services
+    shows: 'The Google Cloud Platform Services Summary lists Cloud Run as a covered Service under the Agreement:
+      "Cloud Run Services lets you run http request-driven workloads in a fully serverless manner." and
+      "Cloud Run Jobs let you run serverless containers that run a specific task to completion and then
+      exit."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 212afdc300e5f7d164b363f75577ae159c78cc21d8b56294c37b0c25e88c0f49
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/google/gvisor/master/LICENSE
+    shows: The gVisor repository LICENSE file, the open isolation runtime used by Cloud Run and distinct
+      from the proprietary service, is the "Apache License" text headed "Version 2.0, January 2004".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0fbab5c58efbdf6d31e8085214f2dd821659c03d73cff3ed2b08e98826ea1cd9
 adoption:
   level: 5
   reach: '>10M'
@@ -47,7 +76,6 @@ adoption:
     or registry artifact, since the service publishes neither. Those disclosures describe broad growth in
     the developer and application base and name Replit as a customer running its primary hosting on the
     platform.
-  last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
     shows: active developers/apps doubled YoY; more new customers in 2025 than first 6 years combined;
@@ -58,31 +86,60 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'isolation: container + gVisor syscall sandbox (now a dedicated `sandbox` agent tool for AI-generated
-    code); cold-start: scale-to-zero with sub-second to low-second starts; language/runtime breadth: any
-    OCI container (very broad); persistence: stateless request model + volume mounts; scale: 0 to thousands
-    of instances autoscaling on a hyperscaler'
+  value: 'isolation: container in a gVisor or Linux microVM execution environment (sandboxes for untrusted
+    or AI-generated code in Preview); cold-start: scale-to-zero, GPU instances start in 5 seconds; language/runtime
+    breadth: any OCI container (very broad); persistence: stateless request model + volume mounts, plus
+    Preview long-running instances; scale: autoscaling from zero on a hyperscaler'
   confidence: medium
-  note: Cloud Run runs any OCI container at hyperscaler scale, and Google has previewed both a built-in
-    `sandbox` tool for running AI-generated code and long-running Cloud Run Instances for background agents.
-    Its isolation is gVisor at the process and syscall level rather than a full microVM, and independent
-    benchmarks measure a sub-second cold start that trails the fastest microVM-based sandboxes.
-  last_verified: '2026-08-13'
+  note: Cloud Run runs any container image at hyperscaler scale, with scale to zero and GPU instances, and
+    isolates it in either a gVisor-based or a Linux microVM-based execution environment. Its sandbox mode
+    for untrusted or AI-generated code and its long-running instances for background agents are both still
+    in preview, and independent ComputeSDK benchmarks place its start-up speed mid-field among sandbox providers.
+  last_verified: '2026-09-29'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
-    shows: built-in `sandbox` tool for agents to run AI-generated code in ephemeral isolated envs; container
-      model, autoscale 0->thousands
-    accessed: '2026-08-13'
+    shows: The launch blog previews individual instances, "you can create individual Cloud Run instances",
+      for long-running background agents and describes a built-in sandbox tool as "you will be able to very
+      quickly spin up an ephemeral sandbox".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 50db99cb77a285efa78ba6edbb4706c8f9f5202309e9e7846bf649eeaa28eadd
+    content_sha256: bc2a9aa3460e8c98f9d9bc95701754f123ace480641676adc247d8a819044101
   - url: https://cloud.google.com/run
-    shows: OCI container deploy, scale-to-zero, broad runtime support
-    accessed: '2026-08-13'
+    shows: The Cloud Run product page lists "Any language, any library, any binary" and says "GPU instances
+      start in 5 seconds and scale to zero."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f41bd86fa912bee53e3335a5b3edb117cd78a067931b0b9af50aa3de0b8571c8
+    content_sha256: 3471af1aa616f7ca55fd735cd1a849ac3e973bfaef90e5e0e37e7084f1a31c12
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard (independent, 2026-08-07 run, 24 providers): Cloud Run median time-to-interactive
-      0.65s, P95 1.05s, P99 1.15s, 100% success; 13th by composite score'
-    accessed: '2026-08-13'
+    shows: The ComputeSDK page describes "Independently verified sandbox benchmarks run on a recurring schedule"
+      and lists Cloud Run 11th of 27 on the 2026-09-25 Sandbox Burst TTI composite score with 93.9; the
+      page body no longer carries a median time-to-interactive in seconds.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 639836bfee0970c31367878466528cb5290b9e4c85f1bea8d19affbc9361bc58
+    content_sha256: aa0fba9d3db185e59774586266691198c3bb77858409c989e83f4ebfc11530cf
+  - url: https://docs.cloud.google.com/run/docs/configuring/services/sandboxes
+    shows: The Cloud Run sandboxes docs page is marked Preview and says "Cloud Run sandboxes provide a fast,
+      secure, and isolated environment to" execute untrusted code or run tools such as AI agents, enabled
+      with the sandbox-launcher flag on a service.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f3b06726fa6e79d6c52730603db328be18e79ebe70445d1ce9812320ad71eeb6
+  - url: https://cloud.google.com/run/docs/securing/security
+    shows: The security design overview lists a gVisor-based first generation and a second generation described
+      as "Based on Linux microVMs, this option provides more" compatibility and performance for custom workloads.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 20e8870d57aaf17d9aa14efae4904b63f973030277f7e7db1e1819723d87de4d
+  - url: https://cloud.google.com/run/docs/overview/what-is-cloud-run
+    shows: The overview says "You can deploy code written in any programming language on Cloud Run if you
+      can build a container image from it." and describes "Cloud Run is a fully managed application platform
+      for running your code, function, or container".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c4788bd8a96b5ff5ea4b29c4dcd6ab8900a760cccdfe16ebfdd77aefb17b2eab
+  - url: https://cloud.google.com/run/pricing
+    shows: The pricing page separates "Services (Requests-based billing)" from "Services (Instance-based
+      billing)".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 456f536ee71d10e3a7d935947bf687b73035753bf954b802cbc14f7029f2ce9c

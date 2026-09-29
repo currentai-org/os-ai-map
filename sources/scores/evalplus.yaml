@@ -11,7 +11,8 @@ openness:
       detail: OSI/open, on both framework and datasets
     datasheet:
       value: present
-      detail: 'card documents structure: task_id/prompt/canonical_solution/test'
+      detail: GitHub README documents HumanEval+ and MBPP+ (test counts, task fixes, paper link); Hub card
+        bodies are empty
     context:
       redistributable:
         value: 'yes'
@@ -19,27 +20,66 @@ openness:
         value: open
         detail: Apache-2.0
   confidence: high
-  note: 'Clean open data: Apache-2.0 on both the datasets and the evaluation framework, downloadable, with
-    a documented schema. Fully open.'
-  raw: 'data:downloadable(HF parquet, evalplus/humanevalplus + mbppplus);license:Apache-2.0(OSI/open, on
-    both framework and datasets);datasheet:present(card documents structure: task_id/prompt/canonical_solution/test);redistributable:yes;framework-code:open(Apache-2.0)'
-  last_verified: '2026-08-13'
+  note: The HumanEval+ and MBPP+ datasets and the EvalPlus evaluation framework are all released under Apache-2.0,
+    and the data downloads from Hugging Face without a gate. The Hub dataset cards are empty, but the GitHub
+    README and the accompanying paper document how the test suites were extended and which tasks were fixed.
+  raw: data:downloadable(HF parquet, evalplus/humanevalplus + mbppplus);license:Apache-2.0(OSI/open, on
+    both framework and datasets);datasheet:present(GitHub README documents HumanEval+ and MBPP+ (test counts,
+    task fixes, paper link); Hub card bodies are empty);redistributable:yes;framework-code:open(Apache-2.0)
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/evalplus/humanevalplus
-    shows: '`license:apache-2.0` in the repo tags; the embedded repo state reads `"gated":false`, so
-      the parquet downloads without a barrier; the card documents the task_id/prompt/canonical_solution/test
-      schema; 27,670 downloads in the trailing 30 days'
-    accessed: '2026-08-13'
+    shows: The page carries "license:apache-2.0" and lists "data/test-00000-of-00001-5973903632b82d40.parquet",
+      while its card body reads "README.md exists but content is empty".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: dd5901cd0974e2d11a5899be082dfcc4cac9cedb5e8bc15ce18105fa120366c8
-    establishes: [license, data, datasheet]
+    content_sha256: df502f26f6baf233825c0c428268d92851ec9fefea9a8bb97dcf8502ec62ba8c
+    establishes:
+    - license
+    - data
   - url: https://github.com/evalplus/evalplus
-    shows: the repository's license tab still reads Apache-2.0, and the README still describes the
-      HumanEval+ and MBPP+ variants and the bigcode-evaluation-harness integration
+    shows: the repository's license tab still reads Apache-2.0, and the README still describes the HumanEval+
+      and MBPP+ variants and the bigcode-evaluation-harness integration
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 296d020aff1b8ec8a232401a6e1c6e81ba10d0703d04cd92ad0be903d8497256
-    establishes: [license]
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/evalplus/humanevalplus
+    shows: The Hub API record lists the tag "license:apache-2.0", reports "gated":false, and lists "data/test-00000-of-00001-5973903632b82d40.parquet"
+      among its siblings.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 12d471b25c96dc4fb6ca02b16f323c7f0bed2a793609fe85ca5d0231e788751d
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/datasets/evalplus/mbppplus
+    shows: The MBPP+ page carries "license:apache-2.0" and lists "data/test-00000-of-00001-d5781c9c51e02795.parquet",
+      while its card body reads "README.md exists but content is empty".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 187b46a75793ded7be4a4b8c98f0b5ffdf539c10a1fa3a31731aa5157b8bff00
+    establishes:
+    - license
+    - data
+  - url: https://raw.githubusercontent.com/evalplus/evalplus/master/README.md
+    shows: The README describes HumanEval+ with "80x more tests than the original HumanEval!" and MBPP+
+      with "35x more tests than the original MBPP!", and logs a dataset revision as "removing some broken
+      tasks (399 -> 378 tasks)".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 667f3f937cf8dfa67dd6624c24c22cb0e938c9b31179cf2e40457d2708ff2260
+    establishes:
+    - datasheet
+  - url: https://raw.githubusercontent.com/evalplus/evalplus/master/LICENSE
+    shows: The repository LICENSE file opens with "Apache License" and "Version 2.0, January 2004", the
+      framework code license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fcc1f77fe5443b21bfc4dfcc3d66f7654f599b91582df771850e5e876986a103
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 10K-100K
@@ -68,11 +108,12 @@ capability:
   note: A dataset is not capability-scored, so capability is left unscored. Its distinguishing quality -
     far denser test suites that catch overfitting the base HumanEval and MBPP suites miss - is noted here
     rather than turned into a number.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/evalplus/humanevalplus
-    shows: a static problem corpus with denser tests; no performance, throughput or feature claim on
-      the page for the capability axis to read
-    accessed: '2026-08-13'
+    shows: 'Dataset page for a static problem corpus, with parquet columns such as "Column ''prompt'' from
+      the Hugging Face parquet file."; searched the body for leaderboard, accuracy, SOTA and pass@1: none,
+      no performance, throughput or feature claim.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: dd5901cd0974e2d11a5899be082dfcc4cac9cedb5e8bc15ce18105fa120366c8
+    content_sha256: 22a132810badbda4f57c25f44b1f3887bb7ce9d8b3bb1ffc0b8fb1ea324640ba

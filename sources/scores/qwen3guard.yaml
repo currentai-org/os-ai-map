@@ -12,32 +12,52 @@ openness:
     - name: Apache-2.0
       detail: OSI
   confidence: medium
-  note: Qwen3Guard's weights are released under Apache-2.0, an OSI-approved license, across all three model
-    sizes. The training data is withheld and no fine-tuning recipe is published, which keeps this at open
-    weights rather than fully open.
+  note: All three Qwen3Guard sizes are released under Apache-2.0 and can be downloaded without gating. The
+    model card describes the safety-labeled training set but does not publish it, which makes this an open-weights
+    release rather than a fully open model.
   raw: weights:open(Qwen3Guard 0.6B/4B/8B on HF);data:not-released;license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/Qwen/Qwen3Guard-Gen-8B
-    shows: Card front matter records license - apache-2.0 with a license_link to the repo's own LICENSE;
-      the repo is ungated and ships five safetensors shards. The body says the series is 'trained on a
-      dataset of 1.19 million prompts and responses labeled for safety' but publishes no such dataset and
-      declares none in cardData.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 0c85311a3deeaf9a24a600445ac3cd4a2544fce57980362c46c507e61a2e0294
-    establishes:
-    - weights
-    - data
-    - license
   - url: https://huggingface.co/Qwen/Qwen3Guard-Gen-8B/raw/main/README.md
-    shows: Raw card front matter - license - apache-2.0, base_model - Qwen/Qwen3-8B. No datasets key, and
-      the training corpus is described by size only.
-    accessed: '2026-08-13'
+    shows: 'The Gen-8B raw model card front matter declares "license: apache-2.0" and lists no datasets
+      key; the body describes the training corpus only as "trained on a dataset of 1.19 million prompts
+      and responses labeled for safety" without linking or publishing it. Searched the body for fine-tuning
+      and training code: none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 186e45caec39c9c7e25732a399baf142370ffc5173767803a6969079f729e77f
     establishes:
     - data
+    - license
+  - url: https://huggingface.co/api/models/Qwen/Qwen3Guard-Gen-8B
+    shows: The Hugging Face API record for Qwen/Qwen3Guard-Gen-8B carries the tag "license:apache-2.0",
+      is ungated, and lists five weight shards ("model-00005-of-00005.safetensors"); its tags name the base
+      model and paper but no dataset.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e73745581bf6cb342995bc7b7a4a5314d4bf2e9591530d171e0683a053d64b7b
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/Qwen/Qwen3Guard-Gen-4B
+    shows: The Hugging Face API record for Qwen/Qwen3Guard-Gen-4B carries the tag "license:apache-2.0",
+      is ungated, lists three weight shards ("model-00003-of-00003.safetensors") and carries no dataset
+      tag.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2c8ac50180c4238c89b2af00bd7bab44d95b4d48e9c72deab85ad4a8b7e45907
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/Qwen/Qwen3Guard-Gen-0.6B
+    shows: The Hugging Face API record for "Qwen/Qwen3Guard-Gen-0.6B" carries the tag "license:apache-2.0",
+      is ungated, and lists a single weight file with no dataset tag; its tags include "base_model:finetune:Qwen/Qwen3-0.6B".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5e2bba6c6dc1eb81567449cc004fc2e515f30e2922f0c61ef5184efbe11e200b
+    establishes:
+    - weights
     - license
 adoption:
   level: 2
@@ -67,13 +87,23 @@ capability:
   value: Prompt and response classification across 119 languages with a three-level verdict and a token-level
     streaming variant; size ladder from 0.6B to 8B.
   confidence: medium
-  note: Among the broadest open guardrails on language coverage, with a streaming mode that few others offer.
-  last_verified: '2026-08-13'
+  note: Each verdict also names which of nine harm categories applies, including jailbreak attempts on prompts,
+    and response checks report whether the model refused. The streaming variant reads Qwen3 token IDs, so
+    pairing it with a model on a different tokenizer means re-tokenizing the text first.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/Qwen/Qwen3Guard-Gen-8B
-    shows: Card lists three sizes (0.6B, 4B, 8B) and two variants, Qwen3Guard-Gen and Qwen3Guard-Stream;
-      'Qwen3Guard-Gen supports 119 languages and dialects'; verdicts are graded safe, controversial and
-      unsafe.
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/Qwen/Qwen3Guard-Gen-8B/raw/main/README.md
+    shows: 'The Gen-8B card says "The series includes models of three sizes (0.6B, 4B, and 8B)", grades
+      verdicts as "safe, controversial, and unsafe severity levels", states "Qwen3Guard-Gen supports 119
+      languages and dialects", lists nine harm categories ending in "Jailbreak (Only for input)", and shows
+      response checks returning "Refusal: Yes".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0c85311a3deeaf9a24a600445ac3cd4a2544fce57980362c46c507e61a2e0294
+    content_sha256: 186e45caec39c9c7e25732a399baf142370ffc5173767803a6969079f729e77f
+  - url: https://huggingface.co/Qwen/Qwen3Guard-Stream-8B/raw/main/README.md
+    shows: The Stream-8B card says the streaming variant "incorporates a token-level classification head
+      for real-time safety monitoring during incremental text generation" and notes that "Streaming detection
+      requires streaming token IDs as input".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 580cc2cb1ade82a0ff598e6574ce57c52aabe8b08e15093b00fb0d3df85a600c

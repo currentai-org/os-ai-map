@@ -16,7 +16,7 @@ openness:
     - multi-backend (Accelerate/vLLM/SGLang/TGI/LiteLLM/inspect-ai)
     - 1000+ tasks
   confidence: high
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   note: Fully OSI-licensed (MIT), full source public, no managed/commercial tier gating the eval engine.
   raw: license:MIT(OSI);source:public(github.com/huggingface/lighteval);no feature-gated core; multi-backend
     (Accelerate/vLLM/SGLang/TGI/LiteLLM/inspect-ai); 1000+ tasks;core-gated:ungated
@@ -25,8 +25,8 @@ openness:
     shows: MIT license, public source, v0.13.0 (Nov 2025), 1000+ tasks, multi-backend support
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/huggingface/lighteval/license
-    shows: GitHub's license endpoint reports spdx_id MIT for huggingface/lighteval and returns the MIT
-      text as the LICENSE body.
+    shows: GitHub's license endpoint reports spdx_id MIT for huggingface/lighteval and returns the MIT text
+      as the LICENSE body.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1ac1ffb3c88d2fb0a5dc70c064a785075d599a364a6788572506782982f7ec4a
@@ -42,6 +42,36 @@ openness:
     content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
     establishes:
     - source
+    - core-gated
+  - url: https://pypi.org/pypi/lighteval/json
+    shows: 'The PyPI-packaged README installs the whole toolkit with pip install lighteval and runs it on
+      local hardware: "Evaluate models on CPU or one or more GPUs using" Accelerate, plus vLLM, SGLang and
+      Nanotron entry points; searched the body for enterprise, license key, pricing, subscription and paid:
+      none, and the endpoint backends are third-party inference providers.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 26971735fd748867156cfab6e1db1b14a1d20dffca48e112ee36b2326c4299a1
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/lighteval/json
+    shows: 'The PyPI-packaged README installs the whole toolkit with pip install lighteval and runs it on
+      local hardware: "Evaluate models on CPU or one or more GPUs using" Accelerate, plus vLLM, SGLang and
+      Nanotron entry points; searched the body for enterprise, license key, pricing, subscription and paid:
+      none, and the endpoint backends are third-party inference providers.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 26971735fd748867156cfab6e1db1b14a1d20dffca48e112ee36b2326c4299a1
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/lighteval/json
+    shows: 'The PyPI-packaged README installs the whole toolkit with pip install lighteval and runs it on
+      local hardware: "Evaluate models on CPU or one or more GPUs using" Accelerate, plus vLLM, SGLang and
+      Nanotron entry points; searched the body for enterprise, license key, pricing, subscription and paid:
+      none, and the endpoint backends are third-party inference providers.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 26971735fd748867156cfab6e1db1b14a1d20dffca48e112ee36b2326c4299a1
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -80,25 +110,38 @@ capability:
   score: 4
   basis: feature_matrix
   value: 'task/benchmark coverage: 1000+ tasks (MMLU, GPQA, GSM8K, MATH, LiveCodeBench, IFEval, MT-Bench,
-    HELM, multilingual); model-backend breadth: Accelerate/vLLM/SGLang/Nanotron/TGI/LiteLLM/HF Inference
-    Endpoints/custom; reproducibility: standardized suite reproducing the HF Open LLM Leaderboard; agentic-eval:
-    via inspect-ai backend'
+    HELM, multilingual); model-backend breadth: inspect-ai/Accelerate/vLLM/SGLang/Nanotron/TGI/LiteLLM/HF
+    Inference Endpoints and providers/custom; custom task and metric authoring; agentic-eval: via inspect-ai
+    backend'
   confidence: high
   relative_to: lm-evaluation-harness
   relation: one_below
-  last_verified: '2026-08-13'
-  note: Strong on every dimension that counts here - task coverage, model-backend breadth, reproducibility,
-    and some agentic support by way of the inspect-ai backend. Not a 5, because lm-evaluation-harness remains
-    the broader de-facto standard and is cited in more frontier release reports; lighteval is the Hugging
-    Face-leaderboard-tied counterpart.
+  last_verified: '2026-09-29'
+  note: lighteval ships more than a thousand tasks, runs on many model backends including vLLM, SGLang and
+    hosted endpoints, supports custom tasks and metrics, and reaches agentic evaluation through its inspect-ai
+    backend. It sits a step below lm-evaluation-harness, which has been used to report results in hundreds
+    of papers and is the more established reference.
   sources:
   - url: https://github.com/huggingface/lighteval
     shows: 1000+ tasks, 8+ model backends, reproduces Open LLM Leaderboard evals
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
-    shows: '''Lighteval supports 1000+ evaluation tasks across multiple domains''; backends invoked as
-      `lighteval eval` (inspect-ai, preferred), `vllm`, `sglang` and `endpoint` including HF inference
-      providers; custom task and custom metric authoring documented.'
+    shows: '''Lighteval supports 1000+ evaluation tasks across multiple domains''; backends invoked as `lighteval
+      eval` (inspect-ai, preferred), `vllm`, `sglang` and `endpoint` including HF inference providers; custom
+      task and custom metric authoring documented.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
+  - url: https://pypi.org/pypi/lighteval/json
+    shows: The PyPI metadata README says "Lighteval supports **1000+ evaluation tasks** across multiple
+      domains and" languages, listing MMLU, GPQA, GSM8K, MATH, LiveCodeBench, IFEval and MT-Bench.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 26971735fd748867156cfab6e1db1b14a1d20dffca48e112ee36b2326c4299a1
+  - url: https://huggingface.co/docs/lighteval/index
+    shows: The Hugging Face docs home describes Lighteval as "your all-in-one toolkit for evaluating Large
+      Language Models" with backends including inspect-ai, vllm, sglang, litellm and Text Generation Inference,
+      plus "1000s pre-built evaluation tasks" and custom tasks and metrics.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8375495ed9574884c87d2ed1cc01905bedc30f52514c2ac0205286de5c1fc4fa
