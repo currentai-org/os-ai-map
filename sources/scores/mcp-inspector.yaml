@@ -4,45 +4,69 @@ openness:
   class: open_source
   components:
     license:
+    - name: Apache-2.0
+      detail: OSI, new code
     - name: MIT
-      detail: OSI
+      detail: OSI, legacy contributions not yet relicensed
     source:
       value: public
     core-gated:
       value: ungated
     free_text:
     - no-feature-gated-core
+    context:
+      docs:
+        value: CC-BY-4.0
+        detail: documentation other than the specifications; not read by the openness ladder, which scores
+          the artifact the product ships
   confidence: high
-  note: MCP Inspector is MIT-licensed, stated in the README and in package.json rather than a standalone
-    LICENSE file, with no feature-gated core. The whole tool - web, CLI and terminal clients - is in the
-    published tree and runs via `npx @modelcontextprotocol/inspector` with no key or paid tier.
-  raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  note: MCP Inspector carries the Model Context Protocol project's transition license - Apache-2.0 for new
+    code, with MIT kept for earlier contributions whose authors have not agreed to relicense - and both
+    are OSI-approved. The whole tool, covering the web, CLI and terminal clients, is in the public repository
+    and runs via `npx @modelcontextprotocol/inspector` with no key or paid tier.
+  raw: license:Apache-2.0(OSI, new code)+MIT(OSI, legacy contributions not yet relicensed);docs:CC-BY-4.0(documentation
+    other than the specifications; not read by the openness ladder, which scores the artifact the product
+    ships);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/README.md
-    shows: License section reads, in full - "MIT." The repository root carries no LICENSE file; raw.githubusercontent
-      answers 404 for both main/LICENSE and main/LICENSE.md.
-    accessed: '2026-08-13'
+    shows: 'The License section reads "The MCP project is transitioning from the MIT License to Apache-2.0".
+      The tool ships "as a single package, `@modelcontextprotocol/inspector`" and runs with "npx @modelcontextprotocol/inspector".
+      Searched the body for pricing, paid, subscription, license key, premium and hosted: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 60e4c9ed29f5a27f39d0251d5e8a6457698b43238e50689ad710f9e7e9838315
+    content_sha256: 370ef1263e69056682d553491a5373e94f2cb31e1e96d0bf39a5282a87b7b979
     establishes:
     - license
+    - source
+    - core-gated
   - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/package.json
-    shows: '"license": "MIT" - the machine-readable declaration, agreeing with the README.'
-    accessed: '2026-08-13'
+    shows: 'package.json no longer declares a bare MIT id: beside "author": "The MCP Maintainers and Community",
+      its license field reads "SEE LICENSE IN LICENSE".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 4ac78f0c8f933d02b13ad440fbceca0552a45c83aeac0c97ead664eeb891cbdb
+    content_sha256: ea0b688cdb67e1132b386ee6e155754daa6dede4a096f46618cd0dd71a9b8122
     establishes:
     - license
   - url: https://github.com/modelcontextprotocol/inspector
-    shows: Repo page, 10,660 stargazers. Web, CLI and TUI clients plus shared core all in the tree, run from
-      one `npx @modelcontextprotocol/inspector` binary. No paid tier, license key or enterprise directory.
+    shows: Repo page, 10,660 stargazers. Web, CLI and TUI clients plus shared core all in the tree, run
+      from one `npx @modelcontextprotocol/inspector` binary. No paid tier, license key or enterprise directory.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ec7659bf41d4f9d37567c99cc494440d40d669d79edd9167076c65e1f54c87f0
     establishes:
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/LICENSE
+    shows: 'The LICENSE file now carries the MCP transition terms: "All new code and specification contributions
+      to the project are licensed under Apache-2.0" while "Contributions made by authors who originally
+      licensed their work under the MIT License and who have not yet granted explicit permission to relicense
+      remain licensed under the MIT License."'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
 adoption:
   level: 4
   signal_type: usage_volume
