@@ -107603,14 +107603,14 @@
           "org_slug": "zilliz",
           "org": "Zilliz",
           "type": "software",
-          "description": "Cloud-native vector database built for approximate nearest-neighbor search at billion scale. It supports hybrid search combining vector similarity with scalar filtering, BM25 full-text search, and index types from HNSW through DiskANN. It is an LF AI & Data graduate project, with Zilliz Cloud as the managed offering, and is aimed at production RAG systems that need to scale.",
+          "description": "Milvus is a distributed vector database for approximate nearest-neighbor search over billions of vectors. Hybrid search combines vector similarity with scalar filtering and BM25 full-text search, over index types from HNSW to DiskANN. The project belongs to the LF AI & Data Foundation, and Zilliz, its main contributor, runs the managed Zilliz Cloud service.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0;source:public;LF-AI&Data-governed(Zilliz-Cloud is managed hosting, not gated core);core-gated:ungated",
             "confidence": "high",
-            "note": "Apache-2.0 and fully public, governed by LF AI & Data. The LICENSE file resolves to the full Apache-2.0 text, the repository carries the matching badge and docker-compose self-hosting instructions, and Zilliz Cloud is named only as the managed offering beside it rather than as a tier holding anything back, so nothing is withheld from the published tree.",
-            "last_verified": "2026-08-13",
+            "note": "Milvus is published in full under Apache-2.0 as an LF AI & Data Foundation project, and the same repository builds the standalone and distributed deployments people run themselves. Zilliz, its main contributor, sells Zilliz Cloud as a managed service beside it rather than as a tier holding part of the engine back.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://github.com/milvus-io/milvus/blob/master/LICENSE",
@@ -107641,6 +107641,27 @@
                 "content_sha256": "edcc1d107b4e9016ed9e74e0cb31a651afbdb691a1cef1dd408f77bbdd1ec76e",
                 "establishes": [
                   "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/milvus-io/milvus/master/LICENSE",
+                "shows": "The master-branch LICENSE file is the full Apache License text, headed \"Apache License\" and \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/milvus-io/milvus/master/README.md",
+                "shows": "The README says the project is hosted \"under [LF AI & Data Foundation]\" and \"distributed with [Apache 2.0]\", with Zilliz as its major contributor, documents \"Standalone mode\" and Milvus Lite for self-hosting, and names Zilliz Cloud only as the managed option: \"Milvus is available as a fully managed service on Zilliz Cloud\". Searched the body for enterprise edition, license key and commercial license: none; the word enterprise appears only where it describes the open build's security features and its users.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "8fedcdc9023fcd061a54405bf0d83afb4516c7ec053b2efd22476473ce10153f",
+                "establishes": [
+                  "source",
+                  "core-gated"
                 ]
               }
             ],
@@ -107710,9 +107731,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-18",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -107721,14 +107742,14 @@
           "org_slug": "qdrant",
           "org": "Qdrant",
           "type": "software",
-          "description": "High-performance vector database and search engine built in Rust, designed for low-latency similarity search. Stores vectors with rich payloads and supports advanced filtering, making it ideal for RAG retrieval pipelines that agents call to access knowledge bases. Supports dense, sparse, multi-vector and hybrid search with quantization, and is available self-hosted or as managed cloud. Rust-native, competing with Milvus and Pinecone.",
+          "description": "Qdrant is a vector database and similarity search engine written in Rust. It stores vectors with JSON payloads that queries can filter on, and supports dense, sparse and multivector search, hybrid queries and quantization. Teams run it self-hosted from a Docker image or use the managed Qdrant Cloud service.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid + free tier);core-gated:ungated(no ee/ path no second license and zero repo-wide hits for enterprise or license key. The two engine features the pricing table marks absent from OSS are both in the open tree - GPU indexing as the lib/gpu crate and resharding across four lib/collection modules with eight consensus tests - so what is sold is control plane rather than engine)",
+            "components": "license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid + free tier);core-gated:ungated(one LICENSE file and no ee/, enterprise/ or commercial/ path at the repository root or among the lib/ crates. The pricing table marks Shard Splitting absent from open source and the documentation calls resharding Cloud-only, but the code is in lib/collection and turns on with the cluster.resharding_enabled setting, off by default, with no license check. GPU Indexing is marked as included in open source, so what is sold is operations around the engine)",
             "confidence": "high",
-            "note": "Qdrant's engine ships entirely under Apache-2.0, with no enterprise, license-key or separately licensed directory anywhere in the repository. The two features the pricing page marks as cloud-only, GPU indexing and shard resharding, are both in the open-source tree, and what the paid Qdrant Cloud tier adds is operational tooling such as SLAs, managed backups and SSO rather than the engine itself.",
-            "last_verified": "2026-08-12",
+            "note": "Qdrant's engine ships under Apache-2.0 from a repository with one license file and no enterprise directory. Resharding, which the pricing page and documentation reserve for Qdrant Cloud, is in the open source behind a configuration switch that is off by default, and what the paid tier otherwise adds is operations such as SLAs, managed backups and SSO.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://github.com/qdrant/qdrant/blob/master/LICENSE",
@@ -107765,10 +107786,71 @@
               },
               {
                 "url": "https://qdrant.tech/pricing/",
-                "shows": "Read for a mechanism and found none. Its OSS-versus-paid comparison is control plane: no uptime SLA for OSS against 99.5% free tier and 99.9% (99.95% multi-AZ) on Standard/Premium, \"custom automation\" backups against managed backup and disaster recovery, multi-AZ topology, disk encryption with custom keys on AWS/GCP, and \"Enterprise SSO Authentication\" on Premium+. It also marks GPU Indexing and Shard Splitting as absent from OSS - both are in the open tree, so those rows describe the managed offering rather than the engine. Hybrid Cloud is \"Run managed Qdrant clusters on your own infrastructure\"; Private Cloud is a \"Dedicated, isolated deployment\".",
-                "accessed": "2026-08-12",
+                "shows": "The pricing comparison marks \"Uptime SLA\", \"Topology Aware Multi AZ Setup\" and \"Enterprise SSO Authentication\" absent from open source and lists \"Custom automation\" for its backups. Of the engine rows, \"GPU Indexing\" is checked for open source and \"Shard Splitting\" is not; \"Cloud Inference\" is a hosted embedding service.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "ed19cca4db9f8b796b5a3160cbfc55873d5df934af3c8226be55a0323c148460",
+                "content_sha256": "a035ddb4030687cca9438b823ddeb28701c6effe42d2df1bedb871578abf7193",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/qdrant/qdrant/master/LICENSE",
+                "shows": "The master-branch LICENSE file is the full Apache License text, headed \"Apache License\" and \"Version 2.0, January 2004\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "210b508429e913d9de5301f90508bc2cbf5b2281de5b45e607c04d58f0f3bd8f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/qdrant/qdrant/master/README.md",
+                "shows": "The README states \"Qdrant is licensed under the Apache License, Version 2.0\", gives a \"docker run -p 6333:6333 qdrant/qdrant\" self-hosted start, and names the hosted service as an alternative: \"Qdrant is also available as a fully managed\" Qdrant Cloud with a free tier. Searched the body for enterprise, license key and commercial license: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "f1455d12252bf40235ad0128d8e98b2cd6d42583e441ac832b01f4daf08df2e4",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/qdrant/qdrant/master/lib/gpu/Cargo.toml",
+                "shows": "The manifest of the lib/gpu crate, the engine's GPU indexing code, declares the crate Apache-2.0 with authors \"Qdrant Team <info@qdrant.tech>\", and its gpu feature pulls in the Vulkan bindings \"dep:ash\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "2c91a27b7dd831baa22f0c432cd01e295a569e0f41d7176e544cc44deaabee71",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/qdrant/qdrant/master/lib/collection/src/collection/resharding.rs",
+                "shows": "The collection-level resharding implementation, published in the open repository: it defines \"pub struct AbortReshardingScope\" and documents the consensus operations that \"might trigger resharding abort\". This is the shard-splitting mechanism the pricing table lists as absent from open source.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "2879ab8739367428cd0698df3b0724f739da80fd2847622a7d5db50e107aa60c",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/qdrant/qdrant/master/src/settings.rs",
+                "shows": "The cluster settings carry resharding as a plain configuration flag, \"pub resharding_enabled: bool, // disabled by default\". Searched the file for license: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "e874f1a86552d8de7ff15a448b1c3882449bd5258675cc75f2257a39271aeaf2",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://qdrant.tech/documentation/scaling/distributed_deployment/",
+                "shows": "The distributed-deployment guide says Qdrant Cloud \"offers the ability to automatically rebalance and to reshard your collections, which is not available in self-hosted Qdrant\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "dc4b0bfd95c6bc769e64cca1356a7ea94c5a5743d77878f14b1f29640502e91f",
                 "establishes": [
                   "core-gated"
                 ]
@@ -107840,9 +107922,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-18",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -107851,21 +107933,21 @@
           "org_slug": "pinecone",
           "org": "Pinecone",
           "type": "software",
-          "description": "Fully managed vector database built for AI applications at scale, with a serverless architecture that scales automatically, integrated sparse-dense hybrid search and sub-100-millisecond query latency. It targets teams that want managed vector search without operational overhead.",
+          "description": "Pinecone is a fully managed vector database offered as a serverless cloud service, with sparse-dense hybrid search built in. It is used through an API rather than installed, and a BYOC option runs its data plane inside a customer's own cloud account.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:proprietary(SaaS);source:closed;self-host:none(BYOC runs Pinecone-managed in customer VPC, not OSS);managed:Pinecone-Cloud",
             "confidence": "high",
-            "note": "Fully proprietary managed vector DB; no open source core (contrast Milvus/Qdrant which are OSI-licensed). BYOC is still closed-source software run in customer cloud.",
-            "last_verified": "2026-08-13",
+            "note": "Pinecone is available only as a managed service used under a subscription agreement, and none of its source is published. Its BYOC option places the data plane in the customer's own cloud account, but the software stays closed and Pinecone runs the control plane.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://www.pinecone.io/pricing/",
-                "shows": "Tiers Starter, Builder, Standard and Enterprise, plus BYOC: \"Bring-your-own-cloud (BYOC) runs Pinecone in your cloud account and VPC. Pinecone does not need SSH, VPN, or inbound network access to operate the system.\" Enterprise adds a 99.95% uptime SLA, private endpoints and customer-managed keys. The phrase \"open source\" does not appear on the page.",
-                "accessed": "2026-08-13",
+                "shows": "The pricing page says \"Pinecone runs on fully managed infrastructure that scales with you\", and its one deployment alternative is BYOC, which \"runs Pinecone in your cloud account and VPC\". Searched the body for open source, self-host, on-prem and license: none.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "d686117aacefb4fe49f4977205748e7233f1b2914b875a897642db44761f46dc",
+                "content_sha256": "95e884cee0ab16e7eb23a57aca3e84fe0f9ae05e469110669aeef03d1ac2430c",
                 "establishes": [
                   "license",
                   "source",
@@ -107879,6 +107961,28 @@
                 "http_status": 200,
                 "content_sha256": "0438b9bbff90bd6f1bc61afe2c4e91234944fa4b2426eb94a6073c33329bc9b4",
                 "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://www.pinecone.io/legal/master-subscription-agreement/",
+                "shows": "The Master Subscription Agreement grants a right to use the hosted service, not the software: \"Pinecone hereby grants to Customer\" the \"right to use Services in accordance with the Documentation\", and the customer may not \"attempt to discover or recreate the source code for, Services\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "9de0507434e221e78436ad39a2ce605f2a40e5d30a1b65754bf87ce3954ee0a2",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://docs.pinecone.io/guides/production/bring-your-own-cloud",
+                "shows": "The BYOC guide describes a split deployment in which only the data plane runs in the customer's account: \"The data plane runs entirely in your cloud account within a dedicated VPC\", while \"The control plane is managed by Pinecone globally and handles index lifecycle management, authentication, billing, and user management\". Searched the body for self-managed, self-host, open source and source code: none.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "090c1fbd424acbb293d62f989f2d4de0909efc86f63eb9578a96debd621bcbf1",
+                "establishes": [
+                  "self-host",
                   "source"
                 ]
               }
@@ -107941,9 +108045,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-18",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-28"
           }
         },
         {
@@ -111559,26 +111663,44 @@
           "org_slug": "algolia",
           "org": "Algolia",
           "type": "software",
-          "description": "Enterprise search-as-a-service platform combining keyword, semantic and AI-powered search with sub-20-millisecond average response times. It has added agent integrations and MCP support, so an agent can search product catalogs, documentation and enterprise content through it. It is primarily a human-facing site-search product usable as an agent retrieval tool.",
+          "description": "Algolia AI Search is a hosted search API that combines keyword and semantic retrieval with AI ranking and personalization, built mainly for search on websites and in apps. Through its agent integrations and MCP server, an AI agent can also use it to search product catalogs, documentation and other indexed content.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:proprietary(SaaS, API-first);source:closed(search engine core);oss:client/UI-libraries-only(InstantSearch);managed:Algolia-Cloud",
             "confidence": "high",
-            "note": "Closed proprietary hosted search engine; only client/UI integration libraries are open. Core ranking/index engine is not OSS or self-hostable.",
-            "last_verified": "2026-08-13",
+            "note": "Algolia's search engine runs only as a hosted service under a subscription agreement, and its source is neither published nor offered for self-hosting. The code Algolia does publish as open source is client-side, such as the MIT-licensed InstantSearch UI library, and contains no search engine.",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://www.algolia.com/products/ai-search/",
-                "shows": "Hosted API-first search platform with NeuralSearch hybrid retrieval, AI ranking and personalization. No self-host, on-premise or source-available option for the engine; the open libraries are client-side UI only.",
-                "accessed": "2026-08-13",
+                "shows": "The AI Search page presents a hosted API: \"Algolia AI Search is an API-first solution that combines keyword and semantic techniques to deliver fast, relevant results\". Searched the body for self-host, on-prem, source-available and license: none; its open-source mentions are a navigation link and a contact entry for Algolia's open-source program.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350",
+                "content_sha256": "6361ce22e30bfd68878e221033e6505ecf0148fcc59270c09b2a0f0590875c14",
                 "establishes": [
                   "license",
                   "source",
                   "core-gated"
                 ]
+              },
+              {
+                "url": "https://www.algolia.com/policies/terms/",
+                "shows": "Algolia's terms of service are a subscription to a hosted service: the agreement is \"made for the purpose of granting Subscriber a limited subscription to use Algolia\" hosted search, the subscriber \"shall not reverse engineer, decompile, translate, disassemble or otherwise attempt to extract any or all of the source code of the Services\", and the open source Algolia offers is described as \"certain language specific codes that enable easy communication with Algolia Software\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d449414cb8409c65ce1dc19a69faad6ec2c000faa61477300ce2be9e6b785f7f",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/algolia/instantsearch/master/LICENSE",
+                "shows": "The open code Algolia publishes is client-side: its InstantSearch UI library carries \"The MIT License (MIT)\" with \"Copyright (c) 2015-present Algolia, Inc.\", and ships no search engine.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "1e605499213e06118cc81abc00b32bbb33ead185d9b0e190f2662588e8806f02"
               }
             ],
             "bucket": "closed"
@@ -111588,15 +111710,14 @@
             "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Algolia's adoption is measured by the volume of end-user queries running through its hosted search across companies such as Stripe, Decathlon and Ubisoft, not by the number of paying accounts. That query volume is why the reading sits high; the smaller, direct B2B customer count on its own would read lower.",
-            "last_verified": "2026-08-13",
+            "note": "Algolia is measured by the end-user queries its hosted search serves for companies such as Stripe, Decathlon and Ubisoft, since each paying account puts the engine in front of a whole site's visitors. Its customer count counts businesses rather than the people searching through them, and on its own would place it lower.",
             "sources": [
               {
                 "url": "https://www.algolia.com/products/ai-search/",
-                "shows": "\"More than 18,000 customers in 150+ countries trust Algolia\"; \"Algolia processes more than 1 billion queries every 5 seconds, with an average response time under 20 milliseconds\"; Stripe, Decathlon and Ubisoft named.",
-                "accessed": "2026-08-13",
+                "shows": "The AI Search page carries \"More than 18,000 customers in 150+ countries trust Algolia\" and \"Algolia processes more than 1 billion queries every 5 seconds, with an average response time under 20 milliseconds\", beside a logo strip that includes Stripe, Decathlon and Ubisoft; further down it says Algolia is \"processing over two trillion queries each year\".",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350"
+                "content_sha256": "6361ce22e30bfd68878e221033e6505ecf0148fcc59270c09b2a0f0590875c14"
               }
             ]
           },
@@ -111636,9 +111757,19 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "date": "2026-09-17",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-28",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-28",
+                "reason": "The AI Search page still carries its 18,000-customer and query-volume figures, but none of them derives the recorded 1M-10M reach: the customer count sits far below it, the query figures far above it, and the two query figures disagree with each other by three orders of magnitude. Algolia has no registry artifact behind usage_volume. Settling it needs an instrument re-read, such as reported_traction on the customer count."
+              }
+            ]
           }
         }
       ]
