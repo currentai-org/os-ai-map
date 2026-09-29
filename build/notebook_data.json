@@ -38239,7 +38239,6 @@
             "signal_type": "usage_volume",
             "confidence": "medium",
             "note": "Adoption is measured by Hugging Face downloads of livecodebench/code_generation_lite, the benchmark's only declared distribution artifact.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/livecodebench/code_generation_lite",
@@ -38272,9 +38271,18 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-29"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "In the adoption reconciliation queue (tier_change: recorded level 3 vs measured 4); the level is settled by the adoption re-band after the 5 Oct reconciliation."
+              }
+            ]
           }
         },
         {
@@ -38364,7 +38372,6 @@
             "signal_type": "usage_volume",
             "confidence": "medium",
             "note": "Adoption is measured by Hugging Face downloads summed across the two companion datasets, evalplus/humanevalplus and evalplus/mbppplus. Both are contamination-hardened versions of HumanEval and MBPP, reported adopted by Meta and other labs for coding evaluation.",
-            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/evalplus/humanevalplus",
@@ -38404,9 +38411,18 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-29"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "In the adoption reconciliation queue (tier_change: recorded level 3 vs measured 2); the level is settled by the adoption re-band after the 5 Oct reconciliation."
+              }
+            ]
           },
           "version_note": "The original benchmarks are saturated above 90 percent, which is why the Plus variants are used to separate frontier models."
         },
@@ -38583,13 +38599,13 @@
           "org_slug": "hendrycks-et-al-uc-berkeley",
           "org": "Hendrycks et al. (UC Berkeley)",
           "type": "dataset",
-          "description": "Benchmark of 12,500 competition mathematics problems spanning algebra, counting and probability, geometry, number theory, prealgebra and precalculus, split 7,500 train and 5,000 test, each with a step-by-step solution in LaTeX and a difficulty level from 1 to 5. It measures reasoning depth beyond grade-school word problems.",
+          "description": "Benchmark of 12,500 competition mathematics problems, split into 7,500 training and 5,000 test problems, each with a full step-by-step solution. It accompanies the paper Measuring Mathematical Problem Solving With the MATH Dataset.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:MIT(declared);access:closed(canonical HF repo access-disabled under a DMCA takedown);data:NOT downloadable from canonical HF repo (access disabled, DMCA takedown);datasheet:present(card still documents schema);redistributability:BLOCKED on the primary registry;problems sourced from AMC/AIME competitions, takedown reflects unresolved rights",
             "confidence": "medium",
-            "note": "MIT is the declared license, but the canonical Hugging Face repository is disabled under a DMCA takedown over AMC/AIME problem rights, so the corpus is no longer distributed from its primary registry. Undistributed data counts as closed regardless of the license, though mirrors and eval harnesses still embed the problems, so the closed score is worth revisiting if the takedown is resolved.",
+            "note": "MIT is the declared license, but the canonical Hugging Face repository is disabled under a DMCA takedown over AMC/AIME problem rights, so the corpus is no longer distributed from its primary registry. Data that is not distributed counts as closed whatever its license, although mirrors and eval harnesses still embed the problems.",
             "last_verified": "2026-09-29",
             "sources": [
               {
@@ -38609,25 +38625,47 @@
           },
           "adoption": {
             "level": 4,
-            "signal_type": "reported_traction",
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "banded_quantity": "all-time downloads (1,034,712) of a takedown-walled repo now reporting 0 in the trailing 30 days",
-            "note": "MATH is one of the most-cited math-reasoning benchmarks; with its canonical Hugging Face repository walled off by a takedown, adoption is read from that citation standing rather than a download count. OLMo 3's model card lists MATH in its evaluation table alongside AIME 2024/2025, GPQA, MMLU, IFEval and LiveCodeBench, evidence that a frontier open model reports it as a headline metric.",
-            "last_verified": "2026-08-13",
+            "banded_quantity": "30-day downloads of the declared EleutherAI/hendrycks_math mirror (205,807 in the warehouse at 2026-09-27; 183,494 on the Hub API at 2026-09-29)",
+            "note": "MATH is measured by Hugging Face downloads of the EleutherAI/hendrycks_math mirror, the distribution the product declares. The canonical hendrycks/competition_math repository is disabled and reports no downloads in the trailing 30 days, so it is not counted. The paper is cited thousands of times on Semantic Scholar, and OLMo 3's model card lists MATH in its evaluation table beside AIME 2024/2025, GPQA, MMLU, IFEval and LiveCodeBench.",
+            "last_verified": "2026-09-29",
+            "reach": "100K-1M",
             "sources": [
               {
                 "url": "https://huggingface.co/allenai/Olmo-3-7B-Instruct/raw/main/README.md",
                 "shows": "evaluation table row \"| **Math** | MATH | 65.1 | 79.6 | 87.3 | 82.3 | 91.6 | 71.0 | 30.1 | 21.9 | 67.3 |\", reported beside AIME 2024, AIME 2025, OMEGA, BigBenchHard, GPQA, MMLU, IFEval, LiveCodeBench v3 and others - MATH carried as a headline metric in a frontier open model release",
-                "accessed": "2026-08-13",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "9c7c873ea9bd506db7800e61a0535302106bdc393d72b0d2341197330d25a7fe"
               },
               {
                 "url": "https://huggingface.co/datasets/hendrycks/competition_math",
-                "shows": "the access-disabled page and its DMCA notice; carries the `license:mit` tag and the card, and reports 0 downloads in the trailing 30 days. This is what rules out treating a download count as the adoption signal; it establishes nothing about release-report standing",
-                "accessed": "2026-08-13",
+                "shows": "The canonical dataset page reads \"Access to this dataset has been disabled\"; its embedded metadata reports 0 downloads in the trailing 30 days and 1,034,712 all-time.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "361599c5136cbd9d8bf46f6ac47b56594c406e411fee9413d1ab4c529d06bb01"
+                "content_sha256": "a00f98cdea7039dc9ce50ccf1612d9bb89218bf6e309ff720b6ff9ad661b05e8"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/hendrycks/competition_math",
+                "shows": "The Hub API record for the canonical repo, whose description reads \"Each problem in MATH has a full step-by-step solution\", reports 0 downloads in the trailing 30 days (downloads field) and disabled true.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ee162cb49151d00dc982f2a8867a1c533bfa625bad9688e345993fff8a56abc6"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/EleutherAI/hendrycks_math",
+                "shows": "The Hub API record for the declared EleutherAI mirror, whose description reads \"MATH dataset from https://github.com/hendrycks/math\", is not disabled and reports 183,494 downloads in the trailing 30 days (downloads field).",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "a43ea01473493546adae373858ddab169972d697fd4fd87bead9e03b47232957"
+              },
+              {
+                "url": "https://api.semanticscholar.org/graph/v1/paper/arXiv:2103.03874?fields=title,citationCount",
+                "shows": "The Semantic Scholar record for the MATH paper reads \"Measuring Mathematical Problem Solving With the MATH Dataset\" with \"citationCount\": 6499.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "832a954979f9955f88078db73bb8cac16a6667222865e831f7fc1a288b8e50b8"
               }
             ]
           },
@@ -38653,9 +38691,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-29"
+            "date": "2026-09-29",
+            "basis": "verified"
           }
         },
         {
@@ -39048,7 +39085,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Adoption is measured by Hugging Face downloads of the cruxeval-org/cruxeval dataset. The GitHub repository has been archived and read-only since 2025-09-18, and although CRUXEval remains a widely cited evaluation standard, a citation is not a download and does not raise what the measured figure shows.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/cruxeval-org/cruxeval",
@@ -39088,9 +39124,18 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-29"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "In the adoption reconciliation queue (tier_change: recorded level 2 vs measured 3); the level is settled by the adoption re-band after the 5 Oct reconciliation."
+              }
+            ]
           }
         },
         {
@@ -65281,8 +65326,8 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public(GitHub);harness+inference+eval code public;no feature-gated core;core-gated:ungated",
             "confidence": "high",
-            "last_verified": "2026-08-13",
-            "note": "The harness is MIT-licensed and its full source is public, and MIT is an OSI license, so this is open source. The product declares the SWE-bench/SWE-bench repository, with the cited princeton-nlp path redirecting there, and the README ships the whole harness with no paid tier.",
+            "last_verified": "2026-09-29",
+            "note": "The harness is MIT-licensed with its full source public, and MIT is an OSI license, so this is open source. The README documents building it from source and running the evaluation locally, lists no paid tier or license key, and states that the Multimodal split is fully open for local evaluation.",
             "sources": [
               {
                 "url": "https://pypi.org/project/swebench/",
@@ -65305,11 +65350,31 @@
                 ]
               },
               {
-                "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md",
-                "shows": "README carries the MIT badge, closes with 'MIT license. Check LICENSE.md', and documents building the harness from source and running containerized Docker evaluation on the reader's own machine. No pricing, enterprise edition, paid tier or license key appears anywhere in it. The only held-back piece is the SWE-bench Multimodal test split, whose grading runs through the free sb-cli service - a contamination control on one split, not a commercial gate on the harness.",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE",
+                "shows": "The LICENSE file opens with \"MIT License\" and grants \"Permission is hereby granted, free of charge, to any person obtaining a copy\" of the software, with the right to \"use, copy, modify, merge, publish, distribute, sublicense, and/or sell\" it.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f",
+                "content_sha256": "2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/swebench/json",
+                "shows": "PyPI metadata for swebench lists the license as \"MIT License\" and carries the classifier \"License :: OSI Approved :: MIT License\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e0596a0b822981603cabe809173b7e0d3fb6f80003de74bff3357bd90b02ab00",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md",
+                "shows": "README carries the MIT badge, closes with \"MIT license. Check `LICENSE.md`.\", and documents building the harness from source (\"pip install -e .\") and running Docker evaluation locally with \"swebench eval verified\". No pricing, enterprise edition, paid tier or license key appears in it (searched for pricing, enterprise, paid, license key). The Multimodal news item states \"SWE-bench Multimodal v2 is now fully open source, with 480 tasks available for local evaluation\"; sb-cli and Modal are listed only as optional cloud alternatives.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -65322,7 +65387,6 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "last_verified": "2026-08-13",
             "banded_quantity": "frontier release-report citations; the ~31.5M PyPI downloads are treated as runner-inflated corroboration rather than the basis",
             "note": "SWE-bench Verified is the de-facto standard agentic-coding evaluation, cited in nearly every 2025-26 frontier release report. Its swebench package also draws heavy PyPI traffic, but that volume is almost certainly CI and benchmark-runner traffic rather than human installs, so citation carries this reading and the download count serves only as corroboration.",
             "sources": [
@@ -65355,10 +65419,10 @@
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": "agentic-coding eval standard: real GitHub-issue patch generation + test-based verification; Verified/Lite/Multimodal/Pro splits; broad model-backend support; reference implementation for the most-cited coding benchmark",
+            "value": "agentic-coding eval harness: real GitHub-issue patch generation + test-based verification in Docker; Verified/Lite/Multimodal splits; model inference with mini-SWE-agent; Modal and sb-cli cloud evaluation",
             "confidence": "high",
-            "last_verified": "2026-08-13",
-            "note": "The reference harness for the benchmark every lab reports against, and the frontier-definer for agentic and coding evaluation: patch generation against real GitHub issues, containerized test-based grading, and the Verified, Lite and Multimodal splits, all documented in the repo README.",
+            "last_verified": "2026-09-29",
+            "note": "The harness applies model-generated patches to real GitHub issues and grades them by running each repository's tests in a Docker container. It documents Verified, Lite and Multimodal splits, and Modal and sb-cli cloud evaluation.",
             "sources": [
               {
                 "url": "https://github.com/princeton-nlp/SWE-bench",
@@ -65367,10 +65431,24 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md",
-                "shows": "harness generates patches for real GitHub issues and grades them by running the repository's own tests in Docker; SWE-bench Verified, Lite and Multimodal splits documented; Modal cloud execution offered as an alternative backend.",
-                "accessed": "2026-08-13",
+                "shows": "README documents Verified, Lite and Multimodal datasets and the eval command: \"swebench eval multimodal --gold\", \"swebench infer verified -m gpt-5 -o preds -w 8        # generate predictions with mini-SWE-agent\", and \"Running SWE-bench evaluation on [Modal](https://modal.com/)\" as a cloud option.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f"
+                "content_sha256": "06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/docs/guides/evaluation.md",
+                "shows": "Evaluation guide states \"SWE-bench evaluates models by applying their generated patches to real-world repositories and running the repository's tests to verify if the issue is resolved\" in \"a containerized Docker environment\", and documents Modal and sb-cli cloud evaluation.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "770c8d6c45d507cd40a74297c2c7d779a5ab1f4f82da8a1a9dfae4d6bb03ff6e"
+              },
+              {
+                "url": "https://huggingface.co/datasets/SWE-bench/SWE-bench/raw/main/README.md",
+                "shows": "Hugging Face dataset card says \"The dataset collects 2,294 Issue-Pull Request pairs from 12 popular Python repositories\" and \"Evaluation is performed by unit test verification using post-PR behavior as the reference solution.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "6433ee353e763e5c1e6f3e9ef4e9872d7f2e9639effc2e52cc5521f419444764"
               }
             ]
           },
@@ -65379,10 +65457,20 @@
           "maturity": 4.5,
           "mature": true,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "In the adoption reconciliation queue (route_disagreement: recorded level 4 vs measured 5); the level is settled by the adoption re-band after the 5 Oct reconciliation."
+              }
+            ]
           },
-          "version_note": "This record is the harness; the underlying dataset is catalogued under benchmark_eval_data. The repository moved from princeton-nlp to the SWE-bench organization."
+          "version_note": "This record is the harness; the underlying dataset is catalogued under benchmark_eval_data."
         },
         {
           "slug": "lm-evaluation-harness",
@@ -65972,13 +66060,12 @@
           "org_slug": "promptfoo",
           "org": "promptfoo",
           "type": "software",
-          "description": "Declarative CLI and Node library that tests prompts, agents and RAG pipelines from a YAML config, comparing model outputs side by side and running the same assertions in CI. It also ships a red-teaming mode that scans an application for jailbreaks and other vulnerabilities, which most eval harnesses leave out.",
+          "description": "Declarative CLI and Node library that tests prompts, models and RAG pipelines from a YAML config, comparing model outputs side by side and running the same checks in CI. It also ships a red-teaming mode that scans an application for vulnerabilities.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:MIT(OSI);source:public(GitHub);no feature-gated core observed (acquired by OpenAI, stated to remain MIT/open source);core-gated:ungated",
             "confidence": "high",
-            "last_verified": "2026-08-13",
             "note": "MIT-licensed and fully public, and MIT is an OSI license, so this is open source. OpenAI now owns the project, which does not change the license the code ships under.",
             "sources": [
               {
@@ -66016,7 +66103,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "npm is the right registry to read from, since promptfoo is distributed npm-first and its downloads there are the primary usage signal, alongside GitHub stars. A PyPI package under the same name is genuinely this project's, but it is not the product's primary distribution, so reading from it would substitute a minority channel for promptfoo's real distribution and understate its reach.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/promptfoo",
@@ -66042,12 +66128,12 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "broad eval + security: prompt/model testing, side-by-side model comparison, red-teaming/vulnerability scanning, CI/CD integration, caching/live-reload; agentic + app eval plus a security dimension peers lack",
+            "value": "broad eval + security: prompt/model/RAG testing, side-by-side model comparison, red-teaming/vulnerability scanning, code scanning of pull requests, CI/CD integration, caching/live-reload",
             "confidence": "high",
             "relative_to": "lm-evaluation-harness",
             "relation": "one_below",
-            "last_verified": "2026-08-13",
-            "note": "Very broad eval coverage plus a distinctive red-teaming and security axis. Top-tier for application evaluation, though below the academic-benchmark standardization references such as lm-evaluation-harness on raw benchmark coverage.",
+            "last_verified": "2026-09-29",
+            "note": "Broad eval coverage for LLM applications, including prompt and model testing, RAG pipeline evaluation, side-by-side model comparison, CI/CD automation, and red teaming with vulnerability scanning. It sits below academic-benchmark standardization references such as lm-evaluation-harness on raw benchmark coverage.",
             "sources": [
               {
                 "url": "https://github.com/promptfoo/promptfoo",
@@ -66056,10 +66142,31 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/promptfoo/promptfoo/main/README.md",
-                "shows": "README lists red teaming and vulnerability scanning, side-by-side model comparison across OpenAI/Anthropic/Azure/Bedrock/Ollama, CI/CD automation, and 'live reload and caching' - the same feature set this reading reflects.",
-                "accessed": "2026-08-13",
+                "shows": "README describes \"a CLI and library for evaluating and red-teaming LLM-based apps\" and lists \"automated evaluations\", \"red teaming\", \"side-by-side (OpenAI, Anthropic, Azure, Bedrock, Ollama\" model comparison, and \"CI/CD\" automation, plus \"Fast, with features like live reload and caching\" and a \"code scanning\" review of pull requests.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "426270e1b7c45d0bf456b1284cdc1af055218db73869864b9590b1e0bdaab5cb"
+                "content_sha256": "0b6031de6f2062786eb2dd858c80c6c0e4a2109f9c21a2ea02bea51343814d6a"
+              },
+              {
+                "url": "https://www.promptfoo.dev/docs/intro/",
+                "shows": "Docs intro lists \"Test and evaluate your prompts, models, and RAG pipelines\" and states \"promptfoo is fast, with quality-of-life features like live reloads and caching.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "e46f9d471911997c54f1c814a05c447552000a2cef58a70dc8bc297490919848"
+              },
+              {
+                "url": "https://www.promptfoo.dev/docs/getting-started/",
+                "shows": "Getting started guide says \"The YAML configuration format runs each prompt through a series of test cases\" and uses a promptfooconfig.yaml file.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "5e1b900acff4c6c917bd8e85b018a89c2aff092613fc0bf536504bacd7b0de13"
+              },
+              {
+                "url": "https://www.promptfoo.dev/docs/usage/node-package/",
+                "shows": "Node package page says \"Integrate LLM testing into Node.js apps\" with promptfoo's evaluate() function.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "a3f14b8a8971d118e397004d716f1fb957c9a5d50b7903673c43d66327379da8"
               }
             ]
           },
@@ -66068,8 +66175,24 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption",
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "In the adoption reconciliation queue (route_disagreement: recorded level 4 vs measured 3); the level is settled by the adoption re-band after the 5 Oct reconciliation."
+              },
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "The enterprise page marks Red Teaming, Remediations, Result Sharing and API Access as limited quantity in the Community version, and no fetched source says whether those limits are enforced in the MIT code or only in hosted services, so the recorded ungated core cannot be re-established. Settled by a first-party statement or source showing where the limits sit."
+              }
+            ]
           }
         },
         {
@@ -66221,14 +66344,14 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "OpenAI's lightweight reference harness, used to produce the model cards for its GPT and o-series releases. It bundles zero-shot and chain-of-thought implementations of MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp and HealthBench, each carrying its upstream terms.",
+          "description": "OpenAI's lightweight reference library for evaluating language models, open sourced for transparency about the accuracy numbers it publishes alongside new models. It bundles implementations of MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp and HealthBench, emphasizing the zero-shot, chain-of-thought setting, each with its upstream license listed. The library is deprecated and will no longer be updated for new models or benchmark results.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:MIT(OSI);source:public(reference eval implementations); no managed tier;core-gated:ungated",
             "confidence": "high",
-            "last_verified": "2026-08-13",
-            "note": "Fully MIT-licensed, and MIT is an OSI license; purely a reference-implementation library with no gated core. The repo is frozen and its README carries only a deprecation notice, but a frozen repo is still a published one, so the source is still public and the core still ungated.",
+            "last_verified": "2026-09-29",
+            "note": "The code is MIT-licensed and public, and MIT is an OSI license. The repository is deprecated and not actively maintained, but the README describes a plain reference library with no paid tier, managed service or license key beside it.",
             "sources": [
               {
                 "url": "https://github.com/openai/simple-evals",
@@ -66246,9 +66369,19 @@
                 ]
               },
               {
+                "url": "https://raw.githubusercontent.com/openai/simple-evals/main/LICENSE",
+                "shows": "The repository LICENSE file is the MIT License: \"MIT License\" followed by \"Permission is hereby granted, free of charge, to any person obtaining a copy\" of the software, with the copyright held by OpenAI.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "d831db55645e47ca8e491c5a0e37f1ee744d7b10bf5aa8d50146c795ac0176c0",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
                 "url": "https://raw.githubusercontent.com/openai/simple-evals/main/README.md",
-                "shows": "README opens with a deprecation notice - 'July 2025: simple-evals will no longer be updated for new models or benchmark results. The repo will continue to host reference implementations for HealthBench, BrowseComp, and SimpleQA' - and the eval scripts are in the repo. No paid tier, managed service or license key is offered anywhere in it.",
-                "accessed": "2026-08-13",
+                "shows": "The README opens with a deprecation notice, \"will no longer be updated for new models or benchmark results\", and calls the library open source: \"We are open sourcing it so we can be transparent about the accuracy numbers we're publishing alongside our latest models\". Run instructions use the repo directly (\"python -m simple-evals.simple_evals --model <model_name> --examples <num_examples>\") and setup needs only pip packages such as \"pip install openai\". Searched the README for a paid tier, managed service, hosted edition and license key and found none.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f",
                 "establishes": [
@@ -66264,7 +66397,7 @@
             "reach": "1K-10K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
-            "note": "simple-evals is run from source with no pip distribution, so there is no download signal, leaving GitHub stars as the only measure available, and a star is not a use. The project is also deprecated and frozen, maintained now only as a reference for a few specific benchmarks (HealthBench, BrowseComp, SimpleQA) rather than as a live harness.",
+            "note": "simple-evals is run from source with no pip distribution, so there is no download signal, leaving GitHub stars as the only measure available, and a star is not a use. The project is also deprecated and not actively maintained.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -66281,7 +66414,7 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/openai/simple-evals/main/README.md",
-                "shows": "deprecation notice still first in the README; only HealthBench, BrowseComp and SimpleQA reference implementations remain maintained",
+                "shows": "The README opens with a deprecation notice: \"will no longer be updated for new models or benchmark results\", and \"The repo will continue to host reference implementations for\" HealthBench, BrowseComp and SimpleQA.",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f"
@@ -66291,10 +66424,10 @@
           "capability": {
             "score": 2,
             "basis": "feature_matrix",
-            "value": "~9 bundled benchmarks, zero-shot/CoT only; no plugin task system, no agentic-eval support, no model-backend abstraction beyond direct API calls; deprecated/frozen.",
+            "value": "Nine bundled benchmarks (MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp, HealthBench) with an emphasis on the zero-shot, chain-of-thought setting; sampler interfaces for the OpenAI and Claude APIs only; not actively maintained and not accepting new evals.",
             "confidence": "medium",
-            "last_verified": "2026-08-13",
-            "note": "simple-evals is a deliberately minimal reference harness, now frozen: the README lists nine bundled benchmarks and says the repository is not actively maintained and accepts no new evals. Its coverage and feature set are narrow next to category leaders such as HELM, Inspect AI and lm-evaluation-harness.",
+            "last_verified": "2026-09-29",
+            "note": "simple-evals is a lightweight reference library: the README lists nine bundled benchmarks and sampler interfaces for only the OpenAI and Claude APIs. It says the repository is not actively maintained and is not accepting new evals.",
             "sources": [
               {
                 "url": "https://github.com/openai/simple-evals",
@@ -66303,8 +66436,8 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/openai/simple-evals/main/README.md",
-                "shows": "bundled benchmarks MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp and HealthBench, each with its upstream license; 'We will not be actively maintaining this repository ... we're not accepting new evals'.",
-                "accessed": "2026-08-13",
+                "shows": "The README lists the bundled evals and their upstream licenses (MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp, HealthBench), says the library emphasizes \"the *zero-shot, chain-of-thought* setting\", that \"We will not be actively maintaining this repository and monitoring PRs and Issues\", and that \"we're not accepting new evals\". Samplers cover only the OpenAI and Claude APIs: \"We have implemented sampling interfaces for the following language model APIs\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f"
               }
@@ -66315,11 +66448,10 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-27",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
-          },
-          "version_note": "Deprecated in July 2025 and no longer updated for new models or benchmarks; only the HealthBench, BrowseComp and SimpleQA reference implementations remain maintained."
+            "latest_axis_confirmation": "2026-09-29"
+          }
         },
         {
           "slug": "openai-evals-api-dashboard",
@@ -66429,14 +66561,14 @@
           "org_slug": "exploding-gradients",
           "org": "Exploding Gradients",
           "type": "software",
-          "description": "Evaluation framework built for retrieval-augmented generation pipelines, with more than thirty metrics covering retrieval quality, generation faithfulness and answer relevance, plus automatic test-set generation. It splits pipeline failure into retrieval and generation buckets, which general harnesses do not, and integrates with LangChain and observability tooling.",
+          "description": "Evaluation framework for RAG and LLM applications, with about thirty metrics covering retrieval quality, generation faithfulness and answer relevance, plus automatic test-set generation. It integrates with LangChain.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(full metrics + test-gen library); core un-gated. (Vendor also offers a hosted app.ragas.io tier; not required for the library.);core-gated:ungated",
+            "components": "license:Apache-2.0(OSI);source:public(full metrics + test-gen library); core un-gated.;core-gated:ungated",
             "confidence": "high",
-            "last_verified": "2026-08-13",
-            "note": "Ragas is Apache-2.0 and fully public, and nothing in the core is feature-gated for the separate app.ragas.io service. GitHub now serves the repository at vibrantlabsai/ragas rather than explodinggradients, and the README installs the whole metric suite from PyPI or a git checkout, with no account, paid tier or license key needed.",
+            "last_verified": "2026-09-29",
+            "note": "Ragas is Apache-2.0 and fully public. The README installs the whole metric suite from PyPI or a git checkout, and the setup needs no account or license key.",
             "sources": [
               {
                 "url": "https://github.com/explodinggradients/ragas",
@@ -66454,11 +66586,32 @@
                 ]
               },
               {
+                "url": "https://raw.githubusercontent.com/vibrantlabsai/ragas/main/LICENSE",
+                "shows": "LICENSE file is the Apache License text: \"Apache License\" heading followed by \"Version 2.0, January 2004\", with the copyright line \"Copyright [2023] [Vibrant Labs]\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "664b930830f291c2936ab30bcd6ef9ca6c9c7384cc475ae0c526156a27d5a6c6",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
                 "url": "https://raw.githubusercontent.com/vibrantlabsai/ragas/main/README.md",
-                "shows": "README carries the Apache-2.0 badge and installs with `pip install ragas` or straight from the git repo; the metric suite and test-set generation ship in the package. No pricing page, hosted tier, enterprise edition or license key is mentioned - even the app.ragas.io cloud product goes unnamed in it.",
-                "accessed": "2026-08-13",
+                "shows": "README installs the package with \"pip install ragas\" or \"pip install git+https://github.com/vibrantlabsai/ragas\" and shows the metric classes \"DiscreteMetric\" used directly after that install, with no Ragas account, Ragas key or paid tier in the setup (the only key mentioned is the user's own OPENAI_API_KEY for the judge model); README carries the \"License Apache-2.0\" badge.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "af20b2258507b12bf930e897b63ee5bb87aac4a4696da078ea5a3c29addb6db7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vibrantlabsai/ragas/main/pyproject.toml",
+                "shows": "pyproject.toml describes the package as \"Evaluation framework for RAG and LLM applications\", points its license at the repository LICENSE file, and lists open-source packages (numpy, datasets, pydantic, openai, langchain) under the core \"# Core dependencies\" block, with no proprietary or license-key package.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "11b24f8114f922ea5d028d65dffabd941e2d11fc732d499afdcfe0e20a998101",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -66497,12 +66650,12 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Broad RAG/LLM-app metric suite (faithfulness, context precision/recall, answer relevancy, custom DiscreteMetric/Aspect Critique), automatic synthetic test-data generation, model-agnostic LLM-as-judge, framework + observability integrations. Specialized for application/RAG eval rather than academic-benchmark model eval (different sub-domain from HELM/lm-eval-harness).",
+            "value": "About thirty metrics in groups for RAG (faithfulness, context precision), agents and tool use, natural-language comparison, SQL and general purpose (aspect critic through DiscreteMetric); automatic test-data generation; custom metrics supported. Scoped to LLM-application evaluation rather than academic-benchmark model evaluation.",
             "confidence": "medium",
             "relative_to": "helm",
             "relation": "one_below",
-            "last_verified": "2026-08-13",
-            "note": "Frontier within the application and RAG evaluation niche on metric breadth and synthetic test-data generation, but not a general academic-benchmark model harness. That is why it scores 4 rather than 5: the coverage is domain-scoped, and the academic-benchmark harnesses such as HELM cover ground it does not.",
+            "last_verified": "2026-09-29",
+            "note": "Ragas ships about thirty metrics grouped by use, including retrieval-augmented generation, agents and tool use, SQL and general-purpose metrics, plus automatic test-set generation and support for writing custom metrics. It is scoped to LLM applications and RAG pipelines, so it covers less benchmark ground than HELM.",
             "sources": [
               {
                 "url": "https://github.com/explodinggradients/ragas",
@@ -66511,10 +66664,17 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/vibrantlabsai/ragas/main/README.md",
-                "shows": "README still leads on the same three capabilities - 'Objective Metrics: Evaluate your LLM applications with precision using both LLM-based and traditional metrics', 'Test Data Generation: Automatically create comprehensive test datasets', and data-driven insights - and demonstrates Aspect Critique through `DiscreteMetric`.",
-                "accessed": "2026-08-13",
+                "shows": "README leads with \"Objective metrics, intelligent test generation, and data-driven insights for LLM apps\", lists \"Objective Metrics: Evaluate your LLM applications with precision using both LLM-based and traditional metrics\" and \"Test Data Generation: Automatically create comprehensive test datasets covering a wide range of scenarios\", installs with \"pip install ragas\" or from the git repo, and demonstrates Aspect Critique through \"DiscreteMetric\".",
+                "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "af20b2258507b12bf930e897b63ee5bb87aac4a4696da078ea5a3c29addb6db7"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vibrantlabsai/ragas/main/docs/concepts/metrics/available_metrics/index.md",
+                "shows": "Available-metrics page lists the shipped metrics in groups (Retrieval Augmented Generation, Nvidia Metrics, Agents or Tool use cases, Natural Language Comparison, SQL, General purpose) and says \"One can also modify or write your own metrics using ragas.\"; General purpose lists \"Aspect critic\" and the RAG group lists \"Faithfulness\" and \"Context Precision\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "dd30c1b87f684711ac2b6af9ec11243279da4df344ba392aa69d814c258e3c16"
               }
             ]
           },
@@ -66523,11 +66683,11 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-24"
+            "latest_axis_confirmation": "2026-09-29"
           },
-          "version_note": "The project moved from explodinggradients to the vibrantlabsai organization and has not been pushed since February 2026. A hosted tier is sold beside the library."
+          "version_note": "The repository moved from the explodinggradients organization to vibrantlabsai."
         },
         {
           "slug": "inspect-ai",
@@ -67362,7 +67522,6 @@
             "class": "source_available",
             "components": "platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure);source:partial(patronus-py is a client wiring to the hosted API, not the engine);client-SDKs:open(patronus-py public on GitHub, v0.1.25, but only 7 stars and wires to the hosted API);eval engine + proprietary evaluators not self-hostable",
             "confidence": "medium",
-            "last_verified": "2026-08-13",
             "note": "The open-source SDK is a thin client to a closed hosted evaluation backend: the scoring engine and the managed Lynx and Glider evaluators are proprietary, not self-hostable, and the SDK repo carries no license text. Rather than an open core withholding a paid tier, this is an open periphery around a runtime that never ships, keeping the source partial rather than closed.",
             "sources": [
               {
@@ -67413,8 +67572,8 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "last_verified": "2026-08-13",
-            "note": "No user, customer or usage-volume count appears on the docs or homepage. The open-source SDK's GitHub stars belong to a thin client that wires to the hosted service rather than the platform itself, and the docs name three case studies with no figures attached, so no level is assigned rather than one inferred from marketing.",
+            "note": "The homepage and pricing page publish no user, customer or usage-volume count, and the SDK's GitHub stars belong to a client library that wires to the hosted service rather than the platform itself, so no level is assigned rather than one inferred from marketing.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/patronus-ai/patronus-py",
@@ -67434,6 +67593,20 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "4d6878b7a74e8c2501ca2c48d3ab4ea05b883f23053bb4b2197f0fd4465e5eff"
+              },
+              {
+                "url": "https://www.patronus.ai",
+                "shows": "The homepage lists \"Handling complex customer support cases end-to-end\" among its task areas and one count, \"5k+ expert contributors\", which counts data labelers rather than users; searched the body for downloads, million and trusted by: none, so it publishes no user, customer or usage figure.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "639142cd8703ceaa3e8f393360a38e1eff3199913ea3413842d5ea606f1c4d1c"
+              },
+              {
+                "url": "https://www.patronus.ai/pricing",
+                "shows": "The pricing page compares plans with rows such as \"Customizable options to meet your specific needs\" and \"Number of Users\"; searched the body for downloads, million and trusted by: none, so it publishes no customer or usage figure.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "18245bcc4437b757ca9b573024e67310bbd296c9cf089638c30352ef069af5ee"
               }
             ]
           },
@@ -67442,7 +67615,6 @@
             "basis": "feature_matrix",
             "value": "benchmark/task coverage: RAG, agent eval, NLP, OWASP/safety metrics, red-teaming dataset generation; model-backend breadth: model-agnostic via SDK; agentic-eval support: yes (agent evaluation + Percival); proprietary evaluators: Lynx (hallucination), Glider; reproducibility: hosted/standardized but not independently reproducible (closed engine)",
             "confidence": "medium",
-            "last_verified": "2026-08-13",
             "note": "A solid, broad commercial eval feature set - evaluators, experiments, monitoring and agent evaluation - but not frontier-defining within the category, and the closed backend limits reproducibility. Mid-tier on features overall.",
             "sources": [
               {
@@ -67464,10 +67636,25 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
-          },
-          "version_note": "The published SDKs wire to hosted infrastructure rather than being the engine, and the Python SDK repository carries no license file and has not been pushed since January 2026. Patronus publishes no customer or usage count."
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "capability",
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-09-29",
+                "reason": "The docs site that carries the recorded evaluator, experiment, monitoring and SDK claims answers 401; only Lynx, GLIDER and Percival are re-established from the homepage and Percival page. Settled by a fetchable docs feature page or llms.txt."
+              },
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "docs.patronus.ai answers 401 and raw.githubusercontent.com returns 404 for patronus-py, so neither the repository license nor the platform's deployment terms can be read. PyPI lists the SDK as MIT and the pricing page lists an Enterprise on-prem / dedicated VPC option, either of which may change the recorded reading. Settled by a fetchable patronus-py LICENSE and README and a first-party deployment page."
+              }
+            ]
+          }
         },
         {
           "slug": "scale-evaluation",
@@ -67475,13 +67662,12 @@
           "org_slug": "scale-ai",
           "org": "Scale AI",
           "type": "software",
-          "description": "Enterprise evaluation and red-teaming service combining automated scoring, expert human raters and private benchmark suites, sold as part of Scale's GenAI platform and deployable into a customer's own cloud. Its public SEAL leaderboards cover coding, instruction following, math and multilinguality, and SEAL Showdown draws on real-world conversations from a global contributor network.",
+          "description": "Enterprise evaluation and red-teaming service combining automated scoring, expert human raters and private benchmark suites, deployable into a customer's own cloud. Scale runs the SEAL leaderboards on proprietary datasets that stay private and unpublished, launching with coding, instruction following, math and multilinguality.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "platform:closed(proprietary hosted SaaS); datasets:closed(private, unpublished SEAL benchmarks kept private to prevent gaming/training contamination); methodology:partially-disclosed(leaderboard transparency) but no open eval code or self-hostable engine; human-eval workforce is a proprietary service;source:closed(proprietary hosted platform, VPC deployment offered but no published source)",
             "confidence": "high",
-            "last_verified": "2026-08-13",
             "note": "Proprietary by design: the deliberately private benchmark datasets and the hosted expert-eval workforce are the moat, and there is no open eval code. The platform page mentions a 'largely open-source technology toolkit' in passing but names no repository and offers nothing downloadable, so nothing about the source is actually open.",
             "sources": [
               {
@@ -67532,8 +67718,7 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "last_verified": "2026-08-13",
-            "note": "The SEAL Leaderboards are widely cited and described as 'trusted by leading AI labs,' and SEAL Showdown draws on real-world conversations across more than 100 countries, 70 languages and 200 professional domains. Scale discloses no paying-customer count for the evaluation platform itself, so this reflects reported traction on the eval surface rather than a verified user count.",
+            "note": "Scale describes itself as a third-party model evaluator trusted by leading AI labs, and it runs the SEAL leaderboards. Scale discloses no paying-customer count for the evaluation platform itself, so this reflects reported traction on the eval surface rather than a verified user count.",
             "sources": [
               {
                 "url": "https://scale.com/blog/showdown",
@@ -67564,10 +67749,9 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "benchmark/task coverage: coding, instruction-following, math, multilingual, reasoning, agentic workflows, multimodal, safety/alignment; eval modalities: private curated benchmarks + adversarial vulnerability scans + human expert eval + real-preference (Showdown); reproducibility: NOT reproducible by design (private datasets); standardization: high (neutral third-party)",
+            "value": "benchmark/task coverage: coding, instruction following, math, multilingual (SEAL launch domains); eval modalities: private curated benchmarks + automated and human feedback; reproducibility: not reproducible by design (private datasets)",
             "confidence": "medium",
-            "last_verified": "2026-08-13",
-            "note": "Scale's evaluation platform covers a broad range of professional domains through private multi-domain benchmarks, an expert human workforce, adversarial red-teaming and the real-preference data behind SEAL Showdown. It is closed and not reproducible by design, and it offers no code a user can run independently, which keeps it behind the fully open, community-run harnesses in the category.",
+            "note": "Scale's evaluation platform combines automated and human feedback with private benchmarks and an expert human workforce. It is closed and not reproducible by design, and it offers no code a user can run independently, which keeps it behind the fully open, community-run harnesses in the category.",
             "sources": [
               {
                 "url": "https://scale.com/blog/leaderboard",
@@ -67600,8 +67784,30 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
+            "date": "2026-09-29",
+            "basis": "commit",
+            "unconfirmed_axes": [
+              "adoption",
+              "capability",
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "The recorded level rests on SEAL Showdown figures (countries, languages, professional domains), but the Showdown pages now return 404 and no live page restates them. The leaderboard blog says only that Scale is a third-party model evaluator trusted by leading AI labs. Settled by a live page restating the figures or a countable usage figure."
+              },
+              {
+                "axis": "capability",
+                "since": "2026-09-29",
+                "reason": "The recorded value cites adversarial vulnerability scans and the Showdown real-preference arena, but the platform page now supports only automated and human feedback and red-teaming expertise, and the Showdown pages return 404. Settled by a live Scale Evaluation or red-teaming product page and a live Showdown page."
+              },
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "No first-party page states that the evaluation platform code is proprietary: scale.com/genai-platform now redirects to a GenAI Portfolio page that never names Scale Evaluation, calls its toolkit largely open-source without naming a repository, and says only that Scale owns the platform infrastructure. Settled by a live Scale Evaluation product or terms page that states the software is proprietary, or names the open toolkit repository."
+              }
+            ]
           }
         },
         {
@@ -67753,14 +67959,14 @@
           "org_slug": "vals-ai",
           "org": "Vals AI",
           "type": "software",
-          "description": "Independent benchmarking service that runs held-out evaluations over finance, law, healthcare, coding, math, education, cybersecurity and games, and publishes composite indices alongside a leaderboard of frontier models scored on those private sets. The benchmarks stay private specifically because public ones suffer contamination.",
+          "description": "Independent benchmarking service that runs evaluations over finance, law, healthcare, coding, math, education, cybersecurity and games, and publishes composite indices alongside a leaderboard of frontier models. Vals says its scores are based on privately held test sets, kept private so models cannot be trained to them, and it has open sourced the infrastructure that runs the evaluations.",
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "license:proprietary(the Vals Index platform and its held-out sets)+AGPL-3.0(OSI, vals-ai/Valkyrie)+MIT(OSI, vals-ai/model-library);source:partial(harness repos public, Index runtime and datasets do not ship);benchmarks:proprietary/private-held-out(Vals Index on non-public datasets);eval-harness:published(Valkyrie AGPL-3.0 + model-library MIT)",
+            "components": "license:proprietary(the Vals Index and its held-out test sets)+AGPL-3.0(OSI, vals-ai/Valkyrie)+MIT(OSI, vals-ai/model-library);source:partial(harness repos public, held-out test sets not published);benchmarks:proprietary/private-held-out(Vals Index on non-public datasets);eval-harness:published(Valkyrie AGPL-3.0 + model-library MIT)",
             "confidence": "high",
-            "note": "Vals AI is a proprietary evaluation platform, but part of its infrastructure is open: Valkyrie, its agentic-benchmark harness, ships under AGPL-3.0, and its model library, a provider-agnostic API gateway, ships under MIT. The Vals Index runtime has no self-hostable version, and the held-out test sets behind its scores are never published, keeping the source partial rather than closed.",
-            "last_verified": "2026-08-14",
+            "note": "Vals AI is a proprietary evaluation service, but part of its infrastructure is open: Valkyrie, its agentic-benchmark harness, is AGPL-3.0, and its model library, a provider-agnostic API gateway, is MIT. The test sets behind its scores are held privately and never published.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.vals.ai",
@@ -67778,17 +67984,6 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "deb010de89092a2071bc5e3e8168d9b85e7bfa3887d7105476aba611c90234fc"
-              },
-              {
-                "url": "https://www.vals.ai/about",
-                "shows": "'We have built, and even open-sourced, the infrastructure we rely on to run these evaluations reproducibly and at scale across labs. This includes Valkyrie, a distributed system to run agentic benchmarks, and our model library, a free standard API to call models with.' Beside it, 'Scores are based on our privately held test sets to preserve the integrity and signal of our results' - the harness ships, the sets and the Index runtime do not.",
-                "accessed": "2026-08-14",
-                "http_status": 200,
-                "content_sha256": "b90f2049e69c80ab973b902ea1524b11f79ea594d00ebf24b6d1fae7c7a7342a",
-                "establishes": [
-                  "source",
-                  "license"
-                ]
               },
               {
                 "url": "https://api.github.com/repos/vals-ai/valkyrie",
@@ -67811,6 +68006,60 @@
                   "license",
                   "source"
                 ]
+              },
+              {
+                "url": "https://www.vals.ai/about",
+                "shows": "The About page says the evaluations run on held-out sets and that the run infrastructure is public: \"Scores are based on our privately held test sets to preserve the integrity and signal of our results.\" and \"We have built, and even open-sourced, the infrastructure we rely on to run these evaluations reproducibly and at scale across labs.\" The harness ships; the test sets do not.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "642675dd3ff13e5bcdb5a1dd1863036223117bd35fc104b9654cb0cf3f2e0df7",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://www.vals.ai/benchmarks",
+                "shows": "The benchmarks page tags the Vals Index \"Proprietary\" and describes its own sets as private: \"Private question-answer benchmark over Canadian court-cases.\" and \"A private benchmark evaluating understanding of long-context credit agreements\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vals-ai/Valkyrie/main/LICENSE",
+                "shows": "Raw LICENSE of vals-ai/Valkyrie is the full text of \"GNU AFFERO GENERAL PUBLIC LICENSE\" \"Version 3, 19 November 2007\", so the harness is AGPL-3.0.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vals-ai/Valkyrie/main/docs/HOSTED_MODE.md",
+                "shows": "Valkyrie docs describe a self-hosted mode that needs no Vals service: \"Run your own infrastructure end-to-end, including your own tracker service deployment.\" Hosted mode is an option that uses \"a Descope API key\" from Vals; self-hosting is the alternative.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "517810d897e108b3a97364f36a073b4eb08b220a3e639dafcbbbd3b5acd8225c",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vals-ai/model-library/main/LICENSE",
+                "shows": "Raw LICENSE of vals-ai/model-library is the \"MIT License\" with \"Copyright (c) 2025 Vals AI, Inc.\", so the model library is MIT.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "c7a99fe28ed4ff01da6aa71fc6853ed11eae6092dba8bfd336ea142cfddab1a0",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -67819,8 +68068,7 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Vals AI's benchmarks page tracks models across the Vals Index, a Multimodal Index and vertical suites spanning law, finance, healthcare, math and coding, with scores cited across third-party coverage and a partnership with Legaltech Hub on industry studies. Vals publishes no user, traffic or customer count, so this reflects citation as a benchmark authority rather than a measured usage figure.",
-            "last_verified": "2026-08-13",
+            "note": "Vals AI's benchmarks page tracks models across the Vals Index, a Multimodal Index and vertical suites spanning law, finance, healthcare, math and coding. Vals publishes no user, traffic or customer count, so this reflects its standing as a benchmark provider rather than a measured usage figure.",
             "sources": [
               {
                 "url": "https://www.vals.ai/benchmarks",
@@ -67833,16 +68081,23 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "68b57a0a93207cd98932ef7bb54e1e638db27450bbb70d5e8fb6cae4841d5a6f"
+              },
+              {
+                "url": "https://www.vals.ai/benchmarks",
+                "shows": "The leaderboard index lists the Vals Index, Vals RSI Index, Web Search Index and Vals Multimodal Index plus legal, finance, healthcare, math, science, education, voice, coding, games and social mobility suites, e.g. \"Evaluating agents on legal research tasks across diverse areas of US law\". It gives per-benchmark model counts only; a search for customers and users finds no usage, traffic or customer figure.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e"
               }
             ]
           },
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Coverage: 6+ domain verticals (finance/law/healthcare/coding/math/tax incl. TaxEval, CorpFin, MedCode, LegalBench); model-backend breadth = all major frontier labs; reproducibility via private held-out sets (anti-leakage); agentic-eval support (Finance Agent v2). Pointwise scoring + composite indices.",
+            "value": "Coverage: finance, legal, healthcare, coding, math, education, security and games suites, including CorpFin, MedCode and LegalBench; models from several frontier labs; many benchmarks on private held-out test sets; agentic evaluation (Finance Agent v2); composite indices (Vals Index, RSI Index, Multimodal Index).",
             "confidence": "medium",
-            "last_verified": "2026-08-13",
-            "note": "Vals AI is a leading independent blind-benchmark suite with deep vertical coverage, including cybersecurity, games and agentic evaluation such as Finance Agent v2, but its fixed, proprietary task set keeps it from becoming a standard others reproduce. Its Valkyrie and model-library repositories have since been published, but the Index remains unhostable, keeping it narrower than a general harness.",
+            "last_verified": "2026-09-29",
+            "note": "Vals AI covers finance, legal, healthcare, math, science, education, coding, security and games suites, plus the Vals Index, RSI Index and Multimodal Index. Many of them run on privately held test sets that outsiders cannot rerun, though the Valkyrie and model-library repositories are published.",
             "sources": [
               {
                 "url": "https://www.vals.ai",
@@ -67855,6 +68110,27 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "303bde67a1b32448cbe8de1ef60414a71472450740363231f8cdda41ef4423db"
+              },
+              {
+                "url": "https://www.vals.ai/benchmarks",
+                "shows": "The benchmarks page covers finance (\"Evaluating agents on core financial analyst tasks\", \"A private benchmark evaluating understanding of long-context credit agreements\"), healthcare (\"Can models support the medical billing process?\"), legal (\"Evaluating agents on legal research tasks across diverse areas of US law\"), math, science, education, coding, security (\"Can AI agents find security bugs and patch them?\") and games, alongside the composite Vals Index, RSI Index and Multimodal Index, and lists the suites \"CorpFin v2\", \"MedCode\", \"LegalBench\" and \"Finance Agent v2\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e"
+              },
+              {
+                "url": "https://www.vals.ai",
+                "shows": "The home page states \"run all of our own evaluations and create many of our benchmarks\" and shows new model releases from several labs each \"evaluated across our benchmark suite\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "69231c016623c2d4263edd27fc7cb34c0fdb8c4c1aba507398ef8cf6632b8e3c"
+              },
+              {
+                "url": "https://www.vals.ai/about",
+                "shows": "The About page says \"Scores are based on our privately held test sets to preserve the integrity and signal of our results.\" and \"This prevents training to the test set, unlike in open-source benchmarks.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "642675dd3ff13e5bcdb5a1dd1863036223117bd35fc104b9654cb0cf3f2e0df7"
               }
             ]
           },
@@ -67863,9 +68139,18 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-14"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "The benchmarks page publishes no user, traffic or customer count, only per-benchmark model counts, and no other countable usage source was found, so the recorded reported-traction band cannot be re-established. Settled by a Vals-published usage or customer figure, or a warehouse route."
+              }
+            ]
           }
         },
         {
@@ -68125,13 +68410,12 @@
           "org_slug": "google-cloud",
           "org": "Google Cloud",
           "type": "software",
-          "description": "Managed evaluation service on Vertex AI, part of the Gemini Enterprise Agent Platform, that scores generative-AI outputs three ways: computation-based metrics such as ROUGE and BLEU, model-based autorater metrics with adaptive rubrics that generate per-prompt pass/fail tests, and AutoSxS pairwise pipelines that A/B test two models with a judge declaring a winner. It covers models, agents and RAG grounding, and evaluation datasets can be built from production logs or synthetic data.",
+          "description": "Google Cloud's managed service for scoring generative-AI outputs, part of the Gemini Enterprise Agent Platform, using adaptive rubrics that generate per-prompt pass/fail tests, static rubrics, computation-based metrics such as ROUGE and BLEU, and custom Python function metrics. It covers models and agents, works with any model callable through LiteLLM, and builds evaluation datasets from uploaded files, production logs or synthetic data.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "license:proprietary(GCP managed service);source:closed;deployment:cloud-only(Vertex AI pipelines/AutoSxS);billing:GCP managed-service pricing",
             "confidence": "high",
-            "last_verified": "2026-08-13",
             "note": "Proprietary Google Cloud managed service; no source, no self-host, runs as Vertex AI eval pipelines. The open-model references on the overview are about models the service can deploy and evaluate, not about the service itself, which is offered with no source, no self-host and no license.",
             "sources": [
               {
@@ -68158,8 +68442,8 @@
             "reach": null,
             "signal_type": "unknown",
             "confidence": "low",
-            "last_verified": "2026-08-13",
-            "note": "A managed Google Cloud feature with no published standalone usage or customer count, and no download or star signal to fall back on, being a closed cloud service. Unlike Amazon Bedrock Evaluations it offers no GA-scale traction figure that can be checked, so no level is assigned rather than inferring one from the size of the parent Vertex AI surface.",
+            "last_verified": "2026-09-29",
+            "note": "Google publishes no customer, usage or run-count figure for the evaluation service, which is a managed feature of Vertex AI. Without a figure specific to it, no level is assigned rather than inferred from the size of the parent Vertex AI surface.",
             "sources": [
               {
                 "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview",
@@ -68172,6 +68456,13 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "4d1f8992f97637bb096575d3c3f5c45fd47702c427c76e682e34eaf7cfd60641"
+              },
+              {
+                "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview",
+                "shows": "The overview of the Gen AI evaluation service describes it as providing \"enterprise-grade tools for objective, data-driven assessment of generative AI models\" and lists features, workflow and supported regions. Searched the page for customers, million, trusted by and used by and found none; the single match for adopt is the sentence \"you can adopt an evaluation-driven development cycle\", which is not an adoption figure, so the page publishes no usage or adoption figure.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ef17bf648297b4443ccdb25ad9d1bd67ad36dfc32d6a62e00ad2dbdcd93b3c31"
               }
             ]
           },
@@ -68182,8 +68473,8 @@
             "confidence": "medium",
             "relative_to": "amazon-bedrock-evaluations",
             "relation": "at",
-            "last_verified": "2026-08-13",
-            "note": "A broad managed eval suite: model, agent and RAG targets, both computation-based and autorater metrics, and pointwise as well as pairwise (AutoSxS) comparison. Comparable in scope to Amazon Bedrock Evaluations, which sits at the same level, and like it a custom-dataset eval product rather than a public standardized leaderboard, so 4 rather than 5.",
+            "last_verified": "2026-09-29",
+            "note": "A managed eval suite covering model and agent targets, with rubric-based, computation-based and custom-function metrics, and pointwise and pairwise judge metrics with configurable and tuned judge models. It is comparable in scope to Amazon Bedrock Evaluations and, like it, runs on custom datasets rather than a public standardized leaderboard.",
             "sources": [
               {
                 "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview",
@@ -68196,6 +68487,27 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "4d1f8992f97637bb096575d3c3f5c45fd47702c427c76e682e34eaf7cfd60641"
+              },
+              {
+                "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview",
+                "shows": "The overview lists evaluation methods including \"Computation-based metrics\" using deterministic algorithms like ROUGE or BLEU, adaptive and static rubrics, and \"Custom functions\", and states that the SDK works with \"any model callable through\" LiteLLM; it also lists \"Agent evaluation\" as a use case with agent-specific metrics.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ef17bf648297b4443ccdb25ad9d1bd67ad36dfc32d6a62e00ad2dbdcd93b3c31"
+              },
+              {
+                "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/optimize/evaluation/agent-evaluation",
+                "shows": "The agent evaluation page states it \"describes how to use agent evaluation to measure and improve the\" performance, safety and quality of agents, and that metrics are computed by \"Grade traces using automated raters (Task Success, Safety)\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "14399d1f39eef6d22aeff665b12deb213aaed4a5baf7023ddf0d75908ac6f5cc"
+              },
+              {
+                "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/configure-judge-model",
+                "shows": "The judge-model page documents customizing model-based metrics with PairwiseMetric and PointwiseMetric, including \"Flip the responses from the baseline model and the candidate model to reduce judge model bias during evaluation.\" and a tuned judge: \"Use a tuned LLM as the judge model.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "0e1e26c32b8ba96185a3faddcb206507fea90f2e27cc550bf86e5ca9a1602e3c"
               }
             ]
           },
@@ -68204,8 +68516,18 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
+            "date": "2026-09-29",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-09-29",
+                "reason": "No fetched first-party page states that the service is closed source, managed-only or under a proprietary license: the overview documents regional availability and SDK use, the pricing page has no evaluation entry, and the service terms name no Gen AI evaluation service. Settled by a first-party statement covering license, source, deployment and billing."
+              }
+            ]
           }
         },
         {
@@ -68626,8 +68948,8 @@
             "class": "open_source",
             "components": "license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python;core-gated:ungated(local execution is the default mode, all scenario packs ship in the package)",
             "confidence": "high",
-            "last_verified": "2026-08-13",
-            "note": "Permissive OSI (MIT) license with full public source. The README describes a local-first framework that ships its scenario packs and needs no account, and no paid tier, hosted edition or license key appears anywhere in it.",
+            "last_verified": "2026-09-29",
+            "note": "SimpleAudit is MIT-licensed with full public source, and MIT is an OSI license. The README describes a local-first framework that ships its scenario packs and needs no account, and no license key, subscription or pricing term appears in it.",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/LICENSE",
@@ -68672,6 +68994,37 @@
                   "source",
                   "core-gated"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/LICENSE",
+                "shows": "LICENSE body opens \"MIT License\" and grants \"Permission is hereby granted, free of charge, to any person obtaining a copy\", with \"Copyright (c) 2025 Simula Research Laboartoy, Oslo, Norway\".",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "6a48f8bb76cd134073d1231f140425f5695b0659cc1fba3ea5596a0a0879fe19",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/README.md",
+                "shows": "README describes \"SimpleAudit is a simple, extensible, local-first framework for multilingual auditing and red-teaming of AI systems via adversarial probing\", gives the install route \"pip install -U git+https://github.com/kelkalot/simpleaudit.git\", and states \"Local execution is the default deployment mode and the original design constraint\". The scenario packs ship in the package, the only external dependency being the reader's own model API key if they choose an API-hosted model; no license key, subscription, enterprise or pricing term appears (searched the body for each).",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "6df497662bdb77eb3b6c6635ab7d4b26b12717fe4a27226608a56206a9ce2ff6",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/pyproject.toml",
+                "shows": "pyproject declares license = {text = \"MIT\"} and the classifier \"License :: OSI Approved :: MIT License\", with dependencies limited to \"any-llm-sdk>=1.14.0\", fsspec and tqdm.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "980642b5bbe2a6171262cab4991a19762b9f6c059bffb642207cbfe5bf2b78ca",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -68681,7 +69034,7 @@
             "reach": "<1K stars",
             "signal_type": "stars_fallback",
             "confidence": "medium",
-            "note": "SimpleAudit describes itself as early-stage, and GitHub stars are the only signal published for it, since no download, install or customer figure exists. A star is not a use, so this reading stays directional rather than precise.",
+            "note": "GitHub stars are the only signal published for SimpleAudit, since no download, install or customer figure exists. A star is not a use, so this reading stays directional rather than precise.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -68698,8 +69051,8 @@
             "basis": "feature_matrix",
             "value": "Multilingual adversarial probing with local/open-model support; scenario packs (safety, RAG, healthcare) plus a broken-premise evaluator.",
             "confidence": "high",
-            "last_verified": "2026-08-13",
-            "note": "A focused but functional red-teaming toolkit with a distinctive broken-premise mode. The README carries a validation section reporting AUROC of 0.89-1.00 for separating safe from unsafe responses, and a direct comparison against Petri, but this is still a single-purpose adversarial-probing tool rather than a general harness, which is what holds the score where it is.",
+            "last_verified": "2026-09-29",
+            "note": "The README reports responsiveness of AUROC 0.89-1.00 across reliable judge-auditor cells and compares the tool against Petri. It is a single-purpose adversarial-probing framework rather than a general harness, with broken-premise packs beside its safety, RAG and health packs.",
             "sources": [
               {
                 "url": "https://github.com/kelkalot/simpleaudit",
@@ -68712,6 +69065,13 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "6c851942b0521b6cbf776a4b1b4905d8255fb261eff3cfcb3aa7abf07df09c46"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/README.md",
+                "shows": "README reports responsiveness of \"AUROC 0.89–1.00 across reliable judge–auditor cells\", compares against Petri (\"both tools pass, so the differences live upstream of the chain\"), lists broken-premise packs \"health_bullshit\" and \"epistemic_safety\" beside the safety, rag and health packs, and advises \"Report the bundle, not a leaderboard.\"",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "6df497662bdb77eb3b6c6635ab7d4b26b12717fe4a27226608a56206a9ce2ff6"
               }
             ]
           },
@@ -68720,9 +69080,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-27",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-27"
+            "latest_axis_confirmation": "2026-09-29"
           },
           "version_note": "A fixed default scenario pack, rubric, auditor, judge and sampling configuration make reruns comparable."
         },
@@ -81637,8 +81997,8 @@
             "basis": "n/a",
             "value": null,
             "confidence": "high",
-            "note": "A wire protocol has no benchmark to score, so capability is left unscored: openness and adoption already carry the signal for a specification, and scoring implementation breadth separately would repeat what adoption measures through the same SDK downloads. The Agent2Agent and Agent Client protocols are treated the same way.",
-            "last_verified": "2026-08-14",
+            "note": "MCP ships a specification, schema and documentation, and the repository publishes no benchmark, leaderboard or performance figure, so there is nothing to score for capability. Implementation breadth already shows up in the SDK downloads counted under adoption, and the Agent2Agent and Agent Client protocols are left unscored for the same reason.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol",
@@ -81646,6 +82006,20 @@
                 "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "0756fabd71a36d29890ee7d2e08c29b43df3718acf2d99e45dba784e23572afe"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/README.md",
+                "shows": "The spec repository README states it contains the \"MCP specification\", the \"MCP protocol schema\" and \"Official MCP documentation\", with the schema \"defined in TypeScript\" first and made available as JSON Schema. Searched the body for benchmark, leaderboard, score and performance: none, so the repository publishes no benchmark result.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "7e98444c73ed5d923a3b02b1247e9cdf678d31a30cc32b1503bdcd906aa984e2"
+              },
+              {
+                "url": "https://modelcontextprotocol.io/docs/getting-started/intro",
+                "shows": "The docs introduction calls it \"an open-source standard for connecting AI applications to external systems\" and describes what it enables, with no benchmark, leaderboard or performance figure. Searched the body for benchmark and leaderboard: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "ff7f4b4be60b963f026dd0d1853c9caba0022db30f4239b20c16f6f4e230726c"
               }
             ]
           },
@@ -81654,9 +82028,9 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-14",
+            "date": "2026-09-28",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-28"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
@@ -81755,8 +82129,8 @@
             "basis": "n/a",
             "value": null,
             "confidence": "high",
-            "note": "A2A is a wire protocol, and protocols are not benchmarked here, so capability is left unscored rather than estimated. Breadth of implementation would double-count what the adoption score already measures, and spec maturity has no comparable protocol to weigh it against; the Model Context Protocol carries the same policy.",
-            "last_verified": "2026-08-14",
+            "note": "A2A is a specification, and neither the repository nor the specification publishes a benchmark, leaderboard or performance figure, so there is nothing to score for capability. How widely it is implemented is already reflected in adoption, and the Model Context Protocol is left unscored for the same reason.",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://github.com/a2aproject/A2A",
@@ -81771,6 +82145,20 @@
                 "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "7123045c8469aa4c558e83b2a967c153f6590170693f8a93cb50cdb28c695a94"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/a2aproject/A2A/main/README.md",
+                "shows": "The README describes A2A as \"An open protocol enabling communication and interoperability between opaque agentic applications.\" and lists specification, documentation and SDK links. Searched the body for benchmark, leaderboard, latency, throughput and performance: none.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "440930f051475027fc54f0747c1f8ee84a12b36c343f585cdb0a54e6436abc1d"
+              },
+              {
+                "url": "https://a2a-protocol.org/latest/specification/",
+                "shows": "The specification page defines protocol operations and wire behavior, for example task listing that \"MUST use cursor-based pagination for performance and consistency\". Searched the body for benchmark, leaderboard and throughput: none. The only other performance wording is descriptive, such as a \"high-performance, strongly-typed interface\" for the gRPC binding, and the page publishes no benchmark result or performance figure for the protocol.",
+                "accessed": "2026-09-29",
+                "http_status": 200,
+                "content_sha256": "574235117ec67ef37e30fe6776ae9258728bd05eb863695bcaf0d3984865c557"
               }
             ]
           },
@@ -81779,9 +82167,9 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-14",
+            "date": "2026-09-28",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-28"
+            "latest_axis_confirmation": "2026-09-29"
           }
         },
         {
