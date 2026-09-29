@@ -16,21 +16,51 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: MIT, local-first document parsing, fully self-hostable with integrated open-weight models.
+  note: Docling's code is MIT-licensed and public, and it runs entirely on the user's own machines, including
+    air-gapped ones. Its layout and table-structure models are published on Hugging Face under the permissive
+    Apache-2.0 and CDLA-Permissive-2.0 licenses, so nothing it needs to run is held back.
   raw: license:MIT(OSI);source:public(github.com/docling-project/docling);self-host:primary;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/docling-project/docling/main/LICENSE
-    shows: 'Plain MIT License text: "Copyright (c) 2024 International Business Machines".'
-    accessed: '2026-08-13'
+    shows: The raw LICENSE is the standard MIT text, "Copyright The Docling Contributors", granting "Permission
+      is hereby granted, free of charge, to any person obtaining a copy" with no added restriction.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 9816fb12b11c33c552f4e8621879d0da493be47c0f86be785b53a2cf7f7ae4c6
+    content_sha256: edb765d1e3e60d0c7a7d5fba5f2bb2c3c29f7465cecb5c22cf1185c884954e4c
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/docling-project/docling/main/README.md
+    shows: 'The raw README states "The Docling codebase is under MIT license." and lists "Local execution
+      capabilities for sensitive data and air-gapped environments" and running "Docling as a service" through
+      docling-serve. Searched the body for enterprise, pricing, paid, subscription and license key: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 4f55583e9c57442b635a2bdf0c718a9919752a73a18b710b0b5cb57ef23c0aed
+    establishes:
+    - source
+    - self-host
+    - core-gated
+  - url: https://huggingface.co/api/models/docling-project/docling-layout-heron
+    shows: Hugging Face model record for Docling's Heron layout model, "docling-project/docling-layout-heron",
+      tagged "license:apache-2.0".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: cdfd79c8c6b6f9dc558a0f67999b1ab23610edd4bcb9ace8fa6a8667a6a2a64e
+    establishes:
+    - core-gated
+  - url: https://huggingface.co/api/models/docling-project/docling-models
+    shows: Hugging Face model record for "docling-project/docling-models", the table-structure weights,
+      tagged "license:cdla-permissive-2.0" and "license:apache-2.0".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 14b894ec6ae7e1e1387d368a766d28c24a1f79fdf9329e29522f873d46e5b071
+    establishes:
+    - core-gated
   - url: https://github.com/docling-project/docling
-    shows: Repo page - MIT badge, 64,719 stargazers. "Local execution capabilities for sensitive data and air-gapped
-      environments"; open-weight VLMs such as GraniteDocling driven from the CLI; docling-serve as the self-run
-      API server. No paid tier, license key or enterprise directory.
+    shows: Repo page - MIT badge, 64,719 stargazers. "Local execution capabilities for sensitive data and
+      air-gapped environments"; open-weight VLMs such as GraniteDocling driven from the CLI; docling-serve
+      as the self-run API server. No paid tier, license key or enterprise directory.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 23ecab48418cfbc5de53cbb3a01663ec3af4e2e029550cf73306342d7cc2a891
@@ -44,7 +74,6 @@ adoption:
   note: Docling's adoption is measured by PyPI downloads of the docling package by itself. A separate package,
     docling-core, adds further downloads that are not included in this count.
   reach: '>10M'
-  last_verified: '2026-08-12'
   sources:
   - url: https://pypistats.org/api/packages/docling/recent
     shows: 12,493,111 downloads in the trailing 30 days for docling
@@ -54,23 +83,40 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/WAV/MP3/WebVTT/email/images/LaTeX and video -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless
-    JSON; layout + reading-order; table-structure recognition; formula/code extraction; image classification;
-    OCR; VLM and ASR models; application-specific XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server
+  value: parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/ODF/Apple Pages/WAV/MP3/WebVTT/email/images/LaTeX and video
+    -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless JSON; layout + reading-order; table-structure recognition;
+    formula/code extraction; image classification; chart understanding; OCR; VLM and ASR models; application-specific
+    XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server; template-driven field extraction (PDF/images)
   confidence: high
-  note: 'Docling parses the widest range of input formats in the category - PDF, DOCX, PPTX, XLSX, HTML,
-    EPUB, audio and images - into Markdown, HTML or lossless JSON with layout and reading order preserved.
-    It recovers structure faithfully but assigns no meaning to it: extracting typed entities or running
-    models trained on a customer''s own document types are capabilities it lacks.'
-  last_verified: '2026-08-13'
+  note: Docling parses PDF, Office, HTML, EPUB, audio, video and image inputs into Markdown, HTML or lossless
+    JSON with layout, reading order and table structure preserved. Its extractor also returns fields a user
+    defines in a dictionary or Pydantic template, such as a bill number and total, though only from PDFs
+    and images.
   sources:
+  - url: https://raw.githubusercontent.com/docling-project/docling/main/README.md
+    shows: 'The raw README feature list: "Advanced PDF understanding incl. page layout, reading order, table
+      structure, code, formulas, image classification, and more", export to "Markdown, HTML, WebVTT, DocLang",
+      "Extensive OCR support for scanned PDFs and images", "Audio support with Automatic Speech Recognition
+      (ASR) models", "Parsing of video files (MP4, AVI, MOV, MKV, and WebM)", "Parsing of ODF (OpenDocument
+      Format) files" and "Chart understanding (Barchart, Piechart, LinePlot)".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 4f55583e9c57442b635a2bdf0c718a9919752a73a18b710b0b5cb57ef23c0aed
+  - url: https://docling-project.github.io/docling/_generated/examples/extraction/
+    shows: The Information extraction example states "Docling provides the capability of extracting information,
+      i.e. structured data, from unstructured documents." and that the user supplies a template "either
+      as a dictionary or as a Pydantic model, and Docling will return" the extracted data; its "Using a
+      dict template" example returns a bill number and a total of "3949.75" from an invoice.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2c7a3feb10edea4ad9304e1ae7e2d8adafc90f9e5ab0524ddeb68a6b37a3b6db
   - url: https://github.com/docling-project/docling
     shows: Feature list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, WAV, MP3, WebVTT, Box Notes, EML/MSG, images,
-      LaTeX, DocLang and plain text input; "Advanced PDF understanding incl. page layout, reading order, table
-      structure, code, formulas, image classification"; export to Markdown, HTML, WebVTT, DocLang, DocTags
-      and lossless JSON; "Extensive OCR support for scanned PDFs and images"; VLM support; "Audio support with
-      Automatic Speech Recognition (ASR) models"; "Connect to any agent using the MCP server"; video parsing
-      under What's new.
+      LaTeX, DocLang and plain text input; "Advanced PDF understanding incl. page layout, reading order,
+      table structure, code, formulas, image classification"; export to Markdown, HTML, WebVTT, DocLang,
+      DocTags and lossless JSON; "Extensive OCR support for scanned PDFs and images"; VLM support; "Audio
+      support with Automatic Speech Recognition (ASR) models"; "Connect to any agent using the MCP server";
+      video parsing under What's new.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 23ecab48418cfbc5de53cbb3a01663ec3af4e2e029550cf73306342d7cc2a891

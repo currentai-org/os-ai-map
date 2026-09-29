@@ -13,24 +13,44 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT; optional Azure/LLM features are pluggable, not gating. Azure Document Intelligence and Azure
-    Content Understanding are optional install extras - the `[az-doc-intel]` and `[az-content-understanding]`
-    groups - sitting beside built-in offline converters, so the conversion the product exists to do runs entirely
-    in the published package and core-gated stays ungated.
+  note: MarkItDown is MIT-licensed, with its full source public on GitHub. Its document converters run locally;
+    the Azure Document Intelligence and Azure Content Understanding integrations are optional extras that
+    call billable cloud services, and the core conversion does not need them.
   raw: license:MIT(OSI; repo LICENSE + pyproject, PyPI field null);source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/microsoft/markitdown/main/LICENSE
-    shows: 'Plain MIT License text: "Copyright (c) Microsoft Corporation".'
-    accessed: '2026-08-13'
+    shows: The raw LICENSE is the standard MIT text, "Copyright (c) Microsoft Corporation", granting "Permission
+      is hereby granted, free of charge, to any person obtaining a copy" with no added restriction.
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/microsoft/markitdown/main/packages/markitdown/pyproject.toml
+    shows: The package manifest for "Utility tool for converting various files to Markdown" declares the
+      license as "MIT".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 68275854fef84923b1a62fce9d7f366ef7073232edfe5ba0b930a6f6cc02b4a8
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/markitdown/main/README.md
+    shows: 'The raw README installs from source with "pip install -e ''packages/markitdown[all]''" and compares
+      converters: built-in ones do "Offline, format-specific extraction" at "Local compute only", while
+      the Azure integrations are optional extras ("Installs dependencies for Azure Document Intelligence")
+      billed as "Billable Azure API calls". Searched the body for enterprise, pricing, subscription and
+      license key: none.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9f9dc0e582d066e8ac671a1f63b3a73c70a7be9909e8be51a7f5aeb5a7c04af2
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/microsoft/markitdown
     shows: Repo page - MIT badge, root tree carrying LICENSE, Dockerfile and packages/. A capability table
-      compares "Built-in converters" (offline, format-specific) against Azure Document Intelligence and Azure
-      Content Understanding, both installed as optional extras `[az-doc-intel]` and `[az-content-understanding]`.
+      compares "Built-in converters" (offline, format-specific) against Azure Document Intelligence and
+      Azure Content Understanding, both installed as optional extras `[az-doc-intel]` and `[az-content-understanding]`.
       No license key, second license or enterprise directory.
     accessed: '2026-08-13'
     http_status: 200
@@ -61,17 +81,31 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: converts PDF/DOCX/PPTX/XLSX/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown; CLI
-    + Python API + Docker; plugins; optional Azure Doc Intelligence + LLM vision
+  value: converts PDF/DOCX/PPTX/XLSX/Outlook/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown
+    keeping headings, lists, tables and links; CLI + Python API + Docker; plugins incl. LLM-vision OCR;
+    optional Azure Document Intelligence and Azure Content Understanding
   confidence: medium
-  note: Broadest format coverage among RAG ingestion tools; lighter on deep layout parsing than Docling.
-  last_verified: '2026-08-13'
+  note: MarkItDown converts Office files, PDFs, HTML, images, audio and other formats into Markdown that
+    keeps headings, lists, tables and links for language models to read. Its built-in converters do format-specific
+    extraction, leaving layout analysis of scanned or complex PDFs to the optional Azure services, and typed
+    fields come only from Azure Content Understanding.
+  last_verified: '2026-09-28'
   sources:
+  - url: https://raw.githubusercontent.com/microsoft/markitdown/main/README.md
+    shows: 'The raw README describes "a focus on preserving important document structure and content as
+      Markdown (including: headings, lists, tables, links, etc.)", lists "ZIP files (iterates over contents)",
+      "Images (EXIF metadata and OCR)" and "Audio (EXIF metadata and speech transcription)", documents plugins
+      including "The `markitdown-ocr` plugin adds OCR support to PDF, DOCX, PPTX, and XLSX converters",
+      and its comparison table gives built-in converters "Offline, format-specific extraction" with structured
+      fields "Not available".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9f9dc0e582d066e8ac671a1f63b3a73c70a7be9909e8be51a7f5aeb5a7c04af2
   - url: https://github.com/microsoft/markitdown
     shows: Format list - PDF, Office documents, images (OCR), audio (speech transcription), HTML, text-based
       formats (CSV, JSON, XML), "ZIP files (iterates over contents)", YouTube URLs, EPubs. Optional extras
-      `[audio-transcription]`, `[youtube-transcription]`, `[az-doc-intel]`, `[az-content-understanding]`; a
-      Plugins section; a Dockerfile in the root tree.
+      `[audio-transcription]`, `[youtube-transcription]`, `[az-doc-intel]`, `[az-content-understanding]`;
+      a Plugins section; a Dockerfile in the root tree.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9

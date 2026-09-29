@@ -73,21 +73,31 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: multi-format document understanding with layout, tables and formulas'
-  value: PDF and Office document extraction to Markdown and JSON with reading-order reconstruction, multi-column
-    layout handling, table and formula recognition, and OCR for scanned pages.
+  value: 'MinerU 4.0: PDF and image parsing across four quality tiers, from fast native parsing to VLM parsing,
+    with tables, formulas, figures, complex layouts and OCR for scanned pages; Office, OpenDocument, EPUB,
+    OFD, HTML and CSV parsed natively; one document model rendered as Markdown, HTML, LaTeX, DOCX or structured
+    JSON content lists.'
   relative_to: docling
   relation: at
   confidence: medium
-  note: MinerU recovers layout, tables, formulas and reading order into Markdown and JSON, matching Docling's
-    output; Docling's wider input-format support does not affect how much of one document survives conversion.
-    MinerU leads the OmniDocBench leaderboard at 93.04 against olmOCR's 85.74, though that benchmark is
-    maintained by MinerU's own team.
-  last_verified: '2026-08-13'
+  note: MinerU parses PDFs and images into one document model that keeps tables, formulas, figures and page
+    layout, rendered as Markdown, HTML or structured JSON, matching what Docling recovers from a document.
+    Its MinerU2.5-Pro model scores 95.75 on OmniDocBench, fourth behind TeleOCR's 96.91, a benchmark MinerU's
+    own team maintains.
   sources:
   - url: https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md
-    shows: README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order
-      reconstruction, multi-column layout handling, table and equation recognition, and OCR for scanned
-      pages.
-    accessed: '2026-08-30'
+    shows: 'The raw README for MinerU 4.0 lists input formats "PDF, images, DOC/DOCX, PPT/PPTX, XLS/XLSX,
+      RTF, ODT/ODS/ODP, EPUB", says "one document model supports nine rendering targets: Markdown, HTML,
+      LaTeX, DOCX, EPUB, PDF, Structured Content, and Content List V1/V2", offers "Basic for OCR and model-based
+      parsing", and calls MinerU "especially useful when documents contain OCR text, tables, formulas, figures,
+      or complex page layouts".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358
+    content_sha256: 69c967e98536be101b5dc3420703d28cc1e0250eeca3b5bf156b060ac4ccfacb
+  - url: https://raw.githubusercontent.com/opendatalab/OmniDocBench/main/README.md
+    shows: The OmniDocBench README, published by OpenDataLab, ranks "Comprehensive evaluation of document
+      parsing on OmniDocBench (v1.6_full)" with "TeleOCR" first at "96.91", then "OvisOCR2" at "96.47",
+      "PaddleOCR-VL-1.6" at "96.34" and "MinerU2.5-Pro" at "95.75".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a799f3dabee0d8e2be9f990fc325c3fefadb8d7f8d0cf56148406547d495a3ad
