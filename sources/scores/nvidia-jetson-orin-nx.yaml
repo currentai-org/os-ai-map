@@ -27,13 +27,12 @@ openness:
       raw: module (260-pin SO-DIMM module for a carrier board)
   confidence: high
   note: NVIDIA publishes module datasheets and a Product Design Guide but not the module's own board files,
-    and modules are sold through its distributor network rather than directly. Jetson Linux ships the kernel,
-    bootloader and drivers under the NVIDIA Software License Agreement, keeping the toolchain closed even
+    and modules are sold through its distributor network. Jetson Linux, which includes the kernel, bootloader
+    and drivers, is downloaded under NVIDIA's Software License Agreement, keeping the toolchain closed even
     though the hardware documentation is public.
   raw: schematics:partial (module datasheet + carrier design guide public);toolchain:closed (JetPack/Jetson
     Linux proprietary (NVIDIA SLA));datasheets:public;blobs:required (proprietary drivers/bootloader);retail:distributor
     (via distributors);form_factor:module (260-pin SO-DIMM module for a carrier board)
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin
     shows: Up to 157 TOPS, 1792-core Ampere GPU with 56 Tensor Cores, 16GB 128-bit LPDDR5, 260-pin SO-DIMM
@@ -65,7 +64,6 @@ adoption:
     popular in commercial drones/robotics but not mass-market. The family page lists "Jetson Orin NX is
     available in 16GB and 8GB" as production modules routed through the Jetson partner ecosystem, with no
     retail channel of its own.
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin
     shows: '"Jetson Orin NX is available in 16GB and 8GB" production modules, sold through the Jetson
@@ -78,10 +76,8 @@ capability:
   basis: feature_matrix
   value: Up to 157 TOPS; 8GB or 16GB LPDDR5; runs mid-to-large LLMs/VLMs and multi-stream vision
   confidence: high
-  note: Strong mid-range edge compute; the 16GB/157 TOPS variant handles sizeable models, below AGX Orin
-    but above Orin Nano. The comparison table reads 157 SPARSE INT8 TOPS and 16GB 128-bit LPDDR5 against
-    AGX Orin's 275 TOPS / 64GB above it and Orin Nano's 67 TOPS / 8GB below.
-  last_verified: '2026-08-13'
+  note: The 16GB, 157 sparse INT8 TOPS variant sits below AGX Orin at 275 TOPS with 64GB and above Orin
+    Nano at 67 TOPS with 8GB, according to NVIDIA's family comparison table.
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin
     shows: 157 SPARSE INT8 TOPS, 1792-core Ampere GPU with 56 Tensor Cores, 16GB 128-bit LPDDR5

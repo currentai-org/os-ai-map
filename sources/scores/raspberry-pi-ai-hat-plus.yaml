@@ -34,12 +34,11 @@ openness:
   note: The Raspberry Pi AI HAT+ has its own public product brief and mechanical specification, but it works
     only with the Raspberry Pi 5, which itself publishes a mechanical drawing rather than a full circuit
     schematic. Its Hailo accelerator runs on an open-source runtime, HailoRT, while the Dataflow Compiler
-    used to prepare models for it stays gated behind Hailo's customer registration.
+    used to prepare models for it stays closed to non-customers.
   raw: schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which
     scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief
     (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market);form_factor:board
     (HAT+ add-on board; the host it completes is recorded under accessory-host)
-  last_verified: '2026-08-14'
   sources:
   - url: https://datasheets.raspberrypi.com/ai-hat-plus/raspberry-pi-ai-hat-plus-product-brief.pdf
     shows: 'Raspberry Pi''s own AI HAT+ product brief, RP-008133-DS, published October 2024 - six
@@ -118,10 +117,8 @@ adoption:
   reach: mass-market
   signal_type: reported_traction
   confidence: high
-  note: First-party Raspberry Pi accessory sold through the global Pi distributor network with strong community/tutorial
-    coverage. The product page reads "Available now from $70", carries Buy links against the 13 TOPS and
-    26 TOPS variants and an Approved Resellers list, and commits to production until at least January 2030.
-  last_verified: '2026-08-13'
+  note: First-party Raspberry Pi accessory sold through the Pi distributor network and retailers such as
+    The Pi Hut, with broad community tutorial coverage.
   sources:
   - url: https://www.raspberrypi.com/products/ai-hat/
     shows: '"Available now from $70"; Buy links for the 13 TOPS and 26 TOPS variants; "Our Approved
@@ -134,11 +131,9 @@ capability:
   basis: feature_matrix
   value: 13 TOPS (Hailo-8L) or 26 TOPS (Hailo-8); vision inference; no onboard RAM (uses host Pi)
   confidence: high
-  note: The AI HAT+ pairs a Hailo-8 or Hailo-8L accelerator, at 26 or 13 TOPS respectively, with the host
-    Raspberry Pi 5's memory, and is built for camera tasks such as object detection, image segmentation
-    and pose estimation rather than generative models. That puts it above the Raspberry Pi 5 and the 6 TOPS
-    RK3588 boards on throughput, and below the Jetson Orin parts on what it can run.
-  last_verified: '2026-08-13'
+  note: The AI HAT+ pairs a Hailo-8 or Hailo-8L accelerator, at 26 or 13 TOPS, with a Raspberry Pi 5 over
+    PCIe and is built for camera vision tasks such as object detection and segmentation. That puts it above
+    the 6 TOPS RK3588 boards on throughput and below the Jetson Orin parts.
   sources:
   - url: https://www.raspberrypi.com/products/ai-hat/
     shows: '"Hailo-8 or Hailo-8L accelerator offering 26 TOPS or 13 TOPS inferencing performance

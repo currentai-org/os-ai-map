@@ -24,12 +24,11 @@ openness:
       detail: M.2 2280 module carrying four MX3 chips
       raw: module (M.2 2280 module carrying four MX3 chips)
   confidence: high
-  note: Proprietary dataflow silicon with public datasheets, retail availability, and several open source
-    runtime/driver repos, though the compiler core is closed.
+  note: Proprietary dataflow silicon with a public datasheet and several open-source runtime and driver
+    repositories, though the compiler core and chip firmware are closed.
   raw: schematics:none;toolchain:partial (open runtime (MxAccl) + utils + driver mirror, closed NeuralCompiler);datasheets:public;blobs:required
     (proprietary silicon);retail:open_market (Amazon/Mouser ~$149);form_factor:module (M.2 2280 module carrying
     four MX3 chips)
-  last_verified: '2026-08-13'
   sources:
   - url: https://developer.memryx.com/specs/M.2_datasheet.html
     shows: openly published MX3 M.2 module datasheet - "MemryX MX3 (x4)" AI processor, PCIe Gen 3 2-lane
@@ -65,11 +64,8 @@ adoption:
   reach: niche
   signal_type: reported_traction
   confidence: medium
-  note: Low-cost retail availability (Amazon, Mouser), independent reviews, a 2025 industry award and an
-    active GitHub org point to growing but emerging traction. Tom's Hardware's launch coverage puts the
-    module at $149 but names no distributor, so the Amazon and Mouser half of that availability is not confirmable
-    from any source cited here.
-  last_verified: '2026-08-13'
+  note: The module retails at $149, and independent reviews, a 2025 industry award and an active GitHub
+    organization point to growing but emerging traction.
   sources:
   - url: https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power
     shows: '"The MX3 M.2 module is available for $149 USD"; a technology start-up originating from the
@@ -88,22 +84,20 @@ capability:
   value: 6 TOPS/chip, up to 24 TOPS (4-chip M.2); 4/8/16-bit weights + BFloat16; ~42M params per module
   confidence: high
   note: Four MX3 chips on the M.2 module combine for up to 24 TOPS, with support for 4, 8 and 16-bit weights
-    plus BFloat16. On-chip parameter capacity limits how large a model can run, and the datasheet no longer
-    states a TOPS figure or parameter capacity, so those numbers come from the launch coverage rather than
-    MemryX's own specification table.
-  last_verified: '2026-08-13'
+    plus BFloat16. On-chip parameter capacity limits how large a model can run, and the figures come from
+    launch coverage rather than a vendor specification table.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power
-    shows: '"Each MX3 chip is said to deliver 6 TOPS (Tera Operations Per Second), offering a total of
-      up to 24 TOPS of compute power"; four MX3 chips on a standard M.2 2280 module; "particularly those
-      optimized for 8-bit weights"'
-    accessed: '2026-08-13'
+    shows: Launch coverage of the MX3 M.2 module stating "Each MX3 chip is said to deliver 6 TOPS (Tera
+      Operations Per Second), offering a total of up to 24 TOPS of compute power", support for "4-bit, 8-bit,
+      16-bit weights, and BFloat16", and "a total of up to 42 million parameters" across the four chips.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0918df1ac7c17e40b3119558e772225fd427599ea6f2fa5a993c419060d2f7c6
+    content_sha256: 7975ac5134b00ed9bd7873c981557ce701466b13fa50184919fc985cb68ff3d5
   - url: https://developer.memryx.com/specs/M.2_datasheet.html
-    shows: '"MemryX MX3 (x4)" as the module''s AI processor and "The 4 MX3 chips appear as one logical
-      unit to the NeuralCompiler and runtime software stack"; the table no longer lists TOPS, data
-      formats or parameter capacity'
-    accessed: '2026-08-13'
+    shows: MemryX MX3 M.2 datasheet listing "MemryX MX3 (x4)" and stating "The 4 MX3 chips appear as one
+      logical unit to the NeuralCompiler and runtime software stack"; no TOPS or parameter-capacity row.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 14d338f59a212d65ca4cae04933e6643e1cedba983b98f5ad9963f4bb88e9479
