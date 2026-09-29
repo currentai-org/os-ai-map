@@ -28,7 +28,6 @@ openness:
     SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product;core-gated:ungated(app/
     ships the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing
     and compose.yaml - with no ee/ or enterprise directory, no license-key check and no premium flag)
-  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/AgentOps-AI/agentops
     shows: MIT-licensed SDK; complementary SaaS dashboard at app.agentops.ai; self-host option
@@ -106,21 +105,41 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: agent execution tracing + session replays, LLM cost tracking, multi-framework integrations, monitoring/debug
-    dashboards, custom eval metrics; lighter on prompt versioning + dataset/annotation than full platforms
+  value: agent execution tracing + session waterfall drilldown, LLM cost tracking, multi-framework integrations,
+    monitoring/debug dashboards; no prompt versioning, dataset or annotation pages in the docs
   confidence: medium
   relative_to: langfuse
   relation: one_below
-  note: AgentOps offers agent execution tracing, cost tracking, dashboards and framework integrations, but
-    prompt versioning and dataset or annotation tools remain thin and evaluations are still on a roadmap,
-    keeping it a step below Langfuse. The SDK has had no release in over a year, reinforcing that gap.
-  last_verified: '2026-08-13'
+  note: AgentOps offers agent execution tracing, cost tracking, session dashboards and integrations with
+    many agent frameworks, but its documentation describes no prompt versioning, datasets or annotation
+    tools, keeping it a step below Langfuse.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/AgentOps-AI/agentops
-    shows: 'Repository README - "AgentOps helps developers build, evaluate, and monitor AI agents", with a
-      feature table covering step-by-step agent execution graphs, LLM cost management, framework integrations
-      and Self-Host, and an "Evaluations Roadmap" table in which several eval rows are still marked as
-      in-progress rather than shipped.'
+    shows: Repository README - "AgentOps helps developers build, evaluate, and monitor AI agents", with
+      a feature table covering step-by-step agent execution graphs, LLM cost management, framework integrations
+      and Self-Host, and an "Evaluations Roadmap" table in which several eval rows are still marked as in-progress
+      rather than shipped.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4c31c24d2c744e9d73ed70103f34689c83cc67b42824c39894cdcfa3e13b7912
+  - url: https://docs.agentops.ai/v2/introduction
+    shows: 'Docs home: "AgentOps is the developer favorite platform for testing, debugging, and deploying
+      AI agents and LLM apps." with integrations for CrewAI, LangChain and OpenAI Agents and a "Session
+      Waterfall" of LLM calls and tool calls.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a46ed824afffc30d35f15d9a2a353ccadf32b7e08eb2fc0cd418e581bb44270a
+  - url: https://docs.agentops.ai/v2/concepts/core-concepts
+    shows: 'Core concepts page: LLM call records include "The estimated cost of the interaction" alongside
+      prompt and completion tokens.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 82b78a5b9fe4c43891de108c73196d4b27f71808c8529e50c9192fb6176d8ab0
+  - url: https://docs.agentops.ai/llms.txt
+    shows: 'Docs index of every page, e.g. "Track and analyze your OpenAI API calls with AgentOps" and "Organize
+      and filter your sessions with customizable tags". Searched the body for evaluation, dataset, prompt
+      versioning and annotation: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 94147f7a50fc0aac4dc488f9cd1dd538105669805e39308361eb6ae7e29caeb4

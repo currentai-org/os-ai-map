@@ -19,19 +19,16 @@ openness:
     destination. The optional Traceloop dashboard is simply one export target among many, not a gated core.
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core(SDK is fully OSS; Traceloop dashboard
     is an optional external export target, not gated core);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://pypi.org/project/traceloop-sdk/
-    shows: 'License: Apache-2.0; v0.61.0 (31 May 2026)'
-    accessed: '2026-06-04'
   - url: https://github.com/traceloop/openllmetry
-    shows: 'README, read rather than assumed. The badge alt text reads "OpenLLMetry is released under the
-      Apache-2.0 License" and the body states "It''s built and maintained by Traceloop under the Apache 2.0
+    shows: README, read rather than assumed. The badge alt text reads "OpenLLMetry is released under the
+      Apache-2.0 License" and the body states "It's built and maintained by Traceloop under the Apache 2.0
       license." On what ships - "The repo contains standard OpenTelemetry instrumentations for LLM providers
       and Vector DBs, as well as a Traceloop SDK that makes it easy to get started." On the gate question,
-      the vendor''s own framing is that "it can be connected to your existing observability solutions -
-      Datadog, Honeycomb, and others", so the published SDK works without any Traceloop-hosted tier and
-      nothing is withheld from it.'
+      the vendor's own framing is that "it can be connected to your existing observability solutions - Datadog,
+      Honeycomb, and others", so the published SDK works without any Traceloop-hosted tier and nothing is
+      withheld from it.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ab2b4375e765649f52924eb26ae7aeecb9f69d809cde3db0fe3ef88f766b511d
@@ -39,6 +36,24 @@ openness:
     - license
     - source
     - core_gated
+  - url: https://www.traceloop.com/docs/openllmetry/introduction
+    shows: 'Introduction page: "OpenLLMetry is an open source project that allows you to easily start monitoring
+      and debugging the execution of your LLM app." and "You can choose to export the traces to Traceloop,
+      or to your existing observability stack." so Traceloop is one optional destination.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: baebc57221cbf7a0fce04ce04e3703199998f3bd507a46ef07d546d9524084ce
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/project/traceloop-sdk/
+    shows: PyPI page for traceloop-sdk lists License expression "Apache-2.0" and describes the SDK as one
+      that "allows you to easily start monitoring and debugging your LLM execution" built on OpenTelemetry.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8c238d12d494f7815fae0dba0d75ae7dc14a075baba9f0a383908429932d137d
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -68,9 +83,9 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: deep OTel instrumentation(15+ LLM providers, 7 vector DBs, framework hooks), multi-destination
-    export(25+ platforms); NO native prompt management, evals/LLM-as-judge, or datasets/annotation in
-    the OSS layer
+  value: deep OTel instrumentation(15+ LLM providers, 9 vector DBs, framework hooks), multi-destination
+    export(25+ platforms); NO native prompt management, evals/LLM-as-judge, or datasets/annotation in the
+    OSS layer
   confidence: high
   relative_to: langfuse
   relation: one_below
@@ -78,13 +93,20 @@ capability:
     full evaluation, prompt and dataset suite. Its open-source layer has no native prompt management, evaluation
     or LLM-as-judge scoring, and no datasets or annotation, which puts it a step behind the broader feature
     sets of Langfuse, MLflow, Phoenix and Opik.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/traceloop/openllmetry
-    shows: 'README structure - "The repo contains standard OpenTelemetry instrumentations for LLM providers
+    shows: README structure - "The repo contains standard OpenTelemetry instrumentations for LLM providers
       and Vector DBs, as well as a Traceloop SDK", then sections for supported providers, Vector DBs and
       "Supported (and tested) destinations". No evals, prompt-management or dataset section exists in the
-      OSS repository.'
+      OSS repository.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ab2b4375e765649f52924eb26ae7aeecb9f69d809cde3db0fe3ef88f766b511d
+  - url: https://www.traceloop.com/docs/openllmetry/tracing/supported
+    shows: 'Supported page: "A list of the models, vector DBs and frameworks that OpenLLMetry supports out
+      of the box." with tables for LLM Foundation Models, Vector DBs (Chroma DB through Weaviate, nine)
+      and Frameworks. Searched the body for prompt management, dataset, experiment and evaluation: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a29a5ddfd058e9f1949790fbf32198a3b887498161b98af7d1410926d8ed8764

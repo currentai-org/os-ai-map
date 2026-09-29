@@ -9,24 +9,26 @@ openness:
     - name: Apache-2.0
       detail: OSI, client library MagnivOrg/prompt-layer-library only
     self-host:
-      value: 'no'
-      detail: managed only
+      value: enterprise-only
+      detail: commercially licensed Docker images and Helm charts, Enterprise plan only
     context:
       platform:
         value: proprietary-SaaS
         detail: API-key gated, hosted prompt registry/logging/evals
   confidence: high
-  note: Open client SDK over a closed hosted backend (prompt CMS, logging, evals are SaaS), no OSS core,
-    so 'closed' alongside the Braintrust/LangSmith pattern; the open library is instrumentation only.
-  raw: source:closed;license:Apache-2.0(OSI, client library MagnivOrg/prompt-layer-library only);platform:proprietary-SaaS(API-key
-    gated, hosted prompt registry/logging/evals);self-host:no(managed only)
-  last_verified: '2026-08-13'
+  note: The Apache-2.0 client library is open, but the prompt registry, logging and evaluation backend is
+    closed. It runs as a hosted service, and a self-hosted deployment exists only on the Enterprise plan
+    under a commercial license, so the product is closed rather than open core.
+  raw: source:closed;license:Apache-2.0(OSI, client library MagnivOrg/prompt-layer-library only);self-host:enterprise-only(commercially
+    licensed Docker images and Helm charts, Enterprise plan only);platform:proprietary-SaaS(API-key gated,
+    hosted prompt registry/logging/evals)
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/MagnivOrg/prompt-layer-library
-    shows: 'Repository page. GitHub resolves its LICENSE to Apache-2.0 (spdxId "Apache-2.0"), and the
-      repository description is "PromptLayer - Maintain a log of your prompts and OpenAI API requests.
-      Track, debug, and replay old completions." It is a client library; the registry, logging and eval
-      services it talks to are not in it and are reached over promptlayer.com with an API key.'
+    shows: Repository page. GitHub resolves its LICENSE to Apache-2.0 (spdxId "Apache-2.0"), and the repository
+      description is "PromptLayer - Maintain a log of your prompts and OpenAI API requests. Track, debug,
+      and replay old completions." It is a client library; the registry, logging and eval services it talks
+      to are not in it and are reached over promptlayer.com with an API key.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 9442179edd5c8e749834f1119bf4d5a8b19c48b16471c10dedfa333a71dc50da
@@ -34,6 +36,32 @@ openness:
     - license
     - source
     - self-host
+  - url: https://docs.promptlayer.com/self-hosted
+    shows: 'Self-hosting page: the architecture is described as "fully dockerized services designed for
+      scalability and reliability" with "pre-built Docker images with Helm charts" and a step to "discuss
+      your requirements and obtain a license".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bccc6b7a7dd696223dbddb6820fd7612ec4281daa766165ba50a775f3bed9891
+    establishes:
+    - self-host
+    - source
+  - url: https://www.promptlayer.com/pricing
+    shows: 'Pricing page: "Enterprise customers have the option of self-hosted on GCP, AWS, and Azure" while
+      Free, Pro and Team plans are Cloud-hosted.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cadd8c4d816b80ea20ae5ec71025319a7008fb2bddc4d309abad53865cc26d80
+    establishes:
+    - self-host
+  - url: https://pypi.org/pypi/promptlayer/json
+    shows: 'PyPI metadata for the promptlayer package: summary "PromptLayer is a platform for prompt engineering
+      and tracks your LLM requests." and classifier "License :: OSI Approved :: Apache Software License".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cbfe6c1696488700b5622790f021dcca86306ad91ffd56e52d882e01e56b8d5b
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 100K-1M
@@ -60,20 +88,38 @@ capability:
   basis: feature_matrix
   relative_to: langfuse
   relation: one_below
-  value: 'prompt mgmt/versioning(registry-based CMS, visual no-code editor, A/B testing); tracing(logs
-    every request/response); evals(basic, regression sets); cost/monitoring(narrower than full-stack).
-    Missing: deep LLM-as-judge eval + broad OTel/framework observability vs anchors.'
+  value: prompt mgmt/versioning(registry-based CMS); tracing(request logs, traces, OpenTelemetry ingestion);
+    evals(datasets, LLM-as-judge, regression runs); cost/latency monitoring. Narrower than Langfuse on open
+    instrumentation breadth and self-serve self-hosting.
   confidence: medium
-  note: 'PromptLayer focuses on the prompt lifecycle: a registry-based CMS with versioning, a visual no-code
-    editor, A/B testing and basic evaluations over regression sets. Its evaluation layer and production
-    observability are shallower than Langfuse''s, lacking deep LLM-as-judge scoring or broad OpenTelemetry
-    and framework coverage, keeping it a step behind.'
-  last_verified: '2026-08-13'
+  note: 'PromptLayer covers the prompt lifecycle: a registry with versioning and a no-code editor, request
+    logs and traces (including OpenTelemetry ingestion), and evaluations with LLM-as-judge and regression
+    runs. It stays a step behind Langfuse on open, self-serve deployment and the breadth of framework instrumentation.'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/MagnivOrg/prompt-layer-library
-    shows: 'Repository tagline - "PromptLayer - Maintain a log of your prompts and OpenAI API requests.
-      Track, debug, and replay old completions." Prompt versioning and request logging are what the library
-      offers; no tracing-platform, dataset or LLM-as-judge surface lives in it.'
+    shows: Repository tagline - "PromptLayer - Maintain a log of your prompts and OpenAI API requests. Track,
+      debug, and replay old completions." Prompt versioning and request logging are what the library offers;
+      no tracing-platform, dataset or LLM-as-judge surface lives in it.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 9442179edd5c8e749834f1119bf4d5a8b19c48b16471c10dedfa333a71dc50da
+  - url: https://docs.promptlayer.com
+    shows: 'Docs home: "requests, responses, metadata, cost, latency, and feedback in one timeline." and
+      "Compare changes against real examples before they reach users."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a357fd358282fdb707ecd94b327e09763619b64372f8ea45e5ea27d5095a98c1
+  - url: https://docs.promptlayer.com/features/evaluations/overview
+    shows: 'Evaluations page: "Add scoring columns such as LLM-as-judge, human grading, equality comparison,
+      cosine similarity, or code evaluators."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b208388cc5616cc752143f05a11550a0650a813b355290cad69c32c331b77885
+  - url: https://docs.promptlayer.com/features/observability/traces/opentelemetry
+    shows: 'OpenTelemetry page: "Any OpenTelemetry SDK or Collector can export traces to this endpoint."
+      PromptLayer exposes an OTLP/HTTP endpoint for traces, and gen_ai model and provider attributes are
+      parsed into request logs.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 92d684fd9a7454c8aa88dbfdf9a7a2bde7ef99e45ed49ed06e9e14173e6423e3

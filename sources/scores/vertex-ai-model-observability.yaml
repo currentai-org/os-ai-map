@@ -17,16 +17,27 @@ openness:
     standard but the service is closed and tied to Google Cloud.
   raw: license:proprietary(Google Cloud managed service);source:closed;note:tracing is built on the open
     OTel standard but the observability product/service itself is proprietary and cloud-locked
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
-    shows: 'Documentation - "Cloud Trace lets you analyze the performance of your agents by tracing" them,
-      with "A trace is composed of individual spans, which represent a single unit of work, like a function
-      call or an interaction with an LLM." The trace format shown carries trace_id, span_id and span_kind
-      LLM. Everything described runs inside Google Cloud; nothing is published to run elsewhere.'
-    accessed: '2026-08-13'
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-observability
+    shows: 'Monitor models page: Agent Platform "provides a prebuilt model observability dashboard to view
+      the behavior, health, and performance of fully-managed models" that are "provided by Google", with
+      metrics "such as model request per second (QPS), token throughput, and first token latencies". Searched
+      the body for on-prem and open source: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 3d349ddecec96887e8ef1c7740a7d3ca54eda36452ba3d7a33fb32a94e710910
+    content_sha256: 4736afb9a34189f25725f337dcbfee00adc8c3c33ff837d91db6cd9a333496cb
+    establishes:
+    - license
+    - source
+  - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
+    shows: 'Tracing page: "Cloud Trace lets you analyze the performance of your agents by tracing the timeline
+      of operations for each query." and traces are enabled by deploying the agent to Agent Runtime with
+      "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY" set. Searched the body for self-host, on-prem, open source
+      and license: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0a47d86916406e4e1768dd8921270262cff6194648300090cbdbadd59062e5ec
     establishes:
     - license
     - source
@@ -38,7 +49,6 @@ adoption:
   note: Vertex AI Model Observability is a feature surface within Vertex AI Agent Engine on Google Cloud,
     and Google publishes no separate usage figure for it. The reading instead reflects the reach of Vertex
     AI as a platform, not a measured count of people using this observability capability itself.
-  last_verified: '2026-08-13'
   sources:
   - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
     shows: The tracing documentation, read for a usage figure and containing none. It sits under an
@@ -50,23 +60,44 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: tracing (traces/spans for LLM calls, tool calls, agent decisions via Cloud Trace/OTel) + perf
-    monitoring dashboard (token consumption, latency, error rates, tool calls) + quality/evaluation (integrated
-    Gen AI Evaluation service incl User Simulator) + Cloud Logging. Cost/token tracking present; prompt
-    management and dedicated annotation queues not evidenced as native.
+  value: tracing (Cloud Trace spans for LLM calls, tool calls and agent steps over OpenTelemetry) + prebuilt
+    model dashboard (request rate, token throughput, first-token latency, API error rates) + Agent Runtime
+    metrics + online evaluation monitors that score live traces + Cloud Logging. Prompt management and dedicated
+    annotation queues not evidenced as native.
   confidence: medium
   relative_to: langfuse
   relation: one_below
-  note: Vertex AI Model Observability provides tracing, a performance dashboard covering token consumption,
-    latency and error rates, and the integrated Gen AI Evaluation service, all through Cloud Trace and OpenTelemetry.
-    Prompt management and dedicated annotation queues are not documented as native features, which leaves
-    it a step behind Langfuse.
-  last_verified: '2026-08-13'
+  note: Vertex AI Model Observability provides tracing through Cloud Trace and OpenTelemetry, a prebuilt
+    dashboard covering request rate, token throughput, latency and error rates, agent metrics, and online
+    monitors that score live traces. Prompt management and dedicated annotation queues are not documented
+    as native features, which leaves it a step behind Langfuse.
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
-    shows: 'Documentation covering Cloud Trace spans for ADK agents, with span_kind LLM, parent_id and
-      event fields shown in the example payload, and an Observability section grouping it with monitoring.
-      No prompt-versioning or annotation-queue feature is described.'
-    accessed: '2026-08-13'
+    shows: 'Tracing page: "Cloud Trace lets you analyze the performance of your agents by tracing the timeline
+      of operations for each query." and spans carry "span_kind" LLM with input and output messages. Searched
+      the body for prompt management and annotation queue: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 3d349ddecec96887e8ef1c7740a7d3ca54eda36452ba3d7a33fb32a94e710910
+    content_sha256: 0a47d86916406e4e1768dd8921270262cff6194648300090cbdbadd59062e5ec
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/model-observability
+    shows: 'Monitor models page: Agent Platform "provides a prebuilt model observability dashboard to view
+      the behavior, health, and performance of fully-managed models" that are "provided by Google", with
+      metrics "such as model request per second (QPS), token throughput, and first token latencies". Searched
+      the body for on-prem and open source: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4736afb9a34189f25725f337dcbfee00adc8c3c33ff837d91db6cd9a333496cb
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/optimize/evaluation/evaluate-online
+    shows: 'Online monitoring page: "Online monitoring lets you continuously assess the quality of your
+      agents in production." and it requires Cloud Trace plus OpenTelemetry signals from a deployed agent.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f7e6f8283e3dd893b240cb3b40a9409b610617adb829185d98fae9ac34141e7a
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/runtime/monitoring
+    shows: 'Agent Runtime monitoring page: "Agent Runtime automatically collects and processes operational
+      metrics for deployed agents." with built-in metrics for "Request count" and "Request latencies", plus
+      alerts and PromQL queries.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ffc349073289d9075e421a1f702271901b4fa85087ea2cee313231491baf2168
