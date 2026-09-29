@@ -21,16 +21,31 @@ openness:
   raw: weights:open(MIT, on HF; distillation explicitly permitted);data:closed(RL/SFT training data not
     released);code:partial(inference; no full RL training pipeline);license:MIT(OSI-style permissive, no
     use restrictions)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
-    shows: '`license:mit` in the repo tags and `"gated":false` in the embedded repo state, so the 671B-A37B
-      MoE weights download without a barrier; the card carries evaluation tables and local-inference
-      instructions only, with no RL training pipeline and no post-training mixture released'
-    accessed: '2026-08-13'
+    shows: 'The card states the model weights are licensed under the MIT License and that "DeepSeek-R1 series
+      support commercial use, allow for any modifications and derivative works, including, but not limited
+      to, distillation for training other LLMs"; the repo state shows "license:mit". Searched the body for
+      training data, training pipeline and RL code releases: none, only evaluation tables and a model-download
+      table.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ef3d4cf617864129aeec4c06be33343d55ceacb1780e8425f5c45488917749fa
-    establishes: [weights, data, code, license]
+    content_sha256: d17e175b3237b349d903aca9b14f915beff1dd9938dfd6bd00ec6691ae1c61a5
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-R1-0528
+    shows: The R1-0528 card states "The use of DeepSeek-R1 models is also subject to" the MIT License and
+      that the series "supports commercial use and distillation"; the repo state shows "license:mit".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: eb605c376f0fe1277791b57362f4e0f4c24e8d31e261eccff3c43f5943dee6f6
+    establishes:
+    - weights
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -60,13 +75,21 @@ capability:
     65.9 (HF card, vs OpenAI o1)
   confidence: high
   note: DeepSeek-R1 was a frontier open reasoning model at its January 2025 release, matching or beating
-    OpenAI's o1 on AIME, MATH-500 and LiveCodeBench. By June 2026 it had been surpassed by DeepSeek-V3.2-Speciale,
-    V4 and other 2026 frontier reasoners, and its figures are vendor-reported on the Hugging Face card.
-  last_verified: '2026-08-13'
+    OpenAI's o1 on AIME, MATH-500 and LiveCodeBench; the figures are vendor-reported on its Hugging Face
+    card. Newer DeepSeek releases, including the V4 family, have since surpassed it.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
-    shows: AIME 79.8 / MATH-500 97.3 / GPQA 71.5 / MMLU 90.8 / SWE-bench Verified 49.2 / LiveCodeBench
-      65.9
-    accessed: '2026-08-13'
+    shows: The card benchmark table lists "AIME 2024 (Pass@1)", "MATH-500 (Pass@1)", "LiveCodeBench (Pass@1-COT)"
+      and "SWE Verified (Resolved)" rows with the R1 column at 79.8, 97.3, 65.9 and 49.2, plus a GPQA Diamond
+      value of 71.5 and MMLU 90.8, all vendor-reported against OpenAI o1.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ef3d4cf617864129aeec4c06be33343d55ceacb1780e8425f5c45488917749fa
+    content_sha256: d17e175b3237b349d903aca9b14f915beff1dd9938dfd6bd00ec6691ae1c61a5
+  - url: https://huggingface.co/api/models?author=deepseek-ai&sort=createdAt&direction=-1&limit=25
+    shows: 'Newest-first listing of the deepseek-ai organization lists "deepseek-ai/DeepSeek-V4-Pro" and
+      "deepseek-ai/DeepSeek-V4-Flash" (created 2026-04-22) and "deepseek-ai/DeepSeek-V3.2"; searched the
+      25 newest entries for a DeepSeek-R2 repository: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a4fc22140c34c6b9a44cc1b785e0c6b4a217e39043f503348b06e0cc3acbe4f4

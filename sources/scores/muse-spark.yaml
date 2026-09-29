@@ -13,35 +13,54 @@ openness:
     - name: Proprietary
       detail: meta.ai/Meta AI app + private API preview; no downloadable weights
   confidence: high
-  note: No weights released - a closed assistant-surface model offered only through a private API preview.
-    Meta's newsroom post says Muse Spark powers the Meta AI app and website and will be offered in private
-    preview via API to select partners, and names no weights, corpus or training code anywhere on it; Meta's
-    engineering blog is not publicly readable.
+  note: Meta releases no weights, training corpus or training code for Muse Spark, which is available only
+    in Meta's apps and through its self-serve Model API. Meta has said only that it hopes to open-source
+    future versions of the model.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(meta.ai/Meta AI app + private API preview;
     no downloadable weights)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: Meta's engineering blog for Muse Spark. It answers HTTP 400 to a plain fetch.
-    accessed: '2026-06-04'
   - url: https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/
-    shows: 'Meta primary newsroom post - "Muse Spark is our most powerful model yet. It currently powers
-      the Meta AI app and website, and will be rolling out to WhatsApp, Instagram, Facebook, Messenger,
-      and AI glasses"; "We will also be offering the model in private preview via API to select partners".
-      No weights, corpus or training code.'
-    accessed: '2026-08-13'
+    shows: 'Meta newsroom post: "It currently powers the Meta AI app and website" and "will be available
+      in private preview via API to select partners, and we hope to open-source future versions of the model".
+      Searched the body for weights, corpus and training code: no release of any.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b4da0bd8ec45f87c8e9286e187e29d136a5b4238efbe5b45f13b600c70aa2620
-    establishes: [weights, data, code, license]
+    content_sha256: 28f0f7494cbd7c07f5a11f0f2842940c853be5434b9a8450dc341f2b9fd31942
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://developer.meta.com/ai/models/muse-spark/
+    shows: 'Meta developer page for Muse Spark 1.3: "Direct, self-serve and affordable access to Muse Spark."
+      through the Meta Model API. Searched the body for weights, download, open-source and license: none
+      offered.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e0e9297ea1b85d835fdda837f7ca9ab935336ce90b4767c921a80f50556abc2f
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://arena.ai/leaderboard/text
+    shows: 'arena.ai text leaderboard, Sep 25, 2026: "View overall rankings across various AI models in
+      text-to-text tasks"; "muse-spark-1.3-max" (Meta · Proprietary) at rank 9, score 1494 +/-7 over 10,036
+      votes.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 84b7b0d810d81198e712fa2b5c5e2df9cff50f50659c0c53b1a037f8360b7c12
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M users
   signal_type: active_users
   confidence: low
   note: Muse Spark powers Meta's AI assistant on meta.ai and in the Meta AI app, and across WhatsApp, Instagram,
-    Facebook, Messenger and the Ray-Ban and Oakley glasses. Meta discloses no Muse Spark-specific user count,
-    so this reading is attributed to the surface it powers rather than to a standalone figure for the model.
-  last_verified: '2026-08-13'
+    Facebook, Messenger and Meta's AI glasses. Meta discloses no Muse Spark-specific user count, so this
+    reading is attributed to the surface it powers rather than to a standalone figure for the model.
   sources:
   - url: https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/
     shows: '"It currently powers the Meta AI app and website, and will be rolling out to WhatsApp, Instagram,
@@ -60,26 +79,22 @@ capability:
   value: 'arena.ai text leaderboard - muse-spark-1.2 (xHigh) ranked 4 of 391 models at 1498 +/-10;
     Artificial Analysis Intelligence Index 57, rank #14 of 188'
   confidence: medium
-  note: Muse Spark ranks 4th of 391 models on the arena.ai text leaderboard, behind three Anthropic entries,
-    and scores 57 on the Artificial Analysis Intelligence Index, 14th of 188, both for the 1.2 (xHigh) release.
-    Meta's own HLE and FrontierScience figures are not counted because Meta's benchmark page is unreadable,
-    leaving these two independent leaderboards as the only evidence.
-  last_verified: '2026-08-14'
+  note: Muse Spark 1.3 (max) ranks 9th on the arena.ai text leaderboard, about 15 points behind the top
+    entry, and scores 48 on the Artificial Analysis Intelligence Index against a median of 26. Meta's own
+    benchmark tables are not included here.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arena.ai/leaderboard/text
-    shows: 'arena.ai text leaderboard (lmarena.ai 301s here) - rank 4 "muse-spark-1.2 (xHigh)", Meta,
-      Proprietary, score 1498 +/-10 over 3,280 votes, behind claude-fable-5 1506, claude-opus-4-6-high
-      1505 and claude-opus-4-7-high 1502, out of 391 models and 7,779,985 votes'
-    accessed: '2026-08-14'
+    shows: 'arena.ai text leaderboard, Sep 25, 2026: "View overall rankings across various AI models in
+      text-to-text tasks"; "muse-spark-1.3-max" (Meta · Proprietary) at rank 9, score 1494 +/-7 over 10,036
+      votes.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 14ae18a07dd83608b55f1bbb8e73355f68ea9091ce3af5c8e2e8942fc943d164
-  - url: https://artificialanalysis.ai/models/muse-spark-1-2
-    shows: '"scores 57 on the Artificial Analysis Intelligence Index, placing it well above average among
-      comparable models (median - 34)"; Intelligence rank "# 14 / 188". No deprecation banner.'
-    accessed: '2026-08-14'
+    content_sha256: 84b7b0d810d81198e712fa2b5c5e2df9cff50f50659c0c53b1a037f8360b7c12
+  - url: https://artificialanalysis.ai/models/muse-spark-1-3
+    shows: 'Artificial Analysis page for Muse Spark 1.3 (max): "scores 48 on the Artificial Analysis Intelligence
+      Index, placing it well above average among other reasoning models in a similar price tier (median:
+      26)".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: efd6d68244a9fbe139a9ab0b4851ad821fa126f8de802ce720b7dd1319915d3c
-  - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: The former source of the HLE 58% and FrontierScience 38% figures. It answers HTTP 400 to the
-      repo's fetcher, so those figures remain unsourced and have been dropped from the value.
-    accessed: '2026-06-04'
+    content_sha256: 0cda18149b02b329377c37d302eae983d9716f7687e62b47341fd9c7d1c060c3
