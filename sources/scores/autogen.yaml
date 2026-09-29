@@ -19,19 +19,32 @@ openness:
   note: Code is MIT and fully open; the GitHub-surfaced CC-BY-4.0 is only the docs license. The whole framework
     is published with no enterprise directory and no paid tier.
   raw: license:MIT(code,via LICENSE-CODE);docs:CC-BY-4.0;source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://github.com/microsoft/autogen/blob/main/LICENSE-CODE
-    shows: 'MIT License text, "Copyright (c) Microsoft Corporation"'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/microsoft/autogen/main/LICENSE-CODE
+    shows: The code license file is the MIT License, quoting "MIT License" and "Copyright (c) Microsoft
+      Corporation" with the standard grant of rights to use, copy, modify and sell.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/microsoft/autogen/main/README.md
+    shows: 'The README grants "a license to any code in the repository under the" MIT License, with documentation
+      under CC-BY 4.0. Searched the body for paid, license key, subscription and commercial: none; enterprise
+      appears only in describing the successor, "Microsoft Agent Framework (MAF) is the enterprise‑ready
+      successor to AutoGen", not any AutoGen tier.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5d300aa3304aeecf1a48f68ac76a1af255b8645d666b8aa154790cb30f1dbb94
+    establishes:
+    - license
+    - source
+    - core-gated
   - url: https://github.com/microsoft/autogen
-    shows: 'README states the split - documentation under LICENSE, "a license to any code in the repository
-      under the MIT License, see the LICENSE-CODE file"; full framework source published, 60.4k stars,
-      9.1k forks, no enterprise directory or paid tier'
+    shows: README states the split - documentation under LICENSE, "a license to any code in the repository
+      under the MIT License, see the LICENSE-CODE file"; full framework source published, 60.4k stars, 9.1k
+      forks, no enterprise directory or paid tier
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 96fd7e883766a5d0a3ff236b1a56b4cb797e8ef1d94e9dcdb5e78f362ad7e7a1
@@ -39,6 +52,13 @@ openness:
     - license
     - source
     - core-gated
+  - url: https://github.com/microsoft/autogen/blob/main/LICENSE-CODE
+    shows: MIT License text, "Copyright (c) Microsoft Corporation"
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
 adoption:
   level: 4
   signal_type: usage_volume
@@ -46,7 +66,6 @@ adoption:
   note: Adoption is measured by PyPI downloads of autogen-agentchat, the package Microsoft ships the framework
     through. Download volume is flat to declining as the project enters maintenance.
   reach: 1M-10M
-  last_verified: '2026-08-12'
   sources:
   - url: https://pypistats.org/api/packages/autogen-agentchat/recent
     shows: 1,058,837 downloads in the trailing 30 days for autogen-agentchat
@@ -59,11 +78,18 @@ capability:
   value: multi-agent conversation orchestration; preset team patterns; tool use; code execution; async/event-driven;
     AutoGen Studio
   confidence: medium
-  note: Strong multi-agent conversation model; less durable-execution depth than LangGraph and now in maintenance.
+  note: AutoGen offers a strong multi-agent conversation model, with group chats, code execution and a no-code
+    Studio. It has less durable-execution depth than LangGraph and is now in maintenance mode.
   relative_to: langgraph
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/microsoft/autogen/main/README.md
+    shows: The README describes "a framework for creating multi-agent AI applications", a "no-code GUI for
+      building multi-agent applications" in Studio, and says AutoGen "is now in maintenance mode".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5d300aa3304aeecf1a48f68ac76a1af255b8645d666b8aa154790cb30f1dbb94
   - url: https://github.com/microsoft/autogen
     shows: multi-agent conversation orchestration, team patterns, tool use and code execution published
       in full; no benchmark figure

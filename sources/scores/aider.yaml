@@ -18,7 +18,7 @@ openness:
   note: Aider is Apache-2.0 with its full source public under Aider-AI/aider, and no managed or enterprise
     tier gates the core.
   raw: license:Apache-2.0(OSI);source:public(GitHub);no feature-gated core; model-agnostic (Claude/DeepSeek/OpenAI/local);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Aider-AI/aider
     shows: Apache-2.0 license on the repo, full CLI source public, 48.2k stars, 4.8k forks; no enterprise
@@ -30,11 +30,37 @@ openness:
     - license
     - source
     - core-gated
-  - url: https://pypi.org/project/aider-chat/
-    shows: aider-chat 0.86.2, released Feb 12 2026, installed with pip and free
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/Aider-AI/aider/main/LICENSE.txt
+    shows: The LICENSE file is the Apache License, with the text "Apache License" and "Version 2.0, January
+      2004" followed by "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0d29570bc8a91672c019b18f2e239ae9d6eb5125b8c291a1163ce1bdd59b0e3a
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Aider-AI/aider/main/pyproject.toml
+    shows: 'The pyproject for the aider-chat package carries the classifier "License :: OSI Approved ::
+      Apache Software License" and names the public repository as its Homepage.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1faaea506c1d42f5e9db0d7152cea43920596b901e281e27c2655e791284c9ef
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/Aider-AI/aider/main/README.md
+    shows: 'The README describes Aider as a terminal tool and says "Aider lets you pair program with LLMs
+      to start a new project or build on your existing codebase." Searched the body for enterprise, paid,
+      premium and subscription: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e40e05367ceacf7138a2605484bf7d1cb5a262d2dba03f52a5327c023b3cd0dc
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/aider-chat/json
+    shows: 'PyPI metadata for aider-chat lists the classifier "License :: OSI Approved :: Apache Software
+      License" for the package.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: cb124f46f966faa741bc675c76956b3c6fd50ed2e9bb8b0b0e7b6aba24afaf36
     establishes:
     - source
 adoption:
@@ -71,13 +97,14 @@ capability:
   relation: two_below
   value: SWE-bench Verified ~31.4% (architect mode, Claude Sonnet 4.5)
   confidence: medium
-  note: Aider scores 31.4% on SWE-bench Verified in architect mode with Claude Sonnet 4.5, against Cline
-    at 59.8% and OpenHands at 68.4%. That places it mid-tier, well below the open-agent leaders.
-  last_verified: '2026-08-13'
+  note: Aider's two-model architect and editor pipeline handles multi-file changes from the terminal, but
+    its SWE-bench Verified result in architect mode is well below the open agents that lead the category.
+    Cline and OpenHands both score far higher on the same leaderboard.
+  last_verified: '2026-09-29'
   sources:
   - url: https://awesomeagents.ai/leaderboards/swe-bench-coding-agent-leaderboard/
-    shows: 'row 13 - Aider (architect mode), Claude Sonnet 4.5, SWE-Bench Verified 31.4%, SWE-Bench Full
-      24.0%, Free (BYOK), two-model architect-editor pipeline'
-    accessed: '2026-08-13'
+    shows: The leaderboard lists "Aider (architect mode)" with "Claude Sonnet 4.5" and "31.4%" in the SWE-bench
+      Verified column, described as "Two-model architect-editor pipeline".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c009a1d2e1fc26bd03376df66ac74ed136ca30362c1628be7a231bc5db57fed0
+    content_sha256: 6778b840281346ec37d9db98823f2da0f2e02430c1edb4b365e992b4ae597c0e

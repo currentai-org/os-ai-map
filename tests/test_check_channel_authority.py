@@ -237,12 +237,17 @@ def test_the_prose_leg_holds_at_its_known_count():
     assets that never pass through the package. The Hugging Face route is countable in principle,
     but it spans a verified org's model repositories rather than one declared artifact, so it
     sits here until someone declares them.
+
+    16 -> 17 with the orchestration_agents refresh: `ragflow` bands on Docker Hub pulls of its
+    Compose stack, and its note now says the cumulative pull count understates the current pace of
+    use, the same admission `langflow` and `n8n` make about the same kind of figure. There is no
+    monthly pull channel to relabel it to, so it sits here with them.
     """
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()
     assert {f[0] for f in findings} == {
         "faiss", "gvisor", "ktransformers", "langflow", "llm-d",
-        "mistral-large", "mistral-rs", "n8n",
+        "mistral-large", "mistral-rs", "n8n", "ragflow",
         "mcp-registry", "ollama", "perplexica", "promptfoo", "qualcomm-ai-hub-models", "searxng",
         "tesseract", "uzu",
     }

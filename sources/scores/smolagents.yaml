@@ -17,8 +17,33 @@ openness:
   confidence: high
   note: Fully OSI-licensed (Apache-2.0), entire library public, no proprietary/managed core, top openness.
   raw: license:Apache-2.0(OSI);source:public(github.com/huggingface/smolagents);no-feature-gated-core;model-agnostic;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/huggingface/smolagents/main/LICENSE
+    shows: The repository LICENSE file is the full text of the "Apache License" "Version 2.0, January 2004",
+      an OSI-approved license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/huggingface/smolagents/main/README.md
+    shows: The README describes a public code-agent library whose "the main code in `agents.py` has <1,000
+      lines of code" and tells readers "to hack into the source code".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 131628d2669b4ee983c715002b57ea4b375b62c8502f6354b8d9fdf3fbc39f8d
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/smolagents/main/README.md
+    shows: 'Searched the README body for enterprise, license key, paid, premium and pricing: none; every
+      feature listed, such as "sandboxed environments via" Docker, E2B or Modal, is part of the library
+      itself.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 131628d2669b4ee983c715002b57ea4b375b62c8502f6354b8d9fdf3fbc39f8d
+    establishes:
+    - core-gated
   - url: https://github.com/huggingface/smolagents
     shows: Apache-2.0 license, full public source for the code-agent framework, 28.8k stars and 2.9k forks;
       no enterprise directory and no paid tier
@@ -67,13 +92,26 @@ capability:
     (E2B/Modal/Docker), MCP + LangChain tool import, multi-agent support; no first-party SWE-bench/GAIA
     headline for the framework
   confidence: medium
-  note: 'Deliberately lightweight: strong on model-agnosticism, tool use and sandboxing, but with a thinner
-    orchestration and evaluation surface than heavier frameworks. It publishes no benchmark, so this reads
-    from its feature set.'
+  note: Smolagents is strong on model-agnosticism, tool use and sandboxed code execution but deliberately
+    small, with a thinner orchestration and evaluation surface than OpenHands. The only benchmark it publishes
+    compares open models run as agents rather than the framework itself, so it is judged on features.
   relative_to: openhands
   relation: two_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/huggingface/smolagents/main/README.md
+    shows: The README lists "First-class support for Code Agents", sandboxed execution via "E2B" and "Modal"
+      or Docker, tools from any "MCP server" and "LangChain", and "multi-agent hierarchies"; it gives no
+      framework benchmark headline.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 131628d2669b4ee983c715002b57ea4b375b62c8502f6354b8d9fdf3fbc39f8d
+  - url: https://raw.githubusercontent.com/huggingface/smolagents/main/README.md
+    shows: 'Searched for a framework-level headline benchmark: only a comparison of open models run as agents,
+      "How strong are open models for agentic workflows?"'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 131628d2669b4ee983c715002b57ea4b375b62c8502f6354b8d9fdf3fbc39f8d
   - url: https://github.com/huggingface/smolagents
     shows: code-action agents, sandboxed execution, MCP and LangChain tool import, multi-model support;
       no benchmark figure published
