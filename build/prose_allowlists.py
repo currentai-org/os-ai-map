@@ -34,8 +34,6 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("apertus", "openness"),
     ("atropos", "adoption"),
     ("claude-haiku", "capability"),
-    ("claude-sonnet", "capability"),
-    ("claude-sonnet", "openness"),
     ("cloudflare-sandboxes", "adoption"),
     ("compar-ia", "adoption"),
     ("cruxeval", "adoption"),

@@ -15,42 +15,62 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI
-  note: Command A+, Cohere's first fully open-licensed model in this family, ships under Apache-2.0 across
-    all three of its quantization variants with no access gate. Its training data and fine-tuning pipeline
-    remain unpublished, which keeps it at open weights rather than a fully open model; the earlier 104B
-    Command R+ checkpoint remains under a non-commercial license.
+  note: Command A+ ships under Apache-2.0 in all three quantization variants with no access gate. Its training
+    data and fine-tuning pipeline are not published, which makes it an open-weights release rather than
+    a fully open model; the earlier 104B Command R+ checkpoint remains under a non-commercial license.
   raw: weights:open(ungated, Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI)
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16
-    shows: 'the governing release - "Command A+ is an open source model with 25 billion active parameters
-      and 218B total parameters ... optimized for agentic, multilingual, and reasoning-heavy tasks with a
-      focus on enterprise performance"; "License - Apache 2.0" and `"gated":false`; BF16, FP8 and W4A4
-      quantizations offered; no post-training mixture and no fine-tuning pipeline published'
-    accessed: '2026-08-14'
+    shows: 'Model card for the governing release: "Command A+ is an open source model with 25 billion active
+      parameters and 218B total parameters" and "has been specifically trained with conversational tool
+      use capabilities"; "Apache 2.0" is the stated license. Searched the body for training data, post-training
+      and fine-tuning pipeline publication: none; no evaluation table.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2191d6228eed7e11b5a2fd523ee716e8123e97d78600b71e9227f61e77cb96e0
+    content_sha256: 46a115a18547e652545d5a1784b7b80c3a41de716c5af90d02d8228f76949ef6
     establishes:
     - weights
     - data
     - code
     - license
-  - url: https://huggingface.co/api/models?author=CohereLabs&sort=createdAt&direction=-1&limit=40
-    shows: 'CohereLabs newest-first. The Command line''s newest release is command-a-plus-05-2026, shipped
-      2026-05-11 (bf16), 2026-05-18 (fp8, w4a4), all three tagged `license:apache-2.0`. Nothing newer in the
-      Command line exists; the 2026-06/07/08 repos are the separate North line and the transcribe models.
-      Every pre-2026-03 Cohere checkpoint, including c4ai-command-r-plus, is `license:cc-by-nc-4.0`.'
-    accessed: '2026-08-14'
+  - url: https://huggingface.co/api/models/CohereLabs/command-a-plus-05-2026-bf16
+    shows: 'Hugging Face API record for the bf16 repository: the tag "license:apache-2.0" is present and
+      the record is not gated (gated false), so the weights download without an access gate; the repo id
+      is "CohereLabs/command-a-plus-05-2026-bf16".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 797c2486d3cc556ee61e46a58c96062b48e86c85c286b2e44ad1d95b40d1309b
+    content_sha256: f1b079e6ad40c6e950c513fc1e01c22b02423ccddd91379f5e198dfa3f36090f
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=CohereLabs&sort=createdAt&direction=-1&limit=40
+    shows: 'CohereLabs newest-first: the newest Command release is "CohereLabs/command-a-plus-05-2026-w4a4"
+      together with the fp8 and bf16 repositories, each tagged "license:apache-2.0"; later repositories
+      belong to the separate North, transcribe and tiny-aya lines, and no newer Command model exists.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3dd6346318a3e998236c64e8606ea56b30ab29b9cbcc80e3c11d219ef7f6b3be
     establishes:
     - license
   - url: https://huggingface.co/CohereLabs/c4ai-command-r-plus
-    shows: '`license:cc-by-nc-4.0` in the repo tags with `"gated":"auto"`; 104B instruct model; the 2024
-      release, superseded and no longer governing'
-    accessed: '2026-08-13'
+    shows: 'Earlier 104B Command R+ checkpoint, superseded: repository tag "license:cc-by-nc-4.0" and a
+      notice "You need to agree to share your contact information to access this model".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f
+    content_sha256: 0496cdc19c14037b8687d1cd54e1343678f0f4311a92b50dacb4e35c022b5685
+    establishes:
+    - license
+  - url: https://cohere.com/blog/command-a-plus
+    shows: 'Cohere launch post dated May 20, 2026: "Command A+ outperforms previous Command A models in
+      key dimensions of enterprise workloads"; lists a sparse MoE with 218B total and 25B active parameters,
+      128K input context, 48 languages, Apache 2.0 and 1x B200 or 2x H100 at W4A4.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: df4a1d1a1fa923213434ce74b82ea06cadaa775e439706857d6d1f72d483ec52
+    establishes:
+    - license
+    - weights
 adoption:
   level: 3
   reach: 100K-1M
@@ -90,22 +110,22 @@ capability:
   value: Command A+ (05-2026) - 218B total / 25B active sparse MoE, 128K context, conversational tool use,
     vision inputs, 48-language coverage, native citation and grounding spans; no vendor benchmark table
   confidence: medium
-  note: Command A+ is a 218B-parameter mixture-of-experts model (25B active) with a 128K context, vision
-    inputs, tool use, 48-language coverage, and citation and grounding spans, but Cohere publishes no benchmark
-    table for it. On that feature set it lands alongside Llama Instruct and Qwen Instruct, while Nemotron,
-    DeepSeek-R1 and Hermes score higher on reasoning benchmarks Cohere does not report.
-  last_verified: '2026-08-14'
+  note: Command A+ is a 218B-parameter mixture-of-experts model (25B active) with a 128K context window,
+    vision inputs, conversational tool use, 48 languages, and citation and grounding spans. Cohere's launch
+    post compares it only with earlier Command models and cites no independent leaderboard result, so it
+    sits with the Llama Instruct and Qwen Instruct models rather than above them.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16
-    shows: 'the governing release - 25B active / 218B total, "optimized for agentic, multilingual, and
-      reasoning-heavy tasks with a focus on enterprise performance", vision inputs, 128K context, and a
-      tool-use section stating the model "has been specifically trained with conversational tool use
-      capabilities". No evaluation or benchmark table anywhere on the card.'
-    accessed: '2026-08-14'
+    shows: 'Grounded generation: "one can ask the model to include grounding spans (citations) in its response";
+      the card lists 25B active and 218B total parameters and W4A4 running on "1 x B200".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2191d6228eed7e11b5a2fd523ee716e8123e97d78600b71e9227f61e77cb96e0
-  - url: https://huggingface.co/CohereLabs/c4ai-command-r-plus
-    shows: the 2024 checkpoint the old score read, with its legacy Open LLM Leaderboard breakdown; superseded
-    accessed: '2026-08-13'
+    content_sha256: 46a115a18547e652545d5a1784b7b80c3a41de716c5af90d02d8228f76949ef6
+  - url: https://cohere.com/blog/command-a-plus
+    shows: Launch post gives benchmark charts against earlier Cohere models only, plus "63% on MMMU Pro
+      and 75.1% on MMMU" and "MathVista scores increased from 73.5% to 80.6%"; no independent leaderboard
+      comparison is cited.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f
+    content_sha256: df4a1d1a1fa923213434ce74b82ea06cadaa775e439706857d6d1f72d483ec52
