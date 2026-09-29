@@ -24,7 +24,7 @@ tagged `refresh-sweep-764`, and each opening one draft PR labeled `freshness`:
 | category | session | PR / status at handoff |
 |---|---|---|
 | embeddings_retrieval | session_01Wnh7xbuEToC1BbyN27K6qw | #776, merged |
-| storage | session_01Euz9KpdiGYK1E8dBUJdNBn | #777, reviewed LGTM by the user. **Merge once `validate` is green** (squash, mark ready first). |
+| storage | session_01Euz9KpdiGYK1E8dBUJdNBn | #777, reviewed LGTM by the user. **Merge once `validate` is green** (squash, mark ready first). Its first `validate` failed only because #776 merged underneath it (see below). `origin/main` was merged in at 0863d50b, fast preflight passed, and CI is re-running. |
 | ml_orchestration | session_011PyXi5EfTLDhU8ZzUcKTxM | #778, CI running, not yet reviewed |
 | federated_learning | session_011q7aYv22k6RxaRhovEK9CZ | preflight, about to push |
 | agent_protocols | session_017HRxWvLtXa5UxRzLB28W1C | pushed, opening PR |
@@ -53,6 +53,15 @@ clears. Keep about 10 running at once: they share the account limit.
   The user reviews for score moves smuggled into freshness, weak `shows`, and prose that is
   reviewer commentary.
 - Do not comment on #764 per category. Post one aggregate comment when the sweep is done.
+
+## Every merge turns the other open sweep PRs red
+
+`validate` runs `build.check_corpus_diff --base origin/main`. Once one sweep PR merges, every other
+open sweep PR whose branch predates that merge fails with `silent rewrites of untouched products:
+<slug>|<axis> changed but sources/... did not`. The named products are the ones the merged PR
+touched. The fix is to merge `origin/main` into the PR branch (a merge commit, never a rebase),
+run `build.preflight`, and push. After each merge, do this for every open sweep PR, or tell the
+child session to do it. Lesson 21 in `playbook.md` tells new children to do it themselves.
 
 ## Other open items
 

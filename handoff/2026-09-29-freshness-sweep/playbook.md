@@ -32,6 +32,7 @@ Branch: work on the branch this session was created with. Open ONE draft PR titl
 18. **This container has 4 cores, so a workflow runs 2 agents at a time.** A 25-product category takes 30-40 minutes of research; do not "help" by skipping the audit.
 19. **Merge conflicts** with sibling sessions will appear in `sources/verification_queue.yaml` and the allowlist. Merge `origin/main` into your branch (never rebase or force-push), keep every entry from both sides, re-run preflight, push.
 20. American English. No AI tells in commits or PRs. End commit messages with the attribution lines your session's system prompt gives you.
+21. **When a sibling PR merges, your `validate` goes red** with `silent rewrites of untouched products` naming products you never touched. It means `main` moved under you, not a defect in your change. Merge `origin/main` into your branch, re-run preflight, push. Check this on every CI event until your PR merges.
 
 When the PR is open and CI is green, stop. Do not comment on #764; the coordinating session aggregates. Your final message should give the PR number and the counts (axes dated, held, score moves).
 
