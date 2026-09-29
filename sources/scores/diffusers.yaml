@@ -13,12 +13,43 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and unarchived,
-    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
-    is public and the core ungated.
+  note: The LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and the README
+    describes the whole library with no paid, enterprise or hosted tier beside it, so the source is public
+    and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/LICENSE
+    shows: LICENSE is the Apache License text, headed "Apache License" and "Version 2.0, January 2004".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f9e2070c247517b1ddf65f7b11b393484a18da91a958fd18a97bd0f241c3125c
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/README.md
+    shows: README header reads "Licensed under the Apache License, Version 2.0" and the file is served from
+      the public huggingface/diffusers repository.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7983ae4d23ec43664c587027d7462ba8a742ddff784430dfb7fd3cea8ba5523c
+    establishes:
+    - source
+  - url: https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/README.md
+    shows: 'README says "Diffusers offers three core components": pipelines, schedulers and pretrained models.
+      Searched the body for enterprise, paid, pricing, subscription, license key, hosted, self-host and
+      on-prem: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7983ae4d23ec43664c587027d7462ba8a742ddff784430dfb7fd3cea8ba5523c
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/diffusers/json
+    shows: 'PyPI metadata lists "License :: OSI Approved :: Apache Software License" for the diffusers package.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bd4549499e090bf5bf57d2da7335c8a8b9f6b37c2e27d47bdfb8192001bdbabb
+    establishes:
+    - license
   - url: https://github.com/huggingface/diffusers/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -26,24 +57,6 @@ openness:
     content_sha256: f9e2070c247517b1ddf65f7b11b393484a18da91a958fd18a97bd0f241c3125c
     establishes:
     - license
-  - url: https://api.github.com/repos/huggingface/diffusers
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
-      - for huggingface/diffusers.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 412f3191f7fa2dc5cd16af1376786163518107b3d813af380c9d9fb992a13d48
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/huggingface/diffusers/main/README.md
-    shows: README describes the three core components - pipelines, schedulers and pretrained models - as
-      the whole toolbox. No paid tier or feature-gated build appears.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: c5cdf07c057b50eab0850bc8ae3501559eb53ca27cdb99c86f1039ee99fc762e
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -67,11 +80,27 @@ capability:
   score: 4
   basis: feature_matrix
   value: 'Diffusion-model toolkit: inference pipelines, swappable schedulers, and pretrained models for
-    image, audio, and 3D generation.'
+    image, video, audio, and 3D generation, with offloading, quantization and torch.compile optimizations.'
   confidence: high
-  note: Deep but domain-specific to diffusion/generative models rather than general-purpose ML.
-  last_verified: '2026-08-13'
+  note: Diffusers covers image, video, audio and 3D generation through ready-made pipelines, interchangeable
+    schedulers and pretrained models, plus memory optimizations such as offloading and quantization. It
+    is deep but specific to diffusion and generative models rather than general-purpose machine learning.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/docs/diffusers/index
+    shows: Docs home says "Diffusers is a library of state-of-the-art pretrained diffusion models for generating
+      videos, images, and audio." and lists "offloading and quantization" optimizations and torch.compile
+      support.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 26103783dab6f09de9608b2b14184a4f7f4de8e2824b54cd1f74f195b90a7423
+  - url: https://cdn.jsdelivr.net/gh/huggingface/diffusers@main/README.md
+    shows: README says "Diffusers is the go-to library for state-of-the-art pretrained diffusion models
+      for generating images, audio, and even 3D structures of molecules" and lists pipelines, schedulers
+      and pretrained models as its three core components.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7983ae4d23ec43664c587027d7462ba8a742ddff784430dfb7fd3cea8ba5523c
   - url: https://github.com/huggingface/diffusers
     shows: README still describes pipelines, interchangeable schedulers and pretrained diffusion models
       for image, audio and 3D generation
