@@ -21,20 +21,57 @@ openness:
     true open AI client.
   raw: license:MPL-2.0(OSI);source:public(github.com/thunderbird/thunderbolt);self-host:primary(enterprise
     self-hosting);governance:MZLA-Technologies(Mozilla-Foundation-subsidiary)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/thunderbird/thunderbolt
     shows: public source repo under MPL-2.0; "AI You Control" self-hosted client
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2f9da909558f8053ad88a7cc6fefdfb5245b28a2484911cb353dd6ff48a9f147
-    establishes: [license, source, self-host]
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://cdn.jsdelivr.net/gh/thunderbird/thunderbolt@main/LICENSE
+    shows: The repository LICENSE file opens with the heading "Mozilla Public License Version 2.0" and carries
+      the full license text.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4b89d4518bd135ab4ee154a7bce722246b57a98c3d7efc1a09409898160c2bd1
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/thunderbird/thunderbolt@main/README.md
+    shows: 'The README License section says "Thunderbolt is licensed under the [Mozilla Public License 2.0](./LICENSE)."
+      and invites readers to try it: "We encourage you to self-host it and try it out".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f90e7a6c5b35fabfd89dbf8bdded6da5c7018cc07a218de510c885e30aa9d54
+    establishes:
+    - source
+    - self-host
   - url: https://www.phoronix.com/news/Mozilla-Thunderbolt
     shows: MZLA launches Thunderbolt as an open source enterprise AI client (Apr 2026)
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 118a2cc3e8d059ffef88676183f572fa068d1152a104c4fc3276c19a350da53e
-    establishes: [source]
+    establishes:
+    - source
+  - url: https://www.thunderbolt.io/docs
+    shows: The docs introduction says "Thunderbolt is an open-source, cross-platform AI client for web,
+      mobile, and desktop" and warns that it is "not yet intended for production use".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 46db1088bb4d0d20cdc82151a8026c80cfb924499ebad075c42343ba44a35898
+    establishes:
+    - source
+  - url: https://www.thunderbolt.io/docs/self-hosting/
+    shows: 'Self-hosting overview: "Every self-hosted target uses the same stack" and can be deployed through
+      Docker Compose, Kubernetes or Pulumi (AWS).'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 601435113717f8098d975b65d87a885408ec96d05c78547a8ee81d276c3f0848
+    establishes:
+    - self-host
 adoption:
   level: 2
   signal_type: reported_traction
@@ -42,7 +79,6 @@ adoption:
   note: Thunderbolt launched in April 2026 and is still in active development and mid-security-audit, with
     no usage figures disclosed. It is backed by the Mozilla and Thunderbird brand, but early enough that
     no real adoption signal yet exists.
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.theregister.com/2026/04/16/mozilla_thunderbolt_enterprise_ai_client/
     shows: launch coverage; positioned vs Copilot/ChatGPT Enterprise/Claude Enterprise
@@ -52,18 +88,45 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'model breadth: Anthropic/OpenAI/Mistral/OpenRouter + local Ollama; surfaces: chat, search, research,
-    task automation; platforms: web + native Linux/Windows/macOS/iOS/Android; self-host: primary; multi-user:
-    enterprise-oriented'
+  value: 'model breadth: any OpenAI-compatible endpoint (Anthropic, OpenAI, Mistral, Fireworks, local Ollama
+    or llama.cpp) plus ACP-compatible agents; surfaces: chat, search, research, automations, skills, voice
+    mode, file upload; platforms: web + native Linux/Windows/macOS/iOS/Android clients; self-host: primary
+    via Docker Compose, Kubernetes or Pulumi; multi-user: enterprise SAML single sign-on'
   confidence: medium
-  note: Broad feature surface (multi-provider, multi-platform, agentic task automation, self-host) comparable
-    to the leading open chat UIs, but newly launched and unproven; medium confidence pending maturity. The
-    repository confirms web, iOS, Android, Mac, Linux and Windows clients and states that there is no public
-    inference endpoint, so the user brings Ollama, llama.cpp or an OpenAI-compatible provider.
-  last_verified: '2026-08-13'
+  note: Thunderbolt covers chat, search, research, automations, skills, voice input and file upload across
+    web, desktop and mobile clients, with any OpenAI-compatible model or ACP agent and enterprise single
+    sign-on.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.ghacks.net/2026/04/20/mozillas-mzla-technologies-launches-thunderbolt-an-open-source-self-hosted-enterprise-ai-client/
-    shows: 'feature set: chat/search/research/task automation across web + native apps, multi-provider + Ollama'
+    shows: 'feature set: chat/search/research/task automation across web + native apps, multi-provider +
+      Ollama'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 330f7b592c9030a2d976d62158d7bb21cc865e85d4e85c9c77eef769f4520061
+  - url: https://www.thunderbolt.io/blog/whats-new-in-thunderbolt
+    shows: 'August 2026 product update lists released features: voice mode ("Talk to Thunderbolt instead
+      of typing."), file upload ("Bring your own files directly into the chat"), SAML/SSO ("organizations
+      can configure Thunderbolt to use their internal identity provider") and "Users can now create and
+      save custom Skills".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 41a30ad781a293e919d0f3374c19cac73bcf8ea2ceadfc93206c9a844295f3eb
+  - url: https://www.thunderbolt.io/docs/customize/
+    shows: 'Customization page lists primitives; Models: "Use any OpenAI-compatible model: on-device, on-prem,
+      or cloud." and MCP servers can be added.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 23352d2e5aa2d4e92a5a272e9cff5664aea86b036b538cc65b19e0803ac9dc1d
+  - url: https://www.thunderbolt.io/blog/mozilla-introduces-thunderbolt
+    shows: 'Launch announcement of April 16, 2026: chat, search and research with MCP and ACP support and
+      "native applications for Windows, macOS, Linux, iOS, and Android".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 274f88065423ac5d90bfe43fd0037d6e75a858e227246dec6ffe5ca8254aa39d
+  - url: https://www.thunderbolt.io/docs/development/quick-start/
+    shows: Quick start says a provider key is needed for "Anthropic, OpenAI, Mistral, Fireworks, or any
+      OpenAI-compatible endpoint".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d137ce8a968950962ecb8deff2f714ac2d5d96fafc590b52de910b90964d0597

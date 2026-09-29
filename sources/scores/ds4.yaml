@@ -12,12 +12,33 @@ openness:
       value: ungated
     free_text:
     - no feature-gated core
-    - built on ggml/llama.cpp
+    - adapts some ggml/llama.cpp source (GGUF quant layouts, CPU quant/dot logic, kernels) under MIT, does
+      not link GGML
   confidence: high
   note: MIT-licensed native inference engine; full C/CUDA/Obj-C source public, no proprietary tier.
-  last_verified: '2026-08-09'
-  raw: license:MIT(OSI);source:public;no feature-gated core;built on ggml/llama.cpp;core-gated:ungated
+  last_verified: '2026-09-29'
+  raw: license:MIT(OSI);source:public;no feature-gated core;adapts some ggml/llama.cpp source (GGUF quant
+    layouts, CPU quant/dot logic, kernels) under MIT, does not link GGML;core-gated:ungated
   sources:
+  - url: https://raw.githubusercontent.com/antirez/ds4/main/LICENSE
+    shows: The repository LICENSE file is the MIT License text, opening with "MIT License" and "Copyright
+      (c) 2026 The ds4.c authors" and "Copyright (c) 2023-2026 The ggml authors".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 4a8a1358f5b048627d71e4988de0bafd386f4988991929629e6cb9e29b7b9b2f
+  - url: https://raw.githubusercontent.com/antirez/ds4/main/README.md
+    shows: The README describes the full engine source in the repository, saying "The code is self-contained
+      and deliberately narrow, not a general GGUF runner" and "Some source-level pieces are retained or
+      adapted here under the MIT license"; a search for enterprise, commercial, license key and hosted found
+      nothing gating the engine.
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: d61ff9a3153916ab88917cbfab0ca1a8c2e42b138b71a1ca0d74d05f391ff113
   - url: https://github.com/antirez/ds4/blob/main/LICENSE
     shows: MIT License, Copyright (c) 2026 The ds4.c authors, Copyright (c) 2023-2026 The ggml authors
     accessed: '2026-09-16'
@@ -59,14 +80,29 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'Backends: Metal/CUDA/ROCm; DeepSeek V4 Flash/PRO specialization; OpenAI-compatible HTTP server; RAM +
-    SSD KV streaming; integrated coding agent. No MLPerf submission.'
+  value: 'Backends: Metal/CUDA/ROCm; DeepSeek V4 Flash/PRO, V4.1 Flash, GLM 5.x and Qwen3.8 Flash Next support;
+    OpenAI-style and Anthropic-style HTTP server; RAM + SSD KV streaming; multi-machine tensor parallel
+    over RDMA; speculative decoding; integrated coding agent. No MLPerf submission.'
   confidence: medium
-  note: ds4 is a specialized engine built for a single model family rather than general-purpose serving.
-    It has neither the model breadth of llama.cpp nor the datacenter throughput of frontier serving engines.
+  note: ds4 is a narrow engine that runs a short list of chosen open-weight models rather than a general
+    GGUF runner. It has neither the model breadth of llama.cpp nor the datacenter throughput of frontier
+    serving engines.
   basis_detail: feature matrix; no benchmark or MLPerf submission
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/antirez/ds4/main/README.md
+    shows: The README says the engine is "deliberately narrow, not a general GGUF runner" and that "model
+      loading, prompt rendering, tool calls, KV state, the HTTP server, and the coding agent are built and
+      tested together"; it lists Metal, CUDA and ROCm targets and DeepSeek V4, GLM and Qwen model support.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d61ff9a3153916ab88917cbfab0ca1a8c2e42b138b71a1ca0d74d05f391ff113
+  - url: https://raw.githubusercontent.com/antirez/ds4/main/docs/SERVER.md
+    shows: The serving guide lists "POST /v1/chat/completions" as "OpenAI-style chat" and "POST /v1/messages"
+      as "Anthropic-style messages".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 14e92c35f8e6c1db1a39f5e30676180ba753dfc1134a589e590a8307aba5e5dd
   - url: https://github.com/antirez/ds4
     shows: README states the engine is "deliberately narrow, not a general GGUF runner. Model loading, prompt
       rendering, tool calls, KV state, the HTTP server, and the coding agent are built and tested together";

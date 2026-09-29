@@ -24,24 +24,25 @@ openness:
   raw: client:proprietary(no public source for chat.deepseek.com app);backend:hosted-SaaS;note:underlying
     models open(MIT) but the chat application/service is closed;source:closed(hosted chat service at chat.deepseek.com;
     DeepSeek's public repos are model and inference releases, not the chat application)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.deepseek.com/en/
-    shows: Free hosted chat at chat.deepseek.com serving DeepSeek-V4 Preview; no source release for the
-      chat app itself
-    accessed: '2026-08-13'
+    shows: 'Home page for the hosted chat and API products: "The official version of DeepSeek-V4.1-Flash
+      has been released" and buttons "Chat with DeepSeek" and "Use API Platform". Searched the body for
+      self-host, on-prem, open source and license: none, and the Research links point to model releases,
+      not the chat application.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a592024875e8d8b59c7b487cf7b456f29309e7dbacd2e2d6b5ff55ab44579158
-    establishes: [source]
-  - url: https://www.deepseek.com/en
-    shows: The site offers exactly two ways to use DeepSeek - 'Free access to DeepSeek' pointing at chat.deepseek.com,
-      and 'Build with the latest DeepSeek models' pointing at the hosted API platform with its own pricing.
-      The Research section links GitHub repositories (DeepSeek R1, V3, Coder V2 and others), and every one
-      of them is a model-weights or research/inference release; none is the chat application. There is no
-      self-hostable implementation of the chat surface being scored here.
-    accessed: '2026-08-13'
+    content_sha256: 26c6efd39f9387c77210b949a929b4d174bfc6065b5c53149ccdf2baa1e46312
+    establishes:
+    - source
+  - url: https://cdn.deepseek.com/policies/en-US/deepseek-terms-of-use.html
+    shows: DeepSeek Terms of Use for the Services prohibit "attempting to discover the source code, models,
+      algorithms, and system source code or underlying components of the software in any way"; the terms
+      grant no source release or self-hosting right.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a592024875e8d8b59c7b487cf7b456f29309e7dbacd2e2d6b5ff55ab44579158
+    content_sha256: e5c52c238ff59a6d274cd66c449f939ba6bd3183fe7927397b595df02887a76d
     establishes:
     - source
 adoption:
@@ -52,17 +53,20 @@ adoption:
   note: An industry tracker's report places DeepSeek's chat app among the most-used AI apps in the Chinese
     market, well above the mass-market threshold. The reading comes from press coverage of that report rather
     than the report itself, and usage is concentrated in China, which keeps confidence medium.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://finance.biggo.com/news/372811e2-28f1-49c7-9f53-fa56879cde3b
-    shows: 'QuestMobile 2026 H1 report, as of May 2026: "DeepSeek ranked third with 130 million MAUs".
-      Doubao leads at 382M.'
-    accessed: '2026-08-13'
+    shows: 'QuestMobile 2026 H1 report coverage: "DeepSeek ranked third with 130 million MAUs, securing
+      its position primarily through technical reputation and organic growth".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e7ea3a11679cc5814830d1f89f68bc2a884faf9ca20bddb7007094d1fc267dde
+    content_sha256: 680399ef9f90acad2519683616940a0926376d5292826f31eee5fa4f1a305494
   - url: https://play.google.com/store/apps/details?id=com.deepseek.chat&hl=en_US
-    shows: Official DeepSeek AI Assistant Android app listing (consumer chat surface, mass-market distribution)
-    accessed: '2026-06-04'
+    shows: Google Play listing for the official DeepSeek Android app, described as "official AI assistant
+      for free!", showing a "50M+" Downloads badge.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 82a825da3f4fdeaf14381613aeb71b0522821981fc1c9ecf5ec6a91672e88147
 capability:
   score: 3
   basis: feature_matrix
@@ -74,7 +78,6 @@ capability:
     capabilities, but it works with only its own model family and offers no enterprise multi-user tier or
     grounding over corporate data. That narrows it against frontier multi-model chat interfaces, so it does
     not define the category frontier.
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.deepseek.com/en/
     shows: 'Chat product features: file reading, long-context, V4 agent capabilities, single-vendor model'

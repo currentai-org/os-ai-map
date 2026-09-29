@@ -29,20 +29,25 @@ openness:
     config/model hub adjacent, core OSS);core-gated:ungated(Apache-2.0 across the whole monorepo, no ee/
     or enterprise directory; the enterprise license key is itself published Apache-2.0 code carrying only
     customerId/expiresAt/apiUrl and unlocks no client feature)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/continuedev/continue
     shows: Apache-2.0; public source; AI code assistant (chat/edit/autocomplete + agent)
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: c5e978602c04d12d338af0b23836088605b6c317ef4f2808544c1d6d5582c615
-    establishes: [license, source]
+    establishes:
+    - license
+    - source
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
-    shows: open source AI code agent extension listing
-    accessed: '2026-08-13'
+    shows: The listing is titled "Continue - open-source AI code agent", its License section reads "Apache
+      2.0 © 2023-2025 Continue Dev, Inc.", and the page metadata carries "GitHubLink":"https://github.com/continuedev/continue.git".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7c078511d59cadc777c86aacdf757eb9984376eb3c7bdba0ad800c8bbfb6a209
-    establishes: [license]
+    content_sha256: df95f782ebaa564ad7e4360f6e2945eb92ede77fd8b9b8cda12eb90ea6353abb
+    establishes:
+    - license
+    - source
   - url: https://api.github.com/repos/continuedev/continue/contents/
     shows: Repository root listing. The tree is actions, binary, core, docs, eval, extensions, gui, manual-testing-sandbox,
       media, packages, scripts, skills, sync - there is no `ee/`, no `enterprise/`, and no second license.
@@ -54,30 +59,33 @@ openness:
     establishes:
     - core-gated
     - source
-  - url: https://github.com/continuedev/continue/blob/main/core/control-plane/mdm/mdm.ts
-    shows: The one thing in this repo that looks like a gate, read directly rather than assumed. Continue
-      does ship an "Enterprise License Key" - `continue.enterEnterpriseLicenseKey` in
-      extensions/vscode/src/commands.ts and an AddLicenseKey action in the IntelliJ extension. But the
-      whole validator is published Apache-2.0 code in this file, and the signed payload it verifies
-      carries only `customerId`, `createdAt`, `expiresAt` and an `apiUrl`. The key is read from
-      MDM-managed OS configuration (a macOS plist, a Windows registry path, a Linux json file), and its
-      effect is to point the client at an enterprise control-plane URL. No client feature is switched on
-      by it - nothing in the extension is compiled out, withheld, or refused without one. That is the
-      langchain shape, a paid platform beside a complete open core, not the langgraph shape of a closed
-      package behind a key.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 10d3ad9d53fcfabe9a36a64bfc60dea7410644df6bf1157715ee4c70f3b64f18
-    establishes: [core-gated]
   - url: https://www.continue.dev/
-    shows: The vendor's own site now leads with Continue having been acquired by Cursor and states "our
-      open-source codebase remains freely available as a foundation for others". No pricing page is
-      linked from it any more, and https://www.continue.dev/pricing returns HTTP 404 - so there is no
-      live paid tier left to withhold anything for.
-    accessed: '2026-08-13'
+    shows: 'The vendor site says "Continue was acquired by" Cursor and that "our open-source codebase remains
+      freely available as a foundation for others". Searched the body for pricing, self-host and on-prem
+      links: none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: e6976b8790d347de0255b6aa09ac5c81a097cd3cd903c2e91d12fe71b2f507d4
-    establishes: [core-gated]
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/continuedev/continue@main/core/control-plane/mdm/mdm.ts
+    shows: 'The license-key validator is ordinary published source in this file: `validateLicenseKey` verifies
+      a signed payload whose `LicenseKeyData` declares only `customerId`, `createdAt` and `expiresAt`, with
+      `apiUrl` in the unsigned data, and the key is read from MDM locations such as "/Library/Managed Preferences/dev.continue.app.plist"
+      and "HKLM\\Software\\Continue\\MDM".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 10d3ad9d53fcfabe9a36a64bfc60dea7410644df6bf1157715ee4c70f3b64f18
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/continuedev/continue@main/LICENSE
+    shows: The root LICENSE file is the "Apache License" "Version 2.0, January 2004" text.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b14a17598cb08c4c7c82c070731126304e0a75d001ed59fb9ea3955a0b561802
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M
@@ -86,7 +94,6 @@ adoption:
   note: Adoption is measured by VS Code Marketplace installs of the Continue extension. The JetBrains plugin
     and CLI are not counted alongside that figure, and GitHub stars serve only as corroboration of the same
     signal.
-  last_verified: '2026-08-13'
   sources:
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
     shows: 3,209,395 installs
@@ -107,13 +114,45 @@ capability:
   note: Leading open source in-IDE AI assistant; broad model-agnostic coverage with chat/edit/autocomplete/agent
     and codebase RAG. Strong feature breadth for an open editor assistant, just below the polished closed
     frontier (Copilot/Cursor).
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
-    shows: agent, chat, edit, autocomplete features
-    accessed: '2026-08-13'
+    shows: The listing header describes "The leading open-source AI code agent" and the Features section
+      shows VS Code "Agent", "Chat", "Edit" and "Autocomplete" entries; the page metadata carries "GitHubLink":"https://github.com/continuedev/continue.git".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7c078511d59cadc777c86aacdf757eb9984376eb3c7bdba0ad800c8bbfb6a209
+    content_sha256: df95f782ebaa564ad7e4360f6e2945eb92ede77fd8b9b8cda12eb90ea6353abb
+  - url: https://docs.continue.dev/
+    shows: The docs home page is titled "Open source AI code assistant for VS Code and JetBrains" with Features
+      entries for Agent, Chat, Autocomplete and Edit.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 611cfd9ba56b85e18c1e44657d46e319fb716864ef0bdb93fe1e462cb8025a31
+  - url: https://docs.continue.dev/customize/model-providers/overview
+    shows: The provider overview says "Continue supports a wide range of AI model providers to power different
+      features like chat, code editing, autocompletion, and embeddings." and lists Anthropic, OpenAI, Ollama,
+      Google Gemini, LM Studio and llama.cpp.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 861d83a12544e2bfb99d08763b9ba8d6bd509a989e7aeea8e768229a12a9fded
+  - url: https://docs.continue.dev/ide-extensions/autocomplete/how-it-works
+    shows: The autocomplete page says "Continue uses a number of retrieval methods to find relevant snippets
+      from your codebase to include in the prompt." under a "Context Retrieval from Your Codebase" heading.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3455f641c5452e9e814a49281a96fde2ac2dcbdeb73c3a962a2fbad14da637c7
+  - url: https://docs.continue.dev/ide-extensions/agent/how-it-works
+    shows: The agent page lists built-in tools including "All other write/execute tools for modifying the
+      codebase".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f2c245c256581c4f9fb67e62291852f9daf804bcc0522c9117848989fdde1231
+  - url: https://docs.continue.dev/faqs
+    shows: The FAQ has an "Images Not Uploading" entry that says "Ensure your model actually supports vision"
+      and an "Indexing issues" entry about rebuilding the codebase index.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2edae7f8dabf44e5d0982564694af6d17df03a5fa8f814f7bfef8ffa8871891c
   - url: https://github.com/continuedev/continue
     shows: model-agnostic AI code assistant feature set
     accessed: '2026-08-13'

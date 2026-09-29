@@ -15,19 +15,21 @@ openness:
         value: managed-cloud-API-only
   confidence: high
   note: GroqCloud is a managed API service. The groq GitHub org publishes client SDKs, eval tools and demo
-    apps, but no repository for the inference engine itself, and the marketing site's terms of use grant
-    a license only to the website, not to GroqCloud or the LPU stack.
-  last_verified: '2026-08-09'
+    apps, but no repository for the inference engine itself. The GroqCloud services agreement grants only
+    a limited right to use the service and forbids extracting its source code, and the marketing site's
+    terms of use grant a license only to the website.
+  last_verified: '2026-09-29'
   raw: engine:proprietary(LPU stack);source:closed;access:managed-cloud-API-only;license:Proprietary
   sources:
   - url: https://console.groq.com/docs/overview
-    shows: Fast LLM inference, OpenAI-compatible. Simple to integrate, easy to scale. Start building in
-      minutes.
-    accessed: '2026-08-09'
+    shows: The docs overview describes GroqCloud as a hosted API and gives the page description "Fast LLM
+      inference, OpenAI-compatible. Simple to integrate, easy to scale. Start building in minutes." with
+      no self-hosting or downloadable engine.
+    accessed: '2026-09-29'
     establishes:
     - source
     http_status: 200
-    content_sha256: e87155fbb05e4a59be11731cd4dfa982bf75d276b406831e818b04b2b0cbc462
+    content_sha256: 16977149e42017b6cd10380c636fd7facc7ff3c20a48ef7cf252ed7d3482e875
   - url: https://github.com/orgs/groq/repositories
     shows: 'Full list of the groq GitHub org''s 41 public repos, read across both pages of the listing (page
       1: groq-python, groq-typescript, groq-mcp-server, openbench, harbor, groq-desktop-beta, dispatch,
@@ -40,14 +42,24 @@ openness:
     - license
     http_status: 200
     content_sha256: 64931de00967470292200f2344c7b5699d51536d44037c8e1fe66e154471ea3f
+  - url: https://console.groq.com/docs/legal/services-agreement
+    shows: The GroqCloud services agreement grants only "non-exclusive, non-transferable, and limited right
+      to access and use the Cloud Services" and bars customers from any attempt "to extract any or all of
+      the source code of, the Cloud Services".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: ccffee5f375bd05065839611d8e52bacbb10cae30c87ddbfa78b02bd478df570
   - url: https://groq.com/terms-of-use
-    shows: Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable,
-      license to access and use the Websites for your personal, non-commercial use only.
-    accessed: '2026-08-09'
+    shows: 'The website terms grant a license to the Websites only: "license to access and use the Websites
+      for your personal, non-commercial use only."'
+    accessed: '2026-09-29'
     establishes:
     - license
     http_status: 200
-    content_sha256: 21489e876fc1d2fd71a7824cfc0423de8270c0e31e9b36f382345d5a433e9191
+    content_sha256: c37d1a4d0ce2d7764e34b8e4e3e95b8b01b76d2a2beb3c5b08a99efa193a1ca2
 adoption:
   level: 4
   signal_type: reported_traction
@@ -56,31 +68,32 @@ adoption:
   note: Groq's own homepage names no enterprise customers, so adoption is read instead from a developer
     count the company reported in a press release. That figure is self-reported and has not been independently
     corroborated.
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://groq.com/newsroom/groq-raises-usd650m-to-scale-its-ai-inference-cloud-business
-    shows: Today, Groq operates 13 data centers across North America, Europe, the Middle East and APAC.
-      The company serves more than five million developers and thousands of AI-native companies that consume
-      trillions of tokens each week.
-    accessed: '2026-08-09'
+    shows: The funding press release says "The company serves more than five million developers and thousands
+      of AI-native companies that consume trillions of tokens each week." This is a company statement with
+      no independent count.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1f70e10c01dbc7a8f8d88d31e2770fbc7c355715c5c23c4a059daf3f008010c7
+    content_sha256: bb0c582bf48b9db0b1b457e8ebd8bf899fda98137e92561df3b335333f35ce1e
 capability:
   score: 5
   basis: benchmark
   basis_detail: ArtificialAnalysis(provider-speed)
-  value: On Artificial Analysis's gpt-oss-120b (high) provider benchmark, Groq measures 476.8 output tokens/sec,
-    ranking 3rd of 18 API providers behind Cerebras (1,942.0 t/s) and SambaNova (705.7 t/s) -- still solidly
-    in the purpose-built-silicon speed-frontier class rather than the GPU-hosted majority of the field.
+  value: On Artificial Analysis's gpt-oss-120b (high) provider benchmark, Groq measures 473.2 output tokens/sec,
+    ranking 3rd of 18 API providers behind Cerebras (1,759.4 t/s) and SambaNova (709.4 t/s), in the purpose-built-silicon
+    speed-frontier class rather than the GPU-hosted majority of the field.
   confidence: medium
-  note: Groq measures 476.8 output tokens per second on Artificial Analysis's gpt-oss-120b provider benchmark,
-    third of 18 providers behind Cerebras at 1,942 tokens per second and SambaNova at 705.7. That still
-    puts it in the purpose-built-silicon speed class rather than among the GPU-hosted majority of providers.
-  last_verified: '2026-08-09'
+  note: Groq measures 473 output tokens per second on Artificial Analysis's gpt-oss-120b provider benchmark,
+    third of 18 providers behind Cerebras and SambaNova. All three top providers run custom silicon rather
+    than general-purpose GPUs.
+  last_verified: '2026-09-29'
   sources:
   - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
-    shows: the top providers are Cerebras (1,942.0 t/s), SambaNova (705.7 t/s), and Groq (476.8 t/s). Speed
-      varies significantly across providers, with a 5011% difference between the fastest and slowest.
-    accessed: '2026-08-09'
+    shows: The gpt-oss-120b (high) provider page states "the top providers are Cerebras (1,759.4 t/s), SambaNova
+      (709.4 t/s), and Groq (473.2 t/s). Speed varies significantly across providers, with a 3223% difference
+      between the fastest and slowest."
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 082d6179bce956957d776b3d9543cb423760838a29999065f98bf22788d5514b
+    content_sha256: 29a213e659fc5fa72c4c0228e0e417b3efe29432697c1575be7c2b5d27e45497

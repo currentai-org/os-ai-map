@@ -28,7 +28,7 @@ openness:
     deploy, a Dockerfile and docker-compose, and desktop builds via src-tauri);core-gated:gated(Enterprise
     Edition withholds the admin panel, member/resource/knowledge-base permission control, internal knowledge-base
     integration and security auditing from the MIT repo)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/ChatGPTNextWeb/NextChat
     shows: MIT license; cross-platform chat client; Enterprise Edition (permissions, team mgmt, internal
@@ -36,7 +36,9 @@ openness:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 3c4898066733a56c76b9d44103e06da64cc6a4600eb24eee32dec7f0d6a0b79f
-    establishes: [license, source]
+    establishes:
+    - license
+    - source
   - url: https://api.github.com/repos/ChatGPTNextWeb/NextChat/contents/
     shows: 'Repository root listing. The repo license endpoint returns MIT, and the tree is the whole application:
       app, src-tauri, public, docs, plus Dockerfile, docker-compose.yml, vercel.json and .env.template.
@@ -50,16 +52,39 @@ openness:
       paid edition adds - Brand Customization, Resource Integration described as "unified configuration
       and management of dozens of AI resources by company administrators", Permission Control described
       as "clearly defined member permissions, resource permissions, and knowledge base permissions, all
-      controlled via a corporate-grade Admin Panel", Knowledge Integration "combining your internal
-      knowledge base with AI capabilities", Security Auditing, Private Deployment, and Continuous
-      Updates. Contact is business@nextchat.club. None of that admin panel, permission model or
-      knowledge base exists in the MIT repository, whose own Features list describes the opposite design:
-      "Privacy first, all data is stored locally in the browser". So this is functionality withheld from
-      the published source rather than a hosted service beside it, which is the gated reading.'
+      controlled via a corporate-grade Admin Panel", Knowledge Integration "combining your internal knowledge
+      base with AI capabilities", Security Auditing, Private Deployment, and Continuous Updates. Contact
+      is business@nextchat.club. None of that admin panel, permission model or knowledge base exists in
+      the MIT repository, whose own Features list describes the opposite design: "Privacy first, all data
+      is stored locally in the browser". So this is functionality withheld from the published source rather
+      than a hosted service beside it, which is the gated reading.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a2e48c50a9c32392e67397a67f66a6e3bdcaeb7c5bb051629a9fb5133927916a
-    establishes: [core-gated]
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/ChatGPTNextWeb/NextChat@main/LICENSE
+    shows: The repository LICENSE file opens "MIT License" with "Copyright (c) 2023-2025 NextChat" and then
+      the standard MIT permission grant, so the published source is under MIT.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: abe83c6910b9437f7342b2184c213678b4adbb191d323e0244336039abbccc01
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/ChatGPTNextWeb/NextChat@main/README.md
+    shows: 'The README lists deployment by one-click Vercel and Zeabur buttons and a "Compact client (~5MB)
+      on Linux/Windows/MacOS", so the app is the repository itself. Its Enterprise Edition section describes
+      "Permission Control" as "member permissions, resource permissions, and knowledge base permissions,
+      all controlled via a corporate-grade Admin Panel", plus "Security Auditing" and "Knowledge Integration".
+      The Features list describes the opposite design: "Privacy first, all data is stored locally in the
+      browser". Nothing in the README places the admin panel or permission model in the MIT repository,
+      and the roadmap leaves "local knowledge base" unchecked.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a2e48c50a9c32392e67397a67f66a6e3bdcaeb7c5bb051629a9fb5133927916a
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -89,10 +114,19 @@ capability:
   confidence: medium
   note: Solid lightweight cross-platform client with plugins/MCP/vision, but RAG and multi-user are gated
     to Enterprise; thinner OSS feature surface than Open WebUI/LibreChat/AnythingLLM.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/ChatGPTNextWeb/NextChat
     shows: multi-provider, plugins, vision, MCP, artifacts; RAG/multi-user in Enterprise Edition
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 3c4898066733a56c76b9d44103e06da64cc6a4600eb24eee32dec7f0d6a0b79f
+  - url: https://cdn.jsdelivr.net/gh/ChatGPTNextWeb/NextChat@main/README.md
+    shows: 'The README describes NextChat "with Claude, DeepSeek, GPT4 & Gemini Pro support" and lists environment
+      settings for Azure, Baidu, ByteDance and Alibaba endpoints. The roadmap checks off "Artifacts", "Plugins:
+      support network search, calculator, any other apis etc." and "Supports Realtime Chat", and it documents
+      "ENABLE_MCP" for the Model Context Protocol and "VISION_MODELS" for vision-capable models. Knowledge-base
+      and permission features appear only under the Enterprise Edition heading.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a2e48c50a9c32392e67397a67f66a6e3bdcaeb7c5bb051629a9fb5133927916a

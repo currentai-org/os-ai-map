@@ -18,46 +18,67 @@ openness:
       models:
         value: third-party-open-weight
   confidence: high
-  note: Privatemode publishes its Trusted Computing Base, the attestation agent, proxy, web app and SDK,
-    as a reproducible build, with the proxy and web app also MIT-licensed. But the main license permits
-    only viewing and compiling the code to audit it, prohibits redistribution, modification and self-hosting,
-    and the service itself, accounts, billing, orchestration, remains unpublished.
+  note: Privatemode publishes the components that make up its Trusted Computing Base, including the attestation
+    agent and proxy, as a reproducible build. The main license permits only viewing and compiling the code
+    to audit it and prohibits redistribution, modification and other use; only privatemode-proxy/, chat/
+    and internal/oss/ are also MIT. The hosted service around them, accounts, billing and orchestration,
+    is not published.
   raw: license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:partial(the
     TCB components are published and reproducibly buildable at github.com/edgelesssys/privatemode-public;
     the service around them is not, and the license permits building only to audit);service:proprietary-hosted;models:third-party-open-weight
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/edgelesssys/privatemode-public
     shows: TCB source (attestation agent, proxy, web app, SDK) under a custom audit-only license with MIT-licensed
       subdirectories
     accessed: '2026-06-17'
   - url: https://github.com/edgelesssys/privatemode-public/blob/main/README.md
-    shows: 'the repo "contains the source code of all components of Privatemode that are part of the TCB",
+    shows: the repo "contains the source code of all components of Privatemode that are part of the TCB",
       that "the build is reproducible", and that this "allows users to fully verify the Privatemode service"
-      - verification, not deployment'
+      - verification, not deployment
     accessed: '2026-08-12'
     establishes:
     - source
     http_status: 200
     content_sha256: e4c9a73f76e9969ccaec1d9fd459d542108f32f1a15502cd25a7872a8cb0483b
   - url: https://github.com/edgelesssys/privatemode-public/blob/main/LICENSE
-    shows: 'permission is granted "to view, analyze, and compile this source code solely for the purpose
+    shows: permission is granted "to view, analyze, and compile this source code solely for the purpose
       of auditing and for verifying its reproducibility and cryptographic hashes", and "Redistribution,
       modification, and use of the software for any other purpose are prohibited unless explicitly permitted
-      by the copyright holder"; privatemode-proxy/, app/web/ and internal/oss/ are additionally MIT'
+      by the copyright holder"; privatemode-proxy/, app/web/ and internal/oss/ are additionally MIT
     accessed: '2026-08-12'
     establishes:
     - license
     - source
     http_status: 200
     content_sha256: e8fab96ce879946cf49f66f752947da7f0a4dca4dc180dd70bf5a4dd41451bef
+  - url: https://cdn.jsdelivr.net/gh/edgelesssys/privatemode-public@main/LICENSE
+    shows: The LICENSE file grants permission "to view, analyze, and compile this source code solely for
+      the purpose of auditing and for verifying its reproducibility and cryptographic hashes", says "Redistribution,
+      modification, and use of the software for any other purpose are prohibited unless explicitly permitted
+      by the copyright holder", and adds that the code under "privatemode-proxy/", "chat/", and "internal/oss/"
+      is additionally MIT.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: db54a3ddf31ba819c882c12849f74a14e4822f033cbcc425d6232bf346d111ef
+    establishes:
+    - license
+    - source
+  - url: https://cdn.jsdelivr.net/gh/edgelesssys/privatemode-public@main/README.md
+    shows: The README says the repository holds the source of the components that are part of the TCB, that
+      "The build is reproducible", and that users are "allowed to inspect the code and build it for auditing
+      and verification purposes".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dc2a96107c5461ba894d413ef8c4ea1505bf8b418474b20144238d0a31c3771f
+    establishes:
+    - source
 adoption:
   level: 2
   signal_type: reported_traction
   confidence: low
   note: Announced Feb 18 2025; offers a free tier, pay-as-you-go, and enterprise plans, and is co-marketed
     with Capgemini for regulated industries, but no customer or usage numbers are published. New and unquantified.
-  last_verified: '2026-08-13'
   sources:
   - url: https://www.edgeless.systems/blog/what-is-privatemode
     shows: launch date (Feb 18 2025); Edgeless Systems as maker; confidential-inference positioning
@@ -67,18 +88,38 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'models: rotating menu of open-weight third-party models (chat/coding/embedding/speech); interfaces:
-    chat UI (no sign-up) + OpenAI/Anthropic-compatible API (streaming, tool calling, structured outputs,
-    prompt caching); confidential compute: confidential VMs + H100, end-to-end remote attestation, reproducible
-    TCB; integrations: Claude Code/OpenCode/VS Code/JetBrains/n8n/AnythingLLM'
+  value: 'models: open-weight third-party models (chat, OCR, embedding, speech-to-text); interfaces: chat
+    web app + API; confidential compute: confidential VMs with CPU and GPU attestation, verified client-side
+    against published reference values; integrations: Claude Code/OpenCode/VS Code/JetBrains/n8n/AnythingLLM/PrivateGPT/GPT4All/OpenClaw'
   confidence: medium
   note: Broad model menu plus a drop-in OpenAI-compatible API, chat UI, and strong integration story. Not
     top-tier because it is a confidential inference relay for others' models rather than a frontier model
     or full platform.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.privatemode.ai
-    shows: 'model list, chat UI + API, integrations, confidential-compute guarantees'
-    accessed: '2026-08-13'
+    shows: The home page offers a chat entry ("Start chatting"), a coding entry ("Install coding agent")
+      and a JavaScript client example calling the API, under the heading "Running on open frontier AI models";
+      its integrations list names OpenClaw, n8n, AnythingLLM, GPT4All and PrivateGPT.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b6d21ede1220969e8fa74fa9c5408db08c4a7a64c18d2ed3a6a98dc582e91f4b
+    content_sha256: 5d60a9858360e84d13bd8cdaa36bc0166647b88eb407ebb0d72eba29804d569b
+  - url: https://docs.privatemode.ai/models/overview
+    shows: The models page lists chat, OCR, embedding and speech-to-text models ("qwen3-embedding-4b", "whisper-large-v3",
+      "gpt-oss-120b"), and says "Privatemode gives you access to the following models."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 81be92185eccdafe3ce8a199a483dfd4eea446e1c8da36150c3934bec215f680
+  - url: https://docs.privatemode.ai/cookbook/coding-assistants
+    shows: The coding-assistants page says "Privatemode enables AI‑assisted coding on sensitive codebases
+      that you can't share with public AI services." and lists Claude Code, OpenCode, Visual Studio Code
+      and JetBrains IDEs as tested environments.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a036d2607bb2e42223c41bfded4d9961290ec9f588d4eeff554056ad4d350bf7
+  - url: https://docs.privatemode.ai/security/attestation/overview
+    shows: The attestation page describes the client-side proxy verifying "hardware-signed evidence" against
+      reference values before any key is released, with a further GPU report for AI workers.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 705226531eddb00ab67a55b168fd7185d1107f92639ff27054a7a8df4591abe0

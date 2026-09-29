@@ -23,20 +23,40 @@ openness:
     as NOASSERTION rather than Apache-2.0.
   raw: license:Apache-2.0(OSI);source:public(github.com/janhq/jan);no-feature-gated-core;self-host:primary(desktop
     app, 100% offline-capable);core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/janhq/jan/blob/dev/LICENSE
     shows: Apache-2.0 license text
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 240e79d4976dbf1d4c76e0ac1da223df97935a75497eaf8dd045771c3e92de16
-    establishes: [license]
+    establishes:
+    - license
   - url: https://github.com/janhq/jan
     shows: public source; Apache-2.0; v0.8.2 (1 Jun 2026)
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a60af4cdb71d1e3faca5d232f8c92f9484e3978d800127d50eb692865c8b60ba
-    establishes: [source, core-gated]
+    establishes:
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/janhq/jan@main/LICENSE
+    shows: 'LICENSE file in the janhq/jan repository: "Licensed under the Apache License, Version 2.0" followed
+      by "Attribution is requested in user-facing documentation and materials, where appropriate."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 240e79d4976dbf1d4c76e0ac1da223df97935a75497eaf8dd045771c3e92de16
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/janhq/jan@main/README.md
+    shows: Repository README titled "Jan - Open-source ChatGPT replacement" with a License section reading
+      "Apache 2.0 - Because sharing is caring."; no paid, enterprise or hosted tier is mentioned.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 297a156f1747488b907a98fb9182027ba3c535386b6827195528925abba80998
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -45,7 +65,6 @@ adoption:
   note: Adoption is measured by cumulative downloads of the desktop app, as reported on the vendor's own
     homepage; GitHub stars corroborate but are not the basis. Because these are lifetime installs rather
     than active users, confidence stays medium.
-  last_verified: '2026-08-13'
   sources:
   - url: https://jan.ai/
     shows: 5.7M+ downloads stated on vendor homepage
@@ -60,20 +79,42 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'model breadth: yes (local GGUF + OpenAI/Anthropic/Google/Mistral/DeepSeek/Qwen/Kimi cloud providers);
-    multimodal: limited; RAG: limited; plugins/extensions: yes; multi-user: no (single-user desktop);
-    OpenAI-compatible local API: yes'
+  value: 'model breadth: yes (local llama.cpp models plus OpenAI/Anthropic/Google/Mistral/Qwen/DeepSeek/Kimi
+    cloud providers and custom endpoints); multimodal: image and audio attachments with capable models;
+    RAG: project files chunked and indexed for retrieval; plugins/extensions: MCP connectors; projects and
+    custom assistants: yes; Cowork autonomous mode: preview; OpenAI-compatible local API: yes'
   confidence: medium
-  note: Solid open desktop chat UI with broad model selection and a local OpenAI-compatible server, but
-    single-user and lighter on RAG and multimodal support than the frontier consumer apps in this category.
-    That keeps it mid-tier among chat UIs.
-  last_verified: '2026-08-13'
+  note: Jan Desktop combines local llama.cpp models with cloud providers, a local OpenAI-compatible server,
+    MCP connectors, Projects with indexed files, custom assistants, and image and audio attachments for
+    capable models. Its autonomous Cowork mode is still labeled a preview.
+  last_verified: '2026-09-29'
   sources:
   - url: https://jan.ai/
-    shows: open + cloud model providers, OpenAI-compatible API, local-first
-    accessed: '2026-08-13'
+    shows: Homepage stating "Choose from open models or plug in your favorite online models." and listing
+      OpenAI, Anthropic, Google, Mistral, Qwen, DeepSeek and Kimi as model providers, with v0.8.4 as the
+      current release.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 123a5b026ad39256245785b7a82bd59a3d9814051c49326dcdcfb15233d40344
+    content_sha256: 2716fdfd6c33da6717001ee3f16fb2e340eb81266b606b7f7923ed87f6a57228
+  - url: https://jan.ai/docs/desktop/api-server
+    shows: 'Local API Server page: "a built-in, OpenAI-compatible API server that runs entirely on your
+      computer" and the ready log "JAN API listening at http://127.0.0.1:1337".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7f42f4fd35feb96e5297fc3a9d0bbca6c04378613520472cf2f569f070632910
+  - url: https://jan.ai/docs/desktop/file-upload
+    shows: 'File Upload page: "Attach images, audio, or documents directly to a single message in any chat."
+      and Project files are chunked and indexed for retrieval; image input needs a vision model.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 03c62e9d7b90676c43b551f9b6bfc55c557f005c32f8e7fcd151266af9cfda9f
+  - url: https://jan.ai/docs/desktop/quickstart
+    shows: 'Quickstart page: "Jan runs models two ways, and you can mix both in the same app" (local or
+      cloud provider), with Cowork (Preview), Projects, Assistants, Agents and Connectors (MCP) listed as
+      app features.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8e1de60c91b9262d623fe64d93f6a80d3764b6ee8960bbea33a7db0a4c7464e2
   - url: https://github.com/janhq/jan
     shows: 'feature set: local LLMs, cloud integration, custom assistants, OpenAI-compatible API'
     accessed: '2026-08-13'
