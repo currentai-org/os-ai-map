@@ -18,6 +18,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- The maintainer's rulings log (`docs/rulings/`), the `build.review_queue` report of every open
+  question and what it waits on, and the `ruling-session` and `audit-repo-accuracy` skills.
 - Second promotion tranche for eight of the new categories, 72 head products: classic_ml_cv 34,
   speech_audio 18, media_generation 6, robotics_embodied 5, multimodal_models 5,
   datacenter_accelerators 2, assurance_evidence 1 and model_hubs 1; openml moves to the
