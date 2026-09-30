@@ -543,6 +543,8 @@ Rules:
   This is evidence per dataset. It separates a failed or stale collector from a legitimate
   absence, which is what `source_unavailable` exists for. It cannot see an artifact dropped by a
   partial run that still reported `SUCCESS`, and that blind spot is accepted, not solved.
+  `build/check_reconciliation.py` implements these conditions over the weekly read and a
+  `source_runs` snapshot taken after it (report-only for now; see §4.4).
 - The observation identity is two things, not one. `observation_content_digest` is
   content-addressed over the normalized observation content alone; `observation_snapshot_id` is
   `SHA-256(domain + canonicalization_version + observation_content_digest)`, binding the
@@ -860,8 +862,10 @@ measurement there as a validated agreement. That status is the source-run contra
 report, not a defect in it, and for the warehouse table it is the settled state. The fuller status
 set comes from a repo-side reconciliation that combines the read-time binding in
 `build/read_binding.py` with the per-dataset fetcher run status in `source_runs`, and the blocking
-gate AD-5 requires reads that (#410), not this table. It activates when
-that gate is built.
+gate AD-5 requires reads that (#410), not this table. That gate is `build/check_reconciliation.py`.
+It runs report-only as an advisory step of the weekly `adoption-reconciliation` workflow: it prints
+the census and every row a release would be blocked on, and blocks nothing. Blocking mode follows
+once a few weekly reports have been read and the baseline adjudicated (§8.3).
 
 #### Repository-derived scoring trace
 
