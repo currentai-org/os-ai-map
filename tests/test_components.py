@@ -1021,3 +1021,112 @@ def test_a_block_list_entry_still_takes_the_preserving_path_for_scalars():
     assert "    - weights\n    - data\n" in out
     changed = [(a, b) for a, b in zip(text.splitlines(), out.splitlines()) if a != b]
     assert len(changed) == 1
+
+
+# --- add_document_field -------------------------------------------------------------------
+
+ORG_TEXT = """name: acme
+display_name: Acme
+type: company
+homepage: https://www.acme.example
+github:
+- url: https://github.com/acme
+products:
+- widget
+- gadget
+comments: Wraps across two lines because the corpus is hand-wrapped and this one is long
+  enough to need it.
+"""
+
+
+def test_a_new_field_goes_after_the_named_key_and_nothing_else_moves():
+    out = components.add_document_field(ORG_TEXT, "country", "US", after="homepage")
+    assert out.splitlines()[3:5] == ["homepage: https://www.acme.example", "country: US"]
+    assert yaml.safe_load(out) == {**yaml.safe_load(ORG_TEXT), "country": "US"}
+    assert list(yaml.safe_load(out)).index("country") == list(yaml.safe_load(out)).index("homepage") + 1
+    assert out.replace("country: US\n", "") == ORG_TEXT
+
+
+def test_the_first_present_anchor_in_a_list_wins():
+    no_homepage = ORG_TEXT.replace("homepage: https://www.acme.example\n", "")
+    out = components.add_document_field(no_homepage, "country", "US", after=["homepage", "type"])
+    assert out.splitlines()[:4] == ["name: acme", "display_name: Acme", "type: company", "country: US"]
+
+
+def test_an_anchor_that_is_a_block_list_is_skipped_whole():
+    """`github:` owns the `- url:` lines beneath it; inserting after the key line alone would
+    split the list from its key."""
+    out = components.add_document_field(ORG_TEXT, "country", "US", after="github")
+    lines = out.splitlines()
+    assert lines[lines.index("github:") + 1] == "- url: https://github.com/acme"
+    assert lines[lines.index("github:") + 2] == "country: US"
+
+
+def test_an_anchor_that_is_a_wrapped_scalar_is_skipped_whole():
+    out = components.add_document_field(ORG_TEXT, "country", "US", after="comments")
+    assert out.endswith("  enough to need it.\ncountry: US\n")
+    assert yaml.safe_load(out)["comments"] == yaml.safe_load(ORG_TEXT)["comments"]
+
+
+def test_without_a_present_anchor_the_field_goes_at_the_end():
+    out = components.add_document_field(ORG_TEXT, "country", "US", after=["nope", "neither"])
+    assert out == ORG_TEXT + "country: US\n"
+    assert components.add_document_field(ORG_TEXT, "country", "US") == ORG_TEXT + "country: US\n"
+
+
+def test_a_list_renders_in_block_style_at_the_keys_own_indent():
+    """The corpus writes `github:` and rosters as `key:` with `- item` in column zero."""
+    out = components.add_document_field(PRODUCT, "languages", ["amh", "hau"], after="type")
+    assert "type: software\nlanguages:\n- amh\n- hau\ndescription:" in out
+    assert yaml.safe_load(out)["languages"] == ["amh", "hau"]
+    assert out.replace("languages:\n- amh\n- hau\n", "") == PRODUCT
+
+
+def test_a_value_that_yaml_would_read_as_a_boolean_is_quoted():
+    """Norway's code is `NO`, which YAML 1.1 reads as false. The dumper quotes it and the
+    reparse assertion would refuse the write if it did not."""
+    out = components.add_document_field(ORG_TEXT, "country", "NO", after="homepage")
+    assert yaml.safe_load(out)["country"] == "NO"
+    assert "country: 'NO'" in out
+
+
+def test_adding_a_key_that_exists_raises():
+    with pytest.raises(ValueError, match="already exists"):
+        components.add_document_field(PRODUCT, "description", "x", after="type")
+
+
+def test_a_file_without_a_trailing_newline_is_refused():
+    with pytest.raises(ValueError, match="newline"):
+        components.add_document_field(ORG_TEXT.rstrip("\n"), "country", "US", after="type")
+
+
+def test_adding_a_field_is_idempotent_through_set_document_field():
+    once = components.add_document_field(ORG_TEXT, "country", "US", after="homepage")
+    assert components.set_document_field(once, "country", "US") == once
+
+
+def test_flow_renders_a_long_list_as_a_wrapped_sequence_under_the_reparse_assertions():
+    codes = [f"a{a}{b}" for a in "bcdefghij" for b in "bcdefghijklmnopqrstuvwxyz"] * 3
+    codes = sorted(set(codes))
+    out = components.add_document_field(PRODUCT, "languages", codes, after="type", flow=True)
+    lines = out.splitlines()
+    assert lines[3].startswith("languages: [abb, abc")
+    wrapped = [lines[3]]
+    for line in lines[4:]:
+        if not line.startswith("  "):
+            break
+        wrapped.append(line)
+    assert len(wrapped) > 2 and all(l.startswith("  ") for l in wrapped[1:])
+    assert all(len(l) < 125 for l in wrapped)
+    assert yaml.safe_load(out)["languages"] == codes
+    # the only bytes that changed are the inserted ones
+    assert out.replace("\n".join(wrapped) + "\n", "") == PRODUCT
+
+
+def test_flow_is_opt_in_and_set_document_field_can_replace_either_style():
+    block = components.add_document_field(PRODUCT, "languages", ["amh", "hau"], after="type")
+    assert "languages:\n- amh\n- hau\n" in block
+    flow = components.set_document_field(block, "languages", ["amh", "hau", "ibo"], flow=True)
+    assert "type: software\nlanguages: [amh, hau, ibo]\ndescription:" in flow
+    back = components.set_document_field(flow, "languages", ["amh"])
+    assert "languages:\n- amh\n" in back and "[" not in back.split("description:")[0]

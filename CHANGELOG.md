@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Identity attributes `country` (organizations, ISO 3166-1 alpha-2), `steward` and `languages`
+  (products; ISO 639-3, datasets only), checked against frozen code-list snapshots and carried
+  into the payload and the registry `products` table, with `build/apply_attributes.py` to apply
+  curation ledgers; the existing free-text countries are normalized to codes
+  ([#684](https://github.com/currentai-org/os-ai-map/issues/684)).
 - Second promotion tranche for eight of the new categories, 72 head products: classic_ml_cv 34,
   speech_audio 18, media_generation 6, robotics_embodied 5, multimodal_models 5,
   datacenter_accelerators 2, assurance_evidence 1 and model_hubs 1; openml moves to the

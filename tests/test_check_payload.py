@@ -190,3 +190,27 @@ def test_fails_an_end_of_life_with_no_usable_source():
 
 def test_a_row_with_no_end_of_life_is_unaffected():
     check(_ok())
+
+
+def test_passes_a_row_with_a_steward_and_languages():
+    p = _ok()
+    row = p["categories"]["c"]["products"][0]
+    row["steward"] = "linux-foundation"
+    row["languages"] = ["amh", "hau"]
+    check(p)
+
+
+@pytest.mark.parametrize("bad", [[], ["hau", "amh"], ["en"], ["amh", "amh"], "amh", ["AMH"], [3]])
+def test_fails_languages_that_are_not_a_sorted_list_of_three_letter_codes(bad):
+    p = _ok()
+    p["categories"]["c"]["products"][0]["languages"] = bad
+    with pytest.raises(PayloadError, match="languages"):
+        check(p)
+
+
+@pytest.mark.parametrize("bad", ["", None, ["lf"]])
+def test_fails_a_steward_that_is_not_a_slug_string(bad):
+    p = _ok()
+    p["categories"]["c"]["products"][0]["steward"] = bad
+    with pytest.raises(PayloadError, match="steward"):
+        check(p)

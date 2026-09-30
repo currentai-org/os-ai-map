@@ -17,7 +17,8 @@ from build.taxonomy import arc_grouped_categories
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "description",
+PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "steward", "languages",
+                     "description",
                      "openness", "adoption", "capability", "overall_score", "tier",
                      "maturity", "mature", "end_of_life",
                      "freshness", "version_note", "lineage"]
@@ -407,6 +408,16 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     eol = prod.get("end_of_life")
     if eol:
         row["end_of_life"] = {"date": eol["date"], "source": eol["source"]}
+    # Identity attributes (#684), emitted only where declared, like `end_of_life` and `lineage`:
+    # a product row with nothing to say about governance or language carries no key, so the
+    # payload does not grow by two empty fields on every row. `steward` is the org slug of the
+    # governing body when that is not the owner (its type and country are on that org's own
+    # record); `languages` is the sorted ISO 639-3 list of a dataset's content. Neither feeds a
+    # score, a tier or a stage. See docs/reference/identity.md.
+    if prod.get("steward"):
+        row["steward"] = prod["steward"]
+    if prod.get("languages"):
+        row["languages"] = list(prod["languages"])
     # Bridge: the source field is now `comments` (a string), but the payload key
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):

@@ -851,3 +851,25 @@ def test_group_order_omits_a_group_with_no_published_category():
     )
     payload = build_payload(src, frozen_long_tail={}, generated="2026-09-22")
     assert "later" not in payload["group_order"]
+
+
+def test_steward_and_languages_reach_the_payload_only_where_declared():
+    """Optional identity attributes follow the `end_of_life` convention: no key, not an empty one."""
+    plain = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10"
+                          )["categories"]["base_pretrained"]["products"][0]
+    assert "steward" not in plain and "languages" not in plain
+
+    s = _sources()
+    s["products"]["llama-4"]["steward"] = "meta"
+    s["products"]["llama-4"]["languages"] = ["amh", "hau"]
+    row = build_payload(s, frozen_long_tail={}, generated="2026-06-10"
+                        )["categories"]["base_pretrained"]["products"][0]
+    assert row["steward"] == "meta" and row["languages"] == ["amh", "hau"]
+    keys = list(row)
+    assert keys.index("type") < keys.index("steward") < keys.index("languages") < keys.index("description")
+
+
+def test_an_organizations_country_reaches_the_payload_as_written():
+    s = _sources()
+    s["organizations"]["meta"]["country"] = "US"
+    assert build_payload(s, frozen_long_tail={}, generated="2026-06-10")["organizations"]["meta"]["country"] == "US"

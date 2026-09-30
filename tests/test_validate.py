@@ -1035,3 +1035,107 @@ def test_the_pre_group_shape_still_reads_for_cross_ref_tools():
     legacy = {"name": "A", "layer": "a",
               "categories": ["x", {"name": "y", "status": "preliminary"}]}
     assert list(arc_categories(legacy)) == [("x", "published"), ("y", "preliminary")]
+
+
+# --- identity attributes: country, steward, languages (#684) --------------------------------
+
+
+def _dataset_fixture():
+    """The base fixture plus one dataset product, so `languages` has somewhere to live."""
+    d = _fixture()
+    d["products"]["corpus"] = {"name": "corpus", "display_name": "Corpus", "type": "dataset",
+                               "comments": ""}
+    d["scores"]["corpus"] = {**d["scores"]["llama"], "product": "corpus"}
+    d["organizations"]["meta"]["products"].append("corpus")
+    d["categories"]["base_pretrained"]["products"].append("corpus")
+    return d
+
+
+def test_org_country_accepts_an_iso_alpha_2_code():
+    d = _fixture()
+    d["organizations"]["meta"]["country"] = "US"
+    assert validate_sources(d) == []
+
+
+@pytest.mark.parametrize("bad", ["USA", "United States", "UK", "EU", "XK", "us", "ZZ"])
+def test_org_country_outside_the_iso_list_is_an_error(bad):
+    d = _fixture()
+    d["organizations"]["meta"]["country"] = bad
+    assert any("organization 'meta': country" in e for e in validate_sources(d))
+
+
+def test_an_individual_with_a_country_is_an_error():
+    d = _fixture()
+    d["organizations"]["meta"]["type"] = "individual"
+    d["organizations"]["meta"]["country"] = "US"
+    assert any("an individual carries no country" in e for e in validate_sources(d))
+
+
+def test_languages_on_a_dataset_pass_when_valid_and_sorted():
+    d = _dataset_fixture()
+    d["products"]["corpus"]["languages"] = ["amh", "hau", "swa"]
+    assert validate_sources(d) == []
+
+
+def test_languages_on_a_non_dataset_is_an_error():
+    d = _fixture()
+    d["products"]["llama"]["languages"] = ["eng"]
+    assert any("'llama'" in e and "datasets only" in e for e in validate_sources(d))
+
+
+@pytest.mark.parametrize("bad", ["en", "mul", "und", "zxx", "xxx", "ENG"])
+def test_a_language_code_outside_the_allowed_set_is_an_error(bad):
+    d = _dataset_fixture()
+    d["products"]["corpus"]["languages"] = sorted(["eng", bad])
+    assert any(f"language {bad!r}" in e for e in validate_sources(d))
+
+
+def test_unsorted_languages_are_an_error():
+    d = _dataset_fixture()
+    d["products"]["corpus"]["languages"] = ["swa", "amh"]
+    assert any("must be sorted" in e for e in validate_sources(d))
+
+
+def test_a_steward_must_resolve_to_an_org_file():
+    d = _fixture()
+    d["products"]["llama"]["steward"] = "nobody"
+    assert any("steward 'nobody' has no sources/organizations/nobody.yaml" in e
+               for e in validate_sources(d))
+
+
+def test_a_steward_may_not_be_the_owning_org():
+    d = _fixture()
+    d["products"]["llama"]["steward"] = "meta"
+    assert any("is the owning organization" in e for e in validate_sources(d))
+
+
+def test_a_steward_other_than_the_owner_passes():
+    d = _fixture()
+    d["organizations"]["lf"] = {"name": "lf", "display_name": "Linux Foundation", "products": []}
+    d["products"]["llama"]["steward"] = "lf"
+    assert validate_sources(d) == []
+
+
+def test_languages_are_required_where_a_category_asks(monkeypatch):
+    """The rule ships disabled (`LANGUAGES_REQUIRED_CATEGORIES` is empty) and is read at call
+    time, so the language backfill turns it on by naming a category, not by touching logic."""
+    import build.validate as validate
+
+    d = _dataset_fixture()
+    assert validate_sources(d) == []
+    monkeypatch.setattr(validate, "LANGUAGES_REQUIRED_CATEGORIES", frozenset({"base_pretrained"}))
+    errs = validate_sources(d)
+    assert any("'corpus'" in e and "requires `languages`" in e for e in errs)
+    d["products"]["corpus"]["languages"] = ["eng"]
+    errs = validate_sources(d)
+    assert not any("'corpus'" in e and "requires" in e for e in errs)
+    # every product in the category is held to it, which is what "required on every product" means
+    assert any("'llama'" in e and "requires `languages`" in e for e in errs)
+
+
+def test_the_required_categories_all_exist():
+    """Naming a category that has no file would silently disable its gate."""
+    import build.validate as validate
+
+    categories = {p.stem for p in (ROOT / "sources" / "categories").glob("*.yaml")}
+    assert validate.LANGUAGES_REQUIRED_CATEGORIES <= categories

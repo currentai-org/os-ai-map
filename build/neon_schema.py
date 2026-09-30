@@ -559,6 +559,12 @@ def _products(payload: dict) -> list[dict]:
                 "freshness_basis": enum_value(
                     "freshness_basis", freshness.get("basis"), column="products.freshness_basis"
                 ),
+                # Identity attributes (#684). An org slug, or "" (NULL on load) when governance
+                # sits with the owner; and a `varchar[]` in the same literal form as
+                # `organizations.github`. No FK on `steward`: `organizations` holds only orgs
+                # that own a published product, and a steward need not be one.
+                "steward": product.get("steward") or "",
+                "languages": _pg_array(product.get("languages")),
             }
         )
     return out
@@ -1035,6 +1041,8 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("version_note", "TEXT"),
             ("freshness_date", "DATE"),
             ("freshness_basis", enum_type("freshness_basis")),
+            ("steward", "VARCHAR"),
+            ("languages", "VARCHAR[]"),
         ),
         _products,
         constraints=(

@@ -46,7 +46,8 @@
     },
     "country": {
       "type": "string",
-      "description": "Where the org is based. Free text and uncontrolled - no ISO codes, no agreed spelling - and populated on 10 of 488 files on 2026-09-25 (six \"USA\", two \"United States\", one \"Singapore\", one \"Sweden\"). Emitted into the payload and the registry's `organizations` table, and read by nothing. Documented in this state so the field is not mistaken for coverage: any geography claim over the map would need it deliberately backfilled and normalized first, and until then an empty string means unrecorded, never domestic."
+      "pattern": "^[A-Z]{2}$",
+      "description": "Where the org is headquartered or legally seated, as an ISO 3166-1 alpha-2 code (`US`, `GB`, `TW`). A university lab takes its university's country, a subsidiary recorded as its own org takes its own seat, a foundation takes its legal seat. The schema checks only the shape; build/validate.py checks the code against sources/snapshots/iso-3166-1.tsv, because 249 codes in an enum here would be a second copy of the snapshot that drifts. Unset means unrecorded, never domestic, and a reader must not infer a country from a homepage's top-level domain. Individuals (`type: individual`) are deliberately left unset: a person's location is personal data, and the question the map asks is about institutions. A community with no legal entity, an intergovernmental body, and an org whose seat cannot be established from a primary page are left unset too. Emitted into the payload and the registry's `organizations` table. Nothing scores, gates or routes on it: it exists so a geography question about who builds open AI can be answered from a controlled field instead of free text, and it is an identity attribute like `type`, not an openness dimension. docs/reference/identity.md carries the rule for who sets it."
     },
     "github": {
       "type": "array",
