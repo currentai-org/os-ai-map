@@ -197,7 +197,16 @@ def test_passes_a_row_with_a_steward_and_languages():
     row = p["categories"]["c"]["products"][0]
     row["steward"] = "linux-foundation"
     row["languages"] = ["amh", "hau"]
+    p["organizations"]["linux-foundation"] = {"slug": "linux-foundation", "products": []}
     check(p)
+
+
+def test_fails_a_steward_with_no_entry_in_organizations():
+    """A steward is an org slug so that its type and country come with it; it has to resolve."""
+    p = _ok()
+    p["categories"]["c"]["products"][0]["steward"] = "linux-foundation"
+    with pytest.raises(PayloadError, match="no entry in organizations"):
+        check(p)
 
 
 @pytest.mark.parametrize("bad", [[], ["hau", "amh"], ["en"], ["amh", "amh"], "amh", ["AMH"], [3]])

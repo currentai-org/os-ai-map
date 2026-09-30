@@ -444,7 +444,7 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
-def _organizations(orgs: dict, product_org: dict, published: set[str]) -> dict:
+def _organizations(orgs: dict, product_org: dict, published: set[str], prods: dict) -> dict:
     """The organization roster, emitted for the app's /map/org/<slug> pages.
 
     Sourced from sources/organizations/*.yaml rather than build/registry/organizations.csv:
@@ -461,11 +461,21 @@ def _organizations(orgs: dict, product_org: dict, published: set[str]) -> dict:
     appear at all. Otherwise marking a category preliminary hid its products from /map while
     leaving them addressable at /map/org/<slug>, and shipped orgs - openxla, mlc-ai - that
     exist on the map nowhere else.
+
+    An org named as the `steward` of a published product is in the index too, with only the
+    products it owns on its roster, which for a steward-only foundation is none. A steward is an
+    org slug precisely so that its `type` and `country` come with it (#684); an index that left
+    it out would publish a slug the payload cannot resolve. `build/check_payload.py` requires
+    every steward to resolve here.
     """
     by_org: dict[str, list[str]] = {}
     for prod_slug, org_slug in product_org.items():
         if prod_slug in published:
             by_org.setdefault(org_slug, []).append(prod_slug)
+    for prod_slug in published:
+        steward = (prods.get(prod_slug) or {}).get("steward")
+        if steward:
+            by_org.setdefault(steward, [])
     return {
         slug: {
             "slug": slug,
@@ -532,7 +542,12 @@ def _aliases(prods: dict, orgs: dict, published: set[str], org_slugs: set[str]) 
 #
 # History:
 #   1 - the shape as of 2026-08. Gap keys void/capability/adoption/resiliency/openness/disclosure.
-PAYLOAD_CONTRACT = 1
+#   2 - `organizations[].country` changes meaning: an ISO 3166-1 alpha-2 code (`US`, `GB`) where
+#       it was uncontrolled free text (`USA`, `United States`), "" still meaning unrecorded
+#       (#684). `organizations` also lists the orgs named as a product's `steward`, some of which
+#       own no published product and carry an empty `products` roster. The new product keys
+#       `steward` and `languages` are additions and would not on their own need the bump.
+PAYLOAD_CONTRACT = 2
 
 
 def repo_version(root: Path | None = None) -> str:
@@ -665,7 +680,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     # opposed to the editorial strapline). Edit at the source; it flows here on build.
     # Built before the payload literal because the alias index is scoped to the organizations
     # this leaves standing, and both are scoped to the published products.
-    organizations = _organizations(orgs, product_org, published_slugs)
+    organizations = _organizations(orgs, product_org, published_slugs, prods)
     descriptions = {
         "stages": {str(k): v for k, v in _STAGE_DESC.items()},
         "gaps": dict(_GAP_DESC),

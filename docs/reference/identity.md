@@ -553,9 +553,16 @@ components once recorded under `context`; a record carrying it fails `build/chec
 
 The value is the slug of an org file, and everything else about the steward (its `type`, its
 `country`) is read from that record and never copied onto the product. A body that only stewards
-is recorded as an org with an empty `products` roster. The payload carries the slug; the
-`organizations` block lists only orgs that own a published product, so a consumer resolving a
-steward should expect a slug with no entry there.
+is recorded as an org with an empty `products` roster. The payload carries the slug, and its
+`organizations` block lists every steward of a published product alongside the orgs that own
+one, so the slug always resolves: `build/check_payload.py` fails a steward with no entry there,
+and the Neon `products.steward` column is a foreign key to `organizations`.
+
+A steward names a body, so it cannot say "a community maintains this". A project that left its
+founder for an informal maintainer group with no legal entity or host (verl, which ByteDance Seed
+started and a community now maintains) carries no `steward`, and the product's prose is where
+that history lives. This is a deliberate limit of the field, not a gap in the backfill: an org
+record for "the community" would have no type, country or homepage to resolve to.
 
 ### Languages
 
@@ -591,7 +598,9 @@ and replaces an existing value only with `--overwrite`. Every edit goes through
 `build/components.py`, so a file keeps its hand-wrapped prose.
 
 The payload carries `steward` and `languages` on a product row only where declared, and an
-org's `country` in the `organizations` block. The registry's `products` table carries `steward`
+org's `country` in the `organizations` block. Payload contract 2 is the change of that field
+from free text to a code; a consumer that reads contract 1 must ship support for it first. The
+registry's `products` table carries `steward`
 and `languages` (the codes joined by a comma), and `organizations` carries `country`.
 
 ## Where the graph lives

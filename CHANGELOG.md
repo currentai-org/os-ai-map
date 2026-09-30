@@ -39,6 +39,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Payload contract 2: `organizations[].country` is an ISO 3166-1 alpha-2 code where it was free
+  text, and `organizations` also lists the orgs named as a product's `steward`. Neon schema
+  version 6 adds `products.steward` (a foreign key to `organizations`) and `products.languages`
+  ([#811](https://github.com/currentai-org/os-ai-map/pull/811)).
 - Merged the `ai2` organization into `allen-institute-for-ai`, which now lists all 23 of the
   institute's products and redirects the old slug
   ([#769](https://github.com/currentai-org/os-ai-map/pull/769)).

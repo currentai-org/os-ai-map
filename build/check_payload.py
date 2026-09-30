@@ -95,17 +95,20 @@ def _require_dict(payload: dict, key: str) -> dict:
     return value
 
 
-def _check_identity_attributes(slug: str, row: dict) -> None:
+def _check_identity_attributes(slug: str, row: dict, orgs: dict) -> None:
     """`steward` and `languages` are optional, and when present must be readable as declared.
 
     A steward is an organization slug, a string. `languages` is a non-empty sorted list of
     three-letter lowercase codes. Their VALUES are gated at the source by `build/validate.py`
     against the ISO snapshots; this checks only that the payload did not carry a shape a
-    consumer would have to guess at. A steward is not required to resolve inside the payload's
-    `organizations` block, which lists only orgs that own a published product.
+    consumer would have to guess at. A steward must resolve inside the payload's `organizations`
+    block, which serialize extends to every steward of a published product, because the point of
+    naming an org rather than writing free text is that the steward's type and country come with it.
     """
     if "steward" in row and not (isinstance(row["steward"], str) and row["steward"]):
         raise PayloadError(f"{slug!r} has a steward that is not an organization slug: {row['steward']!r}")
+    if "steward" in row and row["steward"] not in orgs:
+        raise PayloadError(f"{slug!r} names steward {row['steward']!r}, which has no entry in organizations")
     if "languages" in row:
         languages = row["languages"]
         if not (isinstance(languages, list) and languages
@@ -190,7 +193,7 @@ def check(payload: dict) -> None:
         _check_freshness_caveats(slug, fresh)
         if "end_of_life" in row:
             _check_end_of_life(slug, row["end_of_life"])
-        _check_identity_attributes(slug, row)
+        _check_identity_attributes(slug, row, orgs)
 
     dates = {row["freshness"]["date"] for row in rows}
     if len(dates) <= 1:
