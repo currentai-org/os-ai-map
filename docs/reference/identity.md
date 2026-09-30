@@ -548,7 +548,8 @@ Set `steward` only when governance has moved away from the owner: a project dona
 foundation, a standard whose maintainers now sit in a consortium. The owning org stays the one
 whose roster lists the product, because it is who built or ships it. A product the owner still
 governs carries no `steward`, and `build/validate.py` refuses one equal to the owning org rather
-than store the same fact twice.
+than store the same fact twice. These attributes replaced the `governance` clause that openness
+components once recorded under `context`; a record carrying it fails `build/check_components.py`.
 
 The value is the slug of an org file, and everything else about the steward (its `type`, its
 `country`) is read from that record and never copied onto the product. A body that only stewards

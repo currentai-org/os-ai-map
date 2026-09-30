@@ -36,7 +36,7 @@ RECIPE = {
 
 RAW = (
     "license:Apache-2.0(OSI);source:public(the backend);service:optional(a hosted tier);"
-    "core-gated:ungated;no feature-gated core;governance:Linux-Foundation(co-founded)"
+    "core-gated:ungated;no feature-gated core;commercial:Acme(paid support)"
 )
 
 
@@ -44,8 +44,8 @@ def test_route_context_moves_exactly_the_unread_keys():
     routed = route_context(structure(RAW), RECIPE)
 
     assert list(routed) == ["license", "source", "core-gated", FREE_TEXT, CONTEXT]
-    assert list(routed[CONTEXT]) == ["service", "governance"]
-    assert routed[CONTEXT]["governance"] == {"value": "Linux-Foundation", "detail": "co-founded"}
+    assert list(routed[CONTEXT]) == ["service", "commercial"]
+    assert routed[CONTEXT]["commercial"] == {"value": "Acme", "detail": "paid support"}
     assert routed[FREE_TEXT] == ["no feature-gated core"]
 
 
@@ -61,16 +61,16 @@ def test_route_context_is_idempotent_and_moves_a_newly_read_key_back_out():
     routed = route_context(structure(RAW), RECIPE)
     assert route_context(routed, RECIPE) == routed
 
-    # A ladder that starts reading `governance` must pull it out of context, not leave the
+    # A ladder that starts reading `commercial` must pull it out of context, not leave the
     # record calling read evidence "not scored".
     widened = {
         "openness": {
             **RECIPE["openness"],
-            "dimensions": {**RECIPE["openness"]["dimensions"], "governance": {}},
+            "dimensions": {**RECIPE["openness"]["dimensions"], "commercial": {}},
         }
     }
     moved = route_context(routed, widened)
-    assert "governance" in moved and list(moved[CONTEXT]) == ["service"]
+    assert "commercial" in moved and list(moved[CONTEXT]) == ["service"]
 
 
 def test_a_context_emptied_by_routing_disappears_rather_than_lingering_empty():
@@ -98,7 +98,7 @@ def test_the_gate_fails_an_unread_key_at_the_top_level():
     failures = context_failures("p", structure(RAW), RECIPE)
     assert len(failures) == 2
     assert all("dropped from the score silently" in f for f in failures)
-    assert unread_keys(structure(RAW), RECIPE) == {"service", "governance"}
+    assert unread_keys(structure(RAW), RECIPE) == {"service", "commercial"}
 
 
 def test_the_gate_fails_a_read_key_hidden_in_context():
@@ -135,7 +135,7 @@ def test_a_malformed_entry_is_reported_not_raised(tmp_path):
         "source": {"value": "public", "raw": None},
         1: {"value": "an integer key"},
         CONTEXT: {
-            "governance": "a bare string",
+            "commercial": "a bare string",
             "repo-license": [{"name": "MIT", "raw": 7}],
         },
     }
@@ -144,7 +144,7 @@ def test_a_malformed_entry_is_reported_not_raised(tmp_path):
     )
     failures = check(tmp_path)
     assert {f.split(":")[0] for f in failures} == {
-        "p.service", "p.license", "p.source", "p.1", "p.context.governance",
+        "p.service", "p.license", "p.source", "p.1", "p.context.commercial",
         "p.context.repo-license",
     }
 
@@ -176,3 +176,32 @@ def test_the_corpus_is_routed():
     """Every record already satisfies the gate — the sweep ran and nothing has regressed it."""
     root = Path(__file__).resolve().parents[1]
     assert [f for f in check(root) if CONTEXT in f or "dropped from the score" in f] == []
+
+
+def test_the_gate_refuses_governance_under_context_and_names_where_it_went():
+    # #684 retired the clause: country, steward and dataset languages are identity attributes.
+    # Unread by every ladder, so it was always legal in context until the gate named it.
+    mapping = {"license": [{"name": "MIT"}], CONTEXT: {"governance": {"value": "Hugging Face"}}}
+    [failure] = context_failures("p", mapping, RECIPE)
+    assert failure.startswith("p.context.governance:")
+    assert "`steward`" in failure and "`country`" in failure and "`type`" in failure
+
+    others = {"license": [{"name": "MIT"}], CONTEXT: {"service": {"value": "x"}}}
+    assert context_failures("p", others, RECIPE) == []
+
+
+def test_the_raw_agreement_check_reports_a_returned_governance_clause(tmp_path):
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    (scores / "p.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "openness": {
+                    "components": {"source": {"value": "public"}, CONTEXT: {"governance": {"value": "Acme"}}},
+                    "raw": "source:public;governance:Acme",
+                }
+            }
+        )
+    )
+    failures = check(tmp_path)
+    assert [f for f in failures if "governance" in f and "no longer recorded" in f]

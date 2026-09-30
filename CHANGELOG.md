@@ -53,6 +53,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   up to 5, and nanonets-ocr, liveportrait, latentsync and open-sora down to 2
   ([#750](https://github.com/currentai-org/os-ai-map/pull/750)).
 
+### Removed
+
+- `governance` as a recorded `openness.components.context` key. Country, steward and dataset
+  languages are identity attributes now, so the clause naming who governs a product is removed
+  from the score files that carried it and from their `openness.raw`, which changes the payload's
+  components text for those products. No score or class moved, and `check_components` now fails a
+  record that brings the key back
+  ([#684](https://github.com/currentai-org/os-ai-map/issues/684)).
+
 ## [0.4.0] - 2026-09-26
 
 ### Added

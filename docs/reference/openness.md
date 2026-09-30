@@ -452,6 +452,12 @@ score without a word, which is what the gate prevents. Moving a key across the l
 nothing a reader sees: `raw` is untouched, and `components_of` lifts `context` back in.
 `uv run python -m build.route_context --write` does the move.
 
+`governance` is not a key that can be recorded there. It was, as a clause naming who governs the
+product, and it was never scored. That fact now sits on identity records: the owning org's
+`country` and `type`, and the product's `steward` when a different body governs it
+([`identity.md`](identity.md), "Country, steward and languages"). `build/check_components.py`
+fails a record that brings the clause back under `context` and names the replacement.
+
 What gates a core is a piece of the product *itself* being withheld: a closed package the open
 one depends on, an enterprise or `ee/` directory under a different license, a license key that
 unlocks functionality.
