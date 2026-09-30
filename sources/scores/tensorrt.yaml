@@ -14,31 +14,25 @@ openness:
     rather than source in the tree. That makes the source only partial, regardless of how permissive the
     covering license is.
   raw: license:Apache-2.0(OSI);source:partial
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/NVIDIA/TensorRT/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 62fd70d67cbc6c1b3b482cadd1ca06de05aebf34f401cf889c5919a55405ea01
+    content_sha256: 9f532159ec7a844d3dccc25e1dbed5593c7b7f83afa52db3ba623396b04673e0
     establishes:
     - license
-  - url: https://api.github.com/repos/NVIDIA/TensorRT
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      NVIDIA/TensorRT.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT/main/README.md
+    shows: 'README build step tells the reader to "download and extract the TensorRT GA build from [NVIDIA
+      Developer Zone](https://developer.nvidia.com)" as a tar.zst release, then "export TRT_LIBPATH=`pwd`/TensorRT-11.3.0.99/lib",
+      so the optimizing builder is a prebuilt binary. Searched the body for license key, proprietary and
+      closed source: none; the tarballs are named "TensorRT-Enterprise-11.3.0.99" and enterprise support
+      is offered via "NVIDIA AI Enterprise".'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 0848b89a843792861842dcff3d37f3a3419cd52adde9a97cfea31d3e9d11e96f
-    establishes:
-    - license
-    - source
-  - url: https://github.com/NVIDIA/TensorRT/blob/main/README.md
-    shows: README's build instructions require downloading a prebuilt TensorRT release tarball from developer.nvidia.com
-      and pointing TRT_LIBPATH at its lib directory, so the optimizing builder is linked as a binary rather than
-      built from this repository, which holds the parsers, plugins, bindings and samples.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 8a4644025d91b54eb5fc123aa1f9591ed74993f017b9bd745c921754c94077d3
+    content_sha256: b2fff2e9f2ba3d0678dc170fbbe10bbf33f6f2282e245bb945db19f6275e3803
     establishes:
     - source
 adoption:
@@ -65,19 +59,39 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: full compilation narrowed to one vendor''s targets'
-  value: Graph-level fusion, precision calibration and explicit quantization compiled to NVIDIA GPU engines, with
-    ONNX ingest and a plugin interface for custom layers. NVIDIA hardware only.
+  value: Graph-level fusion and explicit quantization compiled to NVIDIA GPU engines, with ONNX ingest and
+    a plugin interface for custom layers. NVIDIA hardware only.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: TensorRT applies graph-level fusion, precision calibration and explicit quantization, with ONNX
-    ingest and a plugin interface for custom layers, compiling to NVIDIA GPU engines. That toolchain is
-    narrowed to one vendor's hardware, one step below Apache TVM's multi-vendor reach.
-  last_verified: '2026-08-18'
+  note: TensorRT applies graph-level fusion and explicit quantization, with ONNX ingest and a plugin interface
+    for custom layers, compiling to NVIDIA GPU engines. That toolchain is narrowed to one vendor's hardware,
+    one step below Apache TVM's multi-vendor reach.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/NVIDIA/TensorRT/blob/main/README.md
-    shows: README still documents the open source components of the TensorRT SDK, and build instructions that require
-      downloading a prebuilt TensorRT release tarball and setting TRT_LIBPATH.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT/main/documents/import_workflows.md
+    shows: Import guide says "The ONNX path is the most portable way to bring models from PyTorch, TensorFlow,
+      JAX, or any framework with an ONNX exporter." and "A supported NVIDIA GPU (see the [Support Matrix]".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 8a4644025d91b54eb5fc123aa1f9591ed74993f017b9bd745c921754c94077d3
+    content_sha256: 9da9b6ce8df0645a7eba45f4bf33f96574f4d4ae51353ec53a5f2a15a8eb575c
+  - url: https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/quantized-types-explicit-quantization.html
+    shows: Explicit quantization page says "When TensorRT performs these fusions, it replaces the quantizable
+      layers with quantized layers".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: e8db8d5f31420496a400f6a69ef6a387dfd7be978f93e42bae07cf9a2ab1d159
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT/main/documents/supported_models.md
+    shows: Supported models doc says "TensorRT is a general-purpose neural-network graph execution engine,
+      not a model zoo." and that the "Custom Plugin" section "covers the escape hatch for ops TensorRT does
+      not yet implement natively."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 78b034dfc35931bfcfe8d0c6a66c5f64b02f1ae6bb14c00d9825ee78aa19ce21
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT/main/README.md
+    shows: README says "Implicit quantization and related APIs have been removed, replaced by [Explicit
+      Quantization]" and "IPluginV2 and related APIs have been removed, replaced by [IPluginV3]" in TensorRT
+      11.X, and the OSS components include "the sources for TensorRT plugins and ONNX parser".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: b2fff2e9f2ba3d0678dc170fbbe10bbf33f6f2282e245bb945db19f6275e3803

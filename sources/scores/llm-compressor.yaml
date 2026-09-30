@@ -11,35 +11,34 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/vllm-project/llm-compressor/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/vllm-project/llm-compressor
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      vllm-project/llm-compressor.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/setup.py
+    shows: 'setup.py declares the package license and classifier "License :: OSI Approved :: Apache Software
+      License" and license="Apache 2.0" for the published llmcompressor package.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 1ada87c7e657d963c11a335db01f888471559601602bb3a305019eb01f6758f1
+    content_sha256: ca02bf8d48597d3ee65f4c6b77ca549cea44127463e78363b4ff82b8e19717d3
     establishes:
     - license
-    - source
-  - url: https://github.com/vllm-project/llm-compressor/blob/main/README.md
-    shows: README describes weight, activation, KV-cache and attention quantization plus sparsification transforms
-      over Hugging Face models, saved in the compressed-tensors format vLLM loads, with DDP and disk offloading
-      for very large models, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/README.md
+    shows: 'README presents the library as "the fast, efficient, and easy-to-use library for optimizing
+      models for deployment with vLLM" and installs it with a plain "pip install llmcompressor". Searched
+      the body for enterprise, license key, paid, commercial and proprietar: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2b9cafa5763fa411bd8ada81ea2de972aa60f7b82e465638df5ceef14e02b902
+    content_sha256: d75abaa4c5dddb4d2308ffca63981dd55f3e7cc211a85af29eda6d19110a95cb
     establishes:
     - source
     - core-gated
@@ -50,7 +49,6 @@ adoption:
   confidence: high
   note: Adoption is measured from PyPI downloads of the `llmcompressor` package, the name LLM Compressor
     publishes under on PyPI.
-  last_verified: '2026-08-18'
   sources:
   - url: https://pypistats.org/api/packages/llmcompressor/recent
     shows: last_month downloads = 256,030 for llmcompressor
@@ -61,20 +59,40 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: one optimization family, applied broadly'
-  value: Weight, activation, KV-cache and attention quantization plus sparsification over Hugging Face models, emitting
-    compressed-tensors for vLLM. One family, one deployment target.
+  value: Weight, activation, KV-cache and attention quantization plus expert pruning over Hugging Face models,
+    emitting compressed-tensors for vLLM. One family, one deployment target.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: LLM Compressor applies weight, activation, KV-cache and attention quantization plus sparsification
+  note: LLM Compressor applies weight, activation, KV-cache and attention quantization plus expert pruning
     to Hugging Face models, emitting compressed-tensors for vLLM. That single optimization family, applied
     to one deployment target, places it two steps below Apache TVM.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/vllm-project/llm-compressor/blob/main/README.md
-    shows: README still documents weight, activation, KV-cache and attention quantization plus sparsification transforms
-      over Hugging Face models, saved in the compressed-tensors format vLLM loads, with DDP and disk offloading
-      for very large models.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/README.md
+    shows: README lists "Comprehensive set of quantization algorithms and transforms for weight, activation,
+      KV cache, and attention quantization" and "DDP and disk offloading support for compressing very large
+      models with hardware efficiency", with "Models saved in the `compressed-tensors` format, compatible
+      with vLLM".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2b9cafa5763fa411bd8ada81ea2de972aa60f7b82e465638df5ceef14e02b902
+    content_sha256: d75abaa4c5dddb4d2308ffca63981dd55f3e7cc211a85af29eda6d19110a95cb
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/README.md
+    shows: 'README lists "Attention and KV Cache Quantization: FP8, NVFP4" and algorithms "GPTQ", "SmoothQuant"
+      and "REAP expert pruning".'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: d75abaa4c5dddb4d2308ffca63981dd55f3e7cc211a85af29eda6d19110a95cb
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/docs/index.md
+    shows: Docs index says LLM Compressor is "an easy-to-use library for optimizing large language models
+      for deployment with vLLM" and that "Model optimization through quantization and pruning addresses
+      the key challenges of deploying AI at scale".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 14877131a6eaaf63b620118e45e284da18be6cb0b7925eff1be7ad6401e7da47
+  - url: https://raw.githubusercontent.com/vllm-project/llm-compressor/main/docs/index.md
+    shows: Docs index warns "Sparse compression (including 2of4 sparsity) is no longer supported by LLM
+      Compressor due to lack of hardware support and user interest."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 14877131a6eaaf63b620118e45e284da18be6cb0b7925eff1be7ad6401e7da47

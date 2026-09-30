@@ -11,37 +11,39 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text and the README states the same license. The repository
+    is public and the README describes no paid tier, enterprise edition or license-gated build, so the core
+    is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/apache/tvm/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/apache/tvm/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: e62264b483aca7a9f8c1ac69388b476971b43975ced90ac11dbd9e9c530edb46
     establishes:
     - license
-  - url: https://api.github.com/repos/apache/tvm
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      apache/tvm.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 00087e9b03fb998af255cbb07c2426325f8ab7fad3637b7ca77973f7bb3fdb47
-    establishes:
-    - license
-    - source
-  - url: https://github.com/apache/tvm/blob/main/README.md
-    shows: README describes an open machine learning compilation framework built on Python-first customization of
-      compiler pipelines and universal deployment into minimum deployable modules, licensed Apache-2.0, with no
-      paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/apache/tvm/main/README.md
+    shows: 'README states "TVM is licensed under the [Apache-2.0](LICENSE) license." and "We aim to create
+      an open-source project maintained and owned by the community." Searched the body for enterprise, license
+      key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e
     establishes:
     - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/apache/tvm/main/CMakeLists.txt
+    shows: 'Top-level CMakeLists.txt builds each backend from the repository through plain build options:
+      "Build with CUDA", "Build with Metal", "Build with ROCM" and "Build with LLVM, can be set to specific
+      llvm-config path" all default OFF. Searched the body for enterprise, license key, paid, commercial
+      and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ef07c28c7ed3dc280f9074f73fdf9a24796eb4dd134f54ab7a88941df27b6b5f
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -51,7 +53,6 @@ adoption:
   note: PyPI downloads of `apache-tvm` are the adoption signal here, though most installs build the project
     from source rather than install the wheel, so this figure is a floor on real use rather than a full
     measure of it. No stronger usage signal is published for the project.
-  last_verified: '2026-08-18'
   sources:
   - url: https://pypistats.org/api/packages/apache-tvm/recent
     shows: last_month downloads = 13,543 for apache-tvm
@@ -62,18 +63,40 @@ capability:
   score: 5
   basis: feature_matrix
   basis_detail: 'category feature matrix: retargetable end-to-end compiler'
-  value: Multi-framework front ends lowered through TVM's own optimizer and code generator to LLVM, CUDA, ROCm,
-    Metal, OpenCL, SPIR-V and WebGPU backends, with autotuning and quantization passes and a deployable runtime.
+  value: Multi-framework front ends lowered through TVM's own optimizer and code generator to LLVM, CUDA,
+    ROCm, Metal, OpenCL, SPIR-V and WebGPU backends, with autotuning and a deployable runtime.
   confidence: medium
   note: Apache TVM's own optimizer and code generator retarget models from multiple framework front ends
-    to backends spanning CPUs, GPUs and accelerators, the widest compilation surface in the category. No
-    other product here matches that reach across targets, which makes it the reference other engines are
-    measured against.
-  last_verified: '2026-08-18'
+    to LLVM, CUDA, ROCm, Metal, OpenCL, SPIR-V and WebGPU backends. That is a full compilation path from
+    framework model to deployable module, which the kernel libraries and quantization toolkits in this category
+    do not cover.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/apache/tvm/blob/main/README.md
-    shows: README still documents an open machine learning compilation framework built on Python-first customization
-      of compiler pipelines and universal deployment into minimum deployable modules, licensed Apache-2.0.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/apache/tvm/main/README.md
+    shows: README describes "Apache TVM is an open machine learning compilation framework," with "Python-first
+      development that enables quick customization of machine learning compiler pipelines." and "Universal
+      deployment to bring models into minimum deployable modules."
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e
+  - url: https://tvm.apache.org/docs/get_started/overview.html
+    shows: Overview page says "TVM supports importing models from various frameworks, such as PyTorch and
+      ONNX for generic ML models." and that the runtime "works on mobile, edge devices or even bare metal
+      devices."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 23ea344dba86a4e02b16f8ba9f4c53a7a1c7e82eaa90893b1f8e300731334fcf
+  - url: https://raw.githubusercontent.com/apache/tvm/main/docs/arch/index.rst
+    shows: Architecture doc says "For backends such as x86 and ARM, we use the LLVM IRBuilder to build in-memory
+      LLVM IR." and "We can also generate source-level languages such as CUDA C and OpenCL." and lists "MetaSchedule
+      for automated performance tuning."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 1312fdf3183b750503cb467ae222b80da95a98e93a4679295a1aac8366bac777
+  - url: https://raw.githubusercontent.com/apache/tvm/main/CMakeLists.txt
+    shows: Top-level CMakeLists.txt compiles backend sources in the repository, including "src/backend/webgpu/codegen/*.cc"
+      and "src/backend/metal/codegen/*.cc", with options "Build with CUDA", "Build with Metal", "Build with
+      ROCM" and "Build with Vulkan".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ef07c28c7ed3dc280f9074f73fdf9a24796eb4dd134f54ab7a88941df27b6b5f

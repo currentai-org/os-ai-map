@@ -11,37 +11,37 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/intel/neural-compressor/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c61eb7ccdfa46756c6b45df0bc2277866d7e29c4a14567e476f38f632ea1e7c8
     establishes:
     - license
-  - url: https://api.github.com/repos/intel/neural-compressor
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      intel/neural-compressor.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 9df44fe7e4acae6c72038992be2277c1996a699cbe98799b1d3e7e79e882dfb6
-    establishes:
-    - license
-    - source
-  - url: https://github.com/intel/neural-compressor/blob/main/README.md
-    shows: README describes static and dynamic quantization, SmoothQuant, weight-only quantization, quantization-aware
-      training, mixed precision and pruning across PyTorch, TensorFlow and ONNX Runtime, down to INT4 and the MX
-      and NVFP4 formats, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/README.md
+    shows: 'README opens with "An open-source Python library supporting popular model compression techniques
+      on mainstream deep learning frameworks (PyTorch, TensorFlow, and JAX)" and carries the badge "license-Apache%202".
+      Searched the body for enterprise, license key, paid, commercial, proprietary and closed: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 14a3763a17b18afa6cbed85895423ce0f748e3552d42bc6fb78f256badbb303a
     establishes:
     - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/setup.py
+    shows: 'setup.py declares license="Apache 2.0" and the classifier "License :: OSI Approved :: Apache
+      Software License". Searched the body for enterprise, license key, paid, commercial and proprietary:
+      none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: afb29aa0a16a75ec8c01a6247c2747c7718e1d22f04313c9a416c427e87a5385
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -66,20 +66,47 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: multi-technique optimization toolchain'
-  value: Quantization (static, dynamic, weight-only, QAT), SmoothQuant, mixed precision, sparsity and knowledge
-    distillation across three frameworks, with accuracy-driven auto-tuning.
+  value: Quantization (static, dynamic, weight-only with RTN, GPTQ, AutoRound, AWQ, TEQ and HQQ, QAT), SmoothQuant
+    and mixed precision across PyTorch, TensorFlow and JAX, with FP8, MX and NVFP4 low-bit formats and accuracy-aware
+    tuning.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: Intel Neural Compressor combines quantization (static, dynamic, weight-only, QAT), SmoothQuant,
-    mixed precision, sparsity and distillation across three frameworks with auto-tuning. That sits one step
-    below Apache TVM, whose scope covers more of the category.
-  last_verified: '2026-08-18'
+  note: Intel Neural Compressor covers static, dynamic, weight-only and quantization-aware quantization,
+    SmoothQuant and mixed precision across PyTorch, TensorFlow and JAX, with an auto-tune workflow. That
+    sits one step below Apache TVM, whose scope covers more of the category.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/intel/neural-compressor/blob/main/README.md
-    shows: README still documents static and dynamic quantization, SmoothQuant, weight-only quantization, quantization-aware
-      training, mixed precision and pruning across PyTorch, TensorFlow and ONNX Runtime, down to INT4 and the MX
-      and NVFP4 formats.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/README.md
+    shows: README says Intel Neural Compressor "aims to provide popular model compression techniques such
+      as Static Quantization, Dynamic Quantization, SmoothQuant, Weight-Only Quantization, Quantization-Aware
+      Training, Mixed Precision, etc." and offers "advanced quantization of Large Language Models (LLMs)
+      and Vision-Language Models (VLMs)" with "Support a wide range of Intel hardware" and "support AMD
+      CPU, ARM CPU, and NVidia GPU with limited testing".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 14a3763a17b18afa6cbed85895423ce0f748e3552d42bc6fb78f256badbb303a
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/docs/source/design.md
+    shows: 'Design doc says "Intel® Neural Compressor provides two workflows: Quantization and Auto-tune."'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 9c9032751f168d4b3cf47f630b29c9d8441e22da1789f50866ebb1f4b6bc509c
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/docs/source/TF_Quant.md
+    shows: TensorFlow page has the section "With Accuracy Aware Tuning" for tuning out the best quantized
+      model, and its intro reads "supports quantizing both TensorFlow and Keras model".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a302c84db70819e0670c2f968b1aa2eddea98bb4ab94731cd14f814b22ec57d8
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/docs/source/PT_WeightOnlyQuant.md
+    shows: Weight-only page opens with "weight only quantization is probably a better trade-off to balance
+      the performance and the accuracy" and lists "GPTQ", "AutoRound", "AWQ" and "HQQ".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: c97a6f11448b689dcb2fa42cba3ac29897c08e72ca1e1f00cf83db2e6b2c874f
+  - url: https://raw.githubusercontent.com/intel/neural-compressor/main/docs/source/PT_QAT.md
+    shows: QAT page says "QAT explicitly simulates quantization during training, significantly narrowing
+      the accuracy gap compared to pure Post-Training Quantization (PTQ)" and integrates "Microscaling (MX)
+      formats" such as MXFP4 and MXFP8.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: f32b24c4be78967cbd117034f00f5c0012ce4cc79cab3b904681bbe94cb5e0f7

@@ -11,37 +11,37 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/onnx/tensorflow-onnx/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/onnx/tensorflow-onnx/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://api.github.com/repos/onnx/tensorflow-onnx
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      onnx/tensorflow-onnx.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 0b202ca6b26ce53b849383e4ceb851b68052adea8060a8fca5d99aa70d380dd1
-    establishes:
-    - license
-    - source
-  - url: https://github.com/onnx/tensorflow-onnx/blob/main/README.md
-    shows: README describes conversion of TensorFlow, Keras, TensorFlow.js and TFLite models to ONNX from the command
-      line or a Python API, alongside a notice that the project is looking for a new maintainer, with no paid tier,
-      enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/onnx/tensorflow-onnx/main/README.md
+    shows: 'README states "SPDX-License-Identifier: Apache-2.0" and closes with "[Apache License v2.0](LICENSE)",
+      and describes a public project seeking a maintainer, "looking for a new maintainer". Searched the
+      body for enterprise, license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: ed7f79675aa6b13142400521be52d50f0c5ea862d9d98b42bf44df8a8e7a3bcb
     establishes:
     - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/onnx/tensorflow-onnx/main/setup.py
+    shows: 'setup.py opens with "# SPDX-License-Identifier: Apache-2.0" and builds the package with plain
+      setuptools commands, "setuptools.command.build_py.build_py.run(self)", with no key or gated edition.
+      Searched the body for enterprise, license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 784aad5a9102fb997d9b2230be9ebb3e5372f057e56f6138f2dbf05679660a36
+    establishes:
     - core-gated
 adoption:
   level: 3
@@ -66,19 +66,27 @@ capability:
   score: 2
   basis: feature_matrix
   basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
-  value: One-directional conversion from four TensorFlow-family formats to ONNX. No optimization of its own and
-    no hardware target.
+  value: One-directional conversion from four TensorFlow-family formats to ONNX, with ONNX graph cleanup
+    passes such as transpose removal and constant folding. No hardware compilation; the --target flag selects
+    runtime-specific workarounds.
   relative_to: tensorrt
   relation: two_below
   confidence: medium
-  note: tf2onnx performs one-directional conversion from four TensorFlow-family formats to ONNX, with no
-    optimization passes of its own and no hardware target. That single-purpose utility sits two steps below
-    TensorRT.
-  last_verified: '2026-08-18'
+  note: tf2onnx converts TensorFlow, Keras, TensorFlow.js and TFLite models to ONNX and runs ONNX-level
+    graph cleanup passes such as transpose removal and constant folding. It compiles to no hardware target,
+    so this single-purpose utility sits two steps below TensorRT, which fuses and quantizes for NVIDIA GPU
+    engines.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/onnx/tensorflow-onnx/blob/main/README.md
-    shows: README still documents conversion of TensorFlow, Keras, TensorFlow.js and TFLite models to ONNX from
-      the command line or a Python API, alongside a notice that the project is looking for a new maintainer.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/onnx/tensorflow-onnx/main/README.md
+    shows: README opens "tf2onnx converts TensorFlow (tf-2.x), keras, tensorflow.js and tflite models to
+      ONNX via command" line or python api, and documents "We support and test ONNX opset-14 to opset-18."
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: ed7f79675aa6b13142400521be52d50f0c5ea862d9d98b42bf44df8a8e7a3bcb
+  - url: https://raw.githubusercontent.com/onnx/tensorflow-onnx/main/tf2onnx/optimizer/__init__.py
+    shows: Optimizer module registers ONNX graph cleanup passes including "optimize_transpose", "fold_constants"
+      and "remove_identity", run by "def optimize_graph(graph, catch_errors=True, optimizers=None):".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 97016ba5b752c3292eeffca22b2e9f3569e96a3f53db4a96ca2a1ee377727f48

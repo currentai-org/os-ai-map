@@ -11,38 +11,39 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: JuiceFS is released under Apache-2.0 in a public repository that builds the whole community file
+    system, and the README describes nothing withheld from it. Juicedata sells a separate Enterprise Edition
+    and Cloud Service beside it.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/juicedata/juicefs/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/juicedata/juicefs/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://api.github.com/repos/juicedata/juicefs
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      juicedata/juicefs.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/juicedata/juicefs/main/README.md
+    shows: 'README says JuiceFS is a file system "released under Apache License 2.0" and closes with "JuiceFS
+      is open-sourced under Apache License 2.0"; searched the body for enterprise, paid tier, license key
+      and pricing: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: b5ad5b248704d2cd7b50d254e3509a11d18a3b5219f926f00ccc6627176ca4e4
+    content_sha256: 3879fa8e1def7ebf587144513cc3001760ab8cf86920967cc2bf5ee97908a047
     establishes:
     - license
     - source
-  - url: https://github.com/juicedata/juicefs/blob/main/README.md
-    shows: README describes a high-performance POSIX file system for cloud-native environments that persists data
-      in object storage such as Amazon S3 and metadata in Redis, MySQL or TiKV, released under Apache-2.0, with
-      no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+    - core-gated
+  - url: https://juicefs.com/docs/community/introduction/
+    shows: Introduction page describes JuiceFS as "an open-source, high-performance distributed file system
+      designed for the cloud".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: a0f9af00f1f6844208cab980f26446b6c46067c031c6c79b8d40d6c98f07971f
+    content_sha256: 854b508a48f874350f2ca409e126d50b6d7fc66410bf65e2a1b16f90156ff998
     establishes:
     - source
-    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -69,19 +70,43 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
-  value: POSIX, S3-gateway and CSI access over object storage with a pluggable metadata engine, caching, snapshots
-    and quotas. Complete file system rather than an index.
+  value: POSIX, S3-gateway and CSI access over object storage with a pluggable metadata engine, caching,
+    clones and quotas. Complete file system rather than an index.
   relative_to: vespa
   relation: one_below
   confidence: medium
   note: JuiceFS is a complete, distributed POSIX file system over object storage, with a pluggable metadata
-    engine, caching, snapshots and quotas - a full storage system rather than a search index. That keeps
-    it one step below Vespa, the category's top-scoring system.
-  last_verified: '2026-08-18'
+    engine, caching, clones and quotas, and it is a storage system rather than a search index. That keeps
+    it one step below Vespa, which covers retrieval as well as storage.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/juicedata/juicefs/blob/main/README.md
-    shows: README still documents a high-performance POSIX file system for cloud-native environments that persists
-      data in object storage such as Amazon S3 and metadata in Redis, MySQL or TiKV, released under Apache-2.0.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/juicedata/juicefs/main/README.md
+    shows: README says the S3 Gateway "provides an S3-compatible interface", a CSI driver "is provided for
+      easily using JuiceFS in Kubernetes", and metadata "can be persisted in various compatible database
+      engines such as Redis, MySQL, and TiKV".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: a0f9af00f1f6844208cab980f26446b6c46067c031c6c79b8d40d6c98f07971f
+    content_sha256: 3879fa8e1def7ebf587144513cc3001760ab8cf86920967cc2bf5ee97908a047
+  - url: https://juicefs.com/docs/community/guide/quota/
+    shows: Storage quota page states "JuiceFS supports both total file system quota and subdirectory quota".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 819e1a8caf780223eeba84e87952c5e0be43227916e11a6b4ca62c7e3583745e
+  - url: https://juicefs.com/docs/community/guide/cache/
+    shows: Cache page states "The use of caching technology can significantly reduce the latency of storage
+      operations".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a6370ce573d33724c0808aa3f8eb4c383fb2799093daa9d4a8e15f31a67a2d68
+  - url: https://juicefs.com/docs/community/guide/clone/
+    shows: Clone page states "Cloning specific data does not involve copying the actual object storage data
+      but only copies metadata."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ca82b9a9e4e2c61b69a1cbf4c069e59cf5273eea53df95ef502673407857613f
+  - url: https://juicefs.com/docs/community/introduction/
+    shows: Introduction page describes JuiceFS as "an open-source, high-performance distributed file system
+      designed for the cloud".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 854b508a48f874350f2ca409e126d50b6d7fc66410bf65e2a1b16f90156ff998

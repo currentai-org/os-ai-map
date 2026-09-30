@@ -11,37 +11,40 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text with LLVM exceptions. The repository is public, and
+    neither the README nor the CMake driver options mention a paid tier, enterprise edition or license key,
+    so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/iree-org/iree/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/iree-org/iree/main/LICENSE
+    shows: LICENSE file is the Apache-2.0 text, opening with "Apache License" and "Version 2.0, January
+      2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION", followed by a "LLVM Exceptions
+      to the Apache 2.0 License" section.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 579fa63489ca4714793e90fa778b320f84527d7ebee37f1798db487e80c13cc0
     establishes:
     - license
-  - url: https://api.github.com/repos/iree-org/iree
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      iree-org/iree.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 951a733e171b306b4c276ff3b8b3be415e1fa7842076ae7c54f58be924cee08d
-    establishes:
-    - license
-    - source
-  - url: https://github.com/iree-org/iree/blob/main/README.md
-    shows: README describes an MLIR-based end-to-end compiler and runtime that lowers ML models to a unified IR
-      scaling from datacenter hardware down to mobile and edge constraints, with an LF AI & Data project note, with
-      no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/iree-org/iree/main/README.md
+    shows: 'README states "IREE is licensed under the terms of the Apache 2.0 License with LLVM Exceptions."
+      and describes an "MLIR](https://mlir.llvm.org/)-based end-to-end" compiler; the repository builds
+      from source per "instructions on building from source". Searched the body for enterprise, license
+      key, paid, commercial, proprietary and closed: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: d952aa452f41e16eb927bf590e1cdb979e72bfac106de636c0b304219df6adde
     establishes:
     - source
+  - url: https://raw.githubusercontent.com/iree-org/iree/main/CMakeLists.txt
+    shows: 'Top-level CMakeLists.txt builds each accelerator driver from the repository through plain options:
+      "Enables the ''cuda'' runtime HAL driver", "Enables the ''hip'' runtime HAL driver" and "Enables the
+      ''vulkan'' runtime HAL driver". Searched the body for enterprise, license key, paid, commercial and
+      proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 092c170c79ef0e93c693d97c227ba07b0e449c8dd45c7624b1d85fd01d97a431
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -72,13 +75,28 @@ capability:
   relation: at
   confidence: medium
   note: IREE is an MLIR-based end-to-end compiler and runtime that lowers PyTorch, JAX, TensorFlow and ONNX
-    models to CPU, CUDA, ROCm, Vulkan and SPIR-V targets, matching the retargetable, multi-vendor reach
-    that puts Apache TVM at the top of this category.
-  last_verified: '2026-08-18'
+    models to CPU, CUDA, ROCm, Vulkan and SPIR-V targets. That is a retargetable, multi-vendor compilation
+    path comparable to Apache TVM's.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/iree-org/iree/blob/main/README.md
-    shows: README still documents an MLIR-based end-to-end compiler and runtime that lowers ML models to a unified
-      IR scaling from datacenter hardware down to mobile and edge constraints, with an LF AI & Data project note.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/iree-org/iree/main/README.md
+    shows: README describes IREE as an "MLIR](https://mlir.llvm.org/)-based end-to-end" compiler and runtime
+      that "lowers Machine Learning (ML) models to a unified IR" scaling from datacenter to mobile and edge
+      deployments, and notes "IREE joins the LF AI & Data Foundation as a sandbox-stage project".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: d952aa452f41e16eb927bf590e1cdb979e72bfac106de636c0b304219df6adde
+  - url: https://raw.githubusercontent.com/iree-org/iree/main/docs/website/docs/index.md
+    shows: Docs home lists importing from "JAX", "ONNX", "PyTorch" and "TensorFlow and TensorFlow Lite",
+      and accelerator support of "Vulkan", "ROCm/HIP", "CUDA" and "Metal (for Apple silicon devices)" alongside
+      ARM, x86 and RISC-V; generating "SPIR-V kernels and Vulkan API calls" for Vulkan GPU targets.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 0d120c171d6d27db14bf24d7ac201a4f01b7521700f50a8856dd8d0530b1368d
+  - url: https://raw.githubusercontent.com/iree-org/iree/main/docs/website/docs/index.md
+    shows: Docs home says compilation is "performed ahead-of-time on a _host_ machine for any" combination
+      of targets, and lists "Bare metal" and "Android" runtime platforms with "Binary size as low as 30KB
+      on embedded systems".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 0d120c171d6d27db14bf24d7ac201a4f01b7521700f50a8856dd8d0530b1368d

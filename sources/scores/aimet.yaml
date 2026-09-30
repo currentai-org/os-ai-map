@@ -11,39 +11,39 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole
-    product, and the README describes no paid tier, enterprise edition or license-gated build beside it,
-    so the source is public and the core ungated.
+  note: The LICENSE file contains the BSD-3-Clause text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/qualcomm/aimet/blob/develop/LICENSE
-    shows: 'LICENSE body read rather than trusting the GitHub label: it opens with a Qualcomm Innovation Center
-      copyright line and then runs the verbatim three-clause BSD text, which is why the API reports NOASSERTION.'
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/qualcomm/aimet/develop/LICENSE
+    shows: LICENSE opens with "Copyright (c) 2020, Qualcomm Innovation Center, Inc. All rights reserved."
+      and then the three-clause BSD text, "Redistribution and use in source and binary forms, with or without"
+      and "Neither the name of the copyright holder nor the names of its contributors".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 9c17c34cdf28efc567fcb101b05869acb720157c9325e5c3f05eed3fb158525f
     establishes:
     - license
-  - url: https://api.github.com/repos/qualcomm/aimet
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch develop -
-      for qualcomm/aimet.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 085aa9da87608c440a0bd70a027c1e3ff613f0af181c2bc1d91d254e18705352
-    establishes:
-    - license
-    - source
-  - url: https://github.com/qualcomm/aimet/blob/develop/README.md
-    shows: README describes post-training and fine-tuning quantization and compression of PyTorch and ONNX models
-      to cut compute load and memory footprint for deployment on edge devices, with no paid tier, enterprise edition
-      or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/qualcomm/aimet/develop/README.md
+    shows: 'README says "is a software toolkit for quantizing trained ML models" and points to "Build from
+      source" instructions, with "aimet-onnx" and "aimet-torch" on PyPI. Searched the body for enterprise,
+      license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: a14339d5c17f439be91a51b0929b992c6ec9cd2a2c071a3d18392d33b8dcc551
     establishes:
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/qualcomm/aimet/develop/pyproject.toml
+    shows: 'pyproject.toml lists the authors as "Qualcomm Innovation Center, Inc." and sets build-backend
+      = "scikit_build_core.build" so the package builds from the repository. Searched the body for enterprise,
+      license key, paid and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a6011d68b35a019fcab498c43f8e45d6153bdcca88dbb7f71f65856dee6946d8
+    establishes:
+    - source
 adoption:
   level: 2
   reach: 10K-100K
@@ -67,20 +67,33 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: one optimization family, applied broadly'
-  value: Post-training and fine-tuning quantization plus channel pruning and spatial SVD compression over PyTorch
-    and ONNX models, aimed at Qualcomm edge targets.
+  value: Post-training and fine-tuning quantization plus channel pruning and spatial SVD compression over
+    PyTorch and ONNX models, for edge deployment with the Qualcomm Hexagon DSP as the documented target.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
   note: AIMET combines post-training and fine-tuning quantization with channel pruning and spatial SVD compression,
-    covering PyTorch and ONNX models aimed at Qualcomm edge devices. That is one optimization family with
-    one vendor's deployment targets in mind, well short of the retargetable, multi-vendor compilation Apache
-    TVM covers.
-  last_verified: '2026-08-18'
+    covering PyTorch and ONNX models for edge deployment, with the README citing the Qualcomm Hexagon DSP
+    as its measured target. That is one optimization family, well short of the retargetable, multi-vendor
+    compilation Apache TVM covers.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/qualcomm/aimet/blob/develop/README.md
-    shows: README still documents post-training and fine-tuning quantization and compression of PyTorch and ONNX
-      models to cut compute load and memory footprint for deployment on edge devices.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/qualcomm/aimet/develop/README.md
+    shows: README says "AIMET employs post-training and fine-tuning techniques to minimize accuracy loss
+      during quantization and compression." and "AIMET supports models from the ONNX and PyTorch frameworks."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a14339d5c17f439be91a51b0929b992c6ec9cd2a2c071a3d18392d33b8dcc551
+  - url: https://raw.githubusercontent.com/qualcomm/aimet/develop/README.md
+    shows: 'README documents "Spatial SVD*: Tensor decomposition technique to split a large layer into two
+      smaller ones" and "Channel Pruning*: Removes redundant input channels from a layer and reconstructs
+      layer weights" beside post-training quantization for ONNX and PyTorch.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a14339d5c17f439be91a51b0929b992c6ec9cd2a2c071a3d18392d33b8dcc551
+  - url: https://raw.githubusercontent.com/qualcomm/aimet/develop/README.md
+    shows: README says models run "5x-15x faster on the Qualcomm Hexagon DSP than on the Qualcomm Kyro CPU"
+      and that quantized models facilitate deployment "on edge devices like mobile phones or laptops".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: a14339d5c17f439be91a51b0929b992c6ec9cd2a2c071a3d18392d33b8dcc551

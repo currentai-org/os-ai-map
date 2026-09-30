@@ -11,35 +11,35 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the BSD-3-Clause text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/apple/coremltools/blob/main/LICENSE.txt
-    shows: LICENSE file is the verbatim BSD-3-Clause text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/apple/coremltools/main/LICENSE.txt
+    shows: LICENSE file is the verbatim BSD-3-Clause text, opening with "Copyright © 2020-2023, Apple Inc.
+      All rights reserved." and "Redistribution and use in source and binary forms, with or without modification,
+      are permitted provided that the following conditions are met".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: d467a35319f25bd5310100d06ac8be62f880d1cb425181f1ec2b8333a1000afa
     establishes:
     - license
-  - url: https://api.github.com/repos/apple/coremltools
-    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main - for
-      apple/coremltools.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: de982562e2d791a83a419e157e8198b74077d7ac5e1ca66cf4f4efa31a69d348
-    establishes:
-    - license
-    - source
-  - url: https://github.com/apple/coremltools/blob/main/README.md
-    shows: README describes conversion of models from TensorFlow 1.x and 2.x, PyTorch, scikit-learn, XGBoost and
-      LibSVM into the Core ML format, plus reading, writing and optimizing Core ML models and verifying conversions
-      by predicting on macOS, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/apple/coremltools/main/README.md
+    shows: 'README says "Use [Core ML Tools](https://apple.github.io/coremltools/docs-guides/source/overview-coremltools.html)
+      (*coremltools*) to convert machine learning models from third-party libraries to the Core ML format."
+      and "Read, write, and optimize Core ML models." Searched the body for enterprise, license key, paid,
+      proprietary and commercial: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 45afb380a2aae0db4fb847ba0bfb63ea45db26909a0e96b4ce39565e7f12c27b
+  - url: https://raw.githubusercontent.com/apple/coremltools/main/BUILDING.md
+    shows: 'Building guide describes building from the public repository with "Run the [build.sh](scripts/build.sh)
+      script to build `coremltools`." and lists "CMake", Miniconda and "A C++17 compatible compiler" as
+      requirements. Searched the body for enterprise, license key, paid, proprietary and commercial: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ea64b45b063e0ffa12961b51e9cac425958661ba207ae70574cda96d70158a4f
     establishes:
     - source
     - core-gated
@@ -66,20 +66,35 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: full compilation narrowed to one vendor''s targets'
-  value: Multi-framework conversion plus its own optimization passes (quantization, palettization, pruning) and
-    on-device verification, lowering to the Core ML runtime. Apple platforms only.
+  value: Multi-framework conversion plus its own optimization passes (quantization, palettization, pruning)
+    and prediction-based verification on macOS, lowering to the Core ML runtime. Apple platforms only.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
   note: Core ML Tools converts models from multiple frameworks, then applies quantization, palettization
-    and pruning and verifies conversions on-device, lowering to the Core ML runtime. That pipeline is narrowed
-    to Apple's own platforms, one step below Apache TVM's multi-vendor reach.
-  last_verified: '2026-08-18'
+    and pruning and verifies conversions by running predictions on macOS, lowering to the Core ML runtime.
+    That pipeline is narrowed to Apple's own platforms, one step below Apache TVM's multi-vendor reach.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/apple/coremltools/blob/main/README.md
-    shows: README still documents conversion of models from TensorFlow 1.x and 2.x, PyTorch, scikit-learn, XGBoost
-      and LibSVM into the Core ML format, plus reading, writing and optimizing Core ML models and verifying conversions
-      by predicting on macOS.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/apple/coremltools/main/README.md
+    shows: README says "Use [Core ML Tools](https://apple.github.io/coremltools/docs-guides/source/overview-coremltools.html)
+      (*coremltools*) to convert machine learning models from third-party libraries to the Core ML format."
+      and lists "TensorFlow 1.x", "TensorFlow 2.x" and "PyTorch" plus "scikit-learn", "XGBoost" and "LibSVM"
+      as sources, with "Read, write, and optimize Core ML models."
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 45afb380a2aae0db4fb847ba0bfb63ea45db26909a0e96b4ce39565e7f12c27b
+  - url: https://apple.github.io/coremltools/docs-guides/source/opt-overview.html
+    shows: 'Optimization overview lists palettization, linear quantization and pruning: "Refers to discretizing
+      weights using lookup tables." and "Refers to approximating weights with a quantization function."
+      and "refers to zeroing out values that are close to zero."'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 0090388772039bb5338c2d0332a0349a3832c41a2bf098774786197670a58adf
+  - url: https://apple.github.io/coremltools/docs-guides/source/overview-coremltools.html
+    shows: Overview says "Verify creation and conversion by making predictions using Core ML in macOS."
+      and "Core ML optimizes on-device performance by leveraging the CPU, GPU, and Neural Engine (NE) while
+      minimizing its memory footprint and power consumption."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ed7b6b237b4d5466025608af37c486543eedb6ddb9dd6552cf0f10b2aad313d1

@@ -15,28 +15,20 @@ openness:
     product with no paid tier or enterprise edition gating it. The README explains the copyleft choice as
     keeping modifications open rather than limiting who may use the software or at what scale.
   raw: license:GPL-3.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/typesense/typesense/blob/v31/LICENSE.txt
-    shows: LICENSE file is the verbatim GPL-3.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/typesense/typesense/v31/LICENSE.txt
+    shows: 'LICENSE file is the GPL-3.0 text: "GNU GENERAL PUBLIC LICENSE" and "Version 3, 29 June 2007".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b
     establishes:
     - license
-  - url: https://api.github.com/repos/typesense/typesense
-    shows: Repo metadata - license spdx_id GPL-3.0, private false, archived false, default branch v31 - for typesense/typesense.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 8d64cdeb1d36149523652eda1570ff9ae803295489b56910ec95cc0436490256
-    establishes:
-    - license
-    - source
-  - url: https://github.com/typesense/typesense/blob/v31/README.md
-    shows: README describes a typo-tolerant in-memory search engine with faceting, filtering, geosearch and vector
-      search, its GPL choice explained as keeping modifications open, and paid support and Typesense Cloud offered
-      separately, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/typesense/typesense/v31/README.md
+    shows: 'README says "The open source version is free to use" and explains the GPL choice under "Why
+      the GPL license?", with Typesense Cloud and paid support offered separately; searched the body for
+      enterprise, license key and paid tier: only paid support and the managed cloud were found.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: e6221d7df0cbbcdc339127369407f7d2d109421d8227097619a34cb3114fdf18
     establishes:
@@ -72,15 +64,22 @@ capability:
   relative_to: vespa
   relation: one_below
   confidence: medium
-  note: Typesense is a complete, in-memory search engine with full-text, vector and hybrid retrieval, faceting,
-    filtering, geosearch and merchandising rules, clustered for high availability. That's one step below
-    Vespa, the category's top-scoring system.
-  last_verified: '2026-08-18'
+  note: Typesense is a complete in-memory search engine with full-text, vector and hybrid retrieval, faceting,
+    filtering, geosearch and merchandising rules, clustered for high availability with each node holding
+    a full copy of the data. It sits one step below Vespa, which distributes data across a cluster and covers
+    more of the retrieval path.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/typesense/typesense/blob/v31/README.md
-    shows: README still documents a typo-tolerant in-memory search engine with faceting, filtering, geosearch and
-      vector search, its GPL choice explained as keeping modifications open, and paid support and Typesense Cloud
-      offered separately.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/typesense/typesense/v31/README.md
+    shows: README lists "Raft-based Clustering:" as a feature with "Setup a distributed cluster that is
+      highly available." beside geo search, vector search, semantic and hybrid search, and curation and
+      merchandizing.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: e6221d7df0cbbcdc339127369407f7d2d109421d8227097619a34cb3114fdf18
+  - url: https://typesense.org/docs/guide/high-availability.html
+    shows: High availability page says "each node holds the entire replicated copy of your dataset and can
+      handle searches independently".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 23955d630e451514ad770d86cb320a1814a5553e218cf24698be2a0f66a60315

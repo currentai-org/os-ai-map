@@ -11,37 +11,37 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build beyond optional third-party provider integrations,
+    so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/onnxsim/onnxsim/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/onnxsim/onnxsim/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 70774fc513552b4ab9b269cd389baf875c35136489ac7c44f4f6f88e1e601ec4
     establishes:
     - license
-  - url: https://api.github.com/repos/onnxsim/onnxsim
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
-      onnxsim/onnxsim.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/onnxsim/onnxsim/master/pyproject.toml
+    shows: pyproject.toml declares license = "MIT AND (Apache-2.0 OR BSD-2-Clause)" and a build from the
+      repository through requires = ["setuptools>=77", "wheel", "nanobind>=2.12.0"], with onnx as the only
+      required dependency.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: e9d7e0ed9241e0b0d67d93c15caeb4d896b4e122973f89cd5ed995ae53bc5c7e
-    establishes:
-    - license
-    - source
-  - url: https://github.com/onnxsim/onnxsim/blob/master/README.md
-    shows: README describes simplification of an ONNX graph by folding the constant subgraphs and redundant operations
-      exporters emit, with npm and Rust bindings beside the Python package, with no paid tier, enterprise edition
-      or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: b2838cb1b3365f148c8c1c8366c94c6169613971869c12d4a9b13aa5568543c5
+    content_sha256: 693adb9964bda40172e67a985d514bb88528c85a47fbc2283364532f0d03beee
     establishes:
     - source
+  - url: https://raw.githubusercontent.com/onnxsim/onnxsim/master/README.md
+    shows: 'README says "onnxruntime is optional; onnxsim falls back to the onnx reference" evaluator and
+      that "`onnx` is the only required dependency." Searched the body for enterprise, license key, paid,
+      commercial, proprietary, pricing, subscription and closed source: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 301f8659bdbd5f033b607865b896f1c1ed3d59dea8649b4a18183ae8caddc15f
+    establishes:
     - core-gated
 adoption:
   level: 3
@@ -63,22 +63,31 @@ adoption:
     http_status: 200
     content_sha256: e2804949132fd27da429692f654d29569ca61e5e53525fe4b2a18a215c74cd15
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
-  value: Constant folding and redundancy elimination over an ONNX graph. A single graph-simplification pass, no
-    lowering and no target.
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: ONNX graph simplification (shape inference, optimizer passes, constant folding, opset conversion,
+    custom rewriters) with converters to MLIR, Core ML and TFLite and quantization-aware fine-tuning. Broad
+    coverage around an ONNX graph, no code generator or hardware target of its own.
   relative_to: tensorrt
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: ONNX Simplifier folds constant subgraphs and removes redundant operations from an ONNX graph. That
-    is a single simplification pass with no lowering step and no hardware target of its own, well short
-    of a production engine such as TensorRT.
-  last_verified: '2026-08-18'
+  note: ONNX Simplifier runs shape inference, optimizer passes and constant folding to a fixed point and
+    bridges the result to MLIR, Core ML and TFLite, with quantization-aware fine-tuning beside them. That
+    is real coverage across several passes and routes, but the final lowering to a device is left to other
+    tools, so it sits one step below TensorRT, which compiles and runs the model on NVIDIA hardware.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/onnxsim/onnxsim/blob/master/README.md
-    shows: README still documents simplification of an ONNX graph by folding the constant subgraphs and redundant
-      operations exporters emit, with npm and Rust bindings beside the Python package.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/onnxsim/onnxsim/master/README.md
+    shows: README features list says "At its core onnxsim runs a fixed point of shape inference, graph optimization
+      and" constant folding, and adds a Core ML export "via a built-in ONNX-to-MIL translator and" a TensorFlow
+      Lite export "via a built-in ONNX-to-TensorFlow translator and" tf.lite.TFLiteConverter.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: b2838cb1b3365f148c8c1c8366c94c6169613971869c12d4a9b13aa5568543c5
+    content_sha256: 301f8659bdbd5f033b607865b896f1c1ed3d59dea8649b4a18183ae8caddc15f
+  - url: https://raw.githubusercontent.com/onnxsim/onnxsim/master/README.md
+    shows: README says "a bridge into MLIR-based compiler stacks" and "Recover accuracy a quantization lost
+      with `onnxsim.apply_qat()`:" and "A zero-install [web version](#web-version), a Python"
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 301f8659bdbd5f033b607865b896f1c1ed3d59dea8649b4a18183ae8caddc15f

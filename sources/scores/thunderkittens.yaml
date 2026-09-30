@@ -11,34 +11,26 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
-    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
-    the core ungated.
+  note: The LICENSE file contains the MIT text. The repository is public and the README describes no paid
+    tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/HazyResearch/ThunderKittens/blob/main/LICENSE
-    shows: LICENSE file is the verbatim MIT text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/HazyResearch/ThunderKittens/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text, opening with "MIT License" and granting "Permission is
+      hereby granted, free of charge, to any person obtaining a copy" of the software.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: e705a1075640344d86b3b3d4f27dc06bf37cb5bf3b24676a9ca49a19c327ddae
     establishes:
     - license
-  - url: https://api.github.com/repos/HazyResearch/ThunderKittens
-    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for HazyResearch/ThunderKittens.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/HazyResearch/ThunderKittens/main/README.md
+    shows: 'README closes with "This project is licensed under the terms of the MIT license." and states
+      "ThunderKittens itself is a header-only library" that needs no installation. Searched the body for
+      enterprise, license key, paid, proprietary and closed: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: bdbe07b39e123fb60cb1315e3ed3af4bfd49d181772cc017760ca7585095d0c0
-    establishes:
-    - license
-    - source
-  - url: https://github.com/HazyResearch/ThunderKittens/blob/main/README.md
-    shows: README describes a CUDA-embedded framework of tile primitives for writing fast deep-learning kernels,
-      designed so authors can drop back to raw CUDA where the abstraction runs out, with no paid tier, enterprise
-      edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 2f1ffd3bd943c5dcdfcdf1b890bded0d421a8deedfefc2d931f7daca73d9feb3
+    content_sha256: ac0da46c64d31e12d598b04bc82834ff03fc7c8be07be7728d2082e253a539c9
     establishes:
     - source
     - core-gated
@@ -63,22 +55,36 @@ adoption:
     http_status: 200
     content_sha256: bdbe07b39e123fb60cb1315e3ed3af4bfd49d181772cc017760ca7585095d0c0
 capability:
-  score: 2
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
-  value: Tile primitives and example kernels for authoring CUDA kernels on recent NVIDIA architectures. An authoring
-    aid rather than a shipped operator set.
-  relative_to: tensorrt
-  relation: two_below
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
+  value: Tile primitives plus self-contained kernels for GEMM, attention forward and backward and linear
+    attention on Hopper and Blackwell NVIDIA GPUs, including MXFP8 and NVFP4. A header library rather than
+    a compiler.
+  relative_to: apache-tvm
+  relation: one_below
   confidence: medium
-  note: ThunderKittens provides tile primitives and example kernels for authoring CUDA kernels, an aid for
-    writing new kernels rather than a shipped operator set of its own. That authoring-tool scope is well
-    short of a production engine such as TensorRT.
-  last_verified: '2026-08-18'
+  note: ThunderKittens is a header-only tile library that also ships self-contained GEMM, attention and
+    linear-attention kernels for Hopper and Blackwell GPUs. FastVideo vendors it as a submodule for its
+    own kernels, which places it one step below Apache TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/HazyResearch/ThunderKittens/blob/main/README.md
-    shows: README still documents a CUDA-embedded framework of tile primitives for writing fast deep-learning kernels,
-      designed so authors can drop back to raw CUDA where the abstraction runs out.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/HazyResearch/ThunderKittens/main/README.md
+    shows: README says "We've provided a number of ThunderKittens kernels in the `kernels/` folder, which
+      can be easily called from your PyTorch code." and lists attention "forwards / prefill and backwards
+      kernels" with "causal and non-causal variants".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2f1ffd3bd943c5dcdfcdf1b890bded0d421a8deedfefc2d931f7daca73d9feb3
+    content_sha256: ac0da46c64d31e12d598b04bc82834ff03fc7c8be07be7728d2082e253a539c9
+  - url: https://raw.githubusercontent.com/HazyResearch/ThunderKittens/main/README.md
+    shows: README says "ThunderKittens is mainly built and tested for Hopper and Blackwell GPUs." and that
+      the 2.0 release "brings full support for Blackwell GPUs along with MXFP8 and NVFP4 precision".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ac0da46c64d31e12d598b04bc82834ff03fc7c8be07be7728d2082e253a539c9
+  - url: https://raw.githubusercontent.com/hao-ai-lab/FastVideo/main/.gitmodules
+    shows: FastVideo .gitmodules declares a submodule "fastvideo-kernel/include/tk" at "path = fastvideo-kernel/include/tk"
+      with "url = https://github.com/HazyResearch/ThunderKittens.git".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 823bcb0774ed128871a278596ada1e7abf68d81f85cc9e6cb1e29801603e387d

@@ -11,39 +11,38 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so the source
-    is public and the core ungated.
+  note: The LICENSE file contains the MIT text. The repository is public and the README describes no paid
+    tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/ROCm/composable_kernel/blob/develop/LICENSE
-    shows: LICENSE body carries an AMD copyright header and then runs the verbatim MIT text, which is why the API
-      reports NOASSERTION.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ROCm/rocm-libraries/develop/projects/composablekernel/LICENSE
+    shows: LICENSE body carries an AMD copyright header and then the MIT text, with "Permission is hereby
+      granted, free of charge, to any person obtaining a copy" and "WITHOUT WARRANTY OF ANY KIND".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 20f3b83dfda01bd18d285e0edbb9d044be6dde04cdf76a1ec18d9fc7127936bf
     establishes:
     - license
-  - url: https://api.github.com/repos/ROCm/composable_kernel
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch develop -
-      for ROCm/composable_kernel.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: b4bc8889dfef2e77d46268e809322743c31f5fe34f7b965d424ad8179cb10f9f
-    establishes:
-    - license
-    - source
-  - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
-    shows: README describes a programming model and template library for performance-critical ML kernels across
-      architectures, with a code generator and dispatcher, shipped as part of ROCm, with no paid tier, enterprise
-      edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ROCm/rocm-libraries/develop/projects/composablekernel/README.md
+    shows: 'README says "CK is released under the **[MIT license](/LICENSE)**." and "As with all ROCm projects,
+      the documentation is open source." Searched the body for enterprise, license key, paid, proprietary,
+      commercial and closed: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: a32b4f9c5e8a6c2435519fce45712c7b8c7ee39782aae711ed8888eefd79f98b
     establishes:
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/ROCm/composable_kernel/develop/README.md
+    shows: 'README of the standalone mirror says "CK is released under the **[MIT license](/LICENSE)**."
+      and "We recommend building CK inside Docker containers, which include all necessary packages." Searched
+      the body for enterprise, license key, paid, proprietary, commercial and closed: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a32b4f9c5e8a6c2435519fce45712c7b8c7ee39782aae711ed8888eefd79f98b
+    establishes:
+    - source
 adoption:
   level: 1
   reach: <1K stars
@@ -70,35 +69,33 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
-  value: Tile-level templates and a codegen dispatcher for GEMM, convolution and fused attention on AMD
-    GPUs. Vendored as a git submodule by PyTorch (third_party/composable_kernel) and by FlashAttention (csrc/composable_kernel),
-    in both cases on the AMD path.
+  value: Tile-level templates and a code generator for GEMM instances on AMD GPUs. Vendored as a git submodule
+    by PyTorch (third_party/composable_kernel) and by FlashAttention (csrc/composable_kernel), in both cases
+    on the AMD path.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: Composable Kernel is vendored directly as a git submodule by both PyTorch and FlashAttention, the
-    same kind of dependency evidence that places cutlass, making it the ROCm counterpart to cutlass. It
-    covers one layer of the kernel stack rather than the full framework-to-target compilation path, which
-    keeps it below Apache TVM.
-  last_verified: '2026-08-18'
+  note: Composable Kernel is vendored as a git submodule by PyTorch and FlashAttention on their AMD paths.
+    It covers one layer of the kernel stack rather than the full framework-to-target compilation path, which
+    keeps it one step below Apache TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
-    shows: README still documents a programming model and template library for performance-critical ML kernels
-      across architectures, with a code generator and dispatcher, shipped as part of ROCm.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ROCm/rocm-libraries/develop/projects/composablekernel/README.md
+    shows: README says "The Composable Kernel (CK) library provides a programming model for writing performance-critical"
+      kernels for ML across GPUs and CPUs, structured into "Templated Tile Operators", "Instantiated Kernel
+      and Invoker" and "Client API" layers, with a "CK codegen" link and gemm instance options such as "DISABLE_DL_KERNELS".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: a32b4f9c5e8a6c2435519fce45712c7b8c7ee39782aae711ed8888eefd79f98b
   - url: https://raw.githubusercontent.com/pytorch/pytorch/main/.gitmodules
-    accessed: '2026-09-15'
+    shows: PyTorch .gitmodules declares a third_party/composable_kernel submodule with "url = https://github.com/ROCm/composable_kernel.git"
+      and "branch = develop", alongside "third_party/cutlass".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: c7364691cf019f9a34f17d68de041715f5c3d9d58ded3704d0e2f7bda514434f
-    shows: '`[submodule "third_party/composable_kernel"]` with url https://github.com/ROCm/composable_kernel.git,
-      alongside `third_party/cutlass`. PyTorch vendors both; which one a build reaches is decided by the
-      hardware target.'
+    content_sha256: ba1b8a30abf673bb73bbf4c5a973753b2d58b3b4e8d13d975b917bbfd2aba3c3
   - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/.gitmodules
-    accessed: '2026-09-15'
+    shows: FlashAttention .gitmodules declares a csrc/composable_kernel submodule with "url = https://github.com/ROCm/composable_kernel.git"
+      and "branch = amd-master", alongside "csrc/cutlass".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 0c57db58f50c4c7c7aa10c7a0b14d253cb6bfab5368caee0a7ca4c7d3f003b59
-    shows: '`[submodule "csrc/composable_kernel"]` with url https://github.com/ROCm/composable_kernel.git
-      and branch amd-master, alongside `csrc/cutlass`. The branch name is the scope: this is FlashAttention''s
-      AMD path.'

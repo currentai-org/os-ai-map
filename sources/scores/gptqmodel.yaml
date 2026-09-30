@@ -11,36 +11,39 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text, and the README describes no paid tier, enterprise
+    edition or license-gated build, so the core is ungated. The optional Swordfish Blackwell kernel sources
+    it vendors are licensed under AGPL-3.0-or-later and are only compiled at runtime through JIT, so they
+    are not part of the default build.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/ModelCloud/GPTQModel/blob/main/LICENSE
-    shows: LICENSE body opens with ModelCloud.ai SPDX copyright headers declaring SPDX-License-Identifier Apache-2.0
-      and then runs the verbatim Apache License 2.0 text.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ModelCloud/GPTQModel/main/LICENSE
+    shows: 'LICENSE opens with the header "SPDX-License-Identifier: Apache-2.0" and then runs the verbatim
+      Apache License text, with "Version 2.0, January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION,
+      AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: d63713e1d83b56d570b9f98fcb10eef316bf85907a1c49bcd5943ee8a02b61f3
     establishes:
     - license
-  - url: https://api.github.com/repos/ModelCloud/GPTQModel
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
-      ModelCloud/GPTQModel.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ModelCloud/GPTQModel/main/pyproject.toml
+    shows: 'pyproject.toml header reads "# SPDX-License-Identifier: Apache-2.0" and the metadata line is
+      license = "Apache-2.0".'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 60f1e7de4cccd6415b7059376839f0f9621f91d059a2bcae1c162b9efea105c6
+    content_sha256: ced9b7a1ed40551e7c6cdb0d580402e3d5dc636fceb77112d86cb1240cdbcf0e
     establishes:
     - license
-    - source
-  - url: https://github.com/ModelCloud/GPTQModel/blob/main/README.md
-    shows: README describes an LLM quantization toolkit with hardware-accelerated kernels for NVIDIA CUDA, AMD ROCm,
-      Huawei Ascend NPU, Intel XPU and Intel, AMD and Apple CPUs, loadable through Transformers, vLLM and SGLang,
-      with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ModelCloud/GPTQModel/main/README.md
+    shows: 'README carries the header "SPDX-License-Identifier: Apache-2.0" and describes "An extensible
+      platform for LLM quantization, validation, and deployment." Its License section says "The optional
+      Swordfish kernel sources vendored under" gptqmodel_ext/swordfish are licensed under AGPL-3.0-or-later
+      and compiled only through JIT. Searched the body for enterprise, license key, paid, commercial and
+      non-commercial: none beyond that optional kernel.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: ed910d26959b1f735f5c09d5de4f04ba91ff8322894c65cf084ec1016cbd7f4e
+    content_sha256: eff09b3a40e2fe09a5ac986407833d183819b1c141e4e30520eeab55c066f9df
     establishes:
     - source
     - core-gated
@@ -67,21 +70,27 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: one optimization family, applied broadly'
-  value: Post-training GPTQ and AWQ quantization with kernels for five accelerator families and loaders for three
-    serving stacks. Wide hardware reach within a single technique.
+  value: Post-training quantization (GPTQ, AWQ, GGUF, FP8 and other methods) with kernels for five accelerator
+    families and loaders for three serving stacks. Wide hardware reach within one optimization family.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: GPT-QModel applies post-training GPTQ and AWQ quantization with kernels for five accelerator families
-    and loaders for three serving stacks (Transformers, vLLM and SGLang). That is one quantization technique
-    applied broadly across hardware, not the retargetable compilation Apache TVM performs across its whole
-    pipeline.
-  last_verified: '2026-08-18'
+  note: GPT-QModel applies post-training quantization methods including GPTQ, AWQ, GGUF and FP8, with kernels
+    for five accelerator families and loaders for three serving stacks (Transformers, vLLM and SGLang).
+    That is one optimization family applied broadly across hardware, not the retargetable compilation Apache
+    TVM performs across its whole pipeline.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/ModelCloud/GPTQModel/blob/main/README.md
-    shows: README still documents an LLM quantization toolkit with hardware-accelerated kernels for NVIDIA CUDA,
-      AMD ROCm, Huawei Ascend NPU, Intel XPU and Intel, AMD and Apple CPUs, loadable through Transformers, vLLM
-      and SGLang.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ModelCloud/GPTQModel/main/README.md
+    shows: README describes "An extensible platform for LLM quantization, validation, and deployment." across
+      "NVIDIA CUDA, AMD ROCm, Huawei Ascend, Intel XPU, and CPU, with Transformers, vLLM, and SGLang."
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: ed910d26959b1f735f5c09d5de4f04ba91ff8322894c65cf084ec1016cbd7f4e
+    content_sha256: eff09b3a40e2fe09a5ac986407833d183819b1c141e4e30520eeab55c066f9df
+  - url: https://raw.githubusercontent.com/ModelCloud/GPTQModel/main/README.md
+    shows: README support table lists "Huawei Ascend NPU" with "Native Torch kernels for GPTQ, AWQ, ParoQuant,
+      GGUF, QQQ, and EXL3" and Intel/AMD CPU paths, and says "GPTQ, AWQ, ParoQuant, QQQ, GGUF, FP8, EXL3,
+      GPTAQ, EoRA, GAR, and FOEM".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: eff09b3a40e2fe09a5ac986407833d183819b1c141e4e30520eeab55c066f9df

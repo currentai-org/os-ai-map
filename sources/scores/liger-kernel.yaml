@@ -11,37 +11,45 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-2-Clause license body confirmed. The repository is public and unarchived, builds the whole product,
-    and the README names no paid tier, enterprise edition or license-gated build beside it, so the source
-    is public and the core ungated.
+  note: The LICENSE file contains the BSD-2-Clause text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:BSD-2-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/linkedin/Liger-Kernel/blob/main/LICENSE
-    shows: LICENSE file is the verbatim BSD-2-Clause text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/linkedin/Liger-Kernel/main/LICENSE
+    shows: LICENSE file opens "BSD 2-CLAUSE LICENSE" with "Copyright 2024 LinkedIn Corporation" and grants
+      "Redistribution and use in source and binary forms, with or" without modification under listed conditions.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 3a1ccb0c7274b68e1af2ca1d54b10b662085ca56753400182ecf87ae33f2d1a8
     establishes:
     - license
-  - url: https://api.github.com/repos/linkedin/Liger-Kernel
-    shows: Repo metadata - license spdx_id BSD-2-Clause, private false, archived false, default branch main - for
-      linkedin/Liger-Kernel.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/linkedin/Liger-Kernel/main/README.md
+    shows: 'README says Liger Kernel "is a collection of Triton kernels designed specifically for LLM training."
+      and that it "has minimal dependencies, requiring only Torch and Triton—no extra libraries needed!"
+      Searched the body for enterprise, license key, paid, commercial, proprietary and closed: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 14c61226241139e4511f48d60be62974363a0f82cc085ec1f904d9220c8c5d15
+    content_sha256: 1d7b9d7a41b40351e4112174a118d5de6d8bdfbb9aa1e91009e2dc5fa05ac3a5
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/linkedin/Liger-Kernel/main/docs/license.md
+    shows: License doc states the project is "licensed under the [BSD 2-CLAUSE]" license and "It also includes
+      components from projects licensed under:" Apache License 2.0 and MIT, all OSI-approved.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 3abe3f06ed582f46d93d3471dfda7a1bfe56e14f95aecfd988bca8bf254eff64
     establishes:
     - license
-    - source
-  - url: https://github.com/linkedin/Liger-Kernel/blob/main/README.md
-    shows: README describes a collection of Triton kernels for LLM training that replace fused transformer operations
-      and add memory-efficient post-training losses, applied by patching Hugging Face classes, with no paid tier,
-      enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/linkedin/Liger-Kernel/main/setup.py
+    shows: 'setup.py installs the product from the repository with plain package requirements through "install_requires=get_default_dependencies(),"
+      and "extras_require=get_optional_dependencies(),". Searched the body for enterprise, license key,
+      paid, commercial, proprietary and closed: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 58d4eac3aef541b2bf90d41c6462d5da4cbc2f0a5eb5cabebd87c488b8d00e95
+    content_sha256: e82e177bced3e59ec059ac8c70dd92b8f4dbbc31812f31f87b3b34f264787109
     establishes:
-    - source
     - core-gated
 adoption:
   level: 3
@@ -63,22 +71,36 @@ adoption:
     http_status: 200
     content_sha256: 7cec0608832dc8d0c5b30da592384575bf01548059ed968e67285b410e79375b
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: an operator set with no dependency declaration on file'
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
   value: Fused Triton kernels for a fixed list of transformer training operations, plus post-training loss implementations,
     delivered as monkey patches for Hugging Face classes.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Liger Kernel is a set of operators rather than a single kernel, but no training framework is recorded
-    declaring a dependency on it - only that it patches into Hugging Face classes from outside. That gap
-    in evidence, not a smaller feature set, is what keeps it two steps below Apache TVM.
-  last_verified: '2026-08-18'
+  note: Liger Kernel is a set of transformer training operators rather than a single kernel, and Hugging
+    Face TRL declares it as an optional liger extra in its pyproject. Its scope is a fixed list of training
+    operations, which keeps it one step below Apache TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/linkedin/Liger-Kernel/blob/main/README.md
-    shows: README still documents a collection of Triton kernels for LLM training that replace fused transformer
-      operations and add memory-efficient post-training losses, applied by patching Hugging Face classes.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/linkedin/Liger-Kernel/main/README.md
+    shows: README documents "We support losses like DPO, CPO, ORPO, SimPO, KTO, JSD, and many more." and
+      says users can "Simply patch your Hugging Face model with one line of code" using RMSNorm, RoPE, SwiGLU
+      and CrossEntropy kernels.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 58d4eac3aef541b2bf90d41c6462d5da4cbc2f0a5eb5cabebd87c488b8d00e95
+    content_sha256: 1d7b9d7a41b40351e4112174a118d5de6d8bdfbb9aa1e91009e2dc5fa05ac3a5
+  - url: https://raw.githubusercontent.com/linkedin/Liger-Kernel/main/README.md
+    shows: README lists a "Trainer Framework Integration" line naming Axolotl, LLaMa-Factory, SFTTrainer,
+      Hugging Face Trainer, SWIFT and oumi, and says "Compatible with multi-GPU setups (PyTorch FSDP, DeepSpeed,
+      DDP, etc.)."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 1d7b9d7a41b40351e4112174a118d5de6d8bdfbb9aa1e91009e2dc5fa05ac3a5
+  - url: https://raw.githubusercontent.com/huggingface/trl/main/pyproject.toml
+    shows: TRL pyproject declares a Liger extra, "liger = [" with "liger-kernel>=0.8.2", and a test comment
+      "Triggered by the DPO and KTO Liger tests".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 63e2388f4f68ed8626a9a467445dd0743f1fbdb0cb818bb68ef13d6f85c5cbf6
