@@ -69,7 +69,22 @@ jobs:
         run: |
           set -o pipefail
           uv run python -m build.adoption_freshness --live --apply \
-            --queue tier-change-queue.md | tee reconciliation.txt
+            --queue tier-change-queue.md --json-out reconciliation.json | tee reconciliation.txt
+      # The Phase 4 release gate (#410), report-only. It judges the read above, not a second read:
+      # the binding and the rows come from reconciliation.json, and the fetcher runs are snapshotted
+      # here, after that read completed, because §4.3 requires the run evidence to postdate the read
+      # it vouches for. Advisory: it prints what a release would be blocked on and blocks nothing.
+      # `continue-on-error` covers only a crash or an unreadable input; the report itself exits 0.
+      - name: Adoption release gate (report-only, advisory)
+        id: release_gate
+        continue-on-error: true
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          set -o pipefail
+          uv run python -m build.snapshot_source_runs --rows-only --out build/observations
+          uv run python -m build.check_reconciliation --read reconciliation.json \
+            --source-runs build/observations/source_runs.csv | tee release-gate.txt
       - name: The tier-change queue and the binding, whether or not a date moved
         run: |
           {
@@ -87,6 +102,18 @@ jobs:
             echo
             echo '```'
             cat tier-change-queue.md
+            echo '```'
+            echo
+            echo "### Release gate (report-only, #410)"
+            echo
+            echo "What a release would be blocked on under §4.3/§4.4. Nothing is blocked yet."
+            echo
+            echo '```'
+            if [ -s release-gate.txt ]; then
+              cat release-gate.txt
+            else
+              echo "the gate step did not produce a report (outcome: ${{ steps.release_gate.outcome }})"
+            fi
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Gates on the result

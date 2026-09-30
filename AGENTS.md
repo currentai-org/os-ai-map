@@ -106,7 +106,9 @@ Gates              check_*, one module per question. Four families:
                                 check_instrument, check_components,
                                 check_channel_authority
                      evidence   check_verification, check_freshness, check_refetch,
-                                check_citations
+                                check_citations, check_reconciliation (the Phase 4
+                                adoption release gate, #410; report-only in the weekly
+                                reconciliation workflow, not in preflight or CI)
                      payload    check_payload, check_retirement, check_parity
                      coverage   check_routing, check_artifacts
                      prose      check_prose_diff (a prose pass moved only prose; run locally,
