@@ -11,35 +11,34 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: LanceDB's Apache-2.0 core is public, unarchived and builds the whole product, with no paid tier
-    or enterprise edition gating it. A hosted Cloud and Enterprise tier is sold beside that core, but the
-    repository includes the Rust engine and all four language bindings, so nothing is withheld from the
-    published source.
+  note: LanceDB's core is Apache-2.0 and public, and the repository includes the Rust engine and the Python
+    and Node bindings. A hosted Cloud and an Enterprise tier are sold beside it, and the docs describe distributed
+    scale as an Enterprise capability.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/lancedb/lancedb/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lancedb/lancedb/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd
     establishes:
     - license
-  - url: https://api.github.com/repos/lancedb/lancedb
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      lancedb/lancedb.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lancedb/lancedb/main/Cargo.toml
+    shows: Workspace Cargo.toml describes the package as "Serverless, low-latency vector database for AI
+      applications" under the license "Apache-2.0" with the Rust engine at "rust/lancedb".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: d0c95f80dbf91b14c262115d1fb7160834cb71fd223619c9ebe747b2ae155db6
+    content_sha256: b213404211eb77ced9a1044bdbc18be5d64904022f0fa2ea6625b2d9028e85b8
     establishes:
     - license
     - source
-  - url: https://github.com/lancedb/lancedb/blob/main/README.md
-    shows: README describes a multimodal AI lakehouse for production vector search built on the Lance columnar format,
-      running locally or in the user's cloud with GPU index building, and a separate Cloud and Enterprise tier described
-      as products beside the open source one, with no paid tier, enterprise edition or license-key-gated build beside
-      it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lancedb/lancedb/main/README.md
+    shows: 'README lists "100% open source, runs locally or in your cloud." under Open Source & Local, with
+      Cloud and Enterprise as a separate product line; searched the body for license key, paid tier and
+      enterprise edition build: only the Cloud and Enterprise product line beside the open source one.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c4dd477c2183dc83c57a74f75915397dadd5993e4ce2f55c237d34188a0ec1ca
     establishes:
@@ -71,21 +70,31 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
-  value: Vector, full-text and hybrid retrieval with filtering over multimodal records on object storage, embedded
-    in-process, with GPU index builds and four language bindings.
+  value: Vector, full-text and hybrid retrieval with filtering over multimodal records on object storage,
+    embedded in-process, with GPU index builds and Python, TypeScript and Rust bindings.
   relative_to: vespa
   relation: one_below
   confidence: medium
   note: LanceDB combines vector, full-text and hybrid retrieval with filtering over multimodal records on
-    object storage, embedded in-process, with GPU index builds and four language bindings. Vespa covers
-    more of the same persist-index-retrieve path as a distributed, cluster-capable system, which keeps LanceDB
-    one step behind it.
-  last_verified: '2026-08-18'
+    object storage, embedded in-process, with GPU index builds. Vespa covers more of the same persist-index-retrieve
+    path as a distributed system, while distributed scale for LanceDB comes with its Enterprise product.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/lancedb/lancedb/blob/main/README.md
-    shows: README still documents a multimodal AI lakehouse for production vector search built on the Lance columnar
-      format, running locally or in the user's cloud with GPU index building, and a separate Cloud and Enterprise
-      tier described as products beside the open source one.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lancedb/lancedb/main/README.md
+    shows: README describes "Search billions of vectors in milliseconds with state-of-the-art indexing."
+      and "Support for vector similarity search, full-text search and SQL."
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c4dd477c2183dc83c57a74f75915397dadd5993e4ce2f55c237d34188a0ec1ca
+  - url: https://docs.lancedb.com/
+    shows: Docs home says "Start locally with the embedded OSS" library, "then move to Enterprise when your
+      team needs distributed scale".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: ac135fe92587d060cdef0fb7b23d8fb7371eaba01c373284528b8d085d01d035
+  - url: https://docs.lancedb.com/enterprise/architecture
+    shows: Enterprise architecture page says "Table data and index artifacts live in object storage" and
+      the cluster takes "responsibility for distributed execution".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 308502d40fad2bfae4fc46bfeb94ad0259ca03346c8faff564eb8664c70a3c22

@@ -15,29 +15,21 @@ openness:
     and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
     and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/feast-dev/feast/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/feast-dev/feast/master/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
-  - url: https://api.github.com/repos/feast-dev/feast
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
-      feast-dev/feast.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 4fb6738b29853bf5c6499e6e746fca951dceec83fc61b5073aba12f593cc9269
-    establishes:
-    - license
-    - source
-  - url: https://github.com/feast-dev/feast/blob/master/README.md
-    shows: README describes an open source feature store serving features from an offline store for training and
-      an online store for inference, with materialization between them and a registry of definitions, with no paid
-      tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/feast-dev/feast/master/README.md
+    shows: 'README shows the "Apache%202.0" badge and describes Feast as providing "a single data access
+      layer that abstracts feature storage from feature retrieval"; searched the body for enterprise, paid
+      tier, license key and commercial: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c150196258165066e5ac8509f665998bec5aeb14a442b76866586ad16b079066
     establishes:
@@ -67,21 +59,27 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: single-purpose store or index'
-  value: Point-in-time-correct offline retrieval, online serving and materialization over pluggable offline and
-    online stores, with a feature registry. Orchestrates storage rather than providing it, and does no similarity
-    retrieval.
+  value: Point-in-time-correct offline retrieval, online serving and materialization over pluggable offline
+    and online stores, with a feature registry. Orchestrates storage rather than providing it; similarity
+    retrieval is an alpha API that delegates to a separate vector store.
   relative_to: vespa
   relation: two_below
   confidence: medium
   note: Feast orchestrates point-in-time-correct offline retrieval, online serving and materialization across
-    pluggable stores, with a feature registry, but it provides no storage or similarity search of its own.
-    On the scale of how much of the storing, indexing and serving a product does on its own, that keeps
-    it two steps below Vespa, a complete distributed retrieval system.
-  last_verified: '2026-08-18'
+    pluggable stores, with a feature registry. Its alpha vector search calls into a separate vector store
+    rather than providing an index of its own, which keeps it two steps below Vespa, a complete distributed
+    retrieval system.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/feast-dev/feast/blob/master/README.md
-    shows: README still documents an open source feature store serving features from an offline store for training
-      and an online store for inference, with materialization between them and a registry of definitions.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/feast-dev/feast/master/README.md
+    shows: README describes Feast as helping teams "Make features consistently available for training and
+      serving" by managing an offline store, an online store and a feature server.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c150196258165066e5ac8509f665998bec5aeb14a442b76866586ad16b079066
+  - url: https://raw.githubusercontent.com/feast-dev/feast/master/docs/reference/alpha-vector-database.md
+    shows: Alpha vector database page says "Feast provides general APIs to store and retrieve embeddings."
+      and lists Pgvector, Elasticsearch, Milvus, Qdrant and ScyllaDB as supported vector databases.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 964ece7bda169364fbe89f903c14d8539e3b8f74706f29716ca6e1f2503c3704

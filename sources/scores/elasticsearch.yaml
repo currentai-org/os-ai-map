@@ -24,36 +24,43 @@ openness:
   raw: license:AGPL-3.0(OSI);enterprise-dir:Elastic-License-2.0;source:public;core-gated:gated(the x-pack directory
     is licensed solely under the Elastic License 2.0 rather than the repository's default triple license, so a set
     of features in the published tree cannot be run under the open terms)
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/elastic/elasticsearch/blob/main/LICENSE.txt
-    shows: LICENSE.txt states the default is a triple license - GNU Affero General Public License v3.0 only, Server
-      Side Public License v1, and Elastic License 2.0 - and that code licensed solely under the Elastic License
-      2.0 is found only in the x-pack folder, which is present in the repository root.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/elastic/elasticsearch/main/LICENSE.txt
+    shows: LICENSE.txt sets a default triple license and says code licensed solely under Elastic License
+      2.0 "is found only in the x-pack folder", while "The default throughout the repository is a triple"
+      license.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 09979a6b0701e166ea7bfa4bdf524a431c7ca4a94b16ac2c645bbed9fb7ec2e1
     establishes:
     - license
     - core-gated
-  - url: https://api.github.com/repos/elastic/elasticsearch
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
-      elastic/elasticsearch.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/elastic/elasticsearch/main/README.asciidoc
+    shows: 'README calls Elasticsearch "a distributed search and analytics engine, scalable data store and
+      vector database" and says the local trial license "includes all Elastic features" before reverting
+      to "Free and open - Basic"; searched the body for enterprise, paid tier and license key: none named.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 825ae9cd1cf032dc1acc82bb5bb7479e0c6dcf069081c8cb1c75a43c2ed2c70a
-    establishes:
-    - license
-    - source
-  - url: https://github.com/elastic/elasticsearch/blob/main/README.asciidoc
-    shows: README describes a distributed search and analytics engine, data store and vector database, with retrieval-augmented
-      generation, vector search and full-text search among its listed use cases, and names the separately licensed
-      portion of the same repository rather than presenting the tree as uniformly open.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 08f81c149c32baec7f7bda391d2889413743a69c3a6c1c172786dcd96dad7261
+    content_sha256: 57e97a757d09ab40a40a44646cfeffba5979da7de35316c968decb3ba9905d47
     establishes:
     - source
+  - url: https://raw.githubusercontent.com/elastic/elasticsearch/main/x-pack/plugin/inference/build.gradle
+    shows: Inference plugin build file under x-pack carries a header reading "Licensed under the Elastic
+      License" 2.0.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: a893f8df7c8d6c95e36b197722ae192dc7af79107e81dd2c90e2a9ba8aa6105b
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/elastic/elasticsearch/main/x-pack/plugin/ml/build.gradle
+    shows: ML plugin build file under x-pack carries a header reading "Licensed under the Elastic License"
+      2.0.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 155d1addc460b89c05f2ae17e460b653d014abbcedd6ba643bd80a6daf8c42e8
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -80,29 +87,44 @@ capability:
   score: 5
   basis: feature_matrix
   basis_detail: 'category feature matrix: distributed retrieval platform with ranking and inference'
-  value: Full-text, dense-vector, sparse and hybrid retrieval with filtering and aggregations, and an in-tree
-    inference and machine-learning stack that hosts models and evaluates reranking inside the query path,
-    over a sharded and replicated cluster.
+  value: Full-text, dense-vector, sparse and hybrid retrieval, and an in-tree inference and machine-learning
+    stack that hosts models and evaluates reranking inside the query path, over a sharded and replicated
+    cluster.
   relative_to: vespa
   relation: at
   confidence: medium
-  note: 'Elasticsearch matches Vespa at the top of the category: it hosts and evaluates its own ranking
-    and embedding models inside the serving path, through the inference, ml and ml-package-loader plugins
-    shipped alongside rank-rrf and rank-vectors. That sets it apart from vector databases, which fuse or
-    filter retrieval scores but do not host a model themselves.'
-  last_verified: '2026-08-18'
+  note: Elasticsearch hosts and evaluates its own ranking and embedding models inside the serving path through
+    its in-tree inference and ml plugins, as Vespa does. That sets it apart from vector databases, which
+    fuse or filter retrieval scores but do not host a model themselves.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/elastic/elasticsearch/blob/main/README.asciidoc
-    shows: README still documents a distributed search and analytics engine, data store and vector database, with
-      retrieval-augmented generation, vector search and full-text search among its listed use cases.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/elastic/elasticsearch/main/README.asciidoc
+    shows: README lists "Retrieval Augmented Generation (RAG)", vector search and full-text search among
+      use cases of "a distributed search and analytics engine, scalable data store and vector database".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 08f81c149c32baec7f7bda391d2889413743a69c3a6c1c172786dcd96dad7261
-  - url: https://api.github.com/repos/elastic/elasticsearch/contents/x-pack/plugin
-    shows: 'x-pack/plugin tree: `inference`, `ml` and `ml-package-loader` plugins ship in the repository
-      beside `rank-rrf` and `rank-vectors`, so model hosting, inference endpoints and reranking are part
-      of the engine rather than a separate product. They sit inside x-pack, which is the Elastic-License-only
-      directory this product''s openness score records as its gate.'
-    accessed: '2026-08-18'
+    content_sha256: 57e97a757d09ab40a40a44646cfeffba5979da7de35316c968decb3ba9905d47
+  - url: https://www.elastic.co/docs/deploy-manage/distributed-architecture/clusters-nodes-shards
+    shows: Cluster docs state "Each document in an index belongs to one primary shard." and "A replica shard
+      is a copy of a primary shard."
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: d48ce962857bcdbf2805ef7e6492aa6b06ca5f589bfee004c92e1558132b4917
+    content_sha256: e5e4e61995d6a76d99f58e281bb7699d93c2c5e4280cd4e032519236ecb79797
+  - url: https://www.elastic.co/docs/explore-analyze/elastic-inference/inference-api
+    shows: Inference API docs show an endpoint using the elasticsearch service that deploys the ELSER model,
+      where "The API call will automatically download and deploy the model" for use in semantic_text fields.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 5a34d80868a55ac070bd64b0fbff86071ad2fa95bf359c30beadf0869e01efa3
+  - url: https://www.elastic.co/docs/solutions/search/ranking/semantic-reranking
+    shows: Semantic reranking page says "Both use the same underlying inference endpoints and re-ranking
+      models." for the text_similarity_reranker retriever and the ES|QL RERANK command.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: fb87c8141ef21b199d36d912acad6c7adbfc1107c588d942845002b087babe1e
+  - url: https://www.elastic.co/docs/solutions/search/vector
+    shows: Vector search docs list dense_vector and sparse_vector fields, the semantic_text field type with
+      "automatic embedding generation and model management", and hybrid search tutorials.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: fbd9644ee46151fdb67dc746597b40568ce697a47d94c2e2a83eeec98ef29352

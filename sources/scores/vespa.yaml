@@ -15,33 +15,27 @@ openness:
     and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
     and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/vespa-engine/vespa/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vespa-engine/vespa/master/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 71ca03775fa33cc27a4c999c438c306290570e4fe857b814c00e504b09b28d87
     establishes:
     - license
-  - url: https://api.github.com/repos/vespa-engine/vespa
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
-      vespa-engine/vespa.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vespa-engine/vespa/master/README.md
+    shows: 'README states "This repository contains all the code required to build and run all of Vespa
+      yourself," and "All the content in this repository is licensed under the Apache 2.0 license." It links
+      a cloud service as an optional deployment ("Deploy your Vespa applications to the cloud service")
+      beside "run your own Vespa instance"; searched the body for enterprise, paid tier and license key:
+      none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: cb0a39f88cc3b5034eb9eb5a936ce1f9c9f38b0f5406aa0c33d515498a401e11
+    content_sha256: 5265be4d7ef3c3ffe6f8d8e8265047516cd7a8e39258edb15edc7451297ab59a
     establishes:
     - license
-    - source
-  - url: https://github.com/vespa-engine/vespa/blob/master/README.md
-    shows: README describes search, inference and organization over vectors, tensors, text and structured data at
-      serving time and any scale, with the repository stating it contains all the code required to build and run
-      Vespa and that everything in it is Apache-2.0, with no paid tier, enterprise edition or license-key-gated
-      build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
-    establishes:
     - source
     - core-gated
 adoption:
@@ -75,14 +69,24 @@ capability:
   confidence: medium
   note: Vespa combines vector, tensor, lexical and structured retrieval in one engine, evaluating multi-phase
     ranking and ML inference during serving over an elastic cluster with replication and live redistribution.
-    No other product in the category covers as much of the persist-index-retrieve path, which is why every
-    other score in the category is measured against it.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/vespa-engine/vespa/blob/master/README.md
-    shows: README still documents search, inference and organization over vectors, tensors, text and structured
-      data at serving time and any scale, with the repository stating it contains all the code required to build
-      and run Vespa and that everything in it is Apache-2.0.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vespa-engine/vespa/master/README.md
+    shows: README describes the product as "Search, make inferences in and organize vectors, tensors, text
+      and structured data, at serving time and any scale." and says Vespa is "a platform that performs these
+      operations for you with high availability and performance."
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
+    content_sha256: 5265be4d7ef3c3ffe6f8d8e8265047516cd7a8e39258edb15edc7451297ab59a
+  - url: https://docs.vespa.ai/en/content/elasticity.html
+    shows: Elasticity page states "Documents in content clusters are automatically redistributed on changes
+      to maintain an even distribution" and "New replicas of documents are created automatically on other
+      nodes to maintain".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 436db20ccf5bb316b1fc2e4a4ef6da4f1a04f784bd3e93281874eda182c0931c
+  - url: https://docs.vespa.ai/en/ranking/phased-ranking.html
+    shows: Phased ranking page states "Vespa allows expressing multiphased retrieval and ranking of documents."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: f252f258b98a4aa32be83e7d2d6966a25305c024bf4be8b193ec7b36ff3c79ff

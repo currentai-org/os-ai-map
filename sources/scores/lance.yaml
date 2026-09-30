@@ -15,34 +15,41 @@ openness:
     and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
     and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/lance-format/lance/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lance-format/lance/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 6f4030a4f059f5618cf00375afd8f5d18fe48e0fc2be1c2e98b2c32c90c44938
     establishes:
     - license
-  - url: https://api.github.com/repos/lance-format/lance
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      lance-format/lance.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: b6070a0aefd126247969b67536f358c7e976230621ec93d8cbc7dd43a7aa501c
-    establishes:
-    - license
-    - source
-  - url: https://github.com/lance-format/lance/blob/main/README.md
-    shows: README describes an open lakehouse format for multimodal AI with vector search, full-text search, random
-      access, feature engineering and data versioning, compatible with Pandas, DuckDB, Polars, PyArrow, Ray and
-      Spark, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lance-format/lance/main/README.md
+    shows: 'README describes the format as "High-performance vector search, full-text search, random access,
+      and feature engineering capabilities for the lakehouse." Searched the body for enterprise, paid tier,
+      license key and cloud: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 43255727368b2737f6eb11296006c2f8b37fd420c6cd4a7a7053b6ce17f2f4a7
     establishes:
     - source
     - core-gated
+  - url: https://lance.org/
+    shows: Lance home page footer says "Lance is an open-source columnar format for multimodal AI. Apache-2.0."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 98555d10181a04a143683861b195b586e6602fa54f01ec73bf0762a475cd8079
+    establishes:
+    - license
+    - core-gated
+  - url: https://pypi.org/pypi/pylance/json
+    shows: 'PyPI metadata for pylance lists the classifier "License :: OSI Approved :: Apache Software License".'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 52328f8711a8c82fb85b10aba69870b113cc2eb291f33ef72f157f070aad1ea0
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -67,21 +74,27 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
-  value: A storage format carrying its own vector and full-text indexes, zero-copy versioning and fast random access,
-    readable by six analytical engines. Storage and indexing without a serving layer of its own.
+  value: A storage format carrying its own vector and full-text indexes, zero-copy versioning and fast random
+    access, readable by engines such as DuckDB, Polars, Spark and Ray. Storage and indexing without a serving
+    layer of its own.
   relative_to: vespa
   relation: one_below
   confidence: medium
   note: Lance is a columnar table format with its own vector and full-text indexes, zero-copy versioning
-    and fast random access, readable by six analytical engines. It covers most of the storing-and-indexing
-    job itself but ships no serving layer of its own, which keeps it one step below Vespa, the category's
-    top-scoring system.
-  last_verified: '2026-08-18'
+    and fast random access, readable by several analytical engines. It covers most of the storing-and-indexing
+    job itself but ships no serving layer of its own, which keeps it one step below Vespa.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/lance-format/lance/blob/main/README.md
-    shows: README still documents an open lakehouse format for multimodal AI with vector search, full-text search,
-      random access, feature engineering and data versioning, compatible with Pandas, DuckDB, Polars, PyArrow, Ray
-      and Spark.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/lance-format/lance/main/README.md
+    shows: README lists "Combine vector similarity search, full-text search (BM25), and SQL analytics on
+      the same dataset with accelerated secondary indices." and "Automatic versioning with ACID transactions,
+      time travel, tags, and branches".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 43255727368b2737f6eb11296006c2f8b37fd420c6cd4a7a7053b6ce17f2f4a7
+  - url: https://lance.org/
+    shows: Lance home page calls it "A file format, table format, and catalog spec for building a complete
+      lakehouse on object storage" and lists Spark, Ray, PyTorch, Trino and DuckDB integrations.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 98555d10181a04a143683861b195b586e6602fa54f01ec73bf0762a475cd8079
