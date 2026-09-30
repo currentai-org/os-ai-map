@@ -59,10 +59,10 @@ Wikipedia only when nothing primary exists (and then `confidence: medium`).
 
 Resume from the first unchecked line. Each line is one commit or more.
 
-- [ ] Phase 0: code-list snapshots, schema, validate, serialize, registry, `apply_attributes`
-- [ ] Phase 1: normalize the ten existing free-text countries
-- [ ] Phase 2: country ledgers, batches 01-14, applied
-- [ ] Phase 3: language ledgers, batches 01-06, applied; `language_specific_datasets` gate on
-- [ ] Phase 4: stewards
+- [x] Phase 0: code-list snapshots, schema, validate, serialize, registry, `apply_attributes`
+- [x] Phase 1: normalize the ten existing free-text countries
+- [x] Phase 2: country ledgers, batches 01-14 and second pass R1-R3, applied
+- [x] Phase 3: language ledgers, batches 01-06, applied; `language_specific_datasets` gate on
+- [x] Phase 4: stewards
 - [ ] Phase 5: retire `components.context.governance`
 - [ ] Phase 6: spot-check, preflight, PR ready
