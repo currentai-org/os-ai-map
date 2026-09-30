@@ -137,7 +137,8 @@ scoring_recipe:
          PyTorch and TensorFlow then corroborates. Arm Compute Library, declared as a submodule
          (`ARMComputeLibrary`) in OpenVINO's own `.gitmodules` (form 1), which oneDNN also builds
          against on Arm CPUs. Liger Kernel, whose `liger` extra in TRL's pyproject declares
-         `liger-kernel>=0.8.2` (form 1).
+         `liger-kernel>=0.8.2` (form 1). ThunderKittens, vendored at `fastvideo-kernel/include/tk`
+         by FastVideo's `.gitmodules` (form 1).
       3  MIOpen, oneMath, DeepGEMM. None carries a qualifying declaration ON FILE. That is where
          the evidence stands rather than a proof of absence, and
          each note says so in those terms: a search that has not found a consumer and a consumer
@@ -170,8 +171,8 @@ scoring_recipe:
     one, because a band whose stated reason has been withdrawn is not a band anyone can check.
     arm-compute-library, miopen, onemath and deepgemm keep the band they had; each now says what is
     on file about its consumers rather than which part of a compiler's pipeline it does not perform.
-    The 2026-09-30 refresh (#806) then moved arm-compute-library and liger-kernel 3 -> 4 on consumer
-    declarations.
+    The 2026-09-30 refresh (#806) then moved arm-compute-library 3 -> 4, liger-kernel 3 -> 4 and
+    thunderkittens 2 -> 4 on consumer declarations.
 
     oneMath is the one to re-read on the next coverage pass. An interface layer is the shape most
     likely to be depended on without being credited, and its 3 rests entirely on nothing qualifying
