@@ -48,7 +48,9 @@ The country of the org's headquarters, its principal place of business. The lega
 only when no headquarters is stated, so a company incorporated in the Netherlands and run from
 California is `US`. A university lab takes its university's
 country; a subsidiary recorded as its own org takes its own seat; a foundation takes its legal
-seat. A community with no legal entity, an intergovernmental body, or an org that cannot be
+seat. A project with no legal entity of its own that a foundation formally hosts (an LF Projects
+series, a CNCF project) takes the country of the body that holds it. A community with no legal
+entity and no host, an intergovernmental body, or an org that cannot be
 identified gets `null`. Evidence is a page that was actually fetched and states the location:
 the org's own about, contact, imprint or terms page first, a company or charity register next,
 Wikipedia only when nothing primary exists (and then `confidence: medium`).
