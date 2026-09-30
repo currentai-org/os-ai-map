@@ -1095,9 +1095,15 @@ def test_adding_a_key_that_exists_raises():
         components.add_document_field(PRODUCT, "description", "x", after="type")
 
 
-def test_a_file_without_a_trailing_newline_is_refused():
+def test_appending_to_a_file_without_a_trailing_newline_is_refused():
     with pytest.raises(ValueError, match="newline"):
-        components.add_document_field(ORG_TEXT.rstrip("\n"), "country", "US", after="type")
+        components.add_document_field(ORG_TEXT.rstrip("\n"), "country", "US", after="no-such-key")
+
+
+def test_inserting_mid_file_works_without_a_trailing_newline():
+    text = ORG_TEXT.rstrip("\n")
+    out = components.add_document_field(text, "country", "US", after="type")
+    assert "country: US\n" in out and not out.endswith("\n")
 
 
 def test_adding_a_field_is_idempotent_through_set_document_field():

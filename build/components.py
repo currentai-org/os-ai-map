@@ -423,12 +423,10 @@ def add_document_field(
     `width` with two-space continuation lines), for a list long enough that a line per item
     would swamp the file.
 
-    Raises rather than producing a plausible-looking edit unless: the file ends in a newline,
-    the document re-parses to exactly the old mapping plus this one key, and every line
+    Raises rather than producing a plausible-looking edit unless: the file ends in a newline
+    (when the field would be appended at the end), the document re-parses to exactly the old mapping plus this one key, and every line
     outside the insertion is byte-identical.
     """
-    if not text.endswith("\n"):
-        raise ValueError("file does not end with a newline; refusing to insert a field")
     lines = text.splitlines(keepends=True)
     if document_field_span(lines, key) is not None:
         raise ValueError(f"top-level {key!r} already exists; use set_document_field to change it")
@@ -440,6 +438,9 @@ def add_document_field(
         if span is not None:
             insert_at = span[1]
             break
+    # Only an insertion at the very end would glue the new key onto an unterminated last line.
+    if insert_at == len(lines) and not text.endswith("\n"):
+        raise ValueError("file does not end with a newline; refusing to append a field")
 
     rendered = _render_document_field(key, value, width, flow)
     new_lines = lines[:insert_at] + rendered + lines[insert_at:]
