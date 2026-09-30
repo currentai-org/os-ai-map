@@ -1,0 +1,94 @@
+product: agent-manager
+openness:
+  score: 5
+  class: open_source
+  confidence: high
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+    free_text:
+    - no managed tier
+    - model-agnostic
+  note: Everything agent-manager does is in the public repository, and nothing is sold beside it. The
+    coding CLIs it launches bill through their own vendors.
+  raw: license:Apache-2.0(OSI);source:public;no managed tier; model-agnostic;core-gated:ungated
+  last_verified: '2026-09-30'
+  sources:
+  - url: https://raw.githubusercontent.com/YoanWai/agent-manager/main/LICENSE
+    shows: Apache License 2.0, the standard license body with the appendix boilerplate unmodified
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/YoanWai/agent-manager/main/README.md
+    shows: README with the full Go source building from the repository (go run ., go test ./...) and an
+      Apache-2.0 license section
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 6aeefa7d280a8b1e31b1d960b583db16239b6a1aadbdd7b6a9c2232241207fa8
+    establishes:
+    - source
+  - url: https://agent-manager.dev/pricing.md
+    shows: 'one tier, free under Apache-2.0: the terminal UI, its built-in MCP server and the reference
+      API all free with no account, key or quota; only the coding CLIs it launches bill, through their
+      own vendors'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 0b3a89d0977e36a9e2ec932cdcac57dc37d4271cdab426b2cbf753cae6ac94a2
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the signal read for agent-manager, which ships as a Go binary through Homebrew,
+    an install script and release downloads rather than through one package registry. A star is not a
+    use, so this shows attention rather than usage.
+  last_verified: '2026-09-30'
+  sources:
+  - url: https://img.shields.io/github/stars/YoanWai/agent-manager.json
+    shows: 'shields.io relay of the GitHub stargazer count for YoanWai/agent-manager: 543 stars'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: b9d7332961bc5f91d3196f3dda41c6637ef123633290f83132c620bb2812263a
+capability:
+  score: 2
+  basis: feature_matrix
+  value: Session supervision over user-installed coding CLIs - nine supported tools each in a persistent
+    tmux session, live status in one project tree, prompts sent without attaching, revive and fork on
+    the same conversation, full-file diff review with line comments returned to the agent, optional per-session
+    git worktrees, and MCP tools for one agent to spawn, message and wait on another. Not an agent itself,
+    and no standardized benchmark result.
+  relative_to: yylo
+  relation: at
+  comparison:
+    last_attested: '2026-09-30'
+    sources:
+    - url: https://yylo.dev
+      shows: 'YYLO still described as coordinating coding agents from intent through validated code, with
+        isolated worktrees, evidence receipts and review and merge boundaries: a layer over installed
+        agents of the same scope as this product'
+      accessed: '2026-09-30'
+      http_status: 200
+      content_sha256: 61127ea706d6bdf416ae7f860ff2eee9749e013f8e1c1fc0b7485e7427549d4d
+  confidence: medium
+  note: 'agent-manager supervises coding agents the user already runs rather than being one, and sits
+    with YYLO, the other layer of this kind in the category: YYLO structures the task pipeline, agent-manager
+    the live sessions and their review. It is capable within that scope, and has no third-party benchmark
+    coverage.'
+  last_verified: '2026-09-30'
+  sources:
+  - url: https://raw.githubusercontent.com/YoanWai/agent-manager/main/README.md
+    shows: 'README: live status for nine supported coding CLIs in tmux, prompts sent without attaching,
+      revive and fork, full-file diff review with comments returned to the agent, per-session worktrees,
+      and MCP tools for agents to spawn and message each other'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 6aeefa7d280a8b1e31b1d960b583db16239b6a1aadbdd7b6a9c2232241207fa8

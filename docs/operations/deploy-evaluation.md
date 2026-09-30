@@ -216,7 +216,7 @@ Expect a scheduled entry to start hours after its cron; GitHub delays them under
 Monday gates on this repo have been observed starting five to six hours late. The job's ordering
 constraint is the Sunday platform sweep, which that delay cannot reach.
 
-Two things to read on a green run, in this order:
+Three things to read on a green run, in this order:
 
 1. **The queue in the run summary.** A week that re-dates nothing and queues sixty products is
    the week the queue matters most, which is why it is written whether or not a PR opens.
@@ -227,11 +227,21 @@ Two things to read on a green run, in this order:
    does not show as a successful `SCHEDULED` run all fail `build/check_verification.py` before the
    PR exists, so a green PR is one where every moved date names the observation and the scheduled
    run behind it.
+3. **The release gate section of the run summary** (#410, report-only). After the read, the job
+   snapshots the fetcher runs (`build.snapshot_source_runs --rows-only`, which leaves the committed
+   receipt alone) and `build.check_reconciliation` judges the same read against them under the
+   `data-architecture.md` §4.3 conditions. It lists each dataset's authoritative scheduled fetch,
+   the census by status, and every row a release would be blocked on: `override_required` one per
+   line, `source_unavailable` grouped by reason. The step is advisory and blocks nothing. A step
+   that shows `failure` crashed or could not read its input; that is worth fixing, but it did not
+   gate anything.
 
 ## Note on the current state
 
-Every measured reconciliation row is `source_unavailable` until row-to-run binding lands (#355):
-`product_adoption_current` carries no `source_run_id`, so §4.3 forbids reading a current
-measurement as agreement. Publishing the report is still useful — it wires the pipeline end to end
-and exposes the measured-vs-recorded deltas — but the blocking gate (Phase 4) must not be enabled
-until #355 makes the fuller status set assignable.
+Every measured row of the published `evaluation.adoption_reconciliation` is `source_unavailable`,
+and for that table this is the settled state: `product_adoption_current` carries no
+`source_run_id`, the warehouse will not gain one (#355 closed as not planned), so §4.3 forbids
+reading a current measurement there as agreement. Publishing the report is still useful, since it
+wires the pipeline end to end and exposes the measured-vs-recorded deltas. The fuller status set
+comes from the repo-side gate in §5 (#410), which is report-only until a few weekly runs have been
+read; enabling its blocking mode is a separate change.

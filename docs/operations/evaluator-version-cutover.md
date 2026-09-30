@@ -114,7 +114,7 @@ new id and some the old. There is no release-scoped materialization yet (`releas
 atomicity is transitional per `data-architecture.md` 12.2). Mitigations:
 
 - **Low blast radius today.** Nothing consumes these tables cross-generation on the platform: the
-  Phase-4 gate is disabled and the Phase-7 retirement has not begun, so no live query joins an
+  Phase-4 gate is repo-side and report-only, reading no warehouse table, and the Phase-7 retirement has not begun, so no live query joins an
   old-id table to a new-id table. The window is real but currently harms no consumer.
 - **One session, fail-fast.** Run the whole cutover in a single maintainer session; each publisher
   already polls each run group to terminal `SUCCESS` and exits non-zero on the first failure, so a
