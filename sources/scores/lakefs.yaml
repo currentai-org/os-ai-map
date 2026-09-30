@@ -102,12 +102,25 @@ capability:
   note: lakeFS provides zero-copy branching, committing and merging over three object stores behind an S3-compatible
     API, with hooks and garbage collection. It versions storage it does not itself provide and does no indexing
     or retrieval, which is why it covers much less of the persist-index-retrieve path than Vespa does.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/treeverse/lakeFS/blob/master/README.md
-    shows: README still documents transformation of object storage into a Git-like repository giving repeatable,
-      atomic and versioned data lake operations over AWS S3, Azure Blob Storage and Google Cloud Storage, S3-API
-      compatible and working with Spark, Hive and other data frameworks.
-    accessed: '2026-09-24'
+  - url: https://raw.githubusercontent.com/treeverse/lakeFS/master/README.md
+    shows: README says lakeFS "transforms your object storage into a Git-like repository" and lists "AWS
+      S3, Azure Blob Storage, and Google Cloud Storage" as underlying storage, "API compatible with S3"
+      and working with Spark and Hive.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 9be184df7d48a99f7fadc15fd4abfa4aeaaa10e18882d34b952f56b1fa9e45b8
+  - url: https://raw.githubusercontent.com/treeverse/lakeFS/master/README.md
+    shows: 'README says "you can create hooks that make sure that only data that passed these tests will
+      become part of production." Searched the body for vector, index and search as retrieval features:
+      none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 9be184df7d48a99f7fadc15fd4abfa4aeaaa10e18882d34b952f56b1fa9e45b8
+  - url: https://docs.lakefs.io/
+    shows: Docs home says lakeFS provides "version control over the data lake, using Git-like semantics
+      to create and access data versions", and lists Garbage Collection and Webhooks.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: bf21168163414ab70e37a7dbe9cd3f1efbfb25ab890afc4f045e0195c3fcb107

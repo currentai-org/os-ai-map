@@ -15,35 +15,43 @@ openness:
     or enterprise edition gating it. The repository publishes the C++ engine along with its Postgres and
     Python bindings, and the managed offering is a service sold beside that core.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/activeloopai/deeplake/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
     establishes:
     - license
-  - url: https://api.github.com/repos/activeloopai/deeplake
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      activeloopai/deeplake.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 93b28958eee038b4a5171243aa06ff8d259ab297e4f97658581bc43893e74596
-    establishes:
-    - license
-    - source
-  - url: https://github.com/activeloopai/deeplake/blob/main/README.md
-    shows: README describes a database for AI on a storage format optimized for deep learning, used both for storing
-      and searching data plus vectors in LLM applications and for managing datasets while training, over embeddings,
-      audio, text, video, images, DICOM and PDFs, with no paid tier, enterprise edition or license-key-gated build
-      beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/README.md
+    shows: 'README describes "a Database for AI powered by a storage format optimized for deep-learning
+      applications" and installs with "pip install deeplake"; searched the body for enterprise edition,
+      paid tier and license key: none (the word enterprise appears only as "enterprise-grade LLM-based products").'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 632ba1d7b06322cc3e74038a249ce1c5d1dcd86173dde465ece2b24a3f43d467
     establishes:
     - source
     - core-gated
+  - url: https://docs.deeplake.ai/latest/core/
+    shows: Core docs page says "The open-source Deeplake library provides a multi-modal AI database for
+      dataset management, vector search, and deep learning training."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 16495d382c14d9abb6f3fa788864c97ba4a0ac2469255876bf5242be1bd8231f
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/postgres/README.md
+    shows: The repository postgres directory README calls pg_deeplake a "PostgreSQL extension for vector
+      similarity search, full-text search, and hybrid search using DeepLake" and gives "Building from Source"
+      steps.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 424ef824e8cad53e1663fabe4a8ce054d7e32d4e565daa082fbf1aac032d38ed
+    establishes:
+    - source
 adoption:
   level: 3
   reach: 100K-1M
@@ -78,12 +86,23 @@ capability:
   note: Deep Lake combines a multimodal storage format with vector and metadata querying, dataset versioning,
     streaming into training loops, and a Postgres surface. Vespa covers more of the same persist-index-retrieve
     path across a broader range of retrieval modes, which keeps Deep Lake one step behind it.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/activeloopai/deeplake/blob/main/README.md
-    shows: README still documents a database for AI on a storage format optimized for deep learning, used both for
-      storing and searching data plus vectors in LLM applications and for managing datasets while training, over
-      embeddings, audio, text, video, images, DICOM and PDFs.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/README.md
+    shows: README says Deep Lake offers "storage for all data types" with "querying and vector search, data
+      streaming while training models at scale, data versioning and lineage" and "it is serverless".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 632ba1d7b06322cc3e74038a249ce1c5d1dcd86173dde465ece2b24a3f43d467
+  - url: https://docs.deeplake.ai/latest/core/
+    shows: Core docs page lists vector search with "cosine similarity, BM25 text search" and says to "Store
+      datasets locally or on any cloud".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 16495d382c14d9abb6f3fa788864c97ba4a0ac2469255876bf5242be1bd8231f
+  - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/postgres/README.md
+    shows: The Postgres extension README lists full-text search "with BM25 scoring on text columns" and
+      hybrid search "combining vectors and text".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 424ef824e8cad53e1663fabe4a8ce054d7e32d4e565daa082fbf1aac032d38ed

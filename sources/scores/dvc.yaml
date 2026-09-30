@@ -15,29 +15,20 @@ openness:
     and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
     and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/treeverse/dvc/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/treeverse/dvc/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: e817a2cc039b0cf9902431510648773913ccc942dc01a07697cd6f88cf479e15
     establishes:
     - license
-  - url: https://api.github.com/repos/treeverse/dvc
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      treeverse/dvc.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 4193ba9188cf1795217cac203ddc4fde1bab502385be6b8bb44bab74a63f7f69
-    establishes:
-    - license
-    - source
-  - url: https://github.com/treeverse/dvc/blob/main/README.rst
-    shows: README describes versioning of data and models with contents in cloud storage and version information
-      in Git, plus pipeline definitions and experiment tracking, through a command-line tool and a VS Code extension,
-      with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/treeverse/dvc/main/README.rst
+    shows: 'README says DVC will "Store them in your cloud storage but keep their version info in your Git
+      repo"; searched the body for enterprise, paid tier and license key: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: d10985fd1a1efb7ee4a28c0a4dac8a3f40cebe564dc86404aa5300e659ddeb39
     establishes:
@@ -67,20 +58,32 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: single-purpose store or index'
-  value: Content-addressed dataset and model versioning against Git, with pipeline definitions and experiment tracking
-    over a dozen storage backends. No storage or index of its own.
+  value: Content-addressed dataset and model versioning against Git, with pipeline definitions and experiment
+    tracking over cloud and network storage such as S3, Azure, Google Cloud and SSH. No storage or index
+    of its own.
   relative_to: vespa
   relation: two_below
   confidence: medium
   note: DVC versions datasets and models against Git and orchestrates pipelines and experiment tracking
-    across a dozen storage backends, but it stores nothing and serves no queries itself. On the scale of
-    how much of the storing, indexing and serving a product does on its own, that keeps it two steps below
-    Vespa, a complete distributed retrieval system.
-  last_verified: '2026-08-18'
+    across many storage backends, but it stores nothing and serves no queries itself. That keeps it two
+    steps below Vespa, a complete distributed retrieval system.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/treeverse/dvc/blob/main/README.rst
-    shows: README still documents versioning of data and models with contents in cloud storage and version information
-      in Git, plus pipeline definitions and experiment tracking, through a command-line tool and a VS Code extension.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/treeverse/dvc/main/README.rst
+    shows: README describes "Store and share data artifacts (like Git-LFS but without a server)" connected
+      with a Git repository, plus pipelines and experiment tracking.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: d10985fd1a1efb7ee4a28c0a4dac8a3f40cebe564dc86404aa5300e659ddeb39
+  - url: https://raw.githubusercontent.com/treeverse/dvc/main/README.rst
+    shows: README describes DVC pipelines as "computational graphs" that "connect code and data together",
+      with experiment versioning to compare results by metrics.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: d10985fd1a1efb7ee4a28c0a4dac8a3f40cebe564dc86404aa5300e659ddeb39
+  - url: https://raw.githubusercontent.com/treeverse/dvc/main/README.rst
+    shows: README says DVC supports "multiple remote storage platforms - any cloud (S3, Azure, Google Cloud,
+      etc.) or on-premise network storage (via SSH, for example)".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: d10985fd1a1efb7ee4a28c0a4dac8a3f40cebe564dc86404aa5300e659ddeb39

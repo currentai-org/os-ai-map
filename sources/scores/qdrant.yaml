@@ -160,27 +160,41 @@ capability:
   relation: at
   value: Dense, sparse and multi-vector search including ColBERT-style late interaction, payload filtering,
     hybrid queries fused by Reciprocal Rank Fusion or Distribution-Based Score Fusion, built-in quantization,
-    and horizontal sharding and replication with zero-downtime collection resizing. Vendor benchmark reports
-    the highest RPS and lowest latency in almost all scenarios against Milvus, Weaviate, Elasticsearch and
-    Redis at matched precision.
+    and horizontal sharding and replication with zero-downtime collection resizing.
   confidence: medium
-  note: Qdrant is a complete, distributed vector engine on par with Milvus. Its own benchmarks claim the
-    highest throughput and lowest latency among comparable engines, though ANN-Benchmarks lists it without
-    a ranking, and it fuses scores over supplied vectors rather than hosting and evaluating models inside
-    the serving path, which is what separates the category's leaders from the rest.
-  last_verified: '2026-08-18'
+  note: Qdrant is a complete, distributed vector engine comparable to Milvus. It fuses scores over vectors
+    the caller supplies rather than hosting and evaluating models inside the serving path, as Vespa does.
+  last_verified: '2026-09-30'
   sources:
   - url: https://ann-benchmarks.com/
-    shows: Qdrant listed among 38 benchmarked ANN algorithms, alongside Milvus(Knowhere), faiss-ivf, scann,
-      hnswlib and weaviate. Results published as interactive recall-versus-queries-per-second plots per
-      dataset; no ranking table.
-    accessed: '2026-08-18'
+    shows: ANN-Benchmarks page headed "Benchmarks for Single Queries" links "Milvus(Knowhere)" and a "qdrant"
+      algorithm entry among its results, with plots per dataset and no ranking table.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: c964500c5402bf9c4dc5e0c8841f58497b3009aa38937bf1bc2b1306ee912788
+    content_sha256: 16e5dd818c95755ac1db676482f2f5fe696c9e76cb12d60ff9f1fb14ebc3fe78
   - url: https://qdrant.tech/benchmarks/
-    shows: Vendor benchmark, Observations section - "Qdrant achieves highest RPS and lowest latencies in
-      almost all the scenarios, no matter the precision threshold and the metric we choose. It has also
-      shown 4x RPS gains on one of the datasets." Compared against Milvus, Weaviate, Elasticsearch and Redis.
-    accessed: '2026-08-18'
+    shows: Vendor benchmark says Qdrant "achieves highest RPS and lowest latencies in almost all the scenarios"
+      and its meta keywords include "Qdrant vs Milvus".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 14943a0c1c766192c8f065c4f6a5e53da199e3fb5ad5ec7e8cbed612cf919378
+    content_sha256: 7c31b7c4ea54eca88e8344c092fbad7485ea29ea8bb6eb89bb0ef9def05db5af
+  - url: https://raw.githubusercontent.com/qdrant/qdrant/master/README.md
+    shows: README says "Qdrant supports dense vectors for semantic similarity, sparse vectors for full-text
+      search, and multivector search for objects with multiple embeddings or late interaction models like
+      ColBERT." and "Scale horizontally with sharding and replication, and update or resize collections
+      with zero downtime."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: f1455d12252bf40235ad0128d8e98b2cd6d42583e441ac832b01f4daf08df2e4
+  - url: https://qdrant.tech/documentation/concepts/hybrid-queries/
+    shows: Hybrid queries page documents "Reciprocal Rank Fusion (RRF)" and "Distribution-Based Score Fusion
+      (DBSF)" fusion plus a "Multivectors and Late Interaction" section.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: eb2c425556e75088e17b88e7156a4f962af555cdf23cd0ece43dfa7b1e6b645c
+  - url: https://qdrant.tech/documentation/guides/quantization/
+    shows: Quantization guide says users can "compress high-dimensional vectors, reduce memory footprint,
+      and accelerate similarity search while preserving recall quality."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 6b655e92392dfed89d60cf9b6f5e206a77c12c1ce4828d6ae6722cbe327806c8
