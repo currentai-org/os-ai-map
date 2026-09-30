@@ -11,36 +11,29 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: Apache-2.0 license body confirmed. The repository is public and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated. Helix Cloud is a managed deployment offered beside the self-run server.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/HelixDB/helix-db/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/HelixDB/helix-db/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/HelixDB/helix-db
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      HelixDB/helix-db.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/HelixDB/helix-db/main/README.md
+    shows: 'README opens with "HelixDB is an open-source (Apache 2.0) graph database with native vector
+      search and BM25" and offers a local CLI install and embedded mode; searched the body for enterprise,
+      paid tier and license key: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 7241917a6055feefe1781888754e15d057b4a01799c1f07ce0a6c41402ab81d3
+    content_sha256: 46f64ba97c37e6090c342012eb3b237f19b078cae5703df45906aad7f9b1c511
     establishes:
     - license
-    - source
-  - url: https://github.com/HelixDB/helix-db/blob/main/README.md
-    shows: README describes a graph-vector database for knowledge graphs and AI memory, built in Rust, presenting
-      the components an AI application needs in one platform rather than a separate application, relational and
-      vector database, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: b80a90f9c4239592348859605a5adb260ce33e3ab417c4cafadb1bfd997f16a2
-    establishes:
     - source
     - core-gated
 adoption:
@@ -68,21 +61,29 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: single-purpose store or index'
-  value: Graph traversal and vector search in one engine with a compiled query language on object storage. Combines
-    two retrieval models; younger and narrower in operational features than the band above.
+  value: Graph traversal, vector search and BM25 full-text search in one transactional engine on object
+    storage, run as a local server or embedded in a process. Multi-node scaling is documented only for the
+    managed cloud, and the project is younger and narrower in operational features than platforms such as
+    Vespa.
   relative_to: vespa
   relation: two_below
   confidence: medium
-  note: HelixDB combines graph traversal and vector search in one engine, with a compiled query language
-    and persistence to object storage. It is younger and narrower in operational features than the platforms
-    at the top of the category, such as Vespa, which is why it covers less of the same persist-index-retrieve
-    path.
-  last_verified: '2026-08-18'
+  note: HelixDB combines graph traversal, vector search and BM25 full-text search in one transactional engine
+    built on object storage, and runs as a local server or embedded. Its writer-and-reader-node scaling
+    is described only for the managed Helix Cloud, and it is younger and narrower in operational features
+    than platforms such as Vespa, so it covers less of the same persist-index-retrieve path.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/HelixDB/helix-db/blob/main/README.md
-    shows: README still documents a graph-vector database for knowledge graphs and AI memory, built in Rust, presenting
-      the components an AI application needs in one platform rather than a separate application, relational and
-      vector database.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/HelixDB/helix-db/main/README.md
+    shows: README describes the product as "Store entities, relationships, embeddings," and shows "Approximate
+      nearest-neighbor search, prefiltered by graph traversal." beside BM25 keyword search, plus "Local
+      data lives in memory by default".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: b80a90f9c4239592348859605a5adb260ce33e3ab417c4cafadb1bfd997f16a2
+    content_sha256: 46f64ba97c37e6090c342012eb3b237f19b078cae5703df45906aad7f9b1c511
+  - url: https://docs.helix-db.com/database/helix-cloud/start-here/architecture
+    shows: Architecture page states "Helix Cloud runs as a single writer node and multiple reader nodes
+      behind a routing gateway."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: d3a407e077403f839fe5cfa66e18ff189c73fc661c11cee2829b61604f8e9121

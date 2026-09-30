@@ -15,29 +15,21 @@ openness:
     and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
     and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/vearch/vearch/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vearch/vearch/master/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/vearch/vearch
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
-      vearch/vearch.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: f4f668f91f3e0c818d101295dd61e2f371bac9c848f127da944825109162c11e
-    establishes:
-    - license
-    - source
-  - url: https://github.com/vearch/vearch/blob/master/README.md
-    shows: README describes a cloud-native distributed vector database for similarity search over embeddings, with
-      hybrid vector search and scalar filtering, with no paid tier, enterprise edition or license-key-gated build
-      beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vearch/vearch/master/README.md
+    shows: 'README states "Vearch is a cloud-native distributed vector database for efficient similarity
+      search of embedding vectors" and "Vearch is licensed under the" Apache License 2.0; searched the body
+      for enterprise, paid, license key and commercial: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 75345e5843a2e3178bbe4aca70a6cf967f55f446fe0586388a0d6a8398a11732
     establishes:
@@ -68,19 +60,21 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: single-purpose store or index'
-  value: Distributed vector search with scalar filtering and a cluster role split, over IVF and HNSW indexes. A
-    working system, without the hybrid or full-text modes of the band above.
+  value: Distributed vector search with scalar filtering and a master, router and partition-server role
+    split, over IVF and HNSW indexes. Vector search is combined with filtering, but there is no full-text
+    or lexical mode.
   relative_to: vespa
   relation: two_below
   confidence: medium
-  note: Vearch is a distributed vector search cluster with scalar filtering and a split of roles across
-    its cluster, built over IVF and HNSW indexes. It has no hybrid or full-text search, which keeps it two
+  note: Vearch is a distributed vector search cluster with scalar filtering, replication and a split of
+    roles across its master, router and partition servers, built over IVF and HNSW indexes. Its hybrid search
+    is vector similarity plus scalar filtering only, with no full-text or lexical mode, which keeps it two
     steps below Vespa, a complete distributed retrieval system covering more retrieval modes.
-  last_verified: '2026-08-18'
   sources:
-  - url: https://github.com/vearch/vearch/blob/master/README.md
-    shows: README still documents a cloud-native distributed vector database for similarity search over embeddings,
-      with hybrid vector search and scalar filtering.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/vearch/vearch/master/README.md
+    shows: 'README lists "Hybrid search" as vector search plus scalar filtering, and "Replication and elastic
+      scaling out", and describes a "Router" and "PartitionServer (PS)" role split with "raft-based replication";
+      searched the body for full-text, BM25 and lexical: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 75345e5843a2e3178bbe4aca70a6cf967f55f446fe0586388a0d6a8398a11732

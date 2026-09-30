@@ -15,34 +15,33 @@ openness:
     and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
     and the core ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/alibaba/zvec/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/alibaba/zvec/main/LICENSE
+    shows: 'LICENSE file is the Apache-2.0 text: "Apache License" and "Version 2.0, January 2004" and "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
     establishes:
     - license
-  - url: https://api.github.com/repos/alibaba/zvec
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      alibaba/zvec.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/alibaba/zvec/main/README.md
+    shows: 'README calls Zvec "an open-source, in-process vector database" and shows the Apache 2.0 license
+      badge; searched the body for enterprise, paid tier and license key: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: a4e2e274b82db626aa019c11a999b207217490375cdf11c23c2434c029229915
-    establishes:
-    - license
-    - source
-  - url: https://github.com/alibaba/zvec/blob/main/README.md
-    shows: README describes an in-process vector database embedded directly into applications, with group-by search
-      across flat, HNSW, HNSW-RaBitQ and sparse indexes, and published benchmarks, with no paid tier, enterprise
-      edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 05cee941eb351578cf0a79ed00f8ef374d82c00ef9689c8dbd14f07be8988ab8
+    content_sha256: aea3d41c46926b6463fee0b1d9db799f3abdd938c3aefb6cd7ac56b538da64c8
     establishes:
     - source
     - core-gated
+  - url: https://pypi.org/pypi/zvec/json
+    shows: 'PyPI metadata lists "License :: OSI Approved :: Apache Software License" as a classifier for
+      zvec.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 5cf610ebd2b712ac82868838a2f05d0f7b9aa5512fd67e14e667b23dadaf636a
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 10K-100K
@@ -69,19 +68,41 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: single-purpose store or index'
-  value: Flat, HNSW, HNSW-RaBitQ and sparse indexes with group-by retrieval, embedded in the application process.
-    Index breadth is real; there is no server, cluster or hybrid full-text mode.
+  value: Flat, HNSW, HNSW-RaBitQ, IVF and sparse indexes with native full-text search and hybrid queries
+    that fuse vector similarity, full-text search and structured filters, embedded in the application process.
+    There is no server or cluster; several processes can read a collection at once, but writes come from
+    a single process.
   relative_to: vespa
   relation: two_below
   confidence: medium
-  note: 'Zvec offers real index breadth: flat, HNSW, HNSW-RaBitQ and sparse indexes with group-by retrieval,
-    embedded directly in the application process. It has no server, cluster or hybrid full-text mode of
-    its own, so it covers much less of the persist-index-retrieve path than Vespa does.'
-  last_verified: '2026-08-18'
+  note: Zvec offers real index breadth (flat, HNSW, HNSW-RaBitQ, IVF and sparse) plus native full-text and
+    hybrid search, embedded directly in the application process. It has no server or cluster of its own,
+    so it covers much less of the persist-index-retrieve path than Vespa does.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/alibaba/zvec/blob/main/README.md
-    shows: README still documents an in-process vector database embedded directly into applications, with group-by
-      search across flat, HNSW, HNSW-RaBitQ and sparse indexes, and published benchmarks.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/alibaba/zvec/main/README.md
+    shows: README describes an in-process library ("Pure local, no servers, no config, no fuss.") that will
+      "Support dense and sparse embeddings, multi-vector queries" and offers "Native keyword-based full-text
+      search" and "Multiple processes can read the same collection simultaneously; writes are single-process
+      exclusive."
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 05cee941eb351578cf0a79ed00f8ef374d82c00ef9689c8dbd14f07be8988ab8
+    content_sha256: aea3d41c46926b6463fee0b1d9db799f3abdd938c3aefb6cd7ac56b538da64c8
+  - url: https://raw.githubusercontent.com/alibaba/zvec/main/README.md
+    shows: README lists "Fuse vector similarity, full-text search, and structured filters in a single query
+      for precise results." as hybrid search.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: aea3d41c46926b6463fee0b1d9db799f3abdd938c3aefb6cd7ac56b538da64c8
+  - url: https://zvec.org/en/docs/db/concepts/vector-index/
+    shows: Vector index page says "Zvec supports the following vector index types, each suited to different
+      use cases, dataset sizes, and performance requirements:" and lists HNSW-RaBitQ.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: e4befb7798478e91269321580dbc0684b55e4f13f8da1c24a242dd396ebc25e4
+  - url: https://zvec.org/en/docs/db/concepts/fts-index/
+    shows: Full-text index page says the index "supports natural language queries, phrase matching, and
+      boolean expressions, ranked by BM25 relevance scoring."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: c3e2a519622b1e61157f5f0e89f023f31b5c715fa32417d147aed2deae45d210
