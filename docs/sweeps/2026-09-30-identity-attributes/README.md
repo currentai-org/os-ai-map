@@ -44,7 +44,9 @@ steward needs.
 
 ## Rules for country
 
-The country of the org's headquarters or legal seat. A university lab takes its university's
+The country of the org's headquarters, its principal place of business. The legal seat stands in
+only when no headquarters is stated, so a company incorporated in the Netherlands and run from
+California is `US`. A university lab takes its university's
 country; a subsidiary recorded as its own org takes its own seat; a foundation takes its legal
 seat. A community with no legal entity, an intergovernmental body, or an org that cannot be
 identified gets `null`. Evidence is a page that was actually fetched and states the location:
