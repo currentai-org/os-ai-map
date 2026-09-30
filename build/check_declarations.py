@@ -18,8 +18,9 @@ cites repository B: testing `github` presence alone calls that clean and lets ex
 divergence this module exists to catch through the net. So declared and cited repositories are
 compared as identities, not counted.
 
-Every divergence in the corpus today is a repository RENAME - the citation names the old path
-and the declaration names the new one, and GitHub redirects the former to the latter. That is a
+Every verified divergence in the corpus today is a repository RENAME - the citation names the
+old path and the declaration names the new one, and GitHub redirects the former to the latter.
+The two that counting raw file URLs surfaced look like moves too but are not yet verified. That is a
 real finding rather than noise (a reader following the cited URL lands somewhere the record does
 not name) but it is not a wrong artifact, and `artifact_exceptions: {github_moved: ...}` is the
 key the schema already carries for it. Renames are reported separately from undeclared
@@ -32,6 +33,13 @@ declaration but a mis-recorded citation, where the repository named is a compone
 other project rather than the product's own source (`google-cloud-run` cites `google/gvisor`,
 `apify` cites `apify/crawlee`). Those want the citation corrected, not an artifact declared, and
 declaring the repository to silence the check would attach another project's stars and license.
+
+A repository is named either by its page, `github.com/<owner>/<repo>`, or by a file in it,
+`raw.githubusercontent.com/<owner>/<repo>/<branch>/<file>`. Both are matched: a README or
+LICENSE cited by its raw URL establishes source exactly as the repository page does, and
+matching only the page let a finding disappear when its evidence was re-cited by raw URL.
+One repository cited several times on one axis (its page, its README, its LICENSE) is one
+finding, so re-citing a file never moves the count.
 
 A `github.com/<owner>/<path>` URL is not always a repository. GitHub's own site paths match the
 same shape - `github.com/features/copilot` is a product page - so the owner segment is checked
@@ -55,6 +63,15 @@ RESERVED_OWNERS = frozenset({
 })
 
 _REPO_URL = re.compile(r"^https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)$")
+# A README or LICENSE cited by its raw file URL names the same repository as the github.com
+# page does. Matching only the latter let a citation hide from this check by changing host.
+_RAW_FILE_URL = re.compile(r"^https://raw\.githubusercontent\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)/")
+
+
+def _cited_repo(url: str) -> tuple[str, str] | None:
+    """(owner, repo) named by a repository page or raw file URL, or None."""
+    matched = _REPO_URL.match(url.rstrip("/")) or _RAW_FILE_URL.match(url)
+    return (matched.group(1), matched.group(2)) if matched else None
 
 
 def _declared_repos(product: Mapping) -> set[str]:
@@ -70,6 +87,7 @@ def _declared_repos(product: Mapping) -> set[str]:
 def cited_source_repos(root: Path) -> list[tuple[str, str, str, frozenset]]:
     """(slug, owner/repo, axis, declared) for every source-establishing GitHub citation."""
     findings: list[tuple[str, str, str, frozenset]] = []
+    seen: set[tuple[str, str, str]] = set()
     for path in sorted((root / "sources" / "products").glob("*.yaml")):
         product = yaml.safe_load(path.read_text()) or {}
         declared = frozenset(_declared_repos(product))
@@ -81,12 +99,13 @@ def cited_source_repos(root: Path) -> list[tuple[str, str, str, frozenset]]:
             for source in ((score.get(axis) or {}).get("sources") or []):
                 if "source" not in (source.get("establishes") or []):
                     continue
-                matched = _REPO_URL.match((source.get("url") or "").rstrip("/"))
-                if not matched or matched.group(1).lower() in RESERVED_OWNERS:
+                named = _cited_repo(source.get("url") or "")
+                if not named or named[0].lower() in RESERVED_OWNERS:
                     continue
-                cited = f"{matched.group(1)}/{matched.group(2)}"
-                if cited.lower() in declared:
+                cited = f"{named[0]}/{named[1]}"
+                if cited.lower() in declared or (path.stem, cited.lower(), axis) in seen:
                     continue
+                seen.add((path.stem, cited.lower(), axis))
                 findings.append((path.stem, cited, axis, declared))
     return findings
 
@@ -117,7 +136,7 @@ def main() -> int:
             print(f"  ~ {slug}: cites {repo} in {axis}.sources")
     print("\nReport-only. An undeclared citation is either a missing declaration or a mis-recorded")
     print("one; declaring a repository that is not the product's own attaches another project's")
-    print("signals. Every divergence in the corpus today is a verified rename - the cited path")
+    print("signals. Every verified divergence in the corpus today is a rename - the cited path")
     print("redirects to the declared one - which wants the citation refreshed or the move recorded")
     print("under artifact_exceptions.github_moved, not a second artifact declared.")
     return 0
