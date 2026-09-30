@@ -11,34 +11,36 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
-    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
-    the core ungated.
+  note: The LICENSE file contains the MIT text. The repository is public and the README describes no paid
+    tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/bitsandbytes-foundation/bitsandbytes/blob/main/LICENSE
-    shows: LICENSE file is the verbatim MIT text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/bitsandbytes-foundation/bitsandbytes/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text, opening with "MIT License" and "Permission is hereby granted,
+      free of charge, to any person obtaining a copy".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85
     establishes:
     - license
-  - url: https://api.github.com/repos/bitsandbytes-foundation/bitsandbytes
-    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for bitsandbytes-foundation/bitsandbytes.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/bitsandbytes-foundation/bitsandbytes/main/README.md
+    shows: 'README states "`bitsandbytes` is MIT licensed." and lists three features for k-bit quantization
+      with 8-bit optimizers, LLM.int8() and QLoRA 4-bit, with a sponsors section thanking "Hugging Face".
+      Searched the body for enterprise, license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: e6e9f8da9f97dfcdcaf92f6829e9469a593b8f48f12bdf41395f45335d971385
+    content_sha256: 68fc2df60317162ca34ba4a1aa0ff3dbc195634391ddeff326b3b109ff7d5ea3
     establishes:
-    - license
     - source
-  - url: https://github.com/bitsandbytes-foundation/bitsandbytes/blob/main/README.md
-    shows: README describes k-bit quantization for PyTorch through 8-bit block-wise optimizers, the LLM.int8() mixed-precision
-      inference path with separate outlier handling, and 4-bit NF4 quantization for QLoRA, with no paid tier, enterprise
-      edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+    - core-gated
+  - url: https://raw.githubusercontent.com/bitsandbytes-foundation/bitsandbytes/main/pyproject.toml
+    shows: 'pyproject.toml declares license = "MIT" and license-files = ["LICENSE"] and builds with "scikit_build_core.setuptools.build_meta"
+      from the repository. Searched the body for enterprise, license key, paid, commercial and proprietary:
+      none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2ca738f8631329f1b1223ab4efce814aef3c9e5518a5e8fec681f1240c86367e
+    content_sha256: d88a6f7fd14f5226438a2cab4b48ace737b998fc5444bcbb972e6586ec8ce676
     establishes:
     - source
     - core-gated
@@ -65,19 +67,27 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: one optimization family, applied broadly'
-  value: 8-bit optimizers, LLM.int8() inference and 4-bit NF4 quantization for PyTorch, with multi-backend support.
-    Quantization only; it neither compiles nor lowers a graph.
+  value: 8-bit optimizers, LLM.int8() inference and 4-bit quantization for PyTorch, with multi-backend support.
+    Quantization only, it neither compiles nor lowers a graph.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: bitsandbytes provides 8-bit optimizers, LLM.int8() mixed-precision inference and 4-bit NF4 quantization
+  note: bitsandbytes provides 8-bit optimizers, LLM.int8() mixed-precision inference and 4-bit quantization
     for PyTorch across multiple hardware backends. It quantizes existing models rather than compiling or
     lowering a computation graph, which is what separates it from a full compiler such as Apache TVM.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/bitsandbytes-foundation/bitsandbytes/blob/main/README.md
-    shows: README still documents k-bit quantization for PyTorch through 8-bit block-wise optimizers, the LLM.int8()
-      mixed-precision inference path with separate outlier handling, and 4-bit NF4 quantization for QLoRA.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/bitsandbytes-foundation/bitsandbytes/main/README.md
+    shows: README documents "k-bit quantization for PyTorch" with "8-bit optimizers uses block-wise quantization
+      to maintain 32-bit performance at a small fraction of the memory cost." and "QLoRA or 4-bit quantization
+      enables large language model training with several memory-saving techniques".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2ca738f8631329f1b1223ab4efce814aef3c9e5518a5e8fec681f1240c86367e
+    content_sha256: 68fc2df60317162ca34ba4a1aa0ff3dbc195634391ddeff326b3b109ff7d5ea3
+  - url: https://raw.githubusercontent.com/bitsandbytes-foundation/bitsandbytes/main/README.md
+    shows: README accelerator table covers "NVIDIA GPU", "AMD GPU", "Intel GPU", "Intel Gaudi" and "Metal"
+      plus x86-64 and aarch64 CPU, so multi-backend support is documented; the LLM.int8() entry says "separately
+      treating outliers with 16-bit matrix multiplication".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 68fc2df60317162ca34ba4a1aa0ff3dbc195634391ddeff326b3b109ff7d5ea3

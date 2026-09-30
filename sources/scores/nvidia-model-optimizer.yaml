@@ -11,36 +11,37 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/NVIDIA/Model-Optimizer/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/Model-Optimizer/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: f37886aee6b03820c0afbdca55f39071b279012aad9ea2ec59f114e135ddef84
+    content_sha256: c118a792470a418b49a0d3335140c490136c6e3c2df7b70b3528cead63771d0f
     establishes:
     - license
-  - url: https://api.github.com/repos/NVIDIA/Model-Optimizer
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      NVIDIA/Model-Optimizer.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/Model-Optimizer/main/pyproject.toml
+    shows: 'pyproject.toml declares the license "Apache-2.0" and depends only on plain PyPI packages, such
+      as "nvidia-ml-py>=12" and "torch>=2.8", with the comment "# for faster building of C++ / CUDA extensions".
+      Searched the body for enterprise, license key, proprietary, closed source and paid: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 1d1577d2e04bd2aecda4f63335b313891ecd57214a8a072f1e40c2014ce4c18b
+    content_sha256: 0fe3392a998a0e51db25bb34a29553761ef2160326acbe7841976f401bba87d0
     establishes:
-    - license
     - source
-  - url: https://github.com/NVIDIA/Model-Optimizer/blob/main/README.md
-    shows: README describes a library of quantization, pruning, neural architecture search, distillation, speculative
-      decoding and sparsity techniques taking Hugging Face, PyTorch or ONNX inputs and exporting optimized checkpoints
-      for TensorRT-LLM, TensorRT and vLLM, with no paid tier, enterprise edition or license-key-gated build beside
-      it.
-    accessed: '2026-08-18'
+    - core-gated
+  - url: https://raw.githubusercontent.com/NVIDIA/Model-Optimizer/main/README.md
+    shows: 'README states "NVIDIA Model Optimizer** (referred to as **Model Optimizer**, or **ModelOpt**)
+      is a library comprising state-of-the-art model optimization" techniques and carries a license badge
+      "License-Apache%202.0". Searched the body for enterprise, license key, proprietary, closed source
+      and paid: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 1a437a72280ed45ef2b239dae86e996a80e22d137b4a5268c20b9264e948ed8c
+    content_sha256: de9bf60f85b004dcc7a345dc4d5a94adadea10d4b28b8c3d02532f4ef86bc285
     establishes:
     - source
     - core-gated
@@ -67,21 +68,29 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: multi-technique optimization toolchain'
-  value: Six optimization families (quantization, pruning, NAS, distillation, sparsity, speculative decoding) over
-    Hugging Face, PyTorch and ONNX inputs, exporting to NVIDIA deployment stacks.
+  value: Six optimization families (quantization, pruning, NAS, distillation, sparsity, speculative decoding)
+    over Hugging Face, PyTorch and ONNX inputs, exporting for TensorRT-LLM, TensorRT, vLLM and SGLang.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
   note: NVIDIA Model Optimizer applies six optimization families - quantization, pruning, neural architecture
     search, distillation, sparsity and speculative decoding - to Hugging Face, PyTorch and ONNX models,
-    exporting to NVIDIA's own deployment stacks. That breadth of technique sits just short of the retargetable,
-    multi-vendor compilation Apache TVM performs across its whole pipeline.
-  last_verified: '2026-08-18'
+    exporting checkpoints for TensorRT-LLM, TensorRT, vLLM and SGLang. That breadth of technique sits one
+    step below the retargetable, multi-vendor compilation Apache TVM performs across its whole pipeline.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/NVIDIA/Model-Optimizer/blob/main/README.md
-    shows: README still documents a library of quantization, pruning, neural architecture search, distillation,
-      speculative decoding and sparsity techniques taking Hugging Face, PyTorch or ONNX inputs and exporting optimized
-      checkpoints for TensorRT-LLM, TensorRT and vLLM.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/Model-Optimizer/main/README.md
+    shows: README says "Model Optimizer currently supports inputs of a [Hugging Face](https://huggingface.co/),
+      [PyTorch](https://github.com/pytorch/pytorch) or [ONNX](https://github.com/onnx/onnx) model." and
+      "Model Optimizer provides Python APIs for users to easily compose the above model optimization techniques
+      and export an optimized quantized checkpoint."
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 1a437a72280ed45ef2b239dae86e996a80e22d137b4a5268c20b9264e948ed8c
+    content_sha256: de9bf60f85b004dcc7a345dc4d5a94adadea10d4b28b8c3d02532f4ef86bc285
+  - url: https://raw.githubusercontent.com/NVIDIA/Model-Optimizer/main/README.md
+    shows: README says the quantized checkpoint "is ready for deployment in downstream inference frameworks
+      like" SGLang, TensorRT-LLM, TensorRT, or vLLM, and lists a techniques table with "Post Training Quantization",
+      "Pruning" and "Distillation".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: de9bf60f85b004dcc7a345dc4d5a94adadea10d4b28b8c3d02532f4ef86bc285

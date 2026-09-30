@@ -11,38 +11,36 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole
-    product, and the README describes no paid tier, enterprise edition or license-gated build beside it,
-    so the source is public and the core ungated.
+  note: The C++ library is public under a BSD-3-Clause LICENSE file with no paid or gated edition. The CuTe
+    DSL added in CUTLASS 4 is a separate case, since its files carry an NVIDIA proprietary license.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/NVIDIA/cutlass/blob/main/LICENSE.txt
-    shows: LICENSE body carries an NVIDIA copyright line, declares SPDX-License-Identifier BSD-3-Clause and then
-      runs the verbatim three-clause BSD text.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/cutlass/main/LICENSE.txt
+    shows: 'LICENSE file opens with an NVIDIA copyright line, declares "SPDX-License-Identifier: BSD-3-Clause"
+      and then runs the BSD text beginning "Redistribution and use in source and binary forms, with or without".'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: ad1513ca983da737a6843364ad19e8424a56d860736c2da773b8c5be527e1475
     establishes:
     - license
-  - url: https://api.github.com/repos/NVIDIA/cutlass
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
-      NVIDIA/cutlass.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/NVIDIA/cutlass/main/README.md
+    shows: 'README About section states "CUTLASS is released by NVIDIA Corporation as Open Source software
+      under the" 3-clause BSD license, and the library is described as "a collection of C++ CUDA template
+      abstractions". Searched the body for enterprise, paid, license key and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: d3cf7d9898bc426d8d0756c07400425f6a5f4f1b75792e93da05bf01b36b348b
-    establishes:
-    - license
-    - source
-  - url: https://github.com/NVIDIA/cutlass/blob/main/README.md
-    shows: README describes C++ abstractions for high-performance GEMM and related computations at every level of
-      the CUDA hierarchy, with hierarchical decomposition and data movement specialized through tiling sizes, data
-      types and algorithmic policy, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: f9bf5185585cf851146c382bccd5a897f9b6ad264aad3ce28cacd8c2746f4f98
+    content_sha256: ac863a852860b6b8ee56c9c3656093d0af311103e7c518412e7d01f64477dea5
     establishes:
     - source
+  - url: https://raw.githubusercontent.com/NVIDIA/cutlass/main/CMakeLists.txt
+    shows: 'Top-level CMakeLists.txt defines the library from the repository as "add_library(CUTLASS INTERFACE)",
+      a header-only target built with plain options and no key or edition switch. Searched the body for
+      enterprise, license key, paid and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 604a6054f1cfa9656ab54804a2d604775dc853102e1f9663948dd8cf39b87190
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -75,36 +73,26 @@ capability:
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: PyTorch and FlashAttention each vendor CUTLASS directly as a submodule and build against its headers,
-    the strongest evidence of a dependency in this category. It covers one layer of the kernel stack rather
-    than the full path from a framework graph to a target, which keeps it below Apache TVM.
-  last_verified: '2026-08-18'
+  note: PyTorch and FlashAttention each vendor CUTLASS directly as a submodule and build against its headers.
+    It covers one layer of the kernel stack rather than the full path from a framework graph to a target,
+    which keeps it one step below Apache TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/NVIDIA/cutlass/blob/main/README.md
-    shows: README still documents C++ abstractions for high-performance GEMM and related computations at
-      every level of the CUDA hierarchy, with hierarchical decomposition and data movement specialized through
-      tiling sizes, data types and algorithmic policy.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: f9bf5185585cf851146c382bccd5a897f9b6ad264aad3ce28cacd8c2746f4f98
   - url: https://raw.githubusercontent.com/NVIDIA/cutlass/main/README.md
-    shows: '"This release has been tested against the following packages" lists FlashAttention, Quack, FlashInfer,
-      cuDNN-Frontend, Pytorch and TensorRT-LLM, each pinned to a commit. A compatibility list states no
-      direction on its own; it corroborates the submodule declarations, which do.'
-    accessed: '2026-09-15'
+    shows: README describes CuTe as "a collection of C++ CUDA template abstractions for" tensors of threads
+      and data, states "CUTLASS 3.0 and beyond adopts CuTe throughout the GEMM hierarchy in its templates."
+      and "This release has been tested against the following packages:" listing FlashAttention, Pytorch
+      and TensorRT-LLM.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: a78c6aa81d87a88012db7b6570015c8a87f2778f663348c6ffc61936e06b9dce
+    content_sha256: ac863a852860b6b8ee56c9c3656093d0af311103e7c518412e7d01f64477dea5
   - url: https://raw.githubusercontent.com/pytorch/pytorch/main/.gitmodules
-    accessed: '2026-09-15'
+    shows: PyTorch .gitmodules vendors CUTLASS with "path = third_party/cutlass" and "url = https://github.com/NVIDIA/cutlass.git".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: c7364691cf019f9a34f17d68de041715f5c3d9d58ded3704d0e2f7bda514434f
-    shows: '`[submodule "third_party/cutlass"]` with url https://github.com/NVIDIA/cutlass.git. PyTorch
-      vendors CUTLASS and builds against it, which establishes the direction of the dependency where a compatibility
-      list does not.'
+    content_sha256: ba1b8a30abf673bb73bbf4c5a973753b2d58b3b4e8d13d975b917bbfd2aba3c3
   - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/.gitmodules
-    accessed: '2026-09-15'
+    shows: FlashAttention .gitmodules vendors CUTLASS with "path = csrc/cutlass" and "url = https://github.com/NVIDIA/cutlass.git".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 0c57db58f50c4c7c7aa10c7a0b14d253cb6bfab5368caee0a7ca4c7d3f003b59
-    shows: '`[submodule "csrc/cutlass"]` with url https://github.com/NVIDIA/cutlass.git. FlashAttention
-      vendors CUTLASS; its setup.py initializes the submodule and asserts csrc/cutlass/include/cutlass/cutlass.h
-      exists before building.'

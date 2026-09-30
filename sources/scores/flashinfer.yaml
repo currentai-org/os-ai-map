@@ -11,11 +11,10 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text and the repository is public. Several backends, including
+    the TensorRT-LLM and cuDNN paths, download prebuilt binaries from an NVIDIA-hosted artifactory at runtime,
+    so part of the kernel set is not built from the repository source.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
   sources:
   - url: https://github.com/flashinfer-ai/flashinfer/blob/main/LICENSE
     shows: LICENSE file is the verbatim Apache-2.0 text
@@ -73,28 +72,27 @@ capability:
   confidence: medium
   note: FlashInfer provides JIT-specialized attention, GEMM and MoE kernels across four backend implementations,
     and several serving engines - SGLang, vLLM, MLC-LLM and ScaleLLM - declare it as a dependency. It covers
-    several operator families rather than one, but only on recent NVIDIA hardware, which keeps it one step
-    below Apache TVM's broader hardware reach.
-  last_verified: '2026-08-18'
+    several operator families rather than one, but only on NVIDIA GPUs from Turing through Blackwell, which
+    keeps it one step below Apache TVM's broader hardware reach.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/flashinfer-ai/flashinfer/blob/main/README.md
-    shows: README still documents a library and kernel generator for inference exposing unified attention,
-      GEMM and MoE APIs over FlashAttention-2 and -3, cuDNN, CUTLASS and TensorRT-LLM backends, with JIT
-      specialization.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 47cb615c276565c65af95fb0c7695cbba32902b2b24e03d9b50b6116d4e5a1e3
   - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/README.md
-    shows: '"FlashInfer powers inference in:" lists SGLang, vLLM, MLC-LLM and ScaleLLM. The same README
-      records FlashInfer as inspired by FlashAttention, vLLM, stream-K, CUTLASS and AITemplate, so the direction
-      of each relation is stated rather than inferred.'
-    accessed: '2026-09-15'
+    shows: README describes FlashInfer as "a library and kernel generator for inference that delivers state-of-the-art
+      performance across diverse GPU architectures" with "unified APIs for attention, GEMM, and MoE operations"
+      over "FlashAttention-2/3, cuDNN, CUTLASS, and TensorRT-LLM" backends, and lists "Support for SM75
+      (Turing) and later (through Blackwell)".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2388ff1cda27bb48a2aaea3525312f5c6d2a1725435d84ded76f6e4685cf2463
+    content_sha256: 472bc506d8a67ca7d8048650b9fc8f17d75f5adbaa016b505b76bbb48a8b4fbc
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/README.md
+    shows: README lists under Adoption "FlashInfer powers inference in:" SGLang, vLLM, TensorRT-LLM, TGI,
+      MLC-LLM, LightLLM, lorax and ScaleLLM, and states "FlashInfer is inspired by [FlashAttention]".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 472bc506d8a67ca7d8048650b9fc8f17d75f5adbaa016b505b76bbb48a8b4fbc
   - url: https://raw.githubusercontent.com/vllm-project/vllm/main/requirements/cuda.txt
-    shows: vLLM's CUDA requirements pin flashinfer-python and flashinfer-cubin to an exact version, with
-      an extra index URL for them. A consumer's own pinned build requirement states the dependency from
-      the other side of the relation.
-    accessed: '2026-09-15'
+    shows: vLLM CUDA requirements pin "flashinfer-python==0.7.0" and "flashinfer-cubin==0.7.0" with "--extra-index-url
+      https://flashinfer.ai/whl/", so a consumer states the dependency from its own build requirements.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 9393effcd139d93e343195924c455efd97bd914053d4f68365c0467e5dba1272
+    content_sha256: fb0e100c53d8e8ab89d89050c10ced0be6b4ec3b109b7f794e75bb6a372e7bb7

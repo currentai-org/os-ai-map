@@ -11,37 +11,46 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/uxlfoundation/oneDNN/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: e9fc874fc09801b9acf3411ba72394098473704d832d713404b6c4861a086318
     establishes:
     - license
-  - url: https://api.github.com/repos/uxlfoundation/oneDNN
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      uxlfoundation/oneDNN.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/README.md
+    shows: 'README calls oneDNN "an open-source cross-platform" library and states "oneDNN is licensed under
+      [Apache License Version 2.0](LICENSE)." Searched the body for enterprise edition, license key, paid
+      tier and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 8bd9e7d5716f5b456ed5b8b2f30895a665d871a714bf11c068c4ce6347b1a4bd
-    establishes:
-    - license
-    - source
-  - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md
-    shows: README describes a cross-platform performance library of deep-learning building blocks implementing the
-      oneAPI specification, optimized for Intel 64, AMD64 and 64-bit Arm processors and Intel GPUs, with no paid
-      tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 2571c7821890a5b7f777ced8ebe6a29360c01345e2c1e2bc7a9ed3bb1c627b3d
+    content_sha256: c2731c0f5fa8a3771b7cf1354ec4d646605a82b0ab3ed77a64f17e7bfae3e3fc
     establishes:
     - source
+  - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/README.md
+    shows: 'README says the GPU engine "can be enabled by setting" the "ONEDNN_GPU_RUNTIME" build option
+      and that users can "download pre-built binary packages from" conda-forge or "build the library" themselves,
+      so every engine builds from the public source through plain options. Searched the body for enterprise
+      edition, license key, paid tier and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: c2731c0f5fa8a3771b7cf1354ec4d646605a82b0ab3ed77a64f17e7bfae3e3fc
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/CMakeLists.txt
+    shows: 'Top-level CMakeLists.txt builds the library from the repository and includes "cmake/options.cmake"
+      with a "Choose the type of build" cache option. Searched the body for enterprise, license key, paid,
+      commercial and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 871d191b4027bc48a93c577eaf79f7bfe294d11eece954e810646db8c28baa63
+    establishes:
     - core-gated
 adoption:
   level: 2
@@ -68,35 +77,33 @@ capability:
   basis: feature_matrix
   basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
   value: Primitive library covering convolution, matmul, RNN, normalization and fusion across x86-64, AMD64,
-    Arm64 CPUs and Intel GPUs, used as the CPU kernel layer beneath frameworks. Declared as a submodule
-    in OpenVINO's own repository.
+    Arm64 CPUs and Intel GPUs, used as the CPU kernel layer beneath frameworks. Declared as submodules in
+    OpenVINO's own repository.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: OpenVINO declares oneDNN as two submodules directly in its own repository, the strongest evidence
-    of dependency recorded for this operator library. It supplies operators rather than the path from a
-    framework graph to a target, which keeps it short of Apache TVM.
-  last_verified: '2026-08-18'
+  note: OpenVINO vendors oneDNN as two submodules, one pointing at an OpenVINO fork for the CPU plugin and
+    one at oneapi-src/oneDNN for the GPU plugin. It supplies operators rather than the path from a framework
+    graph to a target, which keeps it one step below Apache TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md
-    shows: README still documents a cross-platform performance library of deep-learning building blocks
-      implementing the oneAPI specification, optimized for Intel 64, AMD64 and 64-bit Arm processors and
-      Intel GPUs.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 2571c7821890a5b7f777ced8ebe6a29360c01345e2c1e2bc7a9ed3bb1c627b3d
   - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/README.md
-    shows: README's "deep learning applications and framework developers" section names the frameworks built
-      on oneDNN - ONNX Runtime, OpenVINO toolkit, PaddlePaddle, PyTorch and TensorFlow. A producer-owned
-      list with no link to a consumer's own integrating change, so it corroborates the OpenVINO submodule
-      declaration rather than deciding the reading.
-    accessed: '2026-09-15'
+    shows: README says "oneDNN project is part of the [UXL Foundation] and is an implementation" of the
+      oneAPI specification, and "The library is optimized for Intel 64/AMD64 architecture based processors,"
+      "Arm(R) 64-bit Architecture (AArch64)-based processors, and Intel Graphics."
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: b11198d0e1344c3e030a5f35e557ed08cefaadef4fbf33ddcf4e8fb6c632f18b
+    content_sha256: c2731c0f5fa8a3771b7cf1354ec4d646605a82b0ab3ed77a64f17e7bfae3e3fc
+  - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/README.md
+    shows: 'README names the frameworks built on oneDNN, listing "ONNX Runtime", "OpenVINO(TM) toolkit"
+      and "PyTorch\*" among them, and says oneDNN "has experimental support for the following architectures:
+      NVIDIA\* GPU,"'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: c2731c0f5fa8a3771b7cf1354ec4d646605a82b0ab3ed77a64f17e7bfae3e3fc
   - url: https://raw.githubusercontent.com/openvinotoolkit/openvino/master/.gitmodules
-    shows: 'Two oneDNN submodules: `src/plugins/intel_cpu/thirdparty/onednn` and `thirdparty/onednn_gpu`
-      at src/plugins/intel_gpu/thirdparty/onednn_gpu, the latter pointing at https://github.com/oneapi-src/oneDNN.git.
-      A consumer''s own declaration, which is the strongest of the three forms the recipe admits.'
-    accessed: '2026-09-15'
+    shows: OpenVINO .gitmodules declares two oneDNN submodules, "src/plugins/intel_cpu/thirdparty/onednn"
+      and "src/plugins/intel_gpu/thirdparty/onednn_gpu", the latter with "url = https://github.com/oneapi-src/oneDNN.git".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 4f05411e24fccf476ec34582f3d201d257d3207d11b7356f4575a26641ab9070

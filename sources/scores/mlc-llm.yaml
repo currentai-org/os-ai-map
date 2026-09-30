@@ -11,35 +11,33 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/mlc-ai/mlc-llm/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/mlc-ai/mlc-llm/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://api.github.com/repos/mlc-ai/mlc-llm
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      mlc-ai/mlc-llm.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 9400beb5afa85f51292d9e7a445c4b84cd7f552bf0b545a36b6a45a2f643faa6
-    establishes:
-    - license
-    - source
-  - url: https://github.com/mlc-ai/mlc-llm/blob/main/README.md
-    shows: README describes a machine learning compiler and deployment engine for LLMs, with a platform matrix covering
-      Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU and WASM across Linux, Windows, macOS, iOS, Android and the browser,
-      running on its own MLCEngine, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/mlc-ai/mlc-llm/main/README.md
+    shows: 'README carries a license badge "license-apache_2" and describes "MLC LLM is a machine learning
+      compiler and high-performance deployment engine for large language models." Searched the body for
+      enterprise, license key, paid, commercial, proprietary and non-commercial: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c6208e455ea145dbac62aa26493175db67bde071d481edf57ceaf17638d4db09
+  - url: https://raw.githubusercontent.com/mlc-ai/mlc-llm/main/CMakeLists.txt
+    shows: 'Top-level CMakeLists.txt builds the engine from repository sources with "tvm_file_glob(GLOB_RECURSE
+      MLC_LLM_SRCS cpp/*.cc)" and links the TVM runtime from "set(TVM_SOURCE_DIR 3rdparty/tvm)". Searched
+      the body for enterprise, license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 79d101d0aee37ea409f913acaace510c3d3bf596ad06fce5af4eb87dbe327312
     establishes:
     - source
     - core-gated
@@ -68,21 +66,34 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: full compilation narrowed to one class of models'
-  value: Compiles LLMs through the TVM stack to Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU and WASM across six operating
-    systems, and serves them from its own engine. Breadth of targets is wide; the input class is language models
-    only.
+  value: Compiles LLMs through the MLC fork of the TVM stack to Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU
+    and WASM across six platforms, and serves them from its own engine. Breadth of targets is wide, and
+    the input class is language models only.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: MLC LLM compiles LLMs through the Apache TVM stack to Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU
-    and WASM across six operating systems, then serves them from its own engine. Target breadth is wide,
-    but the model class is narrow, one step below Apache TVM's fully general scope.
-  last_verified: '2026-08-18'
+  note: MLC LLM compiles LLMs through the MLC fork of the Apache TVM stack to Vulkan, CUDA, ROCm, Metal,
+    OpenCL, WebGPU and WASM across six platforms, then serves them from its own engine. Target breadth is
+    wide, but the model class is narrow, one step below Apache TVM's fully general scope.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/mlc-ai/mlc-llm/blob/main/README.md
-    shows: README still documents a machine learning compiler and deployment engine for LLMs, with a platform matrix
-      covering Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU and WASM across Linux, Windows, macOS, iOS, Android and
-      the browser, running on its own MLCEngine.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/mlc-ai/mlc-llm/main/README.md
+    shows: README shows a platform matrix with "Vulkan, ROCm", "Vulkan, CUDA", "Metal (dGPU)", "WebGPU and
+      WASM", "Metal on Apple A-series GPU" and "OpenCL on Adreno GPU", and says "MLCEngine provides OpenAI-compatible
+      API available through REST server, python, javascript, iOS, Android".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: c6208e455ea145dbac62aa26493175db67bde071d481edf57ceaf17638d4db09
+  - url: https://raw.githubusercontent.com/mlc-ai/mlc-llm/main/CMakeLists.txt
+    shows: 'Top-level CMakeLists.txt builds the engine from repository sources with "tvm_file_glob(GLOB_RECURSE
+      MLC_LLM_SRCS cpp/*.cc)" and links the TVM runtime from "set(TVM_SOURCE_DIR 3rdparty/tvm)". Searched
+      the body for enterprise, license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 79d101d0aee37ea409f913acaace510c3d3bf596ad06fce5af4eb87dbe327312
+  - url: https://raw.githubusercontent.com/mlc-ai/mlc-llm/main/.gitmodules
+    shows: The .gitmodules file vendors the TVM stack as a submodule, with "path = 3rdparty/tvm" pointing
+      at "url = https://github.com/mlc-ai/relax.git", a fork rather than apache/tvm.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 3a3db6b1b5b095902704cd6960498165d8599eecc9e7cab3fc11623fdf095548

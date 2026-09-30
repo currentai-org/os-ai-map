@@ -11,37 +11,38 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/thu-ml/SageAttention/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/thu-ml/SageAttention/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 178f46f58127373d449565589a32c2b5b60c082934618c17b7ce6890c61ef394
     establishes:
     - license
-  - url: https://api.github.com/repos/thu-ml/SageAttention
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      thu-ml/SageAttention.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: d6594408649e453ce150d5f3bd2f46ae297ef68d1a35560518e1909d6b359324
-    establishes:
-    - license
-    - source
-  - url: https://github.com/thu-ml/SageAttention/blob/main/README.md
-    shows: README describes the official implementation of SageAttention, SageAttention2 and SageAttention2++, quantized
-      8-bit and INT4 attention applied as a plug-and-play replacement across language, image and video models, with
-      no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/thu-ml/SageAttention/main/README.md
+    shows: 'README says "This repository provides the official implementation of SageAttention, SageAttention2,
+      and SageAttention2++" and installs with "pip install sageattention==2.2.0 --no-build-isolation" or
+      by compiling from source with "python setup.py install". Searched the body for enterprise, license
+      key, paid, commercial, proprietary and non-commercial: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 0cc6662bcf49645b10524f51de5178ab9d83946ae89bfa502a1f16c742bd74ac
     establishes:
     - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/thu-ml/SageAttention/main/setup.py
+    shows: 'setup.py builds the CUDA extensions from the repository with torch CUDAExtension and nvcc, with
+      "CUDA 12.0 or higher is required to build the package." Searched the body for enterprise, license
+      key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: db9b707a3b6cda661534ab25ffc24ffdc3d17137fb44117b99569fb00ea3fd96
+    establishes:
     - core-gated
 adoption:
   level: 3
@@ -63,22 +64,31 @@ adoption:
     http_status: 200
     content_sha256: a9b66cb96832e3135c44f84b3d5c62d75bcc7c0328d895a812c0af3b469e142d
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
-  value: Quantized attention kernels for one operator, on recent NVIDIA architectures, applied as a plug-in replacement.
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: Quantized attention kernels for one operator family across Ampere, Ada, Hopper and Blackwell NVIDIA
+    GPUs, applied as a plug-in replacement.
   relative_to: tensorrt
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: SageAttention replaces the attention operator with quantized 8-bit and INT4 kernels on recent NVIDIA
-    GPUs, applied as a drop-in substitution. That is a single operator rather than a broader toolchain,
-    which places it two steps below TensorRT.
-  last_verified: '2026-08-18'
+  note: SageAttention replaces the attention operator with quantized 8-bit and INT4 kernels, with SageAttention3
+    adding microscaling FP4 kernels for Blackwell, applied as a drop-in substitution across language, image
+    and video models. It is one operator family across four GPU architectures, which places it one step
+    below TensorRT.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/thu-ml/SageAttention/blob/main/README.md
-    shows: README still documents the official implementation of SageAttention, SageAttention2 and SageAttention2++,
-      quantized 8-bit and INT4 attention applied as a plug-and-play replacement across language, image and video
-      models.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/thu-ml/SageAttention/main/README.md
+    shows: README lists "Optmized kernels for **Ampere, Ada and Hopper GPUs.**" and "INT8 quantization and
+      smoothing for $QK^\top$ with support for varying granularities." and "Support `torch.compile` with
+      non-cudagraphs mode and distributed inference."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 0cc6662bcf49645b10524f51de5178ab9d83946ae89bfa502a1f16c742bd74ac
+  - url: https://raw.githubusercontent.com/thu-ml/SageAttention/main/README.md
+    shows: 'README describes attention as a plug-and-play speedup and documents the API "`sageattn`: Automatically
+      selects the optimal kernel based on the GPU to achieve a good performance-accuracy trade-off." with
+      `sageattn_varlen` for variable sequence lengths.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 0cc6662bcf49645b10524f51de5178ab9d83946ae89bfa502a1f16c742bd74ac
