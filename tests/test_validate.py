@@ -1117,8 +1117,8 @@ def test_a_steward_other_than_the_owner_passes():
 
 
 def test_languages_are_required_where_a_category_asks(monkeypatch):
-    """The rule ships disabled (`LANGUAGES_REQUIRED_CATEGORIES` is empty) and is read at call
-    time, so the language backfill turns it on by naming a category, not by touching logic."""
+    """The rule is read at call time, so a category is held to it by being named in
+    `LANGUAGES_REQUIRED_CATEGORIES`, not by touching logic."""
     import build.validate as validate
 
     d = _dataset_fixture()

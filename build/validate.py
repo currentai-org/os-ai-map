@@ -102,10 +102,9 @@ def _load_optional_yaml(path: Path, empty: dict) -> dict:
 # Categories whose every product must carry `languages` (#684). A dataset category that is
 # defined by language (`language_specific_datasets`) cannot be read without the field, while
 # on any other dataset it is optional. Read at call time by `validate_sources`, so a test can
-# name a synthetic category. Empty until the language backfill lands, because a gate that
-# fires on a corpus that has not been filled in yet only teaches people to ignore it: the
-# backfill adds `language_specific_datasets` here in the change that fills the field.
-LANGUAGES_REQUIRED_CATEGORIES: frozenset[str] = frozenset()
+# name a synthetic category. Adding a category here is the same change that fills the field
+# on its roster: a gate that fires on a corpus not yet filled in only teaches people to ignore it.
+LANGUAGES_REQUIRED_CATEGORIES: frozenset[str] = frozenset({"language_specific_datasets"})
 
 
 def load_sources(root: Path) -> dict:
