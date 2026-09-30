@@ -106,6 +106,10 @@ Usage:
     uv run python -m build.adoption_freshness --live           # over the deployed current table
     uv run python -m build.adoption_freshness --queue queue.md # write the tier-change queue
     uv run python -m build.adoption_freshness --live --apply   # write the dates it earned
+    uv run python -m build.adoption_freshness --live --json-out read.json  # the same read, as JSON
+
+`--json` carries the reconciliation rows beside the binding, so the Phase 4 gate
+(`build/check_reconciliation.py`) judges exactly the read this run judged, without a second read.
 
 `--apply` without `--live` earns nothing: the frozen baseline carries no run to attribute a
 measurement to, so the run reports what it would have dated and writes no date.
@@ -679,6 +683,9 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     parser.add_argument("--queue", type=Path, default=None,
                         help="write the tier-change queue to this file")
     parser.add_argument("--json", action="store_true", help="emit the queue as JSON")
+    parser.add_argument("--json-out", type=Path, default=None,
+                        help="also write the JSON document to this file, from the same read; "
+                             "build.check_reconciliation reads it")
     parser.add_argument("--allow-dirty", action="store_true",
                         help="stamp a diagnostic declaration_version_id over a dirty worktree")
     args = parser.parse_args(argv)
@@ -690,9 +697,13 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     changes, declined = plan(rows, binding, root=base)
     unbound = binding_problems(binding)
 
+    document = json.dumps({"snapshot": snapshot, "binding": binding, "queue": entries,
+                           "dates": [c.__dict__ for c in changes], "rows": rows},
+                          indent=2, default=str)
+    if args.json_out:
+        args.json_out.write_text(document + "\n")
     if args.json:
-        print(json.dumps({"snapshot": snapshot, "binding": binding, "queue": entries,
-                          "dates": [c.__dict__ for c in changes]}, indent=2, default=str))
+        print(document)
         return 0
 
     counts: dict[str, int] = {}

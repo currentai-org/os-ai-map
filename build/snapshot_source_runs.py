@@ -68,6 +68,7 @@ Usage:
     uv run python -m build.snapshot_source_runs                 # emit CSV + receipt (needs key)
     uv run python -m build.snapshot_source_runs --check         # validate: live if keyed, else committed
     uv run python -m build.snapshot_source_runs --out build/observations
+    uv run python -m build.snapshot_source_runs --rows-only     # CSV only; the receipt is untouched
 """
 
 from __future__ import annotations
@@ -227,20 +228,25 @@ def deployed_adoption_source_datasets(routing: dict) -> tuple[str, ...]:
     hand-authored route (`source: null`) contributes nothing. Sorted and de-duplicated, so two
     routes on the same dataset (the two Hugging Face routes) yield one entry.
     """
-    sources = routing.get("sources") or {}
     routes = (((routing.get("dimensions") or {}).get("adoption") or {}).get("routes")) or []
-    datasets: set[str] = set()
-    for route in routes:
-        source = route.get("source")
-        if not source:
-            continue
-        decl = sources.get(source)
-        if not decl or not decl.get("bridged"):
-            continue
-        name = _dataset_from_table(decl.get("table"))
-        if name:
-            datasets.add(name)
-    return tuple(sorted(datasets))
+    datasets = {source_dataset(routing, route.get("source")) for route in routes}
+    return tuple(sorted(d for d in datasets if d))
+
+
+def source_dataset(routing: dict, source: str | None) -> str | None:
+    """The collector dataset one routing `source` is fetched into, or `None`.
+
+    `None` for a hand-authored route (no source), a source the `sources:` block does not declare,
+    and a source that is not `bridged: true`: none of those has a collector whose runs could vouch
+    for it. The one resolution of source to dataset, so the snapshot's coverage and the Phase 4
+    gate's per-dataset evidence (`build/check_reconciliation.py`) cannot name different datasets.
+    """
+    if not source:
+        return None
+    decl = (routing.get("sources") or {}).get(source)
+    if not decl or not decl.get("bridged"):
+        return None
+    return _dataset_from_table(decl.get("table"))
 
 
 def source_datasets(routing: dict | None = None) -> tuple[str, ...]:
@@ -800,6 +806,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT,
                     help="output directory for the generated CSV (default build/observations)")
     ap.add_argument("--page-size", type=int, default=100, help="runs page size")
+    ap.add_argument("--rows-only", action="store_true",
+                    help="write the generated CSV and leave the committed receipt alone "
+                         "(the weekly gate's run evidence, not a new attestation)")
     args = ap.parse_args(argv)
 
     captured_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -844,6 +853,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     csv_path = write_rows(rows, args.out)
+    if args.rows_only:
+        print(f"wrote {csv_path} ({receipt['row_count']} rows); receipt left as committed")
+        return 0
     write_receipt(receipt)
     print(f"wrote {csv_path.relative_to(A.ROOT)} ({receipt['row_count']} rows) and "
           f"{RECEIPT.relative_to(A.ROOT)} ({receipt['run_count']} runs)")
