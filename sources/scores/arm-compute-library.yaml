@@ -11,39 +11,38 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so the source
-    is public and the core ungated.
+  note: The LICENSE file and the README both state the MIT license. The repository is public and the README
+    describes no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/ARM-software/ComputeLibrary/blob/main/LICENSES/MIT.txt
-    shows: LICENSES/MIT.txt holds the verbatim MIT text. The repository carries no root LICENSE file - it follows
-      the REUSE convention, with REUSE.toml declaring MIT for the tree and Apache-2.0 and BSD-3-Clause texts beside
-      this one for vendored third-party code - which is why the API reports no license at all.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ARM-software/ComputeLibrary/main/LICENSES/MIT.txt
+    shows: LICENSES/MIT.txt holds the verbatim MIT text, opening with "MIT License" and "Permission is hereby
+      granted, free of charge, to any person obtaining a copy of this software".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5
     establishes:
     - license
-  - url: https://api.github.com/repos/ARM-software/ComputeLibrary
-    shows: Repo metadata - license spdx_id None, private false, archived false, default branch main - for ARM-software/ComputeLibrary.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 2f2a8b1b120bff928d6de3aeeb6f719aa8af4b9ccd62f30b617694a602010e4e
-    establishes:
-    - license
-    - source
-  - url: https://github.com/ARM-software/ComputeLibrary/blob/main/README.md
-    shows: README describes a collection of low-level machine learning and computer vision functions optimized for
-      Arm Cortex-A and Neoverse CPUs and Mali GPUs, distributed as source and as prebuilt binaries, with no paid
-      tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ARM-software/ComputeLibrary/main/README.md
+    shows: 'README states "Open source software available under a permissive MIT license" and "The software
+      is provided under MIT license. Contributions to this project are accepted under the same license."
+      It offers "Pre-built binaries" for download beside the source. Searched the body for enterprise, license
+      key, paid, commercial, proprietary and subscription: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 9dcf9265c2a81b064ea9793379ef9d1235710a40c2d7c253e4664389ba3dc7d3
     establishes:
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/ARM-software/ComputeLibrary/main/REUSE.toml
+    shows: 'REUSE.toml opens with "SPDX-License-Identifier: MIT" and "SPDX-FileCopyrightText: 2024-2026
+      Arm Limited", the REUSE declaration that MIT governs the repository files it annotates.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 2e4757308bbb18b8a50e1ee19fdae385778a58a5301f5f93841ee33e18a1bef9
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -65,23 +64,50 @@ adoption:
     http_status: 200
     content_sha256: 2f2a8b1b120bff928d6de3aeeb6f719aa8af4b9ccd62f30b617694a602010e4e
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: an operator surface with no dependency declaration on file'
-  value: Hand-optimized NEON and OpenCL kernels for ML and vision operators across Arm Cortex-A, Neoverse and Mali
-    targets. Broad operator coverage on one vendor's architectures.
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
+  value: Hand-optimized NEON and OpenCL kernels for ML operators across Arm Cortex-A, Neoverse and Mali
+    targets, with x86 also listed. A kernel library rather than a compiler.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Arm Compute Library provides hand-optimized NEON and OpenCL kernels for machine-learning and vision
-    operators, but only across Arm's own Cortex-A, Neoverse and Mali hardware. It sits two steps below Apache
-    TVM because the only recorded dependents are Arm's own stack and oneDNN's ACL build for Arm targets,
-    which is where the evidence stands, not a proven ceiling.
-  last_verified: '2026-08-18'
+  note: Arm Compute Library provides hand-optimized NEON and OpenCL kernels for machine-learning operators,
+    mainly across Arm's own Cortex-A, Neoverse and Mali hardware, with x86 also listed. OpenVINO declares
+    it as a submodule and oneDNN can be built against it on Arm CPUs, which places it one step below Apache
+    TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/ARM-software/ComputeLibrary/blob/main/README.md
-    shows: README still documents a collection of low-level machine learning and computer vision functions optimized
-      for Arm Cortex-A and Neoverse CPUs and Mali GPUs, distributed as source and as prebuilt binaries.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/ARM-software/ComputeLibrary/main/README.md
+    shows: README describes "a collection of low-level machine learning functions optimized for Arm® Cortex®-A,
+      Arm® Neoverse™ and Arm® Mali™ GPUs architectures." with "Over 100 machine learning functions for CPU
+      and GPU" and "Multiple convolution algorithms (GeMM, Winograd, FFT, Direct and indirect-GeMM)".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 9dcf9265c2a81b064ea9793379ef9d1235710a40c2d7c253e4664389ba3dc7d3
+  - url: https://raw.githubusercontent.com/ARM-software/ComputeLibrary/main/docs/user_guide/introduction.dox
+    shows: Introduction says "The Compute Library is a collection of low-level machine learning functions
+      optimized for both Arm CPUs and GPUs using SIMD technologies." with builds for "Arm® Neon™ / OpenCL
+      / Arm® Neon™ and OpenCL".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 403d604ee092158c8d087e561cb41bab33051041cc6fb11bd74823a799474518
+  - url: https://raw.githubusercontent.com/ARM-software/ComputeLibrary/main/README.md
+    shows: README lists supported hardware "Arm® Mali™-G processor family" and "Arm® Neoverse™ processor
+      family", and also "x86", with "Device and workload specific tuning using OpenCL tuner and GeMM optimized
+      heuristics".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 9dcf9265c2a81b064ea9793379ef9d1235710a40c2d7c253e4664389ba3dc7d3
+  - url: https://raw.githubusercontent.com/openvinotoolkit/openvino/master/.gitmodules
+    shows: OpenVINO .gitmodules declares a submodule "ARMComputeLibrary" at "src/plugins/intel_cpu/thirdparty/ComputeLibrary"
+      with "url = https://github.com/ARM-software/ComputeLibrary.git".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 4f05411e24fccf476ec34582f3d201d257d3207d11b7356f4575a26641ab9070
+  - url: https://raw.githubusercontent.com/uxlfoundation/oneDNN/main/README.md
+    shows: oneDNN README says the CPU engine "can be built with" "Arm Compute Library (ACL)] integration"
+      on AArch64 CPUs.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: c2731c0f5fa8a3771b7cf1354ec4d646605a82b0ab3ed77a64f17e7bfae3e3fc

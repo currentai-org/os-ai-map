@@ -11,35 +11,36 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the Apache-2.0 text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/openxla/xla/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/openxla/xla/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, opening with "Apache License" and "Version 2.0,
+      January 2004" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
     establishes:
     - license
-  - url: https://api.github.com/repos/openxla/xla
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      openxla/xla.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: d3dd034644b5600cb85a49311d560f5dc22c491a1b17ff77d0cc3da0d47695b2
-    establishes:
-    - license
-    - source
-  - url: https://github.com/openxla/xla/blob/main/README.md
-    shows: README describes an ML compiler for GPUs, CPUs and ML accelerators that takes models from PyTorch, TensorFlow
-      and JAX and optimizes them for execution across hardware platforms, with no paid tier, enterprise edition
-      or license-key-gated build beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/openxla/xla/main/README.md
+    shows: 'README says "XLA (Accelerated Linear Algebra) is an open-source machine learning (ML)" compiler
+      and that "If you''re not contributing code to the XLA compiler, you don''t need to clone and" build
+      this repo, so the repository holds the compiler itself. Searched the body for enterprise, license
+      key, paid, commercial, proprietary and closed source: none.'
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 98fc97dc1b470b3efed23cb11d574ffa6874be72884098f299834c8b5cb9a033
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/openxla/xla/main/docs/build_from_source.md
+    shows: 'Build guide says "This document describes how to build XLA components." and builds from the
+      repository with "./configure.py --backend=CUDA" for GPU. Searched the body for enterprise, license
+      key, paid, proprietary and commercial: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 36246f3e7bdb08435aee86919d0bbb0cc54daa2bae1ab61da4829a46b045b15e
     establishes:
     - source
     - core-gated
@@ -68,19 +69,33 @@ capability:
   score: 5
   basis: feature_matrix
   basis_detail: 'category feature matrix: retargetable end-to-end compiler'
-  value: HLO optimization pipeline fed by PyTorch, TensorFlow and JAX front ends and emitting for CPU, GPU and ML
-    accelerators including TPUs.
+  value: HLO optimization pipeline fed by PyTorch, TensorFlow and JAX front ends and emitting for CPUs,
+    GPUs and ML accelerators.
   relative_to: apache-tvm
   relation: at
   confidence: medium
-  note: XLA is a retargetable, end-to-end compiler - an HLO pipeline for PyTorch, TensorFlow and JAX front
-    ends, emitting for CPUs, GPUs and TPUs. That breadth of inputs and targets puts it level with Apache
-    TVM, at the category's frontier.
-  last_verified: '2026-08-18'
+  note: XLA is a retargetable, end-to-end compiler - an HLO optimization pipeline fed by PyTorch, TensorFlow
+    and JAX front ends, emitting code for CPUs, GPUs and ML accelerators. That breadth of inputs and targets
+    is comparable to Apache TVM's.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/openxla/xla/blob/main/README.md
-    shows: README still documents an ML compiler for GPUs, CPUs and ML accelerators that takes models from PyTorch,
-      TensorFlow and JAX and optimizes them for execution across hardware platforms.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/openxla/xla/main/README.md
+    shows: README says "The XLA compiler takes models from popular ML frameworks such as PyTorch," TensorFlow,
+      and JAX and optimizes them for "high-performance execution across" different hardware platforms including
+      GPUs, CPUs, and ML accelerators.
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 98fc97dc1b470b3efed23cb11d574ffa6874be72884098f299834c8b5cb9a033
+  - url: https://raw.githubusercontent.com/openxla/xla/main/docs/index.md
+    shows: Docs home says XLA "supports various backends including GPUs, CPUs, and ML" accelerators and
+      "includes a pluggable infrastructure to add support for" more.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 4df36613e1b5d0df5157308d4f2ef368f96511f3dd7a6d39ab48a63a48ae4032
+  - url: https://raw.githubusercontent.com/openxla/xla/main/docs/architecture.md
+    shows: Architecture page says "The CPU and GPU backends included with XLA use [LLVM](http://llvm.org)
+      for low-level IR," and "The GPU backend currently supports NVIDIA GPUs via the LLVM NVPTX backend.
+      The CPU" backend supports multiple CPU ISAs; the frontends are "PyTorch, TensorFlow, and JAX".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 13a58e8d24f1d309938ec30f0a19ae1dbf814f1ca4b0088b0b26232166863c03

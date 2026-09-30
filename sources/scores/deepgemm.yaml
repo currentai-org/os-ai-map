@@ -11,34 +11,26 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
-    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
-    the core ungated.
+  note: The LICENSE file contains the MIT text. The repository is public and the README describes no paid
+    tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/LICENSE
-    shows: LICENSE file is the verbatim MIT text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/deepseek-ai/DeepGEMM/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text, opening with "MIT License" and "Permission is hereby granted,
+      free of charge, to any person obtaining a copy".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 6c73a30c14a2938abaa6afe98ebb19e6d81dac5bd4ace0cb05c61c20afa37b85
     establishes:
     - license
-  - url: https://api.github.com/repos/deepseek-ai/DeepGEMM
-    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for deepseek-ai/DeepGEMM.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/deepseek-ai/DeepGEMM/main/README.md
+    shows: 'README states "This code repository is released under [the MIT License](LICENSE)." and the library
+      is built from the repository with "./develop.sh" and "./install.sh". Searched the body for enterprise,
+      license key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 2f578bd98a013611af938630babdbb736588785542d2179a650aa48c84287116
-    establishes:
-    - license
-    - source
-  - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/README.md
-    shows: README describes a unified tensor-core kernel library covering FP8, FP4 and BF16 GEMMs, fused MoE with
-      overlapped communication and MQA scoring, all compiled at runtime through a lightweight JIT module, with no
-      paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: df82e7d6979e49e864cd0c8b2389648ebfa226b9f4b331646d7d5cdc4951ee63
+    content_sha256: f2f607c1bf79187fc302992a4ff13570bea1add49baaf512eea3a1ddad92cce7
     establishes:
     - source
     - core-gated
@@ -75,11 +67,18 @@ capability:
     fused MoE with overlapped communication, and MQA scoring - rather than a single kernel. It sits two
     steps below Apache TVM because no project is recorded depending on it, which is where the evidence stands,
     not a proven ceiling.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/README.md
-    shows: README still documents a unified tensor-core kernel library covering FP8, FP4 and BF16 GEMMs, fused MoE
-      with overlapped communication and MQA scoring, all compiled at runtime through a lightweight JIT module.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/deepseek-ai/DeepGEMM/main/README.md
+    shows: README describes "a unified, high-performance tensor core kernel library" covering "GEMMs (FP8,
+      FP4, BF16), fused MoE with overlapped communication (Mega MoE), MQA scoring for the lightning indexer,
+      HyperConnection (HC)" and notes "All kernels are compiled at runtime through DeepJIT".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: df82e7d6979e49e864cd0c8b2389648ebfa226b9f4b331646d7d5cdc4951ee63
+    content_sha256: f2f607c1bf79187fc302992a4ff13570bea1add49baaf512eea3a1ddad92cce7
+  - url: https://raw.githubusercontent.com/deepseek-ai/DeepGEMM/main/README.md
+    shows: README lists requirements "CUDA Toolkit 12.9 or higher" and "CUTLASS 4.0 or higher (could be
+      cloned by Git submodule)" and says "requiring no CUDA compilation during installation".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: f2f607c1bf79187fc302992a4ff13570bea1add49baaf512eea3a1ddad92cce7

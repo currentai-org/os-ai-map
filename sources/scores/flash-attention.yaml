@@ -11,11 +11,9 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the BSD-3-Clause text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
   sources:
   - url: https://github.com/Dao-AILab/flash-attention/blob/main/LICENSE
     shows: LICENSE file is the verbatim BSD-3-Clause text
@@ -66,29 +64,28 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
-  value: Exact IO-aware attention kernels across NVIDIA GPU generations. Its usage page names PyTorch core,
-    Hugging Face transformers, DeepSpeed, Megatron-LM, MosaicML Composer, GPT-NeoX and PaddlePaddle as having
-    integrated it.
+  value: Exact IO-aware attention kernels for NVIDIA GPUs from Ampere through Hopper and Blackwell, with
+    an AMD ROCm backend for FlashAttention-2. Its usage page names PyTorch core, DeepSpeed, Megatron-LM,
+    MosaicML Composer, GPT-NeoX and PaddlePaddle among the projects that have integrated it.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: 'FlashAttention supplies one narrow kernel family, exact IO-aware attention on NVIDIA GPUs, but
-    more training frameworks declare a dependency on it than on anything else in this category: PyTorch,
-    Hugging Face Transformers, DeepSpeed and Megatron-LM among them. That combination of narrow coverage
-    and broad reliance places it one step below Apache TVM.'
-  last_verified: '2026-08-18'
+  note: FlashAttention supplies one narrow kernel family, exact IO-aware attention on NVIDIA GPUs with an
+    AMD ROCm backend, but its usage page lists PyTorch, DeepSpeed and Megatron-LM among the projects that
+    integrate it. Narrow coverage with broad reliance places it one step below Apache TVM.
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md
-    shows: README still documents the official implementation of FlashAttention and FlashAttention-2, IO-aware
-      exact attention, with the papers, benchmarks and Hopper-specific kernels beside it.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/README.md
+    shows: README documents "FlashAttention-3 is optimized for Hopper GPUs (e.g. H100)." and "FlashAttention-4
+      is written in CuTeDSL and optimized for Hopper and Blackwell GPUs (e.g. H100, B200)." and, for AMD,
+      "ROCm version has two backends." with FlashAttention-2 support.
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 7bcb7ca466dcb819822003c5c15a8124e4866f4d446a5c60382615128c81c3a6
+    content_sha256: 0dbaba56da1c8372d460956e2609bfb89acf8f3aadd65d132b1697d221069619
   - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/usage.md
-    shows: '"Integrated into machine learning frameworks" lists PyTorch (into core nn.Transformer), Hugging
-      Face transformers, Microsoft DeepSpeed, NVIDIA Megatron-LM, MosaicML Composer, EleutherAI GPT-NeoX
-      and PaddlePaddle, each with a link to the integrating change. The consumers are named by the product
-      itself and span vendors.'
-    accessed: '2026-09-15'
+    shows: Usage page opens "This page contains a partial list of places where FlashAttention is being used."
+      and lists integrations in "Pytorch", "Huggingface's [transformers]", "Microsoft's [DeepSpeed]", "Nvidia's
+      [Megatron-LM]", "MosaicML [Composer]", "EleutherAI's [GPT-NeoX]" and "PaddlePaddle".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 47dab5f673095ba63d41996b4d7cdfdfb89d4672f0da9463212c267bbec511f7

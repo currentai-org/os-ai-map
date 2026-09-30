@@ -11,39 +11,55 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
+  note: The LICENSE file contains the BSD-3-Clause text. The repository is public and the README describes
+    no paid tier, enterprise edition or license-gated build, so the core is ungated. The default install
+    and the float8, quantization-aware training, int4 and int8 paths need no non-OSI package; the proprietary
+    nvidia-cutlass-dsl is an optional dependency for the MoE mxfp8 training kernels only.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/pytorch/ao/blob/main/LICENSE
-    shows: 'LICENSE body read rather than trusting the GitHub label: it opens with Meta and Arm copyright lines
-      and then runs the verbatim three-clause BSD text, which is why the API reports NOASSERTION.'
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/pytorch/ao/main/LICENSE
+    shows: LICENSE body is the verbatim three-clause BSD text under Meta and Arm copyright lines, with "Redistribution
+      and use in source and binary forms, with or without modification, are permitted" and "Neither the
+      name of the copyright holder nor the names of its contributors may be used to endorse or promote products".
+    accessed: '2026-09-30'
     http_status: 200
     content_sha256: 67901e351baeaa5aef967cccd0886ba679f085df8673d1ecd49592bf284115af
     establishes:
     - license
-  - url: https://api.github.com/repos/pytorch/ao
-    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
-      pytorch/ao.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/pytorch/ao/main/README.md
+    shows: 'README carries the badge "license-BSD_3--Clause" pointing at ./LICENSE and lists MSLK as "is
+      an optional runtime dependency that provides accelerated kernels for some of the workflows in torchao"
+      while the default install is plain "pip install torchao". Searched the body for enterprise, license
+      key, paid, commercial and proprietary: none.'
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: b75b9037227dca875f32c078d2b99fd1c76671ef852b55527681f7665ad302d2
-    establishes:
-    - license
-    - source
-  - url: https://github.com/pytorch/ao/blob/main/README.md
-    shows: README describes PyTorch-native training-to-serving optimization with float8 and MX training, quantization-aware
-      training, and int4 and int8 inference quantization, with measured speedups and memory savings quoted against
-      unquantized baselines, with no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 577583288bc581b8b455769f38b0778768181a65fa2cd1b23d3bad6c32db3041
+    content_sha256: 5c3690de59ed98a0b13d3ae5316f671f8344cb7b57d5f0db93b0091c830c55de
     establishes:
     - source
     - core-gated
+  - url: https://raw.githubusercontent.com/pytorch/ao/main/setup.py
+    shows: 'setup.py builds the package from the repository, with the comment "Auto-enable experimental
+      builds on ARM64 macOS when USE_CPP=1" and env flags such as USE_CPP. Searched the body for enterprise,
+      license key, paid and proprietary: none.'
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 8d2a22d3e443170906bd0b9cf0e6382997a8f6a285ff36290a1079ffd80de88e
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/meta-pytorch/mslk/main/LICENSE
+    shows: MSLK LICENSE opens "BSD License" and "For MSLK software" and carries "Copyright (c) Meta Platforms,
+      Inc. and affiliates. All rights reserved."
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 44519cbe722d7bf092cd7e0fa26558b9e3905b88fca4c0c278e2733a9f6b4cf9
+  - url: https://docs.nvidia.com/cutlass/latest/media/docs/pythonDSL/license.html
+    shows: The NVIDIA CUTLASS DSL page is a "Software License Agreement" that "governs the use of the NVIDIA
+      CUTLASS DSLs software and materials that NVIDIA delivers to you under this Agreement".
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 3597c1df806a684f4cf263534050c994c4bce054d4108432d7908aee81889276
 adoption:
   level: 4
   reach: 1M-10M
@@ -67,21 +83,27 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: multi-technique optimization toolchain'
-  value: Training-side (float8, MX, QAT) and serving-side (int4, int8, sparsity) optimization as native PyTorch
-    dtypes and tensor subclasses. Depth across techniques within one framework.
+  value: Training-side (float8, MX, QAT) and serving-side (int4, int8) optimization as native PyTorch dtypes
+    and tensor subclasses. Depth across techniques within one framework.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: TorchAO applies float8, MX-format and quantization-aware training on the training side and int4,
-    int8 and sparsity optimization on the serving side, all as native PyTorch dtypes and tensor subclasses.
-    That is depth across techniques within one framework, short of the multi-framework, multi-vendor compilation
+  note: TorchAO applies float8, MX-format and quantization-aware training on the training side and int4
+    and int8 quantization on the serving side, all as native PyTorch dtypes and tensor subclasses. That
+    is depth across techniques within one framework, short of the multi-framework, multi-vendor compilation
     Apache TVM covers.
-  last_verified: '2026-08-18'
+  last_verified: '2026-09-30'
   sources:
-  - url: https://github.com/pytorch/ao/blob/main/README.md
-    shows: README still documents PyTorch-native training-to-serving optimization with float8 and MX training, quantization-aware
-      training, and int4 and int8 inference quantization, with measured speedups and memory savings quoted against
-      unquantized baselines.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/pytorch/ao/main/README.md
+    shows: README describes float8 training with "from torchao.float8 import convert_to_float8_training",
+      quantization-aware training with "from torchao.quantization.qat import QATConfig", and "any custom
+      dtype or memory layout should work with our compiler".
+    accessed: '2026-09-30'
     http_status: 200
-    content_sha256: 577583288bc581b8b455769f38b0778768181a65fa2cd1b23d3bad6c32db3041
+    content_sha256: 5c3690de59ed98a0b13d3ae5316f671f8344cb7b57d5f0db93b0091c830c55de
+  - url: https://docs.pytorch.org/ao/main/workflows/index.html
+    shows: Workflows docs page (torchao main documentation) states "our main training workflow is float8
+      quantized training" and lists inference workflows.
+    accessed: '2026-09-30'
+    http_status: 200
+    content_sha256: 03651f323b30e3980dac1cbbac448e07932a9d816011a73d528b55556ec8840e

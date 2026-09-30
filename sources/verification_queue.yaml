@@ -62,6 +62,11 @@ held:
       because: 'In the adoption reconciliation queue (route_disagreement: recorded level 4 vs measured 3);
         settled by the adoption re-band after the 5 Oct reconciliation.'
       since: '2026-09-29'
+  apache-tvm:
+    adoption:
+      because: 'Adoption re-band after the 5 Oct reconciliation: the 28 Sep reading moved the recorded band,
+        so the level is settled by the scheduled observation run and re-banded in one PR after it.'
+      since: '2026-09-30'
   apertus:
     adoption:
       because: >-
@@ -483,6 +488,24 @@ held:
         signal, which takes precedence. Switching the instrument is settled by the adoption re-band
         after the 5 Oct reconciliation, dated from a scheduled observation run.
       since: '2026-09-28'
+  flash-attention:
+    openness:
+      because: The recorded core-gated:ungated reading does not cover FlashAttention-4, which the README now
+        headlines. Its flash_attn/cute package requires nvidia-cutlass-dsl, published under an NVIDIA Software
+        License Agreement rather than an OSI license, while FlashAttention-2 and -3 build from setup.py without
+        it. Settling it needs a maintainer decision on whether FlashAttention-4 counts as core (core-gated gated,
+        open_core) or as a separate optional package (ungated, with that carve-out written into the note).
+      since: '2026-09-30'
+  flashinfer:
+    openness:
+      because: Recorded core-gated:ungated / source:public rested on a README with no binary dependency. The
+        current tree downloads prebuilt cubins (TRTLLM-gen FMHA and batched GEMM, DeepGEMM, cuDNN SDPA, CuTe-DSL
+        FMHA) from an NVIDIA artifactory at runtime, published by a script whose logs are visible to codeowners
+        only, and the README names the TensorRT-LLM and cuDNN backends and Blackwell support as headline features.
+        Settling it needs a maintainer decision on whether these blob-backed backends are core, plus the license
+        and source of the artifactory cubins, which cannot be fetched or quote-checked here. If they count as
+        core, source moves to partial and the score with it (compare tensorrt).
+      since: '2026-09-30'
   gemini-cli:
     capability:
       because: >-
@@ -788,6 +811,11 @@ held:
         stars at level 3. The instrument choice is settled with the other route disagreements by the
         adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run.
       since: '2026-09-29'
+  hummingbird:
+    adoption:
+      because: 'Adoption re-band after the 5 Oct reconciliation: the 28 Sep reading moved the recorded band,
+        so the level is settled by the scheduled observation run and re-banded in one PR after it.'
+      since: '2026-09-30'
   inflection:
     adoption:
       because: >-
@@ -923,6 +951,11 @@ held:
         dimensions, would settle it. License component is freshly established (LICENSE and README,
         2026-09-29); no value moves and openness last_verified must not advance past 2026-08-09.
       since: '2026-09-29'
+  llm-compressor:
+    adoption:
+      because: 'Adoption re-band after the 5 Oct reconciliation: the 28 Sep reading moved the recorded band,
+        so the level is settled by the scheduled observation run and re-banded in one PR after it.'
+      since: '2026-09-30'
   lm-studio:
     adoption:
       because: 'No countable usage figure exists to re-measure the recorded reported-traction level: the
