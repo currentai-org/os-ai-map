@@ -38892,7 +38892,6 @@
             "signal_type": "unknown",
             "confidence": "high",
             "note": "Internal-only eval sets used solely by OpenAI for its own deployment decisions; no external users, no downloads, no third-party citation as a runnable standard. No honest external adoption signal exists.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf",
@@ -38909,7 +38908,6 @@
             "value": null,
             "confidence": "high",
             "note": "Capability is not a meaningful axis for an eval dataset, so it is left unscored. The published framework describes the process around the eval sets rather than any capability of the sets themselves.",
-            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf",
@@ -38925,12 +38923,24 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "partial",
+            "date": "2026-09-29",
+            "basis": "commit",
             "unconfirmed_axes": [
+              "adoption",
+              "capability",
               "openness"
             ],
             "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-09-29",
+                "reason": "The only source, the Preparedness Framework v2 PDF, is Flate-compressed, so the quoted statement that the evaluation sets are internal-only cannot be checked against it, and the openai.com HTML pages that would say the same returned 403 (which says nothing about the fact). The deliberate null is re-dated once a text-readable OpenAI source states that the evaluation sets are unpublished, as with the openness hold."
+              },
+              {
+                "axis": "capability",
+                "since": "2026-09-29",
+                "reason": "The only source, the Preparedness Framework v2 PDF, is Flate-compressed, so the quoted statement that the evaluation sets are internal-only cannot be checked against it, and the openai.com HTML pages that would say the same returned 403 (which says nothing about the fact). The deliberate null is re-dated once a text-readable OpenAI source states that the evaluation sets are unpublished, as with the openness hold."
+              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -41167,14 +41177,14 @@
             "value": "Dolma-V1, the corpus the toolkit builds, scores 35.0 CORE on DataComp-LM at the 7B-1x scale, below RedPajama (35.3) and RefinedWeb (36.9).",
             "confidence": "high",
             "note": "The Dolma toolkit is judged through the corpus it builds, since the toolkit has no benchmark of its own. That corpus scores below RedPajama and RefinedWeb on DataComp-LM, which places the toolkit two tiers below datatrove.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://arxiv.org/html/2406.11794v3",
-                "shows": "DataComp-LM Table 2 in the full text - Dolma-V1 scores 35.0 Core and 18.4 Extended at the 7B-1x scale, below RedPajama 35.3 and RefinedWeb 36.9",
-                "accessed": "2026-08-13",
+                "shows": "Table 2 of the DataComp-LM paper compares Dolma-V1 with RedPajama and RefinedWeb at the 7B-1x scale, and the text notes that \"all four datasets use various heuristic filters and data cleaning steps\" before ranking RefinedWeb first; the table caption adds \"Despite not mixing high-quality sources\" RefinedWeb performs best, with Dolma-V1 at 35.0 Core and 18.4 Extended below RedPajama and RefinedWeb.",
+                "accessed": "2026-09-29",
                 "http_status": 200,
-                "content_sha256": "8938d7969b69269b54000eb3c42bf0bbef14981580547b3fb86c3c7f5d5a54ec"
+                "content_sha256": "2d300fd06ea24a2e51fccd629a0c111f521721efc6b1ed765c4ac3f5c2327bcd"
               }
             ]
           },
@@ -41183,9 +41193,8 @@
           "maturity": 1.8,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-09-29",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-09-29",
             "unconfirmed_axes": [
               "adoption"
             ],
@@ -134372,7 +134381,7 @@
     }
   },
   "n_total": 1098,
-  "generated": "2026-09-29",
+  "generated": "2026-09-30",
   "version": "0.4.0",
   "released": "2026-09-26",
   "contract": 1,
