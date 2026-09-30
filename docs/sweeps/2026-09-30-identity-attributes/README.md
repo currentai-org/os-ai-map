@@ -65,7 +65,7 @@ Resume from the first unchecked line. Each line is one commit or more.
 - [x] Phase 3: language ledgers, batches 01-06, applied; `language_specific_datasets` gate on
 - [x] Phase 4: stewards
 - [x] Phase 5: retire `components.context.governance`
-- [ ] Phase 6: spot-check, preflight, PR ready
+- [x] Phase 6: spot-check, preflight, PR ready
 
 ## Governance retirement
 
@@ -109,3 +109,37 @@ product's score or class changed, and no field outside `openness.components` and
 changed on any file. The payload differs only in the components text of the products touched, and
 the registry evidence rows `serialize_rubric` emits for them fall by one row per file, which a
 maintainer publishes with the static-model reload (`docs/operations/deploy-models.md`).
+
+## Outcome
+
+A record of this batch on 2026-09-30, not a live count.
+
+- **Country.** 575 of 741 org files carry a code, across 42 countries. The 57 individuals are
+  unset by rule. The other 109 are unset because the first pass and a second pass could not
+  settle them: communities with no legal entity and no host, collaborations across institutions
+  with no single seat, conflicting headquarters signals, or no fetchable page stating a location.
+  Each has a row in the ledgers saying which.
+- **Languages.** 162 of 174 dataset products carry `languages`, including every product in
+  `language_specific_datasets`. The rest are source code or robot trajectories with no natural
+  language, or internal evaluations with no public card.
+- **Steward.** 40 products carry one. Three steward orgs are new: `agentic-ai-foundation`, `cncf`
+  and `linux-foundation`. `stewards.jsonl` records the 32 products examined that get none, and why:
+  an acquisition is ownership rather than stewardship, and a project in a foundation's ecosystem
+  that governs itself is not hosted.
+- **Governance.** Retired, above.
+
+### Spot-check
+
+A second model re-fetched the evidence for a random sample: 60 applied countries (36 at medium
+confidence, 24 at high), 17 language lists and 8 stewards. It confirmed all 60 countries and all 8
+stewards, and 16 of the 17 language lists. The one miss, `indicxtreme` leaving out English, is
+fixed in `languages/corrections.jsonl`.
+
+### Worth a reviewer's eye
+
+- **Countries resting on a governing-law clause or a GitHub location field** rather than a stated
+  address (88). The clause names a jurisdiction, which usually is, but need not be, where the
+  company is run: `ai21-labs`, `anthropic`, `anyscale`, `apple`, `aq-laboratory`, `assemblyai`, `automl-freiburg`, `axelera-ai`, `axolotl-ai`, `beam-cloud`, `beingbeyond`, `blaxel`, `bluewave-labs`, `boson-ai`, `browser-use`, `browserbase`, `canopy-labs`, `cartesia`, `character-ai`, `civitai`, `cline`, `coder`, `cohere`, `comfy-org`, `composio`, `confer-labs`, `confident-ai`, `crewai-inc`, `daytona`, `deepgram`, `deepinsight`, `dstack`, `e2b`, `epistasislab`, `fish-audio`, `groq`, `hailo`, `helicone`, `inflection-ai`, `intel`, `kagi`, `kubernetes`, `langchain`, `langgenius`, `lightpanda`, `microsoft-azure`, `mithril-security`, `mixedbread-ai`, `mlcommons`, `mlte-team`, `modelcontextprotocol`, `monocle2ai`, `moonshine-ai`, `myshell-ai`, `nari-labs`, `netflix`, `new-relic`, `nixtla`, `nolabs-ai`, `nomic`, `nous-research`, `nunchux-ai`, `ollama`, `open-mmlab`, `opencompass-community`, `opencomplai`, `openinfra-foundation`, `openlit`, `openmoss`, `oramasearch`, `polyaxon`, `pyannote`, `secretflow`, `sigrobotics-uiuc`, `synthefy`, `thinking-machines-lab`, `together-ai`, `torchgeo`, `traccia-ai`, `traceloop`, `union-ai`, `vellum`, `vercel`, `xllm-ai`, `yylo-dev`, `zapier`, `zed-industries`, `zeroentropy`.
+- **Org types the research suggests are wrong** (29). Not changed here, because `type` is outside
+  this issue: `ath-maas` -> lab, `bkuan001` -> individual, `cyberdatalab` -> lab, `cylynx` -> company, `deepinsight` -> company, `digital-divide-data` -> company, `easydiffusion` -> individual, `flairnlp` -> lab, `genesis-embodied-ai` -> company, `intellindust` -> company, `ipec-community` -> lab, `iqua` -> lab, `m-bain` -> individual, `nunchux-ai` -> company, `opencv` -> foundation, `paritybit-ai` -> company, `perpetual-ml` -> company, `primihub` -> company, `puppeteer` -> company, `pyannote` -> company, `robbyant` -> company, `seacrowd` -> foundation, `shieldmnt` -> company, `smilelab-fl` -> lab, `swivid` -> individual, `symbioticlab` -> lab, `thu-bpm` -> lab, `venturalitica` -> company, `xtra-computing` -> lab.
+- **Unset, non-individual orgs** (109): `ace-step`, `acesuit`, `afrihate`, `ag-ui-protocol`, `agent-infra`, `agentclientprotocol`, `aipotheosis-labs`, `air-blackbox`, `americasnlp`, `arbml`, `atlasia`, `bigcode-project`, `bioimage-io`, `bitsandbytes-foundation`, `bkuan001`, `breezeblue`, `bullet-physics`, `carla-simulator`, `compl-ai`, `data-provenance-initiative`, `deepreinforce-ai`, `dmlc`, `dphn`, `droid-dataset`, `easydiffusion`, `easyfl-ai`, `ecmwf`, `espnet`, `eurollm`, `fastai`, `finch-tensor`, `flashinfer-ai`, `galaxylearning`, `ggml-org-georgi-gerganov`, `hae-rae`, `heartmula`, `henlp`, `hexgrad`, `indonlp`, `iriis-research`, `k2-fsa`, `kipoi`, `lance-format`, `lang-uk`, `langchain-tracer`, `lemonade-sdk`, `lightgbm-org`, `livebench`, `livecodebench-team`, `llamacha`, `lobehub`, `lykos-ai`, `m-a-p`, `m-bain`, `masakhane`, `ml-foundations`, `mlc-ai`, `modelcloud`, `modernvbert`, `moeru-ai`, `mujocolab`, `naijavoices`, `nextchat`, `nltk`, `nmslib`, `online-ml`, `onnxsim`, `open-language-data-initiative`, `open-thoughts`, `open-web-math`, `openlake-project`, `openrlhf`, `openxla`, `p2pfl`, `paritybit-ai`, `pgvector`, `pixart-alpha`, `project-monai`, `raia-center`, `rhymes-ai`, `rise-ai`, `robocasa`, `roboflamingo`, `robotwin-platform`, `roboverse`, `rosetta-commons`, `scikit-learn`, `scikit-learn-contrib`, `searxng`, `serper`, `shieldmnt`, `silero`, `sillytavern`, `sinhala-nlp`, `skrub-data`, `speechbrain`, `stability-ai`, `statsmodels`, `swivid`, `tesseract-ocr`, `thinkinaixyz`, `tl-system`, `treeverse`, `triton-lang`, `unknown`, `vast-ai`, `vearch`, `vostride`, `xdit-project`.
