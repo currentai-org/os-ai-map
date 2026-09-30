@@ -12,61 +12,72 @@ openness:
       value: none
     context:
       model:
-        value: OpenAI+Microsoft
+        value: Anthropic+Microsoft
         detail: closed
   confidence: high
   note: Fully proprietary, delivered as SaaS and embedded in Microsoft products. The closed counterpart
     to the open chat interfaces in this category.
-  raw: license:proprietary(SaaS/embedded);source:closed;self-host:none;model:OpenAI+Microsoft(closed)
-  last_verified: '2026-08-13'
+  raw: license:proprietary(SaaS/embedded);source:closed;self-host:none;model:Anthropic+Microsoft(closed)
+  last_verified: '2026-09-29'
   sources:
-  - url: https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-copilot-usage?view=o365-worldwide
-    shows: Microsoft 365 Copilot Chat is a Microsoft-operated proprietary product (admin usage reporting
-      docs)
-    accessed: '2026-08-13'
+  - url: https://www.microsoft.com/en-us/servicesagreement
+    shows: 'Microsoft Services Agreement section on Copilot AI Experiences states "You may not use the AI
+      services to discover any underlying components of the models, algorithms, and systems." Searched the
+      body for open source, source code, self-host and on-prem: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 35dc799b8cfd0694e27d3d4df95123620a02af15d1805e15f09b5b09c2e9699a
-    establishes: [license, source, self-host]
+    content_sha256: a0d02355233e88cbe2edd2e7a57692864de67a41044fd7d234a0b8af3d4fd350
+    establishes:
+    - license
+    - source
+  - url: https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview
+    shows: 'Copilot overview describes a hosted, license-tiered service: "Microsoft Copilot is available
+      in many regions worldwide" and "Anthropic subprocessors are available only in applicable Microsoft
+      365 licensed experiences". Searched the body for self-host, on-prem, open source and source code:
+      none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0ea6b87aad1b320116287732b7486f2c97c6042f0aeaef22acffcfc917ad7f72
+    establishes:
+    - self-host
 adoption:
   level: 5
   reach: '>10M users'
   signal_type: active_users
   confidence: medium
-  note: Microsoft Copilot's usage figures come from an aggregator compiling Microsoft's own disclosures
-    across Windows, the Copilot app and the website, rather than a single breakdown Microsoft publishes
-    itself. The actively-engaged Microsoft 365 seat count is much smaller than that combined consumer and
-    embedded reach, and the reliance on relayed rather than primary figures keeps confidence medium.
-  last_verified: '2026-08-13'
+  note: Microsoft does not publish a usage breakdown for the Copilot app and website, so the figure comes
+    from a third-party aggregator compiling Microsoft disclosures and app-analytics data.
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.businessofapps.com/data/microsoft-copilot-statistics/
-    shows: 218 million active users across Windows, the app and the website, plus 88M downloads since launch;
-      the ~420M all-surfaces and ~160M enterprise-licensed figures this record was scored on are no longer
-      on the page (aggregator compiling Microsoft disclosures)
-    accessed: '2026-08-13'
+    shows: 'Key statistics: "Microsoft Copilot had 218 million active users across Windows, app and website"
+      and "Copilot has been downloaded 88 million times since launch"; aggregator compiling Microsoft disclosures,
+      AppMagic and Similarweb.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 04c097ae27fcca82a43519f2690785da7ec504948cf6ceaf1817f6b08d11f2cd
-  - url: https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide
-    shows: Microsoft's own active-usage reporting surface for M365 Copilot, showing roughly 33M actively
-      engaged seats - smaller than the combined consumer and embedded reach reported elsewhere.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 9eeea64cc36e2b7e71a74da9c3ec75cd1c49806755a5d548b9f7101a87e82a31
+    content_sha256: 4e911fdd17596144866887da0fc0b2b8816c3d3925da7d7cc4bbd1eeebdbb2d9
 capability:
   score: 4
   basis: feature_matrix
-  value: 'chat-UI matrix: broad model access (GPT family + Microsoft models), deep RAG/grounding over
-    M365 Graph (mail/docs/Teams), multimodal (vision/image gen), Copilot Pages/canvas, plugins/connectors
-    + Copilot Studio extensibility, enterprise multi-user/admin. Missing: model-agnostic provider breadth
-    (locked to OpenAI/Microsoft).'
+  value: 'chat-UI matrix: Microsoft and, in licensed experiences, Anthropic models; grounding over Microsoft
+    365 work data (Graph and Work IQ across mail, docs, Teams); agents + connectors with Copilot Studio
+    extensibility; enterprise multi-user/admin.'
   confidence: medium
-  note: Microsoft Copilot grounds its answers across Teams meetings, chat and channels, Word, Excel, Outlook
-    and the rest of Microsoft 365, an integration breadth that sets it apart from most competitors. It is
-    locked to OpenAI and Microsoft's own models with no self-hosting option, which keeps it short of the
-    category's frontier-defining tools.
-  last_verified: '2026-08-13'
+  note: Microsoft Copilot grounds its answers in Microsoft 365 work data across Teams, Word, Excel and Outlook,
+    and supports agents built in Copilot Studio.
+  last_verified: '2026-09-29'
   sources:
   - url: https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage?view=o365-worldwide
-    shows: M365 Copilot chat features incl. Graph grounding across apps
-    accessed: '2026-08-13'
+    shows: Microsoft 365 Copilot usage report documents Copilot Chat (work) and Copilot Chat (web) in Teams
+      and Outlook, including "Summarize chats and channel conversations" and a per-user "Copilot Chat (work)
+      prompts submitted" count.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9eeea64cc36e2b7e71a74da9c3ec75cd1c49806755a5d548b9f7101a87e82a31
+    content_sha256: 961cd48d9350ebd7b37a1359de88ea54c5fca10c16d2917652d3d53e7c47113c
+  - url: https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-overview
+    shows: Licensing tiers list "Declarative agents that are grounded in instructions and public websites
+      are included with Copilot Chat" and describe Copilot Studio as "is a low-code graphical tool that
+      you can use to create agents and connect to other data sources".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0ea6b87aad1b320116287732b7486f2c97c6042f0aeaef22acffcfc917ad7f72

@@ -57,14 +57,16 @@ capability:
   score: 3
   basis: feature_matrix
   value: Language ID + KenLM perplexity filtering + dedup to build monolingual corpora from Common Crawl;
-    single-approach, foundational, now dated.
+    a single-approach pipeline.
   confidence: medium
-  note: Historically foundational (CC-100), but a single-method pipeline and frozen since 2023.
-  last_verified: '2026-08-13'
+  note: A single-method pipeline built around language ID, perplexity filtering and deduplication.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/facebookresearch/cc_net/main/README.md
-    shows: README documents the language-ID plus KenLM perplexity plus dedup pipeline of the CCNet
-      paper; the repo is archived read-only
-    accessed: '2026-08-13'
+    shows: 'The README describes the pipeline steps: hashes "downloads one Common-Crawl snapshot, and compute
+      hashes for each paragraph" and mine "removes duplicates, detects language, run the LM and split by
+      lang/perplexity buckets", with a "dl_cc_100.py" script for CC-100 and KenLM installed for the language
+      models.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 3b9abc643e55ae84fa42a6731dc34eecd9f1badcca15ed77a2f93e6ccc64498e

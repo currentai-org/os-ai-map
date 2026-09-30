@@ -17,15 +17,36 @@ openness:
     code. The terms limit commercial use rather than forbid it, which is why the license reads as open weights
     rather than something more restrictive.'
   raw: weights:open;data:closed;code:closed;license:Gemma-Terms-of-Use(custom,use-restricted,non-OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/google/codegemma-7b-it
-    shows: '`license:gemma` in the repo tags and `"gated":"manual"`, an access request under the Gemma
-      terms; sizes and intended use documented; no training corpus and no training code published'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/google/codegemma-7b-it
+    shows: The Hugging Face API for google/codegemma-7b-it lists "license:gemma", "license_link":"https://ai.google.dev/gemma/terms"
+      and "gated":"manual", so the weights are downloadable after an access request under the Gemma terms.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a7f1cd9a185cdbf1ecef081f047c3e62a33333f66d3b6e50685b222b07aa71dd
-    establishes: [weights, data, code, license]
+    content_sha256: ead906778fce8ffab5d218b63a87d7dd08841fae123a7fc761b13e5f94312572
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/google/codegemma-7b-it
+    shows: 'The model card describes the training corpus only in prose: "further trained on an additional
+      500 billion tokens of primarily English language data from publicly available code repositories, open
+      source mathematics datasets and synthetically generated code". Searched the body for a dataset link,
+      training code repository and open source license: none; the corpus and training code are not published.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d4aba73de3f75bca21b5c93d7af402678d0d49a11da5ccd38fd8ccd9c746ecf1
+    establishes:
+    - data
+    - code
+  - url: https://ai.google.dev/gemma/terms
+    shows: 'The Gemma Terms of Use page restricts use: "for the restricted uses set forth in the Gemma Prohibited
+      Use Policy" and lets Google "restrict (remotely or otherwise) usage"; a custom license, not OSI-approved.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c9da552be3059bc5f974f8fb84b93376e4e7120dfac1674e6fb86b10d7572531
+    establishes:
+    - license
 adoption:
   level: 2
   signal_type: usage_volume
@@ -73,17 +94,22 @@ capability:
   basis_detail: HumanEval/MBPP
   value: competent FIM/code completion at 2B/7B circa 2024
   confidence: medium
-  note: A 2024 code-completion family, competent for its size and generation and well below the 2026 coders.
-    The Hugging Face release post's comparison table puts CodeGemma 7B at 40.13 on HumanEval Python against
-    DeepSeek Coder 7B's 45.83 and StarCoder 2 15B's 44.15, on 500B tokens of extra training, which is the
-    competent-not-leading position the 3 records.
-  last_verified: '2026-08-13'
+  note: A 2024 code-completion family that is competent for its size but well below current coding models.
+    The Hugging Face release post's comparison table puts CodeGemma 7B at 40.13 on HumanEval Python, behind
+    DeepSeek Coder 7B at 45.83 and StarCoder 2 15B at 44.15, despite 500B tokens of extra training.
+  last_verified: '2026-09-29'
   sources:
+  - url: https://huggingface.co/blog/codegemma
+    shows: The Hugging Face release post states "CodeGemma-7B outperforms similarly-sized 7B models except
+      DeepSeek-Coder-7B on HumanEval" and its table lists CodeGemma 7B at "40.13" against DeepSeek Coder
+      7B at "45.83" and StarCoder 2 15B at "44.15", with CodeGemma 2B at "27.28".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9826f0cc639e4d997480abc35aa9849e2da1e53360c2688e67f2956f8b909307
   - url: https://github.com/huggingface/blog/blob/main/codegemma.md
     shows: '"CodeGemma-7B outperforms similarly-sized 7B models except DeepSeek-Coder-7B on HumanEval";
-      comparison table - CodeGemma 7B Python 40.13 / JavaScript 43.06, DeepSeek Coder 7B 45.83 / 45.9,
-      StarCoder 2 15B 44.15 / 44.24, CodeGemma 2B 27.28 / 29.94; 2B base for infilling, 7B base, 7B
-      instruct'
+      comparison table - CodeGemma 7B Python 40.13 / JavaScript 43.06, DeepSeek Coder 7B 45.83 / 45.9, StarCoder
+      2 15B 44.15 / 44.24, CodeGemma 2B 27.28 / 29.94; 2B base for infilling, 7B base, 7B instruct'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: e564416fc166852c48b6c786d03e80fc0d35e9be932b056ba6915f95ab075934

@@ -22,12 +22,12 @@ openness:
     not a gate on the library.
   raw: license:MIT(OSI);source:public(github.com/truera/trulens);commercial:Snowflake-Cortex-AI-Observability(separate
     hosted product);library:not-feature-gated;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/truera/trulens
-    shows: 'Repository page. The license sidebar reads "MIT license" and GitHub''s own metadata records
-      license spdxId "MIT", name "MIT License", resolved from the single root LICENSE file. The README
-      still leads on feedback functions and the RAG Triad. 3,508 stars.'
+    shows: Repository page. The license sidebar reads "MIT license" and GitHub's own metadata records license
+      spdxId "MIT", name "MIT License", resolved from the single root LICENSE file. The README still leads
+      on feedback functions and the RAG Triad. 3,508 stars.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a692e7e08971b32cf73f93470bfb4c1674907e30cac99bbaace1c11d9e46a580
@@ -35,6 +35,26 @@ openness:
     - license
     - source
     - core_gated
+  - url: https://www.trulens.org/
+    shows: 'Homepage tagline: "Open source, OpenTelemetry-native, MIT licensed." and "Since the acquisition,
+      Snowflake actively maintains TruLens" in open source; searched the body for enterprise, license key,
+      pricing and paid tier: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a6d9379b92e4ba68b1c868a7882f42a9381bef4036cbfdc96ebc26593f7d5d1d
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://pypi.org/project/trulens/
+    shows: 'PyPI project page for trulens: license sidebar reads "MIT License (MIT)" and the classifier
+      list includes "OSI Approved :: MIT License"; searched for enterprise, paid tier, pricing and license
+      key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bf18585cfaae16c06a0490da0f18287578192cd5d24607d7a24320c2611dc843
+    establishes:
+    - license
 adoption:
   level: 3
   signal_type: usage_volume
@@ -42,7 +62,6 @@ adoption:
   note: Adoption is measured by trulens' PyPI downloads in the trailing 30 days. Nothing else in the recorded
     evidence - no star count, customer roster or other channel - supports a higher reading.
   reach: 100K-1M
-  last_verified: '2026-08-12'
   sources:
   - url: https://pypistats.org/api/packages/trulens/recent
     shows: 111,932 downloads in the trailing 30 days for trulens
@@ -52,27 +71,40 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: feedback functions / LLM-as-judge (RAG triad, toxicity); instrumentation + tracing; experiment comparison
-    across versions; Streamlit dashboard; OpenAI/HF/LiteLLM/Cortex providers
+  value: Feedback functions and LLM-as-judge metrics (RAG triad of groundedness, context relevance and answer
+    relevance; agent, MCP and summarization metrics; custom metrics from any Python function or judge prompt);
+    OpenTelemetry-native instrumentation and tracing; version comparison with a leaderboard; Streamlit dashboard;
+    Snowflake Cortex and LiteLLM endpoint providers.
   confidence: medium
-  note: 'Evaluation-first observability: feedback functions and LLM-as-judge scoring including the RAG triad
-    and toxicity, instrumentation and tracing, experiment comparison across versions, a Streamlit dashboard,
-    and OpenAI, Hugging Face, LiteLLM and Cortex providers. It is lighter than Langfuse and Helicone on
-    the production gateway and on prompt management, though the score matches theirs at 4.'
-  last_verified: '2026-08-13'
+  note: 'Evaluation-first observability: judge-scored feedback functions for RAG, agents, MCP apps and summarization,
+    custom metrics, OpenTelemetry tracing and side-by-side comparison of app versions. It is narrower than
+    Langfuse as a platform, with no prompt management or annotation queues in the docs, but its evaluation
+    depth makes up the difference, so it sits level with it.'
+  last_verified: '2026-09-29'
+  relative_to: langfuse
+  relation: at
   sources:
   - url: https://github.com/truera/trulens
-    shows: 'README - feedback functions built around "the RAG Triad" (groundedness, context relevance,
-      answer relevance) with links to Snowflake''s RAG-triad benchmarks, and a comparison claiming TruLens
-      leads on three of four ranking metrics ahead of WandB Weave, RAGAS, DeepEval and UpTrain. No AI
-      gateway, prompt registry or annotation-queue feature appears.'
+    shows: README - feedback functions built around "the RAG Triad" (groundedness, context relevance, answer
+      relevance) with links to Snowflake's RAG-triad benchmarks, and a comparison claiming TruLens leads
+      on three of four ranking metrics ahead of WandB Weave, RAGAS, DeepEval and UpTrain. No AI gateway,
+      prompt registry or annotation-queue feature appears.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a692e7e08971b32cf73f93470bfb4c1674907e30cac99bbaace1c11d9e46a580
-  - url: https://www.snowflake.com/en/blog/trulens-open-source-ai/
-    shows: '"TruLens ❤️ Snowflake OSS", published 2024-06-24, describing Snowflake''s acquisition of TruEra''s
-      AI observability platform and its continued open-source support for LLM app developers. A 2024 post,
-      cited for what it says rather than as current news.'
-    accessed: '2026-08-13'
+  - url: https://www.trulens.org/
+    shows: Homepage of the TruLens docs site. It describes TruLens as an evaluation and tracing tool, saying
+      "Judges explain the score, so a low score" points to what went wrong, records "Latency, inputs, outputs,
+      tokens and cost, recorded per step", and offers custom metrics from "Any Python function" and "Any
+      LLM-as-judge prompt". The RAG use case asks "Is the answer supported by what was retrieved?", and
+      the version section is headed "Pick a winner" with a leaderboard.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5e10f54f944e9a10f48858fa525ae548905b9a47ec56afacec5f3b28b44e5c81
+    content_sha256: a6d9379b92e4ba68b1c868a7882f42a9381bef4036cbfdc96ebc26593f7d5d1d
+  - url: https://www.trulens.org/getting_started/
+    shows: Getting Started docs page, navigation. It links quickstarts titled "Ground Truth Evaluations"
+      and "Blocking Guardrails Quickstart", provider pages for "Snowflake Cortex" and "LiteLLM", and a dashboard
+      reference at "../reference/trulens/dashboard/streamlit/".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6d4a83cfc8949666ee698b7a47dc0e9ee451cc0b74e21368fd0947361978a632

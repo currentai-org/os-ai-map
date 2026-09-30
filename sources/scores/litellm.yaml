@@ -24,15 +24,15 @@ openness:
   raw: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated(the enterprise/
     directory ships under the proprietary BerriAI Enterprise License requiring a paid subscription for production
     use, and the proxy gates premium features on a LITELLM_LICENSE key verified against license.litellm.ai)
-  last_verified: '2026-08-11'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/BerriAI/litellm/main/LICENSE
-    shows: 'Root LICENSE body, read rather than assumed. It opens "Portions of this software are licensed
-      as follows:" and then splits the repository in two - "All content that resides under the ''enterprise/''
-      directory of this repository, if that directory exists, is licensed under the license defined in
-      ''enterprise/LICENSE''" and "Content outside of the above mentioned directories or restrictions above
-      is available under the MIT license as defined below", followed by the full MIT text. So the tier-setting
-      license is MIT and the gate is a carve-out named in the license itself.'
+    shows: Root LICENSE body, read rather than assumed. It opens "Portions of this software are licensed
+      as follows:" and then splits the repository in two - "All content that resides under the 'enterprise/'
+      directory of this repository, if that directory exists, is licensed under the license defined in 'enterprise/LICENSE'"
+      and "Content outside of the above mentioned directories or restrictions above is available under the
+      MIT license as defined below", followed by the full MIT text. So the tier-setting license is MIT and
+      the gate is a carve-out named in the license itself.
     accessed: '2026-08-11'
     http_status: 200
     content_sha256: b170d6bf8e8835dd357e011681db028f4d51e2fb0ea892058f56e01fb39b8273
@@ -62,22 +62,11 @@ openness:
     content_sha256: a3160d1176cb556447255ca8652855486d681f8025550291828796a439e1b2f9
     establishes:
     - core-gated
-  - url: https://raw.githubusercontent.com/BerriAI/litellm/main/litellm/proxy/auth/litellm_license.py
-    shows: The enforcement, in code. The module's own header comment is "If litellm license in env, checks
-      if it's valid". LicenseCheck reads a LITELLM_LICENSE environment variable, carries a bundled public_key.pem
-      for air-gapped verification, and otherwise checks the key against base_url https://license.litellm.ai,
-      setting the premium_user flag the proxy tests before serving paid features. A key you must hold for
-      functionality to run, which is the rubric's own wording for a gate.
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 5e23bc01f166b884f01a4c891be8b0e0e9cf7348684963b77c0c1ebe322cdcda
-    establishes:
-    - core-gated
   - url: https://api.github.com/repos/BerriAI/litellm
     shows: Repository root. The published tree is the whole gateway and proxy - litellm, gateway, ui, backend,
-      helm, terraform, docker, migrations, tests - and self-hosting it needs nothing that is not in the repo,
-      so the source dimension is public. Retained from the phase-C pass with a real reading in place of the
-      placeholder.
+      helm, terraform, docker, migrations, tests - and self-hosting it needs nothing that is not in the
+      repo, so the source dimension is public. Retained from the phase-C pass with a real reading in place
+      of the placeholder.
     accessed: '2026-08-11'
     http_status: 200
     content_sha256: 2caffe731172f8176152bf5f7e71585d13729d88d69799e7602a0c61db793071
@@ -88,6 +77,66 @@ openness:
       under the settled rule is NOT evidence for or against core-gated and is not what the open-core reading
       is based on.
     accessed: '2026-06-04'
+  - url: https://docs.litellm.ai/docs/enterprise
+    shows: 'The Enterprise page of the LiteLLM docs, which separates the open-source proxy from the paid
+      tier: "SSO is free for up to 5 users. Beyond that, an enterprise license is required." and "Built-in
+      moderation callbacks need a license". It also says "A license key enables the features above", with
+      the key set as LITELLM_LICENSE.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1bc4f33c3c3452d2db69c6270d37fe28d788a3276f4944824322490a480709ca
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/BerriAI/litellm@main/LICENSE
+    shows: 'The root LICENSE file, read through the jsDelivr mirror of the repository. It opens "Portions
+      of this software are licensed as follows:" and splits the tree in two: the "enterprise/" directory
+      falls under its own license, and content elsewhere "is available under the MIT license as defined
+      below".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b170d6bf8e8835dd357e011681db028f4d51e2fb0ea892058f56e01fb39b8273
+    establishes:
+    - license
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/BerriAI/litellm@main/enterprise/LICENSE.md
+    shows: The enterprise license body, read through the jsDelivr mirror. It says the software "may only
+      be used in production, if you (and any entity that you represent) have agreed to, and are in compliance
+      with, the BerriAI Subscription Terms of Service" and also allows copying and modifying "for development
+      and testing purposes, without requiring a subscription".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a3160d1176cb556447255ca8652855486d681f8025550291828796a439e1b2f9
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/BerriAI/litellm@main/litellm/proxy/auth/litellm_license.py
+    shows: The license check module, read through the jsDelivr mirror. Its header comment is "If litellm
+      license in env, checks if it's valid", LicenseCheck reads the key with os.getenv("LITELLM_LICENSE",
+      None), and the is_premium method returns False when no key is set, so features tested against it run
+      only with a valid key.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d57d348a3743e166545d2c20a44a527aab5f4f8f93385d4e8c97188843b84b59
+    establishes:
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/BerriAI/litellm@main/pyproject.toml
+    shows: The pyproject.toml of the package, read through the jsDelivr mirror. It declares license = "MIT"
+      for the litellm package and points its Repository entry at "https://github.com/BerriAI/litellm".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4c34d6d5819ceddde9428b1c0c9fce3bd8eab420e9eac5bc51080fe6677203a9
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/BerriAI/litellm@main/README.md
+    shows: The repository README, read through the jsDelivr mirror. Its contributing steps run "git clone
+      https://github.com/BerriAI/litellm.git" and then "make install-dev", so the gateway builds from the
+      public tree, and its Enterprise section lists "Features under the [LiteLLM Commercial License]" as
+      the paid tier.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 342a089295fe430087082c25afc974ebdf95e4fc5e6ab05024377e465d03ebac
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -123,7 +172,7 @@ capability:
   note: LiteLLM is a unified gateway to a very large set of LLM providers in OpenAI format, with cost tracking,
     guardrails, load balancing, virtual keys, budgets and logging. No standard benchmark applies to a gateway,
     so this is rated on the breadth of provider coverage and production features it ships.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/BerriAI/litellm
     shows: 'Repository page describing the gateway: a single interface over many provider endpoints, with
@@ -132,10 +181,10 @@ capability:
     http_status: 200
     content_sha256: febeeccca28633c499beb358d587df2548c45fdb2425c4ad0fbe2bd731cacc91
   - url: https://docs.litellm.ai/
-    shows: '''LiteLLM - Getting Started'': ''Call 100+ LLMs using the OpenAI Input/Output Format'', translating
-      inputs to /chat/completions, /responses, /embeddings, /images, /audio and /batches; consistent output
-      across providers; retry and fallback logic across deployments via the Router; spend tracking and per-project
-      budgets; available as a Proxy Server or a Python SDK.'
-    accessed: '2026-08-15'
+    shows: 'The LiteLLM docs home page, headed "Call 100+ LLMs using the OpenAI Input/Output Format": it
+      lists translation to /chat/completions, /responses, /embeddings, /images, /audio and /batches, "Retry/fallback
+      logic across multiple deployments (e.g. Azure/OpenAI)", and "Track spend & set budgets per project"
+      through the proxy server, with a Python SDK alongside.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 49df395feb4d514c1ddcb69e1ed41616f19d6d3e5a3bf64d64b360de23fc4999
+    content_sha256: 5e99ccac6cc2886e4876de9d0f87b59dd4aa99c05ff6402a52974819f2145b5c

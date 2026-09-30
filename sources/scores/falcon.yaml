@@ -17,37 +17,75 @@ openness:
     License 2.0, an Apache-based license with an acceptable-use policy rather than a usage cap. TII does
     not release the training corpus or training code, and the acceptable-use clause keeps the license outside
     the OSI definition, so the release counts as open weights rather than open source.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open;data:closed;code:closed;license:TII-Falcon-License-2.0(Apache-based+AUP,non-OSI)
   sources:
   - url: https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base
-    shows: '`gated: false`, `private: false`, safetensors weight files, 5,292 downloads and 41 likes; cardData.license
-      is `other`, so the Hub does not name the license and the tier is read from the TII text.'
-    accessed: '2026-08-13'
+    shows: Hugging Face API record for "tiiuae/Falcon3-10B-Base" with gated and private both false and safetensors
+      weight shards such as "model-00001-of-00005.safetensors"; the license tag is "license:other", so the
+      Hub does not name the license and the tier is read from the TII text.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1
+    content_sha256: 76640b7e614bd72f75b7dc092e75bb183cad083e931f18ceca2106c6c7a3e4f5
+    establishes:
+    - weights
+  - url: https://huggingface.co/blog/falcon3
+    shows: 'Falcon 3 release post: "We conducted a single large-scale pretraining run on the 7B model, using
+      1024 H100 GPU chips, leveraging 14 trillion tokens featuring web, code, STEM, and curated high-quality
+      and multilingual data" and "all models in the Falcon3 family are released under the" Falcon LLM license.
+      The corpus is characterized but no dataset or training pipeline is linked.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 797eeb4d99db75d158f13870081e944582ed447efbfd2d79d7618f21bea36e2a
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/tiiuae/Falcon3-7B-Base
+    shows: 'Falcon3-7B-Base model page, license tag falcon-llm-license, stating "Pretrained on 14 Teratokens
+      of datasets comprising of web, code, STEM, high quality and mutlilingual data" and "License: TII Falcon-LLM
+      License 2.0"; the embedded repo data records gated as false. Searched for agree to share and access
+      request - none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a3ef4a1bacda0dd07852074024243d2c5139d43a01530ed5099a27122c8a4806
     establishes:
     - weights
     - license
-  - url: https://huggingface.co/blog/falcon3
-    shows: '"We conducted a single large-scale pretraining run on the 7B model, using 1024 H100 GPU
-      chips, leveraging 14 trillion tokens featuring web, code, STEM, and curated high-quality and
-      multilingual data" - the corpus is characterized but not released, and no training pipeline is
-      published.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: f7bf9e947619dfc4f669054a27a47a0a90eca891b864ed3b11231fb968ffb301
-    establishes: [data, code]
-  - url: https://huggingface.co/tiiuae/Falcon3-7B-Base
-    shows: Falcon3-7B-Base model card, weights downloadable under the TII Falcon License 2.0
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: f286e99aea47863b73154415b0a1f3f235edf8946d05a2775dc6af0be2013acb
   - url: https://www.tii.ae/news/falcon-3-uaes-technology-innovation-institute-launches-worlds-most-powerful-small-ai-models
-    shows: TII launch announcement for the Falcon 3 family of sub-13B models
-    accessed: '2026-08-13'
+    shows: 'TII launch announcement: "The Falcon 3 series include four model sizes" (1B, 3B, 7B and 10B)
+      and "Falcon 3 is licensed under TII Falcon License, the permissive Apache 2.0-based software license
+      that includes an acceptable use policy".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 99e013f6a80aa589f34e241d369a9a072929e4f5cc14fff157d05dde3b4816dd
+    content_sha256: 84853eaa8287c550749d305bd96418a39de691a9f1e68885f1e3881c8ef312a8
+    establishes:
+    - license
+  - url: https://huggingface.co/tiiuae/Falcon3-10B-Base/raw/main/README.md
+    shows: 'Falcon3-10B-Base model card front matter gives "license_name: falcon-llm-license" and "license_link:
+      https://falconllm.tii.ae/falcon-terms-and-conditions.html"; the card states "License: TII Falcon-LLM
+      License 2.0" and "Depth up-scaled from **Falcon3-7B-Base** with continual pretraining on 2 Teratokens".
+      Its only code is a transformers inference snippet, and the Technical Report section reads "Coming
+      soon....".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4f364dc4732c1266d6f1cd2e6352bddb24f682e130f2c29faa76f47335f3a741
+    establishes:
+    - license
+    - code
+    - data
+  - url: https://falconllm.tii.ae/falcon-terms-and-conditions.html
+    shows: 'TII terms page, the December 2024 TII Falcon License that the Falcon 3 cards link: "This license
+      is, in part, based on the Apache License Version 2.0"; "Your copyright license to use the Work shall
+      be royalty free and without charge"; "your use of the Work or any Derivative Work must comply with
+      the Acceptable Use Policy at all times"; derivatives must state "is built using Falcon LLM technology
+      from the Technology Innovation Institute". Searched this license for monthly, revenue caps and non-commercial
+      terms - none; the hosting-permission clause sits only in the separate Falcon 180B license on the same
+      page.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1776c8eef4a78263bad9f6e01849d526855b3fb67182d4f73ffd52bad8400853
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -88,13 +126,29 @@ capability:
   basis_detail: MMLU-Pro
   value: null
   confidence: high
-  note: 'Falcon3-10B-Base: MMLU 73.1, MMLU-Pro 42.5, GSM8K 83.0; Falcon3-7B-Base: MMLU 67.4, MMLU-Pro 39.2.
-    Competitive among sub-13B in 2024 but low vs 2026 frontier.'
-  last_verified: '2026-08-13'
+  note: Falcon3-10B-Base scores 73.1 on MMLU and 42.5 on MMLU-Pro, and the 7B base 67.4 and 39.2. Those
+    results were competitive among models under 13B when Falcon 3 was released, but sit well below the 2026
+    frontier.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/blog/falcon3
-    shows: 'Falcon3-10B-Base MMLU 73.1, MMLU-Pro 42.5, GSM8K 83.0; Falcon3-7B-Base MMLU 67.4, MMLU-Pro
-      39.2 - all five present.'
-    accessed: '2026-08-13'
+    shows: 'Falcon 3 release post: "with scores of 67.4/39.2 (MMLU/MMLU-PRO) for Falcon3-7B-Base and 73.1/42.5
+      (MMLU/MMLU-PRO) for Falcon3-10B-Base respectively" and "Falcon3-10B-Base achieves 22.9 on MATH-Lvl5
+      and 83.0 on GSM8K".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f7bf9e947619dfc4f669054a27a47a0a90eca891b864ed3b11231fb968ffb301
+    content_sha256: 797eeb4d99db75d158f13870081e944582ed447efbfd2d79d7618f21bea36e2a
+  - url: https://huggingface.co/tiiuae/Falcon3-10B-Base/raw/main/README.md
+    shows: 'Falcon3-10B-Base model card benchmark table, internal lm-evaluation-harness raw scores: "We
+      report in the following table our internal pipeline benchmarks." Its comparison set is Gemma2-9B,
+      Yi1.5-9B and "Mistral-Nemo-Base-2407 (12B)", all 2024 releases.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4f364dc4732c1266d6f1cd2e6352bddb24f682e130f2c29faa76f47335f3a741
+  - url: https://huggingface.co/api/models?author=tiiuae&sort=createdAt&direction=-1&limit=30
+    shows: Hugging Face listing of the 30 newest tiiuae repositories, newest first, headed by "tiiuae/Falcon3-10B-Base-1.58bit-prequantized"
+      and including "tiiuae/Falcon-H1R-7B" and "tiiuae/Falcon-H1-Tiny-90M-Base"; no new Falcon 3 base checkpoint
+      or larger Falcon base model appears since the recorded figures.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f31e07c3c56767b4eb767f0e2c4a7b738d9db0f2df4694d780b6db2a102fbfeb

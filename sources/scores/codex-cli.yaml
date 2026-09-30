@@ -19,11 +19,10 @@ openness:
         value: agent is OSS but optimized for/defaults to OpenAI models
         detail: provider-leaning, not license-restricted
         raw: agent is OSS but optimized for/defaults to OpenAI models (provider-leaning, not license-restricted)
-  note: Codex CLI is released under Apache-2.0, and OpenAI's own docs call it open source; the published
-    Rust source is the whole of the CLI agent, and the repository's only other license files cover vendored
-    third-party code. Signing in with a ChatGPT plan or an API key pays for model access rather than for
-    any CLI feature withheld from the source, so nothing about the agent itself is gated.
-  last_verified: '2026-08-11'
+  note: Codex CLI is released under Apache-2.0, and the published Rust source is the whole of the CLI agent.
+    Signing in with a ChatGPT plan or an API key pays for model access rather than for any CLI feature withheld
+    from the source, so nothing about the agent itself is gated.
+  last_verified: '2026-09-29'
   raw: license:Apache-2.0(OSI, the CLI agent);source:public(GitHub);note:agent is OSS but optimized for/defaults
     to OpenAI models (provider-leaning, not license-restricted);core-gated:ungated(one Apache-2.0 LICENSE
     at the root governs the whole tree; a full recursive listing finds no enterprise or commercial directory)
@@ -31,33 +30,36 @@ openness:
   - url: https://github.com/openai/codex
     shows: Apache-2.0 license, public Rust source, v0.137.0 Jun 4 2026, 88.6k stars (verified)
     accessed: '2026-06-04'
-  - url: https://developers.openai.com/codex/cli
-    shows: OpenAI describes Codex CLI as open source
-    accessed: '2026-06-04'
-  - url: https://api.github.com/repos/openai/codex/git/trees/main?recursive=1
-    shows: Full untruncated recursive tree. The only LICENSE paths are the root `LICENSE`, `third_party/wezterm/LICENSE`,
-      `codex-rs/vendor/bubblewrap/LICENSE`, `docs/license.md` and four sample-skill asset licenses. No enterprise/,
-      ee/ or commercial/ directory anywhere in the tree.
-    accessed: '2026-08-11'
+  - url: https://raw.githubusercontent.com/openai/codex/main/LICENSE
+    shows: The root LICENSE file is the standard text of the Apache License and opens with "Apache License"
+      and "Version 2.0, January 2004", with the grant clause "Licensed under the Apache License, Version
+      2.0".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 94eb1fbf3cc5b741307d843c65a8c09285cac078944818e34506f29bc7ad5fef
-    establishes:
-    - core-gated
-    - source
-  - url: https://api.github.com/repos/openai/codex
-    shows: 'Repo metadata: language Rust, license spdx_id Apache-2.0, size 549,758 KB, 105,340 stars, ''Lightweight
-      coding agent that runs in your terminal''.'
-    accessed: '2026-08-11'
-    http_status: 200
-    content_sha256: 495555fd8af1dd00aed142a7d96c6a89493977828d243dac5a1cf45497b4c7bd
+    content_sha256: d17f227e4df5da1600391338865ce0f3055211760a36688f816941d58232d8dc
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/openai/codex/main/docs/license.md
+    shows: The repository license page states "This repository is licensed under the [Apache-2.0 License](../LICENSE)."
+      with no other license for the tree.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dca51cd27a681f46b17d7867d1e8311c024ec1478a6e12b6463a71a4e2f869ba
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openai/codex/main/README.md
+    shows: The README describes a locally run agent that is "a coding agent from OpenAI that runs locally
+      on your computer", installed from npm or Homebrew.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ba4e1f69ff48386e72a9c5e1edaf76aad64a475c2d51af79ccba6d1128261ba7
+    establishes:
     - source
   - url: https://raw.githubusercontent.com/openai/codex/main/README.md
-    shows: '''Using Codex with your ChatGPT plan - Run `codex` and select Sign in with ChatGPT ... to use
-      Codex as part of your Plus, Pro, Business, Edu, or Enterprise plan.'' and ''You can also use Codex
-      with an API key''. The paid relationship is model access, not a withheld CLI feature.'
-    accessed: '2026-08-11'
+    shows: 'The README says paid plans and keys buy model access, not CLI features: "We recommend signing
+      into your ChatGPT account to use Codex as part of your Plus, Pro, Business, Edu, or Enterprise" and
+      "You can also use Codex with an API key".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: ba4e1f69ff48386e72a9c5e1edaf76aad64a475c2d51af79ccba6d1128261ba7
     establishes:
@@ -70,7 +72,6 @@ adoption:
   note: OpenAI and independent tracking both report a weekly active developer count for Codex CLI, corroborated
     by stars on the same GitHub repository. That figure is measured weekly rather than the monthly count
     this scale is written in, so it likely understates the number a monthly measure would show.
-  last_verified: '2026-08-13'
   sources:
   - url: https://openai.com/index/scaling-codex-to-enterprises-worldwide/
     shows: 'OpenAI: Codex surpassed 4M weekly developers (Apr 2026). Not re-fetchable - openai.com answers
@@ -92,20 +93,19 @@ capability:
   score: 4
   basis: feature_matrix
   value: 'Autonomy: full terminal coding agent (plan/edit/run/commit); tool-use: shell+MCP; multi-agent:
-    yes (parallel sessions); model-agnostic: largely OpenAI-locked; reliability: sandboxed exec. No agent-attributed
-    SWE-bench number on the April 2026 leaderboard.'
+    yes (subagents for delegated work, parallel sessions); model-agnostic: largely OpenAI-locked; reliability:
+    sandboxed exec. No agent-attributed SWE-bench number on the April 2026 leaderboard.'
   confidence: medium
   note: 'Capable, heavily-used coding agent backed by frontier OpenAI models, but no standalone agent SWE-bench
     placement is published, so this reads from its feature set: high, but not the open-agent benchmark frontier-definer
     (OpenHands 68.4%).'
   relative_to: openhands
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://developers.openai.com/codex/cli
-    shows: autonomous terminal agent documented across sandboxing and writable roots, permissions and
-      profiles, agent approvals and security, auto-review, MCP and connectors, skills and plugins, and
-      Linux/Windows desktop apps; no benchmark figure published for the agent
-    accessed: '2026-08-13'
+    shows: 'The docs page lists Sandboxing, Auto-review and a "subagents" section: "Ask Codex to delegate
+      focused work to specialized agents". Searched for a benchmark figure: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b8a2154ce23817932ae0d610d0f5d933a7dfae45e647ca3ef2326be38cff045e
+    content_sha256: 811b2d301a96bb30ea7b3a3e8ed31423b967b103fd9edf41c129c80bc898ae40

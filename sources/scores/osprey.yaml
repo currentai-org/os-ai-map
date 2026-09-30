@@ -16,16 +16,18 @@ openness:
       service:
         value: none
   confidence: high
-  note: 'Fully open source: Apache-2.0 real-time safety rules engine, self-hostable, no proprietary tier.
-    Donated by Discord to ROOST.'
+  note: The rules engine, investigation console and plugin system are all published as open source, and
+    adopters run the whole stack on their own infrastructure. ROOST, the nonprofit that maintains it, sells
+    no hosted or enterprise edition, and ML models plug in as the adopter's own add-ons rather than as a
+    gated component.
   raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/roostorg/osprey
-    shows: 'Repo metadata records license spdxId - Apache-2.0. README brings the full stack up with one
-      Docker Compose command (./demo.sh) and describes it as ''a working system, not a prototype'',
-      pointing at the development guide for building it yourself; ROOST is a non-profit and there is no
-      paid tier, enterprise directory or license key on the page.'
+    shows: Repo metadata records license spdxId - Apache-2.0. README brings the full stack up with one Docker
+      Compose command (./demo.sh) and describes it as 'a working system, not a prototype', pointing at the
+      development guide for building it yourself; ROOST is a non-profit and there is no paid tier, enterprise
+      directory or license key on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 592ab20d0b28d1642d82318e38ce104ed1c1f625d061b8669c875182556375b7
@@ -33,6 +35,60 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://roost.tools/blog/introducing-osprey-v1-0-open-source-infrastructure-for-real-time-abuse-mitigation/
+    shows: 'ROOST''s V1.0 announcement, published January 28, 2026, states Osprey "is open source with an
+      Apache 2 license" and that "any organization can use it for free on their own infrastructure, inspect
+      how it works, adapt it to their needs, and contribute improvements back to the community". Searched
+      the body for enterprise, pricing, paid and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 68bf0ce5eba6cc792686ab6e02ab8e1456c3864a3af4119e1c0520595720161a
+    establishes:
+    - license
+    - self-host
+    - core-gated
+  - url: https://docs.roost.tools/osprey/latest/
+    shows: 'The documentation welcome page describes "an open source rules engine and investigation console
+      for trust and safety teams" that is "now developed in the open by" ROOST, and points readers to GitHub
+      "for source code and project information". Searched the body for enterprise, license key, pricing
+      and paid: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e9cea85c57a8735242381aa684d08c0971da80c9181c0ab1cfb45f922d37018f
+    establishes:
+    - source
+  - url: https://docs.roost.tools/osprey/latest/development/
+    shows: 'The Getting Started guide brings up the whole stack locally with Docker Compose, run "from a
+      clone of the repo", and lists "Kafka, Druid, PostgreSQL, MinIO, and" the project''s own worker, API
+      and UI as the containers it starts. Searched the body for license key, enterprise, hosted and pricing:
+      none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e8e90cf83096d05dd7a061e91191bb5fc0e55df933bc6788598fe4482a3e8f12
+    establishes:
+    - source
+    - self-host
+  - url: https://docs.roost.tools/osprey/latest/integration/integrations.html
+    shows: 'The Integrations and Plugins guide says Osprey is "designed to be extended without modifying
+      the core codebase" and that ML models are optional add-ons: "ML models can be integrated as UDFs",
+      with the example loading the adopter''s own model file. No bundled model weights, license key or enterprise
+      build are described. Searched the body for enterprise, license key and pricing: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f1f3dd77a5fd2a7e773ff702486d1bd9cec68d89817b39dd9179204a3bd88d9
+    establishes:
+    - core-gated
+  - url: https://roost.tools/osprey
+    shows: 'ROOST''s Osprey project page says "As an open source, self-hosted solution, data never leaves
+      your environment and is never shared with third parties", and that Osprey "is developed and maintained
+      by ROOST, a nonprofit building open source trust and safety infrastructure". Its only deployment call
+      to action is a contact form. Searched the body for pricing, enterprise, paid and license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e1e01642cbeca5bf67817bed587503a9a1595d5b57dfde1445893424316f8427
+    establishes:
+    - self-host
+    - core-gated
 adoption:
   level: 3
   reach: niche
@@ -43,7 +99,6 @@ adoption:
   note: Osprey's own README lists no adopters, so the repository is not where the adoption evidence sits.
     ROOST's launch announcement documents production use instead, naming Discord, Bluesky and the Matrix.org
     Foundation as deployments, though it gives no count of users or installs.
-  last_verified: '2026-08-13'
   sources:
   - url: https://roost.tools/blog/introducing-osprey-v1-0-open-source-infrastructure-for-real-time-abuse-mitigation/
     shows: 'V1.0 announcement, published January 28, 2026. Osprey ''processes over 50M events daily in
@@ -64,15 +119,16 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: throughput / rules coverage
-  value: High-performance real-time event-decisioning engine with a Python-flavoured rules DSL (SML) and an
-    investigation console; human-written rules evaluate every event as it arrives; ROOST reports it
-    processing over 50M events daily in production environments like Bluesky, and it was built at Discord.
+  value: Real-time rules engine and investigation console built at Discord. Rules written in SML, a restricted
+    subset of Python, evaluate every event as it arrives and can ban users, apply labels or return verdicts,
+    and Python UDFs extend them with custom detection logic, including ML inference. ROOST reports it handling
+    tens of millions of events a day in production at Bluesky.
   confidence: medium
   note: Osprey is a real-time rules engine and investigation console, built at Discord, where rules are
     written in SML and extended with user-defined functions. It is a general Trust and Safety engine rather
     than an AI-native guardrail, so its capability set reflects operational rule evaluation rather than
     model-specific safety detection.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/roostorg/osprey
     shows: README describes 'a safety rules engine and investigation console for real-time event processing
@@ -83,11 +139,12 @@ capability:
     http_status: 200
     content_sha256: 592ab20d0b28d1642d82318e38ce104ed1c1f625d061b8669c875182556375b7
   - url: https://roost.tools/blog/introducing-osprey-v1-0-open-source-infrastructure-for-real-time-abuse-mitigation/
-    shows: The published throughput figure that replaces the vanished ones - Osprey "processes over 50M
-      events daily in production environments like Bluesky and is designed for real-time incident response".
-    accessed: '2026-08-14'
+    shows: ROOST's V1.0 announcement says Osprey "processes over 50M events daily in production environments
+      like" Bluesky and "is designed for real-time incident response", and that the refactored open source
+      version "has been pulled back into" Discord.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d6a88d5ed04eb1fe19fff71b8c8bbdd60ffe36fb3d226608bd8b549f144d2dc2
+    content_sha256: 68bf0ce5eba6cc792686ab6e02ab8e1456c3864a3af4119e1c0520595720161a
   - url: https://github.com/roostorg/osprey
     shows: The README carries no occurrence of "2.3M" or "400M" anywhere. It describes "a safety rules engine
       and investigation console for real-time event processing at scale", with rules written in SML and
@@ -95,3 +152,32 @@ capability:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 2b4b9c4fbe979ebb60ab3348cc1e9e721142f685dfc8b3cdbaa20109fac9886f
+  - url: https://docs.roost.tools/osprey/latest/concepts.html
+    shows: The Concepts page says Osprey "watches a stream of events happening on your platform, runs each
+      one through your rules in real time, and records what it found so analysts can query and act on it".
+      A rule "is a named condition over features, written in" SML, and effects include actions that "ban
+      the user, add a label to an entity, declare a verdict".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fce3a7daee18e3e9c567c4d8d69174244625fba19f28b92c6efc6ac6c2e06286
+  - url: https://docs.roost.tools/osprey/latest/rules/index.html
+    shows: The Writing Rules page says "Osprey rules are written in SML, a subset of Python with additional
+      restrictions to simplify rule writing", and that a UDF is "a function implemented in Python and made
+      available to SML", with a shipped standard library and custom ones registered through plugins.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3617ab10ed8fd752c57981383fc027ea78ec0b670feda991180b645f2dbce6a8
+  - url: https://docs.roost.tools/osprey/latest/integration/integrations.html
+    shows: The Integrations and Plugins guide says a UDF "is a Python class that can be called from your
+      rules" and that UDFs "encapsulate reusable detection logic" including ML inference, while "ML models
+      can be integrated as UDFs" rather than being built into the engine.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9f1f3dd77a5fd2a7e773ff702486d1bd9cec68d89817b39dd9179204a3bd88d9
+  - url: https://roost.tools/osprey
+    shows: ROOST's Osprey project page reports from its Bluesky case study that Osprey "now processes over
+      45 million events daily with 100,000+ automated enforcement actions", and describes it as "A high-performance
+      investigation and rules engine for detecting and responding to real-time abuses at scale".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e1e01642cbeca5bf67817bed587503a9a1595d5b57dfde1445893424316f8427

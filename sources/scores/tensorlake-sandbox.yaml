@@ -8,7 +8,8 @@ openness:
       detail: OSI
     source:
       value: public
-      detail: runtime+SDK, BYOC self-host in your own AWS/GCP/Azure
+      detail: SDK, tl CLI and client crates only; vendor-deployed BYOC runs in the customer's AWS/GCP/Azure
+        account
     core-gated:
       value: gated
       detail: the MicroVM runtime and the Lattice cluster scheduler that creates sandboxes exist in no public
@@ -18,15 +19,17 @@ openness:
       managed-tier:
         value: Tensorlake hosted cloud + proprietary Lattice scheduler
   confidence: medium
-  note: Tensorlake publishes its Python SDK and CLI under Apache-2.0, but the Firecracker microVM runtime
-    and the Lattice scheduler that create sandboxes are in no public repository. Getting started requires
-    an API key for Tensorlake's own cloud, and none of the company's other public repositories implement
-    the missing pieces.
-  raw: license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake
-    hosted cloud + proprietary Lattice scheduler;core-gated:gated(the MicroVM runtime and the Lattice cluster
-    scheduler that creates sandboxes exist in no public repo - the Apache-2.0 tree publishes the SDK, the
-    tl CLI and client crates, which authenticate to cloud.tensorlake.ai with an API key)
-  last_verified: '2026-08-12'
+  note: Tensorlake publishes its Python SDK and the client side of its CLI under Apache-2.0, but the Firecracker
+    microVM runtime and the Lattice scheduler that create sandboxes are in no public repository, and the
+    CLI's filesystem and Git crates are built from private sources. Getting started requires an API key
+    for Tensorlake's own cloud, and none of the company's other public repositories implement the missing
+    pieces.
+  raw: license:Apache-2.0(OSI);source:public(SDK, tl CLI and client crates only; vendor-deployed BYOC runs
+    in the customer's AWS/GCP/Azure account);managed-tier:Tensorlake hosted cloud + proprietary Lattice
+    scheduler;core-gated:gated(the MicroVM runtime and the Lattice cluster scheduler that creates sandboxes
+    exist in no public repo - the Apache-2.0 tree publishes the SDK, the tl CLI and client crates, which
+    authenticate to cloud.tensorlake.ai with an API key)
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/tensorlakeai/tensorlake
     shows: Apache-2.0 license; sandbox runtime + SDK (Python + Rust); BYOC self-host
@@ -47,14 +50,13 @@ openness:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/tensorlakeai/tensorlake/main/README.md
-    shows: 'The capabilities the product is sold on are server side and named as such: "Sandboxes created
-      in under a second via Lattice, a dynamic cluster scheduler", plus snapshots and cloning, auto suspend/resume,
-      live migration between machines, and "up to 5 million sandboxes in a single project". Getting started
-      is "Sign up at cloud.tensorlake.ai and get your API key", export TENSORLAKE_API_KEY, tl login. The
-      repo documents no way to run any of it yourself.'
-    accessed: '2026-08-12'
+    shows: 'The README sells the platform as server side, "Sandboxes created in under a second via Lattice,
+      a dynamic cluster scheduler" and "Supports up to 5 million sandboxes in a single project", and setup
+      is to sign up at the hosted cloud and "export TENSORLAKE_API_KEY" for the tl CLI; searched the body
+      for self-host, on-prem, BYOC, enterprise and license key: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: bfeab32d22bca998ed41593ac902ac5fa9300488849e56fa8650067b1d558ce2
+    content_sha256: d1ef6e1458c68b0eecc6838a7f2cdbfde5cbe2423facea6c51cc58c7eb104e1b
     establishes:
     - core-gated
   - url: https://api.github.com/orgs/tensorlakeai/repos?per_page=100
@@ -75,6 +77,25 @@ openness:
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/tensorlakeai/tensorlake/main/LICENSE
+    shows: 'The repository LICENSE file is the Apache License, "Apache License", "Version 2.0, January 2004",
+      and carries the text "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION"; searched for
+      a second license or enterprise carve-out in the file: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 81a3603e64b8b9b5b0a5548d5c6d3caaeb336ceaac4f9f04b931207d5c20810f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/tensorlakeai/tensorlake/main/Cargo.toml
+    shows: The workspace manifest lists only client crates as members and states "Resolution-only placeholder
+      for the private gsvc-codec packfile codec" and "Private mount core. The source is injected only for
+      official full builds." so parts of the official CLI are built from private crates; license is Apache-2.0.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c047c40b6d66dc642df53b0ef9127f46c810e496b15e0a29e741fee1bb963e7c
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 1
   reach: <1K stars
@@ -100,27 +121,49 @@ capability:
   score: 4
   basis: feature_matrix
   value: isolation:Firecracker microVM (top tier); cold-start:vendor claims sub-second creation via the
-    Lattice scheduler, independently measured at 1.35s median time-to-interactive; runtime breadth:arbitrary
+    Lattice scheduler, independently measured at 1.13s median time-to-interactive; runtime breadth:arbitrary
     agent sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported
     thousands of concurrent sandboxes
   confidence: medium
   note: 'Tensorlake has most of the features expected from a leading sandbox platform: Firecracker microVM
     isolation for every tool call, snapshots that can be paused, forked and resumed, versioned mountable
     volumes, and durable functions with queues, timers and retries. Independent ComputeSDK benchmarks put
-    its median time-to-interactive at 1.35 seconds, slower than the vendor''s sub-second claim, although
+    its median time-to-interactive at 1.13 seconds, slower than the vendor''s sub-second claim, although
     latency is not the main differentiator in this category. Scale is the bigger gap: Tensorlake reports
     thousands of concurrent sandboxes, while E2B has recorded more than a billion sandbox starts.'
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.tensorlake.ai/
-    shows: Firecracker microVM sandboxes, snapshot/suspend/resume, durable execution, scale to thousands.
-    accessed: '2026-08-14'
+    shows: The homepage describes "isolated Firecracker microVM sandboxes that scale from one to thousands"
+      with snapshot, suspend/resume and durable orchestration, and lists "QUEUES, TIMERS, AND RETRIES" among
+      the orchestration features.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7522474f25c2864dae63f26e180926d421d634994f2ba2b3f4405d4882578456
+    content_sha256: 4c28fe0b7e0f4d282afa4c9b61aad58a2258b7435764d7bc6faf116a4774541e
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24 providers
-      on 4 vCPU / 16GB in Northern Virginia. Tensorlake records 1.35s median, 1.44s P95, 1.44s P99, 100%
-      success, composite 86.1 - 15th of 24 by composite and 17th of 24 by median.
-    accessed: '2026-08-14'
+    shows: The ComputeSDK sandbox benchmarks index says "Independently verified sandbox benchmarks run on
+      a recurring schedule." and lists Tensorlake in the Sandbox Burst TTI composite ranking at 88.4 dated
+      Sep 25, 2026.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 297068ee668b6e539692c74bbafde6ab456fe2121a28ad2a1d4bd9a5ce23e949
+    content_sha256: d5a912400ada5d8956cbd994728d20b38e9e02b5cdfa9a5eb374b46b7645e01e
+  - url: https://docs.tensorlake.ai/sandboxes/introduction
+    shows: The sandbox docs introduction says "they are MicroVMs backed by Firecracker and CloudHypervisor"
+      and that "tensorlake/ubuntu-minimal" starts in "a few hundred milliseconds".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: bd85c02f06f69c14e12cf4ba2b17186fc1680449c1748cd7d476a49c212ebedd
+  - url: https://docs.tensorlake.ai/sandboxes/snapshots
+    shows: The snapshot docs describe a memory checkpoint that will "restores filesystem, memory, and running
+      processes exactly as they were" and a filesystem checkpoint that is the default.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e99566461d6cfc3cedf80700ecd66c51839759e67280f5b1bc9b8a16f91f03d3
+  - url: https://www.computesdk.com/benchmarks/sandboxes/burst-tti/
+    shows: 'The ComputeSDK burst time-to-interactive page, "A leaderboard of common benchmarks for each
+      of our sandbox providers.", with the last run "September 25, 2026" in "Northern Virginia, US" with
+      4 vCPU / 16GB RAM, lists Tensorlake at 88.4 composite, "1.13s" median, "1.20s" P95 and "1.21s" P99,
+      each at 100 percent success; searched for a 1.35s figure: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 62923546361870d2cb24685d4e01ec22aae9d014e55b98bf1ffb4f2ade492208

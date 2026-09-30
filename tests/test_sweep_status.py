@@ -67,6 +67,19 @@ def test_a_held_product_is_resolved_not_remaining():
     assert state["done"] is True
 
 
+def test_an_axis_hold_settles_only_that_axis():
+    """The queue holds per axis. dolma-toolkit had adoption held and capability stale, and a
+    per-product reading called it done while `check_freshness` failed on it."""
+    dated = score(openness={"last_verified": "2026-09-29"},
+                  capability={"last_verified": "2026-08-13"})
+    held = {"p": {"adoption": {"since": "2026-09-29", "because": "..."}}}
+    state = product_state("p", {}, dated, held=held, cutoff=date(2026, 8, 15))
+    assert state["held"] is True
+    assert state["done"] is False
+    dated["capability"]["last_verified"] = "2026-09-29"
+    assert product_state("p", {}, dated, held=held, cutoff=date(2026, 8, 15))["done"] is True
+
+
 def test_an_undated_axis_is_open():
     state = product_state("p", {}, score(), held={})
     assert set(state["axes"].values()) == {"open"}

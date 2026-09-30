@@ -19,14 +19,23 @@ openness:
   confidence: high
   note: Core app/engine is closed proprietary freeware; only peripheral CLI/SDKs are open.
   raw: license:Proprietary;source:closed;app:proprietary-freeware(ToS forbids modify/reverse-engineer/redistribute);sdk+cli:MIT(public);core-engine:closed
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://lmstudio.ai/app-terms
-    shows: 'ToS: no modification/reverse-engineering/redistribution'
-    accessed: '2026-08-13'
+    shows: 'Terms of use for the desktop app. Among the things the licensee may not do: "modify, adapt,
+      alter, translate, or create derivative works from the Software" and "reverse engineer, decompile,
+      disassemble, or otherwise attempt to derive the source code for the Software".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: f4f80b5a56c25cd224cc35b6ed68c402756ecb03f9b2dec0d61b716b75f2f94c
-    establishes: [license, source]
+    content_sha256: 5144a61b64900c1b1b0c546af906797cb19296b7eb52fd9e7d23290df0d78a33
+    establishes:
+    - license
+    - source
+  - url: https://registry.npmjs.org/@lmstudio/sdk
+    shows: npm registry metadata for @lmstudio/sdk lists "license":"MIT" and the repository "git+https://github.com/lmstudio-ai/lmstudio-js.git".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4aa6e95b14545aad6027d5788163e0809a71badf8c237572db0611f346279f74
 adoption:
   level: 3
   signal_type: reported_traction
@@ -34,7 +43,6 @@ adoption:
   note: A widely-used consumer desktop app, but the vendor publishes no install or active-user count and
     no primary figure is obtainable, so the level is a conservative reading of that reported reach rather
     than a measured one.
-  last_verified: '2026-08-13'
   sources:
   - url: https://lmstudio.ai/
     shows: product positioning, free for home and work use
@@ -44,16 +52,36 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: polished chat UI; model browser; OpenAI-compatible local server; headless mode; native Apple MLX
+  value: chat UI; Hugging Face model browser; OpenAI- and Anthropic-compatible local server; MCP client;
+    llama.cpp and Apple MLX runtimes; llmster headless daemon; TypeScript and Python SDKs; lms CLI
   confidence: medium
-  note: Strong UX/polish on par with the open local UIs; loses on openness/extensibility (closed source).
-    The headless deployment path is now named llmster - the LM Studio core without the GUI, installable
-    by one-line script on Linux, cloud servers or CI - alongside JS and Python SDKs, an lms CLI and MCP
-    client support.
-  last_verified: '2026-08-13'
+  note: LM Studio combines a desktop chat interface, a Hugging Face model browser, OpenAI- and Anthropic-compatible
+    local endpoints, an MCP client and llama.cpp and Apple MLX runtimes. The llmster daemon runs the same
+    core without the GUI, and the TypeScript and Python SDKs and the lms CLI cover scripting.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://lmstudio.ai/
-    shows: 'feature set: chat UI, model browser, local server, MLX'
-    accessed: '2026-08-13'
+  - url: https://lmstudio.ai/docs/app
+    shows: 'Docs landing page listing what the app does: "Serve local models on OpenAI-like endpoints, locally
+      and on the network" and "Connect MCP servers and use them with local models"; it is available for
+      "macOS, Windows, and Linux".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1d638ab9260ef54ae0a511e1c1c008c581125c012446d6d3d8a6a3217124779f
+    content_sha256: 150685e56ce406d4e0e5df3d2bafeaa7852a975d60f29016c05fbe1f98cd2cea
+  - url: https://lmstudio.ai/docs/developer
+    shows: 'Developer docs introduction: "TypeScript, Python, REST, and OpenAI and Anthropic-compatible
+      endpoints", with sections for the TypeScript SDK, the Python SDK and the lms CLI.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 93988649b47539bad8665bcd154c2819a4a5ddeef0bc7e076cae293b628a8b10
+  - url: https://lmstudio.ai/docs/developer/core/headless
+    shows: 'Headless guide: "is the core of the LM Studio desktop app, packaged to be server-native, without
+      reliance on the GUI"; the desktop app can also run in headless mode.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8b33e7dc74961f5ec9af33abea66898708015a41284c8c0361656d0e7dee4344
+  - url: https://lmstudio.ai/
+    shows: 'Home page: "Powered by the LM Studio runtime, with MLX and llama.cpp under the hood." Footer
+      credit "Element Labs, Inc."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2a499707ec910838851c9497323c08dbc388b016a81dbd0e89aca0f2f3f2ba91

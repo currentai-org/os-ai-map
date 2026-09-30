@@ -19,16 +19,37 @@ openness:
   confidence: high
   note: Publicly downloadable and ungated under the permissive MIT license.
   raw: license:mit;card:present;ungated:yes;rows:169,352;size:94.7MB
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/Anthropic/hh-rlhf
-    shows: MIT license, ungated card, 169,352 rows, 94.7 MB
-    accessed: '2026-08-13'
+    shows: 'HF dataset page for Anthropic/hh-rlhf listing "license:mit" among its tags, with the card summary
+      "Human preference data about helpfulness and harmlessness". Searched the body for a gated-access prompt
+      and an access-request form: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 080aecc60ba4282a428da630fbc29575811329693817b2a0a8a5f5fc74b5a9ed
+    content_sha256: 0e4a02e8061d301c20a81200d1990a7c417e03690b1ecb6b7c34d8dcec6b1635
     establishes:
     - availability
     - documentation
+    - license
+  - url: https://huggingface.co/datasets/Anthropic/hh-rlhf/raw/main/README.md
+    shows: 'Raw dataset card. Front matter reads "license: mit", the card is titled "Dataset Card for HH-RLHF",
+      and it says the preference data are "meant to train preference (or reward) models for subsequent RLHF
+      training".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f75f40db0268656ba07736ec8e59a9720c1910ce554c85354cec74b1c8bda175
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/Anthropic/hh-rlhf
+    shows: 'Hub API record for Anthropic/hh-rlhf, whose tags include "license:mit" and "size_categories:100K<n<1M".
+      Searched the body for a gated flag set to true: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: a2226c6fdc5ff0bfe8ade34a7d4ba019afcf3cf3b8c2aa903c290492c0c113e6
+    establishes:
+    - availability
     - license
 adoption:
   level: 3
@@ -56,21 +77,32 @@ capability:
   basis_detail: superseded
   value: null
   confidence: high
-  note: Documented 2022 RLHF results and huge historical influence, but dropped from frontier open preference
-    mixes (absent from Tulu 3 and OLMo 3 Dolci DPO).
-  last_verified: '2026-08-13'
+  note: Anthropic's papers report RLHF gains on NLP evaluations from training on this data, but newer open
+    preference mixes leave it out, and neither Tulu 3's preference mixture nor Olmo 3's Dolci DPO set includes
+    it.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arxiv.org/pdf/2204.05862
-    shows: 'Anthropic HH paper full text. The per-benchmark results are in the body: Elo scores fitted from crowdworker
-      win rates compare context-distilled, static-RLHF and online-RLHF models (Figure 1), TruthfulQA (MC1) improves
-      with RLHF and with model size (Figure 5), and BBQ-Lite is reported with the authors'' own caution that
-      "none of our models appear particularly biased" under that metric (Figure 18). The arXiv abstract page
-      carries none of these numbers.'
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: 26e390d4f76938d2e2591225603637c643cc108e94afb756c65f5d2e0fc9037b
   - url: https://huggingface.co/datasets/allenai/llama-3.1-tulu-3-8b-preference-mixture
-    shows: HH-RLHF is not used in the Tulu 3 preference mixture
-    accessed: '2026-08-13'
+    shows: 'Tulu 3 8B preference mixture card, which says it "contains 272,898 generation pairs" and lists
+      its generating models. Searched the body for HH-RLHF and hh_rlhf: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a5b9c4f74ae7294808f26cb81361cd4902eb6a7b84616f82588f159f49da34ce
+    content_sha256: d1cddccd7a019b3d80b9d280c4196fd4e35505eb9936b8b2bf4c81d002832e8c
+  - url: https://ar5iv.labs.arxiv.org/html/2204.05862
+    shows: ar5iv rendering of the Anthropic HH paper, including the authors' own caution that "none of our
+      models appear particularly biased" under the BBQ-Lite metric.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 69536aa046742e6d9ea91ed0d0374451f4be5cc38a30c05087e6b587f851b9f5
+  - url: https://arxiv.org/abs/2204.05862
+    shows: arXiv abstract for the paper that introduced the data, stating "this alignment training improves
+      performance on almost all NLP evaluations".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e8485045e8148841fdcbea46cd7837c6ed2e97d39c6f8d8675e81e0c3f72a25c
+  - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-DPO
+    shows: 'Dolci Instruct DPO card, describing a mixture of "125,000 pairs created with the preference
+      heuristic described in Delta Learning". Searched the body for HH-RLHF and hh_rlhf: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7459ae963ad765c5f5f03e736fd17da960a1869603bf4084aa3bed84e73c4d77

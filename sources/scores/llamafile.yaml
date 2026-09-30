@@ -18,7 +18,6 @@ openness:
   confidence: high
   note: llamafile is licensed under Apache-2.0, with MIT covering its llama.cpp and whisper.cpp deltas.
     The source is public and the core carries no proprietary tier.
-  last_verified: '2026-08-09'
   raw: license:Apache-2.0(OSI)+MIT(OSI, for llama.cpp/whisper.cpp deltas);source:public(mozilla-ai/llamafile);no-feature-gated-core;core-gated:ungated
   sources:
   - url: https://github.com/mozilla-ai/llamafile
@@ -73,27 +72,39 @@ capability:
   score: 3
   basis: feature_matrix
   value: Single-file cross-platform (Cosmopolitan Libc) llama.cpp-based local inference; CPU inference plus
-    GPU acceleration via Metal (macOS ARM64) and CUDA (Linux; Windows GPU still unsupported), GGUF external-weight
-    loading, a bundled llama.cpp server mode (`--server`) and TUI chat, plus whisperfile for speech-to-text;
-    portability is the differentiator, not peak throughput.
+    GPU acceleration via Metal (macOS ARM64), CUDA (Linux, Windows), ROCm/HIP and Vulkan (Windows support
+    documented as best-effort), GGUF external-weight loading, a bundled llama.cpp server mode (`--server`)
+    and TUI chat, plus whisperfile for speech-to-text; portability is the differentiator, not peak throughput.
   confidence: medium
-  note: Optimized for portability and zero-install local inference rather than datacenter throughput. Because
-    it is built on llama.cpp it has none of the continuous-batching or tensor-parallel server scaling that
-    vLLM offers, which places it mid-tier on an axis whose frontier is the high-throughput serving engines.
+  note: Optimized for portability and zero-install local inference rather than datacenter serving throughput.
+    GPU acceleration covers Apple Metal, NVIDIA, AMD and Vulkan, with the AMD and Windows paths documented
+    as best-effort, which places it mid-tier among inference engines.
   basis_detail: single-file cross-platform local inference feature set and its build-migration changelog
-  last_verified: '2026-08-09'
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md
-    shows: combining llama.cpp with Cosmopolitan Libc into one framework...single-file executable...runs
-      locally on most operating systems and CPU architectures, with no installation; llamafile also includes
-      whisperfile
-    accessed: '2026-08-09'
+    shows: The README says the project combines llama.cpp with Cosmopolitan Libc into one framework that
+      collapses "all the complexity of LLMs down to" a single-file executable that runs "locally on most
+      operating systems and CPU architectures, with no installation".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ec541178249a9a080700f3bcfe638f78e4f19fdb149abed019a096197da8c254
+  - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md
+    shows: The README also describes "a single-file speech-to-text tool built on" whisper.cpp and says larger
+      models can run with "external weights/models(GGUF)".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: ec541178249a9a080700f3bcfe638f78e4f19fdb149abed019a096197da8c254
   - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README_0.10.0.md
-    shows: 'added Metal support: GPU on MacOS ARM64...Brought back cuda support on Linux...added TUI support:
-      you can now directly chat with the chosen LLM from the terminal, or run the llama.cpp server using
-      the --server parameter...What''s missing: GPU support for Windows (and for whisperfile)'
-    accessed: '2026-08-09'
+    shows: 'The 0.10.0 notes (a historical snapshot, superseded by the Supported Systems page) list "added
+      Metal support: GPU on MacOS ARM64", "added TUI support", the llama.cpp server via the "--server" parameter,
+      and, as then missing, "GPU support for Windows (and for whisperfile)".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 2c25302802ccb7a3efd6d29871d306e1aade35ff5a0b052fe96de8cb64f121e6
+  - url: https://docs.mozilla.ai/llamafile/reference/support
+    shows: The Supported Systems page says "llamafile ships GPU acceleration for Apple Metal, NVIDIA, AMD,
+      and Vulkan" and that "treat the AMD and Windows paths in particular as best-effort".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d12020ba840d530fad41447b101236857361b39bbe8af3159cdc3f60aabf269f

@@ -22,51 +22,60 @@ openness:
   note: K2-V2 ships Apache-2.0 weights, the complete TxT360 pretraining, midtraining and SFT data, training
     code and checkpoints, a fully reproducible open release at 70B.
   raw: weights:open(Apache-2.0);data:open(TxT360 pretraining + midtraining + SFT);code:open(k2v2_train);checkpoints:open;license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/LLM360/K2-V2
-    shows: '`license:apache-2.0` and `"gated":false`; card links Tech Report, Training Code and Evaluation
-      Code, and names Pretraining Data TxT360, Midtraining Data TxT360-Midas and SFT Data TxT360-3efforts;
-      a "Using specific checkpoints" section; repo now shown under the org IFM'
-    accessed: '2026-08-13'
+    shows: 'Card states "Apache 2.0", links Training Code ("github.com/llm360/k2v2_train"), names datasets
+      "Pretraining Data: TxT360", "Midtraining Data: TxT360-Midas" and "SFT Data: TxT360-3efforts", and
+      has a "Using specific checkpoints" section.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2a794ffb621dd3acb98496e56d6d4d6e05d40cd59c0620a8bb4891aacfc19da2
-    establishes: [weights, data, code, checkpoints, license]
-  - url: https://arxiv.org/abs/2512.06201
-    shows: '"K2-V2: A 360-Open, Reasoning-Enhanced LLM", submitted 5 Dec 2025, revised 26 Jan 2026'
-    accessed: '2026-08-13'
+    content_sha256: 398d492e533a5e146102dae46b30bd14197f939ced317cbf9afd36d5b7478c09
+    establishes:
+    - weights
+    - data
+    - code
+    - checkpoints
+    - license
+  - url: https://huggingface.co/api/models/LLM360/K2-V2
+    shows: Hub API lists the weight files as "pytorch_model-00001-of-00006.bin" through "pytorch_model-00006-of-00006.bin"
+      and tags the repo Apache-2.0 and ungated; the repo is served as IFM/K2-V2.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1a9dc871188b8cf153a88ad4e24a25f01c88b004b202892b85f810c22241afdf
+    content_sha256: 8963c3ea18003a2e016805f87281b1ecc2a1d6b0c6e7888a16d666bcac87e8a5
+    establishes:
+    - weights
+    - license
 adoption:
   level: 1
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: K2-V2 is included as a clean, fully open 70B exemplar rather than for its popularity, and downloads
-    across its two declared checkpoints remain niche, much like its K2 predecessor. The Hub repositories
-    now render under the IFM organization rather than LLM360, though the declared LLM360 URLs still resolve.
-  last_verified: '2026-08-14'
+  note: Adoption is measured as Hugging Face downloads across the two declared checkpoints, the base and
+    instruct models. Both see light use.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/api/models/LLM360/K2-V2
-    shows: 223 downloads in the trailing 30 days for K2-V2 (repo now served as IFM/K2-V2)
-    accessed: '2026-08-14'
+  - url: https://huggingface.co/LLM360/K2-V2
+    shows: Model page (now served as IFM/K2-V2) whose card reads "K2-V2 is our most capable fully open model
+      to date" shows a "Downloads last month" count of 388.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 95f46932511c135a6e3d521e9594742b87a180c326f65a2b3d2db2de338c5fb6
-  - url: https://huggingface.co/api/models/LLM360/K2-V2-Instruct
-    shows: 2,747 downloads in the trailing 30 days for K2-V2-Instruct (repo now served as IFM/K2-V2-Instruct)
-    accessed: '2026-08-14'
+    content_sha256: 398d492e533a5e146102dae46b30bd14197f939ced317cbf9afd36d5b7478c09
+  - url: https://huggingface.co/LLM360/K2-V2-Instruct
+    shows: Model page (now served as IFM/K2-V2-Instruct) whose card reads "fully open model to date, and
+      one of the strongest open-weight models" shows a "Downloads last month" count of 340.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6bc1e2bfaf5b1c78cd8e3ea900b81eb740a122d3e25fe35541e53b24b1262a5f
+    content_sha256: 2328be2ac4822f9a5ea82d9f9c6e1437171b577aa5fbc1698bc0e8f31668179c
 capability:
   score: 4
   basis: benchmark
   basis_detail: MMLU/GSM8K/reasoning
   value: Outperforms Qwen2.5-72B; approaches Qwen3-235B
   confidence: medium
-  note: The strongest fully open model by parameter scale (70B dense), with strong long-context and math
-    and reasoning results, though OLMo 3 still leads on fully open evaluations. The figures come from the
-    model card and technical report rather than an independent evaluation, hence medium confidence.
-  last_verified: '2026-08-13'
+  note: K2-V2's abstract describes it as the strongest fully open model, outperforming Qwen2.5-72B and approaching
+    Qwen3-235B; these are the authors' own figures rather than an independent evaluation. The same project
+    has since released the larger K2-Horizon family.
   sources:
   - url: https://arxiv.org/abs/2512.06201
     shows: 'abstract - "It stands as the strongest fully open model, rivals open-weight leaders in its

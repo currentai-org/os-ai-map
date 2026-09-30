@@ -16,7 +16,7 @@ openness:
   note: 'Fully MIT: the entire reimplementation is published, with no hosted tier, enterprise directory
     or license key, so the core is ungated as well as OSI-licensed.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/gusye1234/nano-graphrag
     shows: MIT license, full public source for the GraphRAG reimplementation, 4.0k stars and 424 forks;
@@ -26,6 +26,24 @@ openness:
     content_sha256: d68710a5a7c96e6fdf18d2cccb47e1d1578ac3152ea69c90aa744acfaf06387d
     establishes:
     - license
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/gusye1234/nano-graphrag/main/LICENSE
+    shows: 'The LICENSE file is the standard MIT text: "MIT License" and "Permission is hereby granted,
+      free of charge, to any person obtaining a copy" with no added restrictions.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e76d815cd0c0da9d13ab946ab7c07fb914b791f026822ded5e3477ed3d959cd9
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/gusye1234/nano-graphrag/main/readme.md
+    shows: 'The readme describes a fully public codebase: "nano-graphrag" is "about **1100 lines of code**"
+      and is "Small yet [**portable**](#Components)(faiss, neo4j, ollama...)"; searched the body for enterprise,
+      license key and hosted tier: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: db67894b9d96b98cbe24f1a1ff8c34003934ac78e399dc5b106999bec6b0176f
+    establishes:
     - source
     - core-gated
 adoption:
@@ -55,12 +73,12 @@ capability:
   value: global+local queries; KG community detection; pluggable stores; multi-provider LLMs; incremental insert;
     async+typed
   confidence: medium
-  note: Nano-graphrag trades breadth and polish for a small, readable core, and development has stalled
-    at 155 commits with no release since 2024. That leaves it one tier below GraphRAG, the fuller implementation
-    it reimplements.
+  note: Nano-graphrag offers a small, readable core with global and local queries, community detection,
+    pluggable stores and multiple LLM providers. It has less breadth and polish than GraphRAG, the fuller
+    implementation it reimplements, and development has stalled.
   relative_to: graphrag
   relation: one_below
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/gusye1234/nano-graphrag
     shows: '''a simple, easy-to-hack GraphRAG implementation''; global and local queries, community detection,
@@ -68,3 +86,10 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d68710a5a7c96e6fdf18d2cccb47e1d1578ac3152ea69c90aa744acfaf06387d
+  - url: https://raw.githubusercontent.com/gusye1234/nano-graphrag/main/readme.md
+    shows: The readme documents "# Perform global graphrag search", "# Perform local graphrag search", "supports
+      incremental insert", a built-in Neo4jStorage and DeepSeek and ollama LLM examples; it says the code
+      is "about **1100 lines of code**".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: db67894b9d96b98cbe24f1a1ff8c34003934ac78e399dc5b106999bec6b0176f

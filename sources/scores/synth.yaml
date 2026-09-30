@@ -13,16 +13,34 @@ openness:
   confidence: high
   note: Permissively licensed, ungated dataset with a documented card.
   raw: license:CC-BY-4.0(permissive);access:ungated;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/PleIAs/SYNTH
-    shows: License CC-BY-4.0, not gated, dataset card present
-    accessed: '2026-08-13'
+    shows: Dataset page renders the card, including "SYNTH is the first open generalist synthetic dataset"
+      and the license "cc-by-4.0".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ccedbb4b4d56a5d0897a296d444b1d440d65443cc03951fba26c50197ff10cc7
+    content_sha256: c397da1831d668e15a02ecb92030d3e9d8a9a92663ce86169b0ee789f83beef7
+    establishes:
+    - documentation
+  - url: https://huggingface.co/datasets/PleIAs/SYNTH/raw/main/README.md
+    shows: 'Raw card front matter sets "license: cc-by-4.0" and the card describes itself as "is the first
+      open generalist synthetic dataset for training small reasoning model end-to-end".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7b194cc2effe7fc4593d3b33be56222e73ce91874b4ec07af3a5ee66c4785870
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/PleIAs/SYNTH
+    shows: Hub API record for the dataset lists the license tag as "license:cc-by-4.0" and the card title
+      "SYNTH - generalist open data and environment"; its gated field is false, so downloads need no access
+      request.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: deef60811415e9fd5f6370c5fafc9d3fde14fd76c65bc472c36ae11bf6983afb
     establishes:
     - availability
-    - documentation
     - license
 adoption:
   level: 3
@@ -51,18 +69,20 @@ capability:
   basis_detail: results
   value: null
   confidence: medium
-  note: A novel fully-open synthetic reasoning corpus with real first-party end-to-end results (Baguettotron
-    best-in-class sub-350M), but single-lab evidence. The PleIAs post reports Baguettotron at 321M and Monad
-    at 56M, both trained end to end on SYNTH.
-  last_verified: '2026-08-13'
+  note: PleIAs trained Baguettotron (321M parameters) and Monad (56M) end to end on SYNTH and reports Baguettotron
+    as best in class among models under 350M. The evidence comes from a single lab, with no independent
+    evaluation.
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/blog/Pclanglais/synth-data-frontier
-    shows: PleIAs trained Baguettotron (321M) and Monad (56M) end-to-end on SYNTH, best-in-class for size
-    accessed: '2026-08-13'
+    shows: PleIAs post states "Baguettotron is currently the best in class across major industry benchmarks
+      (MMLU, gsm8k, HotPotQA)" and that "We trained two reasoners on SYNTH".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 21962cdbf6ea2188d48ef95f875162a0097d065f5ef57e09470c7bc95cbb9bf8
-  - url: https://huggingface.co/datasets/PleIAs/SYNTH
-    shows: 'SYNTH: ~79.6M samples, CC-BY-4.0, released Nov 2025'
-    accessed: '2026-08-13'
+    content_sha256: 808c4cfbe8a7d96bbf7eafb3fa1da0d98acfaec15feda09513ec4b2e969943f9
+  - url: https://huggingface.co/datasets/PleIAs/SYNTH/raw/main/README.md
+    shows: Card claims "SYNTH includes 79,648,272 individual text samples" and "achieving current best results
+      for size range on MMLU and other standard evaluation metrics".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ccedbb4b4d56a5d0897a296d444b1d440d65443cc03951fba26c50197ff10cc7
+    content_sha256: 7b194cc2effe7fc4593d3b33be56222e73ce91874b4ec07af3a5ee66c4785870

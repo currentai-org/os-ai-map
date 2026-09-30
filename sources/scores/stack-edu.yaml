@@ -12,15 +12,26 @@ openness:
   confidence: medium
   note: Ungated download with a card; the card defers the data license to The Stack v2's terms.
   raw: access:ungated;license:inherits-the-stack-v2;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceTB/stack-edu
-    shows: ungated access, card defers license to the-stack-v2
-    accessed: '2026-08-13'
+    shows: The dataset page renders the card, which says "Stack-Edu is a 125B token dataset of educational
+      code filtered from" The Stack v2 and "It is intended for Language Models training.", and its embedded
+      repo data reports gated false and private false.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: cc658e83a75d0f981bd0bb4781103bb78b74569203da5e513433f5c5cf6eaa59
+    content_sha256: 278b32e670d371eedf16585a9f60909e80f30b805bcc5e60e8560023b69ebc81
     establishes:
     - availability
+    - documentation
+  - url: https://huggingface.co/datasets/HuggingFaceTB/stack-edu/raw/main/README.md
+    shows: The raw card says "Please refer to [the-stack-v2](https://huggingface.co/datasets/bigcode/the-stack-v2-train-full-ids)
+      for the data license" and describes "Stack-Edu is a 125B token dataset of educational code filtered
+      from" The Stack v2.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fa264b336a946b87e05e540d449a51968149fbe1ab9b34af340f2d20fc290cd4
+    establishes:
     - documentation
     - license
 adoption:
@@ -49,17 +60,32 @@ capability:
   basis_detail: ablation
   value: null
   confidence: high
-  note: Leads controlled classifier ablations, beating StarCoder2Data on MultiPL-E across all languages
-    (SmolLM2 paper); current default in SmolLM3 and OLMo 3's Dolma 3.
-  last_verified: '2026-08-13'
+  note: Stack-Edu beat StarCoder2Data on MultiPL-E in the SmolLM2 paper's annealing ablations, and the dataset
+    card reports the gain across all its programming languages. The SmolLM3 pretraining mixture adds it
+    from its second stage, and it is one of the code sources in the Dolma 3 pool behind Olmo 3.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/html/2502.02737v1
-    shows: Stack-Edu consistently outperforms StarCoder2Data on MultiPL-E (Python 25.6 vs 20.7, etc.)
-    accessed: '2026-08-13'
+    shows: The SmolLM2 paper says "To evaluate Stack-Edu, we performed annealing ablations" and reports
+      Python MultiPL-E rising "20.7 → 25.6" after filtering.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: be627c24bbc0d0c4084648798877bced224b189e12ca4c03a2e25e277986fbbb
+    content_sha256: 6a1e79bcd781f4e49bf6b1302a2137463307a0851be149f4121df92fefcb893f
   - url: https://huggingface.co/blog/smollm3
-    shows: Stack-Edu included in the SmolLM3 pretraining mixture
-    accessed: '2026-08-13'
+    shows: 'The SmolLM3 blog lists a stage 2 mix with "Code: 15% - Adding Stack-Edu".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0bda4e81844892caf115c991b5f50c8ca57f4e4e42aeeefba89d1f5cd8065edc
+    content_sha256: e59a765b852c453e0d8c2e8f9feac67724e690d0f22552e1b521b8b91268ee8d
+  - url: https://huggingface.co/datasets/HuggingFaceTB/stack-edu/raw/main/README.md
+    shows: The card says "Stack-Edu shows consistent improvement over StarCoder2data on all the programming
+      languages on MultiPL-E benchmark." and was built from the "Selected 15 largest programming languages
+      from StarCoder2Data".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fa264b336a946b87e05e540d449a51968149fbe1ab9b34af340f2d20fc290cd4
+  - url: https://huggingface.co/datasets/allenai/dolma3_pool/raw/main/README.md
+    shows: The Dolma 3 pool card lists "StackEdu (Rebalanced) | GitHub code | 137B" among the pool sources
+      and links "https://huggingface.co/datasets/HuggingFaceTB/stack-edu".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7a43fb286ca2d57f6e44fbc109b7208a778d59a7f6e3c8a52ccd4f172d4e0ab1

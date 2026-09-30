@@ -20,26 +20,36 @@ openness:
     inherit its openness.
   raw: license:proprietary(platform);source:closed(platform);note:companion OSS framework DeepEval is Apache-2.0
     but is a separate registry-scope product;self-host:enterprise-tier
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://www.confident-ai.com/
-    shows: 'The platform''s own FAQ - "Can I self-host Confident AI? Yes. Confident AI offers a fully
-      self-hosted deployment option alongside the managed cloud. You can run the entire platform in your
-      own VPC or on-prem infrastructure ... Self-hosting is available on our Enterprise plan - book a demo
-      to get started." No source, repository or license for the platform appears anywhere on the page.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: d5c7cfa0224d33af5a770d97a928d588eaba3f40ffd9339d13dc23c4245add9d
-    establishes:
-    - license
-    - source
-    - self-host
   - url: https://github.com/confident-ai/deepeval
     shows: The separate framework. GitHub resolves LICENSE.md to Apache-2.0 and the README states "DeepEval
       is licensed under Apache 2.0". This is the companion product, not the platform scored here.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b30ab51a3d103da62d2af93fb6cabac0d90d22e894e58ec7d94ac25f83c9f3ec
+  - url: https://www.confident-ai.com/
+    shows: 'Home FAQ: "Yes. Confident AI offers a fully self-hosted deployment option alongside the managed
+      cloud." and "Self-hosting is available on our Enterprise plan". Searched the body for a source repository
+      or license for the platform: none, only the DeepEval and DeepTeam frameworks are called "open-source".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1cc5d2164b1c4ec01f0d72dc4768e6319aa4ca19e4b7d9fab85b4bae29238bc2
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://www.confident-ai.com/docs/self-hosting
+    shows: 'Self-hosting docs: "Self-hosting runs the entire Confident AI platform inside your own cloud
+      account." and "to get a license key and access to the container images." so deployment needs a vendor
+      license key and images. Searched for open source and source code: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 062b6e2f1fc1d05859127eb83f2adc775f4203e1016f4219006db3250c00c7f9
+    establishes:
+    - license
+    - source
+    - self-host
 adoption:
   level: 3
   signal_type: reported_traction
@@ -49,21 +59,19 @@ adoption:
     user figures for the platform itself, so the reading reflects a disclosed claim rather than a measured
     count. Interest in DeepEval, the companion open-source framework that drives platform signups, corroborates
     the claim.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://www.confident-ai.com/
-    shows: '"TRUSTED BY 500+ LEADING AI COMPANIES" as a banner, with named testimonials from Sean Austin
-      (Chief AI Officer, Humach) and an unnamed Senior Director of Engineering at a Fortune 500 medical
-      device company. Community stats on the page read "GITHUB 14K+ STARS" and "DISCORD 2,500+ MEMBERS",
-      both dated 12/01/25 on the page itself. No user or account count for the platform appears.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: d5c7cfa0224d33af5a770d97a928d588eaba3f40ffd9339d13dc23c4245add9d
   - url: https://github.com/confident-ai/deepeval
     shows: 17,578 stars on the DeepEval repository.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b30ab51a3d103da62d2af93fb6cabac0d90d22e894e58ec7d94ac25f83c9f3ec
+  - url: https://www.confident-ai.com/
+    shows: Homepage banner "TRUSTED BY 500+ LEADING AI COMPANIES" with community stats "14K+ STARS" and
+      "2,500+ MEMBERS". No user or account count for the platform appears.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1cc5d2164b1c4ec01f0d72dc4768e6319aa4ca19e4b7d9fab85b4bae29238bc2
 capability:
   score: 4
   basis: feature_matrix
@@ -77,14 +85,19 @@ capability:
   note: Confident AI's evaluation metric library, more than fifty DeepEval methods including G-Eval and
     LLM-as-judge, and its OWASP-aligned red-teaming layer stand out, but the platform's overall breadth
     keeps it level with Langfuse rather than ahead of the category's open-source tools.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.confident-ai.com/
-    shows: 'Product menu - LLM Evaluation, LLM Observability ("Trace, monitor, and alert on production LLM
-      systems"), AI Red Teaming ("Stress-test LLM apps against adversarial attacks") and AI Governance.
-      The platform is described as layering "collaboration, dataset management, tracing, real-time
-      monitoring, and dashboards" on the open framework, and integrating into CI so that "you can run
-      regression tests on every pull request".'
-    accessed: '2026-08-13'
+    shows: 'Homepage FAQ: "DeepEval is our open-source evaluation framework for running LLM tests locally
+      or in CI." Product menu: "Trace, monitor, and alert on production LLM systems." and "Stress-test LLM
+      apps against adversarial attacks." and CI "you can run regression tests on every pull request".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d5c7cfa0224d33af5a770d97a928d588eaba3f40ffd9339d13dc23c4245add9d
+    content_sha256: 1cc5d2164b1c4ec01f0d72dc4768e6319aa4ca19e4b7d9fab85b4bae29238bc2
+  - url: https://www.confident-ai.com/docs
+    shows: Docs home lists annotation queues, dataset management and red teaming sections; text reads "DeepEval
+      is the open-source framework for evaluation and local tracing." and "Trace, monitor, and alert on
+      production LLM systems."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d7b9bf5ac1f62b84483e0d9114d846edc87fbde8d31fe1004736d0727fbacb47

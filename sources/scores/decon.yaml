@@ -20,8 +20,26 @@ openness:
   note: Fully OSI-licensed (Apache-2.0), full source public.
   raw: license:Apache-2.0(OSI);source:public(allenai/decon);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/allenai/decon/main/LICENSE
+    shows: LICENSE text is the Apache License, "Apache License" "Version 2.0, January 2004", with "TERMS
+      AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 5b8ddfadb2d72c64c066821fdd424f5024ce2555e2808fb2bfb0856e65e65c7d
+  - url: https://raw.githubusercontent.com/allenai/decon/main/README.md
+    shows: 'README describes building from the published repo with "git clone https://github.com/allenai/decon"
+      and "cargo run --release -- detect --training-dir tests/fixtures/training/", plus a server mode; searched
+      the body for enterprise, license key, paid and premium: none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: d85e1eed763781ec01b923008c07a1bb0547f1b8cdc6f92b635c467f6b9fee68
   - url: https://github.com/allenai/decon/blob/main/LICENSE
     shows: Apache License Version 2.0 text
     accessed: '2026-08-13'
@@ -29,16 +47,6 @@ openness:
     - license
     http_status: 200
     content_sha256: 5b8ddfadb2d72c64c066821fdd424f5024ce2555e2808fb2bfb0856e65e65c7d
-  - url: https://raw.githubusercontent.com/allenai/decon/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: d85e1eed763781ec01b923008c07a1bb0547f1b8cdc6f92b635c467f6b9fee68
 adoption:
   level: 1
   reach: <1K stars
@@ -65,12 +73,12 @@ capability:
   basis: feature_matrix
   value: Flags/removes train docs overlapping eval benchmarks; focused decontamination tool.
   confidence: medium
-  note: Covers one stage of the Dolma 3 toolchain, decontamination, rather than a full pipeline.
-  last_verified: '2026-08-13'
+  note: Covers a single task, decontamination, rather than a full pipeline.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/allenai/decon/main/README.md
-    shows: README documents token-based detection of training documents overlapping eval instances,
-      producing contamination reports and cleaned datasets
-    accessed: '2026-08-13'
+    shows: README states "Decon identifies documents contaminated with eval instances." and "Decon can produce
+      contamination reports and cleaned datasets." using "token based sampling and counting methods".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: d85e1eed763781ec01b923008c07a1bb0547f1b8cdc6f92b635c467f6b9fee68

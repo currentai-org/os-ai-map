@@ -10,21 +10,23 @@ openness:
       value: public
     core-gated:
       value: gated
-      detail: RBAC, SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are
-        switched on at runtime by MASTRA_LICENSE_KEY, validated against the Mastra license server
+      detail: RBAC, SSO, FGA and the agent builder live in ee/-scoped directories under the Mastra Enterprise
+        License, and the auth features are switched on at runtime by MASTRA_LICENSE_KEY, validated against
+        the Mastra license server
     free_text:
     - ee/-auth-directories-under-Mastra-Enterprise-License
     - Mastra-Platform-hosted-tier-commercial
   confidence: high
-  note: Mastra's framework is Apache-2.0 outside a narrow ee/ directory that carries RBAC, SSO and fine-grained
-    authorization, which ships under the separate Mastra Enterprise License and only activates once MASTRA_LICENSE_KEY
-    validates against Mastra's license server. Because that is a real feature withheld from the published
-    source behind a license key, not merely a hosted platform sold beside it, Mastra is open core rather
-    than fully open source.
-  last_verified: '2026-08-12'
+  note: Mastra's framework is Apache-2.0 outside a set of ee/ directories that carry RBAC, SSO, fine-grained
+    authorization and the agent builder under the separate Mastra Enterprise License, with the auth features
+    activated only once MASTRA_LICENSE_KEY validates against Mastra's license server. Because those are
+    real features withheld from the open license, not merely a hosted platform sold beside it, Mastra is
+    open core rather than fully open source.
+  last_verified: '2026-09-29'
   raw: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated(RBAC,
-    SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are switched on at
-    runtime by MASTRA_LICENSE_KEY, validated against the Mastra license server)
+    SSO, FGA and the agent builder live in ee/-scoped directories under the Mastra Enterprise License, and
+    the auth features are switched on at runtime by MASTRA_LICENSE_KEY, validated against the Mastra license
+    server)
   sources:
   - url: https://github.com/mastra-ai/mastra/blob/main/LICENSE.md
     shows: 'LICENSE.md: "All content that resides under any directory named ''ee/'' within this repository"
@@ -38,54 +40,57 @@ openness:
     establishes:
     - license
     - core-gated
-  - url: https://registry.npmjs.org/@mastra/core
-    shows: 'Registry metadata declares `license: Apache-2.0`, latest 1.57.0, confirming the framework still
-      ships to consumers under the OSI license rather than only being licensed that way in-repo. The npmjs.com
-      package page answers 403 to any non-browser fetch behind a Cloudflare interstitial; this registry
-      endpoint serves the same fact and stays fetchable.'
-    accessed: '2026-08-12'
+  - url: https://raw.githubusercontent.com/mastra-ai/mastra/main/LICENSE.md
+    shows: 'The root LICENSE.md maps the repository to two licenses: "All content that resides under any
+      directory named" ee/ directories "is licensed under the license defined in" ee/LICENSE, while "Content
+      outside of the above-mentioned directories or restrictions is" under the Apache License 2.0.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a4361185051f473caffd3e3cd222e17f108be4f873c688dca43548149dbba9c1
+    content_sha256: f0351b469d1548e547882f01d2486a90f6bd0ff3c89defec841bbf5641265776
     establishes:
     - license
-  - url: https://mastra.ai/
-    shows: Site FAQ states "Mastra's core framework is open source under the Apache 2.0 license. Enterprise
-      features are source-available under the Mastra Enterprise License", and describes Mastra Cloud as
-      the hosted commercial tier you can "deploy the same app to" after running it locally - so the published
-      framework is what self-hosts.
-    accessed: '2026-07-30'
-    http_status: 200
-    content_sha256: c1458faa3a17755659530882810b981eaa4849f8e2135f48e2c7efe7cc8ce82b
-    establishes:
     - source
     - core-gated
-  - url: https://api.github.com/repos/mastra-ai/mastra/git/trees/main?recursive=1
-    shows: Full untruncated recursive tree, 16,790 entries. A top-level ee/LICENSE sits beside the root
-      LICENSE.md, and the ee/-named source lives at packages/_internals/auth/src/ee/ (capabilities.ts, fga-check.ts,
-      license.ts, defaults/rbac/) re-exported through packages/core/src/auth/ee/ and packages/editor/src/ee/.
-    accessed: '2026-08-12'
+  - url: https://registry.npmjs.org/@mastra/core
+    shows: Registry metadata for @mastra/core reads "bugs":{"url":"https://github.com/mastra-ai/mastra/issues"},"license":"Apache-2.0","homepage":"https://mastra.ai",
+      so the published package carries the OSI license.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6aba676525def05671991978ba682502d6edc429084b9a79c823a88ae8aa46cc
+    content_sha256: 88a14bca666023bcfbd08e8d747fb72c4cc38f6ca084023d7ddc5f0c50b0a0b8
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mastra-ai/mastra/main/README.md
+    shows: The README states "This repository uses a dual-license model:" Apache-2.0 for the core framework
+      and the Mastra Enterprise License for ee/ directories that "require a valid enterprise license for
+      production use".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3cf7ca8d2c00593f8f452fc1ac1f75f8269f1df9c98cbaca59409271a4ffa7e8
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://mastra.ai/
+    shows: The site FAQ says "core framework is open source under the Apache 2.0 license. Enterprise features
+      are source-available under the Mastra Enterprise License".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5aec737515ffdf103e275ee2e44362e4a8ddad9eb6e4baa0d0f0ba2823aee549
     establishes:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/mastra-ai/mastra/main/ee/LICENSE
-    shows: '"Mastra Enterprise Edition (EE) License". The Software "may only be used in production if you
-      (and any entity that you represent) have entered into, and remain in compliance with, a written agreement
-      with Kepler Software, Inc. explicitly permitting the use of the Software in production", and it is
-      otherwise "forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software".'
-    accessed: '2026-08-12'
+    shows: The ee/LICENSE states "Enterprise Features are made available in source-available form. They
+      are not open source." and bars Production Use without a license.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d949aa063ea2a9a626d9f635ea44c212edd780875568f03d092315522c41da58
+    content_sha256: 96bc23758db3694296e7b91774b0c7109a3bb8394cceac58a058080ecf8d32cc
     establishes:
     - core-gated
   - url: https://raw.githubusercontent.com/mastra-ai/mastra/main/packages/_internals/auth/src/ee/license.ts
-    shows: '"License validation for EE features." Validation is a POST to {MASTRA_LICENSE_URL}/validate;
-      "No license key configured -> EE features disabled"; "Server says invalid/revoked/expired -> EE features
-      disabled". The success payload carries "Feature entitlements granted by the license (e.g. rbac, sso,
-      fga)" and a planTier of teams or enterprise. MASTRA_LICENSE_KEY is the primary env var, MASTRA_EE_LICENSE
-      a legacy alias.'
-    accessed: '2026-08-12'
+    shows: The license.ts source opens "License validation for EE features." and treats "Server says invalid/revoked/expired"
+      as EE features disabled, so a key checked against the license server switches the features on.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 774f3dede2eeeceb7e0f212021fb25ea3df1a8bb9285d4f8b54bb47f3c85d99f
     establishes:
@@ -128,12 +133,12 @@ capability:
     result exists for the framework, so the score reads from features rather than a measurement.
   relative_to: langchain
   relation: at
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://mastra.ai/
-    shows: mastra.ai describes agents with tools, graph workflows with explicit control flow, memory with
-      semantic recall, model routing across 90+ providers, evals, tracing and human-in-the-loop, with Observability,
-      Studio and Agent Builder listed as separate platform products; no benchmark figure.
-    accessed: '2026-08-13'
+    shows: The site describes "Mastra workflows also support human-in-the-loop functionality", "model routing
+      connects to 90+ providers through one standard interface" and memory with "semantic recall"; no benchmark
+      figure is published on the page.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4626f4d57944be8872ede7dfa440beeb933c04b65691cdca6e9d7b6689c6f2e3
+    content_sha256: 5aec737515ffdf103e275ee2e44362e4a8ddad9eb6e4baa0d0f0ba2823aee549

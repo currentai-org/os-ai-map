@@ -23,46 +23,92 @@ openness:
     corpus, the Megatron-DeepSpeed training code, and intermediate checkpoints as repository branches, matching
     OLMo and Apertus''s openness tier. The corpus itself is CC-BY-NC-SA-4.0, published and ungated but not
     commercially reusable, short of the authors'' own OSI-compliance claim.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0);data:open(Lucie-Training-Dataset on HF, redistributed in training form);code:open(Lucie-Training
     Megatron-DeepSpeed fork);checkpoints:open(intermediate HF revisions);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/OpenLLM-France/Lucie-Training-Dataset
-    shows: '`gated: false`, `private: false`, 2,823 downloads, 38 likes. Card license is `cc-by-nc-sa-4.0`
-      - the corpus is published and ungated, but non-commercial. See the note.'
-    accessed: '2026-08-13'
+    shows: 'Hugging Face API record for the pretraining corpus: "The Lucie Training Dataset is a curated
+      collection of text data", tagged "license:cc-by-nc-sa-4.0" and "format:parquet"; gated and private
+      are both false. The corpus is published and ungated, but under a non-commercial license.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1528dd7f78948659ddb4fc5a93d5b623543a76076a5bc3d3adaff3e2fd6a973b
-    establishes: [data]
+    content_sha256: 52be7eeab9d1f32f38d0c0689ca9a0bf30c2d0d3ca9d6e8cb252a6949416d253
+    establishes:
+    - data
   - url: https://huggingface.co/OpenLLM-France/Lucie-7B
-    shows: 'License apache-2.0, safetensors weights, links to Lucie-Training-Dataset, and intermediate
-      checkpoints as repo branches (`step0005000`, `step0010000`, ...); `isGated: false`.'
-    accessed: '2026-08-13'
+    shows: 'Model page: "Checkpoints at several training steps are available under revision tags", loadable
+      via the revision parameter such as "step0753851"; the embedded repo data records gated as false. Searched
+      for agree to share and access request: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1b15f5ded2a0e3db63430c03e4ce4e0ef46e867d91e624dacbc73e7432f7fdac
-    establishes: [weights, license, checkpoints]
+    content_sha256: f119d1ea8b6ef4ae585d35f8b06e7282d12fbfa7e1f5c67ef4365add1aef5555
+    establishes:
+    - weights
+    - checkpoints
   - url: https://huggingface.co/datasets/OpenLLM-France/Lucie-Training-Dataset
-    shows: 'Dataset page for the multilingual pretraining corpus: `isGated: false`, `isPrivate: false`,
-      Parquet format present. The URL needs its `/datasets/` path segment - without it the Hub resolves
-      the path as a model repo and answers 401.'
-    accessed: '2026-08-13'
+    shows: 'Dataset page for the multilingual pretraining corpus: "The Lucie Training Dataset is a curated
+      collection of text data"; the embedded repo data records gated as false. The URL needs its /datasets/
+      path segment - without it the Hub resolves the path as a model repo.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 60cb981d75e94530c0f674f95661d4377e7c774c37f4fb945d56321a52c4cdeb
+    content_sha256: 09fbca1ccaed7cc20a80cd937bffb64f513079d923a72f5e27fc9065e66ddcab
     establishes:
     - data
   - url: https://github.com/OpenLLM-France/Lucie-Training
-    shows: Repository described as "Code for continual pretraining of LUCIE" - the Megatron-DeepSpeed
-      fork used for the run.
+    shows: Repository described as "Code for continual pretraining of LUCIE" - the Megatron-DeepSpeed fork
+      used for the run.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 10879feb43983ff63bdaa722b9a059dd06be5e3909b183840e1f56a3fd3b2e61
-    establishes: [code]
+    establishes:
+    - code
   - url: https://arxiv.org/abs/2503.12294
-    shows: Paper claiming OSI-compliant open resources for multilingual generation. The claim is the
-      authors', which is why it establishes no dimension by itself.
-    accessed: '2026-08-13'
+    shows: 'Abstract: "model training and data preparation code is available on GitHub" and "This makes
+      Lucie-7B one of the first OSI compliant language models according to the new OSI definition". The
+      compliance claim is the authors'' own.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 3bcd402a6267745a12e4b6a8d609fee944bc12d837cf9a7019dbe82ad9512ce8
+    establishes:
+    - code
+  - url: https://huggingface.co/OpenLLM-France/Lucie-7B/raw/main/README.md
+    shows: 'Raw model card: front matter "license: apache-2.0"; "The training code is available at" the
+      Lucie-Training GitHub repository, "It is based on [this fork of Megatron-DeepSpeed]"; "Intermediate
+      checkpoints can be loaded using the"; "Optimizer checkpoints are available for download".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0cdc56c78884c1aa8db4cc5e98ba392dd6c15d27915c88cbb5cccba5dfcf5721
+    establishes:
+    - weights
+    - code
+    - checkpoints
+    - license
+  - url: https://huggingface.co/api/models/OpenLLM-France/Lucie-7B
+    shows: Hugging Face API record tagged "license:apache-2.0" and "dataset:OpenLLM-France/Lucie-Training-Dataset",
+      with weight shards such as "model-00001-of-00003.safetensors"; gated and private are false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7dd47b129af68fcf2ecdcfd27d0ecb26250dc261403bc535cf019836c07f077e
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/OpenLLM-France/Lucie-7B/refs
+    shows: Refs listing for OpenLLM-France/Lucie-7B with intermediate training branches such as "refs/heads/extension_step0001220"
+      and "refs/heads/step0753851".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 32fd2eed675ce76d065710c9e4fce96a40442cc2a2933c2a1bc7d2b4fdef18d8
+    establishes:
+    - checkpoints
+  - url: https://huggingface.co/OpenLLM-France/Lucie-7B/raw/main/LICENSE.md
+    shows: 'LICENSE.md in the model repo carries the Apache License 2.0: "title: Apache License 2.0", "spdx-id:
+      Apache-2.0".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4b07cb7bcf39c9f379866e25b0e3f6738a683511bd639a83b65969cf80b48925
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -96,15 +142,25 @@ capability:
   note: Lucie-7B is a 7B multilingual base prioritizing French cultural representation and data-rights constraints,
     competitive for its size and language mix on French/English evaluations in the paper. It remains well
     below the 2026 open-weight frontier of trillion-parameter mixture-of-experts models.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2503.12294
-    shows: Lucie-7B / Instruct eval narrative vs contemporary open baselines
-    accessed: '2026-08-13'
+    shows: 'Abstract: the instruct models "achieve promising results compared to state-of-the-art models",
+      presented as "an initial step toward developing more performant, aligned models in the near future".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 3bcd402a6267745a12e4b6a8d609fee944bc12d837cf9a7019dbe82ad9512ce8
   - url: https://huggingface.co/OpenLLM-France/Lucie-7B
-    shows: training/eval learning curves and multilingual benchmark plots on the model card
-    accessed: '2026-08-13'
+    shows: 'Model card evaluation section: "Multiple evaluations were conducted during Lucie-7B''s training
+      to assess its performance on standard benchmarks", with French, English and multilingual ARC learning-curve
+      figures.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1b15f5ded2a0e3db63430c03e4ce4e0ef46e867d91e624dacbc73e7432f7fdac
+    content_sha256: f119d1ea8b6ef4ae585d35f8b06e7282d12fbfa7e1f5c67ef4365add1aef5555
+  - url: https://huggingface.co/OpenLLM-France/Lucie-7B/raw/main/README.md
+    shows: 'Raw model card: "Main results are summarized in the following figures" for French, English and
+      multilingual ARC, plus needle-in-a-haystack plots; "Lucie-7B has the same neural network architecture
+      as" Llama 3.1 with 6.7 billion parameters.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0cdc56c78884c1aa8db4cc5e98ba392dd6c15d27915c88cbb5cccba5dfcf5721

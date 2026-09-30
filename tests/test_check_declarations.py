@@ -77,14 +77,47 @@ def test_case_and_git_suffix_do_not_make_a_divergence(tmp_path):
     assert divergent_citations(root) == []
 
 
-def test_the_real_corpus_divergences_are_all_verified_renames():
+def test_a_raw_file_url_names_its_repository(tmp_path):
+    """A README or LICENSE cited by its raw.githubusercontent.com URL names the same repository
+    as its github.com page. Matching only the page let apify's finding vanish when its Crawlee
+    evidence was re-cited by raw URL, which hid the gap without resolving it."""
+    score = CITES.replace(
+        "https://github.com/acme/thing", "https://raw.githubusercontent.com/acme/thing/main/README.md"
+    )
+    root = _write(tmp_path, "name: p\ntype: software\n", score)
+    assert undeclared_citations(root) == [("p", "acme/thing", "openness")]
+    declared = _write(
+        tmp_path / "declared", "name: p\ntype: software\ngithub:\n- url: https://github.com/acme/thing\n", score
+    )
+    assert undeclared_citations(declared) == []
+
+
+def test_one_repository_cited_twice_is_one_finding(tmp_path):
+    """The page and a raw file of one repository on one axis are one gap, so keeping a
+    github.com citation beside a raw one does not double the count."""
+    score = CITES + """  - url: https://raw.githubusercontent.com/acme/thing/main/LICENSE
+    establishes: [source]
+"""
+    root = _write(tmp_path, "name: p\ntype: software\n", score)
+    assert undeclared_citations(root) == [("p", "acme/thing", "openness")]
+
+
+def test_the_real_corpus_divergences_are_renames():
     """Seven products cite the path a repository was renamed FROM. Each was checked against
     the GitHub API on 2026-08-30 and redirects to the declared repository, so none is a wrong
     artifact - the remedy is refreshing the citation or recording the move under
-    artifact_exceptions.github_moved, not declaring a second repo."""
+    artifact_exceptions.github_moved, not declaring a second repo.
+
+    Two more surfaced when raw file URLs began to count (#773), and neither is verified yet:
+    `e2b-sandbox` cites e2b-dev/runtime beside its declared e2b-dev/infra, whose README calls
+    itself "the open-source runtime", and `sandbox-runtime` cites anthropics/sandbox-runtime
+    beside its declared anthropic-experimental/sandbox-runtime, with the two package.json
+    citations naming opposite paths. Both look like moves; confirm against the API before
+    recording either one.
+    """
     assert {f[0] for f in divergent_citations(ROOT)} == {
-        "fastmcp", "giskard", "llama-factory", "nemo-guardrails", "opencode",
-        "torchtune", "verl",
+        "e2b-sandbox", "fastmcp", "giskard", "llama-factory", "nemo-guardrails", "opencode",
+        "sandbox-runtime", "torchtune", "verl",
     }
 
 
@@ -94,11 +127,20 @@ def test_the_real_corpus_holds_at_its_known_count():
     Every finding is a product whose adoption route would change if the repository were
     declared, which is the decision this check cannot make for anyone. Lower it as they are
     resolved; when it reaches zero the check becomes a build.validate error.
+
+    Counting raw file URLs (#773) raised it from 8 citations to 25 across 23 products, because
+    kaggle-models and vals-ai each cite two repositories. Most of the new ones are a closed
+    hosted service citing its own client SDK, docs or runner repository to show that the
+    service's code is NOT there. That is evidence against open source, not a missing
+    declaration. Only agent2agent-protocol and model-context-protocol cite their own source.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 8, [f[0] for f in findings]
+    assert len(findings) == 25, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "apify", "aws-neuron", "google-cloud-run", "lamini", "predibase",
-        "qualcomm-ai-engine-direct", "replit-agent-code-execution-api",
-        "text-generation-inference",
+        "agent2agent-protocol", "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
+        "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
+        "huggingface-hub-platform", "kaggle-models", "lamini", "model-context-protocol",
+        "modelscope", "ollama-library", "patronus-evaluation-platform", "predibase",
+        "qualcomm-ai-engine-direct", "ragaai-catalyst", "replit-agent-code-execution-api",
+        "tavily-search-api", "text-generation-inference", "vals-ai",
     }

@@ -14,38 +14,52 @@ openness:
   note: 'Proprietary, SaaS-only consumer app: no source, no self-hosting. The closed counterpart to the
     open chat interfaces in this category.'
   raw: source:closed;self-host:none;license:proprietary(SaaS app + API)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://claude.com/product/overview
-    shows: Anthropic's proprietary Claude consumer product page (artifacts, projects, web search, code
-      execution)
-    accessed: '2026-08-13'
+    shows: 'The product page describes a hosted assistant: "Use Claude on the web, on desktop, or on your
+      phone." and "Claude plans are available for personal, team, and enterprise use and all offer varying
+      usage and cost". Searched the body for source code, on-prem and open source offerings for the chat
+      app: none (the only self-hosting mention concerns Claude Code sessions).'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d66d5e0bed4e2f5aba1a90f5569816a23b00249624e4e0954512b7a89feb46f1
-    establishes: [license, source, self-host]
+    content_sha256: 4ad66ba195488739f54f1bd297817705db4b542ed2552447f4f77f0982f48712
+    establishes:
+    - self-host
+  - url: https://www.anthropic.com/legal/consumer-terms
+    shows: 'Consumer Terms of Service for the Claude services; the prohibited-uses list includes "To decompile,
+      reverse engineer, disassemble, or otherwise reduce our Services to human-readable form, except when
+      these restrictions are prohibited by applicable law." Searched the body for a source-code or open-source
+      license grant to the Services: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 611fd85fcf4e2d3a82ef8bd8ba25ef48d05569d5110dd763368dd884382c592d
+    establishes:
+    - license
+    - source
 adoption:
   level: 5
   reach: '>10M users'
   signal_type: active_users
   confidence: low
   note: Anthropic publishes no official monthly-active-user count, so this reading relies on third-party
-    market-research estimates rather than a vendor disclosure. Those estimates place Claude among mass-market
-    consumer chat products, well behind estimates for ChatGPT and the Gemini app, which keeps confidence
-    low despite clearing the mass-market threshold.
-  last_verified: '2026-08-14'
+    market-research estimates rather than a vendor disclosure.
+  last_verified: '2026-09-29'
   sources:
   - url: https://claude.com/product/overview
-    shows: consumer chat product exists (web/desktop/mobile apps)
-    accessed: '2026-08-14'
+    shows: 'The product page describes the consumer app: "Use Claude on the web, on desktop, or on your
+      phone." No user count is published on the page (searched the body for monthly active users and million
+      users: none).'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 272b79c349f6ad983e5c91c2c98fc3ba4b1fa036dc0a7c8170120c13ae4db487
+    content_sha256: 4ad66ba195488739f54f1bd297817705db4b542ed2552447f4f77f0982f48712
   - url: https://seoprofy.com/blog/claude-ai-statistics/
-    shows: '"Recent estimates suggest that Claude has around 18.9 million monthly active users
-      worldwide"; "According to AICPB data, approximately 7.38 million of these" are on mobile; and
-      "MAU levels have largely plateaued" since roughly 18.8M in November 2024'
-    accessed: '2026-08-14'
+    shows: 'Third-party statistics page: "suggest that Claude has around 18.9 million monthly active users
+      worldwide"; "approximately 7.38 million of these users come from the mobile app"; "MAU levels have
+      largely plateaued, indicating a period of stabilization after initial growth."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7dcbb1f577c8170a943a7c997c93713e1466385784dce737c268909a475b5a61
+    content_sha256: 37223713b92f9fb1aef1f2abde3c4501c278953b98d17bcc38ff447d4ade84af
   - url: https://www.demandsage.com/claude-ai-statistics/
     shows: third-party estimate ~18.9M web MAU early 2026 (corroborating, not primary). Not re-fetchable
       - the site answers HTTP 403 - so it stands as a document rather than a live read.
@@ -53,17 +67,24 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: 'model breadth: frontier (Opus/Sonnet/Haiku); RAG/file upload: yes (PDF/Word/Excel/image); multimodal:
-    yes (vision, voice mode); tools/plugins: yes (MCP connectors, web search, code execution, Google Workspace);
-    artifacts + projects; multi-user: yes (Team/Enterprise)'
+  value: 'model breadth: frontier (Opus/Sonnet/Haiku); RAG/file upload: yes (documents, PDF, CSV, images);
+    multimodal: yes (vision, voice); tools/plugins: yes (connectors and custom MCPs, web search, plugins
+    marketplace, skills, browser and computer use); artifacts + projects + memory + scheduled tasks; multi-user:
+    yes (Team/Enterprise)'
   confidence: high
-  note: 'A frontier consumer chat product for this category: Artifacts, Projects, web search, code execution,
-    MCP connectors, voice, multimodal file analysis, and Team and Enterprise tiers. Among the most capable
-    chat surfaces here.'
-  last_verified: '2026-08-13'
+  note: Claude.ai bundles Projects, Artifacts, web search, voice, memory, scheduled tasks, connectors and
+    custom MCPs, skills and plugins, and file and image upload, and is offered on Team and Enterprise plans.
+  last_verified: '2026-09-29'
   sources:
   - url: https://claude.com/product/overview
-    shows: Artifacts, Projects, Web Search, Voice, Code Execution, integrations, multimodal upload
-    accessed: '2026-08-13'
+    shows: Product page lists "Keep context, instructions, and files organized by project." (Projects),
+      "Search the web for current information." (web search), "Talk to Claude instead of typing." (voice),
+      "Remember context from past conversations." (memory), "Build charts, diagrams, and interactive visuals
+      right in the conversation." (Artifacts), and "Set up work Claude runs again on a schedule you choose."
+      (scheduled tasks). It also states "Connect the apps you already use, including interactive MCP apps."
+      and its capabilities navigation lists "Custom connectors and MCPs", "Skills", "Plugins", "Browser
+      use" and "Computer use". For team use it states "Claude plans are available for personal, team, and
+      enterprise use".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d66d5e0bed4e2f5aba1a90f5569816a23b00249624e4e0954512b7a89feb46f1
+    content_sha256: 4ad66ba195488739f54f1bd297817705db4b542ed2552447f4f77f0982f48712

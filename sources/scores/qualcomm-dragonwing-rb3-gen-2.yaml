@@ -29,13 +29,11 @@ openness:
       raw: board (96Boards development-kit board)
   confidence: high
   note: Qualcomm publishes a product brief and an open Linux/Android SDK, including the BSD-3-Clause AI
-    Hub Models repository. But the kit's own board files are not published - it only complies with the 96Boards
-    mezzanine interface standard - and the QCS6490 silicon stays closed, sold through distributors rather
-    than at open retail.
+    Hub Models repository, though that license does not cover its Hexagon tooling. The kit's own board files
+    are not published; it only follows the 96Boards mezzanine interface standard.
   raw: schematics:partial (96Boards mezzanine standard);toolchain:open (open Qualcomm Linux + AI Hub);datasheets:brief
     (public brief);blobs:required (proprietary silicon + firmware);retail:distributor (via Thundercomm/distributors);form_factor:board
     (96Boards development-kit board)
-  last_verified: '2026-08-14'
   sources:
   - url: https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit
     shows: 'official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack. Not re-fetchable
@@ -71,10 +69,9 @@ adoption:
   reach: niche
   signal_type: reported_traction
   confidence: medium
-  note: Qualcomm sells the kit through Thundercomm and other distributors, and Edge Impulse gives it first-class
-    support alongside its other Dragonwing boards. That points to an established but specialist developer
+  note: Edge Impulse fully supports the kit alongside its other Dragonwing boards, and other QCS6490 kits
+    come from Advantech, Tria, Thundercomm and Quectel. That points to an established but specialist developer
     base rather than mass-market reach.
-  last_verified: '2026-08-13'
   sources:
   - url: https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit
     shows: '"It''s fully supported by Edge Impulse - you''ll be able to sample raw data, build models",
@@ -85,18 +82,19 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 12 TOPS (Hexagon NPU); QCS6490 octa-core; multi-camera vision
+  value: 12 TOPS Hexagon 770 NPU; Kryo 670 CPU; two built-in cameras
   confidence: high
-  note: The QCS6490's Hexagon NPU delivers 12 dense TOPS with an octa-core CPU and dual-ISP vision, above
-    the 6 TOPS RK3588 boards in this category and below the Jetson Orin NX.
-  last_verified: '2026-08-13'
+  note: The QCS6490's Hexagon NPU delivers 12 TOPS, above the 6 TOPS RK3588 boards in this category and
+    below the Jetson Orin NX.
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit
-    shows: '"based around the QCS6490 SoC. It has two built-in cameras, a Kryo 670 CPU, Adreno 643L GPU
-      and 12 TOPS Hexagon 770 NPU"'
-    accessed: '2026-08-13'
+    shows: 'Edge Impulse board page: "It’s fully supported by Edge Impulse - you’ll be able to sample raw
+      data" and the kit is "based around the QCS6490 SoC. It has two built-in cameras, a Kryo™ 670 CPU,
+      Adreno™ 643L GPU and 12 TOPS Hexagon™ 770 NPU".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d1547897ef7df27c08f6f02952f0038debfa7f01cc9a4a7ab8f187c5a4a7faff
+    content_sha256: 066a5db92413bc69e9baa9748bb97eb419903929c9043adcf3573769602e2fe2
   - url: https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit
     shows: up to 12 dense TOPS, QCS6490 SoC specs
     accessed: '2026-06-22'

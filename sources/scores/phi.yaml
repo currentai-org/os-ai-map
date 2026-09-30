@@ -17,33 +17,64 @@ openness:
   note: 'Phi-4 ships MIT weights, genuinely permissive with no use restrictions. Neither the training corpus
     nor the training pipeline is published, however: Microsoft describes the synthetic data mix without
     releasing it, so the model is free to use but the recipe is not reproducible.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(MIT);data:closed;code:closed;license:MIT(OSI)
   sources:
   - url: https://huggingface.co/api/models/microsoft/phi-4
-    shows: 'card license `mit`, `gated: false`, `private: false`, safetensors weight files, 662,805
-      downloads and 2,290 likes.'
-    accessed: '2026-08-13'
+    shows: Hub API record with the license tag "license:mit", a license link to "https://huggingface.co/microsoft/phi-4/resolve/main/LICENSE"
+      and six weight shards starting "model-00001-of-00006.safetensors"; the gated and private flags are
+      both false.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0b4c4520ccdea8887b5dbdfd2a60efefcd4cf151ad0c7360c3ab897496871c47
-    establishes: [weights, license]
+    content_sha256: 0e394453714ab51cb14ff738e0e01ae07ddcc32af427acf5cf09416589b3933d
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/microsoft/phi-4
-    shows: 'Model card - "phi-4 is a state-of-the-art open model built upon a blend of synthetic
-      datasets, data from filtered public domain websites, and acquired academic books and Q&A
-      datasets"; Training data 9.8T tokens. The mixture is described, not released, and no training
-      pipeline is linked.'
-    accessed: '2026-08-13'
+    shows: Model card - "built upon a blend of synthetic datasets, data from filtered public domain websites,
+      and acquired academic books and Q&A datasets"; the mixture is described, not released, and no training
+      pipeline is linked.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0ae34ac2e562bfb3b11733c5124e6f5fefc5e374c5e01c9e49679a30bf569b49
-    establishes: [weights, data, code, license]
+    content_sha256: 11610870dc23f44a33f4c83d0d370c28bf561f5a8da39a13c5a19d8b9594ddea
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://the-decoder.com/microsoft-releases-full-phi-4-model-with-weights-under-mit-license/
-    shows: Microsoft released the full Phi-4 weights on Hugging Face under the MIT license
-    accessed: '2026-08-13'
+    shows: Report of the January 2025 release - "By releasing Phi-4 under the MIT license, Microsoft has
+      given developers and researchers free rein to use, modify, and build upon the model".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: aba3991f57db2e170cdc298f1940de6869ba68574c5552236dcbee8c7e226627
+    content_sha256: e03fdf179b1ee8ec73561aba9414258cce0349b93cfbff26e7276e34b313df2b
   - url: https://venturebeat.com/ai/microsoft-makes-powerful-phi-4-model-fully-open-source-on-hugging-face
     shows: VentureBeat coverage of the Phi-4 MIT release; the host answers HTTP 429.
     accessed: '2026-06-04'
+  - url: https://huggingface.co/microsoft/phi-4/raw/main/LICENSE
+    shows: The LICENSE file in the model repo is the MIT text - "Permission is hereby granted, free of charge,
+      to any person obtaining a copy".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c49419617a6070bcb197cfe272f7007fdec3e790dbb529cb995473bd69c0bd51
+    establishes:
+    - license
+  - url: https://huggingface.co/microsoft/phi-4/raw/main/data_summary_card.md
+    shows: Data summary card - "Newly created synthetic, “textbook-like” data" alongside licensed sources;
+      to "Have you concluded transactional commercial licensing agreement(s) with rights holder(s)" it answers
+      Yes. No dataset download is linked.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3571ffd8d9f63dbd09c882880219cc6b254a85cc25a7d5308f6566d12c43f3f7
+    establishes:
+    - data
+  - url: https://huggingface.co/microsoft/phi-4/raw/main/README.md
+    shows: 'Raw model card - the only code link is the evaluation harness "https://github.com/openai/simple-evals";
+      searched the card for training code, pretraining scripts and a GitHub training repo: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4cc56faa6a5bcbde6227789b2ef9aedfde481ca660c8a4b686703aae19b00011
+    establishes:
+    - code
 adoption:
   level: 3
   reach: 100K-1M
@@ -69,20 +100,33 @@ capability:
   basis_detail: GPQA
   value: null
   confidence: high
-  note: 'Phi-4 is a 14B model with outsized math and reasoning results: about 56.1% on graduate-level science
-    questions, 80.4% on competition math, and strong AMC scores, reportedly beating GPT-4, its teacher,
-    on some STEM tasks. It remains a small, older model against the 2026 frontier, and Artificial Analysis
-    places it 47th of 74 on its Intelligence Index, a mid-table position.'
-  last_verified: '2026-08-13'
+  note: Phi-4 is a 14B model with outsized math and reasoning results, including 56.1% on graduate-level
+    science questions and 80.4% on competition math, and its technical report says it surpasses GPT-4, its
+    teacher, on STEM question answering. It remains a small, older model against the 2026 frontier and scores
+    at the median of comparable models on Artificial Analysis's Intelligence Index.
+  last_verified: '2026-09-29'
   sources:
   - url: https://the-decoder.com/microsoft-releases-full-phi-4-model-with-weights-under-mit-license/
-    shows: ~56.1% on graduate-level science questions and 80.4% on competition math, both present
-    accessed: '2026-08-13'
+    shows: Reports "achieving a 56.1 percent success rate on university-level questions and 80.4 percent
+      on mathematical competition problems".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: aba3991f57db2e170cdc298f1940de6869ba68574c5552236dcbee8c7e226627
+    content_sha256: e03fdf179b1ee8ec73561aba9414258cce0349b93cfbff26e7276e34b313df2b
   - url: https://artificialanalysis.ai/models/phi-4
-    shows: 'Phi-4 model page - Intelligence "# 47 / 74", 5 on the Artificial Analysis Intelligence
-      Index, listed as an open-weights model released December 2024.'
-    accessed: '2026-08-13'
+    shows: 'Phi-4 page - "Phi-4 scores 6 on the Artificial Analysis Intelligence Index, placing it below
+      average among comparable models (median: 6)", ranked 45th of 75 on intelligence.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 3d9b5c5b618d79edef61aeb575018eec673c192caa3d33f107b9a7e19d7b0e32
+    content_sha256: 1a4491f6ae41775aa89c55b1c2c715eda7423d2126ba3bac9d2bb6f4cd2a98f0
+  - url: https://huggingface.co/microsoft/phi-4/raw/main/README.md
+    shows: Model card benchmark table lists GPQA as "Complex, graduate-level science questions" and MATH
+      as "Challenging competition math problems", with phi-4 at 56.1 and 80.4.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4cc56faa6a5bcbde6227789b2ef9aedfde481ca660c8a4b686703aae19b00011
+  - url: https://arxiv.org/abs/2412.08905
+    shows: Technical report abstract - "phi-4 substantially surpasses its teacher model on STEM-focused
+      QA capabilities".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 59a4de82be4625a3fee26ef2bc57a0102dc000b52b72530e328d847eff821fce

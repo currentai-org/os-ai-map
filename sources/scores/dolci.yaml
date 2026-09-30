@@ -12,16 +12,37 @@ openness:
   confidence: high
   note: ODC-BY, ungated, per-stage dataset cards.
   raw: license:ODC-BY;gated:false;dataset_card:present
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT
-    shows: ODC-BY license, ungated, dataset card
-    accessed: '2026-08-13'
+    shows: 'The dataset page renders the card note "licensed under ODC-BY. It is intended for research and
+      educational use" and shows the file viewer with no gate. Searched the body for Access gated dataset,
+      Request access and You need to agree: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 279407557f11985037149eecaef5ef6f9640914162167e53a0f0c4066e3a5baa
+    content_sha256: b65ddd72f36a3222ad0aff22ee94b478cd592c35617955481f50a1b7cd16c88a
     establishes:
     - availability
     - documentation
+    - license
+  - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT/raw/main/README.md
+    shows: 'The raw dataset card front matter declares "license: odc-by" and its body states "It contains
+      2,152,112 samples from the following sets".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: db0307ffbeab4a90bb41cb966fcc2bca09ce3495afcdb8e173c0370287002a5b
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/allenai/Dolci-Instruct-SFT
+    shows: 'The Hub API record for allenai/Dolci-Instruct-SFT carries the card text "licensed under ODC-BY.
+      It is intended for research and educational use". Searched the body for gated auto and gated manual
+      values: none, the gated field is false.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9ec3823ddc8866d8522e3ebec45f449dadabda1341193a398fcce31012c86cb0
+    establishes:
+    - availability
     - license
 adoption:
   level: 2
@@ -49,18 +70,15 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: The current fully-open frontier post-training suite; OLMo 3-Think 32B leads the fully-open thinking-model
-    class in documented benchmarks. The Dolci card presents the suite as the successor to the Tulu mixtures.
-  last_verified: '2026-08-13'
+  note: Ai2's launch post reports Olmo 3-Think 32B, post-trained on Dolci, as the strongest fully open thinking
+    model it is aware of, while noting it still trails some open-weight models such as Qwen 3 32B. The comparison
+    is between finished models rather than an ablation of Dolci against other mixes.
+  last_verified: '2026-09-29'
   sources:
   - url: https://allenai.org/blog/olmo3
-    shows: 'OLMo 3-Think 32B (trained with Dolci) is the strongest fully-open thinking model: MATH 96.1,
-      HumanEval+ 91.4, IFEval 89.0'
-    accessed: '2026-08-13'
+    shows: 'The Ai2 Olmo 3 launch post says "Dolci provides separate mixes for each stage of post-training:
+      SFT, DPO, and RLVR" and its benchmark table lists Olmo 3-Think (32B) at MATH "96.1", HumanEvalPlus
+      "91.4" and IFEval "89.0", concluding "Think 32B emerges as the strongest fully open thinking model."'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
-  - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT
-    shows: Dolci is Ai2's OLMo 3 post-training suite, successor to the Tulu mixtures
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 279407557f11985037149eecaef5ef6f9640914162167e53a0f0c4066e3a5baa
+    content_sha256: d838f2d2b2b9f629cfcb284c3155ae26d3ca837463dc94750be6958af607b705

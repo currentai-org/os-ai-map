@@ -20,59 +20,105 @@ openness:
       detail: OSI
   confidence: high
   note: Apertus 1.0 publishes its pretraining-data reconstruction scripts, Megatron-LM training recipe,
-    intermediate checkpoints and technical report under Apache-2.0, the same full-openness tier as OLMo
-    and Pythia. An accompanying acceptable-use policy restricts conduct, not commercial use, so the license
-    still counts as OSI. Apertus 1.5, released 2026-07-24, carries the same license and claims equal openness,
-    but its training pipelines and checkpoints have not shipped yet, so the score reflects the still-public
-    1.0 stack.
-  last_verified: '2026-08-14'
+    intermediate checkpoints and technical report under Apache-2.0, as OLMo and Pythia do. Its acceptable-use
+    policy restricts conduct, not commercial use. Apertus 1.5, released 2026-07-24, carries the same license
+    behind an automatically approved click-through, but its training pipelines and checkpoints have not
+    shipped yet, so the entry reflects the still-public 1.0 stack.
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts,
     github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate
     checkpoints on HF branches);license:Apache-2.0(OSI)
   sources:
   - url: https://api.github.com/repos/swiss-ai/pretrain-data
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Pretraining data
-      reconstruction scripts for Apertus". The reconstruction scripts are published, which is what
-      satisfies data:open by reconstruction rather than by a released corpus.'
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Pretraining data reconstruction
+      scripts for Apertus". The reconstruction scripts are published, which is what satisfies data:open
+      by reconstruction rather than by a released corpus.'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 4ddecf19dff644e1b5c05f298f7d94cd042d7bed86e9b4bb234016a8269471f8
-    establishes: [data]
+    establishes:
+    - data
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
-    shows: 'Model card: "Fully open model: open weights + open data + full training details including
-      all data and training recipes"; "Training Framework: Megatron-LM" linking github.com/swiss-ai/Megatron-LM;
-      "The training intermediate checkpoints are available on the different branches of this same
-      repository"; license apache-2.0; BF16 safetensors.'
-    accessed: '2026-08-14'
+    shows: 'Apertus-70B-2509 model card, License: apache-2.0, describes a "Fully open model" with "open
+      weights + open data + full training details including all data and training recipes", lists "Training
+      data reconstruction scripts" under open resources, and states "The training intermediate checkpoints
+      are available on the different branches of this same repository". BF16 safetensors shards are listed
+      for download.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 85f8f65ee2b570c5b68c7e6b9473bc3ca7a8f801611b7348f32f0e9340274561
-    establishes: [weights, license, code, checkpoints]
+    content_sha256: 14b07f4218366620629297cd80157e81df647dc67bab983745ad4c8de682d3a2
+    establishes:
+    - weights
+    - license
+    - code
+    - checkpoints
+    - data
   - url: https://ethz.ch/en/news-and-events/eth-news/news/2025/09/press-release-apertus-a-fully-open-transparent-multilingual-language-model.html
-    shows: 'ETH Zurich press release, title "Apertus: a fully open, transparent, multilingual language
-      model", dated 2 September 2025 (EPFL/ETH/CSCS). Corroborates the release framing; establishes
-      no dimension on its own, since a press release describes rather than exhibits the artifacts.'
-    accessed: '2026-08-14'
+    shows: 'ETH Zurich press release titled "Apertus: a fully open, transparent, multilingual language model",
+      opening "On 2 September 2025, EPFL, ETH Zurich and the Swiss National Supercomputing Centre (CSCS)
+      released Apertus". Corroborates the release framing and establishes no dimension on its own.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: b2dc7253334c3bcc9acb07aab37a99b895ce92d229a23a3e14b7d471be0257ca
+    content_sha256: 238704b904052c4afde1900101c80ab2b2d0756a00169c372285dcc4ad24070b
   - url: https://github.com/swiss-ai/pretrain-data
-    shows: Repository page for the pretraining-data reconstruction scripts; "reconstruction" appears
-      throughout the tree and README.
+    shows: Repository page for the pretraining-data reconstruction scripts; "reconstruction" appears throughout
+      the tree and README.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 03241f3303116c1da493d34db84392a3d9bb5f7f2459f2b23b66db2b19d4538d
-    establishes: [data]
+    establishes:
+    - data
   - url: https://huggingface.co/swiss-ai/Apertus-v1.5-70B
-    shows: 'Apertus-v1.5-70B model card: "Fully Open Model: Open weights + open data + open values +
-      full training details including all data and training recipes"; License: apache-2.0; identifies
-      itself as "Apertus 1.5 Omni, a multimodal assistant ... you understand images and audio and
-      respond in text"; "context length up to 262,144 tokens, a four-fold increase from our initial
-      Apertus 1.0 release"; and notes that "benchmark results, training pipelines, and intermediate
-      checkpoints will be published in the coming weeks". Establishes weights and license for the
-      current release; data/code for the v1.5 multimodal mix are declared but not yet shipped.'
-    accessed: '2026-08-14'
+    shows: 'Apertus-v1.5-70B model card, License: apache-2.0, describes a fully open model with "Open weights
+      + open data + open values + full training details including all data and training recipes", the models
+      "handle contexts of up to 262,144 tokens", and "The technical report with further details along with
+      benchmark results, training pipelines, and intermediate checkpoints will be published in the coming
+      weeks". The download now sits behind a click-through: "you accept to share your contact information
+      (email and username) with the repository authors".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 266f936d5683231c5c696696d2c2cb4a224d0c95768ddc4105ab401e383853a2
-    establishes: [weights, license]
+    content_sha256: f8d2eb5c358f827ddc6688c482ee6f926d7ae0073aa87883f81434be064bd7bb
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/swiss-ai/Apertus-70B-2509
+    shows: Hub API record for Apertus-70B-2509 is not gated and not private, carries the license:apache-2.0
+      tag and 30 safetensors shards, and embeds the "Apertus LLM Acceptable Use Policy" text in its card
+      data, a conduct and indemnity policy with no commercial or scale limit.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4d095518048c228bab0fde78e7ce4d6c963460b52f3f0262e15264b42aa3db55
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/swiss-ai/Apertus-70B-2509/refs
+    shows: Hub refs listing for Apertus-70B-2509 shows intermediate-checkpoint branches from "step25000-tokens210B"
+      through "step1150000-tokens14920B" plus the final step1155828-tokens15T, and a series of longctx-step
+      branches.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1027590463191057b349802be4156e2f890d3ab68913aa0ae1a0c691bf3172c1
+    establishes:
+    - checkpoints
+  - url: https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/LICENSE.txt
+    shows: LICENSE.txt in the Apertus-70B-2509 repo opens "Copyright 2025 - The Swiss AI team." followed
+      by the unmodified "Apache License Version 2.0, January 2004" text.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7f1e632ea726022e3f880d46aeb9b407a65131f44d8c563c15232e96aef50a4b
+    establishes:
+    - license
+  - url: https://arxiv.org/html/2509.14233
+    shows: 'Apertus technical report (HTML rendering): the pretraining codebase at github.com/swiss-ai/Megatron-LM
+      "is built on NVIDIA" Megatron-LM and "We extend the codebase with multiple functionalities"; for data,
+      the authors "release the pipeline code" at github.com/swiss-ai/pretrain-data "to recreate all of the
+      data that was used for training the models".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6ad1502a227952703e14cf9456eab6a53a00c206238c96524df9b85b90010ea3
+    establishes:
+    - code
+    - data
 adoption:
   level: 2
   reach: 10K-100K
@@ -81,7 +127,6 @@ adoption:
   note: Adoption is measured as Hugging Face downloads summed across the family's three shipped checkpoints,
     most of them now for the multimodal v1.5 release that shipped 2026-07-24. The original 2509 flagship
     draws little of that traffic today, a shift from when it was the only checkpoint available.
-  last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/swiss-ai/Apertus-v1.5-8B
     shows: '`downloads` (trailing 30 days) = 11501 for swiss-ai/Apertus-v1.5-8B; `pipeline_tag`
@@ -113,7 +158,6 @@ capability:
   note: Apertus-70B averages 67.5% on pretraining benchmarks, matching Llama 3.1-70B's 67.3%, and is unusually
     strong multilingually. Its instruct model trails the newer frontier on reasoning, scoring 69.6% on MMLU
     against 87.5% for Llama 3.3-70B and 86.6% for Qwen2.5-72B.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
     shows: 'pretraining benchmark table: Apertus-70B avg 67.5% vs Llama 3.1-70B 67.3%; Apertus-70B-Instruct

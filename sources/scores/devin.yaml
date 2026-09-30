@@ -11,29 +11,32 @@ openness:
     self-host:
       value: 'no'
   confidence: high
-  note: 'Proprietary subscription SaaS: no source is published and there is no self-hosting path.'
+  note: Devin is proprietary software sold as a subscription service, and its source is not published. Customers
+    can run session execution on their own machines, but the agent loop stays in Cognition's cloud, so the
+    product itself cannot be self-hosted.
   raw: source:closed;license:proprietary(SaaS-only);self-host:no
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://docs.devin.ai
-    shows: proprietary SaaS coding agent documented across Cloud, CLI, Desktop, Enterprise, API and Federal;
-      no source distribution and no self-host path
-    accessed: '2026-08-13'
+  - url: https://cognition.com/legal/platform-terms-of-service
+    shows: 'The platform terms bar customers from source-level access to the service: users may not "reverse
+      engineer, disassemble, decompile, decode, adapt, or otherwise attempt to derive or gain access to
+      any software component of the Services".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 39517dbe744137565f2052d242a77729dc8731e1b689fb2e32044fa06b79516f
+    content_sha256: 5393e1b9b4e802249ea072bbd3792673f4370f5537870f464fb972d615d6f9b8
     establishes:
     - source
-    - self-host
-  - url: https://devin.ai/pricing
-    shows: 'paid tiers - Free $0, Pro $20/mo, Max $200/mo, Teams $80/mo plus $40 per dev seat, Enterprise
-      via contact sales; proprietary SaaS throughout'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: bd096a543738392225bca21a5f03ae94c35603d9139ab9aa538bf940a6835aaf
-    establishes:
     - license
-    - source
+  - url: https://docs.devin.ai/cloud/outposts/overview.md
+    shows: 'The Outposts page says customer machines run only command execution, file edits and repository
+      access: "Devin''s agent loop (inference and planning) continues to run in Devin''s cloud". No source
+      distribution is described.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ded5534f10c96944adce147b68bd7f8bb0318f041ca57f372d121b1c0489afef
+    establishes:
     - self-host
+    - source
 adoption:
   level: 3
   signal_type: reported_traction
@@ -41,14 +44,15 @@ adoption:
   note: Devin sells paid Individual, Teams and Enterprise tiers, evidence of broad commercial adoption,
     but Cognition publishes no user or seat count. Adoption here is read from that reported commercial traction
     rather than a counted download or user figure.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://devin.ai/pricing
-    shows: individual, team and enterprise commercial tiers indicating broad paid adoption; no user or
-      seat count published
-    accessed: '2026-08-13'
+    shows: 'The pricing page sells paid Pro, Max, Teams and Enterprise plans, including a team plan of "Up
+      to 200 users" and "Deploy in your virtual private cloud (VPC)"; searched for a total user or seat
+      count: none published.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: bd096a543738392225bca21a5f03ae94c35603d9139ab9aa538bf940a6835aaf
+    content_sha256: 7cf7bb40ae692a5afbf45e656fe83e1a2cdb88baae6f03c671946bad618b8c63
 capability:
   score: 3
   basis: benchmark
@@ -58,26 +62,19 @@ capability:
   value: 'Cognition''s own technical report: 13.86% (2024, 570-problem subset); Devin 2.0 ~45.8% SWE-bench
     Verified (unassisted single-agent, vendor-reported and corroborated)'
   confidence: medium
-  note: Devin 2.0 scores 45.8% on SWE-bench Verified and 35.6% on Full as a single agent, a figure that
-    disappeared from the blog post that first cited it but is corroborated on a third-party leaderboard.
-    That places it mid-tier, well below OpenHands at the top of the field.
-  last_verified: '2026-08-13'
+  note: Devin 2.0 scores 45.8% on SWE-bench Verified as a single unassisted agent on a third-party leaderboard.
+    That is mid-tier, well behind OpenHands, which leads the same leaderboard with an open scaffold.
+  last_verified: '2026-09-29'
   sources:
   - url: https://cognition.ai/blog/swe-bench-technical-report
-    shows: 'Cognition team, 2024-03-15 - "In SWE-bench, Devin successfully resolves 13.86% of issues,
-      far exceeding the previous highest unassisted baseline of 1.96%"'
-    accessed: '2026-08-13'
+    shows: 'Cognition report: "Devin successfully resolved 79 of the 570 issues, giving a 13.86% success
+      rate", the 2024 result on a 570-problem subset.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 9e1c937f6e75754f30533cc0f6893d73d2e2154009545ed40f9b0c1ffbc877c0
-  - url: https://www.tembo.io/blog/devin-alternatives-2025
-    shows: Previously cited for Devin 2.0 at 45.8% SWE-Bench Verified; the figure no longer appears anywhere
-      on the page.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: c3dabd1bbfed02db1d036e2a329c7244c333fcee05db7f509a147a3cf281e3ad
+    content_sha256: 2a141b71217af9448aeed1903e1571bd1d10a22167b38f731a6626206b8149dd
   - url: https://awesomeagents.ai/leaderboards/swe-bench-coding-agent-leaderboard/
-    shows: 'row 7 - Devin 2.0, proprietary, SWE-Bench Verified 45.8%, SWE-Bench Full 35.6%, Cognition
-      AI, unassisted standard eval'
-    accessed: '2026-08-13'
+    shows: The leaderboard says "Devin 2.0 sits at 45.8% in standard unassisted mode" and lists OpenHands
+      with CodeAct v3 at "68.4%" on SWE-bench Verified.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: c009a1d2e1fc26bd03376df66ac74ed136ca30362c1628be7a231bc5db57fed0
+    content_sha256: 78850bbfc149c2bc26debb2e7a643937feae6b3254e8483f2c0e3d94fc62b6e2

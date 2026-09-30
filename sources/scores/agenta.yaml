@@ -29,47 +29,37 @@ openness:
     root LICENSE carves every ee/ directory out of MIT and under ee/LICENSE, the Agenta Enterprise License,
     which permits production use only with a valid Agenta Enterprise License; api/ee, web/ee and services/ee
     each ship source, docker and tests beside the MIT api/oss half);self-hostable
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Agenta-AI/agenta
     shows: MIT license; self-host + Agenta Cloud managed tier
     accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/Agenta-AI/agenta/main/LICENSE
-    shows: 'Root LICENSE. "Portions of this software are licensed as follows: - All content that resides
-      under any ''ee/'' directory of this repository, if such directories exist, are licensed under the
-      license defined in ''ee/LICENSE''. ... - Content outside of the above mentioned directories or restrictions
-      above is available under the ''MIT Expat'' license", followed by the full MIT text. The tier-setting
-      license is MIT and the carve-out is named in the license itself. GitHub''s license endpoint returns
-      NOASSERTION for this repo, which is GitHub declining to classify the split file.'
-    accessed: '2026-08-12'
+    shows: 'The root LICENSE carves the ee directories out of MIT: they are "licensed under the license
+      defined in" ee/LICENSE, while "Content outside of the above mentioned directories or restrictions
+      above is" available under the MIT Expat license.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: efd1323753fcbf4d4fc74c82d5d469263b0641dbee4a65b4690ccb0c3d12b68b
     establishes:
     - license
     - core-gated
   - url: https://raw.githubusercontent.com/Agenta-AI/agenta/main/ee/LICENSE
-    shows: The Agenta Enterprise License. The software "may only be used in production, if you (and any
-      entity that you represent) have agreed to, and are in compliance with, the Agenta Subscription Terms
-      of Service, available at https://agenta.ai/terms ... and otherwise have a valid Agenta Enterprise
-      License." You may copy and modify it "for development and testing purposes, without requiring a subscription",
-      and "it is forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software". Production
-      use behind a paid license is functionality withheld from the MIT source.
-    accessed: '2026-08-12'
+    shows: 'The Agenta Enterprise License allows the software to be used in production only under a subscription:
+      "may only be used in production, if you (and any entity that you represent) have agreed to" the Enterprise
+      Terms, with copying for "development and testing purposes" free.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: c84b4eeea0dc5b1ab240a53e497d1c18d7edbb3114b8772728152ea6ac81f722
     establishes:
     - core-gated
-  - url: https://api.github.com/repos/Agenta-AI/agenta/contents/api/ee
-    shows: The carve-out is shipped code rather than a placeholder. api/ee holds LICENSE, __init__.py, databases,
-      docker, src and tests, mirroring the MIT api/oss tree beside it (__init__.py, databases, docker, src,
-      tests). web/ee and services/ee exist on the same pattern, web/ee carrying its own next.config.ts,
-      package.json, public and src. The top-level ee/ directory contains only the LICENSE the root file
-      points at.
-    accessed: '2026-08-12'
+  - url: https://raw.githubusercontent.com/Agenta-AI/agenta/main/README.md
+    shows: 'The README calls the project public open source and offers self-hosting: "Agenta is an open-source
+      workspace where you build specialized agents" and a "### Self-host Agenta" section.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 34706be8f29e43c940db0a60df0335a26ff5fd071a463e895a31051461521f42
+    content_sha256: c38a40d5ec30c1a3aaa69a696e7ac1350efff1e18265e07d1ca83cc014e181d1
     establishes:
-    - core-gated
     - source
 adoption:
   level: 2
@@ -112,35 +102,19 @@ capability:
     catalogue, prompt management and observability-standard support it once offered. That leaves it two
     tiers below OpenHands, the category's broadest platform, with no published benchmark to place it more
     precisely.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://agenta.ai/docs/
-    shows: '"Agenta is a workspace where you and your team build agents and automations."; features
-      listed are a shared multiplayer workspace, a shared folder per agent, "1000+ Integrations" via
-      built-ins or MCP servers, reusable skills, human approval and permissions, background agents on a
-      schedule or event, "Tracing and usage. Inspect every model and tool call.", and version history.
-      No evaluator catalogue, no prompt-management section, no OTel/OpenLLMetry/OpenInference claim.'
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 5d642d3f7328864865f1909a64ea2e386d38adfa8a14f9138cfc90c672f770bb
   - url: https://github.com/Agenta-AI/agenta
     shows: repo tagline and README now read "Agenta is a workspace where you and your team build agents
-      and automations" and "The open-source workspace for building and running agents". The README no
-      longer mentions prompt management, evaluators or LLM observability.
+      and automations" and "The open-source workspace for building and running agents". The README no longer
+      mentions prompt management, evaluators or LLM observability.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 3d66acb69bfd18abbca6c63500256b6e5da6a145f7e79bf2e0c60fc61e3aaf3e
   - url: https://agenta.ai/docs/
-    shows: 'Beyond the features already recorded, the page carries harness choice across Claude Code, Codex
-      and Pi, per-agent isolated sandboxes, and role-based access with SSO - and the whole of what this
-      category grades is one line, "Tracing and usage. Inspect every model and tool call. Track requests,
-      tokens, latency, and estimated cost."'
-    accessed: '2026-08-14'
+    shows: 'The docs page states "Agenta is a workspace where you and your team build agents and automations."
+      and lists "Tracing and usage." and "Background agents." with no evaluator or prompt management section
+      (searched: evaluat, prompt: none).'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 5d642d3f7328864865f1909a64ea2e386d38adfa8a14f9138cfc90c672f770bb
-  - url: https://api.github.com/repos/Agenta-AI/agenta
-    shows: Repo metadata - description "The open-source workspace for building and running agents", corroborating
-      the reposition from the repository side rather than from the marketing site.
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: a86b82756ac56213d576ca7efb2f229fee53477f99dbd4c45e132e2b9c17f311
+    content_sha256: 1905d6e449e6c4b06de2aa55b29a67fdd5a9306fdfdd498a0afdb98a463f3938

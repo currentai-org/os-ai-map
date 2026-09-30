@@ -28,46 +28,50 @@ openness:
     declares no license field);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset
     card + arXiv:2310.06770);held-out:no hidden split in Verified itself(the public 500-instance set is
     fully released; gold patches + tests included);data-source:real GitHub PR/issue pairs
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
-    shows: 'the embedded repo state reads `"gated":false` and the tags array carries no license tag;
-      the dataset card renders over the 500-instance test split with the gold patch and the
-      FAIL_TO_PASS/PASS_TO_PASS test lists; 413,323 downloads in the trailing 30 days'
-    accessed: '2026-08-13'
+    shows: The dataset card reads "SWE-bench Verified is a subset of 500 samples from the SWE-bench test
+      set, which have been human-validated for quality" and documents the FAIL_TO_PASS and PASS_TO_PASS
+      fields; searched the page for a license and found none.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 21a9ae799b810fb5b73f025632c12b0858475dabbdc756309dad62af5af1d184
-    establishes: [datasheet]
+    content_sha256: e1525b391a84c2b56b309405a568c59d25caed9f9e4f5adf504ec3df3f8835b0
+    establishes:
+    - datasheet
   - url: https://github.com/SWE-bench/SWE-bench/blob/main/LICENSE
     shows: MIT License for the SWE-bench harness
     accessed: '2026-06-04'
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/blob/main/README.md
-    shows: dataset card metadata has no license field declared
-    accessed: '2026-06-04'
+    shows: 'The rendered README view shows the card text "SWE-bench Verified is a subset of 500 samples
+      from the SWE-bench test set, which have been human-validated for quality"; searched the body for a
+      license key: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e437e8a71d0c3522017a9eaad2c2a3356ede173328cbe7a57f0603ede5e80394
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/raw/main/README.md
-    shows: card front matter carries dataset_info, splits and configs and no `license:` key; body describes
-      the 500 human-validated instances and the swebench.com leaderboard, so the data is unlicensed at source.
-      The repository holds only .gitattributes, README.md and one parquet file, so there is no LICENSE file
-      alongside the data either
-    accessed: '2026-08-13'
+    shows: The raw card holds "SWE-bench Verified is a subset of 500 samples from the SWE-bench test set,
+      which have been human-validated for quality" and its front matter has no license key; searched for
+      license, none.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 6edb58b1b2c44ce858426c4ebc90077827713b75cebc243661e4433c81fd57f5
     establishes:
     - license
   - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
-    shows: '"Code and data for the following works:" listing SWE-bench and SWE-bench Multimodal; the "Citation
-      & license" section reads "MIT license. Check `LICENSE.md`." and the citation immediately under it
-      is headed "For SWE-bench (Verified)"; the news entry for Aug. 13, 2024 introduces Verified as a 500-problem
-      subset produced with OpenAI Preparedness'
-    accessed: '2026-08-13'
+    shows: The README opens with "Code and data for the following works:" and its "Citation & license" section
+      reads "MIT license. Check `LICENSE.md`.", so the repository states MIT over code and data; it still
+      lists no license for the Hugging Face copy itself.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f
+    content_sha256: 06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa
     establishes:
     - license
   - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE
-    shows: MIT License, copyright 2023 the SWE-bench authors. Note the README points at `LICENSE.md`, which
-      404s; the file is `LICENSE`
-    accessed: '2026-08-13'
+    shows: The LICENSE file opens "MIT License" and reads "Copyright (c) 2023 Carlos E Jimenez, John Yang,
+      Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, Karthik R Narasimhan" followed by the standard
+      MIT grant "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell".
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57
     establishes:
@@ -101,11 +105,12 @@ capability:
   note: A dataset is not 'capable', so capability is left unscored. SWE-bench Verified is notably contamination-resistant
     and discriminating for coding agents, since it runs against real repository state and executable tests,
     but that quality is noted here rather than turned into a number.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
-    shows: a static 500-instance corpus of repo state, issue text, gold patch and tests; no performance,
-      throughput or feature claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+    shows: 'The dataset card describes a corpus: "SWE-bench Verified is a subset of 500 samples from the
+      SWE-bench test set, which have been human-validated for quality", with FAIL_TO_PASS and PASS_TO_PASS
+      test fields. Searched the body for SOTA and throughput claims: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 21a9ae799b810fb5b73f025632c12b0858475dabbdc756309dad62af5af1d184
+    content_sha256: 2e8370ebb9d3ba1396bbf87ebe3c76cb66ca0a4ada65d42d212da7892819a8fe

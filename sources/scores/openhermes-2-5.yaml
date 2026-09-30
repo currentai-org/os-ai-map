@@ -23,36 +23,37 @@ openness:
     dataset reads as restricted rather than open.'
   raw: license:not-clearly-stated-on-card(no license field in the card YAML, no license section in the card
     body, no LICENSE file in the repository and no license tag on the Hub API);card:present;ungated:yes;format:JSON/Parquet;rows:~1M
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/teknium/OpenHermes-2.5
-    shows: Public ungated dataset card, ~1M rows, synthetic/GPT-4 tags
-    accessed: '2026-08-13'
+    shows: HF dataset page for teknium/OpenHermes-2.5 rendering the card text "primarily synthetically generated
+      instruction and chat samples" and the title "Dataset Card for Dataset Name", public with no gate notice.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 2efb56ae792898ddb1c34693d174654799ef050d66e0033611b1b0839d1ae08d
+    content_sha256: 6a391d5c0efb255bb82a6960d7d856858afdd573f87baf7fc45da4f219cc23d6
     establishes:
     - availability
     - documentation
-    - license
   - url: https://huggingface.co/datasets/teknium/OpenHermes-2.5/raw/main/README.md
-    shows: card front matter is language, pretty_name and tags only, with no `license:` key; the 126-line
-      body covers the dataset description, the Lilac integration, the full list of constituent source datasets,
-      the sharegpt format and a citation, and contains no occurrence of "license" or "terms"
-    accessed: '2026-08-13'
+    shows: 'Raw card whose front matter lists only language, pretty_name and tags, with no license key,
+      and whose body says "reaching 1M, primarily synthetically generated instruction and chat samples".
+      Searched the body for license, licence and terms: none.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 92fd711b9f0f6f8c7312d18d93ad412af415cd25a207584554c8e72c0cfe9f64
     establishes:
     - license
     - documentation
   - url: https://huggingface.co/api/datasets/teknium/OpenHermes-2.5
-    shows: cardData carries no license and the repository has no `license:` tag; siblings are .gitattributes,
-      README.md and openhermes2_5.json, so no LICENSE file ships with the data
-    accessed: '2026-08-13'
+    shows: 'Hub API record with cardData listing only language, pretty_name and tags, no license tag, and
+      tags "size_categories:1M<n<10M" and "format:json"; siblings are .gitattributes, README.md and openhermes2_5.json,
+      so no LICENSE file. Searched the body for license and LICENSE: none.'
+    accessed: '2026-09-29'
     http_status: 200
     establishes:
     - availability
     - license
-    content_sha256: c723e6000d4da3d6b6feeba4953647b8e924b22a3e6d3da4ae487dbf6ec9f835
+    content_sha256: 1894735d1e2c6474726b3a1fbc289b3c5d9daf56b1978c5199070f29cf6deac1
 adoption:
   level: 3
   reach: 10K-100K
@@ -79,13 +80,13 @@ capability:
   basis_detail: superseded
   value: null
   confidence: high
-  note: OpenHermes-2.5 is credited inside SmolTalk's ablation for gains on MMLU, WinoGrande and BBH, but
-    has no standalone ablation of its own. Hermes 3 has since superseded it, and a 100k-example slice of
-    it survives only as a component of SmolTalk.
-  last_verified: '2026-08-13'
+  note: The SmolLM2 authors included a 100k-example slice of OpenHermes-2.5 in SmolTalk for its strong knowledge
+    performance on MMLU-Pro. In the same paper's comparison, fine-tuning on OpenHermes-2.5 alone trails
+    the SmolTalk mixture on instruction following and MT-Bench.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/html/2502.02737v1
-    shows: SmolLM2 paper credits a 100k OpenHermes-2.5 subset with MMLU/WinoGrande/BBH gains
-    accessed: '2026-08-13'
+    shows: SmolLM2 paper section 5.1.4 says "We also added 100k randomly selected OpenHermes2.5 samples due to its strong performance in knowledge (MMLU-Pro)" and Table 10 lists OpenHermes 2.5 at 100k among the SmolTalk components.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: be627c24bbc0d0c4084648798877bced224b189e12ca4c03a2e25e277986fbbb
+    content_sha256: 6a1e79bcd781f4e49bf6b1302a2137463307a0851be149f4121df92fefcb893f

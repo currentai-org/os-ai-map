@@ -27,38 +27,48 @@ openness:
     no variant is stated on the card, the GitHub repository, the project site or the paper);datasheet:present(README
     documents versions/sources/structure);redistributable:yes;splits:public problems with hidden test cases
     bundled
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/livecodebench/code_generation_lite
-    shows: '`license:cc` in the repo tags with no variant; the embedded repo state reads `"gated":false`,
-      so the parquet downloads freely; the README/datasheet still renders the release_v1..v5 change
-      log; 93,572 downloads in the trailing 30 days'
-    accessed: '2026-08-13'
+    shows: 'The dataset page tags the repo "license:cc" with no variant and renders the card with "Each
+      problem instance consists of a problem description, input/output examples, and hidden test cases".
+      Searched the body for non-commercial, by-nc and holdout terms: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 190adad02cd2ca47eff40c28955d2d2ae80dcc3ecc1260e147cb758635268cf4
-    establishes: [license, data, datasheet]
+    content_sha256: 178e5d17b1ae011cd91efb35abf35a59edf1033f1a9fe4b1a196b6a43b6c288d
+    establishes:
+    - license
+    - data
+    - datasheet
   - url: https://huggingface.co/datasets/livecodebench/code_generation_lite/blob/main/README.md
-    shows: 'YAML metadata license: cc'
-    accessed: '2026-06-04'
+    shows: 'The blob view of the card renders "Since LiveCodeBench is a continuously updated benchmark"
+      and its release change log. Searched the body for by-nc, noncommercial and holdout terms: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1757d2dd59d7080dadf2450bd7b23cff2d799d816887520043b51d2cc1048b97
+    establishes:
+    - datasheet
   - url: https://huggingface.co/datasets/livecodebench/code_generation_lite/raw/main/README.md
-    shows: 'card front matter is `license: cc` with tags, pretty_name and size_categories, and nothing naming
-      a Creative Commons variant; the body is a change log of release_v1..v5, a dataset description and
-      usage instructions'
-    accessed: '2026-08-13'
+    shows: 'The card front matter reads "license: cc" with tags, pretty_name and size_categories, naming
+      no Creative Commons variant; the body carries a change log ("release_v5" with 880 problems) and the
+      statement "Each problem instance consists of a problem description, input/output examples, and hidden
+      test cases."'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: fbf0df23c9fb430778f037691bd191ece41d49373c0695151d87549b6f45d809
     establishes:
     - license
+    - datasheet
   - url: https://huggingface.co/api/datasets/livecodebench/code_generation_lite
-    shows: cardData.license is the string "cc" and the repository tags carry `license:cc`; the sibling corpora
-      code_generation and test_generation carry the same bare `cc`, and execution carries no license at
-      all. The open discussions on the repo are about loading, parquet conversion and version sizes - none
-      asks or answers what the CC variant is
-    accessed: '2026-08-13'
+    shows: 'The API JSON lists the data files "test.jsonl" and "test6.jsonl" for direct download and tags
+      the repo "license:cc" with no variant; the description reads "LiveCodeBench is a temporaly updating
+      benchmark for code generation". Searched the body for noncommercial and by-nc: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0f17aeab9c94cf4a6269259748edf887c3ab5daa9aa2ad2cf387716c06ce18c2
+    content_sha256: b2991b86d0d3d8f1ab17a3c7008310fa11c947d4e1c8a55422cbbf3abba21924
     establishes:
     - license
+    - data
   - url: https://raw.githubusercontent.com/LiveCodeBench/LiveCodeBench/main/LICENSE
     shows: MIT License, copyright 2024 LiveCodeBench. This is the repository holding lcb_runner, the evaluation
       harness; the problems are distributed from the Hugging Face repos and this file makes no statement
@@ -83,7 +93,6 @@ adoption:
   confidence: medium
   note: Adoption is measured by Hugging Face downloads of livecodebench/code_generation_lite, the benchmark's
     only declared distribution artifact.
-  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/livecodebench/code_generation_lite
     shows: 91,719 downloads in the trailing 30 days for livecodebench/code_generation_lite
@@ -98,11 +107,12 @@ capability:
   note: A dataset is not 'capable', so capability is left unscored. Its contamination resistance - the "live",
     continuously updated design - is a real quality strength, but openness and adoption are what carry this
     category.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/datasets/livecodebench/code_generation_lite
-    shows: a static release-versioned problem corpus with hidden test cases bundled; no performance,
-      throughput or feature claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+    shows: 'The page describes a problem corpus: "Each problem instance consists of a problem description,
+      input/output examples, and hidden test cases", released in versions; nothing on it claims a capability
+      of its own. Searched the body for throughput, accuracy, SOTA and pass@1: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 190adad02cd2ca47eff40c28955d2d2ae80dcc3ecc1260e147cb758635268cf4
+    content_sha256: 178e5d17b1ae011cd91efb35abf35a59edf1033f1a9fe4b1a196b6a43b6c288d

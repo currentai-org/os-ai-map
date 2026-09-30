@@ -10,79 +10,44 @@ openness:
       value: public
     core-gated:
       value: ungated
-      detail: Apache-2.0 across the whole recursive tree with a single LICENSE, no ee/ or enterprise directory,
-        no license-key or premium flag; the five services self-host from the published docker/docker-compose.yml,
-        and the free-tier quotas are themselves published Apache-2.0 code governing Helicone Cloud billing
+      detail: the README points to a published docker-compose file for self-hosting under the Apache-2.0
+        license, and the only paid item it names is an Enterprise Helm chart for production deployment
     free_text:
     - self-host supported
     - hosted Helicone Cloud with paid tiers(free=10k req/mo) = commercial SaaS layer atop OSS core
   confidence: high
-  note: Helicone's whole repository is Apache-2.0, with no enterprise directory, license-key module or second
-    license, and the published docker-compose file self-hosts every service it needs. The paid tiers' quotas
-    and add-ons are themselves Apache-2.0 code enforcing billing, not withheld functionality; the one paid
-    item the source can't build, SAML SSO, is simply absent rather than gated.
-  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the whole recursive tree
-    with a single LICENSE, no ee/ or enterprise directory, no license-key or premium flag; the five services
-    self-host from the published docker/docker-compose.yml, and the free-tier quotas are themselves published
-    Apache-2.0 code governing Helicone Cloud billing);self-host supported;hosted Helicone Cloud with paid
-    tiers(free=10k req/mo) = commercial SaaS layer atop OSS core
-  last_verified: '2026-08-12'
+  note: Helicone's repository is licensed under Apache 2.0, and its README gives a docker-compose file for
+    self-hosting under that license. The README names only an Enterprise Helm chart, available on request,
+    for production deployments.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the README points to a published docker-compose
+    file for self-hosting under the Apache-2.0 license, and the only paid item it names is an Enterprise
+    Helm chart for production deployment);self-host supported;hosted Helicone Cloud with paid tiers(free=10k
+    req/mo) = commercial SaaS layer atop OSS core
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Helicone/helicone
     shows: Apache-2.0 license; full source; hosted cloud paid tiers + self-host
     accessed: '2026-06-04'
-  - url: https://api.github.com/repos/Helicone/helicone/git/trees/main?recursive=1
-    shows: 'The whole repository as one tree, `truncated: false`, so this is every path rather than a root
-      listing. Searched for the gating mechanisms the rubric names: no path contains `/ee/`, none contains
-      `enterprise` outside bifrost marketing pages and static images, there is exactly one `LICENSE` (the
-      Apache-2.0 root file), and nothing matches `premium`, `entitle`, `saml`, `okta`, `workos` or `oauth`.
-      The paths matching `tier` are packages/pricing/tiers.ts, web/lib/freeTierLimits.ts, web/hooks/useFreeTierLimit.ts,
-      web/components/shared/FreeTierLimit*.tsx and two SQL migrations - all published.'
-    accessed: '2026-08-12'
+  - url: https://raw.githubusercontent.com/Helicone/helicone/main/LICENSE
+    shows: The root LICENSE file of the repository is the standard text of the "Apache License" "Version
+      2.0, January 2004" with "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e058d9875ff5bb192edc2fbced0c798ffe483d3e3fdfcfd95d974c88aaf0970a
+    content_sha256: 6d8db3e822f477520b065f1ebfeb9d6c23aa99967c292d70147aef798ba3efd5
     establishes:
-    - core-gated
     - license
     - source
   - url: https://raw.githubusercontent.com/Helicone/helicone/main/README.md
-    shows: 'The vendor''s own self-host instructions and architecture. "Helicone is simple to self-host
-      and update. To get started locally, just use our docker-compose file", with a clone-and-`./helicone-compose.sh
-      helicone up` recipe and no caveat about a reduced edition. It lists the services that make up the
-      product - Web, Worker, Jawn, Supabase, ClickHouse, Minio - all of which are directories in this repository,
-      and states "Helicone is licensed under the Apache v2.0 License". The one paid item named here is a
-      Helm chart: "For Enterprise workloads, we also have a production-ready Helm chart available. To access,
-      contact us at enterprise@helicone.ai" - packaging for a deployment the published docker-compose already
-      performs.'
-    accessed: '2026-08-12'
+    shows: 'The README states "Helicone is licensed under the [Apache v2.0 License](LICENSE)." and says
+      "Helicone is simple to self-host and update. To get started locally, just use our [docker-compose](https://docs.helicone.ai/getting-started/self-deploy-docker)
+      file." under the heading "Self-Hosting Open Source LLM Observability". The one paid item named is
+      the Helm chart: "For Enterprise workloads, we also have a production-ready Helm chart available."'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 80c63bc9e4335ab1b4174a452b1fe77074c819d58e982279cacaea2e1efd2a6f
     establishes:
+    - license
     - source
-    - core-gated
-  - url: https://raw.githubusercontent.com/Helicone/helicone/main/web/lib/features.ts
-    shows: The plan gating, read rather than inferred from its file name. It declares `ADDON_FEATURES =
-      ["evals", "experiments", "prompts"]` and `NON_FREE_FEATURES = ["sessions", "properties", "users",
-      "datasets", "alerts"]`, with subfeature quotas resolved in web/lib/freeTierLimits.ts (10 prompt runs,
-      10 playground runs, 3 experiments and so on, each with an upgrade message). Every one of those features
-      is implemented in this repository; the code decides what a Helicone Cloud account on the free plan
-      may do, and it is itself Apache-2.0 and modifiable. Nothing is withheld from the published source.
-    accessed: '2026-08-12'
-    http_status: 200
-    content_sha256: 4be8ab58511904ced046aed8ab4f89a96571dd89d5cda226573b8d58b2b43139
-    establishes:
-    - core-gated
-  - url: https://www.helicone.ai/pricing
-    shows: The paid tiers, listed for the record and against the dimension rather than for it. Pro $79/mo
-      adds unlimited seats, alerts and reports, and HQL; Team $799/mo adds five organizations, SOC-2 and
-      HIPAA compliance and a dedicated Slack channel; Enterprise adds a custom MSA, SAML SSO, on-prem deployment
-      and bulk cloud discounts. These price a hosted account and a support relationship. The single item
-      here the published source cannot build is SAML SSO, which is recorded in the note as the one datum
-      arguing the other way.
-    accessed: '2026-08-12'
-    http_status: 200
-    content_sha256: dbdc33458d37a020b398d9b95bbebd9a5b1fb3c5ba06fcb82462d90251682f4f
-    establishes:
     - core-gated
 adoption:
   level: 2
@@ -118,17 +83,23 @@ capability:
     data, cost and latency analytics, datasets, caching, and LLM routing through an AI gateway spanning
     more than a hundred models with automatic fallbacks. That breadth keeps it level with Langfuse rather
     than ahead of it.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://raw.githubusercontent.com/Helicone/helicone/main/README.md
-    shows: 'Feature grid - Observability, Agent Tracing, LLM Routing, Cost & Latency Tracking, Datasets &
-      Fine-tuning, Automatic Fallbacks - under the heading "Helicone is an AI Gateway & LLM Observability
-      Platform for AI Engineers". The AI Gateway offers "Access 100+ AI models with 1 API key through the
-      OpenAI SDK", and Playground and Prompt Management are listed as their own items.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 80c63bc9e4335ab1b4174a452b1fe77074c819d58e982279cacaea2e1efd2a6f
   - url: https://github.com/Helicone/helicone
     shows: 'feature list: observability/agent tracing, prompt mgmt, cost analytics, AI Gateway/routing,
       datasets/fine-tuning, fallbacks'
     accessed: '2026-06-04'
+  - url: https://docs.helicone.ai/gateway/overview.md
+    shows: 'AI Gateway overview: "Helicone AI Gateway provides a unified API for 100+ LLM providers through
+      the OpenAI SDK format" with "automatic fallbacks" and a comparison table listing Session Tracking,
+      Prompt Management, Caching and Open Source as supported.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: fd459bee0cf903149422729059c4ae7bc31afe1807bd923515ce2cca25fb9b6e
+  - url: https://docs.helicone.ai/llms.txt
+    shows: Docs index listing pages for "Compose and iterate prompts, then easily deploy them in any LLM
+      call with the AI Gateway." and "Curate and export LLM request/response data for fine-tuning, evaluation,
+      and analysis" plus Sessions and LLM Caching pages.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: f407f73620ac9b266d19fbccccb42f797ce2f776731b35c4e0d0e0c7a4a77b4f

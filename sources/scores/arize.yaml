@@ -7,67 +7,105 @@ openness:
     - name: Proprietary
     source:
       value: closed
-      detail: proprietary SaaS
+      detail: proprietary software; no AX source repository published
     self-host:
-      value: none for core AX features
+      value: enterprise-only
+      detail: Kubernetes-based self-hosted AX is offered to Enterprise customers on commercial terms; the
+        source is not released
     context:
       weights:
         value: n/a
       note:
         value: open source Phoenix is a separate companion product
         detail: not the AX platform
-        raw: open source Phoenix is a separate companion product, not the AX platform
   confidence: high
-  note: Arize AX is closed/proprietary SaaS with no self-hostable core; only the separate Phoenix project
-    is source-available.
-  raw: license:Proprietary;weights:n/a;source:closed(proprietary SaaS);self-host:none for core AX features;note:open
-    source Phoenix is a separate companion product, not the AX platform
-  last_verified: '2026-08-13'
+  note: Arize AX is proprietary software under commercial terms with no published source. Enterprise customers
+    can run it self-hosted, but that is a commercial deployment of closed code; only the separate Phoenix
+    project publishes its source.
+  raw: license:Proprietary;source:closed(proprietary software; no AX source repository published);self-host:enterprise-only(Kubernetes-based
+    self-hosted AX is offered to Enterprise customers on commercial terms; the source is not released);weights:n/a;note:open
+    source Phoenix is a separate companion product(not the AX platform)
+  last_verified: '2026-09-29'
   sources:
-  - url: https://arize.com/
-    shows: 'The platform menu lists Arize AX, Alyx and adb beside "Phoenix Open Source" as separate entries,
-      AX being the managed platform and Phoenix the open-source one. Alyx is described as "Your AI engineering
-      agent ... Like Cursor or Claude Code, but for AI engineering", and adb as the GenAI datastore. Nothing
-      on the page publishes source for AX or offers a self-hosted AX build - the only self-host route named
-      anywhere on the site is Phoenix''s.'
-    accessed: '2026-08-13'
+  - url: https://arize.com/terms-of-service/
+    shows: 'Terms of service: Arize grants a "non-exclusive, royalty-free, non-transferable, and non-sublicensable
+      license to use and access the Application" and bars attempts to "derive source code, ideas, algorithms
+      or structure underlying any of the Application or Services", so AX is proprietary.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6e523df79a857a9b5d1cd75af6fe36def34f59be2b934e7929eeb9ece7f4b523
+    content_sha256: 82095e01ead3808a708de11b7372f33ecd8ec0e7e75878bd80cf0bb25a6254ea
     establishes:
     - license
     - source
+  - url: https://arize.com/docs/ax/selfhosting
+    shows: 'Self-hosted docs page: "Install, operate, and troubleshoot Arize AX in your own environment."
+      and "Built with a Kubernetes-first approach and deployable across all major cloud providers and private
+      cloud environments." so a self-hosted AX exists; no source repository or open license is named on
+      the page.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 104e3c671fcafd8868b5a500d3010c12b0dbf4f79ef0fad0b4727bba4fd8e9b0
+    establishes:
+    - self-host
+  - url: https://arize.com/products/self-hosted/
+    shows: 'Self-hosted product page: "Deploy Arize AX in your own environment." and "The full capabilities
+      of the AX platform stay intact." Searched the body for open source license or source repository for
+      AX: only the separate Phoenix open-source nav link.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 64de36cf12bcac0ba505b254c25ff17b25b92c640ebf1f6231c96eed4b753b12
+    establishes:
+    - self-host
+  - url: https://arize.com/pricing/
+    shows: Pricing page lists AX Free, AX Pro and AX Enterprise, with the Enterprise tier offered as "SaaS
+      or Self-Hosted", and says "Phoenix is our open-source, local-first platform for tracing, evaluation,
+      experimentation" as the separate open-source product.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 77dfdfa4e97f52f450db73046c71b234ea247fdc3914aa4534899910a4f3c0f4
+    establishes:
     - self-host
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  banded_quantity: platform throughput (~1T spans and ~1B evals a month), not an account or user count
-  note: Arize discloses roughly 1 trillion spans and 1 billion evaluations processed a month on its own
-    homepage. There is no per-account user or customer count, so this reading is based on that disclosed
-    throughput alone rather than a verified user base.
-  last_verified: '2026-08-13'
+  banded_quantity: platform throughput (~1T spans processed and ~1B evals a year), not an account or user
+    count
+  note: Arize reports roughly 1 trillion spans processed and 1 billion evaluations a year on its homepage.
+    It publishes no user or customer count, so that throughput is the only evidence of use.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arize.com/
-    shows: '"1 Trillion spans per month" and "1 Billion evals per month" in the stats block, with named
-      testimonials from Huayi Li (Principal Machine Learning Engineer, Atlassian) and Charles Holive (SVP
-      AI Solutions and Platforms, PepsiCo). No user, account or seat count appears anywhere on the page.'
-    accessed: '2026-08-13'
+    shows: 'Homepage stat cards read "1 Trillion" spans processed and "1 Billion" evals per year, and the
+      AX copy calls adb "the industry’s fastest and most scaled observability datastore". Searched the body
+      for a user, customer or account count for AX: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6e523df79a857a9b5d1cd75af6fe36def34f59be2b934e7929eeb9ece7f4b523
+    content_sha256: 6ff8a432ed36c43443172835ef934e43b6951fa3d2bec3480ffc7ddaae0c5446
 capability:
   score: 5
   basis: feature_matrix
-  value: observe(agent trace) + evaluate(spans/traces/sessions) + improve(prompt/config testing), Alyx
-    embedded AI engineering agent, adb GenAI datastore, alerting/monitoring at trillion-span scale
+  value: observe(agent trace) + evaluate(LLM-as-a-judge, agent-as-a-judge, code evaluators) + improve(experiments
+    on prompt/model/agent changes), Signal issue detection, Alyx embedded AI engineering agent, adb GenAI
+    trace datastore, self-hosted deployment option
   confidence: medium
-  note: Frontier-tier closed observability platform for this category; enterprise-scale managed tracing/eval/monitoring
-    exceeding the OSS feature sets. A 5 reflects category-leading closed capability.
-  last_verified: '2026-08-13'
+  note: Arize AX is a commercial observability platform covering tracing, evaluation, prompt and agent experiments,
+    production issue detection and an embedded AI engineering agent (Alyx), with a datastore for GenAI traces
+    (adb). Its feature set goes beyond Langfuse's.
+  last_verified: '2026-09-29'
+  relative_to: langfuse
+  relation: one_above
   sources:
-  - url: https://arize.com/
-    shows: Product tabs named Observe, Evaluate, Develop and Alyx; Alyx described as an in-app AI engineering
-      agent that "runs evals, debugs issues, and improves your agents"; adb as the GenAI datastore; and 1
-      Trillion spans per month as the scale claim.
-    accessed: '2026-08-13'
+  - url: https://arize.com/docs/ax
+    shows: 'AX docs home: "Evaluate agent performance with LLM-as-a-Judge, agent-as-a-judge, or code evaluators."
+      and "Automatically surface issues from production traces with Signal." and "Alyx: Your AI engineering
+      agent for every step".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6e523df79a857a9b5d1cd75af6fe36def34f59be2b934e7929eeb9ece7f4b523
+    content_sha256: 00d0512f825d48b080e1923e52195245c7d55b0c39f7b2325aec9f43d9fab148
+  - url: https://arize.com/
+    shows: 'Homepage: "Like Cursor or Claude Code, but for AI engineering." and Alyx "runs evals, debugs
+      issues, and improves your agents." plus "ADB: The datastore for GenAI traces".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6ff8a432ed36c43443172835ef934e43b6951fa3d2bec3480ffc7ddaae0c5446

@@ -14,20 +14,21 @@ openness:
       value: ungated
     context:
       service:
-        value: none
-        detail: per the repo
+        value: proprietary
+        detail: Giskard Hub enterprise platform, separate from the library
   confidence: high
-  note: 'Fully open source: an Apache-2.0 Python library, self-hostable, with no commercial tier mentioned
-    on the repo. The repo now lives at Giskard-AI/giskard-oss and the project has shipped a v3 rewrite;
-    neither moves the score.'
-  raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:none(per the repo);core-gated:ungated
-  last_verified: '2026-08-13'
+  note: Giskard's library is published whole under Apache-2.0 and runs locally, using whichever LLM provider
+    the user picks as the judge. Giskard AI also sells an Enterprise platform with its own red-teaming probes
+    and deployment options, but it is a separate product and nothing is withheld from the library itself.
+  raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:proprietary(Giskard Hub enterprise platform,
+    separate from the library);core-gated:ungated
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Giskard-AI/giskard
-    shows: 'Redirects to Giskard-AI/giskard-oss, whose metadata records license spdxId - Apache-2.0. The
+    shows: Redirects to Giskard-AI/giskard-oss, whose metadata records license spdxId - Apache-2.0. The
       README installs the whole thing with pip and documents running it locally; the only paid-adjacent
       ask on the page is GitHub sponsorship, and there is no enterprise directory, commercial edition or
-      license key, so nothing is withheld from the published source.'
+      license key, so nothing is withheld from the published source.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505
@@ -35,6 +36,36 @@ openness:
     - source
     - core-gated
     - license
+  - url: https://pypi.org/pypi/giskard/json
+    shows: 'PyPI metadata for giskard 3.0.0 carries the classifier "License :: OSI Approved :: Apache Software
+      License", lists a Source Code link to the public Giskard-AI repository, and its README calls the project
+      "Giskard is an open-source Python library for" testing agents, installed whole with pip. Searched
+      the body for enterprise, license key and paid: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e885031177f4b06148fa6366335523c9a9249585558054323d0c2312a6877ea6
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://docs.giskard.ai/oss
+    shows: The library docs describe "a Python package for testing, evaluating, and scanning agentic applications"
+      whose tests "run on your machine, using the LLM provider of your choice as the judge", with a vulnerability
+      scan and a quality scan.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 55b534fa07786b6f133b95186e0f859bea9c5822b396814d3208a0593de326bd
+    establishes:
+    - self-host
+    - core-gated
+  - url: https://www.giskard.ai/pricing
+    shows: The pricing page lists a free tier with the "Open-Source library" and "Local deployment", beside
+      a separate Enterprise platform sold with "Hybrid deployment options" and multi-turn red-teaming probes.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b05f599b6441f68d9f894503be767caf1191a20f5d51e457626ef0c5574ca685
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -64,16 +95,31 @@ capability:
   value: Automated vulnerability scanning (injection, harmful output, hallucination) plus scenario-based
     and multi-turn agent evaluations.
   confidence: medium
-  note: Combines automated red-team scanning with structured evaluation; broad coverage for both safety
-    and reliability. The v3 rewrite renamed Scan to vulnerability_scan and ships it in giskard-scan alongside
-    knowledge-base and RAG evaluation, so the shape of the coverage moved but its breadth did not.
-  last_verified: '2026-08-13'
+  note: Giskard pairs an automated red-team scan, covering prompt injection, harmful content, stereotypes
+    and misinformation, with a scenario-based evaluation library that tests full multi-turn conversations
+    and RAG grounding.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/Giskard-AI/giskard
-    shows: README describes 'Evals, Red Teaming and Test Generation for Agentic Systems' and a
-      vulnerability scanner covering 'red teaming, prompt injection, jailbreaks & harmful content'
-      (vulnerability_scan, successor of v2 Scan) plus knowledge-base and RAG quality evaluation, with v3
-      built for dynamic multi-turn testing of agents.
+    shows: README describes 'Evals, Red Teaming and Test Generation for Agentic Systems' and a vulnerability
+      scanner covering 'red teaming, prompt injection, jailbreaks & harmful content' (vulnerability_scan,
+      successor of v2 Scan) plus knowledge-base and RAG quality evaluation, with v3 built for dynamic multi-turn
+      testing of agents.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505
+  - url: https://pypi.org/pypi/giskard/json
+    shows: The README describes v3 as a "fresh rewrite designed for dynamic, multi-turn testing of AI agents";
+      Giskard Scan generates adversarial suites "covering prompt injection, harmful content, stereotypes,
+      misinformation, and more", and Giskard Checks lists "Evaluate multi-turn agents" and RAG grounding
+      checks.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: e885031177f4b06148fa6366335523c9a9249585558054323d0c2312a6877ea6
+  - url: https://docs.giskard.ai/oss
+    shows: The library docs describe "a Python package for testing, evaluating, and scanning agentic applications"
+      whose tests "run on your machine, using the LLM provider of your choice as the judge", with a vulnerability
+      scan and a quality scan.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 55b534fa07786b6f133b95186e0f859bea9c5822b396814d3208a0593de326bd

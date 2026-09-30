@@ -18,37 +18,58 @@ openness:
   note: 'Mistral Large 3 ships Apache-2.0 weights, but the training data is closed and no training code
     is published. Mistral relicensed between releases: Large 2 shipped under the Mistral Research License,
     permitting research and non-commercial use only, while Large 3, the current release, is Apache-2.0.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/models/mistralai/Mistral-Large-3-675B-Base-2512
-    shows: 'card license `apache-2.0`, `gated: false`, `private: false`; the base checkpoint, distinct
-      from the -Instruct-2512 sibling.'
-    accessed: '2026-08-13'
+    shows: 'Hugging Face API record for "mistralai/Mistral-Large-3-675B-Base-2512" carries the tag "license:apache-2.0"
+      and reports gated as false and private as false. Searched the body for agree to share and access request:
+      none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6ffb0e94b9f2597413970b77f4384aded5b7bffac3ed7f227cb1d2246abb0133
-    establishes: [weights, license]
+    content_sha256: ee9cc000fad3f61d52e177b4111550ed08fec38fe5a7e194f697303dcd53e8bd
+    establishes:
+    - weights
+    - license
   - url: https://mistral.ai/news/mistral-3/
-    shows: '"We release both the base and instruction fine-tuned versions of Mistral Large 3 under the
-      Apache 2.0 license"; "trained from scratch on 3000 of NVIDIA''s H200 GPUs". The post names no
-      corpus and links no training pipeline.'
-    accessed: '2026-08-13'
+    shows: 'Mistral''s launch post: "We release both the base and instruction fine-tuned versions of Mistral
+      Large 3 under the Apache 2.0 license" and "trained from scratch on 3000 of NVIDIA". Searched the body
+      for training data and a released dataset or training-code repository: none, so the corpus and pipeline
+      stay closed.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 58e6de2bc30bf84e2c3a1bc1ba17b1c59d035083984f98bec98df96c2ad07292
-    establishes: [weights, data, code, license]
+    content_sha256: 457970a3c49a39f1ae296f615a729d90de1e34a4638ebd1c056e2e7ed91a5de7
+    establishes:
+    - weights
+    - data
+    - code
+    - license
   - url: https://docs.mistral.ai/models/mistral-large-3-25-12
-    shows: Mistral's model reference for mistral-large-3-25-12, describing it as open-weight with a 256k
-      context. Corroborates the weights reading against the vendor's own docs.
-    accessed: '2026-08-15'
+    shows: Mistral's model reference describes "Mistral Large 3, is a state-of-the-art, open-weight, general-purpose
+      multimodal model" and lists the license as Apache 2.0.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 487f12e1e7a4bb8127152b583f393a90e17b22ed8f81100628d9763c3e53dd56
+    content_sha256: 2e26244fe0347ad7e058820d5c473d5637e34bd88ae5c8aaaeaf1f4717e5d03c
+    establishes:
+    - weights
   - url: https://azure.microsoft.com/en-us/blog/introducing-mistral-large-3-in-microsoft-foundry-open-capable-and-ready-for-production-workloads/
-    shows: Microsoft's launch post for Mistral Large 3 in Foundry, describing it as an open-weight model
-      available for production workloads. A distribution partner's description; it establishes no dimension
-      the vendor's own sources do not.
-    accessed: '2026-08-15'
+    shows: Microsoft's Foundry launch post calls it "one of the strongest open-weight, Apache-licensed frontier
+      models" under the heading "Fully Open and Apache 2.0 licensed". A distribution partner, corroborating
+      only.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 3324156ccc77c7267bdd1377c1ccde72619411c86c1a70fdbd9f81fbbe248d49
+    content_sha256: 0bebebdc62b866babfd6b32f271bf2fab122804af3dc112ee15af59426267689
+  - url: https://huggingface.co/mistralai/Mistral-Large-3-675B-Base-2512/raw/main/README.md
+    shows: 'The base model card front matter declares "license: apache-2.0" and the card states "This model
+      is the base pre-trained version, not fine-tuned for instruction or reasoning tasks" with an Apache
+      2.0 License entry reading "Open-source license allowing usage and modification for both commercial
+      and non-commercial purposes". Searched the card for dataset or training-code links: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 770ec15b98c81cd2276d3dfa88f26342fb9482db83d052db1f1f2f9316a63eb8
+    establishes:
+    - weights
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -82,19 +103,28 @@ adoption:
     http_status: 200
     content_sha256: 9965699b0cd9cc3593386dbb8d3abd7359e326fbc1567db7cffaf11760eebc62
 capability:
-  score: 4
+  score: 3
   basis: benchmark
-  basis_detail: LMArena
-  value: null
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'Mistral Large 3 - AA Intelligence Index 9 (v4.3.2), below average among open weight non-reasoning
+    models of similar size (median 12). Launched at #2 in LMArena''s OSS non-reasoning category (launch-day
+    figure).'
   confidence: high
-  note: 'Mistral Large 3 debuted at #2 in LMArena''s OSS non-reasoning category (#6 among all OSS models),
-    but the launch post gives no per-benchmark MMLU-Pro, GPQA or SWE-bench figures. That ranking is a launch-day
-    placement rather than a current leaderboard read.'
-  last_verified: '2026-08-13'
+  note: Mistral Large 3 scores 9 on Artificial Analysis's Intelligence Index, below the median of 12 for
+    open-weight non-reasoning models of similar size. Mistral's launch post placed it second among open
+    non-reasoning models on LMArena, but that was a launch-day placement rather than a current standing.
+  last_verified: '2026-09-29'
   sources:
   - url: https://mistral.ai/news/mistral-3/
-    shows: '"Mistral Large 3 debuts at #2 in the OSS non-reasoning models category (#6 amongst OSS
-      models overall) on the LMArena leaderboard"'
-    accessed: '2026-08-13'
+    shows: 'Mistral''s launch post: "Mistral Large 3 debuts at #2 in the OSS non-reasoning models category
+      (#6 amongst OSS models overall)" on LMArena. A launch-day placement.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 58e6de2bc30bf84e2c3a1bc1ba17b1c59d035083984f98bec98df96c2ad07292
+    content_sha256: 457970a3c49a39f1ae296f615a729d90de1e34a4638ebd1c056e2e7ed91a5de7
+  - url: https://artificialanalysis.ai/models/mistral-large-3
+    shows: 'Artificial Analysis model page on Intelligence Index v4.3.2: "Mistral Large 3 scores 9 on the
+      Artificial Analysis Intelligence Index, placing it below average among other open weight non-reasoning
+      models of similar size (median: 12)".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5416088e1f2fd637cd2f64b55d80f440d2af666afceaea8b1c3b9deec138ad25

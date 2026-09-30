@@ -26,14 +26,19 @@ openness:
     proprietary perpetual-standby platform;core-gated:gated(the control plane that creates, suspends and
     resumes sandboxes - the perpetual-standby platform Blaxel sells - exists in no public repo; the MIT
     repo publishes only the in-sandbox HTTP API and a hub of image templates)
-  last_verified: '2026-08-12'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/blaxel-ai/sandbox
     shows: MIT license; sandbox API self-hostable via Docker Compose (port 8080)
     accessed: '2026-07-09'
   - url: https://blaxel.ai/sandbox
-    shows: perpetual sandbox platform for AI agents; standby at zero compute cost, sub-25ms resume
-    accessed: '2026-07-09'
+    shows: The Blaxel sandbox product page scopes its open-source claim to the API alone under the heading
+      "Open-source core", saying "sandbox API is fully open-source."
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 27b2ba1e8305ec6490d2ccfe417300c5baced25a526dea2edf6718d615ae2409
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/blaxel-ai/sandbox/git/trees/main?recursive=1
     shows: 'Full untruncated recursive tree, 419 entries, one MIT LICENSE. The entire tree is sandbox-api/
       (the HTTP API that runs inside a sandbox: filesystem, process, network), hub/ (about thirty Dockerfile
@@ -47,14 +52,18 @@ openness:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/blaxel-ai/sandbox/main/README.md
-    shows: The repo describes itself as "Sandbox Hub ... a collection of development environment templates
-      for creating secure, isolated micro VM environments", and its prerequisites and installation steps
-      are Docker Compose for building and running those template images locally. It documents no way to
-      run the Blaxel platform itself.
-    accessed: '2026-08-12'
+    shows: 'The blaxel-ai/sandbox README scopes the repo to image templates plus the in-sandbox API, describing
+      it as "a collection of development environment templates" whose base image is "Accessible via port
+      8080 (sandbox-api)" and whose other templates add only their own app ports, and it sends sandbox lifecycle
+      to the hosted service: "You can find sample on how to create/retrieve/remove a Sandbox at this url:
+      https://docs.blaxel.ai/Sandboxes/Overview"; searched the body for scheduler, control plane, standby,
+      resume and self-host: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 6f76844494b52dacdaca2da7a70976c7fa4ce9c7d832a8b6abeb4be864d2c7d8
+    content_sha256: f54055b9135270cb879576c31ea10a275da88a49a073642d31b5ef2c884d2fd9
     establishes:
+    - license
+    - source
     - core-gated
   - url: https://api.github.com/orgs/blaxel-ai/repos?per_page=100
     shows: All 29 public repos in the org. They are SDKs and clients (sdk-python, sdk-typescript, sdk-go,
@@ -74,6 +83,24 @@ openness:
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/blaxel-ai/sandbox/main/LICENSE
+    shows: The blaxel-ai/sandbox repository LICENSE file on main is the MIT license, opening "MIT License"
+      and "Copyright (c) 2025 Beamlit, Inc." with the standard grant "Permission is hereby granted, free
+      of charge, to any person obtaining a copy".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 947aa1a6ad059beb73149127a3df9599355f00485e2b2af59e4d9679ecaebd40
+    establishes:
+    - license
+  - url: https://blaxel.ai/pricing
+    shows: The Blaxel pricing page says even the self-hosted option depends on the vendor control plane,
+      quoting "Deploy bare metal servers in your own VPC, and privately connect them to Blaxel control plane
+      for the sandbox runtime".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6a2beda9879fff38cecae948e567acdb964d3e086c5b81c1650c53675e67f866
+    establishes:
+    - core-gated
 adoption:
   level: 1
   reach: <1K stars
@@ -113,20 +140,35 @@ capability:
     state intact, and the platform adds auto-suspend, batch jobs and self-hosted or VPC deployment options.
     What keeps it a step below the category''s proven microVM platforms is scale: its request-volume claims
     come from the vendor and are not independently verified.'
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://blaxel.ai/sandbox
-    shows: 'MicroVMs that boot in milliseconds and resume in ~25ms from standby with full filesystem and
-      memory snapshots; sandboxes auto-suspend after 15s of inactivity and persist across sessions;
-      batch jobs spawn thousands of tasks; outbound allow-lists, static IPs and proxy routing; managed
-      cloud, self-hosting and VPC deployment options'
-    accessed: '2026-08-13'
+    shows: The Blaxel sandbox product page says the runtime is built on microVMs, quoting "Every sandbox
+      runs in its own microVM with no shared kernel." and "Resume from standby in 25 milliseconds with full
+      memory state restored, at any time." and "connect under one second"; it lists batch jobs, volumes
+      and static IPs, and its Open-source core block says "sandbox API is fully open-source." without naming
+      a license or the control plane.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 58bc1b3f5c3a3695c9a6935235d47d6414740d4dc1cd2a9f7ab7116bab547ca6
+    content_sha256: 27b2ba1e8305ec6490d2ccfe417300c5baced25a526dea2edf6718d615ae2409
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24
-      providers on 4 vCPU / 16GB in Northern Virginia. Blaxel records 0.51s median, 0.60s P95, 0.61s P99,
-      100% success, composite 94.5, ranking 9th of 24 by composite score.'
+    shows: ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24 providers
+      on 4 vCPU / 16GB in Northern Virginia. Blaxel records 0.51s median, 0.60s P95, 0.61s P99, 100% success,
+      composite 94.5, ranking 9th of 24 by composite score.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ec3f48b2ca3c1877605154422671c020935c0bfebdfc9aff268d06799ae865f7
+  - url: https://docs.blaxel.ai/Sandboxes/Overview
+    shows: The Blaxel sandboxes docs page describes standby, quoting "Blaxel automatically creates a snapshot
+      of the entire state" and "standby mode within approximately 15 seconds", and its description says
+      "sub-25ms cold starts, file system, processes, and an MCP server for agents".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 69f3679bf49c269ea925fa1aac6c5ac3d66c7ef3b133247197d4692ac4038d47
+  - url: https://blaxel.ai/pricing
+    shows: The Blaxel pricing page describes a self-hosted option, quoting "Deploy bare metal servers in
+      your own VPC, and privately connect them to Blaxel control plane for the sandbox runtime"; it shows
+      no repository license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 6a2beda9879fff38cecae948e567acdb964d3e086c5b81c1650c53675e67f866

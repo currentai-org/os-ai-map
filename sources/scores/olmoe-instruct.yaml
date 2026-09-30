@@ -20,26 +20,86 @@ openness:
         value: open
         detail: 244 intermediate
   confidence: high
-  note: 'A fully open mixture-of-experts model: Apache-2.0 weights, open pretraining data (OLMoE-mix-0924,
-    built on Dolma and DataComp), open post-training data, open training code and 244 intermediate checkpoints.'
+  note: 'A fully open mixture-of-experts model: Apache-2.0 weights, open pretraining data, open post-training
+    data, open training code and 244 intermediate checkpoints.'
   raw: weights:open(Apache-2.0);data:open(OLMoE-mix-0924 pretraining + Tulu/UltraFeedback post-training);code:open(OLMoE
     training code, SFT/DPO/KTO recipes);checkpoints:open(244 intermediate);license:Apache-2.0(OSI)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct
-    shows: '`license:apache-2.0` in the repo tags; "OLMoE is 100% open-source"; the card links Checkpoints,
-      Code, Data and Logs for pretraining, for SFT, and for DPO/KTO separately, and names
-      allenai/ultrafeedback_binarized_cleaned as the preference data'
-    accessed: '2026-08-13'
+    shows: Model card states "OLMoE is 100% open-source" and links pretraining, SFT and DPO/KTO checkpoints,
+      code, data and logs.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: bcb2b0e5af0862689a775809399adf30e8fa5ff6d7ac0395d3b48371a7cd77b7
-    establishes: [weights, data, code, checkpoints, license]
+    content_sha256: 179a244f34d9c5f2c227fd4b7153635929cdf77933cccfe7d62e6643605c6924
+    establishes:
+    - weights
+    - code
+    - checkpoints
+  - url: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct/raw/main/README.md
+    shows: 'Card front matter reads "license: apache-2.0"; summary says "OLMoE is 100% open-source", with
+      pretraining "Data" and "Logs" links, SFT data "tulu-v3.1-mix-preview-4096-OLMoE", and preference data
+      "allenai/ultrafeedback_binarized_cleaned"; code links "allenai/open-instruct/tree/olmoe-sft".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 06977ee73bcc71eaa8c6c2cf6a01f6f0b1a10aa8ed2777cc4c275b24215df696
+    establishes:
+    - weights
+    - data
+    - code
+    - checkpoints
+    - license
   - url: https://allenai.org/blog/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514
-    shows: released with open data, code, evaluations, logs, and intermediate training
-      checkpoints
-    accessed: '2026-08-13'
+    shows: Blog says OLMoE is "released with open data, code, evaluations, logs, and intermediate training
+      checkpoints" and lists "244 checkpoints for the pretrained model, one every 5000 steps".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a3d2691fa16b3fd9b1b7ef5f4e6582b195674de7f287c967f9b1747eb22844e1
+    content_sha256: 57855c530bbd27f51979e3fd44e4c7be77d019f0c99af0268d08d0af29a92b5d
+    establishes:
+    - data
+    - code
+    - checkpoints
+  - url: https://huggingface.co/api/datasets/allenai/OLMoE-mix-0924
+    shows: Dataset API lists downloadable pretraining shards such as "data/dclm/dclm-0242.json.zst" with
+      tag "license:odc-by" and "gated":false.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 68c770c508bad6b16128cfbf574b85cb3afd7d5b578e5abcc247401f8183cbcc
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/allenai/tulu-v3.1-mix-preview-4096-OLMoE
+    shows: Dataset API for the OLMoE SFT mix (post-training data) carries the tag "license:odc-by", "gated":false,
+      and states "We do not introduce any new data with this dataset." for the "OLMoE SFT Mix".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5fdc76b83feae632a19b39e4cbd16580b59b429e27969ee53d392e8bb2db6a44
+    establishes:
+    - post-training-data
+  - url: https://huggingface.co/api/datasets/allenai/ultrafeedback_binarized_cleaned
+    shows: Dataset API for the preference (DPO) post-training data carries the tag "license:mit", "gated":false,
+      and says "This is a version of the UltraFeedback binarized dataset but with TruthfulQA prompts removed".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 216dc79c938190f15e254bf4e6669007bfef42f4ed3674c4a64a93fc9a7bb549
+    establishes:
+    - post-training-data
+  - url: https://raw.githubusercontent.com/allenai/open-instruct/main/README.md
+    shows: 'open-instruct README describes the post-training code repo: "Code for finetuning language models
+      with latest techniques and instruction datasets in a unified format." and "Code for DPO, preference
+      finetuning and reinforcement learning with verifiable rewards (RLVR)."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 506b8d1cfa7060c50ca30e5df5f9f98980f0b7a4b7a92feb0d0a89a1e535e751
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/allenai/open-instruct/main/LICENSE
+    shows: open-instruct LICENSE file is the full Apache text, headed "Apache License" and "Version 2.0,
+      January 2004", so the post-training code is under an OSI license.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b998a796c55d006a974a48c73aa32674e6901e8d49aa98d74722e0c1063b40b6
+    establishes:
+    - code
 adoption:
   level: 2
   reach: 10K-100K
@@ -73,20 +133,22 @@ capability:
   value: OLMoE-1B-7B-Instruct MMLU 51.9, GSM8k 45.5, HumanEval 54.8, AlpacaEval1 84.0,
     IFEval 48.1
   confidence: medium
-  note: OLMoE-1B-7B-Instruct led other roughly 1B-active-parameter models at release, ahead of Gemma 2,
-    Llama 2 13B Chat, OLMo 7B and DeepSeekMoE-16B on the vendor's own comparisons. Its 1.3B active-parameter
-    budget keeps it well below full-size 2026 chat models on absolute capability.
-  last_verified: '2026-08-13'
+  note: The model card calls it state-of-the-art among models of similar cost, about 1B active parameters,
+    and its own comparison table puts it ahead of OLMo-7B, DeepSeek-3B-16B and Qwen1.5-3B-14B chat models
+    on average score. Its small active-parameter budget keeps it well below full-size current chat models
+    on absolute capability.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct
-    shows: 'Evaluation Snapshot, OLMoE +DPO row - MMLU 51.9, GSM8k 45.5, HumanEval 54.8, Alpaca-Eval 1.0
-      84.0, IFEval 48.1, Avg 57.7; card claims "state-of-the-art performance among models with a similar
-      cost (1B)" and competitiveness with Llama2-13B-Chat'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct/raw/main/README.md
+    shows: 'Evaluation Snapshot, OLMoE +DPO row: MMLU 51.9, GSM8k 45.5, Human-Eval 54.8, Alpaca-Eval 1.0
+      84.0, IFEval 48.1, Avg 57.7; the summary says "state-of-the-art performance among models with a similar
+      cost (1B)" and "competitive with much larger models like Llama2-13B-Chat".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: bcb2b0e5af0862689a775809399adf30e8fa5ff6d7ac0395d3b48371a7cd77b7
+    content_sha256: 06977ee73bcc71eaa8c6c2cf6a01f6f0b1a10aa8ed2777cc4c275b24215df696
   - url: https://allenai.org/blog/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514
-    shows: positioned state-of-the-art at the ~1B-active cost class
-    accessed: '2026-08-13'
+    shows: 'Blog title "OLMoE: An open, small, and state-of-the-art mixture-of-experts model" and text on
+      being "the first model to be on the Pareto frontier of performance and size".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a3d2691fa16b3fd9b1b7ef5f4e6582b195674de7f287c967f9b1747eb22844e1
+    content_sha256: 57855c530bbd27f51979e3fd44e4c7be77d019f0c99af0268d08d0af29a92b5d

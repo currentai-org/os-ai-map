@@ -65,12 +65,29 @@ capability:
   value: Common Crawl WET processing with language ID, filtering, and metadata for multilingual corpus
     construction.
   confidence: medium
-  note: Focused single-corpus pipeline; mature for its scope.
-  last_verified: '2026-08-13'
+  note: Focused single-corpus pipeline.
+  last_verified: '2026-09-29'
   sources:
   - url: https://raw.githubusercontent.com/oscar-project/ungoliant/main/README.md
-    shows: README still describes the OSCAR generation pipeline over Common Crawl, with language
-      identification, filtering and an optional KenLM feature
-    accessed: '2026-08-13'
+    shows: README describes Ungoliant as "a high-performance pipeline that provides tools to build corpus
+      generation pipelines from CommonCrawl", currently "the generation pipeline for" the OSCAR corpus,
+      with a fastText language identification model ("lid.176.bin") and an optional KenLM feature.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 88a8f1ddd38ca16b6f71c78ee43264d3955dfc62505261075f19bb9b4d7cea7d
+  - url: https://raw.githubusercontent.com/oscar-project/ungoliant/main/Cargo.toml
+    shows: Cargo.toml gives the package description "The pipeline for the OSCAR corpus." and lists the "fasttext"
+      crate as a dependency.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 9d8fe53c0361af6e61a2124c0eb8282b57bdfba1104ecf3824d11f0b58e8ac0b
+  - url: https://raw.githubusercontent.com/oscar-project/ungoliant/main/src/filtering/mod.rs
+    shows: 'Rust source of the filtering module: "Filters can operate on sentence or record level"'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7c7f05975e24fab5392ba22bc1488afa6bab0fb410b4aacfa00b1c99c29ccd3e
+  - url: https://raw.githubusercontent.com/oscar-project/ungoliant/main/src/pipelines/oscardoc/types/mod.rs
+    shows: 'The oscardoc types module re-exports the OSCAR document metadata type: "pub use oscar_io::v3::Metadata;"'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 07a37c9615020d6fa0d6119e1e1b9486f7b928067511e157a2f9068e0ea0a9f9

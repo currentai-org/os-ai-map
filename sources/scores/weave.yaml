@@ -8,9 +8,9 @@ openness:
       detail: OSI, SDK/client repo wandb/weave
     source:
       value: partial
-      detail: the Apache-2.0 repo publishes the SDK and a ClickHouse-backed trace-server library, but no
-        web UI, no deployment manifest and not the HTTP service that fronts the trace server, which its
-        own trace_server/README.md places in W&B's closed core repository
+      detail: the Apache-2.0 repo publishes the SDK and a ClickHouse-backed trace-server library, but its
+        own trace_server/README.md places the HTTP service that fronts the trace server in W&B's closed
+        core repository
     context:
       backend:
         value: commercial
@@ -19,66 +19,52 @@ openness:
         value: OSS
   confidence: high
   note: Weave's wandb/weave repository is Apache-2.0 and publishes more than an SDK, including a working
-    ClickHouse trace-server library, but not the web UI or the HTTP service that fronts it, both of which
-    live in W&B's closed core. Using the package requires a Weights & Biases account, and a self-managed
-    install needs a purchased Server license, so it cannot be run from what ships here.
+    ClickHouse trace-server library, but the HTTP service that fronts it lives in W&B's closed core repository.
+    Using the package requires a Weights & Biases account, and a self-managed install needs a Weave-enabled
+    license from W&B, so it cannot be run from what ships here.
   raw: license:Apache-2.0(OSI, SDK/client repo wandb/weave);source:partial(the Apache-2.0 repo publishes
-    the SDK and a ClickHouse-backed trace-server library, but no web UI, no deployment manifest and not
-    the HTTP service that fronts the trace server, which its own trace_server/README.md places in W&B's
-    closed core repository);backend:commercial(W&B SaaS platform hosts traces/evals; full platform is proprietary,
-    self-host is enterprise);eval+tracing-client:OSS
-  last_verified: '2026-08-12'
+    the SDK and a ClickHouse-backed trace-server library, but its own trace_server/README.md places the
+    HTTP service that fronts the trace server in W&B's closed core repository);backend:commercial(W&B SaaS
+    platform hosts traces/evals; full platform is proprietary, self-host is enterprise);eval+tracing-client:OSS
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/wandb/weave
     shows: Apache-2.0 license on the Weave SDK repo; LLM logging/tracing/eval toolkit
     accessed: '2026-06-04'
-  - url: https://api.github.com/repos/wandb/weave/contents/
-    shows: Repository root, listed to establish what ships. LICENSE (Apache-2.0 per the license endpoint),
-      Makefile, noxfile.py, pyproject.toml, bin, dev_docs, examples, scripts, sdks, tests, trace_server_mock,
-      weave. There is no docker-compose, no chart, no deploy or infra directory, and no web/ or ui/ - so
-      no published way to run the application. sdks/ contains only `node`. bin/ contains only codex_setup.sh
-      and run_setup_in_codex.sh. The server-side code that does ship is the library under weave/trace_server/,
-      which includes clickhouse_trace_server_batched.py, clickhouse_schema.py, migrations, workers, kafka.py,
-      file_storage.py and an opentelemetry package.
-    accessed: '2026-08-12'
+  - url: https://raw.githubusercontent.com/wandb/weave/master/LICENSE
+    shows: The repository LICENSE file is the Apache License, "Version 2.0, January 2004", the full standard
+      text.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 099e76f39c0b60aa2deb06f3be1657deb01947289229d4434d5af3b96023c1f2
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
     establishes:
-    - source
     - license
   - url: https://raw.githubusercontent.com/wandb/weave/master/weave/trace_server/README.md
-    shows: The repository's own architecture diagram, which names the piece that is missing. The call-start
-      sequence runs UserCode -> OpExecution -> GraphClientTrace -> RemoteHTTPTraceServer -> "(in core) trace_server.py
-      TraceWebServer <FlaskApp>" -> ClickHouseTraceServer -> ClickHouseDB. The web service tier is annotated
-      as living in core, W&B's closed repository, not in this one. The published RemoteHTTPTraceServer is
-      the client that posts to it.
-    accessed: '2026-08-12'
+    shows: The trace server README diagram places the web service in the closed core repo, labeled "participant
+      TraceWebServer as (in core) trace_server.py" beside the shipped ClickHouseTraceServer.
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: 6136cc31b33793f95de67aa389e20a92d899a2676826fea7edfe5ff7b1f7b89d
     establishes:
     - source
   - url: https://raw.githubusercontent.com/wandb/weave/master/README.md
-    shows: 'The vendor''s own prerequisite for using the published package, stated plainly under Prerequisites:
-      "Python 3.10 or higher" and "A Weights & Biases account (free tier available)". The quick start is
-      `pip install weave` then `weave.init("my-project-name")`, which registers against that account. Nothing
-      in the README describes running Weave without W&B.'
-    accessed: '2026-08-12'
+    shows: The README lists prerequisites of "Python 3.10 or higher" and "A [Weights & Biases account](https://wandb.ai/signup)
+      (free tier available)", and quick start is pip install then weave.init.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: a80ad86bad9feeb77a2f784c145270583a93314d75b9895a0ed1fa774418e6ed
-    establishes:
-    - source
+    content_sha256: 0a3906d2a507c4dcfde172e30a9bbf9a00f0d8325056821ab4473d3bb8a49090
   - url: https://docs.wandb.ai/guides/hosting/
-    shows: 'W&B''s deployment options: Multi-tenant Cloud, Dedicated Cloud and Self-Managed. On licensing
-      it states "Some features and functionality require an Enterprise license" and routes readers to an
-      Enterprise trial. The self-managed page adds "A W&B Server license authorizes your deployment. You
-      must obtain a license before installation." So the on-premises route runs a licensed W&B Server distribution
-      rather than a build of wandb/weave.'
-    accessed: '2026-08-12'
+    shows: The W&B hosting page says "Some features and functionality require an" Enterprise license and
+      compares "deployment options including Multi-tenant Cloud, Dedicated Cloud, and Self-Managed installations".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 17e6dd1f897b73aac6bec88fff076dbbbc8a3b92d9dda25f941cacce26dd6edd
-    establishes:
-    - source
-    - core-gated
+    content_sha256: d1be166dfce430bae891249174dc04fea9e1cabbb55b22944ad4da5464b59317
+  - url: https://docs.wandb.ai/weave/guides/platform/weave-self-managed
+    shows: The Weave self-managed page lists the prerequisite "Weave-enabled license from W&B Support" and
+      says the W&B Platform is already installed and running.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d708c301ae0da4066323b77576adb4066fdad085eb31f3a63474d6a82d2f8f5a
 adoption:
   level: 4
   reach: 1M-10M
@@ -87,7 +73,6 @@ adoption:
   note: Adoption is measured by monthly PyPI downloads of the weave package. Weave rides the established
     Weights & Biases install base, so growth reflects ML teams adding LLM observability inside an existing
     W&B account as much as it reflects independent adoption of Weave itself.
-  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/weave
     shows: Downloads last month 1,052,916 for the weave package (last week 269,722)
@@ -99,24 +84,23 @@ capability:
   basis: feature_matrix
   relative_to: langfuse
   relation: at
-  value: tracing(auto-logs OpenAI/Anthropic calls incl inputs/outputs/tokens/cost); evals(LLM-as-judge
-    + code scorers, experiments vs datasets); datasets/annotation; cost tracking; integrations(OpenAI/Anthropic
-    + framework hooks). Missing dedicated prompt-management/versioning depth vs MLflow/Langfuse.
+  value: tracing(calls traced with ops, OTel-compatible SDK and built-in agent SDK integrations); evals(LLM
+    judges + custom scorers, experiments vs datasets); versioning and feedback collection; production monitoring.
+    Prompt management depth is lighter than Langfuse.
   confidence: medium
-  note: Weave provides end-to-end tracing and evaluation, including LLM-as-judge and code scorers, datasets,
-    annotation and cost tracking. Prompt management and versioning are lighter than Langfuse's, and the
-    README notes that Weave's boards feature is paused while development focuses on tracing and evaluations,
-    keeping the product level with Langfuse rather than ahead of it.
-  last_verified: '2026-08-13'
+  note: Weave provides end-to-end tracing and evaluation with LLM judges and custom scorers, plus versioning,
+    feedback collection and production monitoring. Prompt management is lighter than Langfuse's, which keeps
+    the product level with Langfuse rather than ahead of it.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://raw.githubusercontent.com/wandb/weave/master/README.md
-    shows: 'README - use Weave to "Log and debug language model inputs, outputs, and traces", "Build
-      rigorous, apples-to-apples evaluations for language model use cases" and "Organize all the
-      information generated across the LLM workflow, from experimentation to evaluations to production".
-      It also records that "Weave boards" are on pause "as we focus on Tracing and Evaluations".'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: a80ad86bad9feeb77a2f784c145270583a93314d75b9895a0ed1fa774418e6ed
   - url: https://github.com/wandb/weave
     shows: logging/debugging LLM traces + rigorous evaluations feature set
     accessed: '2026-06-04'
+  - url: https://docs.wandb.ai/weave
+    shows: 'Weave docs home: "W&B Weave is an observability and evaluation platform that helps you track,
+      evaluate, and improve your agents and LLM applications." with tracing of calls, "LLM judges and custom
+      scorers", "Version your work", "Monitor and collect feedback" and "Pick a built-in integration for
+      your agent SDK or harness".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d32c66835888c2b5c991063eea485bfddfa7c05567d53edcbc0cab02bca9dcb9

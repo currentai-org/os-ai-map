@@ -15,8 +15,26 @@ openness:
   confidence: high
   note: Fully OSI-licensed (MIT), full source public.
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/mlfoundations/dclm/main/LICENSE
+    shows: LICENSE file begins "MIT License" and states "Permission is hereby granted, free of charge" to
+      any person obtaining a copy of the software.
+    accessed: '2026-09-29'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: f6f22e7ddf73c6acc94c82555d60f33f26df2aea3be34d65c2f10c9d9c95e3ff
+  - url: https://raw.githubusercontent.com/mlfoundations/dclm/main/README.md
+    shows: 'README states "licensed under the MIT License." and installs from the repo with "pip install
+      -r requirements.txt"; searched the body for enterprise, license key, non-commercial and noncommercial:
+      none.'
+    accessed: '2026-09-29'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 21462d622ec7fe97c9299532feda5c9c5dc7d8d95807f5a92fa74a9e24ce9bfe
   - url: https://github.com/mlfoundations/dclm/blob/main/LICENSE
     shows: MIT License text
     accessed: '2026-08-13'
@@ -24,16 +42,6 @@ openness:
     - license
     http_status: 200
     content_sha256: f6f22e7ddf73c6acc94c82555d60f33f26df2aea3be34d65c2f10c9d9c95e3ff
-  - url: https://raw.githubusercontent.com/mlfoundations/dclm/main/README.md
-    shows: README documents the whole pipeline building and installing from the published
-      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
-      nothing is withheld from the source
-    accessed: '2026-08-13'
-    establishes:
-    - source
-    - core-gated
-    http_status: 200
-    content_sha256: 21462d622ec7fe97c9299532feda5c9c5dc7d8d95807f5a92fa74a9e24ce9bfe
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -58,16 +66,18 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  value: DCLM is the DataComp-LM benchmark harness; its own DCLM-baseline corpus tops the benchmark (a
-    7B model on 2.6T tokens reaches ~64% MMLU, beating RefinedWeb/C4/Dolma), so it defines the curation
-    frontier the other tools are scored against.
+  value: DCLM is the DataComp-LM benchmark harness, with 53 downstream evaluations. Its DCLM-baseline corpus
+    trains a 7B model to 64% 5-shot MMLU on 2.6T tokens, 6.6 points above MAP-Neo, the previous open-data
+    state of the art.
   confidence: high
-  note: 'Benchmark-defining: DCLM-baseline is the reference-topping corpus of the DataComp-LM leaderboard.'
-  last_verified: '2026-08-13'
+  note: DCLM-baseline, the reference curation output of the DataComp-LM benchmark, set the open-data state
+    of the art on MMLU when published.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2406.11794
-    shows: 'DataComp-LM abstract - DCLM-baseline trains a 7B model to 64% 5-shot MMLU on 2.6T tokens,
-      6.6 points above MAP-Neo, the previous open-data state of the art'
-    accessed: '2026-08-13'
+    shows: 'DataComp-LM abstract: "DCLM-Baseline enables training a 7B parameter language model from scratch
+      to 64% 5-shot accuracy on MMLU with 2.6T training tokens" and "6.6 percentage point improvement on
+      MMLU" over MAP-Neo, evaluated on "53 downstream evaluations".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: f665620bfe7fe32ea36cf6f4daab947bd13e925c191d80444c02c8ceb14fd974

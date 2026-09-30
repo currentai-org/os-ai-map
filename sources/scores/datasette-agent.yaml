@@ -15,10 +15,46 @@ openness:
     - PyPI
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 verified against LICENSE body; full source public on the datasette org; no gated tier.
+  note: The plugin is released under Apache-2.0 with its full source public on the datasette GitHub organization,
+    and nothing is sold beside it.
   raw: license:Apache-2.0(OSI);source:public(GitHub);PyPI;no feature-gated core;core-gated:ungated
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
+  - url: https://raw.githubusercontent.com/datasette/datasette-agent/main/LICENSE
+    shows: The LICENSE file is the full Apache license text, beginning "Apache License" and "Version 2.0,
+      January 2004" with "TERMS AND CONDITIONS FOR USE, REPRODUCTION".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/datasette/datasette-agent/main/README.md
+    shows: 'The README documents the plugin as Apache-2.0 via the badge "license-Apache%202.0-blue.svg"
+      and lists plugin extras such as "datasette-agent-charts"; searched for enterprise, paid, license key
+      and pricing: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5e402f9d817f3277ff1ffa137dfe2c86d7e4699d5669bfc47fa0191822ac2811
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/datasette/datasette-agent/main/pyproject.toml
+    shows: 'The pyproject shows a plain setuptools package built from the public repo: "An LLM-powered agent
+      assistant for Datasette" with an "Apache-2.0" license field and no extras.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2c842d0613169565c93ae39669811835c25c9f5ca612ab65d5f29106e78de900
+    establishes:
+    - source
+  - url: https://github.com/datasette/datasette-agent
+    shows: Apache-2.0 license badge, full plugin source published, 110 stars and 6 forks; no paid tier or
+      enterprise directory
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 19f1d1e3ec40b6604ee0d320b27c0b9af7fde2c7fa66dd0dc996018b780bfdb2
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/datasette/datasette-agent/blob/main/LICENSE
     shows: Apache License 2.0 full text
     accessed: '2026-08-13'
@@ -26,24 +62,15 @@ openness:
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://github.com/datasette/datasette-agent
-    shows: Apache-2.0 license badge, full plugin source published, 110 stars and 6 forks; no paid tier
-      or enterprise directory
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 19f1d1e3ec40b6604ee0d320b27c0b9af7fde2c7fa66dd0dc996018b780bfdb2
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 1
   reach: <1K stars
   signal_type: stars_fallback
   confidence: high
-  note: 'Datasette Agent is a pre-release alpha, published on PyPI about a month before this reading, so
-    both GitHub stars and PyPI downloads sit at the bottom of their respective scales. The two signals agree:
-    this is an early, low-adoption plugin rather than one held back by a weak measurement.'
-  last_verified: '2026-08-13'
+  note: 'Datasette Agent is a pre-release alpha plugin, so both GitHub stars and PyPI downloads sit at the
+    bottom of their respective scales. The two signals agree: this is an early, low-adoption plugin rather
+    than one held back by a weak measurement.'
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/datasette/datasette-agent
     shows: 110 stars, 6 forks; alpha-stage plugin
@@ -51,10 +78,10 @@ adoption:
     http_status: 200
     content_sha256: 19f1d1e3ec40b6604ee0d320b27c0b9af7fde2c7fa66dd0dc996018b780bfdb2
   - url: https://pypistats.org/api/packages/datasette-agent/recent
-    shows: 1,396 downloads in the trailing 30 days for datasette-agent
-    accessed: '2026-08-13'
+    shows: '"last_month":571,"last_week":107},"package":"datasette-agent","type":"recent_downloads"}'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 320a895e6e6e687507d1d48c7fee7d6a6818d0f82da4522638e76e2e5df7ef09
+    content_sha256: 8685a2c438c7d049499856e0208687406364c9c080ccc2216644053993073001
 capability:
   score: 2
   basis: feature_matrix
@@ -64,13 +91,25 @@ capability:
   confidence: medium
   note: 'Datasette Agent is a narrow, early structured-data agent: it can explore and query a SQLite database
     in natural language within Datasette, but it remains an alpha release with a limited feature scope.
-    No peer comparison is recorded here, since general coding-agent benchmarks are not the right yardstick
-    for a domain-specific plugin this early.'
-  last_verified: '2026-08-13'
+    General coding-agent benchmarks are not the right yardstick for a domain-specific plugin this early.'
+  last_verified: '2026-09-29'
   sources:
   - url: https://agent.datasette.io/
-    shows: '''An AI assistant for Datasette to help explore and analyze data in SQLite'', live demo, extensible
-      tool surface; no benchmark figure'
-    accessed: '2026-08-13'
+    shows: The project site says "Ask questions about your data; the agent will write and run SQL queries
+      to find the answers." and offers a live demo.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: d927716e4b06b4b2dee36dddf5e28a17694a181a0136538ec50d0fec99939d13
+    content_sha256: c9c53f07f4e6b1454e4ffca1c3d1b63f2347d93c62461adb60a75db703d24c25
+  - url: https://raw.githubusercontent.com/datasette/datasette-agent/main/README.md
+    shows: 'The README documents built-in tools: "The agent also has a built-in `execute_write_sql` tool
+      that can run one or more ordered write SQL statements against a mutable database." and "launch a background
+      agent that explores the selected database or table and writes a report".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5e402f9d817f3277ff1ffa137dfe2c86d7e4699d5669bfc47fa0191822ac2811
+  - url: https://raw.githubusercontent.com/datasette/datasette-agent/main/README.md
+    shows: 'The README lists extension plugins: "renders charts from SQL query results using Observable
+      Plot" and "generates images using OpenAI".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 5e402f9d817f3277ff1ffa137dfe2c86d7e4699d5669bfc47fa0191822ac2811

@@ -25,36 +25,31 @@ openness:
   raw: license:Proprietary;source:closed;platform:proprietary(HF-managed hosting/orchestration, no self-hostable
     Spaces);open-part:app SDKs only (Gradio Apache-2.0, Streamlit) which are separate, portable OSS products;hardware-tiers:CPU
     free + paid GPU upgrades
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/docs/hub/spaces
-    shows: Spaces hosts apps via Gradio (OSS SDK), Streamlit, arbitrary Dockerfile, or static HTML on
-      HF-managed infra with paid GPU upgrades
-    accessed: '2026-08-13'
+    shows: 'Spaces docs overview: apps run on Hugging Face hosting with Gradio or Streamlit, "you can also
+      unlock the whole power of Docker and host an arbitrary Dockerfile", or static HTML. Searched the body
+      for self-host, on-prem and open source: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4550e77bee16ae854ce07a3e7f5ec9a29d617fb720e35cc44e993acbb68a31ae
-    establishes:
-    - source
+    content_sha256: 57ec65061be026ab31e05c2dae62424f48dc9cf6bce7bd46ba69f1c8018e39a3
   - url: https://huggingface.co/pricing
-    shows: 'Spaces Hardware table - the Spaces host is sold as metered Hugging Face compute. CPU Basic
-      (2 vCPU / 16 GB) free, CPU Upgrade $0.03/hr, ZeroGPU free on a shared Blackwell pool with an 8x
-      quota for PRO, then hourly Nvidia T4 / L4 / A100 tiers. PRO and Team plans are described as hosting
-      "your own ZeroGPU, Gradio & Docker Spaces on compute" - HF compute, with no self-hosted option
-      offered anywhere on the page.'
-    accessed: '2026-08-13'
+    shows: 'Pricing page: Team and PRO plans are described as "Host your own ZeroGPU, Gradio & Docker Spaces
+      on compute", with a Spaces hardware table from CPU Basic (FREE) and CPU Upgrade ($0.03) through ZeroGPU
+      and hourly Nvidia T4 and L4 tiers. Searched the body for self-host and on-prem: none, so Spaces is
+      sold only as Hugging Face compute.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 42b3bdf9e77f964b2105c7ad07a58ba79d6bd24428e066a5668239d7f0486650
-    establishes:
-    - source
+    content_sha256: 2269a2b1bc6fbe8a17c1322f2834bbc3c20d189fa55c77ff4fd38335eab8d155
   - url: https://huggingface.co/terms-of-service
-    shows: 'Intellectual Property section - "Proprietary Rights. We retain ownership of all of our intellectual
-      property rights related to the Website and the Services, including all improvements to the Services.
-      All materials that we produce, including the Website, design, code, graphics, interfaces, trademarks"
-      are Hugging Face''s. Spaces is one of the Services, so the platform itself is governed by these
-      proprietary terms rather than by an open license.'
-    accessed: '2026-08-13'
+    shows: 'Terms of Service, Proprietary Rights clause: "We retain ownership of all of our intellectual
+      property rights related to the Website and the Services, including all improvements to the Services."
+      Searched the body for open source, self-host and on-prem: no open license or self-hosted distribution
+      offered.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ee161973aba14a28f6c1666189e322e258bca4f3a79e9c6db24be4d517083b4c
+    content_sha256: 93ddfeac4d5162adcced71d2659f6e26ee1365df906d0dabe0197b0ef0f147e6
     establishes:
     - license
     - source
@@ -82,24 +77,61 @@ capability:
   score: 3
   basis: feature_matrix
   value: 'isolation: managed container per Space (Docker), not microVM-grade for untrusted multi-tenant
-    code; cold-start: warm/sleep model (free tier sleeps), seconds; language/runtime breadth: Gradio/Streamlit/Docker/static
-    (broad for app hosting); persistence: persistent storage tiers + dev mode; scale: CPU free tier +
-    paid GPU upgrades on HF infra'
+    code; cold-start: free-tier Spaces sleep when idle and restart on the next visit, paid hardware never
+    sleeps by default; language/runtime breadth: Gradio/Streamlit/Docker/static (broad for app hosting);
+    persistence: ephemeral disk by default, attachable Storage Buckets volumes, Dev Mode over SSH; scale:
+    free CPU Basic, shared ZeroGPU pool and paid T4/L4/L40S/A100 GPU tiers on HF infra'
   confidence: medium
   note: Spaces hosts machine-learning apps with broad SDK and GPU support, from a free CPU tier through
     paid GPU hardware, and a Space can also serve as an MCP server, agent tool or API endpoint. But each
     app runs in a managed Docker container rather than a hardened microVM, and free-tier Spaces sleep when
     idle, making it built for hosting and demoing apps rather than isolating untrusted code.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/docs/hub/spaces
-    shows: Gradio/Streamlit/Docker/static hosting, GPU hardware upgrades, persistent storage and dev mode
-    accessed: '2026-08-13'
+    shows: 'Spaces docs overview: apps run on Hugging Face hosting with Gradio or Streamlit, "you can also
+      unlock the whole power of Docker and host an arbitrary Dockerfile", or static HTML. Searched the body
+      for self-host, on-prem and open source: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 4550e77bee16ae854ce07a3e7f5ec9a29d617fb720e35cc44e993acbb68a31ae
+    content_sha256: 57ec65061be026ab31e05c2dae62424f48dc9cf6bce7bd46ba69f1c8018e39a3
   - url: https://huggingface.co/pricing
-    shows: 'Spaces Hardware tiers: free CPU Basic, $0.03/hr CPU Upgrade, free ZeroGPU shared pool, then
-      hourly T4 / L4 / A100 tiers.'
-    accessed: '2026-08-13'
+    shows: 'Pricing page: Team and PRO plans are described as "Host your own ZeroGPU, Gradio & Docker Spaces
+      on compute", with a Spaces hardware table from CPU Basic (FREE) and CPU Upgrade ($0.03) through ZeroGPU
+      and hourly Nvidia T4 and L4 tiers. Searched the body for self-host and on-prem: none, so Spaces is
+      sold only as Hugging Face compute.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 42b3bdf9e77f964b2105c7ad07a58ba79d6bd24428e066a5668239d7f0486650
+    content_sha256: 2269a2b1bc6fbe8a17c1322f2834bbc3c20d189fa55c77ff4fd38335eab8d155
+  - url: https://huggingface.co/docs/hub/spaces-overview
+    shows: 'Spaces overview page: "On free hardware, your Space will “go to sleep” and stop executing after
+      a period of time if unused." Also states "creating a Space that runs on compute (Gradio or Docker)
+      requires a paid plan".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: d908127dac4b2b070c5ab020f28ab51b14d3fa781a3ddcf50ec16c879891e968
+  - url: https://huggingface.co/docs/hub/spaces-gpus
+    shows: 'GPU upgrades page: "If you want your Space never to deactivate or if you want to set a custom
+      sleep time, you need to upgrade to paid hardware." with Nvidia T4 and A100 hardware listed.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 7c25f070f846140df88b11912e71ae9c2afa8dda7ce7001c0ac52ac6f73b8acc
+  - url: https://huggingface.co/docs/hub/spaces-storage
+    shows: 'Spaces storage page: "This disk space is ephemeral, meaning its content will be lost if your
+      Space restarts or is stopped." and "are the recommended way to persist data in your Space."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1ec5d4ee75f023cb18f25af8e7b3c74014edc630e9f191258576ce912dedb039
+  - url: https://huggingface.co/docs/hub/spaces-mcp-servers
+    shows: 'Spaces as MCP servers page: "To create your own MCP-enabled Space, you need to" enable MCP support
+      in a Gradio Space, and Spaces added to an MCP client are listed under "Spaces Tools" in settings.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 80626868b309a9af47cb8d704dd10acc52b3b9b16f76cf07bd2a0c944f4f1aca
+  - url: https://huggingface.co/docs/hub/spaces-dev-mode
+    shows: 'Spaces Dev Mode page: "Spaces Dev Mode is a feature that eases the debugging of your application
+      and makes iterating on Spaces faster." and "The changes you make when Dev Mode is enabled are not
+      persisted to the Space repo automatically."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8a80acc898878e6d928c1fe7d6b369d2301dccbac42a7e01360982a03a5c2206

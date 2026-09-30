@@ -23,40 +23,86 @@ openness:
     that reconstruct the exact token order, training and analysis code, and 154 intermediate checkpoints
     per model size. Every part of the release is downloadable and the training run itself is reproducible,
     not just the model, which is what separates full openness from open weights.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0);data:open(the Pile, with dataloader reconstruction tools);code:open(training+analysis
     code, GitHub);checkpoints:open(154 per model);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/EleutherAI/pile
-    shows: '`gated: false`, `private: false`, 2,308 downloads, 502 likes. The Pile is published and
-      ungated on the Hub.'
-    accessed: '2026-08-13'
+    shows: Hub API record for the Pile - "The Pile is a 825 GiB diverse, open source language modelling
+      data set" - with gated and private both false; the repo itself holds only a loading script (pile.py)
+      and a card, tagged "license:other".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: bf7ecc040065bb06afed8833e9cb9bec78988395576971e2e8b5e586b95dd02f
-    establishes: [data]
+    content_sha256: c9a679bec505c0f189dc1c5e77c5caa16bcc6019c43812aeea5fba176eac9399
+    establishes:
+    - data
   - url: https://arxiv.org/abs/2304.01373
-    shows: 'Abstract: "We provide public access to 154 checkpoints for each one of the 16 models,
-      alongside tools to download and reconstruct their exact training dataloaders" - which is both
-      the checkpoint claim and the reconstruction tooling that makes the corpus reproducible in token
-      order.'
-    accessed: '2026-08-13'
+    shows: 'Abstract: "We provide public access to 154 checkpoints for each one of the 16 models, alongside
+      tools to download and reconstruct their exact training dataloaders" and "Trained models, analysis
+      code, training code, and training data can be found at".'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: a4ed5e7d70ff9ae90237a5421aabea072396346e2f70406e23257078d28eddf1
-    establishes: [checkpoints, data]
+    establishes:
+    - checkpoints
+    - data
+    - code
   - url: https://github.com/EleutherAI/pythia
-    shows: 'Repository page, described as "The hub for EleutherAI''s work on interpretability and
-      learning dynamics" - training and analysis code, public.'
+    shows: Repository page, described as "The hub for EleutherAI's work on interpretability and learning
+      dynamics" - training and analysis code, public.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2c220abd598d80b75e362a7a2fabdb3877c0066cb0471697070bde6ddb53f8d5
-    establishes: [code]
+    establishes:
+    - code
   - url: https://huggingface.co/EleutherAI/pythia-12b/blob/main/README.md
-    shows: 'Model card front matter: `license: apache-2.0`, `datasets: [EleutherAI/pile]`; License
-      apache-2.0 in the repo sidebar.'
-    accessed: '2026-08-13'
+    shows: 'Rendered Pythia-12B model card lists "License: Apache 2.0" and "We also provide 154 intermediate
+      checkpoints per model, hosted on Hugging Face as branches"; the embedded repo data records gated as
+      false.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 26110dcb21c54a03aed4ab48b96b7e33df0e0b8cf8fea5659df6d42442dfaf03
-    establishes: [weights, license]
+    content_sha256: 9290ed352f4fd1dc13aa918c3b48cbe38af737c5958121d68f7c869833b2e7de
+    establishes:
+    - weights
+    - license
+    - checkpoints
+  - url: https://huggingface.co/EleutherAI/pythia-12b/raw/main/README.md
+    shows: 'Raw model card front matter declares "license: apache-2.0" with dataset EleutherAI/pile, and
+      the card says "All 8 model sizes are trained on the exact same data, in the exact same order" and
+      points to the GitHub repository "for training procedure, config files, and details on how to use".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4f126014a10e08fea03a8137cf96e16199b5a7d8b256ed5c297ab76b2403bdcd
+    establishes:
+    - weights
+    - license
+    - code
+  - url: https://huggingface.co/api/models/EleutherAI/pythia-12b
+    shows: Hub API record tagged "license:apache-2.0" with card data license apache-2.0 and "text-generation-inference";
+      gated, private and disabled are all false, and the tags include safetensors weights.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3214fa0e790d2e6b9555acfd5fbecc0624e40742dcf5cb74ba58b1a7e503e2d5
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/datasets/EleutherAI/pile-standard-pythia-preshuffled
+    shows: Hub API record for "EleutherAI/pile-standard-pythia-preshuffled", the tokenized Pile in Pythia
+      training order, with gated and private both false and 21 shards plus "document.idx" (about 600 GB
+      stored).
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 2084811283e20e3c7c70f32cfdaf31f921e7f011a78d04f989038de05f9116b4
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/EleutherAI/pile-deduped-pythia-preshuffled
+    shows: Hub API record for "EleutherAI/pile-deduped-pythia-preshuffled", the deduplicated Pile in Pythia
+      training order, with gated and private both false and 21 shards plus "document.idx".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 3b4fe6ecdb0e2960afbbd4f416ec0348c3c55901fb0c9e2d19c1e153db6cc8b0
+    establishes:
+    - data
 adoption:
   level: 2
   reach: 10K-100K
@@ -81,16 +127,23 @@ capability:
   basis: benchmark
   value: null
   confidence: high
-  note: 'Pythia was never built to compete on capability: its sixteen models top out at 12B, trained on
-    2023-era Pile data, and are research tools for studying how language models learn rather than production
-    systems. No benchmark measures it against the 2026 frontier, which is why its capability reading trails
-    every model built for competitive performance.'
-  last_verified: '2026-08-13'
+  note: Pythia was never built to compete on capability. Its sixteen models top out at 12B, were trained
+    on the 2020 Pile corpus, and are research tools for studying how language models learn rather than production
+    systems. No benchmark measures it against the 2026 frontier, and it trails every model built for competitive
+    performance.
+  last_verified: '2026-09-29'
   sources:
   - url: https://arxiv.org/abs/2304.01373
-    shows: '"we introduce Pythia, a suite of 16 LLMs all trained on public data seen in the exact same
-      order and ranging in size from 70M to 12B parameters"; the presented results are case studies in
-      memorization, term frequency and bias, not capability benchmarks.'
-    accessed: '2026-08-13'
+    shows: 'Abstract: "a suite of 16 LLMs all trained on public data seen in the exact same order and ranging
+      in size from 70M to 12B parameters"; the case studies it presents are "memorization, term frequency
+      effects on few-shot performance, and reducing gender bias", not capability benchmarks.'
+    accessed: '2026-09-29'
     http_status: 200
     content_sha256: a4ed5e7d70ff9ae90237a5421aabea072396346e2f70406e23257078d28eddf1
+  - url: https://huggingface.co/EleutherAI/pythia-12b/raw/main/README.md
+    shows: 'Model card: "The Pythia model suite was deliberately designed to promote scientific research
+      on large language models, especially interpretability research" and "Despite not centering downstream
+      performance as a design goal"; its evaluations compare against OPT and GPT-Neo.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4f126014a10e08fea03a8137cf96e16199b5a7d8b256ed5c297ab76b2403bdcd

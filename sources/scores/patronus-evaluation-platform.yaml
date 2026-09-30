@@ -16,7 +16,6 @@ openness:
         value: open
         detail: patronus-py public on GitHub, v0.1.25, but only 7 stars and wires to the hosted API
   confidence: medium
-  last_verified: '2026-08-13'
   note: 'The open-source SDK is a thin client to a closed hosted evaluation backend: the scoring engine
     and the managed Lynx and Glider evaluators are proprietary, not self-hostable, and the SDK repo carries
     no license text. Rather than an open core withholding a paid tier, this is an open periphery around
@@ -64,11 +63,10 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  last_verified: '2026-08-13'
-  note: No user, customer or usage-volume count appears on the docs or homepage. The open-source SDK's GitHub
-    stars belong to a thin client that wires to the hosted service rather than the platform itself, and
-    the docs name three case studies with no figures attached, so no level is assigned rather than one inferred
-    from marketing.
+  note: The homepage and pricing page publish no user, customer or usage-volume count, and the SDK's GitHub
+    stars belong to a client library that wires to the hosted service rather than the platform itself, so
+    no level is assigned rather than one inferred from marketing.
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/patronus-ai/patronus-py
     shows: 7 stars on the public SDK (no honest usage figure for the hosted platform)
@@ -80,11 +78,24 @@ adoption:
     http_status: 200
     content_sha256: 757070b285359722c692ea3a97d1b9447e0603af24f72cbe73d131587e65e13e
   - url: https://api.github.com/repos/patronus-ai/patronus-py
-    shows: stargazers_count = 8 on the public SDK, which is not an honest usage figure for the hosted
-      platform
+    shows: stargazers_count = 8 on the public SDK, which is not an honest usage figure for the hosted platform
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4d6878b7a74e8c2501ca2c48d3ab4ea05b883f23053bb4b2197f0fd4465e5eff
+  - url: https://www.patronus.ai
+    shows: 'The homepage lists "Handling complex customer support cases end-to-end" among its task areas
+      and one count, "5k+ expert contributors", which counts data labelers rather than users; searched the
+      body for downloads, million and trusted by: none, so it publishes no user, customer or usage figure.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 639142cd8703ceaa3e8f393360a38e1eff3199913ea3413842d5ea606f1c4d1c
+  - url: https://www.patronus.ai/pricing
+    shows: 'The pricing page compares plans with rows such as "Customizable options to meet your specific
+      needs" and "Number of Users"; searched the body for downloads, million and trusted by: none, so it
+      publishes no customer or usage figure.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 18245bcc4437b757ca9b573024e67310bbd296c9cf089638c30352ef069af5ee
 capability:
   score: 3
   basis: feature_matrix
@@ -93,7 +104,6 @@ capability:
     proprietary evaluators: Lynx (hallucination), Glider; reproducibility: hosted/standardized but not
     independently reproducible (closed engine)'
   confidence: medium
-  last_verified: '2026-08-13'
   note: A solid, broad commercial eval feature set - evaluators, experiments, monitoring and agent evaluation
     - but not frontier-defining within the category, and the closed backend limits reproducibility. Mid-tier
     on features overall.

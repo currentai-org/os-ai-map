@@ -15,7 +15,6 @@ openness:
       billing:
         value: GCP managed-service pricing
   confidence: high
-  last_verified: '2026-08-13'
   note: Proprietary Google Cloud managed service; no source, no self-host, runs as Vertex AI eval pipelines.
     The open-model references on the overview are about models the service can deploy and evaluate, not
     about the service itself, which is offered with no source, no self-host and no license.
@@ -42,10 +41,9 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  last_verified: '2026-08-13'
-  note: A managed Google Cloud feature with no published standalone usage or customer count, and no download
-    or star signal to fall back on, being a closed cloud service. Unlike Amazon Bedrock Evaluations it offers
-    no GA-scale traction figure that can be checked, so no level is assigned rather than inferring one from
+  last_verified: '2026-09-29'
+  note: Google publishes no customer, usage or run-count figure for the evaluation service, which is a managed
+    feature of Vertex AI. Without a figure specific to it, no level is assigned rather than inferred from
     the size of the parent Vertex AI surface.
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
@@ -57,6 +55,15 @@ adoption:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4d1f8992f97637bb096575d3c3f5c45fd47702c427c76e682e34eaf7cfd60641
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
+    shows: The overview of the Gen AI evaluation service describes it as providing "enterprise-grade tools
+      for objective, data-driven assessment of generative AI models" and lists features, workflow and supported
+      regions. Searched the page for customers, million, trusted by and used by and found none; the single
+      match for adopt is the sentence "you can adopt an evaluation-driven development cycle", which is not
+      an adoption figure, so the page publishes no usage or adoption figure.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef17bf648297b4443ccdb25ad9d1bd67ad36dfc32d6a62e00ad2dbdcd93b3c31
 capability:
   score: 4
   basis: feature_matrix
@@ -66,11 +73,11 @@ capability:
   confidence: medium
   relative_to: amazon-bedrock-evaluations
   relation: at
-  last_verified: '2026-08-13'
-  note: 'A broad managed eval suite: model, agent and RAG targets, both computation-based and autorater
-    metrics, and pointwise as well as pairwise (AutoSxS) comparison. Comparable in scope to Amazon Bedrock
-    Evaluations, which sits at the same level, and like it a custom-dataset eval product rather than a public
-    standardized leaderboard, so 4 rather than 5.'
+  last_verified: '2026-09-29'
+  note: A managed eval suite covering model and agent targets, with rubric-based, computation-based and
+    custom-function metrics, and pointwise and pairwise judge metrics with configurable and tuned judge
+    models. It is comparable in scope to Amazon Bedrock Evaluations and, like it, runs on custom datasets
+    rather than a public standardized leaderboard.
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
     shows: evaluates models/agents/RAG with computation-based + autorater metrics and pointwise/pairwise
@@ -83,3 +90,25 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4d1f8992f97637bb096575d3c3f5c45fd47702c427c76e682e34eaf7cfd60641
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
+    shows: The overview lists evaluation methods including "Computation-based metrics" using deterministic
+      algorithms like ROUGE or BLEU, adaptive and static rubrics, and "Custom functions", and states that
+      the SDK works with "any model callable through" LiteLLM; it also lists "Agent evaluation" as a use
+      case with agent-specific metrics.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ef17bf648297b4443ccdb25ad9d1bd67ad36dfc32d6a62e00ad2dbdcd93b3c31
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/optimize/evaluation/agent-evaluation
+    shows: The agent evaluation page states it "describes how to use agent evaluation to measure and improve
+      the" performance, safety and quality of agents, and that metrics are computed by "Grade traces using
+      automated raters (Task Success, Safety)".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 14399d1f39eef6d22aeff665b12deb213aaed4a5baf7023ddf0d75908ac6f5cc
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/configure-judge-model
+    shows: 'The judge-model page documents customizing model-based metrics with PairwiseMetric and PointwiseMetric,
+      including "Flip the responses from the baseline model and the candidate model to reduce judge model
+      bias during evaluation." and a tuned judge: "Use a tuned LLM as the judge model."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0e1e26c32b8ba96185a3faddcb206507fea90f2e27cc550bf86e5ca9a1602e3c

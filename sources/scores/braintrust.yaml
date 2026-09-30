@@ -7,7 +7,7 @@ openness:
       value: closed
     license:
     - name: Apache-2.0
-      detail: OSI, client SDKs only, Python/TS/Go/Ruby/C#
+      detail: OSI, client SDKs only; JS/TS repo is Apache-2.0, Python package metadata declares MIT
     self-host:
       value: enterprise-only
       detail: hybrid
@@ -16,32 +16,66 @@ openness:
         value: proprietary
         detail: Brainstore custom DB, evals/tracing/automation all SaaS
   confidence: high
-  note: Braintrust's Apache-2.0 client SDK is instrumentation only; the Brainstore backend, the dashboards
-    and the automation layer that make up the actual platform are closed, with no open source core. That
-    makes it closed rather than open core, the same shape as LangSmith and Galileo.
-  raw: source:closed;license:Apache-2.0(OSI, client SDKs only, Python/TS/Go/Ruby/C#);platform:proprietary(Brainstore
-    custom DB, evals/tracing/automation all SaaS);self-host:enterprise-only(hybrid)
-  last_verified: '2026-08-13'
+  note: Braintrust's client SDKs for logging, tracing and evaluations are open source under Apache-2.0.
+    The Brainstore backend, dashboards and automation are proprietary, and the only self-hosting route is
+    an Enterprise-plan hybrid deployment where Braintrust runs the UI and authentication, so the platform
+    itself is closed.
+  raw: source:closed;license:Apache-2.0(OSI, client SDKs only; JS/TS repo is Apache-2.0, Python package
+    metadata declares MIT);self-host:enterprise-only(hybrid);platform:proprietary(Brainstore custom DB,
+    evals/tracing/automation all SaaS)
+  last_verified: '2026-09-29'
   sources:
   - url: https://github.com/braintrustdata/braintrust-sdk
-    shows: 'Repository README - "This repository contains Braintrust''s JavaScript/TypeScript SDKs and
-      integrations", with the core SDK described as being "for logging, tracing, evals, and CLI". Its
-      License section reads Apache-2.0. Nothing in the repository is the platform itself.'
+    shows: Repository README - "This repository contains Braintrust's JavaScript/TypeScript SDKs and integrations",
+      with the core SDK described as being "for logging, tracing, evals, and CLI". Its License section reads
+      Apache-2.0. Nothing in the repository is the platform itself.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 67b40e12540ea77b2a06da3181f07e9ca2e0141b8bd13d3a5f8afb00bec74722
     establishes:
     - license
-  - url: https://www.braintrust.dev/
-    shows: The platform, and the proprietary backend the openness class is based on - "Brainstore, the database
-      built for AI data at scale ... designed specifically for agent observability so you can query millions
-      of traces quickly", with no source published for it. The only self-host route offered is a hybrid
-      one - "Deploy Brainstore data plane on your own infrastructure" - alongside SOC 2 Type II certification.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/braintrustdata/braintrust-sdk/main/LICENSE
+    shows: The SDK repository license file is the Apache License text, with "Licensed under the Apache License,
+      Version 2.0" and "Copyright 2023 Braintrust Data LLC".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 81e7f43fc2016ea0c9378347ceec7ac9aa125c72f0396a7b4adca861bcdc381d
+    content_sha256: 298fa93827e185134178c06f5853558944f3d408d6a8148df892eed6b327836f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/braintrustdata/braintrust-sdk/main/README.md
+    shows: The SDK repository README says "This repository contains Braintrust's JavaScript/TypeScript SDKs
+      and integrations" and lists the core package as "Core JavaScript/TypeScript SDK for logging, tracing,
+      evals, and CLI." with a license section of "Apache-2.0".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: ab1bdd7e8cd200592b1fb48ed0e970ec6adc4da008aa874fce602a17b582d5ca
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/braintrustdata/braintrust-sdk-python/main/py/pyproject.toml
+    shows: The Python SDK package metadata describes the package as "SDK for integrating Braintrust" and
+      declares its license as "license = " MIT.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 56fce6f0d57ba09e79f3569b3d1a3eb1e944b22ba84c8efff99c706446557c73
+    establishes:
+    - license
+  - url: https://www.braintrust.dev/
+    shows: The homepage describes the proprietary backend, "Brainstore, the database built for AI data at
+      scale", and offers only "Deploy Brainstore data plane on your own infrastructure" for self-hosting,
+      next to "SOC 2 Type II certified".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 29d8d2deb5dd0959c8899d47aa9e2f99316cc596381cff215c151385fd6930e7
     establishes:
     - source
+  - url: https://www.braintrust.dev/docs/admin/self-hosting
+    shows: The self-hosting docs say "Braintrust offers a self-hosted deployment option that separates data
+      storage from platform management" and that "Braintrust provides the managed UI, authentication, and
+      platform updates", with the option limited to the "Enterprise plan".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 4ef26905e6c767a594ee0cf3ecd9eb08f02b3ef3c155791436d60f066c103427
+    establishes:
     - self-host
 adoption:
   level: 4
@@ -49,46 +83,43 @@ adoption:
   confidence: low
   banded_quantity: none. The vendor's homepage names customers but publishes no count, and the monthly PyPI
     downloads of the braintrust SDK are the platform's client channel and are not banded.
-  note: Braintrust is a hosted platform, and the braintrust package on PyPI is its client, installed by every
-    application that sends it logs or evaluations, so its downloads count client installs rather than use of
-    the platform. The vendor publishes no user or account figure, and its homepage names Notion and Coursera
-    as customers. The level is left as it was set; raising or lowering it would need standing evidence about
-    the platform itself.
-  last_verified: '2026-08-13'
+  note: Braintrust is a hosted platform, and the braintrust package on PyPI is its client, installed by
+    every application that sends it logs or evaluations, so its downloads count client installs rather than
+    use of the platform. The vendor publishes no user or account figure; its homepage features customer
+    stories from Notion and Graphite and links to Coursera.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://pypistats.org/packages/braintrust
-    shows: Downloads last month 7,366,065 for the braintrust package (last week 1,612,417)
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 4364f112b0e6223709993e4332612a76b7106db6ba62c31c57d5c8d14e161676
   - url: https://www.braintrust.dev/
-    shows: Named customer stories on the homepage - "How Coursera builds next-generation learning tools"
-      and "How Notion evaluates AI at scale across 70 engineers". Vercel, Dropbox and Replit no longer
-      appear anywhere on the page.
-    accessed: '2026-08-13'
+    shows: 'Homepage customer stories: "How Notion evaluates AI at scale across 70 engineers" and "How Graphite
+      builds reliable AI code review at scale", with a Coursera story link. No user or account count appears.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 81e7f43fc2016ea0c9378347ceec7ac9aa125c72f0396a7b4adca861bcdc381d
+    content_sha256: 44754f50c4329264dfdc5f9ee065f583cd315bde89e0d1e0d4847691d66a0e47
 capability:
   score: 5
   basis: feature_matrix
   relative_to: langfuse
   relation: one_above
-  value: tracing(real-time inspection across millions of logs, tool calls); evals(LLM/code/human scorers,
-    experiments vs datasets); prompt mgmt + playground; automation(Topics pattern discovery, continuous
-    scoring, quality gates blocking releases); datasets/annotation; OTel + MCP + framework-agnostic SDKs(5
-    langs). Quality-gate/automation depth exceeds the anchor tier.
+  value: tracing(inspect agent traces and tool calls, search across millions of logs); evals(LLM/code/human
+    scorers, experiments vs datasets); prompt mgmt + playgrounds; automation(Topics pattern discovery, online
+    scoring, quality gates blocking releases); datasets/annotation; OTel + MCP + framework-agnostic SDKs.
+    Quality-gate and automation depth exceeds Langfuse's.
   confidence: high
   note: Braintrust combines real-time tracing across millions of logs, LLM, code and human-scored evaluations
     against versioned datasets, prompt management with a playground, and automation that discovers patterns
     and gates releases on quality. That automation and quality-gate depth puts it a step above Langfuse,
     at the frontier of evaluation-first observability.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://www.braintrust.dev/
-    shows: 'Homepage feature copy - "Automate pattern discovery with Topics", "Topics surfaces patterns in
-      real time across task, issues, and sentiment, online scoring catches regressions, and quality gates
-      block bad releases", plus "Trace everything - Inspect prompts, responses, and tool calls in real
-      time" and scoring "with LLMs, code, or humans" against versioned datasets.'
-    accessed: '2026-08-13'
+    shows: 'Homepage: "Inspect every agent trace and tool call, search across millions of logs, and track
+      latency, cost, and quality in real time." and "Block bad releases before they hit production".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 81e7f43fc2016ea0c9378347ceec7ac9aa125c72f0396a7b4adca861bcdc381d
+    content_sha256: 44754f50c4329264dfdc5f9ee065f583cd315bde89e0d1e0d4847691d66a0e47
+  - url: https://www.braintrust.dev/docs/llms.txt
+    shows: 'Docs index: "Connect Claude Code, Cowork, Cursor, Codex, and other MCP clients to Braintrust."
+      with pages on Topics, scorers and playgrounds.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: dca1fd23268d315e32dd6c0fc6b22461368f25c2143dcfe485d56f097ebd9abd

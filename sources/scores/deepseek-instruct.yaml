@@ -20,26 +20,40 @@ openness:
     source, the same class as V4-Pro.
   raw: weights:open(MIT, on HF);data:closed;code:partial(inference/serving; no training pipeline or data);license:MIT(OSI-style
     permissive, no use restrictions)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
-    shows: 'License section - "This repository and the model weights are licensed under the MIT License";
-      `license:mit` in the repo tags and `"gated":false` in the embedded repo state, so the 284B-A13B FP4+FP8
-      weights download without a barrier; encoding and local-inference folders only, with the post-training
-      pipeline described but not released and no SFT/RL mixture published'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/raw/main/README.md
+    shows: 'README License section: "This repository and the model weights are licensed under the [MIT License](LICENSE).";
+      front matter "license: mit". Searched the body for training data release, dataset and training code:
+      none; it describes the post-training pipeline and points only to the "encoding" and "inference" folders
+      for running the model.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48
-    establishes: [weights, data, code, license]
+    content_sha256: c4d714818a4d3333542edc7d38ea065825a0cf7aa8fea3605bbd1d1c18e4a610
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Flash
+    shows: 'Hugging Face model API: "gated":false and the tag "license:mit"; repository files include "inference/model.py"
+      and "inference/generate.py" and "encoding/encoding_dsv4.py" but no training code, data or dataset
+      files.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 0193124cc4c9ea761b217f8991b9fda3bbf1d40a6e7413d9c8083cc91d31eb89
+    establishes:
+    - weights
+    - code
+    - license
+    - data
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: Adoption is read from Hugging Face downloads on V4-Flash, which land in the same range as the declared
-    V4-Pro repository, so the reading holds regardless of which sibling SKU is used. Flash is the cheaper,
-    faster sibling of V4-Pro and popular for self-hosting, which drives most of its download volume.
-  last_verified: '2026-08-13'
+    V4-Pro repository, so the reading holds regardless of which sibling is used.
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
     shows: 2,213,519 downloads in the trailing 30 days
@@ -56,11 +70,13 @@ capability:
   note: V4-Flash scores near the frontier on DeepSeek's own benchmarks (MMLU-Pro 86.2, LiveCodeBench 91.6),
     figures reported on its Hugging Face model card. It is deliberately the lighter, faster sibling of the
     higher-scoring V4-Pro flagship, so Flash trails Pro rather than matching it.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
-    shows: 'Comparison across Modes - V4-Flash Max MMLU-Pro 86.2, LiveCodeBench 91.6, MRCR 1M 78.7, SWE Verified
-      79.0; base-model table MMLU 88.7, HumanEval 69.5, GSM8K 90.8'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/raw/main/README.md
+    shows: Model table lists "DeepSeek-V4-Flash | 284B | 13B | 1M | FP4 + FP8 Mixed"; instruct comparison
+      row "MMLU-Pro (EM) | 83.0 | 86.4 | 86.2"; "LiveCodeBench (Pass@1) | 55.2 | 88.4 | 91.6"; "MRCR 1M
+      (MMR) | 37.5 | 76.9 | 78.7"; "SWE Verified (Resolved) | 73.7 | 78.6 | 79.0"; base table "HumanEval
+      (Pass@1) | 0-shot | 62.8 | 69.5 | **76.8**".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48
+    content_sha256: c4d714818a4d3333542edc7d38ea065825a0cf7aa8fea3605bbd1d1c18e4a610

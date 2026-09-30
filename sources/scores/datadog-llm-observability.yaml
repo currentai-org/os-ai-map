@@ -15,23 +15,38 @@ openness:
         value: proprietary SaaS
         detail: no source
   confidence: high
-  note: Closed proprietary SaaS; only Datadog's tracing client libraries are open, the LLM Observability
-    product and backend are closed.
+  note: Closed proprietary SaaS. Datadog's subscription terms give it all rights in the service and forbid
+    recreating its source code, while the ddtrace client library that sends data to it is open under Apache
+    2.0 or BSD-3-Clause.
   raw: license:Proprietary;source:closed;platform:proprietary SaaS(no source);only the ddtrace instrumentation
     SDK is open;product itself closed
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
-  - url: https://docs.datadoghq.com/llm_observability/
-    shows: 'LLM Observability documentation, sitting inside the wider Datadog docs alongside APM, Log
-      Management and Cloud SIEM. The navigation covers Agent Monitoring, MCP Clients, Prompt Tracking,
-      Prompt Management, Quality Monitoring and correlation with APM. Nothing on the page links a source
-      repository or a self-hosted distribution of the product itself.'
-    accessed: '2026-08-13'
+  - url: https://www.datadoghq.com/legal/msa/
+    shows: Datadog Master Subscription Agreement, which states that "Datadog owns all right, title and interest
+      in and to the Services" and bars customers from any attempt to "reverse engineer, disassemble or decompile
+      all or any portion of, or attempt to access, discover or recreate the source code for, the Services".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7c4484c17defe958a80e8a00096c3510f84cf5c94e4a7be4008c01c6a37b4297
+    content_sha256: f1ad8c51be3f24f10cb638ec0199fde2ff20aa26c389a8a4f0ff47e94fb8bfe0
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/DataDog/dd-trace-py/main/LICENSE
+    shows: 'License file of the ddtrace Python tracing library, stating "This work is dual-licensed under
+      Apache 2.0 or BSD3." with the identifier "SPDX-License-Identifier: Apache-2.0 OR BSD-3-Clause".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 399be7f8843492393a1e648ff188b6590a990731912509af04ee70f4a05d0f7a
+    establishes:
+    - license
+    - source
+  - url: https://docs.datadoghq.com/llm_observability/instrumentation/sdk/
+    shows: LLM Observability SDK setup page, showing the open ddtrace client library reporting to the hosted
+      service, with the setting "Your Datadog API key. Only required if you are not using the Datadog Agent".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 925c3ad62b71a3eb1488bd0cd9eb4b6c1147b65b685443eb46ad4c0cf1abc394
 adoption:
   level: 4
   signal_type: reported_traction
@@ -41,7 +56,6 @@ adoption:
     vendor, but it is a newer add-on with no disclosed standalone user or usage count of any kind in the
     docs. The level is therefore attributed to the parent platform and is directional: what is banded is
     the reach of Datadog overall, not usage of the LLM Observability module.'
-  last_verified: '2026-08-13'
   sources:
   - url: https://docs.datadoghq.com/llm_observability/
     shows: The module's documentation, read for a usage figure and containing none - no customer count, no
@@ -53,23 +67,43 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Has: end-to-end trace capture (tokens, errors, latency, workflows); built-in + custom evaluations;
-    cost/latency/usage dashboards; sensitive-data scan/redaction + prompt-injection detection; topic clustering
-    (Patterns); anomaly detection (Insights); framework integrations (OpenAI, LangChain, Bedrock, Anthropic)
-    via auto-instrumentation.'
+  value: 'Has: end-to-end trace capture (tokens, errors, latency, workflows); agent monitoring (agent actions,
+    tool usage, reasoning steps); built-in and custom evaluations including hallucination checks; sensitive-data
+    scan and redaction; prompt-injection detection; anomaly detection; prompt tracking; correlation of LLM
+    spans with APM; provider cost estimation for OpenAI, Anthropic and Google Gemini; auto-instrumentation
+    for OpenAI, LangChain, AWS Bedrock and Anthropic.'
   confidence: medium
   relative_to: langfuse
   relation: at
   note: Datadog LLM Observability covers end-to-end trace capture, built-in and custom evaluations, cost
-    and usage dashboards, sensitive-data scanning and prompt-injection detection, topic clustering and anomaly
-    detection, integrated with the wider Datadog APM suite and auto-instrumented for major LLM frameworks.
-    That breadth keeps it level with Langfuse.
-  last_verified: '2026-08-13'
+    and usage dashboards, sensitive-data scanning and prompt-injection detection, and topic clustering of
+    production traffic, integrated with the wider Datadog APM suite and auto-instrumented for major LLM
+    frameworks. That breadth keeps it level with Langfuse.
+  last_verified: '2026-09-29'
   sources:
   - url: https://docs.datadoghq.com/llm_observability/
-    shows: 'Documentation navigation for the module - Quality Monitoring, Jobs Monitoring, Agent Monitoring,
-      MCP Clients, Prompt Tracking, Prompt Management, "Querying spans and traces", "Correlate with APM"
-      and Patterns - plus Sensitive Data Scanner and Watchdog Insights on the wider platform.'
-    accessed: '2026-08-13'
+    shows: 'Docs landing page: "Monitor and improve model performance. Pinpoint root causes and detect anomalies"
+      and "Automatically scan and redact any sensitive data in your AI applications and identify prompt
+      injections, among other evaluations." with Quality Monitoring, Prompt Tracking and Correlate with
+      APM in the navigation. Searched for a customer or usage count: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 7c4484c17defe958a80e8a00096c3510f84cf5c94e4a7be4008c01c6a37b4297
+    content_sha256: 5bc844e3a3955a171e011aa9c821d03dd0167d5b352ccf44d1594428278e4c19
+  - url: https://docs.datadoghq.com/llm_observability/monitoring/
+    shows: 'Investigate page: "This feature helps you track agent actions, tool usage, and reasoning steps,
+      providing visibility into complex LLM workflows" and shows a Hallucination evaluation on a span.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1ffba706e5de3339b9f9c638d52cb36a77b1fb795016d431e66c6b61b6fd3088
+  - url: https://docs.datadoghq.com/llm_observability/instrumentation/sdk/
+    shows: 'SDK page on cost: "Datadog supports common model providers such as OpenAI, Azure OpenAI, Anthropic,
+      and Google Gemini." and it shows LangChain prompt templates picked up by auto-instrumentation.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 925c3ad62b71a3eb1488bd0cd9eb4b6c1147b65b685443eb46ad4c0cf1abc394
+  - url: https://www.datadoghq.com/product/llm-observability/
+    shows: 'Product page, now titled Agent Observability: "Catch hallucinations, prompt injection attempts,
+      and PII exposure as they happen." Searched for a customer count or usage figure for the module: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 1c6d82f5d844099f40d5b3f11a70973c2366da13572e05cd0b7f3c1d6ec48c46

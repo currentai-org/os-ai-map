@@ -19,7 +19,6 @@ openness:
   note: MiniMax distributes MiniMax-M3's weights under a custom minimax-community license over a closed
     training corpus, with inference-only code and no training pipeline released. That combination of open
     weights with closed data and code makes MiniMax an open-weights release rather than a fully open model.
-  last_verified: '2026-08-13'
   raw: weights:open(on HF; ungated; safetensors/BF16; MoE);data:closed;code:partial(inference only; no training
     pipeline/data);license:minimax-community(custom, see HF LICENSE)
   sources:
@@ -70,18 +69,18 @@ capability:
   score: 5
   basis: benchmark
   basis_detail: SWE-bench Verified
-  value: SWE-bench Verified 80.2%, SWE-bench Pro 55.4%, GPQA-D 85.2%, AIME25 86.3%, BrowseComp 76.3%; VIBE-Pro on
-    par with Opus 4.5
+  value: SWE-bench Verified 80.5%, SWE-bench Pro 59.0%, MMMU-Pro 78.1%, Video-MME (w/ sub) 85.4%, Claw-Eval
+    74.5%
   confidence: medium
-  note: MiniMax-M2.5 reports SWE-bench Verified 80.2%, with strong reasoning and browsing scores, at very
-    low serving cost, frontier-tier among open-weight agentic chat models, though the figures are self-reported
-    and not independently audited. All of them come from the M2.5 card, while MiniMax-M3 is the release
-    that now governs the family and has no comparable benchmark table of its own.
-  last_verified: '2026-08-13'
+  note: MiniMax-M3 reports 80.5% on SWE-bench Verified and 59.0% on SWE-bench Pro, alongside multimodal
+    and agentic results, which puts it among the leading open-weight agentic models. The figures are self-reported,
+    run on MiniMax's own infrastructure, and not independently audited.
+  last_verified: '2026-09-29'
   sources:
-  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
-    shows: MiniMax-reported SWE-bench Verified 80.2%, SWE-bench Pro 55.4%, GPQA-D 85.2%, AIME25 86.3%
-      and BrowseComp 76.3% on the official HF card
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M3/raw/main/.eval_results/minimax-m3.yaml
+    shows: MiniMax's evaluation file in the M3 repo, "Extracted from the model card benchmark graph", records
+      "SWE-Bench Verified - 80.5", "SWE-Bench Pro - 59.0", "MMMU-Pro - 78.1" and "Claw-Eval - 74.5", run
+      "using Claude Code as the scaffolding".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1ea8ebb0f7108c23ae67eeb9bd98a527c3c68f034d2c4d9f63e695403e1384f5
+    content_sha256: 538614aa4a8511b61624f107aed90c28cb88f1f1ca7841279c7b49a06aef011a

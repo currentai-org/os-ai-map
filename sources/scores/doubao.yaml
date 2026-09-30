@@ -23,25 +23,27 @@ openness:
   raw: client:proprietary(closed consumer app);backend:hosted-SaaS on Volcano Engine;models:proprietary
     Doubao(closed);license:Proprietary;source:closed(hosted consumer service plus a compiled client download;
     no published source for the assistant)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://en.wikipedia.org/wiki/Doubao
-    shows: Doubao is a proprietary ByteDance AI chatbot app (iOS/Android/web) on Volcano Engine
-    accessed: '2026-08-13'
+    shows: 'Wikipedia infobox for the Doubao entry lists the license as "Proprietary" and the lead describes
+      it as "Artificial intelligence assistant developed by ByteDance". Searched the body for open source,
+      self-host, source code and weights releases: none.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 916ff9db722a576ddcebd5567907d0610fe86a0acc2a03812ff656eca85dfed3
-    establishes: [license, source]
+    content_sha256: 00c023bcf9153990dacf878159ce6d24473187d0249dcef5d6ad477cf94893c6
+    establishes:
+    - license
+    - source
   - url: https://www.doubao.com/download/desktop
-    shows: ByteDance's own distribution page for Doubao. What it offers is a compiled client - '下载豆包客户端',
-      download the Doubao client - for desktop and mobile. Nothing on the page offers source, a repository,
-      or a self-hosted deployment. WEAK EVIDENCE, and deliberately marked so - doubao.com is rendered
-      entirely client-side, so a fetch returns the page header and little else, and this reads as an
-      absence of any source offer rather than a statement that none exists. It corroborates the closed
-      reading; it does not on its own prove it.
-    accessed: '2026-08-13'
+    shows: 'ByteDance''s Doubao download page, titled "下载豆包客户端 - 激发创造力，即刻提升工作学习效率", offers the compiled
+      client. Searched the body for 开源, 私有化, self-host, on-prem, open source, GitHub and license: none (the
+      page is client-rendered, so this corroborates rather than proves the closed reading).'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 84521c8a54eefad2af95a71522da00c3ffd8a644f536855c362d6f737877334d
-    establishes: [source]
+    content_sha256: a251e42b71c1e9d5104ceaad52122a735730ec7e986ec213b49c5b1fbcdaaaa0
+    establishes:
+    - source
 adoption:
   level: 5
   reach: '>10M users'
@@ -51,34 +53,46 @@ adoption:
     Chinese consumer assistant, and is distinct from the larger cumulative total-user figure sometimes quoted
     for it. The count comes through press coverage of the QuestMobile report rather than the report itself,
     which keeps confidence at medium.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://finance.biggo.com/news/372811e2-28f1-49c7-9f53-fa56879cde3b
     shows: 'QuestMobile 2026 H1 report, as of May 2026: "Doubao had 382 million MAUs, maintaining a clear
-      lead".'
-    accessed: '2026-08-13'
+      lead in absolute terms".'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: e7ea3a11679cc5814830d1f89f68bc2a884faf9ca20bddb7007094d1fc267dde
+    content_sha256: e1257614636bdcdb556e9e5f9d9d4bd13fcf717ca638a0f672228cab3b72d5b8
   - url: https://en.wikipedia.org/wiki/Doubao
-    shows: Doubao ~330M users by May 2026; China's most popular AI chatbot; 120T tokens/day
-    accessed: '2026-06-04'
+    shows: 'Wikipedia: "By May 2026, Doubao had 330 million users."'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 00c023bcf9153990dacf878159ce6d24473187d0249dcef5d6ad477cf94893c6
   - url: https://pandaily.com/bytedance-s-doubao-introduces-paid-pro-tier-as-user-base-dip-jun2026
-    shows: MAU ~330M May 2026, down 6.1M after paid-tier signal; corroborating figure
-    accessed: '2026-06-04'
+    shows: Third-party data put Doubao at "approximately 330 million" monthly active users in May 2026,
+      a decline of "6.07 million monthly active users in May".
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 8d158178145c61263eccadff9fd759e608ebadbcffc2fbc2ac87bb2886b45042
 capability:
   score: 3
   basis: feature_matrix
-  value: 'consumer assistant feature set: single-vendor (Doubao models) breadth; multimodal; mobile-first
-    consumer chat; beta AI e-commerce/agent features; consumer single-user (no enterprise RAG / multi-provider
-    hub); China-market focused'
+  value: 'consumer assistant feature set: single-vendor (Doubao models) breadth; multimodal (voice, photo
+    input, image and video generation); work-task mode with scheduled tasks; beta AI e-commerce/agent features;
+    consumer single-user (no enterprise RAG / multi-provider hub); China-market focused'
   confidence: medium
   note: A feature-rich consumer assistant with multimodal support and emerging agentic e-commerce features,
     but narrow on the dimensions this category measures - a single provider, consumer-only. Not a category
     frontier-definer on capability.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://news.aibase.com/news/26405
-    shows: Doubao multimodal consumer assistant adding agentic AI e-commerce/order features
-    accessed: '2026-08-13'
+    shows: Doubao "officially launched a gray-scale test of its AI e-commerce function in March 2026" with
+      a "one-sentence shopping" experience.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0a13080e03d948baca414c84e9a9043842bbcb812cd75f17d700c40452ac1b57
+    content_sha256: 32510890009182c608476fef98a0827b0f308ddff1e880fbb5a00d71dc7b128e
+  - url: https://apps.apple.com/cn/app/id6459478672
+    shows: 'App Store listing for the Doubao app: "在工作任务模式下，可以开启智能化的自动办公体验，内置 Office 和专业技能，理解需求、自动执行，还支持定时任务，复杂工作一键托管。"
+      and image and video generation from "基于 Seedance 模型轻松制作具有大片质感的视频".'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: b58dc6fdf5ef00ffb151402407cd1f8b0802b9f4cbfe09347bb8a73803a2cd39

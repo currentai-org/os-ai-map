@@ -26,30 +26,26 @@ openness:
   raw: source:closed;service:proprietary Vercel Fluid-compute managed cloud (no self-host of the Firecracker
     microVM plane);open-part:client SDK/CLI only (@vercel/sandbox JS + Python, vercel/sandbox on GitHub);license:Proprietary,
     proprietary service
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-29'
   sources:
   - url: https://vercel.com/docs/sandbox
-    shows: Firecracker microVM isolation; SDK/CLI on GitHub vercel/sandbox; managed Vercel cloud, pay-for-active-CPU
-    accessed: '2026-06-04'
-  - url: https://vercel.com/docs/sandbox
-    shows: 'Each sandbox runs in a Firecracker microVM on Vercel; authentication is by Vercel OIDC
-      token or Vercel access token; images come from Vercel Managed Images or the Vercel Container
-      Registry. Only the SDKs and CLI are pointed at GitHub - the runtime itself is not distributed.'
-    accessed: '2026-08-13'
+    shows: 'The Vercel docs overview says "Each sandbox runs in a secure Firecracker microVM with its own
+      filesystem and network" on Vercel, and the only code it points to is the GitHub repo: "View the Sandbox
+      repository on GitHub contained the SDK and CLI codebase." The microVM runtime itself is not distributed,
+      and no self-host or on-prem option appears on the page.'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: ef69310b3232ecb49c4b22f28faa447ab75449570f53695e3f0e5665e9c6f36c
-    establishes:
-    - source
-  - url: https://vercel.com/docs/sandbox/pricing
-    shows: 'Usage metered on Hobby, Pro and Enterprise plans across active CPU, provisioned memory,
-      sandbox creations, data transfer and snapshot storage. No self-hosted, on-premises or
-      source-available tier appears anywhere on the page.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 6f67c48d77bef2d130322d7f4c16d252204c3e968d9a8f629f74ad971ba766c1
+    content_sha256: 595dc5abf4af10d1dde10f067a020c5faed9bd75cc653525cf4fd477e2a4265f
     establishes:
     - source
     - license
+  - url: https://vercel.com/docs/sandbox/pricing
+    shows: 'The pricing page meters usage by Active CPU and Provisioned Memory across Hobby, Pro and Enterprise
+      plans, and says "Sandbox is available in 19 regions" of the Vercel cloud. Searched the body for self-host,
+      on-prem, source-available and license: none.'
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 40d0a4827dcee94b0bcf4d5bf113af7a1a3daf2d04ac0b8570eab114ad5e998a
 adoption:
   level: 5
   reach: '>10M'
@@ -59,25 +55,23 @@ adoption:
     product's own SDK, over the trailing month ending 2026-08-09. Package downloads include the usual CI
     and mirror inflation that overstates distinct human users, so confidence stays moderate even though
     Vercel's large install base and the SDK's general-availability status support genuine production use.
-  last_verified: '2026-08-14'
+  last_verified: '2026-09-29'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@vercel/sandbox
     shows: ~9,062,145 downloads May 4-Jun 2 2026
     accessed: '2026-06-04'
   - url: https://api.npmjs.org/downloads/point/last-month/@vercel%2Fsandbox
-    shows: 13,197,882 downloads of package @vercel/sandbox over the window start 2026-07-11 to end
-      2026-08-09. The scoped name is URL-encoded because the npm point endpoint requires it.
-    accessed: '2026-08-14'
+    shows: '{"downloads":17093112,"start":"2026-08-29","end":"2026-09-27","package":"@vercel/sandbox"}'
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1501d8d65011025ec4e6f0fb7cdddbd56c4643b968b0898c0ee5979ada9817fc
+    content_sha256: 029946525fee2327057c22cd7dceb85492a23b49a0ee0d020bf089956ad2fc01
   - url: https://registry.npmjs.org/@vercel%2Fsandbox
-    shows: 'Registry metadata for the package - description "Software Development Kit for Vercel
-      Sandbox", repository git+https://github.com/vercel/sandbox.git (directory packages/vercel-sandbox),
-      homepage vercel.com/docs/vercel-sandbox/sdk-reference, latest 3.0.0. Confirms the package is the
-      product''s own primary client, not a same-name match.'
-    accessed: '2026-08-14'
+    shows: The npm registry metadata for @vercel/sandbox carries "description":"Software Development Kit
+      for Vercel Sandbox" and "url":"git+https://github.com/vercel/sandbox.git", the product own SDK client
+      rather than a same-name package.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 1aa475ece94f99c78b233b26f2004c6cbe4326cbb34b0f8c2758e33159d3960b
+    content_sha256: 3858b071974bd77487c4684bdcc13f3b7b76c252f903656c5c1b9ae5a600a71d
   - url: https://vercel.com/docs/sandbox
     shows: GA ephemeral compute primitive, JS+Python SDK
     accessed: '2026-06-04'
@@ -87,37 +81,38 @@ capability:
   relative_to: aws-lambda
   relation: one_below
   value: isolation:Firecracker microVM with dedicated kernel (stronger than container/gVisor); cold-start:starts
-    in milliseconds; runtime breadth:high (any Linux distribution, Vercel Managed Images or custom OCI
-    images from Vercel Container Registry, sudo+root, install any package, can run Docker/VPN/FUSE);
-    persistence:persistent-by-default (auto-save state on stop) + explicit snapshotting + attachable
-    drives; scale:managed autoscale to 10,000 concurrent sandboxes, 24h max duration, 32 vCPU / 64GB
-    ceiling, single region (iad1)
+    in milliseconds; runtime breadth:high (any Linux distribution, Vercel Managed Images or custom OCI images
+    from Vercel Container Registry, root and system privileges, can run Docker/VPN/FUSE); persistence:persistent-by-default
+    (auto-save state on stop) + explicit snapshotting + attachable drives; scale:managed autoscale to 10,000
+    concurrent sandboxes, 24h max duration, 32 vCPU / 64GB ceiling, 19 selectable regions (default iad1)
   confidence: high
-  note: Vercel Sandbox isolates each run in a Firecracker microVM with persistent, snapshot-capable state;
-    independent benchmarks put its cold start in the hundreds of milliseconds, short of the vendor's millisecond
-    claim but still sub-second. It matches AWS Lambda's flexibility across Linux distributions and OCI images,
-    but tighter concurrency and region limits keep it one step below Lambda.
-  last_verified: '2026-08-14'
+  note: Vercel Sandbox isolates each run in a Firecracker microVM with persistent, snapshot-capable state.
+    Vercel says sandboxes start in milliseconds, while independent benchmarks put the cold start in the
+    hundreds of milliseconds, still under a second. Its support for custom OCI images and root access is
+    broad, but AWS Lambda's native language runtimes, Runtime API and longer production record keep Vercel
+    Sandbox a step below Lambda.
+  last_verified: '2026-09-29'
   sources:
   - url: https://vercel.com/docs/sandbox
-    shows: '"Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you need";
-      images come from Vercel Managed Images "or your own OCI images stored in Vercel Container Registry";
-      "Each sandbox runs in a secure Firecracker microVM with its own filesystem and network"; "Sandboxes
-      start in milliseconds"; system-privileged processes "such as container runtimes like Docker, VPN clients,
-      and FUSE filesystem drivers"; persistence is the default with snapshotting and attachable drives alongside
-      it.'
-    accessed: '2026-08-14'
+    shows: The docs overview says "Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux
+      distribution you need", that "Sandboxes start in milliseconds", and that system-privileged workloads
+      run "such as container runtimes like Docker, VPN clients, and FUSE filesystem drivers".
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 0c0ba060749a68551b6c2105808d57c4dbbdac425cd62f79145ab46132a475de
+    content_sha256: 595dc5abf4af10d1dde10f067a020c5faed9bd75cc653525cf4fd477e2a4265f
+  - url: https://vercel.com/docs/sandbox
+    shows: The docs overview describes persistence as "Sandboxes that auto-save state on stop and resume
+      where you left off" and says "Persistence is the default. No manual snapshot management needed." and
+      lists Snapshots and Drives pages.
+    accessed: '2026-09-29'
+    http_status: 200
+    content_sha256: 595dc5abf4af10d1dde10f067a020c5faed9bd75cc653525cf4fd477e2a4265f
   - url: https://vercel.com/docs/sandbox/pricing
-    shows: 'The limits tables, which are where the 45 minutes came from and where it stops. Maximum
-      duration is 45 minutes on Hobby and 24 hours on Pro and Enterprise; concurrent sandboxes 10, 10,000
-      and 10,000; maximum vCPUs 4, 8 and 32 with 8GB, 16GB and 64GB of memory; maximum vCPU allocation
-      rate 40/min, 5,000/min and 5,000/min. "Currently, Vercel Sandbox is only available in the `iad1`
-      region."'
-    accessed: '2026-08-14'
+    shows: The limits tables list Maximum vCPUs, Concurrent sandboxes and Max Session Duration by plan,
+      and the page says "Sandbox is available in 19 regions" with regional pricing for each.
+    accessed: '2026-09-29'
     http_status: 200
-    content_sha256: 29ff300d36dd3416ce6e9ab05bb1b3a0b58886d221c85c1be804cdb4aaaf2ba0
+    content_sha256: 40d0a4827dcee94b0bcf4d5bf113af7a1a3daf2d04ac0b8570eab114ad5e998a
   - url: https://www.computesdk.com/benchmarks/sandboxes/
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
       ~390ms sequential / ~490ms burst @100 concurrent; 9th of 19 providers'
