@@ -16,6 +16,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-03
+
 ### Added
 
 - Identity attributes `country` (organizations, ISO 3166-1 alpha-2), `steward` and `languages`
@@ -23,6 +25,20 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   into the payload and the registry `products` table, with `build/apply_attributes.py` to apply
   curation ledgers; the existing free-text countries are normalized to codes
   ([#684](https://github.com/currentai-org/os-ai-map/issues/684)).
+- agent-manager joins orchestration_agents as a scored product: a terminal UI that runs the user's own
+  coding-agent CLIs side by side ([#810](https://github.com/currentai-org/os-ai-map/pull/810)).
+- A report-only adoption release gate. `build/check_reconciliation.py` reads the weekly reconciliation
+  and lists what a release would be blocked on, without blocking anything yet
+  ([#809](https://github.com/currentai-org/os-ai-map/pull/809)).
+- TactiQ OS as an unscored registry row ([#771](https://github.com/currentai-org/os-ai-map/pull/771)).
+- A weekly history of GitHub release-asset downloads and Docker Hub pulls in
+  `sources/snapshots/asset_counters.csv`, kept by a daily workflow until the platform keeps counter
+  history itself ([#766](https://github.com/currentai-org/os-ai-map/pull/766)).
+- Homebrew installs as their own adoption instrument, `install_volume`, banded one order of magnitude
+  below downloads, with a `homebrew` artifact kind. No product declares one yet
+  ([#762](https://github.com/currentai-org/os-ai-map/pull/762)).
+- Four held products promoted to head products: reachy-mini, perception-lm, p2pfl and nebula-dfl
+  ([#756](https://github.com/currentai-org/os-ai-map/pull/756)).
 - Second promotion tranche for eight of the new categories, 72 head products: classic_ml_cv 34,
   speech_audio 18, media_generation 6, robotics_embodied 5, multimodal_models 5,
   datacenter_accelerators 2, assurance_evidence 1 and model_hubs 1; openml moves to the
@@ -39,18 +55,46 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- qwen now governs on Qwen 3.8. The Qwen Community License and the Qwen3.8-Max License sit in the
+  `use_bounded` tier of the pretrained and model ladders, and openness stays 3 / open_weights
+  ([#820](https://github.com/currentai-org/os-ai-map/pull/820)).
+- agent2agent-protocol and model-context-protocol declare their specification repositories and the
+  reference SDK packages their adoption is read from. agent2agent-protocol's adoption moves 4 -> 5
+  ([#819](https://github.com/currentai-org/os-ai-map/pull/819)).
+- Declarations follow repository moves for llava, e2b-sandbox, sandbox-runtime, librechat, maple-ai
+  and humming, which also moves to the vLLM org. text-generation-inference declares its repository,
+  sandbox-runtime its npm package, and all-minilm drops the sentence-transformers library repository.
+  No score moved ([#818](https://github.com/currentai-org/os-ai-map/pull/818)).
+- Selenium records the Software Freedom Conservancy as its steward, and eleven openness notes stop
+  arguing from governance ([#817](https://github.com/currentai-org/os-ai-map/pull/817)).
+- Twenty-seven organization types are corrected, opencv to a foundation and puppeteer to a company
+  among them, which moves 14 scored products between the corporate, independent and unattributed
+  groups ([#816](https://github.com/currentai-org/os-ai-map/pull/816)).
 - Payload contract 2: `organizations[].country` is an ISO 3166-1 alpha-2 code where it was free
   text, and `organizations` also lists the orgs named as a product's `steward`. Neon schema
   version 6 adds `products.steward` (a foreign key to `organizations`) and `products.languages`
   ([#811](https://github.com/currentai-org/os-ai-map/pull/811)).
+- mosaic-ai-model-training declares end of life on 2026-09-11, the date Databricks' page was last
+  updated, recorded as an upper bound ([#807](https://github.com/currentai-org/os-ai-map/pull/807)).
+- Capability moves 2 -> 4 for thunderkittens and 3 -> 4 for arm-compute-library and liger-kernel,
+  each on an outside framework declaring it as a dependency
+  ([#806](https://github.com/currentai-org/os-ai-map/pull/806)).
+- The freshness sweep re-read every product confirmed more than 45 days earlier, across 24 PRs.
+  Scores moved for jina-reader and laminar (open_source to open_core), docling and paddleocr
+  (4 -> 5), anyscale-fine-tuning (2 -> 3), aegis-guard and mistral-large (4 -> 3) and gemma (5 -> 4)
+  ([#764](https://github.com/currentai-org/os-ai-map/issues/764)).
 - Merged the `ai2` organization into `allen-institute-for-ai`, which now lists all 23 of the
   institute's products and redirects the old slug
   ([#769](https://github.com/currentai-org/os-ai-map/pull/769)).
+- mattersim's adoption moves 1 -> 2, banded on its PyPI package
+  ([#758](https://github.com/currentai-org/os-ai-map/pull/758)).
 - The #753 rulings placed the Coqui, Boson Higgs TTS 3, DINOv3 and SAM licenses, widened the dataset
   ladder's `use_bounded` to purpose bounds and counted rentable silicon as buyable. Fourteen
   deferrals close; voxtral moves 2 -> 3 and multipl-e 4 -> 3, and wan, qwen-image, hunyuan-3d and
   qwen-omni now score 1/closed on their current release
   ([#755](https://github.com/currentai-org/os-ai-map/pull/755)).
+- mimo-pro now reads on MiMo-V2.6, and its capability moves 4 -> 5 on the Artificial Analysis
+  Intelligence Index ([#751](https://github.com/currentai-org/os-ai-map/pull/751)).
 - The software ladder gained `noncommercial` and `unstated` tiers and the model ladders `unstated`,
   all capped at 2; territorial and revenue-bound community licenses now sit at 3 and vendor
   non-commercial model licenses at 2. Twenty-eight deferrals close, and five scores move: deepprove
@@ -65,6 +109,18 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   components text for those products. No score or class moved, and `check_components` now fails a
   record that brings the key back
   ([#684](https://github.com/currentai-org/os-ai-map/issues/684)).
+- The warehouse tables `signal_github.repo_state` and `signal_huggingface.hub_state`.
+  `signal_github.artifact_state` now carries release metadata, and the new
+  `signal_packages.package_metadata` carries package metadata
+  ([#760](https://github.com/currentai-org/os-ai-map/pull/760)).
+
+### Fixed
+
+- The site's Neon tables now load the regenerated payload. A push to `main` publishes OSO, and a
+  dispatch that `regenerate.yml` sends once its commit lands reloads Neon, each in its own queue, so
+  the site no longer serves the payload from before regeneration and a reload can no longer cancel
+  an OSO publish
+  ([#814](https://github.com/currentai-org/os-ai-map/pull/814), [#821](https://github.com/currentai-org/os-ai-map/pull/821)).
 
 ## [0.4.0] - 2026-09-26
 
@@ -656,7 +712,8 @@ Initial release: the first full snapshot of the AI Stack Map corpus, at the star
 **458 products across 15 categories**, from **249 organizations**, each scored on openness,
 adoption, and capability. Tagged at commit `2e9d6eb`.
 
-[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/currentai-org/os-ai-map/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/currentai-org/os-ai-map/compare/v0.1.0...v0.2.0
