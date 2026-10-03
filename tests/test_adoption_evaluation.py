@@ -121,7 +121,11 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # (#585) instead of banding. Measured rather than asserted - the row sets were dumped on both sides
 # and diffed: 378 rows before and after, and mimo-pro's is the only row that differs, with
 # measured_level, measured_reach and raw_value now null.
-MEASUREMENTS_DIGEST = "20ee0717459fc862b03906c8ae9a7367e733f0af2b079a67271568978dd509fa"
+# Moved 2026-10-03 when qwen moved its governing release to Qwen 3.8 and declared the three 3.8
+# checkpoints. Regenerated and diffed against main, which still reproduced the previous digest:
+# exactly one row differs, qwen's, from level 5 to an abstention, because the frozen snapshot
+# predates the 3.8 checkpoints. MEASUREMENT_COUNT is unchanged.
+MEASUREMENTS_DIGEST = "952711f896bba2ad1f3dea9e9727bd7b612f546130f5da514cc4b23c9b6e0f3a"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -653,7 +657,9 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     that kind -- the short sums that used to band. Named rather than counted: an abstention
     appearing for any other reason is a finding, not a tolerance."""
     abstained = {r["product_slug"] for r in measurement_rows if r["measured_level"] is None}
-    assert abstained == {"composable-kernel", "glm", "mimo-pro", "olmo-instruct"}
+    # qwen since 2026-10-03: it declares the three Qwen 3.8 checkpoints, which the frozen
+    # snapshot never observed, so its Hugging Face sum covers some declared primaries, not all.
+    assert abstained == {"composable-kernel", "glm", "mimo-pro", "olmo-instruct", "qwen"}
     for row in measurement_rows:
         if row["measured_level"] is None:
             # the short aggregate goes with the band, and the audit trail stays

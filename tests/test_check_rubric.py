@@ -738,6 +738,8 @@ class TestLicenseRulings739:
             ("Tencent-Hunyuan-Community-License", "use_bounded"),
             ("MiniMax-H3-Community-License", "use_bounded"),
             ("Moondream-Model-License-1.0", "use_bounded"),
+            ("Qwen-Community-License-1.0", "use_bounded"),
+            ("Qwen3.8-Max-License", "use_bounded"),
             ("CreativeML-OpenRAIL++-M", "permissive_non_osi"),
             ("NVIDIA-Open-Model-Agreement", "permissive_non_osi"),
             ("PML-1.0", "commercial_forbidden"),
