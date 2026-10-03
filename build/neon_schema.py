@@ -185,7 +185,10 @@ PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
 #      denormalizes what each category in the group already carries, and the loader refuses
 #      a group whose categories disagree rather than choosing one of them.
 #   5: `publish_runs.version`, the payload's semantic version, for the site's version badge.
-SCHEMA_VERSION = 5
+#   6: `products.steward` (an org slug, foreign key to `organizations`) and `products.languages`
+#      (ISO 639-3 codes) added; `organizations.country` holds an ISO 3166-1 alpha-2 code where it
+#      held free text, and `organizations` now includes steward-only orgs (#684).
+SCHEMA_VERSION = 6
 
 class UnmappedValue(ValueError):
     """A payload value with no place in the target enum. Fails the load, names the value."""
@@ -559,6 +562,12 @@ def _products(payload: dict) -> list[dict]:
                 "freshness_basis": enum_value(
                     "freshness_basis", freshness.get("basis"), column="products.freshness_basis"
                 ),
+                # Identity attributes (#684). An org slug, or "" (NULL on load) when governance
+                # sits with the owner; and a `varchar[]` in the same literal form as
+                # `organizations.github`. `steward` references `organizations`, which the
+                # payload extends to every steward of a published product.
+                "steward": product.get("steward") or "",
+                "languages": _pg_array(product.get("languages")),
             }
         )
     return out
@@ -1035,12 +1044,15 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("version_note", "TEXT"),
             ("freshness_date", "DATE"),
             ("freshness_basis", enum_type("freshness_basis")),
+            ("steward", "VARCHAR"),
+            ("languages", "VARCHAR[]"),
         ),
         _products,
         constraints=(
             'PRIMARY KEY ("id")',
             'UNIQUE ("slug")',
             references("org_slug", "organizations", "slug"),
+            references("steward", "organizations", "slug"),
             references("category", "categories", "id"),
         ),
     ),

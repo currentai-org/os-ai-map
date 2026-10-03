@@ -186,3 +186,56 @@ def artifact_kinds() -> frozenset[str]:
         for source in (routing.get("sources") or {}).values()
         if source.get("artifact_key")
     )
+
+
+# The ISO code lists behind the identity attributes (#684). Both are frozen snapshots under
+# sources/snapshots/, so the allowed set is a fact about a file in the repo rather than a list
+# typed into a gate. `country` on an organization is checked against the first; `languages` on
+# a dataset product against the second. Neither schema can carry the list (an enum of 249 or
+# 8,000 codes would be a second copy that drifts), so `build/validate.py` and
+# `build/apply_attributes.py` both ask here.
+_COUNTRY_SNAPSHOT = ROOT / "sources" / "snapshots" / "iso-3166-1.tsv"
+_LANGUAGE_SNAPSHOT = ROOT / "sources" / "snapshots" / "iso-639-3.tab"
+
+# ISO 639-3 `Scope`: I individual, M macrolanguage, S special (mis, mul, und, zxx). A special
+# code names "no language", "several" or "unknown", which is not an answer to "what language
+# is this dataset in", so it is excluded by the scope column rather than by a list of codes.
+LANGUAGE_SCOPES = frozenset({"I", "M"})
+
+
+def _snapshot_lines(path: Path) -> list[str]:
+    """The snapshot's lines, split on `\\n` only. `str.splitlines` also breaks on form feeds and
+    Unicode separators, which a free-text `Comment` column is entitled to contain."""
+    return [line.rstrip("\r") for line in path.read_text(encoding="utf-8").split("\n")]
+
+
+@lru_cache(maxsize=1)
+def country_codes() -> frozenset[str]:
+    """Allowed `country` values: every `alpha_2` code in `sources/snapshots/iso-3166-1.tsv`.
+
+    ISO 3166-1 alpha-2 and nothing else: the exceptionally reserved codes some tools accept
+    (`UK`, `EU`) are not in the snapshot and so are not allowed, and neither is Kosovo's
+    user-assigned `XK`. `GB` is the United Kingdom.
+    """
+    lines = _snapshot_lines(_COUNTRY_SNAPSHOT)
+    column = lines[0].split("\t").index("alpha_2")
+    return frozenset(line.split("\t")[column] for line in lines[1:] if line.strip())
+
+
+@lru_cache(maxsize=1)
+def language_codes() -> frozenset[str]:
+    """Allowed `languages` values: ISO 639-3 `Id`s of scope I or M in `iso-639-3.tab`.
+
+    The SIL download is kept verbatim, so this reads its own header rather than assuming a
+    column order, and tolerates either line ending. Two-letter ISO 639-1 codes (`en`) are not allowed: a corpus that mixed `en` and `eng`
+    would count one language twice.
+    """
+    lines = _snapshot_lines(_LANGUAGE_SNAPSHOT)
+    header = lines[0].split("\t")
+    id_col, scope_col = header.index("Id"), header.index("Scope")
+    out = set()
+    for line in lines[1:]:
+        cells = line.split("\t")
+        if len(cells) > scope_col and cells[scope_col] in LANGUAGE_SCOPES:
+            out.add(cells[id_col])
+    return frozenset(out)

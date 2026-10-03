@@ -634,11 +634,13 @@ def test_contract_is_an_integer_so_consumers_can_compare_it():
     assert isinstance(PAYLOAD_CONTRACT, int) and PAYLOAD_CONTRACT >= 1
 
 
-def test_the_gap_vocabulary_is_what_contract_1_promises():
-    """Contract 1 names these six gap keys. Renaming one without bumping the contract is the
-    exact failure this number exists to prevent, so pin the pair together."""
+def test_the_gap_vocabulary_is_what_contract_2_promises():
+    """Contract 2 names these six gap keys, as contract 1 did; it moved because
+    `organizations[].country` became an ISO 3166-1 code (#684). Renaming a gap key without
+    bumping the contract is the exact failure this number exists to prevent, so pin the pair
+    together."""
     payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
-    assert payload["contract"] == 1
+    assert payload["contract"] == 2
     assert set(payload["descriptions"]["gaps"]) == {
         "void", "capability", "adoption", "resiliency", "openness", "disclosure"
     }
@@ -851,3 +853,38 @@ def test_group_order_omits_a_group_with_no_published_category():
     )
     payload = build_payload(src, frozen_long_tail={}, generated="2026-09-22")
     assert "later" not in payload["group_order"]
+
+
+def test_steward_and_languages_reach_the_payload_only_where_declared():
+    """Optional identity attributes follow the `end_of_life` convention: no key, not an empty one."""
+    plain = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10"
+                          )["categories"]["base_pretrained"]["products"][0]
+    assert "steward" not in plain and "languages" not in plain
+
+    s = _sources()
+    s["products"]["llama-4"]["steward"] = "meta"
+    s["products"]["llama-4"]["languages"] = ["amh", "hau"]
+    row = build_payload(s, frozen_long_tail={}, generated="2026-06-10"
+                        )["categories"]["base_pretrained"]["products"][0]
+    assert row["steward"] == "meta" and row["languages"] == ["amh", "hau"]
+    keys = list(row)
+    assert keys.index("type") < keys.index("steward") < keys.index("languages") < keys.index("description")
+
+
+def test_a_steward_only_org_is_in_the_organizations_index_with_an_empty_roster():
+    """A steward that owns no published product still resolves, so its type and country reach a reader."""
+    s = _sources()
+    s["organizations"]["lf"] = {"name": "lf", "display_name": "Linux Foundation", "type": "foundation",
+                                "country": "US", "products": []}
+    s["organizations"]["idle"] = {"name": "idle", "display_name": "Idle", "type": "company", "products": []}
+    s["products"]["llama-4"]["steward"] = "lf"
+    orgs = build_payload(s, frozen_long_tail={}, generated="2026-06-10")["organizations"]
+    assert orgs["lf"]["products"] == [] and orgs["lf"]["type"] == "foundation" and orgs["lf"]["country"] == "US"
+    assert orgs["meta"]["products"] == ["llama-4"]
+    assert "idle" not in orgs  # an org that neither owns nor stewards a published product stays out
+
+
+def test_an_organizations_country_reaches_the_payload_as_written():
+    s = _sources()
+    s["organizations"]["meta"]["country"] = "US"
+    assert build_payload(s, frozen_long_tail={}, generated="2026-06-10")["organizations"]["meta"]["country"] == "US"

@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Identity attributes `country` (organizations, ISO 3166-1 alpha-2), `steward` and `languages`
+  (products; ISO 639-3, datasets only), checked against frozen code-list snapshots and carried
+  into the payload and the registry `products` table, with `build/apply_attributes.py` to apply
+  curation ledgers; the existing free-text countries are normalized to codes
+  ([#684](https://github.com/currentai-org/os-ai-map/issues/684)).
 - Second promotion tranche for eight of the new categories, 72 head products: classic_ml_cv 34,
   speech_audio 18, media_generation 6, robotics_embodied 5, multimodal_models 5,
   datacenter_accelerators 2, assurance_evidence 1 and model_hubs 1; openml moves to the
@@ -34,6 +39,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Payload contract 2: `organizations[].country` is an ISO 3166-1 alpha-2 code where it was free
+  text, and `organizations` also lists the orgs named as a product's `steward`. Neon schema
+  version 6 adds `products.steward` (a foreign key to `organizations`) and `products.languages`
+  ([#811](https://github.com/currentai-org/os-ai-map/pull/811)).
 - Merged the `ai2` organization into `allen-institute-for-ai`, which now lists all 23 of the
   institute's products and redirects the old slug
   ([#769](https://github.com/currentai-org/os-ai-map/pull/769)).
@@ -47,6 +56,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   non-commercial model licenses at 2. Twenty-eight deferrals close, and five scores move: deepprove
   up to 5, and nanonets-ocr, liveportrait, latentsync and open-sora down to 2
   ([#750](https://github.com/currentai-org/os-ai-map/pull/750)).
+
+### Removed
+
+- `governance` as a recorded `openness.components.context` key. Country, steward and dataset
+  languages are identity attributes now, so the clause naming who governs a product is removed
+  from the score files that carried it and from their `openness.raw`, which changes the payload's
+  components text for those products. No score or class moved, and `check_components` now fails a
+  record that brings the key back
+  ([#684](https://github.com/currentai-org/os-ai-map/issues/684)).
 
 ## [0.4.0] - 2026-09-26
 

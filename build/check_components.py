@@ -40,6 +40,13 @@ resolved ladder, in both directions.
 
 `build/route_context.py --write` repairs both, through `build/components.py`.
 
+A SIXTH is a failure since #684 retired `governance` as a recorded clause: `RETIRED_CONTEXT_KEYS`
+names the keys that may not sit under `context` any more, each with where the fact lives now.
+`governance` was recorded and never scored, and country, steward and dataset languages became
+identity attributes, so a product whose governance sits outside its owner says so with `steward`
+and the org carries `country` and `type`. `build/retire_governance.py` removed the clauses the
+corpus carried.
+
 Exit status is 1 on any failure, so CI can gate on it.
 """
 
@@ -64,6 +71,17 @@ from build.check_rubric import (
 from build.rubrics import load_product_recipes
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Keys that were once recorded under `context` and have since moved to a controlled field, mapped
+# to the sentence that says where. Only `context` is checked: a top-level key no ladder reads is
+# already a failure below, and one a ladder does read is a dimension, not a recorded aside.
+RETIRED_CONTEXT_KEYS = {
+    "governance": (
+        "who governs a product is `steward` on the product file when it is not the owning org, "
+        "and the org's `country` and `type` say the rest (docs/reference/identity.md, "
+        "\"Country, steward and languages\"); put it there, not in components"
+    ),
+}
 
 
 def check(root: Path = ROOT) -> list[str]:
@@ -185,6 +203,11 @@ def context_failures(slug: str, components: dict, recipe: dict | None) -> list[s
         f"{slug}.{CONTEXT}.{key}: `{key}` is reserved and cannot be recorded as context"
         for key in context
         if key in RESERVED
+    ]
+    failures += [
+        f"{slug}.{CONTEXT}.{key}: `{key}` is no longer recorded as a component (#684): {where}"
+        for key, where in RETIRED_CONTEXT_KEYS.items()
+        if key in context
     ]
     failures += [
         f"{slug}.{key}: recorded both at the top level and under {CONTEXT}"

@@ -28,6 +28,21 @@
       ],
       "description": "Which of the four kinds of thing this is, and — the part the field name hides — which ladder scores it. A category's `scoring_recipe.extends` is either one shared ladder for every product in the category or a mapping of product type to ladder, and build/rubrics.py `recipe_for()` reads THIS field to choose: safeguards holds guardrail models and guardrail software, so it declares `{model: model, software: software}`. The four values are the four files in sources/rubrics/. A product whose type no ladder in its category covers scores nothing, and the checkers report why rather than falling back. Type is also what makes a 0-5 openness score readable at all, since the score is graded against what is achievable within a type and not across types (docs/methodology.md, and docs/reference/openness.md for the per-ladder tier names). Carried into the payload, into registry/product_artifacts.csv as `product_type`, and into the per-type counts in the methodology copy. On 2026-08-08: 312 software, 75 model, 65 dataset, 20 hardware."
     },
+    "steward": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "The org slug of the body that governs this product when that is not the org that owns it: a project donated to a foundation, a standard whose maintainers moved to a consortium. The owning org is the one whose roster lists the product, which is who built or ships it; the steward is who decides what happens to it next, and the two come apart exactly when governance has moved away from the owner. Set it only then - absence means the owner governs, so a product whose owner and steward are the same body carries nothing, and build/validate.py rejects a steward equal to the owning org rather than store the same fact twice. The value must resolve to an org file in sources/organizations/, and the steward's type and country come from that record: nothing about the steward is copied onto the product. Emitted into the payload and the registry's `products` table so governance can be read as an identity attribute instead of inferred from a prose note. Nothing scores, gates or routes on it. docs/reference/identity.md carries the rule for who sets it."
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]{3}$"
+      },
+      "description": "The languages a dataset's content is in, as ISO 639-3 codes (`eng`, `swa`, `quz`) of scope individual or macrolanguage, sorted. Only valid on `type: dataset`; a model or a piece of software has no content language in this sense, and validate rejects the field there. It exists so a map of where open data is thin can be cut by language from a controlled field rather than read out of prose. It is required on every product in a category listed in `LANGUAGES_REQUIRED_CATEGORIES` in build/validate.py, and optional elsewhere. A suite lists the union of its members' languages. The schema checks the shape only; build/validate.py checks each code against sources/snapshots/iso-639-3.tab, which is where the special codes (`mul`, `und`, `zxx`) and the two-letter ISO 639-1 forms are refused, and checks the list is sorted so the same set of languages never has two spellings. Absent means not recorded, never monolingual English. Emitted into the payload and the registry's `products` table. Nothing scores or gates on it. docs/reference/identity.md carries the rule."
+    },
     "aliases": {
       "type": "array",
       "items": {

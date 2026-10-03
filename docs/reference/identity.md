@@ -512,6 +512,97 @@ one with the most characters, never the first one it happens to read. `build/val
 this shape as a warning (not an error, since it is a legitimate case) whenever one family's
 pattern is a literal prefix of another's and the two name different products.
 
+## Country, steward and languages
+
+Three optional attributes say who and where a product comes from, as controlled fields a
+question can be cut by rather than facts to be read out of prose. They are identity attributes
+like an org's `type`: descriptive, carried into the payload and the registry, and **read by no
+score, tier, stage or gate**. A product's openness does not change because its steward is a
+foundation or its dataset is in Swahili.
+
+| Attribute | Lives on | Value | Means |
+|---|---|---|---|
+| `country` | an organization | ISO 3166-1 alpha-2, upper case (`US`, `GB`, `TW`) | where the org is headquartered or legally seated |
+| `steward` | a product | an org slug | the body that governs the product, when that is not the owning org |
+| `languages` | a `type: dataset` product | sorted ISO 639-3 codes (`amh`, `hau`, `quz`) | the languages the dataset's content is in |
+
+### Country
+
+The seat of the org's headquarters or legal entity. A university lab takes its university's
+country; a subsidiary recorded as its own org takes its own seat; a foundation takes its legal
+seat. The United Kingdom is `GB`; `UK`, `EU` and Kosovo's `XK` are not ISO 3166-1 codes and are
+refused. The evidence is a page that states the location, the org's own about, contact, imprint
+or terms page first and a company or charity register next; Wikipedia only when nothing primary
+exists.
+
+**Unset means unrecorded, never domestic.** A reader must not infer a country from a homepage's
+top-level domain or from the language of a README. Three kinds of org are left unset on purpose:
+an individual (`type: individual`), because a person's location is personal data and the map's
+question is about institutions (`build/validate.py` refuses a country on one); a community with no legal entity or an intergovernmental body,
+which has no single seat; and an org whose seat cannot be established from a primary page, where
+a guess is worse than a gap. A new org sets `country` when it is an institution.
+
+### Steward
+
+Set `steward` only when governance has moved away from the owner: a project donated to a
+foundation, a standard whose maintainers now sit in a consortium. The owning org stays the one
+whose roster lists the product, because it is who built or ships it. A product the owner still
+governs carries no `steward`, and `build/validate.py` refuses one equal to the owning org rather
+than store the same fact twice. These attributes replaced the `governance` clause that openness
+components once recorded under `context`; a record carrying it fails `build/check_components.py`.
+
+The value is the slug of an org file, and everything else about the steward (its `type`, its
+`country`) is read from that record and never copied onto the product. A body that only stewards
+is recorded as an org with an empty `products` roster. The payload carries the slug, and its
+`organizations` block lists every steward of a published product alongside the orgs that own
+one, so the slug always resolves: `build/check_payload.py` fails a steward with no entry there,
+and the Neon `products.steward` column is a foreign key to `organizations`.
+
+A steward names a body, so it cannot say "a community maintains this". A project that left its
+founder for an informal maintainer group with no legal entity or host (verl, which ByteDance Seed
+started and a community now maintains) carries no `steward`, and the product's prose is where
+that history lives. This is a deliberate limit of the field, not a gap in the backfill: an org
+record for "the community" would have no type, country or homepage to resolve to.
+
+### Languages
+
+`languages` is valid on datasets only; a model or a piece of software has no content language in
+this sense and `build/validate.py` rejects the field there. Codes are ISO 639-3 of scope
+individual (`I`) or macrolanguage (`M`). The special codes (`mul`, `und`, `zxx`, `mis`) are
+refused because they say "several", "unknown" or "none" rather than naming a language, and so
+are two-letter ISO 639-1 codes, because a corpus that mixed `en` and `eng` would count one
+language twice. The list is sorted so the same set never has two spellings. A suite lists the
+union of its members' languages.
+
+It is required on every product in a category named in `LANGUAGES_REQUIRED_CATEGORIES`
+(`build/validate.py`) and optional on other datasets, where it is set whenever the dataset card
+or paper names its languages. Absent means not recorded, never monolingual English. In a product
+file it is written as a wrapped flow sequence (`languages: [amh, hau, ...]`, wrapped at the
+product file width), because a multilingual corpus can list more codes than a line-per-item
+block would keep readable.
+
+### Code lists, and who writes the fields
+
+The schemas check only the shape of a code. The allowed sets are the frozen snapshots
+`sources/snapshots/iso-3166-1.tsv` and `sources/snapshots/iso-639-3.tab`, read through
+`build/vocabulary.py` (`country_codes`, `language_codes`) by both `build/validate.py` and
+`build/apply_attributes.py`, so the gate and the writer cannot disagree about a code. They are
+snapshots, not live reads: a new code enters by replacing the file in a reviewed change.
+
+An editor sets one of these by hand in the same PR that adds the org or product. A bulk pass
+records its findings as a JSONL ledger (`docs/sweeps/2026-09-30-identity-attributes/README.md`
+has the row format) and applies it with `uv run python -m build.apply_attributes --kind
+country|languages|steward --ledger PATH`, which is a dry run until `--write` is given. It skips
+a row with no value, no evidence URL or low confidence, refuses a value outside the vocabulary,
+and replaces an existing value only with `--overwrite`. Every edit goes through
+`build/components.py`, so a file keeps its hand-wrapped prose.
+
+The payload carries `steward` and `languages` on a product row only where declared, and an
+org's `country` in the `organizations` block. Payload contract 2 is the change of that field
+from free text to a code; a consumer that reads contract 1 must ship support for it first. The
+registry's `products` table carries `steward`
+and `languages` (the codes joined by a comma), and `organizations` carries `country`.
+
 ## Where the graph lives
 
 The identity questions this guide describes in prose are also computed as a graph on the OSO
@@ -567,7 +658,8 @@ eval prints them next to the failing row.
 - `docs/reference/openness.md` — the ladders, and the multi-SKU rule the rubric applies
 - `docs/reference/product-copy.md` — the prose fields, and why a curation rationale is not a
   description
-- `docs/schemas/product.schema.json` — `aliases`, `version_in_identity` and `end_of_life`
+- `docs/schemas/product.schema.json` — `aliases`, `version_in_identity`, `end_of_life`, `steward`
+  and `languages`
 - `docs/reference/adoption.md` — the instruments a declared artifact routes to, and the
   precedence order `select_route` applies
 - `sources/resolution_ledger.yaml` — where a rejected or reassigned identity is recorded, so

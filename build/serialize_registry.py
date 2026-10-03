@@ -9,7 +9,10 @@ point the wrong way.
 
 Emitted tables (one CSV each, written to build/registry/):
 
-  products              slug, display_name, type, description, comments
+  products              slug, display_name, type, description, comments, steward, languages
+                        (`languages` is the dataset's sorted ISO 639-3 codes joined with a
+                         comma, empty for a product that declares none; `steward` is an
+                         org slug, empty unless governance sits outside the owning org)
   organizations         slug, display_name, type, homepage, github, country
   categories            slug, display_name, description, strapline,
                         weight_adopt, weight_cap, arc_name, layer, group_name,
@@ -85,7 +88,8 @@ ARTIFACT_KINDS = (
 LINEAGE_RELATIONS = ("derived_from", "curated_with", "trains")
 
 TABLES: dict[str, tuple[str, ...]] = {
-    "products": ("slug", "display_name", "type", "description", "comments"),
+    # `steward` and `languages` are appended so the existing column order is undisturbed.
+    "products": ("slug", "display_name", "type", "description", "comments", "steward", "languages"),
     "organizations": ("slug", "display_name", "type", "homepage", "github", "country"),
     "categories": (
         "slug",
@@ -358,6 +362,11 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 "type": product.get("type", ""),
                 "description": product.get("description", ""),
                 "comments": product.get("comments", ""),
+                "steward": product.get("steward", ""),
+                # A list in a flat CSV cell: sorted codes joined by a comma. Not flattened to the
+                # first element the way `organizations.github` is, because the first language of
+                # a multilingual dataset is not a summary of it.
+                "languages": ",".join(product.get("languages") or []),
             }
         )
         for kind in ARTIFACT_KINDS:
