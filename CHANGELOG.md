@@ -18,6 +18,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- The maintainer's rulings log (`docs/rulings/`), the `build.review_queue` report of every open
+  question and what it waits on, and the `ruling-session` and `audit-repo-accuracy` skills
+  ([#812](https://github.com/currentai-org/os-ai-map/pull/812)).
 - Identity attributes `country` (organizations, ISO 3166-1 alpha-2), `steward` and `languages`
   (products; ISO 639-3, datasets only), checked against frozen code-list snapshots and carried
   into the payload and the registry `products` table, with `build/apply_attributes.py` to apply
