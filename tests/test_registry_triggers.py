@@ -106,8 +106,18 @@ def test_the_neon_steps_run_only_on_a_dispatch_from_main():
     regenerate.yml sends once its commit has landed."""
     for name in ("Publish to Neon", "Report what Neon is serving"):
         guard = step_named(name)["if"]
-        assert "github.event_name == 'workflow_dispatch'" in guard, name
-        assert "github.ref == 'refs/heads/main'" in guard, name
+        runs_on = {run for run in RUNS if evaluate(guard, *run)}
+        assert runs_on == {("workflow_dispatch", "refs/heads/main")}, (name, runs_on)
+
+
+def test_oso_and_neon_never_publish_from_the_same_run():
+    """One target per run is what lets each queue be its own: a run in the Neon queue must not
+    publish OSO, and a run in the OSO queue must not load Neon."""
+    oso = step_named("Publish to OSO")["if"]
+    neon = step_named("Publish to Neon")["if"]
+    for run in RUNS:
+        assert not (evaluate(oso, *run) and evaluate(neon, *run)), run
+    assert {run for run in RUNS if evaluate(oso, *run)} == {("push", "refs/heads/main")}
 
 
 def test_no_other_step_is_handed_the_neon_secret():
@@ -161,22 +171,35 @@ def test_a_regenerated_payload_reloads_neon():
     assert "workflow_dispatch" in (triggers.get("on") or triggers.get(True))
 
 
-def concurrency_group(event: str, ref: str) -> str:
-    """Evaluate registry.yml's concurrency expression for one event and ref.
+def evaluate(expr: str, event: str, ref: str):
+    """Evaluate a registry.yml expression for one event and ref.
 
-    The expression only uses `&&`, `||`, `==`, string literals and `format`, whose GitHub
+    These expressions only use `&&`, `||`, `==`, string literals and `format`, whose GitHub
     semantics match Python's `and`, `or`, `==` and `str.format` on strings, so translating and
-    evaluating it tests the real expression rather than its spelling.
+    evaluating one tests the real expression rather than its spelling.
     """
-    expr = yaml.safe_load(WORKFLOW.read_text())["concurrency"]["group"].strip()
-    assert expr.startswith("${{") and expr.endswith("}}"), expr
+    expr = expr.strip()
+    if expr.startswith("${{"):
+        assert expr.endswith("}}"), expr
+        expr = expr[3:-2]
     body = (
-        expr[3:-2]
-        .replace("&&", " and ").replace("||", " or ")
+        expr.replace("&&", " and ").replace("||", " or ")
         .replace("github.event_name", "event").replace("github.ref", "ref")
     )
     scope = {"event": event, "ref": ref, "format": lambda f, *a: f.format(*a)}
     return eval(body, {"__builtins__": {}}, scope)  # noqa: S307 - a parsed workflow, no input
+
+
+def concurrency_group(event: str, ref: str) -> str:
+    return evaluate(yaml.safe_load(WORKFLOW.read_text())["concurrency"]["group"], event, ref)
+
+
+RUNS = [
+    ("push", "refs/heads/main"),
+    ("workflow_dispatch", "refs/heads/main"),
+    ("workflow_dispatch", "refs/heads/some-branch"),
+    ("pull_request", "refs/pull/12/merge"),
+]
 
 
 def test_each_target_publishes_from_its_own_queue():
