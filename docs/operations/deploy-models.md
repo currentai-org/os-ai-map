@@ -80,7 +80,7 @@ holds it against the `cron:` lines it quotes.
 | What | When (UTC) | Where the cron lives |
 |---|---|---|
 | `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
-| `os-ai-map` schema in Neon (the site's serving layer) | same push, one step after the OSO publish | `.github/workflows/registry.yml`, no cron |
+| `os-ai-map` schema in Neon (the site's serving layer) | a `workflow_dispatch` from `main`, which `regenerate.yml` sends after each completed regeneration | `.github/workflows/registry.yml`, no cron |
 | `observations` dataset (the adoption rollup the reconciliation reads) | Sunday 03:30 | dataset cron, timezone UTC |
 | `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
@@ -262,20 +262,22 @@ transaction, so it is safe to re-run and a reader never sees a half-loaded schem
 is shared with the rest of the site, and the publisher refuses to run against `drizzle`,
 `payload` or `public`.
 
-**Neon publishing happens only from `main`.** aipotluck.org reads the `os-ai-map` schema live
-(aipotluck.org#1350), so whatever lands there reaches visitors within a minute. A push to `main`
-publishes, and so does a `workflow_dispatch` from `main`, which is how to reload Neon without a
-new commit:
+**Neon publishing happens only on a dispatch from `main`.** aipotluck.org reads the `os-ai-map`
+schema live (aipotluck.org#1350), so whatever lands there reaches visitors within a minute. The
+Neon tables are rendered from the committed `build/notebook_data.json`, and the payload a merge
+commits is the one from before the bot regenerates it, so a push never loads Neon. The reload is
+a `workflow_dispatch` from `main`:
 
 ```bash
 gh workflow run registry.yml --ref main
 ```
 
-`regenerate.yml` sends that dispatch itself after it pushes a changed `build/notebook_data.json`.
-It has to: the Neon tables are rendered from the committed payload, a merge's push run loads the
-one committed with the merge (the payload from before the bot regenerates it), and the bot's
-push cannot start registry.yml on its own because a push made with `GITHUB_TOKEN` starts no
-run. Without the dispatch the site serves the previous regeneration until the next merge.
+`regenerate.yml` sends that dispatch itself after each run that finishes its job: when its commit
+lands, and when there was nothing to commit, since a change to the Neon schema or loader can need
+a reload with the payload unchanged. It sends none when it stands down for a queued run with newer
+inputs, which sends its own. The bot's push cannot start `registry.yml` (a push made with
+`GITHUB_TOKEN` starts no run), but a dispatch made with it does. Run the command above by hand
+after a change that `regenerate.yml` does not watch.
 
 A dispatch from any other ref serializes and checks but publishes nothing, to OSO or to Neon. To
 try a change to the load from a branch, run it from a terminal into a schema of its own, which
@@ -291,10 +293,17 @@ name), must not end in `_staging` or `_previous`, and should stay under 54 chara
 `_staging` / `_previous` forms when you are done.
 
 **OSO publishing happens only on a push to `main`.** To republish the static models without a
-new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an empty
-commit. A dispatch, even from `main`, leaves OSO untouched. A re-run of a push run also reloads
-Neon, from the payload committed at that run's commit, which is older than `main`'s once the bot
-has regenerated. So after re-running one, dispatch from `main` to put the current payload back.
+new commit, re-run the push run that last published them (`gh run rerun <id>`). An empty commit
+does not work: it changes no path in the trigger filter, so it starts no run. A dispatch, even
+from `main`, leaves OSO untouched, and a push leaves Neon untouched, so re-running a push run
+republishes OSO and nothing else.
+
+**The two targets queue apart.** GitHub keeps one pending run per concurrency group and cancels
+the older pending one when another queues. On 2026-10-03, with both targets in one group, a Neon
+dispatch replaced #820's waiting push run and its OSO publish never happened. OSO publishes now
+queue in `registry-oso-publish` and Neon loads in `registry-neon-publish`, so one can never
+displace the other. Back-to-back merges still coalesce within a target, and that is harmless:
+the run that survives checks out the newer commit.
 
 See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
 carries, and what it deliberately does not have.

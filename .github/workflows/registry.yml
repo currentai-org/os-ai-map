@@ -6,16 +6,28 @@ name: registry
 # axes go out from here as registry.product_scores, which is a mirror rather than a
 # computation.
 
-# One publish at a time. Tables upload individually and are then materialized, so two
-# overlapping runs can commit a snapshot that is half registry and half rubric. Not
-# cancel-in-progress: a half-finished upload is exactly what must not be abandoned.
+# Each target publishes from its own kind of run, in its own queue. A push to main publishes
+# the OSO static models, serialized fresh from sources/, and nothing else. A dispatch from main
+# reloads Neon from the committed payload, and nothing else; regenerate.yml sends that dispatch
+# once its bot commit has landed, so Neon always loads the regenerated payload rather than the
+# one committed with the merge. One OSO publish and one Neon publish per merge.
 #
-# Pull request runs get a group of their own, per PR. They publish nothing, and GitHub keeps
-# one pending run per group, cancelling the older pending one when another queues. In a shared
-# group a routine PR push could cancel a merge's queued publish, or the Neon reload
-# regenerate.yml dispatches, and the replacement run would skip publishing.
+# One publish of a target at a time. Tables upload individually and are then materialized, so
+# two overlapping OSO runs can commit a snapshot that is half registry and half rubric, and two
+# Neon loads share one staging schema. Not cancel-in-progress: a half-finished upload is exactly
+# what must not be abandoned.
+#
+# The queues are separate because GitHub keeps one pending run per group and cancels the older
+# pending one when another queues. On 2026-10-03, with both targets in one group, a Neon-only
+# dispatch replaced #820's waiting push run and its OSO publish never happened. Pull request
+# runs and dispatches from other branches publish nothing, so each gets a group of its own and
+# can never displace a production run either.
 concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('registry-check-{0}', github.ref) || 'registry-publish' }}
+  group: >-
+    ${{ github.event_name == 'pull_request' && format('registry-check-{0}', github.ref)
+    || (github.event_name == 'push' && 'registry-oso-publish'
+    || (github.ref == 'refs/heads/main' && 'registry-neon-publish'
+    || format('registry-check-dispatch-{0}', github.ref))) }}
   cancel-in-progress: false
 
 on:
@@ -76,10 +88,10 @@ on:
       - "build/publish_neon.py"
       - "build/neon_schema.py"
       - "build/neon_status.py"
-      # The site tables in Neon are built from the payload, so a regeneration of it is a
-      # change to what the serving layer holds. This fires for a human commit to the file.
-      # The bot's own regeneration commit cannot fire it, since a push made with GITHUB_TOKEN
-      # starts no run, so regenerate.yml dispatches this workflow from main instead.
+      # Kept although a push no longer loads Neon: the payload transcribes into
+      # registry.product_scores too. The bot's regeneration commit cannot fire this (a push
+      # made with GITHUB_TOKEN starts no run); the Neon reload comes from regenerate.yml's
+      # dispatch instead.
       - "build/notebook_data.json"
   # A dispatch from main reloads Neon and leaves OSO alone; from any other ref it only
   # serializes. No input decides it: a flag defaulting to false meant that forgetting
@@ -132,8 +144,9 @@ jobs:
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
   #
-  # A `workflow_dispatch` from main reloads Neon; OSO still waits for a push. From any other
-  # ref it serializes but touches neither: the OSO static models are org-wide, and the Neon
+  # A push to main publishes OSO and leaves Neon alone, because the payload a push commits is
+  # the one from before the bot regenerates it. A `workflow_dispatch` from main reloads Neon and
+  # leaves OSO alone. From any other ref a run serializes but touches neither: the OSO static models are org-wide, and the Neon
   # schema is what aipotluck.org serves live (aipotluck.org#1350), so a branch load would reach
   # visitors within a minute. Both Neon steps are guarded, not just the publish, because the
   # secret is the owner credential and a branch's code must never be handed it. To try a
@@ -173,14 +186,17 @@ jobs:
           # Org id is not sensitive, so it lives as a repo variable rather than a secret.
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
-      # The site's serving layer, after OSO rather than instead of it, from main only: the site
-      # reads this schema live, so whatever lands here is what visitors see. The load goes into
-      # os-ai-map_staging and is swapped into os-ai-map in one transaction, so a reader mid-request
-      # sees the old schema or the new one. No `if:` guard on the secret: an absent
+      # The site's serving layer, from a dispatch on main only: regenerate.yml sends one after
+      # every successful regeneration, and `gh workflow run registry.yml --ref main` is the
+      # manual reload. Never from a push, whose committed payload predates the bot's
+      # regeneration of it, and never from a branch. The site reads this schema live, so
+      # whatever lands here is what visitors see. The load goes into os-ai-map_staging and is
+      # swapped into os-ai-map in one transaction, so a reader mid-request sees the old schema or
+      # the new one. No `if:` guard on the secret: an absent
       # NEON_DATABASE_URL must fail this step loudly, because a publish that quietly skips
       # leaves the site serving whatever the last successful run left behind.
       - name: Publish to Neon
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: uv run python -m build.publish_neon
@@ -190,7 +206,7 @@ jobs:
       # record you want when comparing two runs from a terminal. The report carries no part
       # of the DSN, by construction — see build/neon_status.py.
       - name: Report what Neon is serving
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would

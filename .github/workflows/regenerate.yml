@@ -19,7 +19,7 @@ on:
 
 permissions:
   contents: write
-  # To dispatch registry.yml after a push that changed the payload. See the last step.
+  # To dispatch registry.yml, which reloads Neon, after each completed run. See the last step.
   actions: write
 
 # Serialize runs. This workflow commits and pushes to main, so two overlapping runs race:
@@ -87,6 +87,7 @@ jobs:
           ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md tests/goldens/corpus.json"
           if git diff --quiet $ARTIFACTS; then
             echo "No changes to generated artifacts."
+            echo "publish=ready" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -107,9 +108,7 @@ jobs:
           INPUTS="sources docs/methodology.md build :!build/notebook_data.json tests/test_serialize_rubric.py"
           for attempt in 1 2 3; do
             if git push origin HEAD:main; then
-              if ! git diff --quiet HEAD~1 HEAD -- build/notebook_data.json; then
-                echo "payload=changed" >> "$GITHUB_OUTPUT"
-              fi
+              echo "publish=ready" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             if [ "$attempt" = 3 ]; then
@@ -130,18 +129,20 @@ jobs:
           echo "Push still rejected after three attempts." >&2
           exit 1
 
-      # Reload the site's Neon tables from the payload just pushed. registry.yml lists
-      # build/notebook_data.json in its push filter for exactly this, but a push made with
-      # GITHUB_TOKEN starts no workflow run, so it never fired for this commit. The merge's own
-      # push run had already loaded Neon from the payload committed with the merge, which is the
-      # one from before this regeneration, and the site kept serving it until the next merge or
-      # a hand dispatch. On 2026-10-03 that meant #811's merge put schema 6 live with countries
-      # on 10 orgs instead of 489. A dispatch made with GITHUB_TOKEN does start a run. From main
-      # it reloads Neon and leaves OSO alone, which is right: the static models are serialized
-      # from sources/, not from this file, so the push run already published them. registry.yml's
-      # concurrency group queues this behind that push run, so this load lands last.
+      # Reload the site's Neon tables, which only a dispatch of registry.yml from main does. A
+      # merge's push run publishes OSO and nothing else, because the payload it would read is the
+      # one committed with the merge, from before this regeneration. Before #814 that stale
+      # payload was what the site served; on 2026-10-03 #811's merge put schema 6 live with
+      # countries on 10 orgs instead of 489. The bot's own push cannot start registry.yml (a push
+      # made with GITHUB_TOKEN starts no run), but a dispatch made with it does.
+      #
+      # Sent after every run that finished its job: when the push landed, and when there was
+      # nothing to commit, since a change to the Neon schema or loader can need a reload with the
+      # payload unchanged. Not sent when this run stood down for a queued run with newer inputs,
+      # which sends its own. registry.yml queues Neon loads apart from OSO publishes, so this
+      # can never displace a merge's OSO publish.
       - name: Reload Neon from the regenerated payload
-        if: steps.commit.outputs.payload == 'changed'
+        if: steps.commit.outputs.publish == 'ready'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run registry.yml --ref main
