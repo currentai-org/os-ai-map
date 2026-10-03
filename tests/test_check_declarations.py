@@ -134,19 +134,20 @@ def test_the_real_corpus_holds_at_its_known_count():
     kaggle-models and vals-ai each cite two repositories. Most of the new ones are a closed
     hosted service citing its own client SDK, docs or runner repository to show that the
     service's code is NOT there. That is evidence against open source, not a missing
-    declaration. Only agent2agent-protocol and model-context-protocol cite their own source.
+    declaration. Only agent2agent-protocol and model-context-protocol cited their own source.
 
-    Lowered to 24 on 2026-10-03, when text-generation-inference declared the repository it
-    cites. Its adoption level is unchanged: the repository is archived, and its stars band
-    at the same level its recorded reported traction does.
+    Lowered to 22 on 2026-10-03. text-generation-inference declared the repository it cites; its
+    adoption level is unchanged, because the archived repository's stars band at the same level its
+    recorded reported traction does. Both protocols declared their specification repository
+    together with the reference SDK packages their adoption is read from, as ag-ui does.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 24, [f[0] for f in findings]
+    assert len(findings) == 22, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "agent2agent-protocol", "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
+        "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
         "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
-        "huggingface-hub-platform", "kaggle-models", "lamini", "model-context-protocol",
-        "modelscope", "ollama-library", "patronus-evaluation-platform", "predibase",
+        "huggingface-hub-platform", "kaggle-models", "lamini", "modelscope", "ollama-library",
+        "patronus-evaluation-platform", "predibase",
         "qualcomm-ai-engine-direct", "ragaai-catalyst", "replit-agent-code-execution-api",
         "tavily-search-api", "vals-ai",
     }
