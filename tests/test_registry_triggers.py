@@ -20,6 +20,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 WORKFLOW = ROOT / ".github/workflows/registry.yml"
+REGENERATE = ROOT / ".github/workflows/regenerate.yml"
 # What the publish job actually runs. Anything these reach, transitively, is an input.
 SEEDS = ("build.serialize_registry", "build.serialize_rubric", "build.serialize_scores")
 
@@ -118,6 +119,25 @@ def test_no_input_decides_whether_oso_is_published():
     assert not (triggers.get("workflow_dispatch") or {}).get("inputs")
     assert "inputs." not in WORKFLOW.read_text()
 
+
+def test_a_regenerated_payload_reloads_neon():
+    """Neon is rendered from the committed payload, and the bot's regeneration push cannot
+    start this workflow, because a push made with GITHUB_TOKEN starts no run. So regenerate.yml
+    dispatches it from main after pushing a changed payload. Without that, the site serves the
+    payload from before the regeneration until the next merge, which is how #811's merge put
+    schema 6 live with countries on 10 orgs instead of 489."""
+    doc = yaml.safe_load(REGENERATE.read_text())
+    assert (doc.get("permissions") or {}).get("actions") == "write"
+    steps = doc["jobs"]["regenerate"]["steps"]
+    commit = next(i for i, s in enumerate(steps) if s.get("id") == "commit")
+    assert "payload=changed" in steps[commit]["run"]
+    assert "GITHUB_OUTPUT" in steps[commit]["run"]
+    dispatch = next(
+        i for i, s in enumerate(steps) if "gh workflow run registry.yml" in s.get("run", "")
+    )
+    assert dispatch > commit, "the dispatch must follow the push it reloads"
+    assert "--ref main" in steps[dispatch]["run"], "only a dispatch from main reloads Neon"
+    assert steps[dispatch].get("if") == "steps.commit.outputs.payload == 'changed'"
 
 def test_the_closure_is_actually_walking_transitively():
     """Guard on the guard: if the walk stopped at the seeds, the test above would pass
