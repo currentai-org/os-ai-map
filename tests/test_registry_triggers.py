@@ -138,6 +138,25 @@ def test_a_regenerated_payload_reloads_neon():
     assert dispatch > commit, "the dispatch must follow the push it reloads"
     assert "--ref main" in steps[dispatch]["run"], "only a dispatch from main reloads Neon"
     assert steps[dispatch].get("if") == "steps.commit.outputs.payload == 'changed'"
+    assert "github.token" in str(steps[dispatch].get("env", {}).get("GH_TOKEN", ""))
+    # The output is set only once the push has landed, inside its success branch.
+    run = steps[commit]["run"]
+    push_ok = run.index("if git push origin HEAD:main; then")
+    assert push_ok < run.index("payload=changed") < run.index("exit 0", push_ok)
+    triggers = yaml.safe_load(WORKFLOW.read_text())
+    assert "workflow_dispatch" in (triggers.get("on") or triggers.get(True))
+
+
+def test_a_pull_request_run_cannot_take_a_publish_run_s_queue_slot():
+    """GitHub keeps one pending run per concurrency group and cancels the older pending one
+    when another queues. A pull request run publishes nothing, so in the publish group it
+    could cancel a merge's queued publish, or the Neon reload regenerate.yml dispatches, and
+    then skip publishing itself. Pull requests get a group per PR; push and dispatch share
+    registry-publish."""
+    group = yaml.safe_load(WORKFLOW.read_text())["concurrency"]["group"]
+    assert "github.event_name == 'pull_request'" in group
+    assert "github.ref" in group, "one group per PR, not one for every PR"
+    assert group.rstrip("} ").endswith("|| 'registry-publish'"), "push and dispatch must share it"
 
 def test_the_closure_is_actually_walking_transitively():
     """Guard on the guard: if the walk stopped at the seeds, the test above would pass

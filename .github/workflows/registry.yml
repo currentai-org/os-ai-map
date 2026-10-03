@@ -9,8 +9,13 @@ name: registry
 # One publish at a time. Tables upload individually and are then materialized, so two
 # overlapping runs can commit a snapshot that is half registry and half rubric. Not
 # cancel-in-progress: a half-finished upload is exactly what must not be abandoned.
+#
+# Pull request runs get a group of their own, per PR. They publish nothing, and GitHub keeps
+# one pending run per group, cancelling the older pending one when another queues. In a shared
+# group a routine PR push could cancel a merge's queued publish, or the Neon reload
+# regenerate.yml dispatches, and the replacement run would skip publishing.
 concurrency:
-  group: registry-publish
+  group: ${{ github.event_name == 'pull_request' && format('registry-check-{0}', github.ref) || 'registry-publish' }}
   cancel-in-progress: false
 
 on:
