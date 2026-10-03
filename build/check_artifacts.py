@@ -78,6 +78,21 @@ def declared(products: dict[str, dict], kind: str) -> dict[str, str]:
     return out
 
 
+def declared_all(products: dict[str, dict], kind: str) -> dict[str, list[str]]:
+    """slug -> every artifact_id of this kind the product declares, in declared order.
+
+    The repo checks need all of them. A product can declare two repositories (e2b-sandbox's
+    SDK and its runtime, llava's two model lines), and comparing a signal row against only
+    the first one blames the wrong repository and never goes quiet once the right one is fixed.
+    """
+    out: dict[str, list[str]] = {}
+    for slug, product in products.items():
+        idents = [artifact_id(kind, e.get("url") or "") for e in product.get(kind) or []]
+        if idents := [i for i in idents if i]:
+            out[slug] = idents
+    return out
+
+
 def waived(product: dict, check: str) -> str | None:
     return ((product.get("artifact_exceptions") or {}).get(check)) or None
 
@@ -88,16 +103,19 @@ def github_moved(products: dict[str, dict]) -> list[tuple[str, str, str]]:
         "SELECT product_slug, repo, resolved_repo FROM currentai.signal_github.artifact_state "
         "WHERE resolved_via_redirect = true"
     )
+    repos = declared_all(products, "github")
     findings = []
     for row in rows:
-        slug, resolved = row["product_slug"], row["resolved_repo"]
-        declared_id = declared(products, "github").get(slug)
-        if not declared_id or not resolved:
+        slug, moved, resolved = row["product_slug"], row["repo"], row["resolved_repo"]
+        ours = {r.lower(): r for r in repos.get(slug, [])}
+        if not ours or not moved or not resolved:
             continue
-        # The signal probes what the repo declares, so compare against the declaration
-        # rather than against the signal's own `repo` column, which is the same string.
-        if declared_id.lower() != resolved.lower():
-            findings.append((slug, declared_id, resolved))
+        # Quiet once the declaration names where the repo went, even while the signal still
+        # carries last week's redirect row. Also quiet when the moved path is no longer
+        # declared at all: the row describes a declaration that has since been replaced.
+        if resolved.lower() in ours or moved.lower() not in ours:
+            continue
+        findings.append((slug, ours[moved.lower()], resolved))
     return findings
 
 
@@ -162,7 +180,7 @@ def pypi_content(products: dict[str, dict]) -> tuple[list, list]:
     """
     stubs, mismatches = [], []
     packages = declared(products, "pypi")
-    repos = declared(products, "github")
+    repos = declared_all(products, "github")
     for slug, package in sorted(packages.items()):
         info = pypi_info(package)
         if info is None:
@@ -172,18 +190,18 @@ def pypi_content(products: dict[str, dict]) -> tuple[list, list]:
             stubs.append((slug, package, reason))
             continue  # a stub's metadata is not worth corroborating
         names = declared_repo("pypi", package, info=info)
-        ours = (repos.get(slug) or "").lower()
+        ours = [r.lower() for r in repos.get(slug, [])]
         # No repo in the metadata is an absence of evidence, not a mismatch. Only a
-        # package naming a DIFFERENT repo than the one we declare is a finding.
-        if not (names and ours and names != ours):
+        # package naming a repo we declare none of is a finding.
+        if not (names and ours and names.lower() not in ours):
             continue
         # A package's own metadata goes stale exactly the way our declarations did, so a
         # raw string comparison reports a mismatch when WE are the current one. Resolve
         # the package's repo through GitHub's rename before believing the disagreement:
         # torchtune's metadata still names pytorch/torchtune, the path #166 corrected.
-        if canonical_repo(names) == canonical_repo(ours):
+        if canonical_repo(names) in {canonical_repo(r) for r in ours}:
             continue
-        mismatches.append((slug, package, f"names {names}, we declare {ours}"))
+        mismatches.append((slug, package, f"names {names}, we declare {', '.join(ours)}"))
     return stubs, mismatches
 
 
