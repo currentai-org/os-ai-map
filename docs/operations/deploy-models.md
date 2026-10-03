@@ -271,6 +271,12 @@ new commit:
 gh workflow run registry.yml --ref main
 ```
 
+`regenerate.yml` sends that dispatch itself after it pushes a changed `build/notebook_data.json`.
+It has to: the Neon tables are rendered from the committed payload, a merge's push run loads the
+one committed with the merge (the payload from before the bot regenerates it), and the bot's
+push cannot start registry.yml on its own because a push made with `GITHUB_TOKEN` starts no
+run. Without the dispatch the site serves the previous regeneration until the next merge.
+
 A dispatch from any other ref serializes and checks but publishes nothing, to OSO or to Neon. To
 try a change to the load from a branch, run it from a terminal into a schema of its own, which
 the site never reads:
@@ -286,7 +292,9 @@ name), must not end in `_staging` or `_previous`, and should stay under 54 chara
 
 **OSO publishing happens only on a push to `main`.** To republish the static models without a
 new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an empty
-commit. A dispatch, even from `main`, leaves OSO untouched.
+commit. A dispatch, even from `main`, leaves OSO untouched. A re-run of a push run also reloads
+Neon, from the payload committed at that run's commit, which is older than `main`'s once the bot
+has regenerated. So after re-running one, dispatch from `main` to put the current payload back.
 
 See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
 carries, and what it deliberately does not have.

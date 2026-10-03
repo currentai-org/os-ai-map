@@ -9,8 +9,13 @@ name: registry
 # One publish at a time. Tables upload individually and are then materialized, so two
 # overlapping runs can commit a snapshot that is half registry and half rubric. Not
 # cancel-in-progress: a half-finished upload is exactly what must not be abandoned.
+#
+# Pull request runs get a group of their own, per PR. They publish nothing, and GitHub keeps
+# one pending run per group, cancelling the older pending one when another queues. In a shared
+# group a routine PR push could cancel a merge's queued publish, or the Neon reload
+# regenerate.yml dispatches, and the replacement run would skip publishing.
 concurrency:
-  group: registry-publish
+  group: ${{ github.event_name == 'pull_request' && format('registry-check-{0}', github.ref) || 'registry-publish' }}
   cancel-in-progress: false
 
 on:
@@ -72,7 +77,9 @@ on:
       - "build/neon_schema.py"
       - "build/neon_status.py"
       # The site tables in Neon are built from the payload, so a regeneration of it is a
-      # change to what the serving layer holds.
+      # change to what the serving layer holds. This fires for a human commit to the file.
+      # The bot's own regeneration commit cannot fire it, since a push made with GITHUB_TOKEN
+      # starts no run, so regenerate.yml dispatches this workflow from main instead.
       - "build/notebook_data.json"
   # A dispatch from main reloads Neon and leaves OSO alone; from any other ref it only
   # serializes. No input decides it: a flag defaulting to false meant that forgetting
