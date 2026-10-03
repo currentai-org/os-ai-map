@@ -14,7 +14,8 @@ from build.propose_artifacts import stub_reason
 def product(github=None, pypi=None, exceptions=None):
     out = {}
     if github:
-        out["github"] = [{"url": f"https://github.com/{github}"}]
+        repos = [github] if isinstance(github, str) else github
+        out["github"] = [{"url": f"https://github.com/{r}"} for r in repos]
     if pypi:
         out["pypi"] = [{"url": f"https://pypi.org/project/{pypi}"}]
     if exceptions:
@@ -51,6 +52,77 @@ def test_case_alone_is_not_drift(monkeypatch):
     ])
     assert artifacts.github_moved({"x": product(github="Foo/Bar")}) == []
 
+
+
+E2B = "e2b-dev/E2B"
+
+
+def test_a_moved_second_repo_is_named_rather_than_the_first(monkeypatch):
+    """e2b-sandbox declares its SDK first and its runtime second, and the runtime moved.
+
+    Comparing the redirect against only the first declaration reported e2b-dev/E2B, which
+    never moved, as the drifted artifact.
+    """
+    monkeypatch.setattr(artifacts, "query", lambda _sql: [
+        {"product_slug": "e2b-sandbox", "repo": "e2b-dev/infra", "resolved_repo": "e2b-dev/runtime"},
+    ])
+    found = artifacts.github_moved({"e2b-sandbox": product(github=[E2B, "e2b-dev/infra"])})
+    assert found == [("e2b-sandbox", "e2b-dev/infra", "e2b-dev/runtime")]
+
+
+def test_a_corrected_second_repo_goes_quiet(monkeypatch):
+    """Once the second declaration names the new path, the stale redirect row is not a finding."""
+    monkeypatch.setattr(artifacts, "query", lambda _sql: [
+        {"product_slug": "e2b-sandbox", "repo": "e2b-dev/infra", "resolved_repo": "e2b-dev/runtime"},
+    ])
+    products = {"e2b-sandbox": product(github=[E2B, "e2b-dev/runtime"])}
+    assert artifacts.github_moved(products) == []
+
+
+
+def test_declaring_the_new_path_beside_the_old_one_is_still_a_finding(monkeypatch):
+    """The old path stays a join key while it is declared, wherever the new one sits."""
+    monkeypatch.setattr(artifacts, "query", lambda _sql: [
+        {"product_slug": "e2b-sandbox", "repo": "e2b-dev/infra", "resolved_repo": "e2b-dev/runtime"},
+    ])
+    products = {"e2b-sandbox": product(github=[E2B, "e2b-dev/infra", "e2b-dev/runtime"])}
+    assert artifacts.github_moved(products) == [("e2b-sandbox", "e2b-dev/infra", "e2b-dev/runtime")]
+
+
+def test_a_row_for_a_path_no_longer_declared_is_quiet(monkeypatch):
+    """Neither the old path nor the new one is declared: the declaration moved on elsewhere."""
+    monkeypatch.setattr(artifacts, "query", lambda _sql: [
+        {"product_slug": "e2b-sandbox", "repo": "e2b-dev/infra", "resolved_repo": "e2b-dev/runtime"},
+    ])
+    assert artifacts.github_moved({"e2b-sandbox": product(github=[E2B])}) == []
+
+
+def test_a_package_matching_the_second_repo_after_a_rename_is_not_drift(monkeypatch):
+    """The canonical comparison must reach every declared repo, not only the first."""
+    monkeypatch.setattr(artifacts, "pypi_info", lambda _p: {"version": "2.4.0", "summary": "runtime"})
+    monkeypatch.setattr(artifacts, "stub_reason", lambda *a, **k: None)
+    monkeypatch.setattr(artifacts, "declared_repo", lambda *a, **k: "e2b-dev/infra")
+    renamed = {"e2b-dev/infra": "e2b-dev/runtime"}
+    monkeypatch.setattr(artifacts, "canonical_repo", lambda repo: renamed.get(repo.lower(), repo.lower()))
+    products = {"e2b-sandbox": product(github=[E2B, "e2b-dev/runtime"], pypi="e2b")}
+    assert artifacts.pypi_content(products) == ([], [])
+
+def test_a_package_naming_any_declared_repo_is_not_drift(monkeypatch):
+    """A package published from the product's second repository names that repository.
+
+    Only a repo the product declares none of is a mismatch, and agreeing with one of them
+    needs no GitHub lookup.
+    """
+    monkeypatch.setattr(artifacts, "pypi_info", lambda _p: {"version": "2.4.0", "summary": "runtime"})
+    monkeypatch.setattr(artifacts, "stub_reason", lambda *a, **k: None)
+    monkeypatch.setattr(artifacts, "declared_repo", lambda *a, **k: "e2b-dev/runtime")
+
+    def no_lookup(repo):
+        raise AssertionError(f"looked up {repo} although the package names a declared repo")
+
+    monkeypatch.setattr(artifacts, "canonical_repo", no_lookup)
+    products = {"e2b-sandbox": product(github=[E2B, "e2b-dev/runtime"], pypi="e2b")}
+    assert artifacts.pypi_content(products) == ([], [])
 
 def test_stub_versions_are_caught_and_a_real_release_is_not():
     """The #167 shape. `info` is passed in, so this makes no request."""

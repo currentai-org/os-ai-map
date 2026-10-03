@@ -108,16 +108,18 @@ def test_the_real_corpus_divergences_are_renames():
     artifact - the remedy is refreshing the citation or recording the move under
     artifact_exceptions.github_moved, not declaring a second repo.
 
-    Two more surfaced when raw file URLs began to count (#773), and neither is verified yet:
-    `e2b-sandbox` cites e2b-dev/runtime beside its declared e2b-dev/infra, whose README calls
-    itself "the open-source runtime", and `sandbox-runtime` cites anthropics/sandbox-runtime
-    beside its declared anthropic-experimental/sandbox-runtime, with the two package.json
-    citations naming opposite paths. Both look like moves; confirm against the API before
-    recording either one.
+    Two more surfaced when raw file URLs began to count (#773): `e2b-sandbox` and
+    `sandbox-runtime`. Both were confirmed as moves against the GitHub API on 2026-10-03
+    (e2b-dev/infra to e2b-dev/runtime, anthropic-experimental/sandbox-runtime to
+    anthropics/sandbox-runtime), and the declarations now name the new paths. What still
+    diverges is their older citations of the old paths, which redirect.
+
+    `librechat` joined the same day for the same reason: danny-avila/LibreChat moved to
+    LibreChat-AI/LibreChat, the declaration followed, and its citations name the old path.
     """
     assert {f[0] for f in divergent_citations(ROOT)} == {
-        "e2b-sandbox", "fastmcp", "giskard", "llama-factory", "nemo-guardrails", "opencode",
-        "sandbox-runtime", "torchtune", "verl",
+        "e2b-sandbox", "fastmcp", "giskard", "librechat", "llama-factory", "nemo-guardrails",
+        "opencode", "sandbox-runtime", "torchtune", "verl",
     }
 
 
@@ -133,14 +135,18 @@ def test_the_real_corpus_holds_at_its_known_count():
     hosted service citing its own client SDK, docs or runner repository to show that the
     service's code is NOT there. That is evidence against open source, not a missing
     declaration. Only agent2agent-protocol and model-context-protocol cite their own source.
+
+    Lowered to 24 on 2026-10-03, when text-generation-inference declared the repository it
+    cites. Its adoption level is unchanged: the repository is archived, and its stars band
+    at the same level its recorded reported traction does.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 25, [f[0] for f in findings]
+    assert len(findings) == 24, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
         "agent2agent-protocol", "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
         "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
         "huggingface-hub-platform", "kaggle-models", "lamini", "model-context-protocol",
         "modelscope", "ollama-library", "patronus-evaluation-platform", "predibase",
         "qualcomm-ai-engine-direct", "ragaai-catalyst", "replit-agent-code-execution-api",
-        "tavily-search-api", "text-generation-inference", "vals-ai",
+        "tavily-search-api", "vals-ai",
     }
