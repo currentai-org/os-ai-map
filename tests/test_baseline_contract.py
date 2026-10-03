@@ -139,6 +139,13 @@ WITHDRAWN_SINCE_THE_BASELINE = {
     # numbers ARE the product's numbers (identity.md), so it was removed rather than flagged
     # (#448). The baseline row is a true record of what was declared on 2026-08-24.
     ("cohere-rerank-api", "pypi", "cohere"),
+    # Repositories that moved after the freeze. GitHub redirects the old path today and can
+    # free it for reuse tomorrow, so the declaration follows the move (check_artifacts'
+    # github_moved). Each was confirmed against the GitHub API on 2026-10-03.
+    ("e2b-sandbox", "github", "e2b-dev/infra"),  # now e2b-dev/runtime
+    ("librechat", "github", "danny-avila/LibreChat"),  # now LibreChat-AI/LibreChat
+    ("maple-ai", "github", "OpenSecretCloud/Maple"),  # now MaplePrivacyLabs/Maple
+    ("sandbox-runtime", "github", "anthropic-experimental/sandbox-runtime"),  # now anthropics/
 }
 
 
