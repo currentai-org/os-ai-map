@@ -5,68 +5,109 @@ openness:
   components:
     weights:
       value: open
-      detail: Apache-2.0 for open variants e.g. 27B/35B-A3B
+      detail: 'ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship'
     data:
       value: closed
+      detail: no corpus or data card published; the Flash-Next technical report covers architecture, optimization
+        and evaluation, not training data
     code:
       value: partial
-      detail: inference/usage code on GitHub; no training pipeline/data
+      detail: usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no training pipeline
     license:
+    - name: Qwen-Community-License-1.0
+      detail: Qwen3.8-Flash-Next; model-as-a-service and AI work assistant businesses need a separate license
+        for any commercial use; the most restrictive distributed SKU of the governing release
+    - name: Qwen3.8-Max-License
+      detail: Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required only above USD
+        50M annual revenue
     - name: Apache-2.0
-      detail: most restrictive distributed SKU; the proprietary Plus/Max tiers are API-only and never distributed,
-        so they fall outside this axis
-  governing_release: qwen-3-6
+      detail: OSI; Qwen3.8-27B only
+  governing_release: qwen-3-8
   confidence: high
-  note: Every distributed Qwen3 variant ships under Apache-2.0, with a closed training corpus and only inference
-    code published. Qwen3.7-Max, the proprietary flagship, is served only through Alibaba Model Studio and
-    never distributed, so it does not affect the family's reading; earlier Qwen 2.5 checkpoints carried
-    the more restrictive Qwen License Agreement before the move to Apache-2.0.
-  raw: weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage
-    code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the
-    proprietary Plus/Max tiers are API-only and never distributed, so they fall outside this axis)
+  note: Qwen 3.8 ships its dense 27B model under Apache-2.0 and its Flash-Next and flagship models under Qwen's
+    own licenses, which require model-as-a-service and AI coding or office assistant businesses to get a separate
+    license before commercial use. The training corpus is not released and only usage code is published.
+  raw: 'weights:open(ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship);data:closed(no
+    corpus or data card published; the Flash-Next technical report covers architecture, optimization and evaluation,
+    not training data);code:partial(usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no
+    training pipeline);license:Qwen-Community-License-1.0(Qwen3.8-Flash-Next; model-as-a-service and AI work assistant
+    businesses need a separate license for any commercial use; the most restrictive distributed SKU of the governing
+    release)+Qwen3.8-Max-License(Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required
+    only above USD 50M annual revenue)+Apache-2.0(OSI; Qwen3.8-27B only)'
+  last_verified: '2026-10-03'
   sources:
-  - url: https://huggingface.co/api/models/Qwen/Qwen3.6-27B
-    shows: 'card license `apache-2.0`, `gated: false`, `private: false`, 6,830,615 downloads and
-      2,252 likes; the card front matter declares no `datasets`, so no corpus is named there.'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/Qwen/Qwen3.8-2.4T-A95B
+    shows: 'Hub record for the flagship: "private": false, "gated": false, card license "other" with license_name
+      "qwen3.8-max", 213 safetensors shards, created 2026-08-08; the card front matter names no datasets.'
+    accessed: '2026-10-03'
     http_status: 200
-    content_sha256: 7b41b485a8f10317c72fe8c4976c01927cc5a5db61f1b78db0ac8ab909ebd33a
-    establishes: [weights, data, license]
-  - url: https://api.github.com/repos/QwenLM/Qwen3.6
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Qwen3.6 is the
-      large language model series developed by Qwen team, Alibaba Group". Usage and deployment code,
-      no pretraining pipeline, which is what holds `code` at partial.'
-    accessed: '2026-08-13'
+    content_sha256: 6a1f4fdcb000c1e36c21e27c93f38b5f1eb60883acf9c445ffe4d705bc946f46
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE
+    shows: Titled "Qwen3.8-Max License". It grants use "including the model weights", and requires a licensee
+      that "conducts a Model as a Service or AI Work Assistant business" with aggregate revenue over "US$50,000,000"
+      in twelve months to "obtain a separate license from Qwen before Using the Software or its derivative works
+      for any commercial purpose", internal use excepted.
+    accessed: '2026-10-03'
     http_status: 200
-    content_sha256: d4fef7005d81de872c63d3bab105d7b59d9c481439168e235b513574668f54e6
-    establishes: [code]
-  - url: https://github.com/QwenLM/Qwen3.6
-    shows: 'Repository page for QwenLM/Qwen3.6: ''Apache-2.0 license'' in the sidebar, 3.8k stars, public
-      and unarchived. Establishes the Apache-2.0 tier across the released base variants and that the published
-      code is inference-side.'
-    accessed: '2026-08-15'
+    content_sha256: a136bc4137ef3d7a7a54963164a47270f73e497917728ea0f4407a0115db1290
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Qwen/Qwen3.8-Flash-Next
+    shows: 'Hub record for Qwen3.8-Flash-Next: "private": false, "gated": false, card license "other" with license_name
+      "qwen-community-1.0", 131 safetensors shards, created 2026-08-24; the card front matter names no datasets.'
+    accessed: '2026-10-03'
     http_status: 200
-    content_sha256: 62d7b8a9bd15fe633e3b19642383f6306f1c462301fa1e804debf4243a675a3e
-  - url: https://www.marktechpost.com/2026/04/22/alibaba-qwen-team-releases-qwen3-6-27b-a-dense-open-weight-model-outperforming-397b-moe-on-agentic-coding-benchmarks/
-    shows: Trade coverage of the Qwen3.6-27B open-weight release and its 262K context. Corroborates the
-      open-weights reading; establishes no dimension on its own.
-    accessed: '2026-08-15'
+    content_sha256: bafbbe328d676daa42e96f44a6b9367821a8985c98b7262ab6781e48af8bef3d
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/Qwen/Qwen3.8-Flash-Next/raw/main/LICENSE
+    shows: Titled "Qwen Community License 1.0". The same grant as the Max license, but any licensee that "conducts
+      a Model as a Service or AI Work Assistant business" must "obtain a separate license from Qwen before Using
+      the Software or its derivative works for any commercial purpose", with no revenue floor; internal use is
+      excepted.
+    accessed: '2026-10-03'
     http_status: 200
-    content_sha256: ed47c320896efcb77e69a40b65e094790187f232cd590a39eae3ebe06be5a024
-  - url: https://llm-stats.com/models/qwen3.6-plus
-    shows: 'NOT READABLE: the page returns HTTP 200 and serves a ''Quick verification - Confirm you''re
-      human to keep going'' interstitial rather than the model page, so it shows nothing and establishes
-      nothing. Retained because the record cites it; a digest of the interstitial is recorded rather than
-      a claim about the model.'
-    accessed: '2026-08-15'
+    content_sha256: a0dc422560841fd68e06d974907f8b4c709bca44a67daad2b528437bdf676c08
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Qwen/Qwen3.8-27B
+    shows: 'Hub record for Qwen3.8-27B: "private": false, "gated": false, card license "apache-2.0", 18 safetensors
+      shards, created 2026-08-05; the card front matter names no datasets.'
+    accessed: '2026-10-03'
     http_status: 200
-    content_sha256: 8bd056a0bd2988d5b244c4a9c0531620bbb31e662da3c9eb46e7348ba683b2d3
-  - url: https://aimlapi.com/blog/qwen-3-6-series-alibabas-open-source-llm-revolution-in-2026
-    shows: Vendor-blog overview of the Qwen3.6 series describing it as open-weight with a 128K context.
-      Third-party commentary; establishes no dimension on its own.
-    accessed: '2026-08-15'
+    content_sha256: da445ab554f76d60d3bd6566b9d7b68ae389fcfbbb300605803c745aab55f364
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/LICENSE
+    shows: The Apache License, "Version 2.0, January 2004", in full.
+    accessed: '2026-10-03'
     http_status: 200
-    content_sha256: ab2f56e8397dfd8c18c341d541eef3e88b71a3ab364f36f25e9702ad14539f52
+    content_sha256: bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/QwenLM/Qwen3.8
+    shows: '"full_name": "QwenLM/Qwen3.8", "private": false, "archived": false, license "Apache-2.0", description
+      "Qwen3.8 is the large language model series developed by Qwen team, Alibaba Group." The repository holds
+      a README and a LICENSE, with no training code.'
+    accessed: '2026-10-03'
+    http_status: 200
+    content_sha256: e543adabc86ff3ca7c6b7db572b0a4132db554a7d46e21819c2faacb5b9385f6
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3.8-Flash-Next/main/tech_report.pdf
+    shows: The Qwen3.8-Flash-Next technical report. Its sections are Model Architecture (attention, residual,
+      n-gram embedding), Optimization and Evaluation; none describes the pretraining corpus or its mixture.
+    accessed: '2026-10-03'
+    http_status: 200
+    content_sha256: 04f263446d74a35cb7cea368574e0c561f3b05c133be2c777ac884404063655d
+    establishes:
+    - data
 adoption:
   level: 5
   reach: '>10M'

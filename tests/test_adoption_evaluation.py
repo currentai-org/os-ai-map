@@ -128,7 +128,10 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # Moved again the same day when maple-ai followed OpenSecretCloud/Maple to MaplePrivacyLabs/Maple.
 # One row differs: maple-ai's frozen stars row no longer covers the declared path, so it goes
 # from level 1 to an abstention. The count is unchanged.
-MEASUREMENTS_DIGEST = "26fe520b1c2be7d8ffe5a81073310508287a8bee567a0058363841a84501f020"
+# Moved again the same day when qwen moved its governing release to Qwen 3.8 and declared the
+# three 3.8 checkpoints. One row differs, qwen's, from level 5 to an abstention, because the
+# frozen snapshot predates the 3.8 checkpoints. The count is unchanged.
+MEASUREMENTS_DIGEST = "bd9c8475826c17598b16e0325fb707b7cee52992a2a73a0841e2011db25f9c17"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -667,9 +670,11 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     abstained = {r["product_slug"] for r in measurement_rows if r["measured_level"] is None}
     # librechat and maple-ai since 2026-10-03: each repository moved (to LibreChat-AI/LibreChat
     # and MaplePrivacyLabs/Maple) and the declaration followed, so the frozen stars row for the
-    # old path no longer covers the declared primary artifact.
+    # old path no longer covers the declared primary artifact. qwen the same day: it declares the
+    # three Qwen 3.8 checkpoints, which the frozen snapshot never observed, so its Hugging Face sum
+    # covers some declared primaries, not all.
     assert abstained == {
-        "composable-kernel", "glm", "librechat", "maple-ai", "mimo-pro", "olmo-instruct",
+        "composable-kernel", "glm", "librechat", "maple-ai", "mimo-pro", "olmo-instruct", "qwen",
     }
     for row in measurement_rows:
         if row["measured_level"] is None:
