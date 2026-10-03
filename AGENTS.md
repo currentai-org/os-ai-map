@@ -101,6 +101,8 @@ Editing library    components, the only supported way to edit openness.component
                    Never load-modify-dump a corpus file. route_context uses it to keep
                    components.context holding exactly the keys the product's ladder does not
                    read; rerun it with --write after changing a ladder's `reads`.
+                   apply_attributes applies a ledger of `country`, `steward` or `languages`
+                   through the same helpers; a dry run until `--write`.
 
 Gates              check_*, one module per question. Four families:
                      scoring    check_rubric, check_recipe, check_capability, check_adoption,
@@ -159,7 +161,7 @@ The curated source set is four full-record YAML concerns in `sources/`, a compac
 registry, plus the single `sources/taxonomy.yaml` manifest:
 
 - **organizations**: one file per org (`name`=slug, `display_name`, `type`, `homepage`,
-  optional `github` typed-url array and `comments` string). Owns the `products:` roster: a list of product slugs that belong to this org. A product
+  optional `country` (ISO 3166-1 alpha-2), `github` typed-url array and `comments` string). Owns the `products:` roster: a list of product slugs that belong to this org. A product
   slug must appear in exactly one org roster (validated).
 - **categories**: one file per stack-map category (`name`=slug, `display_name`). Owns the
   ordered product roster (`products:` array). Order equals display order. One product
@@ -172,7 +174,9 @@ registry, plus the single `sources/taxonomy.yaml` manifest:
   objects: `github`, `npm`, `pypi`, `crates`, `go`, `huggingface_model`,
   `huggingface_dataset`, `arxiv`. Only keys with entries are included; `product.schema.json`
   is the authoritative list. Four further optional keys are not artifacts and are documented
-  in the schema: `aliases`, `lineage`, `version_in_identity`, `artifact_exceptions`. Optional
+  in the schema: `aliases`, `lineage`, `version_in_identity`, `artifact_exceptions`. Two more
+  identity attributes, `steward` (an org slug, only when governance sits outside the owning org)
+  and `languages` (ISO 639-3, datasets only), are specified in `docs/reference/identity.md`. Optional
   `comments` is a free-text string for provenance and scoring notes (version, license, last
   release date).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.

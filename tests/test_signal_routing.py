@@ -35,6 +35,10 @@ ROOT = Path(__file__).resolve().parents[1]
 # `end_of_life` is a declared date and its citation. Nothing about it is countable, and that is
 # the point: the day a service stops is announced on a page, never emitted by a registry, so
 # there is no source to route it to and no signal it could ever become.
+#
+# `steward` and `languages` are identity attributes (#684, docs/reference/identity.md): an org
+# slug and a list of ISO 639-3 codes, set by curation from a card or a governance page. Neither
+# names an artifact, so there is nothing for a source to fetch.
 METADATA_KEYS = {
     "name",
     "display_name",
@@ -46,6 +50,8 @@ METADATA_KEYS = {
     "version_in_identity",
     "artifact_exceptions",
     "end_of_life",
+    "steward",
+    "languages",
 }
 
 

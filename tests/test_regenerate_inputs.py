@@ -8,8 +8,8 @@ that holds only for a merge the `paths` filter matched.
 
 So `INPUTS` and the push trigger's `paths` are one list written twice, in two syntaxes. If
 `INPUTS` misses a trigger path, a rebased commit can pair new inputs with artifacts built from
-the old ones, and a changed `build/notebook_data.json` reaches the warehouse through
-registry.yml before the queued run repairs it. If `INPUTS` names a path the filter does not,
+the old ones, and a changed `build/notebook_data.json` reaches the site's Neon tables through
+the registry.yml dispatch before the queued run repairs it. If `INPUTS` names a path the filter does not,
 the run stands down for a queued run that never comes, and the payload goes stale (#672, #690).
 """
 

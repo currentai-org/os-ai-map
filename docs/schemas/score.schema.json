@@ -74,6 +74,11 @@
                     "required": [
                       "context"
                     ]
+                  },
+                  {
+                    "required": [
+                      "governance"
+                    ]
                   }
                 ]
               },
@@ -121,7 +126,7 @@
                   }
                 ]
               },
-              "description": "Keyed clauses the product's resolved ladder neither declares as a dimension nor names in any `reads` or `license_tier.reads` list: recorded, serialized as traceability rows, and deliberately not scored. Same entry shapes as the top level. Membership is mechanical rather than a per-key ruling, and build/check_components.py enforces it in both directions - an unread key at the top level fails (it would be dropped from the score silently, #188) and a key under `context` that the ladder does read fails too. build/route_context.py --write moves keys across the line when a ladder changes. `recompose` lifts these back to the top level, so `components_of` and every reader see the same clauses whether or not a key is here, and `raw` never changes."
+              "description": "Keyed clauses the product's resolved ladder neither declares as a dimension nor names in any `reads` or `license_tier.reads` list: recorded, serialized as traceability rows, and deliberately not scored. Same entry shapes as the top level. Membership is mechanical rather than a per-key ruling, and build/check_components.py enforces it in both directions - an unread key at the top level fails (it would be dropped from the score silently, #188) and a key under `context` that the ladder does read fails too. build/route_context.py --write moves keys across the line when a ladder changes. `recompose` lifts these back to the top level, so `components_of` and every reader see the same clauses whether or not a key is here, and `raw` never changes. `governance` is retired as a recorded key (#684): who governs a product is `steward` on the product file and the org's `country` and `type` say the rest, and build/check_components.py names the replacement when a record brings the key back."
             }
           },
           "additionalProperties": {

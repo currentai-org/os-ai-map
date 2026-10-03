@@ -9,7 +9,7 @@ import yaml
 
 from build.identity import fold_for_proposal, fold_handle, id_from_url
 from build.resolution import LEDGER
-from build.vocabulary import axes, SIGNAL_TYPES
+from build.vocabulary import axes, country_codes, language_codes, SIGNAL_TYPES
 
 from build.rubrics import dimension_vocabulary
 from build.taxonomy import category_entry, category_statuses
@@ -97,6 +97,14 @@ def _load_optional_yaml(path: Path, empty: dict) -> dict:
     if not path.exists():
         return empty
     return yaml.safe_load(path.read_text()) or empty
+
+
+# Categories whose every product must carry `languages` (#684). A dataset category that is
+# defined by language (`language_specific_datasets`) cannot be read without the field, while
+# on any other dataset it is optional. Read at call time by `validate_sources`, so a test can
+# name a synthetic category. Adding a category here is the same change that fills the field
+# on its roster: a gate that fires on a corpus not yet filled in only teaches people to ignore it.
+LANGUAGES_REQUIRED_CATEGORIES: frozenset[str] = frozenset({"language_specific_datasets"})
 
 
 def load_sources(root: Path) -> dict:
@@ -445,6 +453,70 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         n = org_roster_count.get(slug, 0)
         if n != 1:
             errors.append(f"product {slug!r}: must appear in exactly one org roster (found in {n})")
+
+    # --- identity attributes: country, steward, languages (#684) ---
+    # The schemas check shapes; the code lists live in sources/snapshots/ and are read through
+    # build.vocabulary, so a 249-code enum is not copied into a schema where it would drift.
+    # `country` and `languages` are free of any cross-file join, but `steward` resolves to an
+    # org file and must differ from the org that already owns the product, which is a fact
+    # only the rosters know.
+    allowed_countries = country_codes()
+    for oslug, org in sorted(orgs.items()):
+        country = org.get("country")
+        if country is not None and not (isinstance(country, str) and country in allowed_countries):
+            errors.append(
+                f"organization {oslug!r}: country {country!r} is not an ISO 3166-1 alpha-2 "
+                f"code in sources/snapshots/iso-3166-1.tsv (use GB for the United Kingdom; "
+                f"UK, EU and XK are not in the list)"
+            )
+        if country is not None and org.get("type") == "individual":
+            errors.append(
+                f"organization {oslug!r}: an individual carries no country. A person's location "
+                f"is personal data, and the question the field answers is about institutions."
+            )
+    owning_org: dict[str, str] = {}
+    for oslug, org in sorted(orgs.items()):
+        for slug in org.get("products") or []:
+            owning_org.setdefault(slug, oslug)
+    allowed_languages = language_codes()
+    for slug, product in sorted(prods.items()):
+        steward = product.get("steward")
+        if steward is not None:
+            if not (isinstance(steward, str) and steward in orgs):
+                errors.append(
+                    f"product {slug!r}: steward {steward!r} has no sources/organizations/{steward}.yaml"
+                )
+            elif steward == owning_org.get(slug):
+                errors.append(
+                    f"product {slug!r}: steward {steward!r} is the owning organization. Set "
+                    f"`steward` only when governance sits with a different body."
+                )
+        languages = product.get("languages")
+        if languages is not None:
+            if product.get("type") != "dataset":
+                errors.append(
+                    f"product {slug!r}: `languages` applies to datasets only (this is a "
+                    f"{product.get('type')!r})"
+                )
+            if isinstance(languages, list):
+                for code in languages:
+                    if not (isinstance(code, str) and code in allowed_languages):
+                        errors.append(
+                            f"product {slug!r}: language {code!r} is not an ISO 639-3 code of "
+                            f"scope individual or macrolanguage in sources/snapshots/iso-639-3.tab "
+                            f"(two-letter codes and the special codes mul, und, zxx are refused)"
+                        )
+                if all(isinstance(code, str) for code in languages) and languages != sorted(languages):
+                    errors.append(
+                        f"product {slug!r}: `languages` must be sorted "
+                        f"(expected {sorted(languages)})"
+                    )
+    for cid in sorted(LANGUAGES_REQUIRED_CATEGORIES):
+        for slug in (cats.get(cid) or {}).get("products") or []:
+            if not (prods.get(slug) or {}).get("languages"):
+                errors.append(
+                    f"product {slug!r}: category {cid!r} requires `languages` on every product"
+                )
 
     # --- org handles (sources/org_handles.yaml) ---
     # Handles live outside the org record on purpose (see docs/reference/identity.md): an

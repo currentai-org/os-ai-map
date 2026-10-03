@@ -11,7 +11,7 @@ asks for belongs in the score file.
 
 ## Inputs you need
 - The **category** it belongs to (exactly one) and the **organization** that makes it.
-- Its **product type** (`software`, `model`, `dataset`, `hardware`).
+- Its **product type** (`software`, `model`, `dataset`, `hardware`). A dataset also takes `languages` where its card or paper names them, and a product whose governance has moved to a body other than its owner takes `steward`; both are in [`../reference/identity.md`](../reference/identity.md#country-steward-and-languages).
 - Its open **artifacts**: GitHub / PyPI / npm / crates / HuggingFace model or dataset / arXiv URLs.
 - Enough **primary-source evidence** to score openness, and to say what it is.
 
@@ -20,7 +20,7 @@ Four, and all in the same PR:
 1. `sources/products/<slug>.yaml` — the product record.
 2. `sources/scores/<slug>.yaml` — its three-axis score.
 3. `sources/categories/<cat>.yaml` — append the slug to the roster.
-4. `sources/organizations/<org>.yaml` — append the slug to the roster (create the org file if new).
+4. `sources/organizations/<org>.yaml` — append the slug to the roster (create the org file if new; a new org that is an institution sets `country` to its ISO 3166-1 alpha-2 code, and an individual leaves it unset — see [`../reference/identity.md`](../reference/identity.md#country-steward-and-languages)).
 
 **And `sources/org_handles.yaml`, whenever the org is new.** The handle-coverage ratchet in
 `build/identity_eval.py` counts orgs-with-a-handle over orgs-with-artifacts per platform, so a

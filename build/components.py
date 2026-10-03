@@ -51,6 +51,7 @@ Usage:
 from __future__ import annotations
 
 import copy
+from collections.abc import Sequence
 from pathlib import Path
 
 import yaml
@@ -342,7 +343,24 @@ def document_field_span(lines: list[str], key: str) -> tuple[int, int] | None:
     return start, end
 
 
-def set_document_field(text: str, key: str, value: object, width: int = PRODUCT_WIDTH) -> str:
+def _render_document_field(key: str, value: object, width: int, flow: bool) -> list[str]:
+    """The lines of a top-level `key: value`, block style unless `flow` asks for a flow sequence.
+
+    `flow` exists for a list that can be a thousand items long: block style spends a line on
+    each, where a flow sequence wraps at `width` and reads as a paragraph of codes. PyYAML
+    wraps it with two-space continuation lines, which `document_field_span` already reads as
+    part of the field. Meant for a list of plain scalars; a list of mappings should stay block.
+    """
+    dumped = yaml.safe_dump(
+        {key: value}, default_flow_style=None if flow else False, allow_unicode=True,
+        width=width, sort_keys=False,
+    )
+    return [f"{line}\n" for line in dumped.splitlines()]
+
+
+def set_document_field(
+    text: str, key: str, value: object, width: int = PRODUCT_WIDTH, flow: bool = False
+) -> str:
     """Return `text` with a top-level `key` replaced by `value`. Raises rather than guessing.
 
     The product prose needs this and `set_field` cannot do it: that one locates a field inside
@@ -356,10 +374,7 @@ def set_document_field(text: str, key: str, value: object, width: int = PRODUCT_
     if span is None:
         raise ValueError(f"no top-level {key!r} field to rewrite")
 
-    dumped = yaml.safe_dump(
-        {key: value}, default_flow_style=False, allow_unicode=True, width=width, sort_keys=False
-    )
-    rendered = [f"{line}\n" for line in dumped.splitlines()]
+    rendered = _render_document_field(key, value, width, flow)
     new_lines = lines[: span[0]] + rendered + lines[span[1] :]
     new_text = "".join(new_lines)
 
@@ -374,6 +389,74 @@ def set_document_field(text: str, key: str, value: object, width: int = PRODUCT_
     tail = span[0] + len(rendered)
     if new_lines[: span[0]] != lines[: span[0]] or new_lines[tail:] != lines[span[1] :]:
         raise ValueError(f"rewriting {key} moved bytes outside its own span")
+
+    return new_text
+
+
+def add_document_field(
+    text: str,
+    key: str,
+    value: object,
+    after: str | Sequence[str] = (),
+    width: int = PRODUCT_WIDTH,
+    flow: bool = False,
+) -> str:
+    """Return `text` with a NEW top-level `key: value` inserted. Raises when the key exists.
+
+    `set_document_field` replaces and `drop_document_field` removes; neither can introduce a
+    field, and the identity attributes (`country`, `steward`, `languages`) are introduced one
+    file at a time by a curation pass. Hand-splicing a line is the approach that shipped a
+    seven-product defect, so this carries the same assertions as the other two.
+
+    `after` names where the field belongs: a key, or a preference-ordered list of keys, of
+    which the FIRST one the document actually has is the anchor, and the new field goes after
+    that key's whole span (continuation lines and a block sequence's items included). The
+    list is how a caller says "after `homepage`, or after `type` when there is no homepage"
+    without this helper knowing anything about organizations or products. When no named key
+    is present the field goes at the end of the document, which is always valid and never
+    reorders anything.
+
+    A list value renders in block style with its items at the key's own indent
+    (`key:` then `- item`), which is how the corpus writes `github:` and an org's `products:`
+    roster, because PyYAML's `safe_dump` does and the corpus was written by it. `flow=True`
+    writes a list of scalars as a wrapped flow sequence instead (`key: [a, b, ...]`, wrapped at
+    `width` with two-space continuation lines), for a list long enough that a line per item
+    would swamp the file.
+
+    Raises rather than producing a plausible-looking edit unless: the file ends in a newline
+    (when the field would be appended at the end), the document re-parses to exactly the old mapping plus this one key, and every line
+    outside the insertion is byte-identical.
+    """
+    lines = text.splitlines(keepends=True)
+    if document_field_span(lines, key) is not None:
+        raise ValueError(f"top-level {key!r} already exists; use set_document_field to change it")
+
+    anchors = [after] if isinstance(after, str) else list(after)
+    insert_at = len(lines)
+    for anchor in anchors:
+        span = document_field_span(lines, anchor)
+        if span is not None:
+            insert_at = span[1]
+            break
+    # Only an insertion at the very end would glue the new key onto an unterminated last line.
+    if insert_at == len(lines) and not text.endswith("\n"):
+        raise ValueError("file does not end with a newline; refusing to append a field")
+
+    rendered = _render_document_field(key, value, width, flow)
+    new_lines = lines[:insert_at] + rendered + lines[insert_at:]
+    new_text = "".join(new_lines)
+
+    before = yaml.safe_load(text)
+    after_doc = yaml.safe_load(new_text)
+    if (after_doc or {}).get(key) != value:
+        raise ValueError(f"{key} re-parsed as {(after_doc or {}).get(key)!r}, not the value asked for")
+    expected = copy.deepcopy(before)
+    expected[key] = value
+    if after_doc != expected:
+        raise ValueError(f"adding {key} changed something else in the document; refusing to write")
+    tail = insert_at + len(rendered)
+    if new_lines[:insert_at] != lines[:insert_at] or new_lines[tail:] != lines[insert_at:]:
+        raise ValueError(f"adding {key} moved bytes outside its own insertion")
 
     return new_text
 
