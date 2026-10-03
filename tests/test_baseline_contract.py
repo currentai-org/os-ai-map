@@ -144,6 +144,7 @@ WITHDRAWN_SINCE_THE_BASELINE = {
     # github_moved). Each was confirmed against the GitHub API on 2026-10-03.
     ("e2b-sandbox", "github", "e2b-dev/infra"),  # now e2b-dev/runtime
     ("librechat", "github", "danny-avila/LibreChat"),  # now LibreChat-AI/LibreChat
+    ("maple-ai", "github", "OpenSecretCloud/Maple"),  # now MaplePrivacyLabs/Maple
     ("sandbox-runtime", "github", "anthropic-experimental/sandbox-runtime"),  # now anthropics/
 }
 

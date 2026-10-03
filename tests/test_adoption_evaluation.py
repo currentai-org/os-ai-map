@@ -125,7 +125,10 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # diffed against main: main still reproduced the previous digest, and exactly two rows differ.
 # sandbox-runtime's stars row is gone, and librechat's goes from level 3 to an abstention. See
 # MEASUREMENT_COUNT below.
-MEASUREMENTS_DIGEST = "cf03f855ad00ecff0677306ecfc8a7b9a1e935aa052f03a6662a20c3bed4c1b2"
+# Moved again the same day when maple-ai followed OpenSecretCloud/Maple to MaplePrivacyLabs/Maple.
+# One row differs: maple-ai's frozen stars row no longer covers the declared path, so it goes
+# from level 1 to an abstention. The count is unchanged.
+MEASUREMENTS_DIGEST = "26fe520b1c2be7d8ffe5a81073310508287a8bee567a0058363841a84501f020"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -662,10 +665,12 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     that kind -- the short sums that used to band. Named rather than counted: an abstention
     appearing for any other reason is a finding, not a tolerance."""
     abstained = {r["product_slug"] for r in measurement_rows if r["measured_level"] is None}
-    # librechat since 2026-10-03: its repository moved to LibreChat-AI/LibreChat and the
-    # declaration followed, so the frozen stars row for danny-avila/LibreChat no longer covers
-    # the declared primary artifact.
-    assert abstained == {"composable-kernel", "glm", "librechat", "mimo-pro", "olmo-instruct"}
+    # librechat and maple-ai since 2026-10-03: each repository moved (to LibreChat-AI/LibreChat
+    # and MaplePrivacyLabs/Maple) and the declaration followed, so the frozen stars row for the
+    # old path no longer covers the declared primary artifact.
+    assert abstained == {
+        "composable-kernel", "glm", "librechat", "maple-ai", "mimo-pro", "olmo-instruct",
+    }
     for row in measurement_rows:
         if row["measured_level"] is None:
             # the short aggregate goes with the band, and the audit trail stays
