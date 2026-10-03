@@ -110,10 +110,11 @@ def github_moved(products: dict[str, dict]) -> list[tuple[str, str, str]]:
         ours = {r.lower(): r for r in repos.get(slug, [])}
         if not ours or not moved or not resolved:
             continue
-        # Quiet once the declaration names where the repo went, even while the signal still
-        # carries last week's redirect row. Also quiet when the moved path is no longer
-        # declared at all: the row describes a declaration that has since been replaced.
-        if resolved.lower() in ours or moved.lower() not in ours:
+        # Quiet once the moved path is no longer declared, even while the signal still carries
+        # last week's redirect row: the row describes a declaration that has since been
+        # replaced. Declaring the new path is not enough on its own. A product that still
+        # declares the old one beside it keeps a stale join key that can be reused.
+        if moved.lower() not in ours or moved.lower() == resolved.lower():
             continue
         findings.append((slug, ours[moved.lower()], resolved))
     return findings

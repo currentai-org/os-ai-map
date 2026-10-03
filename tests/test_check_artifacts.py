@@ -79,6 +79,34 @@ def test_a_corrected_second_repo_goes_quiet(monkeypatch):
     assert artifacts.github_moved(products) == []
 
 
+
+def test_declaring_the_new_path_beside_the_old_one_is_still_a_finding(monkeypatch):
+    """The old path stays a join key while it is declared, wherever the new one sits."""
+    monkeypatch.setattr(artifacts, "query", lambda _sql: [
+        {"product_slug": "e2b-sandbox", "repo": "e2b-dev/infra", "resolved_repo": "e2b-dev/runtime"},
+    ])
+    products = {"e2b-sandbox": product(github=[E2B, "e2b-dev/infra", "e2b-dev/runtime"])}
+    assert artifacts.github_moved(products) == [("e2b-sandbox", "e2b-dev/infra", "e2b-dev/runtime")]
+
+
+def test_a_row_for_a_path_no_longer_declared_is_quiet(monkeypatch):
+    """Neither the old path nor the new one is declared: the declaration moved on elsewhere."""
+    monkeypatch.setattr(artifacts, "query", lambda _sql: [
+        {"product_slug": "e2b-sandbox", "repo": "e2b-dev/infra", "resolved_repo": "e2b-dev/runtime"},
+    ])
+    assert artifacts.github_moved({"e2b-sandbox": product(github=[E2B])}) == []
+
+
+def test_a_package_matching_the_second_repo_after_a_rename_is_not_drift(monkeypatch):
+    """The canonical comparison must reach every declared repo, not only the first."""
+    monkeypatch.setattr(artifacts, "pypi_info", lambda _p: {"version": "2.4.0", "summary": "runtime"})
+    monkeypatch.setattr(artifacts, "stub_reason", lambda *a, **k: None)
+    monkeypatch.setattr(artifacts, "declared_repo", lambda *a, **k: "e2b-dev/infra")
+    renamed = {"e2b-dev/infra": "e2b-dev/runtime"}
+    monkeypatch.setattr(artifacts, "canonical_repo", lambda repo: renamed.get(repo.lower(), repo.lower()))
+    products = {"e2b-sandbox": product(github=[E2B, "e2b-dev/runtime"], pypi="e2b")}
+    assert artifacts.pypi_content(products) == ([], [])
+
 def test_a_package_naming_any_declared_repo_is_not_drift(monkeypatch):
     """A package published from the product's second repository names that repository.
 
