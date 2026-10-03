@@ -508,68 +508,103 @@
         },
         {
           "slug": "qwen",
-          "product": "Qwen 3.6",
+          "product": "Qwen 3.8",
           "org_slug": "alibaba-cloud",
           "org": "Alibaba Cloud",
           "type": "model",
-          "description": "Alibaba's Qwen 3.6 series, released in the first half of 2026. It spans open-weight releases including a 35B mixture of experts with 3B active parameters and a dense 27B, alongside hosted Plus and Max flagship tiers that are reachable only through the API.",
+          "description": "Alibaba's Qwen 3.8 series, released in August 2026. Its open-weight models are a dense 27B, Qwen3.8-Flash-Next, a 125B mixture of experts with 6B active parameters, and the 2.4-trillion-parameter Qwen3.8-2.4T-A95B, which is also the base of the hosted Qwen3.8-Max.",
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the proprietary Plus/Max tiers are API-only and never distributed, so they fall outside this axis)",
-            "governing_release": "qwen-3-6",
+            "components": "weights:open(ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship);data:closed(no corpus or data card published; the Flash-Next technical report covers architecture, optimization and evaluation, not training data);code:partial(usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no training pipeline);license:Qwen-Community-License-1.0(Qwen3.8-Flash-Next; model-as-a-service and AI work assistant businesses need a separate license for any commercial use; the most restrictive distributed SKU of the governing release)+Qwen3.8-Max-License(Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required only above USD 50M annual revenue)+Apache-2.0(OSI; Qwen3.8-27B only)",
+            "governing_release": "qwen-3-8",
             "confidence": "high",
-            "note": "Every distributed Qwen3 variant ships under Apache-2.0, with a closed training corpus and only inference code published. Qwen3.7-Max, the proprietary flagship, is served only through Alibaba Model Studio and never distributed, so it does not affect the family's reading; earlier Qwen 2.5 checkpoints carried the more restrictive Qwen License Agreement before the move to Apache-2.0.",
+            "note": "Qwen 3.8 ships its dense 27B model under Apache-2.0 and its Flash-Next and flagship models under Qwen's own licenses, which require model-as-a-service and AI coding or office assistant businesses to get a separate license before commercial use. The training corpus is not released and only usage code is published.",
+            "last_verified": "2026-10-03",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.6-27B",
-                "shows": "card license `apache-2.0`, `gated: false`, `private: false`, 6,830,615 downloads and 2,252 likes; the card front matter declares no `datasets`, so no corpus is named there.",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-2.4T-A95B",
+                "shows": "Hub record for the flagship: \"private\": false, \"gated\": false, card license \"other\" with license_name \"qwen3.8-max\", 213 safetensors shards, created 2026-08-08; the card front matter names no datasets.",
+                "accessed": "2026-10-03",
                 "http_status": 200,
-                "content_sha256": "7b41b485a8f10317c72fe8c4976c01927cc5a5db61f1b78db0ac8ab909ebd33a",
+                "content_sha256": "6a1f4fdcb000c1e36c21e27c93f38b5f1eb60883acf9c445ffe4d705bc946f46",
                 "establishes": [
                   "weights",
-                  "data",
                   "license"
                 ]
               },
               {
-                "url": "https://api.github.com/repos/QwenLM/Qwen3.6",
-                "shows": "`private: false`, `archived: false`, license `Apache-2.0`, description \"Qwen3.6 is the large language model series developed by Qwen team, Alibaba Group\". Usage and deployment code, no pretraining pipeline, which is what holds `code` at partial.",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE",
+                "shows": "Titled \"Qwen3.8-Max License\". It grants use \"including the model weights\", and requires a licensee that \"conducts a Model as a Service or AI Work Assistant business\" with aggregate revenue over \"US$50,000,000\" in twelve months to \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", internal use excepted.",
+                "accessed": "2026-10-03",
                 "http_status": 200,
-                "content_sha256": "d4fef7005d81de872c63d3bab105d7b59d9c481439168e235b513574668f54e6",
+                "content_sha256": "a136bc4137ef3d7a7a54963164a47270f73e497917728ea0f4407a0115db1290",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-Flash-Next",
+                "shows": "Hub record for Qwen3.8-Flash-Next: \"private\": false, \"gated\": false, card license \"other\" with license_name \"qwen-community-1.0\", 131 safetensors shards, created 2026-08-24; the card front matter names no datasets.",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "bafbbe328d676daa42e96f44a6b9367821a8985c98b7262ab6781e48af8bef3d",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/raw/main/LICENSE",
+                "shows": "Titled \"Qwen Community License 1.0\". The same grant as the Max license, but any licensee that \"conducts a Model as a Service or AI Work Assistant business\" must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", with no revenue floor; internal use is excepted.",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "a0dc422560841fd68e06d974907f8b4c709bca44a67daad2b528437bdf676c08",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-27B",
+                "shows": "Hub record for Qwen3.8-27B: \"private\": false, \"gated\": false, card license \"apache-2.0\", 18 safetensors shards, created 2026-08-05; the card front matter names no datasets.",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "da445ab554f76d60d3bd6566b9d7b68ae389fcfbbb300605803c745aab55f364",
+                "establishes": [
+                  "weights",
+                  "license",
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/LICENSE",
+                "shows": "The Apache License, \"Version 2.0, January 2004\", in full.",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/QwenLM/Qwen3.8",
+                "shows": "\"full_name\": \"QwenLM/Qwen3.8\", \"private\": false, \"archived\": false, license \"Apache-2.0\", description \"Qwen3.8 is the large language model series developed by Qwen team, Alibaba Group.\" The repository holds a README and a LICENSE, with no training code.",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "e543adabc86ff3ca7c6b7db572b0a4132db554a7d46e21819c2faacb5b9385f6",
                 "establishes": [
                   "code"
                 ]
               },
               {
-                "url": "https://github.com/QwenLM/Qwen3.6",
-                "shows": "Repository page for QwenLM/Qwen3.6: 'Apache-2.0 license' in the sidebar, 3.8k stars, public and unarchived. Establishes the Apache-2.0 tier across the released base variants and that the published code is inference-side.",
-                "accessed": "2026-08-15",
+                "url": "https://raw.githubusercontent.com/QwenLM/Qwen3.8-Flash-Next/main/tech_report.pdf",
+                "shows": "The Qwen3.8-Flash-Next technical report. Its sections are Model Architecture (attention, residual, n-gram embedding), Optimization and Evaluation; none describes the pretraining corpus or its mixture.",
+                "accessed": "2026-10-03",
                 "http_status": 200,
-                "content_sha256": "62d7b8a9bd15fe633e3b19642383f6306f1c462301fa1e804debf4243a675a3e"
-              },
-              {
-                "url": "https://www.marktechpost.com/2026/04/22/alibaba-qwen-team-releases-qwen3-6-27b-a-dense-open-weight-model-outperforming-397b-moe-on-agentic-coding-benchmarks/",
-                "shows": "Trade coverage of the Qwen3.6-27B open-weight release and its 262K context. Corroborates the open-weights reading; establishes no dimension on its own.",
-                "accessed": "2026-08-15",
-                "http_status": 200,
-                "content_sha256": "ed47c320896efcb77e69a40b65e094790187f232cd590a39eae3ebe06be5a024"
-              },
-              {
-                "url": "https://llm-stats.com/models/qwen3.6-plus",
-                "shows": "NOT READABLE: the page returns HTTP 200 and serves a 'Quick verification - Confirm you're human to keep going' interstitial rather than the model page, so it shows nothing and establishes nothing. Retained because the record cites it; a digest of the interstitial is recorded rather than a claim about the model.",
-                "accessed": "2026-08-15",
-                "http_status": 200,
-                "content_sha256": "8bd056a0bd2988d5b244c4a9c0531620bbb31e662da3c9eb46e7348ba683b2d3"
-              },
-              {
-                "url": "https://aimlapi.com/blog/qwen-3-6-series-alibabas-open-source-llm-revolution-in-2026",
-                "shows": "Vendor-blog overview of the Qwen3.6 series describing it as open-weight with a 128K context. Third-party commentary; establishes no dimension on its own.",
-                "accessed": "2026-08-15",
-                "http_status": 200,
-                "content_sha256": "ab2f56e8397dfd8c18c341d541eef3e88b71a3ab364f36f25e9702ad14539f52"
+                "content_sha256": "04f263446d74a35cb7cea368574e0c561f3b05c133be2c777ac884404063655d",
+                "establishes": [
+                  "data"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -678,24 +713,19 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-03",
             "unconfirmed_axes": [
-              "adoption",
-              "openness"
+              "adoption"
             ],
             "verification_holds": [
               {
                 "axis": "adoption",
                 "since": "2026-09-29",
                 "reason": "The 27 Sep scheduled observation run measured this product's Hugging Face downloads and did not record an agreement with the stored level, so nothing re-established the band. It is settled by the adoption re-band after the 5 Oct reconciliation, dated from a scheduled observation run."
-              },
-              {
-                "axis": "openness",
-                "since": "2026-09-29",
-                "reason": "Qwen3.8 (August 2026) supersedes the governing Qwen3.6 and ships under Qwen's own licenses (Qwen Community License 1.0, Qwen3.8-Max License), which require a separate license for model-as-a-service and AI work assistant businesses. Moving the governing release is an identity decision and neither license name is in the pretrained ladder. Settled by that decision plus a ladder entry (build-rubric); the score is 3 either way."
               }
             ]
           },
-          "version_note": "Consolidated 2026-07-29 from three earlier records; openness follows Qwen 3.6. The hosted Plus and Max tiers are never distributed, so they sit outside the openness axis, and that exclusion is what keeps the family from being pulled to closed."
+          "version_note": "Consolidated 2026-07-29 from three earlier records; openness follows Qwen 3.8, the current release, across the three models it distributes. Hosted-only tiers sit outside the openness axis."
         },
         {
           "slug": "mistral-large",
@@ -90724,7 +90754,8 @@
             "date": "2026-09-28",
             "basis": "verified",
             "latest_axis_confirmation": "2026-09-29"
-          }
+          },
+          "version_note": "The protocol has no package of its own, so the reference SDK packages its adoption is read from are declared here as well as on mcp-python-sdk and mcp-typescript-sdk, which score the SDKs themselves."
         },
         {
           "slug": "agent2agent-protocol",
@@ -90795,26 +90826,33 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "signal_type": "reported_traction",
-            "confidence": "medium",
-            "banded_quantity": "supporting organizations (150+) and shipped integrations, a breadth count rather than a usage figure",
-            "note": "Because A2A is a protocol, adoption here is measured as organizational breadth rather than user volume, since no usage figure is published. The Linux Foundation reports growth to more than 150 supporting organizations, including AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP and ServiceNow, plus production integrations in Azure AI Foundry, Copilot Studio and Amazon Bedrock AgentCore Runtime.",
-            "last_verified": "2026-09-28",
+            "level": 5,
+            "reach": ">10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured as combined downloads of the protocol's two most-installed reference SDKs, `a2a-sdk` on PyPI and `@a2a-js/sdk` on npm, the channels an A2A implementation installs. The protocol has no package of its own. The Linux Foundation's count of supporting organizations and the cloud integrations it names corroborate a broad footprint.",
+            "last_verified": "2026-10-03",
             "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/a2a-sdk/recent",
+                "shows": "\"last_month\":10333975 downloads for `a2a-sdk` (last_week 2,888,989, last_day 371,578).",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "a1341aee82aa367b1e90bfc803874972278e56ca2833b23bb40b6b468dbf4718"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/@a2a-js/sdk",
+                "shows": "npm downloads point API: 12,267,118 downloads for `@a2a-js/sdk` over 2026-09-02 to 2026-10-01.",
+                "accessed": "2026-10-03",
+                "http_status": 200,
+                "content_sha256": "c1cf5df273dca98b62ff445142c4aecb28e7b312aa899ae5792110d8ac13b8dd"
+              },
               {
                 "url": "https://www.linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year",
                 "shows": "Linux Foundation press release dated April 9, 2026: \"Since April 2025, the number of supporting organizations has grown from more than 50 to over 150\" and names \"AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, and ServiceNow\", with \"Microsoft integrated A2A into Azure AI Foundry and Copilot Studio\" and \"AWS added support through Amazon Bedrock AgentCore Runtime\". It publishes no user, request or download count.",
                 "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "b6da4999792bb9d002a4b5f27d929a16978be9dda9cb32f391e00286fdd20b02"
-              },
-              {
-                "url": "https://github.com/a2aproject/A2A",
-                "shows": "Repo page, 25,336 stargazers, Apache-2.0, spec plus the reference SDK list.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "1165fc1e34756203cf564d09b228b277c3efedb7a0a62a30fac58cb0067a6bd1"
               }
             ]
           },
@@ -90856,15 +90894,16 @@
               }
             ]
           },
-          "overall_score": 4.0,
-          "tier": "strong",
-          "maturity": 4.0,
-          "mature": false,
+          "overall_score": 5.0,
+          "tier": "leading",
+          "maturity": 5.0,
+          "mature": true,
           "freshness": {
             "date": "2026-09-28",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-29"
-          }
+            "latest_axis_confirmation": "2026-10-03"
+          },
+          "version_note": "The protocol has no package of its own, so its two most-installed reference SDKs are declared here as the channels adoption is read from, the same way ag-ui declares its SDK packages."
         },
         {
           "slug": "agent-client-protocol",
@@ -143697,6 +143736,7 @@
       "qwen-2-5": "qwen",
       "qwen-3-6": "qwen",
       "qwen-3-7-max": "qwen",
+      "qwen-3-8": "qwen",
       "qwen2-5-14b-instruct": "qwen-instruct",
       "qwen2-5-coder-instruct": "qwen-coder",
       "qwen3": "qwen",
