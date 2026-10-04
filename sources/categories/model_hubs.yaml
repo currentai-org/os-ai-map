@@ -30,7 +30,7 @@ scoring_recipe:
     \ it, and for how many artifact kinds. Scale is adoption, not capability, so the same quantity orders\
     \ a public hub and a self-hosted one. Rungs, each stated as something the product either does or does\
     \ not do:\n  1  An index that points at weights hosted by each publisher and has no storage of its own.\
-    \ pytorch-hub.\n  2  An operator-curated collection: it hosts versioned artifacts on storage the operator\
+    \ pytorch-hub, atlas-data.\n  2  An operator-curated collection: it hosts versioned artifacts on storage the operator\
     \ runs or controls (NGC's catalog, or accounts the operator holds on another host, as MONAI does on NGC\
     \ and Hugging Face) and serves them by name through a CLI or API, but only the operator or partners it\
     \ admits publish, and it does not deploy what it lists. nvidia-ngc-catalog, qualcomm-ai-hub-models, monai-model-zoo.\n\
@@ -52,9 +52,10 @@ scoring_recipe:
     \ placed against a nearer peer rather than stretched to the anchor: nvidia-ngc-catalog is one_below sagemaker-jumpstart\
     \ (hosts and serves, no deploy, admitted publishers only), and qualcomm-ai-hub-models and monai-model-zoo\
     \ are at nvidia-ngc-catalog. pytorch-hub is one_below monai-model-zoo: both take entries by reviewed pull\
-    \ request, and only the zoo stores and serves what it lists.\n\nDISTRIBUTION, counted 2026-09-27 over\
-    \ 15 banded products: 1 at 1, 3 at 2, 3 at 3, 5 at 4, 3 at 5. The widest rung is 4 at 5 of 15 (33%), at\
-    \ the third that triggers a review, down from 5 of 14 before pytorch-hub filled the bottom rung. Its wording\
+    \ request, and only the zoo stores and serves what it lists. atlas-data is at pytorch-hub: it reviews\
+    \ submissions and mostly points at its providers' hosting, and nothing pulls an entry from it by name.\n\nDISTRIBUTION, counted 2026-10-04 over\
+    \ 16 banded products: 2 at 1, 3 at 2, 3 at 3, 5 at 4, 3 at 5. The widest rung is 4 at 5 of 16 (31%), below\
+    \ the third that triggers a review; it was 5 of 15 (33%) before atlas-data joined the bottom rung. Its wording\
     \ is the rung-4 line above. This is the clustering case, not a loose definition: the five genuinely share\
     \ open publishing, per-version addressing and a pull API over a single artifact class (packaged models,\
     \ image-generation weights, framework variations, Hugging Face-compatible model repos, registered model\
@@ -86,6 +87,7 @@ products:
 - qualcomm-ai-hub-models
 - monai-model-zoo
 - pytorch-hub
+- atlas-data
 comments: 'Proposed in issue #601; seeded 2026-09-26 from the sweep in docs/sweeps/2026-09-26-model_hubs.md.
   Membership test: can a client fetch a named, versioned model artifact from it by API, git or registry protocol,
   where the thing being offered is the registry itself rather than the runtime, UI or inference API in front
@@ -126,4 +128,9 @@ comments: 'Proposed in issue #601; seeded 2026-09-26 from the sweep in docs/swee
   Model Garden. Second tranche, 2026-09-27: pytorch-hub promoted onto the empty bottom rung and deferred on
   its missing license grant; the openml row moved to the benchmark_eval_data registry, because its flows are
   pipeline descriptions that reconstruct an untrained model rather than hosted weights, and its datasets, tasks
-  and runs are the product. bioimage-model-zoo and kipoi stay in the registry for the reasons above.'
+  and runs are the product. bioimage-model-zoo and kipoi stay in the registry for the reasons above. Ruling
+  of 2026-10-04: ATLAS (atlas-data), AI Singapore''s catalog of datasets for underrepresented languages, is
+  admitted at Current AI''s request although it lists datasets rather than models, as the one public hub
+  on the map built for underrepresented-language data. It is scored on this category''s ladder like any other
+  row and lands on the bottom rung. Other dataset catalogs still go to storage, so this admits ATLAS, not
+  the class.'

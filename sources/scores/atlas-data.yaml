@@ -1,0 +1,104 @@
+product: atlas-data
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; site source code reserved by its terms of use
+    source:
+      value: closed
+      detail: managed AI Singapore service; no public repository
+  confidence: high
+  note: ATLAS runs only as AI Singapore's hosted site, and none of its code is published. The datasets it lists
+    keep their providers' own licenses, so how open each one is depends on the dataset, not on the catalog.
+  raw: license:proprietary(hosted service; site source code reserved by its terms of use);source:closed(managed
+    AI Singapore service; no public repository)
+  last_verified: '2026-10-04'
+  sources:
+  - url: https://atlas-data.ai/en/terms-of-service
+    shows: ATLAS is "an online data discovery, cataloguing and sharing platform"; "The contents of the Site, including
+      source code, pages, documents and online graphics" are proprietary, and "AISG does not host, own, license,
+      distribute or sell the underlying Dataset content itself" unless stated otherwise.
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: 48bd29784932552a6de2fddfb8a5388e893d6f094333940ecd5f014019f42121
+    establishes:
+    - license
+    - source
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/owners/aisingapore/repositories?per_page=200
+    shows: Owner listing of AI Singapore's 82 public GitHub repositories, last push 2026-09-20; none is named for
+      ATLAS or holds the atlas-data.ai site.
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: 0d6ae98235ca0088301b2fb3e224da1511c89f4e43d3fde6a2c30eb5bcaa1639
+    establishes:
+    - source
+  - url: https://atlas-data.ai/en/data-licensing-policy
+    shows: 'Each dataset carries the license its provider chose: "AISG does not impose a uniform licence across
+      Datasets", and "the Site does not itself provide, distribute or grant rights to download or use the underlying
+      Dataset content".'
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: 60abba48e14385c8eaa17c1830d4b31c4c6278ba9bfbf9ea4aaa736fcb003f36
+    establishes:
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: AI Singapore publishes the size of the catalog, not how many people search it or download through it. A
+    catalog count measures what is offered, so no reading was recorded.
+  last_verified: '2026-10-04'
+  sources:
+  - url: https://atlas-data.ai/en/datasets
+    shows: The explore page reads "Showing 1–10 of 458" datasets, with no download or user counts.
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: f51bbd3563d0a98bf2370b7a93283bf74fa448ba3855441f19af3de2c4967c1b
+capability:
+  score: 1
+  basis: feature_matrix
+  value: catalog of dataset records for underrepresented languages; anyone with an account submits by Hugging Face
+    import or a file upload of up to 5 GB, and the ATLAS team reviews each before publishing it with an ID and version;
+    most records point at data hosted by its provider; read-only MCP search over metadata, no API that pulls a dataset
+    by name; lists datasets, not models
+  confidence: medium
+  relative_to: pytorch-hub
+  relation: at
+  note: Like PyTorch Hub, ATLAS takes reviewed submissions and mostly points at data its providers host, and no
+    client can pull an entry from it by name. It does store the files contributors upload, but it lists datasets
+    rather than models, so on this category's scale it is an index rather than a registry.
+  comparison:
+    last_attested: '2026-10-04'
+    sources:
+    - url: https://ungh.cc/repos/pytorch/hub/files/master/README.md
+      shows: PyTorch Hub README still says "We accept submission to PyTorch hub through PR in `hub` repo." and "Currently
+        we don't support hosting pretrained weights"; same content hash as the copy its capability axis cites
+      accessed: '2026-10-04'
+      http_status: 200
+      content_sha256: ae7bd7ee0ab39cb094ee1d0e5cd60f5d198e847bfd927140e074ea8cf19bfd51
+  last_verified: '2026-10-04'
+  sources:
+  - url: https://atlas-data.ai/en/docs/how-to-contribute
+    shows: '"You need a signed-in ATLAS account to submit"; "Paste your HuggingFace dataset URL" or "Upload a single
+      file up to 5 GB"; "the ATLAS team inspects the metadata, RAI assessment, and data quality" before "your dataset
+      appears in the catalogue with a unique dataset ID".'
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: a77e5ab060a0c072f30326c968c74cadfca82712adc466e1f9ffec8d2086a40a
+  - url: https://atlas-data.ai/en/mcp
+    shows: The MCP tools "Search datasets by keyword, language, modality, task, domain, or licence" and "Retrieve
+      features, splits, and download size for a specific dataset config"; "Your key grants read-only access to the
+      public catalogue".
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: db31b7c3e2baf9a941f0c60711f1a3e44861620060f363759f815cc8bf85ce2f
+  - url: https://atlas-data.ai/en
+    shows: 'Home page: "ATLAS catalogs the data that helps AI understand them"; "We support HuggingFace imports,
+      file uploads, and assisted submissions"; MCP API offers "Programmatic access to the catalog for AI agents
+      and pipelines".'
+    accessed: '2026-10-04'
+    http_status: 200
+    content_sha256: fca10737697fecce457e95315066ec73ba8b014fa1dec36ca2a0861a58cd2132
