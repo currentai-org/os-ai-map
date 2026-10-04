@@ -1,0 +1,46 @@
+name: data_hubs
+display_name: Data hubs & catalogs
+description: Public platforms whose product is collecting, describing and distributing datasets from many
+  publishers, as a catalog that people and tools search to find data and reach it.
+weights:
+  adopt: 0.3
+  cap: 0.7
+scoring_recipe:
+  version: 1
+  extends: software
+  note: >-
+    Inherits the shared software ladder for openness unchanged: a hub is software, and whether
+    its own code is published is the same question it is for a model hub. The datasets a hub
+    lists keep their publishers' licenses, and that is a question about each dataset, never
+    about the hub. Capability has no ladder yet. The promotion PR derives one from the seed's
+    peers, on the pattern model_hubs uses (how much of the publish, describe, discover and fetch
+    cycle the hub itself provides, and who may publish into it), and must say where an index
+    that stores some uploads but serves no fetch-by-name API sits, because that is ATLAS's
+    shape. Weighted 0.3 adoption to 0.7 capability for the reason model_hubs is: catalogs
+    publish their size, not their use, so adoption will often abstain.
+products: []
+comments: >-
+  Created 2026-10-04 for OSO-6011, as a preliminary category, so that ATLAS has a home that
+  fits it. The first proposal put ATLAS in model_hubs as a named exception, and review
+  rejected it: model_hubs is for registries clients fetch named model artifacts from, and an
+  exception by name would make that definition false for one member. Membership test: is the
+  product a public catalog of datasets from many publishers, where the catalog itself is what
+  is offered rather than one dataset or the storage under it? Neighbors. A hub that hosts models
+  as well as datasets stays in model_hubs (huggingface-hub-platform, modelscope). Versioned data
+  layers and internal or enterprise data catalogs stay in storage (oxen, dvc, lakefs, DagsHub,
+  Unity Catalog). A single dataset, however large, goes to its dataset category
+  (language_specific_datasets, training_synthetic_datasets, benchmark_eval_data). OpenML stays
+  where it is unless the promotion PR moves it. Peers to sweep before promotion, none checked
+  yet: general dataset hubs such as Kaggle Datasets, and the data portals of other national and
+  regional language programmes. Promotion needs ten scored products and a capability ladder.
+  Open questions on the ATLAS seed, for its promotion. Openness: the ATLAS terms of use reserve
+  the site's contents "including source code" (https://atlas-data.ai/en/terms-of-service), but
+  its privacy policy calls ATLAS-Data "an open-source data platform operated by AISG"
+  (https://atlas-data.ai/en/privacy-policy), and no repository for it was found among AI
+  Singapore's public GitHub repositories on 2026-10-04. Until a repository and license are found,
+  or AI Singapore says what the open-source statement covers, its openness is unresolved and not
+  closed. ADR-005: if ATLAS turns out closed, its inclusion rests on the best-in-class reading
+  within this category, not within model_hubs. Credit: AI Singapore is the org on the row.
+  AI Singapore's own site says it is hosted by the National University of Singapore and Nanyang
+  Technological University; the ATLAS footer names only NTU, so any description that names a
+  host should name both or neither.
