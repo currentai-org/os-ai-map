@@ -590,9 +590,12 @@ def test_descriptions_match_the_reference_doc():
 
     # methodology.md uses its own list formatting and appends the mechanism after some
     # definitions, so this matches the labelled prefix rather than the whole line.
+    # Readers know the `void` key as the existence gap (gap-analysis.md says why the key kept
+    # its name); every other gap is labelled by its key.
     method = (ROOT / "docs" / "methodology.md").read_text()
     for gap, text in _GAP_DESC.items():
-        assert f"- **{gap.title()}:** {text}" in method, f"methodology.md is out of sync for `{gap}`"
+        label = {"void": "Existence"}.get(gap, gap.title())
+        assert f"- **{label}:** {text}" in method, f"methodology.md is out of sync for `{gap}`"
     # Stages in BOTH docs, not just the reference one. Binding gaps in two files and stages in
     # one is how methodology.md kept the pre-#320 stage wording through a review that thought
     # the guard covered it.
