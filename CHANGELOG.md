@@ -24,6 +24,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Weaviate's openness re-scored from 5/open_source to 4/open_core after its LICENSE split the
+  repository, putting an Enterprise Edition in the `wl` directory under a separate commercial
+  license enabled by a license key ([#841](https://github.com/currentai-org/os-ai-map/pull/841)).
 - Adoption re-banded for 51 products whose band disagreed with the same measured band on both
   the 28 Sep and 5 Oct reconciliations (41 down, 10 up, most of the down-bands on PyPI after its
   24 Aug counting change), moving finetuning_code and storage from stage 4 to 3
