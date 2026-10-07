@@ -31,6 +31,10 @@ When in doubt about which door, start there.
   [`operations/artifact-state-rename.md`](operations/artifact-state-rename.md). Editors do not
   run these (see `AGENTS.md` on the read-only boundary).
 - **`schemas/`** is the machine-readable JSON Schema for the source files.
+- **`rulings/`** is the maintainer's decision log: every ruling an agent could not make, who
+  made it, why, and where the rule it changed now lives. Read it before asking the maintainer
+  anything. The format is in [`rulings/README.md`](rulings/README.md), and
+  `build.review_queue` lists what is still waiting on one.
 - **`briefs/`** holds dated gap reports on questions the map answers without scoring, such as
   public AI compute, which is not product-shaped. Like the sweep records in `sweeps/`, each brief
   is a record of what its sources said on its date. It gets refreshed by a new brief, not edited.
@@ -105,9 +109,11 @@ doors above:
 - **Advanced** — deep editorial skills for maintainers: `build-rubric` (derive a category's
   scoring ladder), `clean-corpus-prose` (rewrite notes, `shows` and footnotes that were written
   for the score auditor rather than the visitor, one category per pass, never a score or a
-  date), and `refresh-all-categories` (drive the whole-corpus sweep).
+  date), `refresh-all-categories` (drive the whole-corpus sweep), and `ruling-session` (clear
+  the maintainer's open decisions in one walk-and-talk pass and record them in the rulings log).
 - **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (register a
-  fetcher), `pyoso-analyst` (read-only warehouse analysis), and `publish-release` (cut a
-  versioned release and update the changelog; maintainer only).
+  fetcher), `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a
+  versioned release and update the changelog; maintainer only), and `audit-repo-accuracy`
+  (check that the skills, docs, tests and fixtures still describe the system; read-only).
 
 For the repo map, build pipeline, and data model, see `AGENTS.md`.

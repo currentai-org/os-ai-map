@@ -321,9 +321,14 @@ def main(argv: list[str] | None = None, root: Path | None = None, client=None) -
         # the cause is named because the two send a maintainer somewhere different: a refused
         # call is usually a rotated key, an unreachable endpoint usually is not. See the
         # module docstring on why neither may be reported as drift.
-        cause = ("the platform refused the call (an expired or rotated OSO_API_KEY looks like "
-                 "this)" if isinstance(exc, MCPCallFailed)
-                 else "the platform could not be reached")
+        if not isinstance(exc, MCPCallFailed):
+            cause = "the platform could not be reached"
+        elif "validation error" in str(exc):
+            cause = ("the platform rejected the request's shape (its API changed; fix the "
+                     "call in build/oso_mcp.py, not the key)")
+        else:
+            cause = ("the platform refused the call (an expired or rotated OSO_API_KEY looks "
+                     "like this)")
         print(f"[CANNOT CHECK] {cause}: {exc}", file=sys.stderr)
         print(f"0 of {len(contracts)} mirror contracts verified. This is not a pass, and it "
               "is not drift -- do not resync anything on the strength of it.", file=sys.stderr)
