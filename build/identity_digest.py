@@ -109,7 +109,7 @@ A `product_equivalence` ruling is a fact about the artifact: it belongs to exact
 equivalence item only when the ledger confirms THAT product or excludes the artifact
 (`equivalence_ruled` in `udms/identity_digest.sql`, #705). So an artifact ruled to belong to
 `qwen-image` would come back the next week proposed against `qwen` whenever a `model_family`
-match reaches a different product than the ruling names (#838 records four such rulings).
+match reaches a different product than the ruling names.
 
 `suppress_ruled_artifacts()` closes that on the repo side. `main()` runs it on the rows before
 the adopt leg and `render()` see them: every equivalence row, in any state, whose artifact
@@ -117,7 +117,7 @@ the ledger assigns (`build.resolution.assigned_product`) to a different product 
 exists is dropped. A row proposing the product the ledger names is left to the SQL and the
 adopt leg, which already handle it. #705 kept a contradicting confirm visible
 because it "contradicts this edge and is worth a look". That stays true in one case: a ruling
-whose product has since left the corpus (retired or renamed with no head file or tail row).
+whose product is not in the corpus (retired or renamed, with no head file or tail row).
 Such a ruling may be stale, so its rows still render. Otherwise a contradicting heuristic is not
 new evidence against a person's ruling, and a ruling changes only when a person changes it
 deliberately. The scorecard counts what was suppressed, so the contradiction stays visible

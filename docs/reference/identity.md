@@ -638,7 +638,7 @@ is held for review, never overturned. Before the adopt leg and the renderer see 
 `build/identity_digest.py` drops every equivalence proposal for an artifact the ledger already
 assigns to a different product that still exists. An artifact belongs to one product, and a
 heuristic that reaches another is not new evidence against the ruling. So the held case is left
-to rulings whose product has since left the corpus, which keep surfacing. Both readers are audit
+to rulings whose product is not in the corpus, which keep surfacing. Both readers are audit
 roots, which is what puts the dataset
 inside the repo's governed dependency closure.
 
