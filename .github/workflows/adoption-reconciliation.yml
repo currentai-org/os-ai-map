@@ -134,14 +134,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add sources/scores/ sources/snapshots/observation_snapshots.yaml
+          git add sources/scores/ sources/snapshots/observation_snapshots.yaml sources/verification_queue.yaml
           git commit -m "chore(freshness): re-date adoption where the route measured the recorded band"
           git push -u origin "$BRANCH"
           {
             echo "Adoption dates earned by re-measurement. Each re-dated axis records the"
             echo "observation snapshot and route that produced the same band it already carried;"
             echo "a product whose measured band differs keeps its date and appears in the queue"
-            echo "below instead."
+            echo "below instead. A hold marked \`settled_by: scheduled_reconciliation\` is released"
+            echo "in this PR when its axis is dated; every other held axis is left undated."
             echo
             echo '```'
             cat reconciliation.txt

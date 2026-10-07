@@ -202,6 +202,8 @@ class Client:
         serve is drift of the worst kind — the mirror is anchored to something that no longer
         exists — so the caller reports it rather than crashing on it.
         """
-        payload = self.call("GetDataModel", {"id": model_id})
+        # `where` filters on database columns, each with an operator object. A bare
+        # `{"id": ...}` has been rejected since the 5 Oct API change (os-ai-map#830).
+        payload = self.call("GetDataModel", {"where": {"id": {"eq": model_id}}})
         edges = ((payload or {}).get("dataModels") or {}).get("edges") or []
         return edges[0].get("node") if edges else None

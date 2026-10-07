@@ -16,6 +16,19 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- The maintainer's rulings log (`docs/rulings/`), the `build.review_queue` report of every open
+  question and what it waits on, and the `ruling-session` and `audit-repo-accuracy` skills
+  ([#812](https://github.com/currentai-org/os-ai-map/pull/812)).
+
+### Changed
+
+- Adoption re-banded for 51 products whose band disagreed with the same measured band on both
+  the 28 Sep and 5 Oct reconciliations (41 down, 10 up, most of the down-bands on PyPI after its
+  24 Aug counting change), moving finetuning_code and storage from stage 4 to 3
+  ([#834](https://github.com/currentai-org/os-ai-map/pull/834)).
+
 ## [0.5.0] - 2026-10-03
 
 ### Added

@@ -89,23 +89,24 @@ openness:
     establishes:
     - core-gated
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
   confidence: medium
-  note: GitHub stars are one adoption signal for PySyft; they cap low because a star is not a use. PyPI
-    downloads of the syft package are the other signal, and both point to the same reading of usage.
+  note: Adoption is measured by PyPI downloads of the syft package, which is PySyft itself rather than a
+    client for a separate service. GitHub stars are also recorded, but only as corroboration, since a star
+    is not an install.
   sources:
   - url: https://api.github.com/repos/OpenMined/PySyft
     shows: stargazers_count = 9937 for OpenMined/PySyft
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4109e58bf5c9d3f4d9c19b50f9cafccf3a461e933b01df3bb83dff380a1d216e
-  - url: https://pepy.tech/project/syft
-    shows: 1,066,264 total downloads; 15,527 in the last 30 days for syft
-    accessed: '2026-08-13'
+  - url: https://pypistats.org/api/packages/syft/recent
+    shows: 3,661 downloads in the trailing 30 days for syft (pypistats last_month)
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 492e1f3fdf052386c03da9270a24c424e5a79608d03a45ee84aa823d8448fed8
+    content_sha256: 4d6e57a5d6030e748a4d9c6143db01bbc77d63a42fdfa8a7aa114509e40ef2e0
 capability:
   score: 4
   basis: feature_matrix
