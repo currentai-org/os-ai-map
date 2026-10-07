@@ -1,0 +1,144 @@
+product: letta
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: Letta Code harness, terminal interface and App Server
+    - name: MIT
+      detail: bundled self-configuration skill
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 2,450-path tree at 94145d7 carries the root Apache-2.0 LICENSE and one MIT skill LICENSE,
+        with no ee/, enterprise/, commercial/ or proprietary/ path; paid plans sell hosted agent state,
+        remote sandboxes and model usage beside the self-hostable runtime
+    context:
+      commercial:
+        value: Letta-Cloud
+  confidence: high
+  note: Letta Code is Apache-2.0 licensed, and its public source holds the harness, terminal interface
+    and App Server, which run entirely on the user's own machine without a Letta account. Letta's paid
+    plans sell hosted services beside it, such as cloud-stored agent state, remote sandboxes and model
+    usage, rather than features cut from the code.
+  last_verified: '2026-10-07'
+  raw: license:Apache-2.0(Letta Code harness, terminal interface and App Server)+MIT(bundled self-configuration
+    skill);source:public;core-gated:ungated(the 2,450-path tree at 94145d7 carries the root Apache-2.0
+    LICENSE and one MIT skill LICENSE, with no ee/, enterprise/, commercial/ or proprietary/ path; paid
+    plans sell hosted agent state, remote sandboxes and model usage beside the self-hostable runtime);commercial:Letta-Cloud
+  sources:
+  - url: https://raw.githubusercontent.com/letta-ai/letta-code/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright 2025, Letta authors".
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/letta-ai/letta-code/main/src/skills/builtin/self-configuration/LICENSE
+    shows: The bundled self-configuration skill carries its own MIT License, "Copyright (c) 2026 Letta,
+      Inc."
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: cffc4dad09f368acfaeb8a98656ad55a144674ebf36bf35bd53d7f00e5b2b99a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/letta-ai/letta-code/main/package.json
+    shows: 'The package manifest for @letta-ai/letta-code declares "license": "Apache-2.0" and builds
+      the CLI from the repository source.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: be2d820c9d3bf7ed39f8fb129359dfd0ac738e97b99ef1f1bd058e111d9b9e58
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/letta-ai/letta/main/README.md
+    shows: The original repository README says "The current source code lives in [`letta-ai/letta-code`]",
+      which "includes the agent harness, interactive terminal UI, App Server, channels, and the runtime
+      used by the desktop and web apps."
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 1d624e8fd383c1198c8d42da87b055d591a5760e19607692eb46bbbfe2a58f03
+    establishes:
+    - source
+  - url: https://docs.letta.com
+    shows: The documentation home says "The Letta agent harness is fully open source" and offers "managed
+      deployment with Letta Cloud or running the complete runtime yourself with the Letta App Server".
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 97a4eaac09f9769f7d73bf7ee7641894f9d2063cc916e3b9b9f5e05605a85036
+    establishes:
+    - source
+    - core-gated
+  - url: https://docs.letta.com/self-hosting
+    shows: The self-hosting page says "Letta agents can run entirely on infrastructure you control" and
+      that in the local runtime "all agent state, including messages, memory, and provider connections,
+      stays on-device, and no Letta account is required."
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 914d7236225bcee97ce4bf200e130849a5fb51eb1d3237f30815f0eaece8458d
+    establishes:
+    - core-gated
+  - url: https://www.letta.com/pricing
+    shows: 'Pricing sells Free, Pro ($20/month), an API plan, Teams Pro and Enterprise for the hosted
+      app and Letta API: Letta Auto model quota, remote sandboxes, shared agents, SSO and usage-based
+      agent hosting; no plan names a harness feature withheld from the source.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: d70ae92d52d5d22377f96c6fab9bffa2571d502bbd4cfe313e5f9431da3a79e5
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of @letta-ai/letta-code over the trailing month, the package
+    Letta's own instructions install. The letta package on PyPI is left out because its download history
+    mixes the retired Python server with the current wrapper, and the desktop app is not counted.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@letta-ai/letta-code
+    shows: 550,932 downloads of @letta-ai/letta-code between 2026-09-05 and 2026-10-04
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: fec478e39a1638b15fec11ae69803d3406bafce4ddf73d7d1f4c8cbf9793dc06
+capability:
+  score: 4
+  basis: feature_matrix
+  value: self-editing memory blocks and skill learning; git-tracked context (MemFS); background memory
+    consolidation (dreaming); subagents and agent-to-agent calls; hooks; permission modes; crons and schedules;
+    Slack, Telegram and Discord channels; App Server with an Agent SDK; model-agnostic; no first-party
+    benchmark
+  confidence: medium
+  note: Letta Code agents keep persistent memory, rewrite their own memory, skills and prompts, call subagents
+    and run on schedules across several messaging channels. That is the same self-improving, long-running
+    agent design as Hermes Agent, and like Hermes Agent it has no published benchmark result.
+  relative_to: hermes-agent
+  relation: at
+  comparison:
+    last_attested: '2026-10-07'
+    sources:
+    - url: https://raw.githubusercontent.com/NousResearch/hermes-agent/main/README.md
+      shows: The Hermes Agent README still describes "Agent-curated memory with periodic nudges. Autonomous
+        skill creation after complex tasks. Skills self-improve during use.", "Spawn isolated subagents
+        for parallel workstreams" and a "Built-in cron scheduler".
+      accessed: '2026-10-07'
+      http_status: 200
+      content_sha256: c8c3009b1cf6e8d6e48e96a9b4c549d9ab0c86fdaffd91b19f3e9d9b37d93d9d
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/letta-ai/letta-code/main/README.md
+    shows: The README's feature table lists self-improvement and learning through memory blocks and skill
+      learning, message search, MemFS, skills, subagents and multi-agent calls, messaging integrations,
+      hooks, permissions, and crons and schedules; no benchmark figure.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 61811b022086eeb9d0bdab91cce960f193e9b1bec544c36f64cf6a1f5eb9382c
+  - url: https://docs.letta.com/self-hosting/app-server
+    shows: The App Server page says it "lets you deploy the Letta agent harness as a service" and "can
+      manage running multiple agents in parallel in a single process", reached through the Letta Agent
+      SDK or a WebSocket protocol.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 747edc4a54010c3a08d2e29f3ae28ac0b0a6f0fcf71c68f86ca92b4be9bc7ef0

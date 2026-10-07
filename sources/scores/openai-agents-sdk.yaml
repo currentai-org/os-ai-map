@@ -1,0 +1,114 @@
+product: openai-agents-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: SDK
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: one root MIT LICENSE across the 1,684-path tree at f007b3f with no ee/, enterprise/, commercial/
+        or proprietary/ path; the OpenAI API it calls by default is a separately sold service and other
+        providers' models work too
+    context:
+      commercial:
+        value: OpenAI-API
+  confidence: high
+  note: The SDK is MIT licensed and its single package builds from the public repository, with no enterprise
+    directory or paid edition. It runs against other providers' models as well as OpenAI's, so the paid
+    API it most often calls is a separate service rather than a part kept out of the code.
+  last_verified: '2026-10-07'
+  raw: license:MIT(SDK);source:public;core-gated:ungated(one root MIT LICENSE across the 1,684-path tree
+    at f007b3f with no ee/, enterprise/, commercial/ or proprietary/ path; the OpenAI API it calls by
+    default is a separately sold service and other providers' models work too);commercial:OpenAI-API
+  sources:
+  - url: https://raw.githubusercontent.com/openai/openai-agents-python/main/LICENSE
+    shows: 'The root LICENSE is the MIT text: "MIT License" and "Copyright (c) 2025 OpenAI".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 13df7812ca53ecaae1cb4a868844bb598373047ae1d580e4debfbef1dd5b6915
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openai/openai-agents-python/main/pyproject.toml
+    shows: The package manifest builds the openai-agents distribution from the repository with license
+      = "MIT"; its required dependencies are open-source libraries (openai, pydantic, griffelib, mcp and
+      others).
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 906a0ef367f7985d234c5a56492a473935ef62e6ed7704ab0a59a78e1d6d8bdd
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/openai/openai-agents-python/main/README.md
+    shows: The README says the SDK is "provider-agnostic, supporting the OpenAI Responses and Chat Completions
+      APIs, as well as 100+ other LLMs" and closes "We're committed to continuing to build the Agents
+      SDK as an open source framework".
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: cf68cb43182d6ea4f79a32421f6723e8ee2cc0f68f97524da7f300e9fc77940b
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/openai-agents/json
+    shows: 'PyPI metadata for openai-agents 0.23.1: license expression MIT, Repository https://github.com/openai/openai-agents-python,
+      one pure-Python wheel and one sdist.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 1ed88a3db89ba2da3a7444ebbfb07141abe58775aa40af9723abd6ab8965bfc8
+    establishes:
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of openai-agents over the trailing month, the package the
+    SDK installs from. Some of that volume comes from CI runs and from other packages that depend on it,
+    so it counts installs rather than developers, and the JavaScript version on npm is not included.
+  sources:
+  - url: https://pypistats.org/api/packages/openai-agents/recent
+    shows: 12,449,784 downloads in the trailing 30 days for openai-agents (pypistats last_month)
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 25a9a72d28a5e57105640707ad3b0703cb17f3ec314dc422d688553215712215
+capability:
+  score: 4
+  basis: feature_matrix
+  value: agents with tools and guardrails; handoffs and agents-as-tools; sessions; human-in-the-loop;
+    built-in tracing; sandbox agents with resumable sandbox sessions; realtime and voice agents; function
+    and MCP tools; provider-agnostic; no first-party benchmark
+  confidence: medium
+  note: The OpenAI Agents SDK covers multi-agent handoffs, guardrails, sessions, tracing and sandboxed
+    long-running agents with a deliberately small set of primitives. It sits a step below LangGraph, whose
+    graph-structured runs give finer control over flow and checkpoint their state to resume where they
+    stopped. OpenAI publishes no benchmark for the SDK itself.
+  relative_to: langgraph
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-07'
+    sources:
+    - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+      shows: The LangGraph README still describes durable execution, "automatically resuming from exactly
+        where they left off", and "inspecting and modifying agent state at any point during execution".
+      accessed: '2026-10-07'
+      http_status: 200
+      content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/openai/openai-agents-python/main/README.md
+    shows: The README lists agents, sandbox agents, realtime and voice agents, agents as tools and handoffs,
+      tools (functions, MCP, hosted tools), guardrails, human in the loop, sessions and tracing as core
+      concepts; no benchmark figure.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: cf68cb43182d6ea4f79a32421f6723e8ee2cc0f68f97524da7f300e9fc77940b
+  - url: https://openai.github.io/openai-agents-python/
+    shows: The documentation home says "The Agents SDK has a very small set of primitives" and lists sandbox
+      agents with "resumable sandbox sessions", guardrails run "in parallel with agent execution", function
+      tools and MCP server tool calling.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: bcb759d8806f8f6d361c8b034394fb9de0781d0dcd995e77b89f25df014e3f0f
