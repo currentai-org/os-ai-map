@@ -50,9 +50,11 @@ capability:
   score: 2
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
-  value: providers propose entries by pull request, admitted at the discretion of the AWS Open Data team; entries
-    list S3 buckets, SNS topics and other resources by ARN and region; anonymous access with `aws s3 ls --no-sign-request`;
-    storage costs of sponsored datasets covered by AWS; a hosted YAML listing of all entries
+  value: providers propose entries by pull request, admitted at the discretion of the AWS Open Data team;
+    the datasets are "owned and maintained by" their providers; every entry's Resources field names AWS
+    resources by ARN (S3 buckets, CloudFront distributions, database snapshots, SNS topics); anonymous access
+    with `aws s3 ls --no-sign-request`; storage costs of sponsored datasets covered by AWS; a hosted YAML
+    listing of all entries; no persistent dataset identifiers or versions of the registry's own
   confidence: medium
   relative_to: uci-ml-repository
   relation: at
@@ -62,20 +64,26 @@ capability:
   last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/CONTRIBUTING.md
-    shows: '"Datasets are included at the discretion of the AWS Open Data team, which may remove datasets from the
-      registry at any time."'
+    shows: '"Datasets are included at the discretion of the AWS Open Data team, which may remove datasets
+      from the registry at any time."'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 7c55199d25a80022e1cd9c6abcadda71e2d4cfac808939651a0d6b4dc807c157
   - url: https://registry.opendata.aws/noaa-goes/
-    shows: 'Resources on AWS: S3 bucket arn:aws:s3:::noaa-goes19; "AWS CLI Access (No AWS account required) aws
-      s3 ls --no-sign-request s3://noaa-goes19/".'
+    shows: 'Resources on AWS: S3 bucket arn:aws:s3:::noaa-goes19; "AWS CLI Access (No AWS account required)
+      aws s3 ls --no-sign-request s3://noaa-goes19/".'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 28eb2539a7459d0c9b89b7f885afae6f427bc0dc89d9d771ef30cf55f47fb5c1
   - url: https://aws.amazon.com/opendata/open-data-sponsorship-program/
-    shows: '"The AWS Open Data Sponsorship Program covers the cost of storing and sharing publicly available, high-value,
-      cloud-optimized datasets on the Registry of Open Data on AWS."'
+    shows: '"The AWS Open Data Sponsorship Program covers the cost of storing and sharing publicly available,
+      high-value, cloud-optimized datasets on the Registry of Open Data on AWS."'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 1aff41f971407e16a79ab5aa8cfa8731fe5fa7abed01c9de113162bafbaebe70
+  - url: https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/README.md
+    shows: '"these datasets are owned and maintained by a variety of government organizations, researchers,
+      businesses, and individuals"; "Resources > ARN: Amazon Resource Name for resource, e.g. arn:aws:s3:::commoncrawl".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 74572836e0661e6b8506c398c7cea59c18787035f9e1664c5ca5be58425fd0de

@@ -53,33 +53,36 @@ capability:
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
   value: users or organizations create datasets and new versions (`kaggle datasets create`, `kaggle datasets
-    version`); Data Package metadata with per-file descriptions and column schemas written by the publisher;
-    search and filter by file type, license, tags and size; download by owner/slug through the CLI and kagglehub,
-    whose client-side adapters load a file into pandas, Polars or a Hugging Face dataset
+    version`); each version is addressable by a handle such as owner/dataset/versions/N; Data Package metadata
+    with per-file descriptions and column schemas written by the publisher; search and filter by file type,
+    license, tags and size; column-level metrics for tabular files are displayed on dataset pages, with
+    no API or export for them (from Kaggle's datasets documentation, which refused automated fetches and
+    is not cited); download by owner/slug through the CLI and kagglehub, whose client-side adapters load
+    a file into pandas, Polars or a Hugging Face dataset
   confidence: medium
   relative_to: zenodo
   relation: at
-  note: Any user or organization can publish a dataset, add versions and describe each file's columns, and
-    the Kaggle CLI and kagglehub fetch it by owner and name. The column schemas are written by the publisher
-    and the dataframe loading happens in the client, so it sits with Zenodo rather than with OpenML, which
-    parses every dataset on its own servers.
+  note: Any user or organization can publish a dataset and new versions from the Kaggle CLI, and kagglehub
+    fetches a given version by owner, name and version number. Kaggle profiles the columns of tabular files
+    for display on the dataset page only, and dataframe loading happens in the client, so it sits with Zenodo
+    rather than with OpenML, whose servers serve the parsed structure back.
   last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets_metadata.md
-    shows: '"The Kaggle API follows the Data Package specification"; `id` is "Your username or organization slug"
-      plus a dataset slug; resources carry a field `schema`.'
+    shows: '"The Kaggle API follows the Data Package specification"; `id` is "Your username or organization
+      slug" plus a dataset slug; resources carry a field `schema`.'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 330336df920e4c363e7411b73bdccf5b6eb8c4cc9aec86c451c83d121e15a110
   - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets.md
-    shows: '`kaggle datasets list` filters by file type, license, tags and size; `kaggle datasets download <owner/dataset-name>`
-      downloads files.'
+    shows: '`kaggle datasets list` filters by file type, license, tags and size; `kaggle datasets download
+      <owner/dataset-name>` downloads files.'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 6ac0ba358a42364df119af7e827b5686dff296efea9ae7dada8a18b676b62a10
   - url: https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md
     shows: '"Loads a file from a Kaggle Dataset into a python object": KaggleDatasetAdapter.PANDAS, HUGGING_FACE
-      and POLARS.'
+      and POLARS; versioned handles such as "kagglehub.dataset_download(''bricevergnou/spotify-recommendation/versions/1'')".'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b

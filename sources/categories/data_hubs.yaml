@@ -34,12 +34,14 @@ scoring_recipe:
     may publish (open deposit, an editor's review, an operator's discretion) is admission policy,
     recorded in values and notes and never deciding a rung, so a curated repository and an open
     one with the same machinery sit together. Scale is adoption, not capability. Rungs, each a
-    function the product either performs or does not, and each including the ones below it:
+    function the product either performs or does not:
       1  Index and link-out: it describes datasets that stay with their publishers and links to
          them, holding no data of its own. masader.
-      2  Host and fetch: it stores the datasets (or names the storage they sit in) and serves
-         them for download by a stable address, but does not keep numbered versions under
-         persistent identifiers. uci-ml-repository, registry-of-open-data-on-aws.
+      2  Host and fetch: the hub holds the data. The datasets it lists sit on storage the
+         operator runs or sponsors and are read through one uniform protocol (the hub's own
+         download URLs or API, or AWS resource ARNs), not wherever each publisher keeps them; it
+         does not keep numbered versions under persistent identifiers.
+         uci-ml-repository, registry-of-open-data-on-aws.
       3  Persistent identifiers, versioning and API: each dataset has a persistent identifier
          (a DOI or equivalent), published versions are kept and addressable, and machine
          clients fetch a given version by identifier through an API or a stable versioned path.
@@ -48,20 +50,30 @@ scoring_recipe:
          created through an API or CLI, not only the website, and each carries structured,
          machine-readable metadata (DataCite, a Data Package descriptor, a deposition schema).
          dryad, zenodo, kaggle-datasets.
-      5  Server-side parsing, validation and query: the hub's own servers read the files, parse
-         them into a typed structure (columns, variables, features), check or characterize them,
-         and serve that structure back for search, export or loading. openml (top anchor),
-         harvard-dataverse.
-    Each step adds a function: holding data (1 to 2), identifiers and versions (2 to 3), a write
-    path for machines and structured metadata (3 to 4), and the hub understanding the files
-    rather than storing them (4 to 5). Rung 5 counts only parsing done on the hub's servers:
-    kagglehub's dataframe adapters and ucimlrepo's pandas loader run on the user's machine, the
-    same rule the openness note applies to clients, which is why Kaggle Datasets sits at 4. Where
-    a submission interface is offered only to partners (Dryad's Submission API), it counts as
-    programmatic publishing; who is admitted to use it is admission policy. ATLAS, still a
-    registry row, would read 2 on this ladder on its recorded evidence: it holds some datasets
-    and gives each a unique ID, but its read-only MCP API searches and describes the catalog and
-    no interface delivers a dataset by identifier.
+      5  Server-side parsing, validation and query: the hub's servers parse the files into a
+         typed structure AND serve that structure back for search, export or loading. Parsing
+         shown only on a web page does not count. openml (top anchor; features and data
+         characteristics through its API and Parquet), harvard-dataverse (tabular ingest with
+         variable metadata and tab-delimited and Croissant exports).
+    THE RUNGS ARE CUMULATIVE. A product sits at the highest rung whose function it performs
+    together with every function below it, so a product missing a middle function stays below
+    that gap whatever it does above it. PhysioNet is the case: its LightWAVE server parses
+    waveform records and serves typed signals back as JSON (a rung-5 function), and its published-
+    project API returns structured metadata per version (rung-4 metadata), but it has no
+    programmatic publishing, so it sits at 3. Kaggle Datasets is the other: its servers compute
+    column-level metrics for tabular files, but only for display on the dataset page, with no
+    API or export, and its dataframe loading runs in the kagglehub client, so it sits at 4.
+    Client libraries never lift a hub (kagglehub's adapters, ucimlrepo's pandas loader), the same
+    rule the openness note applies to clients. Where a submission interface is offered only to
+    partners (Dryad's Submission API), it counts as programmatic publishing; who is admitted to
+    use it is admission policy. The Registry of Open Data on AWS meets rung 2 only through its
+    storage rule: every entry names AWS resources by ARN, many of them sponsored by AWS, while
+    the datasets are owned and maintained by their providers; read as a catalog of other parties'
+    data it could be rung 1, which is an open question in the promotion PR. Alongside the
+    donations it hosts, UCI can also link an external dataset; its rung rests on the hosted
+    donations. ATLAS, still a registry row, holds the datasets its team uploads but may leave
+    Hugging Face imports on Hugging Face, and no interface delivers a dataset by identifier, so
+    it reads 1 or 2 depending on that share, to settle when it is scored.
 
 
     ANCHORS. openml is the top anchor and records no relative_to. harvard-dataverse is at it.
@@ -96,9 +108,8 @@ comments: >-
   product a public catalog of datasets from many publishers, where the catalog itself is what
   is offered rather than one dataset or the storage under it? Proposed in the promotion PR for
   the maintainer to confirm: a general-purpose research repository qualifies when datasets are a
-  first-class record type in it, carrying dataset-specific records (their own persistent
-  identifiers, versioning and dataset metadata), and not when datasets are merely files attached
-  to records of another kind. Neighbors. A hub that hosts models
+  first-class record type, with their own records, identifiers and dataset metadata, and not
+  merely files attached to records of another kind. Neighbors. A hub that hosts models
   as well as datasets stays in model_hubs (huggingface-hub-platform, modelscope). Versioned data
   layers and internal or enterprise data catalogs stay in storage (oxen, dvc, lakefs, DagsHub,
   Unity Catalog). A single dataset, however large, goes to its dataset category
@@ -130,8 +141,8 @@ comments: >-
   (https://atlas-data.ai/en/terms-of-service), its privacy policy calls ATLAS-Data "an
   open-source data platform operated by AISG" (https://atlas-data.ai/en/privacy-policy), and no
   repository for it appears among AI Singapore's public GitHub repositories (searched 2026-10-04
-  and 2026-10-07). Its capability and adoption were researched (capability 2 on the ladder
-  above, level with uci-ml-repository; adoption abstaining) and are recorded in the promotion PR
+  and 2026-10-07). Its capability and adoption were researched (capability recorded as 2
+  against an earlier ladder, 1 or 2 on the ladder above; adoption abstaining) and are recorded in the promotion PR
   for when it is promoted. ADR-005: read within this category, UCI (closed, capability 2,
   adoption abstaining) sits below the best-in-class line, and so would ATLAS if it reads closed;
   both inclusions are curatorial calls. Credit: AI Singapore is the org on the ATLAS row. AI
