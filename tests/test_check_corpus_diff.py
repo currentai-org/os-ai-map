@@ -119,6 +119,17 @@ def test_touched_products_reads_score_and_product_paths():
     assert ccd.products_from_paths(names) == {"aider", "llama"}
 
 
+def test_a_changed_hold_touches_only_its_own_product():
+    before = "held:\n  a:\n    adoption:\n      because: x\n      since: '2026-09-29'\n  b:\n    openness:\n      because: y\n      since: '2026-09-29'\n"
+    after = "held:\n  a:\n    adoption:\n      because: z\n      since: '2026-10-07'\n  b:\n    openness:\n      because: y\n      since: '2026-09-29'\n  c:\n    adoption:\n      because: w\n      since: '2026-10-07'\n"
+    assert ccd.held_entries_changed(before, after) == {"a", "c"}
+
+
+def test_a_released_hold_touches_its_product():
+    before = "held:\n  a:\n    adoption:\n      because: x\n      since: '2026-09-29'\n"
+    assert ccd.held_entries_changed(before, "held: {}\n") == {"a"}
+
+
 def test_untouched_row_change_fails_the_gate():
     before_rows = {"p1|openness": "row-v1", "p2|openness": "row-v1"}
     after_rows = {"p1|openness": "row-v2", "p2|openness": "row-v1"}

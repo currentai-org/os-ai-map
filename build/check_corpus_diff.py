@@ -5,7 +5,9 @@ and reports, per category, the stage, gap set, product count, and tier deltas. A
 move fails the gate unless --allow-stage-move is passed (CI passes it when the PR carries
 the `stage-move` label), so a stage can only move on purpose. Separately, every axis
 assessment row belonging to a product whose source files the PR did not touch must be
-byte-identical before and after; a change there is a silent rewrite and fails the gate.
+byte-identical before and after; a change there is a silent rewrite and fails the gate. A
+product's own entry in `sources/verification_queue.yaml` counts as one of its source files,
+because a hold is part of the assessment row and is edited there rather than in the score file.
 
 Both sides are built in memory by `build.serialize.build_payload` (no file is written), so
 the committed `build/notebook_data.json` is never read. That copy used to be the `after`
@@ -36,6 +38,8 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 _PRODUCT_PATH = re.compile(r"^sources/(?:scores|products)/([a-z0-9][a-z0-9-]*)\.yaml$")
@@ -99,7 +103,32 @@ def products_from_paths(paths: list[str]) -> set[str]:
 def touched_products(root: Path, base_ref: str) -> set[str]:
     names = subprocess.run(["git", "diff", "--name-only", f"{base_ref}...HEAD"],
                            cwd=root, capture_output=True, text=True, check=True).stdout.split()
-    return products_from_paths(names)
+    touched = products_from_paths(names)
+    if _QUEUE_PATH in names:
+        base = subprocess.run(["git", "merge-base", base_ref, "HEAD"], cwd=root,
+                              capture_output=True, text=True, check=True).stdout.strip()
+        touched |= held_entries_changed(_show(root, base, _QUEUE_PATH), _show(root, "HEAD", _QUEUE_PATH))
+    return touched
+
+
+# A hold is written in the verification queue, not in the score file, and it is part of the
+# product's assessment row (status, hold_reason, held_since). Editing a product's entry there is
+# as deliberate as editing its score file and shows in the diff under that product's slug, so it
+# counts as touching that product. Only the entries that differ count: an edit to one hold does
+# not license a rewrite of every product the queue names.
+_QUEUE_PATH = "sources/verification_queue.yaml"
+
+
+def _show(root: Path, ref: str, path: str) -> str:
+    result = subprocess.run(["git", "show", f"{ref}:{path}"], cwd=root, capture_output=True, text=True)
+    return result.stdout if result.returncode == 0 else ""
+
+
+def held_entries_changed(before_text: str, after_text: str) -> set[str]:
+    """Slugs whose `held` entry differs between two versions of the verification queue."""
+    before = (yaml.safe_load(before_text) or {}).get("held") or {}
+    after = (yaml.safe_load(after_text) or {}).get("held") or {}
+    return {slug for slug in set(before) | set(after) if before.get(slug) != after.get(slug)}
 
 
 # Columns axis_assessments.canonical_row serializes that are commit-scoped identity, not
