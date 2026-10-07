@@ -18,7 +18,7 @@ it describes what its sources said on its date.
 | Date | The landing page footer reads "v1.1 · September 2026 · Data current to 1 September 2026 · Last updated September 14, 2026". The changelog feed dates v1.1 to Mon, 14 Sep 2026. Issue #723 gives 2026-09-15. |
 | Changelog | <https://stateofopensource.ai/changelog.html> (sha256 `ad0543e05c8c128e205575e2f8597bdffd66a2a9162955d0d3570b1dab7a2e6c`), entry "v1.1 — The September edition" |
 
-**How the version was confirmed.** Four things agree. The cover reads "Volume 1.1, September 2026"
+**How the version was confirmed.** Four things agree. The cover reads "Volume 1.1" and "September 2026"
 (p. 1). The appendix states "This is Volume 1.1, published September 2026, and it supersedes Volume 1
 (July 2026) and V.01 (August 2026)" (p. 91). The landing page links the PDF as
 `state-of-open-source-ai-v1-1.pdf`, beside the label "v1.1 · Recurring · September 2026". The
@@ -40,7 +40,8 @@ by Mozilla's CTO (p. 2), and the contact address is `opensource@mozilla.org`.
   subcomponents and 1,361 projects. It "is as of July 2026 and was not re-scored for this edition",
   and its scores "are ordinal and directional, and should not be read as measurements".
 - The developer survey was "commissioned and paid for by Mozilla and fielded by SlashData, which
-  controlled sampling, weighting and the authoritative export. Mozilla wrote the questions."
+  controlled sampling, weighting and the authoritative export. Mozilla wrote the questions and
+  interpreted the results".
 - The p. 23 footer says "Full 44-row subcomponent table in the appendix", and the changelog lists
   "survey instrument cuts" in the appendix. The published PDF's appendix is one page (p. 91) and has
   neither. Page 91 also refers to "the survey methodology page", but the PDF gives no address for it,
@@ -91,24 +92,27 @@ On the ten rows that are not `nemotron`, the map's `data` value is `closed`, whi
   math and multilingual data require gated approval"). This is not an error on either side. The
   record says `open` on a question Mozilla does not ask, and the published note covers what Mozilla
   found.
-- **`kimi`: the license reading disagrees, and the live license sides with Mozilla.** The map names
-  the license `Modified-MIT`, and its note says the license "excludes commercial use above 100 million
-  monthly active users or $20 million in monthly revenue". Mozilla calls it "Kimi K3 License (custom):
-  MaaS above $20M/yr needs a separate agreement; above 100M MAU or $20M/mo must display 'Kimi K3' in
-  the UI. K2 was modified-MIT; that did not settle K3" (p. 81). The LICENSE file at
-  `huggingface.co/moonshotai/Kimi-K3/raw/main/LICENSE`, fetched 2026-10-07 (sha256
-  `20c797ce19af0c17de52c6afb144644768a591c521655f5ebf5712c9850f2887`), is titled "Kimi K3 License". It
-  requires a separate agreement before commercial use by a Model-as-a-Service business above $20M of
-  revenue over 12 months (section 2), and requires prominent "Kimi K3" display above the 100M MAU /
-  $20M monthly thresholds (section 3). Its digest differs from the one the map cites for the same
-  file (`038709cf…`, accessed 2026-08-14). Either the file changed after the map read it, or the map
-  read it wrong. Neither the map nor this record can tell which.
+- **`kimi`: the license name and the commercial exclusion disagree, and the live license sides with
+  Mozilla.** The map names the license `Modified-MIT`. Its note says the license "excludes commercial
+  use above 100 million monthly active users or $20 million in monthly revenue". Its `shows` quotes a
+  grant that is "excepted where the licensee's commercial products or services have 'more than 100
+  million monthly active users…'". The map already records the prominent-display attribution
+  requirement, so attribution is not in dispute. Mozilla calls it "Kimi K3 License (custom): MaaS
+  above $20M/yr needs a separate agreement; above 100M MAU or $20M/mo must display 'Kimi K3' in the
+  UI. K2 was modified-MIT; that did not settle K3" (p. 81). The raw LICENSE file at
+  `huggingface.co/moonshotai/Kimi-K3/raw/main/LICENSE`, fetched 2026-10-07, is titled "Kimi K3
+  License". Section 2 requires a separate agreement with Moonshot before commercial use by a
+  Model-as-a-Service business whose revenue exceeds $20M over any 12 months. Section 3 ties the 100M
+  MAU / $20M monthly thresholds only to displaying "Kimi K3". The file contains no grant exception at
+  those thresholds. The map cites the HTML `blob` page for this file, so its digest cannot be
+  compared with a hash of the raw file, and this record does not try. What disagrees is the license
+  name and where the commercial gate sits: the MaaS term, not a user or revenue threshold.
 - **`inkling`: the AUP.** Mozilla lists "Separate AUP" against Inkling, and in its "Nuance" box says
   that "Inkling-Small pairs Apache 2.0 weights with a separate, changeable Acceptable Use Policy"
-  (p. 4). The map's license detail is "OSI for weights only" and does not mention an AUP.
-  `docs/reference/openness.md` ("Two places the map deliberately departs from MOF") ranks
-  attribution-or-conduct terms separately from OSI terms, so the AUP belongs in the record. Data is
-  `closed`, so the openness score is unlikely to move.
+  (p. 4). The map has already read the AUP: `sources/scores/inkling.yaml` cites the Thinking Machines
+  Model AUP, with conduct restrictions and "no user-count, revenue or commercial-use ceiling". The
+  license detail ("OSI for weights only") and the published note don't surface it, so a reader
+  comparing the two sees Apache 2.0 on one side and "Separate AUP" on the other.
 - **`qwen`: the attribution threshold.** Mozilla: "Qwen3.8 adds attribution above 100M MAU or $20M
   monthly revenue and a paid MaaS licence above $50M TTM" (p. 4). The map records the MaaS term
   ("the separate license required only above USD 50M annual revenue") but not the attribution term.
@@ -177,8 +181,11 @@ and `agent_protocols` at Stage 5 with no gaps. Two things explain most of this:
 
 For `inference_code` and `ml_frameworks`, which #723 also lists, there is little disagreement to
 explain. Mozilla scores model code highest of the nine layers. Infrastructure, at 3.48, is the
-third-highest layer, and its standardization score rose "3.1 → 3.4 after Moonshot upstreamed KDA
-caching to vLLM" (p. 23).
+third-highest layer. Its standardization callout reads "3.1 → 3.4 ▲" and credits Moonshot, which
+"resolved it upstream by contributing KDA prefix caching to vLLM" (p. 23). The site changelog's
+v1.0.1 entry (27 July 2026) records the same move ("Infrastructure standardization moves 3.1 to 3.4
+after Moonshot upstreamed KDA prefix caching to vLLM"). The newest change in the grid is therefore a
+July one, which fits Mozilla's statement that the grid was not re-scored for v1.1.
 
 ## 3. Survey figures behind #724
 
@@ -229,17 +236,20 @@ open-weight models in the August top ten (p. 14). Page 61 reports that 28% of th
 calls "the only true API-channel signal". The other two are vendor or third-party claims of the kind
 #724 says can only enter as `reported_traction`.
 
-The sharpest example for #724 is `mimo-pro`. The map has it at adoption 2 (`10K-100K`, Hugging Face
-downloads of MiMo-V2.5-Pro, `sources/scores/mimo-pro.yaml`). On OpenRouter, Mozilla ranks MiMo-V2.5
-third by August token volume at 29.4T (p. 14), and the changelog's v1.0.1 entry (27 July 2026) has
-it first in the July leaderboard at 31.2T.
+A possible example for #724 is `mimo-pro`. The map has it at adoption 2 (`10K-100K`, Hugging Face
+downloads of MiMo-V2.5-Pro, `sources/scores/mimo-pro.yaml`). On OpenRouter, Mozilla ranks
+"MiMo-V2.5 · Xiaomi" third by August token volume at 29.4T (p. 14), and the changelog's v1.0.1
+entry (27 July 2026) has it first in the July leaderboard at 31.2T. Page 14 doesn't name the
+checkpoint, while p. 4 scores "MiMo-V2.5-Pro" and `sources/products/mimo-pro.yaml` covers only the
+Pro checkpoints. So this is a calibration case only if the OpenRouter MiMo-V2.5 row is the Pro
+checkpoint.
 `nemotron`'s adoption note already calls its download count "a floor rather than a ceiling" because
 OpenRouter traffic is not counted.
 
 ## 4. Capability: the closed edge
 
-Mozilla puts the open-weight lag at "≈4.4 months measured open–closed lag (Mozilla fit on METR
-data); Epoch: 4 months" (p. 10). It places the closed edge in "Professional knowledge work",
+Mozilla puts the open-weight lag at "4 months from scores (Epoch), ≈4.4 months from measurement
+(Mozilla's computation on METR's raw data)" (p. 10). It places the closed edge in "Professional knowledge work",
 "long-context fidelity" and "conversational polish" (p. 11). It repeats this as "Closed still leads in
 expert knowledge work, long context, and accountability" (p. 28), with closed models handling
 "8-to-12-hour tasks" first (p. 10). A keyword search of the `capability` blocks in
@@ -252,15 +262,18 @@ expert knowledge work, long context, and accountability" (p. 28), with closed mo
 - METR time horizon: no row in either category.
 
 So the map's capability evidence for the frontier open families rests on coding and agentic-terminal
-benchmarks (Terminal-Bench, SWE-bench, DeepSWE). Mozilla classes those as parity or contested
-(p. 11), not as the closed edge. A keyword search undercounts, so treat these numbers as a lower
+benchmarks: Terminal-Bench (`qwen`, `glm`, `kimi`, `mimo-pro`) and SWE-bench or DeepSWE (seven
+`base_pretrained` rows). Mozilla classes "Agentic terminal work" (Terminal-Bench 2.1, Program Bench,
+SpreadsheetBench 2, BrowseComp, FrontierSWE) as contested and frontend coding as parity (p. 11). Its
+p. 11 slide names neither SWE-bench nor DeepSWE, so where those fall on its parity scale is this
+record's inference, not Mozilla's. A keyword search undercounts, so treat these numbers as a lower
 bound.
 
 ## 5. Coverage: what the report names that the map does not have
 
 Mozilla's harness map says "Every harness sub-layer has products except permission" (p. 54). It
-names "Permission & identity · the unsolved gap" and argues for "portable permission" ("OAuth 2.1
-handles who the agent is. Nothing yet handles what it may write", p. 86). It does not name five
+names "Permission & identity · the unsolved gap" (p. 54), and argues for "portable permission"
+("OAuth 2.1 handles who the agent is. Nothing yet handles what it may write", p. 86). It does not name five
 authorization products. The governance row lists "meta-harness · Omnigent · OPA · agent governance
 toolkits" (p. 54), and p. 86 refers to unnamed repositories with "50K+ stars across multiple repos
 in August alone". None of these is on the map. The report alone does not meet #723's threshold of
@@ -270,8 +283,8 @@ Products the report names, checked against `sources/products/` and `sources/regi
 
 | Report layer and page | On the map | Not on the map |
 |---|---|---|
-| Coding harnesses, p. 58 census | `claude-code` (closed, agrees), `codex-cli` (Apache 2.0, agrees), `opencode`, `openhands`, `cline`, `aider`, `goose`, `hermes-agent`, `openclaw`, `antigravity` | Kimi Code CLI (MIT), DeepSeek Harness v0.1 (MIT), Mistral Vibe CLI (named only in `codestral`'s description), Pi, Qwen Code |
-| Gemini CLI, p. 58: "Gemini CLI → Antigravity CLI · Open → closed (Qwen Code is the living fork)" | `gemini-cli` is scored openness 5 / adoption 4 with no mention of the move. `sources/products/antigravity.yaml` already says its CLI "supersedes the earlier Gemini CLI" | |
+| Coding harnesses, p. 58 census | `claude-code` (closed, agrees), `codex-cli` (Apache 2.0, agrees), `opencode`, `openhands`, `cline`, `aider`, `goose`, `hermes-agent`, `openclaw`, `antigravity` | Kimi Code CLI (MIT), Grok Build ("Open · Apache 2.0"; named only in `agent-manager`'s description), DeepSeek Harness v0.1 (MIT), Mistral Vibe CLI (named only in `codestral`'s description), Pi, Qwen Code |
+| Gemini CLI, p. 58: the census lists "Gemini CLI → Antigravity CLI" as "Open → closed (Qwen Code is the living fork)" | `gemini-cli` is scored openness 5 / adoption 4 with no mention of the move. `sources/products/antigravity.yaml` already says its CLI "supersedes the earlier Gemini CLI" | |
 | Orchestration and memory, p. 54 | `langgraph`, `crewai`, `autogen`, `llama-index` | Mem0, Zep. Letta is only a tail row in `sources/registry/orchestration_agents.yaml` |
 | Interop and surface, p. 54 | `model-context-protocol`, `agent2agent-protocol`, `ag-ui` | A2UI, x402, AP2, UCP. AGENTS.md is a tail row in `sources/registry/agent_tools_connectors.yaml` |
 | Sandboxes and eval/observability, p. 54 | `e2b-sandbox`, `daytona-sandbox`, `modal-sandboxes`, `langfuse`, `phoenix` | |
@@ -279,59 +292,55 @@ Products the report names, checked against `sources/products/` and `sources/regi
 | Trust and safety (ROOST), p. 25 | `osprey`, `coop`, `gpt-oss-safeguard`, `zentropi-cope`, all in `safeguards` | Roblox's "PII, Sentinel and voice classifiers", Mila's suicide-assistance guardrail |
 | Open-weight models, pp. 14, 35 | | Hy3 (Tencent; second on OpenRouter in August at 34.1T, p. 14), Muse Glimmer, Mistral Medium 3.5 |
 
-The report also records two changes of ownership that the map's organization records don't carry:
-"Nvidia · Hugging Face · … · $12.93B · Sept 3, 2026 · signed" and "Stripe · OpenRouter · … · Aug 19,
-2026 · announced" (p. 49). `sources/organizations/hugging-face.yaml` and
-`sources/organizations/openrouter.yaml` list neither. `docs/reference/identity.md` has no field for a
-parent company, so this is a question, not a fix.
+The report also lists two changes of ownership (p. 49): Nvidia acquiring Hugging Face ($12.93B,
+signed Sept 3, 2026) and Stripe acquiring OpenRouter (announced Aug 19, 2026). The map's organization
+records (`sources/organizations/hugging-face.yaml`, `sources/organizations/openrouter.yaml`) carry
+neither, and `docs/reference/identity.md` has no parent-company field, so this record notes them
+without proposing a change.
 
 ## Recommended follow-ups
 
 None of these is made here. Each names the door it goes through.
 
-1. **update-product `kimi`.** Re-read the K3 LICENSE (the live digest differs from the cited one).
-   Rename the license from `Modified-MIT` to the custom "Kimi K3 License". Replace the "excludes
-   commercial use" reading with the MaaS separate-agreement term and the UI-attribution term, and
-   let the rubric decide whether the openness value moves.
-2. **update-product `glm`.** Change `code: open (inference)` to `partial`, as
-   `sources/rubrics/pretrained.yaml` defines it.
-3. **update-product `inkling`.** Record the separate, changeable acceptable use policy in the
-   license detail and check its license tier.
-4. **update-product `qwen`.** Add Qwen3.8's attribution threshold to the license detail.
-5. **update-product `nemotron`.** No value change is proposed. Consider saying in the published note
-   that `data: open` reads post-training data, so a reader who compares it with Mozilla's "partial /
-   gated" sees why the two differ.
-6. **add-product or update-product: Muse Glimmer.** Either add it as Meta's open-weight row or name
-   the family row that carries it, as `multimodal_models` already says one does.
-7. **add-product candidates: Hy3 (Tencent) and Mistral Medium 3.5** for the model categories. Mistral
-   Medium 3.5 could instead be an update-product question on which Mistral row it governs.
-8. **update-product `gemini-cli`.** Reconcile it with `antigravity`'s statement that the Antigravity
-   CLI supersedes Gemini CLI, and with Mozilla's "Open → closed" reading. This may mean retirement.
-9. **update-product `mimo-pro` (adoption).** Its Hugging Face reading (adoption 2) contradicts a
-   top-three OpenRouter position. This is the calibration case for #724 and for the missing
-   OpenRouter adoption route in `sources/signal_routing.yaml`.
-10. **add-product candidates for `orchestration_agents`:** Kimi Code CLI, DeepSeek Harness, Mistral
-    Vibe CLI, Qwen Code. Run them through discover-candidates first.
-11. **Category question: agent memory.** Mem0, Zep and Letta have no home. Decide whether they
-    belong in `orchestration_agents` or justify a category (edit-category).
-12. **Category question: agent authorization (#723 point 5).** OPA, Omnigent and meta-harness
-    tooling are the report's only named candidates. Run discover-candidates before any proposal, and
-    check the boundary against `safeguards` and #93.
-13. **add-product candidates for `agent_protocols`:** A2UI, x402, AP2 and UCP. Promote AGENTS.md from
-    its tail row.
-14. **add-product candidates for `finetuning_code`:** SkyRL tx, OpenTinker, Prime Intellect's
-    platform and Nebius Token Factory.
-15. **add-product candidates for `safeguards`:** Roblox's open classifiers and Mila's guardrail.
-16. **Category question for #723 point 2: an operational gap type.** Mozilla's standardization and
-    enterprise-readiness columns have no counterpart on the map. Decide whether to pursue one, and
-    note that Mozilla's grades are AI-assisted ordinal judgments (p. 91), not measurements the map
-    could import.
-17. **Category question for #723 point 4: closed-edge workloads.** No frontier open family on the map
-    cites GDPval, long-context retrieval or METR time horizons. Decide whether the capability
-    anchors in `base_pretrained` and `finetuned_chat` should look for them on the next refresh.
-18. **Category question: change of ownership.** Decide whether the map records Nvidia–Hugging Face
-    and Stripe–OpenRouter anywhere, for example in a `model_hubs` resiliency reading, given that
-    `docs/reference/identity.md` has no parent-company field.
+1. **update-product: license and record fixes.**
+   - `kimi`: rename the license to "Kimi K3 License". Replace the reading that the grant is excepted
+     above 100M MAU / $20M monthly revenue with the raw file's Model-as-a-Service separate-agreement
+     term. Let the rubric decide whether the openness value moves.
+   - `glm`: change `code: open (inference)` to `partial`, as `sources/rubrics/pretrained.yaml`
+     defines it.
+   - `qwen`: add Qwen3.8's attribution threshold to the license detail.
+   - `inkling`: surface the Model AUP the record already cites in the license detail or the note.
+   - `nemotron`: no value change. Consider saying in the note that `data: open` reads post-training
+     data.
+2. **update-product `mimo-pro` (adoption), the #724 calibration case.** If the OpenRouter MiMo-V2.5
+   row is the Pro checkpoint, the Hugging Face reading (adoption 2) contradicts a top-three OpenRouter
+   position. That also bears on the missing OpenRouter adoption route in
+   `sources/signal_routing.yaml`.
+3. **update-product `gemini-cli` against `antigravity`.** Reconcile `gemini-cli` with `antigravity`'s
+   statement that its CLI supersedes Gemini CLI, and with Mozilla's "Open → closed" reading. This
+   may end in retirement.
+4. **add-product candidates, by category.** Run each group through discover-candidates first.
+   - Model rows: Muse Glimmer (or name the family row that carries it, as `multimodal_models` says one
+     does), Hy3 (Tencent), and Mistral Medium 3.5 (or an update-product question on which Mistral row
+     it governs).
+   - `orchestration_agents`: Kimi Code CLI, Grok Build, DeepSeek Harness, Mistral Vibe CLI, Pi, Qwen
+     Code.
+   - `agent_protocols`: A2UI, x402, AP2, UCP, and AGENTS.md promoted from its tail row.
+   - `finetuning_code`: SkyRL tx, OpenTinker, Prime Intellect's platform, Nebius Token Factory.
+   - `safeguards`: Roblox's open classifiers, Mila's guardrail.
+5. **Category questions (edit-category).**
+   - Agent memory: Mem0, Zep and Letta have no home. Decide whether they belong in
+     `orchestration_agents` or justify a category.
+   - Agent authorization (#723 point 5): OPA, Omnigent and meta-harness tooling are the report's only
+     named candidates. Collect more before any proposal, and check the boundary against `safeguards`
+     and #93.
+6. **Methodology questions for #723.**
+   - Point 2: Mozilla's standardization and enterprise-readiness columns have no counterpart on the
+     map. Decide whether to pursue an operational gap type. Mozilla's grades are AI-assisted ordinal
+     judgments (p. 91), not measurements the map could import.
+   - Point 4: no frontier open family on the map cites GDPval, long-context retrieval or METR time
+     horizons. Decide whether the capability anchors in `base_pretrained` and `finetuned_chat`
+     should look for them on the next refresh.
 
 For #724: the report supports 79% and 71% for developers using open and closed models. It supports
 51% against 63% reaching production, n=1,494. It does not support the word "professional" for those
