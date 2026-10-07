@@ -706,6 +706,16 @@ not evidence that the figure is current: unchanged bytes on a counts endpoint wo
 number had stopped moving, which is a stronger claim than the axis needs and usually a false
 one. So those citations stay, as provenance, and the date rests on the observation instead.
 
+**A held axis is dated only when its hold asks to be.** A hold in
+`sources/verification_queue.yaml` is a person's open question, and a held axis carries no date,
+so the run declines to date a held axis and reports it. The exception is a hold whose only
+question is the measurement itself: an axis re-banded by hand, or one whose agreeing read could
+not be dated because no scheduled run served it. Such a hold records
+`settled_by: scheduled_reconciliation`. When a scheduled, bound read then measures the recorded
+band, the run writes the date and removes that hold in the same change, so the re-dating PR
+carries both. A hold without the marker is never released by a machine, whatever the run
+measures.
+
 **Who writes it.** `build/adoption_freshness.py`, and nothing else. `build/reverify.py` refuses
 adoption at the flag, in the planner and in the writer, so a machine cannot re-date the axis by
 re-fetching a cited page whatever it is asked to do. Two tools writing one field on two

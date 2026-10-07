@@ -96,6 +96,19 @@ The recorded level is part of the support for the same reason. The run confirmed
 measured; once a person re-bands the axis, that confirmation describes a band the score has left,
 and the date has to be earned again rather than inherited by the new level.
 
+## A hold is a person's, unless it says otherwise
+
+An axis held in `sources/verification_queue.yaml` is one a person parked with a question, and a
+held axis carries no date. A run that dated it anyway would answer a question it was never
+asked, and would leave the axis both held and dated, which every reader of the queue rejects.
+So a held axis is declined like any other match the run may not date, and reported.
+
+The exception is a hold whose question IS the measurement: an axis re-banded by hand, or one
+whose band a hand-refreshed read could not date, waits for exactly one thing, a scheduled read
+that measures the recorded band. Such a hold says so with `settled_by: scheduled_reconciliation`.
+For that axis the agreement is the settlement, so the run writes the date and removes the hold
+in the same change, and the re-dating PR carries both.
+
 ## Advance-only
 
 A stored date newer than the derived one is a person's confirmation of something the run has not
@@ -118,6 +131,7 @@ measurement to, so the run reports what it would have dated and writes no date.
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime
 import json
 from collections.abc import Iterable, Mapping, Sequence
@@ -162,6 +176,11 @@ RUN_KEYS = ("trigger_type", "status", "started_at")
 
 #: The only trigger that may date an axis, and the only status. A MANUAL run is a person.
 DATING_TRIGGER = "SCHEDULED"
+#: Where holds live, and the marker that lets a scheduled agreement settle an adoption hold. See
+#: "A hold is a person's, unless it says otherwise" above.
+QUEUE_PATH = Path("sources") / "verification_queue.yaml"
+RELEASE_KEY = "settled_by"
+RELEASE_ON = "scheduled_reconciliation"
 DATING_STATUS = "SUCCESS"
 
 #: How old the materialization behind a read may be before it stops counting as this cycle's
@@ -361,6 +380,7 @@ class Change:
     now: str
     derived_from: dict
     verdict: str = BAND_MATCH
+    releases_hold: bool = False
 
 
 def _score_path(root: Path, slug: str) -> Path:
@@ -383,6 +403,69 @@ def _already_supported(block: Mapping, derived: Mapping) -> bool:
     ) and str(block.get("last_verified")) == str(derived["measurement_as_of"])
 
 
+def adoption_holds(root: Path | None = None) -> dict[str, dict]:
+    """slug -> the hold on its adoption axis, from the verification queue.
+
+    A whole-product hold (no axis keys, the older shape `sweep_status` still reads) holds the
+    adoption axis too, and never carries the release marker.
+    """
+    path = (root or ROOT) / QUEUE_PATH
+    if not path.exists():
+        return {}
+    held = (yaml.safe_load(path.read_text()) or {}).get("held") or {}
+    out: dict[str, dict] = {}
+    for slug, axes in held.items():
+        axes = axes or {}
+        if DERIVED_AXIS in axes:
+            out[slug] = dict(axes[DERIVED_AXIS] or {})
+        elif "because" in axes:
+            out[slug] = {k: v for k, v in axes.items() if k != RELEASE_KEY}
+    return out
+
+
+def release_holds(text: str, slugs: Iterable[str]) -> str:
+    """`text` (the verification queue) with the adoption hold of each slug removed.
+
+    A product left holding nothing loses its entry. The edit is by line, so every other entry
+    keeps its exact spelling, and the result is reparsed and compared with the expected mapping:
+    a shape this cannot edit safely raises rather than being rewritten.
+    """
+    slugs = list(slugs)
+    if not slugs:
+        return text
+    before = yaml.safe_load(text) or {}
+    expected = copy.deepcopy(before)
+    lines = text.splitlines(keepends=True)
+    for slug in slugs:
+        head = f"  {slug}:\n"
+        if head not in lines:
+            raise ValueError(f"{slug}: no entry in the verification queue to release")
+        start = lines.index(head)
+        end = start + 1
+        while end < len(lines) and (not lines[end].strip() or lines[end].startswith("    ")):
+            end += 1
+        block = lines[start + 1:end]
+        opener = f"    {DERIVED_AXIS}:\n"
+        if opener not in block:
+            raise ValueError(f"{slug}: no block-style adoption hold to release")
+        first = block.index(opener)
+        last = first + 1
+        while last < len(block) and (not block[last].strip() or block[last].startswith("      ")):
+            last += 1
+        block = block[:first] + block[last:]
+        if not any(line.startswith("    ") and line.strip() for line in block):
+            lines[start:end] = []
+        else:
+            lines[start + 1:end] = block
+        del expected["held"][slug][DERIVED_AXIS]
+        if not expected["held"][slug]:
+            del expected["held"][slug]
+    new_text = "".join(lines)
+    if (yaml.safe_load(new_text) or {}) != expected:
+        raise ValueError("releasing adoption holds changed something else; refusing to write")
+    return new_text
+
+
 def plan(
     rows: Iterable[Mapping],
     binding: Mapping | None = None,
@@ -402,6 +485,7 @@ def plan(
     changes: list[Change] = []
     declined: list[str] = []
     unbound = binding_problems(binding, now)
+    holds = adoption_holds(base)
     for row in rows:
         if verdict(row) != BAND_MATCH:
             continue
@@ -429,9 +513,17 @@ def plan(
                 f"it more recently than this run measured it"
             )
             continue
+        hold = holds.get(slug)
+        if hold is not None and hold.get(RELEASE_KEY) != RELEASE_ON:
+            declined.append(
+                f"{slug}: the route measured the recorded band, but the axis is held in the "
+                f"verification queue (since {hold.get('since')}) for a question a measurement "
+                f"does not settle, so nothing is dated"
+            )
+            continue
         if _already_supported(block, derived):
             continue
-        changes.append(Change(slug, was, now, derived))
+        changes.append(Change(slug, was, now, derived, releases_hold=hold is not None))
     changes.sort(key=lambda c: c.product_slug)
     return changes, declined
 
@@ -469,6 +561,21 @@ def apply(changes: Iterable[Change], root: Path | None = None) -> int:
     confirmation under it and this raises instead of writing it.
     """
     base = root or ROOT
+    changes = list(changes)
+    holds = adoption_holds(base)
+    for change in changes:
+        hold = holds.get(change.product_slug)
+        if hold is not None and not (change.releases_hold and hold.get(RELEASE_KEY) == RELEASE_ON):
+            raise ValueError(
+                f"{change.product_slug}: refusing to date a held adoption axis whose hold does not "
+                f"say a scheduled reconciliation settles it; a held axis carries no date"
+            )
+        if change.releases_hold and hold is None:
+            raise ValueError(f"{change.product_slug}: the change releases a hold the queue does not hold")
+    queue_path = base / QUEUE_PATH
+    releasing = [c.product_slug for c in changes if c.releases_hold]
+    # Built before any score is written, so a queue this cannot edit stops the run whole.
+    queue_text = release_holds(queue_path.read_text(), releasing) if releasing else None
     written = 0
     for change in changes:
         if change.verdict != BAND_MATCH:
@@ -509,6 +616,8 @@ def apply(changes: Iterable[Change], root: Path | None = None) -> int:
         if text != path.read_text():
             path.write_text(text)
             written += 1
+    if queue_text is not None:
+        queue_path.write_text(queue_text)
     return written
 
 
@@ -743,6 +852,9 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
         )
         written = apply(changes, root=base)
         print(f"\nwrote {written} score file(s)")
+        released = sum(c.releases_hold for c in changes)
+        if released:
+            print(f"released {released} adoption hold(s) a scheduled agreement settles")
     return 0
 
 

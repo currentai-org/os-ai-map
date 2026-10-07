@@ -464,6 +464,108 @@ def test_a_read_that_straddled_two_materializations_claims_no_run(monkeypatch):
 # ── the safety property: a disagreement earns nothing ───────────────────────────────────────
 
 
+# ── holds ───────────────────────────────────────────────────────────────────────────────────
+
+QUEUE = """\
+# a comment the release must keep
+version: 1
+
+held:
+  gadget:
+    adoption:
+      because: Waits for a scheduled read of the re-banded level.
+      since: '2026-10-07'
+      settled_by: scheduled_reconciliation
+    capability:
+      because: A peer is unconfirmed.
+      since: '2026-09-29'
+  widget:
+    adoption:
+      because: >-
+        Waits for a scheduled read of the re-banded level, folded
+        across two lines.
+      since: '2026-10-07'
+      settled_by: scheduled_reconciliation
+  zebra:
+    adoption:
+      because: Whether the package is the product is a person's call.
+      since: '2026-09-29'
+"""
+
+
+def _queued(tmp_path: Path) -> Path:
+    root = _corpus(tmp_path, {s: {"sources": []} for s in ("gadget", "widget", "zebra")})
+    (root / "sources" / "verification_queue.yaml").write_text(QUEUE)
+    return root
+
+
+def _held(root: Path) -> dict:
+    return yaml.safe_load((root / "sources" / "verification_queue.yaml").read_text())["held"]
+
+
+def test_a_held_axis_whose_hold_asks_another_question_is_not_dated(tmp_path):
+    root = _queued(tmp_path)
+    changes, declined = af.plan([_row(slug="zebra")], BOUND, root=root)
+    assert changes == []
+    assert any(line.startswith("zebra:") and "held" in line for line in declined)
+    assert "last_verified" not in _adoption(root, "zebra")
+
+
+def test_a_scheduled_agreement_dates_the_axis_and_releases_the_hold_it_settles(tmp_path):
+    root = _queued(tmp_path)
+    changes, _ = af.plan([_row(slug="widget"), _row(slug="gadget")], BOUND, root=root)
+    assert [(c.product_slug, c.releases_hold) for c in changes] == [("gadget", True), ("widget", True)]
+    af.apply(changes, root=root)
+    assert _adoption(root, "widget")["last_verified"] == "2026-08-20"
+    assert _adoption(root, "gadget")["last_verified"] == "2026-08-20"
+    held = _held(root)
+    assert "widget" not in held
+    assert held["gadget"] == {"capability": {"because": "A peer is unconfirmed.", "since": "2026-09-29"}}
+    assert "adoption" in held["zebra"]
+
+
+def test_releasing_a_hold_leaves_every_other_line_of_the_queue_alone(tmp_path):
+    root = _queued(tmp_path)
+    changes, _ = af.plan([_row(slug="widget")], BOUND, root=root)
+    af.apply(changes, root=root)
+    after = (root / "sources" / "verification_queue.yaml").read_text()
+    widget = QUEUE[QUEUE.index("  widget:\n"):QUEUE.index("  zebra:\n")]
+    assert after == QUEUE.replace(widget, "")
+
+
+def test_an_unbound_read_releases_nothing(tmp_path):
+    root = _queued(tmp_path)
+    changes, _ = af.plan([_row(slug="widget")], UNSTABLE, root=root)
+    assert changes == []
+    assert (root / "sources" / "verification_queue.yaml").read_text() == QUEUE
+
+
+def test_a_disagreement_releases_nothing(tmp_path):
+    root = _queued(tmp_path)
+    changes, _ = af.plan([_row(slug="widget", measured=2)], BOUND, root=root)
+    assert changes == []
+    assert "widget" in _held(root)
+
+
+def test_the_writer_refuses_to_date_a_held_axis_it_was_not_asked_to_release(tmp_path):
+    root = _queued(tmp_path)
+    derived = af.derivation(_row(slug="zebra"), BOUND)
+    with pytest.raises(ValueError, match="held adoption axis"):
+        af.apply([af.Change("zebra", None, "2026-08-20", derived, releases_hold=True)], root=root)
+    with pytest.raises(ValueError, match="held adoption axis"):
+        af.apply([af.Change("widget", None, "2026-08-20", af.derivation(_row(slug="widget"), BOUND))], root=root)
+    assert "last_verified" not in _adoption(root, "zebra")
+    assert "last_verified" not in _adoption(root, "widget")
+    assert (root / "sources" / "verification_queue.yaml").read_text() == QUEUE
+
+
+def test_a_whole_product_hold_holds_adoption_and_is_never_released():
+    text = "held:\n  widget:\n    because: Retiring.\n    since: '2026-09-01'\n"
+    assert af.release_holds(text, []) == text
+    with pytest.raises(ValueError):
+        af.release_holds(text, ["widget"])
+
+
 def test_a_disagreement_does_not_advance_the_date(tmp_path):
     root = _corpus(tmp_path, {"widget": {"last_verified": "2026-08-01", "sources": []}})
     rows = [_row(recorded=3, measured=5)]
