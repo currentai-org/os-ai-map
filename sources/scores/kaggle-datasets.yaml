@@ -49,19 +49,20 @@ adoption:
     http_status: 200
     content_sha256: 6ac0ba358a42364df119af7e827b5686dff296efea9ae7dada8a18b676b62a10
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
-  value: users or organizations create datasets and new versions (`kaggle datasets create`, `kaggle datasets version`);
-    Data Package metadata with per-file descriptions and column schemas; search and filter by file type, license,
-    tags and size; download by owner/slug through the CLI and kagglehub; kagglehub loads a file into pandas, Polars
-    or a Hugging Face dataset
+  value: users or organizations create datasets and new versions (`kaggle datasets create`, `kaggle datasets
+    version`); Data Package metadata with per-file descriptions and column schemas written by the publisher;
+    search and filter by file type, license, tags and size; download by owner/slug through the CLI and kagglehub,
+    whose client-side adapters load a file into pandas, Polars or a Hugging Face dataset
   confidence: medium
-  relative_to: openml
+  relative_to: zenodo
   relation: at
-  note: Any user or organization can publish a dataset, add versions and describe each file's columns, and the Kaggle
-    CLI and kagglehub fetch it by owner and name. kagglehub also loads a file straight into pandas, Polars or a
-    Hugging Face dataset, which puts it on a par with OpenML.
+  note: Any user or organization can publish a dataset, add versions and describe each file's columns, and
+    the Kaggle CLI and kagglehub fetch it by owner and name. The column schemas are written by the publisher
+    and the dataframe loading happens in the client, so it sits with Zenodo rather than with OpenML, which
+    parses every dataset on its own servers.
   last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets_metadata.md
