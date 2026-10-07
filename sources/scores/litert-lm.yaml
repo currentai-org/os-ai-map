@@ -19,11 +19,11 @@ openness:
     back.
   raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
     path in the repository root and no paid build of the engine in the README)
-  last_verified: '2026-08-31'
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/LICENSE
     shows: 'LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.'
-    accessed: '2026-08-31'
+    accessed: '2026-10-07'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
@@ -39,9 +39,9 @@ openness:
   - url: https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/README.md
     shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
       and for whether any component is stated to be private.
-    accessed: '2026-08-31'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 7732a78b3dbd877a800bab99949f0cfd473720b00c5d1d71b96dd7d936b18447
+    content_sha256: 63013b12cbebdb303139b0f54828c054e07814e7d125f97e216f619d3b10bc69
     establishes:
     - source
     - core-gated
@@ -69,19 +69,31 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: category feature matrix, banded against the vllm anchor
-  value: Cross-platform on-device orchestration of language models over the LiteRT runtime, distributed as a CLI
-    and a C API.
+  value: Cross-platform on-device orchestration of language models over the LiteRT runtime, with GPU and
+    NPU acceleration, vision and audio input and function calling, distributed as a CLI and Python, Kotlin
+    and C++ APIs.
   relative_to: vllm
   relation: two_below
   confidence: medium
   note: LiteRT-LM sits two tiers below vLLM. It runs models on edge hardware rather than serving them from
     a datacenter, so it carries none of the batching, parallelism or multi-tenant serving that the higher-rated
     engines are built around.
-  last_verified: '2026-08-31'
+  comparison:
+    last_attested: '2026-10-07'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'vLLM README feature list: PagedAttention, continuous batching, chunked prefill and prefix
+        caching, "Tensor, pipeline, data, expert, and context parallelism for distributed inference", hardware
+        plugins across GPU and accelerator vendors, and "200+ model architectures".'
+      accessed: '2026-10-07'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/README.md
-    shows: 'README, read for the engine''s feature set: Cross-platform on-device orchestration of language models
-      over the LiteRT runtime, distributed as a CLI and a C API.'
-    accessed: '2026-08-31'
+    shows: 'README "Key Features": Android, iOS, Web, Desktop and IoT support, GPU and NPU acceleration,
+      vision and audio input and function calling; a litert-lm CLI, with Python, Kotlin and C++ listed as
+      stable language APIs.'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 7732a78b3dbd877a800bab99949f0cfd473720b00c5d1d71b96dd7d936b18447
+    content_sha256: 63013b12cbebdb303139b0f54828c054e07814e7d125f97e216f619d3b10bc69

@@ -634,8 +634,13 @@ two tests) into `sources/resolution_ledger.yaml` or `sources/org_handles.yaml`, 
 digest's own "Auto-adopted" section rather than as a review item. Because a 1.0 equivalence rests
 on a ledger ruling, the adopt leg checks the destination first: an item the file already answers
 the same way is reported as already recorded and nothing is written, and one it answers differently
-is held for review, never overturned. Both readers are audit roots, which is what puts the dataset
-inside the repo's governed dependency closure.
+is held for review, never overturned. Before the adopt leg and the renderer see the rows,
+`build/identity_digest.py` drops every equivalence proposal for an artifact the ledger already
+assigns to a different product that still exists. An artifact belongs to one product, and a
+heuristic that reaches another is not new evidence against the ruling. An equivalence ruling
+whose product is not in the corpus is not dropped, so a proposal against it can still be held.
+Both readers are audit roots, which is what puts the dataset inside the repo's governed
+dependency closure.
 
 The eval's truth is every declaration, both tiers. A `sources/registry/*.yaml` tail row states that
 an artifact is a product's and names the org that owns it, which is the same kind of decision a

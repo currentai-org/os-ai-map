@@ -654,3 +654,133 @@ def test_sample_fixture_renders_without_error():
     body = digest.render(SAMPLE, "2026-36", resolved_count=0)
     assert body.startswith("# identity digest: 2026-36")
     assert "### Scorecard" in body
+
+
+# -- an artifact the ledger already assigns is not proposed again ----------------------------
+
+
+def _assigning_ledger(tmp_path, *entries) -> dict:
+    """A fixture ledger loaded through `resolution.load`, so the filter reads the same keys the
+    real file produces."""
+    path = tmp_path / "assigning_ledger.yaml"
+    path.write_text(yaml.safe_dump({"version": 1, "resolutions": list(entries)}, sort_keys=False))
+    return resolution.load(path)
+
+
+def _hf_equivalence(item_id, model_id, product, *, state="active", rank=1):
+    return _row(
+        "equivalence", item_id, state=state, rank=rank,
+        left={"kind": "huggingface_model", "id": model_id},
+        right={"kind": "product", "id": product},
+        method=("model_family",),
+    )
+
+
+def _confirm(model_id, product, *, verdict="existing_product"):
+    return {
+        "artifact": {"kind": "huggingface_model", "id": model_id},
+        "verdict": verdict,
+        "relation": "product_equivalence",
+        "resolves_to": product,
+        "decided_in": "#838",
+        "decided_on": "2026-10-07",
+        "note": "fixture ruling",
+    }
+
+
+def test_an_artifact_ruled_to_one_product_is_suppressed_when_proposed_against_another(tmp_path):
+    """The #838 shape: comfy-org/qwen-image-2.1 is ruled to belong to `qwen-image`, and the
+    `qwen-*` model family proposes it against `qwen`. One artifact belongs to one product, so
+    the proposal is not a review question; an artifact nobody has ruled on still is."""
+    ledger = _assigning_ledger(tmp_path, _confirm("Comfy-Org/Qwen-Image-2.1", "qwen-image"))
+    ruled = _hf_equivalence("e1", "comfy-org/qwen-image-2.1", "qwen", rank=1)
+    parked = _hf_equivalence("e2", "comfy-org/qwen-image-2.1", "qwen", state="parked")
+    unruled = _hf_equivalence("e3", "comfy-org/some-other-model", "qwen", rank=2)
+
+    kept, suppressed = digest.suppress_ruled_artifacts(
+        [ruled, parked, unruled], ledger=ledger, live_slugs={"qwen", "qwen-image"})
+
+    assert kept == [unruled]
+    assert suppressed == [ruled, parked]
+
+
+def test_an_artifact_ruled_sku_of_one_product_is_suppressed_when_proposed_against_another(tmp_path):
+    """`sku_of` assigns an owner just as `existing_product` does, so it suppresses through the
+    same path: a surface of `minimax-hailuo` proposed against `minimax` is not a question."""
+    ledger = _assigning_ledger(
+        tmp_path, _confirm("Comfy-Org/MiniMax-H3", "minimax-hailuo", verdict="sku_of"))
+    ruled = _hf_equivalence("k1", "comfy-org/minimax-h3", "minimax", rank=1)
+    unruled = _hf_equivalence("k2", "comfy-org/another-model", "minimax", rank=2)
+
+    kept, suppressed = digest.suppress_ruled_artifacts(
+        [ruled, unruled], ledger=ledger, live_slugs={"minimax", "minimax-hailuo"})
+
+    assert kept == [unruled]
+    assert suppressed == [ruled]
+
+
+def test_suppression_leaves_stale_unresolved_and_same_product_rows_alone(tmp_path):
+    """What #705's "worth a look" still covers, and what the filter leaves to others: a ruling
+    whose product has left the corpus may be stale; `unresolved` and an exclusion name no owner;
+    a row proposing the very product the ledger names is the SQL's and the adopt leg's to drop;
+    and only the `equivalence` relation is touched."""
+    ledger = _assigning_ledger(
+        tmp_path,
+        _confirm("acme/retired-owner", "retired-product"),
+        {**_confirm("acme/undecided", "qwen"), "verdict": "unresolved"},
+        {"artifact": {"kind": "huggingface_model", "id": "acme/fixture"},
+         "verdict": "excluded_boundary", "relation": "product_equivalence",
+         "boundary": "random-weight-test-fixtures", "decided_in": "#767",
+         "decided_on": "2026-09-28", "note": "fixture exclusion"},
+        _confirm("acme/same", "qwen-image"),
+        _confirm("acme/member", "qwen-image"),
+    )
+    rows = [
+        _hf_equivalence("s1", "acme/retired-owner", "qwen"),
+        _hf_equivalence("s2", "acme/undecided", "qwen-image"),
+        _hf_equivalence("s3", "acme/fixture", "qwen"),
+        _hf_equivalence("s4", "acme/same", "qwen-image"),
+        _row("membership", "m1", left={"kind": "huggingface_model", "id": "acme/member"},
+             right={"kind": "product", "id": "qwen"}),
+    ]
+
+    kept, suppressed = digest.suppress_ruled_artifacts(
+        rows, ledger=ledger, live_slugs={"qwen", "qwen-image"})
+
+    assert kept == rows
+    assert suppressed == []
+
+
+def test_assigned_product_reads_resolves_to_or_the_older_product_field(tmp_path):
+    ledger = _assigning_ledger(
+        tmp_path,
+        _confirm("Comfy-Org/MiniMax-H3", "minimax-hailuo", verdict="sku_of"),
+        {"repo": "acme/old-style", "verdict": "existing_product", "product": "weaviate",
+         "decided_in": "Round 2", "decided_on": "2026-09-02", "note": "fixture"},
+    )
+    assert resolution.assigned_product("huggingface_model", "comfy-org/minimax-h3", ledger) == "minimax-hailuo"
+    assert resolution.assigned_product("github", "ACME/old-style", ledger) == "weaviate"
+    assert resolution.assigned_product("huggingface_model", "nobody/unruled", ledger) is None
+
+
+def test_main_suppresses_before_rendering_and_counts_it(tmp_path, monkeypatch):
+    """The CLI runs the filter on the rows it read, so a suppressed item renders nowhere and the
+    scorecard says how many there were."""
+    ledger_path = tmp_path / "ledger.yaml"
+    ledger_path.write_text(yaml.safe_dump(
+        {"version": 1, "resolutions": [_confirm("comfy-org/qwen-image-2.1", "qwen-image")]},
+        sort_keys=False))
+    monkeypatch.setattr(resolution, "LEDGER", ledger_path)
+    rows_path = tmp_path / "rows.json"
+    rows_path.write_text(json.dumps([
+        _hf_equivalence("e1", "comfy-org/qwen-image-2.1", "qwen", rank=1),
+        _hf_equivalence("e2", "comfy-org/some-other-model", "qwen", rank=2),
+    ]))
+    out = tmp_path / "out.md"
+
+    assert digest.main(["--week", "2026-41", "--out", str(out), "--rows", str(rows_path)]) == 0
+
+    body = out.read_text()
+    assert "comfy-org/qwen-image-2.1" not in body
+    assert "comfy-org/some-other-model" in body
+    assert "- Suppressed, artifact already assigned to a product in the ledger: 1" in body

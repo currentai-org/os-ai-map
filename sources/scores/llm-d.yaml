@@ -19,12 +19,12 @@ openness:
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(CNCF project; founders' commercial platforms
     (e.g. Red Hat OpenShift AI) are separate products sold beside it, which software.yaml does not count
     as gating)
-  last_verified: '2026-09-01'
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/llm-d/llm-d/main/LICENSE
     shows: 'LICENSE body, read in full: stock Apache License Version 2.0 text, unmodified (digest matches
       the canonical Apache-2.0 text).'
-    accessed: '2026-09-01'
+    accessed: '2026-10-07'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
@@ -42,9 +42,9 @@ openness:
       inference serving stack optimized for production deployments on Kubernetes"; CNCF Sandbox, founded
       by Red Hat, Google Cloud, IBM Research, CoreWeave, NVIDIA; intelligent routing, tiered KV cache,
       prefill/decode disaggregation, wide expert-parallelism, SLO-aware autoscaling, batch APIs.'
-    accessed: '2026-09-01'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: cd033c765d1dd60fddd7ddeeb583b3852283ca4b49bc5cb317d139ef869f6b08
+    content_sha256: 769ada2e96ca43a97257b61b901d44f436230262b8e7493707e351634b2d4ce2
     establishes:
     - source
     - core-gated
@@ -85,23 +85,22 @@ capability:
     belongs to someone else's engine. Its cross-accelerator production benchmarks give it the widest validation
     surface among the orchestration layers, but without an engine of its own it does not reach vLLM's tier.
   comparison:
-    last_attested: '2026-09-01'
+    last_attested: '2026-10-07'
     sources:
     - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
-      shows: 'vLLM''s README, re-read today: vLLM is the engine llm-d itself orchestrates ("Model servers
-        like vLLM ... handle efficiently running large language models on accelerators" - llm-d README); the
-        one-step gap is judged on that dependency. Digest identical to the one vLLM''s capability axis recorded
-        on 2026-08-31.'
-      accessed: '2026-09-01'
+      shows: 'vLLM README: the engine itself, with PagedAttention, continuous batching and multi-form parallelism.
+        llm-d''s README leaves running the model to servers such as vLLM and SGLang and routes, caches and
+        scales above them; with no engine of its own it stays one step behind.'
+      accessed: '2026-10-07'
       http_status: 200
       content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
-  last_verified: '2026-09-01'
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/llm-d/llm-d/main/README.md
-    shows: 'Performance highlights: 3x throughput / 2x TTFT with prefix-cache-aware routing (Llama 3.1
-      70B, 4x MI300X, Tesla/Red Hat); 70% higher tokens/sec with P/D disaggregation vs standard vLLM (AWS
-      B200); 50k tok/s wide-EP on 16x16 B200; 13.9x with hierarchical KV offload; four core themes - routing,
-      KV management, serving large models, operational excellence.'
-    accessed: '2026-09-01'
+    shows: 'Performance highlights: 3x throughput / 2x TTFT with prefix-cache-aware routing (Llama 3.1 70B,
+      4x MI300X, Tesla/Red Hat); up to 70% higher tokens/sec with P/D disaggregation vs standard vLLM (AWS
+      B200); 50k tok/s wide-EP on 16x16 B200; 13.9x with hierarchical KV offload; themes - routing, KV-cache
+      management, serving large models, operational excellence and batch processing.'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: cd033c765d1dd60fddd7ddeeb583b3852283ca4b49bc5cb317d139ef869f6b08
+    content_sha256: 769ada2e96ca43a97257b61b901d44f436230262b8e7493707e351634b2d4ce2
