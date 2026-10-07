@@ -119,15 +119,32 @@ def test_touched_products_reads_score_and_product_paths():
     assert ccd.products_from_paths(names) == {"aider", "llama"}
 
 
-def test_a_changed_hold_touches_only_its_own_product():
-    before = "held:\n  a:\n    adoption:\n      because: x\n      since: '2026-09-29'\n  b:\n    openness:\n      because: y\n      since: '2026-09-29'\n"
-    after = "held:\n  a:\n    adoption:\n      because: z\n      since: '2026-10-07'\n  b:\n    openness:\n      because: y\n      since: '2026-09-29'\n  c:\n    adoption:\n      because: w\n      since: '2026-10-07'\n"
-    assert ccd.held_entries_changed(before, after) == {"a", "c"}
+def test_a_changed_hold_touches_only_its_own_axis():
+    before = "held:\n  a:\n    adoption:\n      because: x\n      since: '2026-09-29'\n    capability:\n      because: q\n      since: '2026-09-29'\n  b:\n    openness:\n      because: y\n      since: '2026-09-29'\n"
+    after = "held:\n  a:\n    adoption:\n      because: z\n      since: '2026-10-07'\n    capability:\n      because: q\n      since: '2026-09-29'\n  b:\n    openness:\n      because: y\n      since: '2026-09-29'\n  c:\n    adoption:\n      because: w\n      since: '2026-10-07'\n"
+    assert ccd.held_axes_changed(before, after) == {"a|adoption", "c|adoption"}
 
 
-def test_a_released_hold_touches_its_product():
+def test_a_released_hold_touches_its_axis():
     before = "held:\n  a:\n    adoption:\n      because: x\n      since: '2026-09-29'\n"
-    assert ccd.held_entries_changed(before, "held: {}\n") == {"a"}
+    assert ccd.held_axes_changed(before, "held: {}\n") == {"a|adoption"}
+
+
+def test_a_whole_product_hold_touches_every_axis():
+    before = "held:\n  a:\n    because: x\n    since: '2026-09-29'\n"
+    after = "held:\n  a:\n    because: y\n    since: '2026-09-29'\n"
+    assert ccd.held_axes_changed(before, after) == {"a|*"}
+    rows_before = {"a|adoption": "1", "a|openness": "1"}
+    rows_after = {"a|adoption": "2", "a|openness": "2"}
+    assert ccd.compare_rows(rows_before, rows_after, touched=set(), touched_axes={"a|*"}) == []
+
+
+def test_a_hold_edit_does_not_exempt_the_products_other_axes():
+    before = {"p|adoption": "1", "p|openness": "1", "q|adoption": "1"}
+    after = {"p|adoption": "2", "p|openness": "2", "q|adoption": "1"}
+    changes = ccd.compare_rows(before, after, touched=set(), touched_axes={"p|adoption"})
+    assert changes == ["p|openness changed but sources/{scores,products}/p.yaml did not"]
+    assert ccd.compare_rows(before, after, touched={"p"}, touched_axes=set()) == []
 
 
 def test_untouched_row_change_fails_the_gate():

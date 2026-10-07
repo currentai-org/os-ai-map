@@ -6,8 +6,9 @@ move fails the gate unless --allow-stage-move is passed (CI passes it when the P
 the `stage-move` label), so a stage can only move on purpose. Separately, every axis
 assessment row belonging to a product whose source files the PR did not touch must be
 byte-identical before and after; a change there is a silent rewrite and fails the gate. A
-product's own entry in `sources/verification_queue.yaml` counts as one of its source files,
-because a hold is part of the assessment row and is edited there rather than in the score file.
+hold in `sources/verification_queue.yaml` is part of the assessment row and is edited there rather
+than in the score file, so a changed hold authorizes a change to that one row, `product|axis`, and
+to no other axis of the product.
 
 Both sides are built in memory by `build.serialize.build_payload` (no file is written), so
 the committed `build/notebook_data.json` is never read. That copy used to be the `after`
@@ -101,22 +102,31 @@ def products_from_paths(paths: list[str]) -> set[str]:
 
 
 def touched_products(root: Path, base_ref: str) -> set[str]:
-    names = subprocess.run(["git", "diff", "--name-only", f"{base_ref}...HEAD"],
-                           cwd=root, capture_output=True, text=True, check=True).stdout.split()
-    touched = products_from_paths(names)
-    if _QUEUE_PATH in names:
-        base = subprocess.run(["git", "merge-base", base_ref, "HEAD"], cwd=root,
-                              capture_output=True, text=True, check=True).stdout.strip()
-        touched |= held_entries_changed(_show(root, base, _QUEUE_PATH), _show(root, "HEAD", _QUEUE_PATH))
-    return touched
+    return products_from_paths(_changed_paths(root, base_ref))
+
+
+def touched_axes(root: Path, base_ref: str) -> set[str]:
+    """`product|axis` rows whose hold changed between the merge base and HEAD."""
+    if _QUEUE_PATH not in _changed_paths(root, base_ref):
+        return set()
+    base = subprocess.run(["git", "merge-base", base_ref, "HEAD"], cwd=root,
+                          capture_output=True, text=True, check=True).stdout.strip()
+    return held_axes_changed(_show(root, base, _QUEUE_PATH), _show(root, "HEAD", _QUEUE_PATH))
+
+
+def _changed_paths(root: Path, base_ref: str) -> list[str]:
+    return subprocess.run(["git", "diff", "--name-only", f"{base_ref}...HEAD"],
+                          cwd=root, capture_output=True, text=True, check=True).stdout.split()
 
 
 # A hold is written in the verification queue, not in the score file, and it is part of the
-# product's assessment row (status, hold_reason, held_since). Editing a product's entry there is
-# as deliberate as editing its score file and shows in the diff under that product's slug, so it
-# counts as touching that product. Only the entries that differ count: an edit to one hold does
-# not license a rewrite of every product the queue names.
+# assessment row for one axis (status, hold_reason, held_since). Editing it is as deliberate as
+# editing the score file and shows in the diff under that product and axis, so it authorizes a
+# change to that row and nothing else: an adoption hold does not license a rewrite of the same
+# product's openness or capability row. The older whole-product shape (`slug: {because, since}`)
+# holds every axis, so an edit to one is keyed `slug|*` and covers them all.
 _QUEUE_PATH = "sources/verification_queue.yaml"
+ALL_AXES = "*"
 
 
 def _show(root: Path, ref: str, path: str) -> str:
@@ -124,11 +134,21 @@ def _show(root: Path, ref: str, path: str) -> str:
     return result.stdout if result.returncode == 0 else ""
 
 
-def held_entries_changed(before_text: str, after_text: str) -> set[str]:
-    """Slugs whose `held` entry differs between two versions of the verification queue."""
-    before = (yaml.safe_load(before_text) or {}).get("held") or {}
-    after = (yaml.safe_load(after_text) or {}).get("held") or {}
-    return {slug for slug in set(before) | set(after) if before.get(slug) != after.get(slug)}
+def _holds_by_axis(text: str) -> dict[str, dict]:
+    held = (yaml.safe_load(text) or {}).get("held") or {}
+    out: dict[str, dict] = {}
+    for slug, entry in held.items():
+        entry = entry or {}
+        whole_product = "because" in entry
+        for axis, spec in ({ALL_AXES: entry} if whole_product else entry).items():
+            out[f"{slug}|{axis}"] = spec
+    return out
+
+
+def held_axes_changed(before_text: str, after_text: str) -> set[str]:
+    """`product|axis` keys whose hold differs between two versions of the verification queue."""
+    before, after = _holds_by_axis(before_text), _holds_by_axis(after_text)
+    return {key for key in set(before) | set(after) if before.get(key) != after.get(key)}
 
 
 # Columns axis_assessments.canonical_row serializes that are commit-scoped identity, not
@@ -239,8 +259,12 @@ def renamed_categories(root: Path, base_ref: str) -> set[str]:
 
 
 def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str],
-                 renamed: set[str] | None = None) -> list[str]:
+                 renamed: set[str] | None = None, touched_axes: set[str] | None = None) -> list[str]:
     """Rows belonging to products the PR did not touch must be byte-identical.
+
+    `touched` is products whose score or product file changed; every row of theirs may change.
+    `touched_axes` is `product|axis` rows whose hold changed; only those rows may change, or
+    every row of the product for a whole-product hold (`product|*`).
 
     `renamed` names categories whose file moved in this PR. For a product sitting in one, the
     `category_slug` column is projected out of BOTH sides before comparing - that column is
@@ -248,13 +272,14 @@ def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str
     so a silent rewrite of anything else about those products still fails.
     """
     renamed = renamed or set()
+    touched_axes = touched_axes or set()
     if renamed:
         before = {k: _without_category(v, renamed) for k, v in before.items()}
         after = {k: _without_category(v, renamed) for k, v in after.items()}
     out = []
     for key in sorted(set(before) | set(after)):
         slug = key.split("|", 1)[0]
-        if slug in touched:
+        if slug in touched or key in touched_axes or f"{slug}|{ALL_AXES}" in touched_axes:
             continue
         if key in before and key not in after:
             out.append(f"{key} disappeared but sources/{{scores,products}}/{slug}.yaml did not change")
@@ -293,7 +318,8 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     diff = diff_payloads(before_payload, after_payload)
     touched = touched_products(root, args.base)
     row_changes = compare_rows(before_rows, after_rows, touched,
-                               renamed=renamed_categories(root, args.base))
+                               renamed=renamed_categories(root, args.base),
+                               touched_axes=touched_axes(root, args.base))
     sheet = render_sheet(diff, row_changes)
     (args.sheet.write_text(sheet) if args.sheet else print(sheet))
 
