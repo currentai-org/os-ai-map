@@ -107,7 +107,8 @@ request carrying the two files when anything was written.
 A `product_equivalence` ruling is a fact about the artifact: it belongs to exactly one product
 (docs/reference/identity.md, "Rulings are typed by relation"). The platform model drops an
 equivalence item only when the ledger confirms THAT product or excludes the artifact
-(`equivalence_ruled` in `udms/identity_digest.sql`, #705). So an artifact ruled to belong to
+(`equivalence_ruled` in the platform's `identity.digest`, mirrored read-only at
+`warehouse/models/identity/digest.sql`; #705). So an artifact ruled to belong to
 `qwen-image` would come back the next week proposed against `qwen` whenever a `model_family`
 match reaches a different product than the ruling names.
 

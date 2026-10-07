@@ -704,6 +704,21 @@ def test_an_artifact_ruled_to_one_product_is_suppressed_when_proposed_against_an
     assert suppressed == [ruled, parked]
 
 
+def test_an_artifact_ruled_sku_of_one_product_is_suppressed_when_proposed_against_another(tmp_path):
+    """`sku_of` assigns an owner just as `existing_product` does, so it suppresses through the
+    same path: a surface of `minimax-hailuo` proposed against `minimax` is not a question."""
+    ledger = _assigning_ledger(
+        tmp_path, _confirm("Comfy-Org/MiniMax-H3", "minimax-hailuo", verdict="sku_of"))
+    ruled = _hf_equivalence("k1", "comfy-org/minimax-h3", "minimax", rank=1)
+    unruled = _hf_equivalence("k2", "comfy-org/another-model", "minimax", rank=2)
+
+    kept, suppressed = digest.suppress_ruled_artifacts(
+        [ruled, unruled], ledger=ledger, live_slugs={"minimax", "minimax-hailuo"})
+
+    assert kept == [unruled]
+    assert suppressed == [ruled]
+
+
 def test_suppression_leaves_stale_unresolved_and_same_product_rows_alone(tmp_path):
     """What #705's "worth a look" still covers, and what the filter leaves to others: a ruling
     whose product has left the corpus may be stale; `unresolved` and an exclusion name no owner;
