@@ -20,14 +20,14 @@ openness:
     a training pipeline, which keeps it at open weights rather than a more open score.
   raw: weights:open(gpt-oss-120b/20b on HF, ungated safetensors);data:closed;code:partial(inference reference
     implementations (PyTorch/Triton) in openai/gpt-oss; no training pipeline);license:Apache-2.0(OSI)
-  last_verified: '2026-09-01'
+  last_verified: '2026-10-07'
   sources:
   - url: https://huggingface.co/api/models/openai/gpt-oss-120b
-    shows: '`gated: false`, `private: false`, cardData.license `apache-2.0`, safetensors weight shards
-      listed; 5,376,994 downloads in the trailing 30 days.'
-    accessed: '2026-09-01'
+    shows: 'Model API for openai/gpt-oss-120b: `gated: false`, `private: false`, cardData.license `apache-2.0`,
+      safetensors weights listed.'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 5e25b5fd706abad6dcfd7b9c0291b5e0acb4025a182568c42eb0d6487a77ee61
+    content_sha256: cabfa2c9268bd6c1397e8252f1115762e43adeba806f6741c4ee3ba89f923a66
     establishes:
     - weights
     - license
@@ -35,7 +35,7 @@ openness:
     shows: 'Raw card front matter records only `license: apache-2.0` with no datasets key; the body markets
       "Permissive Apache 2.0 license", configurable reasoning effort and fine-tunability, and carries
       no training-data section — the recipe is not released.'
-    accessed: '2026-09-01'
+    accessed: '2026-10-07'
     http_status: 200
     content_sha256: 92b0408cf5dce04e4c5e4e5f2be0361da710d3650baefd7d7519badd1c687919
     establishes:
@@ -53,11 +53,20 @@ openness:
   - url: https://arxiv.org/abs/2508.10925
     shows: The gpt-oss-120b & gpt-oss-20b Model Card paper (OpenAI, 2025). Describes training at a high
       level; no corpus or pipeline release accompanies it. Corroborates data:closed.
-    accessed: '2026-09-01'
+    accessed: '2026-10-07'
     http_status: 200
     content_sha256: 6b543ce8edf95fd2c2644ba33f535f62d808fe07a4ce195d50ed583f1e1f4088
     establishes:
     - data
+  - url: https://raw.githubusercontent.com/openai/gpt-oss/main/README.md
+    shows: 'README: "This repository provides a collection of reference implementations" in PyTorch, Triton
+      and Metal, "largely reference implementations for educational purposes and are not expected to be
+      run in production", with inference examples and no training pipeline.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 578ad0f82c1d823229f9bf2b52b3f1c55ce82772ac57f634f0ca4eb46a6370aa
+    establishes:
+    - code
 adoption:
   level: 5
   reach: '>10M'
@@ -108,7 +117,6 @@ capability:
       accessed: '2026-09-01'
       http_status: 200
       content_sha256: 4a4e068c0cd8d3110395f0d11f94a5b7b6461fb09abf1088a1bfe515dd861dc8
-  last_verified: '2026-09-01'
   sources:
   - url: https://artificialanalysis.ai/models/gpt-oss-120b
     shows: 'AA model page for gpt-oss-120b (high): embedded index data reads artificialAnalysisIntelligenceIndex
