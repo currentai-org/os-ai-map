@@ -102,6 +102,34 @@ review item. The workflow renders twice: once to create or update the issue and 
 number, then again after adopting with `--adopt --decided-in '#<number>'`, and opens a pull
 request carrying the two files when anything was written.
 
+## An artifact the ledger already assigns is never proposed again
+
+A `product_equivalence` ruling is a fact about the artifact: it belongs to exactly one product
+(docs/reference/identity.md, "Rulings are typed by relation"). The platform model drops an
+equivalence item only when the ledger confirms THAT product or excludes the artifact
+(`equivalence_ruled` in the platform's `identity.digest`, mirrored read-only at
+`warehouse/models/identity/digest.sql`; #705). So an artifact ruled to belong to
+`qwen-image` would come back the next week proposed against `qwen` whenever a `model_family`
+match reaches a different product than the ruling names.
+
+`suppress_ruled_artifacts()` closes that on the repo side. `main()` runs it on the rows before
+the adopt leg and `render()` see them: every equivalence row, in any state, whose artifact
+the ledger assigns (`build.resolution.assigned_product`) to a different product that still
+exists is dropped. A row proposing the product the ledger names is left to the SQL and the
+adopt leg, which already handle it. #705 kept a contradicting confirm visible
+because it "contradicts this edge and is worth a look". That stays true in one case: a ruling
+whose product is not in the corpus (retired or renamed, with no head file or tail row).
+Such a ruling may be stale, so its rows still render. Otherwise a contradicting heuristic is not
+new evidence against a person's ruling, and a ruling changes only when a person changes it
+deliberately. The scorecard counts what was suppressed, so the contradiction stays visible
+without taking a review slot.
+
+`unresolved` rulings and exclusions are left as they are. An `unresolved` artifact still
+needs a person, and the SQL already drops excluded artifacts. Because the platform ranks and
+caps before this filter runs, a suppressed item leaves a gap in that week's ranks rather than
+pulling the next item up. Moving the same rule into `equivalence_ruled` on the platform is a
+maintainer step (docs/operations/); this filter stays correct either way.
+
 ## Evidence rendering
 
 Each `evidence` element is `<url> | <excerpt>` -- a link a reviewer can open and a phrase
@@ -125,6 +153,9 @@ inference's name, not something a reviewer can check.
 - **Ranked items by relation**: how the ranked/rendered set (post-cap) splits across the four
   sections -- a quick check that one relation has not swallowed the whole queue.
 - **Overflow this week**: `pool`-state rows -- eligible but ranked below the cap.
+- **Suppressed, already assigned**: equivalence rows `suppress_ruled_artifacts()` dropped
+  because the ledger already assigns their artifact to a live product. Printed only when the
+  caller passes `suppressed_count`.
 
 CLI:
     uv run python -m build.identity_digest --week 2026-36 --out /tmp/digest.md
@@ -449,7 +480,59 @@ def _render_adopted(adoption) -> list[str]:
     return lines
 
 
-def render(rows: list[dict], week: str, resolved_count: int | None = None, adoption=None) -> str:
+def _live_product_slugs() -> frozenset[str]:
+    """Every product slug the corpus carries: a head file in `sources/products/`, or a tail row,
+    read through `serialize_registry`'s own derivation as `build/identity_eval.py` does."""
+    # Imported here: serialize_registry is a heavier module only main()'s default path needs.
+    from build.serialize_registry import load_registry, tail_product_rows
+
+    head = {path.stem for path in (ROOT / "sources" / "products").glob("*.yaml")}
+    tail = {row["slug"] for row in tail_product_rows(load_registry(ROOT)) if row.get("slug")}
+    return frozenset(head | tail)
+
+
+def suppress_ruled_artifacts(
+    rows: list[dict],
+    ledger=None,
+    live_slugs: frozenset[str] | set[str] | None = None,
+) -> tuple[list[dict], list[dict]]:
+    """`(kept, suppressed)`: drop equivalence rows whose artifact the ledger already assigns.
+
+    A row is suppressed when its `relation` is `equivalence` and `build.resolution.assigned_product`
+    names a product for its `left` artifact that is in `live_slugs` and is not the product the row
+    proposes. Every other row is kept, in order: other relations, unruled artifacts,
+    `unresolved` or excluded artifacts, artifacts assigned to a product that is no longer in the
+    corpus (the ruling may be stale), and rows proposing the very product the ledger names. The
+    SQL already drops that last kind, and within a sweep the adopt leg reports it as already
+    recorded, so this filter leaves it to them. See the module docstring, "An artifact the ledger
+    already assigns is never proposed again".
+
+    `ledger` defaults to `build.resolution.load()` and `live_slugs` to the corpus's head and tail
+    slugs; a test passes both.
+    """
+    ledger = resolution.load(resolution.LEDGER) if ledger is None else ledger
+    live = _live_product_slugs() if live_slugs is None else live_slugs
+    kept: list[dict] = []
+    suppressed: list[dict] = []
+    for row in rows:
+        if row.get("relation") == "equivalence":
+            kind, ident = _pair(row.get("left"))
+            _, proposed = _pair(row.get("right"))
+            owner = resolution.assigned_product(kind, ident, ledger)
+            if owner is not None and owner != proposed and owner in live:
+                suppressed.append(row)
+                continue
+        kept.append(row)
+    return kept, suppressed
+
+
+def render(
+    rows: list[dict],
+    week: str,
+    resolved_count: int | None = None,
+    adoption=None,
+    suppressed_count: int | None = None,
+) -> str:
     """The digest issue body for `week` (`"YYYY-WW"`), rendered from `rows`.
 
     `adoption` is a `build.identity_adopt.AdoptReport` (or `None`). When given, its written
@@ -584,6 +667,10 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None, adopt
         + ", ".join(f"{RELATION_LABELS[r]} {ranked_by_relation[r]}" for r in RELATION_ORDER)
     )
     lines.append(f"- Overflow this week (ranked below the cap, not reviewed): {pool_total}")
+    if suppressed_count is not None:
+        lines.append(
+            f"- Suppressed, artifact already assigned to a product in the ledger: {suppressed_count}"
+        )
     if adoption is not None:
         lines.append(
             f"- Auto-adopted this week: {len(adoption.written)} written, "
@@ -745,6 +832,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.dump_rows:
         args.dump_rows.write_text(json.dumps(rows, indent=2, default=_jsonable) + "\n")
 
+    # Before the adopt leg and the render: an artifact the ledger already assigns is not a
+    # review question, whatever product the heuristic proposes now.
+    rows, suppressed = suppress_ruled_artifacts(rows)
+    if suppressed:
+        print(f"suppressed {len(suppressed)} equivalence row(s) whose artifact the ledger already assigns")
+
     adoption = None
     if args.adopt:
         # Imported here, not at the top: identity_adopt imports this module's entry builders.
@@ -766,7 +859,10 @@ def main(argv: list[str] | None = None) -> int:
 
     monday, sunday = _week_bounds(args.week)
     resolved_count = _resolved_this_week(monday, sunday)
-    body = render(rows, args.week, resolved_count=resolved_count, adoption=adoption)
+    body = render(
+        rows, args.week, resolved_count=resolved_count, adoption=adoption,
+        suppressed_count=len(suppressed),
+    )
     args.out.write_text(body)
     print(f"wrote {args.out} ({len(rows)} row(s))")
     return 0

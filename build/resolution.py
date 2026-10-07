@@ -196,6 +196,27 @@ def blocks_new_product(kind: str, ident: str, ledger: Mapping | None = None) -> 
     return entry if entry and entry["verdict"] in NOT_A_NEW_PRODUCT else None
 
 
+#: The `product_equivalence` verdicts that name the product an artifact belongs to. A subset of
+#: `NOT_A_NEW_PRODUCT`: the two exclusions also say "not a new product", but name no owner.
+ASSIGNING_VERDICTS = frozenset({"existing_product", "sku_of"})
+
+
+def assigned_product(kind: str, ident: str, ledger: Mapping | None = None) -> str | None:
+    """The product slug the ledger assigns this artifact to, or None.
+
+    Relation `product_equivalence` only, and only for a verdict in `ASSIGNING_VERDICTS` that
+    actually names a product: `resolves_to`, or `product` on the older repo-keyed entries. An
+    exclusion, an `unresolved`, or a confirm with no product returns None, so a malformed
+    confirm can never read as an assignment. One artifact belongs to at most one product
+    (docs/reference/identity.md, "Rulings are typed by relation"), so this is a single slug.
+    """
+    entry = verdict_for(kind, ident, "product_equivalence", ledger)
+    if not entry or entry.get("verdict") not in ASSIGNING_VERDICTS:
+        return None
+    slug = (entry.get("resolves_to") or entry.get("product") or "").strip()
+    return slug or None
+
+
 def holds_bulk_promotion(kind: str, ident: str, ledger: Mapping | None = None) -> dict | None:
     """The entry that stops a BULK run from promoting this artifact, if any.
 
