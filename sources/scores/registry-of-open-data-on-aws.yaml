@@ -47,20 +47,21 @@ adoption:
     http_status: 200
     content_sha256: bd3de4f9459ff14fc95bb79d5acf6efe96987267054955bcaed1e5f109c64c8a
 capability:
-  score: 2
+  score: 1
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
-  value: providers propose entries by pull request, admitted at the discretion of the AWS Open Data team;
-    the datasets are "owned and maintained by" their providers; every entry's Resources field names AWS
-    resources by ARN (S3 buckets, CloudFront distributions, database snapshots, SNS topics); anonymous access
-    with `aws s3 ls --no-sign-request`; storage costs of sponsored datasets covered by AWS; a hosted YAML
-    listing of all entries; no persistent dataset identifiers or versions of the registry's own
+  value: a catalog of datasets that providers propose by pull request, admitted at the discretion of the
+    AWS Open Data team; the datasets are "owned and maintained by" their providers; each entry's Resources
+    field points by ARN to the AWS resources that hold the data (S3 buckets, CloudFront distributions, database
+    snapshots, SNS topics), readable with `aws s3 ls --no-sign-request`; the Open Data Sponsorship Program
+    pays storage for sponsored datasets; a hosted YAML listing of all entries; the registry itself stores
+    no data and assigns no persistent dataset identifiers or versions
   confidence: medium
   relative_to: uci-ml-repository
-  relation: at
-  note: Data providers add an entry by pull request, and each entry names the S3 buckets that hold the data,
-    which any S3 client reads by path without an account. The registry assigns no persistent dataset identifiers
-    or versions of its own, the same gap as UCI's missing versions.
+  relation: one_below
+  note: The registry describes datasets that their providers own and maintain, and points to the AWS storage
+    that holds them, which any S3 client can read without an account. The registry itself stores and versions
+    nothing, so like Masader it is a catalog that links out, while UCI holds the datasets it serves.
   last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/CONTRIBUTING.md

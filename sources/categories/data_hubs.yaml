@@ -36,12 +36,12 @@ scoring_recipe:
     one with the same machinery sit together. Scale is adoption, not capability. Rungs, each a
     function the product either performs or does not:
       1  Index and link-out: it describes datasets that stay with their publishers and links to
-         them, holding no data of its own. masader.
-      2  Host and fetch: the hub holds the data. The datasets it lists sit on storage the
-         operator runs or sponsors and are read through one uniform protocol (the hub's own
-         download URLs or API, or AWS resource ARNs), not wherever each publisher keeps them; it
-         does not keep numbered versions under persistent identifiers.
-         uci-ml-repository, registry-of-open-data-on-aws.
+         them, holding no data of its own. masader, registry-of-open-data-on-aws.
+      2  Host and fetch: the hub itself, as a product, holds the data. Datasets are deposited
+         into it and served from its own download URLs or API. Listing datasets that happen to
+         sit on infrastructure the operator's parent company runs (a cloud provider's storage
+         service) does not count; the hub has to take custody of the files, not point at them.
+         It does not keep numbered versions under persistent identifiers. uci-ml-repository.
       3  Persistent identifiers, versioning and API: each dataset has a persistent identifier
          (a DOI or equivalent), published versions are kept and addressable, and machine
          clients fetch a given version by identifier through an API or a stable versioned path.
@@ -55,41 +55,44 @@ scoring_recipe:
          shown only on a web page does not count. openml (top anchor; features and data
          characteristics through its API and Parquet), harvard-dataverse (tabular ingest with
          variable metadata and tab-delimited and Croissant exports).
-    THE RUNGS ARE CUMULATIVE. A product sits at the highest rung whose function it performs
-    together with every function below it, so a product missing a middle function stays below
-    that gap whatever it does above it. PhysioNet is the case: its LightWAVE server parses
-    waveform records and serves typed signals back as JSON (a rung-5 function), and its published-
-    project API returns structured metadata per version (rung-4 metadata), but it has no
-    programmatic publishing, so it sits at 3. Kaggle Datasets is the other: its servers compute
-    column-level metrics for tabular files, but only for display on the dataset page, with no
-    API or export, and its dataframe loading runs in the kagglehub client, so it sits at 4.
-    Client libraries never lift a hub (kagglehub's adapters, ucimlrepo's pandas loader), the same
-    rule the openness note applies to clients. Where a submission interface is offered only to
-    partners (Dryad's Submission API), it counts as programmatic publishing; who is admitted to
-    use it is admission policy. The Registry of Open Data on AWS meets rung 2 only through its
-    storage rule: every entry names AWS resources by ARN, many of them sponsored by AWS, while
-    the datasets are owned and maintained by their providers; read as a catalog of other parties'
-    data it could be rung 1, which is an open question in the promotion PR. Alongside the
-    donations it hosts, UCI can also link an external dataset; its rung rests on the hosted
-    donations. ATLAS, still a registry row, holds the datasets its team uploads but may leave
-    Hugging Face imports on Hugging Face, and no interface delivers a dataset by identifier, so
-    it reads 1 or 2 depending on that share, to settle when it is scored.
+    THE RUNGS ARE CUMULATIVE, by the maintainer's ruling of 2026-10-07. The ladder measures how
+    complete a hub's data lifecycle is, from listing to holding, identifying, publishing and
+    understanding data, not its single strongest feature. A product sits at the highest rung whose
+    function it performs together with every function below it, so a product missing a middle
+    function stays below that gap whatever it does above it, and that outcome is intended.
+    PhysioNet is the case: its LightWAVE server parses waveform records and serves typed signals
+    back as JSON (a rung-5 function), and its published-project API returns structured metadata
+    per version (rung-4 metadata), but it has no programmatic publishing, so it sits at 3. Kaggle
+    Datasets is the other: its servers compute column-level metrics for tabular files, but only
+    for display on the dataset page, with no API or export, and its dataframe loading runs in the
+    kagglehub client, so it sits at 4. Client libraries never lift a hub (kagglehub's adapters,
+    ucimlrepo's pandas loader), the same rule the openness note applies to clients. Where a
+    submission interface is offered only to partners (Dryad's Submission API), it counts as
+    programmatic publishing; who is admitted to use it is admission policy. The Registry of Open
+    Data on AWS is at 1 by the same ruling: its entries point to S3 and other AWS resources that
+    AWS the company operates, but the providers own and maintain the datasets, and the registry
+    itself stores nothing, so it works as a catalog. Alongside the donations it hosts, UCI can
+    also link an external dataset; its rung rests on the hosted donations. ATLAS, still a
+    registry row, holds the datasets its team uploads but may leave Hugging Face imports on
+    Hugging Face, and no interface delivers a dataset by identifier, so it reads 1 or 2 depending
+    on whether it holds the data it lists, to settle when it is scored.
 
 
     ANCHORS. openml is the top anchor and records no relative_to. harvard-dataverse is at it.
     zenodo is one_below harvard-dataverse (the same deposit machinery without server-side
     parsing); kaggle-datasets and dryad are at zenodo. physionet is one_below dryad (versioned
     DOIs and stable paths, but submission only through the website). uci-ml-repository is
-    one_below physionet (a DOI and an API by ID, but no kept versions), registry-of-open-data-on-aws
-    is at uci-ml-repository, and masader is one_below uci-ml-repository (it holds no data).
+    one_below physionet (a DOI and an API by ID, but no kept versions). masader and
+    registry-of-open-data-on-aws are each one_below uci-ml-repository (they list datasets that
+    stay with their providers, where UCI holds what it serves).
 
 
-    DISTRIBUTION, counted 2026-10-07 over 9 banded products: 1 at 1, 2 at 2, 1 at 3, 3 at 4,
+    DISTRIBUTION, counted 2026-10-07 over 9 banded products: 2 at 1, 1 at 2, 1 at 3, 3 at 4,
     2 at 5. The widest rung is 4, at 3 of 9 (33%), at the third that triggers a review rather than
     above it. Its wording is the rung-4 line above, and the three share a checkable pair of
     functions: a write API or CLI (Zenodo's deposition API, Dryad's Submission API, the Kaggle
-    CLI's create and version commands) and structured dataset metadata, with no parsing of the
-    files on the server.
+    CLI's create and version commands) and structured dataset metadata, with no parsing served
+    back by the hub.
 products:
 - openml
 - harvard-dataverse
@@ -106,19 +109,27 @@ comments: >-
   rejected it: model_hubs is for registries clients fetch named model artifacts from, and an
   exception by name would make that definition false for one member. Membership test: is the
   product a public catalog of datasets from many publishers, where the catalog itself is what
-  is offered rather than one dataset or the storage under it? Proposed in the promotion PR for
-  the maintainer to confirm: a general-purpose research repository qualifies when datasets are a
+  is offered rather than one dataset or the storage under it? A general-purpose research
+  repository qualifies (maintainer's ruling, 2026-10-07) when datasets are a
   first-class record type, with their own records, identifiers and dataset metadata, and not
   merely files attached to records of another kind. Neighbors. A hub that hosts models
   as well as datasets stays in model_hubs (huggingface-hub-platform, modelscope). Versioned data
   layers and internal or enterprise data catalogs stay in storage (oxen, dvc, lakefs, DagsHub,
   Unity Catalog). A single dataset, however large, goes to its dataset category
-  (language_specific_datasets, training_synthetic_datasets, benchmark_eval_data). Research
+  (language_specific_datasets, training_synthetic_datasets, benchmark_eval_data). ADOPTION
+  CAUTION (maintainer's ruling, 2026-10-07): adoption abstains on seven of the nine head
+  products, because catalogs publish their size rather than their use, and the two readings
+  that exist are heterogeneous (Harvard Dataverse's file downloads from its metrics API and
+  Masader's GitHub stars). The category may publish on that, but any stage or gap it carries is
+  a thin adoption read, and nothing should present it as broad adoption measurement. Coverage is
+  not to be raised by substituting weaker proxies, such as client-package downloads or catalog
+  size. Research
   tranche, 2026-10-07: nine head products from the peer sweep in issue #827 and its candidate
-  comment, with the category kept preliminary until the maintainer rules on the questions in the
-  promotion PR. Two of the nine are roster questions: OpenML moved here from the
-  benchmark_eval_data registry, since its datasets are what its tasks and runs are built on, and
-  Zenodo is scored for its dataset records though it accepts every research artifact. Roboflow
+  comment. The maintainer ruled on 2026-10-07 that OpenML, moved here from the
+  benchmark_eval_data registry, belongs, since its datasets are what its tasks and runs are
+  built on, and that Zenodo belongs under the general-purpose repository rule above. The
+  category stays preliminary until ATLAS's openness is answered or another tenth product is
+  researched. Roboflow
   Universe was researched and then returned to the registry, because it also hosts trained
   models that it offers for reuse, which this test routes to model_hubs. Further candidates that
   pass the test are registry rows (Google Dataset Search, Figshare, the CLARIN VLO, Academic
