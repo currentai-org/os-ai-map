@@ -229,6 +229,11 @@ def test_any_drift_exits_one_and_names_the_runbook(tmp_path, capsys):
     # maintainer to diff seventeen mirror files against a platform nobody can read.
     (MCPCallFailed("GetDataModel failed: UNAUTHENTICATED: User is not authenticated"),
      "refused the call"),
+    # The 5 Oct failure (#830): the API started requiring `where`, and the message blamed the
+    # key. A validation error names the request, not the credential.
+    (MCPCallFailed("GetDataModel failed: 1 validation error for call[GetDataModel]\n"
+                   "variables.where\n  Field required [type=missing]"),
+     "rejected the request's shape"),
 ])
 def test_anything_that_prevents_checking_exits_two_and_names_the_cause(
         tmp_path, capsys, failure, cause):
