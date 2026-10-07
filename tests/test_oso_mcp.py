@@ -212,6 +212,15 @@ def test_an_unknown_model_id_returns_none_rather_than_raising():
     assert client_with(session).data_model("nope") is None
 
 
+def test_data_model_filters_on_id_with_an_operator():
+    """`GetDataModel` takes `where` over database columns; a bare `id` is rejected (#830)."""
+    session = FakeSession(FakeResponse(tool_result('{"dataModels": {"edges": []}}')))
+    client_with(session).data_model("m1")
+    _url, body = session.posts[-1]
+    assert json.loads(body)["params"]["arguments"] == {
+        "variables": {"where": {"id": {"eq": "m1"}}}}
+
+
 def test_data_model_unwraps_the_edge_node():
     node = {"id": "m1", "latestRevision": {"revisionNumber": 4}}
     session = FakeSession(FakeResponse(
