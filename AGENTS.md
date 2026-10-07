@@ -67,6 +67,7 @@ docs/workflows/        Task-oriented how-to, one per contributor intent
 docs/reference/        Concepts + normative rules (openness, adoption, capability,
                        identity, evidence-and-freshness, gap-analysis, queries, notebook-design)
 docs/operations/       Maintainer deploy/publish runbooks
+docs/rulings/          The maintainer's decision log (log.yaml). Read it before asking anything
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
 skills/                Agent skills for common editor workflows
 tests/                 pytest suite for build helpers and serializer behavior
@@ -130,6 +131,9 @@ Proposers          propose_arxiv, propose_artifacts.
 Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it applies the
                    inclusion principle in docs/architecture/adr-005-closed-product-inclusion.md,
                    which is guidance and not a gate. Never wire one into preflight or CI.
+                   review_queue gathers every open question (held axes, deferred rulings,
+                   and with --live the contradiction sweep) and says what each one waits on:
+                   a ruling, another evidence pass, a working fetch, or a scheduled run.
 ```
 
 Proposers deliberately **print rather than write**. Matching artifacts by name measured 2

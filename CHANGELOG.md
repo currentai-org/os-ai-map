@@ -16,6 +16,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- The maintainer's rulings log (`docs/rulings/`), the `build.review_queue` report of every open
+  question and what it waits on, and the `ruling-session` and `audit-repo-accuracy` skills
+  ([#812](https://github.com/currentai-org/os-ai-map/pull/812)).
+
 ### Changed
 
 - Adoption re-banded for 51 products whose band disagreed with the same measured band on both
