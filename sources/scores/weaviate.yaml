@@ -1,7 +1,7 @@
 product: weaviate
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: BSD-3-Clause
@@ -9,19 +9,28 @@ openness:
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: the wl directory holds Enterprise Edition code available only under a separate enterprise
+        license, and its features are enabled by a license key
+    context:
+      enterprise-dir:
+        value: Weaviate-License
   confidence: high
-  note: Weaviate's BSD-3-Clause core is public, unarchived and builds the whole server, with no paid tier
-    or enterprise edition gating it. Weaviate Cloud is a hosted service sold beside that core rather than
-    a piece withheld from it.
-  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
-  last_verified: '2026-09-02'
+  note: 'Weaviate''s LICENSE splits the repository in two: code outside the wl directory is BSD-3-Clause,
+    while code inside it is an Enterprise Edition available only under a separate commercial license and
+    switched on by a license key. That functionality sits inside the published tree but outside the open
+    terms, the same shape as Meilisearch''s Enterprise Edition, rather than a hosted service sold beside
+    a complete core.'
+  raw: license:BSD-3-Clause(OSI);enterprise-dir:Weaviate-License;source:public;core-gated:gated(the wl directory
+    holds Enterprise Edition code available only under a separate enterprise license, and its features are
+    enabled by a license key)
+  last_verified: '2026-10-07'
   sources:
   - url: https://github.com/weaviate/weaviate/blob/main/LICENSE
-    shows: LICENSE file is the verbatim BSD 3-Clause text under a Weaviate B.V. copyright line.
-    accessed: '2026-09-02'
+    shows: 'LICENSE: outside the "wl" directory source code "is licensed under the BSD-3-Clause License, as defined in LICENSE-BSD"; within it, code "is only available under a separate enterprise license" and "features are enabled via license key".'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 61fc440e31f16993a0358f2c2325618275d4487913d4ec310d6f32293fd32950
+    content_sha256: bdfa69974cf4f303f93b55395e1cc555311d9a50bfd749e79bba1c304d0c3601
     establishes:
     - license
   - url: https://api.github.com/repos/weaviate/weaviate
@@ -34,12 +43,11 @@ openness:
     - license
     - source
   - url: https://github.com/weaviate/weaviate/blob/main/README.md
-    shows: README describes an open-source vector database combining vector search with structured filtering, with
-      no paid tier, enterprise edition or license-key-gated build beside the BSD-3-Clause core, only a separately
-      sold hosted Weaviate Cloud service.
-    accessed: '2026-09-02'
+    shows: 'README License section: "Files in our wl/ folder are only available under a commercial license
+      with a license key issued by us" and "Enterprise features require a license key."'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 0123d30defd019c4b5ead051aa2c977431c4c6d6657cad81bd8a8faa7bbc87c5
+    content_sha256: 8dc0086a08ce896fca55ed99881694a5baae63a4e671489cb98c3e6a07da096a
     establishes:
     - source
     - core-gated
@@ -79,21 +87,21 @@ capability:
     which is what keeps it one step below Vespa, the only system that evaluates models inside its own serving
     path.
   comparison:
-    last_attested: '2026-09-02'
+    last_attested: '2026-10-07'
     sources:
     - url: https://github.com/vespa-engine/vespa/blob/master/README.md
       shows: README still documents search, inference and organization over vectors, tensors, text and structured
-        data at serving time, with ML inference evaluated during serving as part of the core engine rather than
-        an optional external module.
-      accessed: '2026-09-02'
+        data at serving time, with ML inference evaluated during serving as part of the core engine rather
+        than an optional external module.
+      accessed: '2026-10-07'
       http_status: 200
-      content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
-  last_verified: '2026-09-02'
+      content_sha256: 5265be4d7ef3c3ffe6f8d8e8265047516cd7a8e39258edb15edc7451297ab59a
+  last_verified: '2026-10-07'
   sources:
   - url: https://github.com/weaviate/weaviate/blob/main/README.md
-    shows: README documents a cloud-native vector database with replication, sharding and multi-tenancy, and an
-      optional modules system (text2vec, reranker, generative) that integrates external or containerized models
-      rather than hosting inference inside the core query engine.
-    accessed: '2026-09-02'
+    shows: README documents a cloud-native vector database with horizontal scaling, replication, multi-tenancy
+      and RBAC, and integrated vectorizer, reranking and generative modules that call external or containerized
+      models rather than hosting inference in the core query engine.
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 0123d30defd019c4b5ead051aa2c977431c4c6d6657cad81bd8a8faa7bbc87c5
+    content_sha256: 8dc0086a08ce896fca55ed99881694a5baae63a4e671489cb98c3e6a07da096a

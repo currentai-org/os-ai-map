@@ -19,13 +19,13 @@ openness:
     back.
   raw: license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
     path in the repository root and no paid build of the engine in the README)
-  last_verified: '2026-08-31'
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/pytorch/executorch/main/LICENSE
     shows: 'LICENSE body, read in full: the stock BSD 3-Clause text carrying eight copyright holders - Meta, Arm,
       Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which is why the API reports NOASSERTION. No appended
       condition.'
-    accessed: '2026-08-31'
+    accessed: '2026-10-07'
     http_status: 200
     content_sha256: c58707ea5d5c0ee17af7e16f1377e4d31ad1533492ab0bf9b87ebd9f718f9e7b
     establishes:
@@ -41,9 +41,9 @@ openness:
   - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
     shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
       and for whether any component is stated to be private.
-    accessed: '2026-08-31'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+    content_sha256: bae612e3bbca4be0429ec8f7fd08a7427087204bd26388fcf4b0f5c63c58df8a
     establishes:
     - source
     - core-gated
@@ -58,7 +58,6 @@ adoption:
     Ray-Ban Meta smart glasses -- reaching billions of people. GitHub stars measure attention to a repository
     rather than a runtime bundled invisibly inside other companies' apps, so adoption is read from that
     deployment breadth instead.
-  last_verified: '2026-08-31'
   sources:
   - url: https://engineering.fb.com/2025/07/28/android/executorch-on-device-ml-meta-family-of-apps/
     shows: Meta's engineering blog on ExecuTorch in the Meta family of apps, naming Instagram, WhatsApp, Messenger
@@ -82,29 +81,40 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: category feature matrix, banded against the vllm anchor
-  value: On-device execution of exported models through a ~50KB C++ runtime, with twelve or more hardware backends
-    across eight vendors - XNNPACK, Vulkan, Qualcomm, MediaTek and Samsung Exynos on Android, CoreML on iOS, OpenVINO
-    and CUDA on Linux and Windows, Metal and MLX on macOS - switchable by changing one partitioner line, plus the
-    export and lowering toolchain.
+  value: On-device execution of exported PyTorch models on phones, wearables, laptops, browsers, embedded
+    systems and microcontrollers, through a runtime trimmed to the operators a deployment needs, with backends
+    spanning XNNPACK, Vulkan, Qualcomm, MediaTek, Arm, Samsung Exynos, Core ML, MLX, OpenVINO, CUDA, WebGPU,
+    NXP and Cadence, each target exported separately, plus the export and lowering toolchain.
   relative_to: vllm
   relation: one_below
   confidence: medium
   note: ExecuTorch is a tier below vLLM, level with ONNX Runtime, judged by execution-provider breadth across
-    CPU, GPU, mobile and edge hardware. Its backend matrix spans eight silicon vendors and four host platforms,
-    wider than Apple Core ML Runtime's, but it executes models on device rather than serving them with batching,
-    parallelism and a multi-tenant API surface.
-  last_verified: '2026-08-31'
+    CPU, GPU, mobile and edge hardware. Its backend table covers more silicon vendors than Apple Core ML
+    Runtime's, from phones and desktops down to microcontrollers, but it executes models on device rather
+    than serving them with batching, parallelism and a multi-tenant API surface.
+  comparison:
+    last_attested: '2026-10-07'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'vLLM README feature list: PagedAttention, continuous batching, chunked prefill and prefix
+        caching, "Tensor, pipeline, data, expert, and context parallelism for distributed inference", hardware
+        plugins across GPU and accelerator vendors, and "200+ model architectures".'
+      accessed: '2026-10-07'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
-    shows: 'README, read for the engine''s feature set: On-device execution of exported models through a ~50KB C++
-      runtime, with an export and lowering toolchain and backends across a dozen hardware vendors.'
-    accessed: '2026-08-31'
+    shows: 'README: "PyTorch''s open source stack for running AI locally on phones, wearables, laptops,
+      browsers, embedded systems, and microcontrollers", with "A runtime you can right-size" through selective
+      build.'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+    content_sha256: bae612e3bbca4be0429ec8f7fd08a7427087204bd26388fcf4b0f5c63c58df8a
   - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
-    shows: README backend matrix and "12+ Hardware Backends - Open-source acceleration for Apple, Samsung, Qualcomm,
-      ARM, MediaTek, Vulkan, and more", with the per-platform table naming XNNPACK, Vulkan, Qualcomm, MediaTek,
-      Samsung Exynos, CoreML, OpenVINO, CUDA, Metal and MLX.
-    accessed: '2026-08-31'
+    shows: 'README "Platforms and hardware backends" table: XNNPACK, Vulkan, Qualcomm, MediaTek, Arm VGF
+      and Samsung Exynos on Android; Core ML and MLX on Apple; OpenVINO, CUDA and WebGPU on desktop; Arm
+      Ethos-U, NXP eIQ Neutron and Cadence DSP on embedded targets.'
+    accessed: '2026-10-07'
     http_status: 200
-    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+    content_sha256: bae612e3bbca4be0429ec8f7fd08a7427087204bd26388fcf4b0f5c63c58df8a
