@@ -1,0 +1,84 @@
+product: kaggle-datasets
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: hosted service; the published repositories are the CLI and kagglehub client
+  confidence: high
+  note: Kaggle Datasets is part of Kaggle's hosted platform, and what Kaggle publishes openly are two clients for
+    it, a Python library and a CLI. Neither contains the service, so nothing about the catalog can be run elsewhere.
+  raw: license:proprietary(hosted service; server source not published);source:closed(hosted service; the published
+    repositories are the CLI and kagglehub client)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md
+    shows: '"The kagglehub library provides a simple way to interact with Kaggle resources such as datasets, models,
+      notebook outputs in Python." A client of the hosted service.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/README.md
+    shows: '"The official CLI to interact with Kaggle." Another client; neither repository contains the platform.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 5edaa4aded86315be3095dd9675a2ed6fe99d0f68a1fb55c4b3564c45e780107
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Kaggle's dataset pages and listing API served a browser challenge or needed an account, and the CLI documentation
+    describes paged results with no total. No usage figure could be read, and downloads of the kagglehub client
+    would measure a client rather than the catalog.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets.md
+    shows: '`kaggle datasets list` pages with `--page` and sorts by hottest, votes, updated or active; no total
+      count is documented.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 6ac0ba358a42364df119af7e827b5686dff296efea9ae7dada8a18b676b62a10
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: users or organizations create datasets and new versions (`kaggle datasets create`, `kaggle datasets version`);
+    Data Package metadata with per-file descriptions and column schemas; search and filter by file type, license,
+    tags and size; download by owner/slug through the CLI and kagglehub; kagglehub loads a file into pandas, Polars
+    or a Hugging Face dataset
+  confidence: medium
+  relative_to: openml
+  relation: at
+  note: Any user or organization can publish a dataset, add versions and describe each file's columns, and the Kaggle
+    CLI and kagglehub fetch it by owner and name. kagglehub also loads a file straight into pandas, Polars or a
+    Hugging Face dataset, which puts it on a par with OpenML.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets_metadata.md
+    shows: '"The Kaggle API follows the Data Package specification"; `id` is "Your username or organization slug"
+      plus a dataset slug; resources carry a field `schema`.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 330336df920e4c363e7411b73bdccf5b6eb8c4cc9aec86c451c83d121e15a110
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets.md
+    shows: '`kaggle datasets list` filters by file type, license, tags and size; `kaggle datasets download <owner/dataset-name>`
+      downloads files.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 6ac0ba358a42364df119af7e827b5686dff296efea9ae7dada8a18b676b62a10
+  - url: https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md
+    shows: '"Loads a file from a Kaggle Dataset into a python object": KaggleDatasetAdapter.PANDAS, HUGGING_FACE
+      and POLARS.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b

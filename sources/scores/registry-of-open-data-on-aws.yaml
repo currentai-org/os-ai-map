@@ -1,0 +1,81 @@
+product: registry-of-open-data-on-aws
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: partial
+      detail: the registry's entries and schema are published; the site build and the hosting behind it are not
+  confidence: high
+  note: Every entry in the registry is a YAML file in a public Apache-2.0 repository, so the catalog's content can
+    be read and reused. The website built from those files is not published, and admission and storage sponsorship
+    are decisions AWS makes.
+  raw: license:Apache-2.0(OSI);source:partial(the registry's entries and schema are published; the site build and
+    the hosting behind it are not)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/LICENSE
+    shows: Apache License Version 2.0, January 2004, full text.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/README.md
+    shows: '"Each dataset in this repository is described with metadata saved in a YAML file in the /datasets directory.
+      We use these YAML files to provide three services".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 74572836e0661e6b8506c398c7cea59c18787035f9e1664c5ca5be58425fd0de
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: The registry publishes no count of visits or of reads from the buckets it lists, and those reads would belong
+    to each dataset's provider rather than to the catalog. No reading was recorded.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://registry.opendata.aws/
+    shows: Registry home page listing datasets by provider and tag; no usage figure.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: bd3de4f9459ff14fc95bb79d5acf6efe96987267054955bcaed1e5f109c64c8a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: providers propose entries by pull request, admitted at the discretion of the AWS Open Data team; entries
+    list S3 buckets, SNS topics and other resources by ARN and region; anonymous access with `aws s3 ls --no-sign-request`;
+    storage costs of sponsored datasets covered by AWS; a hosted YAML listing of all entries
+  confidence: medium
+  relative_to: uci-ml-repository
+  relation: at
+  note: Data providers propose an entry by pull request, and AWS's open data team decides what is listed and sponsors
+    storage for many datasets. Each entry names the buckets that hold the data, which any S3 client reads by path
+    without an account, the same admitted-then-fetched shape as UCI.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/CONTRIBUTING.md
+    shows: '"Datasets are included at the discretion of the AWS Open Data team, which may remove datasets from the
+      registry at any time."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 7c55199d25a80022e1cd9c6abcadda71e2d4cfac808939651a0d6b4dc807c157
+  - url: https://registry.opendata.aws/noaa-goes/
+    shows: 'Resources on AWS: S3 bucket arn:aws:s3:::noaa-goes19; "AWS CLI Access (No AWS account required) aws
+      s3 ls --no-sign-request s3://noaa-goes19/".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 28eb2539a7459d0c9b89b7f885afae6f427bc0dc89d9d771ef30cf55f47fb5c1
+  - url: https://aws.amazon.com/opendata/open-data-sponsorship-program/
+    shows: '"The AWS Open Data Sponsorship Program covers the cost of storing and sharing publicly available, high-value,
+      cloud-optimized datasets on the Registry of Open Data on AWS."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 1aff41f971407e16a79ab5aa8cfa8731fe5fa7abed01c9de113162bafbaebe70

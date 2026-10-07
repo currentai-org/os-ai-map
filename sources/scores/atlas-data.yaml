@@ -1,0 +1,81 @@
+product: atlas-data
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: terms of use reserve the site's contents, including source code
+    source:
+      value: closed
+      detail: hosted service; no repository for the platform published
+  confidence: low
+  note: ATLAS's privacy policy calls it an open-source data platform, but no source repository for it has been published
+    and its terms of use reserve the site's code. Until the code is released, nothing about the platform can be
+    run or inspected elsewhere.
+  raw: license:proprietary(terms of use reserve the site's contents, including source code);source:closed(hosted
+    service; no repository for the platform published)
+  sources:
+  - url: https://atlas-data.ai/en/terms-of-service
+    shows: '"The contents of the Site, including source code, pages, documents and online graphics ... are protected
+      by copyright, trademark and other forms of proprietary rights."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 3bc2faebff727aceb22fb1bb73600536db59bdfea0689e7cde5d55c03b170b2a
+    establishes:
+    - license
+    - source
+  - url: https://atlas-data.ai/en/privacy-policy
+    shows: '"ATLAS-Data is an open-source data platform operated by AISG."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 404f612fabd825d7f647db8756166077dcb16cd6e5adf325b25b747c565d1d18
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: ATLAS publishes the size and language coverage of its catalog but no count of searches, downloads or users.
+    Catalog size describes what is listed rather than how much it is used, so no reading was recorded.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://atlas-data.ai/en
+    shows: 'Home page: browse, chat and MCP routes into the catalogue and a coverage map; no usage or download counter.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: eaca855a88f8a060983d25c8bd161bc7c626480788e86398f297c8cd6f085a03
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: contributors approved by the ATLAS team submit datasets by Hugging Face import or a team-assisted upload;
+    automated processing and human review before publication with a unique dataset ID; search by language, modality,
+    license or task, a chat search, and a read-only MCP API for search, facets, configs and schemas; signed-in users
+    download datasets that allow it from the site
+  confidence: medium
+  relative_to: uci-ml-repository
+  relation: one_below
+  note: Contributors the ATLAS team approves bring datasets in from Hugging Face or through a team-assisted upload,
+    and each one is reviewed before it is published. Agents can search the catalog and inspect a dataset's schema
+    over a read-only MCP API, but files are downloaded through the website, while UCI serves each dataset by ID
+    through a public API.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://www.atlas-data.ai/en/docs/how-to-contribute
+    shows: '"Paste a HuggingFace URL" or "Have our team upload it" ("Direct browser uploads are paused"); then "Human
+      review" and "Published ... with a unique dataset ID".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 5230018f92956524920cf73cafdb5465e4006a1504f303cb0a4bd2528e6d30a0
+  - url: https://www.atlas-data.ai/en/mcp
+    shows: 'MCP tools: Dataset Search, Catalog Facets, Dataset Health, Config Listing, Schema Inspection; "The API
+      can only read data — nothing can be modified or deleted."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: a1bf6987a4a2ac616d382531a558870ce67bd2cc8474103ee2a1bb6f617c918e
+  - url: https://www.atlas-data.ai/en/docs/verification
+    shows: Signed-in accounts "download datasets that allow it"; a Contributor "can add data to the catalogue",
+      granted on request and reviewed by hand.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: f4abc593f5f3e3f6a027cf7c8eb97df8fbb0737ff1ca5fbf4774e298a0c35bc4

@@ -1,0 +1,92 @@
+product: dryad
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/datadryad/dryad-app
+    core-gated:
+      value: ungated
+      detail: non-profit membership organization; the charge is for curation and publication, not for software features
+  confidence: high
+  note: The application that runs datadryad.org is published under the MIT license. Dryad charges for curating and
+    publishing a dataset, a service rather than a part of the software held back.
+  raw: license:MIT(OSI);source:public(github.com/datadryad/dryad-app);core-gated:ungated(non-profit membership organization;
+    the charge is for curation and publication, not for software features)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/LICENSE.md
+    shows: '"The MIT License (MIT) Copyright (c) 2023-2024 Dryad; Copyright (c) 2015-2023 The Regents of the University
+      of California".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: e8ce03bbafde3622da11b857689f10df7e7926f9f47630010563b2c6e1845b6f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/README.md
+    shows: '"Dryad is a research data publishing platform based on the UC Curation Center''s implementation of the
+      Stash application framework", with installation and deployment instructions.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 1b5d28043dbc21835221fb27abc383b59c7fde841f9d36b2d3179b91ca10cd0d
+    establishes:
+    - source
+  - url: https://datadryad.org/costs
+    shows: '"Our Data Publishing Charge (DPC) is based on the variable costs of curating, publishing, and preserving
+      a dataset."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 599285f24bf79d8d0074fb0c9d79fd18221ea434910cb35e411d17681608c370
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Dryad publishes no repository-wide download or user figure, and its reports API listed nothing. The count
+    of published datasets measures what it holds rather than its use, so no reading was recorded.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://datadryad.org/api/v2/datasets
+    shows: 'Dataset listing: "total": 72656 published datasets; no download counts.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: a87943cb6d11532728fc9eab8b7c380371294fe28c6138a87e7e814117ecea84
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: researchers submit datasets that Dryad's curators review before publication; DataCite metadata and a DOI
+    per dataset; versions listed per dataset; REST API lists datasets, versions and files and downloads the latest
+    version by DOI; anonymous search API
+  confidence: medium
+  relative_to: zenodo
+  relation: one_below
+  note: Every submission passes through Dryad's curators before it is published, and published datasets get a DOI,
+    versions and a REST API that downloads them by DOI. On Zenodo an account publishes without that review, and
+    neither service parses the files it holds.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/documentation/apis/README.md
+    shows: '"Versions of the dataset: /api/v2/datasets/doi.../versions"; "Download the most recent version of a
+      dataset: /api/v2/datasets/doi.../download".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 7eaf2c0961c1111fb9df187208db108f8586856e574cb9d2df0eb87b8d39c573
+  - url: https://datamanagement.hms.harvard.edu/share/data-repositories
+    shows: 'Dryad: "Data downloading via API Yes"; "Uses the DataCite metadata schema"; "$120 data publishing charge
+      unless funded by the institution, publishers or funders."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01
+  - url: https://datadryad.org/about
+    shows: Dryad's community of institutions, funders, societies and publishers invests in it "for the curation,
+      open sharing and reuse of research data in all fields".
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 184eaaae50fbeed366facda3d788fd04e71273a36625276baad60b3a2f399415

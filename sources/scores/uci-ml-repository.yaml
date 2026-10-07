@@ -1,0 +1,82 @@
+product: uci-ml-repository
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; site source not published
+    source:
+      value: closed
+      detail: hosted service; the published repositories are the ucimlrepo client and a feedback issue tracker
+  confidence: high
+  note: The repository's website and API are run by UC Irvine and their code is not published. The ucimlrepo package
+    that fetches from it is open source, but it is a client and does not make the repository itself runnable elsewhere.
+  raw: license:proprietary(hosted service; site source not published);source:closed(hosted service; the published
+    repositories are the ucimlrepo client and a feedback issue tracker)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/uci-ml-repo/ucimlrepo/HEAD/README.md
+    shows: '"Package to easily import datasets from the UC Irvine Machine Learning Repository into scripts and notebooks."
+      A client of the hosted service.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: c4e24ffdb597721a70ee32a05a990f5848cfebbe9707d4cacd735e974fee97f5
+    establishes:
+    - license
+    - source
+  - url: https://archive.ics.uci.edu/about
+    shows: 'About page: librarians, NSF funding and "The current version of the website was released in 2023"; no
+      source link.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 06cd3ff07d3347f38ef1f06ad9e2ede977a77e0fc508fc2b1901a38bfdbd4a05
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Dataset pages show running view and citation counts, but these are cumulative page views rather than downloads,
+    and the repository publishes no monthly or total usage figure. No reading was recorded.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://archive.ics.uci.edu/dataset/53/iris
+    shows: 'Iris dataset page: "352 citations 1522782 views", DOI 10.24432/C56C76, read 2026-10-07.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: ee789f1a1c524581f49c99825b41f224adc5a5fc1d702e57f5775d654e889961
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: donors submit datasets that the repository approves; approved datasets get a DOI and a CC BY 4.0 license;
+    external datasets can be linked; public JSON API by dataset ID; ucimlrepo fetches by ID or name into pandas
+    dataframes with variable metadata
+  confidence: medium
+  relative_to: dryad
+  relation: at
+  note: Datasets enter by donation and are approved by the repository's librarians, then receive a DOI and are served
+    by ID through a public API that the ucimlrepo package loads into pandas. That editorial admission and fetch
+    by identifier is the same shape as Dryad's.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://archive.ics.uci.edu/contribute/donation
+    shows: '"Datasets approved to be in the repository will be assigned a Digital Object Identifier (DOI)"; "Datasets
+      will be licensed under a Creative Commons Attribution 4.0 International license".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 392c8577f18afbcbe2d3b31db7d7af7c3cd7d99a13c9afe73f8d13a67ed21ecd
+  - url: https://archive.ics.uci.edu/api/dataset?id=53
+    shows: 'JSON record for Iris: "uci_id":53, "data_url":"https://archive.ics.uci.edu/static/public/53/data.csv",
+      tasks, characteristics and feature types.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 0387b83840adbdefd10030c96e9e2ba80dc0419b6494efa7745d69bc927b9f15
+  - url: https://raw.githubusercontent.com/uci-ml-repo/ucimlrepo/HEAD/README.md
+    shows: '"fetch_ucirepo(id=45)"; "Provide either a dataset ID or name"; returns "dataset matrices as pandas dataframes"
+      and metadata.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: c4e24ffdb597721a70ee32a05a990f5848cfebbe9707d4cacd735e974fee97f5
