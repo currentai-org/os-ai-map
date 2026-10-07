@@ -140,14 +140,20 @@ def test_the_real_corpus_holds_at_its_known_count():
     adoption level is unchanged, because the archived repository's stars band at the same level its
     recorded reported traction does. Both protocols declared their specification repository
     together with the reference SDK packages their adoption is read from, as ag-ui does.
+
+    Raised to 26 on 2026-10-07 by the data_hubs promotion: kaggle-datasets (kagglehub and the
+    Kaggle CLI, two citations), roboflow-universe (the roboflow Python package) and
+    uci-ml-repository (ucimlrepo) each cite a client of a closed hosted catalog to show that the
+    catalog's code is not there, the kaggle-models shape. Declaring a client would read its
+    downloads as the catalog's adoption.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 22, [f[0] for f in findings]
+    assert len(findings) == 26, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
         "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
         "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
         "huggingface-hub-platform", "kaggle-models", "lamini", "modelscope", "ollama-library",
-        "patronus-evaluation-platform", "predibase",
+        "kaggle-datasets", "patronus-evaluation-platform", "predibase",
         "qualcomm-ai-engine-direct", "ragaai-catalyst", "replit-agent-code-execution-api",
-        "tavily-search-api", "vals-ai",
+        "roboflow-universe", "tavily-search-api", "uci-ml-repository", "vals-ai",
     }
