@@ -85,6 +85,8 @@ Adoption is graded 1–5 and measures real usage (downloads, active users, and d
 
 The sources differ by product type. For repositories we use GitHub stars, forks, and developer activity; for models and datasets, Hugging Face downloads and likes; for packages, registry download statistics (PyPI via pypistats.org, pepy.tech, and pypi.org, together with npm). Relative usage across models is estimated from OpenRouter's per-model token-share leaderboard. For the large closed consumer surfaces, where first-party usage figures are unavailable, we rely on traffic and monthly-active-user trackers such as Business of Apps and DemandSage.
 
+PyPI changed how it counts downloads on 24 August 2026: from that day only requests for distribution files count, so metadata fetches no longer add to the figures. Package download counts fell sharply at that date, and the drop reflects a change in measurement, not in use. We re-baselined the PyPI-measured adoption bands once against the post-change counts, in October 2026, and left the band thresholds unchanged.
+
 We recognize that adoption metrics can be gamed or manipulated, and welcome community feedback on the sources and methods used to compute them.
 
 #### Axis 3: Capability
