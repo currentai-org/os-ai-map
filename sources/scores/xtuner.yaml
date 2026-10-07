@@ -46,7 +46,6 @@ adoption:
     on 2026-05-15, so a download count from the old package measures a version the project has left behind
     rather than current use. No stronger usage signal is available, since GitHub stars measure attention
     rather than use.
-  last_verified: '2026-08-31'
   sources:
   - url: https://pypi.org/pypi/xtuner/json
     shows: 'info.version 0.2.0, uploaded 2025-07-11T05:43:58Z, newest of 27 releases; nothing on a 1.x line has
@@ -89,7 +88,7 @@ capability:
   relative_to: megatron-lm
   relation: one_below
   comparison:
-    last_attested: '2026-08-31'
+    last_attested: '2026-10-07'
     sources:
     - url: https://github.com/NVIDIA/Megatron-LM
       shows: Megatron Core still advertises composable TP, PP, DP, EP and CP with FP16, BF16, FP8 and FP4
@@ -101,12 +100,21 @@ capability:
       accessed: '2026-08-31'
       http_status: 200
       content_sha256: 7c7a75d3ca90f4b9e41eee29630d359164b715fc07ebd8157a6ffffdf924d454
-  last_verified: '2026-08-31'
+    - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md
+      shows: The Megatron-LM README still describes Megatron Core with "advanced parallelism strategies (TP,
+        PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)", and says the codebase "efficiently
+        trains models from 2B to 462B parameters across thousands of GPUs", with a 462B model benchmarked
+        on 6,144 H100 GPUs. That composable general-purpose parallelism keeps XTuner's MoE-specialized story
+        a step behind.
+      accessed: '2026-10-07'
+      http_status: 200
+      content_sha256: 9da0af3c6ccb7fb9dae98930e369293d5872dce1ca9fc22e506d302a83d5f91f
+  last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/InternLM/xtuner/main/README.md
     shows: Key Features section states dropless training of 200B MoE without expert parallelism and 600B with intra-node
       EP, 64k-sequence training on 200B MoE without sequence parallelism, DeepSpeed Ulysses support, MoE training
       up to 1T parameters, and FSDP throughput surpassing traditional 3D parallel schemes for MoE above 200B.
-    accessed: '2026-08-31'
+    accessed: '2026-10-07'
     http_status: 200
     content_sha256: 8ea8e02cb3067051c568bc3b537cab0352bf3ae5ecdd0f3bf3454844d29a1935
