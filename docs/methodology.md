@@ -28,11 +28,11 @@ narrative; keep the two consistent when the openness model changes.
 
 ## Summary
 
-We track {total} open source AI artifacts across the stack. This map scores {scored} of them in depth on three independent axes: **openness** (graded 0–5 against openness frameworks, not a yes/no: the Model Openness Framework for models, OSI classes for software, with data and hardware analogues), **adoption** (real usage, not stars), and **capability** (benchmarks where they exist, feature coverage where they don't). Every score is sourced. The remaining {uncategorized} are the uncategorized long tail, tracked by usage signal but not yet scored. The openness framework descends directly from the [2024 Columbia Convening on Openness in AI](https://arxiv.org/abs/2405.15802).
+We track {total} open source AI artifacts across the stack. This map scores {scored} of them in depth on three independent axes: **openness** (graded 0–5 against openness frameworks, not a yes/no: the Model Openness Framework for models, OSI classes for software, with data and hardware analogues), **adoption** (real usage, not stars), and **capability** (benchmarks where they exist, feature coverage where they don't). Every score is sourced. The remaining {uncategorized} are the uncategorized long tail, tracked by usage signal but not yet scored.
 
 ## Full methodology
 
-To create the map, we used both a discovery step (to find the universe) and a more rigorous scoring and enrichment step (to grade each product). The taxonomy we use to categorize products descends directly from the [2024 Columbia Convening on Openness in AI](https://arxiv.org/abs/2405.15802).
+To create the map, we used both a discovery step (to find the universe) and a more rigorous scoring and enrichment step (to grade each product). The taxonomy we use to categorize products and the openness framework we grade them against both descend directly from the [2024 Columbia Convening on Openness in AI](https://arxiv.org/abs/2405.15802).
 
 The framework has two levels of analysis:
 
@@ -85,6 +85,8 @@ Adoption is graded 1–5 and measures real usage (downloads, active users, and d
 
 The sources differ by product type. For repositories we use GitHub stars, forks, and developer activity; for models and datasets, Hugging Face downloads and likes; for packages, registry download statistics (PyPI via pypistats.org, pepy.tech, and pypi.org, together with npm). Relative usage across models is estimated from OpenRouter's per-model token-share leaderboard. For the large closed consumer surfaces, where first-party usage figures are unavailable, we rely on traffic and monthly-active-user trackers such as Business of Apps and DemandSage.
 
+PyPI changed how it counts downloads on 24 August 2026: from that day only requests for distribution files count, so metadata fetches no longer add to the figures. Package download counts fell sharply at that date, and the drop reflects a change in measurement, not in use. We re-baselined the PyPI-measured adoption bands once against the post-change counts, in October 2026, and left the band thresholds unchanged.
+
 We recognize that adoption metrics can be gamed or manipulated, and welcome community feedback on the sources and methods used to compute them.
 
 #### Axis 3: Capability
@@ -122,7 +124,7 @@ The exact cutoffs (four category-leading fully-open products for Stage 5, the 4.
 
 Openness is treated as an axis orthogonal to maturity: a category can hold strong, widely adopted options that are simply not *fully* open. Each category therefore carries a set of zero or more gaps, derived from the same metrics as the stage:
 
-- **Void:** Needs a usable fully open option at all.
+- **Existence:** Needs a usable fully open option at all.
 - **Capability:** Needs a more capable fully open option.
 - **Adoption:** Needs broader adoption of its fully open options.
 - **Resiliency:** Needs more fully open products at the leading tier to be resilient.
@@ -137,7 +139,7 @@ Here are two illustrations:
 - The base/pretrained-models and fine-tuned/chat-models categories both carry an openness gap: capable, well-adopted options exist, but the category-leading-tier ones are not fully open. Each also carries an adoption gap, because the strongest fully open model in either category is below the adoption threshold — capable here, but not yet widely used.
 - The inference-code category, by contrast, has strong, widely-used open source options (vLLM, llama.cpp, SGLang) but few of them; this is a resiliency gap, signaling an ecosystem that depends on a small number of projects continuing to do well.
 
-At present {n_openness_gaps} of the {n_categories} categories in the map carry an openness gap. The vocabulary is deliberately more discriminating than it used to be: a single **maturity** gap once fired in 12 of 16 categories, which meant it distinguished between none of them, while **capability** never fired at all — the engine emitted one diagnostic per category and checked openness first, so a category whose only fully open option was underpowered reported an openness gap instead. Edge hardware is the case that hid: its one fully open board is genuinely below the capability bar, and the map could not say so. Splitting maturity into **resiliency** at Stage 4 and the two driver gaps below it, and allowing a category to carry more than one diagnostic, gives every label a distinct meaning. The **void** gap still does not fire anywhere; it is kept because it describes a situation the map expects to encounter as coverage grows.
+At present {n_openness_gaps} of the {n_categories} categories in the map carry an openness gap. The vocabulary is deliberately more discriminating than it used to be: a single **maturity** gap once fired in 12 of 16 categories, which meant it distinguished between none of them, while **capability** never fired at all — the engine emitted one diagnostic per category and checked openness first, so a category whose only fully open option was underpowered reported an openness gap instead. Edge hardware is the case that hid: its one fully open board is genuinely below the capability bar, and the map could not say so. Splitting maturity into **resiliency** at Stage 4 and the two driver gaps below it, and allowing a category to carry more than one diagnostic, gives every label a distinct meaning. The **existence** gap still does not fire anywhere; it is kept because it describes a situation the map expects to encounter as coverage grows.
 
 ### The openness verdict
 

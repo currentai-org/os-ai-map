@@ -734,6 +734,26 @@ at 11 of 20, `scientific_ai_models` at 17 of 34 and `storage` at 20 of 41 - and 
 of those categories rather than a defect in them. Docker pull counts would fix most of them; there
 is no `docker` artifact kind to declare, which is the platform-side ask.
 
+## PyPI's counting change on 2026-08-24
+
+From 2026-08-24 a PyPI download record is produced only by a request ending in `.whl`, `.tar.gz`
+or `.zip`. Metadata sidecars, signatures and long-frozen upload formats do not count
+([PyPI's announcement](https://blog.pypi.org/posts/2026-08-31-download-counts/)). Earlier data was
+not corrected, so every PyPI series, `oso.pypi_downloads` and pypistats alike, steps down on that
+day, by an amount that differs from one package to the next.
+
+Three rules follow for a PyPI-routed band:
+
+- **A window that straddles the date is comparable to nothing.** A trailing-30-day figure with
+  days on both sides of it mixes two regimes. A band is read only from a window that lies wholly
+  inside the post-change series.
+- **The scale is unchanged.** PyPI-routed bands are read from post-change windows on the software
+  scale in "The bands", as it stands. A band read from a pre-change window is not comparable with
+  one read after the change, and a jump between the two is the accounting change, not a change in
+  use. `docs/methodology.md` records the one-time re-baseline that applied this.
+- **A trend read across the date reads the accounting.** The monthly series in the next section
+  drops at the change for every package, so a direction claim needs months on one side of it.
+
 ## Reading a pypi-routed band as a trend, not a point
 
 A trailing-30-day figure cannot tell a collapse from a step change that happened months ago, and
@@ -755,7 +775,7 @@ GROUP BY 1 ORDER BY 1
 Two things to hold onto.
 
 **Bound the claim to the window that exists.** The upstream series starts 2026-06-01, a little
-over a hundred days. It answers "has this held for a quarter". It cannot answer "what did this do
+over a hundred days, and breaks at 2026-08-24 (see "PyPI's counting change" above). It answers "has this held for a quarter". It cannot answer "what did this do
 last year", and a note that implies otherwise is asserting more than the data carries.
 
 **The last month is partial.** Reading the current month as a level, rather than as a month in
