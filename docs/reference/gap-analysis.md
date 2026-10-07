@@ -264,6 +264,10 @@ Those six sentences are quoted verbatim from `_GAP_DESC` in `build/serialize.py`
 the text the payload carries and the text a reader sees in the site legend and the category
 drawer. Edit them in one place and copy across.
 
+Readers know `void` as the **existence** gap, which is what the methodology calls it. The key
+keeps its old name because it is part of the payload contract, and the Stage 0 rung is still
+called Void.
+
 They are written as needs on purpose. Stage text and gap text render together in the category
 drawer, and a **stage says where the category stands** while a **gap says what it needs** — in
 one mood they restate each other, because `resiliency` fires if and only if the stage is 4, and the

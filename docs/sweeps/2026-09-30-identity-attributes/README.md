@@ -25,7 +25,8 @@ Branch `claude/happy-noether-2qd7ij`, one PR.
 
 One JSON object per line. Research writes a ledger; `build/apply_attributes.py` applies it. A row
 without an `evidence` URL, or with `confidence: low`, is never applied; it stays in the ledger as
-the record of why the field is unset.
+the record of why the field is unset. A low row for a slug that an earlier row already set is a
+flag instead: the value stands, and the row records that its evidence is weak (`resolve-R4.jsonl`).
 
 `countries/batch-NN.jsonl`, batches listed in `countries/batches.tsv`:
 
@@ -62,6 +63,7 @@ Resume from the first unchecked line. Each line is one commit or more.
 - [x] Phase 0: code-list snapshots, schema, validate, serialize, registry, `apply_attributes`
 - [x] Phase 1: normalize the ten existing free-text countries
 - [x] Phase 2: country ledgers, batches 01-14 and second pass R1-R3, applied
+- [x] Phase 2b: evidence review R4 of the 88 countries flagged below (OSO-5729)
 - [x] Phase 3: language ledgers, batches 01-06, applied; `language_specific_datasets` gate on
 - [x] Phase 4: stewards
 - [x] Phase 5: retire `components.context.governance`
@@ -143,3 +145,29 @@ fixed in `languages/corrections.jsonl`.
 - **Org types the research suggests are wrong** (29). Not changed here, because `type` is outside
   this issue: `ath-maas` -> lab, `bkuan001` -> individual, `cyberdatalab` -> lab, `cylynx` -> company, `deepinsight` -> company, `digital-divide-data` -> company, `easydiffusion` -> individual, `flairnlp` -> lab, `genesis-embodied-ai` -> company, `intellindust` -> company, `ipec-community` -> lab, `iqua` -> lab, `m-bain` -> individual, `nunchux-ai` -> company, `opencv` -> foundation, `paritybit-ai` -> company, `perpetual-ml` -> company, `primihub` -> company, `puppeteer` -> company, `pyannote` -> company, `robbyant` -> company, `seacrowd` -> foundation, `shieldmnt` -> company, `smilelab-fl` -> lab, `swivid` -> individual, `symbioticlab` -> lab, `thu-bpm` -> lab, `venturalitica` -> company, `xtra-computing` -> lab.
 - **Unset, non-individual orgs** (109): `ace-step`, `acesuit`, `afrihate`, `ag-ui-protocol`, `agent-infra`, `agentclientprotocol`, `aipotheosis-labs`, `air-blackbox`, `americasnlp`, `arbml`, `atlasia`, `bigcode-project`, `bioimage-io`, `bitsandbytes-foundation`, `bkuan001`, `breezeblue`, `bullet-physics`, `carla-simulator`, `compl-ai`, `data-provenance-initiative`, `deepreinforce-ai`, `dmlc`, `dphn`, `droid-dataset`, `easydiffusion`, `easyfl-ai`, `ecmwf`, `espnet`, `eurollm`, `fastai`, `finch-tensor`, `flashinfer-ai`, `galaxylearning`, `ggml-org-georgi-gerganov`, `hae-rae`, `heartmula`, `henlp`, `hexgrad`, `indonlp`, `iriis-research`, `k2-fsa`, `kipoi`, `lance-format`, `lang-uk`, `langchain-tracer`, `lemonade-sdk`, `lightgbm-org`, `livebench`, `livecodebench-team`, `llamacha`, `lobehub`, `lykos-ai`, `m-a-p`, `m-bain`, `masakhane`, `ml-foundations`, `mlc-ai`, `modelcloud`, `modernvbert`, `moeru-ai`, `mujocolab`, `naijavoices`, `nextchat`, `nltk`, `nmslib`, `online-ml`, `onnxsim`, `open-language-data-initiative`, `open-thoughts`, `open-web-math`, `openlake-project`, `openrlhf`, `openxla`, `p2pfl`, `paritybit-ai`, `pgvector`, `pixart-alpha`, `project-monai`, `raia-center`, `rhymes-ai`, `rise-ai`, `robocasa`, `roboflamingo`, `robotwin-platform`, `roboverse`, `rosetta-commons`, `scikit-learn`, `scikit-learn-contrib`, `searxng`, `serper`, `shieldmnt`, `silero`, `sillytavern`, `sinhala-nlp`, `skrub-data`, `speechbrain`, `stability-ai`, `statsmodels`, `swivid`, `tesseract-ocr`, `thinkinaixyz`, `tl-system`, `treeverse`, `triton-lang`, `unknown`, `vast-ai`, `vearch`, `vostride`, `xdit-project`.
+
+### Evidence review R4 (OSO-5729, 2026-10-03)
+
+The 88 countries flagged above were re-checked against a page stating a headquarters, an address
+or a register entry. The decision on OSO-5729 was to keep every value and flag the weak ones as
+low confidence rather than remove them. No country changed, and `apply_attributes` writes no file
+for R4.
+
+- **28** were already fine: the existing row cites a street address, a city headquarters or a
+  register, so they get no R4 row. Two of them still rest on less than a headquarters address:
+  `dstack` (a Delaware registered-agent address) and `zeroentropy` ("based in California").
+- **34** now cite a stated location, 32 at high confidence and 2 at medium: `oramasearch`, where
+  the Delaware legal seat stands in because no headquarters is stated, and `monocle2ai`, which
+  takes its host's country from two pages.
+- **26** are held at low confidence with their value kept. For 18 of them, nothing stronger was
+  found: `axolotl-ai`, `blaxel`, `boson-ai`, `canopy-labs`, `cline`, `composio`, `confer-labs`,
+  `crewai-inc`, `deepinsight`, `e2b`, `nous-research`, `ollama`, `open-mmlab`, `openlit`,
+  `polyaxon`, `secretflow`, `xllm-ai` and `yylo-dev`. For 5, the only stronger source is one
+  this sweep does not admit, such as a business database, a news report, a startup directory, a
+  register match by name alone, or an unconfirmed host: `browser-use`, `moonshine-ai`,
+  `nolabs-ai`, `opencompass-community` and `torchgeo`. For 3, the sources conflict:
+  - `myshell-ai`: a Singapore seller entity, against a US GitHub location.
+  - `nari-labs`: TechCrunch calls it Korea-based, against a US GitHub location.
+  - `traceloop`: an Israeli entity in the privacy policy, against a US entity under New York law in
+    the terms.
+

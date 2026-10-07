@@ -121,7 +121,17 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # (#585) instead of banding. Measured rather than asserted - the row sets were dumped on both sides
 # and diffed: 378 rows before and after, and mimo-pro's is the only row that differs, with
 # measured_level, measured_reach and raw_value now null.
-MEASUREMENTS_DIGEST = "20ee0717459fc862b03906c8ae9a7367e733f0af2b079a67271568978dd509fa"
+# Moved 2026-10-03 when three declared repositories followed GitHub renames. Regenerated and
+# diffed against main: main still reproduced the previous digest, and exactly two rows differ.
+# sandbox-runtime's stars row is gone, and librechat's goes from level 3 to an abstention. See
+# MEASUREMENT_COUNT below.
+# Moved again the same day when maple-ai followed OpenSecretCloud/Maple to MaplePrivacyLabs/Maple.
+# One row differs: maple-ai's frozen stars row no longer covers the declared path, so it goes
+# from level 1 to an abstention. The count is unchanged.
+# Moved again the same day when qwen moved its governing release to Qwen 3.8 and declared the
+# three 3.8 checkpoints. One row differs, qwen's, from level 5 to an abstention, because the
+# frozen snapshot predates the 3.8 checkpoints. The count is unchanged.
+MEASUREMENTS_DIGEST = "bd9c8475826c17598b16e0325fb707b7cee52992a2a73a0841e2011db25f9c17"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -143,8 +153,13 @@ MEASUREMENTS_DIGEST = "20ee0717459fc862b03906c8ae9a7367e733f0af2b079a67271568978
 # assessments changed instrument or level once client and component packages stopped
 # standing in for the product measured. Same 613 rows; MEASUREMENTS_DIGEST unchanged.
 # Census and digest now live in tests/goldens/corpus.json; see build/goldens.py.
+# Moved 2026-10-03, 378 -> 377, when three declared repositories followed GitHub renames.
+# The frozen observations name the old paths, so they no longer match a declaration.
+# sandbox-runtime's row was a stars band on anthropic-experimental/sandbox-runtime. It now
+# also declares the npm package its recorded band reads, and the frozen snapshot has no npm
+# row for it, so no measurement is produced. librechat's row abstains instead (below).
 
-MEASUREMENT_COUNT = 378
+MEASUREMENT_COUNT = 377
 ROUTING_POLICY_VERSION = "2"
 
 
@@ -653,7 +668,14 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     that kind -- the short sums that used to band. Named rather than counted: an abstention
     appearing for any other reason is a finding, not a tolerance."""
     abstained = {r["product_slug"] for r in measurement_rows if r["measured_level"] is None}
-    assert abstained == {"composable-kernel", "glm", "mimo-pro", "olmo-instruct"}
+    # librechat and maple-ai since 2026-10-03: each repository moved (to LibreChat-AI/LibreChat
+    # and MaplePrivacyLabs/Maple) and the declaration followed, so the frozen stars row for the
+    # old path no longer covers the declared primary artifact. qwen the same day: it declares the
+    # three Qwen 3.8 checkpoints, which the frozen snapshot never observed, so its Hugging Face sum
+    # covers some declared primaries, not all.
+    assert abstained == {
+        "composable-kernel", "glm", "librechat", "maple-ai", "mimo-pro", "olmo-instruct", "qwen",
+    }
     for row in measurement_rows:
         if row["measured_level"] is None:
             # the short aggregate goes with the band, and the audit trail stays

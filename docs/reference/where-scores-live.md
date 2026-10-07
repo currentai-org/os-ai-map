@@ -46,8 +46,8 @@ band are different scales, so a query that ranks across `signal_type` is wrong.
 
 The front end reads products, scores and freshness dates from Postgres rather than from the
 warehouse, because a page render cannot wait on a Trino query. `build/publish_neon.py` loads
-the `os-ai-map` schema on every push to `main` that triggers `registry.yml`, one step after the
-OSO publish. This is what deprecates `build/notebook_data.json` as the site's transport; the
+the `os-ai-map` schema on a `workflow_dispatch` of `registry.yml` from `main`, which
+`regenerate.yml` sends once the regenerated payload is committed. A push publishes OSO only. This is what deprecates `build/notebook_data.json` as the site's transport; the
 file itself stays the repo's build artifact and its gate contract, and is the *input* to the
 load.
 

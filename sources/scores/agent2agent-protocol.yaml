@@ -15,11 +15,10 @@ openness:
         enterprise/ path, and all six reference SDKs published as public a2aproject repos on public package
         registries
   confidence: high
-  note: The specification is published under Apache-2.0, its six reference SDKs are public repositories
-    in the same a2aproject organization, and governance sits with the Linux Foundation rather than with
-    Google, which contributed the project. The repository has no enterprise or commercial directory, no
-    second license file, and no paid tier or vendor product beside the protocol, so nothing is withheld
-    from what is published.
+  note: The specification is published under Apache-2.0, and its reference SDKs are public repositories
+    in the same a2aproject organization. The repository has no enterprise or commercial directory and no
+    second license file at its root, and there is no paid tier or vendor product beside the protocol, so
+    nothing is withheld from what is published.
   raw: license:Apache-2.0(OSI);source:public(spec + reference SDKs in 6 languages);core-gated:ungated(the
     Linux Foundation project sells nothing - one Apache-2.0 LICENSE at the root, no ee/ or enterprise/ path,
     and all six reference SDKs published as public a2aproject repos on public package registries)
@@ -68,17 +67,26 @@ openness:
     establishes:
     - license
 adoption:
-  level: 4
-  signal_type: reported_traction
-  confidence: medium
-  banded_quantity: supporting organizations (150+) and shipped integrations, a breadth count rather than a
-    usage figure
-  note: Because A2A is a protocol, adoption here is measured as organizational breadth rather than user
-    volume, since no usage figure is published. The Linux Foundation reports growth to more than 150 supporting
-    organizations, including AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP and ServiceNow, plus production
-    integrations in Azure AI Foundry, Copilot Studio and Amazon Bedrock AgentCore Runtime.
-  last_verified: '2026-09-28'
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as combined downloads of the protocol's two most-installed reference SDKs,
+    `a2a-sdk` on PyPI and `@a2a-js/sdk` on npm, the channels an A2A implementation installs. The protocol
+    has no package of its own. The Linux Foundation's count of supporting organizations and the cloud
+    integrations it names corroborate a broad footprint.
+  last_verified: '2026-10-03'
   sources:
+  - url: https://pypistats.org/api/packages/a2a-sdk/recent
+    shows: '"last_month":10333975 downloads for `a2a-sdk` (last_week 2,888,989, last_day 371,578).'
+    accessed: '2026-10-03'
+    http_status: 200
+    content_sha256: a1341aee82aa367b1e90bfc803874972278e56ca2833b23bb40b6b468dbf4718
+  - url: https://api.npmjs.org/downloads/point/last-month/@a2a-js/sdk
+    shows: 'npm downloads point API: 12,267,118 downloads for `@a2a-js/sdk` over 2026-09-02 to 2026-10-01.'
+    accessed: '2026-10-03'
+    http_status: 200
+    content_sha256: c1cf5df273dca98b62ff445142c4aecb28e7b312aa899ae5792110d8ac13b8dd
   - url: https://www.linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year
     shows: 'Linux Foundation press release dated April 9, 2026: "Since April 2025, the number of supporting
       organizations has grown from more than 50 to over 150" and names "AWS, Cisco, Google, IBM, Microsoft,
@@ -88,11 +96,6 @@ adoption:
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: b6da4999792bb9d002a4b5f27d929a16978be9dda9cb32f391e00286fdd20b02
-  - url: https://github.com/a2aproject/A2A
-    shows: Repo page, 25,336 stargazers, Apache-2.0, spec plus the reference SDK list.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 1165fc1e34756203cf564d09b228b277c3efedb7a0a62a30fac58cb0067a6bd1
 capability:
   score: null
   basis: n/a

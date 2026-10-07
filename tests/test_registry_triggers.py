@@ -22,7 +22,10 @@ ROOT = Path(__file__).resolve().parent.parent
 WORKFLOW = ROOT / ".github/workflows/registry.yml"
 REGENERATE = ROOT / ".github/workflows/regenerate.yml"
 # What the publish job actually runs. Anything these reach, transitively, is an input.
-SEEDS = ("build.serialize_registry", "build.serialize_rubric", "build.serialize_scores")
+SEEDS = (
+    "build.serialize_registry", "build.serialize_rubric", "build.serialize_routing",
+    "build.serialize_scores",
+)
 
 
 def _first_party_imports(module: str) -> set[str]:
@@ -92,15 +95,29 @@ def test_the_oso_publish_runs_only_on_a_push_to_main():
     assert "github.event_name" in guard and "github.ref" in guard
 
 
-def test_the_neon_steps_run_only_from_main():
+def test_the_neon_steps_run_only_on_a_dispatch_from_main():
     """aipotluck.org reads the Neon schema live (aipotluck.org#1350), so a load from a branch
     dispatch would be served to visitors within a minute. The read-back is guarded too: its
-    secret is the same owner credential, and a branch's code must never be handed it. A push
-    and a dispatch from main both run them; nothing else does."""
+    secret is the same owner credential, and a branch's code must never be handed it.
+
+    A push to main does not run them either. Its committed payload is the one from before the
+    bot regenerates it, so a push run's load put a stale payload live (#811's merge served
+    countries on 10 orgs instead of 489). Only a dispatch from main loads Neon, which
+    regenerate.yml sends once its commit has landed."""
     for name in ("Publish to Neon", "Report what Neon is serving"):
         guard = step_named(name)["if"]
-        assert "refs/heads/main" in guard and "github.ref" in guard, name
-        assert "event_name" not in guard, f"{name}: a dispatch from main must still run it"
+        runs_on = {run for run in RUNS if evaluate(guard, *run)}
+        assert runs_on == {("workflow_dispatch", "refs/heads/main")}, (name, runs_on)
+
+
+def test_oso_and_neon_never_publish_from_the_same_run():
+    """One target per run is what lets each queue be its own: a run in the Neon queue must not
+    publish OSO, and a run in the OSO queue must not load Neon."""
+    oso = step_named("Publish to OSO")["if"]
+    neon = step_named("Publish to Neon")["if"]
+    for run in RUNS:
+        assert not (evaluate(oso, *run) and evaluate(neon, *run)), run
+    assert {run for run in RUNS if evaluate(oso, *run)} == {("push", "refs/heads/main")}
 
 
 def test_no_other_step_is_handed_the_neon_secret():
@@ -130,33 +147,82 @@ def test_a_regenerated_payload_reloads_neon():
     assert (doc.get("permissions") or {}).get("actions") == "write"
     steps = doc["jobs"]["regenerate"]["steps"]
     commit = next(i for i, s in enumerate(steps) if s.get("id") == "commit")
-    assert "payload=changed" in steps[commit]["run"]
+    assert "publish=ready" in steps[commit]["run"]
     assert "GITHUB_OUTPUT" in steps[commit]["run"]
     dispatch = next(
         i for i, s in enumerate(steps) if "gh workflow run registry.yml" in s.get("run", "")
     )
     assert dispatch > commit, "the dispatch must follow the push it reloads"
     assert "--ref main" in steps[dispatch]["run"], "only a dispatch from main reloads Neon"
-    assert steps[dispatch].get("if") == "steps.commit.outputs.payload == 'changed'"
+    assert steps[dispatch].get("if") == "steps.commit.outputs.publish == 'ready'"
     assert "github.token" in str(steps[dispatch].get("env", {}).get("GH_TOKEN", ""))
-    # The output is set only once the push has landed, inside its success branch.
+    # Set when the run finished its job: inside the push's success branch, and on the early
+    # exit with nothing to commit (a Neon schema or loader change can need a reload with the
+    # payload unchanged). Never on the stand-down, whose queued successor sends its own.
     run = steps[commit]["run"]
+    nothing = run.index('echo "No changes to generated artifacts."')
+    assert nothing < run.index("publish=ready", nothing) < run.index("exit 0", nothing)
     push_ok = run.index("if git push origin HEAD:main; then")
-    assert push_ok < run.index("payload=changed") < run.index("exit 0", push_ok)
+    assert push_ok < run.index("publish=ready", push_ok) < run.index("exit 0", push_ok)
+    stand_down = run.index("Not pushing.")
+    assert "publish=ready" not in run[stand_down:run.index("exit 0", stand_down)]
+    assert run.count("publish=ready") == 2
     triggers = yaml.safe_load(WORKFLOW.read_text())
     assert "workflow_dispatch" in (triggers.get("on") or triggers.get(True))
 
 
-def test_a_pull_request_run_cannot_take_a_publish_run_s_queue_slot():
+def evaluate(expr: str, event: str, ref: str):
+    """Evaluate a registry.yml expression for one event and ref.
+
+    These expressions only use `&&`, `||`, `==`, string literals and `format`, whose GitHub
+    semantics match Python's `and`, `or`, `==` and `str.format` on strings, so translating and
+    evaluating one tests the real expression rather than its spelling.
+    """
+    expr = expr.strip()
+    if expr.startswith("${{"):
+        assert expr.endswith("}}"), expr
+        expr = expr[3:-2]
+    body = (
+        expr.replace("&&", " and ").replace("||", " or ")
+        .replace("github.event_name", "event").replace("github.ref", "ref")
+    )
+    scope = {"event": event, "ref": ref, "format": lambda f, *a: f.format(*a)}
+    return eval(body, {"__builtins__": {}}, scope)  # noqa: S307 - a parsed workflow, no input
+
+
+def concurrency_group(event: str, ref: str) -> str:
+    return evaluate(yaml.safe_load(WORKFLOW.read_text())["concurrency"]["group"], event, ref)
+
+
+RUNS = [
+    ("push", "refs/heads/main"),
+    ("workflow_dispatch", "refs/heads/main"),
+    ("workflow_dispatch", "refs/heads/some-branch"),
+    ("pull_request", "refs/pull/12/merge"),
+]
+
+
+def test_each_target_publishes_from_its_own_queue():
     """GitHub keeps one pending run per concurrency group and cancels the older pending one
-    when another queues. A pull request run publishes nothing, so in the publish group it
-    could cancel a merge's queued publish, or the Neon reload regenerate.yml dispatches, and
-    then skip publishing itself. Pull requests get a group per PR; push and dispatch share
-    registry-publish."""
-    group = yaml.safe_load(WORKFLOW.read_text())["concurrency"]["group"]
-    assert "github.event_name == 'pull_request'" in group
-    assert "github.ref" in group, "one group per PR, not one for every PR"
-    assert group.rstrip("} ").endswith("|| 'registry-publish'"), "push and dispatch must share it"
+    when another queues. On 2026-10-03, with both targets in one group, a Neon-only dispatch
+    replaced #820's waiting push run and its OSO publish never happened.
+
+    So OSO publishes (pushes to main) and Neon loads (dispatches from main) queue apart, and
+    runs that publish nothing, pull requests and dispatches from other branches, each get a
+    group of their own, so none of them can displace a production run either."""
+    main = "refs/heads/main"
+    oso = concurrency_group("push", main)
+    neon = concurrency_group("workflow_dispatch", main)
+    assert oso == "registry-oso-publish"
+    assert neon == "registry-neon-publish"
+    production = {oso, neon}
+    pr_a = concurrency_group("pull_request", "refs/pull/12/merge")
+    pr_b = concurrency_group("pull_request", "refs/pull/13/merge")
+    branch = concurrency_group("workflow_dispatch", "refs/heads/some-branch")
+    assert pr_a != pr_b, "one group per PR, not one for every PR"
+    assert not {pr_a, pr_b, branch} & production
+    assert yaml.safe_load(WORKFLOW.read_text())["concurrency"]["cancel-in-progress"] is False
+
 
 def test_the_closure_is_actually_walking_transitively():
     """Guard on the guard: if the walk stopped at the seeds, the test above would pass
