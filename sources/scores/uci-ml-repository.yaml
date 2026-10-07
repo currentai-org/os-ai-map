@@ -48,35 +48,37 @@ adoption:
     http_status: 200
     content_sha256: ee789f1a1c524581f49c99825b41f224adc5a5fc1d702e57f5775d654e889961
 capability:
-  score: 3
+  score: 2
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
-  value: donors submit datasets that the repository approves; approved datasets get a DOI and a CC BY 4.0 license;
-    external datasets can be linked; public JSON API by dataset ID; ucimlrepo fetches by ID or name into pandas
-    dataframes with variable metadata
+  value: donors submit datasets through a web form, and the repository approves them; approved datasets
+    get a DOI and a CC BY 4.0 license; external datasets can be linked; public JSON API by dataset ID carrying
+    variable metadata and a last-updated date but no version number; ucimlrepo fetches by ID or name into
+    pandas dataframes
   confidence: medium
-  relative_to: dryad
-  relation: at
-  note: Datasets enter by donation and are approved by the repository's librarians, then receive a DOI and are served
-    by ID through a public API that the ucimlrepo package loads into pandas. That editorial admission and fetch
-    by identifier is the same shape as Dryad's.
+  relative_to: physionet
+  relation: one_below
+  note: UCI hosts each donated dataset, gives it a DOI and serves it by ID through a public API that the
+    ucimlrepo package loads into pandas. A dataset is updated in place under the same record rather than
+    kept as numbered versions, which PhysioNet does.
   last_verified: '2026-10-07'
   sources:
   - url: https://archive.ics.uci.edu/contribute/donation
-    shows: '"Datasets approved to be in the repository will be assigned a Digital Object Identifier (DOI)"; "Datasets
-      will be licensed under a Creative Commons Attribution 4.0 International license".'
+    shows: '"Datasets approved to be in the repository will be assigned a Digital Object Identifier (DOI)";
+      "Datasets will be licensed under a Creative Commons Attribution 4.0 International license".'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 392c8577f18afbcbe2d3b31db7d7af7c3cd7d99a13c9afe73f8d13a67ed21ecd
   - url: https://archive.ics.uci.edu/api/dataset?id=53
     shows: 'JSON record for Iris: "uci_id":53, "data_url":"https://archive.ics.uci.edu/static/public/53/data.csv",
-      tasks, characteristics and feature types.'
+      "dataset_doi":"10.24432/C56C76", "last_updated":"Tue Sep 12 2023", variables and feature types; no
+      version field.'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 0387b83840adbdefd10030c96e9e2ba80dc0419b6494efa7745d69bc927b9f15
   - url: https://raw.githubusercontent.com/uci-ml-repo/ucimlrepo/HEAD/README.md
-    shows: '"fetch_ucirepo(id=45)"; "Provide either a dataset ID or name"; returns "dataset matrices as pandas dataframes"
-      and metadata.'
+    shows: '"fetch_ucirepo(id=45)"; "Provide either a dataset ID or name"; returns "dataset matrices as
+      pandas dataframes" and metadata.'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: c4e24ffdb597721a70ee32a05a990f5848cfebbe9707d4cacd735e974fee97f5

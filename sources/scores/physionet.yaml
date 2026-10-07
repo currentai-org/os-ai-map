@@ -60,25 +60,33 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
-  value: registered researchers submit projects that content editors accept, return or reject; published versions
-    are fixed and updates are published as new versions; open, registered and credentialed access tiers; files fetched
-    by versioned path with wget or from an S3 bucket
+  value: registered researchers submit projects through the website, and content editors accept, return
+    or reject them; each published version is fixed and carries its own DOI, and updates are published as
+    new versions; open, registered and credentialed access tiers; files fetched by versioned path with wget
+    or from an S3 bucket
   confidence: medium
   relative_to: dryad
-  relation: at
-  note: Researchers submit a project and PhysioNet's editors decide whether it is published, after which that version
-    is fixed and fetched by a versioned path over the web or from S3. Like Dryad, an editor admits each dataset,
-    and the platform does not parse the files.
+  relation: one_below
+  note: Each published version of a project is fixed, carries its own DOI and is fetched by a versioned
+    path over the web or from S3. Projects are submitted only through the website, with no interface for
+    publishing programmatically such as Dryad offers its partners.
   last_verified: '2026-10-07'
   sources:
   - url: https://physionet.org/about/publish/
-    shows: '"submit the project to the editorial team for review"; decisions "Accept", "Resubmit" or "Reject"; "When
-      a project is published, its content is fixed and cannot be changed."'
+    shows: '"submit the project to the editorial team for review"; decisions "Accept", "Resubmit" or "Reject";
+      "When a project is published, its content is fixed and cannot be changed."'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 6e887e08bd4406608089cc4ed7c3a11fadb9fdf4b420acd86f0476ae5d239549
   - url: https://physionet.org/content/mitdb/1.0.0/
-    shows: '"wget -r -N -c -np https://physionet.org/files/mitdb/1.0.0/" and "aws s3 sync --no-sign-request s3://physionet-open/mitdb/1.0.0/".'
+    shows: '"wget -r -N -c -np https://physionet.org/files/mitdb/1.0.0/" and "aws s3 sync --no-sign-request
+      s3://physionet-open/mitdb/1.0.0/".'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: be2453d56bdcfd41a38e4af806ee1bdb76106a695f6c57e8b67511e8f9990471
+  - url: https://physionet.org/content/mimic-iv-demo/2.2/
+    shows: 'Citation: "MIMIC-IV Clinical Database Demo (version 2.2). PhysioNet." with "doi = {10.13026/dp1f-ex47}"
+      and "note = {Version 2.2}".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 85e0a225baf1a70acf7de05306e92510ce529a40861711c28d40ced2d6908d6b

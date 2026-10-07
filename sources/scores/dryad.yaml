@@ -58,29 +58,32 @@ adoption:
     http_status: 200
     content_sha256: a87943cb6d11532728fc9eab8b7c380371294fe28c6138a87e7e814117ecea84
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
-  value: researchers submit datasets that Dryad's curators review before publication; DataCite metadata and a DOI
-    per dataset; versions listed per dataset; REST API lists datasets, versions and files and downloads the latest
-    version by DOI; anonymous search API
+  value: researchers submit datasets through the website, and partner systems through a Submission API;
+    Dryad's curators review each submission before publication; DataCite metadata and a DOI per dataset;
+    versions listed per dataset; REST API lists datasets, versions and files and downloads the latest version
+    by DOI; anonymous search API
   confidence: medium
   relative_to: zenodo
-  relation: one_below
-  note: Every submission passes through Dryad's curators before it is published, and published datasets get a DOI,
-    versions and a REST API that downloads them by DOI. On Zenodo an account publishes without that review, and
-    neither service parses the files it holds.
+  relation: at
+  note: Datasets get a DOI, numbered versions and a REST API that downloads them by DOI, and partner systems
+    can create submissions programmatically, with DataCite metadata throughout. Like Zenodo it serves files
+    as they were deposited, where Harvard Dataverse parses tabular data on its servers; a curator reviews
+    each dataset before it is published.
   last_verified: '2026-10-07'
   sources:
   - url: https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/documentation/apis/README.md
-    shows: '"Versions of the dataset: /api/v2/datasets/doi.../versions"; "Download the most recent version of a
-      dataset: /api/v2/datasets/doi.../download".'
+    shows: '"Download the most recent version of a dataset: /api/v2/datasets/doi.../download"; "The Submission
+      API is used by systems that want to partner more closely with Dryad and create dataset submissions
+      directly."'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: 7eaf2c0961c1111fb9df187208db108f8586856e574cb9d2df0eb87b8d39c573
   - url: https://datamanagement.hms.harvard.edu/share/data-repositories
-    shows: 'Dryad: "Data downloading via API Yes"; "Uses the DataCite metadata schema"; "$120 data publishing charge
-      unless funded by the institution, publishers or funders."'
+    shows: 'Dryad: "Data downloading via API Yes"; "Uses the DataCite metadata schema"; "$120 data publishing
+      charge unless funded by the institution, publishers or funders."'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01
