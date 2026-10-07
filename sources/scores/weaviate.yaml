@@ -10,8 +10,8 @@ openness:
       value: public
     core-gated:
       value: gated
-      detail: the wl directory holds Enterprise Edition code available only under a separate enterprise
-        license, and its features are enabled by a license key
+      detail: Shard Self-Recovery, Namespaces and Deduplicated backups ship in the wl directory under the
+        separate Weaviate License and need a license key to run
     context:
       enterprise-dir:
         value: Weaviate-License
@@ -21,26 +21,27 @@ openness:
     switched on by a license key. That functionality sits inside the published tree but outside the open
     terms, the same shape as Meilisearch''s Enterprise Edition, rather than a hosted service sold beside
     a complete core.'
-  raw: license:BSD-3-Clause(OSI);enterprise-dir:Weaviate-License;source:public;core-gated:gated(the wl directory
-    holds Enterprise Edition code available only under a separate enterprise license, and its features are
-    enabled by a license key)
+  raw: license:BSD-3-Clause(OSI);enterprise-dir:Weaviate-License;source:public;core-gated:gated(Shard Self-Recovery,
+    Namespaces and Deduplicated backups ship in the wl directory under the separate Weaviate License and
+    need a license key to run)
   last_verified: '2026-10-07'
   sources:
   - url: https://github.com/weaviate/weaviate/blob/main/LICENSE
-    shows: 'LICENSE: outside the "wl" directory source code "is licensed under the BSD-3-Clause License, as defined in LICENSE-BSD"; within it, code "is only available under a separate enterprise license" and "features are enabled via license key".'
+    shows: 'LICENSE: outside the "wl" directory source code "is licensed under the BSD-3-Clause License,
+      as defined in LICENSE-BSD"; within it, code "is only available under a separate enterprise license"
+      and "features are enabled via license key".'
     accessed: '2026-10-07'
     http_status: 200
     content_sha256: bdfa69974cf4f303f93b55395e1cc555311d9a50bfd749e79bba1c304d0c3601
     establishes:
     - license
   - url: https://api.github.com/repos/weaviate/weaviate
-    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main - for
-      weaviate/weaviate.
+    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main
+      - for weaviate/weaviate.
     accessed: '2026-09-02'
     http_status: 200
     content_sha256: 1078c5859576d2966b43561611d5f4248e7e483e8cc929f39157bd86341cea86
     establishes:
-    - license
     - source
   - url: https://github.com/weaviate/weaviate/blob/main/README.md
     shows: 'README License section: "Files in our wl/ folder are only available under a commercial license
@@ -50,6 +51,15 @@ openness:
     content_sha256: 8dc0086a08ce896fca55ed99881694a5baae63a4e671489cb98c3e6a07da096a
     establishes:
     - source
+    - core-gated
+  - url: https://docs.weaviate.io/deploy/enterprise
+    shows: 'Enterprise Edition page: code in the wl/ directory "is licensed under the Weaviate License";
+      the features table lists Shard Self-Recovery, Namespaces and Deduplicated backups, with a "Without
+      a license key" column saying what each refuses.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 9a0bfaa2773b19e4bce7afd1a46a03a507ee2ae4494a407ab6f9dfa63c28e4f3
+    establishes:
     - core-gated
 adoption:
   level: 3
