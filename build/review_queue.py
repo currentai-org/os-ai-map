@@ -25,13 +25,17 @@ queue is who can move it:
   * `fetch`: the evidence exists but could not be read from here, because of a 403, a proxy
     refusal, a script shell or a compressed PDF. The fix is a different route to the page, and
     asking a person about it wastes their time.
-  * `schedule`: a scheduled run settles it, such as the adoption re-band after a reconciliation.
-    Nothing to do until the run.
+  * `schedule`: a scheduled run settles it. A hold says so with `settled_by:
+    scheduled_reconciliation` (the marker the weekly reconciliation reads before it dates the
+    axis and releases the hold), and only that field puts a hold here. Nothing to do until the
+    run.
   * `evidence`: the pass did not find what would settle it. An agent can take another pass
     before anyone is asked.
 
-A hold's reason is prose, so its class is read from its wording by the marker lists below, in
-the order `schedule`, `fetch`, `ruling`. A hold that matches none of them is `evidence`. The
+Any other hold's reason is prose, so its class is read from its wording by the marker lists
+below, in the order `fetch`, `ruling`. Wording never yields `schedule`: a reason that mentions a
+reconciliation may still be asking a person something, and the field is the one statement that
+the run alone settles it. A hold that matches no marker is `evidence`. The
 cost of a wrong class is an agent attempting a question that should have gone to a person, and
 the agent can escalate it, so the default is the agent's pass, not the maintainer's time.
 
@@ -70,8 +74,9 @@ RULINGS = Path("docs") / "rulings" / "log.yaml"
 WAITS_ON = ("ruling", "evidence", "fetch", "schedule")
 
 # Read in this order; the first class whose marker appears in a hold's reason wins.
+SCHEDULED = "scheduled_reconciliation"
+
 MARKERS: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("schedule", ("reconciliation", "re-band after", "re-band is settled")),
     ("fetch", ("403", "proxy", "cannot be re-fetched", "not readable", "rate limit", "rate-limit",
                "script shell", "is compressed", "unreachable", "timed out")),
     ("ruling", ("ruling", "decision", "a maintainer", "editor must", "needs a person")),
@@ -114,7 +119,8 @@ def hold_rows(held: Mapping[str, Mapping]) -> list[Row]:
                 source="hold",
                 subject=slug,
                 axis=axis,
-                waits_on=classify(reason),
+                waits_on=("schedule" if (entry or {}).get("settled_by") == SCHEDULED
+                          else classify(reason)),
                 detail=reason,
                 since=str((entry or {}).get("since", "")),
                 home=str(QUEUE),

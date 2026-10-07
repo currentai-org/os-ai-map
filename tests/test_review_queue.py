@@ -18,12 +18,17 @@ def _write(root: Path, rel: str, doc: dict) -> None:
 
 
 def test_classify_reads_the_reason_in_order():
-    assert rq.classify("settled by the adoption re-band after the 5 Oct reconciliation") == "schedule"
     assert rq.classify("the pricing page returned HTTP 403 from this pass") == "fetch"
     assert rq.classify("Settling it needs an editor ruling on the no-license files") == "ruling"
     assert rq.classify("No benchmark evidence exists in any fetched page") == "evidence"
-    # A schedule marker wins over a fetch marker in the same reason: the run settles it anyway.
-    assert rq.classify("returned 403; waits for the reconciliation") == "schedule"
+    # A fetch marker wins over a ruling marker in the same reason.
+    assert rq.classify("returned 403; a decision follows once it is read") == "fetch"
+
+
+def test_wording_alone_never_waits_on_a_schedule():
+    """A reason can mention a reconciliation and still be asking a person (#834's route holds)."""
+    assert rq.classify("the reconciliation reads another instrument; a ruling decides which") == "ruling"
+    assert rq.classify("settled by the adoption re-band after the 5 Oct reconciliation") == "evidence"
 
 
 def test_classify_survives_a_line_wrap_inside_a_marker():
@@ -33,7 +38,10 @@ def test_classify_survives_a_line_wrap_inside_a_marker():
 def test_every_held_axis_becomes_one_row(tmp_path):
     _write(tmp_path, "sources/verification_queue.yaml", {"version": 1, "held": {
         "alpha": {"openness": {"because": "needs a ruling", "since": "2026-09-01"},
-                  "adoption": {"because": "re-band after the reconciliation", "since": "2026-09-02"}},
+                  "adoption": {"because": "re-band after the reconciliation", "since": "2026-09-02",
+                               "settled_by": "scheduled_reconciliation"}},
+        "gamma": {"adoption": {"because": "the reconciliation reads stars; needs a ruling",
+                               "since": "2026-10-07"}},
         "beta": {"capability": {"because": "nothing found", "since": "2026-09-03"}},
     }})
     rows = rq.gather(tmp_path)
@@ -41,6 +49,7 @@ def test_every_held_axis_becomes_one_row(tmp_path):
         "hold:alpha:adoption": "schedule",
         "hold:alpha:openness": "ruling",
         "hold:beta:capability": "evidence",
+        "hold:gamma:adoption": "ruling",
     }
 
 

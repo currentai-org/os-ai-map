@@ -67,7 +67,7 @@ docs/workflows/        Task-oriented how-to, one per contributor intent
 docs/reference/        Concepts + normative rules (openness, adoption, capability,
                        identity, evidence-and-freshness, gap-analysis, queries, notebook-design)
 docs/operations/       Maintainer deploy/publish runbooks
-docs/rulings/          The maintainer's decision log (log.yaml). Read it before asking him anything
+docs/rulings/          The maintainer's decision log (log.yaml). Read it before asking anything
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
 skills/                Agent skills for common editor workflows
 tests/                 pytest suite for build helpers and serializer behavior

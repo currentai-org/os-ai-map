@@ -6,8 +6,9 @@ description: Use when the maintainer's open decisions on os-ai-map need clearing
 # Ruling session
 
 The corpus waits on the maintainer for a small number of decisions, and each one blocks work an
-agent could otherwise finish. This skill clears them in one sitting that works while he is on
-his feet: one question at a time, spoken, each with a recommendation he can answer in a word.
+agent could otherwise finish. This skill clears them in one sitting that works while the maintainer
+is on their feet: one question at a time, spoken, each with a recommendation they can answer in
+a word.
 The answers become entries in `docs/rulings/log.yaml`, which is the record every agent reads
 before it asks anything (`docs/rulings/README.md` has the format and its rules).
 
@@ -42,7 +43,7 @@ Add three sources the builder does not read:
 
 Read `docs/rulings/log.yaml` in full. A question whose substance an `in-force` ruling answers is
 not asked again. Apply that ruling to the case, and list it in the prompt's appendix as "settled
-by R-…" so the maintainer can see what was not put to him. A `deferred` ruling comes back only
+by R-…" so the maintainer can see what was not put to them. A `deferred` ruling comes back only
 if the reason it was deferred has changed. Say what changed.
 
 ### 3. Choose and order
@@ -61,7 +62,7 @@ if the reason it was deferred has changed. Say what changed.
 For each one: at most forty words of context, then the question, then a recommendation with the
 reason ("I'd say X, because Y — agree?"). Name the issue, product or hold id. Everything the
 recommendation rests on is gathered now, from primary sources where it is a question of fact,
-because the run cannot look it up. Where a question needs him to see a file or a figure, say
+because the run cannot look it up. Where a question needs them to see a file or a figure, say
 that it will be parked, and put it at the end of the list.
 
 Read the ruling's normative home before recommending. A license question reads
@@ -72,30 +73,31 @@ recommendation that contradicts a rule in force is a proposal to change the rule
 ### 5. Emit the prompt
 
 The prompt carries: the run rules below, verbatim; the blocks and questions; an out-of-scope
-list (what was carried, what needs a screen, what an agent can do without him); and the
-appendix of questions settled by an existing ruling. Deliver it where he will pick it up: a
+list (what was carried, what needs a screen, what an agent can do without them); and the
+appendix of questions settled by an existing ruling. Deliver it where they will pick it up: a
 PR comment, an OSO memory named `temp.ruling-session-<date>.md`, or the chat that asked for it.
 
 ## Run
 
-He is walking and talking, not reading. These rules exist because he is on his feet:
+The maintainer is walking and talking, not reading. These rules exist because they are on
+their feet:
 
 - **Lead with the question.** One or two sentences of context, then the question, then your
-  recommendation. Never more than about forty words before he can answer.
-- **Always recommend.** He should be able to answer in one word. A bare open question is a
+  recommendation. Never more than about forty words before they can answer.
+- **Always recommend.** They should be able to answer in one word. A bare open question is a
   failure of this session.
-- **No code, no tables, no lists to read.** If a decision needs his eyes on something, park it.
+- **No code, no tables, no lists to read.** If a decision needs their eyes on something, park it.
 - **Accept fuzzy answers.** "Yeah, the second one" is an answer. Reflect it back in one line, in
   your words, and move on. Ask for precision only when the imprecision changes what gets built.
-- **Let him skip.** "Skip", "later" and "I don't know yet" are answers. Record the question as
-  deferred with the reason he gave, and never re-ask it in the same session.
+- **Let them skip.** "Skip", "later" and "I don't know yet" are answers. Record the question as
+  deferred with the reason they gave, and never re-ask it in the same session.
 - **Track position.** Say "that's six of fourteen" every few questions.
 - **Do not look things up.** If a question turns on a fact that is not in the prompt, defer it
   rather than going quiet while you read.
 - **Follow the thread.** If an answer implies a ruling on a later question, say so and confirm
   it rather than asking again.
 
-Say at the start that he does not have to accept any recommendation. Several are close calls,
+Say at the start that they do not have to accept any recommendation. Several are close calls,
 and the recommendation is there to react to, not to ratify.
 
 ### Confirm, then record
@@ -103,9 +105,9 @@ and the recommendation is there to react to, not to ratify.
 1. **Read back every ruling** in one or two sentences each, and get an explicit yes before
    writing anything.
 2. **Append one entry per question** to `docs/rulings/log.yaml`, including every deferral, in
-   the format `docs/rulings/README.md` gives: `venue: walk-and-talk`, the ruling in his voice,
-   his reasoning in his words where he gave one, and `executor` set to who carries it out.
-   Nothing he did not say goes in `ruling` or `reasoning`.
+   the format `docs/rulings/README.md` gives: `venue: walk-and-talk`, the ruling in their voice,
+   their reasoning in their words where they gave one, and `executor` set to who carries it out.
+   Nothing they did not say goes in `ruling` or `reasoning`.
 3. **Open one PR** with the log entries and nothing else. The rulings are applied in their own
    PRs, by the applier routine or by the skill each ruling routes to (`update-product`,
    `edit-category`, `build-rubric`, `migrate-axis`), and each of those cites the ruling id.
