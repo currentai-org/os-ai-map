@@ -1,0 +1,98 @@
+product: openml
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/openml/OpenML
+    core-gated:
+      value: ungated
+      detail: community project represented by the not-for-profit Open Machine Learning Foundation; nothing sold
+  confidence: high
+  note: The server behind openml.org is published under BSD-3-Clause, and so is the rewrite that will replace it.
+    OpenML is a community project backed by a not-for-profit foundation, with no paid edition.
+  raw: license:BSD-3-Clause(OSI);source:public(github.com/openml/OpenML);core-gated:ungated(community project represented
+    by the not-for-profit Open Machine Learning Foundation; nothing sold)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/openml/OpenML/HEAD/LICENSE
+    shows: '"BSD 3-Clause License. Copyright (c) 2014-2021, OpenML."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: b98c62d2ae1f473f6bfd0e79d2dd87d017365f2819891e4c11be561e9d8bb2d3
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openml/OpenML/HEAD/README.md
+    shows: '"This repository is in maintenance-only mode. We''re phasing out the PHP-based REST API in favor of
+      a much more modern FastAPI-based API."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 90c3948948544c4253012af8d8f5c2ce03099e7f74fe8e2d1b2c9be1c585ef58
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/openml/server-api/HEAD/LICENSE
+    shows: '"BSD 3-Clause License. Copyright (c) 2023, OpenML" for the Python server rewrite.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: bbb316912410421d8140d7fc5d14afd065c571d8d80a92824952076eee7e9ddc
+    establishes:
+    - license
+  - url: https://docs.openml.org/intro/Governance/
+    shows: '"The Open Machine Learning Foundation is a not-for-profit organization supporting, but not controlling,
+      the OpenML project."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: bcc129846414d12dc91589603fa39556fd06cb8cd690beb745bc245757e81202
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: OpenML publishes no total of downloads or users, and its search index refused automated queries. Downloads
+    of the openml client packages would count a client rather than the platform, so no reading was recorded.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://www.openml.org/api/v1/json/data/list/limit/5
+    shows: The dataset listing API returns per-dataset status, format and data qualities; it carries no download
+      or user counts.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: e8cfba3186e27653ab16f390cd9ea686c33c4c2960f4c1fd6ced751d185ab8d0
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: upload and download through the website or the APIs; a dataset ID plus incremental versions per name and
+    a free-form version label; uniform storage with ARFF and Parquet downloads; automatically computed data characteristics;
+    clients load datasets by ID into dataframes; tasks, runs and benchmark suites defined on the datasets
+  confidence: high
+  note: Anyone can upload a dataset from a dataframe, and OpenML stores it in one uniform format, computes its characteristics
+    and serves it back by ID to Python, R and Java. Tasks and benchmark suites are defined on top of the datasets,
+    so the catalog also records how each one is used for evaluation.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://docs.openml.org/concepts/data/
+    shows: '"You can upload and download datasets through the website or though the APIs"; "OpenML assigns incremental
+      version numbers per upload with the same name"; "OpenML will automatically analyze the data and compute a
+      range of data quality characteristics".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: d67879d47679dcd89e235b34b1ad2f64e7bd1a7bc5fb9fb91bef5b0677f014f3
+  - url: https://www.openml.org/api/v1/json/data/61
+    shows: 'Dataset 61 (iris): "version":"1", "format":"ARFF", a "parquet_url" on data.openml.org and a default
+      target attribute.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 7e408fec68984cfcf25f360ca267e706bc5ef27284a17351f78429660c14acd0
+  - url: https://raw.githubusercontent.com/openml/server-api/HEAD/README.md
+    shows: '"If you simply want to access data stored on OpenML in a programmatic way, please have a look at connector
+      packages in Python, Java, or R."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: e681e8325f875d5a571f4e94e9e57bd522aaa57ac1fd97207b2e2d4c25ed090d

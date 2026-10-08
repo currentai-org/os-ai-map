@@ -1,0 +1,103 @@
+product: harvard-dataverse
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/IQSS/dataverse; the Harvard installation reports Dataverse version 6.10.1
+    core-gated:
+      value: ungated
+      detail: academic institute at Harvard; deposit free up to the per-researcher quota
+  confidence: high
+  note: Harvard Dataverse runs a current release of the Dataverse software, which Harvard's IQSS develops in the
+    open under Apache-2.0. Deposit is free, and no feature of the software is held back for a paid edition.
+  raw: license:Apache-2.0(OSI);source:public(github.com/IQSS/dataverse; the Harvard installation reports Dataverse
+    version 6.10.1);core-gated:ungated(academic institute at Harvard; deposit free up to the per-researcher quota)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/IQSS/dataverse/HEAD/LICENSE.md
+    shows: '"The Dataverse software is licensed under the Apache License, Version 2.0".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 194b865caa806471273cfccebabfcd8c5094297f0e31a5ab8ff2155c6f86f64c
+    establishes:
+    - license
+  - url: https://dataverse.harvard.edu/api/info/version
+    shows: '{"version":"6.10.1","build":"iqss-4"}: the Harvard installation reports the Dataverse release it runs.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 4f10ca8ea5535f9b419a65e27200ab01c3bdb1be02da96062dc72c812babe818
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/IQSS/dataverse/HEAD/README.md
+    shows: '"Dataverse®, the open source software platform designed for sharing, finding, citing, and preserving
+      research data. Developed by the Dataverse team at the Institute for Quantitative Social Science".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 44512a3f51e208155b66c434e80cad1ed41802cd12660194592eac8818ae70a4
+    establishes:
+    - source
+    - core-gated
+  - url: https://datamanagement.hms.harvard.edu/share/data-repositories
+    shows: '"Harvard Dataverse Repository is free for all researchers worldwide (up to 1 TB)."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  signal_type: reported_traction
+  confidence: medium
+  banded_quantity: file downloads served by the Harvard Dataverse installation over the trailing 30 days, from its
+    public metrics API; counts files, not people
+  note: The installation's own metrics API counts every file downloaded from it, read here over the trailing month.
+    That is file traffic rather than a count of researchers, and one dataset download can fetch many files.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://dataverse.harvard.edu/api/info/metrics/downloads/pastDays/30
+    shows: '{"status":"OK","data":{"count":9682680}}, read 2026-10-07.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 17c758bad90c024956f06ec56df94b40c498f76cee2e263a3747adfc345ef829
+  - url: https://dataverse.harvard.edu/api/info/metrics/downloads
+    shows: '{"status":"OK","data":{"count":177441883}} downloads in total, read 2026-10-07.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 930948703cf7fa17e653a4c2a79540010c27b023e6ebc9b04039519f1d0ec01f
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: free deposit for researchers worldwide; datasets versioned under DOIs; native API for deposit, search and
+    download; Stata, SPSS, R, Excel, CSV and TSV files ingested as tabular data with variable metadata and tab-delimited
+    downloads; metadata exported as Croissant, Dublin Core, DDI, DataCite and Schema.org JSON-LD
+  confidence: medium
+  relative_to: openml
+  relation: at
+  note: Researchers anywhere can deposit data for free, and each dataset is versioned under a DOI that the API serves
+    for download. Tabular files are ingested into a standard form with variable-level metadata and can be described
+    in Croissant for machine learning tools, which puts it beside OpenML rather than Zenodo.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://guides.dataverse.org/en/latest/user/dataset-management.html
+    shows: '"Files in certain formats - Stata, SPSS, R, Excel (xlsx), CSV and TSV - may be ingested as tabular data";
+      exports "Croissant ... Dublin Core DDI ... DataCite 4 ... Schema.org JSON-LD".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 24e01805fb8c4c266aac72e49818d27614fe25eee9ef478c006485dc54d73190
+  - url: https://datamanagement.hms.harvard.edu/share/data-repositories
+    shows: 'Harvard Dataverse: "Assignment of dataset DOIs Yes"; "free for all researchers worldwide (up to 1 TB)".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01
+  - url: https://guides.dataverse.org/en/latest/api/native-api.html
+    shows: 'Native API reference: create and publish datasets, list versions, and download files by dataset persistent
+      identifier.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 7c9b52837df2b583e10177515404c360bee6f55a5a24b10e57cc17006f9b1895

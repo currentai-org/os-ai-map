@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A preliminary data_hubs category (Data hubs & catalogs) with nine researched head products and
+  fourteen registry rows, ATLAS and Roboflow Universe among the rows, held preliminary until the
+  maintainer rules on its open questions; openml moves to it from the benchmark_eval_data
+  registry ([#826](https://github.com/currentai-org/os-ai-map/pull/826)).
 - The maintainer's rulings log (`docs/rulings/`), the `build.review_queue` report of every open
   question and what it waits on, and the `ruling-session` and `audit-repo-accuracy` skills
   ([#812](https://github.com/currentai-org/os-ai-map/pull/812)).

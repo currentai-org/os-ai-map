@@ -1,0 +1,112 @@
+product: physionet
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/MIT-LCP/physionet-build
+    core-gated:
+      value: ungated
+      detail: academic lab platform funded by the NIH; nothing sold
+  confidence: high
+  note: The Django application behind physionet.org is published under a BSD license and can be run locally from
+    its repository. PhysioNet is an MIT research lab's NIH-funded platform, with no paid edition.
+  raw: license:BSD-3-Clause(OSI);source:public(github.com/MIT-LCP/physionet-build);core-gated:ungated(academic lab
+    platform funded by the NIH; nothing sold)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/MIT-LCP/physionet-build/HEAD/LICENSE
+    shows: BSD three-clause text (redistribution with notice; no endorsement) under a "Copyright (c) Django Software
+      Foundation and individual contributors" line.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 5d76284fce4b87eba8bc86cca36d9c14bed65cd0bf157d415b1233cd389c287a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/MIT-LCP/physionet-build/HEAD/README.md
+    shows: '"The new PhysioNet platform built using Django. The new site is currently hosted at https://physionet.org/".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: e98d6d267382021a7a77ef7187364578422af20d44fb81da2d2660091d064f3a
+    establishes:
+    - source
+  - url: https://physionet.org/about/
+    shows: '"an NIH-funded publishing platform for rigorously curated, de-identified biomedical and clinical data";
+      "managed by the MIT Laboratory for Computational Physiology".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: eb903909f4324742140e13e54fc84ac0af8add96e7a14c25178bba44ef6b5c4b
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: PhysioNet publishes no platform-wide download or user count. Stars on its platform repository would measure
+    interest in the code rather than use of the data, so no reading was recorded.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://physionet.org/about/
+    shows: '"PhysioNet provides access to more than several hundred resources"; no usage figure.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: eb903909f4324742140e13e54fc84ac0af8add96e7a14c25178bba44ef6b5c4b
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: registered researchers submit projects through the website, and content editors accept, return
+    or reject them; there is no programmatic publishing interface; each published version is fixed and carries
+    its own DOI, and updates are published as new versions; a public API lists every published version with
+    its version DOI, license, resource type, access policy and topics; the LightWAVE server parses waveform
+    records and returns signal descriptions and samples as JSON; open, registered and credentialed access
+    tiers; files fetched by versioned path with wget or from an S3 bucket
+  confidence: medium
+  relative_to: dryad
+  relation: one_below
+  note: PhysioNet's servers read its waveform records and serve the signals back as JSON, and its API describes
+    every published version with a DOI, license and access policy. Projects can only be submitted through
+    the website, and with no interface for publishing programmatically it sits below Dryad and Zenodo even
+    though it does more with the files than either.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://physionet.org/about/publish/
+    shows: '"submit the project to the editorial team for review"; decisions "Accept", "Resubmit" or "Reject";
+      "When a project is published, its content is fixed and cannot be changed."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 6e887e08bd4406608089cc4ed7c3a11fadb9fdf4b420acd86f0476ae5d239549
+  - url: https://physionet.org/content/mitdb/1.0.0/
+    shows: '"wget -r -N -c -np https://physionet.org/files/mitdb/1.0.0/" and "aws s3 sync --no-sign-request
+      s3://physionet-open/mitdb/1.0.0/".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: be2453d56bdcfd41a38e4af806ee1bdb76106a695f6c57e8b67511e8f9990471
+  - url: https://physionet.org/content/mimic-iv-demo/2.2/
+    shows: 'Citation: "MIMIC-IV Clinical Database Demo (version 2.2). PhysioNet." with "doi = {10.13026/dp1f-ex47}"
+      and "note = {Version 2.2}".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 85e0a225baf1a70acf7de05306e92510ce529a40861711c28d40ced2d6908d6b
+  - url: https://physionet.org/lightwave/server?action=info&db=mitdb/1.0.0&record=100
+    shows: 'LightWAVE "info" for mitdb/1.0.0 record 100: "tfreq": 360, "duration": "30:05.556", signals
+      "MLII" and "V5" with gain, ADC resolution and baseline.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 6946304730ed49d6ef3fd054981e7f5396ed5202e8d289c1a6ea24d4b4bf9bc5
+  - url: https://physionet.org/lightwave/server?action=fetch&db=mitdb/1.0.0&record=100&signal=MLII&t0=0&dt=1
+    shows: 'LightWAVE "fetch" for signal MLII: "units": "mV", "gain": 200, and a "samp" array of samples.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: af3ee86d6ebb62bc4915ac5e904bf7c33fbca0027c7a349b6b3f12273657772b
+  - url: https://physionet.org/api/v1/project/published/
+    shows: 'Published-project API: each entry carries "version", "version_doi", "license", "resource_type",
+      "access_policy" and "topics", e.g. slpdb 1.0.0 with version_doi 10.13026/C23K5S.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 3110e6de80cd6752626404de46921e04088d5e23cac34f3f6937ff03218ad44d

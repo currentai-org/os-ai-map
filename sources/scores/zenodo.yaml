@@ -1,0 +1,96 @@
+product: zenodo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-3.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/zenodo/zenodo-rdm
+    core-gated:
+      value: ungated
+      detail: operated by CERN as a free service; runs on open-source InvenioRDM
+  confidence: high
+  note: Zenodo's own application is published under GPL-3.0 and built on InvenioRDM, which CERN co-develops in the
+    open. CERN runs it as a free service, and nothing about the repository is sold.
+  raw: license:GPL-3.0(OSI);source:public(github.com/zenodo/zenodo-rdm);core-gated:ungated(operated by CERN as a
+    free service; runs on open-source InvenioRDM)
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://raw.githubusercontent.com/zenodo/zenodo-rdm/HEAD/LICENSE
+    shows: GNU General Public License, Version 3, 29 June 2007, full text.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zenodo/zenodo-rdm/HEAD/README.md
+    shows: 'Development quick start: `git clone https://github.com/zenodo/zenodo-rdm.git`, `invenio-cli install`,
+      `invenio-cli run`.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 91773e50df0c1898db9c8d219ea7d196aff1a42d200005df3fad8bdc06476ef4
+    establishes:
+    - source
+  - url: https://about.zenodo.org/infrastructure/
+    shows: '"Zenodo is powered by CERN Data Centre and the InvenioRDM and is fully run on open source products all
+      the way through."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 44fd69fce3067a133161f55693c1e1ae953fb98a53c6a9751220ad4b23835840
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Zenodo shows view and download counts on individual records but publishes no total for datasets, and its
+    search API refused automated queries. No figure for the repository as a whole could be read.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://about.zenodo.org/
+    shows: 'About page: history, scope and principles; no repository-wide usage figure.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: ddf6f255bf3fd104b2dc5926594db88b853b39ed2944d860b39d77f371374e27
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: anyone may register and deposit any research artifact, datasets included; DOI per record; data files are
+    versioned; REST API for deposit and retrieval; no format, size or license requirements imposed
+  confidence: medium
+  relative_to: harvard-dataverse
+  relation: one_below
+  note: Anyone can register and deposit a dataset, which gets a DOI, versioned files and a REST API for upload and
+    retrieval. Zenodo serves files as they were deposited and does not parse tables or annotations, which Harvard
+    Dataverse does for tabular data.
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://about.zenodo.org/policies/
+    shows: '"Eligible depositors: Anyone may register as user of Zenodo"; "Scope: All fields of research.
+      All types of research artifacts."; "Data files are versioned."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 7f9ed1b2fbe1542f3bf6ef042420e7adc183cea6ccba8df1ffed8b19a3b2f896
+  - url: https://about.zenodo.org/
+    shows: '"Zenodo does not impose any requirements on format, size, access restrictions or licence."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: ddf6f255bf3fd104b2dc5926594db88b853b39ed2944d860b39d77f371374e27
+  - url: https://developers.zenodo.org/
+    shows: 'REST API reference: OAuth tokens with deposit:write and deposit:actions scopes; deposition metadata
+      includes a version field.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: bbd72463dcf7e07f597ed2b145e8019fb0e861c4811a8d22e0e5d202bde69e61
+  - url: https://api.datacite.org/dois/10.5281/zenodo.23213818
+    shows: 'DataCite record registered by Zenodo for a dataset: "resourceTypeGeneral": "Dataset", "publisher":
+      "Zenodo", and "relatedIdentifiers" with "IsVersionOf" 10.5281/zenodo.23213817.'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: fb5a18c2bbe1206d2e153a100f2c2ca4b2b3456402df61b009e3a961da2be3fa
