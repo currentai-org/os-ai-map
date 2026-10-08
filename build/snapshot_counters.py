@@ -23,7 +23,19 @@ platform's fetch time, so rerunning inside a week adds nothing and a missed week
 rather than a repeated value. A reading already recorded with DIFFERENT values is an error, never
 silently kept or replaced. The grain is the product: a repository several products declare appears
 once per product, so whatever computes an increment must not sum those rows as separate use.
-Nothing here computes a band or an increment; the counters are raw.
+The history itself stays raw: nothing is clamped, smoothed or banded on the way in.
+
+Increments (`increments`) are taken between consecutive readings of one counter, and a lifetime
+total can FALL: GitHub's `download_count` is per asset, so deleting or replacing a release asset
+removes its downloads from the sum (OpenPipe/ART read 2,573 then 1,249; tenstorrent/tt-metal
+64,902 then 64,720; mlflow/mlflow 4 then 0, #850). The rule for a falling counter:
+
+- the window's increment is clamped to 0, never negative;
+- the window carries `reset = true`, so it is never read as a measurement of use (the true
+  downloads in it are unknown, not zero);
+- the baseline restarts from the new, lower reading, so the next window is measured from it.
+
+Nothing here computes a band.
 
 `.github/workflows/asset-counters.yml` runs this daily, on its own, so a failure elsewhere can
 never cost a week: the capture is idempotent, one success per platform refresh is enough, and a
@@ -33,6 +45,7 @@ Usage:
     uv run python -m build.snapshot_counters --live     # read the warehouse and append new rows
     uv run python -m build.snapshot_counters --check    # validate the committed history
     uv run python -m build.snapshot_counters --union other.csv   # fold another history in by key
+    uv run python -m build.snapshot_counters --increments   # print per-window increments as CSV
 """
 
 from __future__ import annotations
@@ -48,6 +61,9 @@ HISTORY = ROOT / "sources" / "snapshots" / "asset_counters.csv"
 COLUMNS = ["source", "product_slug", "artifact_id", "observed_at", "counter", "asset_count", "captured_on"]
 SOURCES = ("github_release", "docker")
 KEY = ("source", "product_slug", "artifact_id", "observed_at")
+SERIES = ("source", "product_slug", "artifact_id")
+INCREMENT_COLUMNS = [*SERIES, "from_observed_at", "to_observed_at", "from_counter", "to_counter",
+                     "increment", "reset"]
 
 GITHUB_SQL = (
     "SELECT product_slug, repo AS artifact_id, "
@@ -141,8 +157,8 @@ def union(history: list[dict], other: list[dict]) -> tuple[list[dict], int]:
 
 def problems(rows: list[dict]) -> list[str]:
     """Structural checks on the committed history. A counter going DOWN is not a problem here:
-    it is a real observation (an asset deleted or replaced), and whoever computes an increment
-    must void that window rather than this file hiding it."""
+    it is a real observation (an asset deleted or replaced). `increments` clamps and flags that
+    window; the history must not hide it."""
     out: list[str] = []
     seen: set[tuple] = set()
     for i, row in enumerate(rows, start=2):
@@ -165,6 +181,35 @@ def problems(rows: list[dict]) -> list[str]:
     return out
 
 
+def increments(rows: list[dict]) -> list[dict]:
+    """One row per window between consecutive readings of the same counter.
+
+    The increment is `to_counter - from_counter`, clamped at 0. A window whose lifetime total fell
+    (an asset deleted or replaced) carries `reset = True`: its increment is 0 by rule, not by
+    measurement, and must not be read as "no use". The next window's baseline is the new, lower
+    reading, which falls out of pairing consecutive readings: nothing carries the old high-water
+    mark forward. A series with one reading has no window. Pure, so the tests can drive it.
+    """
+    series: dict[tuple, list[dict]] = {}
+    for row in rows:
+        series.setdefault(tuple(row[k] for k in SERIES), []).append(row)
+    out: list[dict] = []
+    for key in sorted(series):
+        readings = sorted(series[key], key=lambda r: datetime.fromisoformat(str(r["observed_at"])))
+        for before, after in zip(readings, readings[1:]):
+            start, end = int(before["counter"]), int(after["counter"])
+            out.append({
+                **dict(zip(SERIES, key)),
+                "from_observed_at": before["observed_at"],
+                "to_observed_at": after["observed_at"],
+                "from_counter": start,
+                "to_counter": end,
+                "increment": max(end - start, 0),
+                "reset": end < start,
+            })
+    return out
+
+
 def write_history(rows: list[dict], path: Path = HISTORY) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -178,11 +223,21 @@ def main() -> int:
     parser.add_argument("--live", action="store_true", help="read the warehouse and append new rows")
     parser.add_argument("--check", action="store_true", help="validate the committed history")
     parser.add_argument("--union", type=Path, help="fold another history file in by reading key")
+    parser.add_argument("--increments", action="store_true",
+                        help="print per-window increments as CSV, falling counters clamped and flagged")
     args = parser.parse_args()
-    if sum(bool(x) for x in (args.live, args.check, args.union)) != 1:
-        parser.error("pass exactly one of --live, --check and --union")
+    if sum(bool(x) for x in (args.live, args.check, args.union, args.increments)) != 1:
+        parser.error("pass exactly one of --live, --check, --union and --increments")
 
     history = read_history()
+    if args.increments:
+        windows = increments(history)
+        writer = csv.DictWriter(sys.stdout, fieldnames=INCREMENT_COLUMNS, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows({**w, "reset": str(w["reset"]).lower()} for w in windows)
+        resets = sum(w["reset"] for w in windows)
+        print(f"{len(windows)} window(s), {resets} reset(s) clamped to 0", file=sys.stderr)
+        return 0
     if args.union:
         try:
             rows, added = union(history, read_history(args.union))
