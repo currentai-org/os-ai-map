@@ -633,24 +633,6 @@ held:
         the artifact should stop routing the band (update-product); if it passes, the band moves to level
         4 on it.'
       since: '2026-10-07'
-  flash-attention:
-    openness:
-      because: The recorded core-gated:ungated reading does not cover FlashAttention-4, which the README now
-        headlines. Its flash_attn/cute package requires nvidia-cutlass-dsl, published under an NVIDIA Software
-        License Agreement rather than an OSI license, while FlashAttention-2 and -3 build from setup.py without
-        it. Settling it needs a maintainer decision on whether FlashAttention-4 counts as core (core-gated gated,
-        open_core) or as a separate optional package (ungated, with that carve-out written into the note).
-      since: '2026-09-30'
-  flashinfer:
-    openness:
-      because: Recorded core-gated:ungated / source:public rested on a README with no binary dependency. The
-        current tree downloads prebuilt cubins (TRTLLM-gen FMHA and batched GEMM, DeepGEMM, cuDNN SDPA, CuTe-DSL
-        FMHA) from an NVIDIA artifactory at runtime, published by a script whose logs are visible to codeowners
-        only, and the README names the TensorRT-LLM and cuDNN backends and Blackwell support as headline features.
-        Settling it needs a maintainer decision on whether these blob-backed backends are core, plus the license
-        and source of the artifactory cubins, which cannot be fetched or quote-checked here. If they count as
-        core, source moves to partial and the score with it (compare tensorrt).
-      since: '2026-09-30'
   gemini-cli:
     capability:
       because: >-
@@ -2117,13 +2099,6 @@ held:
       since: '2026-10-07'
       settled_by: scheduled_reconciliation
   sglang:
-    openness:
-      because: >-
-        python/pyproject.toml lists nvidia-cutlass-dsl and nvidia-mathdx, two NVIDIA packages under
-        proprietary licenses, in the required dependencies rather than an optional extra, while the
-        note says the repository has no closed dependency. Settled by a ruling on whether those required
-        packages gate the core (5/open_source vs 4/open_core), with the note rewritten to match.
-      since: '2026-09-29'
     adoption:
       because: Not a re-band. The record bands on a download count no bridged route reads, so the reconciliation
         falls back to GitHub stars on sgl-project/sglang (level 3) on both readings and cannot compare the
@@ -2215,13 +2190,6 @@ held:
         environment, where GitHub returns 403, so the re-band to level 2 waits for a re-read of the cited
         count.
       since: '2026-10-07'
-  tensorrt-llm:
-    openness:
-      because: >-
-        core_gated (ungated vs gated) cannot be established: the default build links a prebuilt, source-
-        less internal_cutlass_kernels static library; a maintainer ruling on whether that counts as
-        gating (5/open_source vs 4/open_core) would settle it. License and source dimensions stay dated.
-      since: '2026-09-29'
   terminal-bench:
     adoption:
       because: 'Re-banded on 2026-10-07 from level 3 to 4: the 28 Sep and 5 Oct reconciliations both measured
