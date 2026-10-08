@@ -262,11 +262,12 @@ A model scores on the surface it powers — `gpt-5` on ChatGPT — and its note 
 loud. What the scale will not accept silently is a figure that is **not an active count**: an
 all-time or cumulative user total, a device installed base, a paid-seat count. Those are the
 `active_users` form of the under-coverage error below, a substitution wearing a measurement's
-label. The records that carry one name the substitution in the note:
-`github-copilot` and `github-copilot-ide` (20M **all-time**, not active) and
-`apple-core-ml-runtime` (2.5B active **devices** — a person with an iPhone and a Mac is two of
-it). `doubao` is not one of them: it bands on a measured 382M MAU, which is higher than the
-all-time total a substitution would have reached for.
+label. A record that carries one names the substitution in the note: `apple-core-ml-runtime`
+(2.5B active **devices** — a person with an iPhone and a Mac is two of it). An all-time total is
+not an active count at all, so it moves to `reported_traction` with a `banded_quantity` naming it
+and keeps its level: `github-copilot` and `github-copilot-ide` band on GitHub's 20M **all-time**
+users that way. `doubao` is not one of them: it bands on a measured 382M MAU, which is higher than
+the all-time total a substitution would have reached for.
 
 All three scales share `registry.adoption_bands`, distinguished by `signal_type`. A consumer
 that joins without filtering on it will band a package's downloads against the stars scale.

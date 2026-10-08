@@ -52,14 +52,19 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Adoption is read from Hugging Face downloads on V4-Flash, which land in the same range as the declared
-    V4-Pro repository, so the reading holds regardless of which sibling is used.
+  note: Adoption sums Hugging Face downloads across the two declared checkpoints, V4-Pro and V4-Flash, as
+    the family rule requires; V4-Flash draws roughly twice V4-Pro's downloads.
   sources:
-  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
-    shows: 2,213,519 downloads in the trailing 30 days
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Flash
+    shows: '"downloads":966499 over the trailing 30 days for deepseek-ai/DeepSeek-V4-Flash.'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48
+    content_sha256: 74442736f52992d3d051b868f2f94cb69b5c4937e76e0b77aa5fa340dfa584e9
+  - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Pro
+    shows: '"downloads":423640 over the trailing 30 days for deepseek-ai/DeepSeek-V4-Pro.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 2befbce0c012172c8b8d828da627f4f44b3bc98b79e905fb46cc0233caa905c3
 capability:
   score: 4
   basis: benchmark
