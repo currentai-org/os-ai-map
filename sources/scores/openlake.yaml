@@ -57,23 +57,36 @@ adoption:
     http_status: 200
     content_sha256: c3b2c7f81c09bb271b1f42e7876d3b7e06f6a710642394f93b904eeb3f8564a7
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: single-purpose store or index'
-  value: KV-cache offload and an S3-compatible object store on one io_uring engine, with a lossless BF16
-    codec and a vLLM connector. Purpose-built, with a narrower surface and shorter operational record than
-    platforms such as Vespa.
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: 'Distributed storage for GPU workloads: GPU nodes join one OpenLake cluster serving a KV-cache
+    offload pool and a petabyte-scale S3-compatible object store, durable through Reed-Solomon erasure
+    coding across drives, with Kubernetes Helm deployment and a vLLM connector, on an io_uring engine.'
   relative_to: vespa
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: OpenLake combines KV-cache offload with an S3-compatible object store on one io_uring engine, using
-    a lossless BF16 codec and a vLLM connector. It is purpose-built, but its surface is narrower and its
-    operational record shorter than platforms such as Vespa.
+  note: 'OpenLake is a durable, cluster-capable store: GPU nodes contribute to one cluster, and data and
+    parity are erasure-coded across drives, the same kind of scale-out store as AIStore and JuiceFS. It
+    stores and returns objects and cached KV blocks rather than retrieving across modes, and hosts no
+    model in its serving path, so it sits one step below Vespa.'
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://raw.githubusercontent.com/vespa-engine/vespa/master/README.md
+      shows: README describes the product as "Search, make inferences in and organize vectors, tensors,
+        text and structured data, at serving time and any scale." and says Vespa is "a platform that performs
+        these operations for you with high availability and performance."
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 5265be4d7ef3c3ffe6f8d8e8265047516cd7a8e39258edb15edc7451297ab59a
+  last_verified: '2026-10-08'
   sources:
-  - url: https://github.com/openlake-project/openlake/blob/main/README.md
-    shows: README still documents distributed storage for GPU workloads built in Rust on io_uring, presenting a
-      KV-cache offload pool and a petabyte-scale S3-compatible object store, with published throughput and latency
-      figures and a vLLM connector.
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/openlake-project/openlake/main/README.md
+    shows: 'README: "Distributed storage for GPU workloads"; "fully persistent and durable"; "GPU nodes
+      contribute to create an OpenLake cluster"; "SIMD Reed Solomon erasure coding distributes data and
+      parity across drives"; a Helm guide places "one OpenLake instance on each selected node"; sections
+      for KV offload and a PB-scale object store, with a vLLM connector.'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 03a43a5f6de82dd245d7bc7b849ba88db4c731f8c0273f3356be8bbdf171ff9b
+    content_sha256: 49cffb8cbe1e1fcd4e02235f174e351679f71abe2a9ccc840686c622b1fcf882

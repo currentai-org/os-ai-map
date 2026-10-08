@@ -95,28 +95,64 @@ adoption:
     http_status: 200
     content_sha256: 9b7f9b8d0bd8d3b225d0887a5c1749ef139f07c79649e5f0dd8ad706205d8e63
 capability:
-  score: 4
+  score: 5
   basis: benchmark
-  basis_detail: vendor-reported production and load-test figures (no independent harness submission)
+  basis_detail: vendor-reported production and load-test figures (no independent harness submission),
+    placed on the matrix by Pinecone's documentation of hosted models in the query path
+  value: P50 latency ~26-60ms at 1.4B-vector scale, 5,700 QPS; serverless indexes with dedicated read
+    nodes; hosted embedding models applied at index and query time and hosted reranking models run as
+    an integrated part of a query.
   relative_to: milvus
-  relation: at
-  value: P50 latency ~26-60ms at 1.4B-vector scale, 5,700 QPS; serverless auto-indexing, dedicated read
-    nodes, hosted embedding and reranking models in the query path
+  relation: one_above
   confidence: medium
-  note: Pinecone is a complete, durable, distributed vector database comparable to Milvus, operated at production
-    scale with integrated sparse-dense hybrid search. It also offers hosted embedding and reranking models
-    through its API, and its production figures are vendor-reported rather than independently benchmarked.
+  note: 'Pinecone is a distributed, durable vector database run at production scale, and its own documentation
+    describes hosted embedding and reranking models inside the query path: integrated embedding at index
+    time and integrated reranking as part of a search. Hosting the model in the serving path is what sets
+    Vespa and Elasticsearch apart, which puts Pinecone beside them and one above Milvus, whose model utilities
+    run in the client. Its production figures are vendor-reported, not independently benchmarked.'
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://raw.githubusercontent.com/milvus-io/milvus/master/README.md
+      shows: README describes a "fully-distributed and K8s-native architecture", search that can "define
+        functions to rerank results", and a "pymilvus[model]" utility, described as "simple wrapper code
+        to transform unstructured data into vector embeddings and leverage reranking models", which runs
+        in the client rather than in the server's serving path.
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 8fedcdc9023fcd061a54405bf0d83afb4516c7ec053b2efd22476473ce10153f
+  last_verified: '2026-10-08'
   sources:
+  - url: https://docs.pinecone.io/models/overview
+    shows: 'Pinecone model gallery: "Browse Pinecone''s hosted embedding and reranking model gallery"
+      and "Build end-to-end faster with models hosted by Pinecone."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: e640aa92e85bca24690150a9758eff8c6d144fdcff56483a50bcca87c55b5747
+  - url: https://docs.pinecone.io/guides/search/rerank-results
+    shows: 'Rerank guide: "You can use a hosted model to rerank results as an integrated part of a query";
+      "To rerank initial results as an integrated part of a query, without any extra steps, use the Search
+      with text operation with the rerank parameter, including the hosted reranking model".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 050585b6d23397da551261440c3a0790ca406593cf366be654f0b4c92eb82839
+  - url: https://docs.pinecone.io/guides/index-data/create-an-index
+    shows: 'Create-an-index guide: indexes for "full-text (BM25), semantic (dense vector), sparse-vector,
+      or hybrid search", with "Integrated embedding" index options that "have Pinecone convert it to dense
+      vectors" from source text.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 3df6182f1c878f655ada643c93994b2535bb40796d81dac204ec18f89e9d9a99
   - url: https://www.infoq.com/news/2025/12/pinecone-drn-vector-workloads/
-    shows: Dedicated read nodes for predictable vector workloads; serverless scaling.
-    accessed: '2026-08-18'
+    shows: '"Pinecone Introduces Dedicated Read Nodes in Public Preview for Predictable Vector Workloads":
+      dedicated read nodes beside serverless scaling.'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 7718267b7c994a701f63ca1a6bc7904869f5dcafa14a60d3445bc88f77413bec
+    content_sha256: d9cdb9adb9760d4776fad094f32323aca5d91334f3278887e198adace121b840
   - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
-    shows: '"5,700 queries per second with a P50 latency of just 26 milliseconds across a database of 1.4
-      billion vectors"; and 600 QPS at 45ms over 135 million vectors, load-tested to "2,200 queries per
-      second with a P50 latency of just 60 milliseconds". Vendor-sourced figures reported by a trade outlet,
-      not an independent harness.'
-    accessed: '2026-08-18'
+    shows: '"5,700 queries per second with a P50 latency of just 26 milliseconds across a database of
+      1.4 billion vectors"; load-tested to "2,200 queries per second with a P50 latency of just 60 milliseconds".
+      Vendor-sourced figures reported by a trade outlet, not an independent harness.'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 5fdcdf03270cf00d985ffbaa89ba0be9a2a890cc84b8d6b3300bc64c0505f1c5
+    content_sha256: 13cb29927ab4356b8febf36e17e1e520d506c11a987180d33f38cfea0f992b73

@@ -57,24 +57,35 @@ adoption:
     http_status: 200
     content_sha256: f4f668f91f3e0c818d101295dd61e2f371bac9c848f127da944825109162c11e
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: single-purpose store or index'
-  value: Distributed vector search with scalar filtering and a master, router and partition-server role
-    split, over IVF and HNSW indexes. Vector search is combined with filtering, but there is no full-text
-    or lexical mode.
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Distributed vector search cluster with master, router and partition-server roles, raft-based
+    replication and elastic scale-out, over IVF and HNSW indexes with scalar filtering. No full-text or
+    lexical mode, and no model hosting in the serving path.
   relative_to: vespa
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Vearch is a distributed vector search cluster with scalar filtering, replication and a split of
-    roles across its master, router and partition servers, built over IVF and HNSW indexes. Its hybrid search
-    is vector similarity plus scalar filtering only, with no full-text or lexical mode, which keeps it two
-    steps below Vespa, a complete distributed retrieval system covering more retrieval modes.
+  note: Vearch runs as a distributed cluster, splitting work across master, router and partition servers
+    with raft-based replication and elastic scale-out, which makes it a complete system that scales across
+    machines. Its retrieval is vector similarity plus scalar filtering, with no full-text mode and no
+    model hosted in the serving path, so it sits one step below Vespa.
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://raw.githubusercontent.com/vespa-engine/vespa/master/README.md
+      shows: README describes the product as "Search, make inferences in and organize vectors, tensors,
+        text and structured data, at serving time and any scale." and says Vespa is "a platform that performs
+        these operations for you with high availability and performance."
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 5265be4d7ef3c3ffe6f8d8e8265047516cd7a8e39258edb15edc7451297ab59a
+  last_verified: '2026-10-08'
   sources:
   - url: https://raw.githubusercontent.com/vearch/vearch/master/README.md
-    shows: 'README lists "Hybrid search" as vector search plus scalar filtering, and "Replication and elastic
-      scaling out", and describes a "Router" and "PartitionServer (PS)" role split with "raft-based replication";
-      searched the body for full-text, BM25 and lexical: none.'
-    accessed: '2026-09-30'
+    shows: 'README lists "Hybrid search" as vector search plus scalar filtering, and "Replication and
+      elastic scaling out", and describes a "Router" and "PartitionServer (PS)" role split with "raft-based
+      replication"; searched the body for full-text, BM25 and lexical: none.'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 75345e5843a2e3178bbe4aca70a6cf967f55f446fe0586388a0d6a8398a11732

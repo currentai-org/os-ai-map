@@ -86,7 +86,9 @@ scoring_recipe:
     seven products and distinguish none of them. Hosting a model is the line that holds: vespa
     evaluates tensor and ONNX models at serving time, and elasticsearch ships `inference`, `ml` and
     `ml-package-loader` plugins in-tree beside `rank-rrf` and `rank-vectors`, while the vector
-    databases fuse or filter over vectors the caller supplies. Two products reach it.
+    databases fuse or filter over vectors the caller supplies. Three products reach it: vespa,
+    elasticsearch, and pinecone, whose own documentation runs hosted embedding and reranking models
+    inside the query path, where Milvus's model utilities run in the client.
 
     Three bands rest on a benchmark rather than on the matrix - milvus, qdrant and pinecone, which
     arrived from agent_tools_protocols carrying measurements. Their `basis` stays `benchmark`,
