@@ -37,7 +37,7 @@ def test_docker_rows_carry_no_asset_count():
 
 def test_a_falling_counter_is_kept_not_hidden():
     """A deleted or replaced asset lowers the lifetime total. That is an observation, and the
-    increment step must void the window; the history must not smooth it away."""
+    increment step clamps and flags the window; the history must not smooth it away."""
     rows, _ = SC.merge([], {"github_release": [
         _gh("x", "o/x", "2026-09-28 00:00:00", 500, 4),
         _gh("x", "o/x", "2026-10-04 00:00:00", 300, 3)], "docker": []}, "2026-10-05")
@@ -75,3 +75,52 @@ def test_union_keeps_rows_from_both_sides_and_their_capture_dates():
     assert {r["captured_on"] for r in rows} == {"2026-09-28", "2026-10-05"}
     again, added_again = SC.union(rows, pending)
     assert added_again == 0 and again == rows
+
+
+def _series(slug, repo, *readings):
+    rows, _ = SC.merge([], {"github_release": [
+        _gh(slug, repo, observed, counter, 1) for observed, counter in readings], "docker": []}, "2026-10-05")
+    return rows
+
+
+def test_a_rising_counter_gives_its_difference_unflagged():
+    (window,) = SC.increments(_series("ollama", "ollama/ollama",
+                                      ("2026-09-28 00:00:00", 100), ("2026-10-04 00:00:00", 160)))
+    assert window["increment"] == 60 and window["reset"] is False
+
+
+def test_the_three_falling_counters_from_issue_850_clamp_to_zero_and_flag_a_reset():
+    """The 28 Sep and 4 Oct readings of the three artifacts whose lifetime totals fell (#850)."""
+    rows = (_series("openpipe", "OpenPipe/ART", ("2026-09-28 16:59:59", 2573), ("2026-10-04 03:04:10", 1249))
+            + _series("tenstorrent-blackhole", "tenstorrent/tt-metal",
+                      ("2026-09-28 16:59:59", 64902), ("2026-10-04 03:04:10", 64720))
+            + _series("mlflow", "mlflow/mlflow", ("2026-09-28 16:59:59", 4), ("2026-10-04 03:04:10", 0)))
+    windows = {w["artifact_id"]: w for w in SC.increments(rows)}
+    assert set(windows) == {"OpenPipe/ART", "tenstorrent/tt-metal", "mlflow/mlflow"}
+    for w in windows.values():
+        assert w["increment"] == 0 and w["reset"] is True
+    assert (windows["OpenPipe/ART"]["from_counter"], windows["OpenPipe/ART"]["to_counter"]) == (2573, 1249)
+
+
+def test_after_a_reset_the_baseline_restarts_from_the_lower_reading():
+    """The next window is measured from 1,249, not from the old high of 2,573: 1,249 -> 1,400 is
+    151 real downloads, where a carried-forward high-water mark would report 0."""
+    windows = SC.increments(_series("openpipe", "OpenPipe/ART",
+                                    ("2026-09-28 16:59:59", 2573), ("2026-10-04 03:04:10", 1249),
+                                    ("2026-10-11 03:00:00", 1400)))
+    assert [(w["increment"], w["reset"]) for w in windows] == [(0, True), (151, False)]
+    assert windows[1]["from_counter"] == 1249
+
+
+def test_increments_pair_readings_in_time_order_and_never_across_series():
+    rows = _series("a", "o/a", ("2026-10-04 00:00:00", 30), ("2026-09-28 00:00:00", 10)) \
+        + _series("b", "o/b", ("2026-09-28 00:00:00", 5))
+    windows = SC.increments(rows)
+    assert len(windows) == 1 and windows[0]["artifact_id"] == "o/a"
+    assert (windows[0]["from_counter"], windows[0]["increment"], windows[0]["reset"]) == (10, 20, False)
+
+
+def test_no_window_in_the_committed_history_is_negative():
+    windows = SC.increments(SC.read_history())
+    assert all(w["increment"] >= 0 for w in windows)
+    assert all(w["reset"] == (w["to_counter"] < w["from_counter"]) for w in windows)
