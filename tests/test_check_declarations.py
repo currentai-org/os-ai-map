@@ -157,8 +157,8 @@ def test_the_real_corpus_holds_at_its_known_count():
     (vals-ai), each wanting its own decision.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 10, [f[0] for f in findings]
+    assert len(findings) == 11, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
         "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes", "google-cloud-run",
-        "patronus-evaluation-platform", "predibase", "qualcomm-ai-engine-direct", "vals-ai",
+        "patronus-evaluation-platform", "predibase", "qualcomm-ai-engine-direct", "the-cancer-imaging-archive", "vals-ai",
     }
