@@ -145,14 +145,20 @@ def test_the_real_corpus_holds_at_its_known_count():
     the Kaggle CLI, two citations) and uci-ml-repository (ucimlrepo) each cite a client of a closed
     hosted catalog to show that the catalog's code is not there, the kaggle-models shape. Declaring a client would read its
     downloads as the catalog's adoption.
+
+    Lowered to 10 on 2026-10-08 by a maintainer ruling on that shape: a closed hosted service's
+    client SDK or docs repository does not establish the service's `source`, so those citations
+    keep their place as provenance and drop `source` from `establishes`. That cleared 15 findings
+    across 13 products (cursor, datadog-llm-observability, exa-search-api, huggingface-hub-platform,
+    kaggle-datasets, kaggle-models, lamini, modelscope, ollama-library, ragaai-catalyst,
+    replit-agent-code-execution-api, tavily-search-api, uci-ml-repository). What remains is a
+    different shape: a component or adjacent project cited for a partial or closed reading
+    (google-cloud-run's gVisor, predibase's LoRAX), or a harness that is part of the product
+    (vals-ai), each wanting its own decision.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 25, [f[0] for f in findings]
+    assert len(findings) == 10, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
-        "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
-        "huggingface-hub-platform", "kaggle-models", "lamini", "modelscope", "ollama-library",
-        "kaggle-datasets", "patronus-evaluation-platform", "predibase",
-        "qualcomm-ai-engine-direct", "ragaai-catalyst", "replit-agent-code-execution-api",
-        "tavily-search-api", "uci-ml-repository", "vals-ai",
+        "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes", "google-cloud-run",
+        "patronus-evaluation-platform", "predibase", "qualcomm-ai-engine-direct", "vals-ai",
     }
