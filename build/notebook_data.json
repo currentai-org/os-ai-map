@@ -34,6 +34,7 @@
       "dataset_processing_tools": "Software that builds training corpora: extraction, filtering, deduplication, decontamination, and synthetic-data generation pipelines. This category is the tooling; the corpora themselves live in Training & synthetic datasets.",
       "document_conversion": "Software and services that turn documents into text or structured output a model can consume: PDF, Office, HTML, email and scanned images into Markdown, JSON or layout-preserving formats, including the OCR and layout-analysis engines underneath them.",
       "language_specific_datasets": "Datasets assembled to make an underrepresented language, or a set of related underrepresented languages, usable for AI: pretraining text, speech, instruction and dialogue data, and evaluation sets. General multilingual corpora that happen to include a language live in Training & Synthetic Datasets.",
+      "data_hubs": "Public platforms whose product is collecting, describing and distributing datasets from many publishers, as a catalog that people and tools search to find data and reach it.",
       "finetuning_code": "Libraries and platforms for fine-tuning models.",
       "federated_learning": "Software that trains, evaluates or queries a shared model across data holders who never pool their raw data, moving model updates, aggregates or queries between silos instead of datasets.",
       "inference_code": "Engines and runtimes that serve model inference.",
@@ -64002,6 +64003,1764 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
+            "basis": "verified"
+          }
+        }
+      ]
+    },
+    "data_hubs": {
+      "label": "Data hubs & catalogs",
+      "arc": "Model components",
+      "layer": "model_components",
+      "group": "Data",
+      "group_slug": "data",
+      "stage": {
+        "num": 4,
+        "name": "Competitive Open Ecosystem"
+      },
+      "gaps": [
+        "resiliency"
+      ],
+      "products": [
+        {
+          "slug": "openml",
+          "product": "OpenML",
+          "org_slug": "openml",
+          "org": "OpenML",
+          "type": "software",
+          "description": "OpenML is an open platform for sharing machine learning datasets together with the tasks, pipelines and experiment runs built on them. Anyone can upload a dataset from a dataframe; OpenML stores it in a uniform format under an ID and version, computes its data characteristics, and serves it to Python, R and Java clients. It is run as a community project represented by the not-for-profit Open Machine Learning Foundation.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:BSD-3-Clause(OSI);source:public(github.com/openml/OpenML);core-gated:ungated(community project represented by the not-for-profit Open Machine Learning Foundation; nothing sold)",
+            "confidence": "high",
+            "note": "The server behind openml.org is published under BSD-3-Clause, and so is the rewrite that will replace it. OpenML is a community project backed by a not-for-profit foundation, with no paid edition.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/openml/OpenML/HEAD/LICENSE",
+                "shows": "\"BSD 3-Clause License. Copyright (c) 2014-2021, OpenML.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "b98c62d2ae1f473f6bfd0e79d2dd87d017365f2819891e4c11be561e9d8bb2d3",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openml/OpenML/HEAD/README.md",
+                "shows": "\"This repository is in maintenance-only mode. We're phasing out the PHP-based REST API in favor of a much more modern FastAPI-based API.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "90c3948948544c4253012af8d8f5c2ce03099e7f74fe8e2d1b2c9be1c585ef58",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openml/server-api/HEAD/LICENSE",
+                "shows": "\"BSD 3-Clause License. Copyright (c) 2023, OpenML\" for the Python server rewrite.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "bbb316912410421d8140d7fc5d14afd065c571d8d80a92824952076eee7e9ddc",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://docs.openml.org/intro/Governance/",
+                "shows": "\"The Open Machine Learning Foundation is a not-for-profit organization supporting, but not controlling, the OpenML project.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "bcc129846414d12dc91589603fa39556fd06cb8cd690beb745bc245757e81202",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "OpenML publishes no total of downloads or users, and its search index refused automated queries. Downloads of the openml client packages would count a client rather than the platform, so no reading was recorded.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://www.openml.org/api/v1/json/data/list/limit/5",
+                "shows": "The dataset listing API returns per-dataset status, format and data qualities; it carries no download or user counts.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "e8cfba3186e27653ab16f390cd9ea686c33c4c2960f4c1fd6ced751d185ab8d0"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "upload and download through the website or the APIs; a dataset ID plus incremental versions per name and a free-form version label; uniform storage with ARFF and Parquet downloads; automatically computed data characteristics; clients load datasets by ID into dataframes; tasks, runs and benchmark suites defined on the datasets",
+            "confidence": "high",
+            "note": "Anyone can upload a dataset from a dataframe, and OpenML stores it in one uniform format, computes its characteristics and serves it back by ID to Python, R and Java. Tasks and benchmark suites are defined on top of the datasets, so the catalog also records how each one is used for evaluation.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://docs.openml.org/concepts/data/",
+                "shows": "\"You can upload and download datasets through the website or though the APIs\"; \"OpenML assigns incremental version numbers per upload with the same name\"; \"OpenML will automatically analyze the data and compute a range of data quality characteristics\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "d67879d47679dcd89e235b34b1ad2f64e7bd1a7bc5fb9fb91bef5b0677f014f3"
+              },
+              {
+                "url": "https://www.openml.org/api/v1/json/data/61",
+                "shows": "Dataset 61 (iris): \"version\":\"1\", \"format\":\"ARFF\", a \"parquet_url\" on data.openml.org and a default target attribute.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "7e408fec68984cfcf25f360ca267e706bc5ef27284a17351f78429660c14acd0"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openml/server-api/HEAD/README.md",
+                "shows": "\"If you simply want to access data stored on OpenML in a programmatic way, please have a look at connector packages in Python, Java, or R.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "e681e8325f875d5a571f4e94e9e57bd522aaa57ac1fd97207b2e2d4c25ed090d"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          },
+          "version_note": "Scored as the hosted platform at openml.org. Its PHP backend is in maintenance mode while a Python rewrite of the server is developed in a separate repository."
+        },
+        {
+          "slug": "harvard-dataverse",
+          "product": "Harvard Dataverse",
+          "org_slug": "harvard-iqss",
+          "org": "Institute for Quantitative Social Science",
+          "type": "software",
+          "description": "Harvard Dataverse is a free research data repository, open to researchers anywhere, run by Harvard's Institute for Quantitative Social Science on the open-source Dataverse software. Depositors publish datasets that are versioned under DOIs and downloadable through a web interface and an API. Tabular files from Stata, SPSS, R, Excel and CSV are ingested with variable-level metadata, and dataset metadata exports as Croissant, DDI and DataCite.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(github.com/IQSS/dataverse; the Harvard installation reports Dataverse version 6.10.1);core-gated:ungated(academic institute at Harvard; deposit free up to the per-researcher quota)",
+            "confidence": "high",
+            "note": "Harvard Dataverse runs a current release of the Dataverse software, which Harvard's IQSS develops in the open under Apache-2.0. Deposit is free, and no feature of the software is held back for a paid edition.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/IQSS/dataverse/HEAD/LICENSE.md",
+                "shows": "\"The Dataverse software is licensed under the Apache License, Version 2.0\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "194b865caa806471273cfccebabfcd8c5094297f0e31a5ab8ff2155c6f86f64c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://dataverse.harvard.edu/api/info/version",
+                "shows": "{\"version\":\"6.10.1\",\"build\":\"iqss-4\"}: the Harvard installation reports the Dataverse release it runs.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "4f10ca8ea5535f9b419a65e27200ab01c3bdb1be02da96062dc72c812babe818",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/IQSS/dataverse/HEAD/README.md",
+                "shows": "\"Dataverse®, the open source software platform designed for sharing, finding, citing, and preserving research data. Developed by the Dataverse team at the Institute for Quantitative Social Science\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "44512a3f51e208155b66c434e80cad1ed41802cd12660194592eac8818ae70a4",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://datamanagement.hms.harvard.edu/share/data-repositories",
+                "shows": "\"Harvard Dataverse Repository is free for all researchers worldwide (up to 1 TB).\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "banded_quantity": "file downloads served by the Harvard Dataverse installation over the trailing 30 days, from its public metrics API; counts files, not people",
+            "note": "The installation's own metrics API counts every file downloaded from it, read here over the trailing month. That is file traffic rather than a count of researchers, and one dataset download can fetch many files.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://dataverse.harvard.edu/api/info/metrics/downloads/pastDays/30",
+                "shows": "{\"status\":\"OK\",\"data\":{\"count\":9682680}}, read 2026-10-07.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "17c758bad90c024956f06ec56df94b40c498f76cee2e263a3747adfc345ef829"
+              },
+              {
+                "url": "https://dataverse.harvard.edu/api/info/metrics/downloads",
+                "shows": "{\"status\":\"OK\",\"data\":{\"count\":177441883}} downloads in total, read 2026-10-07.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "930948703cf7fa17e653a4c2a79540010c27b023e6ebc9b04039519f1d0ec01f"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "free deposit for researchers worldwide; datasets versioned under DOIs; native API for deposit, search and download; Stata, SPSS, R, Excel, CSV and TSV files ingested as tabular data with variable metadata and tab-delimited downloads; metadata exported as Croissant, Dublin Core, DDI, DataCite and Schema.org JSON-LD",
+            "confidence": "medium",
+            "relative_to": "openml",
+            "relation": "at",
+            "note": "Researchers anywhere can deposit data for free, and each dataset is versioned under a DOI that the API serves for download. Tabular files are ingested into a standard form with variable-level metadata and can be described in Croissant for machine learning tools, which puts it beside OpenML rather than Zenodo.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://guides.dataverse.org/en/latest/user/dataset-management.html",
+                "shows": "\"Files in certain formats - Stata, SPSS, R, Excel (xlsx), CSV and TSV - may be ingested as tabular data\"; exports \"Croissant ... Dublin Core DDI ... DataCite 4 ... Schema.org JSON-LD\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "24e01805fb8c4c266aac72e49818d27614fe25eee9ef478c006485dc54d73190"
+              },
+              {
+                "url": "https://datamanagement.hms.harvard.edu/share/data-repositories",
+                "shows": "Harvard Dataverse: \"Assignment of dataset DOIs Yes\"; \"free for all researchers worldwide (up to 1 TB)\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01"
+              },
+              {
+                "url": "https://guides.dataverse.org/en/latest/api/native-api.html",
+                "shows": "Native API reference: create and publish datasets, list versions, and download files by dataset persistent identifier.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "7c9b52837df2b583e10177515404c360bee6f55a5a24b10e57cc17006f9b1895"
+              }
+            ]
+          },
+          "overall_score": 4.7,
+          "tier": "leading",
+          "maturity": 4.7,
+          "mature": true,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          },
+          "version_note": "Scored as the Harvard installation. The Dataverse software also runs many other institutions' repositories, which are not entries here."
+        },
+        {
+          "slug": "zenodo",
+          "product": "Zenodo",
+          "org_slug": "cern",
+          "org": "CERN",
+          "type": "software",
+          "description": "Zenodo is a general-purpose research repository run by CERN, where anyone can deposit datasets alongside papers, software and other research outputs. Each record gets a DOI, files can be versioned under it, and a REST API handles deposit and retrieval. It was launched with OpenAIRE as a catch-all repository for EU-funded research and runs on the open-source InvenioRDM platform in CERN's data centre.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:GPL-3.0(OSI);source:public(github.com/zenodo/zenodo-rdm);core-gated:ungated(operated by CERN as a free service; runs on open-source InvenioRDM)",
+            "confidence": "high",
+            "note": "Zenodo's own application is published under GPL-3.0 and built on InvenioRDM, which CERN co-develops in the open. CERN runs it as a free service, and nothing about the repository is sold.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/zenodo/zenodo-rdm/HEAD/LICENSE",
+                "shows": "GNU General Public License, Version 3, 29 June 2007, full text.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/zenodo/zenodo-rdm/HEAD/README.md",
+                "shows": "Development quick start: `git clone https://github.com/zenodo/zenodo-rdm.git`, `invenio-cli install`, `invenio-cli run`.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "91773e50df0c1898db9c8d219ea7d196aff1a42d200005df3fad8bdc06476ef4",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://about.zenodo.org/infrastructure/",
+                "shows": "\"Zenodo is powered by CERN Data Centre and the InvenioRDM and is fully run on open source products all the way through.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "44fd69fce3067a133161f55693c1e1ae953fb98a53c6a9751220ad4b23835840",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Zenodo shows view and download counts on individual records but publishes no total for datasets, and its search API refused automated queries. No figure for the repository as a whole could be read.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://about.zenodo.org/",
+                "shows": "About page: history, scope and principles; no repository-wide usage figure.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "ddf6f255bf3fd104b2dc5926594db88b853b39ed2944d860b39d77f371374e27"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "anyone may register and deposit any research artifact, datasets included; DOI per record; data files are versioned; REST API for deposit and retrieval; no format, size or license requirements imposed",
+            "confidence": "medium",
+            "relative_to": "harvard-dataverse",
+            "relation": "one_below",
+            "note": "Anyone can register and deposit a dataset, which gets a DOI, versioned files and a REST API for upload and retrieval. Zenodo serves files as they were deposited and does not parse tables or annotations, which Harvard Dataverse does for tabular data.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://about.zenodo.org/policies/",
+                "shows": "\"Eligible depositors: Anyone may register as user of Zenodo\"; \"Scope: All fields of research. All types of research artifacts.\"; \"Data files are versioned.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "7f9ed1b2fbe1542f3bf6ef042420e7adc183cea6ccba8df1ffed8b19a3b2f896"
+              },
+              {
+                "url": "https://about.zenodo.org/",
+                "shows": "\"Zenodo does not impose any requirements on format, size, access restrictions or licence.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "ddf6f255bf3fd104b2dc5926594db88b853b39ed2944d860b39d77f371374e27"
+              },
+              {
+                "url": "https://developers.zenodo.org/",
+                "shows": "REST API reference: OAuth tokens with deposit:write and deposit:actions scopes; deposition metadata includes a version field.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "bbd72463dcf7e07f597ed2b145e8019fb0e861c4811a8d22e0e5d202bde69e61"
+              },
+              {
+                "url": "https://api.datacite.org/dois/10.5281/zenodo.23213818",
+                "shows": "DataCite record registered by Zenodo for a dataset: \"resourceTypeGeneral\": \"Dataset\", \"publisher\": \"Zenodo\", and \"relatedIdentifiers\" with \"IsVersionOf\" 10.5281/zenodo.23213817.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "fb5a18c2bbe1206d2e153a100f2c2ca4b2b3456402df61b009e3a961da2be3fa"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          },
+          "version_note": "Scored for its role as a dataset repository. Zenodo accepts every kind of research artifact, and datasets are one record type among them."
+        },
+        {
+          "slug": "kaggle-datasets",
+          "product": "Kaggle Datasets",
+          "org_slug": "kaggle",
+          "org": "Kaggle",
+          "type": "software",
+          "description": "Kaggle Datasets is the public dataset catalog on Kaggle, Google's data science platform. Users and organizations publish datasets with per-file descriptions and column schemas, add new versions, and choose a license. The catalog is searchable by file type, license, tag and size, and the Kaggle CLI and the kagglehub library download a dataset by owner and name or load a file straight into a dataframe.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:proprietary(hosted service; server source not published);source:closed(hosted service; the published repositories are the CLI and kagglehub client)",
+            "confidence": "high",
+            "note": "Kaggle Datasets is part of Kaggle's hosted platform, and what Kaggle publishes openly are two clients for it, a Python library and a CLI. Neither contains the service, so nothing about the catalog can be run elsewhere.",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md",
+                "shows": "\"The kagglehub library provides a simple way to interact with Kaggle resources such as datasets, models, notebook outputs in Python.\" A client of the hosted service.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/README.md",
+                "shows": "\"The official CLI to interact with Kaggle.\" Another client; neither repository contains the platform.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "5edaa4aded86315be3095dd9675a2ed6fe99d0f68a1fb55c4b3564c45e780107"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Kaggle's dataset pages and listing API served a browser challenge or needed an account, and the CLI documentation describes paged results with no total. No usage figure could be read, and downloads of the kagglehub client would measure a client rather than the catalog.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets.md",
+                "shows": "`kaggle datasets list` pages with `--page` and sorts by hottest, votes, updated or active; no total count is documented.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "6ac0ba358a42364df119af7e827b5686dff296efea9ae7dada8a18b676b62a10"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "users or organizations create datasets and new versions (`kaggle datasets create`, `kaggle datasets version`); each version is addressable by a handle such as owner/dataset/versions/N; Data Package metadata with per-file descriptions and column schemas written by the publisher; search and filter by file type, license, tags and size; column-level metrics for tabular files are displayed on dataset pages, with no API or export for them (from Kaggle's datasets documentation, which refused automated fetches and is not cited); download by owner/slug through the CLI and kagglehub, whose client-side adapters load a file into pandas, Polars or a Hugging Face dataset",
+            "confidence": "medium",
+            "relative_to": "zenodo",
+            "relation": "at",
+            "note": "Any user or organization can publish a dataset and new versions from the Kaggle CLI, and kagglehub fetches a given version by owner, name and version number. Kaggle profiles the columns of tabular files for display on the dataset page only, and dataframe loading happens in the client, so it sits with Zenodo rather than with OpenML, whose servers serve the parsed structure back.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets_metadata.md",
+                "shows": "\"The Kaggle API follows the Data Package specification\"; `id` is \"Your username or organization slug\" plus a dataset slug; resources carry a field `schema`.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "330336df920e4c363e7411b73bdccf5b6eb8c4cc9aec86c451c83d121e15a110"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/datasets.md",
+                "shows": "`kaggle datasets list` filters by file type, license, tags and size; `kaggle datasets download <owner/dataset-name>` downloads files.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "6ac0ba358a42364df119af7e827b5686dff296efea9ae7dada8a18b676b62a10"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md",
+                "shows": "\"Loads a file from a Kaggle Dataset into a python object\": KaggleDatasetAdapter.PANDAS, HUGGING_FACE and POLARS; versioned handles such as \"kagglehub.dataset_download('bricevergnou/spotify-recommendation/versions/1')\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-10-08",
+                "reason": "The kagglehub and Kaggle CLI READMEs no longer establish source, because a client repository says nothing about where the hosted catalog's own code lives. No other citation establishes it, and every kaggle.com page tried on 2026-10-08 (terms, docs, robots.txt) served a bot-challenge page instead of the document. Settling it needs a first-party Kaggle page, such as its terms of service, fetched and quoted for the closed source."
+              }
+            ]
+          },
+          "version_note": "Kaggle's model hub is the separate entry Kaggle Models."
+        },
+        {
+          "slug": "dryad",
+          "product": "Dryad",
+          "org_slug": "dryad",
+          "org": "Dryad",
+          "type": "software",
+          "description": "Dryad is a non-profit repository for research data from all fields, where every submitted dataset is checked by Dryad's curators before it is published. Published datasets carry DataCite metadata and a DOI, keep their versions, and can be listed and downloaded through a REST API. Publishing carries a charge unless an institution, journal or funder sponsors it, and downloads are free.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(github.com/datadryad/dryad-app);core-gated:ungated(non-profit membership organization; the charge is for curation and publication, not for software features)",
+            "confidence": "high",
+            "note": "The application that runs datadryad.org is published under the MIT license. Dryad charges for curating and publishing a dataset, a service rather than a part of the software held back.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/LICENSE.md",
+                "shows": "\"The MIT License (MIT) Copyright (c) 2023-2024 Dryad; Copyright (c) 2015-2023 The Regents of the University of California\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "e8ce03bbafde3622da11b857689f10df7e7926f9f47630010563b2c6e1845b6f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/README.md",
+                "shows": "\"Dryad is a research data publishing platform based on the UC Curation Center's implementation of the Stash application framework\", with installation and deployment instructions.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "1b5d28043dbc21835221fb27abc383b59c7fde841f9d36b2d3179b91ca10cd0d",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://datadryad.org/costs",
+                "shows": "\"Our Data Publishing Charge (DPC) is based on the variable costs of curating, publishing, and preserving a dataset.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "599285f24bf79d8d0074fb0c9d79fd18221ea434910cb35e411d17681608c370",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Dryad publishes no repository-wide download or user figure, and its reports API listed nothing. The count of published datasets measures what it holds rather than its use, so no reading was recorded.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://datadryad.org/api/v2/datasets",
+                "shows": "Dataset listing: \"total\": 72656 published datasets; no download counts.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "a87943cb6d11532728fc9eab8b7c380371294fe28c6138a87e7e814117ecea84"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "researchers submit datasets through the website, and partner systems through a Submission API; Dryad's curators review each submission before publication; DataCite metadata and a DOI per dataset; versions listed per dataset; REST API lists datasets, versions and files and downloads the latest version by DOI; anonymous search API",
+            "confidence": "medium",
+            "relative_to": "zenodo",
+            "relation": "at",
+            "note": "Datasets get a DOI, numbered versions and a REST API that downloads them by DOI, and partner systems can create submissions programmatically, with DataCite metadata throughout. Like Zenodo it serves files as they were deposited, where Harvard Dataverse parses tabular data on its servers; a curator reviews each dataset before it is published.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/datadryad/dryad-app/HEAD/documentation/apis/README.md",
+                "shows": "\"Download the most recent version of a dataset: /api/v2/datasets/doi.../download\"; \"The Submission API is used by systems that want to partner more closely with Dryad and create dataset submissions directly.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "7eaf2c0961c1111fb9df187208db108f8586856e574cb9d2df0eb87b8d39c573"
+              },
+              {
+                "url": "https://datamanagement.hms.harvard.edu/share/data-repositories",
+                "shows": "Dryad: \"Data downloading via API Yes\"; \"Uses the DataCite metadata schema\"; \"$120 data publishing charge unless funded by the institution, publishers or funders.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "be70eb84727c0264d52b867c781a49f410084e2417b27d28abfe7beb63f07d01"
+              },
+              {
+                "url": "https://datadryad.org/about",
+                "shows": "Dryad's community of institutions, funders, societies and publishers invests in it \"for the curation, open sharing and reuse of research data in all fields\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "184eaaae50fbeed366facda3d788fd04e71273a36625276baad60b3a2f399415"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "figshare",
+          "product": "Figshare",
+          "org_slug": "digital-science",
+          "org": "Digital Science",
+          "type": "software",
+          "description": "Figshare is a research repository where researchers deposit datasets alongside figures, papers, software and other outputs, each published with a DataCite DOI. Items keep numbered versions, and a REST API covers creating, uploading, publishing and fetching them. The public figshare.com repository is free for individual researchers, and Digital Science sells the same software to institutions and publishers as hosted repositories.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:proprietary(hosted service; platform code not published);source:closed(hosted repository software sold by Digital Science)",
+            "confidence": "high",
+            "note": "Figshare is hosted repository software that Digital Science runs for researchers and sells to institutions and publishers, and its code is not published. The public API reaches the hosted service but does not let anyone run a Figshare repository of their own.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://info.figshare.com/about/",
+                "shows": "\"Figshare is a provider of repository software\"; \"Figshare is part of a portfolio of solutions from Digital Science\"; \"DataCite DOI minting, machine readable metadata, licenses, and OAI-PMH interoperability\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "2a4c5a50ebe0e15899c2936c7364b48c2d4fd454b5684065a9aa69ee00957bf0",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Figshare shows views, downloads and citations on individual items but publishes no total for its datasets or its users. No figure for the repository as a whole could be read.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://info.figshare.com/",
+                "shows": "Home page: \"Track ... downloads, views, citations and Altmetric attention data\" per output; no repository-wide usage figure.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "a98b3d91be9943a6f9d18d748cc89c3b0aba767f0754862044387c1027e381c6"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "free accounts for individual researchers deposit any research output, datasets included; DataCite DOI per item; numbered versions, each addressable through the API; REST API endpoints to create, update and publish items and upload files; OAI-PMH in DataCite, Dublin Core and other formats; files served as deposited",
+            "confidence": "medium",
+            "relative_to": "zenodo",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-08",
+              "sources": [
+                {
+                  "url": "https://developers.zenodo.org/",
+                  "shows": "REST API reference: OAuth tokens with deposit:write and deposit:actions scopes for creating and publishing depositions; files are uploaded to a deposition and served as uploaded.",
+                  "accessed": "2026-10-08",
+                  "http_status": 200,
+                  "content_sha256": "bbd72463dcf7e07f597ed2b145e8019fb0e861c4811a8d22e0e5d202bde69e61"
+                }
+              ]
+            },
+            "note": "Researchers can create, upload and publish datasets through Figshare's API as well as its website, and each item gets a DataCite DOI with numbered versions. Like Zenodo, it serves files as they were deposited, without parsing tables into a structure its API returns.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://docs.figshare.com/swagger.json",
+                "shows": "API v2 specification: \"POST /account/articles - Create new Article\", \"POST /account/articles/{article_id}/publish - Private Article Publish\", \"GET /articles/{article_id}/versions - List article versions\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "9dfb419f443040fc7e76c5c8b12c92d44bc21498fe4599c9032c5b0611e02b9c"
+              },
+              {
+                "url": "https://api.figshare.com/v2/articles/33461998/versions",
+                "shows": "Versions of a dataset item: [{\"version\": 1, \"url\": \"https://api.figshare.com/v2/articles/33461998/versions/1\"}].",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "f2fd0aa039e9be38aa09553346f31d7303b4649a5ee03eae4e75e56848ff8bab"
+              },
+              {
+                "url": "https://docs.figshare.com/",
+                "shows": "OAI-PMH: \"Currently, the supported formats are: Dublin Core ( oai_dc ), Datacite ( oai_datacite ), RDF ( rdf ), CERIF XML ( cerif )\"; upload files through the Uploads API.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "fd0f3c90f9ba5f8d08d3ee10e8e91ae3344a0f226c8dd364384cf2262d344de4"
+              },
+              {
+                "url": "https://info.figshare.com/",
+                "shows": "\"We have provided a free repository for individual researchers for over a decade\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "a98b3d91be9943a6f9d18d748cc89c3b0aba767f0754862044387c1027e381c6"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-08",
+            "basis": "verified"
+          },
+          "version_note": "Scored for its role as a dataset repository. Figshare accepts many kinds of research output, and datasets are one item type among them."
+        },
+        {
+          "slug": "physionet",
+          "product": "PhysioNet",
+          "org_slug": "mit-lcp",
+          "org": "MIT Laboratory for Computational Physiology",
+          "type": "software",
+          "description": "PhysioNet is a publishing platform for de-identified biomedical and clinical data, run by the MIT Laboratory for Computational Physiology with NIH funding. Researchers submit databases, software and models that content editors review before publication. Each published version is fixed, most data is open while sensitive clinical records need credentialed access, and files download by versioned path over the web or from S3.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:BSD-3-Clause(OSI);source:public(github.com/MIT-LCP/physionet-build);core-gated:ungated(academic lab platform funded by the NIH; nothing sold)",
+            "confidence": "high",
+            "note": "The Django application behind physionet.org is published under a BSD license and can be run locally from its repository. PhysioNet is an MIT research lab's NIH-funded platform, with no paid edition.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/MIT-LCP/physionet-build/HEAD/LICENSE",
+                "shows": "BSD three-clause text (redistribution with notice; no endorsement) under a \"Copyright (c) Django Software Foundation and individual contributors\" line.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "5d76284fce4b87eba8bc86cca36d9c14bed65cd0bf157d415b1233cd389c287a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/MIT-LCP/physionet-build/HEAD/README.md",
+                "shows": "\"The new PhysioNet platform built using Django. The new site is currently hosted at https://physionet.org/\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "e98d6d267382021a7a77ef7187364578422af20d44fb81da2d2660091d064f3a",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://physionet.org/about/",
+                "shows": "\"an NIH-funded publishing platform for rigorously curated, de-identified biomedical and clinical data\"; \"managed by the MIT Laboratory for Computational Physiology\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "eb903909f4324742140e13e54fc84ac0af8add96e7a14c25178bba44ef6b5c4b",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "PhysioNet publishes no platform-wide download or user count. Stars on its platform repository would measure interest in the code rather than use of the data, so no reading was recorded.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://physionet.org/about/",
+                "shows": "\"PhysioNet provides access to more than several hundred resources\"; no usage figure.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "eb903909f4324742140e13e54fc84ac0af8add96e7a14c25178bba44ef6b5c4b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "registered researchers submit projects through the website, and content editors accept, return or reject them; there is no programmatic publishing interface; each published version is fixed and carries its own DOI, and updates are published as new versions; a public API lists every published version with its version DOI, license, resource type, access policy and topics; the LightWAVE server parses waveform records and returns signal descriptions and samples as JSON; open, registered and credentialed access tiers; files fetched by versioned path with wget or from an S3 bucket",
+            "confidence": "medium",
+            "relative_to": "dryad",
+            "relation": "one_below",
+            "note": "PhysioNet's servers read its waveform records and serve the signals back as JSON, and its API describes every published version with a DOI, license and access policy. Projects can only be submitted through the website, and with no interface for publishing programmatically it sits below Dryad and Zenodo even though it does more with the files than either.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://physionet.org/about/publish/",
+                "shows": "\"submit the project to the editorial team for review\"; decisions \"Accept\", \"Resubmit\" or \"Reject\"; \"When a project is published, its content is fixed and cannot be changed.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "6e887e08bd4406608089cc4ed7c3a11fadb9fdf4b420acd86f0476ae5d239549"
+              },
+              {
+                "url": "https://physionet.org/content/mitdb/1.0.0/",
+                "shows": "\"wget -r -N -c -np https://physionet.org/files/mitdb/1.0.0/\" and \"aws s3 sync --no-sign-request s3://physionet-open/mitdb/1.0.0/\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "be2453d56bdcfd41a38e4af806ee1bdb76106a695f6c57e8b67511e8f9990471"
+              },
+              {
+                "url": "https://physionet.org/content/mimic-iv-demo/2.2/",
+                "shows": "Citation: \"MIMIC-IV Clinical Database Demo (version 2.2). PhysioNet.\" with \"doi = {10.13026/dp1f-ex47}\" and \"note = {Version 2.2}\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "85e0a225baf1a70acf7de05306e92510ce529a40861711c28d40ced2d6908d6b"
+              },
+              {
+                "url": "https://physionet.org/lightwave/server?action=info&db=mitdb/1.0.0&record=100",
+                "shows": "LightWAVE \"info\" for mitdb/1.0.0 record 100: \"tfreq\": 360, \"duration\": \"30:05.556\", signals \"MLII\" and \"V5\" with gain, ADC resolution and baseline.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "6946304730ed49d6ef3fd054981e7f5396ed5202e8d289c1a6ea24d4b4bf9bc5"
+              },
+              {
+                "url": "https://physionet.org/lightwave/server?action=fetch&db=mitdb/1.0.0&record=100&signal=MLII&t0=0&dt=1",
+                "shows": "LightWAVE \"fetch\" for signal MLII: \"units\": \"mV\", \"gain\": 200, and a \"samp\" array of samples.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "af3ee86d6ebb62bc4915ac5e904bf7c33fbca0027c7a349b6b3f12273657772b"
+              },
+              {
+                "url": "https://physionet.org/api/v1/project/published/",
+                "shows": "Published-project API: each entry carries \"version\", \"version_doi\", \"license\", \"resource_type\", \"access_policy\" and \"topics\", e.g. slpdb 1.0.0 with version_doi 10.13026/C23K5S.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "3110e6de80cd6752626404de46921e04088d5e23cac34f3f6937ff03218ad44d"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "the-cancer-imaging-archive",
+          "product": "The Cancer Imaging Archive (TCIA)",
+          "org_slug": "national-cancer-institute",
+          "org": "National Cancer Institute",
+          "type": "software",
+          "description": "The Cancer Imaging Archive (TCIA) de-identifies and publishes cancer-related medical images, mostly in DICOM, together with supporting clinical data, annotations and analysis results. Research groups apply to publish collections, which an advisory group reviews before TCIA's team curates and releases them, each with a DataCite DOI and a version history. The National Cancer Institute funds it, and the Frederick National Laboratory for Cancer Research manages it.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:BSD-3-Clause(OSI; covers NBIA, the DICOM archive software);source:partial(NBIA is published at github.com/CBIIT/NBIA-TCIA and is being retired; the WordPress collection manager that holds dataset metadata is not part of it)",
+            "confidence": "medium",
+            "note": "NBIA, the image archive software TCIA has served DICOM data from, is published under the BSD 3-Clause license and anyone can deploy it. The WordPress collection manager behind TCIA's dataset pages is not part of that release, and TCIA is retiring NBIA in favor of the Imaging Data Commons, so the published code covers only part of the service.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/CBIIT/NBIA-TCIA/HEAD/LICENSE.txt",
+                "shows": "BSD 3-clause text: \"Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "3b1c1104c436303e56e003c379fd98627a463c2c8473de9e6f763ddc8a759c5b",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/CBIIT/NBIA-TCIA/master/README.md",
+                "shows": "\"NBIA enables several medical imaging archives, including TCIA\"; \"Anyone can deploy a local node of NBIA\"; \"NBIA is distributed under the BSD 3-clause license.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "e1dd05829c80c0a57850d89cf81ee6e85617f432aa0f48af75a364a4877dcd16",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://www.cancerimagingarchive.net/tcia-api-guides/",
+                "shows": "\"Each Collection TCIA publishes is issued a Digital Object Identifier (DOI) through DataCite\"; NBIA \"is our legacy DICOM management system. It is being retired in favor of using the Imaging Data Commons\"; custom \"extensions to WordPress\" manage dataset metadata.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "f2be6874a75a5514ec1c4de0628f0cbcf90556d7cad8b01bdde611c9eaeb76de",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "TCIA shows view and citation counts on each collection page, but no count of users or of downloads for the archive as a whole was found. No reading was recorded.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://www.cancerimagingarchive.net/collection/lidc-idri/",
+                "shows": "LIDC-IDRI collection page with per-collection view and citation counts; no archive-wide usage figure.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "ac4c21e47bd1c8b0e5b6e4fea61f85fa8e0e69fbfcf2420327a7a08890750d13"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "research groups apply to publish collections, which the NCI TCIA Advisory Group reviews quarterly before TCIA de-identifies and curates them; DataCite DOI per collection; earlier versions listed and downloadable on each collection page; NBIA REST API and Imaging Data Commons tools fetch DICOM series by collection and patient; no programmatic submission",
+            "confidence": "medium",
+            "relative_to": "physionet",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-08",
+              "sources": [
+                {
+                  "url": "https://physionet.org/about/publish/",
+                  "shows": "Projects are submitted through the website \"to the editorial team for review\"; \"If this is an updated version of a previously published resource, please clearly specify what the major changes are\".",
+                  "accessed": "2026-10-08",
+                  "http_status": 200,
+                  "content_sha256": "6e887e08bd4406608089cc4ed7c3a11fadb9fdf4b420acd86f0476ae5d239549"
+                }
+              ]
+            },
+            "note": "Each TCIA collection has a DOI, keeps its earlier versions available for download and can be fetched through an API, as PhysioNet's published projects can. Collections arrive through an application that an advisory group reviews and a curation team publishes, with no interface for submitting data programmatically, which Dryad and Zenodo offer.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://www.cancerimagingarchive.net/submission-and-de-identification-overview/",
+                "shows": "\"The first step to publishing cancer imaging data on TCIA is to submit an application ... that will be reviewed by the NCI TCIA Advisory Group.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "ffee0570bd544a8dd41f1401c7ad7cf98a610e12c0bf9485b2c90333cb3c474b"
+              },
+              {
+                "url": "https://www.cancerimagingarchive.net/collection/lidc-idri/",
+                "shows": "\"DOI: 10.7937/K9/TCIA.2015.LO9QL9SX\"; \"Version 4 : Updated 2020/09/21\"; \"Previous Versions Version 3: Updated 2015/07/27\" with its own download table.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "ac4c21e47bd1c8b0e5b6e4fea61f85fa8e0e69fbfcf2420327a7a08890750d13"
+              },
+              {
+                "url": "https://www.cancerimagingarchive.net/tcia-api-guides/",
+                "shows": "\"Each Collection TCIA publishes is issued a Digital Object Identifier (DOI) through DataCite\"; NBIA \"is our legacy DICOM management system. It is being retired in favor of using the Imaging Data Commons\"; custom \"extensions to WordPress\" manage dataset metadata.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "f2be6874a75a5514ec1c4de0628f0cbcf90556d7cad8b01bdde611c9eaeb76de"
+              },
+              {
+                "url": "https://www.cancerimagingarchive.net/about-the-cancer-imaging-archive-tcia/",
+                "shows": "\"TCIA is funded by the Cancer Imaging Program (CIP) within the National Cancer Institute (NCI) and managed by the Frederick National Laboratory for Cancer Research (FNLCR).\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "a1271c02681d9543d018c09a837337e3d990244ec305ad6b9fa3c9135b78c024"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-08",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "uci-ml-repository",
+          "product": "UCI Machine Learning Repository",
+          "org_slug": "uc-irvine",
+          "org": "University of California, Irvine",
+          "type": "software",
+          "description": "The UCI Machine Learning Repository is the University of California, Irvine's collection of datasets donated for machine learning research, kept since 1987. Librarians approve each donation, which then receives a DOI and a CC BY 4.0 license, and datasets from elsewhere can be linked. A public JSON API and the ucimlrepo Python package fetch a dataset by ID or name into pandas with its variable descriptions.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:proprietary(hosted service; site source not published);source:closed(hosted service; the published repositories are the ucimlrepo client and a feedback issue tracker)",
+            "confidence": "high",
+            "note": "The repository's website and API are run by UC Irvine and their code is not published. The ucimlrepo package that fetches from it is open source, but it is a client and does not make the repository itself runnable elsewhere.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/uci-ml-repo/ucimlrepo/HEAD/README.md",
+                "shows": "\"Package to easily import datasets from the UC Irvine Machine Learning Repository into scripts and notebooks.\" A client of the hosted service.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "c4e24ffdb597721a70ee32a05a990f5848cfebbe9707d4cacd735e974fee97f5",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://archive.ics.uci.edu/about",
+                "shows": "About page: librarians, NSF funding and \"The current version of the website was released in 2023\"; no source link.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "06cd3ff07d3347f38ef1f06ad9e2ede977a77e0fc508fc2b1901a38bfdbd4a05",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Dataset pages show running view and citation counts, but these are cumulative page views rather than downloads, and the repository publishes no monthly or total usage figure. No reading was recorded.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://archive.ics.uci.edu/dataset/53/iris",
+                "shows": "Iris dataset page: \"352 citations 1522782 views\", DOI 10.24432/C56C76, read 2026-10-07.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "ee789f1a1c524581f49c99825b41f224adc5a5fc1d702e57f5775d654e889961"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "donors submit datasets through a web form, and the repository approves them; approved datasets get a DOI and a CC BY 4.0 license; external datasets can be linked; public JSON API by dataset ID carrying variable metadata and a last-updated date but no version number; ucimlrepo fetches by ID or name into pandas dataframes",
+            "confidence": "medium",
+            "relative_to": "physionet",
+            "relation": "one_below",
+            "note": "UCI hosts each donated dataset, gives it a DOI and serves it by ID through a public API that the ucimlrepo package loads into pandas. A dataset is updated in place under the same record rather than kept as numbered versions, which PhysioNet does.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://archive.ics.uci.edu/contribute/donation",
+                "shows": "\"Datasets approved to be in the repository will be assigned a Digital Object Identifier (DOI)\"; \"Datasets will be licensed under a Creative Commons Attribution 4.0 International license\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "392c8577f18afbcbe2d3b31db7d7af7c3cd7d99a13c9afe73f8d13a67ed21ecd"
+              },
+              {
+                "url": "https://archive.ics.uci.edu/api/dataset?id=53",
+                "shows": "JSON record for Iris: \"uci_id\":53, \"data_url\":\"https://archive.ics.uci.edu/static/public/53/data.csv\", \"dataset_doi\":\"10.24432/C56C76\", \"last_updated\":\"Tue Sep 12 2023\", variables and feature types; no version field.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "0387b83840adbdefd10030c96e9e2ba80dc0419b6494efa7745d69bc927b9f15"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/uci-ml-repo/ucimlrepo/HEAD/README.md",
+                "shows": "\"fetch_ucirepo(id=45)\"; \"Provide either a dataset ID or name\"; returns \"dataset matrices as pandas dataframes\" and metadata.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "c4e24ffdb597721a70ee32a05a990f5848cfebbe9707d4cacd735e974fee97f5"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          },
+          "version_note": "Scored as the hosted repository. The ucimlrepo client is open source, and the repository's public GitHub account otherwise holds an issue tracker."
+        },
+        {
+          "slug": "aihub-korea",
+          "product": "AI-Hub",
+          "org_slug": "national-information-society-agency",
+          "org": "National Information Society Agency (NIA)",
+          "type": "software",
+          "description": "AI-Hub is South Korea's national platform for AI training data, run by the National Information Society Agency (NIA) for the Ministry of Science and ICT. It publishes datasets built by companies and research groups under the government's data programme, in fields from Korean language and vision to healthcare and transport, alongside data other institutions contribute. Korean nationals apply to download each dataset, through the website or the aihubshell command-line tool.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:proprietary(usage policy reserves rights in the data, models and tool sources to NIA and the builders);source:closed(hosted government platform; aihubshell is a download client)",
+            "confidence": "high",
+            "note": "AI-Hub is a hosted government platform, and its code is not published. The aihubshell tool downloads data from it but cannot run the platform anywhere else.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://www.aihub.or.kr/intrcn/guid/usagepolicy.do",
+                "shows": "Rights in \"데이터, AI 응용모델 및 데이터 저작도구의 소스\" (data, AI application models and the source of data-authoring tools) rest with the building organizations and NIA.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "8fc5d9ba417925e73f036b15afe5ed1ebbd2cdcbf145ddc060777b831acf848f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://www.aihub.or.kr/intrcn/intrcn.do",
+                "shows": "\"AI 허브는 과학기술정보통신부와 한국지능정보사회진흥원이 운영하는 국가 AI 개발 지원 플랫폼\" (a national AI development platform run by the Ministry of Science and ICT and NIA), publishing programme datasets and \"국내외 기관/기업에서 보유한 AI 학습용 데이터\" (training data held by institutions and companies).",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "a59d2745adc6f9e6289c44dfb71678219564d16b761f44a9386ed2c4305c679c",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "AI-Hub shows how many users marked each dataset as of interest but publishes no count of downloads or users for the platform. No reading was recorded.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://www.aihub.or.kr/aihubdata/data/view.do?dataSetSn=71953",
+                "shows": "Dataset page with an \"관심\" (interest) count and version history; no platform-wide usage figure.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "53a6bf615df81327b0e21b7a6e5a48ba903f062cd2d4c90173c00b62aac52010"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "datasets built by contracted companies and research groups under NIA's programme, plus data contributed by other institutions; hosted files downloaded after an application is approved, through the website or the aihubshell CLI with an API key and a dataset key; only Korean nationals may apply; an MCP server for dataset metadata; a version history per dataset page but no DOI or other persistent identifier; no deposit API",
+            "confidence": "medium",
+            "relative_to": "uci-ml-repository",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-08",
+              "sources": [
+                {
+                  "url": "https://archive.ics.uci.edu/api/dataset?id=53",
+                  "shows": "JSON record for Iris: \"data_url\", \"dataset_doi\":\"10.24432/C56C76\", \"last_updated\" and variable metadata; no version field.",
+                  "accessed": "2026-10-08",
+                  "http_status": 200,
+                  "content_sha256": "0387b83840adbdefd10030c96e9e2ba80dc0419b6494efa7745d69bc927b9f15"
+                }
+              ]
+            },
+            "note": "AI-Hub holds the datasets it lists and serves them, once a download application is approved, through its website or a command-line tool that fetches a dataset by its key. Like UCI, it gives a dataset no persistent identifier with addressable versions, which PhysioNet does.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://www.aihub.or.kr/devsport/apishell/list.do",
+                "shows": "\"서버에서 aihubshell을 사용하여 AI 허브의 데이터를 다운로드 받을 수 있습니다\" (aihubshell downloads AI-Hub data); \"데이터셋 다운로드 승인이 완료되어야 다운로드가 가능합니다\" (only after download approval); an MCP server for dataset metadata.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "d8fd3fb68791eb732035384908c2cf6b16f3ae16e51684b4ceb27747eece24d4"
+              },
+              {
+                "url": "https://www.aihub.or.kr/aihubdata/data/view.do?dataSetSn=71953",
+                "shows": "\"내국인만 데이터 신청이 가능합니다\" (only Korean nationals may apply); a version history (1.0, 1.1) and the building company named; no DOI.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "53a6bf615df81327b0e21b7a6e5a48ba903f062cd2d4c90173c00b62aac52010"
+              },
+              {
+                "url": "https://www.aihub.or.kr/intrcn/intrcn.do",
+                "shows": "\"AI 허브는 과학기술정보통신부와 한국지능정보사회진흥원이 운영하는 국가 AI 개발 지원 플랫폼\" (a national AI development platform run by the Ministry of Science and ICT and NIA), publishing programme datasets and \"국내외 기관/기업에서 보유한 AI 학습용 데이터\" (training data held by institutions and companies).",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "a59d2745adc6f9e6289c44dfb71678219564d16b761f44a9386ed2c4305c679c"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-08",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "registry-of-open-data-on-aws",
+          "product": "Registry of Open Data on AWS",
+          "org_slug": "amazon-web-services",
+          "org": "Amazon Web Services",
+          "type": "software",
+          "description": "The Registry of Open Data on AWS is a catalog of public datasets that government agencies, researchers and companies make available in AWS storage. Data providers propose entries as YAML files by pull request, and AWS's open data team decides what is listed. Each entry names the S3 buckets or other resources that hold the data, which anyone can read without an AWS account, and the Open Data Sponsorship Program pays storage costs for sponsored datasets.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:Apache-2.0(OSI);source:partial(the registry's entries and schema are published; the site build and the hosting behind it are not)",
+            "confidence": "high",
+            "note": "Every entry in the registry is a YAML file in a public Apache-2.0 repository, so the catalog's content can be read and reused. The website built from those files is not published, and admission and storage sponsorship are decisions AWS makes.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/LICENSE",
+                "shows": "Apache License Version 2.0, January 2004, full text.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/README.md",
+                "shows": "\"Each dataset in this repository is described with metadata saved in a YAML file in the /datasets directory. We use these YAML files to provide three services\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "74572836e0661e6b8506c398c7cea59c18787035f9e1664c5ca5be58425fd0de",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "The registry publishes no count of visits or of reads from the buckets it lists, and those reads would belong to each dataset's provider rather than to the catalog. No reading was recorded.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://registry.opendata.aws/",
+                "shows": "Registry home page listing datasets by provider and tag; no usage figure.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "bd3de4f9459ff14fc95bb79d5acf6efe96987267054955bcaed1e5f109c64c8a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 1,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "a catalog of datasets that providers propose by pull request, admitted at the discretion of the AWS Open Data team; the datasets are \"owned and maintained by\" their providers; each entry's Resources field points by ARN to the AWS resources that hold the data (S3 buckets, CloudFront distributions, database snapshots, SNS topics), readable with `aws s3 ls --no-sign-request`; the Open Data Sponsorship Program pays storage for sponsored datasets; a hosted YAML listing of all entries; the registry itself stores no data and assigns no persistent dataset identifiers or versions",
+            "confidence": "medium",
+            "relative_to": "uci-ml-repository",
+            "relation": "one_below",
+            "note": "The registry describes datasets that their providers own and maintain, and points to the AWS storage that holds them, which any S3 client can read without an account. The registry itself stores and versions nothing, so like Masader it is a catalog that links out, while UCI holds the datasets it serves.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/CONTRIBUTING.md",
+                "shows": "\"Datasets are included at the discretion of the AWS Open Data team, which may remove datasets from the registry at any time.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "7c55199d25a80022e1cd9c6abcadda71e2d4cfac808939651a0d6b4dc807c157"
+              },
+              {
+                "url": "https://registry.opendata.aws/noaa-goes/",
+                "shows": "Resources on AWS: S3 bucket arn:aws:s3:::noaa-goes19; \"AWS CLI Access (No AWS account required) aws s3 ls --no-sign-request s3://noaa-goes19/\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "28eb2539a7459d0c9b89b7f885afae6f427bc0dc89d9d771ef30cf55f47fb5c1"
+              },
+              {
+                "url": "https://aws.amazon.com/opendata/open-data-sponsorship-program/",
+                "shows": "\"The AWS Open Data Sponsorship Program covers the cost of storing and sharing publicly available, high-value, cloud-optimized datasets on the Registry of Open Data on AWS.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "1aff41f971407e16a79ab5aa8cfa8731fe5fa7abed01c9de113162bafbaebe70"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/HEAD/README.md",
+                "shows": "\"these datasets are owned and maintained by a variety of government organizations, researchers, businesses, and individuals\"; \"Resources > ARN: Amazon Resource Name for resource, e.g. arn:aws:s3:::commoncrawl\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "74572836e0661e6b8506c398c7cea59c18787035f9e1664c5ca5be58425fd0de"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "masader",
+          "product": "Masader",
+          "org_slug": "arbml",
+          "org": "ARBML",
+          "type": "software",
+          "description": "Masader is a public catalog of Arabic text and speech datasets, describing each with more than two dozen attributes such as dialect, domain, source, annotation method and license, and linking to where its publisher hosts it. New entries are submitted through a form and added by the maintainers. It began in the BigScience workshop and is maintained by the ARBML community.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:GPL-3.0(OSI);source:public(github.com/ARBML/masader);core-gated:ungated(volunteer research community project; nothing sold)",
+            "confidence": "high",
+            "note": "The catalog site and its data are published under GPL-3.0 and build from the repository with Jekyll, and the web service it calls is MIT-licensed. It is a volunteer research project with nothing sold.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/license",
+                "shows": "GNU General Public License, Version 3, 29 June 2007, full text.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/CONTRIBUTING.md",
+                "shows": "\"We use jekyll\"; \"Run the site locally with bundle exec jekyll serve\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "ddd61ded80ce742dc4c7463b942e6d694f2bac51b0275d2917c7e44d48804968",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ARBML/masader-webservice/HEAD/LICENSE",
+                "shows": "\"MIT License Copyright (c) 2022 ARBML\" for the catalogue's web service.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "082c9676bea842160ac0158f35f134c638d0fd0d9fe2b186c93cce6216fabece",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md",
+                "shows": "\"Masader was developed in 2021 as part of the BigScience project for open research\"; \"further developed by the arbml team and community.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "Masader is a website built from its repository and publishes no visitor or download count, so GitHub stars are the only signal. A star records interest in the catalog rather than a use of it.",
+            "sources": [
+              {
+                "url": "https://img.shields.io/github/stars/ARBML/masader.json",
+                "shows": "{\"label\":\"stars\",\"message\":\"208\"} for ARBML/masader, read 2026-10-07.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "83b45bc4a8024cdc6825b0b284160c0c8f63ed7f781506d0b57b54559fb2f3a2"
+              }
+            ]
+          },
+          "capability": {
+            "score": 1,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "catalogue of Arabic NLP and speech datasets with more than 25 metadata attributes each (dialect, domain, source, form, annotation style, license, link); entries submitted through a form and added by maintainers; each entry links to where its dataset is hosted; a web service serves the catalogue",
+            "confidence": "medium",
+            "relative_to": "uci-ml-repository",
+            "relation": "one_below",
+            "note": "Masader describes Arabic text and speech datasets in detail, from dialect and domain to license, and links each one to where its publisher hosts it. It stores none of the data, while the UCI repository hosts the datasets donated to it and serves them by ID.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md",
+                "shows": "\"The first online catalogue for Arabic NLP datasets\"; \"Link: direct link to the dataset or instructions on how to download it\"; \"If you want to add a new dataset, use this form.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b"
+              },
+              {
+                "url": "https://arxiv.org/abs/2110.06744",
+                "shows": "\"the largest public catalogue for Arabic NLP datasets, which consists of 200 datasets annotated with 25 attributes\" (2021 paper).",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "f8f583fb9d3dacf1ac95d25e6c0f1c127658a27357884e980bfa0ddf0bf7f770"
+              }
+            ]
+          },
+          "overall_score": 1.0,
+          "tier": null,
+          "maturity": 1.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-07",
+                "reason": "The level was set on 2026-10-07 from a hand-read GitHub star count, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
+          "slug": "clarin-vlo",
+          "product": "CLARIN Virtual Language Observatory",
+          "org_slug": "clarin-eric",
+          "org": "CLARIN ERIC",
+          "type": "software",
+          "description": "The CLARIN Virtual Language Observatory (VLO) is a faceted search portal over descriptions of language resources held by the centers of the CLARIN research infrastructure. It harvests the centers' metadata records over OAI-PMH, converts them to the CMDI metadata standard and indexes them in Solr, so that people can filter resources by language, type and availability before going to the center that holds them.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:GPL-3.0(OSI);source:public(github.com/clarin-eric/VLO);core-gated:ungated(run by CLARIN ERIC, a European research infrastructure consortium; no paid tier)",
+            "confidence": "medium",
+            "note": "The VLO's importer, search configuration and web application are published under GPL-3.0, with instructions for deploying a full instance. CLARIN ERIC, a European research infrastructure consortium governed by its member countries and set up to operate on a non-economic basis, runs it as a public service with no paid tier.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/LICENSE",
+                "shows": "GNU General Public License, Version 3, 29 June 2007, full text.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/README.md",
+                "shows": "\"Using the VLO faceted browser, metadata can be searched and browsed by facet. It consists of three software components: a Solr server with VLO specific configuration, an importer and a web application front end.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "2dbf75b08ac439c931288ca14c2b215277920b179c3b2bcd4b3834d6d5dddd67",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/DEPLOYMENT.md",
+                "shows": "\"The instructions below describe the installation of the applications necessary for browsing: the VLO web application, the Solr server, and the meta data importer.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "ab5d1dea95a8dd522eec6d27131e948d283c4f1c621c056b5e78b00125c83701",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32012D0136",
+                "shows": "Commission Decision 2012/136/EU, Annex (Statutes): \"CLARIN shall have the legal form of a European Research Infrastructure Consortium (ERIC)\"; \"CLARIN ERIC shall construct and operate CLARIN on a non-economic basis\"; membership is open to states and intergovernmental organisations, and \"Member States shall jointly hold the majority of the voting rights in the General Assembly\"; \"The General Assembly shall be the body of CLARIN ERIC with full decision-making powers, and shall represent the members of CLARIN ERIC.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "3adec9df7f3f2d33bc0345d8f5489768c5d47b648faba78a7770bbb87cfa4f6f",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://research-and-innovation.ec.europa.eu/strategy/strategy-research-and-innovation/our-digital-future/european-research-infrastructures/eric/eric-landscape_en",
+                "shows": "Listed under \"Active European Research Infrastructure Consortia (ERICs)\": \"CLARIN, the pan-European Common Language Resources and Technology Infrastructure, makes digital language resources available to scholars and researchers of all disciplines\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "902078c94a96323c9daffae40011979a28a0c4863b8f91b2c4ec1abdc92baa25",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "The VLO publishes no count of searches or visitors, and activity on its code repository says nothing about use of the portal. No reading was recorded.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/CHANGES.txt",
+                "shows": "Release notes through \"VLO 4.15.0 (September 2026)\"; no usage figure.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "f7b3cbc6ceeb528b0d5599119e88bdef8ace209588728a3c612b447614871c81"
+              }
+            ]
+          },
+          "capability": {
+            "score": 1,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "metadata records harvested over OAI-PMH from resource-providing centers and converted to CMDI; faceted search over a Solr index; records describe resources held by the centers; no hosting of the resources and no deposit",
+            "confidence": "medium",
+            "relative_to": "masader",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-08",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md",
+                  "shows": "\"The first online catalogue for Arabic NLP datasets\"; each entry's `Link` field is \"direct link to the dataset or instructions on how to download it\".",
+                  "accessed": "2026-10-08",
+                  "http_status": 200,
+                  "content_sha256": "78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b"
+                }
+              ]
+            },
+            "note": "The VLO searches metadata that language-resource centers publish and it harvests, and the resources themselves stay with those centers. It holds and serves no data of its own, so like Masader it is a catalog that points to its providers.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://aclanthology.org/L12-1227/",
+                "shows": "Abstract: \"a metadata-based portal for language resources\"; \"We describe the metadata harvesting process, based on OAI-PMH, and the conversion from several formats ... to their CMDI counterpart profiles.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "3205b19e3e03d7931be08a00588c08cf190f8798bdb2e9f013ef054a1ff5d305"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/README.md",
+                "shows": "\"Using the VLO faceted browser, metadata can be searched and browsed by facet. It consists of three software components: a Solr server with VLO specific configuration, an importer and a web application front end.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "2dbf75b08ac439c931288ca14c2b215277920b179c3b2bcd4b3834d6d5dddd67"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/DEPLOYMENT.md",
+                "shows": "\"A `DataRoot` element describes sets of metadata files\", which the importer loads into the Solr index.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "ab5d1dea95a8dd522eec6d27131e948d283c4f1c621c056b5e78b00125c83701"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-08",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "atlas-data",
+          "product": "ATLAS",
+          "org_slug": "ai-singapore",
+          "org": "AI Singapore",
+          "type": "software",
+          "description": "ATLAS is AI Singapore's catalog of datasets for underrepresented languages, centered on Southeast Asia. It describes each dataset by language, modality, license and task, imports dataset cards from Hugging Face, and publishes contributions after a human review. A chat search and a read-only MCP API let people and agents query the catalog, and coverage maps show which languages still lack data.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:unnamed open-source license(the privacy policy calls the platform open source; no license text or repository published);core-gated:ungated(run by AI Singapore, a national research programme, with free accounts)",
+            "confidence": "low",
+            "note": "AI Singapore's privacy policy describes ATLAS-Data as an open-source data platform, and a national research programme runs it as a free public service. No repository or license for it has been published, and its terms of use reserve the site's contents including source code, so this reading is provisional until the code appears or AI Singapore explains the statement.",
+            "sources": [
+              {
+                "url": "https://atlas-data.ai/en/privacy-policy",
+                "shows": "\"ATLAS-Data is an open-source data platform operated by AISG.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "68b8c9e3c1327edbcad3f68b339d1a0686b2b9c0f8ced4d409d9281e180b51df",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://atlas-data.ai/en/terms-of-service",
+                "shows": "\"The contents of the Site, including source code, pages, documents and online graphics ... are protected by copyright, trademark and other forms of proprietary rights.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "29a6fd9bd3736cb6f439a5bdd8798f11ef99f724598991e9a7572327bd67ff68"
+              },
+              {
+                "url": "https://www.atlas-data.ai/en/docs/verification",
+                "shows": "Account tiers: \"Signed in: A free account\"; signed-in accounts \"download datasets that allow it\"; a Contributor \"can add data to the catalogue\", granted on request.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "7ca2478a7f68179c5ab9644013c7781d4d440b21b30340c2d7ffd4d800fc6ecc",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "ATLAS publishes the size and language coverage of its catalog but no count of searches, downloads or users. Catalog size describes what is listed rather than how much it is used, so no reading was recorded.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://atlas-data.ai/en",
+                "shows": "Home page: browse, chat and MCP routes into the catalogue and a coverage map; no usage or download counter.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "d19324f631bcc287d62e896cde683a975723d50e37ad5eede6d9e1bf666d10c1"
+              }
+            ]
+          },
+          "capability": {
+            "score": 1,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "contributors approved by the ATLAS team import datasets from Hugging Face or have the team upload them, and each passes human review before it is published with a dataset ID; search by language, modality, license or task, a chat search, and a read-only MCP API for search, facets, configs and schemas; signed-in users download datasets that allow it; the licensing policy says the site does not itself distribute dataset content unless a listing states otherwise",
+            "confidence": "medium",
+            "relative_to": "masader",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-08",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md",
+                  "shows": "\"The first online catalogue for Arabic NLP datasets\"; each entry's `Link` field is \"direct link to the dataset or instructions on how to download it\".",
+                  "accessed": "2026-10-08",
+                  "http_status": 200,
+                  "content_sha256": "78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b"
+                }
+              ]
+            },
+            "note": "ATLAS describes datasets that mostly stay where their publishers put them, such as Hugging Face, and its licensing policy says the site does not itself distribute dataset content unless a listing says otherwise. Its team can upload a new dataset for a contributor, but no interface serves datasets by identifier, so it sits with Masader rather than with UCI, which holds what it lists.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://www.atlas-data.ai/en/data-licensing-policy",
+                "shows": "\"Unless expressly stated otherwise, the Site does not itself provide, distribute or grant rights to download or use the underlying Dataset content.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "78d8850d329722aa96345c6f017c37bff8192a150c492ad24ad09bf7fc57098d"
+              },
+              {
+                "url": "https://www.atlas-data.ai/en/docs/how-to-contribute",
+                "shows": "\"Paste a HuggingFace URL\" or \"Have our team upload it\" (\"Direct browser uploads are paused\"); then \"Human review\" and \"Published ... with a unique dataset ID\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "652aa6f9bada33d96571087ca25551a83ce5599a7c30c3c36717f0a57268ffee"
+              },
+              {
+                "url": "https://www.atlas-data.ai/en/mcp",
+                "shows": "MCP tools: Dataset Search, Catalog Facets, Dataset Health, Config Listing, Schema Inspection; \"The API can only read data — nothing can be modified or deleted.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "28a4316e75c9d7a9c43cd4f8e79bb05bd00369af63d0e9e9e10d17cf9f7e210b"
+              },
+              {
+                "url": "https://www.atlas-data.ai/en/docs/verification",
+                "shows": "Account tiers: \"Signed in: A free account\"; signed-in accounts \"download datasets that allow it\"; a Contributor \"can add data to the catalogue\", granted on request.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "7ca2478a7f68179c5ab9644013c7781d4d440b21b30340c2d7ffd4d800fc6ecc"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-08",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-10-08",
+                "reason": "Scored 5/open_source at low confidence by the maintainer's direction of 2026-10-08, on the privacy policy's statement that \"ATLAS-Data is an open-source data platform operated by AISG\". The two first-party statements disagree: the terms of use reserve the site's contents \"including source code\", no repository or license for the platform has been found among AI Singapore's public GitHub repositories, and the ladder cannot compute the recorded score (the category defers it). Settling it needs a published repository and license, or AI Singapore saying what the open-source statement covers; without either, the reading should fall to what the terms show, 1/closed."
+              }
+            ]
+          },
+          "version_note": "Scored as the hosted catalog at atlas-data.ai. Its privacy policy calls it open source while its terms of use reserve the site's source code, and the openness reading follows the privacy policy until AI Singapore says which is meant."
+        },
+        {
+          "slug": "google-dataset-search",
+          "product": "Google Dataset Search",
+          "org_slug": "google",
+          "org": "Google",
+          "type": "software",
+          "description": "Google Dataset Search is a search engine for datasets hosted in thousands of repositories across the web. It indexes dataset pages whose publishers describe them with schema.org markup, and each result links back to the page where the data is kept. Repositories join by adding that markup to their own pages rather than by submitting files.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:proprietary(hosted Google service);source:closed(hosted search engine; crawler and index not published)",
+            "confidence": "high",
+            "note": "Dataset Search is a hosted Google service, and neither its crawler nor its index is published. Publishers take part through the open schema.org vocabulary, which describes their own pages and not the search engine.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://datasetsearch.research.google.com/help",
+                "shows": "\"Dataset Search is a search engine for datasets. Using a simple keyword search, users can discover datasets hosted in thousands of repositories across the Web.\"; providers \"Add markup to your dataset pages\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "b60121592731855f1752b6cae000ba741e2151bf2dc56e86f7b01302bb8dd9c6",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Google has published how many datasets the index covers but no count of searches or users. Index size describes what is listed rather than how much it is used, so no reading was recorded.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://blog.google/products/search/discovering-millions-datasets-web/",
+                "shows": "\"Dataset Search has indexed almost 25 million of these datasets\"; no count of searches or users.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "40b7f97873f696ff556ac1328afce3524760de293d8f5ec2bbe46056d1e8d3bf"
+              }
+            ]
+          },
+          "capability": {
+            "score": 1,
+            "basis": "feature_matrix",
+            "basis_detail": "publish, describe, discover and fetch coverage read from the operator's own documentation",
+            "value": "indexes dataset pages described with schema.org Dataset markup across the web; keyword search; each result links to the publisher's page; providers add markup to their own pages; no hosting, deposit or download",
+            "confidence": "high",
+            "relative_to": "masader",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-08",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md",
+                  "shows": "\"The first online catalogue for Arabic NLP datasets\"; each entry's `Link` field is \"direct link to the dataset or instructions on how to download it\".",
+                  "accessed": "2026-10-08",
+                  "http_status": 200,
+                  "content_sha256": "78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b"
+                }
+              ]
+            },
+            "note": "Dataset Search finds datasets from the markup their publishers add to their own pages, and every result links back to where the data is kept. It holds and serves no data itself, like Masader.",
+            "last_verified": "2026-10-08",
+            "sources": [
+              {
+                "url": "https://datasetsearch.research.google.com/help",
+                "shows": "\"Dataset Search is a search engine for datasets. Using a simple keyword search, users can discover datasets hosted in thousands of repositories across the Web.\"; providers \"Add markup to your dataset pages\".",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "b60121592731855f1752b6cae000ba741e2151bf2dc56e86f7b01302bb8dd9c6"
+              },
+              {
+                "url": "https://blog.google/products/search/discovering-millions-datasets-web/",
+                "shows": "\"giving you a single place to search for datasets and find links to where the data is.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "40b7f97873f696ff556ac1328afce3524760de293d8f5ec2bbe46056d1e8d3bf"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-08",
             "basis": "verified"
           }
         }
@@ -137042,6 +138801,7 @@
     "dataset_processing_tools",
     "document_conversion",
     "language_specific_datasets",
+    "data_hubs",
     "finetuning_code",
     "federated_learning",
     "inference_code",
@@ -137267,6 +139027,7 @@
       "github": [],
       "country": "SG",
       "products": [
+        "atlas-data",
         "sea-helm",
         "sea-instruct",
         "sea-pile"
@@ -137497,6 +139258,7 @@
         "bedrock-guardrails",
         "firecracker",
         "gluonts",
+        "registry-of-open-data-on-aws",
         "sagemaker-jumpstart",
         "sagemaker-pipelines",
         "textract"
@@ -137694,7 +139456,8 @@
       "github": [],
       "country": "",
       "products": [
-        "cidar"
+        "cidar",
+        "masader"
       ]
     },
     "arc-institute": {
@@ -138272,6 +140035,19 @@
         "cerebras-inference"
       ]
     },
+    "cern": {
+      "slug": "cern",
+      "display_name": "CERN",
+      "type": "lab",
+      "homepage": "https://home.cern",
+      "github": [
+        "https://github.com/zenodo"
+      ],
+      "country": "CH",
+      "products": [
+        "zenodo"
+      ]
+    },
     "cfilt": {
       "slug": "cfilt",
       "display_name": "CFILT, IIT Bombay",
@@ -138340,6 +140116,19 @@
       "country": "US",
       "products": [
         "civitai"
+      ]
+    },
+    "clarin-eric": {
+      "slug": "clarin-eric",
+      "display_name": "CLARIN ERIC",
+      "type": "foundation",
+      "homepage": "https://www.clarin.eu",
+      "github": [
+        "https://github.com/clarin-eric"
+      ],
+      "country": "NL",
+      "products": [
+        "clarin-vlo"
       ]
     },
     "clay-foundation": {
@@ -138888,6 +140677,17 @@
         "khmer-speech-dataset"
       ]
     },
+    "digital-science": {
+      "slug": "digital-science",
+      "display_name": "Digital Science",
+      "type": "company",
+      "homepage": "https://www.digital-science.com",
+      "github": [],
+      "country": "GB",
+      "products": [
+        "figshare"
+      ]
+    },
     "digital-umuganda": {
       "slug": "digital-umuganda",
       "display_name": "Digital Umuganda",
@@ -138945,6 +140745,19 @@
       "country": "",
       "products": [
         "droid"
+      ]
+    },
+    "dryad": {
+      "slug": "dryad",
+      "display_name": "Dryad",
+      "type": "foundation",
+      "homepage": "https://datadryad.org",
+      "github": [
+        "https://github.com/datadryad"
+      ],
+      "country": "US",
+      "products": [
+        "dryad"
       ]
     },
     "dsfsi": {
@@ -139451,6 +141264,7 @@
         "gnome",
         "google-cloud-run",
         "google-coral-dev-board",
+        "google-dataset-search",
         "google-grounding-api",
         "google-programmable-search",
         "gvisor",
@@ -139576,6 +141390,19 @@
       "products": [
         "hailo-10h",
         "hailo-8"
+      ]
+    },
+    "harvard-iqss": {
+      "slug": "harvard-iqss",
+      "display_name": "Institute for Quantitative Social Science",
+      "type": "lab",
+      "homepage": "https://www.iq.harvard.edu",
+      "github": [
+        "https://github.com/IQSS"
+      ],
+      "country": "US",
+      "products": [
+        "harvard-dataverse"
       ]
     },
     "hazy-research": {
@@ -140055,6 +141882,7 @@
       "github": [],
       "country": "US",
       "products": [
+        "kaggle-datasets",
         "kaggle-models"
       ]
     },
@@ -141214,6 +143042,19 @@
         "block-sparse-attention"
       ]
     },
+    "mit-lcp": {
+      "slug": "mit-lcp",
+      "display_name": "MIT Laboratory for Computational Physiology",
+      "type": "lab",
+      "homepage": "https://lcp.mit.edu",
+      "github": [
+        "https://github.com/MIT-LCP"
+      ],
+      "country": "US",
+      "products": [
+        "physionet"
+      ]
+    },
     "mixedbread-ai": {
       "slug": "mixedbread-ai",
       "display_name": "Mixedbread",
@@ -141585,6 +143426,28 @@
         "prithvi-eo",
         "prithvi-wxc",
         "surya-heliophysics"
+      ]
+    },
+    "national-cancer-institute": {
+      "slug": "national-cancer-institute",
+      "display_name": "National Cancer Institute",
+      "type": "government",
+      "homepage": "https://www.cancer.gov",
+      "github": [],
+      "country": "US",
+      "products": [
+        "the-cancer-imaging-archive"
+      ]
+    },
+    "national-information-society-agency": {
+      "slug": "national-information-society-agency",
+      "display_name": "National Information Society Agency (NIA)",
+      "type": "government",
+      "homepage": "https://www.nia.or.kr",
+      "github": [],
+      "country": "KR",
+      "products": [
+        "aihub-korea"
       ]
     },
     "nbailab": {
@@ -142207,6 +144070,17 @@
       "products": [
         "pysyft",
         "syfthub"
+      ]
+    },
+    "openml": {
+      "slug": "openml",
+      "display_name": "OpenML",
+      "type": "unknown",
+      "homepage": "",
+      "github": [],
+      "country": "NL",
+      "products": [
+        "openml"
       ]
     },
     "openmoss": {
@@ -144140,6 +146014,19 @@
         "berkeley-humanoid-lite"
       ]
     },
+    "uc-irvine": {
+      "slug": "uc-irvine",
+      "display_name": "University of California, Irvine",
+      "type": "lab",
+      "homepage": "https://uci.edu",
+      "github": [
+        "https://github.com/uci-ml-repo"
+      ],
+      "country": "US",
+      "products": [
+        "uci-ml-repository"
+      ]
+    },
     "uk-ai-security-institute": {
       "slug": "uk-ai-security-institute",
       "display_name": "UK AI Security Institute",
@@ -144958,7 +146845,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1102,
+  "n_total": 1117,
   "generated": "2026-10-08",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -144971,8 +146858,8 @@
       "total": 62917,
       "matched": 1245,
       "overlap": 636,
-      "scored": 1102,
-      "scored_outside": 466,
+      "scored": 1117,
+      "scored_outside": 481,
       "uncategorized": 61672
     },
     "top": [
