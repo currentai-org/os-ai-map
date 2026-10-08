@@ -616,6 +616,29 @@ def test_the_writer_refuses_a_score_re_banded_since_the_measurement(tmp_path):
     assert _adoption(root, "widget")["last_verified"] == "2026-08-01"
 
 
+def test_dating_a_grandfathered_axis_deletes_its_allowlist_line_and_only_that(tmp_path):
+    """The hand-dated allowlist drains the way the queue does: in the change that dates."""
+    root = _corpus(tmp_path, {"widget": {"last_verified": "2026-08-01", "sources": []},
+                              "gadget": {"last_verified": "2026-08-01", "sources": []}})
+    path = root / af.HAND_DATED_PATH
+    path.parent.mkdir(parents=True)
+    path.write_text("# header\nwidget|2026-08-01\ngadget|2026-08-01\n")
+    changes, _ = af.plan([_row(slug="widget")], BOUND, root=root)
+    af.apply(changes, root=root)
+    assert path.read_text() == "# header\ngadget|2026-08-01\n"
+    assert af.hand_dated_allowlist(root) == {"gadget|2026-08-01"}
+
+
+def test_dating_an_unlisted_axis_leaves_the_allowlist_alone(tmp_path):
+    root = _corpus(tmp_path, {"widget": {"last_verified": "2026-08-01", "sources": []}})
+    path = root / af.HAND_DATED_PATH
+    path.parent.mkdir(parents=True)
+    path.write_text("# header\ngadget|2026-08-01\n")
+    changes, _ = af.plan([_row(slug="widget")], BOUND, root=root)
+    af.apply(changes, root=root)
+    assert path.read_text() == "# header\ngadget|2026-08-01\n"
+
+
 # ── instruments ─────────────────────────────────────────────────────────────────────────────
 
 

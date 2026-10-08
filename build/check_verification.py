@@ -40,6 +40,29 @@ against something other than itself — a date outside the window, a snapshot no
 product the ledger records no measurement for, a level the score has since left, a route the
 tables do not compile, or a pair of records that disagree about one measurement.
 
+## A hand-written adoption date where a route measures the band
+
+The derived date is not an alternative to a reading where a route can measure the band: it is
+the only way that axis is dated. Where the product's applicable route is machine-measured (an
+artifact route the scheduled reconciliation reads, such as PyPI, npm or Hugging Face downloads),
+an `adoption.last_verified` without `derived_from` is a curator's date on a number that moves
+daily, and the fresh-source floor below would pass it. So the invariant refuses it outright and
+never falls back to the floor. The repair is a hold with `settled_by: scheduled_reconciliation`,
+which the first scheduled run that measures the same band releases.
+
+Axes no scheduled run can date keep the read-based path: a deliberate null (a searched
+absence, re-confirmed by re-reading the page), the hand-authored instruments
+(`reported_traction`, `active_users`), which have no collector behind them, and an axis whose
+applicable route measures another instrument than the one recorded, which the reconciliation
+queues as a route disagreement rather than ever dating. Dating those by
+reading is what the guide prescribes, and refusing it would leave them undatable.
+
+The axes hand-dated before this rule are listed, slug and date, in
+`sources/allowlists/hand_dated_adoption.txt`. It is a draining list: a line names the exact date
+it grandfathers, so a new hand date on a listed product is not covered, and a line that no
+longer describes a hand-dated axis fails `tests/test_hand_dated_adoption_ratchet.py`.
+`build/adoption_freshness.py` deletes a product's line in the same change that dates it.
+
 ## The digest requirement — a claimed date needs a fetch to point at
 
 Same scope. Every source read as part of the confirmation carries `http_status` and
@@ -89,7 +112,9 @@ from build.vocabulary import axes, parse_date
 from build.adoption_freshness import (
     DERIVATION_FIELD,
     DERIVED_AXIS,
+    HAND_DATED_PATH,
     derivation_problems,
+    hand_dated_allowlist,
     known_route_ids,
 )
 from build.check_rubric import components_of, license_read_keys, resolve_dimension
@@ -146,6 +171,36 @@ def category_of(categories: dict) -> dict[str, str]:
     }
 
 
+def machine_routed_adoption(scores: dict, categories: dict, root: Path | None = None) -> dict[str, str]:
+    """product slug -> route id, for each banded adoption axis a scheduled run can date.
+
+    The route is the one `build/adoption_measurements.select_route` resolves by precedence, the
+    same selection the reconciliation and `build/axis_assessments.py` use. A hand-authored route
+    (`reported_traction`, `active_users`) has no collector, a null band has nothing to measure,
+    and a route on another instrument than the recorded one never dates the axis, so none of
+    those is listed.
+    """
+    from build.adoption_measurements import all_routes, load_inputs, route_scopes, select_route
+
+    tables, _bands, _category_of, declared, *_ = load_inputs(root or ROOT)
+    routes, scopes = all_routes(tables), route_scopes(tables)
+    owner = category_of(categories)
+    out: dict[str, str] = {}
+    for slug, score in scores.items():
+        block = score.get(DERIVED_AXIS) or {}
+        if block.get("level") is None:
+            continue
+        route = select_route(
+            declared.get(slug, set()), block.get("signal_type"), owner.get(slug), routes, scopes
+        )
+        # Only a route on the recorded instrument can ever date the axis: a cross-instrument
+        # match is a coincidence the reconciliation queues as a route disagreement, so holding
+        # such an axis for a scheduled run would hold it for good.
+        if route and route["artifact_kind"] and route["instrument_type"] == block.get("signal_type"):
+            out[slug] = route["route_id"]
+    return out
+
+
 def recorded_dimensions(components: dict[str, str], recipe: dict) -> dict[str, str]:
     """dimension -> the recorded key that answers it, for every dimension this score RECORDS.
 
@@ -187,17 +242,24 @@ def invariant(
     product_types: dict[str, str],
     ledger: dict | None = None,
     known_routes: set[str] | None = None,
+    machine_routed: dict[str, str] | None = None,
+    grandfathered: set[str] | None = None,
 ) -> list[str]:
     """Every recorded dimension of a dated axis has an establishing source read since.
 
     `ledger` is the observation-snapshot ledger a derived adoption date is resolved against;
     it is read from the repository when not supplied. `known_routes` is the compiled route ids,
     which the caller supplies because compiling them means reading the whole routing source and
-    most corpora have nothing derived to check.
+    most corpora have nothing derived to check. `machine_routed` is `machine_routed_adoption`'s
+    result, and `grandfathered` the `slug|date` lines of the hand-dated allowlist; an adoption
+    axis on a machine-measured route may carry a date only through `derived_from` unless its
+    exact date is grandfathered.
     """
     problems: list[str] = []
     owner = category_of(categories)
     ledger = load_ledger() if ledger is None else ledger
+    machine_routed = machine_routed or {}
+    grandfathered = grandfathered or set()
     for slug, score in sorted(scores.items()):
         variants = recipes.get(owner.get(slug, ""), {})
         recipe, _ = recipe_for(variants, product_types.get(slug, ""))
@@ -226,6 +288,21 @@ def invariant(
                         f"{DERIVED_AXIS} may derive"
                     )
                 problems.extend(derivation_problems(slug, block, ledger, known_routes))
+            elif (
+                axis == DERIVED_AXIS
+                and slug in machine_routed
+                and f"{slug}|{claimed.isoformat()}" not in grandfathered
+            ):
+                # No fallback to the floor. A fresh citation on a counts endpoint dates a reading
+                # of a number that moves daily; where a route measures the band, the scheduled
+                # reconciliation is the only thing that can confirm it.
+                problems.append(
+                    f"{slug}:{axis}: claims last_verified {claimed} without {DERIVATION_FIELD}, "
+                    f"but {machine_routed[slug]} measures this band, so only "
+                    f"build.adoption_freshness may date it. Drop the date and hold the axis "
+                    f"with settled_by: scheduled_reconciliation"
+                )
+                continue
             elif not fresh:
                 # The floor, and it is the whole of the check for adoption and capability:
                 # those axes record one banded value rather than a dimension breakdown, so
@@ -404,6 +481,8 @@ def main() -> int:
         "invariant": invariant(
             scores, categories, recipes, product_types,
             known_routes=known_route_ids() if derived else None,
+            machine_routed=machine_routed_adoption(scores, categories),
+            grandfathered=hand_dated_allowlist(),
         ),
         "digests": digests(scores),
         "producible-pairs": producible_pairs(scores, categories, recipes, product_types),
@@ -433,6 +512,10 @@ def main() -> int:
         )
         if DIGEST_EXEMPT:
             print(f"{len(DIGEST_EXEMPT)} digest exemption(s), each of which should be shrinking")
+        print(
+            f"{len(hand_dated_allowlist())} grandfathered hand-dated adoption axis/axes in "
+            f"{HAND_DATED_PATH}, which should be shrinking"
+        )
         print()
 
     failed = False

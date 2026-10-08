@@ -721,6 +721,19 @@ adoption at the flag, in the planner and in the writer, so a machine cannot re-d
 re-fetching a cited page whatever it is asked to do. Two tools writing one field on two
 different grounds is the state this avoids.
 
+**A person does not write it either, wherever a route measures the band.** `build/check_verification.py`
+refuses an `adoption.last_verified` without `derived_from` when the product's applicable route is
+one the reconciliation measures (an artifact route: PyPI, npm, Hugging Face, GitHub and the
+rest) on the instrument the score records. A fresh citation does not rescue it, because the fresh-source floor is exactly the
+`sources[].accessed` dating this section rules out. A curator who re-reads such a band sets the
+level and holds the axis with `settled_by: scheduled_reconciliation`, which the first scheduled
+run that measures the same level releases. Three kinds of axis keep the read-based path, because no
+scheduled run can date them: a deliberate null (a searched absence, below), the hand-authored
+instruments, `reported_traction` and `active_users`, and an axis whose route measures another
+instrument, which is a route disagreement to repair rather than a band to re-measure. The axes hand-dated before the
+check are grandfathered by slug and date in `sources/allowlists/hand_dated_adoption.txt`, a
+draining list that `build/adoption_freshness.py` trims in the change that dates each one.
+
 ### Catching fabrication rather than just inconsistency
 
 The invariant catches unsupported dates. It cannot catch a source that never said what
