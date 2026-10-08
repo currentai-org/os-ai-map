@@ -252,3 +252,194 @@ def test_a_category_move_without_a_rename_is_still_flagged():
     after = {"p1|openness": _row(category_slug="cat_b")}
     assert ccd.compare_rows(before, after, touched=set(), renamed=set())
     assert ccd.compare_rows(before, after, touched=set(), renamed={"other", "unrelated"})
+
+
+# --- publishing a preliminary category is not a silent rewrite ---------------------------
+#
+# Added 2026-10-08 with data_hubs, the first category whose products were researched in an
+# earlier PR while it was preliminary. Publishing it makes every one of their rows appear while
+# touching none of their files. The exemption holds only when all of these are true: the
+# category's taxonomy status moved from preliminary to published, the row appears (it did not
+# change or disappear), and the product was on the category's roster at the base. Stage, gap and
+# tier reporting is untouched by it.
+
+def test_rows_appearing_in_a_published_category_are_not_flagged():
+    after = {"p1|openness": _row(category_slug="hubs"),
+             "p1|adoption": _row(axis="adoption", category_slug="hubs")}
+    assert ccd.compare_rows({}, after, touched=set(), published={"hubs": {"p1"}},
+                            as_published=dict(after)) == []
+
+
+def test_an_appearing_row_that_differs_from_the_base_record_is_still_flagged():
+    """The publish exempts the category's visibility, not a change to the product's record: an
+    appearing row must equal what the base yields for it once the category is published."""
+    after = {"p1|openness": _row(category_slug="hubs", score=5)}
+    as_published = {"p1|openness": _row(category_slug="hubs", score=4)}
+    changes = ccd.compare_rows({}, after, touched=set(), published={"hubs": {"p1"}},
+                               as_published=as_published)
+    assert changes == ["p1|openness appeared with the publication of hubs but differs from its "
+                       "record at the base, and sources/{scores,products}/p1.yaml did not change"]
+    # A product whose files the PR touched may change freely, as everywhere else in the gate.
+    assert ccd.compare_rows({}, after, touched={"p1"}, published={"hubs": {"p1"}},
+                            as_published=as_published) == []
+
+
+def test_a_published_to_published_appearance_is_still_flagged():
+    """`published` only ever names categories that were preliminary at the base, so a row
+    appearing in a category that was already published gets no exemption."""
+    after = {"p1|openness": _row(category_slug="other")}
+    changes = ccd.compare_rows({}, after, touched=set(), published={"hubs": {"p1"}},
+                               as_published=dict(after))
+    assert changes == ["p1|openness appeared but sources/{scores,products}/p1.yaml did not change"]
+
+
+def test_a_changed_row_in_a_newly_published_category_is_still_flagged():
+    before = {"p1|openness": _row(category_slug="hubs", score=4)}
+    after = {"p1|openness": _row(category_slug="hubs", score=5)}
+    changes = ccd.compare_rows(before, after, touched=set(), published={"hubs": {"p1"}},
+                               as_published=dict(after))
+    assert changes == ["p1|openness changed but sources/{scores,products}/p1.yaml did not"]
+
+
+def test_a_vanished_row_in_a_newly_published_category_is_still_flagged():
+    before = {"p1|openness": _row(category_slug="hubs")}
+    changes = ccd.compare_rows(before, {}, touched=set(), published={"hubs": {"p1"}},
+                               as_published=dict(before))
+    assert changes == ["p1|openness disappeared but sources/{scores,products}/p1.yaml did not change"]
+
+
+def test_a_product_not_on_the_base_roster_is_still_flagged():
+    after = {"p1|openness": _row(category_slug="hubs"),
+             "p2|openness": _row(product_slug="p2", category_slug="hubs")}
+    changes = ccd.compare_rows({}, after, touched=set(), published={"hubs": {"p1"}},
+                               as_published=dict(after))
+    assert changes == ["p2|openness appeared but sources/{scores,products}/p2.yaml did not change"]
+
+
+def _taxonomy_repo(repo, base_statuses, head_statuses, base_rosters, head_rosters):
+    """A throwaway repo with a `base` tag and a HEAD commit, each carrying a taxonomy and
+    category files, for exercising `published_categories` against real git refs. A status of
+    None writes the scalar spelling, which reads as published."""
+    def write(statuses, rosters):
+        (repo / "sources" / "categories").mkdir(parents=True, exist_ok=True)
+        entries = "".join(f"    - {cid}\n" if status is None
+                          else f"    - name: {cid}\n      status: {status}\n"
+                          for cid, status in statuses.items())
+        (repo / "sources" / "taxonomy.yaml").write_text(
+            "arcs:\n- name: A\n  layer: infrastructure\n  groups:\n  - name: G\n    slug: g\n"
+            "    categories:\n" + entries)
+        for cid, roster in rosters.items():
+            (repo / "sources" / "categories" / f"{cid}.yaml").write_text(
+                yaml.safe_dump({"name": cid, "products": roster}))
+
+    repo.mkdir(parents=True, exist_ok=True)
+    _git(repo, "init", "-q", "-b", "main")
+    _git(repo, "config", "user.email", "ccd-test@example.invalid")
+    _git(repo, "config", "user.name", "ccd test")
+    write(base_statuses, base_rosters)
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-q", "-m", "base")
+    _git(repo, "tag", "base")
+    write(head_statuses, head_rosters)
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-q", "-m", "head")
+    return repo
+
+
+def test_published_categories_reads_the_status_move_and_base_roster_from_git(tmp_path):
+    repo = _taxonomy_repo(
+        tmp_path / "repo",
+        base_statuses={"stays": None, "hubs": "preliminary", "later": "preliminary"},
+        head_statuses={"stays": None, "hubs": "published", "later": "preliminary",
+                       "fresh": "published"},
+        base_rosters={"stays": ["s1"], "hubs": ["p1", "p2"], "later": ["l1"]},
+        head_rosters={"stays": ["s1"], "hubs": ["p1", "p2", "p3"], "later": ["l1"],
+                      "fresh": ["f1"]},
+    )
+    # `stays` was published at both refs, `later` is still preliminary, and `fresh` did not
+    # exist at the base, so only `hubs` qualifies; p3 joined its roster in the PR and is left out.
+    assert ccd.published_categories(repo, "base") == {"hubs": {"p1", "p2"}}
+
+
+def test_published_categories_ignores_a_published_to_published_category(tmp_path):
+    repo = _taxonomy_repo(
+        tmp_path / "repo",
+        base_statuses={"hubs": "published"}, head_statuses={"hubs": None},
+        base_rosters={"hubs": ["p1"]}, head_rosters={"hubs": ["p1", "p2"]},
+    )
+    assert ccd.published_categories(repo, "base") == {}
+
+
+def test_a_publish_leaves_stage_gap_and_tier_checks_in_force(tmp_path, monkeypatch):
+    """The exemption reaches only the untouched-row comparison. A stage move that comes with the
+    publish still needs the label, and a tier change is still on the sheet."""
+    before_payload = _payload({"hubs": _cat(1, ["adoption"], [("p1", None)])})
+    after_payload = _payload({"hubs": _cat(2, [], [("p1", "strong")])})
+    after_rows = {"p1|openness": _row(category_slug="hubs")}
+    monkeypatch.setattr(ccd, "_snapshot_at", lambda root, ref: (
+        (before_payload, {}) if ref is not None else (after_payload, after_rows)))
+    monkeypatch.setattr(ccd, "touched_products", lambda root, base: set())
+    monkeypatch.setattr(ccd, "touched_axes", lambda root, base: set())
+    monkeypatch.setattr(ccd, "renamed_categories", lambda root, base: set())
+    monkeypatch.setattr(ccd, "published_categories", lambda root, base: {"hubs": {"p1"}})
+    monkeypatch.setattr(ccd, "as_published_rows", lambda root, base, cids: dict(after_rows))
+
+    sheet_path = tmp_path / "sheet.md"
+    assert ccd.main(["--base", "base", "--sheet", str(sheet_path)], root=tmp_path) == 1
+    sheet = sheet_path.read_text()
+    assert "| hubs | 1 -> 2 | ['adoption'] -> [] |" in sheet and "p1: None -> strong" in sheet
+    assert "untouched-product row changes: none" in sheet
+    assert ccd.main(["--base", "base", "--allow-stage-move", "--sheet", str(sheet_path)],
+                    root=tmp_path) == 0
+
+
+def _preliminary_with_scored_roster(repo):
+    """A preliminary category whose roster products all carry score files, or None."""
+    from build.taxonomy import category_statuses
+
+    statuses = category_statuses(yaml.safe_load((repo / "sources" / "taxonomy.yaml").read_text()))
+    for cid, status in statuses.items():
+        if status != "preliminary":
+            continue
+        path = repo / "sources" / "categories" / f"{cid}.yaml"
+        roster = (yaml.safe_load(path.read_text()) or {}).get("products") or [] if path.exists() else []
+        if roster and all((repo / "sources" / "scores" / f"{s}.yaml").exists() for s in roster):
+            return cid, roster
+    return None
+
+
+def test_publishing_a_researched_category_passes_and_an_edit_inside_it_does_not(tmp_path):
+    """End to end on the real corpus: flipping one preliminary category to published, and
+    touching nothing else, makes its products' rows appear and the gate pass. An uncommitted
+    edit to one of those products' scores, read from the working tree, still fails it."""
+    import pytest
+
+    repo = _clone(tmp_path / "repo")
+    found = _preliminary_with_scored_roster(repo)
+    if found is None:
+        pytest.skip("no preliminary category with a researched roster in the corpus")
+    cid, roster = found
+    base = _git(repo, "rev-parse", "HEAD").strip()
+
+    tax = repo / "sources" / "taxonomy.yaml"
+    text = tax.read_text()
+    flipped = text.replace(f"- name: {cid}\n      status: preliminary",
+                           f"- name: {cid}\n      status: published")
+    assert flipped != text
+    tax.write_text(flipped)
+    _git(repo, "commit", "-qam", f"synthetic: publish {cid}")
+
+    sheet_path = tmp_path / "sheet.md"
+    assert ccd.main(["--base", base, "--allow-stage-move", "--sheet", str(sheet_path)],
+                    root=repo) == 0, sheet_path.read_text()
+    assert "untouched-product row changes: none" in sheet_path.read_text()
+
+    slug = roster[0]
+    score = repo / "sources" / "scores" / f"{slug}.yaml"
+    doc = yaml.safe_load(score.read_text())
+    axis = next(a for a in ("capability", "openness") if isinstance((doc.get(a) or {}).get("score"), int))
+    doc[axis]["score"] = 1 if doc[axis]["score"] != 1 else 2
+    score.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True))
+    assert ccd.main(["--base", base, "--allow-stage-move", "--sheet", str(sheet_path)],
+                    root=repo) == 1
+    assert f"{slug}|{axis} appeared with the publication of {cid}" in sheet_path.read_text()

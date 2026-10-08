@@ -169,7 +169,14 @@ The five files per product, the category record, and `sources/taxonomy.yaml`. In
 the final count, every rejection and replacement with its reason, the capability rung definitions
 and anchors, and anything still deferred or resting on weak evidence. No census is pinned in a test
 any more. The PR's review sheet from `build.check_corpus_diff` states the stage, gap, and tier delta
-per category; a stage move must be intended and carried by the `stage-move` label.
+per category; a stage move must be intended and carried by the `stage-move` label. The same gate
+fails on any assessment row that changes, appears or disappears for a product whose files the PR
+did not touch, with two exemptions it reads from the diff rather than from a declaration. A
+renamed category file exempts the `category_slug` column of its products' rows. A taxonomy status
+moved from `preliminary` to `published` lets rows appear for the products already on the
+category's roster at the base, provided each equals the row the base yields once the category is
+published, so head products researched in an earlier PR need no edit to be published. A row that changes or disappears, or one for a product added to the roster in the same
+PR, is still compared exactly, and the stage, gap and tier delta is reported as usual.
 
 ## Stop and escalate when
 - The category has **no `scoring_recipe`**, or its evidence is prose the ladder cannot read →
