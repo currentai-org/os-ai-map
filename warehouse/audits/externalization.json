@@ -930,6 +930,18 @@
       "to": "sources/organizations/allen-institute-for-ai.yaml",
       "date": "2026-09-28",
       "reason": "Organization merge, not a rename of the surviving record: `ai2` and `allen-institute-for-ai` were one entity filed twice, flagged as a merge candidate on ai2.yaml. Its six products and its `allenai` GitHub and Hugging Face handles moved to allen-institute-for-ai, which carries `ai2` in `aliases` for redirects. The split was 21 of the 57 org false positives in the live identity eval (#763)."
+    },
+    {
+      "from": "sources/products/azure-ai-model-inference.yaml",
+      "to": "sources/products/azure-ai-foundry-models.yaml",
+      "date": "2026-10-08",
+      "reason": "Product retirement onto a successor, ruled in R-2026-10-08-zc: Azure AI Model Inference no longer exists as a product by that name, and Microsoft's model inference overview now redirects into the Foundry Models documentation. Per docs/reference/identity.md a slug leaves only as an alias on the product that replaced it, so azure-ai-foundry-models carries `azure-ai-model-inference` in `aliases`. The retired record's content was not carried over; its last state is in git history."
+    },
+    {
+      "from": "sources/scores/azure-ai-model-inference.yaml",
+      "to": "sources/scores/azure-ai-foundry-models.yaml",
+      "date": "2026-10-08",
+      "reason": "The score file follows its product's retirement onto azure-ai-foundry-models (R-2026-10-08-zc). The successor keeps its own scores; nothing from the retired file was merged into them."
     }
   ],
   "rename_note": "A rename is not an externalization and not a retirement: the file did not leave the repository and its content was not archived, it moved. Recorded here because the receipt's completeness check watches every path under sources/ and would otherwise read a move as an unaccounted deletion - and because the alternative, filing a renamed file as a retired warehouse table, would have put a false statement in an audit document to make a gate pass."

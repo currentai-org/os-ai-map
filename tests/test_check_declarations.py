@@ -145,11 +145,16 @@ def test_the_real_corpus_holds_at_its_known_count():
     the Kaggle CLI, two citations) and uci-ml-repository (ucimlrepo) each cite a client of a closed
     hosted catalog to show that the catalog's code is not there, the kaggle-models shape. Declaring a client would read its
     downloads as the catalog's adoption.
+
+    Raised to 26 on 2026-10-08 by R-2026-10-08-zc: amazon-q-developer cites
+    aws/amazon-q-developer-cli, the MIT client of a closed AWS service, as the open part that makes
+    it source-available. The same shape: declaring the client would read its stars as the service's
+    adoption.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 25, [f[0] for f in findings]
+    assert len(findings) == 26, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
+        "amazon-q-developer", "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
         "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
         "huggingface-hub-platform", "kaggle-models", "lamini", "modelscope", "ollama-library",
         "kaggle-datasets", "patronus-evaluation-platform", "predibase",
