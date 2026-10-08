@@ -636,9 +636,9 @@ on a ledger ruling, the adopt leg checks the destination first: an item the file
 the same way is reported as already recorded and nothing is written, and one it answers differently
 is held for review, never overturned. The digest model drops every equivalence proposal for an
 artifact the ledger already assigns to a different product that still exists (a head product or
-a tail row), before ranking and the 25-item cap, so the freed slot goes to the next item (#844).
+a tail row), before ranking and the 25-item cap, so the freed slot goes to the next item.
 `build/identity_digest.py` applies the same rule again before the adopt leg and the renderer see
-the rows. An artifact belongs to one product, and a heuristic that reaches another is not new
+the rows, as a safety net. An artifact belongs to one product, and a heuristic that reaches another is not new
 evidence against the ruling. An equivalence ruling whose product is not in the corpus is not
 dropped, so a proposal against it can still be held.
 Both readers are audit roots, which is what puts the dataset inside the repo's governed
