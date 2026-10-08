@@ -38,3 +38,21 @@ rulings:
     executor: none
     lands_in: []
     applied_in: []
+
+  - id: R-2026-10-08-a
+    date: 2026-10-08
+    by: ccerv1
+    venue: issue
+    refs: [OSO-6207, "#808"]
+    question: >-
+      check_declarations reports closed hosted services that cite their own client SDK or docs
+      repository as establishing `source`, to show the service's code is not there. Should those
+      repositories be declared as artifacts, or should the citations stop establishing `source`?
+    ruling: >-
+      Neither is declared. A closed service's client SDK or docs repository does not establish the
+      service's source, so those citations drop `source` from `establishes` and stay as provenance.
+      Homebrew declarations stay held.
+    status: in-force
+    executor: agent
+    lands_in: [tests/test_check_declarations.py]
+    applied_in: []
