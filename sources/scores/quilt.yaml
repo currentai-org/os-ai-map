@@ -1,7 +1,7 @@
 product: quilt
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
@@ -9,41 +9,55 @@ openness:
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: installing the Quilt catalog stack requires a license key or an active Quilt Business subscription
+        on AWS Marketplace, deployed from Quilt-provided CloudFormation templates
   confidence: high
-  note: A single Apache-2.0 LICENSE covers the whole repository — the Python SDK, the web catalog frontend
-    and the Lambda backend services all in one tree. The "Enterprise Installation" is documented as a deployment
-    of that same repository, so "Enterprise platform" describes a deployment and support model rather than
-    functionality withheld from the published source.
-  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  note: 'A single Apache-2.0 LICENSE covers the whole repository: the Python SDK, the web catalog frontend
+    and the Lambda backend services. The full Quilt platform is a different matter. The catalog installation
+    guide requires a license key or an active Quilt Business subscription on AWS Marketplace, and deploys
+    from Quilt-provided CloudFormation templates. A license-keyed tier beside the open repository makes
+    this open core.'
+  raw: license:Apache-2.0(OSI);source:public;core-gated:gated(installing the Quilt catalog stack requires
+    a license key or an active Quilt Business subscription on AWS Marketplace, deployed from Quilt-provided
+    CloudFormation templates)
+  last_verified: '2026-10-08'
   sources:
-  - url: https://github.com/quiltdata/quilt/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text, covering the entire repository with no per-directory
-      carve-out.
-    accessed: '2026-09-02'
+  - url: https://raw.githubusercontent.com/quiltdata/quilt/master/LICENSE
+    shows: The LICENSE file is the Apache License text, "Apache License" and "Version 2.0, January 2004",
+      with no per-directory carve-out.
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/quiltdata/quilt/master/docs/Installation.md
+    shows: 'Installation.md covers the Python client and, under "Enterprise Installation", points to the
+      catalog guide: "For installing the Quilt catalog and stack (enterprise deployment on AWS), see the".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: bd8695a7beb7f1f1ffb5defb188b2cbbed41b5ec404d11ddcded3637da93b897
+    establishes:
+    - source
+    - core-gated
+  - url: https://docs.quilt.bio/quilt-platform-administration/installation
+    shows: The catalog installation guide lists as a prerequisite "A license key or an active subscription
+      to Quilt Business on AWS Marketplace." and says to "Use Quilt-provided CloudFormation templates without
+      modification."
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: f78098ea027dc04cd9d7872c14cf3d1b8af94757a7c7a084aa7a056c4ec87611
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/quiltdata/quilt
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
-      quiltdata/quilt.
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
+      - for quiltdata/quilt.
     accessed: '2026-09-02'
     http_status: 200
     content_sha256: 21f66eddf25219826f4b04394c7afe3d29dd26f5362f13bf2923040bc9ddec47
     establishes:
     - license
     - source
-  - url: https://github.com/quiltdata/quilt/blob/master/docs/Installation.md
-    shows: Installation.md documents both the Python client (`pip install quilt3`) and the "Enterprise Installation"
-      (the catalog and stack, deployed on AWS via CloudFormation from the Catalog Installation Guide) as
-      installations of this same repository, with no license key or separate purchase gating the stack itself.
-    accessed: '2026-09-02'
-    http_status: 200
-    content_sha256: bd8695a7beb7f1f1ffb5defb188b2cbbed41b5ec404d11ddcded3637da93b897
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
