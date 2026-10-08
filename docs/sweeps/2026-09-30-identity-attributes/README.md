@@ -171,3 +171,12 @@ for R4.
   - `traceloop`: an Israeli entity in the privacy policy, against a US entity under New York law in
     the terms.
 
+### Evidence review R5 (2026-10-07)
+
+One R4 conflict resolved. `nari-labs` now cites its own terms of service, which name Nari Labs,
+Inc. (United States) with a Delaware headquarters and a San Francisco mailing address
+(`countries/resolve-R5.jsonl`, high confidence). The US value stands and its R4 flag is cleared;
+the Korea reading came from a news report on a co-founder. The site footer reads "SF & Seoul",
+so the team works in both, but the operating entity is American. `apply_attributes` writes no
+file for R5, since the value already matches.
+
