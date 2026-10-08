@@ -541,6 +541,17 @@ it does not make the claim automatic, it makes it falsifiable.
   `/api/v1/datasets/rankings-daily`. Two limits: it returns the top 50 models per day, and its
   `hugging_face_id` bridge is empty for exactly the closed and API-first models that need it
   most. `mistral-large`'s three OpenRouter entries all carry an empty id.
+- **Lifetime counters: GitHub release-asset downloads and Docker Hub pulls** — both are lifetime
+  totals with no window, so a monthly figure has to be an increment between readings. Until the
+  platform keeps counter history (#664), `sources/snapshots/asset_counters.csv` holds one raw
+  reading per counter per weekly refresh, and `build/snapshot_counters.py` (`increments`, or
+  `--increments`) takes the increment between consecutive readings. The trap is that a lifetime
+  total can **fall**: GitHub counts downloads per asset, so a deleted or replaced asset takes its
+  downloads with it (`OpenPipe/ART` read 2,573 then 1,249). The rule for a falling counter is to
+  **clamp the window's increment to zero, flag it `reset`, and restart the baseline from the new,
+  lower reading** (#850). A reset window is not a measurement: its true downloads are unknown,
+  not zero, so nothing should band on it as if it were one. The next window is measured from the
+  lower reading rather than the old high, so real use after a re-upload is not lost.
 - **MLPerf and Artificial Analysis** — capability instruments, not adoption. Recorded here only
   so nobody re-proposes them; see `signal_routing.yaml` for why both are unbridged anyway.
 
