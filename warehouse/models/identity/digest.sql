@@ -221,24 +221,42 @@ ledger_change AS (
 --   * an exclusion (`excluded_boundary` / `excluded_maintenance`), which answers every
 --     equivalence for the artifact -- flagged explicitly by is_exclusion, never by a NULL slug,
 --     so a malformed confirm cannot turn into a wildcard.
+--   * a confirm resolving to a DIFFERENT product that is still live -- a head product
+--     (registry.products) or a tail row (registry.tail_products) -- which answers every OTHER
+--     equivalence for the artifact (#844). A `product_equivalence` ruling is a fact about the
+--     artifact: it belongs to exactly one product (docs/reference/identity.md), so a heuristic
+--     that reaches another product is not new evidence against the ruling. `live_owner` carries
+--     the ruled slug only when it is live, so this branch cannot fire on a stale ruling.
 -- Deliberately NOT answered: `unresolved` (a human looked and could not decide), and a confirm
--- resolving to a DIFFERENT product, which contradicts this edge and is worth a look.
+-- resolving to a different product that is NOT in the corpus (retired or renamed). That ruling
+-- may be stale, so the proposal still surfaces. build/identity_digest.py's
+-- suppress_ruled_artifacts() applies the same rule after the fact (#843); it has to live here
+-- too, because the cap below runs first and a row dropped after it leaves an empty slot.
 -- Same candidate_key fold as ledger_change above.
+live_products AS (
+  SELECT slug FROM currentai.registry.products
+  UNION
+  SELECT slug FROM currentai.registry.tail_products
+),
+
 equivalence_ruled AS (
   SELECT DISTINCT
-    artifact_kind || ':' ||
+    l.artifact_kind || ':' ||
       CASE
-        WHEN artifact_kind IN ('pypi', 'crates')
-          THEN REGEXP_REPLACE(LOWER(artifact_id), '[-_.]+', '-')
-        ELSE LOWER(artifact_id)
+        WHEN l.artifact_kind IN ('pypi', 'crates')
+          THEN REGEXP_REPLACE(LOWER(l.artifact_id), '[-_.]+', '-')
+        ELSE LOWER(l.artifact_id)
       END AS candidate_key,
-    CASE WHEN verdict IN ('existing_product', 'sku_of') THEN resolves_to END AS product_slug,
-    verdict IN ('excluded_boundary', 'excluded_maintenance') AS is_exclusion
-  FROM currentai.registry.resolution_ledger
-  WHERE (relation IS NULL OR relation = 'product_equivalence')
+    CASE WHEN l.verdict IN ('existing_product', 'sku_of') THEN l.resolves_to END AS product_slug,
+    l.verdict IN ('excluded_boundary', 'excluded_maintenance') AS is_exclusion,
+    lp.slug AS live_owner
+  FROM currentai.registry.resolution_ledger l
+  LEFT JOIN live_products lp
+    ON l.verdict IN ('existing_product', 'sku_of') AND lp.slug = TRIM(l.resolves_to)
+  WHERE (l.relation IS NULL OR l.relation = 'product_equivalence')
     AND (
-      verdict IN ('excluded_boundary', 'excluded_maintenance')
-      OR (verdict IN ('existing_product', 'sku_of') AND NULLIF(TRIM(resolves_to), '') IS NOT NULL)
+      l.verdict IN ('excluded_boundary', 'excluded_maintenance')
+      OR (l.verdict IN ('existing_product', 'sku_of') AND NULLIF(TRIM(l.resolves_to), '') IS NOT NULL)
     )
 ),
 
@@ -307,7 +325,12 @@ equivalence_items AS (
       SELECT 1
       FROM equivalence_ruled r
       WHERE r.candidate_key = e.candidate_key
-        AND (r.is_exclusion OR r.product_slug = e.product_slug)
+        AND (
+          r.is_exclusion
+          OR r.product_slug = e.product_slug
+          -- #844: the ledger assigns this artifact to another live product.
+          OR r.live_owner <> e.product_slug
+        )
     )
 ),
 

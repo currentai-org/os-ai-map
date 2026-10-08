@@ -8,7 +8,11 @@ assessment row belonging to a product whose source files the PR did not touch mu
 byte-identical before and after; a change there is a silent rewrite and fails the gate. A
 hold in `sources/verification_queue.yaml` is part of the assessment row and is edited there rather
 than in the score file, so a changed hold authorizes a change to that one row, `product|axis`, and
-to no other axis of the product.
+to no other axis of the product. Two changes of a category, detected from the diff, are not
+rewrites of its products: a renamed category file (the `category_slug` column alone is exempt)
+and a taxonomy status moved from preliminary to published (a row of a product already on the
+category's roster at the base may appear, exactly as the base would publish it, and nothing
+else). Neither touches the stage, gap or tier half of the gate.
 
 Both sides are built in memory by `build.serialize.build_payload` (no file is written), so
 the committed `build/notebook_data.json` is never read. That copy used to be the `after`
@@ -37,6 +41,7 @@ import json
 import re
 import subprocess
 import sys
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -225,12 +230,19 @@ def _snapshot_at(root: Path, ref: str | None) -> tuple[dict, dict[str, str]]:
     from build import axis_assessments
     if ref is None:
         return _payload_at(root), _rows(axis_assessments.resolve(root, allow_dirty=True))
-    # A temporary worktree at ref keeps the comparison honest without touching the checkout.
+    with _worktree_at(root, ref) as tmp:
+        return _payload_at(tmp), _rows(axis_assessments.resolve(tmp, allow_dirty=True))
+
+
+@contextmanager
+def _worktree_at(root: Path, ref: str):
+    """A temporary detached worktree at `ref`, which keeps a read honest without touching the
+    checkout. Removed on exit, whatever happened inside."""
     tmp = root / ".ccd-worktree"
     subprocess.run(["git", "worktree", "add", "--detach", str(tmp), ref], cwd=root, check=True,
                    capture_output=True)
     try:
-        return _payload_at(tmp), _rows(axis_assessments.resolve(tmp, allow_dirty=True))
+        yield tmp
     finally:
         subprocess.run(["git", "worktree", "remove", "--force", str(tmp)], cwd=root, check=True,
                        capture_output=True)
@@ -258,8 +270,82 @@ def renamed_categories(root: Path, base_ref: str) -> set[str]:
     return slugs
 
 
+def published_categories(root: Path, base_ref: str) -> dict[str, set[str]]:
+    """Categories whose taxonomy status moved from `preliminary` to `published` in this PR, each
+    mapped to the product roster its category file carried at the base.
+
+    A preliminary category's products are payload-invisible, so they have no assessment rows at
+    the base. Publishing the category makes every one of their rows appear while touching none
+    of their files, which is a silent rewrite by this gate's definition and is not one: the
+    products did not change, their category's visibility did. Detected from the committed
+    taxonomy at both refs rather than declared, so nobody can exempt a product by claiming a
+    publish that did not happen. Read at `base_ref` itself, the tree the `before` rows are
+    serialized from, so the status and roster describe the same side the rows do.
+
+    The roster is the base's, not HEAD's: a product added to the category in the same PR has no
+    research behind it that predates the publish, so it is not exempt through this path (adding
+    it touches its own files, which exempts it the ordinary way).
+    `build.taxonomy.category_statuses` is the one owner of what a status entry means.
+    """
+    from build.taxonomy import category_statuses
+
+    tax = "sources/taxonomy.yaml"
+    before = category_statuses(yaml.safe_load(_show(root, base_ref, tax)) or {})
+    after = category_statuses(yaml.safe_load(_show(root, "HEAD", tax)) or {})
+    out: dict[str, set[str]] = {}
+    for cid, status in after.items():
+        if status != "published" or before.get(cid) != "preliminary":
+            continue
+        doc = yaml.safe_load(_show(root, base_ref, f"sources/categories/{cid}.yaml")) or {}
+        out[cid] = {s for s in doc.get("products") or [] if isinstance(s, str)}
+    return out
+
+
+def as_published_rows(root: Path, base_ref: str, published: set[str]) -> dict[str, str]:
+    """The rows the base would carry for `published` categories had they been published there.
+
+    Serialized from the tree at `base_ref` with only those categories' taxonomy status set to
+    `published`, and nothing else changed. A row that appears with a publication must equal its
+    counterpart here, so the exemption covers the category's visibility and not a change to a
+    product's record made without touching its files (an edit to a shared input, or an
+    uncommitted one in the tree the gate reads).
+    """
+    from build import axis_assessments
+
+    with _worktree_at(root, base_ref) as tmp:
+        path = tmp / "sources" / "taxonomy.yaml"
+        taxonomy = yaml.safe_load(path.read_text()) or {}
+        for arc in taxonomy.get("arcs") or []:
+            for group in arc.get("groups") or []:
+                for entry in group.get("categories") or []:
+                    if isinstance(entry, dict) and entry.get("name") in published:
+                        entry["status"] = "published"
+        path.write_text(yaml.safe_dump(taxonomy, sort_keys=False, allow_unicode=True))
+        rows = _rows(axis_assessments.resolve(tmp, allow_dirty=True))
+    return {k: v for k, v in rows.items() if json.loads(v).get("category_slug") in published}
+
+
+def _publication_check(key: str, serialized: str, published: dict[str, set[str]],
+                       as_published: dict[str, str]) -> str | None:
+    """Why a row new in this PR is not covered by a publication, or None when it is.
+
+    Covered means: its category is one the PR published, its product was on that category's
+    roster at the base, and the row is exactly what the base yields for it once published.
+    """
+    slug = key.split("|", 1)[0]
+    cid = json.loads(serialized).get("category_slug") if published else None
+    if cid not in published or slug not in published[cid]:
+        return f"{key} appeared but sources/{{scores,products}}/{slug}.yaml did not change"
+    if as_published.get(key) != serialized:
+        return (f"{key} appeared with the publication of {cid} but differs from its record at the "
+                f"base, and sources/{{scores,products}}/{slug}.yaml did not change")
+    return None
+
+
 def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str],
-                 renamed: set[str] | None = None, touched_axes: set[str] | None = None) -> list[str]:
+                 renamed: set[str] | None = None, touched_axes: set[str] | None = None,
+                 published: dict[str, set[str]] | None = None,
+                 as_published: dict[str, str] | None = None) -> list[str]:
     """Rows belonging to products the PR did not touch must be byte-identical.
 
     `touched` is products whose score or product file changed; every row of theirs may change.
@@ -270,12 +356,22 @@ def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str
     `category_slug` column is projected out of BOTH sides before comparing - that column is
     what the rename legitimately changed - and every other column is still compared exactly,
     so a silent rewrite of anything else about those products still fails.
+
+    `published` maps each category this PR moved from preliminary to published to its roster at
+    the base, and `as_published` holds the rows the base yields for them once published. A row
+    of one of those products, in that category, may APPEAR, because a preliminary category's
+    products carry no rows, provided it equals its `as_published` counterpart. A row that already
+    existed, or one that disappears, is still compared exactly, and so is a row that appears for a
+    product not on the base roster.
     """
     renamed = renamed or set()
     touched_axes = touched_axes or set()
+    published = published or {}
+    as_published = as_published or {}
     if renamed:
         before = {k: _without_category(v, renamed) for k, v in before.items()}
         after = {k: _without_category(v, renamed) for k, v in after.items()}
+        as_published = {k: _without_category(v, renamed) for k, v in as_published.items()}
     out = []
     for key in sorted(set(before) | set(after)):
         slug = key.split("|", 1)[0]
@@ -284,7 +380,9 @@ def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str
         if key in before and key not in after:
             out.append(f"{key} disappeared but sources/{{scores,products}}/{slug}.yaml did not change")
         elif key not in before and key in after:
-            out.append(f"{key} appeared but sources/{{scores,products}}/{slug}.yaml did not change")
+            reason = _publication_check(key, after[key], published, as_published)
+            if reason:
+                out.append(reason)
         elif before[key] != after[key]:
             out.append(f"{key} changed but sources/{{scores,products}}/{slug}.yaml did not")
     return out
@@ -317,9 +415,12 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     after_payload, after_rows = _snapshot_at(root, None)
     diff = diff_payloads(before_payload, after_payload)
     touched = touched_products(root, args.base)
+    published = published_categories(root, args.base)
+    as_published = as_published_rows(root, args.base, set(published)) if published else {}
     row_changes = compare_rows(before_rows, after_rows, touched,
                                renamed=renamed_categories(root, args.base),
-                               touched_axes=touched_axes(root, args.base))
+                               touched_axes=touched_axes(root, args.base),
+                               published=published, as_published=as_published)
     sheet = render_sheet(diff, row_changes)
     (args.sheet.write_text(sheet) if args.sheet else print(sheet))
 

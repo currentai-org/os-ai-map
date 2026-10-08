@@ -1,0 +1,93 @@
+product: aihub-korea
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: usage policy reserves rights in the data, models and tool sources to NIA and the builders
+    source:
+      value: closed
+      detail: hosted government platform; aihubshell is a download client
+  confidence: high
+  note: AI-Hub is a hosted government platform, and its code is not published. The aihubshell tool downloads data from it
+    but cannot run the platform anywhere else.
+  raw: license:proprietary(usage policy reserves rights in the data, models and tool sources to NIA and the builders);source:closed(hosted
+    government platform; aihubshell is a download client)
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://www.aihub.or.kr/intrcn/guid/usagepolicy.do
+    shows: Rights in "데이터, AI 응용모델 및 데이터 저작도구의 소스" (data, AI application models and the source of data-authoring tools) rest
+      with the building organizations and NIA.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 8fc5d9ba417925e73f036b15afe5ed1ebbd2cdcbf145ddc060777b831acf848f
+    establishes:
+    - license
+  - url: https://www.aihub.or.kr/intrcn/intrcn.do
+    shows: '"AI 허브는 과학기술정보통신부와 한국지능정보사회진흥원이 운영하는 국가 AI 개발 지원 플랫폼" (a national AI development platform run by the Ministry
+      of Science and ICT and NIA), publishing programme datasets and "국내외 기관/기업에서 보유한 AI 학습용 데이터" (training data held by institutions
+      and companies).'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a59d2745adc6f9e6289c44dfb71678219564d16b761f44a9386ed2c4305c679c
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: AI-Hub shows how many users marked each dataset as of interest but publishes no count of downloads or users for the
+    platform. No reading was recorded.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://www.aihub.or.kr/aihubdata/data/view.do?dataSetSn=71953
+    shows: Dataset page with an "관심" (interest) count and version history; no platform-wide usage figure.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 53a6bf615df81327b0e21b7a6e5a48ba903f062cd2d4c90173c00b62aac52010
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: datasets built by contracted companies and research groups under NIA's programme, plus data contributed by other
+    institutions; hosted files downloaded after an application is approved, through the website or the aihubshell CLI with
+    an API key and a dataset key; only Korean nationals may apply; an MCP server for dataset metadata; a version history per
+    dataset page but no DOI or other persistent identifier; no deposit API
+  confidence: medium
+  relative_to: uci-ml-repository
+  relation: at
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://archive.ics.uci.edu/api/dataset?id=53
+      shows: 'JSON record for Iris: "data_url", "dataset_doi":"10.24432/C56C76", "last_updated" and variable metadata; no
+        version field.'
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 0387b83840adbdefd10030c96e9e2ba80dc0419b6494efa7745d69bc927b9f15
+  note: AI-Hub holds the datasets it lists and serves them, once a download application is approved, through its website or
+    a command-line tool that fetches a dataset by its key. Like UCI, it gives a dataset no persistent identifier with addressable
+    versions, which PhysioNet does.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://www.aihub.or.kr/devsport/apishell/list.do
+    shows: '"서버에서 aihubshell을 사용하여 AI 허브의 데이터를 다운로드 받을 수 있습니다" (aihubshell downloads AI-Hub data); "데이터셋 다운로드 승인이 완료되어야 다운로드가
+      가능합니다" (only after download approval); an MCP server for dataset metadata.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: d8fd3fb68791eb732035384908c2cf6b16f3ae16e51684b4ceb27747eece24d4
+  - url: https://www.aihub.or.kr/aihubdata/data/view.do?dataSetSn=71953
+    shows: '"내국인만 데이터 신청이 가능합니다" (only Korean nationals may apply); a version history (1.0, 1.1) and the building company
+      named; no DOI.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 53a6bf615df81327b0e21b7a6e5a48ba903f062cd2d4c90173c00b62aac52010
+  - url: https://www.aihub.or.kr/intrcn/intrcn.do
+    shows: '"AI 허브는 과학기술정보통신부와 한국지능정보사회진흥원이 운영하는 국가 AI 개발 지원 플랫폼" (a national AI development platform run by the Ministry
+      of Science and ICT and NIA), publishing programme datasets and "국내외 기관/기업에서 보유한 AI 학습용 데이터" (training data held by institutions
+      and companies).'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a59d2745adc6f9e6289c44dfb71678219564d16b761f44a9386ed2c4305c679c

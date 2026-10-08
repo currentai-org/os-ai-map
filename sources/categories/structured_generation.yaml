@@ -1,0 +1,59 @@
+name: structured_generation
+display_name: Structured generation & constrained decoding
+description: Libraries that make a language model's output conform to a schema, grammar or type,
+  either by constraining decoding token by token or by validating the output and asking again.
+strapline: Open so far from end to end. The six libraries this category was proposed with all publish
+  their source under MIT or Apache-2.0, and the two grammar engines among them already run
+  inside vLLM, SGLang, TensorRT-LLM and llama.cpp.
+weights:
+  adopt: 0.5
+  cap: 0.5
+scoring_recipe:
+  version: 1
+  extends: software
+  note: >-
+    Inherits the shared software ladder for openness unchanged: every product here is a library,
+    and whether its code is published is the same question it is for an inference engine. Weighted
+    evenly, as inference_code is, because these libraries ship as packages and their downloads are
+    a usable adoption reading for most of the roster, unlike a category whose adoption abstains by
+    construction. No capability ladder yet. The proposal (issue #845) suggests one quantity,
+    the strength of the guarantee, which would put validate-and-retry libraries (Instructor,
+    TypeChat, trustcall) below token-level engines (XGrammar, llguidance, Outlines, LM Format
+    Enforcer), and expressiveness (regex, JSON Schema, a context-free grammar, an arbitrary
+    program) above that. Whether that ordering holds against the evidence is for the promotion
+    PR to decide, through build-rubric, not for this seed.
+products: []
+comments: >-
+  Proposed in issue #845 and created 2026-10-08 as a preliminary category, by the maintainer's
+  decision on that issue, so that the two #418 `unresolved` ledger entries (Outlines and
+  Instructor) and the four candidates parked beside them in #851 have a home. Membership test:
+  is the product's job to guarantee the SHAPE of a model's output (a JSON Schema, a regular
+  expression, a context-free grammar, a typed object), rather than to serve inference or to plan
+  and execute tasks? Both mechanisms qualify: constraining the token distribution at decode
+  time (XGrammar, llguidance, Outlines, LM Format Enforcer, SynCode) and validating the output
+  against a schema and re-asking the model (Instructor, TypeChat, trustcall). The product has to
+  be usable as that guarantee on its own, by a person who brings their own model or API.
+  Neighbors. Against inference_code: an engine that serves a model stays there even when
+  structured output is one of its features (vLLM, SGLang, TensorRT-LLM, llama.cpp's GBNF
+  grammars), and the grammar library it embeds is here. XGrammar and
+  llguidance are the case: both ship inside those engines as their constrained-decoding
+  backends, and neither serves a token itself, so neither is an engine. A constrained-decoding
+  feature that exists only inside one engine and is not published as its own library is a
+  feature of that engine, not a product here. Against orchestration_agents: a library whose
+  headline is typed output from a model call is here even if it also offers tool calling; a
+  framework whose headline is agents, tasks or workflows stays there even when structured
+  output is one of its features (Pydantic AI, DSPy, LangChain's with_structured_output, and
+  Marvin, which now leads with tasks and agents). The #418 review already ruled Instructor and
+  Outlines are libraries, not agents. Against safeguards: a validator whose job is to block or
+  correct content for policy (Guardrails AI, NeMo Guardrails) stays there; one whose job is
+  conformance to a declared schema is here. Against ui_api: a provider-agnostic LLM client whose
+  structured output is one feature among many (Mirascope) stays with the clients. Against
+  dataset_processing_tools: a task library that extracts records from documents with a model
+  (LangExtract) is an extraction tool first and is not seeded here. A model or hosted API that
+  returns typed answers (TypeSafe's Jev) is a model, not a library that constrains another
+  model, and does not belong here. Its open System One Adapter is a different case and is a seed row: it
+  validates any provider's output against TypeSafe's typed question schema and re-asks on a
+  malformed answer, which passes the test, though its schema is fixed by a closed product and
+  its own README pitches it as a way to compare that product with an LLM; the promotion PR
+  should say whether that keeps it in. Seed roster in sources/registry/structured_generation.yaml;
+  the batch summary in the seeding PR records what was parked and why.
