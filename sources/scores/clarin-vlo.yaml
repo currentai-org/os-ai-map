@@ -1,0 +1,106 @@
+product: clarin-vlo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-3.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/clarin-eric/VLO
+    core-gated:
+      value: ungated
+      detail: run by CLARIN ERIC, a European research infrastructure consortium; no paid tier
+  confidence: medium
+  note: The VLO's importer, search configuration and web application are published under GPL-3.0, with instructions for deploying
+    a full instance. CLARIN ERIC, a consortium of European universities and research centers, runs it as a public service
+    with no paid tier.
+  raw: license:GPL-3.0(OSI);source:public(github.com/clarin-eric/VLO);core-gated:ungated(run by CLARIN ERIC, a European research
+    infrastructure consortium; no paid tier)
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/LICENSE
+    shows: GNU General Public License, Version 3, 29 June 2007, full text.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/README.md
+    shows: '"Using the VLO faceted browser, metadata can be searched and browsed by facet. It consists of three software components:
+      a Solr server with VLO specific configuration, an importer and a web application front end."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 2dbf75b08ac439c931288ca14c2b215277920b179c3b2bcd4b3834d6d5dddd67
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/DEPLOYMENT.md
+    shows: '"The instructions below describe the installation of the applications necessary for browsing: the VLO web application,
+      the Solr server, and the meta data importer."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ab5d1dea95a8dd522eec6d27131e948d283c4f1c621c056b5e78b00125c83701
+    establishes:
+    - source
+  - url: https://en.wikipedia.org/wiki/CLARIN
+    shows: '"CLARIN ERIC is a European Research Infrastructure Consortium founded in 2012. It comprises national consortia
+      ... consisting of institutes such as universities, research centres, libraries and public archives."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 71e4a60807c7124b1ec80ad3b5c737382b8c9be79c656a291f8183d4c2d5a6d3
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: The VLO publishes no count of searches or visitors, and activity on its code repository says nothing about use of
+    the portal. No reading was recorded.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/CHANGES.txt
+    shows: Release notes through "VLO 4.15.0 (September 2026)"; no usage figure.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: f7b3cbc6ceeb528b0d5599119e88bdef8ace209588728a3c612b447614871c81
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: metadata records harvested over OAI-PMH from resource-providing centers and converted to CMDI; faceted search over
+    a Solr index; records describe resources held by the centers; no hosting of the resources and no deposit
+  confidence: medium
+  relative_to: masader
+  relation: at
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md
+      shows: '"The first online catalogue for Arabic NLP datasets"; each entry''s `Link` field is "direct link to the dataset
+        or instructions on how to download it".'
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b
+  note: The VLO searches metadata that language-resource centers publish and it harvests, and the resources themselves stay
+    with those centers. It holds and serves no data of its own, so like Masader it is a catalog that points to its providers.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://aclanthology.org/L12-1227/
+    shows: 'Abstract: "a metadata-based portal for language resources"; "We describe the metadata harvesting process, based
+      on OAI-PMH, and the conversion from several formats ... to their CMDI counterpart profiles."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 3205b19e3e03d7931be08a00588c08cf190f8798bdb2e9f013ef054a1ff5d305
+  - url: https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/README.md
+    shows: '"Using the VLO faceted browser, metadata can be searched and browsed by facet. It consists of three software components:
+      a Solr server with VLO specific configuration, an importer and a web application front end."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 2dbf75b08ac439c931288ca14c2b215277920b179c3b2bcd4b3834d6d5dddd67
+  - url: https://raw.githubusercontent.com/clarin-eric/VLO/HEAD/DEPLOYMENT.md
+    shows: '"A `DataRoot` element describes sets of metadata files", which the importer loads into the Solr index.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ab5d1dea95a8dd522eec6d27131e948d283c4f1c621c056b5e78b00125c83701
