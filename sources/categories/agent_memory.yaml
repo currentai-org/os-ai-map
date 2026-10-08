@@ -1,0 +1,53 @@
+name: agent_memory
+display_name: Agent memory & context stores
+description: Software that gives an agent persistent memory across sessions, deciding what to store,
+  consolidate, update and forget about facts, episodes and users, and serving it back as context.
+weights:
+  adopt: 0.6
+  cap: 0.4
+scoring_recipe:
+  version: 1
+  extends: software
+  note: >-
+    Inherits the shared software ladder unchanged. A memory layer is a library or a server, and
+    whether its own code is published is the same question it is for the storage and agent-tooling
+    categories beside it. The vendors here commonly pair an open SDK or self-hostable engine with a
+    managed platform, and the hosted service never lifts or lowers the open release (identity.md,
+    "An open satellite around a closed core"): read the repository that ships the memory logic, not
+    the cloud product's client. Where a vendor publishes only a client for a closed API, that client
+    is the satellite and the product reads source closed.
+    Weighted 0.6 adoption to 0.4 capability, as storage and the agent-interop categories are:
+    nearly every candidate ships a PyPI or npm package, so adoption is measurable on the same
+    instruments, and capability, which has no ladder of its own yet, is the thinner read. The
+    capability quantity is for the promotion PR to derive from the seed; the likely axis is how much
+    of the remember, consolidate, recall and forget cycle the product performs itself, as opposed to
+    leaving it to the host agent or the store beneath it.
+products: []
+comments: >-
+  Proposed in issue #846 and created 2026-10-08 as a preliminary category, by the maintainer's
+  decision on that issue, so that the cluster the #413 sweep parked under the resolution-ledger
+  boundary `agent-memory-and-context-stores` has a home. Membership test: is the product's job to
+  decide what an agent remembers and recalls across sessions (extracting facts or episodes from
+  interactions, consolidating and updating them, forgetting, and serving the result back as
+  context), rather than storing whatever it is handed or running the agent? The memory policy is
+  what qualifies; the store under it does not. Neighbors. storage keeps the databases and indexes
+  these products are built on (Qdrant, pgvector, Chroma, Redis as a database): a vector store with a
+  "memory" page in its docs is still storage, and a memory server a database vendor ships as its own
+  product (Redis Agent Memory Server) is here. orchestration_agents keeps the frameworks and harnesses
+  that plan and execute; a framework's built-in memory module is part of that framework, not a row
+  here, and Letta, the MemGPT line, stays a head product there by the #855 ruling, which this
+  category does not reopen. A memory toolkit published by a framework's vendor as its own package
+  (LangMem) is here. embeddings_retrieval keeps the models that produce vectors and relevance scores
+  a memory layer calls. search_retrieval keeps retrieval from live external surfaces (web search,
+  crawling); recalling what the agent itself was told is memory, fetching what the world says is
+  search. agent_tools_connectors and agent_protocols keep the adapters and protocols an agent calls:
+  an MCP server whose function is persistent memory is a surface of the memory product behind it,
+  and a generic MCP memory adapter with no memory policy of its own stays with the connectors. Code
+  and repository indexes built for coding agents (code graphs, codebase context servers) are a
+  boundary case the ledger also parked under this cluster; they decide what a coding agent can look
+  up about a codebase rather than what it remembers from its own work, and they are to be ruled on
+  when their ledger entries are re-ruled, not admitted by the existence of this category. Seed:
+  mem0, whose ledger entry was re-ruled in the creating PR, plus the rows of the first
+  discover-candidates sweep. The other repositories under the ledger boundary (Zep, Graphiti,
+  Supermemory, Honcho, memU, Hindsight and the rest) stay held by their #413 entries until a person
+  re-rules them, as issue #846 asks.
