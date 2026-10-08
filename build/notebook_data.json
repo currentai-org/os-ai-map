@@ -6404,7 +6404,6 @@
             "signal_type": "usage_volume",
             "confidence": "medium",
             "note": "Adoption is measured as Hugging Face downloads summed across the two declared releases, Olmo-3-7B-Instruct and Olmo-3.1-32B-Instruct. The 32B checkpoint declared before it, Olmo-3-1025-32B-Instruct, is no longer on the Hub, and 3.1 is the 32B Instruct Ai2 publishes now.",
-            "last_verified": "2026-10-04",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/allenai/Olmo-3-7B-Instruct",
@@ -6446,8 +6445,17 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-10-04"
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-07",
+                "reason": "The level was re-read on 2026-10-04 from hand-fetched Hugging Face counts after the 32B release moved, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
           },
           "version_note": "Adoption counts the two declared instruct checkpoints, 7B and 3.1 32B, and not their SFT, DPO or quantized variants, so it is a floor."
         },
@@ -91778,7 +91786,6 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Adoption is measured as combined downloads of the protocol's two most-installed reference SDKs, `a2a-sdk` on PyPI and `@a2a-js/sdk` on npm, the channels an A2A implementation installs. The protocol has no package of its own. The Linux Foundation's count of supporting organizations and the cloud integrations it names corroborate a broad footprint.",
-            "last_verified": "2026-10-03",
             "sources": [
               {
                 "url": "https://pypistats.org/api/packages/a2a-sdk/recent",
@@ -91847,8 +91854,18 @@
           "mature": true,
           "freshness": {
             "date": "2026-09-28",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-10-03"
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-09-29",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-07",
+                "reason": "The level was re-read on 2026-10-03 from hand-fetched PyPI and npm counts, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
           },
           "version_note": "The protocol has no package of its own, so its two most-installed reference SDKs are declared here as the channels adoption is read from, the same way ag-ui declares its SDK packages."
         },
