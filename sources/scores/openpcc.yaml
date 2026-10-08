@@ -1,70 +1,83 @@
 product: openpcc
 openness:
-  score: 5
-  class: open_source
+  score: 2
+  class: source_available
   components:
     license:
     - name: Apache-2.0
-      detail: OSI
+      detail: OSI, the openpcc reference client and SDKs
+    - name: FSL-1.1-ALv2
+      detail: the confidentcompute compute node, converting to Apache-2.0 later
     source:
       value: public
-      detail: github.com/openpcc/openpcc + spec/whitepaper
+      detail: github.com/openpcc/openpcc + confidentsecurity/confidentcompute + spec/whitepaper
     core-gated:
       value: ungated
     free_text:
     - reference-impl(Go)+client-SDKs
     - commercial-managed-service(CONFSEC)separate
   confidence: high
-  note: 'OpenPCC is Apache-2.0 across both halves of the standard: the reference client implementation and,
-    in a separate repository, the compute-node binaries that actually run inference, alongside a public
-    spec and whitepaper. Confident Security sells a managed service, CONFSEC, on top, but it is an optional
-    business built around a fully open standard rather than a component withheld from the source.'
-  raw: license:Apache-2.0(OSI);source:public(github.com/openpcc/openpcc + spec/whitepaper);reference-impl(Go)+client-SDKs;commercial-managed-service(CONFSEC)separate;core-gated:ungated
+  note: The OpenPCC reference client and SDKs are Apache-2.0, but the compute node that actually runs inference,
+    published separately as confidentcompute, is under the Functional Source License FSL-1.1-ALv2. That
+    license forbids competing uses until each version converts to Apache-2.0, and the compute node is half
+    of the standard, so the product as released is source-available. Confident Security sells a managed
+    service, CONFSEC, built on the same standard.
+  raw: license:Apache-2.0(OSI, the openpcc reference client and SDKs)+FSL-1.1-ALv2(the confidentcompute
+    compute node, converting to Apache-2.0 later);source:public(github.com/openpcc/openpcc + confidentsecurity/confidentcompute
+    + spec/whitepaper);core-gated:ungated;reference-impl(Go)+client-SDKs;commercial-managed-service(CONFSEC)separate
+  last_verified: '2026-10-08'
   sources:
   - url: https://raw.githubusercontent.com/openpcc/openpcc/main/LICENSE
-    shows: Verbatim Apache License 2.0 body at repository head
-    accessed: '2026-08-13'
+    shows: 'Verbatim Apache License 2.0 body at repository head: "Apache License" and "Version 2.0, January
+      2004".'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/openpcc/openpcc/main/README.md
+    shows: 'README: OpenPCC is "fully open, auditable, and deployable on your own infrastructure"; "Confident
+      Security is building a fully managed service, called CONFSEC"; and "Refer to https://github.com/confidentsecurity/confidentcompute
+      for the related compute node implementation".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 4e62b506e6a848b7b4f98fa0d552ddea86a1d035bed74c3fe94b537b40aa588d
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/confidentsecurity/confidentcompute/main/LICENSE
+    shows: The compute node LICENSE is "Functional Source License, Version 1.1, ALv2 Future License", abbreviation
+      "FSL-1.1-ALv2", "Copyright 2025 Nonvolatile, Inc. d/b/a Confident Security".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: fd12b4480be08e8d1629c35bba31340c0dee9454cbfef0712817cd2ddc95c268
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/confidentsecurity/confidentcompute/main/README.md
+    shows: 'README: "Confident-Compute contains the necessary components for CONFSEC''s ComputeNode component
+      of the OpenPCC standard", with the compute_boot, router_com and compute_worker services in source.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: fb14caa3ada83f783491d898b22311c6cc21520d6f0752b09def6deb9a7bf498
+    establishes:
+    - source
+    - core-gated
   - url: https://api.github.com/repos/openpcc/openpcc
-    shows: 'Repository metadata - openpcc/openpcc, language Go, license spdx_id Apache-2.0, public and
-      not archived, 948 stars, 31 forks, last push 2026-01-08'
+    shows: Repository metadata - openpcc/openpcc, language Go, license spdx_id Apache-2.0, public and not
+      archived, 948 stars, 31 forks, last push 2026-01-08
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: dda5b34a01eb066c36535a9537b1a75c4bb373d58190a66971d6e09eb632c14f
     establishes:
     - license
     - source
-  - url: https://raw.githubusercontent.com/openpcc/openpcc/main/README.md
-    shows: '"fully open, auditable, and deployable on your own infrastructure"; the whitepaper is in
-      the tree at whitepaper/openpcc.pdf; the repo carries the Go client, a C library underlying the
-      Python and JavaScript clients, and in-memory services runnable locally via mage runMemServices.
-      The managed CONFSEC service is named as a separate offering, and the compute node is pointed at
-      confidentsecurity/confidentcompute rather than withheld.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 4e62b506e6a848b7b4f98fa0d552ddea86a1d035bed74c3fe94b537b40aa588d
-    establishes:
-    - source
-    - core-gated
-  - url: https://raw.githubusercontent.com/confidentsecurity/confidentcompute/main/README.md
-    shows: The compute-node half of the standard is published - Go service binaries compute_boot (which
-      attests to the TPM, GPU and other hardware), router_com and compute_worker, plus compute-images
-      Packer scripts for building the node image on multiple clouds
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: fb14caa3ada83f783491d898b22311c6cc21520d6f0752b09def6deb9a7bf498
-    establishes:
-    - core-gated
   - url: https://github.com/openpcc/openpcc
     shows: Apache-2.0; "open source framework for verifiably private AI inference"; OHTTP gateway, attestation,
       transparency log, client SDKs
     accessed: '2026-06-17'
   - url: https://cloudsecurityalliance.org/blog/2025/11/13/introducing-openpcc
-    shows: defines OpenPCC as an Apache-2.0 standard for provably-confidential cloud compute; launch Nov 2025;
-      Confident Security
+    shows: defines OpenPCC as an Apache-2.0 standard for provably-confidential cloud compute; launch Nov
+      2025; Confident Security
     accessed: '2026-06-17'
 adoption:
   level: 2
