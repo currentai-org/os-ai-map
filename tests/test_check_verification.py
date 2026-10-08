@@ -323,15 +323,20 @@ def test_an_unrouted_adoption_axis_keeps_the_read_based_path():
     assert invariant(_fresh_adoption(), {}, {}, {}, machine_routed={"other": "pypi.downloads_30d"}) == []
 
 
-def test_the_machine_routed_set_skips_nulls_and_hand_authored_routes():
+def test_the_machine_routed_set_is_only_routes_that_can_date_the_axis():
+    """No nulls, no hand-authored routes, and no route on another instrument than the recorded
+    one: a cross-instrument row never dates an axis, so a hold for it would never release."""
+    from build.adoption_measurements import all_routes, load_inputs
     from build.check_verification import load, machine_routed_adoption
 
     scores, categories, _ = load()
     routed = machine_routed_adoption(scores, categories)
+    instrument = {r["route_id"]: r["instrument_type"] for r in all_routes(load_inputs()[0])}
     for slug, route in routed.items():
         block = scores[slug]["adoption"]
         assert block.get("level") is not None, slug
         assert route not in {"reported_traction", "active_users"}, (slug, route)
+        assert instrument[route] == block.get("signal_type"), (slug, route)
 
 
 # --- the repo itself ---

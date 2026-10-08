@@ -50,9 +50,11 @@ daily, and the fresh-source floor below would pass it. So the invariant refuses 
 never falls back to the floor. The repair is a hold with `settled_by: scheduled_reconciliation`,
 which the first scheduled run that measures the same band releases.
 
-Axes no scheduled run can measure keep the read-based path: a deliberate null (a searched
-absence, re-confirmed by re-reading the page) and the hand-authored instruments
-(`reported_traction`, `active_users`), which have no collector behind them. Dating those by
+Axes no scheduled run can date keep the read-based path: a deliberate null (a searched
+absence, re-confirmed by re-reading the page), the hand-authored instruments
+(`reported_traction`, `active_users`), which have no collector behind them, and an axis whose
+applicable route measures another instrument than the one recorded, which the reconciliation
+queues as a route disagreement rather than ever dating. Dating those by
 reading is what the guide prescribes, and refusing it would leave them undatable.
 
 The axes hand-dated before this rule are listed, slug and date, in
@@ -170,12 +172,13 @@ def category_of(categories: dict) -> dict[str, str]:
 
 
 def machine_routed_adoption(scores: dict, categories: dict, root: Path | None = None) -> dict[str, str]:
-    """product slug -> route id, for each banded adoption axis a scheduled run can measure.
+    """product slug -> route id, for each banded adoption axis a scheduled run can date.
 
     The route is the one `build/adoption_measurements.select_route` resolves by precedence, the
     same selection the reconciliation and `build/axis_assessments.py` use. A hand-authored route
-    (`reported_traction`, `active_users`) has no collector, and a null band has nothing to
-    measure, so neither is listed.
+    (`reported_traction`, `active_users`) has no collector, a null band has nothing to measure,
+    and a route on another instrument than the recorded one never dates the axis, so none of
+    those is listed.
     """
     from build.adoption_measurements import all_routes, load_inputs, route_scopes, select_route
 
@@ -190,7 +193,10 @@ def machine_routed_adoption(scores: dict, categories: dict, root: Path | None = 
         route = select_route(
             declared.get(slug, set()), block.get("signal_type"), owner.get(slug), routes, scopes
         )
-        if route and route["artifact_kind"]:
+        # Only a route on the recorded instrument can ever date the axis: a cross-instrument
+        # match is a coincidence the reconciliation queues as a route disagreement, so holding
+        # such an axis for a scheduled run would hold it for good.
+        if route and route["artifact_kind"] and route["instrument_type"] == block.get("signal_type"):
             out[slug] = route["route_id"]
     return out
 
