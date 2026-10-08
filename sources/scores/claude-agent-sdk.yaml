@@ -1,0 +1,131 @@
+product: claude-agent-sdk
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: MIT
+      detail: Python SDK wrapper
+    - name: Proprietary
+      detail: bundled Claude Code CLI, all rights reserved under Anthropic's Commercial Terms of Service
+    source:
+      value: partial
+      detail: the Python wrapper is public; the Claude Code binary that runs the agent loop is bundled
+        in every platform wheel and its source is not published
+  confidence: high
+  note: The Python wrapper is MIT licensed, but it cannot run without the Claude Code binary it bundles,
+    and that binary is closed and licensed under Anthropic's Commercial Terms of Service. Anthropic's
+    documentation says those terms govern use of the SDK as a whole, so the open part is the interface
+    to the agent rather than the agent.
+  last_verified: '2026-10-07'
+  raw: license:MIT(Python SDK wrapper)+Proprietary(bundled Claude Code CLI, all rights reserved under
+    Anthropic's Commercial Terms of Service);source:partial(the Python wrapper is public; the Claude Code
+    binary that runs the agent loop is bundled in every platform wheel and its source is not published)
+  sources:
+  - url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/LICENSE
+    shows: 'The repository LICENSE is the MIT text: "MIT License" and "Copyright (c) 2025 Anthropic, PBC".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: cebdde8a8fb9ee59e5eaaed19578bf8085aa7047562259c31f38f225c26f6812
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/anthropics/claude-code/main/LICENSE.md
+    shows: 'The Claude Code LICENSE.md is a bare notice: "© Anthropic PBC. All rights reserved. Use is
+      subject to Anthropic''s [Commercial Terms of Service]".'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 728158fd1037143fad6907e8fa34804177e598b7326519503fe83cafdef849e6
+    establishes:
+    - license
+  - url: https://code.claude.com/docs/en/agent-sdk/overview
+    shows: The overview describes the Agent SDK as "A library that runs the Claude Code binary" and says
+      "Use of the Claude Agent SDK is governed by Anthropic's Commercial Terms of Service", except where
+      a component's own LICENSE file says otherwise.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 302fee790082d8a34acedc3041f61e993c161bfaca51d85545c3c62243d3d81b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/README.md
+    shows: The README says "The Claude Code CLI is automatically bundled with the package - no separate
+      installation required! The SDK will use the bundled CLI by default."
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: c38a933bf8fef26316ea38635989b254e69a26d21d80b96bf5731cba4e88bcc6
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/scripts/download_cli.py
+    shows: The wheel build script's docstring reads "Download Claude Code CLI binary for bundling in wheel",
+      fetched "using the official install script and place it in the package directory."
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 1163d627cafb9468df492e34c47ca67152a1317da7cd55b04ee0b85ca5bee4f4
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/src/claude_agent_sdk/_internal/transport/subprocess_cli.py
+    shows: 'The transport looks for the bundled CLI, then a claude binary on PATH, and otherwise raises
+      CLINotFoundError: "Claude Code not found."'
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 23c0b35acfcff5426255f1f17433e66fc7f8f6d5b8f339e93e085233c569e11c
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/claude-agent-sdk/json
+    shows: claude-agent-sdk 0.2.164 ships five platform wheels of roughly 97 to 110 MB each beside a 365
+      KB sdist, the size difference being the bundled Claude Code binary.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 00a3c16b3ebec81fb7997c4b393ee398c714eb1ad0bfd0eb12684d8d1354875f
+    establishes:
+    - source
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of claude-agent-sdk over the trailing month. Each install
+    also delivers the bundled Claude Code binary, and some of the volume comes from CI runs, so it counts
+    installs rather than developers; the TypeScript SDK on npm is not included.
+  sources:
+  - url: https://pypistats.org/api/packages/claude-agent-sdk/recent
+    shows: 29,777,372 downloads in the trailing 30 days for claude-agent-sdk (pypistats last_month)
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 18441b5b684d40643d7202118766f75865745b8161f62c430f8e55aae0a42138
+capability:
+  score: 5
+  basis: feature_matrix
+  value: Claude Code's agent loop, built-in tools (read, write, edit, bash, search) and context management
+    as a library; permission modes and callbacks; sessions and resume; hooks; subagents; in-process MCP
+    custom tools
+  confidence: medium
+  note: The SDK drives the same agent loop, built-in tools and context management that power Claude Code,
+    so it does what Claude Code does, called from Python instead of a terminal. Anthropic publishes no
+    separate benchmark for the SDK.
+  relative_to: claude-code
+  relation: at
+  comparison:
+    last_attested: '2026-10-07'
+    sources:
+    - url: https://llm-stats.com/benchmarks/swe-bench-verified
+      shows: 'The SWE-Bench Verified leaderboard still has Anthropic models on top: Claude Fable 5 leads
+        at 0.950, with Claude Opus 4.8 at 0.886 and Opus 4.7 at 0.876.'
+      accessed: '2026-10-07'
+      http_status: 200
+      content_sha256: 5163b346c5e9e9f45237ec1b772902e4b79aa40311a07a46af6d016703aacb39
+  last_verified: '2026-10-07'
+  sources:
+  - url: https://code.claude.com/docs/en/agent-sdk/overview
+    shows: The overview says "The Agent SDK gives you the same tools, agent loop, and context management
+      that power Claude Code, programmable in Python and TypeScript."
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: 302fee790082d8a34acedc3041f61e993c161bfaca51d85545c3c62243d3d81b
+  - url: https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/README.md
+    shows: The README documents query() and ClaudeSDKClient, "the full Claude Code toolset (Read, Write,
+      Edit, Bash, and others)", permission modes, hooks and custom tools run as in-process SDK MCP servers;
+      no benchmark figure.
+    accessed: '2026-10-07'
+    http_status: 200
+    content_sha256: c38a933bf8fef26316ea38635989b254e69a26d21d80b96bf5731cba4e88bcc6

@@ -91092,6 +91092,462 @@
             "date": "2026-09-30",
             "basis": "verified"
           }
+        },
+        {
+          "slug": "openai-agents-sdk",
+          "product": "OpenAI Agents SDK",
+          "org_slug": "openai",
+          "org": "OpenAI",
+          "type": "software",
+          "description": "Python framework for building agents and multi-agent workflows, in which agents carry instructions, tools and guardrails and hand tasks to one another. It adds sessions that keep conversation history, human-in-the-loop approvals, tracing, sandbox agents that work inside an isolated workspace, and realtime and voice agents. Models can come from the OpenAI APIs or from other providers. OpenAI builds it, alongside a separate JavaScript and TypeScript version.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(SDK);source:public;core-gated:ungated(one root MIT LICENSE across the 1,684-path tree at f007b3f with no ee/, enterprise/, commercial/ or proprietary/ path; the OpenAI API it calls by default is a separately sold service and other providers' models work too);commercial:OpenAI-API",
+            "confidence": "high",
+            "note": "The SDK is MIT licensed and its single package builds from the public repository, with no enterprise directory or paid edition. It runs against other providers' models as well as OpenAI's, so the paid API it most often calls is a separate service rather than a part kept out of the code.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/openai/openai-agents-python/main/LICENSE",
+                "shows": "The root LICENSE is the MIT text: \"MIT License\" and \"Copyright (c) 2025 OpenAI\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "13df7812ca53ecaae1cb4a868844bb598373047ae1d580e4debfbef1dd5b6915",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openai/openai-agents-python/main/pyproject.toml",
+                "shows": "The package manifest builds the openai-agents distribution from the repository with license = \"MIT\"; its required dependencies are open-source libraries (openai, pydantic, griffelib, mcp and others).",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "906a0ef367f7985d234c5a56492a473935ef62e6ed7704ab0a59a78e1d6d8bdd",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openai/openai-agents-python/main/README.md",
+                "shows": "The README says the SDK is \"provider-agnostic, supporting the OpenAI Responses and Chat Completions APIs, as well as 100+ other LLMs\" and closes \"We're committed to continuing to build the Agents SDK as an open source framework\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "cf68cb43182d6ea4f79a32421f6723e8ee2cc0f68f97524da7f300e9fc77940b",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/openai-agents/json",
+                "shows": "PyPI metadata for openai-agents 0.23.1: license expression MIT, Repository https://github.com/openai/openai-agents-python, one pure-Python wheel and one sdist.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "1ed88a3db89ba2da3a7444ebbfb07141abe58775aa40af9723abd6ab8965bfc8",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 5,
+            "reach": ">10M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is read from PyPI downloads of openai-agents over the trailing month, the package the SDK installs from. Some of that volume comes from CI runs and from other packages that depend on it, so it counts installs rather than developers, and the JavaScript version on npm is not included.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/openai-agents/recent",
+                "shows": "12,449,784 downloads in the trailing 30 days for openai-agents (pypistats last_month)",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "25a9a72d28a5e57105640707ad3b0703cb17f3ec314dc422d688553215712215"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "agents with tools and guardrails; handoffs and agents-as-tools; sessions; human-in-the-loop; built-in tracing; sandbox agents with resumable sandbox sessions; realtime and voice agents; function and MCP tools; provider-agnostic; no first-party benchmark",
+            "confidence": "medium",
+            "note": "The OpenAI Agents SDK covers multi-agent handoffs, guardrails, sessions, tracing and sandboxed long-running agents with a deliberately small set of primitives. It sits a step below LangGraph, whose graph-structured runs give finer control over flow and checkpoint their state to resume where they stopped.",
+            "relative_to": "langgraph",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-10-07",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md",
+                  "shows": "The LangGraph README still describes durable execution, \"automatically resuming from exactly where they left off\", and \"inspecting and modifying agent state at any point during execution\".",
+                  "accessed": "2026-10-07",
+                  "http_status": 200,
+                  "content_sha256": "3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933"
+                }
+              ]
+            },
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/openai/openai-agents-python/main/README.md",
+                "shows": "The README lists agents, sandbox agents, realtime and voice agents, agents as tools and handoffs, tools (functions, MCP, hosted tools), guardrails, human in the loop, sessions and tracing as core concepts; no benchmark figure.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "cf68cb43182d6ea4f79a32421f6723e8ee2cc0f68f97524da7f300e9fc77940b"
+              },
+              {
+                "url": "https://openai.github.io/openai-agents-python/",
+                "shows": "The documentation home says \"The Agents SDK has a very small set of primitives\" and lists sandbox agents with \"resumable sandbox sessions\", guardrails run \"in parallel with agent execution\", function tools and MCP server tool calling.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "bcb759d8806f8f6d361c8b034394fb9de0781d0dcd995e77b89f25df014e3f0f"
+              }
+            ]
+          },
+          "overall_score": 4.3,
+          "tier": "strong",
+          "maturity": 4.3,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-07",
+                "reason": "The initial level was set on 2026-10-07 from a hand-read count of PyPI downloads of openai-agents, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
+          "slug": "claude-agent-sdk",
+          "product": "Claude Agent SDK",
+          "org_slug": "anthropic",
+          "org": "Anthropic",
+          "type": "software",
+          "description": "Python library that puts Claude Code's agent loop inside an application. It starts the Claude Code command-line binary as a subprocess and exposes its built-in file, shell and search tools, permission controls, sessions, hooks and subagents through Python calls, with custom tools written as Python functions served as in-process MCP servers. Anthropic publishes the wrapper and bundles the Claude Code binary in each platform wheel.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:MIT(Python SDK wrapper)+Proprietary(bundled Claude Code CLI, all rights reserved under Anthropic's Commercial Terms of Service);source:partial(the Python wrapper is public; the Claude Code binary that runs the agent loop is bundled in every platform wheel and its source is not published)",
+            "confidence": "high",
+            "note": "The Python wrapper is MIT licensed, but it cannot run without the Claude Code binary it bundles, and that binary is closed and licensed under Anthropic's Commercial Terms of Service. Anthropic's documentation says those terms govern use of the SDK as a whole, so the open part is the interface to the agent rather than the agent.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/LICENSE",
+                "shows": "The repository LICENSE is the MIT text: \"MIT License\" and \"Copyright (c) 2025 Anthropic, PBC\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "cebdde8a8fb9ee59e5eaaed19578bf8085aa7047562259c31f38f225c26f6812",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/anthropics/claude-code/main/LICENSE.md",
+                "shows": "The Claude Code LICENSE.md is a bare notice: \"© Anthropic PBC. All rights reserved. Use is subject to Anthropic's [Commercial Terms of Service]\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "728158fd1037143fad6907e8fa34804177e598b7326519503fe83cafdef849e6",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://code.claude.com/docs/en/agent-sdk/overview",
+                "shows": "The overview describes the Agent SDK as \"A library that runs the Claude Code binary\" and says \"Use of the Claude Agent SDK is governed by Anthropic's Commercial Terms of Service\", except where a component's own LICENSE file says otherwise.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "302fee790082d8a34acedc3041f61e993c161bfaca51d85545c3c62243d3d81b",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/README.md",
+                "shows": "The README says \"The Claude Code CLI is automatically bundled with the package - no separate installation required! The SDK will use the bundled CLI by default.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "c38a933bf8fef26316ea38635989b254e69a26d21d80b96bf5731cba4e88bcc6",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/scripts/download_cli.py",
+                "shows": "The wheel build script's docstring reads \"Download Claude Code CLI binary for bundling in wheel\", fetched \"using the official install script and place it in the package directory.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "1163d627cafb9468df492e34c47ca67152a1317da7cd55b04ee0b85ca5bee4f4",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/src/claude_agent_sdk/_internal/transport/subprocess_cli.py",
+                "shows": "The transport looks for the bundled CLI, then a claude binary on PATH, and otherwise raises CLINotFoundError: \"Claude Code not found.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "23c0b35acfcff5426255f1f17433e66fc7f8f6d5b8f339e93e085233c569e11c",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/claude-agent-sdk/json",
+                "shows": "claude-agent-sdk 0.2.164 ships five platform wheels of roughly 97 to 110 MB each beside a 365 KB sdist, the size difference being the bundled Claude Code binary.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "00a3c16b3ebec81fb7997c4b393ee398c714eb1ad0bfd0eb12684d8d1354875f",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 5,
+            "reach": ">10M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is read from PyPI downloads of claude-agent-sdk over the trailing month. Each install also delivers the bundled Claude Code binary, and some of the volume comes from CI runs, so it counts installs rather than developers; the TypeScript SDK on npm is not included.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/claude-agent-sdk/recent",
+                "shows": "29,777,372 downloads in the trailing 30 days for claude-agent-sdk (pypistats last_month)",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "18441b5b684d40643d7202118766f75865745b8161f62c430f8e55aae0a42138"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Claude Code's agent loop, built-in tools (read, write, edit, bash, search) and context management as a library; permission modes and callbacks; sessions and resume; hooks; subagents; in-process MCP custom tools",
+            "confidence": "medium",
+            "note": "The SDK drives the same agent loop, built-in tools and context management that power Claude Code, so it does what Claude Code does, called from Python instead of a terminal. Anthropic publishes no separate benchmark for the SDK.",
+            "relative_to": "claude-code",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-07",
+              "sources": [
+                {
+                  "url": "https://llm-stats.com/benchmarks/swe-bench-verified",
+                  "shows": "The SWE-Bench Verified leaderboard still has Anthropic models on top: Claude Fable 5 leads at 0.950, with Claude Opus 4.8 at 0.886 and Opus 4.7 at 0.876.",
+                  "accessed": "2026-10-07",
+                  "http_status": 200,
+                  "content_sha256": "5163b346c5e9e9f45237ec1b772902e4b79aa40311a07a46af6d016703aacb39"
+                }
+              ]
+            },
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://code.claude.com/docs/en/agent-sdk/overview",
+                "shows": "The overview says \"The Agent SDK gives you the same tools, agent loop, and context management that power Claude Code, programmable in Python and TypeScript.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "302fee790082d8a34acedc3041f61e993c161bfaca51d85545c3c62243d3d81b"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/anthropics/claude-agent-sdk-python/main/README.md",
+                "shows": "The README documents query() and ClaudeSDKClient, \"the full Claude Code toolset (Read, Write, Edit, Bash, and others)\", permission modes, hooks and custom tools run as in-process SDK MCP servers; no benchmark figure.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "c38a933bf8fef26316ea38635989b254e69a26d21d80b96bf5731cba4e88bcc6"
+              }
+            ]
+          },
+          "overall_score": 5.0,
+          "tier": "leading",
+          "maturity": 5.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-07",
+                "reason": "The initial level was set on 2026-10-07 from a hand-read count of PyPI downloads of claude-agent-sdk, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
+          "slug": "letta",
+          "product": "Letta",
+          "org_slug": "letta",
+          "org": "Letta",
+          "type": "software",
+          "description": "Agent harness for long-lived agents that keep persistent memory and rewrite their own memory blocks, skills and prompts as they work. Letta Code runs as a terminal interface, a desktop app and an App Server that applications reach through the Letta Agent SDK, and its agents can run on schedules, call subagents and answer in Slack, Telegram or Discord. Letta, the team behind MemGPT, builds it.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(Letta Code harness, terminal interface and App Server)+MIT(bundled self-configuration skill);source:public;core-gated:ungated(the 2,450-path tree at 94145d7 carries the root Apache-2.0 LICENSE and one MIT skill LICENSE, with no ee/, enterprise/, commercial/ or proprietary/ path; paid plans sell hosted agent state, remote sandboxes and model usage beside the self-hostable runtime);commercial:Letta-Cloud",
+            "confidence": "high",
+            "note": "Letta Code is Apache-2.0 licensed, and its public source holds the harness, terminal interface and App Server, which run entirely on the user's own machine without a Letta account. Letta's paid plans sell hosted services beside it, such as cloud-stored agent state, remote sandboxes and model usage, rather than features cut from the code.",
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/letta-ai/letta-code/main/LICENSE",
+                "shows": "The root LICENSE is the Apache License 2.0 text with \"Copyright 2025, Letta authors\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "036e78b9d7dd33ae5b378fdda973b4aad7901c8d8371a0ae40fae1f6659a89d0",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/letta-ai/letta-code/main/src/skills/builtin/self-configuration/LICENSE",
+                "shows": "The bundled self-configuration skill carries its own MIT License, \"Copyright (c) 2026 Letta, Inc.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "cffc4dad09f368acfaeb8a98656ad55a144674ebf36bf35bd53d7f00e5b2b99a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/letta-ai/letta-code/main/package.json",
+                "shows": "The package manifest for @letta-ai/letta-code declares \"license\": \"Apache-2.0\" and builds the CLI from the repository source.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "be2d820c9d3bf7ed39f8fb129359dfd0ac738e97b99ef1f1bd058e111d9b9e58",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/letta-ai/letta/main/README.md",
+                "shows": "The original repository README says \"The current source code lives in [`letta-ai/letta-code`]\", which \"includes the agent harness, interactive terminal UI, App Server, channels, and the runtime used by the desktop and web apps.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "1d624e8fd383c1198c8d42da87b055d591a5760e19607692eb46bbbfe2a58f03"
+              },
+              {
+                "url": "https://docs.letta.com",
+                "shows": "The documentation home says \"The Letta agent harness is fully open source\" and offers \"managed deployment with Letta Cloud or running the complete runtime yourself with the Letta App Server\".",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "97a4eaac09f9769f7d73bf7ee7641894f9d2063cc916e3b9b9f5e05605a85036",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://docs.letta.com/self-hosting",
+                "shows": "The self-hosting page says \"Letta agents can run entirely on infrastructure you control\" and that in the local runtime \"all agent state, including messages, memory, and provider connections, stays on-device, and no Letta account is required.\"",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "914d7236225bcee97ce4bf200e130849a5fb51eb1d3237f30815f0eaece8458d",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.letta.com/pricing",
+                "shows": "Pricing sells Free, Pro ($20/month), an API plan, Teams Pro and Enterprise for the hosted app and Letta API: Letta Auto model quota, remote sandboxes, shared agents, SSO and usage-based agent hosting; no plan names a harness feature withheld from the source.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "d70ae92d52d5d22377f96c6fab9bffa2571d502bbd4cfe313e5f9431da3a79e5",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is read from npm downloads of @letta-ai/letta-code over the trailing month, the package Letta's own instructions install. The letta package on PyPI is left out because its download history mixes the retired Python server with the current wrapper, and the desktop app is not counted.",
+            "sources": [
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/@letta-ai/letta-code",
+                "shows": "550,932 downloads of @letta-ai/letta-code between 2026-09-05 and 2026-10-04",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "fec478e39a1638b15fec11ae69803d3406bafce4ddf73d7d1f4c8cbf9793dc06"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "self-editing memory blocks and skill learning; git-tracked context (MemFS); background memory consolidation (dreaming); subagents and agent-to-agent calls; hooks; permission modes; crons and schedules; Slack, Telegram and Discord channels; App Server with an Agent SDK; model-agnostic; no first-party benchmark",
+            "confidence": "medium",
+            "note": "Letta Code agents keep persistent memory, rewrite their own memory, skills and prompts, call subagents and run on schedules across several messaging channels. That is the same self-improving, long-running agent design as Hermes Agent, and like Hermes Agent it has no published benchmark result.",
+            "relative_to": "hermes-agent",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-07",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/NousResearch/hermes-agent/main/README.md",
+                  "shows": "The Hermes Agent README still describes \"Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks. Skills self-improve during use.\", \"Spawn isolated subagents for parallel workstreams\" and a \"Built-in cron scheduler\".",
+                  "accessed": "2026-10-07",
+                  "http_status": 200,
+                  "content_sha256": "c8c3009b1cf6e8d6e48e96a9b4c549d9ab0c86fdaffd91b19f3e9d9b37d93d9d"
+                }
+              ]
+            },
+            "last_verified": "2026-10-07",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/letta-ai/letta-code/main/README.md",
+                "shows": "The README's feature table lists self-improvement and learning through memory blocks and skill learning, message search, MemFS, skills, subagents and multi-agent calls, messaging integrations, hooks, permissions, and crons and schedules; no benchmark figure.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "61811b022086eeb9d0bdab91cce960f193e9b1bec544c36f64cf6a1f5eb9382c"
+              },
+              {
+                "url": "https://docs.letta.com/self-hosting/app-server",
+                "shows": "The App Server page says it \"lets you deploy the Letta agent harness as a service\" and \"can manage running multiple agents in parallel in a single process\", reached through the Letta Agent SDK or a WebSocket protocol.",
+                "accessed": "2026-10-07",
+                "http_status": 200,
+                "content_sha256": "747edc4a54010c3a08d2e29f3ae28ac0b0a6f0fcf71c68f86ca92b4be9bc7ef0"
+              }
+            ]
+          },
+          "overall_score": 3.7,
+          "tier": null,
+          "maturity": 3.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-07",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-07",
+                "reason": "The initial level was set on 2026-10-07 from a hand-read count of npm downloads of @letta-ai/letta-code, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Read against letta-ai/letta-code, where Letta's current source lives. The original letta-ai/letta repository now holds only a pointer to it, and the retired Python server sits on an archive branch."
         }
       ]
     },
@@ -137090,6 +137546,7 @@
       ],
       "country": "US",
       "products": [
+        "claude-agent-sdk",
         "claude-ai",
         "claude-code",
         "claude-fable",
@@ -140049,6 +140506,19 @@
         "lemonade"
       ]
     },
+    "letta": {
+      "slug": "letta",
+      "display_name": "Letta",
+      "type": "company",
+      "homepage": "https://www.letta.com",
+      "github": [
+        "https://github.com/letta-ai"
+      ],
+      "country": "US",
+      "products": [
+        "letta"
+      ]
+    },
     "lf-ai-and-data": {
       "slug": "lf-ai-and-data",
       "display_name": "LF AI & Data (Linux Foundation)",
@@ -141562,6 +142032,7 @@
         "humaneval",
         "mle-bench",
         "o-series",
+        "openai-agents-sdk",
         "openai-code-interpreter",
         "openai-embeddings",
         "openai-evals",
@@ -144484,7 +144955,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1099,
+  "n_total": 1102,
   "generated": "2026-10-08",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -144497,8 +144968,8 @@
       "total": 62917,
       "matched": 1245,
       "overlap": 636,
-      "scored": 1099,
-      "scored_outside": 463,
+      "scored": 1102,
+      "scored_outside": 466,
       "uncategorized": 61672
     },
     "top": [
