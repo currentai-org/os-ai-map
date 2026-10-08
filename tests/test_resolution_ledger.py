@@ -56,8 +56,17 @@ def test_a_resolved_repo_names_what_it_resolved_to():
 
 def test_named_products_exist_in_the_corpus():
     """A ledger pointing at a slug the corpus dropped is stale, and would block a candidate
-    on the authority of a product that is no longer there."""
+    on the authority of a product that is no longer there.
+
+    A tail registry row counts as a product here. An `unresolved` entry is settled once its
+    artifact has a home, and in a preliminary category that home is a registry row long before
+    it is a head product (#845 settled Outlines and Instructor this way). The row then moves to
+    `sources/products/` under the same slug when it is promoted, so the pointer stays good; a
+    row that is dropped instead still fails here."""
     slugs = {p.stem for p in (ROOT / "sources" / "products").glob("*.yaml")}
+    for path in (ROOT / "sources" / "registry").glob("*.yaml"):
+        doc = yaml.safe_load(path.read_text()) or {}
+        slugs |= {row["slug"] for row in doc.get("products") or []}
     missing = {
         key: (e.get("product") or e.get("resolves_to"))
         for key, e in load().items()
