@@ -13,6 +13,12 @@ datasets: just 15 of 106 model products carry a GitHub artifact, while 61 carry 
 `downloads` is the Hub's rolling 30-day figure, which is what the adoption bands
 are expressed in, so it is used as-is with no derivation.
 
+Field selection: each call asks only for the fields read below via `expand[]`.
+An unexpanded record carries `siblings` (every file in the repo), and for large
+repos that pushes the response past OSO's 10 MB fetch cap — the 4 Oct 2026 failure,
+caused by InternRobotics/InternData-A1 (~11.9 MB). `id` is always returned. If the
+Hub rejects an expanded call with 400, that one artifact is retried unexpanded.
+
 Two shape traps in the Hub API, both handled:
   * `cardData.license` is a plain string for models but a LIST for datasets.
   * `gated` is either a bool or a mode string ("auto" / "manual"), so gating is
@@ -20,6 +26,7 @@ Two shape traps in the Hub API, both handled:
 
 Partial failure is data, not an exception: a per-artifact `http_status` is
 recorded rather than raised, so one deleted or renamed repo cannot void the run.
+A fetch that raises (oversized or unreachable) is recorded as `http_status` 0.
 """
 
 import asyncio
@@ -36,11 +43,62 @@ ROSTER_SQL = (
 )
 MODEL_KIND = "huggingface_model"
 
+DATASET_FIELDS = (
+    "downloads",
+    "likes",
+    "cardData",
+    "gated",
+    "private",
+    "disabled",
+    "tags",
+    "usedStorage",
+    "createdAt",
+    "lastModified",
+)
+# `pipeline_tag` and `library_name` are model-only; the Hub 400s them for datasets.
+MODEL_FIELDS = (
+    "downloads",
+    "likes",
+    "cardData",
+    "gated",
+    "private",
+    "disabled",
+    "tags",
+    "usedStorage",
+    "createdAt",
+    "lastModified",
+    "pipeline_tag",
+    "library_name",
+)
 
-def _endpoint(kind: str, artifact_id: str) -> str:
+
+def _endpoint(kind: str, artifact_id: str, expand: bool = True) -> str:
     """Models and datasets share a shape but not a path."""
     segment = "models" if kind == MODEL_KIND else "datasets"
-    return f"{HF_API}/api/{segment}/{artifact_id}"
+    url = f"{HF_API}/api/{segment}/{artifact_id}"
+    if not expand:
+        return url
+    fields = MODEL_FIELDS if kind == MODEL_KIND else DATASET_FIELDS
+    return url + "?" + "&".join(f"expand%5B%5D={field}" for field in fields)
+
+
+async def _fetch_one(
+    context: oso.AsyncContext, target: dict, headers: dict[str, str]
+) -> tuple[int, object]:
+    """One artifact's (status, payload); never raises, a raised fetch is status 0."""
+    kind = target["artifact_kind"]
+    artifact_id = target["artifact_id"]
+    try:
+        response = await context.fetch(_endpoint(kind, artifact_id), headers=headers)
+        if response.status == 400:
+            response = await context.fetch(
+                _endpoint(kind, artifact_id, expand=False), headers=headers
+            )
+        if response.status == 200:
+            return response.status, response.json()
+        return response.status, None
+    except Exception:
+        return 0, None
 
 
 def _text(payload: object, key: str) -> str | None:
@@ -152,23 +210,16 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
     if not targets:
         raise RuntimeError("roster query returned no HF artifacts")
 
-    responses = await asyncio.gather(
-        *(
-            context.fetch(_endpoint(t["artifact_kind"], t["artifact_id"]), headers=headers)
-            for t in targets
-        )
-    )
+    outcomes = await asyncio.gather(*(_fetch_one(context, t, headers) for t in targets))
 
     payloads: list[object] = []
     statuses: list[int] = []
     ok_count = 0
-    for response in responses:
-        statuses.append(response.status)
-        if response.status == 200:
+    for status, payload in outcomes:
+        statuses.append(status)
+        if status == 200:
             ok_count += 1
-            payloads.append(response.json())
-        else:
-            payloads.append(None)
+        payloads.append(payload)
 
     if ok_count == 0:
         raise RuntimeError(
