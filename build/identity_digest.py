@@ -105,12 +105,13 @@ request carrying the two files when anything was written.
 ## An artifact the ledger already assigns is never proposed again
 
 A `product_equivalence` ruling is a fact about the artifact: it belongs to exactly one product
-(docs/reference/identity.md, "Rulings are typed by relation"). The platform model drops an
-equivalence item only when the ledger confirms THAT product or excludes the artifact
-(`equivalence_ruled` in the platform's `identity.digest`, mirrored read-only at
+(docs/reference/identity.md, "Rulings are typed by relation"). Until #844 the platform model
+dropped an equivalence item only when the ledger confirmed THAT product or excluded the
+artifact (`equivalence_ruled` in the platform's `identity.digest`, mirrored read-only at
 `warehouse/models/identity/digest.sql`; #705). So an artifact ruled to belong to
-`qwen-image` would come back the next week proposed against `qwen` whenever a `model_family`
-match reaches a different product than the ruling names.
+`qwen-image` came back the next week proposed against `qwen` whenever a `model_family`
+match reached a different product than the ruling named. Since #844 the SQL applies the rule
+below itself, before ranking and the cap.
 
 `suppress_ruled_artifacts()` closes that on the repo side. `main()` runs it on the rows before
 the adopt leg and `render()` see them: every equivalence row, in any state, whose artifact
@@ -125,10 +126,11 @@ deliberately. The scorecard counts what was suppressed, so the contradiction sta
 without taking a review slot.
 
 `unresolved` rulings and exclusions are left as they are. An `unresolved` artifact still
-needs a person, and the SQL already drops excluded artifacts. Because the platform ranks and
-caps before this filter runs, a suppressed item leaves a gap in that week's ranks rather than
-pulling the next item up. Moving the same rule into `equivalence_ruled` on the platform is a
-maintainer step (docs/operations/); this filter stays correct either way.
+needs a person, and the SQL already drops excluded artifacts. The platform ranks and caps
+before this filter runs, so a row dropped here would leave a gap in that week's ranks rather
+than pull the next item up. That is why #844 moved the same rule into `equivalence_ruled`,
+ahead of the cap; against a digest built by that SQL this filter is a no-op safety net, and it
+stays correct either way.
 
 ## Evidence rendering
 
