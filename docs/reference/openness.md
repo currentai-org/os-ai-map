@@ -280,6 +280,11 @@ cap who may use the artifact, or at what scale — not on the license family's r
 - **Bounded community licenses** land in `use_bounded`: the Stability AI Community
   License, the LTX-2 and LTXV licenses, LFM Open, the Moondream Model License 1.0, and the
   territorially bounded Tencent Hunyuan, Tencent Hunyuan 3D and MiniMax H3 community licenses.
+- **GLM-5.3-License** (`glm`) lands in `use_bounded` too. It is the MIT grant with one added
+  condition: a licensee running a model-as-a-service business whose group revenue exceeds USD 10
+  billion over any twelve months must pass Z.ai's security review before any commercial use. That is
+  a revenue bound on commercial use, which permits commercial use for everyone below it, so it is a 3
+  whatever the threshold.
 
 ### A compound license resolves on all of its parts
 
@@ -460,7 +465,10 @@ fails a record that brings the clause back under `context` and names the replace
 
 What gates a core is a piece of the product *itself* being withheld: a closed package the open
 one depends on, an enterprise or `ee/` directory under a different license, a license key that
-unlocks functionality.
+unlocks functionality, or a commercial edition sold beside the open repository with functionality
+the open build lacks. `paradedb` (index replication in ParadeDB Enterprise), `quilt` (a catalog
+stack that needs a license key or a Quilt Business subscription) and `opik` (user management only in
+Comet's paid tier) are that last shape, and score 4/`open_core`.
 
 `langgraph` and `langchain` are the pair to hold onto, because from outside they are the same
 picture — one vendor, one paid platform — and they score differently:
@@ -565,6 +573,33 @@ The cases it has settled:
   is optional output of training. **dlib** stays on BSL-1.0, because the non-commercial 68-point
   landmark model is a manual, optional download. **habitat** stays on MIT, because its CC
   BY-NC-SA task datasets are optional downloads with a CC BY 4.0 substitute in ReplicaCAD.
+
+### A closed binary the product depends on: core, default build, or optional
+
+The rule above is about a published part whose license restricts it. A closed part is a different
+case: a binary or package whose source is not published at all, under a vendor license that grants
+use and nothing more. Recording it as a `license` part does not work, because a proprietary part
+over public source matches no rung on the software ladder. So it is read through `source` and
+`core_gated` instead, by what the closed piece does for the product:
+
+- **The closed piece is the product's core function → `source: partial`, 2/`source_available`.**
+  The published code is an interface to something you cannot read. `claude-agent-sdk` is the case:
+  its MIT Python wrapper cannot run without the bundled Claude Code binary, which is the agent.
+- **The default build requires a closed component, beside an open core → `core-gated: gated`,
+  4/`open_core`.** The product's own code is open and does the work, but the install a user
+  actually gets does not come from open source alone. `flashinfer` and `sglang` list NVIDIA's
+  proprietary `nvidia-cutlass-dsl` (and, for `sglang`, `nvidia-mathdx`) among their required
+  dependencies; `tensorrt-llm`'s default CMake build links a prebuilt `internal_cutlass_kernels`
+  static library that ships without source.
+- **An optional closed dependency does not gate.** `flash-attention`'s default package builds
+  FlashAttention-2 with only PyTorch and einops; FlashAttention-4 needs `nvidia-cutlass-dsl`, but it
+  ships as a separate `flash-attn-4` package, so the product stays 5/`open_source`.
+
+In the two lower cases the closed piece is still recorded, under `components.context`, so the
+record names what it is and under which license. The `core-gated` detail says which case applies.
+This extends "Selling something is not gating a core" rather than contradicting it: what gates the
+core is still a piece of the product withheld from the published source, and a closed component
+the default build cannot do without is that, whether or not anyone charges for it.
 
 ### `permissive_non_osi`: attribution-only licenses, and the artifact they have to attach to
 
