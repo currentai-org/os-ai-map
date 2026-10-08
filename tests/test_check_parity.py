@@ -411,7 +411,12 @@ def test_local_scores_matches_check_rubrics_split():
     # buyable (google-tpu-ironwood, aws-trainium3). What stays is five datacenter_accelerators rows,
     # each on a fact rather than a ruling: d-matrix-corsair goes only to select customers, and
     # sambanova-sn40l, qualcomm-cloud-ai-100, ibm-spyre and moore-threads-mtt-s5000 publish briefs.
-    assert len(deferred) == 5
+    # 5 -> 6 on 2026-10-08, when data_hubs published with atlas-data: the maintainer directed a
+    # 5/open_source on its privacy policy's open-source statement, and with no license name or
+    # repository published the ladder cannot compute it, so data_hubs defers it and the axis is
+    # held in sources/verification_queue.yaml. It comes off when code is published or the score
+    # falls to what the ladder computes.
+    assert len(deferred) == 6
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

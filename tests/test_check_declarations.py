@@ -145,14 +145,19 @@ def test_the_real_corpus_holds_at_its_known_count():
     the Kaggle CLI, two citations) and uci-ml-repository (ucimlrepo) each cite a client of a closed
     hosted catalog to show that the catalog's code is not there, the kaggle-models shape. Declaring a client would read its
     downloads as the catalog's adoption.
+
+    Raised to 26 on 2026-10-08 by the data_hubs publication: the-cancer-imaging-archive cites
+    CBIIT/NBIA-TCIA, the BSD-3-Clause DICOM archive it is retiring, to show that only part of the
+    service's code is published (source: partial). Declaring it would read a component's stars as
+    the archive's adoption.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 25, [f[0] for f in findings]
+    assert len(findings) == 26, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
         "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
         "cursor", "datadog-llm-observability", "exa-search-api", "google-cloud-run",
         "huggingface-hub-platform", "kaggle-models", "lamini", "modelscope", "ollama-library",
         "kaggle-datasets", "patronus-evaluation-platform", "predibase",
         "qualcomm-ai-engine-direct", "ragaai-catalyst", "replit-agent-code-execution-api",
-        "tavily-search-api", "uci-ml-repository", "vals-ai",
+        "tavily-search-api", "uci-ml-repository", "vals-ai", "the-cancer-imaging-archive",
     }
