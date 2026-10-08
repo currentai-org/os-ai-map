@@ -179,6 +179,10 @@ DATING_TRIGGER = "SCHEDULED"
 #: Where holds live, and the marker that lets a scheduled agreement settle an adoption hold. See
 #: "A hold is a person's, unless it says otherwise" above.
 QUEUE_PATH = Path("sources") / "verification_queue.yaml"
+# Adoption axes dated by hand before `check_verification` required `derived_from` wherever a
+# route measures the band, as `slug|date` lines. Draining: dating one of these products here
+# deletes its line in the same change, the way a released hold leaves the queue.
+HAND_DATED_PATH = Path("sources") / "allowlists" / "hand_dated_adoption.txt"
 RELEASE_KEY = "settled_by"
 RELEASE_ON = "scheduled_reconciliation"
 DATING_STATUS = "SUCCESS"
@@ -466,6 +470,28 @@ def release_holds(text: str, slugs: Iterable[str]) -> str:
     return new_text
 
 
+def hand_dated_allowlist(root: Path | None = None) -> set[str]:
+    """The grandfathered `slug|date` lines of the hand-dated adoption allowlist."""
+    path = (root or ROOT) / HAND_DATED_PATH
+    if not path.exists():
+        return set()
+    return {
+        line.strip()
+        for line in path.read_text().splitlines()
+        if line.strip() and not line.startswith("#")
+    }
+
+
+def drop_hand_dated(text: str, slugs: Iterable[str]) -> str:
+    """`text` (the hand-dated allowlist) without the lines of `slugs`, everything else as it was."""
+    gone = set(slugs)
+    return "".join(
+        line
+        for line in text.splitlines(keepends=True)
+        if line.startswith("#") or line.split("|", 1)[0].strip() not in gone
+    )
+
+
 def plan(
     rows: Iterable[Mapping],
     binding: Mapping | None = None,
@@ -576,6 +602,9 @@ def apply(changes: Iterable[Change], root: Path | None = None) -> int:
     releasing = [c.product_slug for c in changes if c.releases_hold]
     # Built before any score is written, so a queue this cannot edit stops the run whole.
     queue_text = release_holds(queue_path.read_text(), releasing) if releasing else None
+    allowlist_path = base / HAND_DATED_PATH
+    allowlist_text = allowlist_path.read_text() if allowlist_path.exists() else None
+    dated: list[str] = []
     written = 0
     for change in changes:
         if change.verdict != BAND_MATCH:
@@ -616,8 +645,13 @@ def apply(changes: Iterable[Change], root: Path | None = None) -> int:
         if text != path.read_text():
             path.write_text(text)
             written += 1
+        dated.append(change.product_slug)
     if queue_text is not None:
         queue_path.write_text(queue_text)
+    if allowlist_text is not None and dated:
+        trimmed = drop_hand_dated(allowlist_text, dated)
+        if trimmed != allowlist_text:
+            allowlist_path.write_text(trimmed)
     return written
 
 

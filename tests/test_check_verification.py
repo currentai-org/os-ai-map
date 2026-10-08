@@ -289,6 +289,51 @@ def test_producible_pairs_checks_a_mixed_category_product_against_its_own_ladder
     assert any("3/open_weights is not an outcome" in p for p in problems)
 
 
+# --- a hand-written adoption date where a route measures the band ---
+
+ROUTED = {"m": "pypi.downloads_30d"}
+
+
+def _fresh_adoption(date="2026-07-30"):
+    return {"m": {"product": "m", "adoption": {"level": 4, "last_verified": date,
+                                              "sources": [_src("https://a", date)]}}}
+
+
+def test_a_hand_date_on_a_machine_measured_route_fails_even_with_a_fresh_source():
+    """No fallback to the floor: a fresh read of a counts endpoint is not a confirmation."""
+    problems = invariant(_fresh_adoption(), {}, {}, {}, machine_routed=ROUTED)
+    assert len(problems) == 1
+    assert "pypi.downloads_30d" in problems[0] and "derived_from" in problems[0]
+
+
+def test_a_grandfathered_hand_date_falls_back_to_the_floor():
+    assert invariant(_fresh_adoption(), {}, {}, {}, machine_routed=ROUTED,
+                     grandfathered={"m|2026-07-30"}) == []
+
+
+def test_the_grandfathering_covers_one_date_not_the_product():
+    """A new hand date on a listed product is a new violation."""
+    problems = invariant(_fresh_adoption("2026-08-15"), {}, {}, {}, machine_routed=ROUTED,
+                         grandfathered={"m|2026-07-30"})
+    assert any("derived_from" in p for p in problems)
+
+
+def test_an_unrouted_adoption_axis_keeps_the_read_based_path():
+    """Dated nulls and hand-authored instruments have no collector; reading still dates them."""
+    assert invariant(_fresh_adoption(), {}, {}, {}, machine_routed={"other": "pypi.downloads_30d"}) == []
+
+
+def test_the_machine_routed_set_skips_nulls_and_hand_authored_routes():
+    from build.check_verification import load, machine_routed_adoption
+
+    scores, categories, _ = load()
+    routed = machine_routed_adoption(scores, categories)
+    for slug, route in routed.items():
+        block = scores[slug]["adoption"]
+        assert block.get("level") is not None, slug
+        assert route not in {"reported_traction", "active_users"}, (slug, route)
+
+
 # --- the repo itself ---
 
 def test_the_repo_passes_all_three_gates():
@@ -297,7 +342,14 @@ def test_the_repo_passes_all_three_gates():
 
     scores, categories, recipes = load()
     product_types = load_product_types(ROOT)
-    assert invariant(scores, categories, recipes, product_types) == []
+    from build.adoption_freshness import hand_dated_allowlist
+    from build.check_verification import machine_routed_adoption
+
+    assert invariant(
+        scores, categories, recipes, product_types,
+        machine_routed=machine_routed_adoption(scores, categories),
+        grandfathered=hand_dated_allowlist(),
+    ) == []
     assert digests(scores) == []
     assert producible_pairs(scores, categories, recipes, product_types) == []
 
