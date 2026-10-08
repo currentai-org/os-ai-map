@@ -727,7 +727,7 @@ one the reconciliation measures (an artifact route: PyPI, npm, Hugging Face, Git
 rest) on the instrument the score records. A fresh citation does not rescue it, because the fresh-source floor is exactly the
 `sources[].accessed` dating this section rules out. A curator who re-reads such a band sets the
 level and holds the axis with `settled_by: scheduled_reconciliation`, which the first scheduled
-run that measures the same level releases. Two kinds of axis keep the read-based path, because no
+run that measures the same level releases. Three kinds of axis keep the read-based path, because no
 scheduled run can date them: a deliberate null (a searched absence, below), the hand-authored
 instruments, `reported_traction` and `active_users`, and an axis whose route measures another
 instrument, which is a route disagreement to repair rather than a band to re-measure. The axes hand-dated before the
