@@ -334,6 +334,11 @@ can either.
 and for `product_membership`: `member_of` (this artifact's measurement belongs to
 `resolves_to`) and `not_member_of` (it does not, though it may look related).
 
+A product in the corpus is a head product or a registry (tail) row: `existing_product` may name
+either. Promotion changes a product's tier, not its identity, so an artifact settled onto a
+registry row stays settled when that row is promoted, and is not recorded `unresolved` while it
+waits.
+
 **Consult it before proposing, and never silently overturn it.** A bulk run must consult the
 ledger before proposing a product. `build/validate.py` enforces the half that can be enforced:
 no product may declare an artifact the ledger resolves elsewhere, under the same relation.
