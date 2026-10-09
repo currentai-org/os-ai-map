@@ -271,6 +271,14 @@ re-opens the instrument, not just the band.**
   unroutable: the external anchors (Artificial Analysis, LMArena) rank *models*, so neither
   can say anything about a training framework or a sandbox. A fetch can re-derive a
   `benchmark` band; a `feature_matrix` or internal-eval judgment needs a human read.
+- **It does not take an anchor from a leaderboard without current cross-model coverage.**
+  METR's task-completion time horizons are not an anchor while the time-horizon page is frozen
+  and lacks current open-weight coverage; a maintained successor with representative current
+  coverage would reopen the question. Standalone long-context suites (RULER, NoLiMa, LongBench
+  v2, Fiction.LiveBench, OpenAI-MRCR, HELM Long Context) are not map-wide anchors, because none
+  has current-release, independently maintained cross-model coverage; one that becomes a
+  current independent leaderboard would reopen it. In both cases a result for the exact release
+  a record reads stays valid per-product evidence.
 - **`value` is not structured into components.** Most of the field is prose, on the same measure
   that stopped `edge_hardware`'s ladder, and four instruments share the one field, so there is no
   shared ladder at the end of that work the way openness has four. The peer comparison, not a
