@@ -38,7 +38,8 @@ which belongs on the record it describes.
 Pitch the slug at **the level the vendor markets as the product**, not at a release.
 
 Google sells "Gemma" and 2/3/4 are versions of it, so the slug is `gemma`. OpenAI sells GPT-4o,
-GPT-4.1 and GPT-5 as distinct lines, so those stay apart. Anthropic sells Opus, Sonnet and Haiku,
+GPT-4.1, GPT-5 and GPT-6 as distinct lines, so those stay apart, and an older line keeps its own
+slug while its API product is live rather than being read on its successor. Anthropic sells Opus, Sonnet and Haiku,
 so `claude-opus` covers 4.5 through 4.8.
 
 A slug that bakes in a version goes stale the day the next release ships, and then costs an alias
