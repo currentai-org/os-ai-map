@@ -139,7 +139,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # firecrawl, swe-agent and langflow move from PyPI to stars, n8n gains a stars row (npm was
 # unbridged), and deepseek-instruct abstains because the frozen snapshot has no V4-Flash row
 # for it (-t). No other row differs.
-MEASUREMENTS_DIGEST = "7df28ef8e04090e84f9e130b9fda97845076e12a2f4968c4af291df5c3b02dbc"
+# Moved 2026-10-09 when llama-cpp relabeled its adoption to reported_traction and, under
+# R-2026-10-08-p, declared ggml-org/llama.cpp not_primary_channel. Measured rather than asserted -
+# the row sets were dumped against main and diffed: 340 rows to 339, and the only difference is
+# llama-cpp's stars row (level 3), which is gone because the reported_traction route it now
+# reaches has no observation.
+MEASUREMENTS_DIGEST = "641134b520b32b87500711806466ea38453a5025b632a651fdf96af22438f3c5"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -168,8 +173,8 @@ MEASUREMENTS_DIGEST = "7df28ef8e04090e84f9e130b9fda97845076e12a2f4968c4af291df5c
 # row for it, so no measurement is produced. librechat's row abstains instead (below).
 
 # Moved 2026-10-08, 377 -> 340, by the adoption rulings; MEASUREMENTS_DIGEST above has the
-# row-by-row account.
-MEASUREMENT_COUNT = 340
+# row-by-row account. Moved 2026-10-09, 340 -> 339, by the llama-cpp relabel (same place).
+MEASUREMENT_COUNT = 339
 ROUTING_POLICY_VERSION = "2"
 
 
@@ -552,6 +557,9 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
         "openfn", "openhands", "openpcc", "openrlhf", "orange-pi-5", "osprey", "osworld",
         "privatemode", "radxa-rock-5b", "rockchip-rk3588", "sipeed-maixcam", "ti-am67a",
         "webcontainers", "zed",
+        # llama-cpp joined on 2026-10-09, when its usage_volume claim with no count behind it was
+        # relabeled reported_traction.
+        "llama-cpp",
     }
     for slug in traction_repos:
         assert {kind for kind, _ in inputs.non_primary_artifacts[slug]} == {"github"}
