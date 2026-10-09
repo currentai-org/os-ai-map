@@ -54,17 +54,24 @@ openness:
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
 adoption:
-  level: 1
-  reach: <10K
+  level: 2
+  reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: PyPI downloads for the dolma package are the published usage signal for this tool.
+  note: PyPI downloads of the dolma package are the usage signal for this tool, counted with mirror traffic
+    as for every PyPI-routed product. Mirrors account for most of this package's downloads, so the figure
+    without them is far lower.
   sources:
-  - url: https://pypistats.org/api/packages/dolma/recent
-    shows: 4,390 downloads in the trailing 30 days for dolma
-    accessed: '2026-08-13'
+  - url: https://pypistats.org/api/packages/dolma/overall?mirrors=true
+    shows: Daily with_mirrors downloads for dolma summing to 11,619 over the 30 days 2026-09-08 to 2026-10-07.
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 6696ad3c661dd15027602f2fd1df3d7c3470fac93e15df4c1a1176a98f553c7d
+    content_sha256: 2e0d103068fabe3acb853537a2fdc9bd41ed9f24fdd85683be9f3a32555b6905
+  - url: https://pypistats.org/api/packages/dolma/recent
+    shows: '"last_month":1727 - the without-mirrors series, which this reading does not use.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 890ae7da0b499e168da47da65d03302975d03d14e1020cabc84a00b7554f144c
 capability:
   score: 3
   basis: benchmark

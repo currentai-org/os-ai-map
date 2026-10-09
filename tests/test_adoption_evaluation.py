@@ -131,7 +131,15 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # Moved again the same day when qwen moved its governing release to Qwen 3.8 and declared the
 # three 3.8 checkpoints. One row differs, qwen's, from level 5 to an abstention, because the
 # frozen snapshot predates the 3.8 checkpoints. The count is unchanged.
-MEASUREMENTS_DIGEST = "bd9c8475826c17598b16e0325fb707b7cee52992a2a73a0841e2011db25f9c17"
+# Moved 2026-10-08 by the adoption rulings R-2026-10-08-p, -r and -t, all declaration changes.
+# Measured rather than asserted - the row sets were dumped against main and diffed: 377 rows to
+# 340. Thirty-three products whose GitHub repository is now not_primary_channel (-p) lose their
+# stars row and reach the reported_traction route, which has no observation; exa-search-api,
+# langsmith, helm, swe-bench and zentropi-cope lose their package row the same way (-r).
+# firecrawl, swe-agent and langflow move from PyPI to stars, n8n gains a stars row (npm was
+# unbridged), and deepseek-instruct abstains because the frozen snapshot has no V4-Flash row
+# for it (-t). No other row differs.
+MEASUREMENTS_DIGEST = "7df28ef8e04090e84f9e130b9fda97845076e12a2f4968c4af291df5c3b02dbc"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -159,7 +167,9 @@ MEASUREMENTS_DIGEST = "bd9c8475826c17598b16e0325fb707b7cee52992a2a73a0841e2011db
 # also declares the npm package its recorded band reads, and the frozen snapshot has no npm
 # row for it, so no measurement is produced. librechat's row abstains instead (below).
 
-MEASUREMENT_COUNT = 377
+# Moved 2026-10-08, 377 -> 340, by the adoption rulings; MEASUREMENTS_DIGEST above has the
+# row-by-row account.
+MEASUREMENT_COUNT = 340
 ROUTING_POLICY_VERSION = "2"
 
 
@@ -531,10 +541,38 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     vision_packages = {"depth-anything": "depth-anything-3", "segment-anything": "sam3"}
     for slug, package in vision_packages.items():
         assert inputs.non_primary_artifacts[slug] == {("pypi", package)}
+    # R-2026-10-08-p: where the record bands on reported traction, the GitHub repository is not
+    # primary for adoption, so the stars route stops applying and the product reaches the
+    # reported_traction route.
+    traction_repos = {
+        "axelera-metis-aipu", "beagley-ai", "claude-code", "codex-cli", "compar-ia", "confer",
+        "coop", "executorch", "google-coral-dev-board", "hailo-10h", "hailo-8", "inspect-ai",
+        "kata-containers", "khadas-edge2", "lumo", "memryx-mx3", "nvidia-jetson-agx-orin",
+        "nvidia-jetson-orin-nano-super-developer-kit", "nvidia-jetson-orin-nx", "opencompass",
+        "openfn", "openhands", "openpcc", "openrlhf", "orange-pi-5", "osprey", "osworld",
+        "privatemode", "radxa-rock-5b", "rockchip-rk3588", "sipeed-maixcam", "ti-am67a",
+        "webcontainers", "zed",
+    }
+    for slug in traction_repos:
+        assert {kind for kind, _ in inputs.non_primary_artifacts[slug]} == {"github"}
+        assert "github" not in inputs.declared_artifacts[slug]
+    # R-2026-10-08-r: the measured package is not how the product is used. helm and swe-bench
+    # band on reported traction, so their repositories follow R-2026-10-08-p as well.
+    assert inputs.non_primary_artifacts["exa-search-api"] == {("pypi", "exa-py")}
+    assert inputs.non_primary_artifacts["firecrawl"] == {("pypi", "firecrawl-py")}
+    assert inputs.non_primary_artifacts["langsmith"] == {("pypi", "langsmith")}
+    assert inputs.non_primary_artifacts["swe-agent"] == {("pypi", "sweagent")}
+    assert inputs.non_primary_artifacts["langflow"] == {("pypi", "langflow")}
+    assert inputs.non_primary_artifacts["n8n"] == {("npm", "n8n")}
+    assert {k for k, _ in inputs.non_primary_artifacts["zentropi-cope"]} == {"huggingface_model"}
+    for slug in ("helm", "swe-bench"):
+        assert {k for k, _ in inputs.non_primary_artifacts[slug]} == {"pypi", "github"}
+    rulings_r = {"exa-search-api", "firecrawl", "langsmith", "swe-agent", "langflow", "n8n",
+                 "zentropi-cope", "helm", "swe-bench"}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml", *vision_packages,
+        "zkml", *vision_packages, *traction_repos, *rulings_r,
     }
 
 
@@ -553,7 +591,11 @@ def test_the_two_declared_products_band_on_stars_at_two(measurement_rows):
 def test_no_other_product_carries_an_exclusion(measurement_rows):
     """The column is empty everywhere else, so a reader can tell an exclusion from an absence."""
     carrying = {r["product_slug"] for r in measurement_rows if r["non_primary_artifacts"]}
-    assert carrying == {"hexabot", "yomo", "qdrant", "milvus", "langtrace"}
+    # firecrawl, swe-agent, langflow and n8n (R-2026-10-08-r) fall through from a package declared
+    # not primary to stars, so their rows name the exclusion too.
+    assert carrying == {
+        "hexabot", "yomo", "qdrant", "milvus", "langtrace", "firecrawl", "swe-agent", "langflow", "n8n",
+    }
 
 
 # --- measurements: aggregation, numbers, banding ---------------------------------
@@ -672,9 +714,11 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     # and MaplePrivacyLabs/Maple) and the declaration followed, so the frozen stars row for the
     # old path no longer covers the declared primary artifact. qwen the same day: it declares the
     # three Qwen 3.8 checkpoints, which the frozen snapshot never observed, so its Hugging Face sum
-    # covers some declared primaries, not all.
+    # covers some declared primaries, not all. deepseek-instruct since 2026-10-08 the same way: it
+    # declares V4-Flash beside V4-Pro (R-2026-10-08-t), and the snapshot observed only V4-Pro for it.
     assert abstained == {
-        "composable-kernel", "glm", "librechat", "maple-ai", "mimo-pro", "olmo-instruct", "qwen",
+        "composable-kernel", "deepseek-instruct", "glm", "librechat", "maple-ai", "mimo-pro",
+        "olmo-instruct", "qwen",
     }
     for row in measurement_rows:
         if row["measured_level"] is None:

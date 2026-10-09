@@ -332,6 +332,37 @@ VISION_MODEL_PACKAGES = {
 }
 
 
+# R-2026-10-08-p: a record banding on reported traction declares its GitHub repository not
+# primary for adoption, so the stars route stops applying.
+TRACTION_REPOSITORIES = [
+    ("axelera-metis-aipu", "axelera-ai-hub/voyager-sdk"), ("beagley-ai", "beagleboard/beagley-ai"),
+    ("claude-code", "anthropics/claude-code"), ("codex-cli", "openai/codex"),
+    ("compar-ia", "betagouv/ComparIA"), ("confer", "ConferLabs/confer-proxy"),
+    ("confer", "ConferLabs/confer-image"), ("coop", "roostorg/coop"),
+    ("executorch", "pytorch/executorch"), ("google-coral-dev-board", "google-coral/libedgetpu"),
+    ("hailo-10h", "hailo-ai/hailo_model_zoo_genai"), ("hailo-8", "hailo-ai/hailort"),
+    ("inspect-ai", "UKGovernmentBEIS/inspect_ai"), ("kata-containers", "kata-containers/kata-containers"),
+    ("khadas-edge2", "khadas/fenix"), ("lumo", "ProtonLumo/ios-lumo"), ("lumo", "ProtonLumo/android-lumo"),
+    ("memryx-mx3", "memryx/MxAccl"), ("nvidia-jetson-agx-orin", "OE4T/meta-tegra"),
+    ("nvidia-jetson-orin-nano-super-developer-kit", "OE4T/meta-tegra"),
+    ("nvidia-jetson-orin-nx", "OE4T/meta-tegra"), ("opencompass", "open-compass/opencompass"),
+    ("openfn", "OpenFn/lightning"), ("openhands", "OpenHands/OpenHands"), ("openpcc", "openpcc/openpcc"),
+    ("openrlhf", "OpenRLHF/OpenRLHF"), ("orange-pi-5", "orangepi-xunlong/orangepi-build"),
+    ("osprey", "roostorg/osprey"), ("osworld", "xlang-ai/OSWorld"),
+    ("privatemode", "edgelesssys/privatemode-public"), ("radxa-rock-5b", "radxa-repo/bsp"),
+    ("rockchip-rk3588", "airockchip/rknn-toolkit2"), ("sipeed-maixcam", "sipeed/MaixPy"),
+    ("ti-am67a", "TexasInstruments/edgeai-tidl-tools"), ("webcontainers", "stackblitz/webcontainer-core"),
+    ("zed", "zed-industries/zed"), ("helm", "stanford-crfm/helm"), ("swe-bench", "SWE-bench/SWE-bench"),
+]
+# R-2026-10-08-r: the measured package is not how the product is used.
+RULED_PACKAGES = {
+    ("exa-search-api", "pypi", "exa-py"), ("firecrawl", "pypi", "firecrawl-py"),
+    ("langsmith", "pypi", "langsmith"), ("helm", "pypi", "crfm-helm"), ("swe-bench", "pypi", "swebench"),
+    ("swe-agent", "pypi", "sweagent"), ("zentropi-cope", "huggingface_model", "zentropi-ai/cope-a-9b"),
+    ("langflow", "pypi", "langflow"), ("n8n", "npm", "n8n"),
+}
+
+
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     """`hexabot`'s npm widget, `yomo`'s crate, and AfroBench's member datasets, and nothing else.
     A further one would be a curation decision, not a serializer change, and this is where it
@@ -382,7 +413,9 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("zkml", "crates", "zkml"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS} | {
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
-    } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()}
+    } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()} | {
+        (slug, "github", repo) for slug, repo in TRACTION_REPOSITORIES
+    } | RULED_PACKAGES
 
 
 def test_real_sources_serialize_without_structural_errors():
