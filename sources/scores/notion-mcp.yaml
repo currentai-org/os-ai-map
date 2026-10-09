@@ -10,28 +10,50 @@ openness:
       value: public
     core-gated:
       value: ungated
+      detail: the whole server is in the repository; the hosted Remote Notion MCP is a separate implementation
     free_text:
     - no-feature-gated-core
+    context:
+      hosted:
+        value: Remote Notion MCP
+        detail: separate hosted implementation with semantic search, AI Connector search and Markdown page
+          editing
+      maintenance:
+        value: unmaintained
+        detail: the README says the repository is no longer actively maintained or supported
   confidence: high
-  note: The server is MIT-licensed, first-party and ships with no feature-gated core. Notion also runs a
-    hosted MCP endpoint, but that is a managed deployment of the same server rather than a tier that withholds
-    tools from it.
-  raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  note: The server is MIT-licensed and first-party, and the whole server is in the repository. Notion no
+    longer actively maintains it and points users to Remote Notion MCP, a separate hosted implementation
+    that adds semantic search, search across connected apps and Markdown page editing. Those are features
+    of the hosted service, not code withheld from this repository.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the whole server is in the repository; the hosted
+    Remote Notion MCP is a separate implementation);hosted:Remote Notion MCP(separate hosted implementation
+    with semantic search, AI Connector search and Markdown page editing);maintenance:unmaintained(the README
+    says the repository is no longer actively maintained or supported);no-feature-gated-core
+  last_verified: '2026-10-08'
   sources:
   - url: https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/LICENSE
-    shows: 'MIT permission grant: "Copyright (c) 2025 Notion Labs, Inc."'
-    accessed: '2026-08-13'
+    shows: 'MIT permission grant: "Copyright (c) 2025 Notion Labs, Inc." and "Permission is hereby granted,
+      free of charge".'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 2fd3e5272a40483e9cc8140136b4438708a496ea2da2537b98f0f2bbb68148ee
     establishes:
     - license
-  - url: https://github.com/makenotion/notion-mcp-server
-    shows: Repo page - MIT badge, 4,588 stargazers, the whole server in the tree, installed from npm. The hosted
-      Notion MCP is pointed at as documentation rather than as a paid tier; no license key, second license
-      or enterprise directory.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/package.json
+    shows: 'package.json for "@notionhq/notion-mcp-server" declares "license": "MIT".'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 2551411540a29e3a7bafa33a61391a5cfb155ad2d0296ae021c2af21e94232f8
+    content_sha256: bfaae66c82171772fd5c02a70389858015d1a0646ec19a39cd8bebc0e5a2ff07
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/README.md
+    shows: 'README: "This repository is a separate, self-hosted MCP" "server implementation that is no longer
+      actively maintained or supported." Its comparison table lists "Keyword search only" and "Limited to
+      two page-content tools" for this project against Remote Notion MCP.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: d21612966c3b4d8747dfddbb99199b44730f0092c3869225b7cd5dc4607a0f86
     establishes:
     - source
     - core-gated

@@ -1,7 +1,7 @@
 product: paradedb
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: AGPL-3.0
@@ -9,39 +9,58 @@ openness:
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: ParadeDB Enterprise, commercially licensed, adds physical replication of ParadeDB indexes
+        for high availability and read replicas, which the AGPL-3.0 Community build lacks
+    context:
+      commercial:
+        value: ParadeDB Enterprise
+        detail: commercially licensed, included with ParadeDB Cloud or self-hosted through sales
   confidence: high
-  note: AGPL-3.0 license body confirmed. The repository is public and unarchived and builds the whole extension,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it - only separately
-    sold hosting options for the same AGPL-3.0 extension.
-  raw: license:AGPL-3.0(OSI);source:public;core-gated:ungated
+  note: ParadeDB Community is AGPL-3.0 and the repository builds the whole extension, but ParadeDB ships
+    a commercially licensed edition beside it. ParadeDB Enterprise adds physical replication of ParadeDB
+    indexes, which gives high availability, failover and read replicas; in the Community build those indexes
+    are available only on the primary. A commercial edition beside the open repository makes this open core.
+  raw: license:AGPL-3.0(OSI);source:public;core-gated:gated(ParadeDB Enterprise, commercially licensed,
+    adds physical replication of ParadeDB indexes for high availability and read replicas, which the AGPL-3.0
+    Community build lacks);commercial:ParadeDB Enterprise(commercially licensed, included with ParadeDB
+    Cloud or self-hosted through sales)
+  last_verified: '2026-10-08'
   sources:
-  - url: https://github.com/paradedb/paradedb/blob/main/LICENSE
-    shows: LICENSE file is the verbatim GNU Affero General Public License v3.0 text.
-    accessed: '2026-09-02'
+  - url: https://raw.githubusercontent.com/paradedb/paradedb/main/LICENSE
+    shows: The LICENSE file is the "GNU AFFERO GENERAL PUBLIC LICENSE" text, "Version 3, 19 November 2007".
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/paradedb/paradedb/main/README.md
+    shows: 'README License section: "ParadeDB Community is licensed under the" GNU AGPL v3.0, and ParadeDB
+      Enterprise "is commercially licensed and included with" ParadeDB Cloud; "To self-host ParadeDB Enterprise".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 3f2084b5c96dfb196aeb78bc972a40348742f634aa79de9c3ca6665c0046b2d0
+    establishes:
+    - source
+    - core-gated
+  - url: https://www.paradedb.com/docs/operate/deploy/enterprise
+    shows: 'Enterprise page: "ParadeDB Community is the open source edition, licensed under AGPL-3.0. It
+      supports single-node deployments." and "ParadeDB Enterprise adds commercial licensing, support, and
+      physical replication for ParadeDB indexes".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 8d358c6bc30bf48d08366ab5be233eca2f7166dd16b9ae18e4f9a290a4a9ac42
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/paradedb/paradedb
-    shows: Repo metadata - license spdx_id AGPL-3.0, private false, archived false, default branch main - for
-      paradedb/paradedb.
+    shows: Repo metadata - license spdx_id AGPL-3.0, private false, archived false, default branch main
+      - for paradedb/paradedb.
     accessed: '2026-09-02'
     http_status: 200
     content_sha256: d373c7529e1fc3aec1a0108317237789ee8681e07fe1fcbef279aacae613e1b7
     establishes:
     - license
     - source
-  - url: https://github.com/paradedb/paradedb/blob/main/README.md
-    shows: README describes a Postgres extension upgrading it with a custom BM25 full-text and vector index,
-      filtering and aggregations, listing self-hosting and managed deploy options with no paid tier, enterprise
-      edition or license-key-gated build beside the AGPL-3.0 extension.
-    accessed: '2026-09-02'
-    http_status: 200
-    content_sha256: 50c0122d4671c6e110c4667acc82fa0cc357318a12f2c5760d747cdc902a1876
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars

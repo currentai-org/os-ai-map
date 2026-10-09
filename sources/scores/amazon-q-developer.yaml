@@ -1,30 +1,57 @@
 product: amazon-q-developer
 openness:
-  score: 1
-  class: closed
+  score: 2
+  class: source_available
   components:
     source:
-      value: closed
+      value: partial
+      detail: the Amazon Q Developer CLI is public and receives only critical security fixes; the IDE plugins
+        and the service are closed
     license:
     - name: proprietary
       detail: AWS managed service
+    - name: MIT
+      detail: Amazon Q Developer CLI, dual-licensed with Apache-2.0
     self-host:
       value: 'no'
   confidence: high
-  note: Proprietary AWS managed service; free and Pro tiers but no source or self-hosting.
-  raw: source:closed;license:proprietary(AWS managed service);self-host:no
+  note: Amazon Q Developer is an AWS managed service delivered through IDE plugins and the console, with
+    no source or self-hosted build for the service. Its command-line client is published under MIT and Apache-2.0,
+    but AWS now gives it only critical security fixes and points users to the closed-source Kiro CLI. An
+    open client in front of a closed service makes the product source-available rather than closed.
+  raw: source:partial(the Amazon Q Developer CLI is public and receives only critical security fixes; the
+    IDE plugins and the service are closed);license:proprietary(AWS managed service)+MIT(Amazon Q Developer
+    CLI, dual-licensed with Apache-2.0);self-host:no
+  last_verified: '2026-10-08'
   sources:
   - url: https://aws.amazon.com/q/developer/
-    shows: AWS proprietary agentic coding assistant delivered as a managed service through IDE plugins
-      and the console; perpetual Free Tier of 50 agentic chat interactions a month plus a paid Q Developer
-      Pro tier; no source and no self-host path
-    accessed: '2026-08-13'
+    shows: 'AWS product page: "Amazon Q Developer is available for use in your code editor. Download a plugin
+      or extension below" and a paid tier beside the "Amazon Q Developer Free Tier"; no source and no self-host
+      path for the service.'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: ef77080ecf7a2e1907413b634a3a2e7c727d75e4dafb7f7dd471564f1b3a07af
+    content_sha256: 38f5604828de419c2eb059f42b6f42c335dfe281727ff2a85788fbae533e37b5
     establishes:
     - source
     - license
     - self-host
+  - url: https://raw.githubusercontent.com/aws/amazon-q-developer-cli/main/README.md
+    shows: 'CLI README: "This open source project is no longer being actively maintained and will only receive
+      critical security fixes." It names "Kiro CLI" as "a closed-source product", and says "This repo is
+      dual licensed under MIT and Apache 2.0 licenses."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: c7ea66adfb406877d512ad4c9a63c887f77e38239e9b29675fef64df40475b08
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/aws/amazon-q-developer-cli/main/LICENSE.MIT
+    shows: 'The CLI''s MIT license: "MIT License" and "Copyright (c) 2024 Amazon.com, Inc. or its affiliates."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 2b96c4c28ee2d49ba1b87f0bf8b2a92b098ef2b1ff8fe69e5f5426a9c14daaaa
+    establishes:
+    - license
 adoption:
   level: 3
   signal_type: reported_traction
