@@ -1442,8 +1442,22 @@
             "reach": ">10M users",
             "signal_type": "active_users",
             "confidence": "medium",
-            "note": "GPT-4o was the default ChatGPT model through most of 2024 and 2025 before GPT-5 replaced it, so adoption here is read from ChatGPT's own weekly active users rather than from a standalone GPT-4o count that OpenAI has never published. Those weekly-actives figures come from OpenAI's own announcements rather than from an aggregator's estimate.",
+            "note": "Adoption for this entry is read on the GPT-6 series, which now holds GPT-4o's place as OpenAI's flagship and runs ChatGPT; GPT-4o itself remains only in the API. No GPT-6 usage figure has been published yet, so the earlier ChatGPT-based level is kept provisionally.",
             "sources": [
+              {
+                "url": "https://developers.openai.com/api/docs/models",
+                "shows": "Models page: \"If you're not sure where to start, use GPT-6 Astra, our flagship model for complex reasoning and coding. Choose GPT-6.1 Sol to balance intelligence and cost, or GPT-6 Luna for cost-sensitive, high-volume workloads.\" No usage figure is published.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "6ad9d4733c6fd4aa3639ca60163063884a5fecff51168b6f284174a07179c2bf"
+              },
+              {
+                "url": "https://en.wikipedia.org/wiki/ChatGPT",
+                "shows": "Infobox \"Engine GPT-6 Astra\"; the model table lists \"GPT-6 September 2026 Active Three released versions: Luna, Sol, Astra\"; \"In February 2026, ChatGPT reached 900 million weekly active users\", a figure that predates the GPT-6 series.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "8ae9f59cccfa9e3015b10a994a0ee394d76ba97e426c831f6f5a552114c90d28"
+              },
               {
                 "url": "https://developers.openai.com/api/docs/models/gpt-4o",
                 "shows": "GPT-4o served as a primary OpenAI API/ChatGPT model; no usage figure published on the page",
@@ -1510,8 +1524,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-09-29",
-                "reason": "The level rests on ChatGPT's weekly active users, but OpenAI retired GPT-4o from ChatGPT on 13 February 2026 and it remains only in the API, so that figure no longer measures GPT-4o. Settled by a GPT-4o-specific API usage figure, or an editorial ruling on whether the axis reads its historical reach."
+                "since": "2026-10-08",
+                "reason": "Under R-2026-10-08-v this entry's adoption is read on the GPT-6 series (GPT-6 Astra, GPT-6.1 Sol and GPT-6 Luna), OpenAI's current flagship line and ChatGPT's engine. Level 5 is a placeholder carried over from the GPT-4o-era ChatGPT reading: the newest ChatGPT figure (900M weekly actives, February 2026) predates GPT-6's September 2026 release. Settling it needs a usage figure for the GPT-6 series, such as a ChatGPT active-user count published after that release, and the band re-derived from it."
               }
             ]
           }
@@ -5774,14 +5788,21 @@
             "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is read from Hugging Face downloads on V4-Flash, which land in the same range as the declared V4-Pro repository, so the reading holds regardless of which sibling is used.",
+            "note": "Adoption sums Hugging Face downloads across the two declared checkpoints, V4-Pro and V4-Flash, as the family rule requires; V4-Flash draws roughly twice V4-Pro's downloads.",
             "sources": [
               {
-                "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash",
-                "shows": "2,213,519 downloads in the trailing 30 days",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Flash",
+                "shows": "\"downloads\":966499 over the trailing 30 days for deepseek-ai/DeepSeek-V4-Flash.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48"
+                "content_sha256": "74442736f52992d3d051b868f2f94cb69b5c4937e76e0b77aa5fa340dfa584e9"
+              },
+              {
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Pro",
+                "shows": "\"downloads\":423640 over the trailing 30 days for deepseek-ai/DeepSeek-V4-Pro.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "2befbce0c012172c8b8d828da627f4f44b3bc98b79e905fb46cc0233caa905c3"
               }
             ]
           },
@@ -5816,12 +5837,12 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "The declared artifact, DeepSeek-V4-Pro, now measures level 3 (435,434 trailing-30-day downloads on 7 Oct), while the note reads the level off V4-Flash (1,004,191, level 4) on the grounds that the two land in the same range, which no longer holds. Settling it needs an identity decision (update-product): declare V4-Flash on this product, or re-band to level 3 on V4-Pro and rewrite the note."
+                "since": "2026-10-08",
+                "reason": "DeepSeek-V4-Flash is declared beside V4-Pro under R-2026-10-08-t, so the Hugging Face route sums both: 1,390,139 trailing-30-day downloads on 8 October, level 4, the recorded band. The axis waits for the first scheduled reconciliation that observes both checkpoints and measures level 4. That run's re-dating PR dates the axis and releases this hold."
               }
             ]
           },
-          "version_note": "V4-Pro is scored separately in the base-pretrained category; this record scores the V4-Flash sibling, a 284B mixture-of-experts model with 13B active parameters."
+          "version_note": "Declares both instruct checkpoints, V4-Pro and V4-Flash, and sums their downloads for adoption. The deepseek record in base_pretrained declares the same two alongside the V3 and base checkpoints."
         },
         {
           "slug": "codellama",
@@ -7356,8 +7377,22 @@
             "reach": ">10M users",
             "signal_type": "active_users",
             "confidence": "medium",
-            "note": "o3 and o4-mini were offered across ChatGPT tiers as well as the API, and OpenAI publishes no per-model usage count, so the reading was taken from the ChatGPT surface rather than a standalone figure. Both have since been retired from ChatGPT; o3 remains available in the API.",
+            "note": "Adoption for this entry is read on the GPT-5 series, which OpenAI names as o3's successor; o3 and o4-mini have left ChatGPT. OpenAI publishes no usage count for the GPT-5 series, so the earlier ChatGPT-based level is kept provisionally.",
             "sources": [
+              {
+                "url": "https://developers.openai.com/api/docs/models/o3",
+                "shows": "o3 is marked \"Deprecated\" and described as \"Reasoning model for complex tasks, succeeded by GPT-5\"; no usage figure is published.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "d7c1bc3bac9cf6a50118d52bada5d46f3e6f6392d831f6ad18228a7b00f6bd12"
+              },
+              {
+                "url": "https://en.wikipedia.org/wiki/ChatGPT",
+                "shows": "Infobox \"Engine GPT-6 Astra\"; the model table lists \"GPT-6 September 2026 Active Three released versions: Luna, Sol, Astra\"; \"In February 2026, ChatGPT reached 900 million weekly active users\", a figure that predates the GPT-6 series.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "8ae9f59cccfa9e3015b10a994a0ee394d76ba97e426c831f6f5a552114c90d28"
+              },
               {
                 "url": "https://en.wikipedia.org/wiki/OpenAI_o3",
                 "shows": "\"OpenAI released o3-mini to all ChatGPT users (including free-tier) and some API users\"; o3 and o3-pro on the paid tiers; no standalone per-model user count published",
@@ -7405,8 +7440,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-09-29",
-                "reason": "Recorded level 5 (>10M users) rests on o3 and o4-mini being selectable across ChatGPT tiers. Current evidence contradicts that: Wikipedia o4-mini says it was retired from ChatGPT on 2026-02-13, and Wikipedia o3 says o3 is retired from ChatGPT on 2026-08-26 (API unaffected); the API page marks the o3-2025-04-16 snapshot Deprecated. No per-model usage figure exists, so the level cannot be re-derived. Escalated for a human decision."
+                "since": "2026-10-08",
+                "reason": "Under R-2026-10-08-v this entry's adoption is read on the GPT-5 series, which OpenAI's o3 page names as o3's successor. Level 5 is a placeholder carried over from the ChatGPT reading: ChatGPT now runs on GPT-6 Astra, so its figure no longer measures the GPT-5 series, and OpenAI publishes no per-series count. Settling it needs a usage figure for the GPT-5 series, from the API or ChatGPT, and the band re-derived from it."
               },
               {
                 "axis": "capability",
@@ -9776,7 +9811,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-09-29",
-                "reason": "The recorded level 5 / reported_traction (mass-market) is not derivable from the cited DeepMind pages: they list where Pro is offered but carry no traction claim or figure for Pro. The only usage claim found is app-level (Gemini app 750M+ monthly users, TechCrunch, sha 7084a06960618d1048ea07361cded7290bb27f468c7ba3deb9a6424e2c0f068a), which is not Pro-specific and would change the instrument to active_users as the Flash record does. Maintainer decision needed."
+                "reason": "Level 5 (reported_traction, mass-market) is kept under R-2026-10-08-q until a figure turns up: the cited DeepMind pages list where Pro is offered but carry no traction claim or figure for Pro. The only usage claim found is app-level (Gemini app 750M+ monthly users, TechCrunch), which is not Pro-specific. Settling it needs a Pro-specific usage figure or claim from a fetched source, and then the date."
               }
             ]
           },
@@ -45016,18 +45051,25 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10K",
+            "level": 2,
+            "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "PyPI downloads for the dolma package are the published usage signal for this tool.",
+            "note": "PyPI downloads of the dolma package are the usage signal for this tool, counted with mirror traffic as for every PyPI-routed product. Mirrors account for most of this package's downloads, so the figure without them is far lower.",
             "sources": [
               {
-                "url": "https://pypistats.org/api/packages/dolma/recent",
-                "shows": "4,390 downloads in the trailing 30 days for dolma",
-                "accessed": "2026-08-13",
+                "url": "https://pypistats.org/api/packages/dolma/overall?mirrors=true",
+                "shows": "Daily with_mirrors downloads for dolma summing to 11,619 over the 30 days 2026-09-08 to 2026-10-07.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "6696ad3c661dd15027602f2fd1df3d7c3470fac93e15df4c1a1176a98f553c7d"
+                "content_sha256": "2e0d103068fabe3acb853537a2fdc9bd41ed9f24fdd85683be9f3a32555b6905"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/dolma/recent",
+                "shows": "\"last_month\":1727 - the without-mirrors series, which this reading does not use.",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "890ae7da0b499e168da47da65d03302975d03d14e1020cabc84a00b7554f144c"
               }
             ]
           },
@@ -45050,9 +45092,9 @@
               }
             ]
           },
-          "overall_score": 1.8,
+          "overall_score": 2.4,
           "tier": null,
-          "maturity": 1.8,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
@@ -45063,8 +45105,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Both reconciliations measured PyPI downloads of dolma at level 2 (12,854 for the 30 days to 4 Oct), against the recorded level 1. Mirror traffic is almost all of it: pypistats reads 1,507 for the same window without mirrors, and the cited /recent figure is the without-mirrors series. signal_packages counts mirror downloads by design, so on the declared instrument this is level 2. Settling it needs a decision on whether mirror traffic should count for a package this small; if it does, re-band to level 2 on the with-mirrors figure."
+                "since": "2026-10-08",
+                "reason": "Re-banded on 2026-10-08 from level 1 to 2 under R-2026-10-08-s, which counts PyPI mirror traffic: pypistats reads 11,619 downloads with mirrors for the 30 days to 7 October. A hand re-band earns no date, so the axis waits for the first scheduled reconciliation that measures level 2 on PyPI downloads of dolma. That run's re-dating PR dates the axis and releases this hold."
               }
             ]
           },
@@ -46211,7 +46253,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-10-07",
-                "reason": "The level rests on the $57.5M funding figure and a record that says no customers are named, but the homepage now names Arcee AI and Thomson Reuters as customers. Neither is a usage figure, and no reconciliation can settle a reported-traction band. Settling it needs the record re-read against the homepage and an instrument decision made by a person."
+                "reason": "Level 2 (reported_traction) is kept under R-2026-10-08-q until a figure turns up: it rests on the $57.5M funding figure, and the homepage now names Arcee AI and Thomson Reuters as customers, neither a usage figure. Settling it needs the record re-read against the homepage and a usage figure or traction claim from a fetched source, and then the date."
               }
             ]
           }
@@ -66764,13 +66806,14 @@
             "confidence": "medium",
             "banded_quantity": "named adopters listed in the repository, not a download or user count",
             "note": "OpenRLHF's repository lists named adopters -- Google, ByteDance, Tencent, Alibaba, Baidu, China Telecom, Vivo, Allen AI, NexusFlow and Jülich -- rather than publishing a download count. It reads as a specialist RLHF tool used by research and training teams, and that named-adopter list is the basis used here rather than GitHub stars, which measure attention only.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md",
                 "shows": "The \"Companies and Organizations using OpenRLHF\" section still lists Google, ByteDance, Tencent, Alibaba, Baidu, China Telecom, Vivo, Allen AI, NexusFlow, and Jülich Supercomputing Centre (JSC), among others -- the same named adopters the score's note cites, unchanged. No download-count badge or PyPI figure appears anywhere in the file.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "ce9e32beb7153b42fc266fa39a43878b5327cf93f0784fcaec2794e880c25553"
+                "content_sha256": "9a5fbcfd4b23fe67362004803664ef0a08ac71c6258376e844189b30cc00e269"
               },
               {
                 "url": "https://github.com/OpenRLHF/OpenRLHF",
@@ -66804,18 +66847,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-09",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-10-07",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on OpenRLHF/OpenRLHF (level 3) on both readings, while the record bands on reported traction (level 2). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -75367,27 +75400,28 @@
             "confidence": "medium",
             "banded_quantity": "deployment breadth - shipped in Meta's family of apps and on Meta Quest and Ray-Ban Meta devices - which is a breadth claim rather than a measured user count",
             "note": "ExecuTorch ships inside Meta's own apps and devices -- Instagram, WhatsApp, Messenger, Quest and Ray-Ban Meta smart glasses -- reaching billions of people. GitHub stars measure attention to a repository rather than a runtime bundled invisibly inside other companies' apps, so adoption is read from that deployment breadth instead.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://engineering.fb.com/2025/07/28/android/executorch-on-device-ml-meta-family-of-apps/",
-                "shows": "Meta's engineering blog on ExecuTorch in the Meta family of apps, naming Instagram, WhatsApp, Messenger and Quest and describing on-device inference reaching billions of people.",
-                "accessed": "2026-08-31",
+                "shows": "Meta's engineering blog: \"on-device AI features, powered by ExecuTorch, that are serving billions of people on Instagram, WhatsApp, Messenger, and Facebook\".",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "66c729a0f927ffda97e4f0b892dde1fba3a22f72369d97602f205a09856ce489"
+                "content_sha256": "1ebb52c3dd797d8c16ea44fc43385e72ea8523ff1da9434def35115fffea890e"
               },
               {
                 "url": "https://docs.pytorch.org/executorch/main/success-stories.html",
-                "shows": "The project's own success-stories page: \"Billions of users\", naming Instagram, WhatsApp, Messenger, Quest and Ray-Ban deployments.",
-                "accessed": "2026-08-31",
+                "shows": "Success-stories page: Meta's Family of Apps \"Status: Production ... Scale: Features serving billions of people\"; Meta Reality Labs in production on Quest 3 and 3S and Ray-Ban Meta glasses.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "adbd164f4bd89af11607336038a479338427867e1632a7ce220f5cdd1d819fe8"
+                "content_sha256": "7a84ff6007ab5110048c73b1fe35b70454274073c8dabf42bfca0394f463fea3"
               },
               {
                 "url": "https://raw.githubusercontent.com/pytorch/executorch/main/README.md",
-                "shows": "README: \"It powers Meta's on-device AI across Instagram, WhatsApp, Quest 3, Ray-Ban Meta Smart Glasses\" and \"Powers billions of users at Meta with real-time on-device inference\".",
-                "accessed": "2026-08-31",
+                "shows": "README: \"ExecuTorch powers on-device experiences across **Instagram, WhatsApp, Facebook, and Messenger**, serving billions of people. It also runs AI features on **Meta Quest and Ray-Ban Meta devices**.\"",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c"
+                "content_sha256": "bae612e3bbca4be0429ec8f7fd08a7427087204bd26388fcf4b0f5c63c58df8a"
               }
             ]
           },
@@ -75436,17 +75470,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-10-07",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The level is reported traction, deployment breadth inside Meta's apps, and the adoption reconciliation does not measure that, so no scheduled run can date it. All three cited pages answered 200 on 2026-10-07 and still say the features serve billions of people, but the README sentence the third source quotes has been rewritten. Settling it needs a person to re-date the axis from the vendor pages, with that source's quote matched to the README."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -76335,8 +76360,9 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "banded_quantity": "frontier release-report citations; the ~31.5M PyPI downloads are treated as runner-inflated corroboration rather than the basis",
+            "banded_quantity": "frontier release-report citations; the ~22.1M monthly PyPI downloads are treated as runner-inflated corroboration rather than the basis",
             "note": "SWE-bench Verified is the de-facto standard agentic-coding evaluation, cited in nearly every 2025-26 frontier release report. Its swebench package also draws heavy PyPI traffic, but that volume is almost certainly CI and benchmark-runner traffic rather than human installs, so citation carries this reading and the download count serves only as corroboration.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://pypistats.org/packages/swebench",
@@ -76350,17 +76376,17 @@
               },
               {
                 "url": "https://pypistats.org/api/packages/swebench/recent",
-                "shows": "last_month = 45,994,790 downloads of the swebench package (last_week 14,827,831, last_day 1,708,049)",
-                "accessed": "2026-08-13",
+                "shows": "last_month = 22,102,583 downloads of the swebench package (last_week 4,466,166, last_day 486,886)",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "385cc2f2f27a10a91fe8e9b4cb2a198fced1a36d8ef4d22402d2ad51848cfb46"
+                "content_sha256": "6e5671564a4ee3df3db23cc11c8c71c4efe99037132e7e867898aaa264714a74"
               },
               {
                 "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md",
                 "shows": "README records the ICLR 2024 oral and ICLR 2025 Multimodal papers and the SWE-bench Verified 500-problem split built with OpenAI Preparedness.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f"
+                "content_sha256": "06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa"
               }
             ]
           },
@@ -76406,17 +76432,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation reads PyPI downloads of swebench (level 5) on both readings, and the record's note rejects that channel as a measure of this product: that volume is benchmark-runner and CI traffic rather than adoption of the benchmark. Settling it needs the measurement-population decision in docs/reference/adoption.md made for swebench. If it fails, the artifact should stop routing the band (update-product); if it passes, the band moves to level 5 on it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "This record is the harness; the underlying dataset is catalogued under benchmark_eval_data."
         },
@@ -76841,8 +76858,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on open-compass/opencompass (level 2) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
+                "since": "2026-10-08",
+                "reason": "The GitHub repository no longer routes the band: R-2026-10-08-p keeps reported traction and declares the repository not_primary_channel, so the axis is dated by re-reading its traction source. The banded quantity names the GitHub star count (7,299), and api.github.com returned 403 to the 2026-10-08 re-read, so that figure could not be confirmed. Settling it needs the star count re-read beside the README, and then the date."
               }
             ]
           }
@@ -77704,15 +77721,16 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "high",
-            "banded_quantity": "frontier-lab adoption; the ~9.9M PyPI downloads are treated as CI-inflated corroboration rather than the basis",
+            "banded_quantity": "frontier-lab adoption; the ~2.9M monthly PyPI downloads are treated as CI-inflated corroboration rather than the basis",
             "note": "Inspect is UK AISI's open-sourced evaluation platform, reported to be used by other governments and some of the leading AI developers. PyPI downloads are high but inflated by continuous-integration and dependency installs, so lab adoption carries more weight, and actual users remain a small population of eval engineers rather than a mass-market base.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.aisi.gov.uk/blog/our-first-year",
                 "shows": "'we open sourced our evaluations platform, Inspect ... now it is used by other governments and some of the leading AI developers'. The post reports evaluations on 16 models in AISI's first year, and carries no 'thousands of evaluations' figure.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "607848ae11534d6e9699c8073624bfef2c07f2be9899531adde35ef981639f65"
+                "content_sha256": "6375a093297d111986097757513c7056dce640e27c6541157f151ca04d76b555"
               },
               {
                 "url": "https://inspect.aisi.org.uk/",
@@ -77726,10 +77744,10 @@
               },
               {
                 "url": "https://pypistats.org/api/packages/inspect-ai/recent",
-                "shows": "last_month = 9,278,867 downloads of the inspect-ai package (last_week 1,494,033, last_day 262,149)",
-                "accessed": "2026-08-13",
+                "shows": "last_month = 2,896,739 downloads of the inspect-ai package (last_week 994,166, last_day 155,525)",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "228f6935b869c9af11e7bfe49a8f34e6f160dc3846e86fba6b2b7885d77d5d3a"
+                "content_sha256": "411789e9ae853e89775dfd685222dc75e1c47d1e64d0bf71bf29993b40ab28d3"
               }
             ]
           },
@@ -77796,17 +77814,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on UKGovernmentBEIS/inspect_ai (level 2) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "The Inspect Evals collection is co-maintained with Arcadia Impact and the Vector Institute."
         },
@@ -77891,8 +77900,9 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "banded_quantity": "research citations and hosted-leaderboard use; crfm-helm on PyPI at ~3,142 a month understates reach rather than measuring it",
+            "banded_quantity": "research citations and hosted-leaderboard use; crfm-helm on PyPI at ~1,200 a month understates reach rather than measuring it",
             "note": "HELM's reach shows up in research citation and use of its hosted leaderboards, not in package installs: the crfm-helm PyPI package sees only a fraction of that use because most usage runs through the website and citation instead of pip. Those downloads corroborate the reading rather than measure it directly.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://github.com/stanford-crfm/helm",
@@ -77906,15 +77916,15 @@
               },
               {
                 "url": "https://pypistats.org/api/packages/crfm-helm/recent",
-                "shows": "last_month = 5,097 downloads of the crfm-helm package (last_week 2,327, last_day 714)",
-                "accessed": "2026-08-13",
+                "shows": "last_month = 1,206 downloads of the crfm-helm package (last_week 284, last_day 45)",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "413fbe6c3f3b21a3b1de4571f754470a9fc511e58863b4d1e79f7c138ef6ca80"
+                "content_sha256": "f9058d8086984d9c00dd9bff4bb2f6c85648e27cda60eeee566767f6808d431b"
               },
               {
                 "url": "https://raw.githubusercontent.com/stanford-crfm/helm/main/README.md",
                 "shows": "README lists the maintained public leaderboards: HELM Capabilities, HELM Safety, VHELM, HEIM, ToRR, MedHELM and audio, each with its published paper.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
                 "content_sha256": "465390a907127138096869b49fd79c817392f5404d23d98161d881f2e408a303"
               }
@@ -77971,17 +77981,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation reads PyPI downloads of crfm-helm (level 1) on both readings, and the record's note rejects that channel as a measure of this product: most of HELM's use runs through its hosted leaderboards and citations rather than pip installs. Settling it needs the measurement-population decision in docs/reference/adoption.md made for crfm-helm. If it fails, the artifact should stop routing the band (update-product); if it passes, the band moves to level 1 on it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "HELM entered maintenance mode on 1 June 2026: the leaderboards stay available, but no new features or leaderboard evaluations are being added."
         },
@@ -78224,13 +78225,14 @@
             "confidence": "medium",
             "banded_quantity": "frontier-lab release-report citations; 2.9k GitHub stars corroborate only",
             "note": "OSWorld scores appear across frontier computer-use launches through 2026, from OpenAI and Anthropic among others, which is the strongest adoption signal available for a harness like this. It is run by a concentrated set of frontier labs and agent teams rather than by a broad install base, so this reading stays directional, and GitHub stars corroborate only loosely alongside it.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.anthropic.com/news/claude-sonnet-4-6",
                 "shows": "The Sonnet 4.6 release post reports OSWorld results and charts Sonnet's progress on it across sixteen months. The benchmark is cited, which is the standard-citation signal; the numeric score is in the chart rather than the prose.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "589bbbfe76178ca13e5400a385164d4bae550ca83abbd587bb13f2533d9a867a"
+                "content_sha256": "2b37d754f22ddbf2f4109c831a589bccdcddfffced76e56c012c1d1cdc8bb6e0"
               },
               {
                 "url": "https://os-world.github.io/",
@@ -78240,7 +78242,7 @@
               {
                 "url": "https://osworld-v1.xlang.ai/",
                 "shows": "the site os-world.github.io now redirects here; it still publishes the human-vs-model baselines - 'While humans can accomplish over 72.36% of the tasks, the best model achieves only 12.24% success' for the original v1 setting - and still lists the model families evaluated (Operator, GPT, Gemini, Claude, UI-TARS, Agent-S, Qwen, CogAgent).",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
                 "content_sha256": "bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516"
               }
@@ -78295,17 +78297,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on xlang-ai/OSWorld (level 2) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "Eight Google Drive tasks may be excluded, leaving a 361-task run, and the project site now redirects to osworld-v1.xlang.ai. It ships both the task set and the runner; this record is the harness."
         },
@@ -79347,7 +79340,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-09-29",
-                "reason": "Level 3 (reported_traction, Bedrock platform footprint) has no cited primary figure behind it: neither the product page nor the GA post carries any usage, customer or job-count number. Settling it needs a fetchable AWS-published Bedrock platform reach figure (customer count or similar) cited as the reach evidence, or a human decision on the band."
+                "reason": "Level 3 (reported_traction, Bedrock platform footprint) is kept under R-2026-10-08-q until a figure turns up: neither the product page nor the GA post carries any usage, customer or job-count number. Settling it needs a fetchable AWS-published Bedrock reach figure, such as a customer count, cited as the evidence, and then the date."
               }
             ]
           }
@@ -79811,11 +79804,12 @@
             "confidence": "high",
             "banded_quantity": "the hosted arena's own collected data — 600,000+ prompts and 250,000+ preference votes — rather than repository or user counts",
             "note": "compar:IA's GitHub star count reflects only the repository, not the hosted arena where people actually use the product, so it does not measure reach on its own. The reading instead follows the arena's own collected data: the free-form prompts and preference votes recorded in the team's arXiv paper as of 2026-02-07, most of it in French, rather than a repository or user count.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2602.06669",
                 "shows": "600,000+ free-form prompts and 250,000+ preference votes collected as of 2026-02-07, ~89% French",
-                "accessed": "2026-08-12",
+                "accessed": "2026-10-08",
                 "http_status": 200,
                 "content_sha256": "4233ea360e26a52bcfcc92f48c880e6b25a27f7ff79990ee224e09852d408500"
               },
@@ -79870,18 +79864,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-22",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-09-29",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on betagouv/ComparIA (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -83041,17 +83025,18 @@
           },
           "adoption": {
             "level": 5,
-            "reach": ">10M users",
-            "signal_type": "active_users",
+            "signal_type": "reported_traction",
+            "banded_quantity": "GitHub-confirmed all-time Copilot users (20M+, July 2025), not an active count",
             "confidence": "high",
             "note": "GitHub's own confirmed figure for Copilot is a cumulative all-time user count rather than a measure of current active use, dating from when the free tier opened to all GitHub developers. Copilot's paid-subscriber count, the only actively-adjacent number GitHub discloses, is considerably smaller than that all-time total.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://techcrunch.com/2025/07/30/github-copilot-crosses-20-million-all-time-users/",
-                "shows": "GitHub-confirmed 20M all-time users, announced by Satya Nadella in July 2025. The same period saw the free tier reach roughly 150M GitHub developers (December 2024) and paid subscribers reach roughly 4.7M (January 2026).",
-                "accessed": "2026-08-13",
+                "shows": "\"has now reached more than 20 million users\"; a GitHub spokesperson confirmed it represents \"all-time users\", and \"Microsoft and GitHub don't report how many of these 20 million people have continued to use the AI coding tool on a monthly or daily basis\".",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "38d679a94c14d0f4efef2d2ba46c495e742936c51fe0bad74ef82a070609f32f"
+                "content_sha256": "8c48de48f09ce97c8dffc1618e1075c8548fa41b51f2024e3bafda114047ed52"
               },
               {
                 "url": "https://github.com/features/copilot",
@@ -83114,16 +83099,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-09-29",
-                "reason": "The only adoption figure is TechCrunch's July 2025 cumulative all-time count of 20M users, which the article says is not a monthly or daily active count, while the record's signal_type is active_users. The sibling github-copilot is held for the same reason. Settle by a maintainer ruling on relabeling the signal_type for both products together, or by a current active-user or paid-subscriber figure from a primary GitHub or Microsoft source."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -83612,13 +83592,14 @@
             "confidence": "medium",
             "banded_quantity": "Proton's account base (100M+), not Lumo use",
             "note": "No Lumo-specific usage numbers are published, so adoption is read from the size of Proton's account base, more than 100 million accounts, across which Lumo is offered for free on web, iOS and Android without a separate sign-up. That account-base size is a proxy for Lumo's own use rather than a measured count of it, which is why confidence stays medium.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://proton.me/blog/lumo-ai",
-                "shows": "Proton's launch announcement for Lumo",
-                "accessed": "2026-08-13",
+                "shows": "\"Lumo is a new service within the Proton privacy ecosystem, trusted by over 100 million people worldwide\"; anyone can use it free, with no account required.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "6eb81a315131a22fb23233e2343149fe760ab76532e2dd2a045fa9e2f187ff92"
+                "content_sha256": "afecbbb71b0fb56ac45bd37310eb1236f93bf98cd7dd1dd9199fa9fce6b93d21"
               }
             ]
           },
@@ -83666,17 +83647,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on ProtonLumo/ios-lumo (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -83892,7 +83864,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-09-29",
-                "reason": "The only fetched source, the first-year recap, carries relative claims (5x user growth, over 90% retention, billions of tokens) and no absolute count, so level 3 (reported_traction) has no countable evidence. Settled by an absolute usage figure (users, downloads or monthly active users) from a fetched source, or by a maintainer re-band on the stars and release-download route."
+                "reason": "Level 3 (reported_traction) is kept under R-2026-10-08-q until a figure turns up: the first-year recap carries relative claims (5x user growth, over 90% retention, billions of tokens) and no absolute count. Settling it needs an absolute usage figure (users, downloads or monthly active users) from a fetched source, and then the date."
               },
               {
                 "axis": "openness",
@@ -84034,8 +84006,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on edgelesssys/privatemode-public (level 1) on both readings, while the record bands on reported traction (level 2). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
+                "since": "2026-10-08",
+                "reason": "The GitHub repository no longer routes the band: R-2026-10-08-p keeps reported traction and declares the repository not_primary_channel, so the axis is dated by re-reading its traction source. The only cited source, Edgeless Systems' 'What is Privatemode' post, now returns 404, so nothing currently backs the level 2 reading. Settling it needs a live Edgeless Systems page carrying the launch and positioning facts the note cites, or another traction source, and then the date."
               }
             ]
           }
@@ -84084,13 +84056,14 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "Young product (repos created Dec 2025, launched late 2025/early 2026); ~70-75 stars per repo and a reported partnership \"bringing foundational AI privacy to Meta\", but no user/usage numbers. Notability is driven mainly by the founder's reputation.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://confer.to/blog/",
-                "shows": "product positioning and feature timeline (memory, encrypted folders, connectors, Meta partnership)",
-                "accessed": "2026-08-13",
+                "shows": "Blog index with the product's feature timeline and the post \"Confer is bringing foundational AI privacy to Meta\" (Moxie Marlinspike, 17 Mar 2026); no user or usage figure.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "b08288fd3e49a16942d35caa32b6f4f1cc730c67a927902dccfcbe189f8c5299"
+                "content_sha256": "7fb77356abe8a124828f0956a89ee47f40172cd4879c20fcddf254897dc892c7"
               }
             ]
           },
@@ -84167,16 +84140,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on ConferLabs/confer-proxy (level 1) on both readings, while the record bands on reported traction (level 2). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -87044,8 +87012,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation reads PyPI downloads of sweagent (level 1, about 190 a month) on both readings, and the record's note rejects that channel as a measure of this product: SWE-agent is installed mostly from source, so the package may be a minority channel rather than the product's primary one. Settling it needs the measurement-population decision in docs/reference/adoption.md made for sweagent. If it fails, the artifact should stop routing the band (update-product); if it passes, the band moves to level 1 on it."
+                "since": "2026-10-08",
+                "reason": "The sweagent package is declared not_primary_channel under R-2026-10-08-r, so the applicable route is GitHub stars on SWE-agent/SWE-agent, the instrument the record bands on (stars_fallback, level 3). The only open question is the measurement: the first scheduled reconciliation that measures level 3 on stars dates the axis and releases this hold."
               }
             ]
           },
@@ -87223,8 +87191,9 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "high",
-            "banded_quantity": "weekly active developers (6M+), weekly rather than the monthly the scale is written in",
+            "banded_quantity": "weekly active users (2M+, March 2026), weekly rather than the monthly the scale is written in",
             "note": "OpenAI and independent tracking both report a weekly active developer count for Codex CLI, corroborated by stars on the same GitHub repository. That figure is measured weekly rather than the monthly count this scale is written in, so it likely understates the number a monthly measure would show.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://openai.com/index/scaling-codex-to-enterprises-worldwide/",
@@ -87233,10 +87202,10 @@
               },
               {
                 "url": "https://en.wikipedia.org/wiki/OpenAI_Codex_(AI_agent)",
-                "shows": "tracks the disclosed figures with citations - more than 2 million weekly active users by March 2026, rising to 6 million weekly active users, with Cisco, Nvidia, Ramp, Rakuten and Harvey named as deployments",
-                "accessed": "2026-08-13",
+                "shows": "Codex \"had grown to more than 2 million weekly active users\" by March 2026, after Fortune reported 1.6 million, with Cisco, Nvidia, Ramp, Rakuten and Harvey named as deployments. The article no longer carries a 6 million figure.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "303daec82c5fbade2438d4472a85c8c9a63353441c6f79c0ff9f2962327847ce"
+                "content_sha256": "31372ef1ce35379e7cb94ddffff49131bc8b472ae0e5322f12172a59b5fde0ac"
               },
               {
                 "url": "https://github.com/openai/codex",
@@ -87272,17 +87241,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on openai/codex (level 3) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "Codex runs against either a ChatGPT plan or an API key."
         },
@@ -87664,6 +87624,7 @@
             "confidence": "medium",
             "banded_quantity": "revenue run-rate (~$2.5B, February 2026), not a developer count",
             "note": "Anthropic reports business subscriptions to Claude Code roughly quadrupling over the year, with enterprise now accounting for more than half of its revenue. No developer or user count is published, so adoption here is read from that commercial scale, which points to a very large developer base.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://code.claude.com/docs/en/overview",
@@ -87674,10 +87635,10 @@
               },
               {
                 "url": "https://www.saastr.com/anthropic-just-hit-14-billion-in-arr-up-from-1-billion-just-14-months-ago/",
-                "shows": "Anthropic $14B ARR; section headed \"Claude Code - $2.5 Billion ARR. Doubled Since January.\"",
-                "accessed": "2026-08-13",
+                "shows": "Anthropic $14B ARR; section headed \"Claude Code: $2.5 Billion ARR. Doubled Since January.\", saying Claude Code \"now has run-rate revenue above $2.5 billion\".",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "a05aa9a278a174acfa0d938f653d38ec9bb59beab78e354ee5842e64d8e943f7"
+                "content_sha256": "e4b826bfd9068aaeebedca55d9b6a3468e4278eb56bbc5eed2372e5edab06ae3"
               }
             ]
           },
@@ -87712,17 +87673,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on anthropics/claude-code (level 3) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -88234,10 +88186,11 @@
           },
           "adoption": {
             "level": 5,
-            "reach": ">10M users",
-            "signal_type": "active_users",
+            "signal_type": "reported_traction",
+            "banded_quantity": "GitHub-confirmed all-time Copilot users (20M+, July 2025), not an active count",
             "confidence": "high",
             "note": "GitHub reports an all-time cumulative user count for Copilot rather than an active-user figure, and describes it as the most widely adopted AI developer tool; agent mode is the autonomous surface of that same user base. Because no agent-mode-specific or active-user count is published, this cumulative total is used as a proxy, which means the true active figure is lower rather than higher.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://github.com/features/copilot",
@@ -88248,10 +88201,10 @@
               },
               {
                 "url": "https://techcrunch.com/2025/07/30/github-copilot-crosses-20-million-all-time-users/",
-                "shows": "more than 20 million users from the Microsoft earnings call, confirmed by GitHub as \"all-time users\"; Microsoft and GitHub do not report monthly or daily actives",
-                "accessed": "2026-08-13",
+                "shows": "\"has now reached more than 20 million users\"; a GitHub spokesperson confirmed it represents \"all-time users\", and \"Microsoft and GitHub don't report how many of these 20 million people have continued to use the AI coding tool on a monthly or daily basis\".",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "95008a609d3c16d34ec6e5909d45c136b3996da2e93b94eef8ed268edc4de064"
+                "content_sha256": "8c48de48f09ce97c8dffc1618e1075c8548fa41b51f2024e3bafda114047ed52"
               }
             ]
           },
@@ -88295,16 +88248,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-09-29",
-                "reason": "The TechCrunch figure still bands at the top level, but the article counts all-time users, while the record labels the signal as active users. Relabeling the signal is a curation decision, and the axis stays undated until it is made."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -89322,8 +89270,9 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "high",
-            "banded_quantity": "GitHub stars (83.9k) and Series A funding ($18.8M), not a user count",
+            "banded_quantity": "GitHub stars (about 90k) and Series A funding ($18.8M), not a user count",
             "note": "OpenHands has no verified active-user or download count, so this reading draws on reported signs of traction instead: substantial GitHub star growth, a Series A funding round, contributors from major companies, and a hosted OpenHands Cloud with multi-user Slack, Jira and Linear integrations.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://github.com/All-Hands-AI/OpenHands",
@@ -89334,10 +89283,10 @@
               },
               {
                 "url": "https://theaiagentindex.com/agents/openhands",
-                "shows": "83.6k GitHub stars, MIT, self-hosted with no vendor lock-in; the entry publishes no user count",
-                "accessed": "2026-08-13",
+                "shows": "Directory entry: \"It has 90k GitHub stars and is MIT licensed\"; self-hosted with no vendor lock-in; the entry publishes no user count.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "462f979735286d6b2c8ded78af945628924cb27f9376af4a867cfbbf5e4bddcf"
+                "content_sha256": "82b616590700f330374b4b2cdefb8be3c1f65a57648eceb744caee3ad98ec600"
               }
             ]
           },
@@ -89393,18 +89342,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-15",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-09-29",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "The record bands on reported traction, and the reconciliation's applicable route reads GitHub stars on OpenHands/OpenHands at the same level 3. Switching to PyPI downloads of openhands-ai would need that package declared and checked against the measurement-population test (update-product), which is not a re-band. Until then the reported-traction source needs a re-read for a date."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -91351,13 +91290,14 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "A widely-used released editor with paid Pro/Business tiers, but no public install count.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://zed.dev/pricing",
                 "shows": "Personal $0 forever, Pro $10 per month, Business per seat; released product with direct download and no install, download or user count published",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "7085628172e55cfa8c6b771d3fa4aff936ae01d9f49553cbc6b455c4c131da31"
+                "content_sha256": "0feb820f86841a3ff3407efd64db9bcb91f2be7fdd37058b95c68b0d1683464f"
               }
             ]
           },
@@ -91391,17 +91331,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on zed-industries/zed (level 3) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -91596,20 +91527,21 @@
             "confidence": "medium",
             "note": "Langflow ships mainly as a Docker image and a desktop app, so PyPI downloads alone would measure a minority channel. The reading combines Docker Hub pulls with PyPI downloads, and because the Docker count is cumulative it understates the current pace, so real reach is likely higher than shown.",
             "reach": "100K-1M",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://hub.docker.com/v2/repositories/langflowai/langflow/",
-                "shows": "\"pull_count\":3991664,\"last_updated\"",
-                "accessed": "2026-09-29",
+                "shows": "\"pull_count\":4140157 since \"date_registered\":\"2024-04-29\", about 141,000 a month as a lifetime average",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "c7933f97523f6221c2255f204bb5d4e8b8a5cc02eb1c44d69a57f32fd4191df6"
+                "content_sha256": "14de3375072db0dc9776fb37349926409d68f5580b64a477278dda246e4304a0"
               },
               {
                 "url": "https://pypistats.org/api/packages/langflow/recent",
-                "shows": "\"last_month\":40142,\"last_week\":8367",
-                "accessed": "2026-09-29",
+                "shows": "\"last_month\":37742,\"last_week\":9169",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "f62cf98e5fd798b0fb219373aa9c43f0c1b82178e8b4b7d5b88fc11879d4b077"
+                "content_sha256": "4e781f8b49a1f2d2e055be6c1aa42f49cec12357509ba3647dd24c83bb336b82"
               }
             ]
           },
@@ -91652,17 +91584,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "The reconciliation reads PyPI downloads of langflow at level 2 on both readings, while the note argues PyPI is a minority channel next to Docker and the desktop app. Settling it needs a decision on whether the langflow package is the product's primary channel (docs/reference/adoption.md, the mirror trap): if not, it should stop routing the band (update-product); if so, the band moves to level 2."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "Began as Logspace, was acquired by DataStax in 2024, and is now an IBM company. A managed cloud is sold beside the published platform."
         },
@@ -91964,20 +91887,21 @@
             "confidence": "high",
             "note": "n8n runs overwhelmingly as a self-hosted Docker container, with the npm package only a minor install path, so this reading combines Docker Hub pulls since 2019-06-22 with npm downloads across n8n's real distribution channels. The cumulative Docker figure understates the current pace, so the level is a floor rather than a ceiling.",
             "reach": "1M-10M",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://hub.docker.com/v2/repositories/n8nio/n8n/",
-                "shows": "The Docker Hub API reports for n8nio/n8n \"pull_count\":265295062,\"last_updated\":\"2026-09-29T00:54:51.665446Z\".",
-                "accessed": "2026-09-29",
+                "shows": "\"pull_count\":269154951 since \"date_registered\":\"2019-06-22\", about 3.1M a month as a lifetime average",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "be55d5a749393f8c0c478209b07676dd44a10d55c5f2c582521c408b2afb20a6"
+                "content_sha256": "51509474c10382de12bb81aafe85a1c0f863d17b5bc4f3d019746776c721d150"
               },
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/n8n",
-                "shows": "\"downloads\":399795,\"start\":\"2026-08-29\",\"end\":\"2026-09-27\",\"package\":\"n8n\"",
-                "accessed": "2026-09-29",
+                "shows": "\"downloads\":408701,\"start\":\"2026-09-05\",\"end\":\"2026-10-04\",\"package\":\"n8n\"",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "73b67497cede1eac380b0491124aae0e9d56df9f4198307d5ed197b706d6c17e"
+                "content_sha256": "a075618ef0cc88feb145657962169c79184d9d7b6d8b9b4447791192bb97248d"
               }
             ]
           },
@@ -92013,17 +91937,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "The reconciliation reads npm downloads of n8n at level 3 on both readings, while the note argues npm is a minor install path next to the Docker image. Settling it needs a decision on whether the npm package is the product's primary channel (docs/reference/adoption.md, the mirror trap): if not, it should stop routing the band (update-product); if so, the band moves to level 3."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -92227,15 +92142,16 @@
             "reach": "niche",
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "banded_quantity": "workflow runs (~5M a year, about 417k a month) across 55+ countries, an institutional deployment count",
-            "note": "OpenFn's own about page reports institutional traction directly: more than 55 countries and roughly five million workflow runs a year. That reported figure, not the modest count of stars on its GitHub repository, is what this reading is based on, since an institutional deployment count is a better signal than stars for a niche, mission-driven tool like this.",
+            "banded_quantity": "workflow runs (~5M a year, about 417k a month) across 60+ countries, an institutional deployment count",
+            "note": "OpenFn's own about page reports institutional traction directly: more than 60 countries and roughly five million workflow runs a year. That reported figure, not the modest count of stars on its GitHub repository, is what this reading is based on, since an institutional deployment count is a better signal than stars for a niche, mission-driven tool like this.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.openfn.org/about",
-                "shows": "55+ countries benefiting; ~5 million workflow runs each year; ~50 million records handled each year",
-                "accessed": "2026-08-12",
+                "shows": "\"5 million Workflow runs each year\", \"~50 million Records handled each year\" and \"approx. 60+ countries Benefiting from OpenFn\"",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "920a56eccb8fc827ed678839c8f714f343fb52f724dfd9a98e53da39875efe59"
+                "content_sha256": "9512d996c7043132bcd5f3ef2b0f8d6a47c0e9db2d64b43bd538d9797603f6e2"
               },
               {
                 "url": "https://github.com/OpenFn/lightning",
@@ -92269,16 +92185,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "capability"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on OpenFn/lightning (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "capability",
                 "since": "2026-09-29",
@@ -98084,13 +97995,14 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Exa's own about page names the customers it serves, including Cursor, Cognition, HubSpot, OpenRouter and Monday.com, and states its developer count directly. No independently published request, query or revenue figure exists, so that vendor-stated count is what the reach here reflects.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://exa.ai/about",
                 "shows": "\"search for Cursor, Cognition, HubSpot, OpenRouter, Monday.com and over 400,000 developers\". No request, query or revenue figure is published.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74"
+                "content_sha256": "9913ed1f538398d0a4e92df4e1f382fc71b6651aafadf3f5bccf9654f5561e43"
               }
             ]
           },
@@ -98126,18 +98038,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-17",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-09-28",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "The reconciliation reads PyPI downloads of exa-py at level 4 (5.35M), against a record that bands at level 3 on Exa's stated developer count but labels it usage_volume. exa-py is the client SDK of a hosted API, so whether it measures the product is the measurement-population decision in docs/reference/adoption.md. Settling it needs that decision and the instrument corrected (update-product), not a re-band."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -98284,8 +98186,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation reads PyPI downloads of firecrawl-py (level 4) on both readings, and the record's note rejects that channel as a measure of this product: firecrawl-py is the client SDK of the hosted API, the case the measurement-population test exists for. Settling it needs the measurement-population decision in docs/reference/adoption.md made for firecrawl-py. If it fails, the artifact should stop routing the band (update-product); if it passes, the band moves to level 4 on it."
+                "since": "2026-10-08",
+                "reason": "The firecrawl-py client SDK is declared not_primary_channel under R-2026-10-08-r, so the applicable route is GitHub stars on firecrawl/firecrawl, the instrument the record bands on (stars_fallback, level 3). The only open question is the measurement: the first scheduled reconciliation that measures level 3 on stars dates the axis and releases this hold."
               }
             ]
           }
@@ -99820,13 +99722,14 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "Zentropi CoPE is a ROOST Model Community partner model, distributed through the RMC. It ships as a LoRA adapter merged into a Gemma base rather than pulled directly, so no meaningful download count exists, and Zentropi publishes no other usage figure.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
-                "shows": "23 likes; downloads 0 over the trailing 30 days; no usage figure published anywhere on the card.",
-                "accessed": "2026-08-13",
+                "shows": "Card: \"Downloads last month - Downloads are not tracked for this model\"; one Space (roosttools/llm_moderation_testing) uses it; no usage figure is published.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "e7c97fc6e5b6b3a70d5662a77352da9fbafbb6869e4b1b7e11a189b23170854c"
+                "content_sha256": "70ff315d17e7904c146a288f48738ac464bfc5330aecdb99cdc7e9e1c7a5a5e9"
               }
             ]
           },
@@ -99863,17 +99766,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation reads Hugging Face downloads of zentropi-ai/cope-a-9b (level 1) on both readings, and the record's note rejects that channel as a measure of this product: the model ships as a LoRA adapter merged into a Gemma base, so the repository is not how it is used. Settling it needs the measurement-population decision in docs/reference/adoption.md made for zentropi-ai/cope-a-9b. If it fails, the artifact should stop routing the band (update-product); if it passes, the band moves to level 1 on it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "Described in arXiv 2512.18027."
         },
@@ -101913,13 +101807,14 @@
             "confidence": "medium",
             "banded_quantity": "production deployment at named platforms and the v1.0 post's 50M+ figure; the previous '400M daily actions' is no longer carried by any cited source",
             "note": "Osprey's own README lists no adopters, so the repository is not where the adoption evidence sits. ROOST's launch announcement documents production use instead, naming Discord, Bluesky and the Matrix.org Foundation as deployments, though it gives no count of users or installs.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://roost.tools/blog/introducing-osprey-v1-0-open-source-infrastructure-for-real-time-abuse-mitigation/",
                 "shows": "V1.0 announcement, published January 28, 2026. Osprey 'processes over 50M events daily in production environments like Bluesky and is designed for real-time incident response'. Named production users with attributed quotes - Discord (Savannah Badalich, Global Head of Product Policy), Bluesky (Aaron Rodericks, Head of Trust and Safety) and The Matrix.org Foundation (Jim Mackenzie, VP of Trust & Safety). No download, install or customer count is published.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "d6a88d5ed04eb1fe19fff71b8c8bbdd60ffe36fb3d226608bd8b549f144d2dc2"
+                "content_sha256": "7e7ade818f3a0ea2151422fa37862cf596707eaabc8e0122b5b50c4225f86a25"
               },
               {
                 "url": "https://github.com/roostorg/osprey",
@@ -101996,17 +101891,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on roostorg/osprey (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -102101,6 +101987,7 @@
             "confidence": "medium",
             "banded_quantity": "adopter deployments including Notion and carried-over Cove clients; the 150M+ messages figure is one adopter's platform, not Coop's own use",
             "note": "Coop's adoption is read from named production deployments, not repository stars: Cove customers, including Notion, carried over when Coop was open-sourced from Cove, and the 1.0 announcement names a community messaging platform and an unnamed large-scale adopter. The repository's own production list is empty, so these deployments are known only through ROOST's announcements, not the codebase.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://github.com/roostorg/coop",
@@ -102112,16 +101999,16 @@
               {
                 "url": "https://roost.tools/blog/coop-1-0-world-s-first-free-open-source-child-safety-infrastructure-for-every-platform/",
                 "shows": "Coop 1.0 announcement, published June 09, 2026, following v0 in February. Names Kyodo, 'a community-first messaging platform with over 150 million messages sent', with a CEO quote; 'One Coop adopter, which serves tens of millions of users across consumer and enterprise contexts, estimates an ~95% reduction in annual safety tooling costs'; and NCMEC CyberTipline reporting as a shipped integration. No user, install or customer count for Coop itself.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "af3831bafcd055284fc68b8c32ec8f12869e547e7fdd9508298f2c283fcd7507"
+                "content_sha256": "7c5b437ed3729eb18bac48e1ae3f3c2cce78e52e14eeb3eaeda3197632a6e446"
               },
               {
                 "url": "https://roost.tools/blog/roost-announces-coop-and-osprey-free-open-source-trust-and-safety-infrastructure-for-the-ai-era/",
                 "shows": "Notion quoted as 'an early adopter of Cove's technology', with Dan Pyykonen, Head of Platform Security, on Notion's Trust and Safety program.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "53f39ec42be296849387cee26f1ea346c13d0ff3068e4c414d426d57a89af308"
+                "content_sha256": "f1ae2955f9f32a6ca1d0f6f4d9908f35313936001aad4e7345dd132c21b410e7"
               }
             ]
           },
@@ -102170,17 +102057,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on roostorg/coop (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -102288,7 +102166,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-10-07",
-                "reason": "No fetched OpenAI page carries a traction figure or claim behind the level 4 reported-traction reading. No reconciliation can settle this: reported traction has no route to measure it. Settling it needs a sourced claim, or an instrument decision made by a person."
+                "reason": "Level 4 (reported_traction) is kept under R-2026-10-08-q until a figure turns up: no fetched OpenAI page carries a traction figure or claim behind it, and no reconciliation measures reported traction. Settling it needs a sourced traction claim for the moderation endpoint, and then the date."
               }
             ]
           }
@@ -102398,7 +102276,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-10-07",
-                "reason": "No fetched Microsoft page states a usage figure or claim behind the level 3 reported-traction reading. No reconciliation can settle this: reported traction has no route to measure it. Settling it needs a sourced traction claim, or an instrument decision made by a person."
+                "reason": "Level 3 (reported_traction) is kept under R-2026-10-08-q until a figure turns up: no fetched Microsoft page states a usage figure or traction claim behind it, and no reconciliation measures reported traction. Settling it needs a sourced traction claim for Azure AI Content Safety, and then the date."
               }
             ]
           }
@@ -103885,13 +103763,14 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "LangSmith is the default observability platform for the LangChain ecosystem, and the vendor names an enterprise roster including Klarna, Lyft and Coinbase, but publishes no user, customer or download count. The langsmith PyPI package is excluded because it is a hard dependency of langchain-core, so its downloads measure LangChain installs rather than LangSmith use.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.langchain.com/langsmith",
-                "shows": "Named enterprise roster still published - Klarna, Lyft, LinkedIn, Coinbase, Nvidia, Workday, Rakuten, Elastic and Harvey among them - and positioned as the LangChain-ecosystem observability platform. No user, customer or download count is stated anywhere on the page, and no \"25+\" figure appears. The URL now redirects to /langsmith/observability.",
-                "accessed": "2026-08-14",
+                "shows": "The customer logo strip still carries Klarna, Lyft and Coinbase among others (logo images and alt text), positioned as the LangChain-ecosystem observability platform. No user, customer or download count is stated.",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "046b9dce62b37762fe777db0bfd87a26c316e72e180a7778835d2cf32ebc5d59"
+                "content_sha256": "20116c92c76e6d8c244b887c1b0cc792e19718660b39f54afd868eb5a7814fd5"
               }
             ]
           },
@@ -103934,17 +103813,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation reads PyPI downloads of langsmith (level 5) on both readings, and the record's note rejects that channel as a measure of this product: the package is a hard dependency of langchain-core, so its downloads count LangChain installs. Settling it needs the measurement-population decision in docs/reference/adoption.md made for langsmith. If it fails, the artifact should stop routing the band (update-product); if it passes, the band moves to level 5 on it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -126899,6 +126769,7 @@
             "confidence": "medium",
             "banded_quantity": "GitHub stars (~8k), corroboration only; no download or user figure is published",
             "note": "Kata Containers is adopted as Kubernetes infrastructure through its runtimeclass integration, with Baidu naming it in production across several cloud services. The project publishes no download, install or user count and ships as release tarballs and a Helm chart rather than a countable registry, so GitHub stars serve only as corroboration.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://github.com/kata-containers/kata-containers",
@@ -126908,9 +126779,9 @@
               {
                 "url": "https://katacontainers.io/",
                 "shows": "The project site publishes no usage, download or deployment figure. It names one production user in prose - \"Baidu is running Kata Containers in production to support Function Computing, Cloud Container Instances, and Edge Computing\" - and otherwise asks operators to \"Take the Kata Containers User Survey\", which is the project asking for the number rather than reporting one.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "dcd594a9b40c82506bd48ff80bebc1f2af084e3f7ab1054edc88ee74e7b024e6"
+                "content_sha256": "0725974b035239e797a6e6c1c7f67e5bf4168d4c8f66e8ed76de5a8df3626582"
               },
               {
                 "url": "https://api.github.com/repos/kata-containers/kata-containers",
@@ -126922,7 +126793,7 @@
               {
                 "url": "https://raw.githubusercontent.com/kata-containers/kata-containers/main/README.md",
                 "shows": "Distribution is by release tarball and the kata-deploy Helm chart on Kubernetes, or build from source - no package-registry channel that would yield a countable download figure.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
                 "content_sha256": "326a9123397a42cd6b56acfce60884c119f5b70250f2ec62ae3bde877ff03895"
               }
@@ -126986,17 +126857,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on kata-containers/kata-containers (level 2) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           },
           "version_note": "The repository landing page does not state governance; the OpenInfra Foundation stewardship is established on the project site instead."
         },
@@ -128530,7 +128392,7 @@
               {
                 "axis": "adoption",
                 "since": "2026-09-29",
-                "reason": "The recorded adoption of usage_volume at level 5 (>10M) for Google Cloud Run rests on no absolute count. The only fresh source, Google's Next '26 Cloud Run blog, gives relative growth plus a Replit figure of over 1 million live projects. A maintainer decision to re-record it as reported_traction and re-band it would settle this, as would a Google-published count of active Cloud Run users, services or requests above 10M."
+                "reason": "Level 5 is kept under R-2026-10-08-q until a figure turns up: the record claims usage_volume (>10M) but rests on no absolute count. The only fresh source, Google's Next '26 Cloud Run blog, gives relative growth and a Replit figure of over 1 million live projects. Settling it needs a Google-published count of active Cloud Run users, services or requests, and the band re-read against it."
               }
             ]
           }
@@ -128875,13 +128737,14 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "WebContainers powers StackBlitz's own IDE and is embedded by named projects such as SvelteKit, Astro, Scrimba, egghead.io and Xata for in-browser coding. Neither StackBlitz nor webcontainers.io discloses a download, user or session figure, so the reading comes from those integrations alone; the npm client's download count is not used, since npm is not the product's own channel.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://webcontainers.io/",
-                "shows": "WebContainers used by SvelteKit, Astro, Scrimba, egghead.io, Xata, Suborbital, re-tune and Touchy Studios (named integrations); no quantitative usage figure",
-                "accessed": "2026-08-13",
+                "shows": "WebContainers used by SvelteKit, Astro, Scrimba, egghead.io, Xata, Suborbital and Touchy Studios (named integrations); no quantitative usage figure",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "9b41968dec5ce3c459e6f6cf23a757f6db3d3b9b9d12169a6da573f12d8358df"
+                "content_sha256": "0159efd84a28af00821f81001053e32593bad7524caf5a78fbe66de6e79ab222"
               }
             ]
           },
@@ -128929,17 +128792,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on stackblitz/webcontainer-core (level 2) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-08"
           }
         },
         {
@@ -129575,8 +129429,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on openpcc/openpcc (level 1) on both readings, while the record bands on reported traction (level 2). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
+                "since": "2026-10-08",
+                "reason": "The GitHub repository no longer routes the band: R-2026-10-08-p keeps reported traction and declares the repository not_primary_channel, so the axis is dated by re-reading its traction source. The 2026-10-08 re-read confirmed the Cloud Security Alliance launch post still names no adopter, but the banded quantity names the GitHub star count (948), and api.github.com returned 403. Settling it needs the star count re-read, and then the date."
               }
             ]
           },
@@ -136849,13 +136703,14 @@
             "signal_type": "reported_traction",
             "confidence": "high",
             "note": "NVIDIA sells the kit worldwide through authorized distributors, backed by a large Jetson developer community and broad global distribution.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/",
                 "shows": "\"It can be purchased through NVIDIA authorized distributors worldwide\" plus a Where to Buy partner list; no price is printed on the page",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "bfc0f0b3900815dcad4c93c9b773b1eaafd9be69c143f0e1002f9fd1f507d952"
+                "content_sha256": "cd04d86f7174213ff7c3a56f07122cd58a18d6b3534d0e158673c41cfc8b23c2"
               }
             ]
           },
@@ -136883,16 +136738,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on OE4T/meta-tegra (level 1) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -136948,13 +136798,14 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "Available as a dev kit and production module through NVIDIA's distributor network with a large Jetson community, but the high price targets professional robotics.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
-                "shows": "\"Jetson AGX Orin is available in 64GB, 32GB, and Industrial versions\" plus the AGX Orin Developer Kit and a partner ecosystem of carrier boards and systems",
-                "accessed": "2026-08-13",
+                "shows": "\"Jetson AGX Orin is available in 64GB ,32GB, and Industrial versions\" plus the AGX Orin Developer Kit and a partner ecosystem of carrier boards and systems",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "99efa728010da0ac785f54233fbef4e621123d6f61ca67f2df5deee3d3df3fe2"
+                "content_sha256": "16cb316139cda95620f85e65dcb3f648de5ebb1ed6a934a7cd410fa848dd8db0"
               }
             ]
           },
@@ -136979,19 +136830,13 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-29",
-            "basis": "commit",
+            "date": "2026-10-08",
+            "basis": "partial",
             "unconfirmed_axes": [
-              "adoption",
               "capability",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on OE4T/meta-tegra (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "capability",
                 "since": "2026-09-29",
@@ -137052,13 +136897,14 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "Production SO-DIMM module sold through NVIDIA's distributor network with strong Jetson community; popular in commercial drones/robotics but not mass-market. The family page lists \"Jetson Orin NX is available in 16GB and 8GB\" as production modules routed through the Jetson partner ecosystem, with no retail channel of its own.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
                 "shows": "\"Jetson Orin NX is available in 16GB and 8GB\" production modules, sold through the Jetson partner ecosystem",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "99efa728010da0ac785f54233fbef4e621123d6f61ca67f2df5deee3d3df3fe2"
+                "content_sha256": "ac873126dd3558c9b41307742060b96f293a32ef70c118dbce3f320b8a5a4c21"
               }
             ]
           },
@@ -137083,19 +136929,13 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-09-29",
-            "basis": "commit",
+            "date": "2026-10-08",
+            "basis": "partial",
             "unconfirmed_axes": [
-              "adoption",
               "capability",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on OE4T/meta-tegra (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "capability",
                 "since": "2026-09-29",
@@ -137174,11 +137014,12 @@
             "signal_type": "reported_traction",
             "confidence": "high",
             "note": "Orange Pi 5 sells directly through AliExpress, Amazon and the vendor's own Xunlong store across the 4GB, 8GB and 16GB SKUs, priced from about $69 to $115, backed by a large third-party software and community ecosystem.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html",
                 "shows": "\"Aliexpress Store BUY\", \"Amazon Store BUY\", Xunlong Store and Orange Pi Store links against the 4GB/8GB/16GB SKUs",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
                 "content_sha256": "9477dddc0147a7932d0959d44d7e687e5d09d047b76aa181786e08c88917fc94"
               },
@@ -137210,19 +137051,13 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-29",
-            "basis": "commit",
+            "date": "2026-10-08",
+            "basis": "partial",
             "unconfirmed_axes": [
-              "adoption",
               "capability",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on orangepi-xunlong/orangepi-build (level 2) on both readings, while the record bands on reported traction (level 5). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "capability",
                 "since": "2026-09-29",
@@ -137300,20 +137135,21 @@
             "signal_type": "reported_traction",
             "confidence": "high",
             "note": "The board is sold globally through authorized distributors, including AmeriDroid at $289.95, and carries 15 or more third-party OS ports such as Armbian, Arch Linux, DietPi and Batocera. A single distributor's stock running low does not by itself indicate a discontinuation.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://ameridroid.com/products/rock5-model-b",
                 "shows": "ROCK 5 Model B listing live at an authorized US distributor, $289.95, with \"Sold out\" against the RAM variants",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "c7089f9d114cd738cbd5fb155da7279fe780ea6bf73f0cc19869a3c0a61a0f5c"
+                "content_sha256": "c2fa23182ef94b5bc6d4d90363c7d4a3287c3189aec33d38b134e6b87f43c113"
               },
               {
                 "url": "https://docs.radxa.com/en/rock5/rock5b/download",
                 "shows": "third-party OS images listed for ROCK 5B including Armbian, Arch Linux, DietPi, RebornOS, openFyde and Batocera",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "5be2c030020841b46a9db971a60695cb5e30415494eabed3d8d53e166dbd4ec5"
+                "content_sha256": "6d30cfaf7359ac19ed8c6d55ae8b30445860e418b27e5ca6175d7956a5c30e12"
               }
             ]
           },
@@ -137341,16 +137177,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on radxa-repo/bsp (level 1) on both readings, while the record bands on reported traction (level 5). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -137424,20 +137255,21 @@
             "signal_type": "reported_traction",
             "confidence": "high",
             "note": "Khadas sells the Edge2 directly with a distributor programme, and it is also stocked on Amazon US and Newegg, backed by an active community forum and mainline Armbian support. An independent Armbian comparison ranks it alongside four other RK3588 boards, but its reach still trails Raspberry Pi-class platforms.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.khadas.com/edge2",
                 "shows": "Buy Now against Basic (8GB LPDDR4X + 32GB eMMC) and Pro (16GB + 64GB) SKUs, plus a Distributor Program link",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "c337940ef0497a6efa3d2b77da5a44b2c3502a764107f68bf046abd6c8a98029"
+                "content_sha256": "e8a5ae78bf15893a9a0b147a7bb7f365fd05eaf3c6cc4285e3869dd4c7f5c9d4"
               },
               {
                 "url": "https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/",
                 "shows": "independent community comparison table placing \"Khadas Edge 2 Pro, Rockchip RK3588S, 16 GB LPDDR4X\" against four other RK3588 boards",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "2db7eb01547612cc0257308c05c7d80607c84d2cb6b2d692a7121897a90456f3"
+                "content_sha256": "33d5a1f6fa1831344e586d7225e6403e5fcc92c5e7b5dc5e32efd06ee217e8d3"
               },
               {
                 "url": "https://www.amazon.com/khadas-Computer-RK3588S-Portable-Compact/dp/B0BFVSC2D5",
@@ -137470,16 +137302,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on khadas/fenix (level 1) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -137554,13 +137381,14 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "In stock at $70.00 with volume pricing at Seeed and orderable via TI, backed by the established BeagleBoard.org community, though recent (2024) so installed base trails Raspberry Pi. The AM67A it is built on is ACTIVE at TI with evaluation boards in stock.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.seeedstudio.com/BeagleYr-AI-beagleboard-orgr-4-TOPS-AI-Acceleration-powered-by-TI-AM67A.html",
                 "shows": "$70.00, \"In stock\"",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "c4c536f7f6f5746f1182721bf5c51bbad54a5f95181f75f0b25d0d408e77c6c9"
+                "content_sha256": "602cf75071b7ae205a36fae6f674260f4355908048db9207c57898c3ba212c0d"
               }
             ]
           },
@@ -137595,16 +137423,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on beagleboard/beagley-ai (level 1) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -137685,13 +137508,14 @@
             "confidence": "high",
             "banded_quantity": "the multi-vendor SBC set the SoC powers, not units shipped of the chip",
             "note": "Powers a large multi-vendor set of single-board computers and modules, including Orange Pi, Radxa, Khadas, FriendlyELEC and Firefly, and is broadly supported in community Linux. Armbian's community comparison tabulates five RK3588 and RK3588S boards from five different vendors.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/",
                 "shows": "comparison table of Khadas Edge 2 Pro, NanoPi R6S, Radxa Rock5B, Mekotronics R58 Mini and R58X-4G and Orange Pi 5, all on Rockchip RK3588 or RK3588S",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "2db7eb01547612cc0257308c05c7d80607c84d2cb6b2d692a7121897a90456f3"
+                "content_sha256": "558f8dbb564c008f4f48059a3d068e45db04af33fae618a100240eebe54665b4"
               }
             ]
           },
@@ -137733,16 +137557,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on airockchip/rknn-toolkit2 (level 2) on both readings, while the record bands on reported traction (level 5). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -137821,13 +137640,16 @@
             "reach": "broad",
             "signal_type": "reported_traction",
             "confidence": "high",
-            "banded_quantity": "a vendor-reported user count (100K+) that is not re-derivable — hailo.ai answers 403",
+            "banded_quantity": "a vendor-reported user count (>100K) for the software suite, not an active count",
             "note": "Hailo-8 modules are stocked by independent distributors including Waveshare, Geniatech, AAEON/UP and Advantech, and HailoRT remains an active open-source project. Hailo also cites a large user base, but that figure comes only from the vendor.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
-                "shows": "vendor claim of >100K users and hundreds of customer products. Not re-fetchable - hailo.ai answers HTTP 403 to every automated request - so the claim keeps its recorded read and is not counted as refreshed",
-                "accessed": "2026-06-22"
+                "shows": "Vendor claim: \"Robust software suite endorsed by >100K users and hundreds of customer products already in deployment.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "4c2a8aadf5f1e0f476ad6789694ec2ffcef8836f56a734f21bc1f28516d75dcd"
               },
               {
                 "url": "https://www.waveshare.com/hailo-8.htm",
@@ -137839,9 +137661,9 @@
               {
                 "url": "https://www.geniatech.com/product/aim-m-h8/",
                 "shows": "a second, independent module vendor shipping the same silicon - \"Geniatech AIM-M-H8 is an M.2 AI acceleration module powered by the Hailo-8 NPU\"",
-                "accessed": "2026-08-14",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "1014072e0b7ecd5bf4e9abaa4d3bba3bb667102c7f32fd85294ef0b89b6dee03"
+                "content_sha256": "36362a5cf0c6a1a296d1e14d015f5900b8f1a53a43948006ea10b2e46c59c3ba"
               },
               {
                 "url": "https://api.github.com/repos/hailo-ai/hailort",
@@ -137897,16 +137719,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on hailo-ai/hailort (level 1) on both readings, while the record bands on reported traction (level 4). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -137987,25 +137804,28 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "Hailo-10H is a newer generative-AI part, sold through at least two independent module vendors (AAEON/UP and Geniatech), with a dedicated GenAI model-zoo repository backing it. It has a smaller install base than the Hailo-8, whose runtime repository sees much more activity.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
-                "shows": "productized, purchasable M.2 generative-AI module. Not re-fetchable - hailo.ai answers HTTP 403 to every automated request - so it keeps its recorded read",
-                "accessed": "2026-06-22"
+                "shows": "Product page with a How to Buy section: \"You can buy small quantities online from one of our global distributors or find a distributor near you for bulk orders.\"",
+                "accessed": "2026-10-08",
+                "http_status": 200,
+                "content_sha256": "3b72f9a7b54829f60dcd176fa459b75aca128cb2f08dbf3522fe608557636296"
               },
               {
                 "url": "https://up-board.org/hailo-10h-m2-ai-acceleration-module/",
                 "shows": "AAEON/UP shipping the Hailo-10H M.2 module as a listed product with full specifications",
-                "accessed": "2026-08-14",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb"
+                "content_sha256": "3fc21c23c21312670b2b67051cec4536bf7683740e1da5cfe7400806de081e49"
               },
               {
                 "url": "https://www.geniatech.com/product/aim-m-h10/",
                 "shows": "\"Hailo-10 M.2 AI Accelerator Card\" - a second independent vendor productizing the part",
-                "accessed": "2026-08-14",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242"
+                "content_sha256": "7f1cdd0975ae4349ddd58f3239c065d93b62f5ec15f10c6763022918405f5d1d"
               },
               {
                 "url": "https://api.github.com/repos/hailo-ai/hailo_model_zoo_genai",
@@ -138052,16 +137872,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on hailo-ai/hailo_model_zoo_genai (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -138194,8 +138009,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on google-coral/libedgetpu (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
+                "since": "2026-10-08",
+                "reason": "The GitHub repository no longer routes the band: R-2026-10-08-p keeps reported traction and declares the repository not_primary_channel, so the axis is dated by re-reading its traction source. The only cited source, the google-coral organization listing on api.github.com, returned 403 on 2026-10-08. Settling it needs that listing re-read, or a fetchable page carrying the Coral Dev Board's traction, and then the date."
               },
               {
                 "axis": "capability",
@@ -138305,8 +138120,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on axelera-ai-hub/voyager-sdk (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
+                "since": "2026-10-08",
+                "reason": "The GitHub repository no longer routes the band: R-2026-10-08-p keeps reported traction and declares the repository not_primary_channel, so the axis is dated by re-reading its traction source. Re-read on 2026-10-08, the axelera.ai homepage still has its Shop link but no longer carries the ASRock Industrial announcement the record cites. Settling it needs a current source for the commercial deployment claim, such as a partner integration or customer announcement, and then the date."
               },
               {
                 "axis": "capability",
@@ -138377,13 +138192,14 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "The module retails at $149, and independent reviews, a 2025 industry award and an active GitHub organization point to growing but emerging traction.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power",
                 "shows": "\"The MX3 M.2 module is available for $149 USD\"; a technology start-up originating from the University of Michigan; no distributor is named",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "0918df1ac7c17e40b3119558e772225fd427599ea6f2fa5a993c419060d2f7c6"
+                "content_sha256": "bea50cf7bb17306962f5370be2f84adf66938f15b6e267b6cd9e80b434cd10f3"
               },
               {
                 "url": "https://github.com/memryx/MxAccl",
@@ -138425,16 +138241,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on memryx/MxAccl (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -138748,20 +138559,21 @@
             "signal_type": "reported_traction",
             "confidence": "high",
             "note": "ACTIVE production part available from TI and distributors, and the basis of the widely sold BeagleY-AI board, giving solid commercial and community reach.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://www.beagleboard.org/boards/beagley-ai",
                 "shows": "TI's AM67A Arm-based vision processor is the BeagleY-AI processor, with the dual C7x DSP and MMA rated at 4 TOPs.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "bdd173a87d3c94b1b3965b244c0e076b89045edeee1c54b2d4a015853d228d03"
+                "content_sha256": "54b183ab24b48b831837a02b7fcdbb39d44f1a4d91833534aa99dcf9ac27c303"
               },
               {
                 "url": "https://www.ti.com/product/AM67A",
                 "shows": "status ACTIVE with evaluation boards \"In stock\" and an Order now path",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "147b265e34a7b894413ce9cfc9883a4594de7d689d575a46948de2265eafaf9a"
+                "content_sha256": "220cae680fe479b970a0b8ca04ec5c605a52181faffd7228ac4547846ec8c6fd"
               }
             ]
           },
@@ -138789,16 +138601,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on TexasInstruments/edgeai-tidl-tools (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
@@ -138973,6 +138780,7 @@
             "signal_type": "reported_traction",
             "confidence": "medium",
             "note": "Sold globally via AliExpress and Taobao with an active MaixPy/MaixHub community, but reach is concentrated among hobbyist and RISC-V edge-AI developers. MaixPy is active and now banners a successor part (\"MaixCam 2 is LIVE\") while still listing MaixCAM and MaixCAM-Pro as supported platforms, and the wiki carries live Taobao and AliExpress purchase links.",
+            "last_verified": "2026-10-08",
             "sources": [
               {
                 "url": "https://github.com/sipeed/MaixPy",
@@ -138984,9 +138792,9 @@
               {
                 "url": "https://wiki.sipeed.com/hardware/en/maixcam/maixcam.html",
                 "shows": "Purchase section with Sipeed Taobao and Sipeed AliExpress links",
-                "accessed": "2026-08-13",
+                "accessed": "2026-10-08",
                 "http_status": 200,
-                "content_sha256": "98cfa748b6715a0a8eae56bb6520f503a18b33e43820f373258dd97469db62da"
+                "content_sha256": "bb3cce3fb05ece2e1aff0d667037ab00613dfdda40ebe9abf16cbbc934feb3a3"
               }
             ]
           },
@@ -139014,16 +138822,11 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-08",
             "unconfirmed_axes": [
-              "adoption",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Not a re-band. The reconciliation's applicable route reads GitHub stars on sipeed/MaixPy (level 1) on both readings, while the record bands on reported traction (level 3). Stars and reported traction are different instruments, so neither reading moves the other. Settling it needs the reported-traction source re-read for a date, and a decision on whether that repository says anything about the product's use (update-product)."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-29",
