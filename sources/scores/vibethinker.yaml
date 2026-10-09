@@ -1,32 +1,62 @@
 product: vibethinker
 openness:
-  score: 3
-  class: open_weights
+  score: 2
+  class: restricted
   components:
     weights:
       value: open
       detail: MIT
     data:
-      value: partial
-      detail: RL/SFT data not fully released
+      value: described
+      detail: the card describes SFT, RL and self-distillation stages but releases no training data
     license:
     - name: MIT
+      detail: the model repository
+    - name: Qwen-Research-License
+      detail: inherited from the Qwen2.5-Coder-3B base, non-commercial
     context:
       base:
         value: open_weights
         detail: Qwen2.5
   confidence: medium
-  note: MIT-licensed weights, but a fine-tune of Qwen2.5-Coder-3B, whose own Qwen Research License is not
-    OSI-approved, released without the training data or pipeline, so open weights rather than open source.
-  raw: weights:open(MIT);base:open_weights(Qwen2.5);data:partial(RL/SFT data not fully released);license:MIT
+  note: The weights ship under MIT, but VibeThinker is fine-tuned from Qwen2.5-Coder-3B, whose Qwen Research
+    License grants rights for non-commercial purposes only and asks commercial users to request a license.
+    That restriction travels with the weights to the fine-tune, so commercial use is not available. The
+    card describes the training stages but releases no training data.
+  raw: weights:open(MIT);data:described(the card describes SFT, RL and self-distillation stages but releases
+    no training data);license:MIT(the model repository)+Qwen-Research-License(inherited from the Qwen2.5-Coder-3B
+    base, non-commercial);base:open_weights(Qwen2.5)
+  last_verified: '2026-10-08'
   sources:
-  - url: https://huggingface.co/WeiboAI/VibeThinker-3B
-    shows: '`license:mit` in the card data and `"gated":false`; `base_model - Qwen/Qwen2.5-Coder-3B`; no
-      RL/SFT mixture and no training pipeline published'
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/WeiboAI/VibeThinker-3B
+    shows: Hub metadata carries the tags "base_model:finetune:Qwen/Qwen2.5-Coder-3B" and "license:mit",
+      reports the model as not gated, and declares no dataset on the card.
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: c9a7309f31307ea11639a6ecd2a026703844139653a6987371c9bb50c05ae63d
-    establishes: [weights, data, license]
+    content_sha256: 70ed2f4ac580fdb17d27a317b39178ef5e30e263adb7e9cafd4b95c58ca1ed3f
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/WeiboAI/VibeThinker-3B/raw/main/README.md
+    shows: 'Model card: "The model repository is licensed under the MIT License." Its training section describes
+      "Curriculum-based two-stage SFT" and "Multi-domain Reasoning RL" without linking any training data.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 5cba2cd8b42b85c382a6d90a56acc060a30ee8bac64c679745355a7e2c0ac958
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/Qwen/Qwen2.5-Coder-3B/raw/main/LICENSE
+    shows: The base model's license is the "Qwen RESEARCH LICENSE AGREEMENT", which grants rights "FOR NON-COMMERCIAL
+      PURPOSES ONLY" and says "If you are commercially using the Materials, you shall request a license
+      from us."
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ef52482bb785733093dc9a2e8edd8e764c77d12d8e9d8f10a80c9b547d32d0f9
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <10K

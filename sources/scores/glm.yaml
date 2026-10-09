@@ -5,44 +5,86 @@ openness:
   components:
     weights:
       value: open
-      detail: MIT
+      detail: GLM-5.3 License
     data:
       value: closed
     code:
-      value: open
-      detail: inference
+      value: partial
+      detail: inference and deployment code only
     license:
-    - name: MIT
-      detail: OSI
-  governing_release: glm-5-2
+    - name: GLM-5.3-License
+      detail: commercial use permitted, except that a model-as-a-service operator above USD 10 billion in
+        annual revenue must first pass a Z.ai security review
+    context:
+      sibling-sku:
+        value: GLM-5.3-Flash
+        detail: a smaller, separately trained model in the same release, MIT
+  governing_release: glm-5-3
   confidence: high
-  note: 'GLM-5.2, the current release, ships MIT weights, but the training data is closed and no training
-    pipeline is published. Z.ai relicensed partway through the family: GLM-4 and GLM-4-9B carried the more
-    restrictive GLM-4 License, requiring commercial-use registration and a "Built with GLM" attribution,
-    before GLM-4.6 and later releases moved to plain MIT.'
-  raw: weights:open(MIT);data:closed;code:open(inference);license:MIT(OSI)
+  note: 'GLM-5.3, the current release, ships its weights under the custom GLM-5.3 License. It reads like
+    MIT with one bound: a company running a model-as-a-service business with more than USD 10 billion in
+    annual revenue must pass a Z.ai security review before any commercial use. The training data is closed
+    and only inference and deployment code is published. GLM-5.2 and the smaller GLM-5.3-Flash ship under
+    plain MIT, and the GLM-4 releases carried the GLM-4 License.'
+  raw: weights:open(GLM-5.3 License);data:closed;code:partial(inference and deployment code only);license:GLM-5.3-License(commercial
+    use permitted, except that a model-as-a-service operator above USD 10 billion in annual revenue must
+    first pass a Z.ai security review);sibling-sku:GLM-5.3-Flash(a smaller, separately trained model in
+    the same release, MIT)
+  last_verified: '2026-10-08'
   sources:
+  - url: https://huggingface.co/zai-org/GLM-5.3/raw/main/LICENSE
+    shows: The "GLM-5.3 License" grants rights "to deal in the Software without restriction" but requires
+      that a Model as a Service operator whose revenue "exceeds 10 billion US dollars" must "pass Z.AI's
+      security review before using the Software or its derivative works for any commercial purpose".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 96e1622099fc9d6b70c9760f007d99e66d7497eec636b63c60fe208401e9170c
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/zai-org/GLM-5.3/raw/main/README.md
+    shows: 'Model card front matter declares "license: other" and "license_name: glm-5.3" and no training
+      dataset; the card says "GLM-5.3 uses the same base model as GLM-5.2" and that every gain comes from
+      post-training.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ed1c0a4563c437a32f8953d637a1db9bd831de1b24bd3062a5ace9e04340b1cf
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/zai-org/GLM-5/main/README.md
+    shows: 'The GLM-5 repository README covers inference and deployment for the family: "GLM-5.3 uses the
+      same base model as GLM-5.2" and its download table links "https://huggingface.co/zai-org/GLM-5.3".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 78ebb1936e94a4c4412bca2abc1c9cbe599455df12fb1373e75c495cb043651e
+    establishes:
+    - code
+  - url: https://huggingface.co/zai-org/GLM-5.3-Flash/raw/main/LICENSE
+    shows: 'GLM-5.3-Flash ships under the plain MIT text: "MIT License" and "Copyright (c) 2026 Z.AI Co.,
+      Ltd".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 30b85b6b9659f2e78aa259f8faf5d920a68dee7c9ced3fa6dba1f19f2bc4fca1
   - url: https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE
-    shows: '"MIT License / Copyright (c) 2026 Zhipu AI / Permission is hereby granted, free of charge
-      ... without restriction" - the unmodified MIT text.'
+    shows: '"MIT License / Copyright (c) 2026 Zhipu AI / Permission is hereby granted, free of charge ...
+      without restriction" - the unmodified MIT text.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 33cc77e2eea44d80990be22430aadee6ef78df2854f0dee99aa36c272569215c
-    establishes: [license]
+    establishes:
+    - license
   - url: https://huggingface.co/api/models/zai-org/GLM-5.2
-    shows: 'card license `mit`, `gated: false`, `private: false`, 2,662,328 downloads and 4,944 likes;
-      no corpus declared on the card.'
+    shows: 'card license `mit`, `gated: false`, `private: false`, 2,662,328 downloads and 4,944 likes; no
+      corpus declared on the card.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 8e5a09b75c4c1dfd1104da3303ff61fc55526981554ff390a3d81a7d0063d573
-    establishes: [weights, data, license]
-  - url: https://api.github.com/repos/zai-org/GLM-5
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 6,943 stars, description
-      "GLM-5: From Vibe Coding to Agentic Engineering". Inference and deployment code, published.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: cf67038b2f1a7eb9bbc452f883e9be11f6cdf6121d5169fbff4555a311c1af95
-    establishes: [code]
+    establishes:
+    - weights
+    - data
+    - license
 adoption:
   level: 4
   reach: 1M-10M

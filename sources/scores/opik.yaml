@@ -1,7 +1,7 @@
 product: opik
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
@@ -9,21 +9,59 @@ openness:
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: a self-hosted install lacks user management, which Comet's Enterprise plan carries with single
+        sign-on, service accounts and view-only users
     free_text:
     - self-hostable-full-stack
     context:
       commercial:
-        value: Comet-cloud-hosting
-        detail: not a gated core
+        value: Comet-Enterprise
+        detail: flexible deployments with single sign-on, service accounts and view-only users
   confidence: high
-  note: Opik's server, web application and evaluation components are Apache-2.0 licensed, and the README
-    says the full platform can be self-hosted with no Enterprise sales conversation required. Comet's self-hosting
-    overview says a self-hosted install includes all Opik features, including tracing and evaluation, but
-    not user management.
-  raw: license:Apache-2.0(OSI);source:public;self-hostable-full-stack;commercial:Comet-cloud-hosting(not
-    a gated core);core-gated:ungated
+  note: 'Opik''s server, web application and evaluation components are Apache-2.0 and self-hostable, and
+    the README calls the self-hosted build the full platform. Comet''s self-hosting overview qualifies that:
+    a self-hosted install has all Opik features but not user management. Comet''s Enterprise plan carries
+    it, with single sign-on, service accounts and view-only users. A commercial tier holding back part of
+    the product makes this open core.'
+  raw: license:Apache-2.0(OSI);source:public;core-gated:gated(a self-hosted install lacks user management,
+    which Comet's Enterprise plan carries with single sign-on, service accounts and view-only users);commercial:Comet-Enterprise(flexible
+    deployments with single sign-on, service accounts and view-only users);self-hostable-full-stack
+  last_verified: '2026-10-08'
   sources:
+  - url: https://raw.githubusercontent.com/comet-ml/opik/main/LICENSE
+    shows: Repository LICENSE file, the full Apache License, Version 2.0 text with "Copyright (c) Comet
+      ML, Inc".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 0236cf0195e033d15c120e610d44943e8e478ffed5d60fbba1b5a6b96e778a47
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/comet-ml/opik/main/README.md
+    shows: README states "Opik is licensed under Apache 2.0." and calls the platform "Apache-2.0 licensed,
+      free to self-host the full platform".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: f4fffa79c792d196ae93d61ea7a3c503ff16821007543bb2ffda8b4ae3fcf716
+    establishes:
+    - license
+    - source
+  - url: https://www.comet.com/docs/opik/self-host/overview
+    shows: 'Self-hosting overview: "you get access to all Opik features including tracing, evaluation, etc
+      but without user management features".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a0c909a272bf752f5fd0acff76170b6b528a9c6e1c61d076313bf2cf94cce76c
+    establishes:
+    - core-gated
+  - url: https://www.comet.com/site/pricing/
+    shows: Comet pricing lists the open-source Opik build beside an Enterprise plan whose additions include
+      "Service accounts and view-only users" and "Single sign-on".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: c0c38f5538957dfb7b9702011248805c94d78b44012a2e1711f6d772ecbf8c7c
+    establishes:
+    - core-gated
   - url: https://github.com/comet-ml/opik
     shows: Repository README, carrying the same statement - "Apache-2.0 licensed, free to self-host the
       full platform" - alongside the tracing, LLM-as-a-judge, dataset and integration sections. 21,353 stars.
@@ -33,35 +71,6 @@ openness:
     establishes:
     - license
     - source
-    - core_gated
-  - url: https://raw.githubusercontent.com/comet-ml/opik/main/LICENSE
-    shows: Repository LICENSE file, the full Apache License, Version 2.0 text with "Copyright (c) Comet
-      ML, Inc".
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: 0236cf0195e033d15c120e610d44943e8e478ffed5d60fbba1b5a6b96e778a47
-    establishes:
-    - license
-    - source
-  - url: https://raw.githubusercontent.com/comet-ml/opik/main/README.md
-    shows: Repository README stating "Opik is licensed under Apache 2.0." and that the platform is "Apache-2.0
-      licensed, free to self-host the full platform" with the server, web application and evaluation components
-      self-hostable "without a commercial license".
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: f4fffa79c792d196ae93d61ea7a3c503ff16821007543bb2ffda8b4ae3fcf716
-    establishes:
-    - license
-    - source
-    - core-gated
-  - url: https://www.comet.com/docs/opik/self-host/overview
-    shows: Self-hosting overview page saying that when self-hosting "you get access to all Opik features
-      including tracing, evaluation, etc but without user management features".
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: 2cb3cb095c877a8c55b265c39d7c97932f5bceaddb52c44dff3d8c3291e283a7
-    establishes:
-    - core-gated
 adoption:
   level: 4
   reach: 1M-10M

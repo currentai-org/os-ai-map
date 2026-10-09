@@ -10,37 +10,75 @@ openness:
       value: public
     core-gated:
       value: ungated
+      detail: the default flash-attn build needs only PyTorch and einops; the closed nvidia-cutlass-dsl
+        is required only by the separately installed flash-attn-4 package
+    context:
+      optional-dependency:
+        value: nvidia-cutlass-dsl
+        detail: NVIDIA proprietary license, required by the optional flash-attn-4 package and not by the
+          default build
   confidence: high
-  note: The LICENSE file contains the BSD-3-Clause text. The repository is public and the README describes
-    no paid tier, enterprise edition or license-gated build, so the core is ungated.
-  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
+  note: The LICENSE file is BSD-3-Clause and the repository is public. The default flash-attn package builds
+    FlashAttention-2 from this source with only PyTorch and einops as dependencies. FlashAttention-4 ships
+    separately as flash-attn-4, which requires NVIDIA's proprietary nvidia-cutlass-dsl. Because that package
+    is optional rather than part of the default build, the closed dependency does not gate the core.
+  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated(the default flash-attn build needs only
+    PyTorch and einops; the closed nvidia-cutlass-dsl is required only by the separately installed flash-attn-4
+    package);optional-dependency:nvidia-cutlass-dsl(NVIDIA proprietary license, required by the optional
+    flash-attn-4 package and not by the default build)
+  last_verified: '2026-10-08'
   sources:
-  - url: https://github.com/Dao-AILab/flash-attention/blob/main/LICENSE
-    shows: LICENSE file is the verbatim BSD-3-Clause text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/LICENSE
+    shows: The LICENSE file is the BSD 3-Clause text, headed "BSD 3-Clause License" and continuing "Redistribution
+      and use in source and binary forms".
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 8c9ccb96c065e706135b6cbad279b721da6156e51f3a5f27c6b3329af9416d73
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/README.md
+    shows: README installs the default package with "pip install flash-attn --no-build-isolation" and documents
+      FlashAttention-4 as a separate package, "pip install flash-attn-4", imported with "from flash_attn.cute
+      import flash_attn_func".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 0dbaba56da1c8372d460956e2609bfb89acf8f3aadd65d132b1697d221069619
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/setup.py
+    shows: setup.py excludes "flash_attn.cute.*" from the default package and, under "# Build install_requires
+      based on platform", requires only "torch" and "einops" on CUDA.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: c71c6ff06167c9a2d6e0ac7c65f9d03c0335baff681b9d5c0e6f1bfad8a34642
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/flash_attn/cute/pyproject.toml
+    shows: The separate flash-attn-4 package, "Flash Attention CUTE (CUDA Template Engine) implementation",
+      lists "nvidia-cutlass-dsl>=4.6.2" among its dependencies.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ac4fdd3e237ea913f1f60aa5c4f93312f50afd4e37d790b9e12b15b1569e61fe
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/nvidia-cutlass-dsl/json
+    shows: 'PyPI metadata for nvidia-cutlass-dsl carries the classifier "License :: Other/Proprietary License".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 1e5dbdcd8a753d6309aaa01ae5a65dbf271e7b3fd0750c88823f6d939209cd63
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/Dao-AILab/flash-attention
-    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main - for
-      Dao-AILab/flash-attention.
+    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main
+      - for Dao-AILab/flash-attention.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: dc403608566e1ed6097bf6b3cd40da10d7b330abcb59bb098b68c32409fb010f
     establishes:
     - license
     - source
-  - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md
-    shows: README describes the official implementation of FlashAttention and FlashAttention-2, IO-aware exact attention,
-      with the papers, benchmarks and Hopper-specific kernels beside it, with no paid tier, enterprise edition or
-      license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 7bcb7ca466dcb819822003c5c15a8124e4866f4d446a5c60382615128c81c3a6
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 3
   reach: 100K-1M

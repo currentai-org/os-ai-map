@@ -1,7 +1,7 @@
 product: flashinfer
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
@@ -9,39 +9,81 @@ openness:
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: the default flashinfer-python install requires NVIDIA's proprietary nvidia-cutlass-dsl and
+        compiles or downloads kernels on first use
+    context:
+      closed-dependency:
+        value: nvidia-cutlass-dsl
+        detail: NVIDIA proprietary license, a base dependency of flashinfer-python
   confidence: high
-  note: The LICENSE file contains the Apache-2.0 text and the repository is public. Several backends, including
-    the TensorRT-LLM and cuDNN paths, download prebuilt binaries from an NVIDIA-hosted artifactory at runtime,
-    so part of the kernel set is not built from the repository source.
-  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  note: FlashInfer's own code is Apache-2.0 and public, but the default install is not open end to end.
+    flashinfer-python lists NVIDIA's nvidia-cutlass-dsl, a proprietary package, among its base dependencies,
+    and the core package compiles or downloads kernels on first use, with the TensorRT-LLM and cuDNN paths
+    among its backends. A closed component that the default build requires makes this open core rather than
+    open source.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:gated(the default flashinfer-python install requires
+    NVIDIA's proprietary nvidia-cutlass-dsl and compiles or downloads kernels on first use);closed-dependency:nvidia-cutlass-dsl(NVIDIA
+    proprietary license, a base dependency of flashinfer-python)
+  last_verified: '2026-10-08'
   sources:
-  - url: https://github.com/flashinfer-ai/flashinfer/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/LICENSE
+    shows: The LICENSE file is the Apache License text, "Apache License" and "Version 2.0, January 2004".
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: f3514f24f2b94d09c409abbf4020cf600e4059098c697110eb91a4a2b235fbb7
+    content_sha256: cb67c224f503e0a063908950b12f89a7280c6e527dcffac972aa114e4bf3c5de
     establishes:
     - license
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/README.md
+    shows: README quickstart is "pip install flashinfer-python", described as the "Core package that compiles/downloads
+      kernels on first use", with backends "including FlashAttention-2/3, cuDNN, CUTLASS, and TensorRT-LLM".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 472bc506d8a67ca7d8048650b9fc8f17d75f5adbaa016b505b76bbb48a8b4fbc
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/pyproject.toml
+    shows: pyproject.toml declares license = "Apache-2.0" and takes its base dependencies from requirements.txt,
+      noting "BASE dependencies (requirements.txt)".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 5ae8432b9fc09ae5f334633d3b6ae989d0252d36f0318cbe29c9ad0e7ce16165
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/requirements.txt
+    shows: requirements.txt, the base dependency list, includes "nvidia-cutlass-dsl>=4.6.2a0" with no extra
+      marker.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: d68dc34c44afc3352d3df3f164ad48435158a78f14485875601b2ec9a7a28dcc
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/flashinfer-python/json
+    shows: PyPI metadata for flashinfer-python lists "nvidia-cutlass-dsl>=4.6.2a0" in requires_dist without
+      an extra marker, beside its "Apache-2.0" license expression.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 3621ee9837ba6cee55a514391c83d98207bccb7fc9ee84a85463559cf7676821
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/nvidia-cutlass-dsl/json
+    shows: 'PyPI metadata for nvidia-cutlass-dsl carries the classifier "License :: Other/Proprietary License".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 1e5dbdcd8a753d6309aaa01ae5a65dbf271e7b3fd0750c88823f6d939209cd63
+    establishes:
+    - core-gated
   - url: https://api.github.com/repos/flashinfer-ai/flashinfer
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
-      flashinfer-ai/flashinfer.
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for flashinfer-ai/flashinfer.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: 573b55098c00f9554d8802f85b76e27e5f0b7f835ade49932b2af0e3ffcd7606
     establishes:
     - license
     - source
-  - url: https://github.com/flashinfer-ai/flashinfer/blob/main/README.md
-    shows: README describes a library and kernel generator for inference exposing unified attention, GEMM and MoE
-      APIs over FlashAttention-2 and -3, cuDNN, CUTLASS and TensorRT-LLM backends, with JIT specialization, with
-      no paid tier, enterprise edition or license-key-gated build beside it.
-    accessed: '2026-08-18'
-    http_status: 200
-    content_sha256: 47cb615c276565c65af95fb0c7695cbba32902b2b24e03d9b50b6116d4e5a1e3
-    establishes:
-    - source
-    - core-gated
 adoption:
   level: 4
   reach: 1M-10M

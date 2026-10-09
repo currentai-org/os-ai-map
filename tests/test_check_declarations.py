@@ -155,10 +155,21 @@ def test_the_real_corpus_holds_at_its_known_count():
     different shape: a component or adjacent project cited for a partial or closed reading
     (google-cloud-run's gVisor, predibase's LoRAX), or a harness that is part of the product
     (vals-ai), each wanting its own decision.
+
+    Raised to 11 on 2026-10-08 by the data_hubs publication: the-cancer-imaging-archive cites
+    CBIIT/NBIA-TCIA, the BSD-3-Clause DICOM archive it is retiring, to show that only part of the
+    service's code is published (source: partial). Declaring it would read a component's stars as
+    the archive's adoption.
+
+    Raised to 12 on 2026-10-08 by R-2026-10-08-zc: amazon-q-developer cites
+    aws/amazon-q-developer-cli, the MIT client of a closed AWS service, as the open part that makes
+    it source-available. The same shape: declaring the client would read its stars as the service's
+    adoption.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 11, [f[0] for f in findings]
+    assert len(findings) == 12, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes", "google-cloud-run",
-        "patronus-evaluation-platform", "predibase", "qualcomm-ai-engine-direct", "the-cancer-imaging-archive", "vals-ai",
+        "amazon-q-developer", "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
+        "google-cloud-run", "patronus-evaluation-platform", "predibase", "qualcomm-ai-engine-direct",
+        "the-cancer-imaging-archive", "vals-ai",
     }

@@ -10,28 +10,38 @@ openness:
       value: public
     core-gated:
       value: ungated
+      detail: the published server builds whole from this repository; three toolsets exist only on GitHub's
+        hosted server
     free_text:
     - no-feature-gated-core
+    context:
+      hosted:
+        value: Remote GitHub MCP Server
+        detail: adds the copilot, copilot_spaces and github_support_docs_search toolsets
   confidence: high
-  note: The server is MIT-licensed, first-party and ships with no feature-gated core. GitHub's hosted Remote
-    GitHub MCP Server is a managed endpoint for that same server rather than a paid tier holding features
-    back; it offers the same toolset, configured by an HTTP header rather than a command-line flag.
-  raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  note: 'The server is MIT-licensed and first-party, and the published repository builds the whole server
+    from source. GitHub''s hosted Remote GitHub MCP Server adds three toolsets the local build does not
+    carry: Copilot, Copilot Spaces and support-docs search. Those are features of the hosted service rather
+    than code withheld from this repository.'
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the published server builds whole from this repository;
+    three toolsets exist only on GitHub's hosted server);hosted:Remote GitHub MCP Server(adds the copilot,
+    copilot_spaces and github_support_docs_search toolsets);no-feature-gated-core
+  last_verified: '2026-10-08'
   sources:
   - url: https://raw.githubusercontent.com/github/github-mcp-server/main/LICENSE
-    shows: 'Plain MIT License text: "Copyright (c) 2025 GitHub".'
-    accessed: '2026-08-13'
+    shows: 'Plain MIT License text: "Copyright (c) 2025 GitHub" and "Permission is hereby granted, free
+      of charge".'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 9e48ecfa18e2b15169746a3c97beda4d1d6c6796097038498ca434ca7e0ccd44
     establishes:
     - license
-  - url: https://github.com/github/github-mcp-server
-    shows: Repo page - MIT badge, 32,220 stargazers, root tree carrying LICENSE, Dockerfile, .goreleaser.yaml
-      and the Go source. The Remote GitHub MCP Server section documents GitHub's hosted endpoint for the same
-      server and the same toolsets; no separate license, no license key, no enterprise directory.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/github/github-mcp-server/main/README.md
+    shows: 'README documents building from source ("Build the complete package with") and lists "Additional
+      Toolsets in Remote GitHub MCP Server": "copilot_spaces" and "github_support_docs_search" among them.'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 8be6c1224a3de08b51eeb4296ccd3f1bbfabcb637898be33a25ea27f32fa988c
+    content_sha256: 9e377f704b0d838c3835e9094893b8489a9c733e80f7191e2b9687db10066a80
     establishes:
     - source
     - core-gated
