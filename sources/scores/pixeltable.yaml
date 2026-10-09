@@ -67,28 +67,54 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: 'category feature matrix: single-purpose store or index'
-  value: One table interface for structured and multimodal data (image, video, audio, document) with computed
-    columns that run models and index embeddings, persisted through Postgres locally with cloud object-store
-    destinations for media.
+  value: One table interface for structured and multimodal data with computed columns that run models
+    and build embedding indexes, and HTTP routes declared beside the tables. Persisted in one embedded
+    PostgreSQL with a single writing process, media on local disk or S3-style destinations; a hosted Pixeltable
+    Cloud database is in limited beta.
   relative_to: pgvector
   relation: at
   confidence: medium
-  note: Pixeltable persists and indexes structured and multimodal data itself, running models and building
-    embedding indexes through computed columns, but it runs single-node with no distributed cluster mode.
-    That puts it on par with pgvector, another single-node, single-purpose store.
+  note: 'Pixeltable stores, indexes and serves its own data and runs models inside computed columns, but
+    self-hosted it is a single node: its operations guide allows one process to write the database and
+    points to Pixeltable Cloud, still in limited beta, for more. Its documentation describes no cluster
+    or distributed mode, and running models only lifts a product above that when it also scales across
+    machines. That leaves it level with pgvector, another single-node store.'
   comparison:
-    last_attested: '2026-09-02'
+    last_attested: '2026-10-08'
     sources:
-    - url: https://github.com/pgvector/pgvector/blob/master/README.md
-      shows: README still documents exact and approximate nearest neighbour search over Postgres with no
-        distribution or clustering of its own, inheriting persistence and transactions from Postgres.
-      accessed: '2026-09-02'
+    - url: https://raw.githubusercontent.com/pgvector/pgvector/master/README.md
+      shows: 'README: "Open-source vector similarity search for Postgres"; "Store your vectors with the
+        rest of your data", inheriting ACID compliance, "point-in-time recovery, JOINs" and the rest of
+        Postgres, with no distribution or clustering of its own.'
+      accessed: '2026-10-08'
       http_status: 200
-      content_sha256: 54cb3a5f4344308476cb2378469ac77d10fbff415d1b5be66608bb386ce8f527
+      content_sha256: 19cebadeeb8d3181d01ef00399674ec41bd2f0363850cdccc7685d4260c5a1c6
+  last_verified: '2026-10-08'
   sources:
-  - url: https://github.com/pixeltable/pixeltable/blob/main/README.md
-    shows: README documents a single-node, embedded multimodal table backend with computed columns for model
-      inference and embedding indexing, and no distributed cluster mode.
-    accessed: '2026-09-02'
+  - url: https://raw.githubusercontent.com/pixeltable/pixeltable/main/README.md
+    shows: 'README: "Pixeltable is the database, orchestration, and serving layers"; "A transform is a
+      computed column. An index is a declaration, and so is an HTTP route."; "Pixeltable Cloud is in Limited
+      Beta."'
+    accessed: '2026-10-08'
     http_status: 200
-    content_sha256: 8b0176c501cc1f8de103ca4f047d6755c93cfde586bd8a018781457869837591
+    content_sha256: e8ad89202d92805c1a1d47a0a021cf1ba447bfe882352de9072e1ed68d1db75b
+  - url: https://docs.pixeltable.com/howto/deployment/infrastructure.md
+    shows: 'Infrastructure page: "Default home is `~/.pixeltable`: `pgdata` (PostgreSQL), `media` (generated
+      files), `file_cache` (downloads)", with generated media on "local disk, or the Cloud database''s
+      home bucket" or an S3 destination.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 4ce39b0b6b3614e85f7ee6952e23b9a71e19a10e991a61b0c1fc304e6f971b04
+  - url: https://docs.pixeltable.com/howto/deployment/operations.md
+    shows: 'Operations page: "One Python process writes to `~/.pixeltable/pgdata`. Several API workers
+      need a shared volume and still one writer. Two pods on the same `pgdata` corrupt the database."
+      and "If you need more than one process writing the database, use" Pixeltable Cloud.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 89e3070964077f6dc25378c2113a64c18f70f9b4209894ad0ddac7d2e432f7a7
+  - url: https://docs.pixeltable.com/cloud.md
+    shows: 'Cloud page: "Run the same application file against a hosted database"; "Pixeltable Cloud is
+      in Limited Beta."; it describes a hosted database and media store, not a cluster mode.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 9162f2e55bdec7a4d665f136b8c57d17930f661bc77e48be198f1650033fda3f
