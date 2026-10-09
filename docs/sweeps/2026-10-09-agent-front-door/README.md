@@ -126,11 +126,20 @@ check             : 6 + 45 = 51; 12 + 33 = 45
 | `maritime` | `deployment` | `github: maritime-sh/maritime-sdk`, `npm: maritime-sdk`, `pypi: maritime`, `homepage: https://maritime.sh` | A hosted service that "hosts agents in Firecracker micro-VMs that sleep when idle". It provides a persistent disk, sleep and wake, and an optional Linux desktop. The service source is not published. The SDKs are MIT ("Copyright (c) 2026 Maritime"): npm `maritime-sdk` 0.9.0, published 2026-09-30, and PyPI `maritime` 0.8.0. A free plan of 3 machines, then flat monthly plans. Its peers in `deployment` are `fly-sprites` and `vercel-sandbox`, both hosted Firecracker microVM services. | F0009, F0010, F0012–F0015, F0018 |
 
 Two notes on Maritime. **The identifiers are the SDKs, not the service.** A later `add-product`
-must score openness on the hosted platform, the way `composio` is scored, not on the SDK's MIT
-license. The npm name `maritime` belongs to an unrelated 2020 package (F0016) and
-`@maritime-sh/sdk` does not exist (F0017); neither is used. **Disclosure:** Maritime's homepage shows a
-paper co-authored by Maria Gorskikh, Open Instinct's author (F0010), so the page's choice of host is
-not independent evidence of Maritime's standing.
+must score openness on the hosted platform, as `vercel-sandbox` and `fly-sprites` are scored (an
+open client over a closed runtime), not on the SDK's MIT license. The npm name `maritime` held a
+2020 package whose versions were all unpublished on 2022-05-27; the name is now held by Maritime's
+own maintainers with no versions (F0016, F0109). `@maritime-sh/sdk` does not exist (F0017). Neither
+is used. **Disclosure:** Maritime and Open Instinct are not independent. Maria Gorskikh, Open
+Instinct's author, is Maritime's co-founder and CEO (Maritime AI, Inc., Y Combinator Fall 2026;
+F0107), and Maritime's own post on Open Instinct says "We built it" (F0108). The "paper" on
+Maritime's homepage (F0010) is a demo graphic whose authors are Maritime's three staff. Open
+Instinct's choice of host is the vendor's showcase, not evidence of Maritime's standing, and
+Maritime's adoption should not be read from Open Instinct's.
+
+*Corrected 2026-10-09 after a follow-up check (F0107–F0110). The first version of this note called
+the npm `maritime` name an unrelated 2020 package, cited `composio` as the openness precedent, and
+described the tie to Open Instinct only as a co-authored paper.*
 
 ### Held in `rows.yaml` (no home category; for the maintainer to rule on)
 
