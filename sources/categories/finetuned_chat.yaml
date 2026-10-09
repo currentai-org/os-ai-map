@@ -49,6 +49,32 @@ scoring_recipe:
   # key with an empty map would read as "we defer nothing yet"; removing it says the
   # question was answered.
 
+  capability:
+    # The anchor sources/signal_routing.yaml already routes for this category, stated
+    # here so the recipe is its normative home. It changes no band: no gate reads this
+    # block, and capability stays hand-authored.
+    basis: benchmark
+    anchor:
+      primary: Artificial Analysis Intelligence Index
+      machine_signal: signal_artificialanalysis.model_evaluations
+      fallback: >
+        LMArena text leaderboard rating (signal_lmarena.text_leaderboard) where the
+        model is absent from Artificial Analysis. That is the order of this
+        category's two capability routes in sources/signal_routing.yaml. Both wait
+        on a product bridge, so neither is read automatically.
+      secondary: >
+        AA-LCR (Artificial Analysis Long Context Reasoning) is secondary evidence
+        within the Artificial Analysis anchor, not a separate anchor and not a
+        tie-break. When long-context capability is material to a comparison, cite
+        AA-LCR alongside the overall Artificial Analysis index. It never overrides
+        or moves the composite band on its own, because it is already a component
+        of the index and counting it again would double-count one submetric.
+    bands: null
+    bands_status: >
+      NOT YET CALIBRATED. No 1-5 thresholds have been fitted against either
+      index. Until they are, capability stays hand-authored and the layer-2
+      scorer must not write it.
+
 products:
 - qwen-coder
 - qwen-instruct
