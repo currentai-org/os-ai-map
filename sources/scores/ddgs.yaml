@@ -1,50 +1,61 @@
 product: ddgs
 openness:
-  score: 5
-  class: open_source
+  score: 2
+  class: source_available
   components:
     license:
     - name: MIT
       detail: OSI; the LICENSE.md body is the unmodified MIT text
     source:
-      value: public
-      detail: the whole library, CLI and both optional servers
-    self-host:
-      value: 'yes'
-      detail: there is nothing else - no hosted service exists
-    core-gated:
-      value: ungated
-      detail: no vendor tier for anything to be withheld for
-    context:
-      service:
-        value: none
+      value: partial
+      detail: 'the whole library is published, but it holds no index: each search backend sends the query to
+        a hosted engine''s own search page and parses the HTML it returns'
   confidence: high
-  note: 'Open source with nothing behind it: the MIT grant covers the product itself rather than a client in
-    front of a closed index, which is what separates this record from every other search product in the category.
-    The READMEs "educational purposes only" line is a disclaimer about use and not a licence term - it is not
-    in LICENSE.md, which is the unmodified MIT text.'
-  raw: license:MIT(OSI; the LICENSE.md body is the unmodified MIT text);source:public(the whole library, CLI
-    and both optional servers);self-host:yes(there is nothing else - no hosted service exists);service:none;core-gated:ungated(no
-    vendor tier for anything to be withheld for)
-  last_verified: '2026-09-16'
+  note: DDGS's own code is MIT licensed and published in full, but it holds no search index. Each of its ten
+    web search backends sends the query to a hosted engine such as Google, Bing or DuckDuckGo and reads back
+    the results page, so the search itself runs on closed services the library only calls. The open part is
+    a client of those engines, not an open search product.
+  raw: 'license:MIT(OSI; the LICENSE.md body is the unmodified MIT text);source:partial(the whole library is
+    published, but it holds no index: each search backend sends the query to a hosted engine''s own search
+    page and parses the HTML it returns)'
+  last_verified: '2026-10-09'
   sources:
   - url: https://raw.githubusercontent.com/deedy5/ddgs/main/LICENSE.md
     shows: 'The LICENSE.md body: verbatim MIT text, "Copyright (c) 2022 deedy5", with no added clause, field-of-use
       restriction or non-commercial rider.'
-    accessed: '2026-09-17'
+    accessed: '2026-10-09'
     http_status: 200
     content_sha256: 767a763769d3c3dcd2b8947e4bdc57f04151f7ea4adbc0bf13e052c77e600427
     establishes:
     - license
-  - url: https://api.github.com/repos/deedy5/ddgs
-    shows: 'Repository metadata for deedy5/ddgs: spdx_id MIT, 2,973 stars, not archived, not a fork, last pushed
-      2026-08-26, description "A metasearch library that aggregates results from diverse web search services".'
-    accessed: '2026-09-16'
+  - url: https://raw.githubusercontent.com/deedy5/ddgs/main/README.md
+    shows: 'The README: "A metasearch library that aggregates results from diverse web search services". Its
+      Engines table lists the text() backends `bing`, `brave`, `duckduckgo`, `google`, `grokipedia`, `mojeek`,
+      `startpage`, `yandex`, `yahoo` and `wikipedia`, and `annasarchive` for books(); every one is a hosted
+      service, and no index, crawler or local engine is documented.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: b817ccc0390a1b5ac63717c3e58bdad477ffec762971fe8b6a57285561be6e02
+    content_sha256: 4541f0854142f2c9a939fee7e8bdf3f075d73d3dcd7b52abdeb1c3d564513223
     establishes:
     - source
-    - core-gated
+  - url: https://raw.githubusercontent.com/deedy5/ddgs/main/ddgs/base.py
+    shows: 'BaseSearchEngine, the "Abstract base class for all search-engine backends": its search() calls
+      `self.request(self.search_method, self.search_url, params=payload)` and hands the returned HTML to extract_results(),
+      which parses it with XPath.'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 429013e3fac08b17e9e832062de7d925e0b4e543dafdd3a3a59f3520e237405e
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/deedy5/ddgs/main/ddgs/engines/google.py
+    shows: The Google backend sets `search_url = "https://www.google.com/wml/search"`, sends the query as `q`
+      under a randomized feature-phone User-Agent, and reads title, href and body out of the returned page
+      with XPath.
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: e5fdcd26288cc05d8571ca0a01d4ec1e1f1201a85dddda308527a40da5bc2312
+    establishes:
+    - source
 adoption:
   level: 4
   reach: 1M-10M
