@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Increments for the weekly asset-counter history (`build.snapshot_counters --increments`). A lifetime
+  counter that falls between readings, because a release asset was deleted or replaced, gives a zero
+  increment flagged `reset`, and the next window is measured from the lower reading
+  ([#850](https://github.com/currentai-org/os-ai-map/issues/850)).
 - A preliminary data_hubs category (Data hubs & catalogs) with nine researched head products and
   fourteen registry rows, ATLAS and Roboflow Universe among the rows, held preliminary until the
   maintainer rules on its open questions; openml moves to it from the benchmark_eval_data

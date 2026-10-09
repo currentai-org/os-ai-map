@@ -166,7 +166,7 @@ required to be whatever product the category compares against most often. For a 
 prefer a nearer peer whose capability is independently evidenced over stretching the relation
 vocabulary to reach the anchor.
 
-The corpus already works this way. `pinecone` is recorded `at milvus`, not against `vespa`,
+The corpus already works this way. `pinecone` is recorded `one_above milvus`, not against `vespa`,
 which most other `storage` bands name; `thunderkittens` and `hummingbird` are both `two_below
 tensorrt` rather than against `apache-tvm`, which most `compilers` bands name; `amazon-bedrock-
 custom-models-fine-tuning` is `one_below openai-fine-tuning-api`, a hosted peer, rather than

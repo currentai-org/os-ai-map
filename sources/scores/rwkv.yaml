@@ -116,34 +116,49 @@ adoption:
     http_status: 200
     content_sha256: 5d732a40ffed05782e80c9a78279b3070f74a4fa261b85d81e202ab57d8384ad
 capability:
-  score: 4
+  score: 2
   basis: benchmark
-  basis_detail: RWKV-7 Goose (arXiv:2503.14456)
-  value: 'RWKV-7 ''Goose'' 2.9B: claimed 3B SoTA multilingual and matching 3B SoTA English on far fewer
-    training tokens; MMLU rose to ~43% across generations'
+  basis_detail: MMLU on the RWKV-7 World model card, with the RWKV-7 Goose paper (arXiv:2503.14456)
+  value: 'RWKV-7 World 2.9B: MMLU 54.56% (1.5B: 44.84%) on the model card; the paper claims a new 3B-scale
+    SoTA on multilingual tasks and parity with the 3B SoTA in English. The larger G1 models (up to 13.3B)
+    publish no benchmark table.'
+  relative_to: internlm
+  relation: at
   confidence: medium
-  note: Strong intelligence-per-token for its size via a linear-time RNN architecture; not at frontier absolute
-    capability. The paper makes a 3B-scale multilingual claim and an efficiency argument and makes no frontier-scale
-    claim at all, which is the shape of a 4 rather than a 5 here.
+  note: 'RWKV''s case is efficiency rather than absolute capability: a linear-time recurrent architecture
+    that its paper shows competitive at 3B scale on far fewer training tokens. Its best published MMLU sits
+    well below InternLM2.5-7B and Yi-34B, small and mid-size models from the 2023-2024 generation that this
+    map places at the same level, and the G1 models that extend the line to 13.3B report only language-modeling
+    results, which give no grounds for placing it higher.'
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://huggingface.co/internlm/internlm2_5-7b/raw/main/README.md
+      shows: 'InternLM2.5-7B raw model card table: "| MMLU      | 71.6           | 65.8         | 66.4      |
+        71.6      |" under "| Benchmark | InternLM2.5-7B | InternLM2-7B | LLaMA3-8B | Yi-1.5-9B |".'
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 563681ef1d4f2197049289c43791182223bce07c560ebacd9244a32d39d3fdb9
+  last_verified: '2026-10-08'
   sources:
   - url: https://arxiv.org/abs/2503.14456
     shows: The abstract says the "2.9 billion parameter language model achieves a new 3B SoTA on multilingual
       tasks and matches the current 3B SoTA on English language downstream performance", trained "on dramatically
       fewer tokens than other top models".
-    accessed: '2026-09-29'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 40573f508270ee99b48e0ad83a2ed56fbc500141d00e931910bfaabb2dad6323
   - url: https://huggingface.co/BlinkDL/rwkv-7-world/raw/main/README.md
     shows: The RWKV-7 World card reports "rwkv7-v3-2.9b 54.56% (rwkv6-v2.1-3.1b 32.38%)" and "rwkv7-v3-1.5b
       44.84% (rwkv6-v2.1-1.6b 26.34%)" on its MMLU eval, and tells users to "Please upgrade to https://huggingface.co/BlinkDL/rwkv7-g1"
       as better in all aspects.
-    accessed: '2026-09-29'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 15eea8973f70b036ccacaeeecae9e5be7b0d4e3a415d0c63bc9977f58edd08a6
   - url: https://huggingface.co/BlinkDL/rwkv7-g1/raw/main/README.md
     shows: The RWKV7-G1 card lists sizes up to "13.3B = L61-D4096" and points to UncheatableEval rather
       than publishing a benchmark table ("check https://huggingface.co/spaces/Jellyfish042/UncheatableEval
       to see their performance at language modeling").
-    accessed: '2026-09-29'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 9045954e42589b5cb642e3370ba2e9da7c35ff8b2c48845ef23d0a9c854d8fc3

@@ -1,7 +1,7 @@
 product: tensorrt-llm
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
@@ -9,42 +9,78 @@ openness:
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: the default build links a prebuilt internal_cutlass_kernels static library that ships without
+        source, and the package requires NVIDIA's proprietary nvidia-cutlass-dsl
     context:
       caveat:
         value: runs only on NVIDIA GPUs
         detail: vendor-hardware lock, not a license restriction
         raw: runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)
+      closed-component:
+        value: internal_cutlass_kernels
+        detail: a prebuilt static library unpacked from an in-tree tarball and linked unless a builder supplies
+          its source
   confidence: high
-  note: The repository is licensed under Apache-2.0, and the published tree includes the C++ runtime and
-    kernels themselves rather than a stub, so nothing is held back from the source. NVIDIA sells NIM and
-    enterprise support as separate products beside it.
+  note: The repository is Apache-2.0 and carries the C++ runtime and most kernels as source, but the default
+    build does not come from that source alone. Unless a builder supplies the internal kernels' source,
+    CMake unpacks a prebuilt internal_cutlass_kernels static library from the tree and links it, and the
+    Python package requires NVIDIA's proprietary nvidia-cutlass-dsl. A closed component that the default
+    build requires makes this open core. NVIDIA sells NIM and enterprise support as separate products beside
+    it.
   raw: license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency
-    appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not
-    a license restriction)
+    appendix);source:public;core-gated:gated(the default build links a prebuilt internal_cutlass_kernels
+    static library that ships without source, and the package requires NVIDIA's proprietary nvidia-cutlass-dsl);caveat:runs
+    only on NVIDIA GPUs (vendor-hardware lock, not a license restriction);closed-component:internal_cutlass_kernels(a
+    prebuilt static library unpacked from an in-tree tarball and linked unless a builder supplies its source)
+  last_verified: '2026-10-08'
   sources:
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT-LLM/main/LICENSE
+    shows: 'Repository LICENSE: "This project is licensed under the Apache 2.0 license, whose full license
+      text is available below."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a56e691155bb532ea212f701d3ecacb2db549fa64757f9bad3e06bc9177f46ea
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT-LLM/main/cpp/tensorrt_llm/CMakeLists.txt
+    shows: cpp/tensorrt_llm/CMakeLists.txt, under "if(NOT INTERNAL_CUTLASS_KERNELS_PATH)", imports "tensorrt_llm_internal_cutlass_kernels_static"
+      as a STATIC IMPORTED library unpacked from a tarball, failing with "The internal_cutlass_kernels library
+      is truncated or incomplete." when the file is missing.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: dbc35ff5803ce131e2ad31edd5076dc1f7ef06e45480af5f12d20ffabe3f707f
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT-LLM/main/setup.py
+    shows: setup.py parses requirements.txt into "required_deps" and passes "install_requires=required_deps".
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 068a3d2a71beada4d221d5905f7cc1145b04a73ff0ad56c77bfdc20e9676097a
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/NVIDIA/TensorRT-LLM/main/requirements.txt
+    shows: requirements.txt lists "nvidia-cutlass-dsl[cu13]==4.8.0.dev0" as an install requirement.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: aa8be9e54cf995a94d3aaa21e865ab645fa0d292c68d3ad070148021b4a07d4d
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/nvidia-cutlass-dsl/json
+    shows: 'PyPI metadata for nvidia-cutlass-dsl carries the classifier "License :: Other/Proprietary License".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 1e5dbdcd8a753d6309aaa01ae5a65dbf271e7b3fd0750c88823f6d939209cd63
+    establishes:
+    - core-gated
   - url: https://github.com/NVIDIA/TensorRT-LLM
     shows: TensorRT LLM provides users with an easy-to-use Python API to define Large Language Models (LLMs)
       and supports state-of-the-art optimizations to perform inference efficiently on NVIDIA GPUs.
     accessed: '2026-08-09'
     establishes:
     - source
-    http_status: 200
-    content_sha256: 87877124e60b1a5c40de3751936a63c4115d35e77f50eb5ab8c97a3b3040392f
-  - url: https://github.com/NVIDIA/TensorRT-LLM/blob/main/LICENSE
-    shows: This project is licensed under the Apache 2.0 license, whose full license text is available below.
-    accessed: '2026-08-09'
-    establishes:
-    - license
-    http_status: 200
-    content_sha256: 4fab2db8e634ec435a39aa264d0a1171be52d8dd128cda57fb3c50747a969627
-  - url: https://github.com/NVIDIA/TensorRT-LLM
-    shows: '{"name":"cpp","path":"cpp","contentType":"directory"} in the repository file tree, alongside
-      3rdparty/, docker/ and examples/ - the C++ runtime and kernels are in-tree, with no stub or binary-only
-      component.'
-    accessed: '2026-08-09'
-    establishes:
-    - core_gated
     http_status: 200
     content_sha256: 87877124e60b1a5c40de3751936a63c4115d35e77f50eb5ab8c97a3b3040392f
 adoption:

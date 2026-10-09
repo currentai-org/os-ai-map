@@ -3,8 +3,8 @@ display_name: Data hubs & catalogs
 description: Public platforms whose product is collecting, describing and distributing datasets from many
   publishers, as a catalog that people and tools search to find data and reach it.
 strapline: Most of the repositories researchers deposit data in run on open-source code, from Zenodo and
-  Dataverse to OpenML and PhysioNet. Kaggle's commercial hub and UCI's academic repository are the closed
-  exceptions.
+  Dataverse to OpenML and PhysioNet. The closed hubs are the commercial ones, Kaggle, Figshare and Google's
+  Dataset Search, along with UCI's academic repository and Korea's government-run AI-Hub.
 weights:
   adopt: 0.3
   cap: 0.7
@@ -16,13 +16,19 @@ scoring_recipe:
     its own code is published is the same question it is for a model hub. The datasets a hub
     lists keep their publishers' licenses, and that is a question about each dataset, never
     about the hub. A hosted hub whose server is not published reads source closed, and the open
-    client a vendor publishes for it (kagglehub and the Kaggle CLI, ucimlrepo) never lifts the
+    client a vendor publishes for it (kagglehub and the Kaggle CLI, ucimlrepo, AI-Hub's
+    aihubshell) never lifts the
     platform (identity.md, "An open satellite around a closed core"). The open hubs read ungated
     on a governance statement beside the license: a not-for-profit foundation (OpenML), a
     university institute or lab (Harvard Dataverse, PhysioNet), CERN (Zenodo), a non-profit whose
-    charge is for curation rather than software (Dryad), and a volunteer research community
-    (Masader). The Registry of Open Data on AWS reads source partial: its entries are an
-    Apache-2.0 repository, and the site and hosting are not published. Weighted 0.3 adoption to
+    charge is for curation rather than software (Dryad), a volunteer research community
+    (Masader), and a European research infrastructure consortium (CLARIN ERIC, for the VLO). The
+    Registry of Open Data on AWS reads source partial: its entries are an Apache-2.0 repository,
+    and the site and hosting are not published. The Cancer Imaging Archive reads source partial
+    too: NBIA, its DICOM archive, is BSD-3-Clause and being retired in favor of the Imaging Data
+    Commons, and the WordPress collection manager behind its dataset pages is not part of it.
+    ATLAS is deferred (see `deferred:`), scored open_source by the maintainer on its operator's
+    statement with no published code behind it. Weighted 0.3 adoption to
     0.7 capability for the reason model_hubs is: catalogs publish their size, not their use, so
     adoption usually abstains. Harvard Dataverse is the one hub with a usage counter of its own
     (its metrics API's trailing-30-day file downloads, recorded as reported_traction with a
@@ -36,20 +42,22 @@ scoring_recipe:
     one with the same machinery sit together. Scale is adoption, not capability. Rungs, each a
     function the product either performs or does not:
       1  Index and link-out: it describes datasets that stay with their publishers and links to
-         them, holding no data of its own. masader, registry-of-open-data-on-aws.
+         them, holding no data of its own. masader, registry-of-open-data-on-aws, clarin-vlo,
+         atlas-data, google-dataset-search.
       2  Host and fetch: the hub itself, as a product, holds the data. Datasets are deposited
          into it and served from its own download URLs or API. Listing datasets that happen to
          sit on infrastructure the operator's parent company runs (a cloud provider's storage
          service) does not count; the hub has to take custody of the files, not point at them.
-         It does not keep numbered versions under persistent identifiers. uci-ml-repository.
+         It does not keep numbered versions under persistent identifiers. uci-ml-repository,
+         aihub-korea.
       3  Persistent identifiers, versioning and API: each dataset has a persistent identifier
          (a DOI or equivalent), published versions are kept and addressable, and machine
          clients fetch a given version by identifier through an API or a stable versioned path.
-         physionet.
+         physionet, the-cancer-imaging-archive.
       4  Programmatic publishing and structured metadata: datasets and new versions can also be
          created through an API or CLI, not only the website, and each carries structured,
          machine-readable metadata (DataCite, a Data Package descriptor, a deposition schema).
-         dryad, zenodo, kaggle-datasets.
+         dryad, zenodo, kaggle-datasets, figshare.
       5  Server-side parsing, validation and query: the hub's servers parse the files into a
          typed structure AND serve that structure back for search, export or loading. Parsing
          shown only on a web page does not count. openml (top anchor; features and data
@@ -72,37 +80,64 @@ scoring_recipe:
     Data on AWS is at 1 by the same ruling: its entries point to S3 and other AWS resources that
     AWS the company operates, but the providers own and maintain the datasets, and the registry
     itself stores nothing, so it works as a catalog. Alongside the donations it hosts, UCI can
-    also link an external dataset; its rung rests on the hosted donations. ATLAS, still a
-    registry row, holds the datasets its team uploads but may leave Hugging Face imports on
-    Hugging Face, and no interface delivers a dataset by identifier, so it reads 1 or 2 depending
-    on whether it holds the data it lists, to settle when it is scored.
+    also link an external dataset; its rung rests on the hosted donations. ATLAS is at 1, settled
+    on 2026-10-08: its team can upload a new dataset for a contributor, but its Data Licensing
+    Policy says the site "does not itself provide, distribute or grant rights to download" dataset
+    content unless a listing says otherwise, the listings read point to Hugging Face, and no
+    interface delivers a dataset by identifier. If ATLAS starts serving the uploads it holds from
+    its own URLs, it moves to 2. The Cancer Imaging Archive is the PhysioNet case again: NBIA
+    indexes every DICOM header tag server-side, a rung-5 function, but collections are admitted
+    by application with no programmatic submission, so it sits at 3. AI-Hub keeps a version
+    history on each dataset page, but under no DOI or other persistent identifier, so it sits at
+    2 with UCI.
 
 
     ANCHORS. openml is the top anchor and records no relative_to. harvard-dataverse is at it.
     zenodo is one_below harvard-dataverse (the same deposit machinery without server-side
-    parsing); kaggle-datasets and dryad are at zenodo. physionet is one_below dryad (versioned
-    DOIs and stable paths, but submission only through the website). uci-ml-repository is
-    one_below physionet (a DOI and an API by ID, but no kept versions). masader and
+    parsing); kaggle-datasets, dryad and figshare are at zenodo. physionet is one_below dryad
+    (versioned DOIs and stable paths, but submission only through the website), and
+    the-cancer-imaging-archive is at physionet. uci-ml-repository is one_below physionet (a DOI
+    and an API by ID, but no kept versions), and aihub-korea is at uci-ml-repository. masader and
     registry-of-open-data-on-aws are each one_below uci-ml-repository (they list datasets that
-    stay with their providers, where UCI holds what it serves).
+    stay with their providers, where UCI holds what it serves); clarin-vlo, atlas-data and
+    google-dataset-search are at masader. Every edge added on 2026-10-08 carries a comparison
+    block attesting the peer's discriminating source.
 
 
-    DISTRIBUTION, counted 2026-10-07 over 9 banded products: 2 at 1, 1 at 2, 1 at 3, 3 at 4,
-    2 at 5. The widest rung is 4, at 3 of 9 (33%), at the third that triggers a review rather than
-    above it. Its wording is the rung-4 line above, and the three share a checkable pair of
-    functions: a write API or CLI (Zenodo's deposition API, Dryad's Submission API, the Kaggle
-    CLI's create and version commands) and structured dataset metadata, with no parsing served
-    back by the hub.
+    DISTRIBUTION, counted 2026-10-08 over 15 banded products: 5 at 1, 2 at 2, 2 at 3, 4 at 4,
+    2 at 5. The widest rung is 1, at 5 of 15 (33%), at the third that triggers a review rather
+    than above it. Its wording is the rung-1 line above, and the five share one checkable fact:
+    the catalog stores none of the data it describes (Masader's links, the AWS registry's ARNs,
+    the VLO's harvested metadata, Dataset Search's schema.org index, ATLAS's licensing policy).
+    Rung 4 is next at 4 of 15: a write API or CLI (Zenodo's deposition API, Dryad's Submission
+    API, the Kaggle CLI's create and version commands, Figshare's article create and publish
+    endpoints) and structured dataset metadata, with no parsing served back by the hub.
+  deferred:
+    atlas-data:
+      because: >-
+        The recorded license is an unnamed open-source license, which maps to no license tier, and
+        source is unrecorded because no repository has been published, so no rung decides it. The
+        recorded 5/open_source is the maintainer's call of 2026-10-08 on AI Singapore's privacy
+        policy ("ATLAS-Data is an open-source data platform operated by AISG"), at low confidence,
+        against terms of use that reserve the site's "source code". The axis carries no date and is
+        held in sources/verification_queue.yaml; when a repository and license appear, record them
+        as components and drop this deferral, or score what the ladder then says.
 products:
 - openml
 - harvard-dataverse
 - zenodo
 - kaggle-datasets
 - dryad
+- figshare
 - physionet
+- the-cancer-imaging-archive
 - uci-ml-repository
+- aihub-korea
 - registry-of-open-data-on-aws
 - masader
+- clarin-vlo
+- atlas-data
+- google-dataset-search
 comments: >-
   Proposed in issue #827 and created 2026-10-04 for OSO-6011, as a preliminary category, so that ATLAS has a home that
   fits it. The first proposal put ATLAS in model_hubs as a named exception, and review
@@ -117,49 +152,51 @@ comments: >-
   layers and internal or enterprise data catalogs stay in storage (oxen, dvc, lakefs, DagsHub,
   Unity Catalog). A single dataset, however large, goes to its dataset category
   (language_specific_datasets, training_synthetic_datasets, benchmark_eval_data). ADOPTION
-  CAUTION (maintainer's ruling, 2026-10-07): adoption abstains on seven of the nine head
+  CAUTION (maintainer's ruling, 2026-10-07): adoption abstains on thirteen of the fifteen head
   products, because catalogs publish their size rather than their use, and the two readings
   that exist are heterogeneous (Harvard Dataverse's file downloads from its metrics API and
   Masader's GitHub stars). The category may publish on that, but any stage or gap it carries is
   a thin adoption read, and nothing should present it as broad adoption measurement. Coverage is
   not to be raised by substituting weaker proxies, such as client-package downloads or catalog
-  size. Research
-  tranche, 2026-10-07: nine head products from the peer sweep in issue #827 and its candidate
-  comment. The maintainer ruled on 2026-10-07 that OpenML, moved here from the
+  size. Research tranche, 2026-10-07: nine head products from the peer sweep in issue #827 and
+  its candidate comment. The maintainer ruled on 2026-10-07 that OpenML, moved here from the
   benchmark_eval_data registry, belongs, since its datasets are what its tasks and runs are
-  built on, and that Zenodo belongs under the general-purpose repository rule above. The
-  category stays preliminary until ATLAS's openness is answered or another tenth product is
-  researched. Roboflow
-  Universe was researched and then returned to the registry, because it also hosts trained
-  models that it offers for reuse, which this test routes to model_hubs. Further candidates that
-  pass the test are registry rows (Google Dataset Search, Figshare, the CLARIN VLO, Academic
-  Torrents, OpenDataLab, two national open-data portals, the ELRA and LDC catalogs, IEEE
-  DataPort, and the Google Cloud and Azure public dataset catalogs). A second sweep the same
-  day added AI-Hub, the NII research data repository, the Mozilla Data Collective, The Cancer
-  Imaging Archive, Språkbanken and data.gov.in, whose page had not loaded the first time.
-  data.world is out: it describes itself as a data catalog platform, the enterprise catalog
-  that belongs to storage.
+  built on, and that Zenodo belongs under the general-purpose repository rule above.
+  Publication tranche, 2026-10-08: six more head products from the registry, on the
+  maintainer's direction (ATLAS, Figshare, Google Dataset Search, the CLARIN VLO, The Cancer
+  Imaging Archive and AI-Hub), which takes the category to fifteen and publishes it. National
+  open-data portals are a class, not ten rows (#827), so at most one or two should ever be head
+  products; none was promoted in this tranche. Roboflow Universe was researched and then
+  returned to the registry, because it also hosts trained models that it offers for reuse,
+  which this test routes to model_hubs. Further candidates that pass the test remain registry
+  rows (Academic Torrents, OpenDataLab, data.europa.eu, Data.gov, the ELRA and LDC catalogs,
+  IEEE DataPort, the Google Cloud and Azure public dataset catalogs, the NII research data
+  repository, the Mozilla Data Collective, Språkbanken and data.gov.in). data.world is out: it
+  describes itself as a data catalog platform, the enterprise catalog that belongs to storage.
   Parked, not rows: Mendeley Data (no page could be read), Papers with Code datasets (the site
   now redirects to Hugging Face's trending papers), Activeloop's dataset listing (an app shell
   that could not be confirmed as a multi-publisher catalog), OPUS (one project's collection of
-  parallel corpora, arguably a dataset), the
-  European Language Grid and IndiaAI's AIKosh (both list models beside datasets, which points at
-  model_hubs), Lacuna Fund's dataset list (one funder's grantee outputs), and the Masakhane
-  community (no catalog found). The SEACrowd catalogue is part of the published seacrowd entry in
-  language_specific_datasets; whether that entry moves here is open. Hugging Face and ModelScope
-  datasets stay on their model_hubs platform rows. ATLAS. Issue #827 asks that its openness be
-  scored only after a repository and license are found or AI Singapore says what its
-  open-source statement covers, and the score schema requires an openness class on every head
-  product, so ATLAS stays a registry row until then. The evidence for the question: the ATLAS
-  terms of use reserve the site's contents "including source code"
-  (https://atlas-data.ai/en/terms-of-service), its privacy policy calls ATLAS-Data "an
-  open-source data platform operated by AISG" (https://atlas-data.ai/en/privacy-policy), and no
-  repository for it appears among AI Singapore's public GitHub repositories (searched 2026-10-04
-  and 2026-10-07). Its capability and adoption were researched (capability recorded as 2
-  against an earlier ladder, 1 or 2 on the ladder above; adoption abstaining) and are recorded in the promotion PR
-  for when it is promoted. ADR-005: read within this category, UCI (closed, capability 2,
-  adoption abstaining) sits below the best-in-class line, and so would ATLAS if it reads closed;
-  both inclusions are curatorial calls. Credit: AI Singapore is the org on the ATLAS row. AI
-  Singapore's own site says it is hosted by the National University of Singapore and Nanyang
-  Technological University; the ATLAS footer names only NTU, so any description should name both
-  or neither.
+  parallel corpora, arguably a dataset), the European Language Grid and IndiaAI's AIKosh (both
+  list models beside datasets, which points at model_hubs), Lacuna Fund's dataset list (one
+  funder's grantee outputs), and the Masakhane community (no catalog found). The SEACrowd
+  catalogue is part of the published seacrowd entry in language_specific_datasets; whether that
+  entry moves here is open. Hugging Face and ModelScope datasets stay on their model_hubs
+  platform rows. ATLAS. Issue #827 asked that its openness be scored only after a repository and
+  license are found or AI Singapore says what its open-source statement covers. On 2026-10-08
+  the maintainer directed that it be promoted and scored open_source at low confidence, on the
+  privacy policy's statement that "ATLAS-Data is an open-source data platform operated by AISG"
+  (https://atlas-data.ai/en/privacy-policy). The tension stays on the record: the terms of use
+  reserve the site's contents "including source code"
+  (https://atlas-data.ai/en/terms-of-service), and no repository for it appears among AI
+  Singapore's public GitHub repositories (searched 2026-10-04, 2026-10-07 and 2026-10-08). The
+  openness axis is undated, deferred in the recipe and held in sources/verification_queue.yaml;
+  if no code is published, or AI Singapore says the statement covers less than the platform, the
+  score comes down to what the ladder computes from the terms, 1/closed. ATLAS's capability is
+  settled at 1 in the recipe note, and its adoption abstains. ADR-005: read within this
+  category, UCI and AI-Hub (closed, capability 2, adoption abstaining) and Google Dataset Search
+  (closed, capability 1, adoption abstaining) sit below the best-in-class line, and their
+  inclusion is a curatorial call: UCI as the long-standing machine-learning repository, AI-Hub as a
+  national AI training-data platform, and Dataset Search as the web-wide index of the kind.
+  Credit: AI Singapore is the org on ATLAS. AI Singapore's own site says it is hosted by the
+  National University of Singapore and Nanyang Technological University; the ATLAS footer names
+  only NTU, so the description names neither.

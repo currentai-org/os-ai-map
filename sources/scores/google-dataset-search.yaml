@@ -1,0 +1,73 @@
+product: google-dataset-search
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted Google service
+    source:
+      value: closed
+      detail: hosted search engine; crawler and index not published
+  confidence: high
+  note: Dataset Search is a hosted Google service, and neither its crawler nor its index is published. Publishers take part
+    through the open schema.org vocabulary, which describes their own pages and not the search engine.
+  raw: license:proprietary(hosted Google service);source:closed(hosted search engine; crawler and index not published)
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://datasetsearch.research.google.com/help
+    shows: '"Dataset Search is a search engine for datasets. Using a simple keyword search, users can discover datasets hosted
+      in thousands of repositories across the Web."; providers "Add markup to your dataset pages".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: b60121592731855f1752b6cae000ba741e2151bf2dc56e86f7b01302bb8dd9c6
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Google has published how many datasets the index covers but no count of searches or users. Index size describes what
+    is listed rather than how much it is used, so no reading was recorded.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://blog.google/products/search/discovering-millions-datasets-web/
+    shows: '"Dataset Search has indexed almost 25 million of these datasets"; no count of searches or users.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 40b7f97873f696ff556ac1328afce3524760de293d8f5ec2bbe46056d1e8d3bf
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: indexes dataset pages described with schema.org Dataset markup across the web; keyword search; each result links
+    to the publisher's page; providers add markup to their own pages; no hosting, deposit or download
+  confidence: high
+  relative_to: masader
+  relation: at
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://raw.githubusercontent.com/ARBML/masader/HEAD/README.md
+      shows: '"The first online catalogue for Arabic NLP datasets"; each entry''s `Link` field is "direct link to the dataset
+        or instructions on how to download it".'
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 78a564785c85cf9daa9ea872a212dd5484bc5c72fc316345e70db1f01677553b
+  note: Dataset Search finds datasets from the markup their publishers add to their own pages, and every result links back
+    to where the data is kept. It holds and serves no data itself, like Masader.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://datasetsearch.research.google.com/help
+    shows: '"Dataset Search is a search engine for datasets. Using a simple keyword search, users can discover datasets hosted
+      in thousands of repositories across the Web."; providers "Add markup to your dataset pages".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: b60121592731855f1752b6cae000ba741e2151bf2dc56e86f7b01302bb8dd9c6
+  - url: https://blog.google/products/search/discovering-millions-datasets-web/
+    shows: '"giving you a single place to search for datasets and find links to where the data is."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 40b7f97873f696ff556ac1328afce3524760de293d8f5ec2bbe46056d1e8d3bf

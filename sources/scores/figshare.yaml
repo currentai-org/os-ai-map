@@ -1,0 +1,89 @@
+product: figshare
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; platform code not published
+    source:
+      value: closed
+      detail: hosted repository software sold by Digital Science
+  confidence: high
+  note: Figshare is hosted repository software that Digital Science runs for researchers and sells to institutions and publishers,
+    and its code is not published. The public API reaches the hosted service but does not let anyone run a Figshare repository
+    of their own.
+  raw: license:proprietary(hosted service; platform code not published);source:closed(hosted repository software sold by Digital
+    Science)
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://info.figshare.com/about/
+    shows: '"Figshare is a provider of repository software"; "Figshare is part of a portfolio of solutions from Digital Science";
+      "DataCite DOI minting, machine readable metadata, licenses, and OAI-PMH interoperability".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 2a4c5a50ebe0e15899c2936c7364b48c2d4fd454b5684065a9aa69ee00957bf0
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Figshare shows views, downloads and citations on individual items but publishes no total for its datasets or its users.
+    No figure for the repository as a whole could be read.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://info.figshare.com/
+    shows: 'Home page: "Track ... downloads, views, citations and Altmetric attention data" per output; no repository-wide
+      usage figure.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a98b3d91be9943a6f9d18d748cc89c3b0aba767f0754862044387c1027e381c6
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: free accounts for individual researchers deposit any research output, datasets included; DataCite DOI per item; numbered
+    versions, each addressable through the API; REST API endpoints to create, update and publish items and upload files; OAI-PMH
+    in DataCite, Dublin Core and other formats; files served as deposited
+  confidence: medium
+  relative_to: zenodo
+  relation: at
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://developers.zenodo.org/
+      shows: 'REST API reference: OAuth tokens with deposit:write and deposit:actions scopes for creating and publishing depositions;
+        files are uploaded to a deposition and served as uploaded.'
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: bbd72463dcf7e07f597ed2b145e8019fb0e861c4811a8d22e0e5d202bde69e61
+  note: Researchers can create, upload and publish datasets through Figshare's API as well as its website, and each item gets
+    a DataCite DOI with numbered versions. Like Zenodo, it serves files as they were deposited, without parsing tables into
+    a structure its API returns.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://docs.figshare.com/swagger.json
+    shows: 'API v2 specification: "POST /account/articles - Create new Article", "POST /account/articles/{article_id}/publish
+      - Private Article Publish", "GET /articles/{article_id}/versions - List article versions".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 9dfb419f443040fc7e76c5c8b12c92d44bc21498fe4599c9032c5b0611e02b9c
+  - url: https://api.figshare.com/v2/articles/33461998/versions
+    shows: 'Versions of a dataset item: [{"version": 1, "url": "https://api.figshare.com/v2/articles/33461998/versions/1"}].'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: f2fd0aa039e9be38aa09553346f31d7303b4649a5ee03eae4e75e56848ff8bab
+  - url: https://docs.figshare.com/
+    shows: 'OAI-PMH: "Currently, the supported formats are: Dublin Core ( oai_dc ), Datacite ( oai_datacite ), RDF ( rdf ),
+      CERIF XML ( cerif )"; upload files through the Uploads API.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: fd0f3c90f9ba5f8d08d3ee10e8e91ae3344a0f226c8dd364384cf2262d344de4
+  - url: https://info.figshare.com/
+    shows: '"We have provided a free repository for individual researchers for over a decade".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a98b3d91be9943a6f9d18d748cc89c3b0aba767f0754862044387c1027e381c6

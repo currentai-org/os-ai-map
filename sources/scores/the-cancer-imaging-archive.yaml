@@ -1,0 +1,108 @@
+product: the-cancer-imaging-archive
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI; covers NBIA, the DICOM archive software
+    source:
+      value: partial
+      detail: NBIA is published at github.com/CBIIT/NBIA-TCIA and is being retired; the WordPress collection manager that
+        holds dataset metadata is not part of it
+  confidence: medium
+  note: NBIA, the image archive software TCIA has served DICOM data from, is published under the BSD 3-Clause license and
+    anyone can deploy it. The WordPress collection manager behind TCIA's dataset pages is not part of that release, and TCIA
+    is retiring NBIA in favor of the Imaging Data Commons, so the published code covers only part of the service.
+  raw: license:BSD-3-Clause(OSI; covers NBIA, the DICOM archive software);source:partial(NBIA is published at github.com/CBIIT/NBIA-TCIA
+    and is being retired; the WordPress collection manager that holds dataset metadata is not part of it)
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://raw.githubusercontent.com/CBIIT/NBIA-TCIA/HEAD/LICENSE.txt
+    shows: 'BSD 3-clause text: "Redistribution and use in source and binary forms, with or without modification, are permitted
+      provided that the following conditions are met".'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: 3b1c1104c436303e56e003c379fd98627a463c2c8473de9e6f763ddc8a759c5b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/CBIIT/NBIA-TCIA/master/README.md
+    shows: '"NBIA enables several medical imaging archives, including TCIA"; "Anyone can deploy a local node of NBIA"; "NBIA
+      is distributed under the BSD 3-clause license."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: e1dd05829c80c0a57850d89cf81ee6e85617f432aa0f48af75a364a4877dcd16
+    establishes:
+    - source
+  - url: https://www.cancerimagingarchive.net/tcia-api-guides/
+    shows: '"Each Collection TCIA publishes is issued a Digital Object Identifier (DOI) through DataCite"; NBIA "is our legacy
+      DICOM management system. It is being retired in favor of using the Imaging Data Commons"; custom "extensions to WordPress"
+      manage dataset metadata.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: f2be6874a75a5514ec1c4de0628f0cbcf90556d7cad8b01bdde611c9eaeb76de
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: TCIA shows view and citation counts on each collection page, but no count of users or of downloads for the archive
+    as a whole was found. No reading was recorded.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://www.cancerimagingarchive.net/collection/lidc-idri/
+    shows: LIDC-IDRI collection page with per-collection view and citation counts; no archive-wide usage figure.
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ac4c21e47bd1c8b0e5b6e4fea61f85fa8e0e69fbfcf2420327a7a08890750d13
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: publish, describe, discover and fetch coverage read from the operator's own documentation
+  value: research groups apply to publish collections, which the NCI TCIA Advisory Group reviews quarterly before TCIA de-identifies
+    and curates them; DataCite DOI per collection; earlier versions listed and downloadable on each collection page; NBIA
+    REST API and Imaging Data Commons tools fetch DICOM series by collection and patient; no programmatic submission
+  confidence: medium
+  relative_to: physionet
+  relation: at
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://physionet.org/about/publish/
+      shows: Projects are submitted through the website "to the editorial team for review"; "If this is an updated version
+        of a previously published resource, please clearly specify what the major changes are".
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 6e887e08bd4406608089cc4ed7c3a11fadb9fdf4b420acd86f0476ae5d239549
+  note: Each TCIA collection has a DOI, keeps its earlier versions available for download and can be fetched through an API,
+    as PhysioNet's published projects can. Collections arrive through an application that an advisory group reviews and a
+    curation team publishes, with no interface for submitting data programmatically, which Dryad and Zenodo offer.
+  last_verified: '2026-10-08'
+  sources:
+  - url: https://www.cancerimagingarchive.net/submission-and-de-identification-overview/
+    shows: '"The first step to publishing cancer imaging data on TCIA is to submit an application ... that will be reviewed
+      by the NCI TCIA Advisory Group."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ffee0570bd544a8dd41f1401c7ad7cf98a610e12c0bf9485b2c90333cb3c474b
+  - url: https://www.cancerimagingarchive.net/collection/lidc-idri/
+    shows: '"DOI: 10.7937/K9/TCIA.2015.LO9QL9SX"; "Version 4 : Updated 2020/09/21"; "Previous Versions Version 3: Updated
+      2015/07/27" with its own download table.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: ac4c21e47bd1c8b0e5b6e4fea61f85fa8e0e69fbfcf2420327a7a08890750d13
+  - url: https://www.cancerimagingarchive.net/tcia-api-guides/
+    shows: '"Each Collection TCIA publishes is issued a Digital Object Identifier (DOI) through DataCite"; NBIA "is our legacy
+      DICOM management system. It is being retired in favor of using the Imaging Data Commons"; custom "extensions to WordPress"
+      manage dataset metadata.'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: f2be6874a75a5514ec1c4de0628f0cbcf90556d7cad8b01bdde611c9eaeb76de
+  - url: https://www.cancerimagingarchive.net/about-the-cancer-imaging-archive-tcia/
+    shows: '"TCIA is funded by the Cancer Imaging Program (CIP) within the National Cancer Institute (NCI) and managed by
+      the Frederick National Laboratory for Cancer Research (FNLCR)."'
+    accessed: '2026-10-08'
+    http_status: 200
+    content_sha256: a1271c02681d9543d018c09a837337e3d990244ec305ad6b9fa3c9135b78c024

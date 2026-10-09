@@ -75,33 +75,47 @@ adoption:
     http_status: 200
     content_sha256: 58d607f65046a7766fb65c9822042d11ea7274f87ddfb08ee723fa04d4b348c2
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
-  value: Multimodal storage format with vector and metadata querying, dataset versioning and streaming to training
-    loops, plus a Postgres surface.
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Multimodal storage format with vector, BM25 and hybrid querying, dataset versioning and streaming
+    to training loops, stored locally or on any cloud, plus a Postgres surface. No cluster or distributed
+    serving mode is documented.
   relative_to: vespa
-  relation: one_below
+  relation: two_below
   confidence: medium
-  note: Deep Lake combines a multimodal storage format with vector and metadata querying, dataset versioning,
-    streaming into training loops, and a Postgres surface. Vespa covers more of the same persist-index-retrieve
-    path across a broader range of retrieval modes, which keeps Deep Lake one step behind it.
+  note: Deep Lake combines a multimodal storage format with vector, BM25 and hybrid querying, dataset
+    versioning and streaming into training loops. None of its first-party documentation describes a cluster
+    or distributed serving mode, so it works as a single store rather than one that scales across machines,
+    two steps below Vespa.
+  comparison:
+    last_attested: '2026-10-08'
+    sources:
+    - url: https://raw.githubusercontent.com/vespa-engine/vespa/master/README.md
+      shows: README describes the product as "Search, make inferences in and organize vectors, tensors,
+        text and structured data, at serving time and any scale." and says Vespa is "a platform that performs
+        these operations for you with high availability and performance."
+      accessed: '2026-10-08'
+      http_status: 200
+      content_sha256: 5265be4d7ef3c3ffe6f8d8e8265047516cd7a8e39258edb15edc7451297ab59a
+  last_verified: '2026-10-08'
   sources:
   - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/README.md
-    shows: README says Deep Lake offers "storage for all data types" with "querying and vector search, data
-      streaming while training models at scale, data versioning and lineage" and "it is serverless".
-    accessed: '2026-09-30'
+    shows: README says Deep Lake offers "storage for all data types" with "querying and vector search,
+      data streaming while training models at scale, data versioning and lineage" and "it is serverless";
+      it describes no cluster or distributed serving mode.
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 632ba1d7b06322cc3e74038a249ce1c5d1dcd86173dde465ece2b24a3f43d467
   - url: https://docs.deeplake.ai/latest/core/
     shows: Core docs page lists vector search with "cosine similarity, BM25 text search" and says to "Store
       datasets locally or on any cloud".
-    accessed: '2026-09-30'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 16495d382c14d9abb6f3fa788864c97ba4a0ac2469255876bf5242be1bd8231f
   - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/postgres/README.md
     shows: The Postgres extension README lists full-text search "with BM25 scoring on text columns" and
       hybrid search "combining vectors and text".
-    accessed: '2026-09-30'
+    accessed: '2026-10-08'
     http_status: 200
     content_sha256: 424ef824e8cad53e1663fabe4a8ce054d7e32d4e565daa082fbf1aac032d38ed
