@@ -70,27 +70,56 @@ adoption:
     http_status: 200
     content_sha256: de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d
 capability:
-  score: 3
+  score: 4
   basis: benchmark
-  basis_detail: MMLU/instruction-following
-  value: General-purpose 14B instruct; vendor reports gains in coding, math, instruction-following and long-text
-    vs predecessor; detailed scores in Qwen2.5 blog
-  confidence: medium
-  note: Qwen2.5-14B-Instruct is a mid-size 2024 general chat model. The Qwen2.5 blog reports MMLU-Pro 63.7
-    and IFEval 81.0 for it, close to GPT-4o-mini and ahead of Gemma2-27B-IT on MMLU-Pro, but it sits well
-    below the current frontier and below the larger Qwen2.5 models.
-  last_verified: '2026-09-29'
+  basis_detail: Artificial Analysis Intelligence Index
+  value: Qwen3.8-2.4T-A95B, the open-weight flagship of Qwen 3.8, scores 40 on the Artificial Analysis Intelligence
+    Index against a median of 18 for open-weights models of its size; the dense Qwen3.8-27B (Xhigh) scores
+    34. Gemini 3.8 Flash (High) scores 41.
+  relative_to: gemini-flash
+  relation: at
+  confidence: high
+  note: 'This score reads Qwen 3.8, the current generation of Qwen''s chat models. Qwen 3.8 ships no separate
+    Instruct checkpoint: its open-weight models are themselves the post-trained chat models, so the Qwen2.5-14B-Instruct
+    release this record began with is no longer the current one. On the Artificial Analysis index the Qwen
+    3.8 flagship sits a point behind Gemini 3.8 Flash and well behind the closed leaders, and even the dense
+    27B model places above Gemini 3.1 Pro, so it scores level with Gemini Flash.'
+  comparison:
+    last_attested: '2026-10-09'
+    sources:
+    - url: https://artificialanalysis.ai/models/gemini-3-8-flash
+      shows: 'Gemini 3.8 Flash (High) "scores 41 on the Artificial Analysis Intelligence Index, placing it
+        well above average among comparable models (median: 26)".'
+      accessed: '2026-10-09'
+      http_status: 200
+      content_sha256: a90a0f809d59bc1a92f0ea1a651857dd275d0717926832e7adc6579c8b3edf0f
+  last_verified: '2026-10-09'
   sources:
-  - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
-    shows: 'Model card page for the 14B instruct SKU: "This repo contains the instruction-tuned 14B Qwen2.5
-      model" with vendor capability claims; benchmark tables are in the Qwen2.5 blog.'
-    accessed: '2026-09-29'
+  - url: https://artificialanalysis.ai/models/qwen3-8-2-4t-a95b
+    shows: '"Qwen3.8 2.4T A95B scores 40 on the Artificial Analysis Intelligence Index, placing it well above
+      average among other open weight models of similar size (median: 18)".'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 7fd5ec4da480f84e9005867d867a5723f54028cb611c3e3461e1b73c3e1f70af
-  - url: https://qwenlm.github.io/blog/qwen2.5-llm/
-    shows: 'Qwen2.5 blog instruct table: "MMLU-Pro 52.8 55.5 63.1 64.8 63.7 69.0" and "IFeval strict-prompt
-      59.9 77.1 80.4 74.9 81.0 79.5" (Qwen2.5-14B-Instruct is the fifth column); "Qwen2.5-14B-Instruct,
-      along with our API model, Qwen-Turbo, also deliver competitive results across all benchmarks".'
-    accessed: '2026-09-29'
+    content_sha256: 2ea4d583e7233a33e95ec27402c29375e72865e3f20abe5206afd8a3be86f2bc
+  - url: https://artificialanalysis.ai/models/qwen3-8-27b
+    shows: '"Qwen3.8 27B (Xhigh) scores 34 on the Artificial Analysis Intelligence Index, placing it well above
+      average among other open weight models of similar size (median: 8)".'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 0d5651d2c4e49d3dd58c3988127d04a14e787cda9d7f9e4881e1f6a4d3f44fef
+    content_sha256: 7b2d0f6b21b770e3fd836f9893fe68681644b4d4b76601bdbf45c42d01f96b39
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max)
+      first at 57.62 and Grok 4.7 (Xhigh) at 46.45 among models not marked deprecated; Gemini 3.8 Flash (High)
+      follows at 40.93, Qwen3.8 2.4T A95B at 39.89, Qwen3.8-Flash-Next at 39.82, Qwen3.8 27B (Xhigh) at 33.70,
+      K2 Horizon 375B A23B at 30.5 and Gemini 3.1 Pro Preview at 29.72. The digest drifts between fetches because
+      the page carries live pricing and throughput figures.
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 69b1cc2a57a4fee16e88a66bd3ac8f3a0a09107ed0f709b4cd2b706c0c053155
+  - url: https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/README.md
+    shows: 'The card says the repository "contains model weights and configuration files for the post-trained
+      model", lists "Training Stage: Pre-training & Post-training", and introduces "Qwen3.8, the most capable
+      generation in the Qwen open-model family to date".'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 7690c680c2d6eb284179ef5dd4db63260d248531cae9087b09b2c2200230f331
