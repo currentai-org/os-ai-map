@@ -252,7 +252,7 @@ rulings:
     status: in-force
     executor: agent
     lands_in: []
-    applied_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/877', 'https://github.com/currentai-org/os-ai-map/pull/878']
 
   - id: R-2026-10-08-o
     date: 2026-10-08
@@ -641,3 +641,201 @@ rulings:
     executor: agent
     lands_in: []
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/875']
+
+  - id: R-2026-10-09-a
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", "#723", agent_authorization]
+    question: >-
+      The agent-authorization sweep found 35 accepted candidates, 21 of them built for agents.
+      Should agent authorization get its own category?
+    ruling: >-
+      Yes. Create agent_authorization as a preliminary category: software and standards that
+      determine who an agent may act as, what authority it may exercise, and what resources and
+      actions it may access or delegate.
+    reasoning: >-
+      The 21 agent-specific products alone show a coherent product cluster, not a hypothetical
+      category. That they are mostly young and lightly adopted is a reason to create the
+      category, not against it: there is open supply with almost no demonstrated consolidation
+      or adoption, exactly the emerging infrastructure gap the map should make visible.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-b
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", agent_authorization]
+    question: >-
+      Do general-purpose authorization and identity systems with agent or MCP features (OPA,
+      OpenFGA, SpiceDB, Cedar, Cerbos, Keycloak, Pomerium, Casdoor, Logto, Better Auth,
+      ThunderID) belong in agent_authorization?
+    ruling: >-
+      No. Keep agent_authorization strictly agent-specific. Name these as adjacent general-
+      purpose systems in the category's boundary notes, and admit one only if its product
+      identity itself becomes agent-first.
+    reasoning: >-
+      Otherwise the category becomes authorization software that happens to support agents, and
+      the agent-native ecosystem disappears inside mature IAM infrastructure.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-c
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", agent_authorization, agent_protocols]
+    question: >-
+      Do authorization standards such as OpenID AuthZEN 1.0, the IETF ID-JAG draft and WIMSE
+      AIMS belong in agent_authorization or agent_protocols?
+    ruling: >-
+      agent_authorization. The boundary is functional: agent_protocols governs how agents
+      communicate and interoperate; agent_authorization governs authority, delegation, identity
+      and policy.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-d
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", agent_authorization]
+    question: >-
+      Where do MCP and agent gateways (agentgateway, IBM ContextForge and others) go?
+    ruling: >-
+      Keep them parked. A gateway that enforces authorization is not thereby an authorization
+      product, just as a connector using OAuth is not. A gateway-specific pass comes later.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-e
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", agent-governance-toolkit, safeguards]
+    question: >-
+      Should agent-governance-toolkit move from safeguards to agent_authorization?
+    ruling: >-
+      Review it when the category is created, against the new membership test, by reading what
+      its primary product actually is. Do not move it automatically.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-f
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", "#863", agent_authorization]
+    question: >-
+      Do open clients and SDKs of closed hosted authorization services (Auth0's AI SDKs,
+      AgentSafe, Quirna, Ziffer, permit-mcp) enter agent_authorization?
+    ruling: >-
+      No. Keep them parked for a closed-product pass. An open SDK does not make an open
+      authorization product.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-g
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#878", bindu, sources/resolution_ledger.yaml]
+    question: >-
+      Bindu was excluded because agent payments had no home, and R-2026-10-08-h has since given
+      them one. Is it re-placed?
+    ruling: >-
+      Re-review it, but do not pre-place it. The old exclusion is obsolete, but identity plus
+      communication plus payments still makes it multifunctional, so re-rule it against the
+      current categories rather than sending it to agent_protocols mechanically.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-h
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#877", base_pretrained, finetuned_chat]
+    question: >-
+      How should AA-LCR, Artificial Analysis's long-context benchmark, be used in the capability
+      anchor?
+    ruling: >-
+      As secondary evidence within the Artificial Analysis anchor, not an independent tie-break.
+      When long-context capability is material to a comparison, cite AA-LCR alongside the
+      overall Artificial Analysis index; it does not override or move the composite band on its
+      own.
+    reasoning: >-
+      It is current, independently run, and has open-weight models at the top, but it is already
+      a component of the composite index, and treating it as a separate tie-break would double-
+      count one submetric.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-i
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#877", finetuned_chat]
+    question: >-
+      finetuned_chat's capability anchor exists only in signal_routing.yaml, not in its category
+      recipe. Should the recipe state it?
+    ruling: >-
+      Yes. Add a capability block to finetuned_chat's scoring_recipe that makes the anchor
+      explicit, mirroring the relevant base_pretrained structure without copying unrelated
+      fields.
+    reasoning: >-
+      This is methodology drift: the category uses Artificial Analysis and LMArena logic in
+      practice and in routing, but its normative recipe says nothing about capability.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-j
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#877", METR]
+    question: >-
+      Should METR's task-completion time horizons become a capability anchor?
+    ruling: >-
+      No, not while the time-horizon page is frozen and lacks current open-weight coverage.
+      Reconsider if METR publishes a maintained successor with representative current coverage.
+      A METR figure for the exact release stays usable as per-product evidence.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-k
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#877", RULER, NoLiMa, LongBench, Fiction.LiveBench, MRCR, HELM]
+    question: >-
+      Should a standalone long-context benchmark (RULER, NoLiMa, LongBench v2,
+      Fiction.LiveBench, OpenAI-MRCR, HELM Long Context) become a map-wide capability anchor?
+    ruling: >-
+      No. They lack current-release, independently maintained cross-model coverage. A result for
+      the exact release remains valid per-product evidence. Revisit if one becomes a current
+      independent leaderboard.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
