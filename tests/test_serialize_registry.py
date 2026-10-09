@@ -363,6 +363,10 @@ RULED_PACKAGES = {
     ("swe-agent", "pypi", "sweagent"), ("zentropi-cope", "huggingface_model", "zentropi-ai/cope-a-9b"),
     ("langflow", "pypi", "langflow"), ("n8n", "npm", "n8n"),
 }
+# The Pi promotion: the coding agent's first npm name, published for four releases before the
+# project moved to @mariozechner/pi-coding-agent, is declared for the record and kept out of the
+# sum, because nothing installs it now.
+RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent")}
 
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
@@ -417,7 +421,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
     } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()} | {
         (slug, "github", repo) for slug, repo in TRACTION_REPOSITORIES
-    } | RULED_PACKAGES
+    } | RULED_PACKAGES | RETIRED_NAMES
 
 
 def test_real_sources_serialize_without_structural_errors():

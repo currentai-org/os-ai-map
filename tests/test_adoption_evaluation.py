@@ -582,10 +582,13 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
         assert {k for k, _ in inputs.non_primary_artifacts[slug]} == {"pypi", "github"}
     rulings_r = {"exa-search-api", "firecrawl", "langsmith", "swe-agent", "langflow", "n8n",
                  "zentropi-cope", "helm", "swe-bench"}
+    # The Pi promotion declares the coding agent's first npm name for the record and keeps it out
+    # of the sum: nothing installs it now. Its two live package names stay in the sum.
+    assert inputs.non_primary_artifacts["pi-coding-agent"] == {("npm", "@mariozechner/coding-agent")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml", *vision_packages, *traction_repos, *rulings_r,
+        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent",
     }
 
 

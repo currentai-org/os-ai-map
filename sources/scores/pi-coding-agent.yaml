@@ -1,0 +1,135 @@
+product: pi-coding-agent
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 42a3497 carries one root MIT LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path, and every published package in it declares MIT. Earendil has announced Fair Source and proprietary
+        add-on tiers but has not built them
+  confidence: high
+  note: Pi is MIT licensed, and its public repository holds the whole agent and the libraries it is built from,
+    so it builds and runs from published source with no account. Earendil has said future commercial add-ons may
+    be Fair Source or proprietary, but none exists yet, and the same statement commits the core to MIT.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the tree at 42a3497 carries one root MIT LICENSE and no
+    ee/, enterprise/, commercial/ or proprietary/ path, and every published package in it declares MIT. Earendil
+    has announced Fair Source and proprietary add-on tiers but has not built them)
+  last_verified: '2026-10-09'
+  sources:
+  - url: https://raw.githubusercontent.com/earendil-works/pi/main/LICENSE
+    shows: The root LICENSE is the MIT License text, "Copyright (c) 2025 Mario Zechner".
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@earendil-works/pi-coding-agent/latest
+    shows: 'The npm record for @earendil-works/pi-coding-agent 1.1.0 declares "license": "MIT", a repository of
+      earendil-works/pi under packages/coding-agent, and the pi command.'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 89f6ff87204066c90e3e3099bbc33de5ed0dafade270c825380e2e35a43a63e0
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/earendil-works/pi/main/README.md
+    shows: The README lists the Pi CLI and its supporting libraries as packages of the monorepo, documents building
+      and running from source and building standalone binaries from release source, and closes "## License MIT";
+      no paid tier or license key is mentioned.
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: d4f05a91fe0de78d1b99d8b8d69c66e7522c493814cc4bd2ed344e4d60b10ce1
+    establishes:
+    - source
+    - core-gated
+  - url: https://mariozechner.at/posts/2026-04-08-ive-sold-out/
+    shows: 'The creator''s post says "pi is MIT licensed. It will stay MIT licensed", lists "MIT (the core): pi
+      as you know it. MIT, forever.", "Fair Source (value-add features): Some future commercial features will be
+      Fair Source licensed." and "Proprietary (enterprise)", and adds "We haven''t built tiers 2 and 3 yet."'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: eff84551bff6a02c2219c80ac7d58735d7cd37e9e307942a5b7557c48c32535d
+    establishes:
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is the trailing month of npm downloads of the coding agent under its current name and its deprecated
+    earlier one, which existing installs still pull. They are separate packages and neither depends on the other,
+    so the sum counts no download twice. Installs through the pi.dev script and Nix are not counted.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@earendil-works/pi-coding-agent
+    shows: 14,900,030 downloads of @earendil-works/pi-coding-agent between 2026-09-08 and 2026-10-07
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 375797d8af1dbc60fbcc1b122919bc44d490c13c3448da7615362d029ef10210
+  - url: https://api.npmjs.org/downloads/point/last-month/@mariozechner/pi-coding-agent
+    shows: 3,464,463 downloads of @mariozechner/pi-coding-agent between 2026-09-08 and 2026-10-07
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 5b6b0d1b5ae8860aa39ba91ab03686617810c2aa4267ddaf3319ce70c007c08b
+  - url: https://registry.npmjs.org/@mariozechner/pi-coding-agent/latest
+    shows: The last release under the old name, 0.73.1, carries the deprecation "please use @earendil-works/pi-coding-agent
+      instead going forward" and depends only on @mariozechner/pi-* libraries, not on the new package.
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 82efcd6b9407317684fdf88e538b0f62d31dda3d8b7e718ae2d909d6067ca381
+  - url: https://api.npmjs.org/downloads/point/last-month/@mariozechner/coding-agent
+    shows: 31 downloads of @mariozechner/coding-agent between 2026-09-08 and 2026-10-07
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 43ac55fc79cecf27f0a3b001a4afbdf4ca47574608f1b411ca1e53f0f7fbeff7
+capability:
+  score: 4
+  basis: feature_matrix
+  value: terminal coding agent with read, write, edit and bash tools; many model providers with mid-session switching;
+    extensions, skills, prompt templates, themes and installable Pi packages; interactive, print/JSON, RPC and TypeScript
+    SDK modes; tree-structured, branchable sessions; built-in MCP through codemode; no built-in sub-agents, plan
+    mode, permission system or sandbox; no published benchmark result
+  confidence: medium
+  note: Pi covers the core of a terminal coding agent, with many model providers, branchable sessions, built-in
+    MCP and an SDK, and leaves sub-agents, plan mode and permissions to extensions by design. It sits a step below
+    OpenHands, which runs agents in a sandboxed runtime and publishes benchmark results, while Pi runs with the
+    user's own permissions and has no benchmark of its own.
+  relative_to: openhands
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-09'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README still leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or
+        any ACP-compatible agent across local, remote, and cloud backends" and offers running agents "in Docker
+        containers, on VMs, or within your company infrastructure".
+      accessed: '2026-10-09'
+      http_status: 200
+      content_sha256: 4ebc158da53d17f88de7ee175bb4fbe56f6442b81314f089682e11412cc34d31
+  last_verified: '2026-10-09'
+  sources:
+  - url: https://raw.githubusercontent.com/earendil-works/pi/main/README.md
+    shows: The README says "Pi ships with powerful defaults but skips features like sub-agents and plan mode", offers
+      interactive, print or JSON, RPC and SDK use, and states "Pi does not include a built-in permission system";
+      no benchmark figure.
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: d4f05a91fe0de78d1b99d8b8d69c66e7522c493814cc4bd2ed344e4d60b10ce1
+  - url: https://pi.dev/
+    shows: The homepage lists "15+ providers, hundreds of models" with mid-session switching, says "Sessions are
+      stored as trees. Use /tree to navigate to any previous point", and "MCP is built in, and Codemode lets agents
+      compose tool calls".
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 5c3b9bfdbdfba786efd1adbb5ad460c01b4e1d9cc944e7e12202d5219eb2bc39
+  - url: https://earendil.com/posts/pi-1-0/
+    shows: The Pi 1.0 announcement lists "Codemode (native support for MCP, and non-LLM models like Jev and image
+      models)", "Deferred tool loading" and "Full-screen mode by default".
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: cfac0d9078bf5a710da2f02e24ed72b7af06902952c2eb0ed52029de7cb9bf4d
