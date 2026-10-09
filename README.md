@@ -8,7 +8,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/categories-38-F0776A" alt="38 categories">
   <img src="https://img.shields.io/badge/organizations-787-F0776A" alt="787 organizations">
-  <img src="https://img.shields.io/badge/products-1117-F0776A" alt="1117 products">
+  <img src="https://img.shields.io/badge/products-1116-F0776A" alt="1116 products">
   <a href="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml"><img src="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg" alt="Validate"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
