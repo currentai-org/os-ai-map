@@ -42,54 +42,77 @@ openness:
     - code
     - license
 adoption:
-  level: 5
-  reach: '>10M users'
-  signal_type: active_users
-  confidence: medium
-  note: Adoption for this entry is read on the GPT-5 series, which OpenAI names as o3's successor; o3 and
-    o4-mini have left ChatGPT. OpenAI publishes no usage count for the GPT-5 series, so the earlier ChatGPT-based
-    level is kept provisionally.
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: o3 and o4-mini are still served through OpenAI's API, where both are marked deprecated, but OpenAI
+    publishes no usage count for either, and both have left ChatGPT, so ChatGPT's user figures no longer
+    describe them. No level is assigned until a count of their own use appears.
+  last_verified: '2026-10-09'
   sources:
   - url: https://developers.openai.com/api/docs/models/o3
-    shows: o3 is marked "Deprecated" and described as "Reasoning model for complex tasks, succeeded by GPT-5";
-      no usage figure is published.
-    accessed: '2026-10-08'
+    shows: 'o3 is marked "Deprecated" and described as "Reasoning model for complex tasks, succeeded by
+      GPT-5"; the page still offers the o3 alias and the o3-2025-04-16 snapshot. Searched the body for users,
+      requests and any usage count: none.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: d7c1bc3bac9cf6a50118d52bada5d46f3e6f6392d831f6ad18228a7b00f6bd12
-  - url: https://en.wikipedia.org/wiki/ChatGPT
-    shows: 'Infobox "Engine GPT-6 Astra"; the model table lists "GPT-6 September 2026 Active Three released
-      versions: Luna, Sol, Astra"; "In February 2026, ChatGPT reached 900 million weekly active users",
-      a figure that predates the GPT-6 series.'
-    accessed: '2026-10-08'
+    content_sha256: 7bbcbbca8ecdc5fda8ebaee87c305e2c838bd66178ee255fd7f70450628ed66f
+  - url: https://developers.openai.com/api/docs/models/o4-mini
+    shows: 'o4-mini is marked "Deprecated" and described as "Fast, cost-efficient reasoning model, succeeded
+      by GPT-5 Mini"; the page still offers the o4-mini alias and snapshot. Searched the body for users,
+      requests and any usage count: none.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 8ae9f59cccfa9e3015b10a994a0ee394d76ba97e426c831f6f5a552114c90d28
-  - url: https://en.wikipedia.org/wiki/OpenAI_o3
-    shows: '"OpenAI released o3-mini to all ChatGPT users (including free-tier) and some API users"; o3
-      and o3-pro on the paid tiers; no standalone per-model user count published'
-    accessed: '2026-08-13'
+    content_sha256: fdd5821814e9e79be6fe52ce7f3ca553bcc02e1467b3a480b7f3438206ee934a
+  - url: https://developers.openai.com/api/docs/deprecations
+    shows: OpenAI's deprecations page schedules "October 23, 2026 o4-mini-2025-04-16 | o4-mini gpt-5.6-terra"
+      and "Dec 11, 2026 o3-2025-04-16 gpt-5.6-sol". The page carries no usage figure.
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 47314bbf2b7d69b81230804757e9225ccce4b8142114fed9ee41958d59d128e9
+    content_sha256: 3cd219195153ff5ea77bc393d57abc578d78da7b34ef23646e4388529ce91adc
 capability:
-  score: 4
+  score: 3
   basis: benchmark
-  basis_detail: SWE-bench/GPQA/Codeforces/AIME
-  value: 'o3: SWE-bench Verified 71.7%, GPQA Diamond 87.7%, Codeforces Elo 2727; o4-mini: AIME 2025 99.5% pass@1
-    with Python tool, GPQA ~81%'
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'o3 scores 20 on the Artificial Analysis Intelligence Index against a median of 26, ranked #157
+    of 226; o4-mini (High) scores 17, ranked #170. Gemini 3.1 Pro Preview scores 30.'
+  relative_to: gemini-pro
+  relation: one_below
   confidence: high
-  note: OpenAI reported 87.7% on GPQA Diamond and 71.7% on SWE-bench Verified for o3 at its April 2025 launch,
-    results that placed it at the frontier for reasoning models at the time. OpenAI now lists GPT-5 as its
-    successor, so the family sits a step behind the current frontier.
+  note: o3 and o4-mini led OpenAI's reasoning line in 2025 and are still served through the API, but newer
+    models have overtaken them. On the Artificial Analysis index o3 now scores below the median for comparable
+    models and about ten points under Gemini 3.1 Pro, a step below the group of models just behind the frontier
+    leaders.
+  comparison:
+    last_attested: '2026-10-09'
+    sources:
+    - url: https://artificialanalysis.ai/models/gemini-3-1-pro-preview
+      shows: '"Gemini 3.1 Pro Preview scores 30 on the Artificial Analysis Intelligence Index, placing it
+        above average among comparable models (median: 26)"; Intelligence rank "# 95 / 226".'
+      accessed: '2026-10-09'
+      http_status: 200
+      content_sha256: efb54912d227a5d60a8b61915c2a049271c7d74902bf78642f1e27a9d4900540
+  last_verified: '2026-10-09'
   sources:
-  - url: https://en.wikipedia.org/wiki/OpenAI_o3
-    shows: '"o3 achieved a score of 87.7% on the GPQA Diamond benchmark"; "On SWE-bench Verified ... o3
-      scored 71.7%, compared to 48.9% for o1. On Codeforces, o3 reached an Elo score of 2727, whereas o1
-      scored 1891". No o4-mini AIME figure on the page.'
-    accessed: '2026-08-13'
+  - url: https://artificialanalysis.ai/models/o3
+    shows: '"o3 scores 20 on the Artificial Analysis Intelligence Index, placing it below average among
+      comparable models (median: 26)"; Intelligence rank "# 157 / 226".'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 47314bbf2b7d69b81230804757e9225ccce4b8142114fed9ee41958d59d128e9
-  - url: https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf
-    shows: primary system card, still resolving; models described as combining "state-of-the-art reasoning
-      with full tool capabilities"
-    accessed: '2026-08-13'
+    content_sha256: 4f9dbb8e7eab4a5597fe77a8d9acfd0870c99cbf034b79575d268c55b95e7b29
+  - url: https://artificialanalysis.ai/models/o4-mini
+    shows: '"o4-mini (High) scores 17 on the Artificial Analysis Intelligence Index, placing it at the lower
+      end among comparable models (median: 26)"; Intelligence rank "# 170 / 226"; the page marks the model
+      deprecated in favor of GPT-5 mini.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 32d7ca19fff2ed0dc2d06f84e3143900bbd7898bb6f443c094477fb4ce0fc4ab
+    content_sha256: 952e505681c5f2ce036bc989fe6c3fb0dbf7f67eee3dd21b687677ee2f61a347
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max)
+      first at 57.62, GPT-6 Astra (Max) at 52.67, Gemini 3.1 Pro Preview at 29.72, o3 at 20.20, o4-mini
+      (High) at 16.65, Llama 4 Maverick at 9.99 and GPT-4o (Nov '24) at 8.44. The digest drifts between
+      fetches because the page carries live pricing and throughput figures.
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: b32380b54bad1092bd9247bfcea5d4eba61af6ee0ce8e5f00d8bfba2337988b4

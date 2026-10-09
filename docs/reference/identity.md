@@ -38,7 +38,8 @@ which belongs on the record it describes.
 Pitch the slug at **the level the vendor markets as the product**, not at a release.
 
 Google sells "Gemma" and 2/3/4 are versions of it, so the slug is `gemma`. OpenAI sells GPT-4o,
-GPT-4.1 and GPT-5 as distinct lines, so those stay apart. Anthropic sells Opus, Sonnet and Haiku,
+GPT-4.1, GPT-5 and GPT-6 as distinct lines, so those stay apart, and an older line keeps its own
+slug while its API product is live rather than being read on its successor. Anthropic sells Opus, Sonnet and Haiku,
 so `claude-opus` covers 4.5 through 4.8.
 
 A slug that bakes in a version goes stale the day the next release ships, and then costs an alias
@@ -333,6 +334,11 @@ can either.
 
 and for `product_membership`: `member_of` (this artifact's measurement belongs to
 `resolves_to`) and `not_member_of` (it does not, though it may look related).
+
+A product in the corpus is a head product or a registry (tail) row: `existing_product` may name
+either. Promotion changes a product's tier, not its identity, so an artifact settled onto a
+registry row stays settled when that row is promoted, and is not recorded `unresolved` while it
+waits.
 
 **Consult it before proposing, and never silently overturn it.** A bulk run must consult the
 ledger before proposing a product. `build/validate.py` enforces the half that can be enforced:

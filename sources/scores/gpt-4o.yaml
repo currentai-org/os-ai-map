@@ -43,73 +43,79 @@ openness:
     - weights
     - license
 adoption:
-  level: 5
-  reach: '>10M users'
-  signal_type: active_users
-  confidence: medium
-  note: Adoption for this entry is read on the GPT-6 series, which now holds GPT-4o's place as OpenAI's
-    flagship and runs ChatGPT; GPT-4o itself remains only in the API. No GPT-6 usage figure has been published
-    yet, so the earlier ChatGPT-based level is kept provisionally.
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: 'GPT-4o is still a live API model, but OpenAI publishes no usage count for it, and ChatGPT''s user
+    figures no longer describe it: GPT-4o has left ChatGPT, which now runs on the GPT-6 family. No level
+    is assigned until a count of GPT-4o''s own use appears.'
+  last_verified: '2026-10-09'
   sources:
-  - url: https://developers.openai.com/api/docs/models
-    shows: 'Models page: "If you''re not sure where to start, use GPT-6 Astra, our flagship model for complex
-      reasoning and coding. Choose GPT-6.1 Sol to balance intelligence and cost, or GPT-6 Luna for cost-sensitive,
-      high-volume workloads." No usage figure is published.'
-    accessed: '2026-10-08'
-    http_status: 200
-    content_sha256: 6ad9d4733c6fd4aa3639ca60163063884a5fecff51168b6f284174a07179c2bf
-  - url: https://en.wikipedia.org/wiki/ChatGPT
-    shows: 'Infobox "Engine GPT-6 Astra"; the model table lists "GPT-6 September 2026 Active Three released
-      versions: Luna, Sol, Astra"; "In February 2026, ChatGPT reached 900 million weekly active users",
-      a figure that predates the GPT-6 series.'
-    accessed: '2026-10-08'
-    http_status: 200
-    content_sha256: 8ae9f59cccfa9e3015b10a994a0ee394d76ba97e426c831f6f5a552114c90d28
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: GPT-4o served as a primary OpenAI API/ChatGPT model; no usage figure published on the page
-    accessed: '2026-08-13'
+    shows: 'OpenAI''s API model page lists GPT-4o as a current model, "our versatile, high-intelligence
+      flagship model", with the gpt-4o alias and the gpt-4o-2024-08-06 and gpt-4o-2024-11-20 snapshots available
+      and only gpt-4o-2024-05-13 marked Deprecated. Searched the body for users, requests, tokens served
+      and any usage count: none.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0
-  - url: https://almcorp.com/blog/chatgpt-900-million-weekly-active-users/
-    shows: '"On February 27, 2026, OpenAI announced that ChatGPT had surpassed 900 million weekly active
-      users" - the surface figure this reading is based on'
-    accessed: '2026-08-14'
+    content_sha256: 9af7c20c8e5e9048721082db637cbb3042b1e5c86486a871a29c5cc1e94e9438
+  - url: https://developers.openai.com/api/docs/deprecations
+    shows: 'OpenAI''s deprecations page schedules only one GPT-4o text snapshot for removal: "October 23,
+      2026 gpt-4o-2024-05-13 gpt-5.6-sol". The ChatGPT snapshot was removed earlier ("2026-02-17 chatgpt-4o-latest").
+      The page carries no usage figure.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: ed91425e1644d5cf291bf1878b4ef04b0b64156fb5720da402d1b6b662d0cae6
-  - url: https://www.demandsage.com/chatgpt-statistics/
-    shows: ChatGPT ~900M+ weekly active users (aggregator, corroborating surface scale). Not re-fetchable
-      - the host answers HTTP 403 to consecutive requests - so it keeps its earlier read.
-    accessed: '2026-06-04'
+    content_sha256: 3cd219195153ff5ea77bc393d57abc578d78da7b34ef23646e4388529ce91adc
+  - url: https://community.openai.com/t/gpt-6-and-intelligent-ui-in-chatgpt/1404139
+    shows: 'OpenAI Developer Community announcement of GPT-6 in ChatGPT: "The global rollout began on October
+      7 for Plus, Pro, Business, and Enterprise, expanding to Free and Go starting October 8", with GPT-6
+      Sol on the paid plans and GPT-6 Luna on Free and Go. No usage figure for any model.'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 3f72cc4bc3de28b5ceb5f80e800d1342f97c2718bd064b4317ff05b2fdf51aa4
 capability:
   score: 3
   basis: benchmark
-  basis_detail: Artificial Analysis Intelligence Index; MMLU
-  value: 'GPT-4o (Nov ''24 snapshot) - AA Intelligence Index 8 (estimated, v4.3.2), ranked #45/60, below
-    average among non-reasoning models in a similar price tier (median 15). Launch-era MMLU 88.7 against
-    86.5 for GPT-4.'
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'GPT-4o (Nov ''24) scores 8 on the Artificial Analysis Intelligence Index, at the lower end among
+    non-reasoning models in its price tier (median 15), ranked #46 of 61; Llama 4 Maverick scores 10.'
+  relative_to: llama
+  relation: at
   confidence: medium
-  note: GPT-4o was OpenAI's multimodal flagship in 2024 and now sits well below a frontier that includes
-    OpenAI's own GPT-5 and GPT-6 lines. On Artificial Analysis's Intelligence Index it scores below the
-    median for non-reasoning models in its price tier, and OpenAI's model page publishes no benchmark figures.
-  last_verified: '2026-09-29'
+  note: GPT-4o was OpenAI's multimodal flagship in 2024 and is still served through the API, but it now
+    sits far below the current frontier, including OpenAI's own GPT-5 and GPT-6 lines. On the Artificial
+    Analysis index it scores close to Llama 4 Maverick and below the median for comparable models, which
+    places it alongside Llama rather than among the leading models.
+  last_verified: '2026-10-09'
+  comparison:
+    last_attested: '2026-10-09'
+    sources:
+    - url: https://artificialanalysis.ai/models/llama-4-maverick
+      shows: '"Llama 4 Maverick scores 10 on the Artificial Analysis Intelligence Index, placing it below
+        average among comparable models (median: 12)"; Intelligence rank "# 26 / 46".'
+      accessed: '2026-10-09'
+      http_status: 200
+      content_sha256: 0b66f5ad66a5852c9964f06fc9bc251496f8843b9c79c4a041673e38022625e8
   sources:
-  - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: OpenAI API model page for GPT-4o with "128,000 context window" and "Oct 01, 2023 knowledge cutoff",
-      described as "our most capable model outside of our o-series models"; the page carries no benchmark
-      figures.
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: 5e7522293db94a851cbd8984e3563468231971964101092a3e7965eb77f23989
   - url: https://artificialanalysis.ai/models/gpt-4o
-    shows: 'Artificial Analysis model page for the November 2024 snapshot - "GPT-4o (Nov ''24) scores 8
-      (estimated) on the Artificial Analysis Intelligence Index, placing it below average among other non-reasoning
-      models in a similar price tier (median: 15)", on "Artificial Analysis Intelligence Index v4.3.2".'
-    accessed: '2026-09-29'
+    shows: '"GPT-4o (Nov ''24) scores 8 on the Artificial Analysis Intelligence Index, placing it at the
+      lower end among comparable models (median: 15)"; Intelligence rank "# 46 / 61"; the page marks the
+      November 2024 snapshot as superseded by a later GPT-4o release.'
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: d0b1e0e3ea8d5a3fb7e1082250c85fdf6282232a92deb53552de480fbadc8818
-  - url: https://en.wikipedia.org/wiki/GPT-4o
-    shows: Encyclopedia entry recording the launch figure "GPT-4o scored 88.7 on the Massive Multitask Language
-      Understanding" benchmark, against 86.5 for GPT-4.
-    accessed: '2026-09-29'
+    content_sha256: d62d2d01a2180b69beb5949a1dfdba2e41a49fef4cd68a4adb3439d09bf296f4
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max)
+      first at 57.62, GPT-6 Astra (Max) at 52.67, Gemini 3.1 Pro Preview at 29.72, o3 at 20.20, o4-mini
+      (High) at 16.65, Llama 4 Maverick at 9.99 and GPT-4o (Nov '24) at 8.44. The digest drifts between
+      fetches because the page carries live pricing and throughput figures.
+    accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 3db808c5f960dd67b15e4427c01de75f2255dddfb682a1f8b1500515b04b8156
+    content_sha256: b32380b54bad1092bd9247bfcea5d4eba61af6ee0ce8e5f00d8bfba2337988b4
+  - url: https://developers.openai.com/api/docs/models/gpt-4o
+    shows: 'OpenAI API model page for GPT-4o: "128,000 context window", "Oct 01, 2023 knowledge cutoff",
+      text and image input with text output; the page carries no benchmark figures.'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 9af7c20c8e5e9048721082db637cbb3042b1e5c86486a871a29c5cc1e94e9438

@@ -172,8 +172,8 @@ rulings:
       sets a band.
     status: in-force
     executor: agent
-    lands_in: []
-    applied_in: []
+    lands_in: [docs/reference/adoption.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/874']
 
   - id: R-2026-10-08-j
     date: 2026-10-08
@@ -370,10 +370,11 @@ rulings:
     ruling: >-
       Re-govern these entries on the current GPT-5 and GPT-6 series, re-derive adoption for the
       new governing model, and keep the old level only as a placeholder until then.
-    status: in-force
+    status: replaced
     executor: agent
     lands_in: []
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/870']
+    replaced_by: R-2026-10-08-zl
 
   - id: R-2026-10-08-w
     date: 2026-10-08
@@ -540,3 +541,103 @@ rulings:
     executor: agent
     lands_in: []
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/865']
+
+  - id: R-2026-10-08-zh
+    date: 2026-10-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#862", "#871", data_hubs]
+    question: >-
+      Publishing a preliminary category makes rows appear for products already researched under it,
+      without their files changing. Is that a silent rewrite the corpus diff gate should fail?
+    ruling: >-
+      No. Rows may appear without touching their product files only when the category moves from
+      preliminary to published, the product was already in that category, the rows are appearances
+      rather than changes or disappearances, and they equal the rows the published category would
+      produce. All stage, tier and gap checks stay active. The fix lands in its own PR, never inside
+      the PR that benefits from it.
+    reasoning: >-
+      A preliminary category becoming published legitimately causes already-researched rows to
+      appear; that is not the silent rewrite the gate is intended to catch.
+    status: in-force
+    executor: agent
+    lands_in: [build/check_corpus_diff.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/871']
+
+  - id: R-2026-10-08-zi
+    date: 2026-10-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#861", "#864", sources/resolution_ledger.yaml]
+    question: >-
+      May an existing_product ledger entry resolve to a registry (tail) row, or only to a head
+      product?
+    ruling: >-
+      Either. existing_product may resolve to a head product or a registry product; promotion
+      changes tier, not identity.
+    reasoning: >-
+      A registry row already asserts that an artifact belongs to a product in the corpus. Keeping
+      such an entry unresolved would manufacture an identity question that has already been answered.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/864', 'https://github.com/currentai-org/os-ai-map/pull/861']
+
+  - id: R-2026-10-08-zj
+    date: 2026-10-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#862", the-cancer-imaging-archive]
+    question: >-
+      TCIA's NBIA archive software is BSD-licensed. Is the current TCIA service open source?
+    ruling: >-
+      No. Current TCIA is 2/source_available: NBIA is open, but it covers only part of the current
+      service, the metadata and application layer is outside it, and NBIA itself is being retired.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/862']
+
+  - id: R-2026-10-08-zk
+    date: 2026-10-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#862", clarin-vlo]
+    question: >-
+      Is Wikipedia enough governance evidence for CLARIN VLO's ungated reading?
+    ruling: >-
+      No. The European Commission's decision setting up CLARIN ERIC, with its statutes, is
+      sufficient governance evidence for ungated; Wikipedia is not.
+    reasoning: >-
+      The ungated rule asks for governance evidence strong enough to establish that no commercial
+      party is positioned to withhold the core. Wikipedia is too indirect for a new record.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/862']
+
+  - id: R-2026-10-08-zl
+    date: 2026-10-08
+    by: ccerv1
+    venue: session
+    refs: [gpt-4o, o-series, gpt-5, R-2026-10-08-v]
+    question: >-
+      R-2026-10-08-v re-governed GPT-4o and the o-series on the GPT-5 and GPT-6 series and kept their
+      old adoption levels as placeholders. Is that right, given both are still live API products?
+    ruling: >-
+      GPT-4o and o-series remain distinct product identities while their API products remain
+      available. Do not transfer adoption from successor model families onto them: GPT-4o adoption
+      describes GPT-4o, o-series adoption describes o3 and o4-mini, and where no current
+      model-specific measurement exists the axis abstains or is held rather than carrying an old
+      level as a placeholder. Add GPT-6 as its own product, with its own adoption. When the o-series
+      endpoints are withdrawn, retire o-series into the GPT-5 line; decide GPT-4o's retirement only
+      when its API product actually ends.
+    reasoning: >-
+      GPT-4o is still an active API model with its own endpoint and snapshots, and repurposing its
+      slug would break the rule that marketed product lines are distinct. o3 and o4-mini are
+      deprecated with named successors but still exposed. GPT-6 is marketed as its own flagship
+      family. The ChatGPT usage figure predates GPT-6, so it cannot give GPT-6 a level.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/875']
