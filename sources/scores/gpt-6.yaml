@@ -53,27 +53,42 @@ openness:
     - weights
     - code
 adoption:
-  level: null
+  level: 5
   reach: null
-  signal_type: unknown
-  confidence: low
-  note: OpenAI has published no usage count for GPT-6. ChatGPT's earlier user figures predate the family,
-    and GPT-6 only became the default ChatGPT model in October 2026, so no level is assigned yet.
+  signal_type: reported_traction
+  banded_quantity: ChatGPT weekly users (more than 1.2 billion, October 2026), the surface GPT-6 is the
+    default model on, not a GPT-6 active-user count
+  confidence: medium
+  note: 'GPT-6 is the default model in ChatGPT. OpenAI began rolling it out to Plus, Pro, Business and Enterprise
+    users on October 7, 2026 with GPT-6 Sol, and to Free and Go users on October 8 with GPT-6 Luna. The
+    level reads that surface: OpenAI describes ChatGPT as used by more than 1.2 billion people each week,
+    which counts ChatGPT''s weekly users rather than GPT-6''s, and OpenAI has published no active-user count
+    for GPT-6 itself.'
+  last_verified: '2026-10-09'
   sources:
+  - url: https://community.openai.com/t/gpt-6-is-now-rolling-out-to-all-chatgpt-users/1404163
+    shows: 'OpenAI Developer Community announcement of October 7, 2026, posted by a community moderator
+      in OpenAI''s voice and linking OpenAI''s "GPT-6 and Intelligent UI for everyone" post: a "new GPT‑6
+      model built for more than 1.2 billion people who use ChatGPT each week. The rollout starts today.
+      GPT-6 is coming to Plus, Pro, Business, and Enterprise users globally in Chat today. Free and Go users
+      follow tomorrow. Paid tiers use GPT-6 Sol, while Free and Go use GPT-6 Luna."'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: 37f5cc5813fa51a5fb5b56808a4f1e2ce6cca6fb7bf588ae53f8923c0e328db2
+  - url: https://openai.com/news/rss.xml
+    shows: 'OpenAI''s news feed item "GPT-6 and Intelligent UI for everyone", linking https://openai.com/index/gpt-6-for-everyone
+      with pubDate Wed, 07 Oct 2026: "GPT‑6 is rolling out globally in ChatGPT with Intelligent UI". The
+      post itself answered HTTP 403 to a fetch, and the feed''s digest changes whenever OpenAI publishes.'
+    accessed: '2026-10-09'
+    http_status: 200
+    content_sha256: d2727f963914dd054bfd1213c2b6730c4342a87e7cbddf6b3b8e8ce484158263
   - url: https://community.openai.com/t/gpt-6-and-intelligent-ui-in-chatgpt/1404139
-    shows: 'OpenAI Developer Community announcement of GPT-6 in ChatGPT: "The global rollout began on
-      October 7 for Plus, Pro, Business, and Enterprise, expanding to Free and Go starting October 8",
-      with GPT-6 Sol on the paid plans and GPT-6 Luna on Free and Go. It links OpenAI''s announcement,
-      which answered HTTP 403 to a fetch, and carries no usage figure.'
+    shows: 'OpenAI Developer Community announcement of GPT-6 in ChatGPT: "The global rollout began on October
+      7 for Plus, Pro, Business, and Enterprise, expanding to Free and Go starting October 8", with GPT-6
+      Sol on the paid plans and GPT-6 Luna on Free and Go.'
     accessed: '2026-10-09'
     http_status: 200
-    content_sha256: 3f72cc4bc3de28b5ceb5f80e800d1342f97c2718bd064b4317ff05b2fdf51aa4
-  - url: https://developers.openai.com/api/docs/models/gpt-6-astra
-    shows: 'OpenAI API model page for GPT-6 Astra. Searched the body for users, requests, tokens served
-      and any usage count: none.'
-    accessed: '2026-10-09'
-    http_status: 200
-    content_sha256: 7c5c95ce22d87aa9564b24ecca700dd3dcc64b6a65ce95095d4c95263813a205
+    content_sha256: 0998079cf8f85a2e6751d5287384deffc3eae941adcc1902aefd421a162f10e5
 capability:
   score: 5
   basis: benchmark
