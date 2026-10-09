@@ -839,3 +839,127 @@ rulings:
     executor: agent
     lands_in: [docs/reference/capability.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/880']
+
+  - id: R-2026-10-09-l
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#884", pi-coding-agent, maritime, orchestration_agents, deployment]
+    question: >-
+      The agent front-door sweep found nine open messaging-identity candidates from nine
+      organizations, short of the category heuristic's fifteen. Should an agent_channels category
+      be created, and do Pi and Maritime enter as tail candidates?
+    ruling: >-
+      Do not create agent_channels yet. Pi is a sensible orchestration_agents tail candidate and
+      Maritime a sensible deployment candidate. The sweep's finding stands: the open stack can
+      reproduce much of the agent, but the front door still has real closed dependencies.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-m
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#883", qwen, qwen-instruct, base_pretrained, finetuned_chat]
+    question: >-
+      qwen-instruct still names Qwen2.5-14B-Instruct for openness and adoption, while Qwen 3.8 ships
+      no separate Instruct checkpoint and its chat models already sit under qwen. Pin, alias or
+      re-scope?
+    ruling: >-
+      Re-scope, not pin or alias. Keep the existing base/chat split, but make it coherent: qwen
+      governs on the latest genuinely base/pretrained Qwen artifacts, and qwen-instruct governs on
+      the current post-trained/chat Qwen line, even if Alibaba no longer puts "Instruct" in the
+      checkpoint name. Then re-read all three axes for both records. Hold #883.
+    reasoning: >-
+      Pinning leaves a 2024 fossil in a current-products map; aliasing loses the base-vs-chat
+      distinction the taxonomy intentionally preserves for families like Llama.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-n
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#885", ddgs, github-mcp, search_retrieval, R-2026-10-08-m]
+    question: >-
+      DDGS is an MIT library whose text backends are all hosted search engines. Does that make its
+      source partial, and its openness 2/source_available?
+    ruling: >-
+      No. DDGS stays 5/open_source and #885 is closed; its search_retrieval gap-set move does not
+      land. DDGS is the open library and metasearch product; Google, Bing and the rest are external
+      systems it queries, not an unpublished DDGS runtime. source partial is for cases where the
+      published repo is merely an interface to the actual product, such as Claude Agent SDK or
+      Composio, not for every open adapter whose useful work depends on a closed external system.
+    reasoning: >-
+      search_retrieval itself describes DDGS as a library that scrapes ten search sites, and
+      github-mcp is the control case: it stays 5/open_source although its purpose is to operate
+      against the closed GitHub service.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-o
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: [gpt-6, finetuned_chat, R-2026-10-08-zl, open-instinct-build]
+    question: >-
+      GPT-6 has no adoption score, so the Instinct page's closed chat rival ties on capability and
+      falls to the GPT-5 line on adoption. Rate GPT-6's adoption, or change the tie-break rule?
+    ruling: >-
+      GPT-6 gets adoption 5, as reported_traction, medium confidence. Not active_users. No
+      tie-break rule change is needed.
+    reasoning: >-
+      On October 7 OpenAI said GPT-6 was rolling out to paid ChatGPT tiers and to Free/Go on
+      October 8, with GPT-6 Sol/Luna powering ChatGPT, and described the surface as serving more
+      than 1.2 billion weekly ChatGPT users. That is not a measured GPT-6 active-user count, but it
+      is very strong parent-surface evidence for more than 10M reach, exactly the sort of
+      reported_traction inference the map already uses.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-p
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: [artificial-analysis, gpt-oss, deepseek-instruct, "#865"]
+    question: >-
+      Artificial Analysis appears to have rescaled its Intelligence Index (gpt-oss-120b read 24.1 on
+      2026-09-01 and 11.6 today). Should capability bands be re-banded on the new absolute values?
+    ruling: >-
+      Do not mechanically re-band because an AA number changed. Treat it as an instrument-version
+      or rescaling event, not necessarily a capability collapse: the scheduled reconciliation takes
+      it as a re-read trigger and requires a current-release, current-peer comparison on the same
+      AA version. deepseek-instruct moves its governing evidence to V4.1 Flash and can remain 4 if
+      the current comparison supports it. gpt-oss gets a dedicated re-read; 4 to 3 is not
+      authorized merely from the rescaled absolute value.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-09-q
+    date: 2026-10-09
+    by: ccerv1
+    venue: pr-review
+    refs: [open-instinct-build, "#884"]
+    question: >-
+      May the revised Open Instinct page model be published to OSO?
+    ruling: >-
+      Yes, after #884 lands, on one editorial condition: the page must not imply that the whole
+      Instinct-like stack is open end to end. It should make visible that the agent loop, email and
+      sandbox pieces have credible open options, while acquiring a phone number and issuing fiat
+      payment credentials still bottom out in closed infrastructure.
+    reasoning: >-
+      If the page makes those gaps visible rather than papering them over, it strengthens the piece.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
