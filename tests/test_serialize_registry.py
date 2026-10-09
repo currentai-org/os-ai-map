@@ -353,6 +353,8 @@ TRACTION_REPOSITORIES = [
     ("rockchip-rk3588", "airockchip/rknn-toolkit2"), ("sipeed-maixcam", "sipeed/MaixPy"),
     ("ti-am67a", "TexasInstruments/edgeai-tidl-tools"), ("webcontainers", "stackblitz/webcontainer-core"),
     ("zed", "zed-industries/zed"), ("helm", "stanford-crfm/helm"), ("swe-bench", "SWE-bench/SWE-bench"),
+    # Added 2026-10-09 by the llama-cpp relabel from usage_volume to reported_traction.
+    ("llama-cpp", "ggml-org/llama.cpp"),
 ]
 # R-2026-10-08-r: the measured package is not how the product is used.
 RULED_PACKAGES = {
