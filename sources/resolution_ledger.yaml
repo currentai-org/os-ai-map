@@ -489,11 +489,24 @@ resolutions:
   note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
     into storage; it wants a category-proposal issue of its own
 - repo: getbindu/bindu
-  verdict: excluded_boundary
-  decided_in: '#413'
-  decided_on: '2026-08-30'
-  note: identity, communication and payments for agents. The payments dimension has no peer anywhere in
-    the taxonomy, so the product cannot be placed without stretching a category
+  verdict: existing_product
+  resolves_to: bindu
+  decided_in: R-2026-10-09-g
+  decided_on: '2026-10-09'
+  note: 'Supersedes the excluded_boundary recorded from #413 on 2026-08-30, whose note read: "identity,
+    communication and payments for agents. The payments dimension has no peer anywhere in the taxonomy,
+    so the product cannot be placed without stretching a category." R-2026-10-08-h has since put agent
+    payment protocols in agent_protocols, and R-2026-10-09-a created agent_authorization, so the reason
+    no longer holds. Re-ruled under R-2026-10-09-g by the primary product, read on 2026-10-09 from the
+    repository README and PyPI record: Bindu wraps an existing agent handler (`bindufy()`) and serves it
+    as an A2A JSON-RPC agent, with a DID, mTLS and OAuth2 security stack on the transport and optional
+    x402 payment gating. PyPI describes it as "A protocol framework for agent-to-agent communication",
+    and the README treats security "as transport". Its authorization is delegated to Ory Hydra under a
+    single coarse scope, with fine-grained authorization on its roadmap, so it fails agent_authorization''s
+    test that deciding authority be the primary function. It does not run the agent itself, so it is
+    not orchestration_agents. Like FastMCP for MCP, it is a framework that implements an agent protocol,
+    which is agent_protocols. It is now the `bindu` registry row there, with the PyPI package `bindu`.
+    An existing_product entry may resolve to a registry row (R-2026-10-08-zi).'
 - repo: getmaxun/maxun
   verdict: excluded_boundary
   boundary: generic-browser-automation
