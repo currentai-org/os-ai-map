@@ -399,6 +399,50 @@ it says something the level does not, which is usually the *shape* of the tracti
 its size: `osprey` at 462 GitHub stars but running in production at Discord is `niche` in a way
 that matters. The words are hardware's, and sharing a vocabulary beats minting a parallel one.
 
+### Derivative counts corroborate; they never band
+
+A Hugging Face model's model tree counts the repositories that name it as their base: fine-tunes,
+adapters, quantizations and merges, each a relation the Hub API can filter on. The count is real
+and machine-readable, and it says something a download count does not, which is how many people
+built on the weights rather than pulled them. It is **corroborating context for an open-weight
+model, not an instrument**. No `signal_type`, adoption route or band table carries it.
+
+What a derivative count may do:
+
+- **Give context in the note.** A sentence saying the checkpoint carries a large ecosystem of
+  fine-tunes and quantizations tells a reader what kind of standing the band reflects.
+  `mistral-7b-instruct` is the shape: its band is read on the trailing-30-day downloads of the
+  declared checkpoint, and its source records the model tree beside that figure.
+- **Corroborate a band another instrument set.** A large derivative count beside a high download
+  band is consistent evidence for the reading. A count that seems out of line with the band is a
+  reason to re-read the band on its own instrument, not a reason to move it.
+
+What it may not do:
+
+- **Set a band or move one.** No level is read off a derivative count, in either direction, and a
+  derivative count is never the `banded_quantity` behind a level.
+- **Stand in when the instrument abstains.** Where the authoritative route has no figure, or
+  partial coverage withholds one, the product takes the next route `signal_routing.yaml` declares
+  or goes unbanded. A derivative count is not a route, and reaching for it there is the
+  substitution "Abstain rather than substitute" forbids.
+
+**Why not an instrument.** Each of these is enough on its own:
+
+- **It is cumulative.** The tree counts every derivative ever published, and every band on the map
+  is a monthly figure. It has the lifetime-counter problem below with no history of readings to
+  take an increment from.
+- **Automation inflates it.** Conversion bots publish quantizations of a popular checkpoint in many
+  formats within days of its release, so much of the count measures a pipeline's coverage rather
+  than anyone's use.
+- **A derivative's use is its own.** Each derivative is a separate repository with its own
+  downloads. Crediting its existence to the base reads one product's adoption off other projects'
+  activity, the attribution failure the vendor-SDK trap below describes, met from the other side.
+- **It exists for one kind of artifact.** Only a Hugging Face model carries a base-model relation,
+  so a scale built on it could never compare an open-weight model with a closed model, a dataset or
+  a package, and a level has to mean one magnitude across the whole map. A family declared across
+  several checkpoints, whose derivatives may name more than one of them, adds an aggregation
+  question no route answers.
+
 ### When a re-read may re-band, and when it may not
 
 These are curation rules and no gate enforces them; `docs/workflows/refresh-category.md` is where
@@ -552,6 +596,8 @@ it does not make the claim automatic, it makes it falsifiable.
   lower reading**. A reset window is not a measurement: its true downloads are unknown, not zero,
   so nothing bands on it as if it were one. Measuring the next window from the lower reading,
   rather than from the previous high, keeps real use after a re-upload from being lost.
+- **Hugging Face derivative counts** — corroborating context for an open-weight model, never a
+  band. The rule and its reasons are in "Derivative counts corroborate; they never band" above.
 - **MLPerf and Artificial Analysis** — capability instruments, not adoption. Recorded here only
   so nobody re-proposes them; see `signal_routing.yaml` for why both are unbridged anyway.
 
@@ -824,6 +870,8 @@ written from the series above, or it is not written.
       monthly series above rather than from two point reads, and bounds itself to the window
       that series covers.
 - [ ] No band was copied from a computed signal — those are observations, not scores.
+- [ ] A Hugging Face derivative count appears only as context or corroboration. No level was
+      read off it, and none stands on it where the instrument abstained.
 - [ ] The registry release the band was read off is on the line the repository is publishing.
       `check_channel_authority --warehouse` asks this; a band a whole major line behind needs the
       under-coverage ladder applied to it.
