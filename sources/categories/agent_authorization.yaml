@@ -1,0 +1,76 @@
+name: agent_authorization
+display_name: Agent identity & authorization
+description: Software and standards that determine who an agent may act as, what authority it may
+  exercise, and what resources and actions it may access or delegate.
+strapline: Open supply, thin adoption. The agent-native authorization layer is a young cluster of open
+  projects, most of them started in 2026 and none yet dominant, and the standards that would let them
+  interoperate are still working-group drafts apart from AuthZEN 1.0.
+weights:
+  adopt: 0.6
+  cap: 0.4
+scoring_recipe:
+  version: 1
+  extends: software
+  note: >-
+    Inherits the shared software ladder unchanged. Every row is a library, a server, a sidecar or a
+    specification, and whether its code or text is published is the same question it is for the
+    agent-interop categories beside it. Several vendors here pair an open engine with a hosted
+    dashboard or control plane, and the hosted service never lifts or lowers the open release
+    (identity.md, "An open satellite around a closed core"): read the repository that makes the
+    authorization decision. An open client whose decision is made by a closed hosted service reads
+    source closed and is not seeded here (R-2026-10-09-f). Weighted 0.6 adoption to 0.4 capability,
+    as agent_protocols and agent_tools_connectors are: most rows ship a PyPI, npm or crates.io
+    package, so adoption reads on the same instruments, and capability has no ladder of its own yet.
+    The 2026-10-09 sweep record sketches one quantity for the promotion PR to test through
+    build-rubric: how many of five parts a product implements (identity issued to the agent
+    instance, a per-action decision against policy, delegation narrowed across hops, human approval
+    before a consequential action, and a verifiable record of the decision), with the per-action
+    decision required for band 3 and above. It has not been checked against the seed.
+products: []
+comments: >-
+  Created 2026-10-09 as a preliminary category by maintainer ruling R-2026-10-09-a, on the
+  agent-authorization sweep in docs/sweeps/2026-10-09-agent-authorization/ (#878, issue #723).
+  Membership test: is the product's primary function to decide, prove or delegate what an AI agent
+  may do, and on whose authority, before the action runs, and is the product built for agents? Built
+  for agents means its own README or documentation leads with agents, not that it lists them among
+  its use cases. An open standard passes the same test when a standards body's working group holds
+  it, which is why AuthZEN 1.0 (OpenID Foundation), ID-JAG (IETF OAuth WG) and WIMSE AIMS (IETF
+  WIMSE WG) are seeded; an individual Internet-Draft has no standing in the IETF process and does
+  not pass. ADJACENT, NOT HERE (R-2026-10-09-b): general-purpose identity and authorization systems
+  that ship an agent or MCP feature, among them Open Policy Agent, OpenFGA, SpiceDB, Cedar, Cerbos,
+  Keycloak, Pomerium, Casdoor, Logto, Better Auth and ThunderID. They are authorization software that
+  happens to support agents, and admitting them would bury the agent-native cluster inside mature IAM
+  infrastructure. One enters only if its product identity itself becomes agent-first, read from what
+  the project now leads with, not from a new docs page. Neighbors. agent_protocols (R-2026-10-09-c):
+  the line is functional. Protocols govern how agents communicate and interoperate; this category
+  governs authority, delegation, identity and policy. The authorization section of a wire protocol
+  stays part of that protocol (MCP's authorization spec is part of `model-context-protocol`, A2A's
+  security scheme part of `agent2agent-protocol`), and so does agent payment authorization (x402,
+  AP2; R-2026-10-08-h). A library that implements only the authorization half of a protocol (MCP
+  Auth, Workers OAuth Provider) is here; an MCP server framework with auth as one feature (FastMCP,
+  golf) or a stdio-to-remote bridge that handles the client side of OAuth (mcp-remote) stays there,
+  and so does an agent-communication framework whose identity layer serves its transport (Bindu,
+  R-2026-10-09-g). Gateways (R-2026-10-09-d): MCP and agent gateways (agentgateway, IBM
+  ContextForge, Docker MCP Gateway, Obot, Jarvis Registry, casbin-gateway, OctoBus) stay parked
+  until a gateway-specific pass. A gateway that enforces authorization is not thereby an
+  authorization product, any more than a connector that uses OAuth is. Closed services
+  (R-2026-10-09-f, consistent with #863): an open client or SDK whose decision is made by a closed
+  hosted service (Auth0's AI SDKs, AgentSafe, Quirna, Ziffer, permit-mcp) is not an open
+  authorization product and waits for a closed-product pass. Kontext was kept because its policy is
+  evaluated locally, though setup needs a token from its hosted dashboard. agent_tools_connectors:
+  credential custody inside an adapter stays there, where that ladder already rewards it (Composio,
+  Arcade, Open Connector, Pipedream, Nango). A standalone authorization server, policy point or
+  approval gate that adapts no system is here; Clawvisor is the edge case, since it injects
+  credentials but adapts nothing. safeguards: that category decides by content, whether an input or
+  output is harmful; this one decides by authority, whether this principal may take this action.
+  Prompt-injection and content guardrails stay there (Arcjet, Invariant, agentshield,
+  LlamaFirewall). agent-governance-toolkit moved here from the safeguards registry under
+  R-2026-10-09-e, because its README leads with the per-action policy decision, agent identity and
+  the decision record, and states that it does not work at the prompt. orchestration_agents keeps the
+  permission prompts built into a harness or framework; a plugin whose only job is to add permission
+  enforcement to one harness (pi-permission-system) is here. assurance_evidence keeps evidence about
+  systems handed to an outside party; a record of an authorization decision emitted by the product
+  that made it is part of this category's function. agent_memory: Halofy also keeps durable context,
+  but its README leads with identity, policy and audit, so it is seeded here. Seed roster in
+  sources/registry/agent_authorization.yaml: the 21 agent-specific accepted candidates and the three
+  standards from the sweep's rows.yaml, plus agent-governance-toolkit.
