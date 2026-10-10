@@ -144,7 +144,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # the row sets were dumped against main and diffed: 340 rows to 339, and the only difference is
 # llama-cpp's stars row (level 3), which is gone because the reported_traction route it now
 # reaches has no observation.
-MEASUREMENTS_DIGEST = "641134b520b32b87500711806466ea38453a5025b632a651fdf96af22438f3c5"
+# Moved 2026-10-09 by the Qwen re-scope (R-2026-10-09-m): qwen now declares only base checkpoints
+# and qwen-instruct the post-trained line, including the Qwen 3.8 checkpoints. Measured rather than
+# asserted - the row sets were dumped against main and diffed: 339 rows on both sides, and the only
+# difference is qwen-instruct's row, which goes from level 4 to an abstention because the frozen
+# snapshot never observed the Qwen 3.8 checkpoints it now declares. qwen's row does not change.
+MEASUREMENTS_DIGEST = "92430180fc03fc72887601a90d79e997cb5c3e36b7d413f5dc30b352eeeb9a35"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -727,9 +732,11 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     # three Qwen 3.8 checkpoints, which the frozen snapshot never observed, so its Hugging Face sum
     # covers some declared primaries, not all. deepseek-instruct since 2026-10-08 the same way: it
     # declares V4-Flash beside V4-Pro (R-2026-10-08-t), and the snapshot observed only V4-Pro for it.
+    # qwen-instruct since 2026-10-09 the same way: the re-scope (R-2026-10-09-m) gave it the Qwen 3.8
+    # checkpoints, which the snapshot never observed.
     assert abstained == {
         "composable-kernel", "deepseek-instruct", "glm", "librechat", "maple-ai", "mimo-pro",
-        "olmo-instruct", "qwen",
+        "olmo-instruct", "qwen", "qwen-instruct",
     }
     for row in measurement_rows:
         if row["measured_level"] is None:

@@ -146,6 +146,12 @@ WITHDRAWN_SINCE_THE_BASELINE = {
     ("librechat", "github", "danny-avila/LibreChat"),  # now LibreChat-AI/LibreChat
     ("maple-ai", "github", "OpenSecretCloud/Maple"),  # now MaplePrivacyLabs/Maple
     ("sandbox-runtime", "github", "anthropic-experimental/sandbox-runtime"),  # now anthropics/
+    # Post-trained Qwen checkpoints the baseline recorded under qwen. The re-scope
+    # (R-2026-10-09-m) keeps qwen to base checkpoints and declares these on qwen-instruct.
+    ("qwen", "huggingface_model", "Qwen/Qwen3-235B-A22B"),
+    ("qwen", "huggingface_model", "Qwen/Qwen3.5-397B-A17B"),
+    ("qwen", "huggingface_model", "Qwen/Qwen3.6-27B"),
+    ("qwen", "huggingface_model", "Qwen/Qwen3.6-35B-A3B"),
 }
 
 
