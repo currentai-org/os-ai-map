@@ -671,71 +671,53 @@
             ]
           },
           "capability": {
-            "score": 5,
+            "score": 4,
             "basis": "benchmark",
-            "basis_detail": "SWE-bench Pro/Terminal-Bench 2.1",
-            "value": null,
-            "confidence": "high",
-            "note": "Qwen3.8-Max, the hosted version built on the open-weight Qwen3.8-2.4T-A95B, reports 86.6 on Terminal-Bench 2.1 and 67.7 on SWE-bench Pro, within a few points of Claude Opus 4.8 on both, and the dense Qwen3.8-27B reports 73.0 and 61.7. The figures come from Qwen's own model cards rather than an independent evaluation.",
+            "basis_detail": "Artificial Analysis Intelligence Index",
+            "value": "Qwen3.5 35B A3B (Reasoning), the post-trained sibling of the largest Qwen3.5 Base checkpoint - AA Intelligence Index 19 (estimated, v4.3.2), well above the median of 8 for open-weight models of similar size. Qwen3.5 397B A17B scores 18. On the same index version Llama 4 Maverick (llama, 3) scores 10 and DeepSeek-V4.1-Flash (deepseek, 5) scores 39.",
+            "confidence": "medium",
+            "note": "Artificial Analysis does not evaluate base checkpoints, so this record is read on its post-trained sibling, as llama is read on Llama 4 Maverick. Qwen3.5 35B A3B, the chat model built on the largest Qwen3.5 Base checkpoint, scores 19 on Artificial Analysis's Intelligence Index, well above the median of 8 for open-weight models of its size, and between the base records read at 10 and at 39.",
+            "last_verified": "2026-10-10",
             "sources": [
               {
-                "url": "https://www.marktechpost.com/2026/04/22/alibaba-qwen-team-releases-qwen3-6-27b-a-dense-open-weight-model-outperforming-397b-moe-on-agentic-coding-benchmarks/",
-                "shows": "Qwen3.6-27B SWE-bench Verified 77.2 and Terminal-Bench 2.0 59.3, outperforming a 397B MoE on agentic coding",
-                "accessed": "2026-08-13",
+                "url": "https://artificialanalysis.ai/models/qwen3-5-35b-a3b",
+                "shows": "Artificial Analysis page on Intelligence Index v4.3.2: \"Qwen3.5 35B A3B (Reasoning) scores 19 (estimated) on the Artificial Analysis Intelligence Index, placing it well above average among other open weight models of similar size (median: 8)\".",
+                "accessed": "2026-10-10",
                 "http_status": 200,
-                "content_sha256": "5d10a19286f3982ec02173d497e426bed31f755e851f0bffeaf8922e5d3c0560"
+                "content_sha256": "b1515c0b5d0107e148364874bdbdaef74564013f5fa998a0ce353452d3d297cc"
               },
               {
-                "url": "https://www.caixinglobal.com/2026-04-02/alibaba-releases-qwen-36-plus-ai-model-with-enhanced-coding-capabilities-102430395.html",
-                "shows": "Caixin reports that \"Qwen 3.6-Plus matches Anthropic’s Claude Opus 4.5 in programming\" and \"agent benchmarks like SWE-bench and Terminal-Bench 2.0\".",
-                "accessed": "2026-09-29",
+                "url": "https://artificialanalysis.ai/models/qwen3-5-397b-a17b",
+                "shows": "Artificial Analysis page for the larger Qwen3.5 post-trained model, which has no released base checkpoint: \"Qwen3.5 397B A17B (Reasoning) scores 18 on the Artificial Analysis Intelligence Index\", so the 35B A3B reading is the generation's strongest.",
+                "accessed": "2026-10-10",
                 "http_status": 200,
-                "content_sha256": "fba53ea49d4db79188cd7dd9c8a2b22f2df8afb19ba18aba2a375be05eb038a8"
+                "content_sha256": "7801874aa0fed8c1d028e3bfa38b07afb53db6ccae24a8b939abcca95da1167b"
               },
               {
-                "url": "https://huggingface.co/Qwen/Qwen3.6-27B/raw/main/README.md",
-                "shows": "The Qwen3.6-27B card's benchmark table lists \"SWE-bench Verified\" at 77.2 and \"Terminal-Bench 2.0\" at 59.3 for the model, with the harness described as \"Harbor/Terminus-2 harness; 3h timeout\".",
-                "accessed": "2026-09-29",
+                "url": "https://artificialanalysis.ai/models/llama-4-maverick",
+                "shows": "The llama record's reading on the same index version, fetched the same day: \"Llama 4 Maverick scores 10 on the Artificial Analysis Intelligence Index\", unchanged since 2026-09-29, so the two readings are on one scale.",
+                "accessed": "2026-10-10",
                 "http_status": 200,
-                "content_sha256": "bb936d6da51014f1edc9aa4cf9abf28d98695b7616ad56adfeeebfa752051d3d"
-              },
-              {
-                "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/README.md",
-                "shows": "The Qwen3.8-2.4T-A95B card, whose hosted Qwen3.8-Max \"is the official version based on Qwen3.8-2.4T-A95B\", has a table comparing \"Opus 4.8\", \"GPT 5.6 Sol (max)\" and \"Qwen3.8-Max\"; the Qwen3.8-Max column reads 86.6 on Terminal Bench 2.1 (Opus 4.8 84.6) and 67.7 on SWE-bench Pro (Opus 4.8 69.2).",
-                "accessed": "2026-09-29",
-                "http_status": 200,
-                "content_sha256": "7690c680c2d6eb284179ef5dd4db63260d248531cae9087b09b2c2200230f331"
-              },
-              {
-                "url": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/README.md",
-                "shows": "The card says \"Qwen3.8-27B brings these advances to a compact, deployment-friendly dense model\", and its text table reports Terminal Bench 2.1 (Terminus) at 73.0 and SWE-bench Pro at 61.7 for the model, against 63.4 and 53.5 for Qwen3.6-27B.",
-                "accessed": "2026-09-29",
-                "http_status": 200,
-                "content_sha256": "57e4bdb258ee1a7d2635c5174ebd4e56abe392505cdb5f8bbb356b0dc4293641"
+                "content_sha256": "5b4a602a38c0244cd9f0a7002a50fdc76645e8d87499dcfe09a837406cb03fa2"
               }
             ]
           },
-          "overall_score": 4.7,
-          "tier": "leading",
-          "maturity": 4.7,
+          "overall_score": 4.0,
+          "tier": "strong",
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
             "date": "2026-10-09",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-10-10",
             "unconfirmed_axes": [
-              "adoption",
-              "capability"
+              "adoption"
             ],
             "verification_holds": [
               {
                 "axis": "adoption",
                 "since": "2026-10-09",
                 "reason": "The record now declares only base checkpoints, and the level was re-read on 2026-10-09 from hand-fetched Hugging Face download counts for those seven, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
-              },
-              {
-                "axis": "capability",
-                "since": "2026-10-09",
-                "reason": "The recorded 5 reads Qwen 3.8, whose models are post-trained and now belong to qwen-instruct, so the evidence no longer describes this record. The base generation it now governs, Qwen3.5 Base, has no reading on the category's anchor: Artificial Analysis evaluates no base checkpoint, and the fallback, a published pretraining-suite average, appears neither on the Qwen3.5 Base model cards nor in the QwenLM/Qwen3.8 repository, and the Qwen3.5 blog is client-rendered. Question for the maintainer: should a base record with no base benchmark be read on its post-trained sibling's Artificial Analysis score (Qwen3.5 35B A3B), as llama is read on Llama 4 Maverick, or abstain until a pretraining-suite table is found?"
               }
             ]
           },
