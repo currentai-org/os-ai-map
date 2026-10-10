@@ -509,68 +509,26 @@
         },
         {
           "slug": "qwen",
-          "product": "Qwen 3.8",
+          "product": "Qwen Base",
           "org_slug": "alibaba-cloud",
           "org": "Alibaba Cloud",
           "type": "model",
-          "description": "Alibaba's Qwen 3.8 series, released in August 2026. Its open-weight models are a dense 27B, Qwen3.8-Flash-Next, a 125B mixture of experts with 6B active parameters, and the 2.4-trillion-parameter Qwen3.8-2.4T-A95B, which is also the base of the hosted Qwen3.8-Max.",
+          "description": "Alibaba's pretrained Qwen base models, published for fine-tuning and research rather than chat. The current base generation is Qwen3.5, released in February 2026 in five sizes from 0.8B to a 35B mixture of experts with 3B active parameters. Qwen has published no base checkpoints for Qwen 3.6 or 3.8, whose open-weight models ship post-trained only.",
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship);data:closed(no corpus or data card published; the Flash-Next technical report covers architecture, optimization and evaluation, not training data);code:partial(usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no training pipeline);license:Qwen-Community-License-1.0(Qwen3.8-Flash-Next; model-as-a-service and AI work assistant businesses need a separate license for any commercial use; the most restrictive distributed SKU of the governing release)+Qwen3.8-Max-License(Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required only above USD 50M annual revenue)+Apache-2.0(OSI; Qwen3.8-27B only)",
-            "governing_release": "qwen-3-8",
+            "components": "weights:open(ungated on the Hub: the five Qwen3.5 Base checkpoints, 0.8B to 35B-A3B);data:closed(no corpus or data card published; the cards name no datasets and the series README describes the corpus only as trillions of multimodal tokens);code:partial(usage, deployment and fine-tuning pointers in QwenLM/Qwen3.8, which covers the Qwen3.5 series; no pretraining pipeline);license:Apache-2.0(OSI; all five Qwen3.5 Base checkpoints)",
+            "governing_release": "qwen-3-5-base",
             "confidence": "high",
-            "note": "Qwen 3.8 ships its dense 27B model under Apache-2.0 and its Flash-Next and flagship models under Qwen's own licenses, which require model-as-a-service and AI coding or office assistant businesses to get a separate license before commercial use. The training corpus is not released and only usage code is published.",
-            "last_verified": "2026-10-03",
+            "note": "Qwen3.5's base models download from Hugging Face under Apache-2.0 without a gate, in five sizes. The pretraining corpus is not released and only usage code is published, so this is open weights rather than open source.",
+            "last_verified": "2026-10-09",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-2.4T-A95B",
-                "shows": "Hub record for the flagship: \"private\": false, \"gated\": false, card license \"other\" with license_name \"qwen3.8-max\", 213 safetensors shards, created 2026-08-08; the card front matter names no datasets.",
-                "accessed": "2026-10-03",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-35B-A3B-Base",
+                "shows": "Hub record for the largest base checkpoint: \"private\": false, \"gated\": false, card license \"apache-2.0\", created 2026-02-24; the card front matter names no datasets.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "6a1f4fdcb000c1e36c21e27c93f38b5f1eb60883acf9c445ffe4d705bc946f46",
-                "establishes": [
-                  "weights",
-                  "license"
-                ]
-              },
-              {
-                "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE",
-                "shows": "Titled \"Qwen3.8-Max License\". It grants use \"including the model weights\", and requires a licensee that \"conducts a Model as a Service or AI Work Assistant business\" with aggregate revenue over \"US$50,000,000\" in twelve months to \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", internal use excepted.",
-                "accessed": "2026-10-03",
-                "http_status": 200,
-                "content_sha256": "a136bc4137ef3d7a7a54963164a47270f73e497917728ea0f4407a0115db1290",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-Flash-Next",
-                "shows": "Hub record for Qwen3.8-Flash-Next: \"private\": false, \"gated\": false, card license \"other\" with license_name \"qwen-community-1.0\", 131 safetensors shards, created 2026-08-24; the card front matter names no datasets.",
-                "accessed": "2026-10-03",
-                "http_status": 200,
-                "content_sha256": "bafbbe328d676daa42e96f44a6b9367821a8985c98b7262ab6781e48af8bef3d",
-                "establishes": [
-                  "weights",
-                  "license"
-                ]
-              },
-              {
-                "url": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/raw/main/LICENSE",
-                "shows": "Titled \"Qwen Community License 1.0\". The same grant as the Max license, but any licensee that \"conducts a Model as a Service or AI Work Assistant business\" must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", with no revenue floor; internal use is excepted.",
-                "accessed": "2026-10-03",
-                "http_status": 200,
-                "content_sha256": "a0dc422560841fd68e06d974907f8b4c709bca44a67daad2b528437bdf676c08",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-27B",
-                "shows": "Hub record for Qwen3.8-27B: \"private\": false, \"gated\": false, card license \"apache-2.0\", 18 safetensors shards, created 2026-08-05; the card front matter names no datasets.",
-                "accessed": "2026-10-03",
-                "http_status": 200,
-                "content_sha256": "da445ab554f76d60d3bd6566b9d7b68ae389fcfbbb300605803c745aab55f364",
+                "content_sha256": "88b69d93237707e53136e815fb6e0284979b739cca77085374a3d1414c2286a7",
                 "establishes": [
                   "weights",
                   "license",
@@ -578,86 +536,137 @@
                 ]
               },
               {
-                "url": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/LICENSE",
-                "shows": "The Apache License, \"Version 2.0, January 2004\", in full.",
-                "accessed": "2026-10-03",
+                "url": "https://huggingface.co/Qwen/Qwen3.5-35B-A3B-Base/raw/main/README.md",
+                "shows": "The card says the repository \"contains model weights and configuration files for the pre-trained only model\" and lists \"Training Stage: Pre-training\"; its intended uses are \"fine-tuning, in-context learning experiments, and other research or development purposes, not direct interaction\". It publishes no corpus.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+                "content_sha256": "60d1e23113fb47e636b3e205fb18e722eddbda152da4301ba7fd9b4395184a4c",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3.5-35B-A3B-Base/raw/main/LICENSE",
+                "shows": "The Apache License, \"Version 2.0, January 2004\", in full.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32",
                 "establishes": [
                   "license"
                 ]
               },
               {
-                "url": "https://api.github.com/repos/QwenLM/Qwen3.8",
-                "shows": "\"full_name\": \"QwenLM/Qwen3.8\", \"private\": false, \"archived\": false, license \"Apache-2.0\", description \"Qwen3.8 is the large language model series developed by Qwen team, Alibaba Group.\" The repository holds a README and a LICENSE, with no training code.",
-                "accessed": "2026-10-03",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-9B-Base",
+                "shows": "Hub record for Qwen/Qwen3.5-9B-Base: \"private\": false, \"gated\": false, card license \"apache-2.0\", created 2026-02-26.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "e543adabc86ff3ca7c6b7db572b0a4132db554a7d46e21819c2faacb5b9385f6",
+                "content_sha256": "05ca207da3496d37198a775e07c60c5c591b3ba7362592851af47877f003ca2f",
                 "establishes": [
-                  "code"
+                  "weights",
+                  "license"
                 ]
               },
               {
-                "url": "https://raw.githubusercontent.com/QwenLM/Qwen3.8-Flash-Next/main/tech_report.pdf",
-                "shows": "The Qwen3.8-Flash-Next technical report. Its sections are Model Architecture (attention, residual, n-gram embedding), Optimization and Evaluation; none describes the pretraining corpus or its mixture.",
-                "accessed": "2026-10-03",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-4B-Base",
+                "shows": "Hub record for Qwen/Qwen3.5-4B-Base: \"private\": false, \"gated\": false, card license \"apache-2.0\", created 2026-02-27.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "04f263446d74a35cb7cea368574e0c561f3b05c133be2c777ac884404063655d",
+                "content_sha256": "9c1458850965be54c3efe7dbc1f790bd5bfd9a291dd51fd08bd259c902ba372b",
                 "establishes": [
-                  "data"
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-2B-Base",
+                "shows": "Hub record for Qwen/Qwen3.5-2B-Base: \"private\": false, \"gated\": false, card license \"apache-2.0\", created 2026-02-28.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "91f585b0ca1ec1190e1a829a7ea3bd07175f98aa4b5a291ae8a5b4ed36f08a63",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-0.8B-Base",
+                "shows": "Hub record for Qwen/Qwen3.5-0.8B-Base: \"private\": false, \"gated\": false, card license \"apache-2.0\", created 2026-02-28.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "a4f0f6019583242b77c8bac99d63c954fcc95fb5627fbd4b7718c1a63a5e14ef",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/QwenLM/Qwen3.8/main/README.md",
+                "shows": "The repository \"of the Qwen3.5 open model series, including Qwen3.5, Qwen3.6, and the latest Qwen3.8\". Its sections cover quickstart, local use and deployment, and for fine-tuning it points to third-party frameworks (Unsloth, Swift, Llama-Factory); no training pipeline is published.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "a71ec46607f81d6056336fb0a8431a26a1c7d8db6ac568a0c021c36f1ed3c92e",
+                "establishes": [
+                  "code"
                 ]
               }
             ],
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 5,
-            "reach": ">10M",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "Adoption is measured as Hugging Face downloads summed across six checkpoints spanning Qwen2.5 through the current Qwen3.6 generation. The two Qwen3.6 checkpoints account for most of that total, so the family's reach reflects its current release rather than the older 2.5 generation.",
+            "confidence": "high",
+            "note": "Adoption is measured as Hugging Face downloads summed across the seven declared base checkpoints, the five Qwen3.5 Base sizes and the Qwen2.5 72B and 7B bases. The Qwen2.5-7B base still draws the most downloads of the seven.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/Qwen/Qwen2.5-72B",
-                "shows": "28,852 downloads in the trailing 30 days for Qwen/Qwen2.5-72B",
-                "accessed": "2026-08-13",
+                "shows": "\"downloads\":16295 over the trailing 30 days for Qwen/Qwen2.5-72B.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "0f5c22c02d39e74cea82841a62e1b55dc429d77515205d64588e293c84f7fca4"
+                "content_sha256": "4c19f29061f8cab6f29d0b96890acb712255c91eca5b4f547a566cecb2bdfad7"
               },
               {
                 "url": "https://huggingface.co/api/models/Qwen/Qwen2.5-7B",
-                "shows": "716,344 downloads in the trailing 30 days for Qwen/Qwen2.5-7B",
-                "accessed": "2026-08-13",
+                "shows": "\"downloads\":781894 over the trailing 30 days for Qwen/Qwen2.5-7B.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "b4781da83b7c09a83d17c9de015a96e496db1221ed34c867b62126f8144364d4"
+                "content_sha256": "de6117171da4865b13bc2f5b1cef9c14e452e40cd8235be7dc143ccc8149c237"
               },
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.6-27B",
-                "shows": "6,830,615 downloads in the trailing 30 days for Qwen/Qwen3.6-27B",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-35B-A3B-Base",
+                "shows": "\"downloads\":99083 over the trailing 30 days for Qwen/Qwen3.5-35B-A3B-Base.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "7b41b485a8f10317c72fe8c4976c01927cc5a5db61f1b78db0ac8ab909ebd33a"
+                "content_sha256": "88b69d93237707e53136e815fb6e0284979b739cca77085374a3d1414c2286a7"
               },
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.6-35B-A3B",
-                "shows": "5,609,980 downloads in the trailing 30 days for Qwen/Qwen3.6-35B-A3B",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-9B-Base",
+                "shows": "\"downloads\":305121 over the trailing 30 days for Qwen/Qwen3.5-9B-Base.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "27deb7cb3efc4e276abed96e674d4f3384cf3033d7652f1e784811a0ff8ec912"
+                "content_sha256": "05ca207da3496d37198a775e07c60c5c591b3ba7362592851af47877f003ca2f"
               },
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3-235B-A22B",
-                "shows": "529,067 downloads in the trailing 30 days for Qwen/Qwen3-235B-A22B",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-4B-Base",
+                "shows": "\"downloads\":648400 over the trailing 30 days for Qwen/Qwen3.5-4B-Base.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "b205446c5206695fb56a140aada74d51a6dcb13f7a3f17a38def4275097bc9a4"
+                "content_sha256": "9c1458850965be54c3efe7dbc1f790bd5bfd9a291dd51fd08bd259c902ba372b"
               },
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-397B-A17B",
-                "shows": "315,840 downloads in the trailing 30 days for Qwen/Qwen3.5-397B-A17B",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-2B-Base",
+                "shows": "\"downloads\":304328 over the trailing 30 days for Qwen/Qwen3.5-2B-Base.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "2fb1bf45f215300b053841254bd158f65b525ed62732d21dd82cddc165a1e9e5"
+                "content_sha256": "91f585b0ca1ec1190e1a829a7ea3bd07175f98aa4b5a291ae8a5b4ed36f08a63"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-0.8B-Base",
+                "shows": "\"downloads\":479031 over the trailing 30 days for Qwen/Qwen3.5-0.8B-Base.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "a4f0f6019583242b77c8bac99d63c954fcc95fb5627fbd4b7718c1a63a5e14ef"
               }
             ]
           },
@@ -668,7 +677,6 @@
             "value": null,
             "confidence": "high",
             "note": "Qwen3.8-Max, the hosted version built on the open-weight Qwen3.8-2.4T-A95B, reports 86.6 on Terminal-Bench 2.1 and 67.7 on SWE-bench Pro, within a few points of Claude Opus 4.8 on both, and the dense Qwen3.8-27B reports 73.0 and 61.7. The figures come from Qwen's own model cards rather than an independent evaluation.",
-            "last_verified": "2026-09-29",
             "sources": [
               {
                 "url": "https://www.marktechpost.com/2026/04/22/alibaba-qwen-team-releases-qwen3-6-27b-a-dense-open-weight-model-outperforming-397b-moe-on-agentic-coding-benchmarks/",
@@ -707,26 +715,31 @@
               }
             ]
           },
-          "overall_score": 5.0,
+          "overall_score": 4.7,
           "tier": "leading",
-          "maturity": 5.0,
+          "maturity": 4.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-29",
+            "date": "2026-10-09",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-10-03",
             "unconfirmed_axes": [
-              "adoption"
+              "adoption",
+              "capability"
             ],
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "The 5 Oct reconciliation measured the recorded level on Hugging Face model downloads, but it read a hand-refreshed table, which earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+                "since": "2026-10-09",
+                "reason": "The record now declares only base checkpoints, and the level was re-read on 2026-10-09 from hand-fetched Hugging Face download counts for those seven, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              },
+              {
+                "axis": "capability",
+                "since": "2026-10-09",
+                "reason": "The recorded 5 reads Qwen 3.8, whose models are post-trained and now belong to qwen-instruct, so the evidence no longer describes this record. The base generation it now governs, Qwen3.5 Base, has no reading on the category's anchor: Artificial Analysis evaluates no base checkpoint, and the fallback, a published pretraining-suite average, appears neither on the Qwen3.5 Base model cards nor in the QwenLM/Qwen3.8 repository, and the Qwen3.5 blog is client-rendered. Question for the maintainer: should a base record with no base benchmark be read on its post-trained sibling's Artificial Analysis score (Qwen3.5 35B A3B), as llama is read on Llama 4 Maverick, or abstain until a pretraining-suite table is found?"
               }
             ]
           },
-          "version_note": "Consolidated 2026-07-29 from three earlier records; openness follows Qwen 3.8, the current release, across the three models it distributes. Hosted-only tiers sit outside the openness axis."
+          "version_note": "Covers Qwen's base checkpoints only. The post-trained models are in qwen-instruct, the same split as llama and llama-instruct; the aliases for the Qwen 3.6 to 3.8 releases point here from before that split."
         },
         {
           "slug": "mistral-large",
@@ -5416,105 +5429,252 @@
         },
         {
           "slug": "qwen-instruct",
-          "product": "Qwen2.5-14B-Instruct",
+          "product": "Qwen 3.8",
           "org_slug": "alibaba-cloud",
           "org": "Alibaba Cloud",
           "type": "model",
-          "description": "Qwen2.5-14B-Instruct is an instruction-tuned general chat model from the Qwen2.5 series, released in September 2024. It is a 14.7B-parameter dense model with 48 layers, grouped-query attention and a 128K context window, and it supports more than 29 languages.",
+          "description": "Alibaba's post-trained Qwen chat models. The current release, Qwen 3.8 from August 2026, ships three open-weight models that think by default and can answer directly on request: a dense 27B under Apache-2.0, Qwen3.8-Flash-Next, a 125B mixture of experts with 6B active parameters, and the 2.4-trillion-parameter Qwen3.8-2.4T-A95B, which is also the base of the hosted Qwen3.8-Max. From Qwen 3.5 on, Alibaba publishes its chat checkpoints under the plain release name rather than as Instruct models.",
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/chat template; no training pipeline or SFT/RLHF data);license:Apache-2.0(OSI permissive)",
+            "components": "weights:open(ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship);data:closed(no post-training data published; the cards name no datasets, and the Flash-Next technical report covers architecture, optimization and evaluation);code:partial(usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no post-training pipeline);license:Qwen-Community-License-1.0(Qwen3.8-Flash-Next; model-as-a-service and AI work assistant businesses need a separate license for any commercial use; the most restrictive distributed SKU of the governing release)+Qwen3.8-Max-License(Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required only above USD 50M annual revenue)+Apache-2.0(OSI; Qwen3.8-27B only)",
+            "governing_release": "qwen-3-8",
             "confidence": "high",
-            "note": "Apache-2.0 weights anyone can download, but the post-training data and the training code are closed, so this is open weights rather than open source.",
-            "last_verified": "2026-09-29",
+            "note": "Qwen 3.8 ships its dense 27B chat model under Apache-2.0 and its Flash-Next and flagship models under Qwen's own licenses, which require model-as-a-service and AI coding or office assistant businesses to get a separate license before commercial use. The post-training data is not released and only usage code is published.",
+            "last_verified": "2026-10-09",
             "sources": [
               {
-                "url": "https://huggingface.co/Qwen/Qwen2.5-14B-Instruct",
-                "shows": "Repo page state: \"license:apache-2.0\" tag; \"This repo contains the instruction-tuned 14B Qwen2.5 model\"",
-                "accessed": "2026-09-29",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-2.4T-A95B",
+                "shows": "Hub record for the flagship: \"private\": false, \"gated\": false, card license \"other\" with license_name \"qwen3.8-max\", created 2026-08-08; the card front matter names no datasets.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "7fd5ec4da480f84e9005867d867a5723f54028cb611c3e3461e1b73c3e1f70af",
+                "content_sha256": "7fd2e983458851ca155d8837ada4ddec75e542fd5131cdb21364372c5adbe027",
                 "establishes": [
-                  "weights"
+                  "weights",
+                  "license"
                 ]
               },
               {
-                "url": "https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/raw/main/README.md",
-                "shows": "Model card front matter declares \"license: apache-2.0\" with a \"license_link\" to the repo LICENSE; the card lists \"Training Stage: Pretraining & Post-training\" and gives a transformers quickstart only. Searched the body for SFT, RLHF, training data and dataset: no post-training data or training pipeline is published.",
-                "accessed": "2026-09-29",
+                "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE",
+                "shows": "Titled \"Qwen3.8-Max License\". A licensee that \"conducts a Model as a Service or AI Work Assistant business\" with aggregate revenue over \"US$50,000,000\" in twelve months must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", internal use excepted.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "7ea9d73d5e0a0381121db8bfb04dee739c7b8d3c6cb25af7121e75c9d7cac94c",
+                "content_sha256": "a136bc4137ef3d7a7a54963164a47270f73e497917728ea0f4407a0115db1290",
                 "establishes": [
-                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-Flash-Next",
+                "shows": "Hub record for Qwen3.8-Flash-Next: \"private\": false, \"gated\": false, card license \"other\" with license_name \"qwen-community-1.0\", created 2026-08-24; the card front matter names no datasets.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "69b5906271c9c993a02c131ba1d3399e7befd9606a1c2126a8a11c520d845553",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/raw/main/LICENSE",
+                "shows": "Titled \"Qwen Community License 1.0\". Any licensee that \"conducts a Model as a Service or AI Work Assistant business\" must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", with no revenue floor; internal use is excepted.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "a0dc422560841fd68e06d974907f8b4c709bca44a67daad2b528437bdf676c08",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-27B",
+                "shows": "Hub record for Qwen3.8-27B: \"private\": false, \"gated\": false, card license \"apache-2.0\", created 2026-08-05; the card front matter names no datasets.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "cf80090173f8b69af97a5605329a71fda50f3552f1ea025c49a93e0ca0123221",
+                "establishes": [
+                  "weights",
+                  "license",
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/LICENSE",
+                "shows": "The Apache License, \"Version 2.0, January 2004\", in full.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/QwenLM/Qwen3.8/main/README.md",
+                "shows": "The Qwen3.8 repository README covers introduction, benchmarks, quickstart, local use and deployment; for fine-tuning it points to third-party frameworks (Unsloth, Swift, Llama-Factory), and for the license it points to \"the license file released with the model weights\". No post-training pipeline or data is published.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "a71ec46607f81d6056336fb0a8431a26a1c7d8db6ac568a0c021c36f1ed3c92e",
+                "establishes": [
                   "code",
-                  "license"
+                  "data"
                 ]
               },
               {
-                "url": "https://huggingface.co/Qwen/Qwen2.5-14B-Instruct/raw/main/LICENSE",
-                "shows": "The repo LICENSE file is the standard Apache text, headed \"Apache License\" and \"Version 2.0, January 2004\".",
-                "accessed": "2026-09-29",
+                "url": "https://raw.githubusercontent.com/QwenLM/Qwen3.8-Flash-Next/main/tech_report.pdf",
+                "shows": "The Qwen3.8-Flash-Next technical report. Its sections are Model Architecture, Optimization and Evaluation; none publishes the post-training data or its mixture.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+                "content_sha256": "04f263446d74a35cb7cea368574e0c561f3b05c133be2c777ac884404063655d",
                 "establishes": [
-                  "license"
+                  "data"
                 ]
               }
             ],
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 5,
+            "reach": ">10M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is read from Hugging Face downloads on the single declared SKU, the Qwen2.5-14B-Instruct model, part of the widely used Qwen2.5 family.",
-            "last_verified": "2026-09-27",
+            "note": "Adoption is measured as Hugging Face downloads summed across the eight declared chat checkpoints, from Qwen2.5-14B-Instruct through the three Qwen 3.8 models. Qwen3.8-27B alone accounts for about two fifths of the total.",
             "sources": [
               {
-                "url": "https://huggingface.co/Qwen/Qwen2.5-14B-Instruct",
-                "shows": "3,137,049 downloads in the trailing 30 days",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-27B",
+                "shows": "\"downloads\":6783589 over the trailing 30 days for Qwen/Qwen3.8-27B.",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d"
+                "content_sha256": "cf80090173f8b69af97a5605329a71fda50f3552f1ea025c49a93e0ca0123221"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-Flash-Next",
+                "shows": "\"downloads\":1751752 over the trailing 30 days for Qwen/Qwen3.8-Flash-Next.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "69b5906271c9c993a02c131ba1d3399e7befd9606a1c2126a8a11c520d845553"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.8-2.4T-A95B",
+                "shows": "\"downloads\":32559 over the trailing 30 days for Qwen/Qwen3.8-2.4T-A95B.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "7fd2e983458851ca155d8837ada4ddec75e542fd5131cdb21364372c5adbe027"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.6-27B",
+                "shows": "\"downloads\":2276333 over the trailing 30 days for Qwen/Qwen3.6-27B.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "30a8f288c8d78e74bd7f2332564f04d6dc34a18db40777ea9ee968be39933d8e"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.6-35B-A3B",
+                "shows": "\"downloads\":3554896 over the trailing 30 days for Qwen/Qwen3.6-35B-A3B.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "058ab592f97148534726e03d9f0eb1586d163d14e70ea9ea17fdce4ba33a42c9"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3.5-397B-A17B",
+                "shows": "\"downloads\":479485 over the trailing 30 days for Qwen/Qwen3.5-397B-A17B.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "f752dfa49cac602e6bd695ad1bf61ace4e93219aa202d4ed4b0b1edeaeae3daf"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3-235B-A22B",
+                "shows": "\"downloads\":498367 over the trailing 30 days for Qwen/Qwen3-235B-A22B.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "034e13501e7a7011db03d90bb5dc66c9598738140447467e91de28926c0fafb1"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Qwen/Qwen2.5-14B-Instruct",
+                "shows": "\"downloads\":1291727 over the trailing 30 days for Qwen/Qwen2.5-14B-Instruct.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "00d7509bbe857c585e50adc0d006bbac516b8427e083cb3219b8a57906c79e9b"
               }
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "benchmark",
-            "basis_detail": "MMLU/instruction-following",
-            "value": "General-purpose 14B instruct; vendor reports gains in coding, math, instruction-following and long-text vs predecessor; detailed scores in Qwen2.5 blog",
-            "confidence": "medium",
-            "note": "Qwen2.5-14B-Instruct is a mid-size 2024 general chat model. The Qwen2.5 blog reports MMLU-Pro 63.7 and IFEval 81.0 for it, close to GPT-4o-mini and ahead of Gemma2-27B-IT on MMLU-Pro, but it sits well below the current frontier and below the larger Qwen2.5 models.",
-            "last_verified": "2026-09-29",
+            "basis_detail": "Artificial Analysis Intelligence Index",
+            "value": "Qwen3.8-2.4T-A95B, the open-weight flagship of Qwen 3.8, scores 40 on the Artificial Analysis Intelligence Index against a median of 18 for open-weights models of its size; Qwen3.8-Flash-Next also scores 40 and the dense Qwen3.8-27B (Xhigh) 34. Gemini 3.8 Flash (High) scores 41.",
+            "relative_to": "gemini-flash",
+            "relation": "at",
+            "confidence": "high",
+            "note": "This score reads Qwen 3.8, the current release of Qwen's chat models. On the Artificial Analysis index its flagship sits a point behind Gemini 3.8 Flash and well behind the closed leaders, and even the dense 27B model places above Gemini 3.1 Pro, so it scores level with Gemini Flash.",
+            "comparison": {
+              "last_attested": "2026-10-09",
+              "sources": [
+                {
+                  "url": "https://artificialanalysis.ai/models/gemini-3-8-flash",
+                  "shows": "Gemini 3.8 Flash (High) \"scores 41 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 26)\".",
+                  "accessed": "2026-10-09",
+                  "http_status": 200,
+                  "content_sha256": "a90a0f809d59bc1a92f0ea1a651857dd275d0717926832e7adc6579c8b3edf0f"
+                }
+              ]
+            },
+            "last_verified": "2026-10-09",
             "sources": [
               {
-                "url": "https://huggingface.co/Qwen/Qwen2.5-14B-Instruct",
-                "shows": "Model card page for the 14B instruct SKU: \"This repo contains the instruction-tuned 14B Qwen2.5 model\" with vendor capability claims; benchmark tables are in the Qwen2.5 blog.",
-                "accessed": "2026-09-29",
+                "url": "https://artificialanalysis.ai/models/qwen3-8-2-4t-a95b",
+                "shows": "\"Qwen3.8 2.4T A95B scores 40 on the Artificial Analysis Intelligence Index, placing it well above average among other open weight models of similar size (median: 18)\".",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "7fd5ec4da480f84e9005867d867a5723f54028cb611c3e3461e1b73c3e1f70af"
+                "content_sha256": "2ea4d583e7233a33e95ec27402c29375e72865e3f20abe5206afd8a3be86f2bc"
               },
               {
-                "url": "https://qwenlm.github.io/blog/qwen2.5-llm/",
-                "shows": "Qwen2.5 blog instruct table: \"MMLU-Pro 52.8 55.5 63.1 64.8 63.7 69.0\" and \"IFeval strict-prompt 59.9 77.1 80.4 74.9 81.0 79.5\" (Qwen2.5-14B-Instruct is the fifth column); \"Qwen2.5-14B-Instruct, along with our API model, Qwen-Turbo, also deliver competitive results across all benchmarks\".",
-                "accessed": "2026-09-29",
+                "url": "https://artificialanalysis.ai/models/qwen3-8-flash-next",
+                "shows": "\"Qwen3.8-Flash-Next scores 40 on the Artificial Analysis Intelligence Index, placing it well above average among other open weight models of similar size (median: 18)\".",
+                "accessed": "2026-10-09",
                 "http_status": 200,
-                "content_sha256": "0d5651d2c4e49d3dd58c3988127d04a14e787cda9d7f9e4881e1f6a4d3f44fef"
+                "content_sha256": "022aa2cfb8380b0ac34fc657f2e862dfea8df71e5905e4f688d93afef5126d93"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/qwen3-8-27b",
+                "shows": "\"Qwen3.8 27B (Xhigh) scores 34 on the Artificial Analysis Intelligence Index, placing it well above average among other open weight models of similar size (median: 8)\".",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "7b2d0f6b21b770e3fd836f9893fe68681644b4d4b76601bdbf45c42d01f96b39"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max) first at 57.62 and Grok 4.7 (Xhigh) at 46.45 among models not marked deprecated; Gemini 3.8 Flash (High) follows at 40.93, Qwen3.8 2.4T A95B at 39.89, Qwen3.8-Flash-Next at 39.82, Qwen3.8 27B (Xhigh) at 33.70, K2 Horizon 375B A23B at 30.5 and Gemini 3.1 Pro Preview at 29.72. The digest drifts between fetches because the page carries live pricing and throughput figures.",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "69b1cc2a57a4fee16e88a66bd3ac8f3a0a09107ed0f709b4cd2b706c0c053155"
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/README.md",
+                "shows": "The card says the repository \"contains model weights and configuration files for the post-trained model\", lists \"Training Stage: Pre-training & Post-training\", and introduces \"Qwen3.8, the most capable generation in the Qwen open-model family to date\".",
+                "accessed": "2026-10-09",
+                "http_status": 200,
+                "content_sha256": "7690c680c2d6eb284179ef5dd4db63260d248531cae9087b09b2c2200230f331"
               }
             ]
           },
-          "overall_score": 3.3,
-          "tier": null,
-          "maturity": 3.3,
+          "overall_score": 4.3,
+          "tier": "strong",
+          "maturity": 4.3,
           "mature": false,
           "freshness": {
-            "date": "2026-09-27",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-09-29"
-          }
+            "date": "2026-10-09",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-09",
+                "reason": "The record now declares eight post-trained checkpoints, and the level was re-read on 2026-10-09 from hand-fetched Hugging Face download counts, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Covers Qwen's post-trained chat models; the base checkpoints are in qwen, the same split as llama-instruct and llama. Qwen2.5-14B-Instruct, the release this record was first written for, stays declared."
         },
         {
           "slug": "deepseek-r1",
