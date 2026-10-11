@@ -59,7 +59,7 @@ identity rule elsewhere in `safeguards`.
 **New organizations.** These six new orgs come with handles in `sources/org_handles.yaml`:
 
 - `novasky-ai` (GitHub and Hugging Face `NovaSky-AI`)
-- `open-tinker` (GitHub)
+- `open-tinker` (GitHub; `type: unknown`, since no primary source establishes it as a lab)
 - `prime-intellect` (GitHub `PrimeIntellect-ai`, Hugging Face `PrimeIntellect`, `primeintellect.ai`)
 - `nebius` (`nebius.com`)
 - `mila` (Hugging Face `mila-ai4h`, `mila.quebec`)
