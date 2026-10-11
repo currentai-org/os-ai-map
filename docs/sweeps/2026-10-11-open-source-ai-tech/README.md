@@ -46,29 +46,33 @@ entity pages in the fetch log (`F0206` on).
 
 ```
 raw_signals       = duplicate_signals + unique_candidates
-191               = 166               + 25
+191               = 167               + 24
 
 unique_candidates = accepted          + parked
-25                = 6                 + 19
+24                = 6                 + 18
 ```
 
-The 166 duplicates break down as follows.
+The 167 duplicates break down as follows.
 
 | Disposition | Signals | Meaning |
 |---|---|---|
 | `duplicate:product` | 35 | The page's own repository, Hub id, slug or name is already a head product |
-| `duplicate:sku_of` | 105 | A release or SKU of a head product that holds the whole line (`claude-sonnet`, `gemini-pro`, `qwen-instruct`, `llama`, `o-series` and so on, per `sources/model_families.yaml` and each record's description), or a prior or current generation of a seeded `datacenter_accelerators` row, which that category's identity rule makes a SKU of the line |
+| `duplicate:sku_of` | 106 | A release or SKU of a head product that holds the whole line (`claude-sonnet`, `gemini-pro`, `qwen-instruct`, `llama`, `o-series` and so on, per `sources/model_families.yaml` and each record's description), or a prior or current generation of a seeded `datacenter_accelerators` row, which that category's identity rule makes a SKU of the line |
 | `duplicate:registry` | 14 | Already a registry row (`structured_generation`, `orchestration_agents`, `agent_protocols`, `finetuned_chat`, `base_pretrained`) |
 | `duplicate:self` | 12 | A second page for a candidate already counted, for example Mixtral 8x7B beside Mixtral 8x22B, or the six Apple Mac pages |
 
-Two `duplicate:sku_of` calls rest on judgment rather than a declared artifact, and a reviewer may
-want to check them:
+Three `duplicate:sku_of` calls rest on judgment rather than a declared artifact:
 
 - **Llama-3.1-Nemotron Ultra and Llama-3.3-Nemotron Super** go to `nemotron`, as earlier generations
   of NVIDIA's Nemotron line, not to `llama`, although `llama-*` in `model_families.yaml` would
   catch their slugs.
-- **Qwen3 Max and Qwen3.5 Plus**, Alibaba's hosted models, go to `qwen`, whose aliases already hold
-  `qwen-3-7-max`.
+- **Qwen3 Max and Qwen3.5 Plus**, Alibaba's hosted chat models, go to `qwen-instruct`. Since #890,
+  `qwen` holds the base checkpoints only and `qwen-instruct` the post-trained line, whatever a release's
+  suffix. Two leftovers from before that split could send them back to `qwen`: the `qwen-*` pattern in
+  `sources/model_families.yaml`, and the `qwen-3-7-max` alias on `qwen`. They are a separate fix.
+- **QwQ** (QwQ-32B-Preview, then QwQ-32B in March 2025) goes to `qwen-instruct`. It is Qwen's
+  reinforcement-learning post-trained reasoning model, so it sits on the post-trained side of the split.
+  Ruled in review of #895.
 
 ## Accepted (6 rows)
 
@@ -89,11 +93,10 @@ on `comma`, and that is an `update-product` question for `comma`. The row declar
 training mix rather than `common-pile/raw_v0.1_parquet` (F0220), because the filtered mix is the
 artifact people download: 21,297 downloads against 3,945 on 2026-10-11.
 
-## Parked (19)
+## Parked (18)
 
 | Candidate | Signal | Reason |
 |---|---|---|
-| QwQ | `models/qwq-32b-preview` (F0222–F0223) | **identity-unresolved.** Qwen's reasoning line: QwQ-32B-Preview, then QwQ-32B in March 2025, Apache-2.0. Qwen3 folded thinking into its main chat models, so QwQ may be a SKU of `qwen-instruct` rather than a product. `model_families.yaml` has no `qwq-*` pattern either way |
 | INTELLECT | `projects/intellect-1` (F0224) | **category-boundary.** INTELLECT-1 is a 10B base model pretrained from scratch over decentralized compute (`base_pretrained`). INTELLECT-2 and INTELLECT-3 are reinforcement-learning post-trains of other labs' bases (`finetuned_chat`). One line straddles two categories, and the call is the reviewer's |
 | Prime Intellect `prime` | `projects/prime-intellect` | **category-proposal #847.** Decentralized training system |
 | Nous DisTrO | `projects/nous-distro` | **category-proposal #847** |
