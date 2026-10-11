@@ -57,6 +57,49 @@ def test_the_committed_history_is_well_formed():
     assert SC.problems(SC.read_history()) == []
 
 
+def test_no_counter_row_is_left_under_a_product_a_rescope_moved_its_artifact_from():
+    """#890 moved QwenLM/Qwen3.8 to qwen-instruct and left its reading under qwen. A re-scope
+    has to move the history's rows with the declaration, in the same PR."""
+    assert SC.orphans(SC.read_history(), SC.declarations()) == []
+
+
+_MOVED = {("github_release", "QwenLM/Qwen3.8"): {"qwen-instruct"},
+          ("github_release", "QwenLM/Qwen3-Embedding"): {"qwen3-embedding", "qwen3-reranker"}}
+
+
+def test_a_row_under_the_product_a_rescope_moved_from_is_an_orphan():
+    row = SC._normalize("github_release", _gh("qwen", "QwenLM/Qwen3.8", "2026-10-04 03:04:10", 0, 0),
+                        "2026-10-04")
+    assert len(SC.orphans([row], _MOVED)) == 1
+    assert SC.orphans([{**row, "product_slug": "qwen-instruct"}], _MOVED) == []
+
+
+def test_a_row_whose_artifact_nobody_declares_is_history_not_an_orphan():
+    row = SC._normalize("github_release", _gh("qwen", "QwenLM/Qwen3.6", "2026-09-28 16:59:59", 0, 0),
+                        "2026-09-28")
+    assert SC.orphans([row], _MOVED) == []
+
+
+def test_a_stale_platform_reading_follows_the_declaration_and_appends_nothing():
+    """The platform reads the old attribution until its next sweep. Once the history's row has
+    moved, the capture must not put the same reading back under the old slug as a new key."""
+    history, _ = SC.merge([], {"github_release": [
+        _gh("qwen-instruct", "QwenLM/Qwen3.8", "2026-10-04 03:04:10", 0, 0)], "docker": []}, "2026-10-04")
+    stale = [_gh("qwen", "QwenLM/Qwen3.8", "2026-10-04 03:04:10", 0, 0)]
+    fresh = {"github_release": SC.reattribute("github_release", stale, _MOVED), "docker": []}
+    rows, added = SC.merge(history, fresh, "2026-10-12")
+    assert added == 0 and rows == history
+    assert SC.orphans(rows, _MOVED) == []
+
+
+def test_reattribute_leaves_a_declared_row_and_an_ambiguous_one_alone():
+    declared = _gh("qwen3-reranker", "QwenLM/Qwen3-Embedding", "2026-10-04 03:04:10", 0, 0)
+    ambiguous = _gh("qwen", "QwenLM/Qwen3-Embedding", "2026-10-04 03:04:10", 0, 0)
+    unknown = _gh("qwen", "QwenLM/Qwen3.6", "2026-09-28 16:59:59", 0, 0)
+    assert SC.reattribute("github_release", [declared, ambiguous, unknown], _MOVED) == [
+        declared, ambiguous, unknown]
+
+
 def test_the_same_reading_with_different_values_is_an_error():
     import pytest
 
