@@ -25,6 +25,21 @@ silently kept or replaced. The grain is the product: a repository several produc
 once per product, so whatever computes an increment must not sum those rows as separate use.
 The history itself stays raw: nothing is clamped, smoothed or banded on the way in.
 
+The product a row names has to be one that declares the artifact. A re-scope that moves an
+artifact to another product (#890 moved QwenLM/Qwen3.8 from qwen to qwen-instruct) leaves the
+history's rows under the old slug, where they start a series nothing will continue (the same
+stale attribution in the platform table they were read from is what fails
+`observations.product_adoption_current`). So the rows move with the declaration, in the PR that
+moves it: `orphans` names every
+row attributed to a product that does not declare its artifact while another product does, and
+`--check` and a test on the committed history fail on it. The platform keeps reading the old
+attribution until its next sweep, so the capture re-attributes a fresh reading to the one product
+that now declares the artifact (`reattribute`) before merging; without that, the next daily run
+would append the stale reading under the old slug as a new key. A row whose artifact no product
+declares any more (a repository read at a path it has since moved from) is history at an
+identifier, not a misattribution, and stays as recorded. Declarations are read from
+`build.serialize_registry`'s `product_artifacts`, the table the observations guard joins on.
+
 Increments (`increments`) are taken between consecutive readings of one counter, and a lifetime
 total can FALL: GitHub's `download_count` is per asset, so deleting or replacing a release asset
 removes its downloads from the sum (OpenPipe/ART read 2,573 then 1,249; tenstorrent/tt-metal
@@ -43,7 +58,7 @@ reading the platform has already overwritten cannot be recovered afterwards.
 
 Usage:
     uv run python -m build.snapshot_counters --live     # read the warehouse and append new rows
-    uv run python -m build.snapshot_counters --check    # validate the committed history
+    uv run python -m build.snapshot_counters --check    # validate the committed history, attribution included
     uv run python -m build.snapshot_counters --union other.csv   # fold another history in by key
     uv run python -m build.snapshot_counters --increments   # print per-window increments as CSV
 """
@@ -64,6 +79,8 @@ KEY = ("source", "product_slug", "artifact_id", "observed_at")
 SERIES = ("source", "product_slug", "artifact_id")
 INCREMENT_COLUMNS = [*SERIES, "from_observed_at", "to_observed_at", "from_counter", "to_counter",
                      "increment", "reset"]
+#: The registry artifact kind each source's artifact_id is declared under.
+ARTIFACT_KIND = {"github_release": "github", "docker": "docker"}
 
 GITHUB_SQL = (
     "SELECT product_slug, repo AS artifact_id, "
@@ -181,6 +198,58 @@ def problems(rows: list[dict]) -> list[str]:
     return out
 
 
+def declarations(root: Path = ROOT) -> dict[tuple[str, str], set[str]]:
+    """(source, artifact_id) -> the product slugs that declare that artifact today.
+
+    Derived from `build.serialize_registry`'s `product_artifacts`, the same table
+    `observations.product_adoption_current` checks every observation against, so the history and
+    the warehouse guard cannot disagree about who declares what.
+    """
+    from build.serialize_registry import build_registry
+    from build.validate import load_sources
+
+    tables, _errors, _warnings = build_registry(load_sources(root))
+    source_of = {kind: source for source, kind in ARTIFACT_KIND.items()}
+    out: dict[tuple[str, str], set[str]] = {}
+    for row in tables["product_artifacts"]:
+        source = source_of.get(row["artifact_kind"])
+        if source is not None:
+            out.setdefault((source, row["artifact_id"]), set()).add(row["product_slug"])
+    return out
+
+
+def reattribute(source: str, rows: list[dict], declared: dict[tuple[str, str], set[str]]) -> list[dict]:
+    """Fresh rows, each moved to the one product that now declares its artifact when the product
+    it names does not. The platform keeps the attribution of its last sweep, so after a re-scope
+    it reads the moved artifact under the old slug until it next refreshes. A row whose artifact
+    no product, or more than one other product, declares is left as it is for `orphans` to judge.
+    Pure, so the tests can drive it.
+    """
+    out: list[dict] = []
+    for row in rows:
+        owners = declared.get((source, str(row["artifact_id"])), set())
+        if str(row["product_slug"]) not in owners and len(owners) == 1:
+            row = {**row, "product_slug": next(iter(owners))}
+        out.append(row)
+    return out
+
+
+def orphans(rows: list[dict], declared: dict[tuple[str, str], set[str]]) -> list[str]:
+    """Rows a re-scope left behind: attributed to a product that does not declare the artifact,
+    while another product does. A row whose artifact nobody declares any more is not one of
+    these; it is a reading at an identifier the corpus has since moved from, and stays."""
+    out: list[str] = []
+    for i, row in enumerate(rows, start=2):
+        owners = declared.get((row["source"], row["artifact_id"]), set())
+        if owners and row["product_slug"] not in owners:
+            out.append(
+                f"line {i}: {row['source']},{row['product_slug']},{row['artifact_id']} is declared by "
+                f"{', '.join(sorted(owners))}, not {row['product_slug']}; move the row to the product "
+                f"that declares it"
+            )
+    return out
+
+
 def increments(rows: list[dict]) -> list[dict]:
     """One row per window between consecutive readings of the same counter.
 
@@ -248,7 +317,7 @@ def main() -> int:
         print(f"folded in {added} row(s) from {args.union}; history now {len(rows)} rows")
         return 0
     if args.check:
-        found = problems(history)
+        found = problems(history) + orphans(history, declarations())
         for line in found:
             print(f"  x {line}")
         print(f"{len(history)} counter rows, {len(found)} problem(s)")
@@ -256,14 +325,16 @@ def main() -> int:
 
     from build.warehouse import query
 
-    fresh = {"github_release": query(GITHUB_SQL), "docker": query(DOCKER_SQL)}
+    declared = declarations()
+    fresh = {"github_release": reattribute("github_release", query(GITHUB_SQL), declared),
+             "docker": reattribute("docker", query(DOCKER_SQL), declared)}
     captured_on = datetime.now(timezone.utc).date().isoformat()
     try:
         rows, added = merge(history, fresh, captured_on)
     except ConflictingReading as exc:
         print(f"  x {exc}", file=sys.stderr)
         return 1
-    found = problems(rows)
+    found = problems(rows) + orphans(rows, declared)
     if found:
         for line in found:
             print(f"  x {line}", file=sys.stderr)
