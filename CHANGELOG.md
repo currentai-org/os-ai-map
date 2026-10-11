@@ -40,6 +40,13 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   24 Aug counting change), moving finetuning_code and storage from stage 4 to 3
   ([#834](https://github.com/currentai-org/os-ai-map/pull/834)).
 
+### Fixed
+
+- The asset-counter history's QwenLM/Qwen3.8 reading moved from qwen to qwen-instruct, where #890
+  re-scoped the repository, and `build.snapshot_counters --check` now fails a counter row left
+  under a product that no longer declares its artifact while another product does
+  ([#893](https://github.com/currentai-org/os-ai-map/pull/893)).
+
 ## [0.5.0] - 2026-10-03
 
 ### Added
