@@ -92,10 +92,10 @@ families:
     product: phi
     decided_in: "#474"
     note: "Microsoft's Phi line; releases append a generation number (phi-4)."
-  - pattern: "qwen-*"
-    product: qwen
-    decided_in: "#474"
-    note: "Alibaba Cloud's Qwen line; releases append a generation-and-point number, sometimes a size suffix (qwen-2-5, qwen-3-7-max)."
+  # No `qwen-*` pattern (#897). Since #890 `qwen` holds the base checkpoints and `qwen-instruct`
+  # the post-trained line, and a Qwen release name does not say which side it is on, so any single
+  # pattern would route half the line to the wrong product. A Qwen release surfaces for a person to
+  # resolve, and a decided one is recorded as an alias or a resolution-ledger ruling.
   - pattern: "tulu-*"
     product: tulu
     decided_in: "#474"
