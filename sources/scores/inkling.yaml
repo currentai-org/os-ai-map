@@ -14,15 +14,22 @@ openness:
       detail: day-0 transformers/SGLang/vLLM/llama.cpp; no training pipeline
     license:
     - name: Apache-2.0
-      detail: OSI for weights only
+      detail: OSI; the weights
+    - name: Thinking-Machines-Model-AUP
+      detail: conduct restrictions binding anyone who downloads the weights; no user, revenue or commercial
+        ceiling; Thinking Machines may revise it
   confidence: high
   note: Inkling's weights are released under Apache-2.0, but the training data and the full training pipeline
-    are withheld, so it is an open-weights release rather than a fully open model. Press coverage often
-    calls Inkling open source because of the license tag, but the data and training code needed to reproduce
-    it are not public.
+    are withheld, so it is an open-weights release rather than a fully open model. Downloading the weights
+    also binds the user to Thinking Machines' Model Acceptable Use Policy, which restricts conduct such as
+    weapons development and surveillance but sets no user, revenue or commercial ceiling, and which the company
+    may revise. Press coverage often calls Inkling open source because of the license tag, but the data and
+    training code needed to reproduce it are not public.
   last_verified: '2026-09-29'
   raw: weights:open(Apache-2.0 on HF, BF16 + NVFP4);data:closed(public+third-party+synthetic, not redistributed);code:partial(day-0
-    transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI for weights only)
+    transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI; the weights)+Thinking-Machines-Model-AUP(conduct
+    restrictions binding anyone who downloads the weights; no user, revenue or commercial ceiling; Thinking
+    Machines may revise it)
   sources:
   - url: https://huggingface.co/thinkingmachines/Inkling
     shows: Hugging Face model page for the BF16 release listing "975B total, 41B active" and stating that
@@ -87,10 +94,12 @@ openness:
   - url: https://thinkingmachines.ai/model-acceptable-use-policy/
     shows: Model Acceptable Use Policy stating "By accessing, downloading, or using any Model Materials,
       you agree to be bound by this Model AUP" with conduct restrictions (illegal activity, weapons, CSAM,
-      surveillance); no user-count, revenue or commercial-use ceiling.
-    accessed: '2026-09-29'
+      surveillance); no user-count, revenue or commercial-use ceiling. Dated "Last updated July 15, 2026",
+      and "Your continued use of the Model Materials after any update constitutes acceptance of the revised
+      Model AUP".
+    accessed: '2026-10-11'
     http_status: 200
-    content_sha256: 1e0960508ded3c9ac1312e2218648302b528fc6285264d310a4b56a205349201
+    content_sha256: 6f0d392271ed4b601e943f7d6b57cf7bd37053e972b7b99fe6af7abaafcfc024
     establishes:
     - license
 adoption:

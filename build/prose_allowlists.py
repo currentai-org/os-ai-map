@@ -62,6 +62,7 @@ FIGURES_THAT_ARE_PRODUCT_FACTS = {
     ("llama-instruct", "openness"),          # the Llama license's 700 million MAU threshold
     ("tulu", "openness"),                    # the same license threshold, inherited
     ("llama", "openness"),                   # the same license threshold
-    ("kimi", "openness"),                    # the Modified MIT license's 100 million MAU threshold
+    ("kimi", "openness"),                    # the Kimi K3 License's 100 million MAU display threshold
+    ("qwen-instruct", "openness"),           # the Qwen 3.8 licenses' 100 million MAU display threshold
     ("mineru", "openness"),                  # the AGPL exception's 100 million MAU threshold
 }
