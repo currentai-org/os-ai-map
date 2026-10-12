@@ -22,7 +22,10 @@ a day per twenty-five candidates.
 Per promoted product, five concerns:
 1. `sources/products/<slug>.yaml` and 2. `sources/scores/<slug>.yaml` - the records.
 3. `sources/categories/<cat>.yaml` - the head roster, in display order.
-4. `sources/organizations/<org>.yaml` - the org roster, created if the org is new.
+4. `sources/organizations/<org>.yaml` - the org roster, created if the org is new. A new institution
+   sets `country`, or records why it cannot in a `countries/` ledger
+   ([`../reference/identity.md`](../reference/identity.md#country); `tests/test_org_country.py`
+   checks it). A new org also needs its handles in `sources/org_handles.yaml`.
 5. `sources/registry/<cat>.yaml` - the row comes **out**.
 
 Plus, once per category: the category's `strapline` and `sources/taxonomy.yaml` when the status

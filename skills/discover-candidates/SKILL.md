@@ -61,7 +61,9 @@ Populated `sources/registry/<category>.yaml` files — appended, or created for 
 no file yet — and a summary carrying the five reconciled counts (`raw_signals =
 duplicate_signals + unique_candidates`; `unique_candidates = accepted + parked`), and the
 source URL and fetch date behind every candidate, accepted or parked, each parked one with its
-reason. Not a prose report, and not a PR per candidate.
+reason. Not a prose report, and not a PR per candidate. A row whose org is new also brings the
+org file, its handles and, for an institution, a `country` or a ledger row saying why not (the
+workflow's step 5).
 
 A registry row rejects unknown keys, so the summary is the only place a reason, a source URL
 or an ambiguity can be recorded. It is part of the deliverable, not a covering note.

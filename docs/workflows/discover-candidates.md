@@ -57,6 +57,8 @@ head products use `promote-category`; to re-verify what is already published use
 | File | Change |
 |---|---|
 | `sources/registry/<category>.yaml` | One accepted candidate per row under `products:` — appended to an existing file, or a new file created for a category that has none yet (see step 5) |
+| `sources/organizations/<org>.yaml` | Only for a row whose `org` does not exist yet: a new file with an empty `products:` roster (see step 5) |
+| `sources/org_handles.yaml` | The new org's handles, so identity resolution and the handle-coverage ratchet see it |
 
 Nothing else. A candidate that needs a category which does not exist is a governance event,
 not a data event: open a `category-proposal` issue and park the candidate against it (see
@@ -194,6 +196,18 @@ identifier, so a stored URL would serialize to `https://github.com/https://githu
 Head product records are the opposite convention — `sources/products/<slug>.yaml` stores typed
 arrays of `{url: ...}` — so do not carry a habit from `add-product` into a registry row, or
 back the other way.
+
+**A row's `org` must exist, so a new org gets its file in the same PR.** Create
+`sources/organizations/<org>.yaml` with `name`, `display_name`, `type`, `homepage` where there is
+one, and `products: []`. The registry row does not join the org's roster until it is promoted. Add the org's handles to
+`sources/org_handles.yaml`. An institution (`company`, `lab`, `foundation`, `government`) also sets
+`country` from a page that states its seat, under the rules in
+[`../reference/identity.md`](../reference/identity.md#country). Where no primary page states one, leave
+it unset and add a row with `country: null` and the reason to a ledger under
+`docs/sweeps/<sweep>/countries/` (row format in
+`docs/sweeps/2026-09-30-identity-attributes/README.md`). `tests/test_org_country.py` fails an
+institution that has neither. Leave `type: unknown` where the org's nature is not established, and
+never set `country` on a `type: individual`.
 
 **The source URLs still matter, they just live elsewhere.** Every raw signal's URL and fetch
 date belong in the batch summary, which is what makes the sweep auditable and lets the next
