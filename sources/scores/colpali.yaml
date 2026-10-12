@@ -71,21 +71,29 @@ openness:
     - code
     - license
 adoption:
-  level: 4
-  reach: 1M-10M
+  level: 3
+  reach: 100K-1M
   signal_type: usage_volume
-  banded_quantity: trailing-30-day downloads summed across the 45 vidore repositories carrying the ColPali and ColQwen lines, which is wider than the two checkpoints this product declares
   confidence: high
-  note: Adoption is measured as Hugging Face downloads summed across the 45 vidore repositories carrying
-    the ColPali and ColQwen lines, wider than the two checkpoints this product declares. Downloads run mostly
-    to the ColQwen successors, with the original ColPali checkpoints trailing well behind.
-  last_verified: '2026-09-11'
+  note: Adoption is measured as Hugging Face downloads summed across the two declared checkpoints, ColPali
+    v1.3 and ColQwen2.5 v0.2. The vidore account carries about 45 repositories in the ColPali and ColQwen
+    lines, and the others are not counted, so the figure is a floor for the family's use.
   sources:
-  - url: https://huggingface.co/api/models?author=vidore&limit=100&sort=downloads&direction=-1
-    shows: 45 vidore repos with `downloads` (trailing 30 days) summing to 1,255,462.
-    accessed: '2026-09-11'
+  - url: https://huggingface.co/api/models/vidore/colqwen2.5-v0.2
+    shows: 72,565 downloads in the trailing 30 days for vidore/colqwen2.5-v0.2
+    accessed: '2026-10-12'
     http_status: 200
-    content_sha256: 32365cbb57ac872e740d826e07bb2b9c9ab5c9057a4bf8227f0ba56404c074d0
+    content_sha256: 62d8a0666848e4806f3109a41a210e21992b6c1c1024783e57be53f60351b691
+  - url: https://huggingface.co/api/models/vidore/colpali-v1.3
+    shows: 34,249 downloads in the trailing 30 days for vidore/colpali-v1.3
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 7188bc8f028cbec5501b38e75a0608571af05122d98b1f1824832a065909148a
+  - url: https://huggingface.co/api/models?author=vidore&limit=100&sort=downloads&direction=-1
+    shows: 45 vidore repos with `downloads` (trailing 30 days) summing to 563,251.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 206bf8384011620aa09bc8adeb45c727d1a7fa8cdd80a4742d1156b930387477
 capability:
   score: 4
   basis: benchmark

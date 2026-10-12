@@ -60,21 +60,30 @@ openness:
     establishes:
     - code
 adoption:
-  level: 5
-  reach: '>10M'
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
-  banded_quantity: trailing-30-day downloads summed across the 44 google/siglip* repositories, which is wider than the two checkpoints this product declares
   confidence: high
-  note: Adoption is measured as Hugging Face downloads summed across the 44 google/siglip* repositories,
-    led by the SigLIP 2 giant-opt and base checkpoints. The timm re-hosts of the same checkpoints are excluded
-    as mirrors.
-  last_verified: '2026-09-11'
+  note: Adoption is measured as Hugging Face downloads summed across the two declared checkpoints, SigLIP
+    so400m-patch14-384 and SigLIP 2 so400m-patch16-384. Google publishes about 44 SigLIP repositories, together
+    drawing over 12M downloads a month, and the timm re-hosts add more; only the two declared checkpoints
+    are counted here.
   sources:
-  - url: https://huggingface.co/api/models?author=google&search=siglip&limit=100&sort=downloads&direction=-1
-    shows: 44 google siglip repos with `downloads` (trailing 30 days) summing to 11,451,605.
-    accessed: '2026-09-11'
+  - url: https://huggingface.co/api/models/google/siglip-so400m-patch14-384
+    shows: 1,061,061 downloads in the trailing 30 days for google/siglip-so400m-patch14-384
+    accessed: '2026-10-12'
     http_status: 200
-    content_sha256: 5ae7b6b5fcd1621b4411c9a36a59aeb2fa9a73e9adf821d1afef356c3fc8e7bb
+    content_sha256: 46d7443a6de2a8c267aa2160b0fa8ffb6862cdadc6abd3b2a40eec5fa6049ec0
+  - url: https://huggingface.co/api/models/google/siglip2-so400m-patch16-384
+    shows: 167,466 downloads in the trailing 30 days for google/siglip2-so400m-patch16-384
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 72b2c0cd3a44d80d2d2319b0841974f2ee74378af2bf15b8e2ef50ff0daa5312
+  - url: https://huggingface.co/api/models?author=google&search=siglip&limit=100&sort=downloads&direction=-1
+    shows: 44 google siglip repos with `downloads` (trailing 30 days) summing to 12,547,255.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 7006fec76e8e689e9790bbe37c27db24de51a8c1e1b8594b60e868dc88cf157f
 capability:
   score: 4
   basis: benchmark

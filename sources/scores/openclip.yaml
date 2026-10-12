@@ -67,22 +67,25 @@ openness:
     establishes:
     - license
 adoption:
-  level: 5
-  reach: '>10M'
+  level: 3
+  reach: 100K-1M
   signal_type: usage_volume
-  banded_quantity: trailing-30-day downloads summed across the 56 laion/CLIP-* checkpoints in the LAION account, which is wider than the single flagship repo this product declares as an artifact
   confidence: medium
-  note: Adoption is measured as Hugging Face downloads summed across the 56 laion/CLIP-* repositories in
-    the LAION account. That total sits close to the top adoption threshold and moves week to week, which
-    keeps confidence at medium rather than high, and third-party re-hosts on the timm and apple accounts
-    are excluded as mirrors, so the reading is, if anything, an undercount.
-  last_verified: '2026-09-11'
+  note: Adoption is measured as Hugging Face downloads of the declared flagship checkpoint, CLIP-ViT-H-14-laion2B-s32B-b79K.
+    LAION publishes about 56 OpenCLIP checkpoints under laion/CLIP-*, together drawing close to 10M downloads
+    a month, and re-hosts on the timm and apple accounts add more. None of those are counted here, so the
+    reading understates the library's reach by a wide margin.
   sources:
-  - url: https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1
-    shows: 56 laion CLIP repos with `downloads` (trailing 30 days) summing to 10,909,706.
-    accessed: '2026-09-11'
+  - url: https://huggingface.co/api/models/laion/CLIP-ViT-H-14-laion2B-s32B-b79K
+    shows: 495,970 downloads in the trailing 30 days for laion/CLIP-ViT-H-14-laion2B-s32B-b79K
+    accessed: '2026-10-12'
     http_status: 200
-    content_sha256: 8dc47a8aba03c34640048aabec3fb6846c718c27defe0e7140319a8be78928c8
+    content_sha256: 95ef00b3707d2eb3aade701bab8a25603f9cedb2d9452339ff45df0e1edcd452
+  - url: https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1
+    shows: 56 laion CLIP repos with `downloads` (trailing 30 days) summing to 9,739,962.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: a481c044373b27a65d22815e5e653d2c82e2848b6970bae54d90b00e9096f488
 capability:
   score: 3
   basis: benchmark
