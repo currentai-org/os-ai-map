@@ -32,6 +32,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Adoption re-banded for six products whose band disagreed with the measured band on both the
+  28 Sep and 12 Oct reconciliations: ag-ui 5 to 4, colpali 4 to 3, openclip 5 to 3, siglip 5 to 4,
+  modernvbert 3 to 1 and tensorlake-sandbox 1 to 2, with no stage moves
+  ([#904](https://github.com/currentai-org/os-ai-map/pull/904)).
 - Weaviate's openness re-scored from 5/open_source to 4/open_core after its LICENSE split the
   repository, putting an Enterprise Edition in the `wl` directory under a separate commercial
   license enabled by a license key ([#841](https://github.com/currentai-org/os-ai-map/pull/841)).
