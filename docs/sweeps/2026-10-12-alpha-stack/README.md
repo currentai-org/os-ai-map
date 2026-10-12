@@ -135,6 +135,23 @@ primary use. The row is ready to emit once ruled:
     pypi: "lettucedetect"
 ```
 
+## Promoted to head products
+
+| Product | Category | Openness | Adoption | Capability |
+|---|---|---|---|---|
+| `shieldstral` | `safeguards` | 3/open_weights: Apache-2.0 weights, ungated. The technical report describes the 54.1M-sample training set, which is not released | 2: 37,660 Hugging Face downloads in 30 days | 4, `at` `gpt-oss-safeguard`. The card's F1 tables put the two level, and Shieldstral adds images but gives no reasoning |
+| `mistral-medium` | `finetuned_chat` | 3/open_weights: ungated weights, no data or training code | 2: 72,266 Hugging Face downloads in 30 days. API and Le Chat use is not visible | 3, `at` `o-series`. It scores 14 on the Artificial Analysis Intelligence Index, between GPT-4o (8) and o3 (20) |
+
+**A license reading for the maintainer.** Mistral's Modified MIT license withholds every right from a
+company with more than $20 million in monthly revenue. The model ladder's `use_bounded` definition
+says "an annual revenue ceiling ... sits here whatever the threshold", but the `Modified-MIT`
+spelling is listed under `permissive_non_osi`, where Kimi's attribution-only modification belongs.
+`mistral-medium` records `Modified-MIT`, as `devstral` already does for the same license text. Both
+tiers reach 3 for a model whose recipe is closed, so no score moves today. They would diverge only
+for a Mistral release that opened its data and code (4 against 3). A distinct license name for the
+revenue-bounded text would settle it, and that change belongs in `sources/rubrics/model.yaml`, not in
+this sweep.
+
 ## Validation
 
 - `uv run python -m build.validate`: 0 errors.
