@@ -37,10 +37,10 @@ raw_signals       = duplicate_signals + unique_candidates
 25                = 6                 + 19
 
 unique_candidates = accepted          + parked
-19                = 15                + 4
+19                = 16                + 3
 ```
 
-## Accepted (15 rows)
+## Accepted (16 rows)
 
 | Slug | Registry file | Identifiers | Primary source |
 |---|---|---|---|
@@ -58,9 +58,10 @@ unique_candidates = accepted          + parked
 | `openalex` | `search_retrieval` | `ourresearch/openalex-elastic-api`, homepage | That repository's README: "the elasticsearch-backed portion of the OpenAlex API". LICENSE MIT (OurResearch). `openalex.org` answers automated requests with a bot wall, and the API's anonymous daily budget was spent, so the homepage was not read. Alpha calls `api.openalex.org/works` |
 | `mediawiki-search-api` | `search_retrieval` | `wikimedia/mediawiki-extensions-CirrusSearch`, homepage | <https://www.mediawiki.org/wiki/API:Search> documents `list=search` (GPL-2.0-or-later). Alpha's `openSearch.ts` calls the same `https://<lang>.<site>/w/api.php` surface for Wikipedia and Wikinews, "differing only by host", so it is one row. CirrusSearch is the extension behind it, and its GitHub repository is a mirror of Wikimedia's Gerrit. The `wikipedia` row stays the training dataset |
 | `arxiv-api` | `search_retrieval` | homepage | <https://info.arxiv.org/help/api/index.html>, "arXiv API Access". Alpha calls `export.arxiv.org/api/query`. Homepage only, so it is weaker evidence than a repository-backed row |
+| `lettucedetect` | `safeguards` | `KRLabsOrg/LettuceDetect`, PyPI `lettucedetect`, arXiv `2502.17125` | Emitted under R-2026-10-12-b (below). Repository README and LICENSE (MIT); PyPI `lettucedetect` names the repository as its homepage; the README's arXiv badge is the paper. The v2 encoder Alpha runs, `KRLabsOrg/lettucedect-v2-mmbert-base`, is Apache-2.0 on the HF API, created 2026-06-22. Alpha's `groundcheck/app.py` wraps it as a token classifier over each answer |
 | `bubblewrap` | `deployment` | `containers/bubblewrap` | README, `COPYING` (LGPL 2.1 text), and `bubblewrap.c` declares `LGPL-2.0-or-later`. It sits beside `gvisor`, `firecracker` and `sandbox-runtime`, which itself uses bubblewrap on Linux. Alpha's `agent-service` runs agent-mode tool calls under `bwrap` |
 
-**New organizations.** Eight orgs, with handles in `sources/org_handles.yaml`:
+**New organizations.** Nine orgs, with handles in `sources/org_handles.yaml`:
 
 - `speakleash` (GitHub and Hugging Face `speakleash`, `speakleash.org`)
 - `infomaniak` (`infomaniak.com`)
@@ -71,12 +72,16 @@ unique_candidates = accepted          + parked
   bubblewrap. `type: unknown`, since no page establishes it as a company or a foundation.
 - `ourresearch` (GitHub `ourresearch`, `openalex.org`)
 - `arxiv` (`arxiv.org`)
+- `krlabs` (GitHub and Hugging Face `KRLabsOrg`). `type: unknown`, and no homepage: the
+  repository and the Hugging Face organization name "KR Labs" and no page establishes what kind of
+  body it is.
 
 `meta` also gains a GitHub handle, `facebook`, the account that owns ThreatExchange.
 
 **Seats (`country`)** are in `countries/batch-01.jsonl`, each with the page it was read from.
 `speakleash` is `PL`, `infomaniak` `CH`, `featherless` `US` and `scaleway` `FR`. `public-ai`,
-`ourresearch` and `arxiv` stay unset, each with its reason in the ledger.
+`ourresearch` and `arxiv` stay unset, each with its reason in the ledger. `containers` and `krlabs`
+are `type: unknown`, so they take no seat.
 
 ## Duplicates (6)
 
@@ -88,52 +93,40 @@ unique_candidates = accepted          + parked
 | Shieldstral | Registry row `shieldstral` (#896), promoted to a head product in this PR |
 | Mistral Medium | Registry row `mistral-medium` (#895), promoted in this PR. Alpha calls it as `mistral-medium-2604` against `api.mistral.ai`. Mistral's page <https://docs.mistral.ai/models/mistral-medium-3-5-26-04> names Mistral Medium 3.5, version 26.04, "released as open weights under a Modified MIT license", and links its weights to `huggingface.co/mistralai/Mistral-Medium-3.5-128B`, the checkpoint the row points at. The `-2604` id follows the version number the same way `mistral-small-2603` follows Small 4's v26.03 |
 
-## Parked (4)
+## Parked (3)
 
 | Candidate | Reason |
 |---|---|
-| AI Singapore's SEA-LION API (`api.sea-lion.ai`) | Waits on the host ruling below. Alpha's `gatewayFallbackGate.ts` names it. <https://docs.sea-lion.ai> answers 200 |
-| NextBit (ALIA's host) | Waits on the host ruling, and has no anchor either way. Alpha's catalog entry is `{name: 'NextBit', blurb: 'Runs ALIA for Alpha.'}` with no URL. `nextbit.es` is a web-design agency in Menorca, not this host. Revisit when the gateway's operators name the provider's site |
-| PLGrid's LLMLab (Bielik's host) | Waits on the host ruling. <https://llmlab.plgrid.pl> answers 200 with a client-rendered page titled "LLM Lab" and no readable text |
-| LettuceDetect (`KRLabsOrg/LettuceDetect`, PyPI `lettucedetect`, `KRLabsOrg/lettucedect-v2-mmbert-base`) | Waits on the scope ruling below. The repository is MIT and the v2 model card is Apache-2.0, created 2026-06-22. Alpha's `groundcheck/app.py` wraps it as a token classifier over each answer |
+| AI Singapore's SEA-LION API (`api.sea-lion.ai`) | Not a product, under R-2026-10-12-a (below). Alpha's `gatewayFallbackGate.ts` names it. <https://docs.sea-lion.ai> answers 200 |
+| NextBit (ALIA's host) | Not a product, under R-2026-10-12-a, and it has no anchor either way. Alpha's catalog entry is `{name: 'NextBit', blurb: 'Runs ALIA for Alpha.'}` with no URL. `nextbit.es` is a web-design agency in Menorca, not this host. Revisit when the gateway's operators name the provider's site |
+| PLGrid's LLMLab (Bielik's host) | Not a product, under R-2026-10-12-a. <https://llmlab.plgrid.pl> answers 200 with a client-rendered page titled "LLM Lab" and no readable text |
 
-## Needs a ruling
+## Rulings
 
-**1. Are the national hosts products, or an attribute of the model row?** The Public AI gateway
-routes SEA-LION to AI Singapore's API, ALIA to NextBit and Bielik to PLGrid's LLMLab. Each serves
-one model family for its model's own national program. Mistral Studio, Infomaniak, Featherless and
-Scaleway are different: each is a general hosted-inference product serving many families, which is
-`inference_code`'s brief.
+All three were decided on the review of #907 and are recorded in `docs/rulings/log.yaml`.
 
-*Recommendation: an attribute, not products.* A single-family endpoint is how that model is
-distributed, and a row for it would score one model's API a second time in another category. No
-schema field records a model's hosts today, so following the recommendation means changing
-`product.schema.json` and `identity.md`. That is a `migrate-axis`-sized change and should not happen
-inside a sweep. In the meantime the three stay parked.
+**R-2026-10-12-a: the national hosts are not products.** The Public AI gateway routes SEA-LION to
+AI Singapore's API, ALIA to NextBit and Bielik to PLGrid's LLMLab. Each is a distribution
+relationship for a model product, unlike Mistral Studio, Infomaniak, Featherless and Scaleway, which
+are general hosted-inference products serving many families. The three stay parked. The longer-term
+shape is a many-to-many hosting relationship between models and hosts, not a scalar attribute on the
+model, and that is outside this sweep.
 
-**2. Which category does a groundedness detector extend?** LettuceDetect flags answer spans that no
-retrieved source supports, and HHEM and MiniCheck do the same job. The two candidate homes already
-hold this capability:
+**R-2026-10-12-b: a groundedness detector goes in `safeguards`.** A serving-time detector that takes
+an answer and decides whether it is grounded is a safeguard; a harness whose primary job is running
+and grading model evaluations is `evaluation_code`. This matches `granite-guardian` ("hallucination
+checks for retrieval pipelines") and `azure-content-safety` ("groundedness detection") in
+`safeguards`, while `patronus-evaluation-platform`, built around Lynx, stays in `evaluation_code`.
+The `lettucedetect` row is emitted above.
 
-- `safeguards`: `granite-guardian` lists "hallucination checks for retrieval pipelines (context
-  relevance, groundedness, answer relevance)", and `azure-content-safety` lists "groundedness
-  detection".
-- `evaluation_code`: `patronus-evaluation-platform` is "built around in-house judge models: Lynx for
-  hallucination detection".
-
-*Recommendation: `safeguards`.* Alpha, like Granite Guardian and Azure, runs it on live answers at
-serving time, which is a guardrail's job. An offline harness that scores a model's hallucination
-rate stays in `evaluation_code`, as Lynx does. A detector that is used both ways goes by its
-primary use. The row is ready to emit once ruled:
-
-```yaml
-  - slug: lettucedetect
-    display_name: "LettuceDetect"
-    type: software
-    org: krlabs
-    github: "KRLabsOrg/LettuceDetect"
-    pypi: "lettucedetect"
-```
+**R-2026-10-12-c: Mistral's Modified MIT license is `use_bounded`.** It withholds every right from a
+company whose consolidated monthly revenue exceeds USD 20M, which is the `use_bounded` definition.
+The bare `Modified-MIT` spelling that `devstral` recorded resolved to `permissive_non_osi`. The text
+is now named `Mistral-Modified-MIT` and listed under `use_bounded` on both the model and pretrained
+ladders. The bare spelling is retired from `permissive_non_osi`, since no record uses it any more and
+other vendors' "modified MIT" texts carry different terms. `devstral` and `mistral-medium` record the
+new name. Both still score 3, because `use_bounded` resolves to 3 before the data and code rungs are
+read. The two tiers would have diverged for a release under this license that opened its recipe.
 
 ## Promoted to head products
 
@@ -141,16 +134,6 @@ primary use. The row is ready to emit once ruled:
 |---|---|---|---|---|
 | `shieldstral` | `safeguards` | 3/open_weights: Apache-2.0 weights, ungated. The technical report describes the 54.1M-sample training set, which is not released | 2: 37,660 Hugging Face downloads in 30 days | 4, `at` `gpt-oss-safeguard`. The card's F1 tables put the two level, and Shieldstral adds images but gives no reasoning |
 | `mistral-medium` | `finetuned_chat` | 3/open_weights: ungated weights, no data or training code | 2: 72,266 Hugging Face downloads in 30 days. API and Le Chat use is not visible | 3, `at` `o-series`. It scores 14 on the Artificial Analysis Intelligence Index, between GPT-4o (8) and o3 (20) |
-
-**A license reading for the maintainer.** Mistral's Modified MIT license withholds every right from a
-company with more than $20 million in monthly revenue. The model ladder's `use_bounded` definition
-says "an annual revenue ceiling ... sits here whatever the threshold", but the `Modified-MIT`
-spelling is listed under `permissive_non_osi`, where Kimi's attribution-only modification belongs.
-`mistral-medium` records `Modified-MIT`, as `devstral` already does for the same license text. Both
-tiers reach 3 for a model whose recipe is closed, so no score moves today. They would diverge only
-for a Mistral release that opened its data and code (4 against 3). A distinct license name for the
-revenue-bounded text would settle it, and that change belongs in `sources/rubrics/model.yaml`, not in
-this sweep.
 
 ## Validation
 

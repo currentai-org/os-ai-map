@@ -979,3 +979,67 @@ rulings:
     executor: agent
     lands_in: [sources/scores/qwen.yaml]
     applied_in: []
+
+  - id: R-2026-10-12-a
+    date: 2026-10-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#903", "#907", inference_code, sea-lion, bielik, alia-40b]
+    question: >-
+      Are the national hosts behind the Public AI gateway (AI Singapore's SEA-LION API, PLGrid's
+      LLMLab and NextBit, which serves ALIA) products in inference_code, or an attribute of the
+      model row they serve?
+    ruling: >-
+      Not separate products. Each is a distribution relationship for a model product, unlike Mistral
+      Studio or Scaleway Generative APIs, which are general hosted-inference products. Keep the three
+      parked. Longer term, model hosting as a many-to-many served_by relationship, not as a scalar
+      attribute on the model, since one model can have several hosts and one host can serve several
+      models. That is outside the sweep.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+
+  - id: R-2026-10-12-b
+    date: 2026-10-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#903", "#907", lettucedetect, safeguards, evaluation_code, granite-guardian, azure-content-safety]
+    question: >-
+      Which category does a groundedness detector such as LettuceDetect (or HHEM, or MiniCheck)
+      extend: safeguards or evaluation_code?
+    ruling: >-
+      Safeguards. A serving-time detector that takes an answer and decides whether it is grounded
+      belongs in safeguards; a harness whose primary job is running and grading model evaluations
+      belongs in evaluation_code. Emit the LettuceDetect row now.
+    reasoning: >-
+      That matches Granite Guardian and Azure's groundedness detection, and it is more useful than
+      classifying by whether the same detector could also be used offline.
+    status: in-force
+    executor: agent
+    lands_in: [sources/registry/safeguards.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+
+  - id: R-2026-10-12-c
+    date: 2026-10-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#907", devstral, mistral-medium, Modified-MIT]
+    question: >-
+      Mistral's "Modified MIT License" withholds every right from a company whose consolidated
+      monthly revenue exceeds USD 20M, but the Modified-MIT spelling the corpus records it under is
+      tiered permissive_non_osi. Which tier governs?
+    ruling: >-
+      use_bounded. Give the text its own identity, Mistral-Modified-MIT, put it in use_bounded, and
+      move devstral and mistral-medium to it, as Kimi-K3-License was named rather than treating every
+      license called "Modified MIT" as one set of terms. Fix it now rather than leave the
+      inconsistency because both tiers score 3 today.
+    reasoning: >-
+      Above USD 20M monthly revenue the licensee loses the grant, which is the use_bounded
+      definition almost word for word. The two tiers diverge the moment a model under this license
+      publishes an open recipe, so the rubric should be repaired while the license body is in front
+      of us.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/model.yaml, sources/rubrics/pretrained.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
