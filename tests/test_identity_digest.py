@@ -690,7 +690,7 @@ def _confirm(model_id, product, *, verdict="existing_product"):
 
 def test_an_artifact_ruled_to_one_product_is_suppressed_when_proposed_against_another(tmp_path):
     """The #838 shape: comfy-org/qwen-image-2.1 is ruled to belong to `qwen-image`, and the
-    `qwen-*` model family proposes it against `qwen`. One artifact belongs to one product, so
+    `qwen-*` model family (removed in #897) proposed it against `qwen`. One artifact belongs to one product, so
     the proposal is not a review question; an artifact nobody has ruled on still is."""
     ledger = _assigning_ledger(tmp_path, _confirm("Comfy-Org/Qwen-Image-2.1", "qwen-image"))
     ruled = _hf_equivalence("e1", "comfy-org/qwen-image-2.1", "qwen", rank=1)
