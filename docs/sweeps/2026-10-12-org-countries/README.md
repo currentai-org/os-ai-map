@@ -18,7 +18,8 @@ a footer.
 `confidence`). Applied with:
 
 ```bash
-uv run python -m build.apply_attributes --kind country --ledger docs/sweeps/2026-10-12-org-countries/countries/batch-01.jsonl --write
+D=docs/sweeps/2026-10-12-org-countries
+uv run python -m build.apply_attributes --kind country --ledger "$D/countries/batch-01.jsonl" --write
 ```
 
 Every page was read on 2026-10-12.
