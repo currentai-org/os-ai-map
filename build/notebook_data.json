@@ -1956,17 +1956,18 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(shipped 2026-07-27, ungated, 96 safetensors shards);data:closed;code:partial(inference/deploy only; no training data or full pipeline);license:Modified-MIT(non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue threshold, plus a prominent-display attribution requirement)",
+            "components": "weights:open(shipped 2026-07-27, ungated, 96 safetensors shards);data:closed;code:partial(inference/deploy only; no training data or full pipeline);license:Kimi-K3-License(non-OSI; a model-as-a-service business with over USD 20M revenue in any 12 months needs a separate agreement before commercial use, and products above 100M MAU or USD 20M monthly revenue must display \"Kimi K3\")",
             "governing_release": "kimi-k3",
             "confidence": "high",
-            "note": "Kimi K3's weights are ungated on Hugging Face, but its Modified-MIT license excludes commercial use above 100 million monthly active users or $20 million in monthly revenue and requires prominent attribution, keeping it outside OSI. Only inference and deployment code is published and no training corpus is released, so the family counts as open weights rather than open source.",
+            "note": "Kimi K3's weights are ungated on Hugging Face under the Kimi K3 License, an MIT-style grant with two conditions. A company running a model-as-a-service business with more than $20 million in revenue over any 12 months must sign a separate agreement with Moonshot AI before commercial use, and a product with more than 100 million monthly active users or $20 million in monthly revenue must display \"Kimi K3\". Only inference and deployment code is published and no training corpus is released, so the family counts as open weights rather than open source.",
+            "last_verified": "2026-10-11",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/moonshotai/Kimi-K3",
-                "shows": "`\"gated\":false`, `\"private\":false`, `license:other` in the repo tags with a LICENSE file in the sibling list, and 96 model-000NN-of-000096.safetensors shards, so the K3 weights shipped and download without a barrier. 1,871,575 downloads in the trailing 30 days; 10,621 likes. No corpus and no training pipeline appear in the tree - only configuration, processor and encoding modules.",
-                "accessed": "2026-08-14",
+                "shows": "`\"gated\":false`, `\"private\":false`, `license:other` in the repo tags with a LICENSE file in the sibling list, and 96 model-000NN-of-000096.safetensors shards, so the K3 weights shipped and download without a barrier. No corpus and no training pipeline appear in the tree - only configuration, processor and encoding modules.",
+                "accessed": "2026-10-11",
                 "http_status": 200,
-                "content_sha256": "1d124012b8f86b3db9194b9ab99f3d964e0e82904f23471e7b853f964f63b0bd",
+                "content_sha256": "25ea9eeac2d17a6a917ea1fea9135449f401b4111ade6d9ab0df23920a6bf7a7",
                 "establishes": [
                   "weights",
                   "data",
@@ -1974,11 +1975,11 @@
                 ]
               },
               {
-                "url": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/LICENSE",
-                "shows": "K3's own license file, read directly rather than assumed from K2.x. MIT text with the Modified-MIT carve-out - the grant is excepted where the licensee's commercial products or services have \"more than 100 million monthly active users, or more than 20 million US dollars (or equivalent in other currencies)\" - and a prominent-display attribution requirement.",
-                "accessed": "2026-08-14",
+                "url": "https://huggingface.co/moonshotai/Kimi-K3/raw/main/LICENSE",
+                "shows": "Titled \"Kimi K3 License\". Section 2: a licensee that \"operates a Model as a Service business\", with aggregate revenue that \"exceeds 20 million US dollars\" over \"any consecutive 12 months\", \"must enter into a separate agreement with Moonshot AI before using the Software or its derivative works for any commercial purpose\". Section 3: a commercial product with \"more than 100 million monthly active users\" or \"more than 20 million US dollars\" in monthly revenue must display \"Kimi K3\". Section 4 exempts internal use. The grant itself carries no user or revenue exception.",
+                "accessed": "2026-10-11",
                 "http_status": 200,
-                "content_sha256": "038709cf2befa10d37a07f559d2dc018bbf8a5190eda4d092e51c5a6bb0727fe",
+                "content_sha256": "20c797ce19af0c17de52c6afb144644768a591c521655f5ebf5712c9850f2887",
                 "establishes": [
                   "license"
                 ]
@@ -2072,18 +2073,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-27",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-09-29",
-            "unconfirmed_axes": [
-              "openness"
-            ],
-            "verification_holds": [
-              {
-                "axis": "openness",
-                "since": "2026-09-29",
-                "reason": "The weights now ship under the Kimi K3 License (LICENSE replaced 2026-09-02), which requires a licensee running a model-as-a-service business with more than $20 million in revenue over twelve months to sign a separate agreement with Moonshot before commercial use. That reads as a use-bounded license, but the name is not yet listed in the pretrained ladder's license tiers, so the recorded license component cannot be corrected in a refresh. Settled by adding the license to the ladder (build-rubric) and then recording it; the score is 3 either way."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-11"
           }
         },
         {
@@ -2096,9 +2087,9 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(Apache-2.0 on HF, BF16 + NVFP4);data:closed(public+third-party+synthetic, not redistributed);code:partial(day-0 transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI for weights only)",
+            "components": "weights:open(Apache-2.0 on HF, BF16 + NVFP4);data:closed(public+third-party+synthetic, not redistributed);code:partial(day-0 transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI; the weights)+Thinking-Machines-Model-AUP(conduct restrictions binding anyone who downloads the weights; no user, revenue or commercial ceiling; Thinking Machines may revise it)",
             "confidence": "high",
-            "note": "Inkling's weights are released under Apache-2.0, but the training data and the full training pipeline are withheld, so it is an open-weights release rather than a fully open model. Press coverage often calls Inkling open source because of the license tag, but the data and training code needed to reproduce it are not public.",
+            "note": "Inkling's weights are released under Apache-2.0, but the training data and the full training pipeline are withheld, so it is an open-weights release rather than a fully open model. Downloading the weights also binds the user to Thinking Machines' Model Acceptable Use Policy, which restricts conduct such as weapons development and surveillance but sets no user, revenue or commercial ceiling, and which the company may revise. Press coverage often calls Inkling open source because of the license tag, but the data and training code needed to reproduce it are not public.",
             "last_verified": "2026-09-29",
             "sources": [
               {
@@ -2169,10 +2160,10 @@
               },
               {
                 "url": "https://thinkingmachines.ai/model-acceptable-use-policy/",
-                "shows": "Model Acceptable Use Policy stating \"By accessing, downloading, or using any Model Materials, you agree to be bound by this Model AUP\" with conduct restrictions (illegal activity, weapons, CSAM, surveillance); no user-count, revenue or commercial-use ceiling.",
-                "accessed": "2026-09-29",
+                "shows": "Model Acceptable Use Policy stating \"By accessing, downloading, or using any Model Materials, you agree to be bound by this Model AUP\" with conduct restrictions (illegal activity, weapons, CSAM, surveillance); no user-count, revenue or commercial-use ceiling. Dated \"Last updated July 15, 2026\", and \"Your continued use of the Model Materials after any update constitutes acceptance of the revised Model AUP\".",
+                "accessed": "2026-10-11",
                 "http_status": 200,
-                "content_sha256": "1e0960508ded3c9ac1312e2218648302b528fc6285264d310a4b56a205349201",
+                "content_sha256": "6f0d392271ed4b601e943f7d6b57cf7bd37053e972b7b99fe6af7abaafcfc024",
                 "establishes": [
                   "license"
                 ]
@@ -5419,10 +5410,10 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship);data:closed(no post-training data published; the cards name no datasets, and the Flash-Next technical report covers architecture, optimization and evaluation);code:partial(usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no post-training pipeline);license:Qwen-Community-License-1.0(Qwen3.8-Flash-Next; model-as-a-service and AI work assistant businesses need a separate license for any commercial use; the most restrictive distributed SKU of the governing release)+Qwen3.8-Max-License(Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required only above USD 50M annual revenue)+Apache-2.0(OSI; Qwen3.8-27B only)",
+            "components": "weights:open(ungated on the Hub: Qwen3.8-27B, Qwen3.8-Flash-Next and the Qwen3.8-2.4T-A95B flagship);data:closed(no post-training data published; the cards name no datasets, and the Flash-Next technical report covers architecture, optimization and evaluation);code:partial(usage and deployment instructions in QwenLM/Qwen3.8 and the model cards; no post-training pipeline);license:Qwen-Community-License-1.0(Qwen3.8-Flash-Next; model-as-a-service and AI work assistant businesses need a separate license for any commercial use, and products above 100M MAU or USD 20M monthly revenue must display the model name; the most restrictive distributed SKU of the governing release)+Qwen3.8-Max-License(Qwen3.8-2.4T-A95B, the flagship; the same terms, with the separate license required only above USD 50M annual revenue, and the same display requirement)+Apache-2.0(OSI; Qwen3.8-27B only)",
             "governing_release": "qwen-3-8",
             "confidence": "high",
-            "note": "Qwen 3.8 ships its dense 27B chat model under Apache-2.0 and its Flash-Next and flagship models under Qwen's own licenses, which require model-as-a-service and AI coding or office assistant businesses to get a separate license before commercial use. The post-training data is not released and only usage code is published.",
+            "note": "Qwen 3.8 ships its dense 27B chat model under Apache-2.0 and its Flash-Next and flagship models under Qwen's own licenses, which require model-as-a-service and AI coding or office assistant businesses to get a separate license before commercial use. Both licenses also require a product with more than 100 million monthly active users or $20 million in monthly revenue to display the model's name. The post-training data is not released and only usage code is published.",
             "last_verified": "2026-10-09",
             "sources": [
               {
@@ -5438,8 +5429,8 @@
               },
               {
                 "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/raw/main/LICENSE",
-                "shows": "Titled \"Qwen3.8-Max License\". A licensee that \"conducts a Model as a Service or AI Work Assistant business\" with aggregate revenue over \"US$50,000,000\" in twelve months must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", internal use excepted.",
-                "accessed": "2026-10-09",
+                "shows": "Titled \"Qwen3.8-Max License\". A licensee that \"conducts a Model as a Service or AI Work Assistant business\" with aggregate revenue over \"US$50,000,000\" in twelve months must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", internal use excepted. Clause 1 requires a commercial product with \"more than 100,000,000 monthly active users or US$ 20,000,000 (or equivalent in other currencies) monthly revenue\" to display the model name.",
+                "accessed": "2026-10-11",
                 "http_status": 200,
                 "content_sha256": "a136bc4137ef3d7a7a54963164a47270f73e497917728ea0f4407a0115db1290",
                 "establishes": [
@@ -5459,8 +5450,8 @@
               },
               {
                 "url": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/raw/main/LICENSE",
-                "shows": "Titled \"Qwen Community License 1.0\". Any licensee that \"conducts a Model as a Service or AI Work Assistant business\" must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", with no revenue floor; internal use is excepted.",
-                "accessed": "2026-10-09",
+                "shows": "Titled \"Qwen Community License 1.0\". Any licensee that \"conducts a Model as a Service or AI Work Assistant business\" must \"obtain a separate license from Qwen before Using the Software or its derivative works for any commercial purpose\", with no revenue floor; internal use is excepted. Clause 1 requires a commercial product with \"more than 100,000,000 monthly active users or US$ 20,000,000 (or equivalent in other currencies) monthly revenue\" to display the model name.",
+                "accessed": "2026-10-11",
                 "http_status": 200,
                 "content_sha256": "a0dc422560841fd68e06d974907f8b4c709bca44a67daad2b528437bdf676c08",
                 "establishes": [
@@ -91372,7 +91363,7 @@
           "org_slug": "google",
           "org": "Google",
           "type": "software",
-          "description": "Google's terminal coding agent, bringing Gemini models into the shell for coding, debugging and task automation. It ships built-in tools for Google Search grounding, file operations, shell commands and web fetch, and extends through MCP and GEMINI.md system-prompt files.",
+          "description": "Gemini CLI is Google's open-source terminal coding agent, bringing Gemini models into the shell for coding, debugging and task automation. It ships built-in tools for Google Search grounding, file operations, shell commands and web fetch, and extends through MCP and GEMINI.md system-prompt files. Since June 2026 it serves paid Gemini API keys and Gemini Code Assist Standard and Enterprise organizations, while free individual users and Google AI Pro and Ultra subscribers moved to its Antigravity CLI.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -91477,8 +91468,7 @@
                 "reason": "The record places Gemini CLI level with OpenHands, but no fresh source compares the two: the fetched pages list tools, MCP support and the GitHub Action, while OpenHands now runs Gemini CLI as one pluggable agent and publishes a benchmark lead. The relation needs re-judging against a source that compares them."
               }
             ]
-          },
-          "version_note": "A free tier runs on a personal Google account, with paid access through AI Studio or Vertex."
+          }
         },
         {
           "slug": "zed",
