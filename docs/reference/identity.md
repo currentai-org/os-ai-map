@@ -548,6 +548,13 @@ question is about institutions (`build/validate.py` refuses a country on one); a
 which has no single seat; and an org whose seat cannot be established from a primary page, where
 a guess is worse than a gap. A new org sets `country` when it is an institution.
 
+Because unset is sometimes right, neither the schema nor `build/validate.py` can tell a deliberate
+gap from a forgotten one. The ledgers can: a row with `country: null` or a low confidence records
+why a field stays unset. `tests/test_org_country.py` fails any `company`, `lab`, `foundation` or
+`government` org that has neither a `country` nor a row in a ledger under
+`docs/sweeps/*/countries/`. All three workflows that create an org (`add-product`,
+`promote-category`, `discover-candidates`) carry the step.
+
 ### Steward
 
 Set `steward` only when governance has moved away from the owner: a project donated to a

@@ -20,7 +20,7 @@ Four, and all in the same PR:
 1. `sources/products/<slug>.yaml` — the product record.
 2. `sources/scores/<slug>.yaml` — its three-axis score.
 3. `sources/categories/<cat>.yaml` — append the slug to the roster.
-4. `sources/organizations/<org>.yaml` — append the slug to the roster (create the org file if new; a new org that is an institution sets `country` to its ISO 3166-1 alpha-2 code, and an individual leaves it unset — see [`../reference/identity.md`](../reference/identity.md#country-steward-and-languages)).
+4. `sources/organizations/<org>.yaml` — append the slug to the roster (create the org file if new; a new org that is an institution sets `country` to its ISO 3166-1 alpha-2 code, and an individual leaves it unset; where no primary page states an institution's seat, add a `country: null` row with the reason to a `docs/sweeps/<sweep>/countries/` ledger, which `tests/test_org_country.py` checks — see [`../reference/identity.md`](../reference/identity.md#country-steward-and-languages)).
 
 **And `sources/org_handles.yaml`, whenever the org is new.** The handle-coverage ratchet in
 `build/identity_eval.py` counts orgs-with-a-handle over orgs-with-artifacts per platform, so a
