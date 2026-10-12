@@ -65,6 +65,17 @@ identity rule elsewhere in `safeguards`.
 - `mila` (Hugging Face `mila-ai4h`, `mila.quebec`)
 - `musubi-labs` (Hugging Face `musubilabs`, `musubilabs.ai`)
 
+**Seats (`country`), read 2026-10-12 from each org's own pages.** Per `docs/reference/identity.md`, a
+seat is set only from a primary page:
+
+- `novasky-ai` is `US`: the site's footer reads "Sky Computing Lab @ Berkeley", and a university lab takes
+  its university's country.
+- `prime-intellect` is `US`: its terms of service say "We are registered in Delaware, United States".
+- `nebius` is `NL`: its about page says "headquartered in Amsterdam".
+- `mila` is `CA`: the Quebec AI Institute, in Montreal.
+- `musubi-labs` and `open-tinker` stay unset. Musubi's terms choose New York law, which is not a seat,
+  and no OpenTinker page names one.
+
 Two existing orgs gain a handle: `xai` (GitHub `xai-org`) and `meta-superintelligence-labs`
 (Hugging Face `meta-models`).
 
