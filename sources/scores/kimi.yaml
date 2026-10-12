@@ -12,36 +12,43 @@ openness:
       value: partial
       detail: inference/deploy only; no training data or full pipeline
     license:
-    - name: Modified-MIT
-      detail: non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue threshold, plus a prominent-display
-        attribution requirement
+    - name: Kimi-K3-License
+      detail: non-OSI; a model-as-a-service business with over USD 20M revenue in any 12 months needs
+        a separate agreement before commercial use, and products above 100M MAU or USD 20M monthly revenue
+        must display "Kimi K3"
   governing_release: kimi-k3
   confidence: high
-  note: Kimi K3's weights are ungated on Hugging Face, but its Modified-MIT license excludes commercial
-    use above 100 million monthly active users or $20 million in monthly revenue and requires prominent
-    attribution, keeping it outside OSI. Only inference and deployment code is published and no training
-    corpus is released, so the family counts as open weights rather than open source.
+  note: Kimi K3's weights are ungated on Hugging Face under the Kimi K3 License, an MIT-style grant with
+    two conditions. A company running a model-as-a-service business with more than $20 million in revenue
+    over any 12 months must sign a separate agreement with Moonshot AI before commercial use, and a product
+    with more than 100 million monthly active users or $20 million in monthly revenue must display "Kimi
+    K3". Only inference and deployment code is published and no training corpus is released, so the family
+    counts as open weights rather than open source.
   raw: weights:open(shipped 2026-07-27, ungated, 96 safetensors shards);data:closed;code:partial(inference/deploy
-    only; no training data or full pipeline);license:Modified-MIT(non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue
-    threshold, plus a prominent-display attribution requirement)
+    only; no training data or full pipeline);license:Kimi-K3-License(non-OSI; a model-as-a-service business with over USD
+    20M revenue in any 12 months needs a separate agreement before commercial use, and products above 100M
+    MAU or USD 20M monthly revenue must display "Kimi K3")
+  last_verified: '2026-10-11'
   sources:
   - url: https://huggingface.co/api/models/moonshotai/Kimi-K3
     shows: '`"gated":false`, `"private":false`, `license:other` in the repo tags with a LICENSE file in the
       sibling list, and 96 model-000NN-of-000096.safetensors shards, so the K3 weights shipped and download
-      without a barrier. 1,871,575 downloads in the trailing 30 days; 10,621 likes. No corpus and no
-      training pipeline appear in the tree - only configuration, processor and encoding modules.'
-    accessed: '2026-08-14'
+      without a barrier. No corpus and no training pipeline appear in the tree - only configuration, processor
+      and encoding modules.'
+    accessed: '2026-10-11'
     http_status: 200
-    content_sha256: 1d124012b8f86b3db9194b9ab99f3d964e0e82904f23471e7b853f964f63b0bd
+    content_sha256: 25ea9eeac2d17a6a917ea1fea9135449f401b4111ade6d9ab0df23920a6bf7a7
     establishes: [weights, data, code]
-  - url: https://huggingface.co/moonshotai/Kimi-K3/blob/main/LICENSE
-    shows: 'K3''s own license file, read directly rather than assumed from K2.x. MIT text with the Modified-MIT
-      carve-out - the grant is excepted where the licensee''s commercial products or services have "more
-      than 100 million monthly active users, or more than 20 million US dollars (or equivalent in other
-      currencies)" - and a prominent-display attribution requirement.'
-    accessed: '2026-08-14'
+  - url: https://huggingface.co/moonshotai/Kimi-K3/raw/main/LICENSE
+    shows: 'Titled "Kimi K3 License". Section 2: a licensee that "operates a Model as a Service business",
+      with aggregate revenue that "exceeds 20 million US dollars" over "any consecutive 12 months", "must
+      enter into a separate agreement with Moonshot AI before using the Software or its derivative works
+      for any commercial purpose". Section 3: a commercial product with "more than 100 million monthly active
+      users" or "more than 20 million US dollars" in monthly revenue must display "Kimi K3". Section 4 exempts
+      internal use. The grant itself carries no user or revenue exception.'
+    accessed: '2026-10-11'
     http_status: 200
-    content_sha256: 038709cf2befa10d37a07f559d2dc018bbf8a5190eda4d092e51c5a6bb0727fe
+    content_sha256: 20c797ce19af0c17de52c6afb144644768a591c521655f5ebf5712c9850f2887
     establishes: [license]
   - url: https://www.kimi.com/blog/kimi-k3
     shows: primary announcement — 2.8T MoE, 1M context, native vision; API live; full weights by 2026-07-27
