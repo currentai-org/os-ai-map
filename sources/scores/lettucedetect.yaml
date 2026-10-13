@@ -1,0 +1,182 @@
+product: lettucedetect
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI, the code and the English and multilingual v1 detector weights
+    - name: Apache-2.0
+      detail: OSI, the v2 detector weights for code, tool output and prose
+    source:
+      value: public
+      detail: full Python implementation, training and evaluation scripts included
+    self-host:
+      value: 'yes'
+      detail: pip package and optional FastAPI server
+    core-gated:
+      value: ungated
+    context:
+      service:
+        value: none
+  confidence: high
+  note: LettuceDetect's code is MIT-licensed, and the detector models it loads from Hugging Face come from the same
+    team under MIT or Apache 2.0, so nothing in an ordinary setup carries a narrower license. The package installs
+    from PyPI and runs on your own hardware, web server included, and the repository also holds the scripts used
+    to train and evaluate the models. Only the optional LLM-based baseline calls an outside service.
+  raw: license:MIT(OSI, the code and the English and multilingual v1 detector weights)+Apache-2.0(OSI, the v2 detector
+    weights for code, tool output and prose);source:public(full Python implementation, training and evaluation scripts
+    included);self-host:yes(pip package and optional FastAPI server);service:none;core-gated:ungated
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/KRLabsOrg/LettuceDetect@main/LICENSE
+    shows: The LICENSE file at the head of KRLabsOrg/LettuceDetect is the MIT License text, "Copyright (c) 2025
+      KR Labs", granting permission "to deal in the Software without restriction".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: c19341bdd059245b994d6984da1a24d40a52535e7bb1c93d4a2829d66c272e68
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/KRLabsOrg/LettuceDetect@main/README.md
+    shows: 'The README lists "MIT-licensed models & code" among its features, installs with "pip install lettucedetect
+      -U", loads detectors from Hugging Face by model path, documents training with "scripts/train.py" and evaluation
+      with "scripts/evaluate.py", and starts its own web API with "scripts/start_api.py". The LLM baselines need
+      an OpenAI API key. Searched the body for enterprise, pricing, commercial, paid, hosted and license key: none.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: d1d7e9881e36a7fc450e4a401635ac7dd693de98a2a20dd4fbf1ad7743c7fc06
+    establishes:
+    - source
+    - self-host
+    - core-gated
+    - license
+  - url: https://pypi.org/pypi/lettucedetect/json
+    shows: 'The PyPI JSON for lettucedetect (version 0.2.3) records license "MIT" and the classifier "License ::
+      OSI Approved :: MIT License", gives "https://github.com/krlabsorg/lettucedetect" as its homepage, and lists
+      an optional "api" extra that pulls in fastapi.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 9e7f67ae3001d04fde63059f975aa699cb18c629962e5eaa42fc81aaeaf3c851
+    establishes:
+    - license
+    - source
+    - self-host
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-base-modernbert-en-v1
+    shows: The Hugging Face API record for KRLabsOrg/lettucedect-base-modernbert-en-v1, the default model of the
+      web API, carries the tag "license:mit", reports gated as false and lists "model.safetensors" among its files.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 8878ddf8acb22c88645da6f5b74dd6651d9b2d7de9e8d5aac8ccee727ba3af2e
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-mmbert-base
+    shows: The Hugging Face API record for KRLabsOrg/lettucedect-v2-mmbert-base carries the tag "license:apache-2.0",
+      reports gated as false, lists "model.safetensors", and was created on 2026-06-22.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 78933ca5151cf67974340e2b5d8c62891f28cd31103e8c30042dac95ed325d3f
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-qwen-2b
+    shows: The Hugging Face API record for KRLabsOrg/lettucedect-v2-qwen-2b carries the tags "license:apache-2.0"
+      and "base_model:finetune:Qwen/Qwen3.5-2B", reports gated as false and lists a safetensors weight file.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 553ab525a0faaaa9e3ebe6ddfb85118c90dc9f6fe97ebe9f7fcc20c316a603cd
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the sum of PyPI downloads of the lettucedetect package and Hugging Face downloads of its four
+    main detector models, since most uses of the package load one of those models. The models can also be loaded
+    without the package, so part of their downloads may come from people using them directly.
+  sources:
+  - url: https://pypistats.org/api/packages/lettucedetect/recent
+    shows: last_month 2,798 for the lettucedetect package
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 1c5f66f25b32136e0f342404ec333bc7b096519ae929dd80aec14163b4d24347
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-base-modernbert-en-v1
+    shows: 13,824 downloads in the trailing 30 days for KRLabsOrg/lettucedect-base-modernbert-en-v1
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 8878ddf8acb22c88645da6f5b74dd6651d9b2d7de9e8d5aac8ccee727ba3af2e
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-mmbert-base
+    shows: 8,532 downloads in the trailing 30 days for KRLabsOrg/lettucedect-v2-mmbert-base
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 78933ca5151cf67974340e2b5d8c62891f28cd31103e8c30042dac95ed325d3f
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-large-modernbert-en-v1
+    shows: 4,612 downloads in the trailing 30 days for KRLabsOrg/lettucedect-large-modernbert-en-v1
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 70bf792a848093ad2c4d6ece72d583b3b2a39934229c0e3a831a6abca9938a62
+  - url: https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-qwen-2b
+    shows: 973 downloads in the trailing 30 days for KRLabsOrg/lettucedect-v2-qwen-2b
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 553ab525a0faaaa9e3ebe6ddfb85118c90dc9f6fe97ebe9f7fcc20c316a603cd
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: groundedness span detection
+  value: 'Span-level groundedness checking for retrieval-augmented, coding-agent and tool-grounded answers: encoder
+    token classifiers built on ModernBERT, EuroBERT and mmBERT, plus a 2B generative detector that tags each unsupported
+    span with one of 3 categories and 13 subcategories. Covers seven languages in its multilingual models, with
+    a Python API and a FastAPI web server. Its own reports give 79.22% example-level F1 on RAGTruth for the original
+    model and 0.689 span-F1 on the unified v2 test set for the 2B model.'
+  relative_to: granite-guardian
+  relation: one_below
+  confidence: medium
+  note: 'LettuceDetect makes one of the checks Granite Guardian makes, deciding whether an answer is supported by
+    its sources, and goes further on that one check: where Granite Guardian answers yes or no, LettuceDetect marks
+    the exact unsupported passages, in code and tool output as well as prose. It does not screen for harmful content,
+    jailbreaks or risky function calls, which Granite Guardian also covers, so it sits a step below it.'
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://huggingface.co/ibm-granite/granite-guardian-4.1-8b/raw/main/README.md
+      shows: The peer's Granite Guardian 4.1 8B card still describes a model "designed to judge if the input prompts
+        and the output responses of an LLM-based system meet specified criteria", with pre-baked harm, RAG (including
+        groundedness) and function-calling criteria and user-supplied criteria, and says it is used "strictly for
+        the prescribed scoring mode, which generates yes/no outputs". The digest matches the one granite-guardian
+        records from 2026-09-29.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: b8d7ae89ebac9ce04dfb5389b04fb76a8659fe521b8ee5d4ec8126f7d871efa8
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/KRLabsOrg/LettuceDetect@main/README.md
+    shows: The README calls LettuceDetect "an open span-level grounding verifier for AI outputs" that "localizes
+      unsupported, contradictory, or fabricated parts of RAG answers, coding-agent responses, and tool-grounded
+      outputs", returning "exact character spans instead of only an answer-level clean/flagged verdict". It lists
+      7 languages for the multilingual models, a category and subcategory for each span in the v2 models, a web
+      API with a Python client, and 0.689 span-F1 for Qwen-2B on "the unified 10,698-example v2 test set".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: d1d7e9881e36a7fc450e4a401635ac7dd693de98a2a20dd4fbf1ad7743c7fc06
+  - url: https://arxiv.org/abs/2502.17125
+    shows: The arXiv abstract describes "a token-classification model that processes context-question-answer triples",
+      built on ModernBERT and trained on RAGTruth, reporting "an F1 score of 79.22% for example-level detection"
+      and "30 to 60 examples per second on a single GPU".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: db9fa8ce1c63cb58202d530684b21433a9cfbbd8689459d5f1f443c5d6e8fdf0
+  - url: https://arxiv.org/abs/2607.00895
+    shows: The arXiv abstract, submitted 1 July 2026, introduces a span-level hallucination benchmark over code,
+      tool output and documents, and reports that the fine-tuned Qwen3.5-2B detector "reaches 0.689 span-F1 on the
+      unified test set and 0.60 on the code-agent source".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 4d5f0383bd97474b757b312c619e67d21db2cd5e1da5449c9965189aced48d52
+  - url: https://huggingface.co/KRLabsOrg/lettucedect-v2-qwen-2b/raw/main/README.md
+    shows: The lettucedect-v2-qwen-2b card describes a generative detector that emits the unsupported spans of an
+      answer as JSON, each with a category and subcategory from a taxonomy of "3 categories (contradiction, fabricated_reference,
+      unsupported_addition) × 13 subcategories". On code-agent answers it reports off-the-shelf detectors including
+      Granite-Guardian as "all ≈ chance" on its own benchmark.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 3f60e99e813b79875eafdeae1676381fbfb8e4b2485defd5e2f5311ffb288363
