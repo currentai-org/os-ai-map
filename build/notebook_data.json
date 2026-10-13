@@ -10608,6 +10608,487 @@
             ]
           },
           "version_note": "Mistral serves this release through its API as mistral-medium-2604 (version 26.04)."
+        },
+        {
+          "slug": "sea-lion",
+          "product": "SEA-LION",
+          "org_slug": "ai-singapore",
+          "org": "AI Singapore",
+          "type": "model",
+          "description": "SEA-LION (Southeast Asian Languages In One Network) is AI Singapore's family of language models for Southeast Asia, funded by the National Research Foundation Singapore. The current release, SEA-LION v4.8, adapts NVIDIA's Nemotron 3 models to English and seven regional languages, from Burmese and Tamil to Thai and Vietnamese, through continued pretraining and post-training, in 30B and 120B mixture-of-experts sizes. Earlier v4 releases were built on Qwen3 32B and Gemma 3 27B.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(safetensors on HF for all four v4.8 checkpoints, ungated);data:partial(the supervised examples are a subset of the published aisingapore/SEA-Instruct-2602 (ODC-BY, automatic click-through); the online distillation trajectories are generated during training and not released);code:partial(usage code only; the post-training pipeline is described in the technical report, and neither the card nor the report links its code);license:MIT(OSI; declared on every v4.8 card and Hub record)+NVIDIA-Nemotron-Open-Model-License(the Nemotron 3 base model's license, carried in the repository's NOTICE.md; commercial use permitted, non-OSI)",
+            "governing_release": "sea-lion-v4-8",
+            "confidence": "medium",
+            "note": "SEA-LION v4.8, the current release, declares MIT on every checkpoint, but the models are built on NVIDIA's Nemotron 3 and ship with its Nemotron Open Model License, which allows commercial use without being an open-source license. Post-training drew on a published Southeast Asian instruction dataset, though only a subset of it, and the training pipeline is described rather than released. The Gemma-based v4 model, under Google's Gemma terms, belongs to an older release.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B",
+                "shows": "Hub record: \"private\": false, \"gated\": false, cardData license \"mit\", datasets [\"aisingapore/SEA-Instruct-2602\"], base_model aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B-Base; files include model-00001-of-00050.safetensors onward, NOTICE.md and NVIDIA-Nemotron-Open-Model-License-12-12-25.pdf.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "0530d64a5e34fe6045f0f6878db2f49d4aeb4de7296ba4f7cf120417bb895156",
+                "establishes": [
+                  "weights",
+                  "license",
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B/raw/main/NOTICE.md",
+                "shows": "Third-party notices. \"AI Singapore opensource models are under NTU-mandated MIT License\", followed by a \"Base Model License (nvidia-nemotron-open-model)\" section reproducing the NVIDIA Nemotron Open Model License of December 15, 2025: \"Works are commercially usable\", \"You are free to create and distribute Derivative Works\", and redistribution requires giving recipients \"a copy of this License\". It names no user or revenue ceiling.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "6419728721546d2d9beeee01ada88c0ae96dd1cb02d4061ca5e3f6785b78a7b8",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B/raw/main/README.md",
+                "shows": "Card: built on Nemotron-SEA-LION-v4.8-120B-A12B-Base \"by fine-tuning with a mixture of SFT and online on-policy distillation (OPD)\"; \"License: MIT\"; under Training Data, \"The training data is a subset of aisingapore/SEA-Instruct-2602\". The code on the card is a transformers usage example; no training code is linked.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "101102b64b29d20ca78a2ca69c22a631e70c13693fb19a553e939f29f301c088",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/collections/aisingapore/sea-lion-v48",
+                "shows": "The \"SEA-LION v4.8\" collection lists the 120B-A12B and 30B-A3B post-trained and base checkpoints with their FP8, NVFP4 and GGUF variants, every one ungated, and the technical report 2609.18310.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e73a7e696478f6b7639ca5bdc3549685cd1638326e8d9a0863d2ca4a9a1bf71f",
+                "establishes": [
+                  "weights"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=aisingapore&limit=200",
+                "shows": "AI Singapore's model listing. Every Nemotron-SEA-LION-v4.8 repository, created between 2026-09-03 and 2026-09-16, carries the tag license:mit. The Gemma-SEA-LION-v4-27B family, created in August 2025, carries license:gemma, and Qwen-SEA-LION-v4-32B-IT, created in October 2025, license:mit.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "840454074dcfc72aa66733604d0157db0d7e934ff24cc6583ceec0cd0d0dfa20",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/SEA-Instruct-2602",
+                "shows": "Dataset record: \"gated\": \"auto\", license \"odc-by\", parquet files per language. Its description calls it \"a preliminary release of instruction-tuning data\" that \"contains only the filtered subset of data\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2640a7f7745026337f077ce96c195d263cc7a70d080e22351bd9c581c75d7453",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/html/2609.18310",
+                "shows": "SEA-LION-v4.8 technical report. Offline supervised examples \"are a subset from our aisingapore/SEA-Instruct-2602 dataset\"; a second source of post-training data \"consists of trajectories generated dynamically by the model\". Section 4.2 describes a five-part post-training pipeline; searched the body for a code repository link and found none.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "136ca8d5509d0e5efec50cf9197a1ca38e0e2f1242b04b5886819d5d68aa431e",
+                "establishes": [
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/aisingapore/Gemma-SEA-LION-v4-27B-IT",
+                "shows": "Hub record for the v4 Gemma model: \"gated\": false, cardData license \"gemma\", base_model aisingapore/Gemma-SEA-LION-v4-27B, and new_version \"aisingapore/Qwen-SEA-LION-v4.5-27B-IT\", so a later release supersedes it.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e81ae80e396477185722f0b2384c3f9231e93e8f9bc7cc9fa7864a3d47d7fb68",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is counted as Hugging Face downloads summed across the three declared chat models: the current v4.8 120B model and the earlier v4 models built on Qwen3 and Gemma 3. AI Singapore publishes quantized and smaller checkpoints separately, and those are not counted.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B",
+                "shows": "\"downloads\":1592 over the trailing 30 days for aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "0530d64a5e34fe6045f0f6878db2f49d4aeb4de7296ba4f7cf120417bb895156"
+              },
+              {
+                "url": "https://huggingface.co/api/models/aisingapore/Gemma-SEA-LION-v4-27B-IT",
+                "shows": "\"downloads\":1066 over the trailing 30 days for aisingapore/Gemma-SEA-LION-v4-27B-IT.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e81ae80e396477185722f0b2384c3f9231e93e8f9bc7cc9fa7864a3d47d7fb68"
+              },
+              {
+                "url": "https://huggingface.co/api/models/aisingapore/Qwen-SEA-LION-v4-32B-IT",
+                "shows": "\"downloads\":833 over the trailing 30 days for aisingapore/Qwen-SEA-LION-v4-32B-IT.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "175c5d1548e19f4d99fb5f7d1c5c45a85fa044720a8e5a26511e1a2bb7581332"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "medium",
+            "note": "No general benchmark or arena reading of SEA-LION itself exists yet: Artificial Analysis does not list it, and a score read off its Nemotron base would describe a different model. Its own technical report measures it on SEA-HELM, the Southeast Asian benchmark suite, but no other model on the map has a SEA-HELM reading to place it against. It stays unrated until SEA-LION has a direct general reading or a same-benchmark comparison.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 12.83 for Nemotron 3 Super 120B A12B (Reasoning), 11.27 for Mistral Small 4 (Reasoning), 8.99 for Mistral Small 4 (Non-reasoning) and 8.44 for GPT-4o (Nov '24). No SEA-LION or Bielik model appears on the page. The digest drifts between fetches because the page carries live pricing and throughput figures.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "1e96e09d9dba9f70d99e88f28e32eef38c51660f089b92d3974b20d4234b9f13"
+              },
+              {
+                "url": "https://arxiv.org/abs/2609.18310",
+                "shows": "\"SEA-LION-v4.8: A Technical Report\", submitted 16 Sep 2026. Abstract: the family is \"built upon NVIDIA Nemotron 3\"; \"On SEA-HELM, the 30B-A3B model improves the overall SEA score from 46.06 to 51.57, while the 120B-A12B model improves from 49.30 to 63.44.\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "736ab95abb88e0131f269abe2489c3bebcacb1ce65aff7164de3d1d1bfa078bb"
+              }
+            ]
+          },
+          "overall_score": 1.0,
+          "tier": null,
+          "maturity": 1.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-13",
+                "reason": "Promoted from the registry on 2026-10-13. The level was read from hand-fetched download counts, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
+          "slug": "bielik",
+          "product": "Bielik",
+          "org_slug": "speakleash",
+          "org": "SpeakLeash Foundation",
+          "type": "model",
+          "description": "Bielik is an open language model for Polish from the SpeakLeash Foundation, developed with the support of the ACK Cyfronet AGH computing center. Bielik 11B v3 extends Mistral 7B v0.2 to 11 billion parameters by duplicating layers, continues pretraining on Polish, English and other European languages, and is then instruction-tuned, preference-trained and refined with reinforcement learning.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(safetensors on HF speakleash/Bielik-11B-v3.0-Instruct, behind an automatic click-through that asks for contact consent);post-training-data:described(SpeakLeash's own instruction corpus (20M instructions and dialogues) and a 114,000-example preference set, described in the paper, not released);code:closed(no training code released; the paper names the third-party VERL framework for the RL stage);license:Apache-2.0(OSI; every Bielik v3 checkpoint on the Hub)+Bielik-Terms-of-Use-1.1(non-OSI conduct terms on top of Apache-2.0: users must be 18 or older, and unlawful or harmful use and processing personal data are prohibited; no commercial limit)",
+            "governing_release": "bielik-v3",
+            "confidence": "high",
+            "note": "Bielik 11B v3 ships under Apache-2.0, an open-source license, after an automatic click-through on Hugging Face. SpeakLeash's terms of use add conduct rules, an age minimum of 18 and a ban on processing personal data among them, without limiting commercial use. The instruction and preference data are SpeakLeash's own, described in the paper but not released, and no training code is published.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/speakleash/Bielik-11B-v3.0-Instruct",
+                "shows": "Hub record: \"private\": false, \"gated\": \"auto\", cardData license \"apache-2.0\", base_model speakleash/Bielik-11B-v3-Base-20250730, extra_gated_fields asking only \"I agree to be contacted for feedback about Bielik models\"; files model-00001-of-00005.safetensors to model-00005-of-00005.safetensors. No dataset tag. The raw model card returns 401 without accepting the gate.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "421ec327f1fb6ae9c28a709524798b28287d0851d1a8009e0d6877aebc29c6ff",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=speakleash&limit=200",
+                "shows": "SpeakLeash's model listing: every Bielik v3 repository, from Bielik-1.5B-v3 through Bielik-11B-v3.0-Instruct and Bielik-Minitron-7B-v3.0-Instruct and their quantized copies, carries the tag license:apache-2.0.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "11e52c4d3596c8a26c9a7b828c4f1a4d678e190168368ebc76eb40a3a9e94c8c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://bielik.ai/en/terms/",
+                "shows": "Terms of Use, \"version 1.1 of 31 July 2025\", supplementary to the license: \"The Bielik 3.0 Model is made available under the Apache 2.0 licence\". \"Use of the Model is permitted only to persons who are at least 18 years of age\", and use for \"unlawful activities\", harmful content and \"processing any personal data\" is prohibited. It sets no commercial, user or revenue limit.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "f19f33ff019d75ad0179b6a504af5409de8243bd1d72e978645d4b517faa211f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/pdf/2601.11579",
+                "shows": "Bielik 11B v3 paper, section 4.1: \"we developed a proprietary dataset that undergoes continuous expansion and refinement by human annotators\"; SFT ran \"for 3 epochs on 20 million instructions and dialogues\"; the preference set was expanded \"to over 114, 000 examples\"; RL \"was performed using the Volcano Engine Reinforcement Learning (VERL) framework\". The paper links no dataset release and no training code.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "19c78052f44bb7cf55d409d8feaa792c80b2869e043677ef15ec3a2ecd29b62f",
+                "establishes": [
+                  "post-training-data",
+                  "code"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured by Hugging Face downloads of the full-precision instruct model. SpeakLeash also publishes quantized AWQ and GGUF copies, which are not declared and so are not counted here.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/speakleash/Bielik-11B-v3.0-Instruct",
+                "shows": "\"downloads\":5515 over the trailing 30 days for speakleash/Bielik-11B-v3.0-Instruct.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "421ec327f1fb6ae9c28a709524798b28287d0851d1a8009e0d6877aebc29c6ff"
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=speakleash&limit=200",
+                "shows": "Trailing-30-day downloads in SpeakLeash's listing: 9,018 for Bielik-11B-v3.0-Instruct-awq and 8,199 for Bielik-11B-v3.0-Instruct-GGUF, against 5,515 for the full-precision Bielik-11B-v3.0-Instruct.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "11e52c4d3596c8a26c9a7b828c4f1a4d678e190168368ebc76eb40a3a9e94c8c"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark",
+            "basis_detail": "Open LLM Leaderboard suite (paper benchmark table)",
+            "value": "Bielik-11B-v3.0-Instruct averages 72.45 on the Open LLM Leaderboard tasks in its paper, with MMLU 71.11 and GSM8K 85.60; the same table gives Mistral-7B-Instruct-v0.2 65.71, MMLU 60.78 and GSM8K 40.03, and Meta-Llama-3-8B-Instruct 66.87. On the Open PL LLM Leaderboard it scores 65.93.",
+            "relative_to": "mistral-7b-instruct",
+            "relation": "one_above",
+            "confidence": "medium",
+            "note": "Bielik is not listed on Artificial Analysis, so this reading comes from the paper's own English benchmark table. There it clearly outperforms Mistral 7B Instruct v0.2, a tune of the same base it was scaled up from, most of all in math, and Llama 3 8B Instruct. In Polish it scores close to open models several times its size.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://mistral.ai/news/la-plateforme",
+                  "shows": "La Plateforme launch post: the mistral-tiny endpoint \"serves Mistral 7B Instruct v0.2, a new minor release of Mistral 7B Instruct\" and \"obtains 7.6 on MT-Bench\", the figure the peer records.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "66e8b1cb7441fc006ca9ff4fa365c891d0766730debfe0f74e8b825cca98238a"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://arxiv.org/pdf/2601.11579",
+                "shows": "Table 11, \"Open LLM Leaderboard results for selected instruction-tuned models\": Bielik-11B-v3.0-Instruct AVG 72.45, MMLU 71.11, GSM8K 85.60; Meta-Llama-3-8B-Instruct 66.87; Mistral-7B-Instruct-v0.2 65.71, MMLU 60.78, GSM8K 40.03. Table 5, Open PL LLM Leaderboard for instruction-tuned models: Bielik-11B-v3.0-Instruct 65.93, below Llama-3.3-70B-Instruct at 66.40 and above Qwen2-72B-Instruct at 65.87.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "19c78052f44bb7cf55d409d8feaa792c80b2869e043677ef15ec3a2ecd29b62f"
+              },
+              {
+                "url": "https://arxiv.org/abs/2601.11579",
+                "shows": "\"Bielik 11B v3: Multilingual Large Language Model for European Languages\", submitted 30 Dec 2025. The model \"extends the Mistral 7B v0.2 architecture, scaled to 11B parameters via depth up-scaling\", trained in four stages: \"continuous pre-training, supervised fine-tuning (SFT), Direct Preference Optimization (DPO), and reinforcement learning\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "18643e451188e9df6c19cf75c7a9605b27af19753276009d1c91c873f1cae507"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 12.83 for Nemotron 3 Super 120B A12B (Reasoning), 11.27 for Mistral Small 4 (Reasoning), 8.99 for Mistral Small 4 (Non-reasoning) and 8.44 for GPT-4o (Nov '24). No SEA-LION or Bielik model appears on the page. The digest drifts between fetches because the page carries live pricing and throughput figures.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "1e96e09d9dba9f70d99e88f28e32eef38c51660f089b92d3974b20d4234b9f13"
+              }
+            ]
+          },
+          "overall_score": 2.4,
+          "tier": null,
+          "maturity": 2.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-13",
+                "reason": "Promoted from the registry on 2026-10-13. The level was read from hand-fetched download counts, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
+          "slug": "mistral-small",
+          "product": "Mistral Small",
+          "org_slug": "mistral-ai",
+          "org": "Mistral AI",
+          "type": "model",
+          "description": "Mistral Small is a line of open-weight models from Mistral AI. Mistral Small 4 is a 119-billion-parameter mixture of experts with about 6.5 billion parameters active per token. It merges Mistral's instruct, reasoning (previously Magistral) and Devstral coding models into one, with reasoning switched on per request, image input and a 256k-token context window.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(safetensors on HF mistralai/Mistral-Small-4-119B-2603, ungated; NVFP4 and eagle checkpoints also Apache-2.0);data:closed;code:partial(inference and serving only; fine-tuning is pointed to third-party Axolotl);license:Apache-2.0(OSI)",
+            "governing_release": "mistral-small-4",
+            "confidence": "high",
+            "note": "Mistral Small 4's weights are downloadable without a gate under Apache-2.0, an open-source license, but Mistral publishes neither the training data nor the training code. That makes it an open-weights release with a closed recipe.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Mistral-Small-4-119B-2603",
+                "shows": "Hub record: \"private\": false, \"gated\": false, cardData license \"apache-2.0\"; files include consolidated-00001-of-00007.safetensors to consolidated-00007-of-00007.safetensors and model-00001-of-00003.safetensors to model-00003-of-00003.safetensors. No dataset tag, and no LICENSE file in the repository.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "57f796c8c1865cff0983aecc21aba0bf439c2ef937de3f026f3927a2405a5436",
+                "establishes": [
+                  "weights",
+                  "license",
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/mistralai/Mistral-Small-4-119B-2603/raw/main/README.md",
+                "shows": "Card front matter \"license: apache-2.0\"; \"Apache 2.0 License: Open-source license for both commercial and non-commercial use\"; \"This model is licensed under the Apache 2.0 License\". Code covers inference through vLLM, llama.cpp, SGLang and transformers, and fine-tuning points to Axolotl. Searched the body for dataset, training data and corpus: none.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "243f9d4f6cdb5644ca93d34d2e002822cb946803a6a7e3aed39b56d6ceeb1996",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=mistralai&search=Mistral-Small-4&full=true",
+                "shows": "Mistral's Hub listing for Mistral Small 4: Mistral-Small-4-119B-2603, Mistral-Small-4-119B-2603-NVFP4 and Mistral-Small-4-119B-2603-eagle, each ungated and tagged license:apache-2.0.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2be8a2875d54ad5159fe135ea5b3e9f1193c18f741b55ba912565f3e9f5710b9",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://docs.mistral.ai/models/mistral-small-4-0-26-03",
+                "shows": "Mistral's model page: \"March 16, 2026\", \"Apache 2.0\", \"v 26.03\", \"Mistral Small 4\", \"Our powerful hybrid model unifying instruct, reasoning, and coding capabilities in a single model\", API identifier \"mistral-small-2603\", context 256k, priced at $0.15 per million input tokens and $0.6 per million output tokens.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2c654256bf610a1e9724668d488d2eb22eace64261e774d2a37e85373e87155b",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured by Hugging Face downloads of the main checkpoint Mistral publishes. Mistral also serves the model through its API, which publishes no usage figure, so the count covers the open weights alone.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Mistral-Small-4-119B-2603",
+                "shows": "\"downloads\":77411 over the trailing 30 days for mistralai/Mistral-Small-4-119B-2603.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "57f796c8c1865cff0983aecc21aba0bf439c2ef937de3f026f3927a2405a5436"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark",
+            "basis_detail": "Artificial Analysis Intelligence Index",
+            "value": "Mistral Small 4 (Reasoning) scores 11 on the Artificial Analysis Intelligence Index against a median of 8 for comparable models, ranked #12 of 65 in that group; with reasoning off it scores 9. Mistral Medium 3.5 scores 14 and GPT-4o (Nov '24) 8.",
+            "relative_to": "mistral-medium",
+            "relation": "at",
+            "confidence": "high",
+            "note": "With reasoning on, Mistral Small 4 sits a little below Mistral Medium 3.5 on the Artificial Analysis index and above GPT-4o, far from the frontier but strong for its active size, so it scores level with Mistral Medium.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://artificialanalysis.ai/models/mistral-medium-3-5",
+                  "shows": "\"Mistral Medium 3.5 scores 14 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 8)\"; Intelligence rank \"# 6 / 65\". The score the peer records is unchanged; the digest drifts because the page carries live pricing.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "1ca0b622ab2aa16c21b81d7fe03039fada21148fca934e23656c7f9dcfc1b5ff"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://artificialanalysis.ai/models/mistral-small-4",
+                "shows": "\"Mistral Small 4 (Reasoning) scores 11 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 8)\"; Intelligence rank \"# 12 / 65\"; tagged \"Open weights model\" and \"Released March 2026\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "edc61963ffc605832884a711127a6a709b56212dcd71aaff6da5fcf0efa063ba"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/mistral-small-4-non-reasoning",
+                "shows": "\"Mistral Small 4 (Non-reasoning) scores 9 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 7)\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "425fc2895bd06f929079f77e610e49d90dd4d422c147716e70e5fd03478f3434"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 12.83 for Nemotron 3 Super 120B A12B (Reasoning), 11.27 for Mistral Small 4 (Reasoning), 8.99 for Mistral Small 4 (Non-reasoning) and 8.44 for GPT-4o (Nov '24). No SEA-LION or Bielik model appears on the page. The digest drifts between fetches because the page carries live pricing and throughput figures.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "1e96e09d9dba9f70d99e88f28e32eef38c51660f089b92d3974b20d4234b9f13"
+              },
+              {
+                "url": "https://docs.mistral.ai/models/mistral-small-4-0-26-03",
+                "shows": "Mistral's model page: \"March 16, 2026\", \"Apache 2.0\", \"v 26.03\", \"Mistral Small 4\", \"Our powerful hybrid model unifying instruct, reasoning, and coding capabilities in a single model\", API identifier \"mistral-small-2603\", context 256k, priced at $0.15 per million input tokens and $0.6 per million output tokens.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2c654256bf610a1e9724668d488d2eb22eace64261e774d2a37e85373e87155b"
+              }
+            ]
+          },
+          "overall_score": 2.7,
+          "tier": null,
+          "maturity": 2.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-13",
+                "reason": "Promoted from the registry on 2026-10-13. The level was read from hand-fetched download counts, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Mistral serves this release through its API as mistral-small-2603 (version 26.03)."
         }
       ]
     },
@@ -76676,6 +77157,563 @@
             "latest_axis_confirmation": "2026-10-07"
           },
           "version_note": "Default branch is public-main. README is Chinese-primary with an English copy under docs/en/."
+        },
+        {
+          "slug": "mistral-studio",
+          "product": "Mistral Studio",
+          "org_slug": "mistral-ai",
+          "org": "Mistral AI",
+          "type": "software",
+          "description": "Mistral Studio, formerly La Plateforme, is Mistral AI's platform for running its models through an API. The API reference covers chat completion, fill-in-the-middle code completion, embeddings, classifiers, OCR, speech transcription and synthesis, and batch jobs, alongside endpoints for agents, workflows and observability. Beyond the hosted API, Mistral sells hybrid, dedicated and self-hosted deployments of the platform.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "engine:proprietary;source:closed;access:managed-cloud-API(hybrid, dedicated and self-hosted deployments sold commercially);license:Proprietary",
+            "confidence": "high",
+            "note": "Mistral sells Studio as a hosted API and as hybrid, dedicated or self-hosted deployments, and none of them comes with published source for the platform. Its commercial terms grant only a limited, non-sublicensable license to use the products and forbid any attempt to discover their source code.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://mistral.ai/products/studio",
+                "shows": "The Studio page, which mistral.ai/products/la-plateforme now redirects to, offers \"Hybrid\", \"Dedicated\" and \"Self-hosted\" deployment (\"Retain full control over infrastructure and data residency\") and a \"Developer toolkit\" of \"APIs, SDKs, code samples\"; its only GitHub link is mistralai/cookbook, and no source for the platform itself is linked.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "57940700c6cc49a0262a613378266dd1cdfe23292359b4ac2155318bb9ca5dd3"
+              },
+              {
+                "url": "https://legal.mistral.ai/terms/commercial-terms-of-service",
+                "shows": "The commercial terms grant \"a limited, non-exclusive, non-transferrable ... non-sublicensable (except to its End Users) license to access and use the Mistral AI Products\" and bar customers from attempting \"to reverse engineer, decompile, or otherwise attempt to discover the source code or underlying components (e.g., algorithms, weights, or systems) of the Mistral AI Products\".",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "license",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "329171653dcd00befe40355a6978785066f226187a97beea3b7a80fe5f3d8f8f"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "banded_quantity": "third-party routed token volume via OpenRouter (~119B tokens on 2026-10-12) and named enterprise customers, not a user count",
+            "note": "OpenRouter's provider page charts heavy daily traffic routed to Mistral's API, and Mistral names enterprise customers such as HSBC, ASML, CMA CGM and Stellantis. Neither is a count of the API's own users, and much of the OpenRouter traffic is for GLM models that Mistral also serves.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://openrouter.ai/provider/mistral",
+                "shows": "OpenRouter's Mistral provider page states \"Access 24 models served by Mistral through the OpenRouter unified API\" and charts \"Tokens processed on OpenRouter\"; the embedded daily series for 2026-10-12 sums to about 119B tokens, led by mistralai/mistral-large-4-0-20261006 at about 58.4B and z-ai/glm-5.3-20260816 at about 50.7B.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "fd00aa303b69838a07194b8282bc0e7ebd169133f25e82a22214c72d2547c52b"
+              },
+              {
+                "url": "https://mistral.ai/customers",
+                "shows": "The customer stories page (\"Bringing customers to the frontier\") lists stories for HSBC, ASML, CMA CGM, AXA, Airbus, BMW, Cisco, Ericsson, the European Patent Office, Stellantis and TotalEnergies, among others; none gives a usage figure, and the stories cover Mistral's products generally rather than the API alone.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "4b51c9094b8d02a0d5d0c05ebfcfedee578f4f36716681445e155270dd2be635"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "API reference coverage, with Artificial Analysis's independent provider measurements; placed against fireworks-inference",
+            "value": "The API reference lists chat completion, FIM, embeddings, classifiers, files, models, batch, OCR, audio transcription, audio speech and realtime sessions, plus workflows, agents, conversations, libraries and observability endpoints. Artificial Analysis tracks 8 models on Mistral's API; the fastest are GLM-5.2 (max) at 223 output tokens/sec, Ministral 3 3B at 215 t/s and Mistral Medium 3.5 at 163 t/s.",
+            "relative_to": "fireworks-inference",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Mistral's API covers more kinds of work than most hosted inference services, from chat and code completion to OCR, speech and batch jobs, and it is the first-party source for Mistral's own models. Its fastest models run slower than the fastest Fireworks serves, so it sits alongside Fireworks rather than above it.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://artificialanalysis.ai/providers/fireworks",
+                  "shows": "The Fireworks provider page says \"Fireworks offers 7 models\" and \"For output speed, the fastest models are Nemotron 3.5 Lightning (BF16) (419 t/s), GLM-5.3-Flash (188 t/s), and MiniMax-M3 (181 t/s)\", and lists context windows of up to 1M tokens for Kimi K3 (max) and GLM-5.3-Flash.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "9b9e203e27506c9620438013da0a5e485fc37a4a756bbf6782117d2a14f6b22d"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://docs.mistral.ai/api",
+                "shows": "The API reference navigation lists \"Chat Completion\", \"Fim\", \"Embeddings\", \"Classifiers\", \"Files\", \"Models\", \"Batch\", \"Ocr\", \"Audio Transcriptions\", \"Audio Speech\", \"Realtime Sessions\" and \"Workflows\" endpoints, with beta Agents, Conversations, Libraries, Connectors and Observability groups; the chat endpoint is POST /v1/chat/completions.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "4e95b80bc8f5b38318a89c3f6de2a228a3883f0473fa73d108db23619214d562"
+              },
+              {
+                "url": "https://artificialanalysis.ai/providers/mistral",
+                "shows": "The provider page says \"Mistral offers 8 models\" and \"For output speed, the fastest models are GLM-5.2 (max) (223 t/s), Ministral 3 3B (215 t/s), and Mistral Medium 3.5 (163 t/s).\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "41598f68e4ccd0291b25a875ff34fd74b714e3530e07a40cb73d60427526259d"
+              }
+            ]
+          },
+          "overall_score": 4.0,
+          "tier": "strong",
+          "maturity": 4.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          },
+          "version_note": "The ratings cover the model API. Studio's agent-building, workflow and evaluation tools sit on top of it and are not assessed here."
+        },
+        {
+          "slug": "hugging-face-inference-providers",
+          "product": "Hugging Face Inference Providers",
+          "org_slug": "hugging-face",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Hugging Face Inference Providers routes requests for models on the Hugging Face Hub to partner inference services, among them Cerebras, Groq, Fireworks, Together and Scaleway, through one API and one Hugging Face token. A router at router.huggingface.co exposes an OpenAI-compatible chat endpoint, and requests can name a provider or let the router choose one by speed or by price. Hugging Face bills provider rates with no markup.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "source:closed;access:managed-cloud-API-only(routes to third-party providers);client:MIT(@huggingface/inference);license:Proprietary",
+            "confidence": "medium",
+            "note": "Hugging Face publishes its client libraries, and the JavaScript client is MIT-licensed, but the router and its billing run only as a Hugging Face service. The terms of service treat Inference Providers as a limited right of access and use, not software you can run yourself.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/docs/inference-providers/index",
+                "shows": "The docs describe a hosted service reached with a Hugging Face token at https://router.huggingface.co/v1, which selects among partner providers; the page links no repository for the router, only github.com/huggingface and the hub-docs repository.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "5998508e52d22548589d34528670b10309180471d6ad67ef61f7090fbf72acce"
+              },
+              {
+                "url": "https://huggingface.co/terms-of-service",
+                "shows": "The terms say Services \"may include limited licenses or subscriptions to access or use certain offerings ... including ... the Inference Providers\" and that purchases \"mean a limited right to access and use a Service (not a transfer or any ownership right, title, or interest)\".",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "291efb1a5ebdd4c49f75c03402076fae920ec5d4c49248099a9be8250f066ab1"
+              },
+              {
+                "url": "https://registry.npmjs.org/@huggingface/inference/latest",
+                "shows": "The npm registry metadata for @huggingface/inference 4.13.32 gives license \"MIT\", repository huggingface/huggingface.js and the description \"Typescript client for the Hugging Face Inference Providers and Inference Endpoints\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "ca2f6833298a503b19c8098933792124b07b7d1b224c8867938ba4fdd3d239fa"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Hugging Face publishes no request, token or user count for Inference Providers. Its JavaScript client also serves Inference Endpoints and its Python client the whole Hub, so their downloads cannot be credited to the router alone.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/docs/inference-providers/pricing",
+                "shows": "The pricing page, read for a usage disclosure, describes pay-as-you-go billing, monthly credits for PRO, Team and Enterprise accounts and \"no markup from Hugging Face\"; it gives no request, token or user figure.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "6d68a3f408ec7eb55d196545a24fc074cbdf5509a47b808d8620432eca062dce"
+              },
+              {
+                "url": "https://registry.npmjs.org/@huggingface/inference/latest",
+                "shows": "The npm package describes itself as the \"Typescript client for the Hugging Face Inference Providers and Inference Endpoints\", so its installs span two services.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "ca2f6833298a503b19c8098933792124b07b7d1b224c8867938ba4fdd3d239fa"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "documented provider coverage, task support and routing policies; placed against fireworks-inference, one of the providers it routes to",
+            "value": "Routes Hub models to 18 providers: Baseten, Cerebras, Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks, Groq, HF Inference, Novita, Nscale, OVHcloud AI Endpoints, Public AI, Replicate, Scaleway, Together, WaveSpeedAI and Z.ai. Tasks span chat completion (LLM and VLM), feature extraction, text-to-image, text-to-video and speech-to-text. Requests pick the fastest provider by default, or the cheapest or a named one by model-id suffix, through an OpenAI-compatible endpoint.",
+            "relative_to": "fireworks-inference",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Inference Providers runs no models itself, but it reaches the fastest specialist hosts, Fireworks among them, and can choose between them on each request by speed or price. What it can do is roughly what those providers can, so it sits alongside Fireworks rather than above the services it depends on.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://artificialanalysis.ai/providers/fireworks",
+                  "shows": "The Fireworks provider page says \"Fireworks offers 7 models\" and \"For output speed, the fastest models are Nemotron 3.5 Lightning (BF16) (419 t/s), GLM-5.3-Flash (188 t/s), and MiniMax-M3 (181 t/s)\", and lists context windows of up to 1M tokens for Kimi K3 (max) and GLM-5.3-Flash.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "9b9e203e27506c9620438013da0a5e485fc37a4a756bbf6782117d2a14f6b22d"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/docs/inference-providers/index",
+                "shows": "The provider table lists Baseten, Cerebras, Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks, Groq, HF Inference, Novita, Nscale, OVHcloud AI Endpoints, Public AI, Replicate, Scaleway, Together, WaveSpeedAI and Z.ai across chat completion (LLM, VLM), feature extraction, text to image, text to video and speech to text; \"By default, our system automatically selects the fastest available provider\", with \":cheapest\" or a provider name such as \"openai/gpt-oss-120b:groq\" as alternatives, and the page calls it a \"Drop-in replacement for the OpenAI chat completions API\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "5998508e52d22548589d34528670b10309180471d6ad67ef61f7090fbf72acce"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "public-ai-inference-utility",
+          "product": "Public AI Inference Utility",
+          "org_slug": "public-ai",
+          "org": "Public AI Inference Utility",
+          "type": "software",
+          "description": "The Public AI Inference Utility is a nonprofit hosted inference service that gives developers an OpenAI-compatible API to open models from public institutions, among them Switzerland's Apertus, AI Singapore's SEA-LION and Poland's Bielik. A gateway routes each request to vLLM servers running on compute donated by partners such as AWS, Exoscale and the Jülich Supercomputing Centre. The same models are offered through Hugging Face as an inference provider, and the developer portal and gateway code are published under the MIT license.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:MIT(developer portal and API gateway code);source:partial(the published repository is the developer portal and gateway, which forwards requests to an internal endpoint; the model-serving deployments behind it run on partner clusters and are not in the repository);access:hosted OpenAI-compatible API(api.publicai.co);engine:vLLM(on partner-donated clusters)",
+            "confidence": "medium",
+            "note": "Public AI publishes the front door: an MIT-licensed developer portal and gateway that handles sign-up, API keys, billing and rate limits, then passes each request to an internal endpoint. The model servers and the routing across partner clusters behind that endpoint are not in the repository, so the published code cannot stand the service up on its own.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/LICENSE",
+                "shows": "The repository LICENSE is the MIT text: \"MIT License\" and \"Copyright (c) 2025 Public AI Inference Utility\", with no added terms.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "90b11707e25dbefe3ee4321188d80d438a4c2412f999aa84afd7f3235f72cfb5"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/README.md",
+                "shows": "The README calls the repository \"The developer portal and API gateway for the Public AI Inference Utility\", for creating API keys, viewing documentation and monitoring usage and billing, built on Zuplo and deployed with \"A Zuplo account for deployment\"; its License section names MIT.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source",
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "104a212e44a5443326b47fc65149b78cbabe87759a5b378daf974b648f5b950c"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/",
+                "shows": "The repository tree at its head holds config, docs and modules folders plus LICENSE, package.json, README.md and zuplo.jsonc; the modules are gateway handlers for API keys, billing, wallets, pricing, rate limits and request headers, and no model-serving code.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "a4ef4d57c597be921818de3809f6b655ab5296ebda9058b7c9ec4341b6ee8564"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/config/routes.oas.json",
+                "shows": "The gateway's route file forwards requests with Zuplo's urlForwardHandler to the base URL \"https://api-internal.publicai.co\" and rewrites chat and completion calls to that internal host, whose implementation is not in the repository.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "8c2c02183422602df6b64c718e30823f18db0f9a2f62453755bcf43aa43b444e"
+              },
+              {
+                "url": "https://publicai.co/stories/utility",
+                "shows": "The launch post says inference \"is handled by servers running OpenAI-compatible APIs on vLLM\", deployed across clusters donated by national and industry partners, behind \"A global load-balancing layer\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "22a9346580eeb10e95785a0426dc9e71025cce44ecf4bdeadd5640da6be14599"
+              },
+              {
+                "url": "https://publicai.co/about",
+                "shows": "The about page says \"The Public AI Inference Utility is a nonprofit, open-source project\" fiscally sponsored by Metagov.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "97a8dfaad862f172e1409469b2952276571f80da0b4ae05d4c354e4a5cdfbf2c"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Public AI publishes no request, token or user count. What it does report is standing: it is a listed inference provider on Hugging Face, the official international deployer of the Swiss Apertus models, and the host for national models such as Spain's ALIA and EuroLLM, which places it as real but specialist infrastructure for public-sector models.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://huggingface.co/docs/inference-providers/providers/publicai",
+                "shows": "Hugging Face's Inference Providers documentation has a PublicAI page for chat completion, reading \"All models supported by the PublicAI Inference Utility can be found here\", with an example calling speakleash/Bielik-11B-v3.0-Instruct through the Hugging Face router.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "aa1fece63cbffd4ab0f7e8d96f2146d4f9d3bcd0e773536fff50a877ec6aaeeb"
+              },
+              {
+                "url": "https://publicai.co/stories/huggingface",
+                "shows": "A September 16, 2025 post announces that the Utility \"is now an official inference provider on Hugging Face\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "123593f5c83a285093f5dbd30a188fa305ae04ee7aa39ba3e6028d34f01b5b72"
+              },
+              {
+                "url": "https://publicai.co/stories/apertus-1-5",
+                "shows": "A July 24, 2026 post says \"Public AI is proud to be the official international deployer for Apertus\" and that Apertus 1.5 is live on its chat app, developer platform and Hugging Face.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "77868f47833281274ba2484148931eddee509c4bcb01e04baf16e8412645d773"
+              },
+              {
+                "url": "https://publicai.co/stories/amazon-intel",
+                "shows": "A June 16, 2026 post says that after launch \"Traffic ramped faster than expected\" and that Intel-backed clusters have hosted EuroLLM, \"Spain's ALIA models\" and Apertus 8B; it gives a concurrency target of about 2,500 users but no measured usage figure.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "d36f6c99220f35cfce0c24e93abdb6a261c6969e8a9d543710e422e9d3f82e40"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "hosted catalog and serving features read from the service's developer documentation",
+            "value": "OpenAI-compatible chat and completions API over a catalog of nine models (Apertus 1.5 8B and 70B with 262K context, SEA-LION v4 27B and 32B, Bielik 11B); vLLM servers on partner clusters behind a gateway that load-balances, routes and fails over between them; per-key rate limits from 100 to 10,000 requests per minute; also served as a Hugging Face inference provider.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "The service runs its models on vLLM, so its serving techniques are that engine's, and what it adds is routing, failover and per-key rate limits across clusters donated by different partners. Its catalog is a handful of national models of up to 70 billion parameters, and it publishes no throughput or latency figures.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://cdn.jsdelivr.net/gh/vllm-project/vllm/README.md",
+                  "shows": "vLLM README feature list: PagedAttention, continuous batching with chunked prefill and prefix caching, \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\", speculative decoding, broad quantization support and \"200+ model architectures\".",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://platform.publicai.co/models",
+                "shows": "The Available Models page lists nine catalog entries, among them swiss-ai/apertus-v1.5-8b and apertus-v1.5-70b at 262K context, aisingapore/Gemma-SEA-LION-v4-27B-IT and Qwen-SEA-LION-v4-32B-IT at 128K, and speakleash/Bielik-11B-v3.0-Instruct at 32K, served through \"a unified, OpenAI-compatible API\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "53bea73eb4d2d3cb0a20df1c1f92835789690190fae5a31ade5347dadad03da0"
+              },
+              {
+                "url": "https://platform.publicai.co/inference-partners-faq",
+                "shows": "The partners FAQ describes \"a unified API that routes requests to open-source models hosted by inference partners worldwide\", with the gateway handling \"load balancing, traffic routing, and failover\"; partners contribute GPU compute.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "f8be15c6accdb55438754ff5314cdc2e5d513d74444b3bb0d588a9199e43c4e8"
+              },
+              {
+                "url": "https://platform.publicai.co/plans",
+                "shows": "The plans page lists four tiers with per-key limits: Free at 100 requests/minute, Plus at 200, Pro at 300 and Enterprise at 10,000.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "0bc02fe3e4a6d88f6e6a735e948ae66ef0d393b71e6b98bfacf574b0df4ffc40"
+              },
+              {
+                "url": "https://publicai.co/stories/utility",
+                "shows": "The launch post says inference runs on \"servers running OpenAI-compatible APIs on vLLM\" across partner clusters, with \"A global load-balancing layer\" routing requests between them.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "22a9346580eeb10e95785a0426dc9e71025cce44ecf4bdeadd5640da6be14599"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          }
+        },
+        {
+          "slug": "text-embeddings-inference",
+          "product": "Text Embeddings Inference",
+          "org_slug": "hugging-face",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Text Embeddings Inference (TEI) is Hugging Face's Rust server for deploying open embedding, reranking and sequence-classification models such as Qwen3-Embedding, GTE, E5 and BGE. It batches requests dynamically by token count, runs optimized model code built on Flash Attention, Candle and cuBLASLt, loads Safetensors and ONNX weights, and exposes HTTP and gRPC APIs with OpenTelemetry tracing and Prometheus metrics. It ships as Docker images for CPUs and recent NVIDIA GPU generations, with AMD Instinct and Apple Silicon builds as well.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the Rust router and model backends build from the repository);core-gated:ungated(no enterprise path in the repository tree; Hugging Face Inference Endpoints is a separate hosted product that runs TEI as one of its engines);history:HFOIL 1.0 through v1.2.0(Apache-2.0 from v1.2.3)",
+            "confidence": "high",
+            "note": "Text Embeddings Inference is Apache-2.0 and builds whole from the public repository, with no enterprise edition or license key, and Hugging Face's paid Inference Endpoints run it as one engine among several rather than holding features back. Its early releases used Hugging Face's restrictive HFOIL license until the v1.2 series.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/LICENSE",
+                "shows": "LICENSE at the latest release (v1.9.4) is the Apache License, Version 2.0, January 2004, ending \"Copyright 2022 Hugging Face\".",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "28216184827860ae83a60244c8868de4cf84e16357d16cdb975a46afe3afa9db"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference@v1.2.0/LICENSE",
+                "shows": "The LICENSE at the v1.2.0 tag is a different document, headed \"Hugging Face Optimized Inference License 1.0 (HFOILv1.0)\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "c5e9241519783e92066943bed9ebc9768dcbedac2cfee2e8febd26f0cf01699f"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference@v1.2.3/LICENSE",
+                "shows": "The LICENSE at the v1.2.3 tag is the Apache License, Version 2.0, the same text the current release carries.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "28216184827860ae83a60244c8868de4cf84e16357d16cdb975a46afe3afa9db"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/",
+                "shows": "The repository tree at v1.9.4 holds backends, core, router, proto, docs and test folders with Cargo.toml, per-platform Dockerfiles (CUDA, ROCm, Intel, arm64) and one LICENSE; there is no ee/, enterprise/, commercial/ or proprietary/ path.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "bee8d0bda402e731e8a9e163a7d44e0d1b1fac08bea735042ce263a8f1dfe5bb"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/README.md",
+                "shows": "The README documents running the server from Docker images at ghcr.io/huggingface/text-embeddings-inference, a local install, \"brew install text-embeddings-inference\" on Apple Silicon and Docker builds from source, with no paid tier or license key.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "2ff2b8137163ed861547f86ffd9f3003b1a2dd7173ba1acf2688b3a67c959801"
+              },
+              {
+                "url": "https://huggingface.co/docs/inference-endpoints/engines/tei",
+                "shows": "Hugging Face's Inference Endpoints documentation lists Text Embeddings Inference (TEI) as one of its inference engines beside vLLM, TGI, SGLang and llama.cpp, configured with the same batch and concurrency settings the open server exposes.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "49959624267d970792e4e4a7a7d001870c76d88f89a1df7b9d24922dd15f2587"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "TEI ships mainly as Docker images on GitHub's container registry, which publishes no pull counts, so GitHub stars are the only signal that covers it. Its Homebrew build for Apple Silicon is countable but is a minor install route and sees only a few dozen installs a month, so it is not used to judge reach.",
+            "sources": [
+              {
+                "url": "https://img.shields.io/github/stars/huggingface/text-embeddings-inference.json",
+                "shows": "shields.io relay of the GitHub stargazer count for huggingface/text-embeddings-inference: 5.1k stars.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a4baaaf4230b20c3974afef473e5573174c1050dacb663372bca2398b67d914c"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/README.md",
+                "shows": "The README's Docker Images table lists every supported backend as an image under ghcr.io/huggingface/text-embeddings-inference, from cpu-1.9 to hopper-1.9; Homebrew is offered only for Apple Silicon.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2ff2b8137163ed861547f86ffd9f3003b1a2dd7173ba1acf2688b3a67c959801"
+              },
+              {
+                "url": "https://formulae.brew.sh/api/formula/text-embeddings-inference.json",
+                "shows": "Homebrew analytics for the text-embeddings-inference package: 49 installs in the last 30 days and 445 in the last 365 days.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e7849845feb9899c5c269f68661b4d6d61933bd1c5eecac7620d8f9566b21034"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "README-documented feature set, compared with Text Generation Inference",
+            "value": "Embedding, reranking, sequence-classification and SPLADE pooling for encoder and decoder embedding models (BERT, XLM-RoBERTa, GTE, NomicBERT, ModernBERT, Qwen2/Qwen3, Gemma3, Mistral); token-based dynamic batching; Flash Attention, Candle and cuBLASLt kernels; Safetensors and ONNX weights; HTTP and gRPC APIs; OpenTelemetry tracing and Prometheus metrics; CPU, NVIDIA Turing to Blackwell, AMD Instinct and Apple Metal backends.",
+            "relative_to": "text-generation-inference",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Text Embeddings Inference covers what search and retrieval need from a server, with dynamic batching, optimized kernels and production tracing across CPU, NVIDIA, AMD and Apple hardware, and it is still actively released. It sits level with its sibling Text Generation Inference as a focused server rather than a general-purpose engine.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/docs/text-generation-inference/index",
+                  "shows": "The Text Generation Inference docs index still says \"text-generation-inference is now in maintenance mode\" and lists continuous batching, \"Tensor Parallelism for faster inference on multiple GPUs\", token streaming, Flash Attention and Paged Attention, quantization and OpenTelemetry tracing with Prometheus metrics.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "152eb286eff1a7865c73ab32f5e22ed45bd86fc8ffd2195034a32aa2ed683f39"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/README.md",
+                "shows": "The README lists \"Token based dynamic batching\", Flash Attention, Candle and cuBLASLt kernels, Safetensors and ONNX weight loading, \"Metal support for local execution on Macs\" and OpenTelemetry tracing with Prometheus metrics; it documents re-rankers, sequence classification, SPLADE pooling, gRPC, AMD Instinct GPUs via ROCm, and images from Turing to Blackwell.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2ff2b8137163ed861547f86ffd9f3003b1a2dd7173ba1acf2688b3a67c959801"
+              },
+              {
+                "url": "https://huggingface.co/docs/inference-endpoints/engines/tei",
+                "shows": "The Inference Endpoints TEI page describes it as a production-ready engine for text embeddings with token-based dynamic batching, Flash Attention, Candle and cuBLASLt, Safetensors and ONNX formats, and settings for max tokens per batch and max concurrent requests.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "49959624267d970792e4e4a7a7d001870c76d88f89a1df7b9d24922dd15f2587"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-13",
+                "reason": "Promoted from the registry on 2026-10-13. The level was read from hand-fetched download counts, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Releases through v1.2.0 shipped under Hugging Face's own HFOIL 1.0 license; v1.2.3 and later are Apache-2.0, which is what the entry reads."
         }
       ]
     },
@@ -99980,6 +101018,465 @@
               }
             ]
           }
+        },
+        {
+          "slug": "openalex",
+          "product": "OpenAlex",
+          "org_slug": "ourresearch",
+          "org": "OurResearch",
+          "type": "software",
+          "description": "Free catalog of the world's scholarly research, run by the nonprofit OurResearch, covering hundreds of millions of works with their authors, institutions, sources and funders. Its REST API searches works by keyword or by meaning, sorts them by relevance, and links each open-access work it holds a copy of to the full text as a PDF and as structured XML. The data is released under CC0, and the whole database can be downloaded as a free snapshot.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI; the LICENSE bodies of openalex-elastic-api and openalex-walden are the unmodified MIT text);source:public(the Elasticsearch-backed API service and the data pipelines that build the catalog);core-gated:ungated(OurResearch states all code is open source and charges for usage, sync and support);managed:api.openalex.org, free daily budget, then metered usage and annual plans",
+            "confidence": "medium",
+            "note": "The code behind the API and the pipelines that build the catalog are published under MIT, and OurResearch says all of its code is open source. What it charges for is API usage above a free daily allowance, faster snapshot updates and support, not features held back from the code. Confidence is medium because the API repository describes itself as only the Elasticsearch-backed portion of the service, and not every newer piece, such as the full-text download service, could be matched to a published license.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ourresearch/openalex-elastic-api/HEAD/LICENSE",
+                "shows": "The LICENSE body: \"The MIT License (MIT)\", \"Copyright (c) 2021 OurResearch\", unmodified MIT text with no added clause.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "8229d025366b682ecf61af48d05f01f3137eb42e0d6c31cfc3cb0dca817b8f1f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ourresearch/openalex-elastic-api/HEAD/README.md",
+                "shows": "\"This is the elasticsearch-backed portion of the [OpenAlex API](https://api.openalex.org/).\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "f9e42ad5e9d42682f53829e08117cf4baf5ec5e94a25a63fe77b6cf387003aed",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ourresearch/openalex-walden/HEAD/LICENSE",
+                "shows": "The LICENSE body: \"MIT License\", \"Copyright (c) 2025 OurResearch\", unmodified MIT text.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "7ab82d0e4fa6e0a9c62b046293bab87b9b83be404ec65edf425234d49ffdb463",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ourresearch/openalex-walden/HEAD/README.md",
+                "shows": "\"# openalex-walden\" / \"Data pipelines, transformations, science and AI code\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "79ca3c51b86b12617d08c8c30c151162560c76d7e772b0535aa3ff43291251f1",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://help.openalex.org/access/pricing.md",
+                "shows": "\"The OpenAlex *data* is free — but serving it is not, so *usage* is what costs money.\" Free accounts get \"$1 of API usage per day\"; paid options are prepaid usage and Member, Member+ and Partner annual plans. \"Free data, paid services\": the data is \"released under a CC0 public-domain license\", revenue comes from \"serving, freshness, support\", and \"OpenAlex is a US 501(c)(3) nonprofit, all code is open source, and the full dataset is openly downloadable\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "4f4a861a5e794d9d3dfdf759507c623983ae2f740557f595545fef9aa38600bc",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "OurResearch publishes no request, user or customer count for the API; its help center gives prices and rate limits and says only that most users stay on the free tier. The API needs no package to call, and the most downloaded Python client is a third-party wrapper, so no package count would measure the service. No level is recorded.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://help.openalex.org/access/pricing.md",
+                "shows": "Pricing and plan terms, including \"the vast majority of users never leave the free tier\", with no request, user or customer count, which is why no level is recorded.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "4f4a861a5e794d9d3dfdf759507c623983ae2f740557f595545fef9aa38600bc"
+              },
+              {
+                "url": "https://help.openalex.org/api/authentication.md",
+                "shows": "Rate limits by caller (10 requests per second with no key, 30 with a free key or prepaid usage, 50 on an annual plan) and usage headers; no aggregate usage figure.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "af63f51c7c936a2810bf5ab05979a61353568a40fcfc559d62a2c2790bb86404"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "search and full-text retrieval read from the operator's API documentation",
+            "value": "`/works?search=` matches title, abstract, full text and keywords and returns works sorted by `relevance_score`, with exact, boolean, scoped and semantic variants and an optional rerank; each work carries `content_urls` to a cached PDF and Grobid-parsed TEI XML on `content.openalex.org`, held for 50M+ open-access works",
+            "confidence": "medium",
+            "relative_to": "ddgs",
+            "relation": "at",
+            "note": "OpenAlex ranks works for a query by relevance and, for the more than 50 million open-access works it keeps a copy of, returns the full text through the same API key, both as the PDF and as structured XML parsed from it. Finding sources and then fetching their content puts it level with DDGS. It does not compose an answer from what it finds, and the full text stops at the open-access subset of the catalog.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/deedy5/ddgs/main/README.md",
+                  "shows": "The DDGS README still documents `text()` returning ranked references aggregated across ten backends and `extract()`, \"Fetch a URL and extract its content in various formats\", taking a `url`: the find-then-fetch pairing that its score depends on. No answer-composition function is documented.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "4541f0854142f2c9a939fee7e8bdf3f075d73d3dcd7b52abdeb1c3d564513223"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://help.openalex.org/api/searching.md",
+                "shows": "\"The `search` parameter finds results matching a given text search\"; works search covers `title`, `abstract`, `fulltext` and keywords; \"Search results include a `relevance_score` property and are sorted by it (descending) by default\"; rerank reorders the top 100.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a1e1806a23e7b711ba8d727ac38e3f851cc944eb5dda2491ea6eba1a4cbcbf9b"
+              },
+              {
+                "url": "https://help.openalex.org/access/fulltext.md",
+                "shows": "\"OpenAlex keeps its own cached copy of the full text for more than 50 million open-access works, as PDF and as machine-readable TEI XML parsed by Grobid\"; works link to it through `has_content` and `content_urls` on `content.openalex.org`; \"Any API key works, including a free one; downloads are metered against your daily usage like any other call.\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a6ad9e96587789f9f882d20f396b5bb91970f3588390ad08b048223f6e678c6d"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          },
+          "version_note": "Casual use of the API needs no key. A free key raises the daily allowance to $1 of usage, and heavier use is paid as you go or through annual plans; the help center says the data is free and what is sold is serving, freshness and support. The full-text cache covers open-access works only, and the PDFs keep their original copyright. The openalex.org website runs on the same public API, and its home page is a JavaScript application that points programmatic callers to help.openalex.org."
+        },
+        {
+          "slug": "mediawiki-search-api",
+          "product": "MediaWiki Search API",
+          "org_slug": "wikimedia-foundation",
+          "org": "Wikimedia Foundation",
+          "type": "software",
+          "description": "The search surface of the MediaWiki Action API, served at the `api.php` endpoint of every MediaWiki site, including Wikipedia and Wikinews, which answer it for anonymous callers. Its `list=search` module returns ranked page titles with highlighted snippets and page metadata, and can run as a generator that passes its results to the TextExtracts module, which returns plain-text extracts of the pages found. On Wikimedia's wikis it is backed by the CirrusSearch extension over an OpenSearch index.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:GPL-2.0(OSI; GPL-2.0-or-later, as CirrusSearch's extension.json and MediaWiki's COPYING both state);source:public(MediaWiki core and the CirrusSearch and TextExtracts extensions, over an OpenSearch index);self-host:yes(any MediaWiki install can enable CirrusSearch against its own OpenSearch cluster);core-gated:ungated(the Wikimedia Foundation runs it as a free public API and describes the engine as open source)",
+            "confidence": "high",
+            "note": "MediaWiki and the CirrusSearch extension behind its search are both licensed GPL-2.0-or-later, and the extension's README walks through running the same search against your own OpenSearch cluster. The Wikimedia Foundation's search team describes what it runs as an open-source search engine, and nothing in the API is sold, so there is no paid tier for anything to be held back for.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-CirrusSearch/HEAD/COPYING",
+                "shows": "The COPYING body: \"GNU GENERAL PUBLIC LICENSE Version 2, June 1991\", full text.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-CirrusSearch/HEAD/extension.json",
+                "shows": "The extension manifest declares \"license-name\": \"GPL-2.0-or-later\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "b3d37bfb77762fb8ed7bcf7e806ba6abd9547ed92627774d4c7bdb4bd9865921",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wikimedia/mediawiki/HEAD/COPYING",
+                "shows": "\"MediaWiki is licensed under the terms of the GNU General Public License, version 2 or later.\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "ea5429175b5ed3b83131d2a3b848ef1bd0142a6192e1027be9e1efaf031a3928",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-CirrusSearch/HEAD/README",
+                "shows": "Installation: \"Get OpenSearch v2.x or v3.x up and running somewhere\", load the Elastica and CirrusSearch extensions, build the index with the maintenance scripts, then set `$wgSearchType = 'CirrusSearch'`.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a135ed32183c2d8af54d5154f6fabfa170eb7cdf9205547a5a7aedbe3746877e",
+                "establishes": [
+                  "source",
+                  "self-host"
+                ]
+              },
+              {
+                "url": "https://www.mediawiki.org/w/index.php?title=Wikimedia_Search_Platform&action=raw",
+                "shows": "The page's wikitext: the Search Platform team maintains \"the CirrusSearch extension which relies on OpenSearch (formerly Elasticsearch), the search backend used at the Wikimedia Foundation to support Wikimedia projects\", and: \"We provide an open-source search engine, backed by an inverted index for non-structured on-wiki data.\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "0e789f90fac1436c015e1f47b1ab3a5365eb1d275c6048bf928342b23736543f",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-TextExtracts/master/extension.json",
+                "shows": "TextExtracts' extension.json gives \"name\": \"TextExtracts\" and \"license-name\": \"GPL-2.0-or-later\", the same license as MediaWiki core and CirrusSearch.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e38ab50e93d3a166e572b745b870a1c122766c9cc30590b47894a84b19c707f8",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-TextExtracts/master/COPYING",
+                "shows": "The COPYING file is the \"GNU GENERAL PUBLIC LICENSE Version 2, June 1991\" text.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "Wikimedia publishes no request count for the search module, or for the Action API as a whole, on the pages read. The API needs no key, account or client package, so there is no sign-up or download figure to count instead either. No level is recorded.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://www.mediawiki.org/w/index.php?title=API:Search&action=raw",
+                "shows": "The wikitext of the module's reference page: its help template, an example GET request and response, sample code and parameter history, with no request or user count, which is why no level is recorded.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "32858a97849a280c47f659ebb3a529994a4cd5eb021df95337d4adc2082056a3"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "search and extract modules of the MediaWiki Action API, list=search with generator=search and TextExtracts, read from their documentation",
+            "value": "`list=search` returns pages sorted by relevance by default, with titles, highlighted snippets, size, word count and timestamp, and selectable ranking profiles; `generator=search` feeds the same results into other modules, and TextExtracts' `prop=extracts&explaintext` returns plain-text page content",
+            "confidence": "medium",
+            "relative_to": "ddgs",
+            "relation": "at",
+            "note": "A search returns pages ranked by relevance with highlighted snippets, and the same query can run as a generator so that one call also returns a plain-text extract of each page found. Finding pages and returning their cleaned text through one interface puts it level with DDGS. It searches the wiki it is called on rather than the open web, which limits what it covers rather than what it does, and it composes no answer.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/deedy5/ddgs/main/README.md",
+                  "shows": "The DDGS README still documents `text()` returning ranked references aggregated across ten backends and `extract()`, \"Fetch a URL and extract its content in various formats\", taking a `url`: the find-then-fetch pairing that its score depends on. No answer-composition function is documented.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "4541f0854142f2c9a939fee7e8bdf3f075d73d3dcd7b52abdeb1c3d564513223"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://en.wikipedia.org/w/api.php?action=paraminfo&modules=query%2Bsearch&helpformat=wikitext&format=json",
+                "shows": "English Wikipedia's own description of `list=search`: module \"search\", source MediaWiki, license GPL-2.0-or-later, \"Perform a full text search.\" `srsearch` \"Search for page titles or content matching this value\"; `srsort` default \"relevance\"; `srqiprofile` ranking profiles including classic, popular_inclinks_pv and mlr-1024rs; `srprop` default \"size|wordcount|timestamp|snippet\". Examples include `action=query&generator=search&gsrsearch=meaning&prop=info`.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "4e0b39710658ddf6797bc6f4c54cbb0b152b54a78af42427ffec9141a95b1561"
+              },
+              {
+                "url": "https://en.wikipedia.org/w/api.php?action=paraminfo&modules=query%2Bextracts&helpformat=wikitext&format=json",
+                "shows": "English Wikipedia's description of `prop=extracts`: source TextExtracts, license GPL-2.0-or-later, \"Returns plain-text or limited HTML extracts of the given pages\", with `explaintext`: \"Return extracts as plain text instead of limited HTML.\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2de2020cb0a3336b9c8491aec59a5797f07bcbb2fc208242ad2c07f612dde4c6"
+              },
+              {
+                "url": "https://www.mediawiki.org/w/index.php?title=Extension:TextExtracts&action=raw",
+                "shows": "The TextExtracts extension page: it \"provides an API which allows retrieval of plain-text or limited HTML\" extracts of page content, the `prop=extracts` module \"Returns plain-text or limited HTML extracts of the given pages\" with an `explaintext` parameter, and the page carries \"{{Bundled|1.34}}\". It also asks that new features for code running in Wikimedia production use the Page Content Service for summaries instead.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "cfe57d6accfbf714f767912deb48e1a70aaf313978625461ab0d23e30b49ccf9"
+              },
+              {
+                "url": "https://en.wikipedia.org/w/api.php?action=paraminfo&modules=query%2Bextracts&format=json",
+                "shows": "Wikipedia's paraminfo for `query+extracts` names its source as \"TextExtracts\", licensed \"GPL-2.0-or-later\", with parameters including `chars`, `sentences`, `intro` and `plaintext`, so the module is live on the wiki Alpha searches.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "402a1475c3ecccbd3f7bec54ba5a8f0ad01a61d2be10e41f21116fb7e8699222"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          },
+          "version_note": "Scored as the composable search surface of MediaWiki's Action API, not as Wikipedia: `list=search` and `generator=search` with the TextExtracts module, which has shipped bundled with MediaWiki since 1.34, and CirrusSearch, the backend Wikimedia deploys. Both GitHub repositories are mirrors of Wikimedia's own Gerrit. TextExtracts' documentation asks Wikimedia's own production features to use the Page Content Service for summaries instead. Wikimedia sets its own API rate limits, and MediaWiki's guidance asks callers to send requests in series rather than in parallel."
+        },
+        {
+          "slug": "arxiv-api",
+          "product": "arXiv API",
+          "org_slug": "arxiv",
+          "org": "arXiv",
+          "type": "software",
+          "description": "arXiv's public query API at export.arxiv.org/api/query, which searches the arXiv preprint server by title, author, abstract, comment, journal reference, category or report number, or looks papers up by identifier. Results come back as an Atom feed giving each paper's title, authors, abstract and categories, with links to its abstract page and PDF. It needs no key, and arXiv's terms ask for no more than one request every three seconds.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI; the LICENSE body is MIT text for arXiv, Inc. and for Cornell University Library's earlier contributions);source:public(arxiv-search ships the classic API service, documented as the export.arxiv.org replacement);core-gated:ungated(a nonprofit's free public API with no paid tier in its terms)",
+            "confidence": "medium",
+            "note": "The service behind the API is published under MIT in arXiv's arxiv-search repository, which describes it as the replacement for the old export.arxiv.org service. The live endpoint returns feeds formatted the way that code formats them, not the way the old service did, which is the evidence it is the code in production; arXiv does not state it outright, hence medium confidence. arXiv is a nonprofit and its API terms name no paid tier.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/arXiv/arxiv-search/HEAD/LICENSE",
+                "shows": "The LICENSE body: MIT License, \"Copyright (c) 2026 arXiv, Inc.\", followed by \"Contributions made on or before June 30, 2026 are: Copyright (c) 2017-2025 Cornell University Library\" under the same MIT text.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "6ac7777ae2d1c43506c4e29544593671b0ebda79ed8ef06eb3ffb077bb7ff6e6",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/arXiv/arxiv-search/HEAD/AGENTS.md",
+                "shows": "The repository's guide lists the Classic API app serving \"`/api/query` — Atom XML (the `export.arxiv.org/api/query` replacement)\" and says \"The classic API is a Python reimplementation of a Perl/Lucene 2.3.2 service\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "55245372c4ea2b2d4164c551ba1f5f80412c140459b1530a941263b0376afb3c",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/arXiv/arxiv-search/HEAD/search/serialize/atom.py",
+                "shows": "The Atom serializer sets the feed title with `fg.title(f\"arXiv Query: {query.to_query_string()}\")` and builds the feed id from a SHA-1 of the query string under https://arxiv.org/api/.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "75d271598ed4553ace44155441ab956a28c77df56ad4bb107b894932333a09f7",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://export.arxiv.org/api/query?search_query=all:retrieval&start=0&max_results=2",
+                "shows": "The live feed: `<title>arXiv Query: search_query=all:retrieval&amp;id_list=&amp;start=0&amp;max_results=2</title>` and `<id>https://arxiv.org/api/UsmWS98RQDJiq1Y9LMuoqtpMfV4</id>`, the lowercase \"arXiv Query\" title and https id the published serializer emits.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "69261ecc8a2ab08ed563b4cdc24c8fd9dacf3fa972cb6dc170eca218372eb591",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://info.arxiv.org/help/api/user-manual.html",
+                "shows": "The user manual's example response from the older service reads `ArXiv Query: search_query=all:electron&id_list=&start=0&max_results=1` with an id under http://arxiv.org/api/, a different format from what the endpoint returns today.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a4f8c339c191e35addd5a658114015f3a44000de89ec15ba633836a6c5db57b9",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://info.arxiv.org/help/api/index.html",
+                "shows": "\"arXiv offers public API access in order to maximize its openness and interoperability\"; independent, noncommercial and open-access projects need no assistance from arXiv, and API users are asked to acknowledge arXiv. Page banner: \"arXiv is now an independent nonprofit!\"",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "d39ef59296d8d1636f81eabea2f98476d2bb62c43c66dde3b408f9a3a2f3dbc8",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://info.arxiv.org/help/api/tou.html",
+                "shows": "Terms of Use for arXiv APIs: rate limits (\"make no more than one request every three seconds\" on the legacy APIs, with higher rates by contacting support), what users may and must not do; no fee or paid tier is described.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "badbec1e87aa317038c3a519a3fad3c4a855ebe019f0e681772d72f6a14f4e49",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "arXiv publishes reports and institutional download statistics for papers, but no count of API requests or API users on the pages read. The API needs no key, account or client package, so there is no sign-up or download figure to count instead. No level is recorded.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://info.arxiv.org/about/reports/index.html",
+                "shows": "arXiv's reports index: annual reports, budgets, roadmaps and \"Annual Institutional Usage (Downloads) Statistics\", with no API request or user count, which is why no level is recorded.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a8d1db3718223b020b1feafd2f92a7347795be161d5599d7b8dfa0581a5ab4cf"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "query interface and response format read from arXiv's API user manual",
+            "value": "`/api/query` takes a fielded `search_query` (ti, au, abs, co, jr, cat, rn, all, with Boolean operators and a submittedDate range) or an `id_list`, sorts by relevance, lastUpdatedDate or submittedDate, and returns an Atom feed of entries with title, authors, abstract, categories and links to the abstract page and PDF, up to 2,000 per call",
+            "confidence": "high",
+            "relative_to": "searxng",
+            "relation": "at",
+            "note": "The API returns a list of matching papers, each with its full abstract and a link to its PDF, but not the paper itself, so getting the text means a separate download and a PDF parser of the caller's own. Returning references without the content behind them puts it level with SearXNG. It composes no answer.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://docs.searxng.org/dev/search_api.html",
+                  "shows": "SearXNG's search API still documents `GET /search` and `POST /search` returning results in json, csv or rss format, with parameters for query, categories, language, page, time range and safe search, and no endpoint that fetches page content or composes an answer.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "86521c7e3e817c0261fa6e3ce78d4bc17b5bf4499d2be8b465c73cefbd51c6b6"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://info.arxiv.org/help/api/user-manual.html",
+                "shows": "Field prefixes \"ti Title au Author abs Abstract co Comment jr Journal Reference cat Subject Category rn Report Number id Id (use id_list instead) all All of the above\"; sortBy \"relevance\", \"lastUpdatedDate\", \"submittedDate\"; max_results limited \"to 30000 in slices of at most 2000 at a time\"; \"The <summary> element contains the abstract for the article\"; entry links to the abstract page, the pdf and a resolved doi.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "a4f8c339c191e35addd5a658114015f3a44000de89ec15ba633836a6c5db57b9"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          },
+          "version_note": "arXiv's documentation calls this its legacy API. The code for it is published in arXiv's arxiv-search repository as a Python reimplementation of an older Perl and Lucene service, and the feed the live endpoint returns carries the reimplementation's formatting rather than the format the user manual shows from the old service. Building an index with that code needs an arXiv metadata endpoint reachable only from Cornell University Library's network; the metadata itself is public through OAI-PMH and bulk downloads. The terms let callers store and share descriptive metadata, but not serve the papers themselves without the copyright holder's permission or a license that allows it."
         }
       ]
     },
@@ -103181,6 +104678,391 @@
             ]
           },
           "version_note": "A ROOST Model Community partner model. Mistral documents it as Shieldstral 1.0, in public preview."
+        },
+        {
+          "slug": "hasher-matcher-actioner",
+          "product": "Hasher-Matcher-Actioner",
+          "org_slug": "meta",
+          "org": "Meta",
+          "type": "software",
+          "description": "Hasher-Matcher-Actioner (HMA) is Meta's open-source service for finding copies of known harmful images and videos. It turns uploaded media into hashes, matches them against banks of previously identified content, and connects those banks to industry hash-sharing programs such as those run by NCMEC, GIFCT and StopNCII. HMA runs as a Docker container with a REST API and a PostgreSQL database, or as a Python library.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:BSD-3-Clause(OSI, the ThreatExchange repository license, which covers HMA);source:public(the whole service builds from facebook/ThreatExchange/hasher-matcher-actioner);self-host:yes(Docker image or Python library);service:none;core-gated:ungated",
+            "confidence": "high",
+            "note": "HMA is released under the BSD license that covers Meta's whole ThreatExchange repository, and the complete service builds from that published code and runs on your own servers. Meta launched it as a free tool, none of its documentation mentions a paid or hosted edition, and the 2.0 rewrite replaced its AWS dependencies with open-source components only.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/LICENSE",
+                "shows": "The LICENSE file at the root of facebook/ThreatExchange opens \"BSD License\" and \"For ThreatExchange software\", with \"Copyright (c) Meta Platforms, Inc. and affiliates.\", and carries the three BSD clauses: keep the copyright notice in source, reproduce it in binary distributions, and \"Neither the name Facebook nor the names of its contributors may be used to endorse or promote products\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "68ecc6aafbd2a205a1077f86127030898f03091b7dae9d9017325a8702d8668f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/README.md",
+                "shows": "The repository README says \"All projects in this repository are under the BSD license\", with exceptions only for files \"included for demonstration purposes\", and lists one: \"pdq/cpp/CImg.h\". It lists HMA among the sub-projects alongside PDQ, TMK, vPDQ and python-threatexchange. Its HMA paragraph still describes the older AWS deployment.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "705cef89924954dd53877a4b63dc2b7ecc14610f75b2c6ff191b65a8a6c799ec",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/README.md",
+                "shows": "The HMA README calls it \"a reference implementation for a key Trust and Safety content moderation capability: copy detection\", says \"HMA can be used as a library, or in any deployment setup that can use docker\", and runs it from the published image \"ghcr.io/facebook/threatexchange/hma\" or locally with \"docker compose up\" in the hasher-matcher-actioner directory. Searched the body for enterprise, pricing, commercial, paid and license key: none.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e0c47dad67c0f9561fff3c7231990372160606c3f9cbec3998d6c26c5739fb16",
+                "establishes": [
+                  "source",
+                  "self-host",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/history.md",
+                "shows": "The project history says that in March 2024 the team archived the original version and replaced it with a full rewrite, proposing \"a new, entirely open source offering of composable components\". Its comparison table lists HMA 2.0 as \"OSS dependencies only\" and \"Runs in any Docker based infra\", against HMA 1.0's \"Heavy AWS dependencies\". Searched the body for enterprise, pricing, paid and license key: none.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "52202bbaa354ce4d09dcb86b96161de1a797db60172bf671477bc05458de8f22",
+                "establishes": [
+                  "source",
+                  "self-host",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/pyproject.toml",
+                "shows": "The HMA package metadata names the project \"OpenMediaMatch\", lists \"Meta Platforms, Inc. and affiliates\" as author, and carries the classifier \"License :: OSI Approved :: BSD License\". Its dependencies are open-source Python packages such as flask, psycopg2 and threatexchange.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "576d6bdc05b7c5ac2d4f9ac8161a0da83fc3fdfc42e68a3cc1da96989d417d39",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://about.fb.com/news/2022/12/meta-launches-new-content-moderation-tool/",
+                "shows": "Meta's newsroom post of December 13, 2022, by Nick Clegg, says Meta is \"making available a free open source software tool it has developed that will help platforms identify copies of images or videos and take action against them en masse\", called Hasher-Matcher-Actioner, and that it will be \"especially useful for smaller companies who don’t have the same resources as bigger ones\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "54746715abc12c49703679b6b52e97ebb106451d4ec5dc584cf4a28313e870f7",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "HMA ships as a container image on GitHub's registry rather than as a package with a public download count, and its repository is shared with other projects, so neither gives a usage figure for HMA itself. The clearest sign of use is that ROOST's open-source moderation console, Coop, runs HMA as its hash-matching service. Meta has not published how many platforms deploy it.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://roost.tools/coop/",
+                "shows": "ROOST's Coop page says Coop's child safety workflow \"goes further with hash matching via HMA, NCMEC CyberTipline reporting, and integrations with Google Content Safety API and OpenAI Moderation API\". It gives no count of HMA deployments.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "84ec21bab9e6382289b74b50fe0388335ab3b838df8d320e15365b9c29fe3364"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/roostorg/coop@main/package.json",
+                "shows": "The root package.json of the Coop repository defines an \"up\" script that runs \"docker compose up --detach postgres clickhouse hma scylla redis otel-collector\", starting HMA as one of the services in Coop's local stack.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "fedce851912ed651d5f4a6083db411bcee3e5e897cbe8ae8ebba07b3852d15d6"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/releasing.md",
+                "shows": "The HMA release guide says that on each release \"Docker images are built and pushed to GHCR\", tagged latest and with the version number, and tests the image with \"docker pull ghcr.io/facebook/threatexchange/hma:1.1.3\". It publishes no pull or install count.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "d104fa9d91d5277d247601208455ee2baff9dc74b703c6f4c20b8859396e7c6b"
+              },
+              {
+                "url": "https://about.fb.com/news/2022/12/meta-launches-new-content-moderation-tool/",
+                "shows": "Meta's December 2022 launch post says Meta hopes HMA \"will be adopted by a range of companies\" to stop the spread of terrorist content, and gives no adopter names or deployment count.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "54746715abc12c49703679b6b52e97ebb106451d4ec5dc584cf4a28313e870f7"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "hash-matching coverage",
+            "value": "Copy detection for trust and safety teams: hashes images with PDQ and videos with MD5, matches them against banks of known content through an in-memory FAISS index, and fetches and shares banks with hash-exchange programs including NCMEC, GIFCT, StopNCII and ThreatExchange through pluggable interfaces. Ships a REST API, a CLI and a curation web UI, and splits into hasher, matcher and curator roles to scale out; its stated targets are 10M PDQ hashes on one machine and 1,000 image lookups per second across instances.",
+            "relative_to": "coop",
+            "relation": "at",
+            "confidence": "low",
+            "note": "HMA covers one stage of a moderation pipeline in depth: recognizing copies of images and videos a platform or an industry hash list has already flagged, with the exchange connections that make those lists usable. Coop covers more of the workflow, with review queues, routing and reporting, and relies on HMA for its own hash matching, so the two sit level. HMA dropped the rules for acting on a match when it was rewritten, and it handles only exact and near-duplicate media, not new content.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://roost.tools/coop/",
+                  "shows": "The peer's page still describes \"An open source review and moderation platform\", with review across any policy category, a child safety workflow adding \"hash matching via HMA, NCMEC CyberTipline reporting\", review queues with \"Role-based access controls and routing rules\", and automation rules. It names HMA as the component Coop uses for hash matching.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "84ec21bab9e6382289b74b50fe0388335ab3b838df8d320e15365b9c29fe3364"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/README.md",
+                "shows": "The README describes the process by which \"new content is evaluated against collections of known content (called \"Banks\" in HMA)\": content is hashed, matched \"against an index of known content\", and acted on if it matches. It names the NCMEC Hash Sharing Program, GIFCT's Hash-Sharing Database, StopNCII.org and Meta's ThreatExchange, says custom algorithms plug in through python-threatexchange interfaces, and says HMA \"is designed with horizontal scalability in mind\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e0c47dad67c0f9561fff3c7231990372160606c3f9cbec3998d6c26c5739fb16"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/architecture.md",
+                "shows": "The architecture page splits a scaled deployment into Hashers, which turn images into PDQ hashes, Matchers, which \"periodically rebuild their (in-memory) FAISS indices\", and Curators, which import hash lists and edit bank content. It says the API and CLI are built into the Python package and the API service is distributed as a Docker image.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "214c28f0273280ae473cb4e6cb1571e499764ad46e43c614d044c926f200ad94"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/goals.md",
+                "shows": "The goals page lists \"Image + PDQ\" and \"Video + MD5\" as fully implemented, a single-box target to \"fetch, store, index at least 10M PDQ hashes\", and a multi-instance target where \"1000 qps image hash + match should be possible\". Under non-goals it says the actioning interface from HMA 1.0 is on hold for 2.0 and that vPDQ video lookup is not implemented.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "b64fc0a1fe4a4a507807376480e3ea416a67cd7ac04f2a6d746684dda2fe449e"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/user-interface.md",
+                "shows": "The user-interface guide says HMA \"includes a web app where users can configure their signal banks, connect to exchanges like NCMEC, StopNCII, GIFCT, ThreatExchange, and others, and debug matches\", across four pages starting with a dashboard showing system status and index statistics.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2f02ccd7cdba3a35b6107ce657f2a9176811fd556172b336216296be0d15c3fb"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          },
+          "version_note": "Version 2.0, a full rewrite that replaced the original AWS-only deployment in March 2024, runs on any infrastructure that can run Docker. Its code lives in Meta's ThreatExchange repository beside the PDQ and TMK hashing algorithms and the python-threatexchange library, and its images are published to GitHub's container registry."
+        },
+        {
+          "slug": "lettucedetect",
+          "product": "LettuceDetect",
+          "org_slug": "krlabs",
+          "org": "KR Labs",
+          "type": "software",
+          "description": "LettuceDetect checks whether an AI answer is supported by the source material it was given and marks the exact passages that are not. Small encoder models run locally for fast checks, and a 2B generative model also labels each unsupported passage by type. It covers retrieval-augmented answers, coding-agent responses and tool output, and KR Labs publishes it as a Python package with an optional web API.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI, the code and the English and multilingual v1 detector weights)+Apache-2.0(OSI, the v2 detector weights for code, tool output and prose);source:public(full Python implementation, training and evaluation scripts included);self-host:yes(pip package and optional FastAPI server);service:none;core-gated:ungated",
+            "confidence": "high",
+            "note": "LettuceDetect's code is MIT-licensed, and the detector models it loads from Hugging Face come from the same team under MIT or Apache 2.0, so nothing in an ordinary setup carries a narrower license. The package installs from PyPI and runs on your own hardware, web server included, and the repository also holds the scripts used to train and evaluate the models. Only the optional LLM-based baseline calls an outside service.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/KRLabsOrg/LettuceDetect@main/LICENSE",
+                "shows": "The LICENSE file at the head of KRLabsOrg/LettuceDetect is the MIT License text, \"Copyright (c) 2025 KR Labs\", granting permission \"to deal in the Software without restriction\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "c19341bdd059245b994d6984da1a24d40a52535e7bb1c93d4a2829d66c272e68",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/KRLabsOrg/LettuceDetect@main/README.md",
+                "shows": "The README lists \"MIT-licensed models & code\" among its features, installs with \"pip install lettucedetect -U\", loads detectors from Hugging Face by model path, documents training with \"scripts/train.py\" and evaluation with \"scripts/evaluate.py\", and starts its own web API with \"scripts/start_api.py\". The LLM baselines need an OpenAI API key. Searched the body for enterprise, pricing, commercial, paid, hosted and license key: none.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "d1d7e9881e36a7fc450e4a401635ac7dd693de98a2a20dd4fbf1ad7743c7fc06",
+                "establishes": [
+                  "source",
+                  "self-host",
+                  "core-gated",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/lettucedetect/json",
+                "shows": "The PyPI JSON for lettucedetect (version 0.2.3) records license \"MIT\" and the classifier \"License :: OSI Approved :: MIT License\", gives \"https://github.com/krlabsorg/lettucedetect\" as its homepage, and lists an optional \"api\" extra that pulls in fastapi.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "9e7f67ae3001d04fde63059f975aa699cb18c629962e5eaa42fc81aaeaf3c851",
+                "establishes": [
+                  "license",
+                  "source",
+                  "self-host"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-base-modernbert-en-v1",
+                "shows": "The Hugging Face API record for KRLabsOrg/lettucedect-base-modernbert-en-v1, the default model of the web API, carries the tag \"license:mit\", reports gated as false and lists \"model.safetensors\" among its files.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "8878ddf8acb22c88645da6f5b74dd6651d9b2d7de9e8d5aac8ccee727ba3af2e",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-mmbert-base",
+                "shows": "The Hugging Face API record for KRLabsOrg/lettucedect-v2-mmbert-base carries the tag \"license:apache-2.0\", reports gated as false, lists \"model.safetensors\", and was created on 2026-06-22.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "78933ca5151cf67974340e2b5d8c62891f28cd31103e8c30042dac95ed325d3f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-qwen-2b",
+                "shows": "The Hugging Face API record for KRLabsOrg/lettucedect-v2-qwen-2b carries the tags \"license:apache-2.0\" and \"base_model:finetune:Qwen/Qwen3.5-2B\", reports gated as false and lists a safetensors weight file.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "553ab525a0faaaa9e3ebe6ddfb85118c90dc9f6fe97ebe9f7fcc20c316a603cd",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is the sum of PyPI downloads of the lettucedetect package and Hugging Face downloads of its four main detector models, since most uses of the package load one of those models. The models can also be loaded without the package, so part of their downloads may come from people using them directly.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/lettucedetect/recent",
+                "shows": "last_month 2,798 for the lettucedetect package",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "1c5f66f25b32136e0f342404ec333bc7b096519ae929dd80aec14163b4d24347"
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-base-modernbert-en-v1",
+                "shows": "13,824 downloads in the trailing 30 days for KRLabsOrg/lettucedect-base-modernbert-en-v1",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "8878ddf8acb22c88645da6f5b74dd6651d9b2d7de9e8d5aac8ccee727ba3af2e"
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-mmbert-base",
+                "shows": "8,532 downloads in the trailing 30 days for KRLabsOrg/lettucedect-v2-mmbert-base",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "78933ca5151cf67974340e2b5d8c62891f28cd31103e8c30042dac95ed325d3f"
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-large-modernbert-en-v1",
+                "shows": "4,612 downloads in the trailing 30 days for KRLabsOrg/lettucedect-large-modernbert-en-v1",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "70bf792a848093ad2c4d6ece72d583b3b2a39934229c0e3a831a6abca9938a62"
+              },
+              {
+                "url": "https://huggingface.co/api/models/KRLabsOrg/lettucedect-v2-qwen-2b",
+                "shows": "973 downloads in the trailing 30 days for KRLabsOrg/lettucedect-v2-qwen-2b",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "553ab525a0faaaa9e3ebe6ddfb85118c90dc9f6fe97ebe9f7fcc20c316a603cd"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "groundedness span detection",
+            "value": "Span-level groundedness checking for retrieval-augmented, coding-agent and tool-grounded answers: encoder token classifiers built on ModernBERT, EuroBERT and mmBERT, plus a 2B generative detector that tags each unsupported span with one of 3 categories and 13 subcategories. Covers seven languages in its multilingual models, with a Python API and a FastAPI web server. Its own reports give 79.22% example-level F1 on RAGTruth for the original model and 0.689 span-F1 on the unified v2 test set for the 2B model.",
+            "relative_to": "granite-guardian",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "LettuceDetect makes one of the checks Granite Guardian makes, deciding whether an answer is supported by its sources, and goes further on that one check: where Granite Guardian answers yes or no, LettuceDetect marks the exact unsupported passages, in code and tool output as well as prose. It does not screen for harmful content, jailbreaks or risky function calls, which Granite Guardian also covers, so it sits a step below it.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/ibm-granite/granite-guardian-4.1-8b/raw/main/README.md",
+                  "shows": "The peer's Granite Guardian 4.1 8B card still describes a model \"designed to judge if the input prompts and the output responses of an LLM-based system meet specified criteria\", with pre-baked harm, RAG (including groundedness) and function-calling criteria and user-supplied criteria, and says it is used \"strictly for the prescribed scoring mode, which generates yes/no outputs\". The digest matches the one granite-guardian records from 2026-09-29.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "b8d7ae89ebac9ce04dfb5389b04fb76a8659fe521b8ee5d4ec8126f7d871efa8"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/KRLabsOrg/LettuceDetect@main/README.md",
+                "shows": "The README calls LettuceDetect \"an open span-level grounding verifier for AI outputs\" that \"localizes unsupported, contradictory, or fabricated parts of RAG answers, coding-agent responses, and tool-grounded outputs\", returning \"exact character spans instead of only an answer-level clean/flagged verdict\". It lists 7 languages for the multilingual models, a category and subcategory for each span in the v2 models, a web API with a Python client, and 0.689 span-F1 for Qwen-2B on \"the unified 10,698-example v2 test set\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "d1d7e9881e36a7fc450e4a401635ac7dd693de98a2a20dd4fbf1ad7743c7fc06"
+              },
+              {
+                "url": "https://arxiv.org/abs/2502.17125",
+                "shows": "The arXiv abstract describes \"a token-classification model that processes context-question-answer triples\", built on ModernBERT and trained on RAGTruth, reporting \"an F1 score of 79.22% for example-level detection\" and \"30 to 60 examples per second on a single GPU\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "db9fa8ce1c63cb58202d530684b21433a9cfbbd8689459d5f1f443c5d6e8fdf0"
+              },
+              {
+                "url": "https://arxiv.org/abs/2607.00895",
+                "shows": "The arXiv abstract, submitted 1 July 2026, introduces a span-level hallucination benchmark over code, tool output and documents, and reports that the fine-tuned Qwen3.5-2B detector \"reaches 0.689 span-F1 on the unified test set and 0.60 on the code-agent source\".",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "4d5f0383bd97474b757b312c619e67d21db2cd5e1da5449c9965189aced48d52"
+              },
+              {
+                "url": "https://huggingface.co/KRLabsOrg/lettucedect-v2-qwen-2b/raw/main/README.md",
+                "shows": "The lettucedect-v2-qwen-2b card describes a generative detector that emits the unsupported spans of an answer as JSON, each with a category and subcategory from a taxonomy of \"3 categories (contradiction, fabricated_reference, unsupported_addition) × 13 subcategories\". On code-agent answers it reports off-the-shelf detectors including Granite-Guardian as \"all ≈ chance\" on its own benchmark.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "3f60e99e813b79875eafdeae1676381fbfb8e4b2485defd5e2f5311ffb288363"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-13",
+                "reason": "Promoted from the registry on 2026-10-13. The level was read from hand-fetched download counts, which set a level but earn no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Described in arXiv 2502.17125. The code, tool-output and agent models released in June 2026 are described in arXiv 2607.00895."
         }
       ]
     },
@@ -130578,6 +132460,146 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-09-29"
           }
+        },
+        {
+          "slug": "bubblewrap",
+          "product": "bubblewrap",
+          "org_slug": "containers",
+          "org": "Containers",
+          "type": "software",
+          "description": "bubblewrap (bwrap) is a small Linux tool that lets unprivileged users build sandboxes from kernel user namespaces. Each sandbox starts from an empty mount namespace on a tmpfs hidden from the host, with optional PID, IPC, network and UTS namespaces and seccomp filters. Rather than shipping a security policy of its own, it leaves the policy to whatever calls it, which is how Flatpak and Anthropic's Sandbox Runtime use it. The project lives in the containers GitHub organization.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:LGPL-2.1(COPYING carries the LGPL 2.1 text; source files declare SPDX LGPL-2.0-or-later);source:public(C, builds with meson);core-gated:ungated(a single command-line tool with no paid edition, shipped through Linux distribution packages)",
+            "confidence": "high",
+            "note": "bubblewrap is free software under the GNU Lesser General Public License: the source files allow version 2 or any later version, and the license text shipped with them is version 2.1. The whole tool builds from the public repository, and there is no company edition, hosted service or withheld feature beside it.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/containers/bubblewrap/COPYING",
+                "shows": "COPYING at the latest release (v0.13.0) is the \"GNU LESSER GENERAL PUBLIC LICENSE\", \"Version 2.1, February 1999\".",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/containers/bubblewrap/bubblewrap.c",
+                "shows": "The main source file opens \"Copyright (C) 2016 Alexander Larsson\" and \"SPDX-License-Identifier: LGPL-2.0-or-later\", allowing version 2 of the LGPL or any later version.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "534295b804fa3f5ddeb3ae275ce5a2113d468c72ec0a74fdad6003e0a67ee4ef"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/containers/bubblewrap/",
+                "shows": "The repository tree at v0.13.0 holds bubblewrap.c with its helper C files, meson.build, tests, completions, demos and packaging, COPYING and SECURITY.md; there is no ee/, enterprise/, commercial/ or proprietary/ path.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "e5112580165da3a1c1395016e887c985894f36d094bea786438c33975cc6655d"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/containers/bubblewrap/README.md",
+                "shows": "The README says bubblewrap \"is available in the package repositories of the most Linux distributions\" and gives the meson commands to build it from source; it names Flatpak and rpm-ostree as users and describes no paid edition or hosted service.",
+                "accessed": "2026-10-13",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "0c1dc12c6d94017c45e220fc0e5b679f24c0f09494bdd4bc7157d8abcd75c001"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "banded_quantity": "Debian popcon: installed on 134,122 of 291,938 reporting systems (45.94%); an install share, not monthly users",
+            "note": "bubblewrap reaches people mostly as a dependency that Linux distributions install for Flatpak and similar tools, so no download count captures it. Debian's opt-in popularity survey finds it on nearly half of reporting machines, which puts it among the system's commonly installed components.",
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://qa.debian.org/popcon.php?package=bubblewrap",
+                "shows": "Debian popularity contest for bubblewrap: installed on 134,122 of 291,938 reporting systems (45.94%) and used regularly on 113,764.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "ef19392a90694c8f5e5182011b382c3c29000c1dd0a6752a29fbf3bd2a99c53d"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/containers/bubblewrap/README.md",
+                "shows": "The README lists Flatpak, rpm-ostree unprivileged and bwrap-oci as users, and says the larger frameworks that build its command lines include Flatpak, libgnome-desktop and sandwine.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "0c1dc12c6d94017c45e220fc0e5b679f24c0f09494bdd4bc7157d8abcd75c001"
+              },
+              {
+                "url": "https://cdn.jsdelivr.net/gh/anthropics/sandbox-runtime/README.md",
+                "shows": "Anthropic's Sandbox Runtime README says it uses \"native OS sandboxing primitives (`sandbox-exec` on macOS, `bubblewrap` on Linux)\" and tells Linux users to install bubblewrap from apt, dnf or pacman.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "2b18ce30672734247519435d5755875ed5f962ef9d0dbfe00994f6097bbe4b93"
+              },
+              {
+                "url": "https://img.shields.io/github/stars/containers/bubblewrap.json",
+                "shows": "shields.io relay of the GitHub stargazer count for containers/bubblewrap: 9k stars.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "e511d24127292b13840839f330aa569919a32136e85a7965670077345742f6f6"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "isolation mechanism and scope read from the README, compared with Sandbox Runtime",
+            "value": "isolation:Linux namespaces (a fresh mount namespace on a hidden tmpfs, plus optional user, PID, IPC, network and UTS namespaces) with caller-supplied seccomp filters, no kernel or VM boundary; policy:none built in, set entirely by the caller's arguments; runtime breadth:any Linux process; platform:Linux only; scale:single-host command-line tool, no fleet or managed mode",
+            "relative_to": "sandbox-runtime",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "bubblewrap isolates a process with Linux namespaces and optional seccomp filters, a boundary that shares the host kernel, unlike a microVM or gVisor. Its protection depends entirely on the arguments it is given, which places it level with Sandbox Runtime, a ready-made policy layer built on bubblewrap on Linux.",
+            "comparison": {
+              "last_attested": "2026-10-13",
+              "sources": [
+                {
+                  "url": "https://cdn.jsdelivr.net/gh/anthropics/sandbox-runtime/README.md",
+                  "shows": "The Sandbox Runtime README describes \"native OS sandboxing primitives (`sandbox-exec` on macOS, `bubblewrap` on Linux)\" plus \"proxy-based network filtering\", so its Linux isolation is bubblewrap's, with filesystem and network policy layered on top.",
+                  "accessed": "2026-10-13",
+                  "http_status": 200,
+                  "content_sha256": "2b18ce30672734247519435d5755875ed5f962ef9d0dbfe00994f6097bbe4b93"
+                }
+              ]
+            },
+            "last_verified": "2026-10-13",
+            "sources": [
+              {
+                "url": "https://cdn.jsdelivr.net/gh/containers/bubblewrap/README.md",
+                "shows": "The README says bubblewrap \"is not a complete, ready-made sandbox with a specific security policy\" and that protection \"is entirely determined by the arguments passed to bubblewrap\"; it documents a new mount namespace on an invisible tmpfs, user, IPC, PID, network and UTS namespaces, and seccomp filters.",
+                "accessed": "2026-10-13",
+                "http_status": 200,
+                "content_sha256": "0c1dc12c6d94017c45e220fc0e5b679f24c0f09494bdd4bc7157d8abcd75c001"
+              }
+            ]
+          },
+          "overall_score": 4.2,
+          "tier": "strong",
+          "maturity": 4.2,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-13",
+            "basis": "verified"
+          }
         }
       ]
     },
@@ -139774,6 +141796,7 @@
         "atlas-data",
         "sea-helm",
         "sea-instruct",
+        "sea-lion",
         "sea-pile"
       ]
     },
@@ -140356,6 +142379,17 @@
       "country": "IN",
       "products": [
         "vaani"
+      ]
+    },
+    "arxiv": {
+      "slug": "arxiv",
+      "display_name": "arXiv",
+      "type": "foundation",
+      "homepage": "https://arxiv.org",
+      "github": [],
+      "country": "",
+      "products": [
+        "arxiv-api"
       ]
     },
     "aslp-lab": {
@@ -141084,6 +143118,17 @@
       "country": "US",
       "products": [
         "openpcc"
+      ]
+    },
+    "containers": {
+      "slug": "containers",
+      "display_name": "Containers",
+      "type": "unknown",
+      "homepage": "https://github.com/containers",
+      "github": [],
+      "country": "",
+      "products": [
+        "bubblewrap"
       ]
     },
     "content-authenticity-initiative": {
@@ -142363,6 +144408,7 @@
         "fineweb-edu",
         "gradio",
         "hf-datasets",
+        "hugging-face-inference-providers",
         "huggingchat-chat-ui",
         "huggingface-hub",
         "huggingface-hub-platform",
@@ -142380,6 +144426,7 @@
         "smolvlm",
         "spaces",
         "stack-edu",
+        "text-embeddings-inference",
         "text-generation-inference",
         "timm",
         "tokenizers",
@@ -142752,6 +144799,17 @@
       "country": "US",
       "products": [
         "suna"
+      ]
+    },
+    "krlabs": {
+      "slug": "krlabs",
+      "display_name": "KR Labs",
+      "type": "unknown",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "lettucedetect"
       ]
     },
     "kuaishou": {
@@ -143610,6 +145668,7 @@
         "faiss",
         "gaia",
         "habitat",
+        "hasher-matcher-actioner",
         "llama",
         "llama-guard",
         "llama-instruct",
@@ -143771,6 +145830,8 @@
         "mistral-fine-tuning-api",
         "mistral-large",
         "mistral-medium",
+        "mistral-small",
+        "mistral-studio",
         "shieldstral",
         "voxtral"
       ]
@@ -144998,6 +147059,17 @@
         "ai-toolkit"
       ]
     },
+    "ourresearch": {
+      "slug": "ourresearch",
+      "display_name": "OurResearch",
+      "type": "foundation",
+      "homepage": "https://ourresearch.org",
+      "github": [],
+      "country": "",
+      "products": [
+        "openalex"
+      ]
+    },
     "owasp": {
       "slug": "owasp",
       "display_name": "OWASP",
@@ -145373,6 +147445,17 @@
       "country": "ES",
       "products": [
         "corpusnos"
+      ]
+    },
+    "public-ai": {
+      "slug": "public-ai",
+      "display_name": "Public AI Inference Utility",
+      "type": "foundation",
+      "homepage": "https://publicai.co",
+      "github": [],
+      "country": "",
+      "products": [
+        "public-ai-inference-utility"
       ]
     },
     "puppeteer": {
@@ -146160,6 +148243,17 @@
       "github": [],
       "country": "US",
       "products": []
+    },
+    "speakleash": {
+      "slug": "speakleash",
+      "display_name": "SpeakLeash Foundation",
+      "type": "foundation",
+      "homepage": "https://speakleash.org",
+      "github": [],
+      "country": "PL",
+      "products": [
+        "bielik"
+      ]
     },
     "speechbrain": {
       "slug": "speechbrain",
@@ -147207,6 +149301,7 @@
       ],
       "country": "US",
       "products": [
+        "mediawiki-search-api",
         "wikipedia"
       ]
     },
@@ -147605,8 +149700,8 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1120,
-  "generated": "2026-10-12",
+  "n_total": 1133,
+  "generated": "2026-10-13",
   "version": "0.5.0",
   "released": "2026-10-03",
   "contract": 2,
@@ -147618,8 +149713,8 @@
       "total": 62538,
       "matched": 1263,
       "overlap": 647,
-      "scored": 1120,
-      "scored_outside": 473,
+      "scored": 1133,
+      "scored_outside": 486,
       "uncategorized": 61275
     },
     "top": [
