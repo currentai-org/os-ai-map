@@ -1,15 +1,17 @@
 name: mediawiki-search-api
 display_name: MediaWiki Search API
 type: software
-description: The full-text search module of the MediaWiki Action API, `list=search`, served at the `api.php` endpoint
-  of every MediaWiki site, including Wikipedia and Wikinews, which answer it for anonymous callers. It returns ranked
-  page titles with highlighted snippets and page metadata, and can run as a generator that passes its results to
-  other API modules, such as one returning plain-text page extracts. On Wikimedia's wikis it is backed by the CirrusSearch
-  extension over an OpenSearch index.
+description: The search surface of the MediaWiki Action API, served at the `api.php` endpoint of every MediaWiki
+  site, including Wikipedia and Wikinews, which answer it for anonymous callers. Its `list=search` module returns
+  ranked page titles with highlighted snippets and page metadata, and can run as a generator that passes its
+  results to the TextExtracts module, which returns plain-text extracts of the pages found. On Wikimedia's
+  wikis it is backed by the CirrusSearch extension over an OpenSearch index.
 github:
 - url: https://github.com/wikimedia/mediawiki-extensions-CirrusSearch
-comments: 'Scored as MediaWiki''s search interface rather than as Wikipedia: the same module runs on any MediaWiki
-  installation, and CirrusSearch is the backend Wikimedia deploys. The GitHub repository is a mirror of Wikimedia''s
-  own Gerrit. Plain-text extracts come from the TextExtracts extension, which Wikimedia''s wikis run but a bare
-  MediaWiki install does not include. Wikimedia sets its own API rate limits, and MediaWiki''s guidance asks callers
-  to send requests in series rather than in parallel.'
+- url: https://github.com/wikimedia/mediawiki-extensions-TextExtracts
+comments: 'Scored as the composable search surface of MediaWiki''s Action API, not as Wikipedia: `list=search`
+  and `generator=search` with the TextExtracts module, which has shipped bundled with MediaWiki since 1.34,
+  and CirrusSearch, the backend Wikimedia deploys. Both GitHub repositories are mirrors of Wikimedia''s own
+  Gerrit. TextExtracts'' documentation asks Wikimedia''s own production features to use the Page Content Service
+  for summaries instead. Wikimedia sets its own API rate limits, and MediaWiki''s guidance asks callers to
+  send requests in series rather than in parallel.'

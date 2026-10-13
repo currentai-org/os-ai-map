@@ -1043,3 +1043,92 @@ rulings:
     executor: agent
     lands_in: [sources/rubrics/model.yaml, sources/rubrics/pretrained.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+
+  - id: R-2026-10-13-a
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", infomaniak-ai-services, featherless, scaleway-generative-apis, inference_code, ADR-005]
+    question: >-
+      Should Infomaniak AI Services, Featherless and Scaleway Generative APIs be promoted to head
+      products because Alpha uses them?
+    ruling: >-
+      No. All three are closed, their adoption abstains, and their capability is 3, which puts them
+      below ADR-005's inclusion line while inference_code already carries stronger closed products
+      such as Fireworks. That Alpha uses them is not enough. They stay in the tail.
+    reasoning: >-
+      Promoting every closed host a showcase product happens to call would turn the map into a
+      closed-provider catalog.
+    status: in-force
+    executor: agent
+    lands_in: [sources/registry/inference_code.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-b
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", sea-lion, finetuned_chat, docs/reference/capability.md]
+    question: >-
+      May SEA-LION's capability be banded from its Nemotron 3 Super base's Artificial Analysis reading,
+      with its own SEA-HELM gains as support?
+    ruling: >-
+      No. Abstain, score null and basis n/a, until SEA-LION itself has an adequate general benchmark or
+      arena reading, or a direct same-benchmark comparison with a peer can support a band. basis_detail
+      names an instrument for this product, not one inherited from a related model.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/sea-lion.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-c
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", bubblewrap, reported_traction, banded_quantity]
+    question: >-
+      Does bubblewrap's adoption 5, read off Debian popcon as reported traction, stand?
+    ruling: >-
+      Yes, at medium confidence, given popcon's roughly 46% of reporting systems and Flatpak and
+      Sandbox Runtime usage. But a reported_traction band that cites a concrete proxy magnitude must
+      record what was banded in banded_quantity, here the popcon install share, which is not monthly
+      users.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/bubblewrap.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-d
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", bielik, "#117", permissive_non_osi]
+    question: >-
+      Bielik's Terms of Use add conduct restrictions on top of its Apache-2.0 weights. Are they context,
+      or part of the license?
+    ruling: >-
+      Part of the license. They are binding restrictions layered on Apache-2.0, the same shape as other
+      compound license and acceptable-use records, and #117 puts conduct restrictions in
+      permissive_non_osi. Name them (Bielik-Terms-of-Use-1.1) and record them under license. The
+      openness score stays 3.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/model.yaml, sources/scores/bielik.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-e
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", mediawiki-search-api, search_retrieval]
+    question: >-
+      mediawiki-search-api's capability 4 depends on composing generator=search with the separate
+      TextExtracts module. May it take that band?
+    ruling: >-
+      Only if the scored product is deliberately the composable Action API search surface, with
+      TextExtracts represented in the product record and its evidence. Otherwise score the search
+      module alone at 3. A band is not taken from an adjacent extension the record does not declare.
+    status: in-force
+    executor: agent
+    lands_in: [sources/products/mediawiki-search-api.yaml, sources/scores/mediawiki-search-api.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
