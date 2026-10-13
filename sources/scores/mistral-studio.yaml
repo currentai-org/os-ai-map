@@ -1,0 +1,110 @@
+product: mistral-studio
+openness:
+  score: 1
+  class: closed
+  components:
+    source:
+      value: closed
+    license:
+    - name: Proprietary
+    context:
+      engine:
+        value: proprietary
+      access:
+        value: managed-cloud-API
+        detail: hybrid, dedicated and self-hosted deployments sold commercially
+  confidence: high
+  note: Mistral sells Studio as a hosted API and as hybrid, dedicated or self-hosted deployments, and none of them
+    comes with published source for the platform. Its commercial terms grant only a limited, non-sublicensable license
+    to use the products and forbid any attempt to discover their source code.
+  last_verified: '2026-10-13'
+  raw: engine:proprietary;source:closed;access:managed-cloud-API(hybrid, dedicated and self-hosted deployments sold
+    commercially);license:Proprietary
+  sources:
+  - url: https://mistral.ai/products/studio
+    shows: The Studio page, which mistral.ai/products/la-plateforme now redirects to, offers "Hybrid", "Dedicated"
+      and "Self-hosted" deployment ("Retain full control over infrastructure and data residency") and a "Developer
+      toolkit" of "APIs, SDKs, code samples"; its only GitHub link is mistralai/cookbook, and no source for the
+      platform itself is linked.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 57940700c6cc49a0262a613378266dd1cdfe23292359b4ac2155318bb9ca5dd3
+  - url: https://legal.mistral.ai/terms/commercial-terms-of-service
+    shows: The commercial terms grant "a limited, non-exclusive, non-transferrable ... non-sublicensable (except
+      to its End Users) license to access and use the Mistral AI Products" and bar customers from attempting "to
+      reverse engineer, decompile, or otherwise attempt to discover the source code or underlying components (e.g.,
+      algorithms, weights, or systems) of the Mistral AI Products".
+    accessed: '2026-10-13'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: 329171653dcd00befe40355a6978785066f226187a97beea3b7a80fe5f3d8f8f
+adoption:
+  level: 4
+  signal_type: reported_traction
+  confidence: medium
+  banded_quantity: third-party routed token volume via OpenRouter (~119B tokens on 2026-10-12) and named enterprise
+    customers, not a user count
+  note: OpenRouter's provider page charts heavy daily traffic routed to Mistral's API, and Mistral names enterprise
+    customers such as HSBC, ASML, CMA CGM and Stellantis. Neither is a count of the API's own users, and much of
+    the OpenRouter traffic is for GLM models that Mistral also serves.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://openrouter.ai/provider/mistral
+    shows: OpenRouter's Mistral provider page states "Access 24 models served by Mistral through the OpenRouter
+      unified API" and charts "Tokens processed on OpenRouter"; the embedded daily series for 2026-10-12 sums to
+      about 119B tokens, led by mistralai/mistral-large-4-0-20261006 at about 58.4B and z-ai/glm-5.3-20260816 at
+      about 50.7B.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: fd00aa303b69838a07194b8282bc0e7ebd169133f25e82a22214c72d2547c52b
+  - url: https://mistral.ai/customers
+    shows: The customer stories page ("Bringing customers to the frontier") lists stories for HSBC, ASML, CMA CGM,
+      AXA, Airbus, BMW, Cisco, Ericsson, the European Patent Office, Stellantis and TotalEnergies, among others;
+      none gives a usage figure, and the stories cover Mistral's products generally rather than the API alone.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 4b51c9094b8d02a0d5d0c05ebfcfedee578f4f36716681445e155270dd2be635
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: API reference coverage, with Artificial Analysis's independent provider measurements; placed against
+    fireworks-inference
+  value: The API reference lists chat completion, FIM, embeddings, classifiers, files, models, batch, OCR, audio
+    transcription, audio speech and realtime sessions, plus workflows, agents, conversations, libraries and observability
+    endpoints. Artificial Analysis tracks 8 models on Mistral's API; the fastest are GLM-5.2 (max) at 223 output
+    tokens/sec, Ministral 3 3B at 215 t/s and Mistral Medium 3.5 at 163 t/s.
+  relative_to: fireworks-inference
+  relation: at
+  confidence: medium
+  note: Mistral's API covers more kinds of work than most hosted inference services, from chat and code completion
+    to OCR, speech and batch jobs, and it is the first-party source for Mistral's own models. Its fastest models
+    run slower than the fastest Fireworks serves, so it sits alongside Fireworks rather than above it.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://artificialanalysis.ai/providers/fireworks
+      shows: The Fireworks provider page says "Fireworks offers 7 models" and "For output speed, the fastest models
+        are Nemotron 3.5 Lightning (BF16) (419 t/s), GLM-5.3-Flash (188 t/s), and MiniMax-M3 (181 t/s)", and lists
+        context windows of up to 1M tokens for Kimi K3 (max) and GLM-5.3-Flash.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 9b9e203e27506c9620438013da0a5e485fc37a4a756bbf6782117d2a14f6b22d
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://docs.mistral.ai/api
+    shows: The API reference navigation lists "Chat Completion", "Fim", "Embeddings", "Classifiers", "Files", "Models",
+      "Batch", "Ocr", "Audio Transcriptions", "Audio Speech", "Realtime Sessions" and "Workflows" endpoints, with
+      beta Agents, Conversations, Libraries, Connectors and Observability groups; the chat endpoint is POST /v1/chat/completions.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 4e95b80bc8f5b38318a89c3f6de2a228a3883f0473fa73d108db23619214d562
+  - url: https://artificialanalysis.ai/providers/mistral
+    shows: The provider page says "Mistral offers 8 models" and "For output speed, the fastest models are GLM-5.2
+      (max) (223 t/s), Ministral 3 3B (215 t/s), and Mistral Medium 3.5 (163 t/s)."
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 41598f68e4ccd0291b25a875ff34fd74b714e3530e07a40cb73d60427526259d

@@ -1,0 +1,107 @@
+product: hugging-face-inference-providers
+openness:
+  score: 1
+  class: closed
+  components:
+    source:
+      value: closed
+    license:
+    - name: Proprietary
+    context:
+      access:
+        value: managed-cloud-API-only
+        detail: routes to third-party providers
+      client:
+        value: MIT
+        detail: '@huggingface/inference'
+  confidence: medium
+  note: Hugging Face publishes its client libraries, and the JavaScript client is MIT-licensed, but the router and
+    its billing run only as a Hugging Face service. The terms of service treat Inference Providers as a limited
+    right of access and use, not software you can run yourself.
+  last_verified: '2026-10-13'
+  raw: source:closed;access:managed-cloud-API-only(routes to third-party providers);client:MIT(@huggingface/inference);license:Proprietary
+  sources:
+  - url: https://huggingface.co/docs/inference-providers/index
+    shows: The docs describe a hosted service reached with a Hugging Face token at https://router.huggingface.co/v1,
+      which selects among partner providers; the page links no repository for the router, only github.com/huggingface
+      and the hub-docs repository.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 5998508e52d22548589d34528670b10309180471d6ad67ef61f7090fbf72acce
+  - url: https://huggingface.co/terms-of-service
+    shows: The terms say Services "may include limited licenses or subscriptions to access or use certain offerings
+      ... including ... the Inference Providers" and that purchases "mean a limited right to access and use a Service
+      (not a transfer or any ownership right, title, or interest)".
+    accessed: '2026-10-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 291efb1a5ebdd4c49f75c03402076fae920ec5d4c49248099a9be8250f066ab1
+  - url: https://registry.npmjs.org/@huggingface/inference/latest
+    shows: The npm registry metadata for @huggingface/inference 4.13.32 gives license "MIT", repository huggingface/huggingface.js
+      and the description "Typescript client for the Hugging Face Inference Providers and Inference Endpoints".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: ca2f6833298a503b19c8098933792124b07b7d1b224c8867938ba4fdd3d239fa
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Hugging Face publishes no request, token or user count for Inference Providers. Its JavaScript client also
+    serves Inference Endpoints and its Python client the whole Hub, so their downloads cannot be credited to the
+    router alone.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://huggingface.co/docs/inference-providers/pricing
+    shows: The pricing page, read for a usage disclosure, describes pay-as-you-go billing, monthly credits for PRO,
+      Team and Enterprise accounts and "no markup from Hugging Face"; it gives no request, token or user figure.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 6d68a3f408ec7eb55d196545a24fc074cbdf5509a47b808d8620432eca062dce
+  - url: https://registry.npmjs.org/@huggingface/inference/latest
+    shows: The npm package describes itself as the "Typescript client for the Hugging Face Inference Providers and
+      Inference Endpoints", so its installs span two services.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: ca2f6833298a503b19c8098933792124b07b7d1b224c8867938ba4fdd3d239fa
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: documented provider coverage, task support and routing policies; placed against fireworks-inference,
+    one of the providers it routes to
+  value: 'Routes Hub models to 18 providers: Baseten, Cerebras, Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks,
+    Groq, HF Inference, Novita, Nscale, OVHcloud AI Endpoints, Public AI, Replicate, Scaleway, Together, WaveSpeedAI
+    and Z.ai. Tasks span chat completion (LLM and VLM), feature extraction, text-to-image, text-to-video and speech-to-text.
+    Requests pick the fastest provider by default, or the cheapest or a named one by model-id suffix, through an
+    OpenAI-compatible endpoint.'
+  relative_to: fireworks-inference
+  relation: at
+  confidence: medium
+  note: Inference Providers runs no models itself, but it reaches the fastest specialist hosts, Fireworks among
+    them, and can choose between them on each request by speed or price. What it can do is roughly what those providers
+    can, so it sits alongside Fireworks rather than above the services it depends on.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://artificialanalysis.ai/providers/fireworks
+      shows: The Fireworks provider page says "Fireworks offers 7 models" and "For output speed, the fastest models
+        are Nemotron 3.5 Lightning (BF16) (419 t/s), GLM-5.3-Flash (188 t/s), and MiniMax-M3 (181 t/s)", and lists
+        context windows of up to 1M tokens for Kimi K3 (max) and GLM-5.3-Flash.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 9b9e203e27506c9620438013da0a5e485fc37a4a756bbf6782117d2a14f6b22d
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://huggingface.co/docs/inference-providers/index
+    shows: The provider table lists Baseten, Cerebras, Cohere, DeepInfra, Fal AI, Featherless AI, Fireworks, Groq,
+      HF Inference, Novita, Nscale, OVHcloud AI Endpoints, Public AI, Replicate, Scaleway, Together, WaveSpeedAI
+      and Z.ai across chat completion (LLM, VLM), feature extraction, text to image, text to video and speech to
+      text; "By default, our system automatically selects the fastest available provider", with ":cheapest" or a
+      provider name such as "openai/gpt-oss-120b:groq" as alternatives, and the page calls it a "Drop-in replacement
+      for the OpenAI chat completions API".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 5998508e52d22548589d34528670b10309180471d6ad67ef61f7090fbf72acce
