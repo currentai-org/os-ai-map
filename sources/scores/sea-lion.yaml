@@ -1,0 +1,186 @@
+product: sea-lion
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on HF for all four v4.8 checkpoints, ungated
+    data:
+      value: partial
+      detail: the supervised examples are a subset of the published aisingapore/SEA-Instruct-2602 (ODC-BY, automatic
+        click-through); the online distillation trajectories are generated during training and not released
+    code:
+      value: partial
+      detail: usage code only; the post-training pipeline is described in the technical report, and neither the
+        card nor the report links its code
+    license:
+    - name: MIT
+      detail: OSI; declared on every v4.8 card and Hub record
+    - name: NVIDIA-Nemotron-Open-Model-License
+      detail: the Nemotron 3 base model's license, carried in the repository's NOTICE.md; commercial use permitted,
+        non-OSI
+  governing_release: sea-lion-v4-8
+  confidence: medium
+  note: SEA-LION v4.8, the current release, declares MIT on every checkpoint, but the models are built on NVIDIA's
+    Nemotron 3 and ship with its Nemotron Open Model License, which allows commercial use without being an open-source
+    license. Post-training drew on a published Southeast Asian instruction dataset, though only a subset of it,
+    and the training pipeline is described rather than released. The Gemma-based v4 model, under Google's Gemma
+    terms, belongs to an older release.
+  raw: weights:open(safetensors on HF for all four v4.8 checkpoints, ungated);data:partial(the supervised examples
+    are a subset of the published aisingapore/SEA-Instruct-2602 (ODC-BY, automatic click-through); the online distillation
+    trajectories are generated during training and not released);code:partial(usage code only; the post-training
+    pipeline is described in the technical report, and neither the card nor the report links its code);license:MIT(OSI;
+    declared on every v4.8 card and Hub record)+NVIDIA-Nemotron-Open-Model-License(the Nemotron 3 base model's license,
+    carried in the repository's NOTICE.md; commercial use permitted, non-OSI)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://huggingface.co/api/models/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B
+    shows: 'Hub record: "private": false, "gated": false, cardData license "mit", datasets ["aisingapore/SEA-Instruct-2602"],
+      base_model aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B-Base; files include model-00001-of-00050.safetensors
+      onward, NOTICE.md and NVIDIA-Nemotron-Open-Model-License-12-12-25.pdf.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 0530d64a5e34fe6045f0f6878db2f49d4aeb4de7296ba4f7cf120417bb895156
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://huggingface.co/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B/raw/main/NOTICE.md
+    shows: 'Third-party notices. "AI Singapore opensource models are under NTU-mandated MIT License", followed by
+      a "Base Model License (nvidia-nemotron-open-model)" section reproducing the NVIDIA Nemotron Open Model License
+      of December 15, 2025: "Works are commercially usable", "You are free to create and distribute Derivative Works",
+      and redistribution requires giving recipients "a copy of this License". It names no user or revenue ceiling.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 6419728721546d2d9beeee01ada88c0ae96dd1cb02d4061ca5e3f6785b78a7b8
+    establishes:
+    - license
+  - url: https://huggingface.co/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B/raw/main/README.md
+    shows: 'Card: built on Nemotron-SEA-LION-v4.8-120B-A12B-Base "by fine-tuning with a mixture of SFT and online
+      on-policy distillation (OPD)"; "License: MIT"; under Training Data, "The training data is a subset of aisingapore/SEA-Instruct-2602".
+      The code on the card is a transformers usage example; no training code is linked.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 101102b64b29d20ca78a2ca69c22a631e70c13693fb19a553e939f29f301c088
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/collections/aisingapore/sea-lion-v48
+    shows: The "SEA-LION v4.8" collection lists the 120B-A12B and 30B-A3B post-trained and base checkpoints with
+      their FP8, NVFP4 and GGUF variants, every one ungated, and the technical report 2609.18310.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e73a7e696478f6b7639ca5bdc3549685cd1638326e8d9a0863d2ca4a9a1bf71f
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models?author=aisingapore&limit=200
+    shows: AI Singapore's model listing. Every Nemotron-SEA-LION-v4.8 repository, created between 2026-09-03 and
+      2026-09-16, carries the tag license:mit. The Gemma-SEA-LION-v4-27B family, created in August 2025, carries
+      license:gemma, and Qwen-SEA-LION-v4-32B-IT, created in October 2025, license:mit.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 840454074dcfc72aa66733604d0157db0d7e934ff24cc6583ceec0cd0d0dfa20
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/aisingapore/SEA-Instruct-2602
+    shows: 'Dataset record: "gated": "auto", license "odc-by", parquet files per language. Its description calls
+      it "a preliminary release of instruction-tuning data" that "contains only the filtered subset of data".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2640a7f7745026337f077ce96c195d263cc7a70d080e22351bd9c581c75d7453
+    establishes:
+    - data
+  - url: https://arxiv.org/html/2609.18310
+    shows: SEA-LION-v4.8 technical report. Offline supervised examples "are a subset from our aisingapore/SEA-Instruct-2602
+      dataset"; a second source of post-training data "consists of trajectories generated dynamically by the model".
+      Section 4.2 describes a five-part post-training pipeline; searched the body for a code repository link and
+      found none.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 136ca8d5509d0e5efec50cf9197a1ca38e0e2f1242b04b5886819d5d68aa431e
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models/aisingapore/Gemma-SEA-LION-v4-27B-IT
+    shows: 'Hub record for the v4 Gemma model: "gated": false, cardData license "gemma", base_model aisingapore/Gemma-SEA-LION-v4-27B,
+      and new_version "aisingapore/Qwen-SEA-LION-v4.5-27B-IT", so a later release supersedes it.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e81ae80e396477185722f0b2384c3f9231e93e8f9bc7cc9fa7864a3d47d7fb68
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 'Adoption is counted as Hugging Face downloads summed across the three declared chat models: the current
+    v4.8 120B model and the earlier v4 models built on Qwen3 and Gemma 3. AI Singapore publishes quantized and smaller
+    checkpoints separately, and those are not counted.'
+  sources:
+  - url: https://huggingface.co/api/models/aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B
+    shows: '"downloads":1592 over the trailing 30 days for aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 0530d64a5e34fe6045f0f6878db2f49d4aeb4de7296ba4f7cf120417bb895156
+  - url: https://huggingface.co/api/models/aisingapore/Gemma-SEA-LION-v4-27B-IT
+    shows: '"downloads":1066 over the trailing 30 days for aisingapore/Gemma-SEA-LION-v4-27B-IT.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e81ae80e396477185722f0b2384c3f9231e93e8f9bc7cc9fa7864a3d47d7fb68
+  - url: https://huggingface.co/api/models/aisingapore/Qwen-SEA-LION-v4-32B-IT
+    shows: '"downloads":833 over the trailing 30 days for aisingapore/Qwen-SEA-LION-v4-32B-IT.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 175c5d1548e19f4d99fb5f7d1c5c45a85fa044720a8e5a26511e1a2bb7581332
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Intelligence Index (base model) and SEA-HELM (technical report)
+  value: SEA-LION v4.8 is not listed on Artificial Analysis. Its base, Nemotron 3 Super 120B A12B (Reasoning), scores
+    13 on the index, against 14 for Mistral Medium 3.5 and 8 for GPT-4o (Nov '24). On SEA-HELM, the Southeast Asian
+    benchmark suite, the 120B tune raises the overall score from 49.30 for that base to 63.44.
+  relative_to: mistral-medium
+  relation: at
+  confidence: low
+  note: No general benchmark reading of SEA-LION v4.8 itself exists. It is a regional adaptation of NVIDIA's Nemotron
+    3 Super, which scores just below Mistral Medium 3.5 on Artificial Analysis, and its own report shows large gains
+    over that base in Southeast Asian languages, so it is placed level with Mistral Medium until a direct reading
+    appears.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://artificialanalysis.ai/models/mistral-medium-3-5
+      shows: '"Mistral Medium 3.5 scores 14 on the Artificial Analysis Intelligence Index, placing it well above
+        average among comparable models (median: 8)"; Intelligence rank "# 6 / 65". The score the peer records is
+        unchanged; the digest drifts because the page carries live pricing.'
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 1ca0b622ab2aa16c21b81d7fe03039fada21148fca934e23656c7f9dcfc1b5ff
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://artificialanalysis.ai/models/nvidia-nemotron-3-super-120b-a12b
+    shows: '"Nemotron 3 Super 120B A12B (Reasoning) scores 13 on the Artificial Analysis Intelligence Index, placing
+      it well above average among other open weight models of similar size (median: 8)"; Intelligence rank "# 7
+      / 65"; "Open weights model", "Released March 2026". This is the base SEA-LION v4.8 120B was adapted from.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 1912f99f858f54c58704bb6c1f697543c3cdefd10f2712eb07639f1a799c9c0b
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 12.83 for
+      Nemotron 3 Super 120B A12B (Reasoning), 11.27 for Mistral Small 4 (Reasoning), 8.99 for Mistral Small 4 (Non-reasoning)
+      and 8.44 for GPT-4o (Nov '24). No SEA-LION or Bielik model appears on the page. The digest drifts between
+      fetches because the page carries live pricing and throughput figures.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 1e96e09d9dba9f70d99e88f28e32eef38c51660f089b92d3974b20d4234b9f13
+  - url: https://arxiv.org/abs/2609.18310
+    shows: '"SEA-LION-v4.8: A Technical Report", submitted 16 Sep 2026. Abstract: the family is "built upon NVIDIA
+      Nemotron 3"; "On SEA-HELM, the 30B-A3B model improves the overall SEA score from 46.06 to 51.57, while the
+      120B-A12B model improves from 49.30 to 63.44."'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 736ab95abb88e0131f269abe2489c3bebcacb1ce65aff7164de3d1d1bfa078bb

@@ -1,0 +1,146 @@
+product: bielik
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on HF speakleash/Bielik-11B-v3.0-Instruct, behind an automatic click-through that asks
+        for contact consent
+    post-training-data:
+      value: described
+      detail: SpeakLeash's own instruction corpus (20M instructions and dialogues) and a 114,000-example preference
+        set, described in the paper, not released
+    code:
+      value: closed
+      detail: no training code released; the paper names the third-party VERL framework for the RL stage
+    license:
+    - name: Apache-2.0
+      detail: OSI; every Bielik v3 checkpoint on the Hub
+    context:
+      terms:
+        value: conduct
+        detail: 'Bielik Terms of Use v1.1 apply on top of Apache-2.0: users must be 18 or older, and unlawful or
+          harmful use and processing personal data are prohibited; no commercial limit'
+  governing_release: bielik-v3
+  confidence: high
+  note: Bielik 11B v3 ships under Apache-2.0, an open-source license, after an automatic click-through on Hugging
+    Face. SpeakLeash's terms of use add conduct rules, an age minimum of 18 and a ban on processing personal data
+    among them, without limiting commercial use. The instruction and preference data are SpeakLeash's own, described
+    in the paper but not released, and no training code is published.
+  raw: 'weights:open(safetensors on HF speakleash/Bielik-11B-v3.0-Instruct, behind an automatic click-through that
+    asks for contact consent);post-training-data:described(SpeakLeash''s own instruction corpus (20M instructions
+    and dialogues) and a 114,000-example preference set, described in the paper, not released);code:closed(no training
+    code released; the paper names the third-party VERL framework for the RL stage);license:Apache-2.0(OSI; every
+    Bielik v3 checkpoint on the Hub);terms:conduct(Bielik Terms of Use v1.1 apply on top of Apache-2.0: users must
+    be 18 or older, and unlawful or harmful use and processing personal data are prohibited; no commercial limit)'
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://huggingface.co/api/models/speakleash/Bielik-11B-v3.0-Instruct
+    shows: 'Hub record: "private": false, "gated": "auto", cardData license "apache-2.0", base_model speakleash/Bielik-11B-v3-Base-20250730,
+      extra_gated_fields asking only "I agree to be contacted for feedback about Bielik models"; files model-00001-of-00005.safetensors
+      to model-00005-of-00005.safetensors. No dataset tag. The raw model card returns 401 without accepting the
+      gate.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 421ec327f1fb6ae9c28a709524798b28287d0851d1a8009e0d6877aebc29c6ff
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=speakleash&limit=200
+    shows: 'SpeakLeash''s model listing: every Bielik v3 repository, from Bielik-1.5B-v3 through Bielik-11B-v3.0-Instruct
+      and Bielik-Minitron-7B-v3.0-Instruct and their quantized copies, carries the tag license:apache-2.0.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 11e52c4d3596c8a26c9a7b828c4f1a4d678e190168368ebc76eb40a3a9e94c8c
+    establishes:
+    - license
+  - url: https://bielik.ai/en/terms/
+    shows: 'Terms of Use, "version 1.1 of 31 July 2025", supplementary to the license: "The Bielik 3.0 Model is
+      made available under the Apache 2.0 licence". "Use of the Model is permitted only to persons who are at least
+      18 years of age", and use for "unlawful activities", harmful content and "processing any personal data" is
+      prohibited. It sets no commercial, user or revenue limit.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: f19f33ff019d75ad0179b6a504af5409de8243bd1d72e978645d4b517faa211f
+    establishes:
+    - license
+  - url: https://arxiv.org/pdf/2601.11579
+    shows: 'Bielik 11B v3 paper, section 4.1: "we developed a proprietary dataset that undergoes continuous expansion
+      and refinement by human annotators"; SFT ran "for 3 epochs on 20 million instructions and dialogues"; the
+      preference set was expanded "to over 114, 000 examples"; RL "was performed using the Volcano Engine Reinforcement
+      Learning (VERL) framework". The paper links no dataset release and no training code.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 19c78052f44bb7cf55d409d8feaa792c80b2869e043677ef15ec3a2ecd29b62f
+    establishes:
+    - post-training-data
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the full-precision instruct model. SpeakLeash also publishes
+    quantized copies, and its AWQ and GGUF builds each draw more downloads than the original, so the count understates
+    how widely the model is run.
+  sources:
+  - url: https://huggingface.co/api/models/speakleash/Bielik-11B-v3.0-Instruct
+    shows: '"downloads":5515 over the trailing 30 days for speakleash/Bielik-11B-v3.0-Instruct.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 421ec327f1fb6ae9c28a709524798b28287d0851d1a8009e0d6877aebc29c6ff
+  - url: https://huggingface.co/api/models?author=speakleash&limit=200
+    shows: 'Trailing-30-day downloads in SpeakLeash''s listing: 9,018 for Bielik-11B-v3.0-Instruct-awq and 8,199
+      for Bielik-11B-v3.0-Instruct-GGUF, against 5,515 for the full-precision Bielik-11B-v3.0-Instruct.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 11e52c4d3596c8a26c9a7b828c4f1a4d678e190168368ebc76eb40a3a9e94c8c
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Open LLM Leaderboard suite (paper benchmark table)
+  value: Bielik-11B-v3.0-Instruct averages 72.45 on the Open LLM Leaderboard tasks in its paper, with MMLU 71.11
+    and GSM8K 85.60; the same table gives Mistral-7B-Instruct-v0.2 65.71, MMLU 60.78 and GSM8K 40.03, and Meta-Llama-3-8B-Instruct
+    66.87. On the Open PL LLM Leaderboard it scores 65.93.
+  relative_to: mistral-7b-instruct
+  relation: one_above
+  confidence: medium
+  note: Bielik is not listed on Artificial Analysis, so this reading comes from the paper's own English benchmark
+    table. There it clearly outperforms Mistral 7B Instruct v0.2, a tune of the same base it was scaled up from,
+    most of all in math, and Llama 3 8B Instruct. In Polish it scores close to open models several times its size.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://mistral.ai/news/la-plateforme
+      shows: 'La Plateforme launch post: the mistral-tiny endpoint "serves Mistral 7B Instruct v0.2, a new minor
+        release of Mistral 7B Instruct" and "obtains 7.6 on MT-Bench", the figure the peer records.'
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 66e8b1cb7441fc006ca9ff4fa365c891d0766730debfe0f74e8b825cca98238a
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://arxiv.org/pdf/2601.11579
+    shows: 'Table 11, "Open LLM Leaderboard results for selected instruction-tuned models": Bielik-11B-v3.0-Instruct
+      AVG 72.45, MMLU 71.11, GSM8K 85.60; Meta-Llama-3-8B-Instruct 66.87; Mistral-7B-Instruct-v0.2 65.71, MMLU 60.78,
+      GSM8K 40.03. Table 5, Open PL LLM Leaderboard for instruction-tuned models: Bielik-11B-v3.0-Instruct 65.93,
+      below Llama-3.3-70B-Instruct at 66.40 and above Qwen2-72B-Instruct at 65.87.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 19c78052f44bb7cf55d409d8feaa792c80b2869e043677ef15ec3a2ecd29b62f
+  - url: https://arxiv.org/abs/2601.11579
+    shows: '"Bielik 11B v3: Multilingual Large Language Model for European Languages", submitted 30 Dec 2025. The
+      model "extends the Mistral 7B v0.2 architecture, scaled to 11B parameters via depth up-scaling", trained in
+      four stages: "continuous pre-training, supervised fine-tuning (SFT), Direct Preference Optimization (DPO),
+      and reinforcement learning".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 18643e451188e9df6c19cf75c7a9605b27af19753276009d1c91c873f1cae507
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 12.83 for
+      Nemotron 3 Super 120B A12B (Reasoning), 11.27 for Mistral Small 4 (Reasoning), 8.99 for Mistral Small 4 (Non-reasoning)
+      and 8.44 for GPT-4o (Nov '24). No SEA-LION or Bielik model appears on the page. The digest drifts between
+      fetches because the page carries live pricing and throughput figures.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 1e96e09d9dba9f70d99e88f28e32eef38c51660f089b92d3974b20d4234b9f13

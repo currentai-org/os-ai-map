@@ -1,0 +1,133 @@
+product: mistral-small
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on HF mistralai/Mistral-Small-4-119B-2603, ungated; NVFP4 and eagle checkpoints also Apache-2.0
+    data:
+      value: closed
+    code:
+      value: partial
+      detail: inference and serving only; fine-tuning is pointed to third-party Axolotl
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: mistral-small-4
+  confidence: high
+  note: Mistral Small 4's weights are downloadable without a gate under Apache-2.0, an open-source license, but
+    Mistral publishes neither the training data nor the training code. That makes it an open-weights release with
+    a closed recipe.
+  raw: weights:open(safetensors on HF mistralai/Mistral-Small-4-119B-2603, ungated; NVFP4 and eagle checkpoints
+    also Apache-2.0);data:closed;code:partial(inference and serving only; fine-tuning is pointed to third-party
+    Axolotl);license:Apache-2.0(OSI)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Small-4-119B-2603
+    shows: 'Hub record: "private": false, "gated": false, cardData license "apache-2.0"; files include consolidated-00001-of-00007.safetensors
+      to consolidated-00007-of-00007.safetensors and model-00001-of-00003.safetensors to model-00003-of-00003.safetensors.
+      No dataset tag, and no LICENSE file in the repository.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 57f796c8c1865cff0983aecc21aba0bf439c2ef937de3f026f3927a2405a5436
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://huggingface.co/mistralai/Mistral-Small-4-119B-2603/raw/main/README.md
+    shows: 'Card front matter "license: apache-2.0"; "Apache 2.0 License: Open-source license for both commercial
+      and non-commercial use"; "This model is licensed under the Apache 2.0 License". Code covers inference through
+      vLLM, llama.cpp, SGLang and transformers, and fine-tuning points to Axolotl. Searched the body for dataset,
+      training data and corpus: none.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 243f9d4f6cdb5644ca93d34d2e002822cb946803a6a7e3aed39b56d6ceeb1996
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=mistralai&search=Mistral-Small-4&full=true
+    shows: 'Mistral''s Hub listing for Mistral Small 4: Mistral-Small-4-119B-2603, Mistral-Small-4-119B-2603-NVFP4
+      and Mistral-Small-4-119B-2603-eagle, each ungated and tagged license:apache-2.0.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2be8a2875d54ad5159fe135ea5b3e9f1193c18f741b55ba912565f3e9f5710b9
+    establishes:
+    - weights
+    - license
+  - url: https://docs.mistral.ai/models/mistral-small-4-0-26-03
+    shows: 'Mistral''s model page: "March 16, 2026", "Apache 2.0", "v 26.03", "Mistral Small 4", "Our powerful hybrid
+      model unifying instruct, reasoning, and coding capabilities in a single model", API identifier "mistral-small-2603",
+      context 256k, priced at $0.15 per million input tokens and $0.6 per million output tokens.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2c654256bf610a1e9724668d488d2eb22eace64261e774d2a37e85373e87155b
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the main checkpoint Mistral publishes. Mistral also serves
+    the model through its API, which publishes no usage figure, so the count covers the open weights alone.
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Small-4-119B-2603
+    shows: '"downloads":77411 over the trailing 30 days for mistralai/Mistral-Small-4-119B-2603.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 57f796c8c1865cff0983aecc21aba0bf439c2ef937de3f026f3927a2405a5436
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'Mistral Small 4 (Reasoning) scores 11 on the Artificial Analysis Intelligence Index against a median of
+    8 for comparable models, ranked #12 of 65 in that group; with reasoning off it scores 9. Mistral Medium 3.5
+    scores 14 and GPT-4o (Nov ''24) 8.'
+  relative_to: mistral-medium
+  relation: at
+  confidence: high
+  note: With reasoning on, Mistral Small 4 sits a little below Mistral Medium 3.5 on the Artificial Analysis index
+    and above GPT-4o, far from the frontier but strong for its active size, so it scores level with Mistral Medium.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://artificialanalysis.ai/models/mistral-medium-3-5
+      shows: '"Mistral Medium 3.5 scores 14 on the Artificial Analysis Intelligence Index, placing it well above
+        average among comparable models (median: 8)"; Intelligence rank "# 6 / 65". The score the peer records is
+        unchanged; the digest drifts because the page carries live pricing.'
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 1ca0b622ab2aa16c21b81d7fe03039fada21148fca934e23656c7f9dcfc1b5ff
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://artificialanalysis.ai/models/mistral-small-4
+    shows: '"Mistral Small 4 (Reasoning) scores 11 on the Artificial Analysis Intelligence Index, placing it well
+      above average among comparable models (median: 8)"; Intelligence rank "# 12 / 65"; tagged "Open weights model"
+      and "Released March 2026".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: edc61963ffc605832884a711127a6a709b56212dcd71aaff6da5fcf0efa063ba
+  - url: https://artificialanalysis.ai/models/mistral-small-4-non-reasoning
+    shows: '"Mistral Small 4 (Non-reasoning) scores 9 on the Artificial Analysis Intelligence Index, placing it
+      well above average among comparable models (median: 7)".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 425fc2895bd06f929079f77e610e49d90dd4d422c147716e70e5fd03478f3434
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 12.83 for
+      Nemotron 3 Super 120B A12B (Reasoning), 11.27 for Mistral Small 4 (Reasoning), 8.99 for Mistral Small 4 (Non-reasoning)
+      and 8.44 for GPT-4o (Nov '24). No SEA-LION or Bielik model appears on the page. The digest drifts between
+      fetches because the page carries live pricing and throughput figures.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 1e96e09d9dba9f70d99e88f28e32eef38c51660f089b92d3974b20d4234b9f13
+  - url: https://docs.mistral.ai/models/mistral-small-4-0-26-03
+    shows: 'Mistral''s model page: "March 16, 2026", "Apache 2.0", "v 26.03", "Mistral Small 4", "Our powerful hybrid
+      model unifying instruct, reasoning, and coding capabilities in a single model", API identifier "mistral-small-2603",
+      context 256k, priced at $0.15 per million input tokens and $0.6 per million output tokens.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2c654256bf610a1e9724668d488d2eb22eace64261e774d2a37e85373e87155b
