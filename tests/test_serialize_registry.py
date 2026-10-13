@@ -355,6 +355,12 @@ TRACTION_REPOSITORIES = [
     ("zed", "zed-industries/zed"), ("helm", "stanford-crfm/helm"), ("swe-bench", "SWE-bench/SWE-bench"),
     # Added 2026-10-09 by the llama-cpp relabel from usage_volume to reported_traction.
     ("llama-cpp", "ggml-org/llama.cpp"),
+    # Added 2026-10-13 by the Alpha stack promotions: hasher-matcher-actioner's repository is the
+    # ThreatExchange monorepo, public-ai-inference-utility's is its portal and gateway, and
+    # bubblewrap installs through distribution packages; all three band on reported traction.
+    ("hasher-matcher-actioner", "facebook/ThreatExchange"),
+    ("public-ai-inference-utility", "forpublicai/platform.publicai.co"),
+    ("bubblewrap", "containers/bubblewrap"),
 ]
 # R-2026-10-08-r: the measured package is not how the product is used.
 RULED_PACKAGES = {

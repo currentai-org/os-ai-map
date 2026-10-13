@@ -1,0 +1,16 @@
+name: arxiv-api
+display_name: arXiv API
+type: software
+description: arXiv's public query API at export.arxiv.org/api/query, which searches the arXiv preprint server by
+  title, author, abstract, comment, journal reference, category or report number, or looks papers up by identifier.
+  Results come back as an Atom feed giving each paper's title, authors, abstract and categories, with links to its
+  abstract page and PDF. It needs no key, and arXiv's terms ask for no more than one request every three seconds.
+github:
+- url: https://github.com/arXiv/arxiv-search
+comments: arXiv's documentation calls this its legacy API. The code for it is published in arXiv's arxiv-search
+  repository as a Python reimplementation of an older Perl and Lucene service, and the feed the live endpoint returns
+  carries the reimplementation's formatting rather than the format the user manual shows from the old service. Building
+  an index with that code needs an arXiv metadata endpoint reachable only from Cornell University Library's network;
+  the metadata itself is public through OAI-PMH and bulk downloads. The terms let callers store and share descriptive
+  metadata, but not serve the papers themselves without the copyright holder's permission or a license that allows
+  it.

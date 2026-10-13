@@ -1,0 +1,144 @@
+product: text-embeddings-inference
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the Rust router and model backends build from the repository
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository tree; Hugging Face Inference Endpoints is a separate hosted product
+        that runs TEI as one of its engines
+    context:
+      history:
+        value: HFOIL 1.0 through v1.2.0
+        detail: Apache-2.0 from v1.2.3
+  confidence: high
+  note: Text Embeddings Inference is Apache-2.0 and builds whole from the public repository, with no enterprise
+    edition or license key, and Hugging Face's paid Inference Endpoints run it as one engine among several rather
+    than holding features back. Its early releases used Hugging Face's restrictive HFOIL license until the v1.2
+    series.
+  raw: license:Apache-2.0(OSI);source:public(the Rust router and model backends build from the repository);core-gated:ungated(no
+    enterprise path in the repository tree; Hugging Face Inference Endpoints is a separate hosted product that runs
+    TEI as one of its engines);history:HFOIL 1.0 through v1.2.0(Apache-2.0 from v1.2.3)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/LICENSE
+    shows: LICENSE at the latest release (v1.9.4) is the Apache License, Version 2.0, January 2004, ending "Copyright
+      2022 Hugging Face".
+    accessed: '2026-10-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 28216184827860ae83a60244c8868de4cf84e16357d16cdb975a46afe3afa9db
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference@v1.2.0/LICENSE
+    shows: The LICENSE at the v1.2.0 tag is a different document, headed "Hugging Face Optimized Inference License
+      1.0 (HFOILv1.0)".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: c5e9241519783e92066943bed9ebc9768dcbedac2cfee2e8febd26f0cf01699f
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference@v1.2.3/LICENSE
+    shows: The LICENSE at the v1.2.3 tag is the Apache License, Version 2.0, the same text the current release carries.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 28216184827860ae83a60244c8868de4cf84e16357d16cdb975a46afe3afa9db
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/
+    shows: The repository tree at v1.9.4 holds backends, core, router, proto, docs and test folders with Cargo.toml,
+      per-platform Dockerfiles (CUDA, ROCm, Intel, arm64) and one LICENSE; there is no ee/, enterprise/, commercial/
+      or proprietary/ path.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: bee8d0bda402e731e8a9e163a7d44e0d1b1fac08bea735042ce263a8f1dfe5bb
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/README.md
+    shows: The README documents running the server from Docker images at ghcr.io/huggingface/text-embeddings-inference,
+      a local install, "brew install text-embeddings-inference" on Apple Silicon and Docker builds from source,
+      with no paid tier or license key.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 2ff2b8137163ed861547f86ffd9f3003b1a2dd7173ba1acf2688b3a67c959801
+  - url: https://huggingface.co/docs/inference-endpoints/engines/tei
+    shows: Hugging Face's Inference Endpoints documentation lists Text Embeddings Inference (TEI) as one of its
+      inference engines beside vLLM, TGI, SGLang and llama.cpp, configured with the same batch and concurrency settings
+      the open server exposes.
+    accessed: '2026-10-13'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 49959624267d970792e4e4a7a7d001870c76d88f89a1df7b9d24922dd15f2587
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: TEI ships mainly as Docker images on GitHub's container registry, which publishes no pull counts, so GitHub
+    stars are the only signal that covers it. Its Homebrew build for Apple Silicon is countable but is a minor install
+    route and sees only a few dozen installs a month, so it is not used to judge reach.
+  sources:
+  - url: https://img.shields.io/github/stars/huggingface/text-embeddings-inference.json
+    shows: 'shields.io relay of the GitHub stargazer count for huggingface/text-embeddings-inference: 5.1k stars.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a4baaaf4230b20c3974afef473e5573174c1050dacb663372bca2398b67d914c
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/README.md
+    shows: The README's Docker Images table lists every supported backend as an image under ghcr.io/huggingface/text-embeddings-inference,
+      from cpu-1.9 to hopper-1.9; Homebrew is offered only for Apple Silicon.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2ff2b8137163ed861547f86ffd9f3003b1a2dd7173ba1acf2688b3a67c959801
+  - url: https://formulae.brew.sh/api/formula/text-embeddings-inference.json
+    shows: 'Homebrew analytics for the text-embeddings-inference package: 49 installs in the last 30 days and 445
+      in the last 365 days.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e7849845feb9899c5c269f68661b4d6d61933bd1c5eecac7620d8f9566b21034
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: README-documented feature set, compared with Text Generation Inference
+  value: Embedding, reranking, sequence-classification and SPLADE pooling for encoder and decoder embedding models
+    (BERT, XLM-RoBERTa, GTE, NomicBERT, ModernBERT, Qwen2/Qwen3, Gemma3, Mistral); token-based dynamic batching;
+    Flash Attention, Candle and cuBLASLt kernels; Safetensors and ONNX weights; HTTP and gRPC APIs; OpenTelemetry
+    tracing and Prometheus metrics; CPU, NVIDIA Turing to Blackwell, AMD Instinct and Apple Metal backends.
+  relative_to: text-generation-inference
+  relation: at
+  confidence: medium
+  note: Text Embeddings Inference covers what search and retrieval need from a server, with dynamic batching, optimized
+    kernels and production tracing across CPU, NVIDIA, AMD and Apple hardware, and it is still actively released.
+    It sits level with its sibling Text Generation Inference as a focused server rather than a general-purpose engine.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://huggingface.co/docs/text-generation-inference/index
+      shows: The Text Generation Inference docs index still says "text-generation-inference is now in maintenance
+        mode" and lists continuous batching, "Tensor Parallelism for faster inference on multiple GPUs", token streaming,
+        Flash Attention and Paged Attention, quantization and OpenTelemetry tracing with Prometheus metrics.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 152eb286eff1a7865c73ab32f5e22ed45bd86fc8ffd2195034a32aa2ed683f39
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/huggingface/text-embeddings-inference/README.md
+    shows: The README lists "Token based dynamic batching", Flash Attention, Candle and cuBLASLt kernels, Safetensors
+      and ONNX weight loading, "Metal support for local execution on Macs" and OpenTelemetry tracing with Prometheus
+      metrics; it documents re-rankers, sequence classification, SPLADE pooling, gRPC, AMD Instinct GPUs via ROCm,
+      and images from Turing to Blackwell.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2ff2b8137163ed861547f86ffd9f3003b1a2dd7173ba1acf2688b3a67c959801
+  - url: https://huggingface.co/docs/inference-endpoints/engines/tei
+    shows: The Inference Endpoints TEI page describes it as a production-ready engine for text embeddings with token-based
+      dynamic batching, Flash Attention, Candle and cuBLASLt, Safetensors and ONNX formats, and settings for max
+      tokens per batch and max concurrent requests.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 49959624267d970792e4e4a7a7d001870c76d88f89a1df7b9d24922dd15f2587

@@ -1,0 +1,126 @@
+product: bubblewrap
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: LGPL-2.1
+      detail: COPYING carries the LGPL 2.1 text; source files declare SPDX LGPL-2.0-or-later
+    source:
+      value: public
+      detail: C, builds with meson
+    core-gated:
+      value: ungated
+      detail: a single command-line tool with no paid edition, shipped through Linux distribution packages
+  confidence: high
+  note: 'bubblewrap is free software under the GNU Lesser General Public License: the source files allow version
+    2 or any later version, and the license text shipped with them is version 2.1. The whole tool builds from the
+    public repository, and there is no company edition, hosted service or withheld feature beside it.'
+  raw: license:LGPL-2.1(COPYING carries the LGPL 2.1 text; source files declare SPDX LGPL-2.0-or-later);source:public(C,
+    builds with meson);core-gated:ungated(a single command-line tool with no paid edition, shipped through Linux
+    distribution packages)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/containers/bubblewrap/COPYING
+    shows: COPYING at the latest release (v0.13.0) is the "GNU LESSER GENERAL PUBLIC LICENSE", "Version 2.1, February
+      1999".
+    accessed: '2026-10-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551
+  - url: https://cdn.jsdelivr.net/gh/containers/bubblewrap/bubblewrap.c
+    shows: 'The main source file opens "Copyright (C) 2016 Alexander Larsson" and "SPDX-License-Identifier: LGPL-2.0-or-later",
+      allowing version 2 of the LGPL or any later version.'
+    accessed: '2026-10-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 534295b804fa3f5ddeb3ae275ce5a2113d468c72ec0a74fdad6003e0a67ee4ef
+  - url: https://cdn.jsdelivr.net/gh/containers/bubblewrap/
+    shows: The repository tree at v0.13.0 holds bubblewrap.c with its helper C files, meson.build, tests, completions,
+      demos and packaging, COPYING and SECURITY.md; there is no ee/, enterprise/, commercial/ or proprietary/ path.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: e5112580165da3a1c1395016e887c985894f36d094bea786438c33975cc6655d
+  - url: https://cdn.jsdelivr.net/gh/containers/bubblewrap/README.md
+    shows: The README says bubblewrap "is available in the package repositories of the most Linux distributions"
+      and gives the meson commands to build it from source; it names Flatpak and rpm-ostree as users and describes
+      no paid edition or hosted service.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 0c1dc12c6d94017c45e220fc0e5b679f24c0f09494bdd4bc7157d8abcd75c001
+adoption:
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  confidence: medium
+  banded_quantity: 'Debian popcon: installed on 134,122 of 291,938 reporting systems (45.94%); an install
+    share, not monthly users'
+  note: bubblewrap reaches people mostly as a dependency that Linux distributions install for Flatpak and similar
+    tools, so no download count captures it. Debian's opt-in popularity survey finds it on nearly half of reporting
+    machines, which puts it among the system's commonly installed components.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://qa.debian.org/popcon.php?package=bubblewrap
+    shows: 'Debian popularity contest for bubblewrap: installed on 134,122 of 291,938 reporting systems (45.94%)
+      and used regularly on 113,764.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: ef19392a90694c8f5e5182011b382c3c29000c1dd0a6752a29fbf3bd2a99c53d
+  - url: https://cdn.jsdelivr.net/gh/containers/bubblewrap/README.md
+    shows: The README lists Flatpak, rpm-ostree unprivileged and bwrap-oci as users, and says the larger frameworks
+      that build its command lines include Flatpak, libgnome-desktop and sandwine.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 0c1dc12c6d94017c45e220fc0e5b679f24c0f09494bdd4bc7157d8abcd75c001
+  - url: https://cdn.jsdelivr.net/gh/anthropics/sandbox-runtime/README.md
+    shows: Anthropic's Sandbox Runtime README says it uses "native OS sandboxing primitives (`sandbox-exec` on macOS,
+      `bubblewrap` on Linux)" and tells Linux users to install bubblewrap from apt, dnf or pacman.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2b18ce30672734247519435d5755875ed5f962ef9d0dbfe00994f6097bbe4b93
+  - url: https://img.shields.io/github/stars/containers/bubblewrap.json
+    shows: 'shields.io relay of the GitHub stargazer count for containers/bubblewrap: 9k stars.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e511d24127292b13840839f330aa569919a32136e85a7965670077345742f6f6
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: isolation mechanism and scope read from the README, compared with Sandbox Runtime
+  value: isolation:Linux namespaces (a fresh mount namespace on a hidden tmpfs, plus optional user, PID, IPC, network
+    and UTS namespaces) with caller-supplied seccomp filters, no kernel or VM boundary; policy:none built in, set
+    entirely by the caller's arguments; runtime breadth:any Linux process; platform:Linux only; scale:single-host
+    command-line tool, no fleet or managed mode
+  relative_to: sandbox-runtime
+  relation: at
+  confidence: medium
+  note: bubblewrap isolates a process with Linux namespaces and optional seccomp filters, a boundary that shares
+    the host kernel, unlike a microVM or gVisor. Its protection depends entirely on the arguments it is given, which
+    places it level with Sandbox Runtime, a ready-made policy layer built on bubblewrap on Linux.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://cdn.jsdelivr.net/gh/anthropics/sandbox-runtime/README.md
+      shows: The Sandbox Runtime README describes "native OS sandboxing primitives (`sandbox-exec` on macOS, `bubblewrap`
+        on Linux)" plus "proxy-based network filtering", so its Linux isolation is bubblewrap's, with filesystem
+        and network policy layered on top.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 2b18ce30672734247519435d5755875ed5f962ef9d0dbfe00994f6097bbe4b93
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/containers/bubblewrap/README.md
+    shows: The README says bubblewrap "is not a complete, ready-made sandbox with a specific security policy" and
+      that protection "is entirely determined by the arguments passed to bubblewrap"; it documents a new mount namespace
+      on an invisible tmpfs, user, IPC, PID, network and UTS namespaces, and seccomp filters.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 0c1dc12c6d94017c45e220fc0e5b679f24c0f09494bdd4bc7157d8abcd75c001

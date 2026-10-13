@@ -1,0 +1,194 @@
+product: hasher-matcher-actioner
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI, the ThreatExchange repository license, which covers HMA
+    source:
+      value: public
+      detail: the whole service builds from facebook/ThreatExchange/hasher-matcher-actioner
+    self-host:
+      value: 'yes'
+      detail: Docker image or Python library
+    core-gated:
+      value: ungated
+    context:
+      service:
+        value: none
+  confidence: high
+  note: HMA is released under the BSD license that covers Meta's whole ThreatExchange repository, and the complete
+    service builds from that published code and runs on your own servers. Meta launched it as a free tool, none
+    of its documentation mentions a paid or hosted edition, and the 2.0 rewrite replaced its AWS dependencies with
+    open-source components only.
+  raw: license:BSD-3-Clause(OSI, the ThreatExchange repository license, which covers HMA);source:public(the whole
+    service builds from facebook/ThreatExchange/hasher-matcher-actioner);self-host:yes(Docker image or Python library);service:none;core-gated:ungated
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/LICENSE
+    shows: 'The LICENSE file at the root of facebook/ThreatExchange opens "BSD License" and "For ThreatExchange
+      software", with "Copyright (c) Meta Platforms, Inc. and affiliates.", and carries the three BSD clauses: keep
+      the copyright notice in source, reproduce it in binary distributions, and "Neither the name Facebook nor the
+      names of its contributors may be used to endorse or promote products".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 68ecc6aafbd2a205a1077f86127030898f03091b7dae9d9017325a8702d8668f
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/README.md
+    shows: 'The repository README says "All projects in this repository are under the BSD license", with exceptions
+      only for files "included for demonstration purposes", and lists one: "pdq/cpp/CImg.h". It lists HMA among
+      the sub-projects alongside PDQ, TMK, vPDQ and python-threatexchange. Its HMA paragraph still describes the
+      older AWS deployment.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 705cef89924954dd53877a4b63dc2b7ecc14610f75b2c6ff191b65a8a6c799ec
+    establishes:
+    - license
+    - source
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/README.md
+    shows: 'The HMA README calls it "a reference implementation for a key Trust and Safety content moderation capability:
+      copy detection", says "HMA can be used as a library, or in any deployment setup that can use docker", and
+      runs it from the published image "ghcr.io/facebook/threatexchange/hma" or locally with "docker compose up"
+      in the hasher-matcher-actioner directory. Searched the body for enterprise, pricing, commercial, paid and
+      license key: none.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e0c47dad67c0f9561fff3c7231990372160606c3f9cbec3998d6c26c5739fb16
+    establishes:
+    - source
+    - self-host
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/history.md
+    shows: 'The project history says that in March 2024 the team archived the original version and replaced it with
+      a full rewrite, proposing "a new, entirely open source offering of composable components". Its comparison
+      table lists HMA 2.0 as "OSS dependencies only" and "Runs in any Docker based infra", against HMA 1.0''s "Heavy
+      AWS dependencies". Searched the body for enterprise, pricing, paid and license key: none.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 52202bbaa354ce4d09dcb86b96161de1a797db60172bf671477bc05458de8f22
+    establishes:
+    - source
+    - self-host
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/pyproject.toml
+    shows: 'The HMA package metadata names the project "OpenMediaMatch", lists "Meta Platforms, Inc. and affiliates"
+      as author, and carries the classifier "License :: OSI Approved :: BSD License". Its dependencies are open-source
+      Python packages such as flask, psycopg2 and threatexchange.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 576d6bdc05b7c5ac2d4f9ac8161a0da83fc3fdfc42e68a3cc1da96989d417d39
+    establishes:
+    - license
+    - source
+  - url: https://about.fb.com/news/2022/12/meta-launches-new-content-moderation-tool/
+    shows: Meta's newsroom post of December 13, 2022, by Nick Clegg, says Meta is "making available a free open
+      source software tool it has developed that will help platforms identify copies of images or videos and take
+      action against them en masse", called Hasher-Matcher-Actioner, and that it will be "especially useful for
+      smaller companies who don’t have the same resources as bigger ones".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 54746715abc12c49703679b6b52e97ebb106451d4ec5dc584cf4a28313e870f7
+    establishes:
+    - license
+    - core-gated
+adoption:
+  level: 2
+  signal_type: reported_traction
+  confidence: low
+  note: HMA ships as a container image on GitHub's registry rather than as a package with a public download count,
+    and its repository is shared with other projects, so neither gives a usage figure for HMA itself. The clearest
+    sign of use is that ROOST's open-source moderation console, Coop, runs HMA as its hash-matching service. Meta
+    has not published how many platforms deploy it.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://roost.tools/coop/
+    shows: ROOST's Coop page says Coop's child safety workflow "goes further with hash matching via HMA, NCMEC CyberTipline
+      reporting, and integrations with Google Content Safety API and OpenAI Moderation API". It gives no count of
+      HMA deployments.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 84ec21bab9e6382289b74b50fe0388335ab3b838df8d320e15365b9c29fe3364
+  - url: https://cdn.jsdelivr.net/gh/roostorg/coop@main/package.json
+    shows: The root package.json of the Coop repository defines an "up" script that runs "docker compose up --detach
+      postgres clickhouse hma scylla redis otel-collector", starting HMA as one of the services in Coop's local
+      stack.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: fedce851912ed651d5f4a6083db411bcee3e5e897cbe8ae8ebba07b3852d15d6
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/releasing.md
+    shows: The HMA release guide says that on each release "Docker images are built and pushed to GHCR", tagged
+      latest and with the version number, and tests the image with "docker pull ghcr.io/facebook/threatexchange/hma:1.1.3".
+      It publishes no pull or install count.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: d104fa9d91d5277d247601208455ee2baff9dc74b703c6f4c20b8859396e7c6b
+  - url: https://about.fb.com/news/2022/12/meta-launches-new-content-moderation-tool/
+    shows: Meta's December 2022 launch post says Meta hopes HMA "will be adopted by a range of companies" to stop
+      the spread of terrorist content, and gives no adopter names or deployment count.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 54746715abc12c49703679b6b52e97ebb106451d4ec5dc584cf4a28313e870f7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: hash-matching coverage
+  value: 'Copy detection for trust and safety teams: hashes images with PDQ and videos with MD5, matches them against
+    banks of known content through an in-memory FAISS index, and fetches and shares banks with hash-exchange programs
+    including NCMEC, GIFCT, StopNCII and ThreatExchange through pluggable interfaces. Ships a REST API, a CLI and
+    a curation web UI, and splits into hasher, matcher and curator roles to scale out; its stated targets are 10M
+    PDQ hashes on one machine and 1,000 image lookups per second across instances.'
+  relative_to: coop
+  relation: at
+  confidence: low
+  note: 'HMA covers one stage of a moderation pipeline in depth: recognizing copies of images and videos a platform
+    or an industry hash list has already flagged, with the exchange connections that make those lists usable. Coop
+    covers more of the workflow, with review queues, routing and reporting, and relies on HMA for its own hash matching,
+    so the two sit level. HMA dropped the rules for acting on a match when it was rewritten, and it handles only
+    exact and near-duplicate media, not new content.'
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://roost.tools/coop/
+      shows: The peer's page still describes "An open source review and moderation platform", with review across
+        any policy category, a child safety workflow adding "hash matching via HMA, NCMEC CyberTipline reporting",
+        review queues with "Role-based access controls and routing rules", and automation rules. It names HMA as
+        the component Coop uses for hash matching.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 84ec21bab9e6382289b74b50fe0388335ab3b838df8d320e15365b9c29fe3364
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/README.md
+    shows: 'The README describes the process by which "new content is evaluated against collections of known content
+      (called "Banks" in HMA)": content is hashed, matched "against an index of known content", and acted on if
+      it matches. It names the NCMEC Hash Sharing Program, GIFCT''s Hash-Sharing Database, StopNCII.org and Meta''s
+      ThreatExchange, says custom algorithms plug in through python-threatexchange interfaces, and says HMA "is
+      designed with horizontal scalability in mind".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: e0c47dad67c0f9561fff3c7231990372160606c3f9cbec3998d6c26c5739fb16
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/architecture.md
+    shows: The architecture page splits a scaled deployment into Hashers, which turn images into PDQ hashes, Matchers,
+      which "periodically rebuild their (in-memory) FAISS indices", and Curators, which import hash lists and edit
+      bank content. It says the API and CLI are built into the Python package and the API service is distributed
+      as a Docker image.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 214c28f0273280ae473cb4e6cb1571e499764ad46e43c614d044c926f200ad94
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/goals.md
+    shows: The goals page lists "Image + PDQ" and "Video + MD5" as fully implemented, a single-box target to "fetch,
+      store, index at least 10M PDQ hashes", and a multi-instance target where "1000 qps image hash + match should
+      be possible". Under non-goals it says the actioning interface from HMA 1.0 is on hold for 2.0 and that vPDQ
+      video lookup is not implemented.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: b64fc0a1fe4a4a507807376480e3ea416a67cd7ac04f2a6d746684dda2fe449e
+  - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/website/content/hma/user-interface.md
+    shows: The user-interface guide says HMA "includes a web app where users can configure their signal banks, connect
+      to exchanges like NCMEC, StopNCII, GIFCT, ThreatExchange, and others, and debug matches", across four pages
+      starting with a dashboard showing system status and index statistics.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2f02ccd7cdba3a35b6107ce657f2a9176811fd556172b336216296be0d15c3fb

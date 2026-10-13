@@ -1,0 +1,133 @@
+product: arxiv-api
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the LICENSE body is MIT text for arXiv, Inc. and for Cornell University Library's earlier contributions
+    source:
+      value: public
+      detail: arxiv-search ships the classic API service, documented as the export.arxiv.org replacement
+    core-gated:
+      value: ungated
+      detail: a nonprofit's free public API with no paid tier in its terms
+  confidence: medium
+  note: The service behind the API is published under MIT in arXiv's arxiv-search repository, which describes it
+    as the replacement for the old export.arxiv.org service. The live endpoint returns feeds formatted the way that
+    code formats them, not the way the old service did, which is the evidence it is the code in production; arXiv
+    does not state it outright, hence medium confidence. arXiv is a nonprofit and its API terms name no paid tier.
+  raw: license:MIT(OSI; the LICENSE body is MIT text for arXiv, Inc. and for Cornell University Library's earlier
+    contributions);source:public(arxiv-search ships the classic API service, documented as the export.arxiv.org
+    replacement);core-gated:ungated(a nonprofit's free public API with no paid tier in its terms)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://raw.githubusercontent.com/arXiv/arxiv-search/HEAD/LICENSE
+    shows: 'The LICENSE body: MIT License, "Copyright (c) 2026 arXiv, Inc.", followed by "Contributions made on
+      or before June 30, 2026 are: Copyright (c) 2017-2025 Cornell University Library" under the same MIT text.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 6ac7777ae2d1c43506c4e29544593671b0ebda79ed8ef06eb3ffb077bb7ff6e6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/arXiv/arxiv-search/HEAD/AGENTS.md
+    shows: The repository's guide lists the Classic API app serving "`/api/query` — Atom XML (the `export.arxiv.org/api/query`
+      replacement)" and says "The classic API is a Python reimplementation of a Perl/Lucene 2.3.2 service".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 55245372c4ea2b2d4164c551ba1f5f80412c140459b1530a941263b0376afb3c
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/arXiv/arxiv-search/HEAD/search/serialize/atom.py
+    shows: 'The Atom serializer sets the feed title with `fg.title(f"arXiv Query: {query.to_query_string()}")` and
+      builds the feed id from a SHA-1 of the query string under https://arxiv.org/api/.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 75d271598ed4553ace44155441ab956a28c77df56ad4bb107b894932333a09f7
+    establishes:
+    - source
+  - url: https://export.arxiv.org/api/query?search_query=all:retrieval&start=0&max_results=2
+    shows: 'The live feed: `<title>arXiv Query: search_query=all:retrieval&amp;id_list=&amp;start=0&amp;max_results=2</title>`
+      and `<id>https://arxiv.org/api/UsmWS98RQDJiq1Y9LMuoqtpMfV4</id>`, the lowercase "arXiv Query" title and https
+      id the published serializer emits.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 69261ecc8a2ab08ed563b4cdc24c8fd9dacf3fa972cb6dc170eca218372eb591
+    establishes:
+    - source
+  - url: https://info.arxiv.org/help/api/user-manual.html
+    shows: 'The user manual''s example response from the older service reads `ArXiv Query: search_query=all:electron&id_list=&start=0&max_results=1`
+      with an id under http://arxiv.org/api/, a different format from what the endpoint returns today.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a4f8c339c191e35addd5a658114015f3a44000de89ec15ba633836a6c5db57b9
+    establishes:
+    - source
+  - url: https://info.arxiv.org/help/api/index.html
+    shows: '"arXiv offers public API access in order to maximize its openness and interoperability"; independent,
+      noncommercial and open-access projects need no assistance from arXiv, and API users are asked to acknowledge
+      arXiv. Page banner: "arXiv is now an independent nonprofit!"'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: d39ef59296d8d1636f81eabea2f98476d2bb62c43c66dde3b408f9a3a2f3dbc8
+    establishes:
+    - core-gated
+  - url: https://info.arxiv.org/help/api/tou.html
+    shows: 'Terms of Use for arXiv APIs: rate limits ("make no more than one request every three seconds" on the
+      legacy APIs, with higher rates by contacting support), what users may and must not do; no fee or paid tier
+      is described.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: badbec1e87aa317038c3a519a3fad3c4a855ebe019f0e681772d72f6a14f4e49
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: arXiv publishes reports and institutional download statistics for papers, but no count of API requests or
+    API users on the pages read. The API needs no key, account or client package, so there is no sign-up or download
+    figure to count instead. No level is recorded.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://info.arxiv.org/about/reports/index.html
+    shows: 'arXiv''s reports index: annual reports, budgets, roadmaps and "Annual Institutional Usage (Downloads)
+      Statistics", with no API request or user count, which is why no level is recorded.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a8d1db3718223b020b1feafd2f92a7347795be161d5599d7b8dfa0581a5ab4cf
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: query interface and response format read from arXiv's API user manual
+  value: '`/api/query` takes a fielded `search_query` (ti, au, abs, co, jr, cat, rn, all, with Boolean operators
+    and a submittedDate range) or an `id_list`, sorts by relevance, lastUpdatedDate or submittedDate, and returns
+    an Atom feed of entries with title, authors, abstract, categories and links to the abstract page and PDF, up
+    to 2,000 per call'
+  confidence: high
+  relative_to: searxng
+  relation: at
+  note: The API returns a list of matching papers, each with its full abstract and a link to its PDF, but not the
+    paper itself, so getting the text means a separate download and a PDF parser of the caller's own. Returning
+    references without the content behind them puts it level with SearXNG. It composes no answer.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://docs.searxng.org/dev/search_api.html
+      shows: SearXNG's search API still documents `GET /search` and `POST /search` returning results in json, csv
+        or rss format, with parameters for query, categories, language, page, time range and safe search, and no
+        endpoint that fetches page content or composes an answer.
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 86521c7e3e817c0261fa6e3ce78d4bc17b5bf4499d2be8b465c73cefbd51c6b6
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://info.arxiv.org/help/api/user-manual.html
+    shows: Field prefixes "ti Title au Author abs Abstract co Comment jr Journal Reference cat Subject Category
+      rn Report Number id Id (use id_list instead) all All of the above"; sortBy "relevance", "lastUpdatedDate",
+      "submittedDate"; max_results limited "to 30000 in slices of at most 2000 at a time"; "The <summary> element
+      contains the abstract for the article"; entry links to the abstract page, the pdf and a resolved doi.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a4f8c339c191e35addd5a658114015f3a44000de89ec15ba633836a6c5db57b9

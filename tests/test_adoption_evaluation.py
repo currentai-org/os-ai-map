@@ -570,6 +570,10 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
         # llama-cpp joined on 2026-10-09, when its usage_volume claim with no count behind it was
         # relabeled reported_traction.
         "llama-cpp",
+        # The Alpha stack promotions (2026-10-13) add three that band on reported traction: the
+        # ThreatExchange monorepo, the Public AI portal and gateway, and bubblewrap, which
+        # installs through distribution packages.
+        "hasher-matcher-actioner", "public-ai-inference-utility", "bubblewrap",
     }
     for slug in traction_repos:
         assert {kind for kind, _ in inputs.non_primary_artifacts[slug]} == {"github"}
