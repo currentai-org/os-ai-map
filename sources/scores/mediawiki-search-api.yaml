@@ -1,0 +1,126 @@
+product: mediawiki-search-api
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-2.0
+      detail: OSI; GPL-2.0-or-later, as CirrusSearch's extension.json and MediaWiki's COPYING both state
+    source:
+      value: public
+      detail: MediaWiki core and the CirrusSearch extension, over an OpenSearch index
+    self-host:
+      value: 'yes'
+      detail: any MediaWiki install can enable CirrusSearch against its own OpenSearch cluster
+    core-gated:
+      value: ungated
+      detail: the Wikimedia Foundation runs it as a free public API and describes the engine as open source
+  confidence: high
+  note: MediaWiki and the CirrusSearch extension behind its search are both licensed GPL-2.0-or-later, and the extension's
+    README walks through running the same search against your own OpenSearch cluster. The Wikimedia Foundation's
+    search team describes what it runs as an open-source search engine, and nothing in the API is sold, so there
+    is no paid tier for anything to be held back for.
+  raw: license:GPL-2.0(OSI; GPL-2.0-or-later, as CirrusSearch's extension.json and MediaWiki's COPYING both state);source:public(MediaWiki
+    core and the CirrusSearch extension, over an OpenSearch index);self-host:yes(any MediaWiki install can enable
+    CirrusSearch against its own OpenSearch cluster);core-gated:ungated(the Wikimedia Foundation runs it as a free
+    public API and describes the engine as open source)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-CirrusSearch/HEAD/COPYING
+    shows: 'The COPYING body: "GNU GENERAL PUBLIC LICENSE Version 2, June 1991", full text.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-CirrusSearch/HEAD/extension.json
+    shows: 'The extension manifest declares "license-name": "GPL-2.0-or-later".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: b3d37bfb77762fb8ed7bcf7e806ba6abd9547ed92627774d4c7bdb4bd9865921
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/wikimedia/mediawiki/HEAD/COPYING
+    shows: '"MediaWiki is licensed under the terms of the GNU General Public License, version 2 or later."'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: ea5429175b5ed3b83131d2a3b848ef1bd0142a6192e1027be9e1efaf031a3928
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/wikimedia/mediawiki-extensions-CirrusSearch/HEAD/README
+    shows: 'Installation: "Get OpenSearch v2.x or v3.x up and running somewhere", load the Elastica and CirrusSearch
+      extensions, build the index with the maintenance scripts, then set `$wgSearchType = ''CirrusSearch''`.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a135ed32183c2d8af54d5154f6fabfa170eb7cdf9205547a5a7aedbe3746877e
+    establishes:
+    - source
+    - self-host
+  - url: https://www.mediawiki.org/w/index.php?title=Wikimedia_Search_Platform&action=raw
+    shows: 'The page''s wikitext: the Search Platform team maintains "the CirrusSearch extension which relies on
+      OpenSearch (formerly Elasticsearch), the search backend used at the Wikimedia Foundation to support Wikimedia
+      projects", and: "We provide an open-source search engine, backed by an inverted index for non-structured on-wiki
+      data."'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 0e789f90fac1436c015e1f47b1ab3a5365eb1d275c6048bf928342b23736543f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Wikimedia publishes no request count for the search module, or for the Action API as a whole, on the pages
+    read. The API needs no key, account or client package, so there is no sign-up or download figure to stand in
+    for one either. No level is recorded.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://www.mediawiki.org/w/index.php?title=API:Search&action=raw
+    shows: 'The wikitext of the module''s reference page: its help template, an example GET request and response,
+      sample code and parameter history, with no request or user count, which is why no level is recorded.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 32858a97849a280c47f659ebb3a529994a4cd5eb021df95337d4adc2082056a3
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: search and extract modules read from the MediaWiki Action API documentation
+  value: '`list=search` returns pages sorted by relevance by default, with titles, highlighted snippets, size, word
+    count and timestamp, and selectable ranking profiles; `generator=search` feeds the same results into other modules,
+    and TextExtracts'' `prop=extracts&explaintext` returns plain-text page content'
+  confidence: medium
+  relative_to: ddgs
+  relation: at
+  note: A search returns pages ranked by relevance with highlighted snippets, and the same query can run as a generator
+    so that one call also returns a plain-text extract of each page found. Finding pages and returning their cleaned
+    text through one interface puts it level with DDGS. It searches the wiki it is called on rather than the open
+    web, which limits what it covers rather than what it does, and it composes no answer.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://raw.githubusercontent.com/deedy5/ddgs/main/README.md
+      shows: 'The DDGS README still documents `text()` returning ranked references aggregated across ten backends
+        and `extract()`, "Fetch a URL and extract its content in various formats", taking a `url`: the find-then-fetch
+        pairing its band 4 rests on. No answer-composition function is documented.'
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 4541f0854142f2c9a939fee7e8bdf3f075d73d3dcd7b52abdeb1c3d564513223
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://en.wikipedia.org/w/api.php?action=paraminfo&modules=query%2Bsearch&helpformat=wikitext&format=json
+    shows: 'English Wikipedia''s own description of `list=search`: module "search", source MediaWiki, license GPL-2.0-or-later,
+      "Perform a full text search." `srsearch` "Search for page titles or content matching this value"; `srsort`
+      default "relevance"; `srqiprofile` ranking profiles including classic, popular_inclinks_pv and mlr-1024rs;
+      `srprop` default "size|wordcount|timestamp|snippet". Examples include `action=query&generator=search&gsrsearch=meaning&prop=info`.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 4e0b39710658ddf6797bc6f4c54cbb0b152b54a78af42427ffec9141a95b1561
+  - url: https://en.wikipedia.org/w/api.php?action=paraminfo&modules=query%2Bextracts&helpformat=wikitext&format=json
+    shows: 'English Wikipedia''s description of `prop=extracts`: source TextExtracts, license GPL-2.0-or-later,
+      "Returns plain-text or limited HTML extracts of the given pages", with `explaintext`: "Return extracts as
+      plain text instead of limited HTML."'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 2de2020cb0a3336b9c8491aec59a5797f07bcbb2fc208242ad2c07f612dde4c6
