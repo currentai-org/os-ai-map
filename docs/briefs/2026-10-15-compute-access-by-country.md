@@ -68,7 +68,7 @@ or any other repo-governed dataset.
 
 | Table | Grain | Use on the page | Notes |
 |---|---|---|---|
-| `currentai.compute_sources.epoch_gpu_clusters` | one row per tracked cluster (482) | source for capacity | Static, pulled 2026-09-19. CC BY 4.0, credit Epoch AI. 81 rows are `Likely`, not `Confirmed`. |
+| `currentai.compute_sources.epoch_gpu_clusters` | one row per tracked cluster (482) | source for capacity | Static, pulled 2026-09-19. CC BY 4.0, credit Epoch AI. Existing systems only; Epoch puts coverage at 10–20% of world GPU cluster performance. 81 rows are `Likely`, not `Confirmed`. |
 | `currentai.compute_sources.top500_systems` | one row per TOP500 system (500) | public system counts by segment | June 2025 list. Self-submitted; under-represents China. |
 | `currentai.compute_supply.cluster_capacity` | one row per cluster | public/mixed/private split, `owner_bloc` | Adds `country_canonical`, `sector_group`, `owner_bloc` (keeps US DOE and EuroHPC apart). |
 | `currentai.compute_supply.country_compute_supply` | one row per country (61) | the country table | `public_h100e`, `public_private_h100e`, `private_h100e`, `public_clusters`, `top500_public_*`, `is_focus_country`, population and GDP for focus countries. |
@@ -154,7 +154,10 @@ aipotluck.org system), so it reads as part of the same set.
   measure, and never blended into a computed figure.
 - No ranking of countries by a composite score. The page compares, it does not score.
 - Credit Epoch AI under CC BY 4.0, and GIRAI under CC BY 4.0, on the page.
-- Do not use Data Centre Map. Its data is proprietary.
+- Do not use Data Centre Map. Its terms forbid scraping and redistribution.
+- No public dataset of compute access programs exists. Epoch publishes none, and the Ada Lovelace
+  Institute's 2024 mapping is a policy brief. The 24 Sep inventory is the only program source, so
+  credit it as this project's own research.
 
 **Done when**
 
@@ -172,11 +175,28 @@ These are for Carl, and for Ayah where marked.
 
 - **Ayah's artifact.** It could not be read from this account. If it names sources or framing
   not covered here, fold them in before the page is published. *(Ayah)*
-- **Refresh.** The Epoch and TOP500 pulls are from 2026-09-19, and TOP500 is the June 2025 list.
-  Refresh them as part of this build, or ship on the September pull and refresh later?
-- **Oxford Insights.** Show the readiness index's compute dimension as context, if its country
-  data can be downloaded under terms that allow it? GIRAI already sits in the org and covers
-  similar ground.
+- **Refresh.** The org's pulls are from 2026-09-19. A re-pull changes less than it seems:
+  - Epoch's GPU clusters CSV regenerates daily, but its newest existing cluster went live
+    2025-07-22 and the dataset covers an estimated 10–20% of world GPU cluster performance.
+    Epoch's own page was last updated 2026-03-13. Re-pulling it buys little.
+  - Epoch's raw file (`gpu_clusters_raw.csv`, 887 rows) does add something: 176 planned systems,
+    22 of them public and 39 public/private. That would fill the inventory's `building` and
+    `announced` rows with capacity figures.
+  - TOP500 has a June 2026 list (`TOP500_202606.xlsx`) against the June 2025 list in the org. It
+    states no license, only a copyright line, so keep it to counts, as the org does now.
+
+  Recommendation: ship on the September pull, and add the raw file's planned systems as a
+  separate, labeled series.
+- **Oxford Insights.** Its page embeds 2025 scores for 195 countries, `compute_capacity`
+  included, but under "All rights reserved" with no license, and the indicator-level data sits
+  behind a sign-up form. Leave it out unless Oxford Insights grants reuse, and use GIRAI
+  (CC BY 4.0, already in the org) for readiness context.
+- **Commercial cloud regions.** The Oxford Internet Institute's 2025 cloud-region data is not
+  downloadable. Its 2023 census (187 regions, six providers, on OSF) carries no license, and the
+  OECD.AI compute tracker has no export. The OECD paper behind it (AI Papers No. 49, October
+  2025, CC BY 4.0) has country tables in PDF only. A "where can you rent a GPU" panel would need
+  the authors' permission or a hand transcription of the OECD tables. Leave it for a later
+  version.
 - **The France edition.** Add a compute panel to `gap-map-france` from the same tables, or keep
   compute on its own page and link to it?
 - **Program inventory cadence.** The 24 Sep brief is the only program source. A second dated
@@ -188,7 +208,11 @@ These are for Carl, and for Ayah where marked.
 - [Public AI compute: who can get capacity](2026-09-24-public-ai-compute.md), this repository,
   2026-09-24
 - Epoch AI, [AI data centers](https://epoch.ai/data/ai-data-centers), updated 2026-10-12, CC BY 4.0
-- Epoch AI GPU clusters and TOP500, as pulled into `currentai.compute_sources` on 2026-09-19
+- Epoch AI, [GPU clusters](https://epoch.ai/data/gpu-clusters) (formerly "AI Supercomputers"),
+  CC BY 4.0, as pulled into `currentai.compute_sources` on 2026-09-19. The `Sector` field
+  definitions are in its [records documentation](https://epoch.ai/data/gpu-clusters-documentation/records).
+- [TOP500](https://top500.org/lists/top500/2026/06/), June 2025 list as pulled on 2026-09-19.
+  The June 2026 list is the current one.
 - Oxford Insights, [Government AI Readiness Index 2025: methodology](https://oxfordinsights.com/wp-content/uploads/2026/01/Methodology-Report-2025-1.pdf),
   January 2026
 - Matt Davies and Jai Vipra, [*Computing Commons: Designing public compute for people and society*](https://www.adalovelaceinstitute.org/report/computing-commons/),
