@@ -134,7 +134,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add sources/scores/ sources/snapshots/observation_snapshots.yaml sources/verification_queue.yaml
+          # Every file `adoption_freshness --apply` writes. The allowlist was missing, so #902 left
+          # 192 trimmed lines uncommitted and failed test_hand_dated_adoption_ratchet.
+          git add sources/scores/ sources/snapshots/observation_snapshots.yaml sources/verification_queue.yaml \
+            sources/allowlists/hand_dated_adoption.txt
           git commit -m "chore(freshness): re-date adoption where the route measured the recorded band"
           git push -u origin "$BRANCH"
           {
