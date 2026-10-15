@@ -92,7 +92,10 @@ M_DATASET = """mutation($input: CreateDatasetInput!){
   createDataset(input:$input){ success dataset{ id name } } }"""
 M_STATIC = """mutation($input: CreateStaticModelInput!){
   createStaticModel(input:$input){ success staticModel{ id name } } }"""
-M_URL = """mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModelId:$staticModelId) }"""
+# The upload slot: `url` takes the PUT, and the run request must name `uploadId`, because each call
+# mints a new object and a run loads only the upload it names (the API stopped returning a bare URL).
+M_URL = """mutation($staticModelId: ID!){
+  createStaticModelUploadUrl(staticModelId:$staticModelId){ uploadId url } }"""
 M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
   createStaticModelRunRequest(input:$input){ success runGroup{ id status } } }"""
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
@@ -323,15 +326,17 @@ def main() -> int:
                 print(f"  would upload {table}.csv ({counts[table]:,} rows) -> {model_id}")
         return 0
 
+    upload_ids: dict[str, str] = {}
     for table in populated:
         path = args.dir / f"{table}.csv"
         model_id = models[table][0]
-        url = graphql(M_URL, {"staticModelId": model_id}, token)["createStaticModelUploadUrl"]
-        upload(path, url)
+        slot = graphql(M_URL, {"staticModelId": model_id}, token)["createStaticModelUploadUrl"]
+        upload(path, slot["url"])
+        upload_ids[table] = slot["uploadId"]
         print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {counts[table]:,} rows)")
 
     # The run request is per static model: CreateStaticModelRunRequestInput takes
-    # (datasetId, staticModelId), not a selectedModels list. Materialize ONE model at a time,
+    # (datasetId, staticModelId, uploadId), not a selectedModels list. Materialize ONE model at a time,
     # awaiting THIS request's run group to a terminal state before requesting the next. A run
     # request only QUEUES a run; the loads then execute asynchronously, and firing them all at
     # once makes their loads collide on the destination — a transient "Failed to query OPA
@@ -343,7 +348,7 @@ def main() -> int:
         model_id = models[table][0]
         run_group = graphql(
             M_RUN,
-            {"input": {"datasetId": dataset_id, "staticModelId": model_id}},
+            {"input": {"datasetId": dataset_id, "staticModelId": model_id, "uploadId": upload_ids[table]}},
             token,
         )["createStaticModelRunRequest"]["runGroup"]
         status = poll_run_group(run_group["id"], token)

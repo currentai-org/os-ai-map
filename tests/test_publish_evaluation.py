@@ -222,7 +222,8 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
                 for t in P.EVAL_TABLES
             ]}}
         if query is P.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is P.M_RUN:
             model = variables["input"]["staticModelId"]
             return {"createStaticModelRunRequest":
@@ -276,7 +277,8 @@ def _fake_platform(requested):
                 {"node": {"id": f"id-{t}", "name": t, "materializations": {"totalCount": 1}}}
                 for t in P.EVAL_TABLES]}}
         if query is P.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is P.M_RUN:
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
@@ -514,7 +516,8 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
                 for t in P.EVAL_TABLES
             ]}}
         if query is P.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is P.M_RUN:
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
@@ -540,6 +543,7 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
         assert payload["datasetId"] == "ds-eval"
         assert "selectedModels" not in payload, "the batch selectedModels payload is gone"
     assert [pl["staticModelId"] for pl in requested] == [f"id-{t}" for t in P.EVAL_TABLES]
+    assert [pl["uploadId"] for pl in requested] == [f"upload-id-{t}" for t in P.EVAL_TABLES]
 
 
 def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypatch):
@@ -557,7 +561,8 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
                 for t in P.EVAL_TABLES
             ]}}
         if query is P.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is P.M_RUN:
             requested.append(variables["input"])
             return {"createStaticModelRunRequest": {"runGroup": {"id": "group-1", "status": "QUEUED"}}}

@@ -280,7 +280,8 @@ def test_a_failed_delete_does_not_fail_the_publish(
         if query is pr.M_DELETE:
             raise RuntimeError("HTTP 403 from the API: User not authorized")
         if query is pr.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is pr.M_RUN:
             assert "selectedModels" not in variables["input"]
             ran.append(variables["input"]["staticModelId"])
@@ -331,7 +332,8 @@ def _fake_platform(group_status: dict[str, list[str]]):
                           "materializations": {"totalCount": None if t == "tail_products" else 5}}}
                 for t in pr.TABLES]}}
         if query is pr.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is pr.M_DELETE:
             return {"deleteStaticModel": {"success": True, "message": "ok"}}
         if query is pr.M_RUN:
@@ -436,7 +438,8 @@ def test_poll_run_group_treats_a_timeout_as_not_success(monkeypatch):
 
 
 def test_run_request_input_is_static_model_id_not_selected_models(tmp_path, monkeypatch):
-    """The request carries a single staticModelId; the obsolete selectedModels batch input is gone."""
+    """The request carries a single staticModelId and the uploadId its upload slot returned; the
+    obsolete selectedModels batch input is gone."""
     inputs: list[dict] = []
     base = _fake_platform({f"grp-id-{t}": ["SUCCESS"] for t in _populated_tables()})
 
@@ -446,5 +449,6 @@ def test_run_request_input_is_static_model_id_not_selected_models(tmp_path, monk
         return base(query, variables, token)
 
     assert _run_publish(tmp_path, monkeypatch, recording) == 0
-    assert inputs and all(set(i) == {"datasetId", "staticModelId"} for i in inputs)
+    assert inputs and all(set(i) == {"datasetId", "staticModelId", "uploadId"} for i in inputs)
+    assert all(i["uploadId"] == f"upload-{i['staticModelId']}" for i in inputs)
     assert not any("selectedModels" in i for i in inputs)
