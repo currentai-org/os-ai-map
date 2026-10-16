@@ -451,6 +451,15 @@ a pass applies them.
 - **A measured signal on an already-declared artifact beats a hand-set band.** The artifact was
   declared, so the count is the instrument the record already claims to have been read with, and
   the band follows the count. Re-band, and put the figure in the note.
+- **...but only when the declaration covers the product.** A count on two checkpoints of a
+  family that ships fourteen, or on the one channel the route sums when the product ships through
+  two, is a precise reading of a partial channel, and a partial channel is undercoverage ("The
+  mirror trap" below). The winning machine route does not override known family or distribution
+  coverage. Declare the family's checkpoints or the missing channel first and band on the fuller
+  count; where the route cannot yet sum what the product ships through, the curated band stands
+  and is not moved down to match the route's present limit. `openclip` and `colpali` (a family
+  under-declared) and `ag-ui` (PyPI and npm, where the route takes PyPI alone) are the cases
+  (R-2026-10-16-a). An `ag-ui` row on the tier-change queue is that limit showing, not a re-band.
 - **A `stars_fallback` band means no download signal existed when it was set.** If one exists
   now, re-band on it.
 - **A `usage_volume` record over a page publishing no count at all is on the wrong instrument.**

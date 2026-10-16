@@ -67,25 +67,22 @@ openness:
     establishes:
     - license
 adoption:
-  level: 3
-  reach: 100K-1M
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
-  confidence: medium
-  note: Adoption is measured as Hugging Face downloads of the declared flagship checkpoint, CLIP-ViT-H-14-laion2B-s32B-b79K.
-    LAION publishes about 56 OpenCLIP checkpoints under laion/CLIP-*, and re-hosts on the timm and apple
-    accounts carry more; only the declared checkpoint is counted here, so the figure covers one checkpoint
-    rather than the library's whole use.
+  confidence: high
+  note: 'Adoption is measured as Hugging Face downloads summed across the OpenCLIP checkpoints LAION publishes
+    under laion/CLIP-*, declared as a family: the LAION-2B, LAION-5B multilingual, DataComp and CommonPool
+    ViT and ConvNeXt lines. The declared checkpoints carry nearly all of the account''s CLIP downloads;
+    re-hosts on the timm and apple accounts are excluded as mirrors, so the figure is a floor on the library''s
+    use.'
   sources:
-  - url: https://huggingface.co/api/models/laion/CLIP-ViT-H-14-laion2B-s32B-b79K
-    shows: 495,970 downloads in the trailing 30 days for laion/CLIP-ViT-H-14-laion2B-s32B-b79K
-    accessed: '2026-10-12'
-    http_status: 200
-    content_sha256: 95ef00b3707d2eb3aade701bab8a25603f9cedb2d9452339ff45df0e1edcd452
   - url: https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1
-    shows: 56 laion CLIP repos with `downloads` (trailing 30 days) summing to 9,739,962.
-    accessed: '2026-10-12'
+    shows: 56 laion CLIP repos with `downloads` (trailing 30 days) summing to 9,456,811; the 20 declared
+      checkpoints account for 9,450,997, led by CLIP-ViT-B-32-laion2B-s34B-b79K at 3,770,566.
+    accessed: '2026-10-16'
     http_status: 200
-    content_sha256: a481c044373b27a65d22815e5e653d2c82e2848b6970bae54d90b00e9096f488
+    content_sha256: d641113a7e4f7481f8e95f294bbead9b3684c5965fd1dfa081f5c9158c72ca43
 capability:
   score: 3
   basis: benchmark
