@@ -3,35 +3,54 @@ openness:
   score: 2
   class: restricted
   components:
-    weights: {value: open, detail: ungated foundation checkpoints published as GitHub release assets}
-    data: {value: open, detail: 'MPTrj, sAlex, OMat, MATPES, and OMol training datasets publicly released'}
-    code: {value: open, detail: 'full data preprocessing, distributed training, and fine-tuning pipeline'}
+    weights:
+      value: open
+      detail: ungated foundation checkpoints published as GitHub release assets
+    data:
+      value: components-listed
+      detail: MPTrj named with a Figshare link in the MACE-MP prose; sAlex, OMAT, SPICE v1, MATPES-PBE/r2SCAN,
+        OMOL and OC20 are each named per checkpoint in the foundation-models table with no link and no disclosed
+        mixture or sampling ratio for multi-dataset checkpoints
+    code:
+      value: open
+      detail: full data preprocessing, distributed training, and fine-tuning pipeline
     license:
-    - {name: MIT, detail: 'code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints'}
-    - {name: ASL, detail: 'MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic non-commercial only'}
-  raw: weights:open(ungated foundation checkpoints published as GitHub release assets);data:open(MPTrj, sAlex, OMat, MATPES, and OMol training datasets publicly released);code:open(full data preprocessing, distributed training, and fine-tuning pipeline);license:MIT(code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints)+ASL(MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic non-commercial only)
+    - name: MIT
+      detail: code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints
+    - name: ASL
+      detail: MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1
+        checkpoints; academic non-commercial only
+  raw: weights:open(ungated foundation checkpoints published as GitHub release assets);data:components-listed(MPTrj
+    named with a Figshare link in the MACE-MP prose; sAlex, OMAT, SPICE v1, MATPES-PBE/r2SCAN, OMOL and
+    OC20 are each named per checkpoint in the foundation-models table with no link and no disclosed mixture
+    or sampling ratio for multi-dataset checkpoints);code:open(full data preprocessing, distributed training,
+    and fine-tuning pipeline);license:MIT(code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints)+ASL(MACE-OMAT-0,
+    MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic
+    non-commercial only)
   confidence: high
-  note: 'MACE is otherwise a complete release: open corpus, open pretraining pipeline, open weights. Some
-    checkpoints ship under MIT, but the newer foundation checkpoints ship under the Academic Software License,
-    which states that it is not an open-source license because it forbids commercial use; where a release
-    mixes licenses like this, the more restrictive one governs the score, so the release counts as restricted.'
-  last_verified: '2026-09-10'
+  note: MACE names every training dataset per checkpoint, with a link for MPTrj, but the mixture and sampling
+    ratio behind the multi-dataset checkpoints are not disclosed, so the corpus itself is not reproducible.
+    The pretraining pipeline and weights are both public. Some checkpoints ship under MIT, but the newer
+    foundation checkpoints ship under the Academic Software License, which states that it is not an open-source
+    license because it forbids commercial use; where a release mixes licenses like this, the more restrictive
+    one governs the score, so the release counts as restricted.
+  last_verified: '2026-10-14'
   sources:
   - url: https://raw.githubusercontent.com/ACEsuit/mace/main/README.md
     shows: Tabulates the recommended foundation models with a download link, a named training dataset, and a licence column per checkpoint — MIT for MACE-MP-0a, 0b3 and MPA-0, ASL for OMAT-0, MATPES and OMOL-0 and MH — and documents mace_run_train, preprocess_data.py, multi-GPU training, and foundation-model finetuning.
-    accessed: '2026-09-10'
+    accessed: '2026-10-14'
     http_status: 200
-    content_sha256: dd0baa36ac60651bf8de2783026124f4cd374a0ab2a90c71a7c384925d8bedcc
+    content_sha256: c3e61eb0c17cca62d5a1a1cf71d1532e9e7506bcf31ddf5d99d1f2a6a0f4a1ac
     establishes: [weights, data, code, license]
   - url: https://raw.githubusercontent.com/ACEsuit/mace/main/LICENSE.md
     shows: MIT License body with an added ACEsuit/mace copyright line, read directly because the license endpoint reports NOASSERTION; it covers the code, not the checkpoints.
-    accessed: '2026-09-10'
+    accessed: '2026-10-14'
     http_status: 200
     content_sha256: 42137790f854ae2b9d29a0a72a4da3f6fb9a21d820b3f276f23b0575af72e86e
     establishes: [license]
   - url: https://raw.githubusercontent.com/gabor1/ASL/main/ASL.md
     shows: 'States the Academic Software Licence is not an open-source licence because it does not allow commercial use, and grants rights only for academic non-commercial use.'
-    accessed: '2026-09-10'
+    accessed: '2026-10-14'
     http_status: 200
     content_sha256: 54a623a4bba6833807aad02bc24ad85bbda97826274595559bc112b7b5abbf43
     establishes: [license]
