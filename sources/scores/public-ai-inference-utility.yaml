@@ -1,0 +1,165 @@
+product: public-ai-inference-utility
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: MIT
+      detail: developer portal and API gateway code
+    source:
+      value: partial
+      detail: the published repository is the developer portal and gateway, which forwards requests to an internal
+        endpoint; the model-serving deployments behind it run on partner clusters and are not in the repository
+    context:
+      access:
+        value: hosted OpenAI-compatible API
+        detail: api.publicai.co
+      engine:
+        value: vLLM
+        detail: on partner-donated clusters
+  confidence: medium
+  note: 'Public AI publishes the front door: an MIT-licensed developer portal and gateway that handles sign-up,
+    API keys, billing and rate limits, then passes each request to an internal endpoint. The model servers and the
+    routing across partner clusters behind that endpoint are not in the repository, so the published code cannot
+    stand the service up on its own.'
+  raw: license:MIT(developer portal and API gateway code);source:partial(the published repository is the developer
+    portal and gateway, which forwards requests to an internal endpoint; the model-serving deployments behind it
+    run on partner clusters and are not in the repository);access:hosted OpenAI-compatible API(api.publicai.co);engine:vLLM(on
+    partner-donated clusters)
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/LICENSE
+    shows: 'The repository LICENSE is the MIT text: "MIT License" and "Copyright (c) 2025 Public AI Inference Utility",
+      with no added terms.'
+    accessed: '2026-10-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 90b11707e25dbefe3ee4321188d80d438a4c2412f999aa84afd7f3235f72cfb5
+  - url: https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/README.md
+    shows: The README calls the repository "The developer portal and API gateway for the Public AI Inference Utility",
+      for creating API keys, viewing documentation and monitoring usage and billing, built on Zuplo and deployed
+      with "A Zuplo account for deployment"; its License section names MIT.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    - license
+    http_status: 200
+    content_sha256: 104a212e44a5443326b47fc65149b78cbabe87759a5b378daf974b648f5b950c
+  - url: https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/
+    shows: The repository tree at its head holds config, docs and modules folders plus LICENSE, package.json, README.md
+      and zuplo.jsonc; the modules are gateway handlers for API keys, billing, wallets, pricing, rate limits and
+      request headers, and no model-serving code.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: a4ef4d57c597be921818de3809f6b655ab5296ebda9058b7c9ec4341b6ee8564
+  - url: https://cdn.jsdelivr.net/gh/forpublicai/platform.publicai.co/config/routes.oas.json
+    shows: The gateway's route file forwards requests with Zuplo's urlForwardHandler to the base URL "https://api-internal.publicai.co"
+      and rewrites chat and completion calls to that internal host, whose implementation is not in the repository.
+    accessed: '2026-10-13'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 8c2c02183422602df6b64c718e30823f18db0f9a2f62453755bcf43aa43b444e
+  - url: https://publicai.co/stories/utility
+    shows: The launch post says inference "is handled by servers running OpenAI-compatible APIs on vLLM", deployed
+      across clusters donated by national and industry partners, behind "A global load-balancing layer".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 22a9346580eeb10e95785a0426dc9e71025cce44ecf4bdeadd5640da6be14599
+  - url: https://publicai.co/about
+    shows: The about page says "The Public AI Inference Utility is a nonprofit, open-source project" fiscally sponsored
+      by Metagov.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 97a8dfaad862f172e1409469b2952276571f80da0b4ae05d4c354e4a5cdfbf2c
+adoption:
+  level: 2
+  signal_type: reported_traction
+  confidence: low
+  note: 'Public AI publishes no request, token or user count. What it does report is standing: it is a listed inference
+    provider on Hugging Face, the official international deployer of the Swiss Apertus models, and the host for
+    national models such as Spain''s ALIA and EuroLLM, which places it as real but specialist infrastructure for
+    public-sector models.'
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://huggingface.co/docs/inference-providers/providers/publicai
+    shows: Hugging Face's Inference Providers documentation has a PublicAI page for chat completion, reading "All
+      models supported by the PublicAI Inference Utility can be found here", with an example calling speakleash/Bielik-11B-v3.0-Instruct
+      through the Hugging Face router.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: aa1fece63cbffd4ab0f7e8d96f2146d4f9d3bcd0e773536fff50a877ec6aaeeb
+  - url: https://publicai.co/stories/huggingface
+    shows: A September 16, 2025 post announces that the Utility "is now an official inference provider on Hugging
+      Face".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 123593f5c83a285093f5dbd30a188fa305ae04ee7aa39ba3e6028d34f01b5b72
+  - url: https://publicai.co/stories/apertus-1-5
+    shows: A July 24, 2026 post says "Public AI is proud to be the official international deployer for Apertus"
+      and that Apertus 1.5 is live on its chat app, developer platform and Hugging Face.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 77868f47833281274ba2484148931eddee509c4bcb01e04baf16e8412645d773
+  - url: https://publicai.co/stories/amazon-intel
+    shows: A June 16, 2026 post says that after launch "Traffic ramped faster than expected" and that Intel-backed
+      clusters have hosted EuroLLM, "Spain's ALIA models" and Apertus 8B; it gives a concurrency target of about
+      2,500 users but no measured usage figure.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: d36f6c99220f35cfce0c24e93abdb6a261c6969e8a9d543710e422e9d3f82e40
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: hosted catalog and serving features read from the service's developer documentation
+  value: OpenAI-compatible chat and completions API over a catalog of nine models (Apertus 1.5 8B and 70B with 262K
+    context, SEA-LION v4 27B and 32B, Bielik 11B); vLLM servers on partner clusters behind a gateway that load-balances,
+    routes and fails over between them; per-key rate limits from 100 to 10,000 requests per minute; also served
+    as a Hugging Face inference provider.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: The service runs its models on vLLM, so its serving techniques are that engine's, and what it adds is routing,
+    failover and per-key rate limits across clusters donated by different partners. Its catalog is a handful of
+    national models of up to 70 billion parameters, and it publishes no throughput or latency figures.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://cdn.jsdelivr.net/gh/vllm-project/vllm/README.md
+      shows: 'vLLM README feature list: PagedAttention, continuous batching with chunked prefill and prefix caching,
+        "Tensor, pipeline, data, expert, and context parallelism for distributed inference", speculative decoding,
+        broad quantization support and "200+ model architectures".'
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://platform.publicai.co/models
+    shows: The Available Models page lists nine catalog entries, among them swiss-ai/apertus-v1.5-8b and apertus-v1.5-70b
+      at 262K context, aisingapore/Gemma-SEA-LION-v4-27B-IT and Qwen-SEA-LION-v4-32B-IT at 128K, and speakleash/Bielik-11B-v3.0-Instruct
+      at 32K, served through "a unified, OpenAI-compatible API".
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 53bea73eb4d2d3cb0a20df1c1f92835789690190fae5a31ade5347dadad03da0
+  - url: https://platform.publicai.co/inference-partners-faq
+    shows: The partners FAQ describes "a unified API that routes requests to open-source models hosted by inference
+      partners worldwide", with the gateway handling "load balancing, traffic routing, and failover"; partners contribute
+      GPU compute.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: f8be15c6accdb55438754ff5314cdc2e5d513d74444b3bb0d588a9199e43c4e8
+  - url: https://platform.publicai.co/plans
+    shows: 'The plans page lists four tiers with per-key limits: Free at 100 requests/minute, Plus at 200, Pro at
+      300 and Enterprise at 10,000.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 0bc02fe3e4a6d88f6e6a735e948ae66ef0d393b71e6b98bfacf574b0df4ffc40
+  - url: https://publicai.co/stories/utility
+    shows: The launch post says inference runs on "servers running OpenAI-compatible APIs on vLLM" across partner
+      clusters, with "A global load-balancing layer" routing requests between them.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 22a9346580eeb10e95785a0426dc9e71025cce44ecf4bdeadd5640da6be14599

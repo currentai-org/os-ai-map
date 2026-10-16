@@ -1,0 +1,110 @@
+product: shieldstral
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 safetensors on HF mistralai/Shieldstral-1.0-3B, ungated
+    data:
+      value: described
+      detail: the technical report gives the construction recipe for about 54.1M training samples; the data are
+        not released
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: Shieldstral's weights are downloadable without a gate under Apache-2.0, and its technical report explains
+    how the 54.1M-sample training set was assembled. The training data itself is not released, which keeps it at
+    open weights with the other policy-adaptive classifiers here.
+  raw: weights:open(Apache-2.0 safetensors on HF mistralai/Shieldstral-1.0-3B, ungated);data:described(the technical
+    report gives the construction recipe for about 54.1M training samples; the data are not released);license:Apache-2.0(OSI)
+  last_verified: '2026-10-12'
+  sources:
+  - url: https://huggingface.co/mistralai/Shieldstral-1.0-3B/raw/main/README.md
+    shows: 'Raw model card front matter declares "license: apache-2.0" and "base_model: mistralai/Ministral-3-3B-Base-2512";
+      the features list reads "Apache 2.0 License: Open weights for both commercial and non-commercial use", and
+      the License section says "This model is licensed under the Apache 2.0 License". Searched the card for dataset
+      and training data: it links no training set, and mentions the training data only as a limitation ("domains
+      represented unevenly in the training data").'
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: b67233168fac38fa63658f70a1b59901da612cfa19cd14cc6ecaf804b9003d9d
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/mistralai/Shieldstral-1.0-3B
+    shows: The Hugging Face API record reports gated as false, carries the tag "license:apache-2.0", and lists the
+      weight files "consolidated.safetensors" and "model.safetensors". It declares no dataset tag.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 0b82a4ce8e988f966dfeaacaf96f6342a7fc787b52ef18e0eaa4cfc10bf1c9a0
+    establishes:
+    - weights
+    - license
+  - url: https://arxiv.org/abs/2607.25857
+    shows: The arXiv abstract says "We present the data construction recipe, covering curation and generation of
+      approximately 54.1M samples and a fine-grained evaluation set to evaluate policy adaptability". It links no
+      dataset release.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: e35d3b1e389db0338983072d22cbd8c2213bb53446d2ac2940dfccf44d953eae
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the one checkpoint Mistral publishes, Shieldstral-1.0-3B.
+    Mistral also serves it through its own API, and those calls are not counted.
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Shieldstral-1.0-3B
+    shows: 37,660 downloads in the trailing 30 days for mistralai/Shieldstral-1.0-3B
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 0b82a4ce8e988f966dfeaacaf96f6342a7fc787b52ef18e0eaa4cfc10bf1c9a0
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: steerable bring-your-own-policy, text and image
+  value: Policy-adaptive yes/no classification against a natural-language policy for prompts, responses, prompt-response
+    pairs and images, in twelve languages, returning a continuous score. On the card's F1 tables it posts 88.1 on
+    WildGuardTest prompts against 87.3 for gpt-oss-safeguard-20b and 88.2 for Qwen3Guard-8B, and 97.7 on VLGuard
+    for images.
+  relative_to: gpt-oss-safeguard
+  relation: at
+  confidence: medium
+  note: Like gpt-oss-safeguard, Shieldstral checks content against a policy the user writes rather than a fixed
+    taxonomy, and on Mistral's own benchmark tables the two trade wins at a seventh of the size. Shieldstral also
+    moderates images, but it answers only yes or no and gives no reasoning, so it sits level with gpt-oss-safeguard
+    rather than ahead.
+  comparison:
+    last_attested: '2026-10-12'
+    sources:
+    - url: https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md
+      shows: The peer's card still describes "safety reasoning models built-upon gpt-oss" that "classify text content
+        based on safety policies that you provide", with a bring-your-own-policy feature and reasoning effort set
+        to low, medium or high. The digest matches the one gpt-oss-safeguard records from 2026-09-29.
+      accessed: '2026-10-12'
+      http_status: 200
+      content_sha256: 1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9
+  last_verified: '2026-10-12'
+  sources:
+  - url: https://huggingface.co/mistralai/Shieldstral-1.0-3B/raw/main/README.md
+    shows: The card calls Shieldstral a "policy-adaptive multimodal safety classifier" that "evaluates content against
+      a safety policy expressed in natural language and returns a single continuous safety score", lists twelve
+      languages, and says it "fits in 16GB of VRAM in BF16". Its prompt-classification F1 table gives WildGuardTest
+      88.1 for Shieldstral-3B, 87.3 for GPT-OSS-Safeguard-20B and 88.2 for Qwen3Guard-8B, and its multimodal table
+      gives VLGuard 97.7.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: b67233168fac38fa63658f70a1b59901da612cfa19cd14cc6ecaf804b9003d9d
+  - url: https://mistral.ai/news/shieldstral
+    shows: Mistral's announcement, dated August 4, 2026, describes "a 3B open-weights, policy-adaptive multimodal
+      safety classifier that matches models up to 7x its size on text safety and sets a new state of the art on
+      multimodal moderation".
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: c2266af3ce21343f7a3c36d23d16811c5ba010212d50d39f66784a589245e79c

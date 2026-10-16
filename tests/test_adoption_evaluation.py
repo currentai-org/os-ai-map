@@ -149,7 +149,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # asserted - the row sets were dumped against main and diffed: 339 rows on both sides, and the only
 # difference is qwen-instruct's row, which goes from level 4 to an abstention because the frozen
 # snapshot never observed the Qwen 3.8 checkpoints it now declares. qwen's row does not change.
-MEASUREMENTS_DIGEST = "92430180fc03fc72887601a90d79e997cb5c3e36b7d413f5dc30b352eeeb9a35"
+# Moved 2026-10-12 when alia-40b declared BSC-LT/ALIA-40b-instruct-2606 beside its base checkpoint
+# (#903). Measured rather than asserted - the row sets were dumped against main and diffed: 339 rows on
+# both sides, and the only difference is alia-40b's row, which goes from level 1 to an abstention because
+# the frozen snapshot never observed the instruct checkpoint. The products that issue adds or promotes
+# produce no row, since the snapshot observed none of their artifacts.
+MEASUREMENTS_DIGEST = "956a8145cbb599e4b38af224f2a394a53d562887449346d1dba2044eb15bd1c2"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -565,6 +570,10 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
         # llama-cpp joined on 2026-10-09, when its usage_volume claim with no count behind it was
         # relabeled reported_traction.
         "llama-cpp",
+        # The Alpha stack promotions (2026-10-13) add three that band on reported traction: the
+        # ThreatExchange monorepo, the Public AI portal and gateway, and bubblewrap, which
+        # installs through distribution packages.
+        "hasher-matcher-actioner", "public-ai-inference-utility", "bubblewrap",
     }
     for slug in traction_repos:
         assert {kind for kind, _ in inputs.non_primary_artifacts[slug]} == {"github"}
@@ -733,10 +742,12 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     # covers some declared primaries, not all. deepseek-instruct since 2026-10-08 the same way: it
     # declares V4-Flash beside V4-Pro (R-2026-10-08-t), and the snapshot observed only V4-Pro for it.
     # qwen-instruct since 2026-10-09 the same way: the re-scope (R-2026-10-09-m) gave it the Qwen 3.8
-    # checkpoints, which the snapshot never observed.
+    # checkpoints, which the snapshot never observed. alia-40b since 2026-10-12 the same way: it
+    # declares ALIA-40b-instruct-2606 beside the base checkpoint (#903), which the snapshot never
+    # observed.
     assert abstained == {
-        "composable-kernel", "deepseek-instruct", "glm", "librechat", "maple-ai", "mimo-pro",
-        "olmo-instruct", "qwen", "qwen-instruct",
+        "alia-40b", "composable-kernel", "deepseek-instruct", "glm", "librechat", "maple-ai",
+        "mimo-pro", "olmo-instruct", "qwen", "qwen-instruct",
     }
     for row in measurement_rows:
         if row["measured_level"] is None:

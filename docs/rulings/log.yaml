@@ -979,3 +979,156 @@ rulings:
     executor: agent
     lands_in: [sources/scores/qwen.yaml]
     applied_in: []
+
+  - id: R-2026-10-12-a
+    date: 2026-10-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#903", "#907", inference_code, sea-lion, bielik, alia-40b]
+    question: >-
+      Are the national hosts behind the Public AI gateway (AI Singapore's SEA-LION API, PLGrid's
+      LLMLab and NextBit, which serves ALIA) products in inference_code, or an attribute of the
+      model row they serve?
+    ruling: >-
+      Not separate products. Each is a distribution relationship for a model product, unlike Mistral
+      Studio or Scaleway Generative APIs, which are general hosted-inference products. Keep the three
+      parked. Longer term, model hosting as a many-to-many served_by relationship, not as a scalar
+      attribute on the model, since one model can have several hosts and one host can serve several
+      models. That is outside the sweep.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+
+  - id: R-2026-10-12-b
+    date: 2026-10-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#903", "#907", lettucedetect, safeguards, evaluation_code, granite-guardian, azure-content-safety]
+    question: >-
+      Which category does a groundedness detector such as LettuceDetect (or HHEM, or MiniCheck)
+      extend: safeguards or evaluation_code?
+    ruling: >-
+      Safeguards. A serving-time detector that takes an answer and decides whether it is grounded
+      belongs in safeguards; a harness whose primary job is running and grading model evaluations
+      belongs in evaluation_code. Emit the LettuceDetect row now.
+    reasoning: >-
+      That matches Granite Guardian and Azure's groundedness detection, and it is more useful than
+      classifying by whether the same detector could also be used offline.
+    status: in-force
+    executor: agent
+    lands_in: [sources/registry/safeguards.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+
+  - id: R-2026-10-12-c
+    date: 2026-10-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#907", devstral, mistral-medium, Modified-MIT]
+    question: >-
+      Mistral's "Modified MIT License" withholds every right from a company whose consolidated
+      monthly revenue exceeds USD 20M, but the Modified-MIT spelling the corpus records it under is
+      tiered permissive_non_osi. Which tier governs?
+    ruling: >-
+      use_bounded. Give the text its own identity, Mistral-Modified-MIT, put it in use_bounded, and
+      move devstral and mistral-medium to it, as Kimi-K3-License was named rather than treating every
+      license called "Modified MIT" as one set of terms. Fix it now rather than leave the
+      inconsistency because both tiers score 3 today.
+    reasoning: >-
+      Above USD 20M monthly revenue the licensee loses the grant, which is the use_bounded
+      definition almost word for word. The two tiers diverge the moment a model under this license
+      publishes an open recipe, so the rubric should be repaired while the license body is in front
+      of us.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/model.yaml, sources/rubrics/pretrained.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+
+  - id: R-2026-10-13-a
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", infomaniak-ai-services, featherless, scaleway-generative-apis, inference_code, ADR-005]
+    question: >-
+      Should Infomaniak AI Services, Featherless and Scaleway Generative APIs be promoted to head
+      products because Alpha uses them?
+    ruling: >-
+      No. All three are closed, their adoption abstains, and their capability is 3, which puts them
+      below ADR-005's inclusion line while inference_code already carries stronger closed products
+      such as Fireworks. That Alpha uses them is not enough. They stay in the tail.
+    reasoning: >-
+      Promoting every closed host a showcase product happens to call would turn the map into a
+      closed-provider catalog.
+    status: in-force
+    executor: agent
+    lands_in: [sources/registry/inference_code.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-b
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", sea-lion, finetuned_chat, docs/reference/capability.md]
+    question: >-
+      May SEA-LION's capability be banded from its Nemotron 3 Super base's Artificial Analysis reading,
+      with its own SEA-HELM gains as support?
+    ruling: >-
+      No. Abstain, score null and basis n/a, until SEA-LION itself has an adequate general benchmark or
+      arena reading, or a direct same-benchmark comparison with a peer can support a band. basis_detail
+      names an instrument for this product, not one inherited from a related model.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/sea-lion.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-c
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", bubblewrap, reported_traction, banded_quantity]
+    question: >-
+      Does bubblewrap's adoption 5, read off Debian popcon as reported traction, stand?
+    ruling: >-
+      Yes, at medium confidence, given popcon's roughly 46% of reporting systems and Flatpak and
+      Sandbox Runtime usage. But a reported_traction band that cites a concrete proxy magnitude must
+      record what was banded in banded_quantity, here the popcon install share, which is not monthly
+      users.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/bubblewrap.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-d
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", bielik, "#117", permissive_non_osi]
+    question: >-
+      Bielik's Terms of Use add conduct restrictions on top of its Apache-2.0 weights. Are they context,
+      or part of the license?
+    ruling: >-
+      Part of the license. They are binding restrictions layered on Apache-2.0, the same shape as other
+      compound license and acceptable-use records, and #117 puts conduct restrictions in
+      permissive_non_osi. Name them (Bielik-Terms-of-Use-1.1) and record them under license. The
+      openness score stays 3.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/model.yaml, sources/scores/bielik.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']
+
+  - id: R-2026-10-13-e
+    date: 2026-10-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#909", mediawiki-search-api, search_retrieval]
+    question: >-
+      mediawiki-search-api's capability 4 depends on composing generator=search with the separate
+      TextExtracts module. May it take that band?
+    ruling: >-
+      Only if the scored product is deliberately the composable Action API search surface, with
+      TextExtracts represented in the product record and its evidence. Otherwise score the search
+      module alone at 3. A band is not taken from an adjacent extension the record does not declare.
+    status: in-force
+    executor: agent
+    lands_in: [sources/products/mediawiki-search-api.yaml, sources/scores/mediawiki-search-api.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/909']

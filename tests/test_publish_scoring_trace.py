@@ -363,11 +363,14 @@ def _platform_graphql(requested):
                 for t in P.TRACE_TABLES
             ]}}
         if query is P.M_URL:
-            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+            return {"createStaticModelUploadUrl": {"uploadId": f"upload-{variables['staticModelId']}",
+                                                   "url": "https://upload.example/put"}}
         if query is P.M_RUN:
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
                     {"runGroup": {"id": f"grp-for-{variables['input']['staticModelId']}", "status": "QUEUED"}}}
+        if query is PR.Q_RUN_GROUP_ERRORS:  # no recorded cause: not retried
+            return {"runGroups": {"edges": []}}
         raise AssertionError(f"unexpected query: {query[:60]}")
     return fake_graphql
 
@@ -398,6 +401,7 @@ def test_load_run_is_requested_once_per_model_with_static_model_id(tmp_path, mon
         assert payload["datasetId"] == "ds-eval"
         assert "selectedModels" not in payload
     assert [pl["staticModelId"] for pl in requested] == [f"id-{t}" for t in P.TRACE_TABLES]
+    assert [pl["uploadId"] for pl in requested] == [f"upload-id-{t}" for t in P.TRACE_TABLES]
 
 
 def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path, monkeypatch):

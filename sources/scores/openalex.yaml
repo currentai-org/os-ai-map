@@ -1,0 +1,134 @@
+product: openalex
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the LICENSE bodies of openalex-elastic-api and openalex-walden are the unmodified MIT text
+    source:
+      value: public
+      detail: the Elasticsearch-backed API service and the data pipelines that build the catalog
+    core-gated:
+      value: ungated
+      detail: OurResearch states all code is open source and charges for usage, sync and support
+    context:
+      managed:
+        value: api.openalex.org
+        detail: free daily budget, then metered usage and annual plans
+        raw: api.openalex.org, free daily budget, then metered usage and annual plans
+  confidence: medium
+  note: The code behind the API and the pipelines that build the catalog are published under MIT, and OurResearch
+    says all of its code is open source. What it charges for is API usage above a free daily allowance, faster snapshot
+    updates and support, not features held back from the code. Confidence is medium because the API repository describes
+    itself as only the Elasticsearch-backed portion of the service, and not every newer piece, such as the full-text
+    download service, could be matched to a published license.
+  raw: license:MIT(OSI; the LICENSE bodies of openalex-elastic-api and openalex-walden are the unmodified MIT text);source:public(the
+    Elasticsearch-backed API service and the data pipelines that build the catalog);core-gated:ungated(OurResearch
+    states all code is open source and charges for usage, sync and support);managed:api.openalex.org, free daily
+    budget, then metered usage and annual plans
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://raw.githubusercontent.com/ourresearch/openalex-elastic-api/HEAD/LICENSE
+    shows: 'The LICENSE body: "The MIT License (MIT)", "Copyright (c) 2021 OurResearch", unmodified MIT text with
+      no added clause.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 8229d025366b682ecf61af48d05f01f3137eb42e0d6c31cfc3cb0dca817b8f1f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ourresearch/openalex-elastic-api/HEAD/README.md
+    shows: '"This is the elasticsearch-backed portion of the [OpenAlex API](https://api.openalex.org/)."'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: f9e42ad5e9d42682f53829e08117cf4baf5ec5e94a25a63fe77b6cf387003aed
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/ourresearch/openalex-walden/HEAD/LICENSE
+    shows: 'The LICENSE body: "MIT License", "Copyright (c) 2025 OurResearch", unmodified MIT text.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 7ab82d0e4fa6e0a9c62b046293bab87b9b83be404ec65edf425234d49ffdb463
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ourresearch/openalex-walden/HEAD/README.md
+    shows: '"# openalex-walden" / "Data pipelines, transformations, science and AI code".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 79ca3c51b86b12617d08c8c30c151162560c76d7e772b0535aa3ff43291251f1
+    establishes:
+    - source
+  - url: https://help.openalex.org/access/pricing.md
+    shows: '"The OpenAlex *data* is free — but serving it is not, so *usage* is what costs money." Free accounts
+      get "$1 of API usage per day"; paid options are prepaid usage and Member, Member+ and Partner annual plans.
+      "Free data, paid services": the data is "released under a CC0 public-domain license", revenue comes from "serving,
+      freshness, support", and "OpenAlex is a US 501(c)(3) nonprofit, all code is open source, and the full dataset
+      is openly downloadable".'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 4f4a861a5e794d9d3dfdf759507c623983ae2f740557f595545fef9aa38600bc
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: OurResearch publishes no request, user or customer count for the API; its help center gives prices and rate
+    limits and says only that most users stay on the free tier. The API needs no package to call, and the most downloaded
+    Python client is a third-party wrapper, so no package count would measure the service. No level is recorded.
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://help.openalex.org/access/pricing.md
+    shows: Pricing and plan terms, including "the vast majority of users never leave the free tier", with no request,
+      user or customer count, which is why no level is recorded.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: 4f4a861a5e794d9d3dfdf759507c623983ae2f740557f595545fef9aa38600bc
+  - url: https://help.openalex.org/api/authentication.md
+    shows: Rate limits by caller (10 requests per second with no key, 30 with a free key or prepaid usage, 50 on
+      an annual plan) and usage headers; no aggregate usage figure.
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: af63f51c7c936a2810bf5ab05979a61353568a40fcfc559d62a2c2790bb86404
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: search and full-text retrieval read from the operator's API documentation
+  value: '`/works?search=` matches title, abstract, full text and keywords and returns works sorted by `relevance_score`,
+    with exact, boolean, scoped and semantic variants and an optional rerank; each work carries `content_urls` to
+    a cached PDF and Grobid-parsed TEI XML on `content.openalex.org`, held for 50M+ open-access works'
+  confidence: medium
+  relative_to: ddgs
+  relation: at
+  note: OpenAlex ranks works for a query by relevance and, for the more than 50 million open-access works it keeps
+    a copy of, returns the full text through the same API key, both as the PDF and as structured XML parsed from
+    it. Finding sources and then fetching their content puts it level with DDGS. It does not compose an answer from
+    what it finds, and the full text stops at the open-access subset of the catalog.
+  comparison:
+    last_attested: '2026-10-13'
+    sources:
+    - url: https://raw.githubusercontent.com/deedy5/ddgs/main/README.md
+      shows: 'The DDGS README still documents `text()` returning ranked references aggregated across ten backends
+        and `extract()`, "Fetch a URL and extract its content in various formats", taking a `url`: the find-then-fetch
+        pairing that its score depends on. No answer-composition function is documented.'
+      accessed: '2026-10-13'
+      http_status: 200
+      content_sha256: 4541f0854142f2c9a939fee7e8bdf3f075d73d3dcd7b52abdeb1c3d564513223
+  last_verified: '2026-10-13'
+  sources:
+  - url: https://help.openalex.org/api/searching.md
+    shows: '"The `search` parameter finds results matching a given text search"; works search covers `title`, `abstract`,
+      `fulltext` and keywords; "Search results include a `relevance_score` property and are sorted by it (descending)
+      by default"; rerank reorders the top 100.'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a1e1806a23e7b711ba8d727ac38e3f851cc944eb5dda2491ea6eba1a4cbcbf9b
+  - url: https://help.openalex.org/access/fulltext.md
+    shows: '"OpenAlex keeps its own cached copy of the full text for more than 50 million open-access works, as
+      PDF and as machine-readable TEI XML parsed by Grobid"; works link to it through `has_content` and `content_urls`
+      on `content.openalex.org`; "Any API key works, including a free one; downloads are metered against your daily
+      usage like any other call."'
+    accessed: '2026-10-13'
+    http_status: 200
+    content_sha256: a6ad9e96587789f9f882d20f396b5bb91970f3588390ad08b048223f6e678c6d

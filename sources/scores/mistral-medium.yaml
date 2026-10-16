@@ -1,0 +1,117 @@
+product: mistral-medium
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on HF mistralai/Mistral-Medium-3.5-128B, ungated
+    data:
+      value: closed
+    code:
+      value: partial
+      detail: inference and serving only; no training or post-training code
+    license:
+    - name: Mistral-Modified-MIT
+      detail: non-OSI; withholds every right from a company whose consolidated monthly revenue exceeds $20
+        million
+  confidence: high
+  note: Mistral Medium 3.5's weights are downloadable without a gate, but its Modified MIT license withholds every
+    right from companies with more than $20 million in monthly revenue, and Mistral publishes neither the training
+    data nor the training code. That makes it an open-weights release under a bounded license.
+  raw: weights:open(safetensors on HF mistralai/Mistral-Medium-3.5-128B, ungated);data:closed;code:partial(inference
+    and serving only; no training or post-training code);license:Mistral-Modified-MIT(non-OSI; withholds
+    every right from a company whose consolidated monthly revenue exceeds $20 million)
+  last_verified: '2026-10-12'
+  sources:
+  - url: https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/raw/main/LICENSE
+    shows: 'LICENSE file, "Modified MIT License": "You are not authorized to exercise any rights under this license
+      if the global consolidated monthly revenue of your company (or that of your employer) exceeds $20 million
+      (or its equivalent in another currency) for the preceding month." A revenue ceiling, so not OSI.'
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 648194727930df730890e9f9affdbcc5c930d406d6829559b25ca3d5a973fc8c
+    establishes:
+    - license
+  - url: https://huggingface.co/mistralai/Mistral-Medium-3.5-128B/raw/main/README.md
+    shows: 'Raw model card front matter declares "license: other", and the card says "We release this model under
+      a Modified MIT License: Open-source license for both commercial and non-commercial use with exceptions for
+      companies with large revenue". Searched the body for dataset, training data and corpus: none. The code it
+      references is for serving (vLLM, mistral_common), not training.'
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 6d14ac4dba5a4c8b3d652ea67742ee1b41e424772194b8088cd62603d5032465
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Medium-3.5-128B
+    shows: The Hugging Face API record reports gated as false, carries the tag "license:other", and lists weight
+      shards from "consolidated-00001-of-00003.safetensors" to "consolidated-00003-of-00003.safetensors". It declares
+      no dataset tag.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 39bdb3407d4d3cbf193245e70cfcfa44b329b26a69a7b220ba59f3e4fa55d0c7
+    establishes:
+    - weights
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the one checkpoint Mistral publishes. Mistral also
+    serves the model through its API and Le Chat, which publish no usage figure, so the count covers the open
+    weights alone.
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Medium-3.5-128B
+    shows: 72,266 downloads in the trailing 30 days for mistralai/Mistral-Medium-3.5-128B
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 39bdb3407d4d3cbf193245e70cfcfa44b329b26a69a7b220ba59f3e4fa55d0c7
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'Mistral Medium 3.5 scores 14 on the Artificial Analysis Intelligence Index against a median of 8 for comparable
+    models, ranked #6 of 65 in that group. o3 scores 20 and GPT-4o (Nov ''24) 8.'
+  relative_to: o-series
+  relation: at
+  confidence: high
+  note: Mistral Medium 3.5 is among the strongest open-weight models of its size on the Artificial Analysis index,
+    but it sits far below the frontier, between GPT-4o and o3. That places it level with OpenAI's o-series, a step
+    below Gemini 3.1 Pro.
+  comparison:
+    last_attested: '2026-10-12'
+    sources:
+    - url: https://artificialanalysis.ai/models/o3
+      shows: '"o3 scores 20 on the Artificial Analysis Intelligence Index, placing it below average among comparable
+        models (median: 26)"; Intelligence rank "# 157 / 227". The score the peer records is unchanged; the digest
+        drifts because the page carries live pricing.'
+      accessed: '2026-10-12'
+      http_status: 200
+      content_sha256: d1382df6d7e3262d4a14f680518f29f84c81a16ea5a2016702484e503d548801
+  last_verified: '2026-10-12'
+  sources:
+  - url: https://artificialanalysis.ai/models/mistral-medium-3-5
+    shows: '"Mistral Medium 3.5 scores 14 on the Artificial Analysis Intelligence Index, placing it well above average
+      among comparable models (median: 8)"; Intelligence rank "# 6 / 65"; the page tags it "Open weights model"
+      and "Released April 2026".'
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 0a618301b3afe5359fed17b64d938f397d58196ba0381b41216ea5b7f38d34c2
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: The leaderboard's embedded model records give intelligenceIndex 14.19 for Mistral Medium 3.5, 29.72 for
+      Gemini 3.1 Pro Preview, 9.99 for Llama 4 Maverick, 9.27 for Mistral Large 3 and 8.44 for GPT-4o (Nov '24).
+      The digest drifts between fetches because the page carries live pricing and throughput figures.
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: 8af3b6b4156d2074940d3d52401d85bc11d5fc4c1e37cfed9a011ef75991ec01
+  - url: https://docs.mistral.ai/models/mistral-medium-3-5-26-04
+    shows: 'Mistral''s model page: "April 28, 2026", "Modified MIT", "v 26.04", "Mistral Medium 3.5. Our frontier-class
+      multimodal model optimized for agentic and coding use cases. Released as open weights under a Modified MIT
+      license", context 256k, with its weights linked at huggingface.co/mistralai/Mistral-Medium-3.5-128B.'
+    accessed: '2026-10-12'
+    http_status: 200
+    content_sha256: f5628e9529d29587e2bdeb0ca8a6a51df451cfd2eeb80bc8b70243ad66946a0d
