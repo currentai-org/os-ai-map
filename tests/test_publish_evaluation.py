@@ -228,6 +228,8 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
             model = variables["input"]["staticModelId"]
             return {"createStaticModelRunRequest":
                     {"runGroup": {"id": f"grp-for-{model}", "status": "QUEUED"}}}
+        if query is PR.Q_RUN_GROUP_ERRORS:  # no recorded cause: not retried
+            return {"runGroups": {"edges": []}}
         raise AssertionError(f"unexpected query: {query[:60]}")
 
     def record_poll(group_id, token, timeout=1800.0):
@@ -283,6 +285,8 @@ def _fake_platform(requested):
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
                     {"runGroup": {"id": f"group-{len(requested)}", "status": "QUEUED"}}}
+        if query is PR.Q_RUN_GROUP_ERRORS:  # no recorded cause: not retried
+            return {"runGroups": {"edges": []}}
         raise AssertionError(f"unexpected query: {query[:60]}")
     return fake_graphql
 
@@ -522,6 +526,8 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
                     {"runGroup": {"id": f"group-{len(requested)}", "status": "QUEUED"}}}
+        if query is PR.Q_RUN_GROUP_ERRORS:  # no recorded cause: not retried
+            return {"runGroups": {"edges": []}}
         raise AssertionError(f"unexpected query: {query[:60]}")
 
     monkeypatch.setattr(P, "graphql", fake_graphql)
@@ -566,6 +572,8 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
         if query is P.M_RUN:
             requested.append(variables["input"])
             return {"createStaticModelRunRequest": {"runGroup": {"id": "group-1", "status": "QUEUED"}}}
+        if query is PR.Q_RUN_GROUP_ERRORS:  # no recorded cause: not retried
+            return {"runGroups": {"edges": []}}
         raise AssertionError(f"unexpected query: {query[:60]}")
 
     def boom(dataset, table):

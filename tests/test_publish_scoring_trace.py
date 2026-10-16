@@ -369,6 +369,8 @@ def _platform_graphql(requested):
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
                     {"runGroup": {"id": f"grp-for-{variables['input']['staticModelId']}", "status": "QUEUED"}}}
+        if query is PR.Q_RUN_GROUP_ERRORS:  # no recorded cause: not retried
+            return {"runGroups": {"edges": []}}
         raise AssertionError(f"unexpected query: {query[:60]}")
     return fake_graphql
 

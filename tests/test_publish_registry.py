@@ -313,15 +313,18 @@ def _populated_tables() -> list[str]:
     return [t for t in pr.TABLES if t != "tail_products"]
 
 
-def _fake_platform(group_status: dict[str, list[str]]):
+def _fake_platform(group_status: dict[str, list[str]], group_errors: dict[str, list[str]] | None = None):
     """A fake `graphql` over the publish flow with a scripted run-group lifecycle.
 
     `group_status` maps a run-group id to the statuses returned on successive polls (the last
-    repeats). A run request for `id-<table>` mints group id `grp-id-<table>`. `fake.calls`
-    records `("run"|"poll", group_id)` in order so a test can assert identity and ordering.
+    repeats). A run request for `id-<table>` mints group id `grp-id-<table>`, and a repeat request
+    for the same model `grp-id-<table>-retry<n>`. `group_errors` maps a group id to its failed runs'
+    error messages. `fake.calls` records `("run"|"poll"|"errors", group_id)` in order so a test
+    can assert identity and ordering.
     """
     calls: list[tuple[str, str]] = []
     poll_index: dict[str, int] = {}
+    requests: dict[str, int] = {}
 
     def fake(query: str, variables: dict, token: str) -> dict:
         if query is pr.Q_DATASETS:
@@ -338,7 +341,10 @@ def _fake_platform(group_status: dict[str, list[str]]):
             return {"deleteStaticModel": {"success": True, "message": "ok"}}
         if query is pr.M_RUN:
             assert "selectedModels" not in variables["input"]  # obsolete batch input is gone
-            gid = f"grp-{variables['input']['staticModelId']}"
+            model = variables["input"]["staticModelId"]
+            n = requests.get(model, 0)
+            requests[model] = n + 1
+            gid = f"grp-{model}" if n == 0 else f"grp-{model}-retry{n}"
             calls.append(("run", gid))
             return {"createStaticModelRunRequest": {"runGroup": {"id": gid, "status": "RUNNING"}}}
         if query is pr.Q_RUN_GROUP:
@@ -348,6 +354,12 @@ def _fake_platform(group_status: dict[str, list[str]]):
             i = poll_index.get(gid, 0)
             poll_index[gid] = i + 1
             return {"runGroups": {"edges": [{"node": {"id": gid, "status": seq[min(i, len(seq) - 1)]}}]}}
+        if query is pr.Q_RUN_GROUP_ERRORS:
+            gid = variables["where"]["id"]["eq"]
+            calls.append(("errors", gid))
+            runs = [{"node": {"status": "FAILED", "metadata": {"errorDetails": {"error_message": m}}}}
+                    for m in (group_errors or {}).get(gid, [])]
+            return {"runGroups": {"edges": [{"node": {"id": gid, "runs": {"edges": runs}}}]}}
         raise AssertionError(f"unexpected query: {query[:40]}")
 
     fake.calls = calls  # type: ignore[attr-defined]
@@ -423,6 +435,50 @@ def test_a_failed_group_fails_fast_and_returns_nonzero(tmp_path, monkeypatch):
     run_gids = [g for op, g in fake.calls if op == "run"]
     # fail-fast: only the first two models were ever requested — nothing after the failure
     assert run_gids == [f"grp-id-{populated[0]}", f"grp-id-{populated[1]}"]
+
+
+OPA_504 = ("Pipeline execution failed at `step=load` ... <class 'dlt.destinations.exceptions."
+           "DatabaseTransientException'> TrinoQueryError(... Error listing schemas for catalog "
+           "user_shared: OPA server returned status 504 when processing policy ...)")
+
+
+def test_a_transient_load_failure_is_requested_again_and_the_publish_continues(tmp_path, monkeypatch):
+    """The 15 Oct failure: OPA timed out under one table's load. That table is requested again
+    with the same upload, and the publish carries on once the retry succeeds."""
+    populated = _populated_tables()
+    flaky = f"grp-id-{populated[1]}"
+    status = {f"grp-id-{t}": ["SUCCESS"] for t in populated}
+    status[flaky] = ["RUNNING", "FAILED"]
+    fake = _fake_platform(status, {flaky: [OPA_504]})
+    assert _run_publish(tmp_path, monkeypatch, fake) == 0
+    run_gids = [g for op, g in fake.calls if op == "run"]
+    assert run_gids[:3] == [f"grp-id-{populated[0]}", flaky, f"{flaky}-retry1"]
+    assert run_gids[3:] == [f"grp-id-{t}" for t in populated[2:]]  # the rest still publish
+
+
+def test_a_load_that_keeps_failing_transiently_stops_after_the_last_attempt(tmp_path, monkeypatch):
+    populated = _populated_tables()
+    model = f"grp-id-{populated[0]}"
+    attempts = [model] + [f"{model}-retry{n}" for n in range(1, pr.LOAD_ATTEMPTS)]
+    status = {gid: ["FAILED"] for gid in attempts}
+    fake = _fake_platform(status, {gid: [OPA_504] for gid in attempts})
+    assert _run_publish(tmp_path, monkeypatch, fake) == 1
+    assert [g for op, g in fake.calls if op == "run"] == attempts  # nothing after the last attempt
+
+
+def test_a_failure_that_is_not_transient_is_never_retried(tmp_path, monkeypatch):
+    populated = _populated_tables()
+    broken = f"grp-id-{populated[0]}"
+    fake = _fake_platform({broken: ["FAILED"]}, {broken: ["CSV header does not match the table's columns"]})
+    assert _run_publish(tmp_path, monkeypatch, fake) == 1
+    assert [g for op, g in fake.calls if op == "run"] == [broken]
+
+
+def test_is_transient_needs_every_failure_to_be_a_known_transient():
+    assert pr.is_transient([OPA_504])
+    assert pr.is_transient(["dlt ... DatabaseTransientException: Failed to query OPA backend"])
+    assert not pr.is_transient([])  # no recorded cause is not evidence of a transient
+    assert not pr.is_transient([OPA_504, "column count mismatch"])
 
 
 def test_poll_run_group_treats_a_timeout_as_not_success(monkeypatch):
