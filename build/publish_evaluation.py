@@ -74,8 +74,10 @@ from build.publish_registry import (
     Q_DATASETS,
     data_rows,
     graphql,
+    load_upload,
     poll_run_group,
     resolve_static_models,
+    run_group_errors,
     upload,
 )
 
@@ -350,15 +352,15 @@ def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receip
 
     statuses: dict[str, tuple[str, str]] = {}
     for table in tables:
-        run_group = graphql(
-            M_RUN,
-            {"input": {"datasetId": dataset_id, "staticModelId": models[table][0],
-                       "uploadId": upload_ids[table]}},
-            token,
-        )["createStaticModelRunRequest"]["runGroup"]
-        status = poll_run_group(run_group["id"], token, timeout=1800.0)
-        statuses[table] = (run_group["id"], status)
-        print(f"  {table}: run group {run_group['id']} finished {status}")
+        run_input = {"datasetId": dataset_id, "staticModelId": models[table][0], "uploadId": upload_ids[table]}
+        group_id, status = load_upload(
+            request=lambda: graphql(M_RUN, {"input": run_input}, token)["createStaticModelRunRequest"]["runGroup"],
+            poll=lambda gid: poll_run_group(gid, token, timeout=1800.0),
+            errors=lambda gid: run_group_errors(gid, token, gql=graphql),
+            label=table,
+        )
+        statuses[table] = (group_id, status)
+        print(f"  {table}: run group {group_id} finished {status}")
         if status != GROUP_SUCCESS:
             break
     problems = run_groups_all_succeeded(statuses)

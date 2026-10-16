@@ -100,9 +100,21 @@ M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
   createStaticModelRunRequest(input:$input){ success runGroup{ id status } } }"""
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
 Q_RUN_GROUP = """query($where: JSON){ runGroups(where:$where){ edges{ node{ id status } } } }"""
+Q_RUN_GROUP_ERRORS = """query($where: JSON){ runGroups(where:$where){ edges{ node{ id
+  runs{ edges{ node{ status metadata } } } } } } }"""
 
 GROUP_SUCCESS = "SUCCESS"
+GROUP_FAILED = "FAILED"
 GROUP_TERMINAL = frozenset({"SUCCESS", "FAILED", "CANCELED", "CANCELLED"})
+
+# A load the platform refused for its own reasons, not the upload's: the load step's query to the
+# destination failed because the policy service (OPA) or the warehouse timed out. A fresh run of the
+# same upload succeeds. On 15 Oct each attempt of the registry publish lost a different table this
+# way ("OPA server returned status 504"), so the run is retried; any other failure stops the publish.
+TRANSIENT_LOAD_ERRORS = ("DatabaseTransientException", "OPA server returned status 5",
+                         "Failed to query OPA backend")
+LOAD_ATTEMPTS = 3
+RETRY_BACKOFF = 30.0  # seconds, times the attempt number
 
 
 def run_group_status(run_group_id: str, token: str) -> str | None:
@@ -132,6 +144,46 @@ def poll_run_group(run_group_id: str, token: str, timeout: float = 600.0, interv
         time.sleep(interval)
         status = run_group_status(run_group_id, token)
     return status
+
+
+def run_group_errors(run_group_id: str, token: str, gql=None) -> list[str]:
+    """The error message of each failed run in THIS run group, as the platform recorded it."""
+    gql = gql or graphql
+    edges = gql(Q_RUN_GROUP_ERRORS, {"where": {"id": {"eq": run_group_id}}}, token)["runGroups"]["edges"]
+    errors = []
+    for group in edges:
+        for run in (group["node"].get("runs") or {}).get("edges") or []:
+            node = run["node"]
+            if node.get("status") == GROUP_FAILED:
+                details = (node.get("metadata") or {}).get("errorDetails") or {}
+                errors.append(str(details.get("error_message") or ""))
+    return errors
+
+
+def is_transient(errors: list[str]) -> bool:
+    """True only when there is at least one failure and every one is a known transient."""
+    return bool(errors) and all(any(m in e for m in TRANSIENT_LOAD_ERRORS) for e in errors)
+
+
+def load_upload(request, poll, errors, label: str, attempts: int = LOAD_ATTEMPTS) -> tuple[str, str]:
+    """Request a run, await its run group, and re-request it after a transient platform failure.
+
+    `request()` returns the run group a new run request created, `poll(group_id)` its terminal
+    status, `errors(group_id)` its failed runs' messages. The caller passes its own functions so a
+    publisher's module-level names (and the tests that patch them) stay in charge. Returns the last
+    run group's id and status; anything but SUCCESS fails the publish as before.
+    """
+    import time
+
+    for attempt in range(1, attempts + 1):
+        group_id = request()["id"]
+        status = poll(group_id)
+        if status != GROUP_FAILED or attempt == attempts or not is_transient(errors(group_id)):
+            return group_id, status
+        print(f"  {label}: run group {group_id} failed on a transient platform error; "
+              f"requesting it again ({attempt + 1}/{attempts})", file=sys.stderr)
+        time.sleep(RETRY_BACKOFF * attempt)
+    raise AssertionError("unreachable")
 
 
 def resolve_dataset(name: str, org_id: str, token: str, create: bool = True) -> str | None:
@@ -343,18 +395,19 @@ def main() -> int:
     # backend" (DatabaseTransientException) that fails a nondeterministic subset. Serializing
     # keeps each load alone, and polling the run group we just created (by its id, never the
     # model's "latest run") is what certifies the table actually materialized. Fail fast: the
-    # first unsuccessful model stops the publish rather than queuing more runs behind a failure.
+    # first unsuccessful model stops the publish rather than queuing more runs behind a failure,
+    # once `load_upload` has re-requested a load the platform failed for its own transient reasons.
     for table in populated:
-        model_id = models[table][0]
-        run_group = graphql(
-            M_RUN,
-            {"input": {"datasetId": dataset_id, "staticModelId": model_id, "uploadId": upload_ids[table]}},
-            token,
-        )["createStaticModelRunRequest"]["runGroup"]
-        status = poll_run_group(run_group["id"], token)
-        print(f"  {table}: run group {run_group['id']} finished {status}")
+        run_input = {"datasetId": dataset_id, "staticModelId": models[table][0], "uploadId": upload_ids[table]}
+        group_id, status = load_upload(
+            request=lambda: graphql(M_RUN, {"input": run_input}, token)["createStaticModelRunRequest"]["runGroup"],
+            poll=lambda gid: poll_run_group(gid, token),
+            errors=lambda gid: run_group_errors(gid, token, gql=graphql),
+            label=table,
+        )
+        print(f"  {table}: run group {group_id} finished {status}")
         if status != GROUP_SUCCESS:
-            print(f"materialization did not succeed: {table} run group {run_group['id']} is {status}", file=sys.stderr)
+            print(f"materialization did not succeed: {table} run group {group_id} is {status}", file=sys.stderr)
             return 1
     print(f"materialized {len(populated)} models")
     return 0
