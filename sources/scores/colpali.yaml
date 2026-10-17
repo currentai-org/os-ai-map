@@ -71,21 +71,22 @@ openness:
     - code
     - license
 adoption:
-  level: 4
-  reach: 1M-10M
+  level: 3
+  reach: 100K-1M
   signal_type: usage_volume
-  banded_quantity: trailing-30-day downloads summed across the 45 vidore repositories carrying the ColPali and ColQwen lines, which is wider than the two checkpoints this product declares
   confidence: high
-  note: Adoption is measured as Hugging Face downloads summed across the 45 vidore repositories carrying
-    the ColPali and ColQwen lines, wider than the two checkpoints this product declares. Downloads run mostly
-    to the ColQwen successors, with the original ColPali checkpoints trailing well behind.
-  last_verified: '2026-09-11'
+  note: 'Adoption is measured as Hugging Face downloads summed across the ColPali family''s retriever checkpoints
+    on the vidore account, in every format published: ColPali, ColQwen2 and ColQwen2.5, ColSmol and ColQwen-Omni.
+    The base initializations the adapters load are excluded so that one load is not counted twice, as are
+    the paper''s single-vector bi-encoder baselines and its ColIdefics ablation.'
   sources:
   - url: https://huggingface.co/api/models?author=vidore&limit=100&sort=downloads&direction=-1
-    shows: 45 vidore repos with `downloads` (trailing 30 days) summing to 1,255,462.
-    accessed: '2026-09-11'
+    shows: 45 vidore model repos with `downloads` (trailing 30 days) summing to 503,434; the 23 declared
+      retriever checkpoints account for 503,356, led by colSmol-500M at 234,853 and colqwen2.5-v0.2 at 107,230.
+      The 14 *-base initializations draw 65 and the four bi-encoder baselines 13.
+    accessed: '2026-10-17'
     http_status: 200
-    content_sha256: 32365cbb57ac872e740d826e07bb2b9c9ab5c9057a4bf8227f0ba56404c074d0
+    content_sha256: f2fce4a10f57959a59c79fc7436b91e88628f5e5130d6b1e5656fe931e65ef2b
 capability:
   score: 4
   basis: benchmark
