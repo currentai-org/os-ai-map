@@ -12757,20 +12757,18 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 5,
-            "reach": ">10M",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "banded_quantity": "trailing-30-day downloads summed across the 44 google/siglip* repositories, which is wider than the two checkpoints this product declares",
             "confidence": "high",
-            "note": "Adoption is measured as Hugging Face downloads summed across the 44 google/siglip* repositories, led by the SigLIP 2 giant-opt and base checkpoints. The timm re-hosts of the same checkpoints are excluded as mirrors.",
-            "last_verified": "2026-09-11",
+            "note": "Adoption is measured as Hugging Face downloads summed across every SigLIP and SigLIP 2 checkpoint Google publishes under google/siglip*, declared as a family in both the Transformers and JAX formats and led by the SigLIP 2 giant-opt and base checkpoints. The timm re-hosts of the same checkpoints are excluded as mirrors.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models?author=google&search=siglip&limit=100&sort=downloads&direction=-1",
-                "shows": "44 google siglip repos with `downloads` (trailing 30 days) summing to 11,451,605.",
-                "accessed": "2026-09-11",
+                "shows": "44 google siglip repos, all declared, with `downloads` (trailing 30 days) summing to 9,952,373, led by siglip2-giant-opt-patch16-384 at 1,737,175; the 17 *-jax format repos draw none.",
+                "accessed": "2026-10-17",
                 "http_status": 200,
-                "content_sha256": "5ae7b6b5fcd1621b4411c9a36a59aeb2fa9a73e9adf821d1afef356c3fc8e7bb"
+                "content_sha256": "a87ed6e22b3d4917ce8fa1b2cb7e78c4706b891be7177a36ddbfb6f39ef739c8"
               }
             ]
           },
@@ -12799,14 +12797,24 @@
               }
             ]
           },
-          "overall_score": 4.3,
+          "overall_score": 4.0,
           "tier": "strong",
-          "maturity": 4.3,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
             "date": "2026-09-11",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-10-13"
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-10-13",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-17",
+                "reason": "Re-banded on 2026-10-17 from level 5 to 4. The level 5 rested on a sum across 44 google/siglip* repositories the product did not declare. With every SigLIP and SigLIP 2 checkpoint now declared, the family read level 4 on 16 and 17 Oct, just under the 10M line. No reconciliation has measured the declared family yet, so the axis waits for the first scheduled reconciliation that measures level 4 on it. That run's re-dating PR dates the axis and releases this hold; a scheduled reading at level 5 sends it back for a re-band."
+              }
+            ]
           },
           "version_note": "The Hub cards for SigLIP 1 were written by Hugging Face rather than by the release team, and both generations put their evaluation tables in images; the numbers used here come from big_vision's own SigLIP 2 checkpoint table instead."
         },
@@ -13730,20 +13738,18 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
-            "banded_quantity": "trailing-30-day downloads summed across the 45 vidore repositories carrying the ColPali and ColQwen lines, which is wider than the two checkpoints this product declares",
             "confidence": "high",
-            "note": "Adoption is measured as Hugging Face downloads summed across the 45 vidore repositories carrying the ColPali and ColQwen lines, wider than the two checkpoints this product declares. Downloads run mostly to the ColQwen successors, with the original ColPali checkpoints trailing well behind.",
-            "last_verified": "2026-09-11",
+            "note": "Adoption is measured as Hugging Face downloads summed across the ColPali family's retriever checkpoints on the vidore account, in every format published: ColPali, ColQwen2 and ColQwen2.5, ColSmol and ColQwen-Omni. The base initializations the adapters load are excluded so that one load is not counted twice, as are the paper's single-vector bi-encoder baselines and its ColIdefics ablation.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models?author=vidore&limit=100&sort=downloads&direction=-1",
-                "shows": "45 vidore repos with `downloads` (trailing 30 days) summing to 1,255,462.",
-                "accessed": "2026-09-11",
+                "shows": "45 vidore model repos with `downloads` (trailing 30 days) summing to 503,434; the 23 declared retriever checkpoints account for 503,356, led by colSmol-500M at 234,853 and colqwen2.5-v0.2 at 107,230. The 14 *-base initializations draw 65 and the four bi-encoder baselines 13.",
+                "accessed": "2026-10-17",
                 "http_status": 200,
-                "content_sha256": "32365cbb57ac872e740d826e07bb2b9c9ab5c9057a4bf8227f0ba56404c074d0"
+                "content_sha256": "f2fce4a10f57959a59c79fc7436b91e88628f5e5130d6b1e5656fe931e65ef2b"
               }
             ]
           },
@@ -13772,13 +13778,23 @@
               }
             ]
           },
-          "overall_score": 4.0,
-          "tier": "strong",
-          "maturity": 4.0,
+          "overall_score": 3.7,
+          "tier": null,
+          "maturity": 3.7,
           "mature": false,
           "freshness": {
             "date": "2026-09-11",
-            "basis": "verified"
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-17",
+                "reason": "Re-banded on 2026-10-12 from level 4 to 3. The earlier reconciliations measured only the two checkpoints then declared, ColPali v1.3 and ColQwen2.5 v0.2, which put the reading near the 100K line. The family is now declared by identity, every retriever checkpoint in the ColPali, ColQwen2 and 2.5, ColSmol and ColQwen-Omni lines in every published format, and its downloads read level 3 on 16 and 17 Oct. No reconciliation has measured the declared family yet, so the axis waits for the first scheduled reconciliation that measures level 3 on it. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
           },
           "version_note": "Published by ILLUIN Technology - code at github.com/illuin-tech/colpali, weights and the ViDoRe benchmark under the `vidore` Hugging Face org - not by a company called ViDoRe."
         },
@@ -13845,18 +13861,18 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
+            "level": 1,
+            "reach": "<10K",
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "Adoption is measured as Hugging Face downloads for ColModernVBERT, which accounts for effectively the whole family since the bi-encoder, base and ablation repos draw only single digits.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/ModernVBERT/colmodernvbert",
-                "shows": "`downloads` (trailing 30 days) = 132434; `gated: false`; `private: false`.",
-                "accessed": "2026-09-11",
+                "shows": "`downloads` (trailing 30 days) = 6784; `gated: false`; `private: false`.",
+                "accessed": "2026-10-12",
                 "http_status": 200,
-                "content_sha256": "129cbe91afbf1d21ada5a006ebd320d35f4ce7f7af0dd8763f626d3b7bf042ab"
+                "content_sha256": "a6373e05f02255fd2dcd801093a6f9b5038e594115a0c816c8ae6e504da092ed"
               }
             ]
           },
@@ -13887,9 +13903,9 @@
               }
             ]
           },
-          "overall_score": 3.0,
+          "overall_score": 2.4,
           "tier": null,
-          "maturity": 3.0,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-11",
@@ -13900,8 +13916,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Both reconciliations measured Hugging Face downloads of ModernVBERT/colmodernvbert at level 2 (11,347 on 4 Oct), against the recorded level 3, and the repository read 9,905 on 7 Oct, under the 10K line. A fall from 132,434 in September looks like traffic moving to another repository rather than a fall in use. Settling it needs the family's current repositories re-read and, if the downloads moved, the new one declared (update-product) before the band is set."
+                "since": "2026-10-12",
+                "reason": "Re-banded on 2026-10-12 from level 3 to 1 on Hugging Face downloads of ModernVBERT/colmodernvbert. The 28 Sep and 5 Oct reconciliations measured level 2 and the 12 Oct one level 1 (7,228). The ModernVBERT account was re-read the same day: colmodernvbert draws 6,784 of its 6,792 downloads, and the only repositories elsewhere named for the model are tiny test checkpoints, so the traffic did not move to another repository. The band was set after the 12 Oct run, which cannot date it, so the axis waits for the first scheduled reconciliation that measures level 1. That run's re-dating PR dates the axis and releases this hold."
               }
             ]
           },
@@ -14173,20 +14189,25 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 5,
-            "reach": ">10M",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "banded_quantity": "trailing-30-day downloads summed across the 56 laion/CLIP-* checkpoints in the LAION account, which is wider than the single flagship repo this product declares as an artifact",
-            "confidence": "medium",
-            "note": "Adoption is measured as Hugging Face downloads summed across the 56 laion/CLIP-* repositories in the LAION account. That total sits close to the top adoption threshold and moves week to week, which keeps confidence at medium rather than high, and third-party re-hosts on the timm and apple accounts are excluded as mirrors, so the reading is, if anything, an undercount.",
-            "last_verified": "2026-09-11",
+            "confidence": "high",
+            "note": "Adoption is measured as Hugging Face downloads summed across the OpenCLIP checkpoints LAION publishes, declared as a family: every laion/CLIP-* checkpoint across the LAION-2B, LAION-5B multilingual, DataComp and CommonPool lines, and the CoCa checkpoints open_clip ships beside them. Copies re-hosted on other accounts, such as timm's, are excluded as mirrors, so the figure is a floor on the library's use.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1",
-                "shows": "56 laion CLIP repos with `downloads` (trailing 30 days) summing to 10,909,706.",
-                "accessed": "2026-09-11",
+                "shows": "56 laion repos matching CLIP with `downloads` (trailing 30 days) summing to 9,556,334; the 50 declared CLIP-* checkpoints account for 9,555,823, led by CLIP-ViT-B-32-laion2B-s34B-b79K at 3,836,233. The other six are LLM runs named for gradient clipping and an OpenVINO int8 copy of OpenAI's CLIP.",
+                "accessed": "2026-10-17",
                 "http_status": 200,
-                "content_sha256": "8dc47a8aba03c34640048aabec3fb6846c718c27defe0e7140319a8be78928c8"
+                "content_sha256": "1fc2c63538ecf9871d389561d2f20989211339c5f518865c27c49cfdd1994d44"
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=laion&search=CoCa&limit=100&sort=downloads&direction=-1",
+                "shows": "4 laion CoCa checkpoints, all `library_name: open_clip`, with `downloads` summing to 16,298.",
+                "accessed": "2026-10-17",
+                "http_status": 200,
+                "content_sha256": "b4382cb65d6e41e94c16f5840960a81842e36e55c66192f4c35fdc8b24fbf3b8"
               }
             ]
           },
@@ -14210,13 +14231,23 @@
               }
             ]
           },
-          "overall_score": 3.6,
+          "overall_score": 3.3,
           "tier": null,
-          "maturity": 3.6,
+          "maturity": 3.3,
           "mature": false,
           "freshness": {
             "date": "2026-09-11",
-            "basis": "verified"
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-17",
+                "reason": "Re-banded on 2026-10-16 from level 5 to 4. The 28 Sep, 5 Oct and 12 Oct reconciliations measured level 3, but only on the one checkpoint then declared, CLIP-ViT-H-14-laion2B-s32B-b79K, which is a partial channel rather than the product. The family is now declared by identity, every laion/CLIP-* checkpoint and the CoCa checkpoints open_clip ships, and its downloads read level 4 on 16 and 17 Oct. No reconciliation has measured the declared family yet, so the axis waits for the first scheduled reconciliation that measures level 4 on it. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
           },
           "version_note": "Two organizations in one product: the open_clip training code is maintained under mlfoundations, the checkpoints and the LAION corpora are published by LAION. The corpus history is not clean - laion/laion2B-en no longer resolves under its own name and now redirects to the re-filtered laion/relaion2B-en-research-safe, which sits behind an auto-accept gate."
         },
@@ -132224,18 +132255,18 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<1K stars",
+            "level": 2,
+            "reach": "1K-10K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
             "note": "GitHub stars are the only usage signal published for Tensorlake's sandbox repository, since no download, install or customer figure exists. A star is not a use, so this reads as attention rather than adoption volume.",
             "sources": [
               {
                 "url": "https://api.github.com/repos/tensorlakeai/tensorlake",
-                "shows": "stargazers_count = 986 for tensorlakeai/tensorlake",
-                "accessed": "2026-08-12",
+                "shows": "stargazers_count = 1023 for tensorlakeai/tensorlake",
+                "accessed": "2026-10-17",
                 "http_status": 200,
-                "content_sha256": "31e2f7885ab3c4a7adcb7ee04f26250051ffed9854546dbfdd8e0ebe5f33e18d"
+                "content_sha256": "a28d4ca552afa2c67e7f9cce56be29977650737cb727c14ffc8aaf834b07ca22"
               }
             ]
           },
@@ -132284,9 +132315,9 @@
               }
             ]
           },
-          "overall_score": 2.2,
+          "overall_score": 2.8,
           "tier": null,
-          "maturity": 2.2,
+          "maturity": 2.8,
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
@@ -132297,8 +132328,8 @@
             "verification_holds": [
               {
                 "axis": "adoption",
-                "since": "2026-10-07",
-                "reason": "Both reconciliations measured 1,017 GitHub stars on tensorlakeai/tensorlake (level 2, 1K-10K stars), against the recorded level 1 and the cited 986. The star count could not be re-read from this environment, where GitHub returns 403, so the re-band to level 2 waits for a re-read of the cited count."
+                "since": "2026-10-12",
+                "reason": "Re-banded on 2026-10-12 from level 1 to 2: the 28 Sep, 5 Oct and 12 Oct reconciliations all measured GitHub stars on tensorlakeai/tensorlake at level 2 (1,020 on 12 Oct), and GitHub's search API returned 1,022 the same day. The cited repository API was re-fetched on 2026-10-17 at 1,023 stars. The band was set after the 12 Oct run, which cannot date it, so the axis waits for the first scheduled reconciliation that measures level 2. That run's re-dating PR dates the axis and releases this hold."
               }
             ]
           }
@@ -149699,6 +149730,7 @@
       "qwen2-5-coder-instruct": "qwen-coder",
       "qwen3": "qwen",
       "qwen3-coder": "qwen-coder",
+      "siglip2": "siglip",
       "smollm3": "smollm",
       "tinyllama-1-1b-chat-v1-0": "tinyllama-chat",
       "tulu-3": "tulu",
@@ -149712,7 +149744,7 @@
     }
   },
   "n_total": 1133,
-  "generated": "2026-10-16",
+  "generated": "2026-10-17",
   "version": "0.5.0",
   "released": "2026-10-03",
   "contract": 2,
