@@ -71,18 +71,23 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'Adoption is measured as Hugging Face downloads summed across the OpenCLIP checkpoints LAION publishes
-    under laion/CLIP-*, declared as a family: the LAION-2B, LAION-5B multilingual, DataComp and CommonPool
-    ViT and ConvNeXt lines. The declared checkpoints carry nearly all of the account''s CLIP downloads;
-    re-hosts on the timm and apple accounts are excluded as mirrors, so the figure is a floor on the library''s
-    use.'
+  note: 'Adoption is measured as Hugging Face downloads summed across the OpenCLIP checkpoints LAION publishes,
+    declared as a family: every laion/CLIP-* checkpoint across the LAION-2B, LAION-5B multilingual, DataComp
+    and CommonPool lines, and the CoCa checkpoints open_clip ships beside them. Copies re-hosted on other
+    accounts, such as timm''s, are excluded as mirrors, so the figure is a floor on the library''s use.'
   sources:
   - url: https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1
-    shows: 56 laion CLIP repos with `downloads` (trailing 30 days) summing to 9,456,811; the 20 declared
-      checkpoints account for 9,450,997, led by CLIP-ViT-B-32-laion2B-s34B-b79K at 3,770,566.
-    accessed: '2026-10-16'
+    shows: 56 laion repos matching CLIP with `downloads` (trailing 30 days) summing to 9,556,334; the 50
+      declared CLIP-* checkpoints account for 9,555,823, led by CLIP-ViT-B-32-laion2B-s34B-b79K at 3,836,233.
+      The other six are LLM runs named for gradient clipping and an OpenVINO int8 copy of OpenAI's CLIP.
+    accessed: '2026-10-17'
     http_status: 200
-    content_sha256: d641113a7e4f7481f8e95f294bbead9b3684c5965fd1dfa081f5c9158c72ca43
+    content_sha256: 1fc2c63538ecf9871d389561d2f20989211339c5f518865c27c49cfdd1994d44
+  - url: https://huggingface.co/api/models?author=laion&search=CoCa&limit=100&sort=downloads&direction=-1
+    shows: '4 laion CoCa checkpoints, all `library_name: open_clip`, with `downloads` summing to 16,298.'
+    accessed: '2026-10-17'
+    http_status: 200
+    content_sha256: b4382cb65d6e41e94c16f5840960a81842e36e55c66192f4c35fdc8b24fbf3b8
 capability:
   score: 3
   basis: benchmark

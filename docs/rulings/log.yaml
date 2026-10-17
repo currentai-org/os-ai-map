@@ -1182,10 +1182,11 @@ rulings:
       and 2.5, ColSmol and ColQwen-Omni checkpoints rather than two of them. OpenCLIP is 4, not 3, on
       the LAION OpenCLIP checkpoints. SigLIP stays 5, since the scored identity spans SigLIP and
       SigLIP 2 and the family drew about 12.55M a month on the 12 Oct read.
-    status: in-force
+    status: replaced
     executor: agent
     lands_in: [sources/products/colpali.yaml, sources/products/openclip.yaml, sources/products/siglip.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/904']
+    replaced_by: R-2026-10-17-a
 
   - id: R-2026-10-16-d
     date: 2026-10-16
@@ -1200,4 +1201,41 @@ rulings:
     status: in-force
     executor: agent
     lands_in: [sources/scores/modernvbert.yaml, sources/scores/tensorlake-sandbox.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/904']
+
+  - id: R-2026-10-17-a
+    date: 2026-10-17
+    by: ccerv1
+    venue: pr-review
+    refs: ["#904", colpali, openclip, siglip]
+    question: >-
+      With the SigLIP family declared, its downloads read level 4 on 16 Oct. Does SigLIP keep the level 5
+      set on the earlier, undeclared 44-repository sum?
+    ruling: >-
+      No. A fresh authoritative reading on the declared artifacts beats the hand-set band, and no rule
+      lets a single reading below a threshold be ignored. SigLIP re-bands 5 to 4 on the declared SigLIP and
+      SigLIP 2 family and is held, undated, for scheduled confirmation. ColPali stays 3 and OpenCLIP 4, each
+      on its declared family. An anti-oscillation rule needing two readings would have to be codified first,
+      and would hold the axis undated rather than present the old band as verified.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/siglip.yaml, sources/products/colpali.yaml, sources/products/openclip.yaml, sources/products/siglip.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/904']
+
+  - id: R-2026-10-17-b
+    date: 2026-10-17
+    by: ccerv1
+    venue: pr-review
+    refs: ["#904", identity, adoption]
+    question: >-
+      May a family's declared checkpoints be chosen by a download floor, such as every repository with at
+      least 1,000 downloads?
+    ruling: >-
+      No. A declared artifact is a measurement identity, so membership is decided by identity: declare every
+      canonical first-party checkpoint of the scored family, and exclude mirrors, quantizations, test
+      artifacts or genuinely separate lines for what they are, not for their download count. A canonical
+      checkpoint left out for being small is never counted when it grows.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/adoption.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/904']

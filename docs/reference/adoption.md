@@ -460,6 +460,13 @@ a pass applies them.
   and is not moved down to match the route's present limit. `openclip` and `colpali` (a family
   under-declared) and `ag-ui` (PyPI and npm, where the route takes PyPI alone) are the cases
   (R-2026-10-16-a). An `ag-ui` row on the tier-change queue is that limit showing, not a re-band.
+- **Family membership is an identity question, never a download threshold.** Declare every
+  canonical first-party checkpoint of the scored family, in every format its publisher ships it
+  in, however few downloads it draws today; a checkpoint left out because it was small is never
+  counted when it grows. Exclude a repository only for what it is: a third-party mirror, a
+  quantization, a test or benchmark-results repository, an initialization an adapter loads (so
+  one load is not counted twice), or a genuinely separate line. Say in the note what was
+  excluded and why (R-2026-10-17-b).
 - **A `stars_fallback` band means no download signal existed when it was set.** If one exists
   now, re-band on it.
 - **A `usage_volume` record over a page publishing no count at all is on the wrong instrument.**
