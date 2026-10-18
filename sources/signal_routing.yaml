@@ -158,6 +158,30 @@ dimensions:
     - strip a leading `app=` / `code=` / `model=` qualifier
     - '`assumed-X` keeps tier X but caps confidence at medium'
 
+    # Which cited license URLs may be judged from a route's weekly `artifact_state` row
+    # instead of a fetch of the page itself (#691, ruled 2026-09-25: the API form of a
+    # cited github.com or huggingface.co page, declared here rather than inferred). The
+    # `artifact` group names the artifact the row must belong to, on this product; a URL
+    # naming an artifact the product does not declare abstains. Read by
+    # build/license_rows.py.
+    #
+    # Deliberately absent: every file URL, raw.githubusercontent.com and the github.com
+    # `blob/` view alike. A license document is evidence for its own text, so it stays on
+    # the direct-document path: an SPDX classification cannot confirm changed bytes, an
+    # added exception or extra terms. Only the repository page and the repository and
+    # license APIs are rewritten, because what they cite is the classification itself.
+    source_rewrites:
+    - source: github
+      match: '^https://(?:www\.)?github\.com/(?P<artifact>[^/?#]+/[^/?#]+?)(?:\.git)?/?(?:[?#].*)?$'
+    - source: github
+      match: '^https://api\.github\.com/repos/(?P<artifact>[^/?#]+/[^/?#]+)(?:/license)?/?(?:[?#].*)?$'
+    - source: huggingface_dataset
+      match: '^https://huggingface\.co/(?:api/)?datasets/(?P<artifact>[^/?#]+/[^/?#]+)/?(?:[?#].*)?$'
+    - source: huggingface_model
+      match: '^https://huggingface\.co/api/models/(?P<artifact>[^/?#]+/[^/?#]+)/?(?:[?#].*)?$'
+    - source: huggingface_model
+      match: '^https://huggingface\.co/(?!api/|datasets/|spaces/|docs/|blog/|papers/|collections/)(?P<artifact>[^/?#]+/[^/?#]+)/?(?:[?#].*)?$'
+
     # `huggingface:` maps a Hub license SLUG to its published name; naming only, no
     # tier assigned. Ruling: docs/reference/openness.md, "The license scale".
     aliases:
