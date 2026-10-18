@@ -13,6 +13,14 @@ datasets: just 15 of 106 model products carry a GitHub artifact, while 61 carry 
 `downloads` is the Hub's rolling 30-day figure, which is what the adoption bands
 are expressed in, so it is used as-is with no derivation.
 
+Derivative counts (#849): `childrenModelCount` is the Hub's count of repos that
+declare this model as `base_model`, split by relation (quantized, finetune,
+adapter, merge). It is the same figure as the model page's "Model tree" and comes
+back on the one expanded call, so there is no per-relation listing to page
+through. The counts are CUMULATIVE, not trailing-30-day, and include bot-made
+auto-quantizations; they are models-only (the Hub 400s the field for datasets),
+so dataset rows carry nulls.
+
 Field selection: each call asks only for the fields read below via `expand[]`.
 An unexpanded record carries `siblings` (every file in the repo), and for large
 repos that pushes the response past OSO's 10 MB fetch cap — the 4 Oct 2026 failure,
@@ -55,7 +63,8 @@ DATASET_FIELDS = (
     "createdAt",
     "lastModified",
 )
-# `pipeline_tag` and `library_name` are model-only; the Hub 400s them for datasets.
+# `pipeline_tag`, `library_name` and `childrenModelCount` are model-only; the Hub
+# 400s them for datasets.
 MODEL_FIELDS = (
     "downloads",
     "likes",
@@ -69,6 +78,7 @@ MODEL_FIELDS = (
     "lastModified",
     "pipeline_tag",
     "library_name",
+    "childrenModelCount",
 )
 
 
@@ -145,6 +155,13 @@ def _tag_count(payload: object) -> int | None:
         value = payload.get("tags")
         if isinstance(value, list):
             return len(value)
+    return None
+
+
+def _derivatives(payload: object, relation: str) -> int | None:
+    """`childrenModelCount.<relation>`; null when the Hub sent no count at all."""
+    if isinstance(payload, dict):
+        return _number(payload.get("childrenModelCount"), relation)
     return None
 
 
@@ -252,6 +269,10 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
                 "last_modified": _stamp(payload, "lastModified"),
                 "http_status": statuses[index],
                 "fetched_at": fetched,
+                "derivatives_quantized": _derivatives(payload, "quantized"),
+                "derivatives_finetune": _derivatives(payload, "finetune"),
+                "derivatives_adapter": _derivatives(payload, "adapter"),
+                "derivatives_merge": _derivatives(payload, "merge"),
             }
         )
 
@@ -277,5 +298,9 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
             "last_modified": pl.Datetime("us"),
             "http_status": pl.Int64,
             "fetched_at": pl.Datetime("us"),
+            "derivatives_quantized": pl.Int64,
+            "derivatives_finetune": pl.Int64,
+            "derivatives_adapter": pl.Int64,
+            "derivatives_merge": pl.Int64,
         },
     )
