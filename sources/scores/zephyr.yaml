@@ -5,7 +5,7 @@ openness:
   components:
     weights:
       value: open
-      detail: zephyr-7b-beta MIT, zephyr-orpo-141b Apache-2.0;base Mistral-7B Apache-2.0
+      detail: MIT;base Mistral-7B Apache-2.0
     data:
       value: open
       detail: UltraChat_200k + UltraFeedback_binarized, both MIT, ungated
@@ -14,19 +14,14 @@ openness:
       detail: alignment-handbook DPO recipe, Apache-2.0
     license:
     - name: MIT
-      detail: OSI, zephyr-7b-beta weights
-    - name: Apache-2.0
-      detail: OSI, zephyr-orpo-141b weights
+      detail: OSI
   confidence: high
-  note: 'Genuinely fully open: the weights ship under OSI licenses, MIT for zephyr-7b-beta and Apache-2.0
-    for the zephyr-orpo-141b checkpoint, both DPO training datasets are public and MIT-licensed, and the
-    end-to-end training code (the alignment handbook) that reproduces zephyr-7b-beta is under Apache-2.0.
-    One caveat that does not change the class: the upstream UltraChat and UltraFeedback sets were partly
-    generated with OpenAI model outputs, though the released Hugging Face artifacts are themselves open
-    and MIT.'
-  raw: weights:open(zephyr-7b-beta MIT, zephyr-orpo-141b Apache-2.0;base Mistral-7B Apache-2.0);data:open(UltraChat_200k
-    + UltraFeedback_binarized, both MIT, ungated);code:open(alignment-handbook DPO recipe, Apache-2.0);license:MIT(OSI,
-    zephyr-7b-beta weights)+Apache-2.0(OSI, zephyr-orpo-141b weights)
+  note: 'Genuinely fully open: MIT weights, both DPO training datasets public and MIT-licensed, and end-to-end
+    training code (the alignment handbook) under Apache-2.0 that reproduces zephyr-7b-beta. One caveat that
+    does not change the class: the upstream UltraChat and UltraFeedback sets were partly generated with
+    OpenAI model outputs, though the released Hugging Face artifacts are themselves open and MIT.'
+  raw: weights:open(MIT;base Mistral-7B Apache-2.0);data:open(UltraChat_200k + UltraFeedback_binarized,
+    both MIT, ungated);code:open(alignment-handbook DPO recipe, Apache-2.0);license:MIT(OSI)
   last_verified: '2026-09-29'
   sources:
   - url: https://huggingface.co/HuggingFaceH4/zephyr-7b-beta
