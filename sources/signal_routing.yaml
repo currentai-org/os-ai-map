@@ -158,6 +158,32 @@ dimensions:
     - strip a leading `app=` / `code=` / `model=` qualifier
     - '`assumed-X` keeps tier X but caps confidence at medium'
 
+    # Which cited license URLs may be judged from a route's weekly `artifact_state` row
+    # instead of a fetch of the page itself (#691, ruled 2026-09-25: the API form of a
+    # cited github.com or huggingface.co page, declared here rather than inferred). The
+    # `artifact` group names the artifact the row must belong to, on this product; a URL
+    # naming an artifact the product does not declare abstains. Read by
+    # build/license_rows.py.
+    #
+    # Deliberately absent: raw.githubusercontent.com and every other file URL. A raw
+    # LICENSE file stays on the direct-document path, because a warehouse label cannot
+    # confirm a file's bytes, its exceptions or its scope. GitHub blob URLs below are
+    # limited to a LICENSE or COPYING file at the repository root, the file GitHub
+    # classifies; one in a subdirectory may govern something else.
+    source_rewrites:
+    - source: github
+      match: '^https://(?:www\.)?github\.com/(?P<artifact>[^/?#]+/[^/?#]+?)(?:\.git)?/?(?:[?#].*)?$'
+    - source: github
+      match: '^https://(?:www\.)?github\.com/(?P<artifact>[^/?#]+/[^/?#]+)/blob/[^/?#]+/(?:LICEN[CS]E|COPYING)(?:\.[A-Za-z]+)?(?:[?#].*)?$'
+    - source: github
+      match: '^https://api\.github\.com/repos/(?P<artifact>[^/?#]+/[^/?#]+)(?:/license)?/?(?:[?#].*)?$'
+    - source: huggingface_dataset
+      match: '^https://huggingface\.co/(?:api/)?datasets/(?P<artifact>[^/?#]+/[^/?#]+)/?(?:[?#].*)?$'
+    - source: huggingface_model
+      match: '^https://huggingface\.co/api/models/(?P<artifact>[^/?#]+/[^/?#]+)/?(?:[?#].*)?$'
+    - source: huggingface_model
+      match: '^https://huggingface\.co/(?!api/|datasets/|spaces/|docs/|blog/|papers/|collections/)(?P<artifact>[^/?#]+/[^/?#]+)/?(?:[?#].*)?$'
+
     # `huggingface:` maps a Hub license SLUG to its published name; naming only, no
     # tier assigned. Ruling: docs/reference/openness.md, "The license scale".
     aliases:

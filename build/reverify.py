@@ -391,7 +391,9 @@ def _spdx_verdict(url: str, fetched: dict, recorded_license: str) -> tuple[str, 
     corresponding to a recorded web URL, which is a different resource from the one the score
     cites, and comparing a license to an artifact that may not carry it (an HF *dataset*
     endpoint cited as evidence for a `data` dimension produced five false refutations when
-    tried). Both are rulings, tracked separately; this function deliberately does neither.
+    tried). Both were ruled on 2026-09-25 (#691) and are implemented in `build/license_rows.py`,
+    which judges such a citation from the artifact's weekly `artifact_state` row; it reports and
+    does not yet date. This function deliberately does neither.
     """
     if not recorded_license:
         return ABSTAINS, ""

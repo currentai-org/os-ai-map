@@ -18,6 +18,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A report that judges cited GitHub and Hugging Face license sources from the weekly
+  `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
+  declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
+  18 Oct rows, 77 products' licenses confirm from rows alone, 34 of them unreadable by
+  `reverify` today, and one cited card disagrees with its record. It writes no dates yet
+  ([#691](https://github.com/currentai-org/os-ai-map/issues/691)).
 - Increments for the weekly asset-counter history (`build.snapshot_counters --increments`). A lifetime
   counter that falls between readings, because a release asset was deleted or replaced, gives a zero
   increment flagged `reset`, and the next window is measured from the lower reading

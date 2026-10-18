@@ -65,6 +65,18 @@ A leg that abstains this often has to prove it looked, so the sweep reports its 
 grouped by the rule that fired. A run finding nothing and a run whose comparison silently broke
 print the same line otherwise.
 
+The same rows can also confirm. `build/license_rows.py` judges a cited github.com or
+huggingface.co license source from the weekly `artifact_state` row of the artifact the citation
+names, through the rewrites declared under `dimensions.license.source_rewrites` in
+`sources/signal_routing.yaml`. The scope rule above is extended to the
+other two artifacts: a Hub model card is compared only with the part about the weights, a Hub
+dataset card only with the part about the data. A row is bound to the cited artifact, never to
+the product, because a product can declare checkpoints under different licenses. It is a report
+for now and writes nothing: a confirmation from a row has no fetch of its own to record, and
+per-dimension provenance (artifact, column, observed value, `fetched_at`, scheduled run) has to
+be accepted by the schema and `check_verification` before such a confirmation may date an axis.
+A raw LICENSE file never takes this path; its bytes are the evidence.
+
 ## Two passes, and they are not the same job
 
 **The light pass** runs often, over the whole corpus, and asks only what the collected signals
