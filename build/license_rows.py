@@ -26,10 +26,15 @@ So the observation exists. What #691 needed was three rulings, all taken 2026-09
      refutations when it was tried without it.
   3. **The freshness event.** What would be re-dated is measured, here, before anything writes.
 
-The 2026-10-03 review on the issue added the rule that makes the comparison safe on a product
-declaring several artifacts: **a row is bound to the artifact the cited URL names.** zephyr cites
-the zephyr-7b-beta card and records MIT; the zephyr-orpo card it also declares says Apache-2.0.
-Matching by product would refute a correct record. Matching by the cited artifact confirms it.
+The 2026-10-03 review on the issue added the rules that make the comparison safe on a product
+declaring several artifacts. **A row is bound to the artifact the cited URL names**, never to the
+product. And **on a route where the product declares more than one artifact, only the governing
+release is judged**: the cited artifact must be the one `openness.governing_release` names, or the
+source abstains. zephyr is the case. Its record governs on zephyr-7b-beta (MIT); the zephyr-orpo-141b
+checkpoint it also declares ships under Apache-2.0, and that card is another release's answer, not
+a contradiction of the record. A record that does not say which release it describes abstains on
+every multi-artifact route until it does; the reach comes back as records name their release, not
+by making a record compound to satisfy the comparison.
 
 ## What a verdict is
 
@@ -299,9 +304,26 @@ class SourceVerdict:
 
 
 def _direct_class(url: str) -> str:
-    if "raw.githubusercontent.com" in url or _RAW_LICENSE_FILE.search(url.split("?")[0]):
-        return "a raw license file stays on the direct-document path"
+    if _RAW_LICENSE_FILE.search(url.split("?")[0].split("#")[0]):
+        return "a license file stays on the direct-document path"
+    if "raw.githubusercontent.com" in url or "/raw/" in url or "/blob/" in url:
+        return "a file URL stays on the direct-document path"
     return "no declared rewrite covers this URL"
+
+
+def names_release(artifact: str, governing_release: str) -> bool:
+    """Whether a declared artifact id is the release `openness.governing_release` names.
+
+    The field is a free-text release name (`zephyr-7b-beta`, `bagel-7b-mot`, `Depth Anything 3`),
+    so this accepts only the two exact spellings an artifact id can carry it in: the whole id, or
+    the repository name after the owner, case-folded. Anything looser would be guessing which
+    checkpoint a person meant, and a guess here is exactly what the guard exists to prevent.
+    """
+    release = str(governing_release or "").strip().lower()
+    if not release:
+        return False
+    artifact = artifact.strip().lower()
+    return release in (artifact, artifact.rsplit("/", 1)[-1])
 
 
 def judge_source(
@@ -312,15 +334,28 @@ def judge_source(
     rows: Mapping[tuple[str, str, str], Mapping],
     bound: Mapping[str, bool],
     root: Path = ROOT,
+    governing_release: str = "",
 ) -> SourceVerdict:
-    """One cited license source, judged from the row of the artifact it names."""
+    """One cited license source, judged from the row of the artifact it names.
+
+    A product declaring several artifacts on the route is judged only when the cited one is the
+    release the openness record governs on, by `openness.governing_release`. Otherwise it
+    abstains: a declared checkpoint with a different license is another release's answer, not a
+    contradiction of this record (zephyr's orpo-141b card is the case), and nothing here can tell
+    the two apart without the record saying which release it describes.
+    """
     routed = route_for(url, root)
     if routed is None:
         return SourceVerdict(slug, url, DIRECT, _direct_class(url))
     source, artifact = routed
     base = {"route": source, "artifact": artifact, "bound": bool(bound.get(source))}
-    if artifact.lower() not in declared_artifacts(product, root)[source]:
+    declared = declared_artifacts(product, root)[source]
+    if artifact.lower() not in declared:
         return SourceVerdict(slug, url, ABSTAINS, "the cited artifact is not declared on the product", **base)
+    if len(declared) > 1 and not names_release(artifact, governing_release):
+        return SourceVerdict(slug, url, ABSTAINS,
+                             "several artifacts are declared on the route and the cited one is not the governing release",
+                             **base)
     row = rows.get((source, slug, artifact.lower()))
     if row is None:
         return SourceVerdict(slug, url, ABSTAINS, "no artifact_state row for the cited artifact", **base)
@@ -414,7 +449,9 @@ def build_report(
         if not sources:
             skipped["no digested source establishes the license"] += 1
             continue
-        verdicts = [judge_source(slug, src["url"], product, entry, rows, bound, root) for src in sources]
+        governing = str((score.get("openness") or {}).get("governing_release") or "")
+        verdicts = [judge_source(slug, src["url"], product, entry, rows, bound, root, governing)
+                    for src in sources]
         reports.append(ProductReport(
             slug=slug,
             last_verified=str((score.get("openness") or {}).get("last_verified") or ""),

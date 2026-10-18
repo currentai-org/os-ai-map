@@ -12,8 +12,6 @@ BOUND = {LR.GITHUB: True, LR.HF_MODEL: True, LR.HF_DATASET: True}
     ("https://github.com/vllm-project/vllm", ("github", "vllm-project/vllm")),
     ("https://github.com/vllm-project/vllm/", ("github", "vllm-project/vllm")),
     ("https://github.com/vllm-project/vllm.git", ("github", "vllm-project/vllm")),
-    ("https://github.com/o/r/blob/main/LICENSE", ("github", "o/r")),
-    ("https://github.com/o/r/blob/main/LICENSE.md", ("github", "o/r")),
     ("https://api.github.com/repos/o/r", ("github", "o/r")),
     ("https://api.github.com/repos/o/r/license", ("github", "o/r")),
     ("https://huggingface.co/HuggingFaceH4/zephyr-7b-beta", ("huggingface_model", "HuggingFaceH4/zephyr-7b-beta")),
@@ -26,8 +24,11 @@ def test_declared_rewrites_name_the_artifact(url, expected):
 
 
 @pytest.mark.parametrize("url", [
-    # Raw files stay on the direct-document path: a label cannot confirm a file's bytes.
+    # License documents stay on the direct-document path, raw or blob view alike: a label
+    # cannot confirm a file's bytes, an added exception or extra terms.
     "https://raw.githubusercontent.com/o/r/main/LICENSE",
+    "https://github.com/o/r/blob/main/LICENSE",
+    "https://github.com/o/r/blob/main/LICENSE.md",
     # A LICENSE below the root may govern something other than what GitHub classifies.
     "https://github.com/o/r/blob/main/models/LICENSE",
     "https://github.com/o/r/blob/main/README.md",
@@ -80,20 +81,46 @@ ROWS = LR.index_rows(
 )
 
 
-def _judge(url, product=ZEPHYR, entry=MIT, rows=ROWS, bound=BOUND):
-    return LR.judge_source("zephyr", url, product, entry, rows, bound)
+def _judge(url, product=ZEPHYR, entry=MIT, rows=ROWS, bound=BOUND, governing="zephyr-7b-beta"):
+    return LR.judge_source("zephyr", url, product, entry, rows, bound, governing_release=governing)
 
 
-def test_a_row_binds_to_the_artifact_the_cited_url_names():
-    # The 7b card says MIT and confirms; the orpo card the product also declares says
-    # Apache-2.0 and is a different artifact's answer, not this citation's.
+def test_a_row_binds_to_the_governing_release_the_cited_url_names():
     v = _judge("https://huggingface.co/HuggingFaceH4/zephyr-7b-beta")
     assert (v.verdict, v.artifact, v.bound) == (LR.CONFIRMS, "HuggingFaceH4/zephyr-7b-beta", True)
 
 
-def test_a_citation_whose_own_row_disagrees_refutes_and_goes_to_a_person():
+def test_another_declared_release_abstains_rather_than_refuting():
+    # The orpo-141b card says Apache-2.0. It is another release's answer, not a contradiction
+    # of a record that governs on zephyr-7b-beta.
     v = _judge("https://huggingface.co/HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1")
+    assert v.verdict == LR.ABSTAINS
+    assert "not the governing release" in v.reason
+
+
+def test_a_multi_artifact_route_abstains_when_the_record_names_no_release():
+    for url in ("https://huggingface.co/HuggingFaceH4/zephyr-7b-beta",
+                "https://huggingface.co/HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1"):
+        assert _judge(url, governing="").verdict == LR.ABSTAINS
+
+
+def test_a_single_declared_artifact_whose_row_disagrees_refutes():
+    product = {"type": "model", "huggingface_model": [{"url": "https://huggingface.co/H/solo"}]}
+    rows = LR.index_rows([], [_hf("zephyr", "huggingface_model", "H/solo", "apache-2.0")])
+    v = _judge("https://huggingface.co/H/solo", product=product, rows=rows, governing="")
     assert (v.verdict, v.recorded, v.observed) == (LR.REFUTES, "MIT", "apache-2.0")
+
+
+@pytest.mark.parametrize("artifact, release, expected", [
+    ("HuggingFaceH4/zephyr-7b-beta", "zephyr-7b-beta", True),
+    ("ByteDance-Seed/BAGEL-7B-MoT", "bagel-7b-mot", True),
+    ("HuggingFaceH4/zephyr-7b-beta", "HuggingFaceH4/zephyr-7b-beta", True),
+    ("HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1", "zephyr-7b-beta", False),
+    ("depth-anything/DA3-LARGE", "Depth Anything 3", False),
+    ("o/r", "", False),
+])
+def test_the_governing_release_matches_only_an_exact_spelling(artifact, release, expected):
+    assert LR.names_release(artifact, release) is expected
 
 
 def test_a_dataset_card_never_answers_for_a_model_license():
@@ -121,7 +148,8 @@ def test_an_undeclared_artifact_abstains_even_when_a_row_would_agree():
 
 def test_no_row_and_no_answer_both_abstain():
     product = {**ZEPHYR, "huggingface_model": ZEPHYR["huggingface_model"] + [{"url": "https://huggingface.co/H/other"}]}
-    assert _judge("https://huggingface.co/H/other", product=product).reason == "no artifact_state row for the cited artifact"
+    assert _judge("https://huggingface.co/H/other", product=product, governing="other").reason == \
+        "no artifact_state row for the cited artifact"
     rows = LR.index_rows([], [_hf("zephyr", "huggingface_model", "HuggingFaceH4/zephyr-7b-beta", "other")])
     assert _judge("https://huggingface.co/HuggingFaceH4/zephyr-7b-beta", rows=rows).reason == "the row carries no usable license"
     rows = LR.index_rows([], [_hf("zephyr", "huggingface_model", "HuggingFaceH4/zephyr-7b-beta", "mit", status=404)])
@@ -133,9 +161,13 @@ def test_a_qualified_detail_abstains():
     assert (v.verdict, v.reason) == (LR.ABSTAINS, "the detail qualifies the license")
 
 
-def test_a_raw_license_file_is_on_the_direct_path():
-    v = _judge("https://raw.githubusercontent.com/huggingface/alignment-handbook/main/LICENSE")
-    assert (v.verdict, v.reason) == (LR.DIRECT, "a raw license file stays on the direct-document path")
+def test_license_and_other_files_are_on_the_direct_path():
+    for url in ("https://raw.githubusercontent.com/huggingface/alignment-handbook/main/LICENSE",
+                "https://github.com/huggingface/alignment-handbook/blob/main/LICENSE"):
+        v = _judge(url)
+        assert (v.verdict, v.reason) == (LR.DIRECT, "a license file stays on the direct-document path")
+    v = _judge("https://raw.githubusercontent.com/huggingface/alignment-handbook/main/README.md")
+    assert (v.verdict, v.reason) == (LR.DIRECT, "a file URL stays on the direct-document path")
 
 
 def _v(verdict, bound=True):

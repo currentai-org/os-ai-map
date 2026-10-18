@@ -165,16 +165,14 @@ dimensions:
     # naming an artifact the product does not declare abstains. Read by
     # build/license_rows.py.
     #
-    # Deliberately absent: raw.githubusercontent.com and every other file URL. A raw
-    # LICENSE file stays on the direct-document path, because a warehouse label cannot
-    # confirm a file's bytes, its exceptions or its scope. GitHub blob URLs below are
-    # limited to a LICENSE or COPYING file at the repository root, the file GitHub
-    # classifies; one in a subdirectory may govern something else.
+    # Deliberately absent: every file URL, raw.githubusercontent.com and the github.com
+    # `blob/` view alike. A license document is evidence for its own text, so it stays on
+    # the direct-document path: an SPDX classification cannot confirm changed bytes, an
+    # added exception or extra terms. Only the repository page and the repository and
+    # license APIs are rewritten, because what they cite is the classification itself.
     source_rewrites:
     - source: github
       match: '^https://(?:www\.)?github\.com/(?P<artifact>[^/?#]+/[^/?#]+?)(?:\.git)?/?(?:[?#].*)?$'
-    - source: github
-      match: '^https://(?:www\.)?github\.com/(?P<artifact>[^/?#]+/[^/?#]+)/blob/[^/?#]+/(?:LICEN[CS]E|COPYING)(?:\.[A-Za-z]+)?(?:[?#].*)?$'
     - source: github
       match: '^https://api\.github\.com/repos/(?P<artifact>[^/?#]+/[^/?#]+)(?:/license)?/?(?:[?#].*)?$'
     - source: huggingface_dataset

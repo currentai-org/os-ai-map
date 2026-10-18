@@ -21,8 +21,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
   declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
-  18 Oct rows, 77 products' licenses confirm from rows alone, 34 of them unreadable by
-  `reverify` today, and one cited card disagrees with its record. It writes no dates yet
+  18 Oct rows, 40 products' licenses confirm from rows alone, 26 of them unreadable by
+  `reverify` today. On a route where a product declares several artifacts only the governing
+  release is judged, and license documents stay on the direct path. It writes no dates yet
   ([#691](https://github.com/currentai-org/os-ai-map/issues/691)).
 - Increments for the weekly asset-counter history (`build.snapshot_counters --increments`). A lifetime
   counter that falls between readings, because a release asset was deleted or replaced, gives a zero
@@ -38,6 +39,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- zephyr's openness record names its governing release, zephyr-7b-beta, and records the separately
+  released zephyr-orpo-141b checkpoint (Apache-2.0) as context it does not cover; the license and
+  the score are unchanged ([#917](https://github.com/currentai-org/os-ai-map/pull/917)).
 - Adoption re-banded for five products on the 28 Sep and 12 Oct reconciliations and the family
   declarations behind them: colpali 4 to 3, openclip 5 to 4 and siglip 5 to 4, each now declaring
   its whole checkpoint family, modernvbert 3 to 1 and tensorlake-sandbox 1 to 2; ag-ui keeps 5 on

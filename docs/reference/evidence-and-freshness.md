@@ -71,11 +71,16 @@ names, through the rewrites declared under `dimensions.license.source_rewrites` 
 `sources/signal_routing.yaml`. The scope rule above is extended to the
 other two artifacts: a Hub model card is compared only with the part about the weights, a Hub
 dataset card only with the part about the data. A row is bound to the cited artifact, never to
-the product, because a product can declare checkpoints under different licenses. It is a report
-for now and writes nothing: a confirmation from a row has no fetch of its own to record, and
-per-dimension provenance (artifact, column, observed value, `fetched_at`, scheduled run) has to
-be accepted by the schema and `check_verification` before such a confirmation may date an axis.
-A raw LICENSE file never takes this path; its bytes are the evidence.
+the product, because a product can declare checkpoints under different licenses. Where the product
+declares more than one artifact on the route, only the governing release is judged: the cited
+artifact has to be the one `openness.governing_release` names, and anything else abstains, since a
+second checkpoint's license is that release's answer rather than a contradiction of the record. A
+record that should be judged there names its release; it is never made compound to satisfy the
+comparison. It is a report for now and writes nothing: a confirmation from a row has no fetch of
+its own to record, and per-dimension provenance (artifact, column, observed value, `fetched_at`,
+scheduled run) has to be accepted by the schema and `check_verification` before such a
+confirmation may date an axis. A license document never takes this path, raw file or GitHub
+`blob/` view alike; its bytes are the evidence.
 
 ## Two passes, and they are not the same job
 
