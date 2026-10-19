@@ -596,10 +596,13 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     assert inputs.non_primary_artifacts["pi-coding-agent"] == {("npm", "@mariozechner/coding-agent")}
     # Kimi Code CLI declares the archived Python kimi-cli it replaced, for the record only.
     assert inputs.non_primary_artifacts["kimi-code-cli"] == {("pypi", "kimi-cli")}
+    # SkyRL declares its two pre-merge package names and the environment library its extras pull in.
+    assert inputs.non_primary_artifacts["skyrl"] == {
+        ("pypi", "skyrl-tx"), ("pypi", "skyrl-train"), ("pypi", "skyrl-gym")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli",
+        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli", "skyrl",
     }
 
 

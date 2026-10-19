@@ -375,6 +375,11 @@ RULED_PACKAGES = {
 # Python kimi-cli, a separate predecessor whose downloads install the old tool, not this one.
 RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent"),
                  ("kimi-code-cli", "pypi", "kimi-cli")}
+# SkyRL's promotion: skyrl-tx and skyrl-train are the package names the backend and trainer shipped
+# under before the repository merged them into skyrl, and skyrl-gym is the environment library the
+# training extras depend on, so counting it would count those installs twice.
+MERGED_PACKAGES = {("skyrl", "pypi", "skyrl-tx"), ("skyrl", "pypi", "skyrl-train"),
+                   ("skyrl", "pypi", "skyrl-gym")}
 
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
@@ -429,7 +434,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
     } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()} | {
         (slug, "github", repo) for slug, repo in TRACTION_REPOSITORIES
-    } | RULED_PACKAGES | RETIRED_NAMES
+    } | RULED_PACKAGES | RETIRED_NAMES | MERGED_PACKAGES
 
 
 def test_real_sources_serialize_without_structural_errors():
