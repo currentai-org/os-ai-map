@@ -375,6 +375,9 @@ RULED_PACKAGES = {
 # Python kimi-cli, a separate predecessor whose downloads install the old tool, not this one.
 RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent"),
                  ("kimi-code-cli", "pypi", "kimi-cli")}
+# Muse Glimmer's promotion: its speculative-decoding drafter runs beside the full-precision weights,
+# so its downloads are people already counted on the main repository.
+DRAFTER_REPOS = {("muse-glimmer", "huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
 
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
@@ -429,7 +432,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
     } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()} | {
         (slug, "github", repo) for slug, repo in TRACTION_REPOSITORIES
-    } | RULED_PACKAGES | RETIRED_NAMES
+    } | RULED_PACKAGES | RETIRED_NAMES | DRAFTER_REPOS
 
 
 def test_real_sources_serialize_without_structural_errors():

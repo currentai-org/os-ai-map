@@ -596,10 +596,13 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     assert inputs.non_primary_artifacts["pi-coding-agent"] == {("npm", "@mariozechner/coding-agent")}
     # Kimi Code CLI declares the archived Python kimi-cli it replaced, for the record only.
     assert inputs.non_primary_artifacts["kimi-code-cli"] == {("pypi", "kimi-cli")}
+    # Muse Glimmer declares its speculative-decoding drafter, which runs beside the main weights.
+    assert inputs.non_primary_artifacts["muse-glimmer"] == {
+        ("huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli",
+        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli", "muse-glimmer",
     }
 
 
