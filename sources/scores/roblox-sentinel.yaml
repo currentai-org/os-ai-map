@@ -1,0 +1,132 @@
+product: roblox-sentinel
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, the repository LICENSE and the pyproject license field
+    source:
+      value: public
+      detail: the whole library installs from Roblox/Sentinel with pip install .
+    self-host:
+      value: 'yes'
+      detail: a local Python library, with Dockerfiles for GPU and CPU-only images
+    core-gated:
+      value: ungated
+      detail: the tree at 66c6985 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path. Roblox released it as part of its open-source safety toolkit and sells no edition of it
+    context:
+      service:
+        value: none
+  confidence: high
+  note: Sentinel is released under Apache 2.0, and the published repository holds the whole library, which runs on your own
+    machines. Roblox open-sourced it as part of its safety toolkit and offers no paid or hosted version.
+  raw: license:Apache-2.0(OSI, the repository LICENSE and the pyproject license field);source:public(the whole library installs
+    from Roblox/Sentinel with pip install .);self-host:yes(a local Python library, with Dockerfiles for GPU and CPU-only images);core-gated:ungated(the
+    tree at 66c6985 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path. Roblox
+    released it as part of its open-source safety toolkit and sells no edition of it);service:none
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/Roblox/Sentinel/main/LICENSE
+    shows: The root LICENSE is the Apache License, Version 2.0 text, ending with the unfilled appendix line "Copyright [yyyy]
+      [name of copyright owner]".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Roblox/Sentinel/main/pyproject.toml
+    shows: 'The package metadata names the project "sentinel" version "2.0.0" with license = "Apache-2.0" and the classifier
+      "License :: OSI Approved :: Apache Software License", built from src/sentinel.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 71ae6964097cf1aea6b250ee64c7f17a4e5641c7f19ac780bf3e25a9547eb75d
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/Roblox/Sentinel/main/README.md
+    shows: 'The README installs the library with "pip install ." from the repository, documents two Dockerfiles, "Dockerfile"
+      and "Dockerfile.cpu", and closes "Apache License 2.0". Searched the body for enterprise, pricing, commercial, paid,
+      premium and license key: none.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 9f8f1b9a6ccc6a44b1e9f30c97b34eb06bd79e235b1074cb0f2a3397021bea89
+    establishes:
+    - source
+    - self-host
+    - core-gated
+  - url: https://about.roblox.com/newsroom/2025/08/open-sourcing-roblox-sentinel-preemptive-risk-detection
+    shows: Roblox's announcement of August 7, 2025 says "We are excited to open source Roblox Sentinel" and that "it's also
+      part of our Roblox open-source safety toolkit". It mentions no paid or hosted edition.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: da5ddaef50b47cffb6efd6ffd4928de3c7420e56664a3d5c0e7d34dd5af5c902
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal, and a star is not a use. Roblox's own production use of Sentinel on its chat service
+    is not counted.
+  sources:
+  - url: https://ungh.cc/repos/Roblox/Sentinel
+    shows: 'Roblox/Sentinel: 118 stars and 27 forks, pushed 2026-08-18'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 9da620d03d1666b309292dae2b1fad884398a8cda0d8b63a59b9846c37ec2a89
+  - url: https://pypi.org/pypi/sentinel/json
+    shows: The PyPI project "sentinel" is version 1.0.0 by Eddie Antonio Santos, homepage github.com/eddieantonio/sentinel,
+      summarized as "Create sentinel objects, akin to None, NotImplemented, Ellipsis". It is not Roblox's library.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 6c74b4543b9ee5f946460f88f7200865e97aa2066d785726fc8bc1b3b8af3f13
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: rare-class detection across messages
+  value: 'Contrastive rare-class detection over one source''s recent messages: each message is scored by embedding similarity
+    against positive and negative example sets, and six aggregation methods, skewness by default, combine the scores, with
+    per-message explanations naming the nearest examples. Indexes build from text in one call, resize without re-encoding
+    and save locally or to S3, and a numpy-only harness compares aggregators and settings on labeled data. Roblox credits
+    it with about 1,200 reports to NCMEC in the first half of 2025.'
+  relative_to: hasher-matcher-actioner
+  relation: at
+  confidence: low
+  note: 'Like Hasher-Matcher-Actioner, Sentinel does one detection job and hands what it finds to human reviewers: HMA recognizes
+    copies of media already flagged, and Sentinel finds patterns across a user''s messages that no single message reveals.
+    Sentinel is a library with no service or review screen, so the two sit level.'
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/README.md
+      shows: 'The peer''s README still calls HMA "a reference implementation for a key Trust and Safety content moderation
+        capability: copy detection", matching new content against "Banks" of known content, and says "HMA can be used as a
+        library, or in any deployment setup that can use docker". The digest matches the one hasher-matcher-actioner records
+        from 2026-10-13.'
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: e0c47dad67c0f9561fff3c7231990372160606c3f9cbec3998d6c26c5739fb16
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/Roblox/Sentinel/main/README.md
+    shows: The README describes "realtime detection of extremely rare classes of text by using contrastive learning principles",
+      scoring observations "using embedding similarity" and aggregating "using statistical measures like skewness". It documents
+      from_texts(), subsample(), the sentinel.simulation harness, per-text explanations, and local or "s3://" index storage.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 9f8f1b9a6ccc6a44b1e9f30c97b34eb06bd79e235b1074cb0f2a3397021bea89
+  - url: https://raw.githubusercontent.com/Roblox/Sentinel/main/V2_FEATURES.md
+    shows: The 2.0 notes list "Six summarize metrics, not two" and say "2.0 brings the count to six and adds the means to
+      decide between them".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 5fa43d74b8a17eac9b703d846d5daf73a82247d3e20afe268ece1e8f4ef4edd4
+  - url: https://about.roblox.com/newsroom/2025/08/open-sourcing-roblox-sentinel-preemptive-risk-detection
+    shows: The announcement says Sentinel "has been running on Roblox since late 2024" and that in the first half of 2025
+      it helped Roblox "submit approximately 1,200 reports to the National Center for Missing and Exploited Children".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: da5ddaef50b47cffb6efd6ffd4928de3c7420e56664a3d5c0e7d34dd5af5c902

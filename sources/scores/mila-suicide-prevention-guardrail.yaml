@@ -1,0 +1,129 @@
+product: mila-suicide-prevention-guardrail
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 safetensors on HF mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail, ungated
+    data:
+      value: described
+      detail: the card says a synthetic training set was generated from the published constitution.md; the set itself
+        is not released
+    code:
+      value: partial
+      detail: load and inference examples on the card only; no training or data-generation code
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: Mila publishes the classifier's weights under Apache-2.0 with no access gate, together with the written
+    policy its training labels were drawn from. The synthetic training set built from that policy is not released,
+    and the only code is a loading and inference example, so this is an open-weights release rather than a fully
+    open model.
+  raw: weights:open(Apache-2.0 safetensors on HF mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail, ungated);data:described(the
+    card says a synthetic training set was generated from the published constitution.md; the set itself is not released);code:partial(load
+    and inference examples on the card only; no training or data-generation code);license:Apache-2.0(OSI)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://huggingface.co/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail/raw/main/README.md
+    shows: 'Raw model card front matter declares "license: apache-2.0" and "base_model: bert-base-uncased". The
+      change log says the release "Generated a new synthetic training dataset" and "Trained `bert-base-uncased`
+      on the new dataset", and the training section says the constitution "shapes **data and labels only**" and
+      "can be found in the artifacts, in `constitution.md`". The card links no training dataset; its only code is
+      a "Quick Load Example" and an "Inference Example".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: df95f50b1b53760f330d6e8d828ceacf49b2e6c14102c554228e7acb2e03b427
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail
+    shows: The Hugging Face API record reports "gated":false, carries the tag "license:apache-2.0", and lists the
+      files "model.safetensors", "constitution.md", the tokenizer and config. It declares no dataset tag and ships
+      no training script.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: bb4684268bf60e6618fe498d86fe11ffd0232d55b8c2f0ec2b9a9608f4f07556
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail/raw/main/constitution.md
+    shows: The published constitution sorts content into "Harmful in-scope (intentional self-harm)", "Harmless in-scope
+      (self-harm related, not enabling)", "Harmful out-of-scope (not self-harm)" and "Harmless out-of-scope (everyday
+      / benign)", with example topics for each. It is a policy text, not a dataset or generation script.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 2225faee3db31142b2b3c83b4349addc397a5d97990a4810c8bbd3b5ec84df62
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the one checkpoint Mila publishes. No other channel is
+    declared for the model, so this count is the only visible measure of its use.
+  sources:
+  - url: https://huggingface.co/api/models/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail
+    shows: 2,279 downloads in the trailing 30 days for mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: bb4684268bf60e6618fe498d86fe11ffd0232d55b8c2f0ec2b9a9608f4f07556
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: single-harm response classification
+  value: Binary classification of English assistant responses against one harm, suicide and self-harm as the MLCommons
+    AILuminate taxonomy defines it, with a 512-token input on a 110M-parameter BERT encoder. On Mila's internal
+    hand-annotated set of 494 responses it reports precision 0.908, recall 0.802 and F1 0.852 at the default threshold.
+    It does not classify user prompts and gives no explanation or category breakdown.
+  relative_to: llama-guard
+  relation: two_below
+  confidence: low
+  note: The guardrail checks one thing, whether a chatbot's English reply encourages or instructs suicide or self-harm,
+    and is cheap enough to run on every response. Llama Guard screens prompts and replies across fourteen hazard
+    categories in eight languages, suicide and self-harm among them, so a single-harm, reply-only filter sits two
+    steps below it.
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+      shows: 'The peer''s model page still lists hazard categories from "S1: Violent Crimes" to "S14: Code Interpreter
+        Abuse", including "S11: Suicide & Self-Harm", says Llama Guard 3 can "classify content in both LLM inputs
+        (prompt classification) and in LLM responses (response classification)", "was aligned to safeguard against
+        the MLCommons standardized hazards taxonomy" and "provides content moderation in 8 languages". The page
+        is rendered HTML and its digest differs from the one llama-guard records from 2026-09-29; the quoted claims
+        read as that record describes them.'
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: 1a863c9d22382d96b35c3adb5e39dafd401eb07a5ff8c24a38ad35ca94cf5a05
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://huggingface.co/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail/raw/main/README.md
+    shows: The card describes "a binary sequence classifier that takes an LLM **output** (assistant response text)",
+      says "It is **not** an input guardrail, **not** a general harm classifier", aligns its policy with the "Suicide
+      and Self-Harm" category from MLCommons AILuminate, lists "Languages other than English" as out of scope, gives
+      a "Max sequence length" of 512 tokens, and reports precision 0.908, recall 0.802 and F1 0.852 at "Default
+      threshold τ = 0.5" on 494 internal examples. It says the classifier "does not provide explanations or category
+      breakdowns".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: df95f50b1b53760f330d6e8d828ceacf49b2e6c14102c554228e7acb2e03b427
+  - url: https://huggingface.co/api/models/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail
+    shows: The Hugging Face API record gives the architecture "BertForSequenceClassification" with 109,483,778 parameters
+      in a single "model.safetensors" file.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: bb4684268bf60e6618fe498d86fe11ffd0232d55b8c2f0ec2b9a9608f4f07556
+  - url: https://roost.tools/blog/releasing-mila-s-suicide-prevention-guardrail-lightweight-open-source-safeguards-for-real-time-detection/
+    shows: ROOST's release post calls the guardrail a "low-latency BERT model" that "can run locally, even on an
+      ordinary CPU", "Targeting exclusively model outputs", and describes it as "a high-recall, low-footprint narrow
+      safety add-on filter" rather than "a general-purpose safety moderation filter".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 546cc8aaa19922adfb38a17ccc419a6664c76239d4ec3ace0bebaa3360c65c4c

@@ -1,0 +1,139 @@
+product: roblox-pii-classifier
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 safetensors and ONNX on HF Roblox/roblox-pii-classifier-v2, with no access gate
+    data:
+      value: described
+      detail: the cards and Roblox's announcement describe expert-labeled, anonymized Roblox chat plus AI-generated conversations.
+        Neither is released, and the Roblox dataset on the Hub is an evaluation-only benchmark
+    code:
+      value: partial
+      detail: an inference script and requirements file only, no training code
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    context:
+      prior-release:
+        value: distributed
+        detail: Roblox PII Classifier v1 (Roblox/roblox-pii-classifier) stays downloadable under Apache-2.0
+  governing_release: Roblox PII Classifier v2
+  confidence: high
+  note: The v2 weights are published under Apache 2.0 with no access gate, along with an inference script. Roblox describes
+    the labeled chat and synthetic conversations it trained on but releases neither them nor its training code, so this is
+    an open-weights model rather than a fully open one.
+  raw: weights:open(Apache-2.0 safetensors and ONNX on HF Roblox/roblox-pii-classifier-v2, with no access gate);data:described(the
+    cards and Roblox's announcement describe expert-labeled, anonymized Roblox chat plus AI-generated conversations. Neither
+    is released, and the Roblox dataset on the Hub is an evaluation-only benchmark);code:partial(an inference script and requirements
+    file only, no training code);license:Apache-2.0(OSI);prior-release:distributed(Roblox PII Classifier v1 (Roblox/roblox-pii-classifier)
+    stays downloadable under Apache-2.0)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://huggingface.co/Roblox/roblox-pii-classifier-v2/raw/main/README.md
+    shows: 'The v2 card front matter declares "license: apache-2.0" and "base_model: FacebookAI/xlm-roberta-large". Its usage
+      section runs the model with "python inference.py" after "pip install -r requirements.txt"; it mentions no training script,
+      and says only that v2 "Broadened synthetic data generation and fine-tuning".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 08a63bbb8439628526dead6d6f489a6333fdc0b527acc5395f3a95dd9d8a3f67
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/Roblox/roblox-pii-classifier-v2
+    shows: The Hugging Face API record reports "gated":false and the tag "license:apache-2.0", and lists "model.safetensors",
+      "onnx/model.onnx", "inference.py" and "requirements.txt" among its files, with no training script.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 1fb802f9b2e8e5fa43f3f46c08ed69b910a0845c7c08cc77f36dd1d0a314d9b6
+    establishes:
+    - weights
+    - code
+    - license
+  - url: https://huggingface.co/Roblox/roblox-pii-classifier/raw/main/README.md
+    shows: 'The v1 card says "All the model training has been conducted with Roblox anonymized internal text datasets labeled
+      by experts and AI generated conversations", and its front matter declares "license: apache-2.0".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 7cc769e30fb58a8433851e4d35f30911ab3734a1e716d473c63ca88693fecf2d
+    establishes:
+    - data
+    - license
+  - url: https://huggingface.co/api/datasets/Roblox/roblox-pii-classifier-benchmark
+    shows: The dataset record describes "an evaluation-only dataset" that "accompanies Roblox PII Classifier v2.0", with a
+      single test split of synthetic English conversations.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 834bf0d65326bde36325400a99ce5177f40aad86cfe0d39656347282f7167ea0
+    establishes:
+    - data
+  - url: https://about.roblox.com/newsroom/2025/11/open-sourcing-roblox-pii-classifier-ai-pii-detection-chat
+    shows: Roblox's announcement of November 4, 2025 says "we manually reviewed and labeled PII-related data", describes sampling
+      production chat and "an AI data-generation pipeline", and links no training data.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b33f8a8ec7123d1c05fba751b9e36c0a596d2705755d6e880e53116d932229b8
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the two releases Roblox publishes, v2 and the earlier v1. Roblox's
+    own use of the model on its chat service is not counted, so the figure is a lower bound on use.
+  sources:
+  - url: https://huggingface.co/api/models/Roblox/roblox-pii-classifier-v2
+    shows: 244 downloads in the trailing 30 days for Roblox/roblox-pii-classifier-v2
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 1fb802f9b2e8e5fa43f3f46c08ed69b910a0845c7c08cc77f36dd1d0a314d9b6
+  - url: https://huggingface.co/api/models/Roblox/roblox-pii-classifier
+    shows: 74 downloads in the trailing 30 days for Roblox/roblox-pii-classifier
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: cc0917f5a28b2b439b3e9a36b8a8f4cb77651e8267973d5559dfc214ba916dc9
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: PII detection in conversational context
+  value: Multi-label detection of asking for personal information, sharing it, and directing users off-platform, scored on
+    one speaker's message within a multi-user chat. On the card's F1 table v2 posts 88.82% on Roblox's PII safety-for-chat
+    benchmark and 99.22% on Nemotron-PII, against 56.24% and 46.07% for Llama Guard 3 8B. Roblox reports serving v1 at a peak
+    of over 200,000 queries per second.
+  relative_to: llama-guard
+  relation: one_below
+  confidence: medium
+  note: On privacy it outscores Llama Guard by a wide margin on every benchmark in Roblox's tables, and it reads the conversation
+    around a message rather than the message alone. Privacy is the only harm it checks, while Llama Guard screens prompts
+    and responses across fourteen hazard categories, so it sits a step below Llama Guard.
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+      shows: 'The peer''s model page still lists hazard categories from "S1: Violent Crimes" to "S14: Code Interpreter Abuse",
+        with "S7: Privacy" among them, and says the model "provides content moderation in 8 languages". The rendered page''s
+        digest differs from the one llama-guard records from 2026-09-29.'
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: e770fa767aab6f58dc57e57cd6bdab7ce7119cc53b70c04d9749be36abfc842c
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://huggingface.co/Roblox/roblox-pii-classifier-v2/raw/main/README.md
+    shows: The v2 card lists three output labels, "privacy_asking_for_pii", "privacy_giving_pii" and "directing_users_off_platform",
+      formats input as a target speaker "t" among other speakers, and reports expanding language coverage from 17 to 189 languages.
+      Its F1 table gives 88.82% and 99.22% for v2 against 56.24% and 46.07% for LlamaGuard v3 8B on roblox-pii-safety-for-chat
+      and Nemotron-PII.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 08a63bbb8439628526dead6d6f489a6333fdc0b527acc5395f3a95dd9d8a3f67
+  - url: https://about.roblox.com/newsroom/2025/11/open-sourcing-roblox-pii-classifier-ai-pii-detection-chat
+    shows: The announcement says "PII Classifier receives a peak of over 200,000 queries per second on Roblox" with "<100ms
+      P90 latency", served from an encoder-only model fine-tuned from XLM-RoBERTa-Large.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b33f8a8ec7123d1c05fba751b9e36c0a596d2705755d6e880e53116d932229b8
