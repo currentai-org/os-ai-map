@@ -371,8 +371,10 @@ RULED_PACKAGES = {
 }
 # The Pi promotion: the coding agent's first npm name, published for four releases before the
 # project moved to @mariozechner/pi-coding-agent, is declared for the record and kept out of the
-# sum, because nothing installs it now.
-RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent")}
+# sum, because nothing installs it now. Kimi Code CLI's promotion does the same for the archived
+# Python kimi-cli, a separate predecessor whose downloads install the old tool, not this one.
+RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent"),
+                 ("kimi-code-cli", "pypi", "kimi-cli")}
 
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():

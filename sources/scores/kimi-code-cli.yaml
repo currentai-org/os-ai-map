@@ -1,0 +1,182 @@
+product: kimi-code-cli
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 4a82a07 carries one root MIT LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path, and the workspace packages the CLI bundles declare MIT or fall under that root file. Remote Control,
+        which needs a paid Kimi membership, relays through a hosted Kimi service; its client is in the tree
+  confidence: medium
+  note: Kimi Code CLI is MIT licensed, and its public repository holds the CLI and every package it bundles, so
+    it builds and runs from published source. A Kimi Code account buys model access, and the CLI also runs against
+    Anthropic, OpenAI-compatible and Gemini providers. Remote Control is limited to paid members because it relays
+    through Moonshot AI's hosted service, but its client is published and the agent still runs on the user's machine.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the tree at 4a82a07 carries one root MIT LICENSE and no
+    ee/, enterprise/, commercial/ or proprietary/ path, and the workspace packages the CLI bundles declare MIT or
+    fall under that root file. Remote Control, which needs a paid Kimi membership, relays through a hosted Kimi
+    service; its client is in the tree)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/LICENSE
+    shows: The root LICENSE is the MIT License text, "Copyright (c) 2026 Moonshot AI".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 23cc68e17992e0b512ae2e80afc5787d7d8e0fbfbdb4fff54ec0245508fa400e
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@moonshot-ai/kimi-code/latest
+    shows: 'The npm record for @moonshot-ai/kimi-code 2.2.0 declares "license": "MIT", a repository of MoonshotAI/kimi-code
+      under apps/kimi-code, and the kimi command.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 68608a63b6acf100ea7ca6521714a771870b3e7f9a31366634d613eec286d261
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/pnpm-workspace.yaml
+    shows: The workspace file lists packages/*, apps/*, apps/vis/server, apps/vis/web and docs as the repository's
+      own packages.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: afae9dc0465379d9fbcd58ee2a1683f90417cdaa48a984ef28820f40bdb062db
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/README.md
+    shows: The README documents cloning MoonshotAI/kimi-code and running "pnpm build" to build all packages, and
+      closes "Released under the [MIT License](LICENSE)."; no paid edition or license key is mentioned.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 50ea102c7003c746244c69cb78cbd5b1e9158311e5e4e028aee8a2afee698c4c
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/configuration/providers.md
+    shows: 'The providers page says the CLI "supports connecting to multiple LLM platforms simultaneously: one-click
+      login via the Kimi Code managed service, connecting Claude with an Anthropic API key, or connecting third-party
+      inference services via the OpenAI-compatible protocol".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 84a267233ed7a6956962a9f5bff31593329291eed7a23b3b2a3efe4300250fd0
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/guides/remote-control.md
+    shows: The Remote Control guide says "Remote Control requires a paid membership and is not available to free
+      users" and "Tasks always run on your machine — the web page is just a remote window."
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 21d0388e04f6cdd9349b739c64ce40555162c58027f9c3e1d9ae891a403449d5
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of npm downloads of @moonshot-ai/kimi-code. The recommended install script
+    downloads a standalone binary from Moonshot AI's own server, and those installs and Homebrew's are not counted,
+    so the band is a floor. Downloads of the archived Python kimi-cli are left out because they install
+    the predecessor, not this tool.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@moonshot-ai/kimi-code
+    shows: 169,243 downloads of @moonshot-ai/kimi-code between 2026-09-17 and 2026-10-16
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 8e0459b7aee8a867dbd7b94c49d79e40eeb74750ab3feb37cd11c143e0a7a888
+  - url: https://code.kimi.com/kimi-code/install.sh
+    shows: The install script sets KIMI_DOWNLOAD_BASE="https://code.kimi.com/kimi-code" and fetches the binary from
+      its binaries path, not from npm.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 270a86f2d2304529b6d8a3783fca9534874ebaeecb6cfcc1aebcdb6ce20ae1d7
+  - url: https://pypistats.org/api/packages/kimi-cli/recent
+    shows: 50,722 downloads of kimi-cli in the last month
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 7ff380142a888e339e5cf49e481afa87f4a192dabd12e72f076f59970f77cff1
+  - url: https://pypi.org/pypi/kimi-cli/json
+    shows: 'The PyPI record for kimi-cli 1.52.0 carries the summary "[Archived] Legacy Python Kimi CLI, no longer
+      maintained. Use Kimi Code CLI instead" and the classifier "Development Status :: 7 - Inactive".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: ef382ddd82f824070c71fbe2ba919c8dca04688fcb4c183ac1ae708c00ffa8a2
+capability:
+  score: 4
+  basis: feature_matrix
+  value: terminal coding agent with read, write, edit, grep, glob, media-reading and shell tools; Kimi models by
+    default plus Anthropic, OpenAI-compatible, Gemini and Vertex AI providers; built-in coder, explore and plan sub-agents,
+    AgentSwarm fan-out and an experimental Tower mode that runs parallel workers in separate git worktrees with
+    independent review; plan mode, approval modes and lifecycle hooks; MCP, skills and plugins; ACP for Zed and
+    JetBrains; interactive and single-prompt modes; resumable, forkable sessions; no sandbox; no published benchmark
+    result
+  confidence: medium
+  note: Kimi Code CLI covers the core of a terminal coding agent and adds built-in sub-agents, an experimental mode
+    that runs parallel workers in separate git worktrees with independent review, lifecycle hooks and editor integration
+    over ACP. It sits a step below OpenHands, which runs agents in a sandboxed runtime and publishes benchmark results,
+    while Kimi Code CLI runs with the user's own permissions and has no benchmark of its own.
+  relative_to: openhands
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud backends" and offers running agents in "Docker containers, on VMs, or within your company infrastructure".
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ba3c3b5c271353eb44d78feb1e1d991146a23d68c83cd3dc5351c46e369978a0
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/README.md
+    shows: The README lists "Subagents for focused, parallel work", "Lifecycle hooks", "AI-native MCP configuration",
+      "Video input" and "Editor & IDE integration (ACP)", and says the agent "can also be configured to use other
+      compatible providers"; no benchmark figure.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 50ea102c7003c746244c69cb78cbd5b1e9158311e5e4e028aee8a2afee698c4c
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/configuration/providers.md
+    shows: The provider table lists kimi, anthropic, openai, openai_responses, google-genai and vertexai types.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 84a267233ed7a6956962a9f5bff31593329291eed7a23b3b2a3efe4300250fd0
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/customization/agents.md
+    shows: 'The agents page says "Kimi Code CLI includes three built-in sub-agents": coder, explore and plan, each
+      working in its own isolated context.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: ff28d00bea544d4023bbea1b7358f404f10a3792f6bdb700ff423538af3b5ee1
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/reference/tools.md
+    shows: The built-in tools reference lists Read, Write, Edit, Grep, Glob and ReadMediaFile, shell tools, and AgentSwarm,
+      which "launches subagents from a shared prompt_template and an items array".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 25f7242de47421da43563b459b5595f5228309b93e648f48bf8b459742f97e8b
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/guides/tower.md
+    shows: '"Tower is an experimental multi-agent collaboration mode"; "Every mission has its own branch and Git
+      worktree", and "Worktrees isolate writes, but they are not a security sandbox."'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 763151f4c9405efa496164b529ab8e1d45302143f1919fed5e3a314f642e11b1
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/guides/interaction.md
+    shows: The interaction guide describes Plan mode, Ask When Needed mode and the fully unattended Never Ask mode
+      for tool approvals.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 3c6f446a2cd5bada358c58755a9cbdb8ad510258be64e1241cbcedea3c9f2c7b
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/guides/getting-started.md
+    shows: 'The getting-started guide opens the interactive UI with kimi and runs a single instruction with kimi
+      -p: "To run a single instruction without entering the interactive UI, use `-p`".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 203c26fbd4d97a4232c5fbb0f5858e120b46ac8a83a9b7e17d6107d1c2e81a89
+  - url: https://raw.githubusercontent.com/MoonshotAI/kimi-code/main/docs/en/guides/sessions.md
+    shows: The sessions guide says Kimi Code CLI persists every conversation as a session and covers how to "resume
+      sessions, manage context, and export or fork sessions".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 194b398e64776704d28f96eabad1bd8ca7951c8897da0e81e54dd7d9f5202f3b

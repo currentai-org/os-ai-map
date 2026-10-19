@@ -1,0 +1,146 @@
+product: mistral-vibe
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 2.26.1 source distribution carries one Apache-2.0 LICENSE and no ee/, enterprise/, commercial/
+        or proprietary/ path, Mistral's launch post says the CLI is released under Apache 2.0, and its docs tie
+        paid plans to model usage and rate limits rather than to CLI features
+  confidence: medium
+  note: Mistral Vibe is Apache-2.0 licensed, and its public repository holds the Python agent, the native harness
+    and the optional Rust terminal client, so the published wheels build from source. Mistral's paid plans buy
+    higher model usage and rate limits rather than CLI features, and the CLI also runs offline with local models.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the 2.26.1 source distribution carries one Apache-2.0
+    LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path, Mistral's launch post says the CLI is released
+    under Apache 2.0, and its docs tie paid plans to model usage and rate limits rather than to CLI features)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/mistralai/mistral-vibe/main/LICENSE
+    shows: The root LICENSE is the standard Apache License text, headed "Apache License" and "Version 2.0, January
+      2004".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 3375b98d59c50073c1ea6667fda7df54d122f4e8c67d1ae2fb7afdfe311abf27
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/mistral-vibe/json
+    shows: 'The PyPI record for mistral-vibe 2.26.1 declares "license": "Apache-2.0" and the classifier "License
+      :: OSI Approved :: Apache Software License", with author Mistral AI and a repository of github.com/mistralai/mistral-vibe.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 402935768a83583b63d8b3393c67efe528700a94d1f293c0e4249df2cb68c97b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/mistralai/mistral-vibe/main/pyproject.toml
+    shows: The build configuration compiles the wheel's native module from ".native-build/harness-core/Cargo.toml",
+      keyed on the repository's "harness/core/src/**/*.rs" and "vibe/cli-rust/src/**/*.rs", and declares license
+      = { text = "Apache-2.0" }.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 339856af4e36aafc0df9dd27e5b37b711d148330482b0fb8372378ee7115ba6e
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/mistralai/mistral-vibe/main/README.md
+    shows: The README calls the tool "Mistral's open-source CLI coding assistant", installs it with "uv tool install
+      mistral-vibe" or "pip install mistral-vibe", and closes with "Licensed under the Apache License, Version 2.0".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: dfe5c431c0806524120e637e7c2ef402b12b7fc055eb37ea62acea8d6b867d27
+    establishes:
+    - source
+  - url: https://mistral.ai/news/devstral-2-vibe-cli
+    shows: Mistral's launch post, dated December 9, 2025, says "Mistral Vibe CLI is an open-source command-line coding
+      assistant powered by Devstral" and "It is released under the Apache 2.0 license."
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 680de6b25883b242080f837b0247c90775cbadb74c2163e266bbf5a625134eb3
+    establishes:
+    - license
+    - core-gated
+  - url: https://docs.mistral.ai/vibe/code/cli/install-setup
+    shows: The setup docs say "Vibe Code is included, with usage and rate limits based on your plan and pay-as-you-go
+      settings" and "The CLI also works fully offline with local models, or against any compatible API key you
+      provide."
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b0b7f12d7985476dbefb14fdb8e6a278d42018c331095fc9524349676315b9bf
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/mistralai/mistral-vibe/main/vibe/cli-rust/Cargo.toml
+    shows: The manifest for the optional Rust terminal client, vibe-rs 2.26.1, declares license = "Proprietary"
+      and publish = false.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 60ca80c4912ec5e6a9f7bf7a63449d24db5ae1232efa45596e998d5939e1956b
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is the trailing month of PyPI downloads of mistral-vibe, the one package the CLI ships as. The
+    README's uv and pip instructions and Mistral's one-line installer all install that package, so the count covers
+    every documented install route.
+  sources:
+  - url: https://pypistats.org/api/packages/mistral-vibe/recent
+    shows: last_month 3,932,883 downloads for mistral-vibe (last_week 368,368, last_day 41,546).
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 32559e90cd7cdc7e0878b8342922221c250c25d585be2b79221953ce2fcf1686
+  - url: https://mistral.ai/vibe/install.sh
+    shows: The one-line installer, served from the repository's scripts/install.sh, "installs uv if not present and
+      then installs mistral-vibe using uv" by running "uv tool install mistral-vibe".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 89d2ac2675726785134799c7a605cdab1e2ddaf569b2d300007285d162bdc283
+capability:
+  score: 4
+  basis: feature_matrix
+  value: terminal coding agent with read, write, edit, shell, grep and todo tools; subagent delegation through a
+    task tool, with a built-in read-only explore subagent; ask, plan, accept-edits and auto-approve profiles for
+    tool approval; MCP servers, skills and hooks; interactive, programmatic and Agent Client Protocol editor modes;
+    Mistral models by default, with local models or other compatible API keys; sandboxing only through an experimental
+    external agent server; no published benchmark result for the agent
+  confidence: medium
+  note: Mistral Vibe covers a full terminal coding agent with subagents, a read-only planning profile, approval
+    controls, MCP and editor use through the Agent Client Protocol. It sits a step below OpenHands, which runs
+    agents in a sandboxed runtime and publishes benchmark results, while Vibe runs on the user's machine and has
+    no benchmark of its own.
+  relative_to: openhands
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud backends" and offers running agents in "Docker containers, on VMs, or within your company infrastructure".
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ba3c3b5c271353eb44d78feb1e1d991146a23d68c83cd3dc5351c46e369978a0
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/mistralai/mistral-vibe/main/README.md
+    shows: The README lists "Delegate tasks to subagents for parallel work (`task`)", a "`plan`" profile described
+      as "Read-only agent for exploration and planning", MCP server configuration, hooks, skills and Agent Client
+      Protocol editor support; its sandbox option is marked "Experimental".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: dfe5c431c0806524120e637e7c2ef402b12b7fc055eb37ea62acea8d6b867d27
+  - url: https://docs.mistral.ai/vibe/code/cli/install-setup
+    shows: The setup docs say "The CLI also works fully offline with local models, or against any compatible API
+      key you provide."
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b0b7f12d7985476dbefb14fdb8e6a278d42018c331095fc9524349676315b9bf
+  - url: https://mistral.ai/news/devstral-2-vibe-cli
+    shows: The launch post reports SWE-bench Verified scores of 72.2% for Devstral 2 and 68.0% for Devstral Small
+      2, and human evaluations "with tasks scaffolded through Cline"; it gives no benchmark figure for the CLI.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 680de6b25883b242080f837b0247c90775cbadb74c2163e266bbf5a625134eb3

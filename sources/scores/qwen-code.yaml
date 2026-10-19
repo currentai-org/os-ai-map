@@ -1,0 +1,133 @@
+product: qwen-code
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 0df419d carries one root Apache-2.0 LICENSE, Apache-2.0 or MIT files in a few packages,
+        and no ee/, enterprise/, commercial/ or proprietary/ path. The paid options the project's terms list are
+        model access through a Qwen account or an Alibaba Cloud Coding Plan key
+  confidence: high
+  note: Qwen Code is released under Apache-2.0, and its public repository holds the whole agent along with its
+    SDKs, so it builds and runs from published source. The project calls itself an open-source tool, and signing
+    in with a Qwen account or an Alibaba Cloud Coding Plan key pays for model access rather than for any part of
+    the agent.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the tree at 0df419d carries one root Apache-2.0
+    LICENSE, Apache-2.0 or MIT files in a few packages, and no ee/, enterprise/, commercial/ or proprietary/ path.
+    The paid options the project's terms list are model access through a Qwen account or an Alibaba Cloud Coding
+    Plan key)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/QwenLM/qwen-code/main/LICENSE
+    shows: The root LICENSE is the Apache License, Version 2.0 text, with an appendix notice reading "Copyright
+      2025 Google LLC" and "Copyright 2025 Qwen".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 55367b61ccd2a016a0159ad886bd66a3ee6cb5e873d0c75c803c897dd245b075
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@qwen-code/qwen-code/latest
+    shows: The npm record for @qwen-code/qwen-code 0.25.2 names the repository git+https://github.com/QwenLM/qwen-code.git
+      and the qwen command, published from GitHub Actions with SLSA provenance; it carries no license field.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: eabb695825942e338c612339119993315d2ad1fb92666b7ae8b799664fc0e46c
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/QwenLM/qwen-code/main/README.md
+    shows: 'The README calls the project "The open-source AI coding agent for your terminal, editor, desktop, browser,
+      and chat", says "Open-source, inside and out", and links TypeScript, Python and Java SDKs under packages/;
+      no paid tier, enterprise edition or license key is mentioned.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 8ad684d5404161d34d879e640d94a5d51ba9243ec9b06f44217d06b8509ec2ef
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/QwenLM/qwen-code/main/docs/users/support/tos-privacy.md
+    shows: 'The terms page says "Qwen Code is an open-source AI coding assistant tool maintained by the Qwen Code
+      team" and lists four ways to reach models: Qwen OAuth ("free tier discontinued 2026-04-15"), Alibaba Cloud
+      Coding Plan, your own API key, and Vertex AI.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 311d1d9acbf1fe2b0a40875e82be7d675286bcd72bac079bed9543a7480a4975
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of npm downloads of @qwen-code/qwen-code, the package that is the CLI itself,
+    and the Homebrew package installs the same npm tarball. The README leads with a standalone installer that fetches
+    a prebuilt archive from Alibaba Cloud storage or GitHub releases and falls back to the npmmirror registry. None
+    of those installs reach the npm count, so the band is a floor.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@qwen-code/qwen-code
+    shows: 320,024 downloads of @qwen-code/qwen-code between 2026-09-17 and 2026-10-16
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 25c20a7513bb97fe7081e9dd30844fce20e34306e31442a5f9c017b9931363b2
+  - url: https://registry.npmjs.org/@qwen-code/qwen-code/latest
+    shows: The npm record for @qwen-code/qwen-code 0.25.2 installs the qwen command and has no runtime dependencies,
+      only optional platform helpers.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: eabb695825942e338c612339119993315d2ad1fb92666b7ae8b799664fc0e46c
+  - url: https://formulae.brew.sh/api/formula/qwen-code.json
+    shows: Homebrew's qwen-code package installs from https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.2.tgz
+      and reports 3,987 installs in 30 days.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: ddd64a5fb6a0dca79de2354d95486fcedad8fcff5325b47a33192ef2da25339b
+  - url: https://raw.githubusercontent.com/QwenLM/qwen-code/main/scripts/installation/install-qwen-standalone.sh
+    shows: 'The repository copy of the README''s installer "Installs Qwen Code from a standalone archive when available,
+      with npm fallback", with "Mirror: auto, github, or aliyun" and an npm registry default of https://registry.npmmirror.com.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 2d2bd07c8b3015e3dacddc190494212518361e6f0c5a75581eca9453b45c4e4f
+capability:
+  score: 5
+  basis: feature_matrix
+  value: terminal coding agent with sub-agents, agent teams, dynamic workflows, hooks, auto-memory and skills; MCP,
+    plan mode, LSP integration, sandbox and git worktrees; computer use; OpenAI, Anthropic, Gemini and Qwen APIs
+    plus third-party and local models, switchable at runtime; VS Code, Zed and JetBrains plugins, desktop app, web
+    UI and Telegram, DingTalk, WeChat and Feishu channels; headless mode, ACP daemon and TypeScript, Python and Java
+    SDKs; vendor-run SWE-bench Verified averages of 76.40% to 77.80% across seven versions on Qwen 3.7 Max
+  confidence: medium
+  note: Qwen Code covers the same ground as OpenHands and as Gemini CLI, the agent it was forked from, with sub-agents
+    and agent teams, MCP, plan mode, a sandbox, computer use and many model providers, plus editor, desktop, web
+    and chat front ends and SDKs in three languages. Its SWE-bench Verified results come from the Qwen Code team
+    running its own model rather than from an independent board, the same limit that applies to the scores OpenHands
+    publishes.
+  relative_to: openhands
+  relation: at
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud backends" and offers running agents in "Docker containers, on VMs, or within your company infrastructure".
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ba3c3b5c271353eb44d78feb1e1d991146a23d68c83cd3dc5351c46e369978a0
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/QwenLM/qwen-code/main/README.md
+    shows: 'The README''s feature table checks "SubAgents, Agent Teams, Dynamic Workflows", "MCP, Plan Mode, LSP Integration",
+      "Auto Mode, Sandbox, Git Worktrees" and "Computer Use (desktop automation)", and lists "Multi-protocol — Supports
+      OpenAI, Anthropic, Gemini, and Qwen APIs", a headless mode, a qwen serve daemon and three SDKs.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 8ad684d5404161d34d879e640d94a5d51ba9243ec9b06f44217d06b8509ec2ef
+  - url: https://raw.githubusercontent.com/QwenLM/qwen-code/main/docs/evaluation.md
+    shows: The evaluation page compares seven Qwen Code versions on SWE-bench Verified "using the same Qwen 3.7 Max
+      model and configuration", with average scores from 76.40% to 77.80% over 500 cases and three trials per version.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b60568c2527e5042a96a3b1337cc30c84c45b870729cd1ff00c7a363a3c4c692

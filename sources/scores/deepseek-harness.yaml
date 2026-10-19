@@ -1,0 +1,145 @@
+product: deepseek-harness
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 687f282 carries one root MIT LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path, and every package manifest that declares a license declares MIT or BSD-3-Clause. DeepSeek calls the
+        harness open source and sells model access, which it reaches through an API key like any other provider
+  confidence: high
+  note: DeepSeek Harness is MIT licensed, and its public repository holds the whole harness, Web and desktop apps
+    included, so it builds and runs from published source. What DeepSeek sells is access to its models, which the
+    harness reaches with an API key in the same way it reaches other providers.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the tree at 687f282 carries one root MIT LICENSE and no
+    ee/, enterprise/, commercial/ or proprietary/ path, and every package manifest that declares a license declares
+    MIT or BSD-3-Clause. DeepSeek calls the harness open source and sells model access, which it reaches through
+    an API key like any other provider)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/LICENSE
+    shows: The root LICENSE is the MIT License text, "Copyright (c) 2026 DeepSeek".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: ebb4f09972aee8608be255debaf78451a68e95c290f55c240dec2ecfa16ea6be
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@deepseek-ai/dsh/latest
+    shows: 'The npm record for @deepseek-ai/dsh 0.2.0-rc.2 declares "license": "MIT", a repository of deepseek-ai/deepseek-harness
+      under apps/cli, and the dsh command.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 1510cc60fea3ecfd2aca2e4762e10a17ab2353b784a8cdef813b7a412e1c091e
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/README.md
+    shows: The README says "DeepSeek Harness (`dsh`) is an open-source agent harness developed by" DeepSeek AI,
+      documents running it from a clone with pnpm install and build, and closes "## License [MIT](LICENSE)"; no
+      paid tier or license key is mentioned.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 0f5516be2acde776f05572cbc8c3093c90549afe04ce118e11157d073d5d15f4
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/docs/user/guide/index.md
+    shows: The Web UI guide's first step is to open Settings, Models and enter a DeepSeek API key, linked to platform.deepseek.com,
+      and it points to the model configuration guide for other providers.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: a22e25ad4bb6a1b249b9e2f1df0dd408f22cebd8a110067fddad82870c2b96e9
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is the trailing month of npm downloads of @deepseek-ai/dsh, the package the README runs with npx.
+    Installs of the Python SDK, which carries its own copy of the dsh command, and of the desktop app are not counted.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@deepseek-ai/dsh
+    shows: 1,723,718 downloads of @deepseek-ai/dsh between 2026-09-17 and 2026-10-16
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 2cee12f14ff126936a4fcf5de2e35477cc892279b5f59c9751619e84c63e7581
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/README.md
+    shows: The README's install instruction is "npx @deepseek-ai/dsh web", which starts the Web UI.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 0f5516be2acde776f05572cbc8c3093c90549afe04ce118e11157d073d5d15f4
+capability:
+  score: 4
+  basis: feature_matrix
+  value: agent harness that reads and edits files, runs commands, delegates to sub-agents and keeps a plan; plan
+    mode, skills, MCP servers as native tools and LSP; DeepSeek plus built-in third-party providers and custom OpenAI-
+    or Anthropic-compatible endpoints; Web UI, desktop app, headless, ACP and TypeScript/Python SDK modes; read-only,
+    workspace-write or unrestricted sandboxing on bwrap, Landlock, Seatbelt and Windows restricted tokens, with approval
+    prompts; SSH remote execution; scheduled follow-ups; every part a Cordis plugin; developer preview with no security
+    audit; no published benchmark result
+  confidence: medium
+  note: DeepSeek Harness covers what a coding agent is expected to do, with sub-agents, plan mode, MCP, many model
+    providers and an SDK, and adds per-platform process sandboxing and approval prompts that limit what the agent
+    can touch. It sits a step below OpenHands, which publishes benchmark results, because it is still a developer
+    preview with no published benchmark result and no security audit.
+  relative_to: openhands
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud backends" and offers running agents in "Docker containers, on VMs, or within your company infrastructure".
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ba3c3b5c271353eb44d78feb1e1d991146a23d68c83cd3dc5351c46e369978a0
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/docs/user/guide/index.md
+    shows: The Web UI guide says "The agent can read and edit workspace files, run commands, delegate work, and maintain
+      a plan" and that the Web UI "asks before operations that require approval under the active permission policy".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: a22e25ad4bb6a1b249b9e2f1df0dd408f22cebd8a110067fddad82870c2b96e9
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/packages/README.md
+    shows: The package map lists groups for subagents, plan collaboration, skills, "External Model Context Protocol
+      servers exposed as native tools", an LSP tool, "POSIX remote connection", "Host-owned scheduled follow-ups",
+      an "Out-of-process SDK" and an "Automation-only Agent Client Protocol server".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e55e7288792ac3eae5119e58ab5d96a8d4a249fd0c2c6c03ec2d89454623ae1e
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/packages/sandbox/README.md
+    shows: The sandbox group runs commands "read-only", under "workspace-write" or "danger-full-access", with backends
+      "Linux bwrap then Landlock, macOS Seatbelt, Windows restricted token".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 596d370240fe996245fe763804862c0c5dbbd6d48ac3b6f77bf72332f9bcbfea
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/docs/user/guide/providers.md
+    shows: The model guide offers built-in providers such as "`anthropic`, `openai`, `moonshotai` for Kimi, or `zai`
+      for GLM" and custom endpoints speaking "OpenAI Chat Completions, OpenAI Responses, and Anthropic Messages".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e5d8c89009f5b722f55c80af5214f193d95f888716c46994c8cbdfae7a6e6a75
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/apps/cli/README.md
+    shows: The CLI's entry modes include "dsh web", a headless mode that runs one session and prints the answer,
+      an SDK server over JSON-RPC stdio, and "Serve automation clients over ACP stdio".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: f80e7498e2718eb5ff85fd43d2e6d389ecceff24c4378651d0d89f3843c7a29e
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/SAFETY.md
+    shows: The safety notice says the harness "is experimental developer-preview software" that "has not undergone
+      a security audit".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 62075bb51e0f7790441e7722ff12063107b4866019332e71ef01b63b6f880fee
+  - url: https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/master/BENCHMARK.md
+    shows: The benchmark page only explains how to run benchmark tasks through the Python SDK; it reports no result.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 3e38b63e4507b4db923d2cacdff0828e12e2774a35cd1695b592cfaa3d9e7bc2
