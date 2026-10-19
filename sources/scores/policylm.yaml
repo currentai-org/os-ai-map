@@ -1,0 +1,122 @@
+product: policylm
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 safetensors on HF musubilabs/policylm-1.7b, ungated
+    data:
+      value: partial
+      detail: three third-party public safety datasets named in the card, plus synthetic data that is not released
+    code:
+      value: partial
+      detail: inference helper and quickstart in the model repository; no training code for the five fine-tuning
+        stages
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: Musubi publishes PolicyLM's weights and inference helper under Apache-2.0 with no access gate, and the card
+    names the three public safety datasets it was trained on. The synthetic data used alongside them and the training
+    code are not released, so this is an open-weights release rather than a fully open model.
+  raw: weights:open(Apache-2.0 safetensors on HF musubilabs/policylm-1.7b, ungated);data:partial(three third-party
+    public safety datasets named in the card, plus synthetic data that is not released);code:partial(inference helper
+    and quickstart in the model repository; no training code for the five fine-tuning stages);license:Apache-2.0(OSI)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://huggingface.co/musubilabs/policylm-1.7b/raw/main/README.md
+    shows: 'Raw model card front matter declares "license: apache-2.0" and lists the datasets "nvidia/Nemotron-Safety-Guard-Dataset-v3",
+      "Alibaba-AAIG/XGuard-Train-Open-200K" and "ToxicityPrompts/PolyGuardMix". The Training section says the model
+      was fine-tuned "in five stages, on public safety datasets" and "synthetic data"; the synthetic data is not
+      linked. The Files table describes `inference/` as "The helper `policylm_infer.py`, `quickstart.py`, `requirements.txt`
+      and the base encoder''s code", and the license section reads "**PolicyLM-1.7B:** Apache-2.0."'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 3b9068afe949d5698968ec60fc702375ab01973c4a986b57285fff8701d685fe
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/musubilabs/policylm-1.7b
+    shows: The Hugging Face API record reports "gated":false, carries the tag "license:apache-2.0" and the three
+      "dataset:" tags, and lists "model.safetensors", "LICENSE" and the inference files "inference/policylm_infer.py"
+      and "inference/quickstart.py". No training script is among the files.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 59e0491d47552e7832f4d765c538e59b9c02d1006402294bb79ff2b2bd338a16
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/musubilabs/policylm-1.7b/raw/main/LICENSE
+    shows: The LICENSE file in the model repository is the Apache License, Version 2.0, January 2004.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured by Hugging Face downloads of the one checkpoint Musubi publishes. A hosted version
+    also runs on Baseten, and its calls are not counted, so the figure is a lower bound on use.
+  sources:
+  - url: https://huggingface.co/api/models/musubilabs/policylm-1.7b
+    shows: 268 downloads in the trailing 30 days for musubilabs/policylm-1.7b
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 59e0491d47552e7832f4d765c538e59b9c02d1006402294bb79ff2b2bd338a16
+  - url: https://raw.githubusercontent.com/roostorg/model-community/main/musubi-policylm/README.md
+    shows: The ROOST Model Community page for PolicyLM links a "Hosted version on Baseten" beside the Hugging Face
+      download.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 15125f69cb8824fbe64154b74be175fa3b0f545e36a13b8af94990bdaabff07a
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: steerable bring-your-own-policy, per-category scores
+  value: Scores a user message against a policy of up to 16 user-written categories, or against a built-in 23-category
+    Aegis 2.0 taxonomy, returning a 0-1 score per category in one pass with no generated text; evaluated in 19 languages.
+    On Musubi's custom-policy benchmark it posts 0.842 accuracy against 0.909 for gpt-oss-safeguard-20B, 0.829 for
+    CoPE-B-A4B and 0.643 for Shieldstral-1.0-3B, at 22 ms median per message on an H100.
+  relative_to: gpt-oss-safeguard
+  relation: at
+  confidence: medium
+  note: Like gpt-oss-safeguard, PolicyLM checks content against a policy the user writes, and it scores each category
+    of that policy separately in one fast pass. It follows custom policies less accurately on Musubi's own benchmark,
+    gives no written reason and does not check assistant responses, so it sits level with gpt-oss-safeguard rather
+    than ahead.
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md
+      shows: The peer's card still describes "safety reasoning models built-upon gpt-oss" that "classify text content
+        based on safety policies that you provide", with a bring-your-own-policy feature and reasoning effort set
+        to low, medium or high. The digest matches the one gpt-oss-safeguard records from 2026-09-29.
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: 1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://huggingface.co/musubilabs/policylm-1.7b/raw/main/README.md
+    shows: The card says "You give it a message and a policy and it returns a score from 0 to 1 for each category
+      of the policy", offers "A built-in taxonomy (`aegis` mode)** of 23 categories from NVIDIA's Aegis 2.0", scores
+      "Every category in one pass,** up to 16 per policy", and was "Evaluated on messages in 19 languages". Its
+      custom-policy table gives accuracy 0.842 for PolicyLM-1.7B, 0.909 for gpt-oss-safeguard-20B, 0.829 for CoPE-B-A4B
+      and 0.643 for Shieldstral-1.0-3B, with a 22 ms median on an H100. It lists "moderating assistant responses"
+      as out of scope and points to other models when "The decision needs a written reason".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 3b9068afe949d5698968ec60fc702375ab01973c4a986b57285fff8701d685fe
+  - url: https://raw.githubusercontent.com/roostorg/model-community/main/musubi-policylm/README.md
+    shows: The ROOST Model Community page describes PolicyLM-1.7B as "an open-weights (Apache-2.0) moderation classifier
+      from Musubi Labs" that "returns a 0–1 score for every category in one pass, with no text generated".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 15125f69cb8824fbe64154b74be175fa3b0f545e36a13b8af94990bdaabff07a
