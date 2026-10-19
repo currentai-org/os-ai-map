@@ -1,0 +1,144 @@
+product: opentinker
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: open-tinker/OpenTinker
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary path in the tree at commit f87fe25; an academic project
+        with no paid tier described
+    context:
+      training-backend:
+        value: open
+        detail: verl, Apache-2.0, included as a git submodule from volcengine/verl
+  confidence: high
+  note: OpenTinker is Apache-2.0, and the client, scheduler and server all build from this repository. Its training
+    backend, verl, is Apache-2.0 too, and the authors are university researchers who describe no paid edition or
+    hosted tier.
+  last_verified: '2026-10-19'
+  raw: license:Apache-2.0(OSI);source:public(open-tinker/OpenTinker);core-gated:ungated(no ee, enterprise, commercial
+    or proprietary path in the tree at commit f87fe25; an academic project with no paid tier described);training-backend:open(verl,
+    Apache-2.0, included as a git submodule from volcengine/verl)
+  sources:
+  - url: https://raw.githubusercontent.com/open-tinker/OpenTinker/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache License 2.0 text with its unfilled appendix boilerplate
+      ("Copyright [yyyy] [name of copyright owner]") and no added term or condition.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/open-tinker/OpenTinker/main/README.md
+    shows: 'README installs the product from a clone ("git clone --recurse-submodules", "pip install -e .", then
+      verl from its submodule) and describes Client Setup and Server Setup, with a built-in authentication system
+      for the scheduler API. Searched the body for enterprise, pricing, paid and commercial: none.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e3c159e95e7da56f83273fe546196161008badcc72718b3dacae5bee8b6d41ec
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/open-tinker/OpenTinker/files/main
+    shows: 'The 190-file tree of open-tinker/OpenTinker at sha f87fe25fc483e7f1d7596182fc55115cbc992724: one root
+      LICENSE, and no ee/, enterprise/, commercial/, proprietary/ or premium/ path anywhere in it. Path absence
+      only, paired with the authorship statement cited beside it.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 786ee0a9035ed99ea34fe592bac28ebc480b5a5ea2fb1c1c4d5976bce987459b
+    establishes:
+    - core-gated
+  - url: https://arxiv.org/pdf/2601.07376
+    shows: Both authors, Siqi Zhu and Jiaxuan You, are listed at the "University of Illinois Urbana-Champaign".
+      The paper presents OpenTinker as "an open infrastructure for multi-LoRA SFT and RL training of LLM agents"
+      and says commercial systems "such as Tinker" keep their internal abstractions private.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 38b9d0bbfd8860ab5deda1422bf5530c958a7267bb3d7bf59e54284f3e0d325a
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/open-tinker/OpenTinker/main/.gitmodules
+    shows: One submodule, "verl", at path verl with url https://github.com/volcengine/verl.git.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: d800e48fe19bf169a47e725183c3e63d1467f76838c00cead51b2435538ca886
+  - url: https://raw.githubusercontent.com/volcengine/verl/main/LICENSE
+    shows: 'LICENSE body of volcengine/verl: the Apache License, Version 2.0.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 'OpenTinker has no registry package: the opentinker name in its pyproject.toml is not published on PyPI,
+    and the README installs it from a clone. GitHub stars are the only signal left, and a star records interest
+    rather than a use.'
+  sources:
+  - url: https://ungh.cc/repos/open-tinker/OpenTinker
+    shows: 'Repository metadata for open-tinker/OpenTinker: "stars":678, "forks":67, created 2025-12-20, pushedAt
+      2026-03-21.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 30232665791772fdcb797e2c94a8ba033e195a300f9ca7107b78862c2313b258
+  - url: https://pypi.org/pypi/opentinker/json
+    shows: 'HTTP 404, {"message": "Not Found"}: no PyPI package named opentinker, the name the repository''s pyproject.toml
+      declares, so there is no download count to read.'
+    accessed: '2026-10-19'
+    http_status: 404
+    content_sha256: b82014934f66beeb9e05a37f65357c4b50db0349d25d68d818ed0319dd4feb40
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'Methods: SFT and online RL through one token-masked trajectory path, with GAE, GRPO and per-step GRPO
+    advantage estimators; many LoRA adapters sharing one base model, with a scheduler that keeps each adapter''s
+    gradients, optimizer state and rollout snapshots separate; single- and multi-turn environments with tool calling,
+    multi-agent training, LLM and VLM examples (math, geometry, ALFWorld, Android World, Gomoku) on models up to
+    3B; training on verl. A focused agent-RL service layer comparable to OpenPipe ART, not a large-scale training
+    framework.'
+  confidence: medium
+  note: OpenTinker trains agents with SFT and reinforcement learning in single- and multi-turn environments, letting
+    many LoRA adapters share one base model with their training state kept apart, the same agent-RL ground OpenPipe's
+    ART covers. Its documented examples stop at 3B-parameter models, so none of the large-scale parallel training
+    of verl or Megatron-LM is shown.
+  relative_to: openpipe
+  relation: at
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenPipe/ART/main/README.md
+      shows: The ART README still describes "an open-source RL framework that improves agent reliability by allowing
+        LLMs to **learn from experience**", whose server trains the model with GRPO "initializing from the latest
+        checkpoint (or an empty LoRA". That is the same LoRA-based agent-RL scope OpenTinker documents.
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ea7684d222767b85b9392dbf3dff6f9972bed7802aee7352daad33c0cd9d7773
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://arxiv.org/abs/2601.07376
+    shows: The abstract describes "multi-LoRA SFT/RL training in which many users, tasks, or agents can share a
+      base model while keeping adapter updates, checkpoints, and rollout snapshots isolated", and "the training
+      scheduler that isolates adapter-local gradients and optimizer state", validated on "single-turn, multi-turn,
+      LoRA, and multi-agent agentic training".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: ed4f80e451e7d5b81162bc3d20cb4aaa2d609827cf4ae9e6e7b3889385a34ff7
+  - url: https://raw.githubusercontent.com/open-tinker/OpenTinker/main/README.md
+    shows: Quick Start table lists LLM single- and multi-turn math, an LLM single-LoRA math run, VLM single- and
+      multi-turn geometry, and Gomoku, ALFWorld and Android World agents; an Environments section describes data-dependent
+      and data-free, single- and multi-turn paradigms.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e3c159e95e7da56f83273fe546196161008badcc72718b3dacae5bee8b6d41ec
+  - url: https://raw.githubusercontent.com/open-tinker/OpenTinker/main/docs/alfworld_multiturn.md
+    shows: 'The ALFWorld example trains "tokenizer_path=Qwen/Qwen2.5-3B-Instruct" through the scheduler and lists
+      "`adv_estimator`: Advantage estimator (`gae`, `grpo`, `grpo_per_step`)".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: f6a20df22acdbb1139bef564f59a0b43d58e3a1ce57f003e204fd0f3eaa64368

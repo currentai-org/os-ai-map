@@ -1,0 +1,140 @@
+product: prime-rl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: PrimeIntellect-ai/prime-rl
+    core-gated:
+      value: ungated
+      detail: the tree at cd26753 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path, and its five submodules are public repositories. Prime Intellect sells compute, hosted training and inference
+        as separate platform products; the platform monitor is opt-in, and the eval command defaults to Prime Inference
+        but takes any OpenAI-compatible server
+  confidence: high
+  note: prime-rl is Apache-2.0 licensed, and its public repository holds the trainer, orchestrator and inference server,
+    which install and run from source with no account. Prime Intellect sells compute, hosted training and inference as
+    separate products, and the framework's links to them, run reporting and hosted evaluation, are optional.
+  last_verified: '2026-10-19'
+  raw: license:Apache-2.0(OSI);source:public(PrimeIntellect-ai/prime-rl);core-gated:ungated(the tree at cd26753 carries
+    one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path, and its five submodules are
+    public repositories. Prime Intellect sells compute, hosted training and inference as separate platform products;
+    the platform monitor is opt-in, and the eval command defaults to Prime Inference but takes any OpenAI-compatible
+    server)
+  sources:
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/LICENSE
+    shows: The LICENSE is the stock Apache License 2.0 text, with the unfilled appendix line "Copyright [yyyy] [name
+      of copyright owner]", followed by a "Third-party code attributions" note that some code is derived from Meta Platforms
+      under a BSD-style license; no use restriction is added.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: f5118b9c9e98b0f4076214ee13f68d5f73c13b077c44544cb9a0c4ed9155065c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/README.md
+    shows: The README installs prime-rl by cloning the repository and running uv sync, validates SFT, inference and the
+      full RL stack locally, closes "This project is licensed under the Apache 2.0 license", and recommends "our compute
+      platform" for renting GPUs, a separate offering.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 10365bd2c36500abf91a97ff66e86c8330bc0c08a3742aa53687b80d9055d162
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/docs/eval.md
+    shows: The eval guide says "By default the model is served by Prime Inference" and shows how "To evaluate a model
+      you serve yourself" with a local vLLM server; the file monitor is on by default and --monitors.prime, which streams
+      to the Prime platform, is opt-in.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: d834f3573ffd7533763449e20b3f95d883e621bbad53d607205ce5923fba8f9d
+    establishes:
+    - core-gated
+  - url: https://www.primeintellect.ai/
+    shows: Prime Intellect's homepage presents Lab ("Hosted Training", "Managed training workflows"), Compute and Inference
+      as its platform products, and names the open-source Verifiers library as what its RL environments are built on.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 1c2667866df7384d189b965e3a403dc93260cb21af0d34401b2c302c5650e236
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  banded_quantity: 2,166 GitHub stargazers on PrimeIntellect-ai/prime-rl, the product's only declared artifact
+  note: 'No package registry carries prime-rl: it installs from a git checkout, and its release images go to GitHub''s
+    container registry, which publishes no pull count. GitHub stars are the only available signal, and a star is not
+    a use, so confidence is low.'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/PrimeIntellect-ai%2Fprime-rl
+    shows: 'ecosyste.ms''s copy of the GitHub repository metadata for PrimeIntellect-ai/prime-rl: stargazers_count 2166,
+      archived false, license "apache-2.0".'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 4d36ab70d068564c662dc3f92c27a7e797ac645bfe534a57b62269dc35b741f5
+  - url: https://pypi.org/pypi/prime-rl/json
+    shows: 'PyPI answers 404 "Not Found" for prime-rl: the framework has no registry package.'
+    accessed: '2026-10-19'
+    http_status: 404
+    content_sha256: b82014934f66beeb9e05a37f65357c4b50db0349d25d68d818ed0319dd4feb40
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/.github/workflows/image.yml
+    shows: 'The image workflow sets REGISTRY: ghcr.io and IMAGE_NAME: primeintellect-ai/prime-rl, so release images are
+      pushed to GitHub''s container registry rather than Docker Hub.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 800f857d130fef2b3ed7147d506bed9695a76a0baec23fba25a4673de6592aca
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: GRPO and variants (MaxRL, RAE, hierarchical GRPO, ECHO), on-policy distillation, self-distillation
+    and SFT, with an IPO loss, custom losses and configurable sample filters; fully asynchronous off-policy RL; FSDP2
+    training with expert and context parallelism; vLLM inference with FP8 and prefill/decode disaggregation; multi-node
+    Slurm deployment from one GPU to a 1000-GPU cluster; verifiers environments; Qwen3.5 VLMs. Built for 1T+ MoE training,
+    with one training backend and no critic-based PPO, so a narrower method catalog than verl''s.'
+  confidence: medium
+  note: prime-rl is built for asynchronous RL at frontier scale, training mixture-of-experts models on FSDP2 with expert
+    and context parallelism and vLLM inference, with SFT, distillation and evaluation in the same stack. It sits a step
+    below verl, which documents a wider algorithm catalog, including PPO with a critic, and more than one training backend.
+  relative_to: verl
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/volcengine/verl/main/README.md
+      shows: The verl README still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME,
+        DAPO and DrGRPO, "FSDP, FSDP2 and Megatron-LM for training", support that "Scales up to 671B models and hundreds
+        of GPUs", and reports that Seed-Thinking-v1.5 was trained with verl. The body is byte-identical to the one verl's
+        own capability record cites.
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/README.md
+    shows: 'The README describes "Fully asynchronous RL for high-throughput agentic training at scale", "built to train
+      1T+ MoE models on 1000+ GPUs with FSDP2 for training and vLLM for inference, with FP8 inference, PD disaggregation,
+      EP and CP parallelism", "End-to-end post-training: SFT, RL training, and evals", Slurm deployment and multimodal
+      Qwen3.5 support.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 10365bd2c36500abf91a97ff66e86c8330bc0c08a3742aa53687b80d9055d162
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/docs/algorithms.md
+    shows: 'The algorithms page lists grpo, max_rl, rae, hierarchical_grpo, opd, sft, opsd and echo, with an IPO loss
+      and async off-policy training, and says "prime-rl hosts exactly one model: the trainable policy", so there is no
+      critic model.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 44e9066557c43db23765a93fd0fc0db7e78d3df25070196ef1122cacfcb8cbf1
+  - url: https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/docs/scaling.md
+    shows: The scaling guide covers taking prime-rl "from a single GPU to a 1000-GPU cluster" with FSDP, expert parallelism,
+      context parallelism and multi-node Slurm launches.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 82334c8f3bb8b779911067b2a6c999deb5424f5aa0892482b11814d861aa8699
