@@ -375,8 +375,8 @@ RULED_PACKAGES = {
 # Python kimi-cli, a separate predecessor whose downloads install the old tool, not this one.
 RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent"),
                  ("kimi-code-cli", "pypi", "kimi-cli")}
-# Muse Glimmer's promotion: its speculative-decoding drafter runs beside the full-precision weights,
-# so its downloads are people already counted on the main repository.
+# Muse Glimmer's promotion: its speculative-decoding drafter is an auxiliary checkpoint that cannot
+# provide the model's capability on its own, so it is not a distribution of the product.
 DRAFTER_REPOS = {("muse-glimmer", "huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
 
 
