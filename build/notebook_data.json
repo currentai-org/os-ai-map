@@ -70441,6 +70441,534 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-10-07"
           }
+        },
+        {
+          "slug": "opentinker",
+          "product": "OpenTinker",
+          "org_slug": "open-tinker",
+          "org": "OpenTinker",
+          "type": "software",
+          "description": "OpenTinker trains language-model agents with supervised fine-tuning and reinforcement learning as a service: a client defines environments and objectives, and a server-side scheduler runs jobs on shared GPUs, with many LoRA adapters sharing one base model. Training runs on verl, with examples for math, vision-language geometry, ALFWorld, Android World and Gomoku agents. It was built at the University of Illinois Urbana-Champaign, independently of Thinking Machines, whose closed Tinker API its paper cites as motivation.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(open-tinker/OpenTinker);core-gated:ungated(no ee, enterprise, commercial or proprietary path in the tree at commit f87fe25; an academic project with no paid tier described);training-backend:open(verl, Apache-2.0, included as a git submodule from volcengine/verl)",
+            "confidence": "high",
+            "note": "OpenTinker is Apache-2.0, and the client, scheduler and server all build from this repository. Its training backend, verl, is Apache-2.0 too, and the authors are university researchers who describe no paid edition or hosted tier.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/open-tinker/OpenTinker/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache License 2.0 text with its unfilled appendix boilerplate (\"Copyright [yyyy] [name of copyright owner]\") and no added term or condition.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/open-tinker/OpenTinker/main/README.md",
+                "shows": "README installs the product from a clone (\"git clone --recurse-submodules\", \"pip install -e .\", then verl from its submodule) and describes Client Setup and Server Setup, with a built-in authentication system for the scheduler API. Searched the body for enterprise, pricing, paid and commercial: none.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "e3c159e95e7da56f83273fe546196161008badcc72718b3dacae5bee8b6d41ec",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://ungh.cc/repos/open-tinker/OpenTinker/files/main",
+                "shows": "The 190-file tree of open-tinker/OpenTinker at sha f87fe25fc483e7f1d7596182fc55115cbc992724: one root LICENSE, and no ee/, enterprise/, commercial/, proprietary/ or premium/ path anywhere in it. Path absence only, paired with the authorship statement cited beside it.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "786ee0a9035ed99ea34fe592bac28ebc480b5a5ea2fb1c1c4d5976bce987459b",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/pdf/2601.07376",
+                "shows": "Both authors, Siqi Zhu and Jiaxuan You, are listed at the \"University of Illinois Urbana-Champaign\". The paper presents OpenTinker as \"an open infrastructure for multi-LoRA SFT and RL training of LLM agents\" and says commercial systems \"such as Tinker\" keep their internal abstractions private.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "38b9d0bbfd8860ab5deda1422bf5530c958a7267bb3d7bf59e54284f3e0d325a",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/open-tinker/OpenTinker/main/.gitmodules",
+                "shows": "One submodule, \"verl\", at path verl with url https://github.com/volcengine/verl.git.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "d800e48fe19bf169a47e725183c3e63d1467f76838c00cead51b2435538ca886"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/volcengine/verl/main/LICENSE",
+                "shows": "LICENSE body of volcengine/verl: the Apache License, Version 2.0.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "OpenTinker has no registry package: the opentinker name in its pyproject.toml is not published on PyPI, and the README installs it from a clone. GitHub stars are the only signal left, and a star records interest rather than a use.",
+            "sources": [
+              {
+                "url": "https://ungh.cc/repos/open-tinker/OpenTinker",
+                "shows": "Repository metadata for open-tinker/OpenTinker: \"stars\":678, \"forks\":67, created 2025-12-20, pushedAt 2026-03-21.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "30232665791772fdcb797e2c94a8ba033e195a300f9ca7107b78862c2313b258"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Methods: SFT and online RL through one token-masked trajectory path, with GAE, GRPO and per-step GRPO advantage estimators; many LoRA adapters sharing one base model, with a scheduler that keeps each adapter's gradients, optimizer state and rollout snapshots separate; single- and multi-turn environments with tool calling, multi-agent training, LLM and VLM examples (math, geometry, ALFWorld, Android World, Gomoku) on models up to 3B; training on verl. A focused agent-RL service layer comparable to OpenPipe ART, not a large-scale training framework.",
+            "confidence": "medium",
+            "note": "OpenTinker trains agents with SFT and reinforcement learning in single- and multi-turn environments, letting many LoRA adapters share one base model with their training state kept apart, the same agent-RL ground OpenPipe's ART covers. Its documented examples stop at 3B-parameter models, so none of the large-scale parallel training of verl or Megatron-LM is shown.",
+            "relative_to": "openpipe",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/OpenPipe/ART/main/README.md",
+                  "shows": "The ART README still describes \"an open-source RL framework that improves agent reliability by allowing LLMs to **learn from experience**\", whose server trains the model with GRPO \"initializing from the latest checkpoint (or an empty LoRA\". That is the same LoRA-based agent-RL scope OpenTinker documents.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "ea7684d222767b85b9392dbf3dff6f9972bed7802aee7352daad33c0cd9d7773"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2601.07376",
+                "shows": "The abstract describes \"multi-LoRA SFT/RL training in which many users, tasks, or agents can share a base model while keeping adapter updates, checkpoints, and rollout snapshots isolated\", and \"the training scheduler that isolates adapter-local gradients and optimizer state\", validated on \"single-turn, multi-turn, LoRA, and multi-agent agentic training\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "ed4f80e451e7d5b81162bc3d20cb4aaa2d609827cf4ae9e6e7b3889385a34ff7"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/open-tinker/OpenTinker/main/README.md",
+                "shows": "Quick Start table lists LLM single- and multi-turn math, an LLM single-LoRA math run, VLM single- and multi-turn geometry, and Gomoku, ALFWorld and Android World agents; an Environments section describes data-dependent and data-free, single- and multi-turn paradigms.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "e3c159e95e7da56f83273fe546196161008badcc72718b3dacae5bee8b6d41ec"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/open-tinker/OpenTinker/main/docs/alfworld_multiturn.md",
+                "shows": "The ALFWorld example trains \"tokenizer_path=Qwen/Qwen2.5-3B-Instruct\" through the scheduler and lists \"`adv_estimator`: Advantage estimator (`gae`, `grpo`, `grpo_per_step`)\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "f6a20df22acdbb1139bef564f59a0b43d58e3a1ce57f003e204fd0f3eaa64368"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of GitHub stars on open-tinker/OpenTinker, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
+          "slug": "skyrl",
+          "product": "SkyRL",
+          "org_slug": "novasky-ai",
+          "org": "NovaSky",
+          "type": "software",
+          "description": "SkyRL is a modular reinforcement-learning library for post-training language models and agents. Its unified skyrl package runs PPO, GRPO and related algorithms over FSDP or Megatron training with vLLM or SGLang rollout, and implements the Tinker API so Tinker training scripts run on local GPUs. Alongside it ship skyrl-gym, a set of tool-use environments, and skyrl-agent for long-horizon agents. NovaSky at the Berkeley Sky Computing Lab builds it with Anyscale.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI, root LICENSE)+MIT(OSI, declared by the skyrl-gym package);source:public(NovaSky-AI/SkyRL);core-gated:ungated(the tree at 2c54cef carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path. The project is developed at the Berkeley Sky Computing Lab, and Anyscale runs the same open library on its paid managed platform rather than selling an edition of it)",
+            "confidence": "high",
+            "note": "SkyRL is Apache-2.0 licensed, and its public repository holds the trainer, the Tinker backend, the environments and the agent layer, so it builds and runs from published source with no account. Anyscale offers SkyRL on its paid managed platform, but that is a separate service running the same open library, and nothing in SkyRL is held back for it.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/LICENSE",
+                "shows": "The root LICENSE is the stock Apache License 2.0 text, ending with the unfilled appendix line \"Copyright [yyyy] [name of copyright owner]\"; no added term or condition is attached.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-gym/pyproject.toml",
+                "shows": "The skyrl-gym manifest declares name = \"skyrl-gym\", version = \"0.4.0\" and license = { text = \"MIT\" }.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "73cd0ce1abda7f3b9416a704b4b2c98ab78dda36c0094c5cc17b12d1d59894e0",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/README.md",
+                "shows": "The README describes SkyRL as \"a full-stack RL library\" whose components skyrl, skyrl-agent and skyrl-gym live in this repository, says the work is done at the Berkeley Sky Computing Lab in collaboration with Anyscale, and mentions no enterprise, paid or license-gated edition.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "7ae463b24113a2dd3295c48017aa9f40e655cc03a715e46f4ceb005d3f5374e7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/pyproject.toml",
+                "shows": "The root manifest builds the skyrl package, \"Unified API for training and inference\", from the repository's skyrl* packages, with fsdp, megatron, jax and tinker extras for its backends.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "e4ff14600ccc0d41e48cc0182c0f20fd556284d701d60706b741ef6f684c3338",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://docs.anyscale.com/llm/fine-tuning",
+                "shows": "Anyscale's documentation for its managed platform says \"Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory, SkyRL, and Ray Train\" and lists a \"GRPO with SkyRL\" tutorial: the paid platform runs the open library.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "41238f940d21afc8b51720cea44874d05e42c3eb357c4f45fe3a0d18c91b0162",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is the trailing month of PyPI downloads of skyrl, the package that now holds the trainer and the Tinker backend; the retired skyrl-train and skyrl-tx packages and the skyrl-gym environment library are left out. Installs from a git checkout, which the installation guide uses, and from the project's Docker images are not counted, so the figure is a lower bound on use.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/skyrl/recent",
+                "shows": "last_month 210, last_week 26, last_day 5 for the skyrl package.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "c8d9eb9644face02d34abd999213e4465cca0c99b7b85cc371bd53f92a835cad"
+              },
+              {
+                "url": "https://pypi.org/pypi/skyrl/json",
+                "shows": "skyrl 0.4.0, uploaded 2026-10-01, with the summary \"Unified API for training and inference\", the description the repository's root manifest gives. Its fsdp and megatron extras pull skyrl[skyrl-train], which requires skyrl-gym.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "96a2572950736ccc89c392c2ecf9745e5dc170ffbfcb43cb46ceffe182147ea9"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/docs/content/docs/getting-started/library.mdx",
+                "shows": "The library guide offers \"Option A: Install from PyPI (stable release)\" as skyrl[fsdp], and \"Option B\" from Git.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "6e478424663fde231437ce0449ef8386575581ff0788e2bf38fb9d37e1ff4a31"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/docs/content/docs/getting-started/installation.mdx",
+                "shows": "The installation guide marks \"Docker (recommended)\", starts a novaskyai/skyrl-train-ray image, and inside it has the user run \"git clone https://github.com/novasky-ai/SkyRL.git\"; that path does not go through PyPI.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "29c4b840845b5915239dd95ab70863b0b89421b1c7a62036741c8d995ba6d310"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-tx/README.md",
+                "shows": "The skyrl-tx README says \"SkyRL is undergoing a repo reorganization\" into a single package and that the code \"previously in the skyrl-tx folder can now be found in skyrl/{backends, tinker, tx, utils}\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "0688e7a539d5f211e7fc4b945d39167d34f813efb652f2b068689b6d65937949"
+              },
+              {
+                "url": "https://pypi.org/pypi/skyrl-tx/json",
+                "shows": "skyrl-tx's newest release is 0.3.0, uploaded 2026-02-09, with no release since.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "275fe07c36eaa82f8767022862a7482d9a764d303d462e035d94df3371edb872"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/skyrl-tx/recent",
+                "shows": "last_month 27, last_week 2, last_day 0 for skyrl-tx.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "98067d5fddab7f55b211f027df1364e3939863948fe91d6daa1f9b198fe4cf47"
+              },
+              {
+                "url": "https://pypi.org/pypi/skyrl-train/json",
+                "shows": "skyrl-train's newest release is 0.3.1, uploaded 2026-01-02, with no release since.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "e6b081d1d6029d4b98892b6e8f2a11655dd70a17bc8b73b291338b9f39997acc"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/skyrl-train/recent",
+                "shows": "last_month 61, last_week 13, last_day 1 for skyrl-train.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "0a7b3776d85ad0602bb4bdf8f0f20825a09b463fd3c5e202b3ddc3f596d0dafe"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/skyrl-gym/recent",
+                "shows": "last_month 34,949, last_week 187, last_day 22 for skyrl-gym.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "0fffb692b23d9d592f7f2c364b777a12e1cbcd64b8dc890ddd3081b33655618d"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/skyrl-gym/overall?mirrors=false",
+                "shows": "Daily skyrl-gym downloads without mirrors: 7,883, 9,199, 7,455 and 6,595 on 2026-09-11 to 2026-09-14, then under 400 a day from 2026-09-15 to 2026-10-18 apart from 1,351 on 2026-10-06.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "b93e5411fd89227b5897e41a1d18c51a90a728d971efdde5cbb6910fa8bc6fc2"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Methods: PPO, GRPO, RLOO, REINFORCE, GSPO, CISPO, SAPO and DAPO, plus SFT; training backends FSDP and Megatron, with 5D parallelism for MoE models on Megatron; inference through vLLM, SGLang or any OpenAI-compatible endpoint with weight sync; synchronous, one-step-off and fully asynchronous RL; a Tinker API backend with multi-user LoRA and a JAX engine for GPU and TPU; skyrl-gym environments and skyrl-agent for long-horizon agents. A narrower documented algorithm catalog than verl's.",
+            "confidence": "medium",
+            "note": "SkyRL covers a broad RL post-training stack: PPO, GRPO and several newer policy-optimization variants over FSDP or Megatron, vLLM or SGLang rollout, fully asynchronous training, and a local implementation of the Tinker API. It sits a step below verl, which documents a wider algorithm catalog and has been used to train frontier reasoning models.",
+            "relative_to": "verl",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
+                  "shows": "The verl README still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME, DAPO and DrGRPO, \"FSDP, FSDP2 and Megatron-LM for training\", support that \"Scales up to 671B models and hundreds of GPUs\", and reports that Seed-Thinking-v1.5 was trained with verl. The body is byte-identical to the one verl's own capability record cites.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-train/README.md",
+                "shows": "The trainer's feature list gives \"PPO and GRPO\", FSDP and Megatron training backends, vLLM, SGLang and OpenAI-compatible inference endpoints with weight sync, Ulysses sequence parallelism, synchronous, one-step-off and \"fully async RL with in-flight weight updates\", \"Algorithmic support for RLOO, REINFORCE, GSPO, CISPO, SAPO\" and \"5D Parallelism support for MoE models\" with Megatron.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "7bf9f64ffb1a0d440ae166247933854c069daab909c9d69a2b42fb945b22695e"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/docs/content/docs/algorithms/dapo.mdx",
+                "shows": "The DAPO guide says \"DAPO is supported with the fsdp and megatron backends\" and walks through Clip-Higher, dynamic sampling, token-level loss and overlong reward shaping.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "f17005dae7d94b639aac36c06d58fc896575ec0ce5ce32febcf1db68a2e83f73"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-tx/README.md",
+                "shows": "SkyRL tx implements a backend for the Tinker API with multi-user LoRA, \"SFT & RL Support\", FSDP, tensor and expert parallelism, and GPU and TPU launch commands.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "0688e7a539d5f211e7fc4b945d39167d34f813efb652f2b068689b6d65937949"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/README.md",
+                "shows": "The README lists skyrl, skyrl-agent and skyrl-gym as SkyRL's components, links a 397B RL training guide, and announces day-0 LoRA, full fine-tuning and MXFP8 RL recipes for a 501B-A23B MoE model on a release branch.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "7ae463b24113a2dd3295c48017aa9f40e655cc03a715e46f4ceb005d3f5374e7"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of PyPI downloads of skyrl, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "SkyRL tx, the Tinker API backend, and the earlier skyrl-train trainer were separate packages until both moved into the unified skyrl package; their old PyPI names are declared beside it."
+        },
+        {
+          "slug": "prime-rl",
+          "product": "prime-rl",
+          "org_slug": "prime-intellect",
+          "org": "Prime Intellect",
+          "type": "software",
+          "description": "prime-rl is a framework for asynchronous reinforcement learning on language models at large scale, using FSDP2 for training and vLLM for inference. It covers SFT, RL and evaluation in one stack, trains on multi-turn and agentic tasks written as verifiers environments, and is designed to train mixture-of-experts models above a trillion parameters across more than 1,000 GPUs under Slurm. Prime Intellect develops it.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(PrimeIntellect-ai/prime-rl);core-gated:ungated(the tree at cd26753 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path, and its five submodules are public repositories. Prime Intellect sells compute, hosted training and inference as separate platform products; the platform monitor is opt-in, and the eval command defaults to Prime Inference but takes any OpenAI-compatible server)",
+            "confidence": "high",
+            "note": "prime-rl is Apache-2.0 licensed, and its public repository holds the trainer, orchestrator and inference server, which install and run from source with no account. Prime Intellect sells compute, hosted training and inference as separate products, and the framework's links to them, run reporting and hosted evaluation, are optional.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/LICENSE",
+                "shows": "The LICENSE is the stock Apache License 2.0 text, with the unfilled appendix line \"Copyright [yyyy] [name of copyright owner]\", followed by a \"Third-party code attributions\" note that some code is derived from Meta Platforms under a BSD-style license; no use restriction is added.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "f5118b9c9e98b0f4076214ee13f68d5f73c13b077c44544cb9a0c4ed9155065c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/README.md",
+                "shows": "The README installs prime-rl by cloning the repository and running uv sync, validates SFT, inference and the full RL stack locally, closes \"This project is licensed under the Apache 2.0 license\", and recommends \"our compute platform\" for renting GPUs, a separate offering.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "10365bd2c36500abf91a97ff66e86c8330bc0c08a3742aa53687b80d9055d162",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/docs/eval.md",
+                "shows": "The eval guide says \"By default the model is served by Prime Inference\" and shows how \"To evaluate a model you serve yourself\" with a local vLLM server; the file monitor is on by default and --monitors.prime, which streams to the Prime platform, is opt-in.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "d834f3573ffd7533763449e20b3f95d883e621bbad53d607205ce5923fba8f9d",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.primeintellect.ai/",
+                "shows": "Prime Intellect's homepage presents Lab (\"Hosted Training\", \"Managed training workflows\"), Compute and Inference as its platform products, and names the open-source Verifiers library as what its RL environments are built on.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "1c2667866df7384d189b965e3a403dc93260cb21af0d34401b2c302c5650e236",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "banded_quantity": "2,166 GitHub stargazers on PrimeIntellect-ai/prime-rl, the product's only declared artifact",
+            "note": "No package registry carries prime-rl: it installs from a git checkout, and its release images go to GitHub's container registry, which publishes no pull count. GitHub stars are the only available signal, and a star is not a use, so confidence is low.",
+            "sources": [
+              {
+                "url": "https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/PrimeIntellect-ai%2Fprime-rl",
+                "shows": "ecosyste.ms's copy of the GitHub repository metadata for PrimeIntellect-ai/prime-rl: stargazers_count 2166, archived false, license \"apache-2.0\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "4d36ab70d068564c662dc3f92c27a7e797ac645bfe534a57b62269dc35b741f5"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/.github/workflows/image.yml",
+                "shows": "The image workflow sets REGISTRY: ghcr.io and IMAGE_NAME: primeintellect-ai/prime-rl, so release images are pushed to GitHub's container registry rather than Docker Hub.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "800f857d130fef2b3ed7147d506bed9695a76a0baec23fba25a4673de6592aca"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Methods: GRPO and variants (MaxRL, RAE, hierarchical GRPO, ECHO), on-policy distillation, self-distillation and SFT, with an IPO loss, custom losses and configurable sample filters; fully asynchronous off-policy RL; FSDP2 training with expert and context parallelism; vLLM inference with FP8 and prefill/decode disaggregation; multi-node Slurm deployment from one GPU to a 1000-GPU cluster; verifiers environments; Qwen3.5 VLMs. Built for 1T+ MoE training, with one training backend and no critic-based PPO, so a narrower method catalog than verl's.",
+            "confidence": "medium",
+            "note": "prime-rl is built for asynchronous RL at frontier scale, training mixture-of-experts models on FSDP2 with expert and context parallelism and vLLM inference, with SFT, distillation and evaluation in the same stack. It sits a step below verl, which documents a wider algorithm catalog, including PPO with a critic, and more than one training backend.",
+            "relative_to": "verl",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
+                  "shows": "The verl README still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME, DAPO and DrGRPO, \"FSDP, FSDP2 and Megatron-LM for training\", support that \"Scales up to 671B models and hundreds of GPUs\", and reports that Seed-Thinking-v1.5 was trained with verl. The body is byte-identical to the one verl's own capability record cites.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/README.md",
+                "shows": "The README describes \"Fully asynchronous RL for high-throughput agentic training at scale\", \"built to train 1T+ MoE models on 1000+ GPUs with FSDP2 for training and vLLM for inference, with FP8 inference, PD disaggregation, EP and CP parallelism\", \"End-to-end post-training: SFT, RL training, and evals\", Slurm deployment and multimodal Qwen3.5 support.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "10365bd2c36500abf91a97ff66e86c8330bc0c08a3742aa53687b80d9055d162"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/docs/algorithms.md",
+                "shows": "The algorithms page lists grpo, max_rl, rae, hierarchical_grpo, opd, sft, opsd and echo, with an IPO loss and async off-policy training, and says \"prime-rl hosts exactly one model: the trainable policy\", so there is no critic model.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "44e9066557c43db23765a93fd0fc0db7e78d3df25070196ef1122cacfcb8cbf1"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PrimeIntellect-ai/prime-rl/main/docs/scaling.md",
+                "shows": "The scaling guide covers taking prime-rl \"from a single GPU to a 1000-GPU cluster\" with FSDP, expert parallelism, context parallelism and multi-node Slurm launches.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "82334c8f3bb8b779911067b2a6c999deb5424f5aa0892482b11814d861aa8699"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of GitHub stargazers on PrimeIntellect-ai/prime-rl, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
         }
       ]
     },
@@ -147440,6 +147968,17 @@
         "hermes-agent"
       ]
     },
+    "novasky-ai": {
+      "slug": "novasky-ai",
+      "display_name": "NovaSky",
+      "type": "lab",
+      "homepage": "https://novasky-ai.github.io",
+      "github": [],
+      "country": "US",
+      "products": [
+        "skyrl"
+      ]
+    },
     "nunchux-ai": {
       "slug": "nunchux-ai",
       "display_name": "nunchux-ai",
@@ -147652,6 +148191,17 @@
       "country": "",
       "products": [
         "openthoughts-114k"
+      ]
+    },
+    "open-tinker": {
+      "slug": "open-tinker",
+      "display_name": "OpenTinker",
+      "type": "unknown",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "opentinker"
       ]
     },
     "open-web-math": {
@@ -148298,6 +148848,17 @@
       "country": "US",
       "products": [
         "fastmcp"
+      ]
+    },
+    "prime-intellect": {
+      "slug": "prime-intellect",
+      "display_name": "Prime Intellect",
+      "type": "company",
+      "homepage": "https://www.primeintellect.ai",
+      "github": [],
+      "country": "US",
+      "products": [
+        "prime-rl"
       ]
     },
     "princeton-nlp": {
@@ -150688,7 +151249,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1138,
+  "n_total": 1141,
   "generated": "2026-10-19",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -150701,8 +151262,8 @@
       "total": 62538,
       "matched": 1263,
       "overlap": 647,
-      "scored": 1138,
-      "scored_outside": 491,
+      "scored": 1141,
+      "scored_outside": 494,
       "uncategorized": 61275
     },
     "top": [
