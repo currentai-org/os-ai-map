@@ -1,0 +1,140 @@
+product: universal-commerce-protocol
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the specification, schemas and documentation, with the official Python and JavaScript SDKs in sibling repositories
+        under the same license
+    core-gated:
+      value: ungated
+      detail: the tree at bb92f11 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path, and the project's governance makes a Governing Council founded by Google and Shopify the owner of all UCP
+        assets, with no paid edition anywhere in the project
+  confidence: high
+  note: UCP is Apache-2.0 licensed, and its public repository holds the full specification, schemas and documentation,
+    with the official Python and JavaScript SDKs published under the same license. A Governing Council founded by Google
+    and Shopify owns the project's assets, and nothing is kept back for a paid edition.
+  raw: license:Apache-2.0(OSI);source:public(the specification, schemas and documentation, with the official Python and
+    JavaScript SDKs in sibling repositories under the same license);core-gated:ungated(the tree at bb92f11 carries one
+    root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path, and the project's governance makes
+    a Governing Council founded by Google and Shopify the owner of all UCP assets, with no paid edition anywhere in the
+    project)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/universal-commerce-protocol/ucp/main/LICENSE
+    shows: The root LICENSE is the unmodified Apache License text, headed "Apache License" and "Version 2.0, January
+      2004".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/universal-commerce-protocol/ucp/main/README.md
+    shows: The README calls UCP "An open standard enabling interoperability between various commerce entities" and closes
+      "UCP is an open-source project under the" Apache License 2.0 and is "open to contributions from the community".
+      It links the SDKs, samples and conformance tests in the project's GitHub organization. Searched the body for pricing,
+      paid, subscription, license key, premium, enterprise and commercial, and found none of them.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 89ab81903c30c956efa661c42f4768a7ee8d88e793390912337817cc348acb30
+    establishes:
+    - license
+    - source
+  - url: https://ucp.dev
+    shows: The project site says "The complete technical specification, documentation, and reference implementations
+      are hosted in our public GitHub repository." and its footer reads "Copyright 2026 UCP Authors".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c6c8dc444fe2078842e04debd008e0e43529d80f83e81c8d4315113942c99edc
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/Universal-Commerce-Protocol/.github/main/GOVERNANCE.md
+    shows: The governance document says "GC serves as the ultimate owner of all UCP assets", with "1 permanent member
+      from each founding organization (Google & Shopify)" and three elected seats, and that "Google holds proxy vote
+      for all open seats until Dec 2028". It asks members to work towards "a more open ecosystem and agnostic to interests
+      of the companies they represent". It describes no paid tier or commercial edition.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 7cbc963c895b87ce144805abb244195f21a667b857651518003ac59d394933f3
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/Universal-Commerce-Protocol/python-sdk/main/LICENSE
+    shows: The Python SDK's LICENSE is the Apache License text, "Version 2.0, January 2004", with the appendix line "Copyright
+      2026 UCP Authors".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 41cb58c640e8109599f1a2a16f15454b490fdb07214b4ef85e3558eebd28f11e
+    establishes:
+    - license
+    - source
+  - url: https://registry.npmjs.org/@ucp-js/sdk/latest
+    shows: The npm record for @ucp-js/sdk 0.5.1 declares the Apache-2.0 license and the repository "git+https://github.com/Universal-Commerce-Protocol/js-sdk.git",
+      and depends only on zod.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: abb4cf2f04c1c61b0f954893148cef49fd10a76beedff4ea3fdc7487ccb5b30e
+    establishes:
+    - license
+    - source
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of downloads of the two official SDKs, @ucp-js/sdk on npm and ucp-sdk on PyPI,
+    which the getting-started guide installs to build a UCP server. Businesses that implement the published schemas without
+    an SDK are not counted, nor are four days npm left blank, so the figure is a lower bound on use.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@ucp-js/sdk
+    shows: 'npm downloads point API: 50,951 downloads for @ucp-js/sdk over 2026-09-17 to 2026-10-16.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 327d189097e2192adb0e131514a4b15bfae89f5e7c043c3887eb7d76c2a31688
+  - url: https://pypistats.org/api/packages/ucp-sdk/recent
+    shows: last_month 8,621 downloads for ucp-sdk (last_week 4,177, last_day 184).
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: dcff9369f0b5e0ea45dadf2886ec8f63cd422fb5c5ff4f37ec01d467384a204a
+  - url: https://api.npmjs.org/downloads/range/last-month/@ucp-js/sdk
+    shows: Daily npm downloads of @ucp-js/sdk from 2026-09-17 to 2026-10-16. Four days, 2026-10-06 and 2026-10-13 to
+      2026-10-15, read 0, and every other day reads between 376 and 3,497.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: ea03d9a2c518c985f29e4d7d0191cbfefd0a838ed1861ce800eaa23116bacdde
+  - url: https://raw.githubusercontent.com/universal-commerce-protocol/ucp/main/docs/specification/getting-started.md
+    shows: The getting-started guide builds a UCP server in Python and Node.js "using the official" Python and TypeScript
+      SDKs, installing them with "uv add fastapi uvicorn ucp-sdk" and "npm install express uuid @ucp-js/sdk".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b88f3f06ae89b908429fcaf24fb1601956dec382478036ae6cd175121cc50d12
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: UCP is a specification, defining commerce capabilities and extensions that businesses implement and platforms
+    call, so like the Agent2Agent Protocol and AG-UI it has nothing to be measured against. Neither the repository README
+    nor the project site publishes a benchmark, leaderboard or performance figure for the protocol.
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/universal-commerce-protocol/ucp/main/README.md
+    shows: The README says UCP defines Capabilities such as Checkout or Identity Linking that businesses implement, with
+      Extensions layered on top, and that businesses "declare their supported Capabilities in a standardized profile"
+      and can offer them "via REST APIs, MCP (Model Context Protocol), or A2A". Searched the body for benchmark, leaderboard,
+      latency, throughput and performance, and found none of them.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 89ab81903c30c956efa661c42f4768a7ee8d88e793390912337817cc348acb30
+  - url: https://ucp.dev
+    shows: The project site describes UCP as "The common language for platforms, agents, and businesses" and lists its
+      capabilities as catalog, cart, checkout, identity linking and order. Searched the body for benchmark, leaderboard,
+      latency and throughput, and found none of them.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c6c8dc444fe2078842e04debd008e0e43529d80f83e81c8d4315113942c99edc
