@@ -1,0 +1,190 @@
+product: grok-build
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: GitHub mirror of an internal monorepo
+    core-gated:
+      value: ungated
+      detail: the tree at 2bdd1d6 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path; the enterprise login, sandbox and permission pins are config keys documented in the tree's own config
+        reference, and what SpaceXAI sells is model access through a Grok sign-in or an xAI API key
+  confidence: medium
+  note: Grok Build's first-party code is Apache-2.0, and the public repository holds the Rust source for the CLI, its
+    agent runtime and its enterprise policy settings. What SpaceXAI sells is model access through a Grok sign-in or
+    an xAI API key, not features held back from the code.
+  raw: license:Apache-2.0(OSI);source:public(GitHub mirror of an internal monorepo);core-gated:ungated(the tree at
+    2bdd1d6 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path; the enterprise
+    login, sandbox and permission pins are config keys documented in the tree's own config reference, and what SpaceXAI
+    sells is model access through a Grok sign-in or an xAI API key)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/LICENSE
+    shows: The root LICENSE opens "Copyright 2023-2026 SpaceXAI" above the text of the Apache License, Version 2.0.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 116f7778b9802e569b7fa3a532b17bd80eb13c67837def01eed093d4ea472f28
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@xai-official/grok/latest
+    shows: 'The npm record for @xai-official/grok 1.0.62 declares "license":"Apache-2.0" and the grok command, with
+      per-platform binary packages as optional dependencies.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 1b2cf8f0c264c5c64d6f43240aa7ca2cfeded32c82a0df4b47eefd532745c8d3
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/README.md
+    shows: The README says "This repository contains the Rust source for the `grok` CLI/TUI and its agent runtime. It
+      is synced periodically from the SpaceXAI monorepo", documents building the release binary with cargo, and licenses
+      first-party code under Apache-2.0; no paid tier or license key is mentioned.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 322066de9f5bc136295bd0ae4f1752cef3d8dcb1a8f9d88044609e7b6d7abcf7
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/CONTRIBUTING.md
+    shows: CONTRIBUTING says "SpaceXAI develops this software internally. The public tree is published for source transparency
+      and local builds under the terms of the Apache License, Version 2.0", and that external pull requests are not
+      accepted.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 5614dc7d16f6f4c93cc58f2b34ae544f2dbe085c31660d1e7c514966c52296ec
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/26-config-reference.md
+    shows: The in-tree config reference "ships with the CLI" and is "the complete field list for `config.toml`, `managed_config.toml`,
+      and `requirements.toml`", including the pinned auth.force_login_team_uuid team-login policy.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b24874647c6bd8f1e77e8cc6a56c69df90d9c49aa13734d5d5fd3b2c14cd5ddd
+    establishes:
+    - core-gated
+  - url: https://docs.x.ai/build/enterprise.md
+    shows: The Enterprise Deployments page lists cli-chat-proxy.grok.com ("Inference proxy, settings") and auth.x.ai
+      as the required hosts, and sets its enterprise-only policy (sandbox pins, team-login pins, locking always-approve
+      off) through requirements.toml.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 293a82de2c28c9067056f5f3ad9b47b017cfaf9ce78aa5c927fdcb1799fb9ec7
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/02-authentication.md
+    shows: The authentication guide signs users in through grok.com or SpaceXAI OAuth, or with "an API key from console.x.ai",
+      and ranks a per-model api_key for a custom endpoint above both.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 4e2d87b5edded0aa676349ab44bf0a297669f64aeb635f3f3cd3e2e265931c63
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of npm downloads of @xai-official/grok, the package the vendor's docs offer for
+    installing Grok Build; the per-platform binary packages it pulls in are not added. Installs through the install
+    script on x.ai publish no count and are not included, so the figure is a lower bound on use.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@xai-official/grok
+    shows: 271,006 downloads of @xai-official/grok between 2026-09-17 and 2026-10-16
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: f9bcce7593f94ae4d420cc122171ee82ed758d1952555a2bfc396cecd7826185
+  - url: https://registry.npmjs.org/@xai-official/grok/latest
+    shows: The npm record for @xai-official/grok 1.0.62 ("Bring Grok into your terminal") installs the grok command and
+      lists @xai-official/grok-linux-x64, -darwin-arm64 and four other platform packages as optional dependencies.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 1b2cf8f0c264c5c64d6f43240aa7ca2cfeded32c82a0df4b47eefd532745c8d3
+  - url: https://docs.x.ai/build/enterprise.md
+    shows: The Enterprise Deployments page offers "npm install -g @xai-official/grok" as an alternative to the curl | bash
+      install script that downloads CLI binaries from x.ai.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 293a82de2c28c9067056f5f3ad9b47b017cfaf9ce78aa5c927fdcb1799fb9ec7
+capability:
+  score: 4
+  basis: feature_matrix
+  value: terminal coding agent with file edit, shell and web search tools in a full-screen TUI; headless mode with JSON
+    and streaming-JSON output; ACP agent mode over stdio or WebSocket for editors and SDKs; parallel subagents with
+    optional git-worktree isolation; plan mode with plan review; ask, classifier-based auto and always-approve permission
+    modes; opt-in OS-level sandbox (Landlock, Seatbelt); MCP, skills, plugins, marketplaces and hooks; SpaceXAI models
+    by default, with OpenAI-compatible, Anthropic Messages and Ollama endpoints configurable; no published benchmark
+    result
+  confidence: medium
+  note: Grok Build covers the full terminal coding agent, with parallel subagents in separate worktrees, plan mode, an
+    OS-level sandbox, ACP for editors and other providers' models. It sits a step below OpenHands, which runs agents
+    in containers, on VMs or in cloud backends and publishes benchmark results, while Grok Build runs on the user's
+    machine with no benchmark of its own.
+  relative_to: openhands
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible
+        agent across local, remote, and cloud backends" and offers running agents in "Docker containers, on VMs, or within
+        your company infrastructure".
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ba3c3b5c271353eb44d78feb1e1d991146a23d68c83cd3dc5351c46e369978a0
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/README.md
+    shows: The README describes "SpaceXAI's terminal-based AI coding agent" that "edits files, executes shell commands,
+      searches the web, and manages long-running tasks", interactively, headlessly or "embedded in editors via the Agent
+      Client Protocol (ACP)"; no benchmark figure.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 322066de9f5bc136295bd0ae4f1752cef3d8dcb1a8f9d88044609e7b6d7abcf7
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/README.md
+    shows: The user guide index covers plugins with marketplaces, hooks, custom models ("Bring-your-own-key, Ollama, and
+      OpenAI-compatible endpoints"), memory, headless mode, ACP agent mode, subagents, sandbox and plan mode.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 67bd2202b57c701811d2b01c055c083d7af81e4e7436e5e0ee5654a1949f78d2
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/16-subagents.md
+    shows: The guide says "Subagents are independent child sessions that handle tasks in parallel" and lets a subagent
+      run in "an isolated git worktree" with isolation set to worktree.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e6962fafb177bc545e844825d4bbd767989ce8ab1143ff999d8c0e214fa0b410
+  - url: https://docs.x.ai/build/features/sandbox.md
+    shows: The Sandbox page limits what the agent and its children can read, write and reach "(Landlock on Linux, Seatbelt
+      on macOS). Off by default.", with off, workspace, devbox, read-only and strict profiles.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 6795d7dde08430ad2db159803a8b5e5763e2530ea423637b871334326de52d06
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/11-custom-models.md
+    shows: The custom models guide says "By default, Grok uses models hosted by SpaceXAI" and configures OpenAI-compatible
+      endpoints and Claude models through the Anthropic Messages API.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 8a1972c2255bdc2901b4f7c3f80a4104fb3f7f7c13ee9e1430d8f9e42d93c174
+  - url: https://raw.githubusercontent.com/xai-org/grok-build/main/crates/codegen/xai-grok-pager/docs/user-guide/15-agent-mode.md
+    shows: The guide says "Agent mode runs Grok as a long-lived server that clients talk to over" ACP (JSON-RPC), for IDEs,
+      SDKs and eval harnesses, started over stdio or as a WebSocket server.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 17f6088ffd7ba636e8dff4ba37255d11920865492b9f23b7e1e91f838fafe185
+  - url: https://docs.x.ai/build/features/permissions.md
+    shows: The Permissions page lists Ask, Auto ("Classifier auto-approves safe tools") and Always-approve modes, with
+      allow and deny rules in which deny always wins over allow.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c5bad5c416aa9aa1178ba178de33d36a1c45739ad5b727bdf28332eca5eb4791
+  - url: https://docs.x.ai/build/features/plan-mode.md
+    shows: The Plan Mode page says the agent "explores the codebase and drafts a plan for your approval before it edits
+      anything", and auto or always-approve do not skip the review.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: f4a1a7ce7cc358708b4a859ecc6b41da725a4741f989ad3ce5df4f4ba30a2855

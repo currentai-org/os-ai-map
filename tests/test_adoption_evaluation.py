@@ -594,10 +594,12 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # The Pi promotion declares the coding agent's first npm name for the record and keeps it out
     # of the sum: nothing installs it now. Its two live package names stay in the sum.
     assert inputs.non_primary_artifacts["pi-coding-agent"] == {("npm", "@mariozechner/coding-agent")}
+    # Kimi Code CLI declares the archived Python kimi-cli it replaced, for the record only.
+    assert inputs.non_primary_artifacts["kimi-code-cli"] == {("pypi", "kimi-cli")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent",
+        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli",
     }
 
 
