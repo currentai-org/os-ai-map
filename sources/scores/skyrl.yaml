@@ -1,0 +1,194 @@
+product: skyrl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, root LICENSE
+    - name: MIT
+      detail: OSI, declared by the skyrl-gym package
+    source:
+      value: public
+      detail: NovaSky-AI/SkyRL
+    core-gated:
+      value: ungated
+      detail: the tree at 2c54cef carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path. The project is developed at the Berkeley Sky Computing Lab, and Anyscale runs the same open library on
+        its paid managed platform rather than selling an edition of it
+  confidence: high
+  note: SkyRL is Apache-2.0 licensed, and its public repository holds the trainer, the Tinker backend, the environments
+    and the agent layer, so it builds and runs from published source with no account. Anyscale offers SkyRL on its paid
+    managed platform, but that is a separate service running the same open library, and nothing in SkyRL is held back
+    for it.
+  last_verified: '2026-10-19'
+  raw: license:Apache-2.0(OSI, root LICENSE)+MIT(OSI, declared by the skyrl-gym package);source:public(NovaSky-AI/SkyRL);core-gated:ungated(the
+    tree at 2c54cef carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path. The
+    project is developed at the Berkeley Sky Computing Lab, and Anyscale runs the same open library on its paid managed
+    platform rather than selling an edition of it)
+  sources:
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/LICENSE
+    shows: The root LICENSE is the stock Apache License 2.0 text, ending with the unfilled appendix line "Copyright [yyyy]
+      [name of copyright owner]"; no added term or condition is attached.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-gym/pyproject.toml
+    shows: The skyrl-gym manifest declares name = "skyrl-gym", version = "0.4.0" and license = { text = "MIT" }.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 73cd0ce1abda7f3b9416a704b4b2c98ab78dda36c0094c5cc17b12d1d59894e0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/README.md
+    shows: The README describes SkyRL as "a full-stack RL library" whose components skyrl, skyrl-agent and skyrl-gym
+      live in this repository, says the work is done at the Berkeley Sky Computing Lab in collaboration with Anyscale,
+      and mentions no enterprise, paid or license-gated edition.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 7ae463b24113a2dd3295c48017aa9f40e655cc03a715e46f4ceb005d3f5374e7
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/pyproject.toml
+    shows: The root manifest builds the skyrl package, "Unified API for training and inference", from the repository's
+      skyrl* packages, with fsdp, megatron, jax and tinker extras for its backends.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e4ff14600ccc0d41e48cc0182c0f20fd556284d701d60706b741ef6f684c3338
+    establishes:
+    - source
+  - url: https://docs.anyscale.com/llm/fine-tuning
+    shows: 'Anyscale''s documentation for its managed platform says "Anyscale supports multiple frameworks for LLM post-training,
+      including LLaMA-Factory, SkyRL, and Ray Train" and lists a "GRPO with SkyRL" tutorial: the paid platform runs the
+      open library.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 41238f940d21afc8b51720cea44874d05e42c3eb357c4f45fe3a0d18c91b0162
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of skyrl, the package that now holds the trainer and the Tinker
+    backend; the retired skyrl-train and skyrl-tx packages and the skyrl-gym environment library are left out. Installs
+    from a git checkout, which the installation guide uses, and from the project's Docker images are not counted, so
+    the figure is a lower bound on use.
+  sources:
+  - url: https://pypistats.org/api/packages/skyrl/recent
+    shows: last_month 210, last_week 26, last_day 5 for the skyrl package.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: c8d9eb9644face02d34abd999213e4465cca0c99b7b85cc371bd53f92a835cad
+  - url: https://pypi.org/pypi/skyrl/json
+    shows: skyrl 0.4.0, uploaded 2026-10-01, with the summary "Unified API for training and inference", the description
+      the repository's root manifest gives. Its fsdp and megatron extras pull skyrl[skyrl-train], which requires skyrl-gym.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 96a2572950736ccc89c392c2ecf9745e5dc170ffbfcb43cb46ceffe182147ea9
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/docs/content/docs/getting-started/library.mdx
+    shows: 'The library guide offers "Option A: Install from PyPI (stable release)" as skyrl[fsdp], and "Option B" from
+      Git.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 6e478424663fde231437ce0449ef8386575581ff0788e2bf38fb9d37e1ff4a31
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/docs/content/docs/getting-started/installation.mdx
+    shows: The installation guide marks "Docker (recommended)", starts a novaskyai/skyrl-train-ray image, and inside
+      it has the user run "git clone https://github.com/novasky-ai/SkyRL.git"; that path does not go through PyPI.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 29c4b840845b5915239dd95ab70863b0b89421b1c7a62036741c8d995ba6d310
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-tx/README.md
+    shows: The skyrl-tx README says "SkyRL is undergoing a repo reorganization" into a single package and that the code
+      "previously in the skyrl-tx folder can now be found in skyrl/{backends, tinker, tx, utils}".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 0688e7a539d5f211e7fc4b945d39167d34f813efb652f2b068689b6d65937949
+  - url: https://pypi.org/pypi/skyrl-tx/json
+    shows: skyrl-tx's newest release is 0.3.0, uploaded 2026-02-09, with no release since.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 275fe07c36eaa82f8767022862a7482d9a764d303d462e035d94df3371edb872
+  - url: https://pypistats.org/api/packages/skyrl-tx/recent
+    shows: last_month 27, last_week 2, last_day 0 for skyrl-tx.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 98067d5fddab7f55b211f027df1364e3939863948fe91d6daa1f9b198fe4cf47
+  - url: https://pypi.org/pypi/skyrl-train/json
+    shows: skyrl-train's newest release is 0.3.1, uploaded 2026-01-02, with no release since.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: e6b081d1d6029d4b98892b6e8f2a11655dd70a17bc8b73b291338b9f39997acc
+  - url: https://pypistats.org/api/packages/skyrl-train/recent
+    shows: last_month 61, last_week 13, last_day 1 for skyrl-train.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 0a7b3776d85ad0602bb4bdf8f0f20825a09b463fd3c5e202b3ddc3f596d0dafe
+  - url: https://pypistats.org/api/packages/skyrl-gym/recent
+    shows: last_month 34,949, last_week 187, last_day 22 for skyrl-gym.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 0fffb692b23d9d592f7f2c364b777a12e1cbcd64b8dc890ddd3081b33655618d
+  - url: https://pypistats.org/api/packages/skyrl-gym/overall?mirrors=false
+    shows: 'Daily skyrl-gym downloads without mirrors: 7,883, 9,199, 7,455 and 6,595 on 2026-09-11 to 2026-09-14, then
+      under 400 a day from 2026-09-15 to 2026-10-18 apart from 1,351 on 2026-10-06.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: b93e5411fd89227b5897e41a1d18c51a90a728d971efdde5cbb6910fa8bc6fc2
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: PPO, GRPO, RLOO, REINFORCE, GSPO, CISPO, SAPO and DAPO, plus SFT; training backends FSDP and Megatron,
+    with 5D parallelism for MoE models on Megatron; inference through vLLM, SGLang or any OpenAI-compatible endpoint
+    with weight sync; synchronous, one-step-off and fully asynchronous RL; a Tinker API backend with multi-user LoRA
+    and a JAX engine for GPU and TPU; skyrl-gym environments and skyrl-agent for long-horizon agents. A narrower documented
+    algorithm catalog than verl''s.'
+  confidence: medium
+  note: 'SkyRL covers a broad RL post-training stack: PPO, GRPO and several newer policy-optimization variants over FSDP
+    or Megatron, vLLM or SGLang rollout, fully asynchronous training, and a local implementation of the Tinker API. It
+    sits a step below verl, which documents a wider algorithm catalog and has been used to train frontier reasoning models.'
+  relative_to: verl
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-19'
+    sources:
+    - url: https://raw.githubusercontent.com/volcengine/verl/main/README.md
+      shows: The verl README still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME,
+        DAPO and DrGRPO, "FSDP, FSDP2 and Megatron-LM for training", support that "Scales up to 671B models and hundreds
+        of GPUs", and reports that Seed-Thinking-v1.5 was trained with verl. The body is byte-identical to the one verl's
+        own capability record cites.
+      accessed: '2026-10-19'
+      http_status: 200
+      content_sha256: ddf49da56b709047d7641c6885c00bb43a68944aa458f03965008978d75a019d
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-train/README.md
+    shows: The trainer's feature list gives "PPO and GRPO", FSDP and Megatron training backends, vLLM, SGLang and OpenAI-compatible
+      inference endpoints with weight sync, Ulysses sequence parallelism, synchronous, one-step-off and "fully async
+      RL with in-flight weight updates", "Algorithmic support for RLOO, REINFORCE, GSPO, CISPO, SAPO" and "5D Parallelism
+      support for MoE models" with Megatron.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 7bf9f64ffb1a0d440ae166247933854c069daab909c9d69a2b42fb945b22695e
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/docs/content/docs/algorithms/dapo.mdx
+    shows: The DAPO guide says "DAPO is supported with the fsdp and megatron backends" and walks through Clip-Higher,
+      dynamic sampling, token-level loss and overlong reward shaping.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: f17005dae7d94b639aac36c06d58fc896575ec0ce5ce32febcf1db68a2e83f73
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/skyrl-tx/README.md
+    shows: SkyRL tx implements a backend for the Tinker API with multi-user LoRA, "SFT & RL Support", FSDP, tensor and
+      expert parallelism, and GPU and TPU launch commands.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 0688e7a539d5f211e7fc4b945d39167d34f813efb652f2b068689b6d65937949
+  - url: https://raw.githubusercontent.com/NovaSky-AI/SkyRL/main/README.md
+    shows: The README lists skyrl, skyrl-agent and skyrl-gym as SkyRL's components, links a 397B RL training guide, and
+      announces day-0 LoRA, full fine-tuning and MXFP8 RL recipes for a 501B-A23B MoE model on a release branch.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 7ae463b24113a2dd3295c48017aa9f40e655cc03a715e46f4ceb005d3f5374e7

@@ -1,0 +1,25 @@
+name: skyrl
+display_name: SkyRL
+type: software
+description: SkyRL is a modular reinforcement-learning library for post-training language models and agents. Its unified
+  skyrl package runs PPO, GRPO and related algorithms over FSDP or Megatron training with vLLM or SGLang rollout, and
+  implements the Tinker API so Tinker training scripts run on local GPUs. Alongside it ship skyrl-gym, a set of tool-use
+  environments, and skyrl-agent for long-horizon agents. NovaSky at the Berkeley Sky Computing Lab builds it with Anyscale.
+comments: SkyRL tx, the Tinker API backend, and the earlier skyrl-train trainer were separate packages until both moved
+  into the unified skyrl package; their old PyPI names are declared beside it.
+github:
+- url: https://github.com/NovaSky-AI/SkyRL
+pypi:
+- url: https://pypi.org/project/skyrl/
+- url: https://pypi.org/project/skyrl-tx/
+  not_primary_channel: The Tinker API backend's own package before the repository merged it into skyrl. Its last release,
+    0.3.0, was uploaded in February 2026 and the code now ships in skyrl, so it is kept as a record of the old name and
+    left out of the download figure.
+- url: https://pypi.org/project/skyrl-train/
+  not_primary_channel: The trainer's own package before the repository merged it into skyrl. Its last release, 0.3.1,
+    was uploaded in January 2026 and the code now ships in skyrl, so it is kept as a record of the old name and left
+    out of the download figure.
+- url: https://pypi.org/project/skyrl-gym/
+  not_primary_channel: 'SkyRL''s library of tool-use RL environments, which also installs on its own for people writing
+    environments. The skyrl training extras depend on it, so adding it would count those installs twice, and its count
+    moves independently of the trainer''s: about 31,000 of its downloads arrived over four days in September 2026.'
