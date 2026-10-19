@@ -1,0 +1,137 @@
+product: a2ui
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the root LICENSE also carries the MIT notice for one vendored third-party script, eval/bin/transcrypt
+    source:
+      value: public
+      detail: the specification, the renderers and the agent SDKs, with every published package built from this repository
+    core-gated:
+      value: ungated
+      detail: the tree at cbaa5ee carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path; the README says every package is developed in the repository, the npm packages name it as their source,
+        and the project site describes A2UI only as an Apache-2.0 project Google created with community contributions
+  confidence: high
+  note: A2UI is Apache-2.0 licensed, and its public repository holds the specification together with the renderers and
+    agent SDKs published to npm and PyPI, so everything people install builds from published source. Nothing is kept
+    back for a paid edition, and the project site presents it only as an open project Google created with contributions
+    from CopilotKit and the wider community.
+  raw: license:Apache-2.0(OSI; the root LICENSE also carries the MIT notice for one vendored third-party script, eval/bin/transcrypt);source:public(the
+    specification, the renderers and the agent SDKs, with every published package built from this repository);core-gated:ungated(the
+    tree at cbaa5ee carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path; the
+    README says every package is developed in the repository, the npm packages name it as their source, and the project
+    site describes A2UI only as an Apache-2.0 project Google created with community contributions)
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/a2ui-project/a2ui/main/LICENSE
+    shows: The root LICENSE is the Apache License text, headed "Apache License" and "Version 2.0, January 2004", followed
+      by a notice that "The file eval/bin/transcrypt is licensed under the MIT License".
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 8c8b5b632d56c4c1658296963c693db5396772a33caaddb9a22593c4155c437a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/a2ui-project/a2ui/main/README.md
+    shows: The README opens "A2UI is an open-source project, complete with a format optimized for representing updatable
+      agent-generated UIs and an initial set of renderers". Its Packages section says "These packages are developed in
+      this repository" and lists a2ui-core and a2ui-agent-sdk on PyPI, @a2ui/web_core, @a2ui/lit, @a2ui/angular, @a2ui/react
+      and @a2ui/markdown-it on npm, and Dart packages on pub.dev, and it closes by calling A2UI an Apache 2.0 licensed
+      project. Searched the body for pricing, paid, subscription, license key, premium, hosted and commercial, and found
+      none of them.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 32fce5253f4e6f02f0c3ac184536e5e316d182ab2081a09013874c9e98d7b711
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://registry.npmjs.org/@a2ui/web_core/latest
+    shows: The npm record for @a2ui/web_core 0.14.0 declares the Apache-2.0 license, author Google, and the repository
+      "git+https://github.com/a2ui-project/a2ui.git" with directory "typescript/core/web_core". Every dependency it lists
+      is a public npm package.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 998bf3a276f2a6c00205401f7ef18bdf9f4f9805a9b3ec9e1cd2007151946abe
+    establishes:
+    - license
+    - source
+  - url: https://a2ui.org
+    shows: The project site says "A2UI is Apache 2.0 licensed, created by Google with contributions from" CopilotKit
+      "and the open source community," and links github.com/a2ui-project/a2ui as where it is in active development. Searched
+      the body for pricing, paid, enterprise and commercial, and found none of them.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 9991945ec3b8b3e28d45190a6f6ecda889f649198341d8b469af19ad8294e4fc
+    establishes:
+    - license
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of npm downloads of @a2ui/web_core, which every A2UI web renderer installs, plus
+    PyPI downloads of a2ui-agent-sdk, the Python agent SDK. Part of the npm count comes from CopilotKit, whose React
+    package installs the web core whether or not an app draws A2UI, while the Dart packages on pub.dev are not counted
+    at all; neither changes the reading.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@a2ui/web_core
+    shows: 'npm downloads point API: 5,258,762 downloads for @a2ui/web_core over 2026-09-17 to 2026-10-16.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: d1e1f768ba4731992c12b6e9855688e0bbe44703a0958c12c8b03b9d7c1cdca3
+  - url: https://pypistats.org/api/packages/a2ui-agent-sdk/recent
+    shows: last_month 400,731 downloads for a2ui-agent-sdk (last_week 124,309, last_day 14,079).
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 6ac0ae324e0726537906144d54555624a20c82ffa83accd17f79b9cb09940bc6
+  - url: https://api.npmjs.org/downloads/range/last-month/@a2ui/web_core
+    shows: Daily npm downloads of @a2ui/web_core from 2026-09-17 to 2026-10-16. Four days, 2026-10-06 and 2026-10-13
+      to 2026-10-15, read 0, and every other day reads between 98,905 and 330,055.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: a9efd3e86e6e570814568d86b6e6b352668cb9399e75ae214eb9b8a24c44c477
+  - url: https://registry.npmjs.org/@copilotkit/react-core/latest
+    shows: The npm record for @copilotkit/react-core 1.79.1 lists @copilotkit/a2ui-renderer 1.79.1 among its dependencies.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 59dac012b7153019b3c3836a4323c44cda1da9a6b2d00bdc0bfb566b0dc75de5
+  - url: https://registry.npmjs.org/@copilotkit/a2ui-renderer/latest
+    shows: The npm record for @copilotkit/a2ui-renderer 1.79.1 depends on @a2ui/web_core pinned at 0.10.4.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 6c0e38862659b7cb9d032029814b81fb673a42aa789a4c210768ea536465c5b6
+  - url: https://api.npmjs.org/versions/@a2ui%2Fweb_core/last-week
+    shows: 'Per-version npm downloads of @a2ui/web_core over the last week: 0.10.4, the version CopilotKit pins, has
+      165,515 of the 569,081 total, and the rest are spread over 0.12.0, 0.9.0, 0.11.0 and other releases.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 5e9a0013904e345af83060f1d866f738966d19f0936390bbae78148864d69d1f
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: A2UI is a specification for how an agent describes an interface, shipped with renderers and SDKs that implement
+    it, so like AG-UI and the Agent2Agent Protocol it has nothing to be measured against. Neither the repository README
+    nor the project site publishes a benchmark, leaderboard or performance figure for the protocol.
+  last_verified: '2026-10-19'
+  sources:
+  - url: https://raw.githubusercontent.com/a2ui-project/a2ui/main/README.md
+    shows: 'The README says A2UI "is an open standard and set of libraries that allows agents to" speak UI: "Agents send
+      a declarative JSON format describing the" intent of the UI, and "The client application then renders this using
+      its own native component library". It names A2A and AG-UI as transports. Searched the body for benchmark, leaderboard,
+      latency, throughput and performance, and found none of them.'
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 32fce5253f4e6f02f0c3ac184536e5e316d182ab2081a09013874c9e98d7b711
+  - url: https://a2ui.org
+    shows: The project site calls A2UI "A Protocol for Agent-Driven Interfaces" and lists its specification versions
+      as v1.0 candidate, v0.9.1 current, v0.9 stable and v0.8 legacy. Searched the body for benchmark, leaderboard and
+      performance, and found none of them.
+    accessed: '2026-10-19'
+    http_status: 200
+    content_sha256: 9991945ec3b8b3e28d45190a6f6ecda889f649198341d8b469af19ad8294e4fc
