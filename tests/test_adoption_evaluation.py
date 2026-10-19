@@ -599,10 +599,13 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # SkyRL declares its two pre-merge package names and the environment library its extras pull in.
     assert inputs.non_primary_artifacts["skyrl"] == {
         ("pypi", "skyrl-tx"), ("pypi", "skyrl-train"), ("pypi", "skyrl-gym")}
+    # Muse Glimmer declares its speculative-decoding drafter, an auxiliary checkpoint, not a distribution.
+    assert inputs.non_primary_artifacts["muse-glimmer"] == {
+        ("huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli", "skyrl",
+        "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli", "skyrl", "muse-glimmer",
     }
 
 
