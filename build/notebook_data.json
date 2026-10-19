@@ -107060,6 +107060,758 @@
             ]
           },
           "version_note": "Described in arXiv 2502.17125. The code, tool-output and agent models released in June 2026 are described in arXiv 2607.00895."
+        },
+        {
+          "slug": "roblox-pii-classifier",
+          "product": "Roblox PII Classifier",
+          "org_slug": "roblox",
+          "org": "Roblox",
+          "type": "model",
+          "description": "Roblox PII Classifier flags chat messages that ask for or share personal information, such as phone numbers, social media handles and credentials, and messages that try to move a user to another platform. Version 2 reads each message together with the surrounding multi-user conversation, which helps it catch bypass attempts like phonetic spelling and implicit references. Roblox built it by fine-tuning the 560M-parameter XLM-RoBERTa-Large encoder for its own chat moderation.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0 safetensors and ONNX on HF Roblox/roblox-pii-classifier-v2, with no access gate);data:described(the cards and Roblox's announcement describe expert-labeled, anonymized Roblox chat plus AI-generated conversations. Neither is released, and the Roblox dataset on the Hub is an evaluation-only benchmark);code:partial(an inference script and requirements file only, no training code);license:Apache-2.0(OSI);prior-release:distributed(Roblox PII Classifier v1 (Roblox/roblox-pii-classifier) stays downloadable under Apache-2.0)",
+            "governing_release": "Roblox PII Classifier v2",
+            "confidence": "high",
+            "note": "The v2 weights are published under Apache 2.0 with no access gate, along with an inference script. Roblox describes the labeled chat and synthetic conversations it trained on but releases neither them nor its training code, so this is an open-weights model rather than a fully open one.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Roblox/roblox-pii-classifier-v2/raw/main/README.md",
+                "shows": "The v2 card front matter declares \"license: apache-2.0\" and \"base_model: FacebookAI/xlm-roberta-large\". Its usage section runs the model with \"python inference.py\" after \"pip install -r requirements.txt\"; it mentions no training script, and says only that v2 \"Broadened synthetic data generation and fine-tuning\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "08a63bbb8439628526dead6d6f489a6333fdc0b527acc5395f3a95dd9d8a3f67",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/roblox-pii-classifier-v2",
+                "shows": "The Hugging Face API record reports \"gated\":false and the tag \"license:apache-2.0\", and lists \"model.safetensors\", \"onnx/model.onnx\", \"inference.py\" and \"requirements.txt\" among its files, with no training script.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "1fb802f9b2e8e5fa43f3f46c08ed69b910a0845c7c08cc77f36dd1d0a314d9b6",
+                "establishes": [
+                  "weights",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Roblox/roblox-pii-classifier/raw/main/README.md",
+                "shows": "The v1 card says \"All the model training has been conducted with Roblox anonymized internal text datasets labeled by experts and AI generated conversations\", and its front matter declares \"license: apache-2.0\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "7cc769e30fb58a8433851e4d35f30911ab3734a1e716d473c63ca88693fecf2d",
+                "establishes": [
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/Roblox/roblox-pii-classifier-benchmark",
+                "shows": "The dataset record describes \"an evaluation-only dataset\" that \"accompanies Roblox PII Classifier v2.0\", with a single test split of synthetic English conversations.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "834bf0d65326bde36325400a99ce5177f40aad86cfe0d39656347282f7167ea0",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://about.roblox.com/newsroom/2025/11/open-sourcing-roblox-pii-classifier-ai-pii-detection-chat",
+                "shows": "Roblox's announcement of November 4, 2025 says \"we manually reviewed and labeled PII-related data\", describes sampling production chat and \"an AI data-generation pipeline\", and links no training data.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "b33f8a8ec7123d1c05fba751b9e36c0a596d2705755d6e880e53116d932229b8",
+                "establishes": [
+                  "data"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured by Hugging Face downloads of the two releases Roblox publishes, v2 and the earlier v1. Roblox's own use of the model on its chat service is not counted, so the figure is a lower bound on use.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/Roblox/roblox-pii-classifier-v2",
+                "shows": "244 downloads in the trailing 30 days for Roblox/roblox-pii-classifier-v2",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "1fb802f9b2e8e5fa43f3f46c08ed69b910a0845c7c08cc77f36dd1d0a314d9b6"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/roblox-pii-classifier",
+                "shows": "74 downloads in the trailing 30 days for Roblox/roblox-pii-classifier",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "cc0917f5a28b2b439b3e9a36b8a8f4cb77651e8267973d5559dfc214ba916dc9"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "PII detection in conversational context",
+            "value": "Multi-label detection of asking for personal information, sharing it, and directing users off-platform, scored on one speaker's message within a multi-user chat. On the card's F1 table v2 posts 88.82% on Roblox's PII safety-for-chat benchmark and 99.22% on Nemotron-PII, against 56.24% and 46.07% for Llama Guard 3 8B. Roblox reports serving v1 at a peak of over 200,000 queries per second.",
+            "relative_to": "llama-guard",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "On privacy it outscores Llama Guard by a wide margin on every benchmark in Roblox's tables, and it reads the conversation around a message rather than the message alone. Privacy is the only harm it checks, while Llama Guard screens prompts and responses across fourteen hazard categories, so it sits a step below Llama Guard.",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
+                  "shows": "The peer's model page still lists hazard categories from \"S1: Violent Crimes\" to \"S14: Code Interpreter Abuse\", with \"S7: Privacy\" among them, and says the model \"provides content moderation in 8 languages\". The rendered page's digest differs from the one llama-guard records from 2026-09-29.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "e770fa767aab6f58dc57e57cd6bdab7ce7119cc53b70c04d9749be36abfc842c"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Roblox/roblox-pii-classifier-v2/raw/main/README.md",
+                "shows": "The v2 card lists three output labels, \"privacy_asking_for_pii\", \"privacy_giving_pii\" and \"directing_users_off_platform\", formats input as a target speaker \"t\" among other speakers, and reports expanding language coverage from 17 to 189 languages. Its F1 table gives 88.82% and 99.22% for v2 against 56.24% and 46.07% for LlamaGuard v3 8B on roblox-pii-safety-for-chat and Nemotron-PII.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "08a63bbb8439628526dead6d6f489a6333fdc0b527acc5395f3a95dd9d8a3f67"
+              },
+              {
+                "url": "https://about.roblox.com/newsroom/2025/11/open-sourcing-roblox-pii-classifier-ai-pii-detection-chat",
+                "shows": "The announcement says \"PII Classifier receives a peak of over 200,000 queries per second on Roblox\" with \"<100ms P90 latency\", served from an encoder-only model fine-tuned from XLM-RoBERTa-Large.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "b33f8a8ec7123d1c05fba751b9e36c0a596d2705755d6e880e53116d932229b8"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of Hugging Face downloads across the v2 and v1 checkpoints, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "A ROOST Model Community partner model. Version 1 stays on Hugging Face as its own repository and is counted here as an earlier release of the same product."
+        },
+        {
+          "slug": "roblox-voice-safety-classifier",
+          "product": "Roblox Voice Safety Classifier",
+          "org_slug": "roblox",
+          "org": "Roblox",
+          "type": "model",
+          "description": "Roblox Voice Safety Classifier scores short voice-chat clips for policy violations, working on the audio itself rather than a transcript. Version 3 takes 16 kHz clips of up to 30 seconds and scores eight categories, including harassment, discrimination, sexual content, profanity, requests for personal information and disruptive audio, in 30 languages. It is a 320M-parameter transformer distilled from a larger model Roblox trained on its own voice chat.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0 safetensors on HF Roblox/voice-safety-classifier-v3, with no access gate);data:described(Roblox's internal voice chat, machine- and human-labeled, described in the v3 card and announcement but not released);code:partial(an inference script and requirements files only, no training code);license:Apache-2.0(OSI, the v3 card and its LICENSE.md);prior-release:CC-BY-SA-3.0(v1 (Roblox/voice-safety-classifier) and v2 (Roblox/voice-safety-classifier-v2) stay downloadable under CC-BY-SA-3.0. v3 is the current release, so its license governs)",
+            "governing_release": "Voice Safety Classifier v3",
+            "confidence": "high",
+            "note": "Version 3 is published under Apache 2.0 with no access gate and an inference script, while its training data, which Roblox describes, and its training code are not released. The earlier v1 and v2 checkpoints carry a Creative Commons share-alike license, but v3 is the current release, so its terms decide.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Roblox/voice-safety-classifier-v3/raw/main/README.md",
+                "shows": "The v3 card front matter declares \"license: apache-2.0\" and its License section reads \"Apache License 2.0\", pointing to LICENSE.md. It says \"All the model training has been conducted with Roblox internal voice chat datasets, using both machine and human-labeled data, with 300k hours of training data in total\", and its usage section runs \"python inference.py\"; it mentions no training script.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "0e31a375986c5bf5849f09906327b5980f6b8aaf7db6c9c46dcccf6dd87be079",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/voice-safety-classifier-v3",
+                "shows": "The Hugging Face API record reports \"gated\":false and the tag \"license:apache-2.0\", and lists \"model.safetensors\", \"inference.py\", \"requirements.txt\" and \"LICENSE.md\" among its files, with no training script.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "d1ef8fcaccff13ca676c9bcc10d9cbd3bd40e7056f83415ab7407679cc121d01",
+                "establishes": [
+                  "weights",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Roblox/voice-safety-classifier-v3/raw/main/LICENSE.md",
+                "shows": "The LICENSE.md in the v3 repository is the Apache License, Version 2.0 text, \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "84b6fe6794ce2c637ad7f9ee499f487838f7974053271a1d600e1529c4128bd6",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://about.roblox.com/newsroom/2026/06/upgrading-voice-safety-classifier-22-languages-sharper-detection-capabilities",
+                "shows": "Roblox's v3 announcement of June 17, 2026 says \"we used 250,000 hours of machine-labeled multilingual data and 29,000 hours of human-labeled multilingual data\", and links no training data.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "2363d3cfa1598705eacf4994b344a68f875c0abb9d0332809c29bdb02fb46c78",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/voice-safety-classifier-v2",
+                "shows": "The API record for the v2 repository carries the tag \"license:cc-by-sa-3.0\" and is not gated.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "977275dffd3af8d044e4433d45fbc20f3ed738e12763326ca968813b4536849e",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/voice-safety-classifier",
+                "shows": "The API record for the v1 repository carries the tag \"license:cc-by-sa-3.0\" and is not gated.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "2aadb5c0d3ac54c22601c74b53c9a999ae0003b89a57e93e91cfdad89e283ca0",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured by Hugging Face downloads of all three releases, v3 and the earlier v1 and v2. Downloads of the older weights from the GitHub repository's release pages and Roblox's own use on its voice chat are not counted, so the figure is a lower bound on use.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/Roblox/voice-safety-classifier-v3",
+                "shows": "190 downloads in the trailing 30 days for Roblox/voice-safety-classifier-v3",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "d1ef8fcaccff13ca676c9bcc10d9cbd3bd40e7056f83415ab7407679cc121d01"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/voice-safety-classifier-v2",
+                "shows": "178 downloads in the trailing 30 days for Roblox/voice-safety-classifier-v2",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "977275dffd3af8d044e4433d45fbc20f3ed738e12763326ca968813b4536849e"
+              },
+              {
+                "url": "https://huggingface.co/api/models/Roblox/voice-safety-classifier",
+                "shows": "93 downloads in the trailing 30 days for Roblox/voice-safety-classifier",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "2aadb5c0d3ac54c22601c74b53c9a999ae0003b89a57e93e91cfdad89e283ca0"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "voice moderation coverage",
+            "value": "Multi-label scoring of 16 kHz voice clips of up to 30 seconds against eight policy categories (asking for personal information, discrimination, harassment, sexual content, illegal and regulated content, dating and romance, profanity, disruptive audio), with language-detection heads, in 30 languages. Roblox reports 61% recall weighted by its voice-chat language mix at a 1% false-positive rate, and per-language recall on the card from 29.5% for Czech to 75.2% for Polish.",
+            "relative_to": "llama-guard",
+            "relation": "one_below",
+            "confidence": "low",
+            "note": "It moderates speech directly, across 30 languages, where Llama Guard reads text. Its eight fixed categories cover fewer harms than Llama Guard's fourteen, and on Roblox's own tables it still misses a large share of violations in most languages, so it sits a step below Llama Guard.",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
+                  "shows": "The peer's model page still lists hazard categories from \"S1: Violent Crimes\" to \"S14: Code Interpreter Abuse\" for prompt and response classification, and says the model \"provides content moderation in 8 languages\". The rendered page's digest differs from the one llama-guard records from 2026-09-29.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "e770fa767aab6f58dc57e57cd6bdab7ce7119cc53b70c04d9749be36abfc842c"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Roblox/voice-safety-classifier-v3/raw/main/README.md",
+                "shows": "The v3 card lists eight heads from \"ABUSE_TYPE_PRIVACY_ASKING_FOR_PII\" to \"ABUSE_TYPE_DISRUPTIVE_AUDIO\", says \"The model supports 30 languages\" with \"auxiliary heads for language detection\", sets \"The maximum supported audio duration is 30s\", and gives recall at a 1% false-positive rate from 29.5% for Czech to 75.2% for Polish.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "0e31a375986c5bf5849f09906327b5980f6b8aaf7db6c9c46dcccf6dd87be079"
+              },
+              {
+                "url": "https://about.roblox.com/newsroom/2026/06/upgrading-voice-safety-classifier-22-languages-sharper-detection-capabilities",
+                "shows": "The announcement says \"V3 of the open-source model achieves 61% recall weighted by Roblox voice chat language distribution at 1% false positive rate\", and adds 22 languages and two violation categories over v2.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "2363d3cfa1598705eacf4994b344a68f875c0abb9d0332809c29bdb02fb46c78"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of Hugging Face downloads across the v3, v2 and v1 checkpoints, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Versions 1 and 2 stay on Hugging Face as their own repositories and are counted here as earlier releases. The Roblox/voice-safety-classifier GitHub repository that also carried them says it is no longer updated."
+        },
+        {
+          "slug": "roblox-sentinel",
+          "product": "Roblox Sentinel",
+          "org_slug": "roblox",
+          "org": "Roblox",
+          "type": "software",
+          "description": "Roblox Sentinel is a Python library for detecting very rare kinds of harmful text, such as grooming, across a run of messages from one source rather than one message at a time. It compares each message with small sets of harmful and ordinary examples by embedding similarity, then combines the results for that source, by default with skewness, to surface candidates for human review. Roblox built it for its own chat moderation.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI, the repository LICENSE and the pyproject license field);source:public(the whole library installs from Roblox/Sentinel with pip install .);self-host:yes(a local Python library, with Dockerfiles for GPU and CPU-only images);core-gated:ungated(the tree at 66c6985 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path. Roblox released it as part of its open-source safety toolkit and sells no edition of it);service:none",
+            "confidence": "high",
+            "note": "Sentinel is released under Apache 2.0, and the published repository holds the whole library, which runs on your own machines. Roblox open-sourced it as part of its safety toolkit and offers no paid or hosted version.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Roblox/Sentinel/main/LICENSE",
+                "shows": "The root LICENSE is the Apache License, Version 2.0 text, ending with the unfilled appendix line \"Copyright [yyyy] [name of copyright owner]\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Roblox/Sentinel/main/pyproject.toml",
+                "shows": "The package metadata names the project \"sentinel\" version \"2.0.0\" with license = \"Apache-2.0\" and the classifier \"License :: OSI Approved :: Apache Software License\", built from src/sentinel.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "71ae6964097cf1aea6b250ee64c7f17a4e5641c7f19ac780bf3e25a9547eb75d",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Roblox/Sentinel/main/README.md",
+                "shows": "The README installs the library with \"pip install .\" from the repository, documents two Dockerfiles, \"Dockerfile\" and \"Dockerfile.cpu\", and closes \"Apache License 2.0\". Searched the body for enterprise, pricing, commercial, paid, premium and license key: none.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "9f8f1b9a6ccc6a44b1e9f30c97b34eb06bd79e235b1074cb0f2a3397021bea89",
+                "establishes": [
+                  "source",
+                  "self-host",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://about.roblox.com/newsroom/2025/08/open-sourcing-roblox-sentinel-preemptive-risk-detection",
+                "shows": "Roblox's announcement of August 7, 2025 says \"We are excited to open source Roblox Sentinel\" and that \"it's also part of our Roblox open-source safety toolkit\". It mentions no paid or hosted edition.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "da5ddaef50b47cffb6efd6ffd4928de3c7420e56664a3d5c0e7d34dd5af5c902",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "GitHub stars are the only signal, and a star is not a use. Roblox's own production use of Sentinel on its chat service is not counted.",
+            "sources": [
+              {
+                "url": "https://ungh.cc/repos/Roblox/Sentinel",
+                "shows": "Roblox/Sentinel: 118 stars and 27 forks, pushed 2026-08-18",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "9da620d03d1666b309292dae2b1fad884398a8cda0d8b63a59b9846c37ec2a89"
+              },
+              {
+                "url": "https://pypi.org/pypi/sentinel/json",
+                "shows": "The PyPI project \"sentinel\" is version 1.0.0 by Eddie Antonio Santos, homepage github.com/eddieantonio/sentinel, summarized as \"Create sentinel objects, akin to None, NotImplemented, Ellipsis\". It is not Roblox's library.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "6c74b4543b9ee5f946460f88f7200865e97aa2066d785726fc8bc1b3b8af3f13"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "rare-class detection across messages",
+            "value": "Contrastive rare-class detection over one source's recent messages: each message is scored by embedding similarity against positive and negative example sets, and six aggregation methods, skewness by default, combine the scores, with per-message explanations naming the nearest examples. Indexes build from text in one call, resize without re-encoding and save locally or to S3, and a numpy-only harness compares aggregators and settings on labeled data. Roblox credits it with about 1,200 reports to NCMEC in the first half of 2025.",
+            "relative_to": "hasher-matcher-actioner",
+            "relation": "at",
+            "confidence": "low",
+            "note": "Like Hasher-Matcher-Actioner, Sentinel does one detection job and hands what it finds to human reviewers: HMA recognizes copies of media already flagged, and Sentinel finds patterns across a user's messages that no single message reveals. Sentinel is a library with no service or review screen, so the two sit level.",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://cdn.jsdelivr.net/gh/facebook/ThreatExchange@main/hasher-matcher-actioner/README.md",
+                  "shows": "The peer's README still calls HMA \"a reference implementation for a key Trust and Safety content moderation capability: copy detection\", matching new content against \"Banks\" of known content, and says \"HMA can be used as a library, or in any deployment setup that can use docker\". The digest matches the one hasher-matcher-actioner records from 2026-10-13.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "e0c47dad67c0f9561fff3c7231990372160606c3f9cbec3998d6c26c5739fb16"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Roblox/Sentinel/main/README.md",
+                "shows": "The README describes \"realtime detection of extremely rare classes of text by using contrastive learning principles\", scoring observations \"using embedding similarity\" and aggregating \"using statistical measures like skewness\". It documents from_texts(), subsample(), the sentinel.simulation harness, per-text explanations, and local or \"s3://\" index storage.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "9f8f1b9a6ccc6a44b1e9f30c97b34eb06bd79e235b1074cb0f2a3397021bea89"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Roblox/Sentinel/main/V2_FEATURES.md",
+                "shows": "The 2.0 notes list \"Six summarize metrics, not two\" and say \"2.0 brings the count to six and adds the means to decide between them\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "5fa43d74b8a17eac9b703d846d5daf73a82247d3e20afe268ece1e8f4ef4edd4"
+              },
+              {
+                "url": "https://about.roblox.com/newsroom/2025/08/open-sourcing-roblox-sentinel-preemptive-risk-detection",
+                "shows": "The announcement says Sentinel \"has been running on Roblox since late 2024\" and that in the first half of 2025 it helped Roblox \"submit approximately 1,200 reports to the National Center for Missing and Exploited Children\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "da5ddaef50b47cffb6efd6ffd4928de3c7420e56664a3d5c0e7d34dd5af5c902"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of GitHub stars for Roblox/Sentinel, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Sentinel installs from its repository and is not published to PyPI. The sentinel package there is an unrelated project."
+        },
+        {
+          "slug": "mila-suicide-prevention-guardrail",
+          "product": "Mila Suicide Prevention Guardrail",
+          "org_slug": "mila",
+          "org": "Mila",
+          "type": "model",
+          "description": "Mila Suicide Prevention Guardrail is a BERT-based classifier that reads a chatbot's reply and flags it when the reply enables, encourages or endorses suicide, self-injury or disordered eating, following the MLCommons AILuminate definition of that harm. It checks English assistant responses one at a time, not user messages, and is small enough to run on a CPU. Mila's AI Safety Studio built it with ROOST.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0 safetensors on HF mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail, ungated);data:described(the card says a synthetic training set was generated from the published constitution.md; the set itself is not released);code:partial(load and inference examples on the card only; no training or data-generation code);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Mila publishes the classifier's weights under Apache-2.0 with no access gate, together with the written policy its training labels were drawn from. The synthetic training set built from that policy is not released, and the only code is a loading and inference example, so this is an open-weights release rather than a fully open model.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail/raw/main/README.md",
+                "shows": "Raw model card front matter declares \"license: apache-2.0\" and \"base_model: bert-base-uncased\". The change log says the release \"Generated a new synthetic training dataset\" and \"Trained `bert-base-uncased` on the new dataset\", and the training section says the constitution \"shapes **data and labels only**\" and \"can be found in the artifacts, in `constitution.md`\". The card links no training dataset; its only code is a \"Quick Load Example\" and an \"Inference Example\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "df95f50b1b53760f330d6e8d828ceacf49b2e6c14102c554228e7acb2e03b427",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail",
+                "shows": "The Hugging Face API record reports \"gated\":false, carries the tag \"license:apache-2.0\", and lists the files \"model.safetensors\", \"constitution.md\", the tokenizer and config. It declares no dataset tag and ships no training script.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "bb4684268bf60e6618fe498d86fe11ffd0232d55b8c2f0ec2b9a9608f4f07556",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail/raw/main/constitution.md",
+                "shows": "The published constitution sorts content into \"Harmful in-scope (intentional self-harm)\", \"Harmless in-scope (self-harm related, not enabling)\", \"Harmful out-of-scope (not self-harm)\" and \"Harmless out-of-scope (everyday / benign)\", with example topics for each. It is a policy text, not a dataset or generation script.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "2225faee3db31142b2b3c83b4349addc397a5d97990a4810c8bbd3b5ec84df62",
+                "establishes": [
+                  "data"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured by Hugging Face downloads of the one checkpoint Mila publishes. No other channel is declared for the model, so this count is the only visible measure of its use.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail",
+                "shows": "2,279 downloads in the trailing 30 days for mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "bb4684268bf60e6618fe498d86fe11ffd0232d55b8c2f0ec2b9a9608f4f07556"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "basis_detail": "single-harm response classification",
+            "value": "Binary classification of English assistant responses against one harm, suicide and self-harm as the MLCommons AILuminate taxonomy defines it, with a 512-token input on a 110M-parameter BERT encoder. On Mila's internal hand-annotated set of 494 responses it reports precision 0.908, recall 0.802 and F1 0.852 at the default threshold. It does not classify user prompts and gives no explanation or category breakdown.",
+            "relative_to": "llama-guard",
+            "relation": "two_below",
+            "confidence": "low",
+            "note": "The guardrail checks one thing, whether a chatbot's English reply encourages or instructs suicide or self-harm, and is cheap enough to run on every response. Llama Guard screens prompts and replies across fourteen hazard categories in eight languages, suicide and self-harm among them, so a single-harm, reply-only filter sits two steps below it.",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
+                  "shows": "The peer's model page still lists hazard categories from \"S1: Violent Crimes\" to \"S14: Code Interpreter Abuse\", including \"S11: Suicide & Self-Harm\", says Llama Guard 3 can \"classify content in both LLM inputs (prompt classification) and in LLM responses (response classification)\", \"was aligned to safeguard against the MLCommons standardized hazards taxonomy\" and \"provides content moderation in 8 languages\". The page is rendered HTML and its digest differs from the one llama-guard records from 2026-09-29; the quoted claims read as that record describes them.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "1a863c9d22382d96b35c3adb5e39dafd401eb07a5ff8c24a38ad35ca94cf5a05"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail/raw/main/README.md",
+                "shows": "The card describes \"a binary sequence classifier that takes an LLM **output** (assistant response text)\", says \"It is **not** an input guardrail, **not** a general harm classifier\", aligns its policy with the \"Suicide and Self-Harm\" category from MLCommons AILuminate, lists \"Languages other than English\" as out of scope, gives a \"Max sequence length\" of 512 tokens, and reports precision 0.908, recall 0.802 and F1 0.852 at \"Default threshold τ = 0.5\" on 494 internal examples. It says the classifier \"does not provide explanations or category breakdowns\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "df95f50b1b53760f330d6e8d828ceacf49b2e6c14102c554228e7acb2e03b427"
+              },
+              {
+                "url": "https://huggingface.co/api/models/mila-ai4h/Mila-Suicide-Prevention-Output-Guardrail",
+                "shows": "The Hugging Face API record gives the architecture \"BertForSequenceClassification\" with 109,483,778 parameters in a single \"model.safetensors\" file.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "bb4684268bf60e6618fe498d86fe11ffd0232d55b8c2f0ec2b9a9608f4f07556"
+              },
+              {
+                "url": "https://roost.tools/blog/releasing-mila-s-suicide-prevention-guardrail-lightweight-open-source-safeguards-for-real-time-detection/",
+                "shows": "ROOST's release post calls the guardrail a \"low-latency BERT model\" that \"can run locally, even on an ordinary CPU\", \"Targeting exclusively model outputs\", and describes it as \"a high-recall, low-footprint narrow safety add-on filter\" rather than \"a general-purpose safety moderation filter\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "546cc8aaa19922adfb38a17ccc419a6664c76239d4ec3ace0bebaa3360c65c4c"
+              }
+            ]
+          },
+          "overall_score": 1.5,
+          "tier": null,
+          "maturity": 1.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of Hugging Face model downloads, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "A ROOST Model Community partner model. Mila documents it as an early beta, meant to run alongside other safeguards rather than on its own."
+        },
+        {
+          "slug": "policylm",
+          "product": "PolicyLM",
+          "org_slug": "musubi-labs",
+          "org": "Musubi",
+          "type": "model",
+          "description": "PolicyLM is Musubi's 1.7B-parameter moderation classifier: given a message and a policy written as short plain-language categories, it returns a score from 0 to 1 for every category in one pass, without generating text. A built-in mode scores against NVIDIA's 23-category Aegis 2.0 taxonomy instead. It is meant for user content such as chat messages and posts, was evaluated in 19 languages, and runs on a single 24 GB GPU or a CPU.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0 safetensors on HF musubilabs/policylm-1.7b, ungated);data:partial(three third-party public safety datasets named in the card, plus synthetic data that is not released);code:partial(inference helper and quickstart in the model repository; no training code for the five fine-tuning stages);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Musubi publishes PolicyLM's weights and inference helper under Apache-2.0 with no access gate, and the card names the three public safety datasets it was trained on. The synthetic data used alongside them and the training code are not released, so this is an open-weights release rather than a fully open model.",
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/musubilabs/policylm-1.7b/raw/main/README.md",
+                "shows": "Raw model card front matter declares \"license: apache-2.0\" and lists the datasets \"nvidia/Nemotron-Safety-Guard-Dataset-v3\", \"Alibaba-AAIG/XGuard-Train-Open-200K\" and \"ToxicityPrompts/PolyGuardMix\". The Training section says the model was fine-tuned \"in five stages, on public safety datasets\" and \"synthetic data\"; the synthetic data is not linked. The Files table describes `inference/` as \"The helper `policylm_infer.py`, `quickstart.py`, `requirements.txt` and the base encoder's code\", and the license section reads \"**PolicyLM-1.7B:** Apache-2.0.\"",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "3b9068afe949d5698968ec60fc702375ab01973c4a986b57285fff8701d685fe",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/musubilabs/policylm-1.7b",
+                "shows": "The Hugging Face API record reports \"gated\":false, carries the tag \"license:apache-2.0\" and the three \"dataset:\" tags, and lists \"model.safetensors\", \"LICENSE\" and the inference files \"inference/policylm_infer.py\" and \"inference/quickstart.py\". No training script is among the files.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "59e0491d47552e7832f4d765c538e59b9c02d1006402294bb79ff2b2bd338a16",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/musubilabs/policylm-1.7b/raw/main/LICENSE",
+                "shows": "The LICENSE file in the model repository is the Apache License, Version 2.0, January 2004.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is measured by Hugging Face downloads of the one checkpoint Musubi publishes. A hosted version also runs on Baseten, and its calls are not counted, so the figure is a lower bound on use.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/musubilabs/policylm-1.7b",
+                "shows": "268 downloads in the trailing 30 days for musubilabs/policylm-1.7b",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "59e0491d47552e7832f4d765c538e59b9c02d1006402294bb79ff2b2bd338a16"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/roostorg/model-community/main/musubi-policylm/README.md",
+                "shows": "The ROOST Model Community page for PolicyLM links a \"Hosted version on Baseten\" beside the Hugging Face download.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "15125f69cb8824fbe64154b74be175fa3b0f545e36a13b8af94990bdaabff07a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "steerable bring-your-own-policy, per-category scores",
+            "value": "Scores a user message against a policy of up to 16 user-written categories, or against a built-in 23-category Aegis 2.0 taxonomy, returning a 0-1 score per category in one pass with no generated text; evaluated in 19 languages. On Musubi's custom-policy benchmark it posts 0.842 accuracy against 0.909 for gpt-oss-safeguard-20B, 0.829 for CoPE-B-A4B and 0.643 for Shieldstral-1.0-3B, at 22 ms median per message on an H100.",
+            "relative_to": "gpt-oss-safeguard",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Like gpt-oss-safeguard, PolicyLM checks content against a policy the user writes, and it scores each category of that policy separately in one fast pass. It follows custom policies less accurately on Musubi's own benchmark, gives no written reason and does not check assistant responses, so it sits level with gpt-oss-safeguard rather than ahead.",
+            "comparison": {
+              "last_attested": "2026-10-19",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md",
+                  "shows": "The peer's card still describes \"safety reasoning models built-upon gpt-oss\" that \"classify text content based on safety policies that you provide\", with a bring-your-own-policy feature and reasoning effort set to low, medium or high. The digest matches the one gpt-oss-safeguard records from 2026-09-29.",
+                  "accessed": "2026-10-19",
+                  "http_status": 200,
+                  "content_sha256": "1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9"
+                }
+              ]
+            },
+            "last_verified": "2026-10-19",
+            "sources": [
+              {
+                "url": "https://huggingface.co/musubilabs/policylm-1.7b/raw/main/README.md",
+                "shows": "The card says \"You give it a message and a policy and it returns a score from 0 to 1 for each category of the policy\", offers \"A built-in taxonomy (`aegis` mode)** of 23 categories from NVIDIA's Aegis 2.0\", scores \"Every category in one pass,** up to 16 per policy\", and was \"Evaluated on messages in 19 languages\". Its custom-policy table gives accuracy 0.842 for PolicyLM-1.7B, 0.909 for gpt-oss-safeguard-20B, 0.829 for CoPE-B-A4B and 0.643 for Shieldstral-1.0-3B, with a 22 ms median on an H100. It lists \"moderating assistant responses\" as out of scope and points to other models when \"The decision needs a written reason\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "3b9068afe949d5698968ec60fc702375ab01973c4a986b57285fff8701d685fe"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/roostorg/model-community/main/musubi-policylm/README.md",
+                "shows": "The ROOST Model Community page describes PolicyLM-1.7B as \"an open-weights (Apache-2.0) moderation classifier from Musubi Labs\" that \"returns a 0–1 score for every category in one pass, with no text generated\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "15125f69cb8824fbe64154b74be175fa3b0f545e36a13b8af94990bdaabff07a"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-19",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-19",
+                "reason": "The initial level was set on 2026-10-19 from a hand-read count of Hugging Face model downloads, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "A ROOST Model Community partner model."
         }
       ]
     },
@@ -147767,6 +148519,17 @@
         "midjourney"
       ]
     },
+    "mila": {
+      "slug": "mila",
+      "display_name": "Mila",
+      "type": "lab",
+      "homepage": "https://mila.quebec",
+      "github": [],
+      "country": "CA",
+      "products": [
+        "mila-suicide-prevention-guardrail"
+      ]
+    },
     "minimax": {
       "slug": "minimax",
       "display_name": "MiniMax",
@@ -148159,6 +148922,17 @@
       "country": "",
       "products": [
         "localai"
+      ]
+    },
+    "musubi-labs": {
+      "slug": "musubi-labs",
+      "display_name": "Musubi",
+      "type": "company",
+      "homepage": "https://www.musubilabs.ai",
+      "github": [],
+      "country": "",
+      "products": [
+        "policylm"
       ]
     },
     "myshell-ai": {
@@ -149779,6 +150553,19 @@
       "country": "",
       "products": [
         "freetensor"
+      ]
+    },
+    "roblox": {
+      "slug": "roblox",
+      "display_name": "Roblox",
+      "type": "company",
+      "homepage": "",
+      "github": [],
+      "country": "US",
+      "products": [
+        "roblox-pii-classifier",
+        "roblox-sentinel",
+        "roblox-voice-safety-classifier"
       ]
     },
     "roboflow": {
@@ -151752,7 +152539,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1144,
+  "n_total": 1149,
   "generated": "2026-10-19",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -151765,8 +152552,8 @@
       "total": 58319,
       "matched": 1350,
       "overlap": 666,
-      "scored": 1144,
-      "scored_outside": 478,
+      "scored": 1149,
+      "scored_outside": 483,
       "uncategorized": 56969
     },
     "top": [
