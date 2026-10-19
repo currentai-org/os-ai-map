@@ -380,6 +380,9 @@ RETIRED_NAMES = {("pi-coding-agent", "npm", "@mariozechner/coding-agent"),
 # training extras depend on, so counting it would count those installs twice.
 MERGED_PACKAGES = {("skyrl", "pypi", "skyrl-tx"), ("skyrl", "pypi", "skyrl-train"),
                    ("skyrl", "pypi", "skyrl-gym")}
+# Muse Glimmer's promotion: its speculative-decoding drafter is an auxiliary checkpoint that cannot
+# provide the model's capability on its own, so it is not a distribution of the product.
+DRAFTER_REPOS = {("muse-glimmer", "huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
 
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
@@ -434,7 +437,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
     } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()} | {
         (slug, "github", repo) for slug, repo in TRACTION_REPOSITORIES
-    } | RULED_PACKAGES | RETIRED_NAMES | MERGED_PACKAGES
+    } | RULED_PACKAGES | RETIRED_NAMES | MERGED_PACKAGES | DRAFTER_REPOS
 
 
 def test_real_sources_serialize_without_structural_errors():
