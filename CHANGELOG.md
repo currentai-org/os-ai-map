@@ -39,6 +39,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- muse-spark re-scored on Muse Spark Open's weights: openness 1/closed to 3/open_weights with Muse Spark
+  Open as the governing release and Muse-Model-License as use_bounded; adoption stays 4, now recorded as
+  reported traction with no numeric reach ([#930](https://github.com/currentai-org/os-ai-map/pull/930)).
 - zephyr's openness record names its governing release, zephyr-7b-beta, and records the separately
   released zephyr-orpo-141b checkpoint (Apache-2.0) as context it does not cover; the license and
   the score are unchanged ([#917](https://github.com/currentai-org/os-ai-map/pull/917)).
