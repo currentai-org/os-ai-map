@@ -8583,72 +8583,83 @@
           "org_slug": "meta-superintelligence-labs",
           "org": "Meta Superintelligence Labs",
           "type": "model",
-          "description": "Muse Spark is a closed-weight multimodal language model from Meta Superintelligence Labs, launched on April 8, 2026 as the first in the Muse series. It powers the Meta AI app and website and extends to WhatsApp, Instagram, Facebook, Messenger and AI glasses, and Meta offers it to developers through the Meta Model API. Later releases in the line, such as Muse Spark 1.3, continue under the same product name.",
+          "description": "Muse Spark is a multimodal language model line from Meta Superintelligence Labs, launched on April 8, 2026 as the first in the Muse series. The hosted releases, currently Muse Spark 1.3, power the Meta AI app and website and Meta's other apps and AI glasses, and reach developers through the Meta Model API. On October 15, 2026 Meta published Muse Spark Open, an 816-billion-parameter mixture-of-experts model with 42 billion active parameters that shares Muse Spark 1.3's base model, as downloadable weights under the Muse Model License.",
           "openness": {
-            "score": 1,
-            "class": "closed",
-            "components": "weights:closed;data:closed;code:closed;license:Proprietary(meta.ai/Meta AI app + private API preview; no downloadable weights)",
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(BF16 and NVFP4 safetensors on Hugging Face, released after a manually approved access request);data:closed(training data described only by source type: public, crawled, licensed, Meta products and synthetic; none released);code:partial(chat template and configs, with inference through SGLang, vLLM, Transformers and other frameworks; no post-training pipeline released);license:Muse-Model-License(MIT-style grant; Model-as-a-Service businesses above USD 20M revenue in any 12 months need a separate agreement with Meta; incorporated usage policy and a \"Built with Muse Spark Open\" credit)",
+            "governing_release": "Muse Spark Open",
             "confidence": "high",
-            "note": "Meta releases no weights, training corpus or training code for Muse Spark, which is available only in Meta's apps and through its self-serve Model API. Meta has said only that it hopes to open-source future versions of the model.",
-            "last_verified": "2026-09-29",
+            "note": "Meta publishes the Muse Spark Open weights for download after an access request, under a license that lets almost anyone use them commercially: only model-as-a-service businesses with more than USD 20 million in yearly revenue need a separate agreement with Meta. The training data and the post-training pipeline are not released. Muse Spark 1.3, the hosted model in Meta's apps and API, shares its base model and ships no weights.",
+            "last_verified": "2026-10-19",
             "sources": [
               {
-                "url": "https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/",
-                "shows": "Meta newsroom post: \"It currently powers the Meta AI app and website\" and \"will be available in private preview via API to select partners, and we hope to open-source future versions of the model\". Searched the body for weights, corpus and training code: no release of any.",
-                "accessed": "2026-09-29",
+                "url": "https://huggingface.co/api/models/meta-models/Muse-Spark-Open-816B-A42B",
+                "shows": "Hugging Face API for meta-models/Muse-Spark-Open-816B-A42B: \"gated\": \"manual\", 65 model-*.safetensors files, cardData license_name \"muse-model-license\", and an extra_gated_prompt carrying the \"MUSE MODEL LICENSE, version: Muse Spark Open, Release date: October 15, 2026\" text: rights to \"use, copy, modify (including fine-tune), ... distribute, sublicense, and/or sell\", a \"Built with Muse Spark Open\" display requirement, the Usage Policy \"hereby incorporated into this license\", and Section 3: a Model as a Service licensee whose revenue \"exceeds twenty (20) million US dollars ... during any consecutive twelve (12) month period\" must \"enter into a separate written agreement with Meta\"; Section 3 \"does not apply to (a) internal use, research, or any commercial activity that is not Model as a Service\".",
+                "accessed": "2026-10-19",
                 "http_status": 200,
-                "content_sha256": "28f0f7494cbd7c07f5a11f0f2842940c853be5434b9a8450dc341f2b9fd31942",
+                "content_sha256": "00dd1f8b0779d5310574d623a3e6d3626a57a5aba3f4ed3c9b507b2f7fb7315d",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/meta-models/Muse-Spark-Open-816B-A42B-NVFP4",
+                "shows": "Hugging Face API for meta-models/Muse-Spark-Open-816B-A42B-NVFP4: \"gated\": \"manual\", 127 safetensors files, cardData license_name \"muse-model-license\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "c0bd2ae7cddd9e1bd175a14fed2aa35008137dca42843db079a283cc0c57d522",
+                "establishes": [
+                  "weights"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/meta-models/Muse-Spark-Open-816B-A42B",
+                "shows": "Muse Spark Open model card: \"an 816B total/42B active parameter open weights model\"; \"The model is available in BF16 and NVFP4 versions\"; supported frameworks \"SGLang, vLLM, Hugging Face, TensorRT-LLM, Unsloth and Llama.cpp\"; \"Training data includes text, images, audio, and video. It includes data drawn from public sources, crawled from the Internet, acquired from third parties, derived from Meta's products and services, and synthetically generated\". No training data or training code is linked.",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "d62bb0be76d084661b8781138d2dbe900b21b9ca9c1662820c00bcf11b6863e9",
                 "establishes": [
                   "weights",
                   "data",
-                  "code",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://pytorch.org/blog/muse-spark-open/",
+                "shows": "PyTorch blog post by Meta: \"Building on our August release of Muse Spark, this open weights version has additional safety post-training\"; Muse Spark Open \"shares the same base model as Muse Spark 1.3\"; \"available today on Hugging Face under the Muse Model License\".",
+                "accessed": "2026-10-19",
+                "http_status": 200,
+                "content_sha256": "34d98b8bd53b513506e01f01d2959470e5ca97fb9fac5cbd1321e3285a763018",
+                "establishes": [
+                  "weights",
                   "license"
                 ]
               },
               {
                 "url": "https://developer.meta.com/ai/models/muse-spark/",
-                "shows": "Meta developer page for Muse Spark 1.3: \"Direct, self-serve and affordable access to Muse Spark.\" through the Meta Model API. Searched the body for weights, download, open-source and license: none offered.",
-                "accessed": "2026-09-29",
+                "shows": "Meta developer site lists \"Muse Spark 1.3\" and \"Muse Spark Open\" as separate models; the Muse Spark 1.3 page offers it through the Meta Model API: \"Muse Spark 1.3 is trained for agentic workflows and optimized for competitive coding performance\".",
+                "accessed": "2026-10-19",
                 "http_status": 200,
-                "content_sha256": "e0e9297ea1b85d835fdda837f7ca9ab935336ce90b4767c921a80f50556abc2f",
-                "establishes": [
-                  "weights",
-                  "data",
-                  "code",
-                  "license"
-                ]
-              },
-              {
-                "url": "https://arena.ai/leaderboard/text",
-                "shows": "arena.ai text leaderboard, Sep 25, 2026: \"View overall rankings across various AI models in text-to-text tasks\"; \"muse-spark-1.3-max\" (Meta · Proprietary) at rank 9, score 1494 +/-7 over 10,036 votes.",
-                "accessed": "2026-09-29",
-                "http_status": 200,
-                "content_sha256": "84b7b0d810d81198e712fa2b5c5e2df9cff50f50659c0c53b1a037f8360b7c12",
-                "establishes": [
-                  "license"
-                ]
+                "content_sha256": "ce31affe42d7e98e28151a37263c6bc1e070b34057e517fc4d3fe7ff458e07bf"
               }
             ],
-            "bucket": "closed"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 4,
-            "reach": "1M-10M users",
-            "signal_type": "active_users",
+            "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Muse Spark powers Meta's AI assistant on meta.ai and in the Meta AI app, and across WhatsApp, Instagram, Facebook, Messenger and Meta's AI glasses. Meta discloses no Muse Spark-specific user count, so this reading is attributed to the surface it powers rather than to a standalone figure for the model.",
+            "note": "Muse Spark powers Meta AI in the Meta AI app and website and across WhatsApp, Instagram, Facebook, Messenger, Threads and Meta's AI glasses, and since October it also ships as the downloadable Muse Spark Open weights. Meta describes the reach of those surfaces as a whole and publishes no active-user figure for Muse Spark itself. Hugging Face downloads measure only the Open weights, one SKU of the line, so they do not band the product.",
+            "last_verified": "2026-10-20",
             "sources": [
               {
                 "url": "https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/",
-                "shows": "\"It currently powers the Meta AI app and website, and will be rolling out to WhatsApp, Instagram, Facebook, Messenger, and AI glasses\"; 2026-05-12 update - \"When we launched Muse Spark last month, we said we'd bring it everywhere. Today, we are\". No Muse Spark user count published.",
-                "accessed": "2026-08-13",
+                "shows": "Meta newsroom post, updated through May 12, 2026: \"Muse Spark now powers the Meta AI assistant in the Meta AI app and meta.ai\"; \"Muse Spark is starting to bring the same intelligence to Meta AI across WhatsApp, Instagram, Facebook, Messenger, and Threads\"; \"Muse Spark and the new Meta AI are reaching billions of people across our apps\". No Muse Spark-specific user count is published.",
+                "accessed": "2026-10-20",
                 "http_status": 200,
-                "content_sha256": "b4da0bd8ec45f87c8e9286e187e29d136a5b4238efbe5b45f13b600c70aa2620"
-              },
-              {
-                "url": "https://ai.meta.com/blog/introducing-muse-spark-msl/",
-                "shows": "Meta's engineering blog for Muse Spark. It answers HTTP 400 to a plain fetch.",
-                "accessed": "2026-06-04"
+                "content_sha256": "c830e54486d475d4c818f802a909df365dec798347e39a3a89360b5c903bd71b"
               }
             ]
           },
@@ -8656,7 +8667,7 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "LMArena/HLE",
-            "value": "arena.ai text leaderboard - muse-spark-1.2 (xHigh) ranked 4 of 391 models at 1498 +/-10; Artificial Analysis Intelligence Index 57, rank #14 of 188",
+            "value": "arena.ai text leaderboard - muse-spark-1.3-max ranked 9 at 1494 +/-7; Artificial Analysis Intelligence Index 48 for Muse Spark 1.3 (max)",
             "confidence": "medium",
             "note": "Muse Spark 1.3 (max) ranks 9th on the arena.ai text leaderboard, about 15 points behind the top entry, and scores 48 on the Artificial Analysis Intelligence Index against a median of 26. Meta's own benchmark tables are not included here.",
             "last_verified": "2026-09-29",
@@ -8683,17 +8694,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-29",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-09-29",
-                "reason": "The recorded 1M-10M users cannot be derived from the cited pages: Meta discloses no Muse Spark- specific user count, and the newsroom post now says Muse Spark and the new Meta AI are 'reaching billions of people across our apps', a surface-reach claim (not a model usage count) far above the recorded band. Level not changed on judgement; escalated."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-20"
           }
         },
         {
@@ -152540,7 +152542,7 @@
     }
   },
   "n_total": 1149,
-  "generated": "2026-10-19",
+  "generated": "2026-10-20",
   "version": "0.5.0",
   "released": "2026-10-03",
   "contract": 2,
