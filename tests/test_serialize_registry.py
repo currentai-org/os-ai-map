@@ -383,6 +383,10 @@ MERGED_PACKAGES = {("skyrl", "pypi", "skyrl-tx"), ("skyrl", "pypi", "skyrl-train
 # Muse Glimmer's promotion: its speculative-decoding drafter is an auxiliary checkpoint that cannot
 # provide the model's capability on its own, so it is not a distribution of the product.
 DRAFTER_REPOS = {("muse-glimmer", "huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
+# R-2026-10-20-a: muse-spark bands on reported traction. Muse Spark Open's Hub weights are one SKU of
+# a line whose primary channel, the hosted model in Meta's apps and API, publishes no count.
+OPEN_SKU_REPOS = {("muse-spark", "huggingface_model", "meta-models/Muse-Spark-Open-816B-A42B"),
+                  ("muse-spark", "huggingface_model", "meta-models/Muse-Spark-Open-816B-A42B-NVFP4")}
 
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
@@ -437,7 +441,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
     } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()} | {
         (slug, "github", repo) for slug, repo in TRACTION_REPOSITORIES
-    } | RULED_PACKAGES | RETIRED_NAMES | MERGED_PACKAGES | DRAFTER_REPOS
+    } | RULED_PACKAGES | RETIRED_NAMES | MERGED_PACKAGES | DRAFTER_REPOS | OPEN_SKU_REPOS
 
 
 def test_real_sources_serialize_without_structural_errors():

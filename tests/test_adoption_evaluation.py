@@ -602,10 +602,16 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # Muse Glimmer declares its speculative-decoding drafter, an auxiliary checkpoint, not a distribution.
     assert inputs.non_primary_artifacts["muse-glimmer"] == {
         ("huggingface_model", "meta-models/Muse-Glimmer-30B-assistant")}
+    # R-2026-10-20-a: muse-spark bands on reported traction. Its Hub weights are one SKU of a line
+    # whose primary channel, the hosted model in Meta's apps and API, publishes no count.
+    assert inputs.non_primary_artifacts["muse-spark"] == {
+        ("huggingface_model", "meta-models/Muse-Spark-Open-816B-A42B"),
+        ("huggingface_model", "meta-models/Muse-Spark-Open-816B-A42B-NVFP4")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
         "zkml", *vision_packages, *traction_repos, *rulings_r, "pi-coding-agent", "kimi-code-cli", "skyrl", "muse-glimmer",
+        "muse-spark",
     }
 
 
