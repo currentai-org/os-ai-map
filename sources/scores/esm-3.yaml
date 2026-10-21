@@ -3,40 +3,55 @@ openness:
   score: 3
   class: open_weights
   components:
-    weights: {value: open, detail: ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside}
-    data: {value: closed, detail: '2.78 billion natural proteins described by count, corpus not released'}
-    code: {value: partial, detail: 'inference, generation and tutorial code in the esm package; no pretraining pipeline'}
+    weights:
+      value: open
+      detail: ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside
+    data:
+      value: documented-not-released
+      detail: composition described by scale -- 2.78B natural proteins, 3.15B sequences with synthetic augmentation,
+        236M structures, 539M function-annotated proteins, 771B tokens -- but no corpus or reconstruction
+        scripts released
+    code:
+      value: partial
+      detail: inference, generation and tutorial code in the esm package; no pretraining pipeline
     license:
-    - {name: MIT, detail: 'OSI; stated in the card body and repository LICENSE.md rather than a card license field'}
-  raw: weights:open(ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside);data:closed(2.78 billion natural proteins described by count, corpus not released);code:partial(inference, generation and tutorial code in the esm package; no pretraining pipeline);license:MIT(OSI; stated in the card body and repository LICENSE.md rather than a card license field)
+    - name: MIT
+      detail: OSI; stated in the card body and repository LICENSE.md rather than a card license field
+  raw: weights:open(ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside);data:documented-not-released(composition
+    described by scale -- 2.78B natural proteins, 3.15B sequences with synthetic augmentation, 236M structures,
+    539M function-annotated proteins, 771B tokens -- but no corpus or reconstruction scripts released);code:partial(inference,
+    generation and tutorial code in the esm package; no pretraining pipeline);license:MIT(OSI; stated in
+    the card body and repository LICENSE.md rather than a card license field)
   confidence: medium
-  note: The checkpoint's Hugging Face namespace moved to biohub with no license field on the destination
-    card, but MIT is still stated in the card body and in the repository's LICENSE.md, so the grant survives
-    even though it is asserted in prose rather than declared as metadata. Only the 1.4B checkpoint is downloadable;
-    the 7B and 98B models remain available only through the hosted API.
-  last_verified: '2026-09-10'
+  note: Only the 1.4B checkpoint can be downloaded and run locally, free of any access gate, under the MIT
+    license stated in the repository's LICENSE.md and the card body. It does not score higher because the
+    training corpus is described only by its scale and composition -- 2.78 billion source proteins totaling
+    771 billion tokens -- rather than released, and the published code covers inference, generation and
+    tutorials rather than the full pretraining pipeline; the larger 7B and 98B models remain reachable only
+    through the hosted API.
+  last_verified: '2026-10-21'
   sources:
   - url: https://huggingface.co/api/models/EvolutionaryScale/esm3-sm-open-v1
     shows: 'Redirects to huggingface.co/api/models/biohub/esm3-sm-open-v1; gated: false; private: false; no license tag and no cardData license key; data/weights/esm3_sm_open_v1.pth, esm3_structure_decoder_v0.pth and esm3_function_decoder_v0.pth present.'
-    accessed: '2026-10-14'
+    accessed: '2026-10-21'
     http_status: 200
-    content_sha256: a16b6496a1baeeb025ac816da43d85c3b8fab0eb0ace10d95857470cf237de88
+    content_sha256: 589d517110cff2705de786a2013629e2da5d6b254bd0a50b1b2a6cc993da73fd
     establishes: [weights]
   - url: https://huggingface.co/biohub/esm3-sm-open-v1/raw/main/README.md
     shows: 'Front matter declares only language and tags, no license. The body says "This repository is under a MIT license" and links the esm repository LICENSE.md; training is described as 2.78 billion natural proteins, with no corpus released.'
-    accessed: '2026-10-14'
+    accessed: '2026-10-21'
     http_status: 200
     content_sha256: 4aedacc49eff2fb6b90b926b5252076818a888884ac34d8a6701cd74421903d5
     establishes: [license, data]
   - url: https://raw.githubusercontent.com/Biohub/esm/main/LICENSE.md
     shows: '"License (MIT)", Copyright 2026 Chan Zuckerberg Biohub, Inc., with the standard MIT permission grant.'
-    accessed: '2026-09-10'
+    accessed: '2026-10-21'
     http_status: 200
     content_sha256: b63df9ca1dd96b3b21eec226b51b236d0bd152ac20eafc43aad46bf832b48d8a
     establishes: [license]
   - url: https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md
     shows: '"These models are available under the MIT license." Code covers local inference and generation and a tutorials cookbook; the 7B and 98B tiers are reachable only through the hosted platform.'
-    accessed: '2026-10-14'
+    accessed: '2026-10-21'
     http_status: 200
     content_sha256: 2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6
     establishes: [code, license]

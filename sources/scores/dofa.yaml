@@ -27,38 +27,68 @@ openness:
     for each of the five training subsets, enough to audit the mixture. But those subsets are third-party
     datasets nothing in the repository assembles into one release, so the corpus is not fully open, and
     the weights carry CC-BY-4.0 rather than the repository's own MIT license.
-  last_verified: '2026-10-14'
+  last_verified: '2026-10-21'
   sources:
   - url: https://huggingface.co/api/models/earthflow/DOFA
-    shows: 'gated: false; private: false; license cc-by-4.0; DOFA_ViT_base_e100.pth, DOFA_ViT_large_e100.pth, dofav2_vit_base_e150.pth, and dofav2_vit_large_e150.pth present.'
-    accessed: '2026-10-14'
+    shows: 'gated: false; private: false; license cc-by-4.0; DOFA_ViT_base_e100.pth, DOFA_ViT_large_e100.pth,
+      dofav2_vit_base_e150.pth, and dofav2_vit_large_e150.pth present.'
+    accessed: '2026-10-21'
     http_status: 200
     content_sha256: 08b25d8c7adb1d043170a8b6c815da7ad07cea0766e818bad4f7c12e7ecba130
-    establishes: [weights, license]
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/earthflow/DOFA/raw/main/README.md
-    shows: 'Card front matter and the model details both state License: CC-BY-4.0 for the released DOFA weights.'
-    accessed: '2026-10-14'
+    shows: 'Card front matter and the model details both state License: CC-BY-4.0 for the released DOFA
+      weights.'
+    accessed: '2026-10-21'
     http_status: 200
     content_sha256: da6a3e09bd7afd27f7d80d71b2bfd01883bb4e0be784b5a142af7219c038bc95
-    establishes: [license]
+    establishes:
+    - license
   - url: https://api.github.com/repos/zhu-xlab/DOFA/contents/pretraining
-    shows: Lists main_pretrain_ofa.py, engine_pretrain.py, models_base_ofa_mae.py, train_mae_all.sh, samplers, and a datasets directory holding only a loader and wavelength tables.
+    shows: Lists main_pretrain_ofa.py, engine_pretrain.py, models_base_ofa_mae.py, train_mae_all.sh, samplers,
+      and a datasets directory holding only a loader and wavelength tables.
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 61556552bac2d400dca91a2c27191d97e01bfa98ca5c449e19cf73659bdf4922
-    establishes: [code]
+    establishes:
+    - code
   - url: https://arxiv.org/abs/2403.15356
-    shows: Abstract states that the code and pretrained weights are publicly available. It says nothing either way about the corpus, so it establishes the artifacts and not the data dimension.
+    shows: Abstract states that the code and pretrained weights are publicly available. It says nothing
+      either way about the corpus, so it establishes the artifacts and not the data dimension.
     accessed: '2026-10-14'
     http_status: 200
     content_sha256: f7ebf422dac91bfdf9053df9f6cb85803a1ab39ead39e514f23c433a5cfb1ff4
-    establishes: [weights, code]
+    establishes:
+    - weights
+    - code
   - url: https://arxiv.org/pdf/2403.15356v3
-    shows: 'Section 4.5 — "DOFA is pretrained on a large-scale multimodal EO dataset comprising approximately 11.5 million images from five different modalities: Sentinel-1, Sentinel-2, NAIP, Gaofen, and EnMAP". Section 6 Data availability statements gives a download link per subset (SatlasPretrain for Sentinel-1 and Sentinel-2, a named Drive folder for Gaofen, hyspecnet.rsim.berlin for EnMAP).'
-    accessed: '2026-10-14'
+    shows: 'Section 4.5 — "DOFA is pretrained on a large-scale multimodal EO dataset comprising approximately
+      11.5 million images from five different modalities: Sentinel-1, Sentinel-2, NAIP, Gaofen, and EnMAP".
+      Section 6 Data availability statements gives a download link per subset (SatlasPretrain for Sentinel-1
+      and Sentinel-2, a named Drive folder for Gaofen, hyspecnet.rsim.berlin for EnMAP).'
+    accessed: '2026-10-21'
     http_status: 200
     content_sha256: 5a8fed90e47fa78f2a561de486e3c0270e691aeee288cffc986ac854a889d395
-    establishes: [data]
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/zhu-xlab/DOFA/refs/heads/master/pretraining/main_pretrain_ofa.py
+    shows: 'Full MAE pretraining entry point: argparse config, Sentinel-1/Sentinel-2/NAIP/Gaofen/hyperspectral
+      dataset loaders, model and training-loop imports -- a genuine training script, not inference code.'
+    accessed: '2026-10-21'
+    http_status: 200
+    content_sha256: ebd7d38f850e528fe4cafe3c673960a541669bd468a914b805b37e567bc7cbfb
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/zhu-xlab/DOFA/refs/heads/master/pretraining/engine_pretrain.py
+    shows: The train_one_epoch loop imported by main_pretrain_ofa.py, implementing the actual MAE pretraining
+      step.
+    accessed: '2026-10-21'
+    http_status: 200
+    content_sha256: e1aaa90348898e75006f713304aa7f8bef9f1046fdb5de3b4a4f45fb7f8856ec
+    establishes:
+    - code
 adoption:
   level: 1
   reach: <1K stars
