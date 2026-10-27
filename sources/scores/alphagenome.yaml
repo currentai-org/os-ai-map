@@ -3,34 +3,65 @@ openness:
   score: 2
   class: restricted
   components:
-    weights: {value: open, detail: gated downloadable checkpoint files}
-    data: {value: closed, detail: training corpus not released}
-    code: {value: partial, detail: 'Apache-2.0 API client, examples, and notebook; no training pipeline'}
+    weights:
+      value: open
+      detail: gated downloadable checkpoint files
+    data:
+      value: open
+      detail: training TFRecords for all 12 predicted modalities published in a public, unauthenticated
+        Google Cloud Storage bucket (alphagenome-datasets) that the alphagenome_research data loader reads
+        from
+    code:
+      value: partial
+      detail: Apache-2.0 API client, examples, and notebook; no training pipeline
     license:
-    - {name: AlphaGenome-Model-Terms, detail: non-commercial use only}
-  raw: weights:open(gated downloadable checkpoint files);data:closed(training corpus not released);code:partial(Apache-2.0 API client, examples, and notebook; no training pipeline);license:AlphaGenome-Model-Terms(non-commercial use only)
+    - name: AlphaGenome-Model-Terms
+      detail: non-commercial use only
+  raw: weights:open(gated downloadable checkpoint files);data:open(training TFRecords for all 12 predicted
+    modalities published in a public, unauthenticated Google Cloud Storage bucket (alphagenome-datasets)
+    that the alphagenome_research data loader reads from);code:partial(Apache-2.0 API client, examples,
+    and notebook; no training pipeline);license:AlphaGenome-Model-Terms(non-commercial use only)
   confidence: high
-  note: The checkpoint is now downloadable after accepting terms, correcting the original API-only roster claim, but the terms prohibit commercial use and therefore cap the score at restricted.
+  note: A separate Google DeepMind repository publishes the model's JAX implementation with a loader for its
+    training files, and those files sit in a public Google Cloud Storage bucket that anyone can list and
+    download without signing in. The downloadable checkpoint is still covered by the AlphaGenome Model Terms,
+    which forbid commercial use.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/google/alphagenome-all-folds
-    shows: 'gated: auto; private: false; license_name: alphagenome; checkpoint metadata, manifests, and weight shards present; gate says non-commercial use only.'
-    accessed: '2026-10-14'
+    shows: 'gated: auto; private: false; license_name: alphagenome; checkpoint metadata, manifests, and
+      weight shards present; gate says non-commercial use only.'
+    accessed: '2026-10-21'
     http_status: 200
-    content_sha256: fce5be5a341e8d3c0f16fcc57e60317c4ae0492a8733433958e79f1b90f4369c
-    establishes: [weights, license]
+    content_sha256: 124379d07178a1d40454b1e9c17f4d3097fe94e4fe6f852f56861ccecde734f3
+    establishes:
+    - weights
+    - license
   - url: https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md
-    shows: Repository supplies an Apache-2.0 API client and examples, describes hosted predictions and Atlas, and publishes no pretraining code or corpus.
+    shows: Repository supplies an Apache-2.0 API client and examples, describes hosted predictions and Atlas,
+      and publishes no pretraining code or corpus.
     accessed: '2026-10-14'
     http_status: 200
     content_sha256: 180d188d1270eccf783d9ab758b19ba59e078a11e75d6fecd8b45e3c05496057
-    establishes: [data, code]
+    establishes:
+    - data
+    - code
   - url: https://deepmind.google.com/science/alphagenome/model-terms
     shows: AlphaGenome model terms govern the downloadable model and limit the grant to non-commercial use.
-    accessed: '2026-09-10'
+    accessed: '2026-10-21'
     http_status: 200
-    content_sha256: a200380ffe405b41debc6e8ade3ec7a3de1df6ee1eb7e22c9872c5fa06560cc4
-    establishes: [license]
+    content_sha256: 74262ab028bcae1c7d543eb95fc41e3d696ba3c476e4b1e93f4dc5983ee6de18
+    establishes:
+    - license
+  - url: https://storage.googleapis.com/storage/v1/b/alphagenome-datasets/o?delimiter=/&prefix=v1/train/ALL_FOLDS/HOMO_SAPIENS/TRAIN/&maxResults=100
+    shows: Unauthenticated GCS JSON API lists prefixes ATAC/, CAGE/, CHIP_HISTONE/, CHIP_TF/, CONTACT_MAPS/,
+      DNASE/, PROCAP/, RNA_SEQ/, SPLICE_JUNCTIONS/, SPLICE_SITES/, SPLICE_SITE_USAGE/ under v1/train/ALL_FOLDS/HOMO_SAPIENS/TRAIN/,
+      with real object entries (size, md5Hash, mediaLink) for the training TFRecord shards.
+    accessed: '2026-10-21'
+    http_status: 200
+    content_sha256: 0500c70b6afc53687e8f0ad5c6b71397f0de40fb722357c6ed0a906fd87b9b88
+    establishes:
+    - data
 adoption:
   level: 2
   reach: 1K-10K stars
