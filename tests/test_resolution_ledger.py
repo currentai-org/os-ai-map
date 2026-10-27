@@ -150,7 +150,7 @@ def test_two_membership_rulings_for_the_same_artifact_and_product_is_a_duplicate
     assert "widget" in str(raised.value)
 
 
-LEDGER_FLOOR = 336  # +12 on 2026-10-07 for the #831 digest rulings; exact equality ratchet
+LEDGER_FLOOR = 356  # +20 on 2026-10-27 for the #937 digest rulings; exact equality ratchet
 
 
 def test_the_ledger_never_shrinks_and_the_floor_moves_with_it():
