@@ -2535,3 +2535,201 @@ resolutions:
   decided_on: '2026-10-07'
   note: NVIDIA's NVFP4 quantization of google/gemma-4-31B-it, which gemma declares and which the upload
     names as its base model. Quantizing does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: desta-ntu/llama-3.1-8b-instruct
+  verdict: unresolved
+  relation: product_equivalence
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Not Meta's Llama-3.1-8B-Instruct, though it carries the name. Its four safetensors shards match
+    Meta's in size but not in content hash, while unsloth/Meta-Llama-3.1-8B-Instruct, a plain copy,
+    matches Meta's byte for byte (Hugging Face LFS sha256, checked 2026-10-27). So the weights were
+    changed, most likely tuned by NTU's DeSTA speech-text group, and the auto-generated model card names
+    no license, base model or method. Not llama-instruct; whether it is anything on the map needs a card.
+- artifact:
+    kind: huggingface_model
+    id: deepseek-ai/deepseek-v4-flash-0731
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: deepseek
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: DeepSeek's own dated revision of DeepSeek-V4-Flash, which deepseek declares.
+- artifact:
+    kind: huggingface_model
+    id: meta-llama/llama-3.2-1b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: llama-instruct
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Meta's instruction-tuned Llama 3.2 1B. Instruct releases resolve to llama-instruct, not to the
+    base-model product llama the digest proposed.
+- artifact:
+    kind: huggingface_model
+    id: radixark/kimi-k3-dspark
+  verdict: unresolved
+  relation: product_equivalence
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: RadixArk's 2.2B-parameter speculative-decoding draft model trained to accelerate Kimi K3 under
+    SGLang, per its model card. It shares none of Kimi K3's weights and is not Moonshot's release, so it
+    is not kimi. No scope rule yet says whether a trained speculator is a product, an accessory of its
+    serving engine, or out of scope.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/minimax-h3-gguf
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: minimax-hailuo
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Unsloth's GGUF quantization of MiniMaxAI/MiniMax-H3, which minimax-hailuo declares and which the
+    upload names as its base model. The weights resolve there, not to the MiniMax M3 language model the
+    digest proposed. Quantizing does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: zai-org/glm-5.3
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: glm
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Z.ai's own GLM-5.3, the next release in the line after GLM-5.1 and GLM-5.2, which glm declares.
+- artifact:
+    kind: huggingface_model
+    id: handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf
+  verdict: unresolved
+  relation: product_equivalence
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: A GGUF quantization of nvidia/nemotron-3.5-asr-streaming-0.6b. It follows its base model, which is
+    itself unresolved below.
+- artifact:
+    kind: huggingface_model
+    id: zai-org/glm-ocr
+  verdict: unresolved
+  relation: product_equivalence
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Z.ai's GLM-OCR, a multimodal OCR model with its own GitHub repository, SDK and technical report. It
+    is not the GLM language model the digest proposed. It is a candidate product for the OCR category
+    beside deepseek-ocr and dots-ocr, recorded unresolved until it is promoted or excluded.
+- artifact:
+    kind: huggingface_model
+    id: deepseek-ai/deepseek-v4.1-flash
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: deepseek
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: DeepSeek's own V4.1-Flash, the next release in the V4-Flash line deepseek declares.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/gemma-4-12b-it-gguf
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: gemma
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Unsloth's GGUF quantization of Google's Gemma 4 12B instruction-tuned model. Quantizing does not
+    transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: lightx2v/minimax-h3-turbo
+  verdict: excluded_boundary
+  relation: product_equivalence
+  boundary: adapters-and-derivative-checkpoints
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: LightX2V's distillation LoRA for MiniMax-H3, packaged with its own online studio, per its model
+    card. media_generation's contested ruling (3) holds that adapters and derivative checkpoints are not
+    products, so it is neither minimax-hailuo nor the M3 language model the digest proposed.
+- artifact:
+    kind: huggingface_model
+    id: litert-community/gemma-4-e2b-it-litert-lm
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: gemma
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: A LiteRT-LM conversion of Google's Gemma 4 E2B instruction-tuned model for on-device inference.
+    Converting does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: deepseek-ai/deepseek-v3
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: deepseek
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: DeepSeek's own V3 release. deepseek declares DeepSeek-V3-Base and V3.2 in the same line.
+- artifact:
+    kind: huggingface_model
+    id: antirez/deepseek-v4.1-flash-gguf
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: deepseek
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: A GGUF quantization of DeepSeek-V4.1-Flash. Quantizing does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: deepseek-ai/deepseek-r1-distill-qwen-1.5b
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: deepseek-r1
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: One of the distilled models DeepSeek published with the R1 release, so it resolves to deepseek-r1
+    rather than the V-series product deepseek the digest proposed.
+- artifact:
+    kind: huggingface_model
+    id: redhatai/gemma-4-26b-a4b-it-fp8-dynamic
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: gemma
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Red Hat's FP8 quantization of Google's Gemma 4 26B-A4B instruction-tuned model. Quantizing does not
+    transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: nvidia/nemotron-3.5-asr-streaming-0.6b
+  verdict: unresolved
+  relation: product_equivalence
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: NVIDIA's streaming speech-recognition model. nemotron tracks NVIDIA's language models, so it is not
+    that product. Whether it belongs to parakeet as the same ASR line renamed, or is a speech product of
+    its own, needs a ruling.
+- artifact:
+    kind: huggingface_model
+    id: zai-org/glm-5
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: glm
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Z.ai's own GLM-5, in the line glm declares.
+- artifact:
+    kind: huggingface_model
+    id: meta-llama/llama-3.2-3b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: llama-instruct
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: Meta's instruction-tuned Llama 3.2 3B. Instruct releases resolve to llama-instruct, not to the
+    base-model product llama the digest proposed.
+- artifact:
+    kind: huggingface_model
+    id: lmstudio-community/gemma-4-e4b-it-mlx-4bit
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: gemma
+  decided_in: '#937'
+  decided_on: '2026-10-27'
+  note: LM Studio's 4-bit MLX quantization of Google's Gemma 4 E4B instruction-tuned model. Quantizing does
+    not transfer ownership.
