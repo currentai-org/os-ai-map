@@ -73152,82 +73152,155 @@
           "org_slug": "openmined",
           "org": "OpenMined",
           "type": "software",
-          "description": "Federated RAG framework from OpenMined. Rather than centralizing documents, a query is broadcast across a network of peers; each peer searches its own private index and returns only the most relevant snippets, which are aggregated, ranked and synthesized into a grounded answer. Its SDK loads data sources from the network, selects a model and runs the pipeline, built on OpenMined's Syft privacy stack.",
+          "description": "SyftHub is a registry where people publish AI models and data sources as endpoints, and others find them, see what each one costs and requires, and query them from a web app, a Python SDK or an MCP server. Its retrieval aggregator sends a question to each chosen source on its owner's own Syft Space node and combines only the passages that come back into one answer. OpenMined builds it.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(github.com/OpenMined/syft-hub-sdk);self-host:yes;service:proprietary-hosted(OpenMined runs the accounting service that bills paid network services; the SDK registers with it by default, and free services work without it)",
+            "components": "license:Apache-2.0(OSI);source:public(github.com/OpenMined/syfthub: backend, web app, retrieval aggregator, MCP server and Python SDK);self-host:yes;service:proprietary-hosted(the backend proxies billing for paid endpoints to an external accounting service set by URL, whose source OpenMined has not published)",
             "confidence": "high",
-            "note": "SyftHub is open source: the SDK is Apache-2.0 with its source public, and the SyftBox network it runs on publishes its server code, so an operator can run the whole stack. The one closed piece is the OpenMined-run accounting service that bills paid services on the network, which free queries do not need.",
-            "last_verified": "2026-09-28",
+            "note": "SyftHub is open source under Apache-2.0. The whole platform, from the registry and web app to the retrieval aggregator and the Python SDK, sits in one public repository and runs on a single machine with one command. The piece outside it is the accounting service the backend calls to bill paid endpoints, which OpenMined has not published.",
+            "last_verified": "2026-10-27",
             "sources": [
               {
-                "url": "https://github.com/OpenMined/syft-hub-sdk",
-                "shows": "Apache-2.0 license on the repo, full SDK source published, README \"Build Federated RAG and tap into distributed data sources without centralizing\"; 2 stars",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/OpenMined/syfthub/main/LICENSE",
+                "shows": "The root LICENSE file on main is the standard \"Apache License\" text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-10-27",
                 "http_status": 200,
-                "content_sha256": "da9fd96d31dc48ee86ce0dd364dd6d5dc87906fd6226cad91424cdbce21c6cd2",
+                "content_sha256": "75cd66363b30693069fdb3d4a0beeda9f2a6fc5ef6951654c43405d1d16fa897",
                 "establishes": [
-                  "license",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syfthub/main/README.md",
+                "shows": "README: SyftHub is \"a registry and discovery platform for AI/ML endpoints\"; the project layout lists components/ (\"services (backend, frontend, aggregator, mcp)\"), sdk/ (\"the Python SDK\") and deploy/ (\"deployment configs\"); Quick Start runs \"the full stack\" locally with \"make dev\"; License: \"Apache 2.0\".",
+                "accessed": "2026-10-27",
+                "http_status": 200,
+                "content_sha256": "7b346c6fe29c09f89b1bf9819746fd175804d4f7c5d87cd95451d26c7cbd4466",
+                "establishes": [
                   "source",
                   "self-host"
                 ]
               },
               {
-                "url": "https://raw.githubusercontent.com/OpenMined/syft-hub-sdk/main/LICENSE",
+                "url": "https://raw.githubusercontent.com/OpenMined/syfthub/main/docs/architecture/components/backend.md",
+                "shows": "Backend component guide: the accounting routes are a \"Proxy\" (register, login, balance, transfer, transaction-token), and the Accounting Service is listed as an \"External billing integration\" configured by DEFAULT_ACCOUNTING_URL.",
+                "accessed": "2026-10-27",
+                "http_status": 200,
+                "content_sha256": "6dc309728abb6506749864837e98394ce4127051202ea48fbb6e3f24ec074b80"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "Adoption is measured by PyPI downloads of syfthub-sdk, the Python SDK the platform publishes. The web app is the other way in, and it publishes no usage count.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/syfthub-sdk/recent",
+                "shows": "pypistats recent downloads for syfthub-sdk: last_month 30, last_week 146, last_day 105. The month figure is lower than the week, so the service is serving an inconsistent window.",
+                "accessed": "2026-10-27",
+                "http_status": 200,
+                "content_sha256": "fe8e3fa043d29f9c38fec47b60ac45a21f0a78ec891a7ab6e8a871220cfa1126"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "federated_learning feature matrix: federation reach (rungs in the category's scoring_recipe.note)",
+            "value": "A registry, retrieval aggregator and identity provider that send a query to data sources running on their owners' own Syft Space nodes and return only the matching passages; the nodes are a separate product each data owner deploys.",
+            "confidence": "medium",
+            "note": "SyftHub runs the coordinating side of federated retrieval itself. It lists data sources, issues short-lived tokens that each source checks on its own, and sends a question to every source where its data lives. The sources run as Syft Space nodes that their owners deploy separately, so SyftHub on its own covers one side of the federation, a step short of PySyft, which runs both.",
+            "relative_to": "pysyft",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-10-27",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md",
+                  "shows": "README: computations \"are reviewed and run by data owners on private data\"; \"Data owners must approve each collaborator before any data flows\"; an Enclaves package ships beside it; peers communicate \"through cloud storage their organizations already use\".",
+                  "accessed": "2026-10-27",
+                  "http_status": 200,
+                  "content_sha256": "2464fc293c67366a69add39c2526139f2a57e4714608cc09267e4613f8342dff"
+                }
+              ]
+            },
+            "last_verified": "2026-10-27",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syfthub/main/docs/architecture/overview.md",
+                "shows": "Architecture overview: SyftHub is a \"registry and discovery platform for AI/ML endpoints\" with \"a stateless RAG aggregator\"; it \"acts as an IdP, issuing RS256 satellite tokens verified locally by external services via JWKS\"; \"SyftAI-Space instances are external data sources and models that the aggregator queries during RAG workflows\".",
+                "accessed": "2026-10-27",
+                "http_status": 200,
+                "content_sha256": "357851ef6b1d513a45fc8cefe7b0af6260324638d150c2e260104964d04eb111"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-space/main/README.md",
+                "shows": "Syft Space README: \"A Syft Space is a decentralized node operated by anyone with knowledge to share\"; owners \"add your documents, connect an AI model, and create endpoints that others can query\"; \"Your data never leaves your control\".",
+                "accessed": "2026-10-27",
+                "http_status": 200,
+                "content_sha256": "c728db1a16f61737ca40c18f4e26a20dcfd1e56c10ae9afc7c122cdb4c2b5198"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-10-27",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-27",
+                "reason": "The level was set on 2026-10-27 from a hand-read count of PyPI downloads of syfthub-sdk, when the product's declared artifacts moved to the OpenMined/syfthub repository and its SDK package. A hand read sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "The earlier syft-hub-sdk repository holds a retired SDK. The current Python SDK is developed in this repository and publishes as syfthub-sdk."
+        },
+        {
+          "slug": "syft-space",
+          "product": "Syft Space",
+          "org_slug": "openmined",
+          "org": "OpenMined",
+          "type": "software",
+          "description": "Syft Space is an application a data owner runs to make a document collection answerable without handing it over. It indexes the documents in a local or remote vector database, pairs them with a model from OpenAI, Anthropic, Ollama, vLLM or another provider, and serves the pair as an endpoint with its own access rules, rate limits and pricing. Endpoints can be listed on SyftHub, and only answers leave the owner's machine. OpenMined builds it.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(backend, web app and desktop app under packages/spaces in github.com/OpenMined/syft-space);core-gated:ungated(no enterprise edition or license key; Stripe and Xendit appear only as gateways an owner uses to charge for their own endpoints)",
+            "confidence": "high",
+            "note": "Syft Space is open source under Apache-2.0, and the whole application, from the server to the web and desktop apps, is in one public repository. It installs as a desktop app, a Docker image or from source. The payment integrations exist so an owner can charge for their own endpoints, not to unlock features. Publishing from a home machine needs a developer token from OpenMined, while a server with a public address does not.",
+            "last_verified": "2026-10-27",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-space/main/LICENSE",
                 "shows": "The root LICENSE file on main is the standard \"Apache License\" text, \"Version 2.0, January 2004\".",
-                "accessed": "2026-09-28",
+                "accessed": "2026-10-27",
                 "http_status": 200,
-                "content_sha256": "781ca6cd2fe6b71db352281d6aa2cf037563130ef35c38325b7f7847795ded17",
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
                 "establishes": [
                   "license"
                 ]
               },
               {
-                "url": "https://ungh.cc/repos/OpenMined/syft-hub-sdk/files/main",
-                "shows": "The public file listing of main carries the SDK source, among them \"syft_hub/main.py\" and \"syft_hub/clients/accounting_client.py\", beside one root LICENSE.",
-                "accessed": "2026-09-28",
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-space/main/README.md",
+                "shows": "README: install as a \"Desktop App\", with \"Docker (Production ready)\" from ghcr.io/openmined/syft-space, or \"From Source\" with run.sh; endpoints carry \"access policies and pricing\"; a developer token is \"Required for local deployments only\", while a cloud VM \"uses public IP\". No enterprise edition or paid tier of the software is named.",
+                "accessed": "2026-10-27",
                 "http_status": 200,
-                "content_sha256": "303d3f906fec1377d37ffcf969cef0897308beef099b438310c5d00b5481aa93",
+                "content_sha256": "c728db1a16f61737ca40c18f4e26a20dcfd1e56c10ae9afc7c122cdb4c2b5198",
                 "establishes": [
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/OpenMined/syft-hub-sdk/main/README.md",
-                "shows": "README describes the federated pipeline, in which \"Only relevant snippets were retrieved and shared\", and a section \"Setup accounting for paid models\" noting \"Each new user received $20 upon registration\"; paid services on the network are billed through that account.",
-                "accessed": "2026-09-28",
-                "http_status": 200,
-                "content_sha256": "d10033fe70e23796084e5e657f4a3677ce137b55ccb4b32887d15dad13e84d0c"
-              },
-              {
-                "url": "https://raw.githubusercontent.com/OpenMined/syft-hub-sdk/main/pyproject.toml",
-                "shows": "pyproject.toml describes the package as \"Python SDK for discovering and using AI models across the SyftBox network\" and declares MIT as its license text, which disagrees with the Apache-2.0 LICENSE file; both are OSI licenses and the score follows the LICENSE.",
-                "accessed": "2026-09-28",
-                "http_status": 200,
-                "content_sha256": "d3bf59c378584a7d0028aef0fcabda796604fd1a3fb3056e26efbc18c797ca4a",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/OpenMined/syftbox/main/LICENSE",
-                "shows": "The SyftBox runtime the SDK runs on carries the standard \"Apache License\" text, \"Version 2.0, January 2004\".",
-                "accessed": "2026-09-28",
-                "http_status": 200,
-                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
-                "establishes": [
-                  "self-host"
-                ]
-              },
-              {
-                "url": "https://ungh.cc/repos/OpenMined/syftbox/files/main",
-                "shows": "The SyftBox file listing publishes the server beside the client, with \"docker/Dockerfile.server\" and \"config/server.example.yaml\" in the tree, so an operator can run the network the SDK queries.",
-                "accessed": "2026-09-28",
-                "http_status": 200,
-                "content_sha256": "40be7afa9832269b6ad49069109d3dbb73e8ad5a8a60a40573eb61339790aca5",
-                "establishes": [
-                  "self-host"
+                  "source",
+                  "core-gated"
                 ]
               }
             ],
@@ -73238,55 +73311,67 @@
             "reach": "<1K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
-            "note": "SyftHub is a very early entry, part of OpenMined's federated-RAG effort alongside local-rag and local-rag-router, and its repository has attracted almost no attention yet. It is included here as an emerging project rather than for adoption to date.",
-            "last_verified": "2026-10-25",
+            "note": "Syft Space publishes no package to a registry, so adoption falls back to GitHub stars on its repository. It also ships desktop installers on GitHub releases, which no route counts yet.",
             "sources": [
               {
-                "url": "https://github.com/OpenMined/syft-hub-sdk",
-                "shows": "2 stars, 0 forks; no download or user count published",
-                "accessed": "2026-08-13",
+                "url": "https://api.github.com/repos/OpenMined/syft-space",
+                "shows": "stargazers_count = 10 for OpenMined/syft-space; created 2025-09-19; license Apache-2.0.",
+                "accessed": "2026-10-27",
                 "http_status": 200,
-                "content_sha256": "da9fd96d31dc48ee86ce0dd364dd6d5dc87906fd6226cad91424cdbce21c6cd2"
+                "content_sha256": "2d7c2771ec04b83e6ad6909d6ce2a89f4e612bc1f7b757132dd72bb69d1c48f6"
               }
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "federated_learning feature matrix: federation reach (rungs in the category's scoring_recipe.note)",
-            "value": "An SDK that loads data-source services from a network, queries each on its owner's infrastructure, returns only relevant snippets and has an LLM synthesize them; the federation itself runs on the separate SyftBox runtime.",
+            "value": "The data owner's node for federated retrieval, installed by each owner on their own machine or server, with per-endpoint access policies, rate limits and pricing; the registry and aggregator that send queries to it are SyftHub, a separate product.",
             "confidence": "medium",
-            "note": "SyftHub federates retrieval: each source is queried where it lives and only snippets leave it, which nothing else on the map does. The SDK leaves the federation itself to SyftBox, which users install separately, so it sits two steps below PySyft, the OpenMined runtime it builds on.",
+            "note": "Syft Space runs the data owner's side of federated retrieval. Each owner installs it on their own machine or server, decides who may ask what and at what price, and returns answers rather than documents. Finding sources and routing a question to them is SyftHub's job, so Syft Space on its own covers one side of the federation, a step short of PySyft, which runs both.",
             "relative_to": "pysyft",
-            "relation": "two_below",
-            "last_verified": "2026-09-27",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-10-27",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md",
+                  "shows": "README: computations \"are reviewed and run by data owners on private data\"; \"Data owners must approve each collaborator before any data flows\"; an Enclaves package ships beside it; peers communicate \"through cloud storage their organizations already use\".",
+                  "accessed": "2026-10-27",
+                  "http_status": 200,
+                  "content_sha256": "2464fc293c67366a69add39c2526139f2a57e4714608cc09267e4613f8342dff"
+                }
+              ]
+            },
+            "last_verified": "2026-10-27",
             "sources": [
               {
-                "url": "https://cdn.jsdelivr.net/gh/OpenMined/syft-hub-sdk/README.md",
-                "shows": "README: \"Build Federated RAG and tap into distributed data sources without centralizing knowledge\"; \"Each data source was queried on its own infrastructure\"; \"Only relevant snippets were retrieved and shared\"; outside Jupyter, \"Download and run distributed protocol, SyftBox\".",
-                "accessed": "2026-09-27",
+                "url": "https://raw.githubusercontent.com/OpenMined/syft-space/main/README.md",
+                "shows": "README: \"A Syft Space is a decentralized node operated by anyone with knowledge to share\"; owners \"add your documents, connect an AI model, and create endpoints that others can query\"; \"Policies: Control access, set rate limits, and configure pricing\"; \"SyftHub Integration: Optional publishing to the decentralized knowledge network\".",
+                "accessed": "2026-10-27",
                 "http_status": 200,
-                "content_sha256": "d10033fe70e23796084e5e657f4a3677ce137b55ccb4b32887d15dad13e84d0c"
-              },
-              {
-                "url": "https://openmined.org/syfthub/",
-                "shows": "SyftHub: \"The Directory for Collective Intelligence\", a registry of who has knowledge and how to reach it; Syft Spaces publish queryable RAG endpoints with access policies and pricing.",
-                "accessed": "2026-09-27",
-                "http_status": 200,
-                "content_sha256": "cff57a24d4da5f80d438fc72a1804e10d7fc59079eac4386c627440ad5d31eb7"
+                "content_sha256": "c728db1a16f61737ca40c18f4e26a20dcfd1e56c10ae9afc7c122cdb4c2b5198"
               }
             ]
           },
-          "overall_score": 1.5,
+          "overall_score": 2.0,
           "tier": null,
-          "maturity": 1.5,
+          "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-27",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
-          },
-          "version_note": "Early-stage, created August 2025, and part of OpenMined's wider federated-RAG work."
+            "date": "2026-10-27",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-10-27",
+                "reason": "The initial level was set on 2026-10-27 from a hand-read count of GitHub stars on OpenMined/syft-space, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
         }
       ]
     },
@@ -149249,6 +149334,7 @@
       "country": "US",
       "products": [
         "pysyft",
+        "syft-space",
         "syfthub"
       ]
     },
@@ -152099,8 +152185,8 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1149,
-  "generated": "2026-10-26",
+  "n_total": 1150,
+  "generated": "2026-10-27",
   "version": "0.5.0",
   "released": "2026-10-03",
   "contract": 2,
@@ -152112,8 +152198,8 @@
       "total": 58490,
       "matched": 1357,
       "overlap": 670,
-      "scored": 1149,
-      "scored_outside": 479,
+      "scored": 1150,
+      "scored_outside": 480,
       "uncategorized": 57133
     },
     "top": [
