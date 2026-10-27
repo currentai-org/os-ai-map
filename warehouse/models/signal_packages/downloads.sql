@@ -35,6 +35,14 @@
 --              daily history per package, because no global npm dataset exists.
 --   * crates -- the same daily table. crates.io serves 90 days and will not page further back.
 --
+-- The windowing itself lives in two feeder models, which this model unions:
+--   * currentai.signal_packages.downloads_pypi     -- the pypi leg, restricted to the roster's
+--              pypi packages BEFORE aggregation. Windowing every package on PyPI and then joining
+--              to the roster ran out of memory on 2026-10-25 (HashAggregationOperator at the
+--              15GB per-node limit); that is why the legs are split.
+--   * currentai.signal_packages.downloads_registry -- the npm and crates legs.
+-- Each feeder emits its own anchor as last_day, so anchors below is derived from them.
+--
 -- The 30-day window is anchored per registry on that registry's own latest day, not on
 -- CURRENT_DATE and not on the package's own latest day. Per registry, because the PyPI feed lags
 -- npm by about a day (2026-09-11 against 2026-09-12 on 2026-09-13) and a shared anchor would
@@ -65,57 +73,49 @@ WITH roster AS (
   WHERE artifact_kind IN ('pypi', 'npm', 'crates')
 ),
 
--- Every day of history the three registries can offer, in one shape.
-history AS (
+-- Every windowed (kind, package) the three registries can offer, in one shape.
+-- downloads_prev_30d is the 30 days before the current window. This is what tells a step change
+-- that has held for months from a collapse that happened this week, which two point reads cannot:
+-- it is the lmdeploy case in issue #163, where 165K -> 50K turned out to be one step in May.
+windowed AS (
   SELECT
-    'pypi' AS artifact_kind,
+    artifact_kind,
     package,
-    day,
-    downloads,
-    country_count
-  FROM oso.pypi_downloads.daily_downloads_by_package
+    last_day,
+    downloads_30d,
+    downloads_7d,
+    downloads_prev_30d,
+    days_observed,
+    days_of_history,
+    max_country_count,
+    first_day_seen,
+    last_day_seen
+  FROM currentai.signal_packages.downloads_pypi
 
   UNION ALL
 
   SELECT
     artifact_kind,
     package,
-    day,
-    downloads,
-    CAST(NULL AS BIGINT) AS country_count
-  FROM currentai.signal_packages.downloads_daily
-  WHERE day IS NOT NULL
-    AND downloads IS NOT NULL
+    last_day,
+    downloads_30d,
+    downloads_7d,
+    downloads_prev_30d,
+    days_observed,
+    days_of_history,
+    max_country_count,
+    first_day_seen,
+    last_day_seen
+  FROM currentai.signal_packages.downloads_registry
 ),
 
+-- One anchor per registry: every feeder row of a kind carries the same last_day.
 anchors AS (
   SELECT
     artifact_kind,
-    MAX(day) AS last_day
-  FROM history
+    MAX(last_day) AS last_day
+  FROM windowed
   GROUP BY artifact_kind
-),
-
-windowed AS (
-  SELECT
-    h.artifact_kind,
-    h.package,
-    SUM(CASE WHEN h.day > a.last_day - INTERVAL '30' DAY THEN h.downloads ELSE 0 END) AS downloads_30d,
-    SUM(CASE WHEN h.day > a.last_day - INTERVAL '7' DAY THEN h.downloads ELSE 0 END) AS downloads_7d,
-    -- The 30 days before the current window. This is what tells a step change that has held
-    -- for months from a collapse that happened this week, which two point reads cannot: it is
-    -- the lmdeploy case in issue #163, where 165K -> 50K turned out to be one step in May.
-    SUM(CASE
-      WHEN h.day > a.last_day - INTERVAL '60' DAY AND h.day <= a.last_day - INTERVAL '30' DAY
-      THEN h.downloads ELSE 0 END) AS downloads_prev_30d,
-    COUNT(DISTINCT CASE WHEN h.day > a.last_day - INTERVAL '30' DAY THEN h.day END) AS days_observed,
-    COUNT(DISTINCT h.day) AS days_of_history,
-    MAX(h.country_count) AS max_country_count,
-    MIN(h.day) AS first_day_seen,
-    MAX(h.day) AS last_day_seen
-  FROM history h
-  JOIN anchors a ON a.artifact_kind = h.artifact_kind
-  GROUP BY h.artifact_kind, h.package
 ),
 
 -- One row per (kind, package): package_metadata is at product grain, so a package two
