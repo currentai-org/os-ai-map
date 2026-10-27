@@ -154,7 +154,11 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # both sides, and the only difference is alia-40b's row, which goes from level 1 to an abstention because
 # the frozen snapshot never observed the instruct checkpoint. The products that issue adds or promotes
 # produce no row, since the snapshot observed none of their artifacts.
-MEASUREMENTS_DIGEST = "956a8145cbb599e4b38af224f2a394a53d562887449346d1dba2044eb15bd1c2"
+# Moved 2026-10-27 when syfthub's declaration followed the product from OpenMined/syft-hub-sdk, a retired
+# SDK, to OpenMined/syfthub and the syfthub-sdk package. Measured rather than asserted - the row sets were
+# dumped against main and diffed: 339 rows on main, 338 here, and the only difference is syfthub's stars row,
+# which is gone because the frozen snapshot observed only the old repository.
+MEASUREMENTS_DIGEST = "8ee43e5074239b2355858db742530ff3c7331de8ca6bc671f45cf0d5f5792390"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -184,7 +188,8 @@ MEASUREMENTS_DIGEST = "956a8145cbb599e4b38af224f2a394a53d562887449346d1dba2044eb
 
 # Moved 2026-10-08, 377 -> 340, by the adoption rulings; MEASUREMENTS_DIGEST above has the
 # row-by-row account. Moved 2026-10-09, 340 -> 339, by the llama-cpp relabel (same place).
-MEASUREMENT_COUNT = 339
+# Moved 2026-10-27, 339 -> 338, when syfthub's declaration left OpenMined/syft-hub-sdk (same place).
+MEASUREMENT_COUNT = 338
 ROUTING_POLICY_VERSION = "2"
 
 
