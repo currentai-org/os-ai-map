@@ -5123,14 +5123,14 @@
             "components": "weights:open(Apache-2.0, BF16 safetensors, ungated);data:documented-not-released(EuroWeb-2512 web subset released, remaining parallel/curated/synthetic and long-context components documented in the report but withheld);code:closed(only deep-spin/eurollm-eval evaluation harness is EuroLLM-specific, deep-spin/Megatron-LM-pretrain a generic year-stale Megatron-LM fork with no EuroLLM configs);checkpoints:open(intermediate Megatron-Core checkpoints per pretraining phase, eurollm-22b/9b/1.7b-mcore-phase1/2/3);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "EuroLLM ships ungated Apache-2.0 BF16 weights and publishes intermediate Megatron-Core checkpoints for every pretraining phase, matching what OLMo and Apertus release. Only the EuroWeb-2512 web subset of its training data is public -- the parallel, code, math, synthetic-math, book and long-context components are documented but withheld -- and the only EuroLLM-specific code released is an evaluation harness, not the training pipeline. That mix of open weights, partly documented data and unreleased training code keeps it at open weights rather than open source.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/utter-project/EuroLLM-22B-2512",
                 "shows": "`private: false`, `gated: false`, `license: apache-2.0`, `safetensors.total` 22,637,328,384 BF16 parameters, LlamaForCausalLM. Establishes that the weights are downloadable, ungated and OSI-licensed.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "7f9365951377e2680999b0849e4d92c74c92c0ab92b64e4fcd8af702325052c4",
+                "content_sha256": "c70291df2b5d987d24b2d64e66b2e7ea4cb63d7cdeb48cac5fb21a51f9cd37dc",
                 "establishes": [
                   "weights",
                   "license"
@@ -5139,9 +5139,9 @@
               {
                 "url": "https://huggingface.co/utter-project/EuroLLM-22B-2512",
                 "shows": "Model card \"Model Card for EuroLLM-22B\": \"License: Apache License 2.0\"; 22B parameter multilingual transformer trained from scratch on ~4T tokens; describes the three pretraining phases (initial 3.6T, annealing 400B, annealing-to-zero 100B) and the data sources (web, parallel, Wikipedia, Arxiv, books, math, code, Apollo) without releasing the non-web components.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "7b0fc4cde5326c9b3137e3430795a3098b120c655e498da9052140b4e388c9e7",
+                "content_sha256": "74afe3e96880032dfb46bda4de518c6c9b3c68919f7c3b074b37b4e49f028b41",
                 "establishes": [
                   "weights",
                   "license",
@@ -5151,7 +5151,7 @@
               {
                 "url": "https://arxiv.org/pdf/2602.05879",
                 "shows": "Technical report lists the pretraining corpus components (web, parallel, code, math, synthetic math, Wikipedia, ArXiv, Books, Apollo, Cosmopedia, ~60B long-context) and cites github.com/deep-spin/Megatron-LM-pretrain (pre-training) and github.com/deep-spin/eurollm-eval (evaluation) as codebases. Only the web subset (EuroWeb-2512) and the eval harness are actually released; the pretraining repo is a generic Megatron-LM fork (independently verified: last commit 2025-01-06, no EuroLLM configs).",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289",
                 "establishes": [
@@ -5162,9 +5162,9 @@
               {
                 "url": "https://huggingface.co/api/datasets/utter-project/EuroWeb-2512",
                 "shows": "`private: false`, `gated: false`, size category 1B<n<10B, no license tag; the released multilingual web pretraining subset for the 2512 release. Establishes that a documented subset of the corpus is released while the remainder is not.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "a4dcda9e8ed65cbde35e8bd4e8b66582596799e14afa35da36cdee0795e18c0a",
+                "content_sha256": "111a3f34a652bc271691023cc508dcb8d0bec72a4f515d38a614aae5e798fdce",
                 "establishes": [
                   "data"
                 ]
@@ -5172,7 +5172,7 @@
               {
                 "url": "https://huggingface.co/api/models/utter-project/eurollm-22b-mcore-phase1",
                 "shows": "`private: false`, `gated: false`; a public Megatron-Core intermediate checkpoint for the 22B model's first pretraining phase, one of the eurollm-22b/9b/1.7b-mcore-phase1/2/3 series. Establishes checkpoints:open.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "c0051aa8d2d87196007bfc63173047cd10d92494b306a2148304b9c14a40a205",
                 "establishes": [
@@ -15165,12 +15165,12 @@
             "components": "license:Apache-2.0(OSI);weights:open(Apache-2.0 ungated checkpoint);data:documented-not-released(4.2M HLS V2 samples and six bands described; sampled pretraining corpus not released);code:partial(inference and downstream fine-tuning code, not the pretraining pipeline)",
             "confidence": "high",
             "note": "The weights are permissively licensed and the training inputs are described, but the repository starts at inference and downstream fine-tuning rather than reproducing pretraining.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-600M/raw/main/README.md",
                 "shows": "The card identifies Apache-2.0 weights, 4.2M HLS V2 training samples with six bands, six released model variants, and TerraTorch fine-tuning examples.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "12f9ab36f5be76a6c88abd0bdc091c93daa1eaf0d020ad043baa59273c6a8f01",
                 "establishes": [
@@ -15243,12 +15243,12 @@
             "components": "license:Apache-2.0(OSI);weights:open(Apache-2.0 ungated checkpoint);data:open(TerraMesh dataset published on Hugging Face);code:partial(inference, generation, and fine-tuning examples without the full pretraining pipeline)",
             "confidence": "high",
             "note": "TerraMind publishes its weights and named training dataset, but the product repository documents use and adaptation rather than an end-to-end pretraining run.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md",
                 "shows": "Apache-2.0 card linking TerraMesh, describing 500B tokens from 9M aligned multimodal samples, and documenting generation and TerraTorch fine-tuning.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "1fac187c72dfbc20c5c4588885b96ed4c1a6d3ec307e8ec6a17993e5d5b9d9d7",
                 "establishes": [
@@ -15326,12 +15326,12 @@
             "components": "license:Apache-2.0(OSI);weights:open(Apache-2.0 checkpoint);data:components-listed(Landsat 8/9, Sentinel-2 L2A, Sentinel-1 RTC, NAIP, LINZ and MODIS named one by one with bands and resolution; the 33.8TB assembled sample is not redistributed);code:open(trainer, data module, configs, and model implementation released)",
             "confidence": "high",
             "note": "The full training machinery - trainer, data module and configs - is public, and the training-data page names each imagery source in turn rather than describing the corpus in prose. The assembled 33.8TB sample is not redistributed, which keeps Clay at open weights rather than fully open.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/Clay-foundation/model/main/README.md",
                 "shows": "States that code and trained weights use Apache, and documents trainer.py, ClayDataModule, and configuration-driven training.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e",
                 "establishes": [
@@ -15343,7 +15343,7 @@
               {
                 "url": "https://clay-foundation.github.io/model/release-notes/data_sampling.html",
                 "shows": "The training-data page names each imagery source in turn with its coverage and ground resolution - Landsat 8/9 at 30m, Sentinel-2 L2A at 10m, Sentinel-1 RTC at 10m, NAIP under 1m, LINZ under 0.5m and MODIS at 500m - and gives the assembled scale as 33.8TB across about 70 million chips, with the sampling index and stacchip processing code published but no download for the assembled corpus.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "e2d44fcbe7c9be824021becbfbc34d080494fff2e77de6845cac02cfcf1b3df9",
                 "establishes": [
@@ -15413,12 +15413,12 @@
             "components": "license:MIT(OSI);weights:open(MIT ungated checkpoints);data:components-listed(public ERA5, CMIP6, HRES, and GFS sources enumerated; training mixture not released);code:partial(model and inference implementation without pretraining pipeline)",
             "confidence": "high",
             "note": "Aurora releases the multi-task checkpoint family and describes the public training sources, but not the pipeline that produced the pretrained base.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/aurora/main/README.md",
                 "shows": "Lists four specialized forecast versions, links all training datasets, and documents loading released checkpoints; no pretraining procedure is provided.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "73535361d411738555fba1054f88e97aed8a746b6174391e0feb11db08c04c92",
                 "establishes": [
@@ -15429,9 +15429,9 @@
               {
                 "url": "https://huggingface.co/api/models/microsoft/aurora",
                 "shows": "license: mit; gated: false; checkpoint files for weather, air pollution, ocean waves, and cyclone tracking.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "5c6df1caeea6ca14f998e0386c9e2151d0609886061cf41440c2f0adebd8f5d1",
+                "content_sha256": "d753c6c3a6fa3417538a801893f2f893a5d86a025aa88d38177ea9a733c5a987",
                 "establishes": [
                   "weights",
                   "license"
@@ -15490,7 +15490,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-10",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-10-21"
           }
         },
         {
@@ -15506,12 +15507,12 @@
             "components": "license:CDLA-Permissive-2.0(permissive non-OSI);weights:open(CDLA-Permissive-2.0 ungated checkpoint);data:documented-not-released(MERRA-2 variables and climatology identified; exact training sample not released);code:partial(model, validation, and downstream task code without full pretraining pipeline)",
             "confidence": "high",
             "note": "The downloadable checkpoint has a permissive data-oriented license and no use ceiling; the missing pretraining pipeline keeps it at the open-weights center.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-nasa-geospatial/Prithvi-WxC-1.0-2300M/raw/main/README.md",
                 "shows": "Declares CDLA-Permissive-2.0, a 2.3B model trained on 160 MERRA-2 variables, and two pretrained checkpoint variants.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "9eb1978782a865079baa619a4645e681585a808477411088dec8695c274ae459",
                 "establishes": [
@@ -15523,7 +15524,7 @@
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-WxC/main/README.md",
                 "shows": "Identifies the repository as model and downstream-task code, links task-specific fine-tuning repositories, and documents MERRA-2 climatology.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713",
                 "establishes": [
@@ -15593,12 +15594,12 @@
             "components": "weights:open(Apache-2.0 ungated checkpoint);data:open(core SDO dataset released on Hugging Face with download tooling);code:partial(inference and four downstream fine-tuning paths; no full pretraining pipeline);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Surya publishes the checkpoint and dataset, but the repository's training surface begins at downstream adaptation rather than reproducing foundation-model pretraining.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md",
                 "shows": "Links the Apache-2.0 model and core-SDO dataset, provides data download scripts, inference, and four downstream fine-tuning examples.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873",
                 "establishes": [
@@ -15609,9 +15610,9 @@
               {
                 "url": "https://huggingface.co/api/models/nasa-ibm-ai4science/Surya-1.0",
                 "shows": "license: apache-2.0; gated: false; private: false; surya.366m.v1.pt present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "79beebf4559cdfae2d0b22c57f946fd7897a0440618500b1aadc37c2fb204690",
+                "content_sha256": "ada0cc02c425ea0dfdc0378793018317867a144917aa7a5d00e420b4933682a9",
                 "establishes": [
                   "weights",
                   "license"
@@ -15680,14 +15681,14 @@
             "components": "weights:open(MIT ungated PyTorch, TensorFlow, and safetensors files);data:closed(card points to the paper rather than releasing the pretraining corpus);code:partial(inference and fine-tuning integrations without pretraining pipeline);license:MIT(OSI)",
             "confidence": "high",
             "note": "ESM-2 is an openly licensed and widely mirrored checkpoint family, but neither the training corpus nor a reproducible pretraining pipeline ships with this release.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/facebook/esm2_t33_650M_UR50D",
                 "shows": "license: mit; gated: false; private: false; model.safetensors, pytorch_model.bin, and tf_model.h5 present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "625f02bf586600947ed6cb1f316d2d095af7522bed2b02a2486eca6c43d8e70e",
+                "content_sha256": "3120ad461a16654f92b59c18e87d74093bff285ba10565ce59b44b2ceb90b70f",
                 "establishes": [
                   "weights",
                   "license"
@@ -15696,7 +15697,7 @@
               {
                 "url": "https://huggingface.co/facebook/esm2_t33_650M_UR50D/raw/main/README.md",
                 "shows": "Describes masked protein-language pretraining, points training-data detail to the paper, and links downstream fine-tuning notebooks rather than pretraining code.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "462a2f24724e19c6be0efab926315c294a863c9a9770e2c8b3d859b2d81a07de",
                 "establishes": [
@@ -15767,12 +15768,12 @@
             "components": "weights:open(Apache-2.0 ungated checkpoint);data:open(OpenGenome2 raw FASTA and augmented JSONL released);code:open(Savanna training framework and Evo 2 training guidance released);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Evo 2 releases all three parts of the from-scratch stack: permissive weights, the OpenGenome2 training corpus, and the named open training framework.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md",
                 "shows": "Links downloadable checkpoints, the OpenGenome2 raw and processed training data, and the open Savanna framework under its Training and Finetuning section.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89",
                 "establishes": [
@@ -15783,9 +15784,9 @@
               {
                 "url": "https://huggingface.co/api/models/arcinstitute/evo2_7b",
                 "shows": "license: apache-2.0; gated: false; private: false; evo2_7b.pt present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "9923531e979b23020cc51d58d4399b690a289f3b42f0799bdbb05c76627ee51f",
+                "content_sha256": "4b13a7f7dd35ab3cf2248a206b9841f71a00d9394faf73e9d8c3cf18b18f4c0c",
                 "establishes": [
                   "weights",
                   "license"
@@ -15851,17 +15852,17 @@
           "openness": {
             "score": 2,
             "class": "restricted",
-            "components": "weights:open(gated downloadable checkpoint files);data:closed(training corpus not released);code:partial(Apache-2.0 API client, examples, and notebook; no training pipeline);license:AlphaGenome-Model-Terms(non-commercial use only)",
+            "components": "weights:open(gated downloadable checkpoint files);data:open(training TFRecords for all 12 predicted modalities published in a public, unauthenticated Google Cloud Storage bucket (alphagenome-datasets) that the alphagenome_research data loader reads from);code:partial(Apache-2.0 API client, examples, and notebook; no training pipeline);license:AlphaGenome-Model-Terms(non-commercial use only)",
             "confidence": "high",
-            "note": "The checkpoint is now downloadable after accepting terms, correcting the original API-only roster claim, but the terms prohibit commercial use and therefore cap the score at restricted.",
+            "note": "A separate Google DeepMind repository publishes the model's JAX implementation with a loader for its training files, and those files sit in a public Google Cloud Storage bucket that anyone can list and download without signing in. The downloadable checkpoint is still covered by the AlphaGenome Model Terms, which forbid commercial use.",
             "last_verified": "2026-09-10",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/google/alphagenome-all-folds",
                 "shows": "gated: auto; private: false; license_name: alphagenome; checkpoint metadata, manifests, and weight shards present; gate says non-commercial use only.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "fce5be5a341e8d3c0f16fcc57e60317c4ae0492a8733433958e79f1b90f4369c",
+                "content_sha256": "124379d07178a1d40454b1e9c17f4d3097fe94e4fe6f852f56861ccecde734f3",
                 "establishes": [
                   "weights",
                   "license"
@@ -15881,11 +15882,21 @@
               {
                 "url": "https://deepmind.google.com/science/alphagenome/model-terms",
                 "shows": "AlphaGenome model terms govern the downloadable model and limit the grant to non-commercial use.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "a200380ffe405b41debc6e8ade3ec7a3de1df6ee1eb7e22c9872c5fa06560cc4",
+                "content_sha256": "74262ab028bcae1c7d543eb95fc41e3d696ba3c476e4b1e93f4dc5983ee6de18",
                 "establishes": [
                   "license"
+                ]
+              },
+              {
+                "url": "https://storage.googleapis.com/storage/v1/b/alphagenome-datasets/o?delimiter=/&prefix=v1/train/ALL_FOLDS/HOMO_SAPIENS/TRAIN/&maxResults=100",
+                "shows": "Unauthenticated GCS JSON API lists prefixes ATAC/, CAGE/, CHIP_HISTONE/, CHIP_TF/, CONTACT_MAPS/, DNASE/, PROCAP/, RNA_SEQ/, SPLICE_JUNCTIONS/, SPLICE_SITES/, SPLICE_SITE_USAGE/ under v1/train/ALL_FOLDS/HOMO_SAPIENS/TRAIN/, with real object entries (size, md5Hash, mediaLink) for the training TFRecord shards.",
+                "accessed": "2026-10-21",
+                "http_status": 200,
+                "content_sha256": "0500c70b6afc53687e8f0ad5c6b71397f0de40fb722357c6ed0a906fd87b9b88",
+                "establishes": [
+                  "data"
                 ]
               }
             ],
@@ -15951,12 +15962,12 @@
             "components": "weights:open(MIT ungated base and property-conditioned checkpoints);data:open(MP-20 and Alex-MP-20 training releases with preprocessing instructions);code:open(full preprocessing, training, fine-tuning, generation, and evaluation pipeline);license:MIT(OSI)",
             "confidence": "high",
             "note": "MatterGen publishes the weights, training datasets, and end-to-end code required to train and adapt the model, making it a fully open-source release.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/mattergen/main/README.md",
                 "shows": "Provides base and fine-tuned checkpoints, downloadable MP-20 and Alex-MP-20 data, preprocessing, training, fine-tuning, generation, and evaluation commands.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "4a0f0213ad5458046ef8ee59b86a1050a8adb1f0876c146712fdb9efd71a3e5e",
                 "establishes": [
@@ -15967,9 +15978,9 @@
               {
                 "url": "https://huggingface.co/api/models/microsoft/mattergen",
                 "shows": "license: mit; gated: false; private: false; base and property-conditioned checkpoints plus data-release files present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "d0ff4700f255cb7fb6e3b3456509264c072fc035e2335eb92731caccbc35f8fb",
+                "content_sha256": "e08a41f31c08cde2d2a24120ba95a43aa2d4fa5dd7e01a343985944fefc9cc7b",
                 "establishes": [
                   "weights",
                   "license"
@@ -16022,7 +16033,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-14"
+            "latest_axis_confirmation": "2026-10-21"
           }
         },
         {
@@ -16038,12 +16049,12 @@
             "components": "license:Apache-2.0(OSI);weights:open(Apache-2.0 ungated checkpoint files);data:documented-not-released(HLS L30 and GEDI L4A sources and the leaf-on compositing method described, assembled training set not published);code:partial(getting-started and few-shot notebooks over TerraTorch, no pretraining or fine-tuning pipeline)",
             "confidence": "high",
             "note": "The checkpoint and its configuration are published under Apache-2.0 and the card names its NASA source products in detail, but the model repository is archived notebooks and the assembled corpus never shipped.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md",
                 "shows": "Apache-2.0 card stating that the weights and the configuration file that defines them are made available, naming HLS L30 and GEDI L4A as the training data with the cloud-free compositing method, and pointing to getting-started notebooks rather than training code.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00",
                 "establishes": [
@@ -16056,9 +16067,9 @@
               {
                 "url": "https://huggingface.co/api/models/ibm-granite/granite-geospatial-biomass",
                 "shows": "gated: false; private: false; license apache-2.0; biomass_model.ckpt, biomass_model_lightning.ckpt, and config.yaml present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "93721dc6e51a2d669a4a05871a0d7648002ad45abd4291fd0388fd8d635da0c5",
+                "content_sha256": "1acae8ae4d5f6606607932b3b8a0b41cf138fb0f2b1d4b45305f1ff2f3413139",
                 "establishes": [
                   "weights",
                   "license"
@@ -16067,7 +16078,7 @@
               {
                 "url": "https://raw.githubusercontent.com/ibm-granite/granite-geospatial-biomass/main/README.md",
                 "shows": "Describes the repository as public notebooks and utilities for working with the fine-tuned model, with no training or fine-tuning pipeline.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "126cae16fbbb0cda4b7d375cffa900731bed87770c7521e91fe8f4c80fbebe12",
                 "establishes": [
@@ -16138,12 +16149,12 @@
             "components": "weights:open(ungated CC-BY-4.0 DOFA and DOFA v2 checkpoints on Hugging Face);data:components-listed(paper section 6 gives the composition — ~11.5M images across Sentinel-1, Sentinel-2, NAIP, Gaofen and EnMAP, with per-modality channel counts — and a download link per subset, but no assembled DOFA corpus and no script that rebuilds it end to end);code:open(pretraining entry point, masked-autoencoder engine, samplers, and launch script under pretraining/);license:CC-BY-4.0(attribution only, not OSI-approved)",
             "confidence": "medium",
             "note": "The pretraining pipeline is public, the checkpoints are ungated, and the paper links a download for each of the five training subsets, enough to audit the mixture. But those subsets are third-party datasets nothing in the repository assembles into one release, so the corpus is not fully open, and the weights carry CC-BY-4.0 rather than the repository's own MIT license.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/earthflow/DOFA",
                 "shows": "gated: false; private: false; license cc-by-4.0; DOFA_ViT_base_e100.pth, DOFA_ViT_large_e100.pth, dofav2_vit_base_e150.pth, and dofav2_vit_large_e150.pth present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "08b25d8c7adb1d043170a8b6c815da7ad07cea0766e818bad4f7c12e7ecba130",
                 "establishes": [
@@ -16154,7 +16165,7 @@
               {
                 "url": "https://huggingface.co/earthflow/DOFA/raw/main/README.md",
                 "shows": "Card front matter and the model details both state License: CC-BY-4.0 for the released DOFA weights.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "da6a3e09bd7afd27f7d80d71b2bfd01883bb4e0be784b5a142af7219c038bc95",
                 "establishes": [
@@ -16185,11 +16196,31 @@
               {
                 "url": "https://arxiv.org/pdf/2403.15356v3",
                 "shows": "Section 4.5 — \"DOFA is pretrained on a large-scale multimodal EO dataset comprising approximately 11.5 million images from five different modalities: Sentinel-1, Sentinel-2, NAIP, Gaofen, and EnMAP\". Section 6 Data availability statements gives a download link per subset (SatlasPretrain for Sentinel-1 and Sentinel-2, a named Drive folder for Gaofen, hyspecnet.rsim.berlin for EnMAP).",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "5a8fed90e47fa78f2a561de486e3c0270e691aeee288cffc986ac854a889d395",
                 "establishes": [
                   "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/zhu-xlab/DOFA/refs/heads/master/pretraining/main_pretrain_ofa.py",
+                "shows": "Full MAE pretraining entry point: argparse config, Sentinel-1/Sentinel-2/NAIP/Gaofen/hyperspectral dataset loaders, model and training-loop imports -- a genuine training script, not inference code.",
+                "accessed": "2026-10-21",
+                "http_status": 200,
+                "content_sha256": "ebd7d38f850e528fe4cafe3c673960a541669bd468a914b805b37e567bc7cbfb",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/zhu-xlab/DOFA/refs/heads/master/pretraining/engine_pretrain.py",
+                "shows": "The train_one_epoch loop imported by main_pretrain_ofa.py, implementing the actual MAE pretraining step.",
+                "accessed": "2026-10-21",
+                "http_status": 200,
+                "content_sha256": "e1aaa90348898e75006f713304aa7f8bef9f1046fdb5de3b4a4f45fb7f8856ec",
+                "establishes": [
+                  "code"
                 ]
               }
             ],
@@ -16246,7 +16277,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-14"
+            "latest_axis_confirmation": "2026-10-21"
           }
         },
         {
@@ -16380,14 +16411,14 @@
             "components": "license:proprietary(no license granted over the model, the embedding layers are licensed separately under CC-BY 4.0);weights:closed(no checkpoint distributed, only precomputed annual embedding layers);data:closed(training corpus not released);code:closed(no public implementation, training, or inference code)",
             "confidence": "high",
             "note": "Both primary sources describe releasing a dataset of embedding layers, not the model itself. Because no weights are downloadable, the license question does not even arise, and the CC-BY-4.0 grant on the Earth Engine collection covers the output layers, not the model that produced them.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2507.22291",
                 "shows": "Abstract states that the authors have released a dataset of global, annual, analysis-ready embedding field layers from 2017 through 2024, and offers no weights, corpus, or code.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "f279d00bb71133655ef3c1a6f24886a0fff350885ae0707b5332f97d2b15f3b7",
+                "content_sha256": "c38ac777f0a8929ce8a6dd48f8687741e15206e4972baabd214f8e9c7151d5c5",
                 "establishes": [
                   "weights",
                   "data",
@@ -16397,9 +16428,9 @@
               {
                 "url": "https://deepmind.google/discover/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/",
                 "shows": "Announcement says the team is releasing a collection of AlphaEarth Foundations' annual embeddings as the Satellite Embedding dataset in Google Earth Engine, with no mention of publishing the model.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "fdbf0104d652691cd8c4a23c6715e183b60786953fd8117bfaad3045e3064b82",
+                "content_sha256": "9cd3a000d3dbd617a81c0ce2fe1f799bdcfcce3aa55b1b4be0c8e98787a4803d",
                 "establishes": [
                   "weights",
                   "code"
@@ -16408,7 +16439,7 @@
               {
                 "url": "https://storage.googleapis.com/earthengine-stac/catalog/GOOGLE/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL.json",
                 "shows": "The collection's STAC record distributes an Earth Engine ImageCollection of 64-band annual embedding images under CC-BY-4.0 with a required attribution string. It describes a dataset; nothing in it distributes the model. Cited in place of the rendered catalog page, whose body is nondeterministic.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "1c5fb2abdcbf6d12a9b6cfecf10ccc55cbfac7d009645536d4e4828f9a14e012",
                 "establishes": [
@@ -16469,7 +16500,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-14"
+            "latest_axis_confirmation": "2026-10-21"
           },
           "version_note": "What Google DeepMind released is the embedding dataset, not the model. There is no checkpoint, no implementation, and no license over weights, so the product is scored closed even though its outputs are freely usable."
         },
@@ -16565,12 +16596,12 @@
             "components": "license:MIT(OSI);weights:open(MIT ungated checkpoints at two grid resolutions);data:open(Snakemake download and regrid workflow plus preprocessing scripts reconstruct the CMIP6 pretraining corpus end to end);code:open(pretraining entry point and config alongside per-task fine-tuning configs and data preparation scripts)",
             "confidence": "high",
             "note": "ClimaX is the rare complete release in this category - the corpus is rebuildable from shipped scripts rather than merely described, the pretraining run is a documented command with its config, and MIT covers both the repository and the published checkpoints.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://microsoft.github.io/ClimaX/usage/",
                 "shows": "A Snakemake workflow downloads and regrids CMIP6 variables and nc2np_equally_cmip6.py preprocesses them for pretraining; pretraining runs as src/climax/pretrain/train.py --config configs/pretrain_climax.yaml; two pretrained checkpoints at 5.625deg and 1.40625deg are provided, both pretrained on all five CMIP6 datasets, and each downstream task has a fine-tuning config.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694",
                 "establishes": [
@@ -16581,7 +16612,7 @@
               {
                 "url": "https://raw.githubusercontent.com/microsoft/ClimaX/main/LICENSE",
                 "shows": "Full MIT License text, copyright Microsoft Corporation, with no added use restriction.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
                 "establishes": [
@@ -16591,7 +16622,7 @@
               {
                 "url": "https://huggingface.co/api/models/tungnd/climax",
                 "shows": "license: mit; gated: false; private: false; checkpoint files 5.625deg.ckpt, 1.40625deg.ckpt, vits.ckpt, vitb.ckpt and vitl.ckpt.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "536e19e2460ec7a1b0ae68939c7f922e5b6816d4b7c0150ad866629b932eb39d",
                 "establishes": [
@@ -16646,7 +16677,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-20"
+            "latest_axis_confirmation": "2026-10-21"
           },
           "version_note": "The repository README is a stub; the substantive documentation is the project docs site."
         },
@@ -16663,12 +16694,12 @@
             "components": "weights:open(CC-BY-SA-4.0 checkpoints on an anonymously readable Google Cloud bucket);data:documented-not-released(ERA5 inputs, forcings and pressure levels specified with ARCO-ERA5 named as the source; the training corpus is not released);code:partial(inference API, regridding utilities, and reference_code carrying per-checkpoint training configs and loss code, but its entry point imports google_proprietary_code, a package that is not published, so the training path cannot run);license:CC-BY-SA-4.0(permissive non-OSI)",
             "confidence": "high",
             "note": "Apache-2.0 covers the code, but the trained weights carry CC-BY-SA-4.0, a share-alike, non-OSI license, and that is the license that applies to the released model. The training code is only partly public: the reference code ships per-checkpoint configs, training utilities and loss code, but the experiment script imports an unpublished Google-internal module, so the training path cannot be run.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/neuralgcm/neuralgcm/main/README.md",
                 "shows": "States the split license: code under Apache License 2.0, trained model weights under Creative Commons Attribution-ShareAlike 4.0 International.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "0e0c6f4e585ad1ff0e1735aa89cdbbff9152fd345e73c42eedad5bc619b72586",
                 "establishes": [
@@ -16678,7 +16709,7 @@
               {
                 "url": "https://neuralgcm.readthedocs.io/en/latest/",
                 "shows": "\"Pseudo-code for training NeuralGCM models can be found in the reference_code subdirectory\", the documentation \"focuses mostly on our API for inference\", and the team notes it would like to support training, modifying and fine-tuning but the present codebase makes it trickier than it needs to be.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "725df0f422b0b8fc15ac1d50e8f53614af942a28e1dbfc3fdc55adb517dee080",
                 "establishes": [
@@ -16688,7 +16719,7 @@
               {
                 "url": "https://neuralgcm.readthedocs.io/en/latest/data_preparation.html",
                 "shows": "Specifies the ERA5 pressure levels, input/output variables and sea-surface forcings the models take, and uses the ARCO-ERA5 Zarr copy of ERA5 as the worked example; no training corpus is distributed.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "496c591aca645eac0d16ad231ea1514477aaf66d167c00c1a90cd64de83e72f1",
                 "establishes": [
@@ -16698,7 +16729,7 @@
               {
                 "url": "https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html",
                 "shows": "Loads checkpoints from gs://neuralgcm/models with an anonymous token, offering v1/deterministic_0_7_deg.pkl, v1/deterministic_1_4_deg.pkl, v1/deterministic_2_8_deg.pkl and v1/stochastic_1_4_deg.pkl.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f",
                 "establishes": [
@@ -16767,7 +16798,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-20"
+            "latest_axis_confirmation": "2026-10-21"
           },
           "version_note": "The repository README points to the documentation site, which is where the checkpoints, data preparation, and the limits of the released training code are described."
         },
@@ -16784,12 +16815,12 @@
             "components": "weights:open(CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt);data:documented-not-released(ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed);code:partial(config_pretraining.yaml and config_finetuning.yaml ship beside the checkpoint with pinned Anemoi versions and both stage commands, but no data-preparation recipe - the commands begin DATASETS_PATH=??????? and no anemoi-datasets build ships);license:CC-BY-4.0(permissive non-OSI)",
             "confidence": "high",
             "note": "ECMWF publishes both the pretraining and fine-tuning configs beside the checkpoint, with pinned library versions and the commands to run them. But both commands point to an undefined dataset path, and no script builds the ERA5 and operational-analysis inputs the checkpoint was trained on, so this reads as open weights with partial code rather than a fully open release.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md",
                 "shows": "\"These model weights are published under a Creative Commons Attribution 4.0 International (CC BY 4.0)\" while notebooks and scripts are Apache 2.0; gives the pretraining command anemoi-training train --config-name=config_pretraining.yaml against pinned anemoi-training 0.3.1, anemoi-models 0.4.0 and anemoi-graphs 0.4.4, then the fine-tuning stage; and details pretraining on ERA5 1979-2022 followed by rollout on operational IFS analyses 2016-2022.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09",
                 "establishes": [
@@ -16801,9 +16832,9 @@
               {
                 "url": "https://huggingface.co/api/models/ecmwf/aifs-single-1.0",
                 "shows": "license: cc-by-4.0; gated: false; private: false; siblings include aifs-single-mse-1.0.ckpt, config_pretraining.yaml and config_finetuning.yaml.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "afc5dec23d8a9a741faad81ca8ae47a5c13715583b42ec5b404decb1506787d1",
+                "content_sha256": "c561e19a1abf3a75691c27ee5782dbcee9b451c68f5ef2293af61de637aa73cd",
                 "establishes": [
                   "weights",
                   "license"
@@ -16956,14 +16987,14 @@
             "components": "weights:open(ungated Apache-2.0 backbone checkpoint plus nine modality tokenizer checkpoints);data:documented-not-released(SomBench composition given tile by tile; the published dataset repo is a sample);code:partial(TerraTorch fine-tuning integration and configs; README states pretraining code is not included);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "An unusually complete release for a government-lab model, though not a fully open one. The corpus is described down to per-modality counts and split rules, but what ships on the Hub is only a sample, and the fine-tuning repository states that pretraining code is not included.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model",
                 "shows": "license:apache-2.0; gated: false; private: false; backbone/checkpoint.pt and nine tokenizers/*/checkpoint.pt present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "a7cea6d760f969ace2e57e08e97b42e10abc67dcc8e5fdd3b39492f7855cd540",
+                "content_sha256": "9da1e480b3448bd72e63627d0578f35381f050a45c5206b85dfe9bbc23982b7c",
                 "establishes": [
                   "weights",
                   "license"
@@ -16972,7 +17003,7 @@
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/LICENSE",
                 "shows": "Apache License Version 2.0 body, contradicting the NOASSERTION the GitHub license endpoint reports.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "9b00f43643ca3c0f99c0d4345ea6182735c0a1897b2e2681593012238cb70150",
                 "establishes": [
@@ -16982,7 +17013,7 @@
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/README.md",
                 "shows": "\"Pretraining code is not included.\" The two packages are the vendored model package and a TerraTorch integration of datamodules, tasks, backbone wrappers and runnable fine-tuning configs.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "66c86f3cd0d3d4416edf1252aeb5ec16c3c5e0d7706823b3dd814d7834a05cc6",
                 "establishes": [
@@ -16992,9 +17023,9 @@
               {
                 "url": "https://huggingface.co/api/datasets/nasa-ibm-ai4science/Sombench-pretraining-data",
                 "shows": "\"This includes a small sample from SomBench\"; license cc-by-4.0; size_categories n<1K, against the 963,609 WAC and 1,000,113 NAC bundles the model card says pretraining used.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "7f1d039980be91a9880080a444d2f920a78edc282fd0e83ed4fdb0ebc4fc54bd",
+                "content_sha256": "c671c19a77b272ce78cbc1985d394f5b8cdea1704bd10eb3b7270306112ac2de",
                 "establishes": [
                   "data"
                 ]
@@ -17067,17 +17098,17 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside);data:closed(2.78 billion natural proteins described by count, corpus not released);code:partial(inference, generation and tutorial code in the esm package; no pretraining pipeline);license:MIT(OSI; stated in the card body and repository LICENSE.md rather than a card license field)",
+            "components": "weights:open(ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside);data:documented-not-released(composition described by scale -- 2.78B natural proteins, 3.15B sequences with synthetic augmentation, 236M structures, 539M function-annotated proteins, 771B tokens -- but no corpus or reconstruction scripts released);code:partial(inference, generation and tutorial code in the esm package; no pretraining pipeline);license:MIT(OSI; stated in the card body and repository LICENSE.md rather than a card license field)",
             "confidence": "medium",
-            "note": "The checkpoint's Hugging Face namespace moved to biohub with no license field on the destination card, but MIT is still stated in the card body and in the repository's LICENSE.md, so the grant survives even though it is asserted in prose rather than declared as metadata. Only the 1.4B checkpoint is downloadable; the 7B and 98B models remain available only through the hosted API.",
-            "last_verified": "2026-09-10",
+            "note": "ESM3's open 1.4B checkpoint can be downloaded and run locally without an access request, under the MIT license stated in the repository's LICENSE.md and on the card. The training corpus is described in detail but not released, and the published code covers inference, generation and tutorials rather than pretraining. The 7B and 98B models are reachable only through the hosted API.",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/EvolutionaryScale/esm3-sm-open-v1",
                 "shows": "Redirects to huggingface.co/api/models/biohub/esm3-sm-open-v1; gated: false; private: false; no license tag and no cardData license key; data/weights/esm3_sm_open_v1.pth, esm3_structure_decoder_v0.pth and esm3_function_decoder_v0.pth present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "a16b6496a1baeeb025ac816da43d85c3b8fab0eb0ace10d95857470cf237de88",
+                "content_sha256": "589d517110cff2705de786a2013629e2da5d6b254bd0a50b1b2a6cc993da73fd",
                 "establishes": [
                   "weights"
                 ]
@@ -17085,7 +17116,7 @@
               {
                 "url": "https://huggingface.co/biohub/esm3-sm-open-v1/raw/main/README.md",
                 "shows": "Front matter declares only language and tags, no license. The body says \"This repository is under a MIT license\" and links the esm repository LICENSE.md; training is described as 2.78 billion natural proteins, with no corpus released.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "4aedacc49eff2fb6b90b926b5252076818a888884ac34d8a6701cd74421903d5",
                 "establishes": [
@@ -17096,7 +17127,7 @@
               {
                 "url": "https://raw.githubusercontent.com/Biohub/esm/main/LICENSE.md",
                 "shows": "\"License (MIT)\", Copyright 2026 Chan Zuckerberg Biohub, Inc., with the standard MIT permission grant.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "b63df9ca1dd96b3b21eec226b51b236d0bd152ac20eafc43aad46bf832b48d8a",
                 "establishes": [
@@ -17106,7 +17137,7 @@
               {
                 "url": "https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md",
                 "shows": "\"These models are available under the MIT license.\" Code covers local inference and generation and a tutorials cookbook; the 7B and 98B tiers are reachable only through the hosted platform.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6",
                 "establishes": [
@@ -17185,12 +17216,12 @@
             "components": "weights:open(AlphaFold 3 parameters at a published URL but only if received directly from Google; AlphaFold 2 parameters freely downloadable);data:closed(training corpus not released in either generation);code:partial(Apache-2.0 inference pipeline in both repositories; no training code);license:AlphaFold-3-Model-Parameters-Terms-of-Use(non-commercial use only; the resolved tier for the line, AlphaFold 2 parameters being CC-BY-4.0)",
             "confidence": "high",
             "note": "Google DeepMind distributes AlphaFold 3 parameters only on direct request, under terms that forbid commercial use, while AlphaFold 2's parameters remain freely available under CC-BY-4.0. AlphaFold 3 is the version now shipped, so its more restrictive terms are what the license reflects, keeping the line at restricted rather than open weights.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/alphafold3/main/README.md",
                 "shows": "\"You may only use AlphaFold 3 model parameters if received directly from Google\"; parameters download from storage.googleapis.com/alphafold3/af3.bin.zst subject to separate terms; source code is Apache-2.0; the package \"provides an implementation of the inference pipeline\".",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "0aff5538016f91aae06209319e4514e23a2fc6156854271f75873f8b78e0e44f",
                 "establishes": [
@@ -17202,7 +17233,7 @@
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/alphafold3/main/WEIGHTS_TERMS_OF_USE.md",
                 "shows": "The grant covers \"non-commercial use by, or on behalf of, non-commercial organizations\", provided \"you are not a commercial organisation or acting on behalf of a commercial organisation\", and excludes commercial activities including research on behalf of commercial organizations.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "41adf62ff5eabc58831c828793988537948663c139f8b87d8d413851b150b6e5",
                 "establishes": [
@@ -17212,7 +17243,7 @@
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/alphafold/main/README.md",
                 "shows": "\"The AlphaFold parameters are made available under the terms of the Creative Commons Attribution 4.0 International (CC BY 4.0) license\"; the repository publishes inference only and points training data detail at the paper.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "39a82c6f8ecfaf16872275167e98ff00109321f8de150edf5212dc9ed36f3763",
                 "establishes": [
@@ -17291,12 +17322,12 @@
             "components": "weights:open(Apache-2.0 OpenFold3 checkpoints behind an auto-approved form, and OpenFold's own AlphaFold 2-reproduction parameters fetched by repository scripts);data:open(OpenProteinSet, some 400,000 MSAs and PDB70 template hit files, on the AWS Registry of Open Data);code:open(train_openfold.py plus a documented end-to-end training guide, not inference alone);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "OpenFold was built to be retrained from the start: the AlphaFold-2 reproduction ships a full training corpus (OpenProteinSet, on AWS's Registry of Open Data), a training pipeline (train_openfold.py and its guide), and the resulting weights, all under Apache-2.0. OpenFold can also load DeepMind's original AlphaFold 2 parameters, released separately under CC-BY-4.0. OpenFold3-preview ships checkpoints without a matching corpus or pipeline, so its openness reading depends on that AlphaFold-2 evidence.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/OpenFold/OpenFold3",
                 "shows": "license: apache-2.0; private: false; gated: auto with the prompt \"The OpenFold3-preview model is released under Apache 2.0 license. You will automatically get access to the model after answering the following simple questions\"; four checkpoints/*.pt files present.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "4e788b686efac5d437a47665c52aa43519fe4d58fcaa85eef70e8bd301bff8bf",
                 "establishes": [
@@ -17307,7 +17338,7 @@
               {
                 "url": "https://raw.githubusercontent.com/aqlaboratory/openfold/main/docs/source/original_readme.md",
                 "shows": "\"We've publicly released model weights and our training data - some 400,000 MSAs and PDB70 template hit files - under a permissive license. Model weights are available via scripts in this repository while the MSAs are hosted by the Registry of Open Data on AWS.\"",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "aa0812608f4b4dca4b4d30b9e0eb6b7d08ca9d1596535419d6255c3ced48f36f",
                 "establishes": [
@@ -17318,7 +17349,7 @@
               {
                 "url": "https://registry.opendata.aws/openfold/",
                 "shows": "OpenProteinSet listed on the Registry of Open Data on AWS as a public dataset, cited as OpenFold's training data.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "6040d8111ded79d669feab83b0a23f6146dd380aa2b0b2ff39ac775bbba963d4",
                 "establishes": [
@@ -17328,7 +17359,7 @@
               {
                 "url": "https://openfold.readthedocs.io/en/latest/Training_OpenFold.html",
                 "shows": "A training guide covering how to train an OpenFold model from the RODA dataset and how to fine-tune it, alongside a separate page on setting up the PDB training set.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "46cc7e7906b12250665a83154d0890449f27c776a12d2249652e55fedb02ddb7",
                 "establishes": [
@@ -17338,7 +17369,7 @@
               {
                 "url": "https://raw.githubusercontent.com/aqlaboratory/openfold/main/LICENSE",
                 "shows": "Apache License Version 2.0 body, matching the license the GitHub API reports for the repository.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "7a77a0f9b49715d3b124b39607c53c5df8795d26f7aae08b12e6dbb9b1ec1a40",
                 "establishes": [
@@ -17406,7 +17437,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-20"
+            "latest_axis_confirmation": "2026-10-21"
           },
           "version_note": "The OpenFold3 Hugging Face repository is Apache-2.0 but auto-gated behind a name-and-affiliation form, so its download counter reads zero and cannot carry the adoption signal."
         },
@@ -17423,12 +17454,12 @@
             "components": "weights:open(MIT weights downloaded by the boltz package, covering Boltz-1 and Boltz-2);data:open(pre-processed RCSB and OpenFold structures and MSAs published for download, with instructions for reprocessing raw data);code:open(training script and structure and confidence model configs under scripts/train, alongside a training guide);license:MIT(OSI)",
             "confidence": "high",
             "note": "Boltz-1's full release - training corpus, preprocessing pipeline, training configs and MIT-licensed weights - is what makes this an open-source rather than open-weights entry. Boltz-2's equivalents are announced but not yet published, so the runnable training pipeline trails the model most users would want to retrain; the MIT license and weights, though, cover both versions.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md",
                 "shows": "\"All the code and weights are provided under MIT license, making them freely available for both academic and commercial uses\"; a Training section pointing at docs/training.md for retraining.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2",
                 "establishes": [
@@ -17439,7 +17470,7 @@
               {
                 "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/LICENSE",
                 "shows": "MIT License body, Copyright (c) 2024 Jeremy Wohlwend, Gabriele Corso, Saro Passaro.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "f0667fd5e66c51e1ba8ddaa0249c6d7225b30037e02c45782d8f2c2943ac2617",
                 "establishes": [
@@ -17449,7 +17480,7 @@
               {
                 "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/docs/training.md",
                 "shows": "Download links for the pre-processed RCSB and OpenFold structures and MSAs and the ligand symmetry file, instructions for reprocessing raw data, and template training configs for the structure and confidence models under scripts/train/configs; Boltz-2 training information is marked coming soon.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c",
                 "establishes": [
@@ -17519,7 +17550,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-20"
+            "latest_axis_confirmation": "2026-10-21"
           }
         },
         {
@@ -17730,14 +17761,14 @@
             "components": "weights:open(Apache-2.0 ungated V1-10M, V2-104M, and V2-316M checkpoints);data:open(Genecorpus-30M and Genecorpus-104M published as Hugging Face datasets);code:open(tokenization, DeepSpeed pretraining, fine-tuning, and in silico perturbation code in the model repository);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Geneformer publishes the weights, both named pretraining corpora, and a pretraining script in one Apache-2.0 repository, which is a full from-scratch, source-available release.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/ctheodoris/Geneformer",
                 "shows": "gated: false; private: false; license:apache-2.0 tag; Geneformer-V1-10M, Geneformer-V2-104M, Geneformer-V2-316M, and cancer-tuned safetensors present.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "64aadee9b52331927ec792d10da1960606cd7cb39c1e675f9220d0cb3fdbf7cb",
+                "content_sha256": "bb470262f90206ffe2954a79f1a44af47a1b573a82faab042ebe67274d7b40ab",
                 "establishes": [
                   "weights",
                   "license"
@@ -17746,7 +17777,7 @@
               {
                 "url": "https://huggingface.co/ctheodoris/Geneformer/raw/main/README.md",
                 "shows": "Links Genecorpus-30M and Genecorpus-104M as released datasets and lists repository functions for tokenizing, pretraining, fine-tuning, embedding extraction, and in silico perturbation.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8",
                 "establishes": [
@@ -17816,12 +17847,12 @@
             "components": "weights:open(ungated whole-human, organ-specific, and pan-cancer checkpoint folders);data:closed(33 million pretraining cells described in the preprint with no corpus or reconstruction scripts released);code:partial(fine-tuning, inference, and reference-mapping examples; the pretraining code is still an open to-do);license:MIT(OSI)",
             "confidence": "high",
             "note": "scGPT is an openly licensed checkpoint zoo with adaptation code, but the repository's own to-do list still carries the pretraining code, and the corpus was never released.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/README.md",
                 "shows": "Lists eight downloadable pretrained checkpoint folders, describes pretraining on 33 million normal human cells without releasing the corpus, ships a fine-tuning example, and leaves \"Provide the pretraining code with generative attention masking\" unchecked.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83",
                 "establishes": [
@@ -17833,7 +17864,7 @@
               {
                 "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/LICENSE",
                 "shows": "MIT License body covering the repository, read directly rather than from the license endpoint.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "1ceeacbed51e2890187425547bc2efd16c1b7ad45189b7dfb21e83a45a2e9d9e",
                 "establishes": [
@@ -17909,12 +17940,12 @@
             "components": "weights:open(ungated 4-layer and 33-layer checkpoints, fetched by the evaluation script or from Figshare);data:documented-not-released(the paper describes the 36-million-cell Integrated Mega-scale Atlas corpus while the repository links processed paper datasets rather than the pretraining corpus);code:partial(embedding and evaluation script only; no pretraining pipeline);license:CC-BY-4.0(governs the Figshare-hosted checkpoints; the repository MIT covers the code only)",
             "confidence": "high",
             "note": "The checkpoints are downloadable and the paper describes the training corpus, but the repository ships only code to embed a dataset, not a pretraining pipeline, keeping this off a fully open release. The weights' own license applies, not the repository's: the 33-layer checkpoint ships from a Figshare record stating CC BY 4.0, while the repository LICENSE is MIT and covers only the code.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/snap-stanford/UCE/main/README.md",
                 "shows": "Documents automatic download of the pretrained 4-layer model and a Figshare link for the 33-layer model, exposes only eval_single_anndata.py, and links processed paper datasets rather than the training corpus.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "4454680cbe611ede29c2d19da3a000d874ec145ca3f36be9659545c0e5015101",
                 "establishes": [
@@ -17925,9 +17956,9 @@
               {
                 "url": "https://www.nature.com/articles/s41586-026-10689-z",
                 "shows": "Describes self-supervised training on a large corpus of cell data and the resulting Integrated Mega-scale Atlas of 36 million cells from hundreds of experiments, dozens of tissues, and eight species.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "f5fc0a2789728c2f2b2079292dfe514b3161de9c28b4c6c2852fb42cb98bc94a",
+                "content_sha256": "2c17f23d12fc72994de6afbf5abdfde313d2c364298c1a4f8795b12de449f919",
                 "establishes": [
                   "data"
                 ]
@@ -17935,9 +17966,19 @@
               {
                 "url": "https://raw.githubusercontent.com/snap-stanford/UCE/main/LICENSE",
                 "shows": "MIT License body covering the repository and the released model files, read directly rather than from the license endpoint.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "bf068012efcf3a796af03889d4214df435bc1220ac97981c77a14f14c5070cde",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.figshare.com/v2/articles/24320806",
+                "shows": "Figshare API record for 'Universal Cell Embedding Model Files' (the 33-layer checkpoint's hosting record): license {'name': 'CC BY 4.0', 'url': 'https://creativecommons.org/licenses/by/4.0/'}.",
+                "accessed": "2026-10-21",
+                "http_status": 200,
+                "content_sha256": "58019bdd1fbe930d4b62b2d84479a226fb41837b413c66057a08a2b03dcf6af1",
                 "establishes": [
                   "license"
                 ]
@@ -18011,12 +18052,12 @@
             "components": "weights:open(MIT MatterSim-v1.0.0-1M and MatterSim-v1.0.0-5M checkpoints in the repository);data:closed(the 3M and 6M-structure training sets are not released; only the test datasets ship);code:partial(inference and fine-tuning scripts; no pretraining pipeline);license:MIT(OSI)",
             "confidence": "high",
             "note": "The released v1 checkpoints are MIT and locally runnable, but the training data stays inside Microsoft and the repository documents fine-tuning rather than a pretraining run.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/mattersim/main/MODEL_CARD.md",
                 "shows": "license: mit for the released models, training data sizes of 3M and 6M structures with no download, and released test datasets only.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "9f48dffafb55f0700bbc2d180ce8f7b5bc28decac1de43c3058c323a7c0dc5b7",
                 "establishes": [
@@ -18027,7 +18068,7 @@
               {
                 "url": "https://raw.githubusercontent.com/microsoft/mattersim/main/README.md",
                 "shows": "Offers two pretrained MatterSim-v1 checkpoints from the repository's pretrained_models folder and a finetune_mattersim.py script, with no pretraining entry point.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "b222a569a01bc94712f2385661cb3d6294ec8bedff7aa8ec93b902f4a1005d95",
                 "establishes": [
@@ -18081,7 +18122,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-20"
+            "latest_axis_confirmation": "2026-10-21"
           },
           "version_note": "The pretrained checkpoints ship inside the repository and through the mattersim PyPI package; more advanced versions are held back behind Azure Quantum Elements."
         },
@@ -18221,14 +18262,14 @@
             "components": "weights:open(ungated foundation checkpoints published as GitHub release assets);data:components-listed(MPTrj named with a Figshare link in the MACE-MP prose; sAlex, OMAT, SPICE v1, MATPES-PBE/r2SCAN, OMOL and OC20 are each named per checkpoint in the foundation-models table with no link and no disclosed mixture or sampling ratio for multi-dataset checkpoints);code:open(full data preprocessing, distributed training, and fine-tuning pipeline);license:MIT(code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints)+ASL(MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic non-commercial only)",
             "confidence": "high",
             "note": "MACE names every training dataset per checkpoint, with a link for MPTrj, but the mixture and sampling ratio behind the multi-dataset checkpoints are not disclosed, so the corpus itself is not reproducible. The pretraining pipeline and weights are both public. Some checkpoints ship under MIT, but the newer foundation checkpoints ship under the Academic Software License, which states that it is not an open-source license because it forbids commercial use; where a release mixes licenses like this, the more restrictive one governs the score, so the release counts as restricted.",
-            "last_verified": "2026-10-14",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/ACEsuit/mace/main/README.md",
                 "shows": "Tabulates the recommended foundation models with a download link, a named training dataset, and a licence column per checkpoint — MIT for MACE-MP-0a, 0b3 and MPA-0, ASL for OMAT-0, MATPES and OMOL-0 and MH — and documents mace_run_train, preprocess_data.py, multi-GPU training, and foundation-model finetuning.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "c3e61eb0c17cca62d5a1a1cf71d1532e9e7506bcf31ddf5d99d1f2a6a0f4a1ac",
+                "content_sha256": "ce86d53b18ca7b6167d4791fac5832c37deb680dd0534354575c837c16cfac89",
                 "establishes": [
                   "weights",
                   "data",
@@ -18239,7 +18280,7 @@
               {
                 "url": "https://raw.githubusercontent.com/ACEsuit/mace/main/LICENSE.md",
                 "shows": "MIT License body with an added ACEsuit/mace copyright line, read directly because the license endpoint reports NOASSERTION; it covers the code, not the checkpoints.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "42137790f854ae2b9d29a0a72a4da3f6fb9a21d820b3f276f23b0575af72e86e",
                 "establishes": [
@@ -18249,7 +18290,7 @@
               {
                 "url": "https://raw.githubusercontent.com/gabor1/ASL/main/ASL.md",
                 "shows": "States the Academic Software Licence is not an open-source licence because it does not allow commercial use, and grants rights only for academic non-commercial use.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "54a623a4bba6833807aad02bc24ad85bbda97826274595559bc112b7b5abbf43",
                 "establishes": [
@@ -18308,7 +18349,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-10-14",
+            "latest_axis_confirmation": "2026-10-21",
             "unconfirmed_axes": [
               "adoption"
             ],
@@ -18334,12 +18375,12 @@
             "components": "weights:open(Apache-2.0 ungated checkpoints loaded through the orb_models.forcefield.pretrained module);data:open(MPTrj, Alexandria, OMat24, OMol25, and OPoly26 training datasets publicly released);code:partial(inference, simulation wrappers, and a finetuning script; no pretraining pipeline);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Orb names a released public dataset behind every checkpoint and licenses the models under Apache-2.0, but the repository ships adaptation code rather than a pretraining run, which keeps it from reaching a fully open, from-scratch release.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/orbital-materials/orb-models/main/README.md",
                 "shows": "States that Orb models are licensed under the Apache License, Version 2.0, loads checkpoints from orb_models.forcefield.pretrained with no gate, and documents finetune.py and a finetuning guide but no pretraining entry point.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "6ee1f8fcda191b3d4a4d1716256af566c85d279a56352d5722439e9c28210938",
                 "establishes": [
@@ -18350,7 +18391,7 @@
               {
                 "url": "https://raw.githubusercontent.com/orbital-materials/orb-models/main/MODELS.md",
                 "shows": "Names the training dataset for each released model: OMol25 and OPoly26 for OrbMol, OMat24 or MPA for v3, MPTraj and Alexandria for v2, each with a public link or reference.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "1fc0af7c8c9314a40862bf5e6c1898c12ae87d6c035e0b129724743a7d4483a4",
                 "establishes": [
@@ -18360,7 +18401,7 @@
               {
                 "url": "https://raw.githubusercontent.com/orbital-materials/orb-models/main/LICENSE",
                 "shows": "Apache License 2.0 body with a 2024 Orbital Materials copyright, read directly rather than from the license endpoint.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "ae89c659da81fa5cf80f03e1fe25fc7c6fac7db0b66d80592562537a614e0dbb",
                 "establishes": [
@@ -18420,7 +18461,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-20"
+            "latest_axis_confirmation": "2026-10-21"
           },
           "version_note": "Checkpoints are loaded through the orb_models.forcefield.pretrained module rather than declared as a Hub artifact."
         },
@@ -18437,12 +18478,12 @@
             "components": "weights:closed(model definitions and architecture configuration only; no trained checkpoint is distributed);data:closed(the models were trained on a 2018 Materials Project snapshot that is not released as a corpus; the downloadable 520,000-structure GNoME database under CC BY-NC 4.0 is the models output, not their pretraining data);code:partial(Apache-2.0 model definitions and exploration Colabs; training colabs and configs are listed as upcoming);license:proprietary(no weights are distributed, so no weights licence exists; Apache-2.0 covers the code and CC BY-NC 4.0 the database)",
             "confidence": "high",
             "note": "The Apache-2.0 label on the repository is a code license, not a weights license. What GNoME released is the discovered-materials database and the model architectures behind it, not a downloadable trained checkpoint, so nothing here qualifies as an open model no matter what else was published.",
-            "last_verified": "2026-10-20",
+            "last_verified": "2026-10-21",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/materials_discovery/main/README.md",
                 "shows": "Offers the dataset and Colab notebooks for download, says the repository provides model definitions for the GNoME and NequIP architectures with basic configuration parameters, lists model training colabs and configs as upcoming, and splits the licence between Apache-2.0 for code and CC BY-NC 4.0 for the database.",
-                "accessed": "2026-10-20",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "67699d0d7928b23009b804b95dbfd7cd024487e3a6a76fff41b5bb3c2f468c21",
                 "establishes": [
@@ -67329,7 +67370,7 @@
               {
                 "url": "https://raw.githubusercontent.com/hiyouga/LlamaFactory/main/LICENSE",
                 "shows": "The full standard Apache License, Version 2.0 text — definitions through the appendix boilerplate — with no additional restriction, exception, or commons-clause layered on top.",
-                "accessed": "2026-09-23",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a",
                 "establishes": [
@@ -67339,9 +67380,9 @@
               {
                 "url": "https://pypi.org/project/llamafactory/",
                 "shows": "Project page for \"llamafactory 0.9.5\" lists License expression Apache-2.0 and points Homepage/Repository at https://github.com/hiyouga/LLaMA-Factory, confirming the published package matches the GitHub source.",
-                "accessed": "2026-09-23",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "58534e2961290e961e82ca55959d5a60bbf5dacff5048e79e8056d0205bb0bd3",
+                "content_sha256": "303cb0fb8f21c75fd162b6216f427966561d25b9733dca69c78279b8970a6c55",
                 "establishes": [
                   "license",
                   "source"
@@ -68196,9 +68237,9 @@
               {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
                 "shows": "The fine-tuning workflow is entirely OpenAI-hosted: \"Collect a dataset of examples to use as training data\", \"Upload that dataset to OpenAI, formatted in JSONL\", then create a job — and \"you can create fine-tuned models either in the\" dashboard \"or\" \"with the API\". No repository, package, or self-hostable runtime is offered anywhere on the page. It also points at the pricing page for \"how fine-tuned model training and usage are billed\", and carries the banner \"OpenAI is winding down the fine-tuning platform\" with the platform \"no longer\\naccessible to new users\".",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "4079cfd67cef2284396f3962dd9416cab6a56d52f72c7e2d907897ccbce418c1",
+                "content_sha256": "2f724fa26df15a55354ca2c7a43fa3696ca6fb5f5688adeb25825ced658a0e27",
                 "establishes": [
                   "source"
                 ]
@@ -68206,9 +68247,9 @@
               {
                 "url": "https://developers.openai.com/api/docs/deprecations",
                 "shows": "Under \"Update to OpenAI\"'s self-serve fine-tuning, a three-row table dated from the May 7th 2026 notification. May 7, 2026: \"Creating fine-tuning jobs or training is not available to organizations that have not previously run fine-tuning.\" July 2, 2026: \"Creating fine-tuning jobs is no longer available to organizations that have not run inference on a fine-tuned model in the past 60 days.\" Jan 6, 2027: \"Active existing customers will no longer be able to create new fine-tuning jobs on this date. Inference on fine-tuned models will be disabled only when the underlying base model is deprecated.\" Cited as lifecycle corroboration; it settles no scored openness dimension on its own.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "f2272ef1a9a1b69c8a2651d2a72771cbbabd13cda9718579678393ae3b2ad86f"
+                "content_sha256": "cbcd36390305de3f7590f47404110e052b4e84a48e52e2d16799ce229090f50d"
               }
             ],
             "bucket": "closed"
@@ -69494,7 +69535,7 @@
               {
                 "url": "https://raw.githubusercontent.com/NousResearch/atropos/main/LICENSE",
                 "shows": "The LICENSE body in full, 1,070 bytes. It opens \"MIT License\", carries \"Copyright (c) 2026 Nous Research\", and grants permission to deal in the software \"without restriction\" including use, copy, modify, merge, publish, distribute, sublicense and sell, subject only to the notice-retention condition and the standard warranty disclaimer. No field-of-use, non-commercial, competition or delayed-conversion clause anywhere in the text, so the recorded license:MIT(OSI) holds and resolves to the osi tier.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
                 "content_sha256": "5f79d321c17de8ef6e5f34967dc5b484afebeeefd87180890d9741941f6b815f",
                 "establishes": [
@@ -69515,9 +69556,9 @@
               {
                 "url": "https://portal.nousresearch.com/",
                 "shows": "The vendor's paid surface: a pricing page. It sells a Nous Portal subscription built around the Hermes agent: nav sections Overview, Hermes Cloud, Models, Plans, Resources, a Pricing heading, and copy about hosted tools that \"come bundled with your subscription\" and \"bills to the same credits as your models\". The string atropos (case-insensitive) does not occur anywhere in the saved body of 647,329 bytes, searched over the raw HTML rather than the rendered text so that script-embedded payloads were included. Nothing from the Atropos repo is sold as, or withheld for, a Portal tier.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "3ac3e9b64d9e481db16df0399554c4e0716244408b7d29c883240dd893a1bed3",
+                "content_sha256": "1f796bafc562529208764cf953b8b3ffc8423b18184937eacbf92048e978a979",
                 "establishes": [
                   "core-gated"
                 ]
@@ -69525,9 +69566,9 @@
               {
                 "url": "https://nousresearch.com/",
                 "shows": "Vendor home page, redesigned since the prior read (890,639 bytes vs. 76,131). Nav now covers Hermes Agent, Nous Portal, Business/Enterprise and Plans (Hermes Enterprise on-prem/cloud, subscription management at portal.nousresearch.com/manage-subscription); Psyche, Hermes 4, Chat and Simulators no longer appear. Searching the raw body case-insensitively: atropos and pricing are still zero hits; enterprise, subscri and plan now return multiple hits, all tied to Hermes Agent/Nous Portal offerings, none naming Atropos. Atropos remains outside this vendor's commercial surface.",
-                "accessed": "2026-10-14",
+                "accessed": "2026-10-21",
                 "http_status": 200,
-                "content_sha256": "05e56b106e4f1fe077b9af91357c39c78b21af4b66f233dc4ee0d859a9766d87",
+                "content_sha256": "c02c20e608668a03e92b7aa14a5bf0da0ec37fb4240a5f3e8fe9dbc72616ae94",
                 "establishes": [
                   "core-gated"
                 ]
