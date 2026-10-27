@@ -1,0 +1,90 @@
+product: syft-space
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: public
+      detail: backend, web app and desktop app under packages/spaces in github.com/OpenMined/syft-space
+    core-gated:
+      value: ungated
+      detail: no enterprise edition or license key; Stripe and Xendit appear only as gateways an owner uses to
+        charge for their own endpoints
+  confidence: high
+  note: Syft Space is open source under Apache-2.0, and the whole application, from the server to the web and
+    desktop apps, is in one public repository. It installs as a desktop app, a Docker image or from source. The
+    payment integrations exist so an owner can charge for their own endpoints, not to unlock features. Publishing
+    from a home machine needs a developer token from OpenMined, while a server with a public address does not.
+  raw: 'license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(backend,
+    web app and desktop app under packages/spaces in github.com/OpenMined/syft-space);core-gated:ungated(no enterprise
+    edition or license key; Stripe and Xendit appear only as gateways an owner uses to charge for their own endpoints)'
+  last_verified: '2026-10-27'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenMined/syft-space/main/LICENSE
+    shows: The root LICENSE file on main is the standard "Apache License" text, "Version 2.0, January 2004".
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/OpenMined/syft-space/main/README.md
+    shows: 'README: install as a "Desktop App", with "Docker (Production ready)" from ghcr.io/openmined/syft-space,
+      or "From Source" with run.sh; endpoints carry "access policies and pricing"; a developer token is "Required
+      for local deployments only", while a cloud VM "uses public IP". No enterprise edition or paid tier of the
+      software is named.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: c728db1a16f61737ca40c18f4e26a20dcfd1e56c10ae9afc7c122cdb4c2b5198
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: Syft Space publishes no package to a registry, so adoption falls back to GitHub stars on its repository.
+    It also ships desktop installers on GitHub releases, which no route counts yet.
+  sources:
+  - url: https://api.github.com/repos/OpenMined/syft-space
+    shows: stargazers_count = 10 for OpenMined/syft-space; created 2025-09-19; license Apache-2.0.
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: 2d7c2771ec04b83e6ad6909d6ce2a89f4e612bc1f7b757132dd72bb69d1c48f6
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: The data owner's node for federated retrieval, installed by each owner on their own machine or server,
+    with per-endpoint access policies, rate limits and pricing; the registry and aggregator that send queries to
+    it are SyftHub, a separate product.
+  confidence: medium
+  note: Syft Space runs the data owner's side of federated retrieval. Each owner installs it on their own machine
+    or server, decides who may ask what and at what price, and returns answers rather than documents. Finding
+    sources and routing a question to them is SyftHub's job, so Syft Space on its own covers one side of the
+    federation, a step short of PySyft, which runs both.
+  relative_to: pysyft
+  relation: one_below
+  comparison:
+    last_attested: '2026-10-27'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md
+      shows: 'README: computations "are reviewed and run by data owners on private data"; "Data owners must approve each
+        collaborator before any data flows"; an Enclaves package ships beside it; peers communicate "through cloud storage
+        their organizations already use".'
+      accessed: '2026-10-27'
+      http_status: 200
+      content_sha256: 2464fc293c67366a69add39c2526139f2a57e4714608cc09267e4613f8342dff
+  last_verified: '2026-10-27'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenMined/syft-space/main/README.md
+    shows: 'README: "A Syft Space is a decentralized node operated by anyone with knowledge to share"; owners "add your
+      documents, connect an AI model, and create endpoints that others can query"; "Policies: Control access, set
+      rate limits, and configure pricing"; "SyftHub Integration: Optional publishing to the decentralized knowledge
+      network".'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: c728db1a16f61737ca40c18f4e26a20dcfd1e56c10ae9afc7c122cdb4c2b5198
