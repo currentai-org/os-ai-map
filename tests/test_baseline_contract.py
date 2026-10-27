@@ -152,6 +152,9 @@ WITHDRAWN_SINCE_THE_BASELINE = {
     ("qwen", "huggingface_model", "Qwen/Qwen3.5-397B-A17B"),
     ("qwen", "huggingface_model", "Qwen/Qwen3.6-27B"),
     ("qwen", "huggingface_model", "Qwen/Qwen3.6-35B-A3B"),
+    # syfthub's declaration followed the product to OpenMined/syfthub on 2026-10-27. The baseline
+    # row is the stars of OpenMined/syft-hub-sdk, a retired SDK that is no longer the product.
+    ("syfthub", "github", "OpenMined/syft-hub-sdk"),
 }
 
 
