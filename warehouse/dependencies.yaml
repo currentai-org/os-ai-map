@@ -209,7 +209,7 @@ dependencies:
     nullable: false
   freshness_requirement: <= 35 days (map reads trailing-30d and trailing-7d windows)
   required_by:
-  - warehouse/models/signal_packages/downloads.sql
+  - warehouse/models/signal_packages/downloads_pypi.sql
   owner: oso
   verified_at: '2026-08-29'
   content_contract_sha256: fc944c8a4d6faf77bd3ee10b4616e6dc99ea1a1481e0ff94a0ceca29ee9543fc
@@ -430,20 +430,60 @@ dependencies:
   - build/check_artifacts.py
   - build/check_channel_authority.py
   - warehouse/models/observations/product_adoption_current.sql
-  verified_revision: 5
+  verified_revision: 6
   owner: oso
   files:
     model: warehouse/models/signal_packages/downloads.sql
   mirror:
     model_id: 444e9e8f-a21c-4de1-a08b-bf4a009dfab5
-    revision: 5
-    hash: b41f13bd38490de5dd47660ecce1d9edf710af32490445119e8c6d48a93f3c0b
-    local_sha256: 61a09076d6d39dd37edd4bd949eefcd03f38b1abecccb98c39bcebf0b45b3ca1
-    synced_at: '2026-09-28'
+    revision: 6
+    hash: bb54df02084adbe01462e341378373e41dd3c0b9240d98ef9c215a206dcb58c6
+    local_sha256: 44db3f7e001d285aa3638235fff2fdbda5d73bd22ebbac191ef2ed480ee8a85f
+    synced_at: '2026-10-27'
   platform_schedule:
     cron: 0 1 * * 0
     timezone: UTC
     last_observed_trigger: SCHEDULED
+- table: currentai.signal_packages.downloads_pypi
+  purpose: package_adoption_signal
+  expected_grain: one row per (artifact_kind, package), PyPI only, over the declared packages
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/signal_packages/downloads.sql
+  verified_revision: 2
+  owner: oso
+  files:
+    model: warehouse/models/signal_packages/downloads_pypi.sql
+  mirror:
+    model_id: 5c475846-65a9-44fa-ba3d-1036c37023a4
+    revision: 2
+    hash: 0df8be66aa04d5e8dbe8790475787ab2e82fc94cce146b85685f41ecb6c2df62
+    local_sha256: af564439b27ef9936e5e54a3828ea95d2c337fd5494662994a541157ca8701ae
+    synced_at: '2026-10-27'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.signal_packages.downloads_registry
+  purpose: package_adoption_signal
+  expected_grain: one row per (artifact_kind, package), npm and crates
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/signal_packages/downloads.sql
+  verified_revision: 2
+  owner: oso
+  files:
+    model: warehouse/models/signal_packages/downloads_registry.sql
+  mirror:
+    model_id: 5a4d08a7-2910-4d75-8151-da07a1a13cbf
+    revision: 2
+    hash: 4b2234ce4884663f76ee79cefce4f6e41d70a323bb9c4981750f1971cd67606f
+    local_sha256: 9371224688151f0a2bc203957ed0282c1965c86850ed60a3632054e3ed074bfe
+    synced_at: '2026-10-27'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
 - table: currentai.signal_packages.package_metadata
   purpose: package_release_metadata
   expected_grain: one row per (product_slug, artifact_kind, package)
@@ -472,6 +512,7 @@ dependencies:
   freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/signal_packages/downloads.sql
+  - warehouse/models/signal_packages/downloads_registry.sql
   verified_revision: 3
   owner: oso
   files:

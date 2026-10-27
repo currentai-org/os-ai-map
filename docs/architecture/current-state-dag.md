@@ -126,11 +126,14 @@ graph LR
   currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> build/check_channel_authority__py[build/check_channel_authority.py]:::audit
   currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_packages__downloads_daily[currentai.signal_packages.downloads_daily]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
+  currentai__signal_packages__downloads_daily[currentai.signal_packages.downloads_daily]:::dep --> currentai__signal_packages__downloads_registry[currentai.signal_packages.downloads_registry]:::dep
+  currentai__signal_packages__downloads_pypi[currentai.signal_packages.downloads_pypi]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
+  currentai__signal_packages__downloads_registry[currentai.signal_packages.downloads_registry]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
   currentai__signal_packages__package_metadata[currentai.signal_packages.package_metadata]:::dep --> build/snapshot_counters__py[build/snapshot_counters.py]:::audit
   currentai__signal_packages__package_metadata[currentai.signal_packages.package_metadata]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_packages__package_metadata[currentai.signal_packages.package_metadata]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
   currentai__signal_semanticscholar__paper_citations[currentai.signal_semanticscholar.paper_citations]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
-  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
+  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads_pypi[currentai.signal_packages.downloads_pypi]:::dep
   classDef dep fill:#eee;
   classDef audit fill:#ffd;
   classDef src fill:#def;
