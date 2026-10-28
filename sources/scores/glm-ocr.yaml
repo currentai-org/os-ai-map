@@ -1,0 +1,89 @@
+product: glm-ocr
+openness:
+  score: 3
+  class: open_weights
+  components:
+    license:
+    - name: MIT
+      detail: weights; the Hugging Face card declares mit
+    - name: Apache-2.0
+      detail: SDK and inference toolchain in the GitHub repository
+    weights:
+      value: open
+      detail: model.safetensors on Hugging Face, ungated
+    data:
+      value: closed
+      detail: the training corpus is neither published nor named in the card
+    code:
+      value: partial
+      detail: the SDK, serving recipes and a LLaMA-Factory fine-tuning guide; no training pipeline
+  confidence: high
+  note: GLM-OCR's weights download from Hugging Face without a gate under MIT, and its SDK is Apache-2.0. Z.ai publishes
+    inference tooling and a fine-tuning guide but neither the training corpus nor the pipeline that built the model,
+    which makes it an open-weights release rather than a fully open one.
+  raw: license:MIT(weights; the Hugging Face card declares mit)+Apache-2.0(SDK and inference toolchain in the GitHub
+    repository);weights:open(model.safetensors on Hugging Face, ungated);data:closed(the training corpus is neither
+    published nor named in the card);code:partial(the SDK, serving recipes and a LLaMA-Factory fine-tuning guide;
+    no training pipeline)
+  last_verified: '2026-10-27'
+  sources:
+  - url: https://huggingface.co/api/models/zai-org/GLM-OCR
+    shows: '"gated":false; cardData "license":"mit"; model.safetensors in the file list; no dataset declared.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: fc399cb3f46638af1fdecceecc2bd8b3c29c21ff52b0379d2ebe20c4e3893200
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://github.com/zai-org/GLM-OCR
+    shows: 'Repository page for zai-org/GLM-OCR: "Apache-2.0 license", public, with the SDK, examples and apps;
+      the news list links a "GLM-OCR Fine-tuning Guide" based on LLaMA-Factory.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: bb3ff5a6a21c388aa05126435174ed951d3a57da5c8ffb62e62fb9fe5c4b48fc
+    establishes:
+    - license
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: GLM-OCR's adoption is measured by Hugging Face downloads over the trailing month, the declared distribution
+    channel for its weights.
+  sources:
+  - url: https://huggingface.co/api/models/zai-org/GLM-OCR
+    shows: '"downloads":1745838 for zai-org/GLM-OCR.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: fc399cb3f46638af1fdecceecc2bd8b3c29c21ff52b0379d2ebe20c4e3893200
+capability:
+  score: 5
+  basis: feature_matrix
+  value: document parsing to Markdown with text, formula and table recognition; information extraction into a caller-supplied
+    JSON schema, such as the fields of an ID card; layout analysis through the SDK
+  confidence: medium
+  note: 'GLM-OCR does more than keep a page''s structure: given a JSON template, it returns the fields the caller
+    names, the same typed extraction that places docling at the top of the category.'
+  relative_to: docling
+  relation: at
+  comparison:
+    last_attested: '2026-10-27'
+    sources:
+    - url: https://docling-project.github.io/docling/_generated/examples/extraction/
+      shows: The Information extraction example states "Docling provides the capability of extracting information,
+        i.e. structured data, from unstructured documents." and that the user supplies a template "either as a dictionary
+        or as a Pydantic model, and Docling will return" the extracted data.
+      accessed: '2026-10-27'
+      http_status: 200
+      content_sha256: ee85b861199b865302e3fc106a6b3b178809bdbac9b9040cce3dda3b08b3bcb1
+  last_verified: '2026-10-27'
+  sources:
+  - url: https://huggingface.co/zai-org/GLM-OCR/raw/main/README.md
+    shows: '"Information Extraction – extract structured information from documents. Prompts must follow a strict
+      JSON schema" with an ID-card example; "Document Parsing" prompts for text, math and table recognition; the SDK "integrates PP-DocLayoutV3 and provides a complete ... pipeline for document
+      parsing, including layout analysis and structured output generation".'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: 172334449c3df98650bc9a42781c254c64c9d466b440e2ca8ce31f99829212b2
