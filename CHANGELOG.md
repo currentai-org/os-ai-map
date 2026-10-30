@@ -18,6 +18,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- An optional per-language coverage record on a dataset's capability axis
+  (`capability.language_coverage`): for each language, the item count and its unit, how the items
+  were made, their tasks, and whether the language is a pivot, cited through `capability.sources`.
+  Codes must be ones the product's `languages` lists. No product carries it yet, nothing scores on
+  it, and the notebook payload leaves it out (R-2026-10-30-h,
+  [#952](https://github.com/currentai-org/os-ai-map/pull/952)).
 - `lineage.part_of`, a many-to-many link from a dataset to the suites it belongs to, and the
   stage rule it feeds: a suite and its members count once toward a category's stage, through the
   group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No
