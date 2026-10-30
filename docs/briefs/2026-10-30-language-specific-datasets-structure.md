@@ -12,13 +12,21 @@ above and gets refreshed by a new brief, not edited. Map-side claims cite files 
 
 ## The short answer
 
-Split the category by **kind of dataset**, not by **global versus regional**: one category for
-language-specific corpora and one for language-targeted evaluation sets. That removes the size-cap
-asymmetry (finding 1) for evaluation sets, but not for instruction data, which needs its own cap.
-The bundling rule (finding 5) is independent of the split and has to be made symmetric either way.
-The `languages` field that #684 added makes the rest feasible: a graded rule for "underrepresented"
-(finding 7), then a per-language depth rung for evaluation sets (finding 4), then the adoption
-question (finding 6).
+Separate training data from evaluation data. The category puts corpora, instruction data and
+evaluation sets on one capability ladder, and that is the main source of the asymmetries below.
+Language-targeted evaluation sets either get their own category or move into `benchmark_eval_data`,
+and D1 weighs the two. A split removes the size-cap asymmetry (finding 1) for evaluation sets, but
+not for instruction data, which needs its own cap. The bundling rule (finding 5) is independent of
+the split. Unbundling needs a counting rule first, so that a suite and its members are not counted
+more than once toward the category's stage.
+
+Two of the fixes need data the corpus does not have yet. The `languages` field that #684 added lists
+which languages a dataset covers, not how much it holds in each, so per-language depth (finding 4)
+waits on an evidence model. "Underrepresented" (finding 7) needs a resource classification with an
+explicit `unknown` state, not a single web-share threshold.
+
+No step moves a published product into a preliminary category, or moves a product without
+rescoring it in the same PR.
 
 ## The findings
 
@@ -67,14 +75,17 @@ category's `weights`).
    (`docs/sweeps/2026-09-23-language-specific-datasets.md`, open items) already asked for a rule
    that reproduces the calls rather than a list that states them.
 
-The seed sweep also listed a structured `languages` field as an open item. That is no longer open:
-#684 added ISO 639-3 `languages`, required on every product in this category (see
-`docs/sweeps/2026-09-30-identity-attributes/README.md`).
+The seed sweep also listed a structured `languages` field as an open item. #684 added ISO 639-3
+`languages`, required on every product in this category (see
+`docs/sweeps/2026-09-30-identity-attributes/README.md`). It records coverage only: which languages,
+not how many items, hours or tokens each has, where they came from, or which tasks they fall under.
 
-## Why a kind split rather than a global/regional split
+## Where language-targeted evaluation sets should go
 
-A global/regional split was considered (global or English sets, evaluation sets, other languages).
-It was set aside for three reasons:
+Three placements were considered.
+
+**A global/regional split** (global or English sets, evaluation sets, other languages) was set
+aside for three reasons:
 
 - **It adds a second hand-drawn line.** Finding 7 is already a boundary drawn by list. A "global"
   category needs another: SEACrowd covers about 1,000 languages and Belebele 122, and neither
@@ -84,10 +95,32 @@ It was set aside for three reasons:
   treats them as different classes.
 - **English corpora are already elsewhere.** They are in `training_synthetic_datasets`.
 
-A kind split answers finding 1 for evaluation sets directly: every row in the corpus category is
-capped and no row in the evaluation category is, and each category gets its own weights. The
-question the category was built to answer, what a given language has across modalities, no longer
-needs one roster. It can be computed from `languages` across both categories.
+That leaves two placements for the evaluation sets. Both separate training data from evaluation
+data. They differ on whether language scope stays part of the category line.
+
+- **A new language-targeted evaluation category.** The split is then not by kind alone. It is by
+  kind within the language-specific scope, so the "underrepresented" line (finding 7) still decides
+  membership, now for two categories instead of one.
+- **Moving them into `benchmark_eval_data`.** The line becomes kind alone, and regional coverage
+  shows through `languages`. But that category's recipe has no capability ladder (its
+  `scoring_recipe` carries openness only), and it weights adoption 0.6 against capability 0.4.
+  The language-specific recipe weights adoption 0.3 because download counts for a low-resource
+  dataset are small by construction. In an adoption-heavy category, a Lao or Thai benchmark would
+  be ranked on downloads against MMLU and HumanEval. That measures how many people speak the
+  language before it measures the benchmark.
+
+The deciding question is whether a language-targeted evaluation set needs a different ladder from a
+general benchmark. It does on two counts. Adoption has to be discounted for language population,
+which `benchmark_eval_data`'s weights do not do. And per-language depth and provenance (written in
+the language, or translated into it) are questions an English benchmark never faces. Moving the sets
+into `benchmark_eval_data` would mean giving that category per-language weights or rungs, a change
+for its 32 existing products, or accepting the ranking above. A new category keeps the change to
+the products it concerns. D1 asks the question with both options.
+
+Either way, every row in the corpus category is capped and no evaluation set is. The question the
+category was built to answer, what a given language has across modalities, no longer needs one
+roster. Which languages each dataset covers can be computed from `languages` across categories.
+How much each holds per language cannot be yet (see D6).
 
 ### Provisional roster
 
@@ -104,20 +137,31 @@ Read from each product's capability value on this date, before any ruling.
   `te-hiku-media-reo-maori-corpus`).
 
 Twenty-one evaluation sets clear the ten-product publication floor in
-`docs/workflows/edit-category.md`. A product that moves needs its capability band re-read, since a
-`relative_to` peer must sit in its own category. Under the provisional roster, five peers cross
-the line: `lahaja` names `kathbath`, `seacrowd` names `sea-helm`, `afrihate` and `sold` name
-`afrobench`, and `americasnlp-shared-task-data` names `flores-plus`. Four of the five are boundary
-cases, so D2 settles most of them.
+`docs/workflows/edit-category.md`. A product that moves is rescored against the destination's
+recipe in the same PR. Its band is relative to its category's rubric and weights, and
+`build/check_capability.py` rejects a `relative_to` peer in another category. Under the provisional
+roster, five peers cross the line: `lahaja` names `kathbath`, `seacrowd` names `sea-helm`,
+`afrihate` and `sold` name `afrobench`, and `americasnlp-shared-task-data` names `flores-plus`.
+Four of the five are boundary cases, so D2 settles most of them.
+
+A move must not take a product off the public map. `published_products` in `build/validate.py`
+leaves every product on a preliminary category's roster out of the scored payload. Moving the 21
+evaluation sets into a new preliminary category would take them off the map until it published.
+The [sequence](#sequence) keeps the roster where it is until the new category can publish in the
+same PR.
 
 ## Decisions
 
 In dependency order. Each carries a recommendation, for the ruling session to confirm or overturn.
 
-**D1. Split shape.** Split `language_specific_datasets` into a corpus category (pretraining text,
-speech, parallel text, instruction data) and a new evaluation-set category? *Recommend yes, by kind,
-for the reasons above.* The current slug stays with the corpus category, so existing links keep
-working.
+**D1. Where evaluation sets go.** Take language-targeted evaluation sets out of the corpus ladder,
+and place them in:
+- (a) a new language-targeted evaluation category, or
+- (b) `benchmark_eval_data`, with regional coverage shown through `languages`.
+
+*Recommend (a), because of the deciding question above.* (b) is the cleaner taxonomy, but only if
+`benchmark_eval_data` takes on per-language weights or rungs for all its products. Either way, the
+corpus category keeps the current slug, so existing links keep working.
 
 **D2. Boundary for task sets with training splits.** Does a dataset that ships training and test
 splits for one task (AfriHate, SOLD, NCHLT) go with evaluation sets or corpora? Is SEACrowd, a
@@ -137,27 +181,62 @@ provenance is handled by the rungs, not by the cap.*
   its suites.
 - (b) **Fold everything.** Global sets a suite borrows also lose their own rows.
 
-*Recommend (a).* It matches the many-to-many direction of the Public AI hosting ruling, and (b)
-would cost FLORES+ its row. The cost is at least thirteen new rows and a relationship field, which is
-a schema change in its own PR.
+*Recommend (a), but not before D4b.* It matches the many-to-many direction of the Public AI hosting
+ruling, and (b) would cost FLORES+ its row. The cost is at least thirteen new rows and a lineage
+relationship, which is a schema change in its own PR.
 
-**D5. Source for "underrepresented".** Replace the enumerated list with a graded measure computed
-from `languages`. Candidates:
-- (a) the Joshi et al. (2020) resource classes;
-- (b) a language's share of Common Crawl pages, which Common Crawl publishes for each crawl;
-- (c) keep the list.
+**D4b. How a suite and its members count.** A category's stage counts its fully open
+category-leading products (`_stage_and_gaps` in `build/serialize.py`; Stage 5 needs
+`_STAGE5_MIN_MATURE` of them), and nothing in that count knows about overlap. AfroBench plus ten
+member rows could count up to eleven times for what is one body of evaluation work, inflating the
+category's apparent maturity. *Recommend: a suite and its members form one lineage group, and a group
+counts at most once toward the stage, through its highest-scoring fully open row. Each row keeps its
+own scores and stays visible.* This is a change to `build/serialize.py` and
+`docs/reference/gap-analysis.md`, and it lands before any member row does. Adoption overlaps the
+same way, because a suite's downloads include its members', so a member row's adoption note says
+which downloads it counts.
 
-*Recommend (b), checked against (a).* It is current, re-fetchable and primary, where (a) is a 2020
-snapshot. The threshold is set in the ruling, once the table is fetched and the calls it changes
-are listed. Arabic, Korean, Indonesian and Vietnamese are the ones to check, since the current
-list's calls for them are not obviously what any threshold reproduces. A multilingual dataset
-qualifies when most of its languages are under the threshold.
+**D5. Source for "underrepresented".** Replace the enumerated list with a per-language resource
+classification, computed for every code in `languages`. A single web measure cannot carry it:
+- **Coverage.** Common Crawl's published language statistics come from a language detector that
+  recognizes far fewer languages than the map's datasets cover. A language the detector does not
+  report has not been measured, which is not the same as having no web text.
+- **What it measures.** Web-page share measures web text. A language can have plenty of it and
+  still have little open speech, instruction or evaluation data.
 
-**D6. Evaluation-set ladder.** Replace "no other open row covers the same languages" with rungs on
-per-language depth (items per language), provenance (written in the language, human-translated,
-machine-translated) and named downstream use. Breadth counts only through the per-language view.
-*Recommend yes.* It answers findings 3 and 4. No band is presumed; FLORES+ and SEA-HELM are
-re-read on the new rungs like every other row.
+*Recommend: a reproducible classification that combines signals, where web share is one input and
+not the rule.* Other inputs would be the Joshi et al. (2020) resource classes and whether the language
+has open speech, instruction and evaluation data, which the map itself can count from `languages`.
+Each language gets a class, or `unknown` where the signals do not reach it. `unknown` is a recorded
+state, not a default to "underrepresented" or "well-resourced". The classification and the roster
+changes it implies are published as a table for review before it is adopted. The current calls for
+Arabic, Korean, Indonesian and Vietnamese are the ones to check.
+
+Membership stays with the purpose test the category already uses: a dataset is in when it was built
+for languages the classification marks underrepresented. There is no majority rule across a
+dataset's languages, so adding more low-resource languages to a set cannot move it out. A dataset
+whose target languages are all `unknown` is decided on the purpose test alone, and its row records
+that.
+
+**D6. Evaluation-set ladder.** Rungs on per-language depth, provenance (written in the language,
+human-translated, machine-translated) and named downstream use, in place of "no other open row
+covers the same languages". *Recommend yes in principle, but implement only once both parts below
+are ruled and in place.* Without them, a depth rung would still be a judgment about breadth, under a
+different name.
+- **D6a. A per-language evidence model.** For each language a set covers, record its item count,
+  provenance and task, cited to the card or paper. A product-level size is not enough for a
+  heterogeneous suite like SEA-HELM, whose tasks cover different languages. *Recommend: a structured
+  per-language coverage record on evaluation-set products. It is a schema change in its own PR,
+  filled by `refresh-category`.*
+- **D6b. An aggregation rule.** The map keeps one capability score per product, so per-language
+  depth has to reduce to one number. *Recommend: band on the median per-language depth across the
+  set's target languages, excluding pivot languages such as English, and show the per-language
+  values in the language view.* The median keeps a few deep languages from carrying a set, and a
+  few thin ones from sinking it.
+
+Until D6a and D6b are in place, the evaluation category takes the current rungs, with the breadth
+clause replaced by a same-language peer comparison. FLORES+ and SEA-HELM are then read against peers
+that cover the languages they cover. No band is presumed in either case.
 
 **D7. Adoption across languages.** Normalize downloads per language served? *Recommend no, for now.*
 Dividing by language count penalizes broad sets crudely. Show adoption beside same-language peers
@@ -166,20 +245,34 @@ and changes the instrument, it goes through `migrate-axis`.
 
 ## Sequence
 
-Each step is its own PR, on the workflow named.
+Each step is its own PR, on the workflow named. Two rules hold throughout. A published product is
+never on a preliminary roster. And a product that changes category is rescored against the
+destination's recipe, with its `relative_to` peers re-pointed, in the same PR that moves it. No
+product moves with its old capability band intact unless that band has been checked against the
+destination rubric and the PR says so.
 
 1. **Ruling session** (`ruling-session`): put D1 to D7 to the maintainer in one pass, and record
    them in `docs/rulings/log.yaml`.
-2. **Membership rule** (`edit-category`): apply D5. Re-route rows that fall outside the threshold
-   to `training_synthetic_datasets` or `benchmark_eval_data`. Rewrite the category comments.
-   Membership comes before the split, because both new categories inherit it.
-3. **Split** (`edit-category`): create the evaluation-set category as preliminary, add it to
-   `sources/taxonomy.yaml`, move the roster per D1 and D2, and re-point the `relative_to` peers
-   that cross the new line.
-4. **Bundling** (`add-product`, plus a schema PR if D4 is (a)): add member rows and the suite
-   relationship.
-5. **Ladders** (`build-rubric`): the corpus recipe gains the instruction-data cap (D3). The
-   evaluation-set recipe is new (D6).
-6. **Re-score and publish** (`refresh-category`, both categories). The evaluation-set category moves
-   to published once its strapline and ten scored products are in.
-7. **Adoption** (D7), when the per-language view exists.
+2. **Language classification** (D5): publish the per-language classification table, with its
+   `unknown` rows, and the roster changes it implies. Nothing moves in this PR. The ruling that
+   adopts it reads the table.
+3. **Membership** (`edit-category`, `refresh-category`): re-route the rows the adopted
+   classification puts outside the category. Each is rescored against its destination's recipe,
+   with peers re-pointed, in this PR.
+4. **Evaluation recipe** (`build-rubric`), if D1 is (a): create the evaluation category as
+   preliminary, with its recipe and an empty roster, so nothing leaves the payload. Dry-run the
+   recipe against the products that will move, and record the computed bands in the PR. If D1 is
+   (b), this step changes `benchmark_eval_data`'s recipe instead, and rescores its existing products
+   in the same PR.
+5. **Split, in one PR** (`edit-category`, `refresh-category`): move the roster per D1 and D2, apply
+   the bands from step 4, re-point the crossing peers, add the strapline, and set the category to
+   published. `build.preflight` passes, and the published product count is the same before and
+   after.
+6. **Instruction cap** (D3, `build-rubric`): add the cap to the corpus recipe and rescore the
+   instruction sets in the same PR.
+7. **Lineage counting** (D4b): the schema relationship and the stage rule in `build/serialize.py`,
+   with no member rows yet. Then **unbundling** (D4, `add-product`): the member rows, each scored on
+   arrival.
+8. **Per-language evidence** (D6a, D6b): the coverage schema, then the depth ladder applied through
+   `refresh-category`.
+9. **Adoption** (D7), when the per-language view exists.
