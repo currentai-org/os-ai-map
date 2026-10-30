@@ -1472,3 +1472,51 @@ rulings:
     executor: agent
     lands_in: []
     applied_in: []
+
+  - id: R-2026-10-30-l
+    date: 2026-10-30
+    by: ccerv1
+    venue: pr-review
+    refs: ["#950", "#952", "#948", language_specific_eval_sets, R-2026-10-30-g, R-2026-10-30-i]
+    question: >-
+      The dry run of the interim evaluation-set ladder in #950 puts 12 of 22 sets at capability 5.
+      Should those bands be adopted, or a temporary numerical depth floor added, so the sets can move
+      before the depth ladder exists? And may a set-wide total be divided across languages where no
+      per-language count is published?
+    ruling: >-
+      Neither. Twelve of 22 at 5 is not a useful distribution: the interim ladder mostly rewards being
+      the best available option for a language rather than demonstrating sufficient depth or quality.
+      No temporary numerical minimum that would immediately be replaced. The empty preliminary category
+      stays, and the product migration is deferred until the depth ladder of R-2026-10-30-i is ready;
+      if migration must precede it, a defensible provisional floor is preferred over the current
+      distribution. The final scoring uses the evidence rule of #952: source-reported per-language
+      counts only, never a dataset total divided by its number of languages.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_eval_sets.yaml]
+    applied_in: []
+
+  - id: R-2026-10-30-m
+    date: 2026-10-30
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", "#948", language_specific_datasets, wangchan-thai-instruct, R-2026-10-30-c, R-2026-10-30-k]
+    question: >-
+      Applied as written in #951, the instruction-data cap of R-2026-10-30-c drops WangchanThaiInstruct,
+      a curated human-written Thai set of 40,000 examples, from 4 to 2 against English post-training
+      corpora of tens of millions. Is #951 merged as written?
+    ruling: >-
+      No. Hold #951. A size dimension is supported, but not one that mechanically forces a dataset down
+      two levels solely because it has 40,000 examples. R-2026-10-30-k establishes the
+      language-resource-adjusted yardsticks before the cap is applied, and the new approach must at
+      minimum preserve a meaningful distinction between curated human data and large-scale generated
+      data.
+    reasoning: >-
+      Comparing a curated human-written Thai dataset with massive English-oriented post-training corpora,
+      using raw example count as an upper bound, confounds language-resource availability, dataset scale
+      and training value, and risks rewarding huge synthetic collections over smaller, carefully curated
+      datasets.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []

@@ -46,9 +46,11 @@ scoring_recipe:
     product, and comparing it with each kind it contains would either lend it its members' depth
     or let any single-task set outrank it.
 
-    "Holds more" counts test items per shared language, read from the card or paper. Where only a
-    product-level total is recorded it is divided across the set's languages, and the comparison
-    says so. Languages that only one of the two sets covers count for neither. That is what
+    "Holds more" counts test items per shared language, as the card or paper states them and as
+    `capability.language_coverage` records them (docs/reference/capability.md, "Per-language
+    coverage"). A set-wide total is never divided across languages: a language whose source gives
+    no count of its own is not compared (R-2026-10-30-l). Languages that only one of the two sets
+    covers count for neither. That is what
     removes the breadth advantage: a set no longer reaches 5 because nothing else covers all its
     languages, and it does not lose 5 because a regional set is deeper in a few of them. "Most"
     is the interim stand-in for the median R-2026-10-30-i adopts, on the same reasoning: a few
@@ -59,10 +61,13 @@ scoring_recipe:
     depth ladder will answer, on that language's own terms rather than against an English-scale
     yardstick.
 
-    Not calibrated. The dry run in docs/sweeps/2026-10-30-language-specific-eval-sets-dry-run.md
-    puts 12 of 22 sets at 5, past the one-third review trigger, because this rung 5 has no
-    absolute depth floor. The maintainer accepted the category as a scaffold and held the bands:
-    no set moves onto this ladder until it is calibrated (tracked in #948).
+    Not adopted. The dry run in docs/sweeps/2026-10-30-language-specific-eval-sets-dry-run.md
+    puts 12 of 22 sets at 5, past the one-third review trigger, because this rung 5 rewards being
+    the best available set for a language rather than showing enough depth. Its comparisons also
+    divided some set-wide totals across languages, which the rule above no longer allows. Under
+    R-2026-10-30-l no set moves onto this interim ladder and no provisional depth floor is added:
+    the roster moves with the per-language depth ladder (R-2026-10-30-g, -i), in one PR with
+    publication (tracked in #948).
 
     relative_to names a peer in this category (build/check_capability.py rejects any other).
     Prefer a same-language peer of the same kind; where the relation vocabulary cannot express
