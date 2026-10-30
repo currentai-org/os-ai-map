@@ -594,6 +594,11 @@ file it is written as a wrapped flow sequence (`languages: [amh, hau, ...]`, wra
 product file width), because a multilingual corpus can list more codes than a line-per-item
 block would keep readable.
 
+`languages` says which languages, not how much of each. How many items an evaluation set holds per
+language, how they were made and which tasks they fall under is capability evidence, recorded as
+`capability.language_coverage` on the score file, because a ladder will read it. Its codes must be
+ones `languages` lists. [`capability.md`](capability.md#per-language-coverage) is normative.
+
 ### Code lists, and who writes the fields
 
 The schemas check only the shape of a code. The allowed sets are the frozen snapshots

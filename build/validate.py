@@ -585,6 +585,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         cap = sc.get("capability", {})
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
+        errors.extend(language_coverage_errors(slug, prods[slug], cap))
 
     # --- slug stability ---
     # The slug is a product's identity and the key deep links are built on, so a slug may
@@ -888,6 +889,66 @@ def model_family_overlap_warnings(model_families: dict) -> list[str]:
                     "-- the longest matching pattern wins (docs/reference/identity.md)"
                 )
     return warnings
+
+
+def language_coverage_errors(slug: str, product: dict, capability: dict) -> list[str]:
+    """Cross-file checks on `capability.language_coverage` (R-2026-10-30-h).
+
+    The score schema checks each entry's shape: the closed `unit`, `provenance` and `tasks`
+    vocabularies, a non-negative `count`, the required fields. What it cannot see is the
+    product record and the code list, so those checks are here. Each code is held to the rule
+    `languages` is held to, through the same `language_codes()`, and must also be a code the
+    product's `languages` lists: coverage says how deep a listed language goes and may not add
+    one. Entries are sorted by code and name each language once, so one record has one
+    spelling. Every `cites` URL must be the `url` of a `capability.sources` entry, which is
+    where the citation's `shows`, `accessed` and digest live and where the evidence gates read
+    them. docs/reference/capability.md, "Per-language coverage", is normative.
+    """
+    coverage = capability.get("language_coverage") if isinstance(capability, dict) else None
+    if not isinstance(coverage, list):
+        return []
+    errors: list[str] = []
+    where = f"score {slug!r}: capability.language_coverage"
+    if product.get("type") != "dataset":
+        errors.append(f"{where} applies to datasets only (this is a {product.get('type')!r})")
+    listed = product.get("languages")
+    listed = set(listed) if isinstance(listed, list) else set()
+    allowed = language_codes()
+    cited = {
+        s.get("url") for s in capability.get("sources") or [] if isinstance(s, dict)
+    }
+    codes: list[str] = []
+    for entry in coverage:
+        if not isinstance(entry, dict):
+            continue
+        code = entry.get("language")
+        if not isinstance(code, str):
+            continue
+        codes.append(code)
+        if code not in allowed:
+            errors.append(
+                f"{where}: language {code!r} is not an ISO 639-3 code of scope individual or "
+                f"macrolanguage in sources/snapshots/iso-639-3.tab (two-letter codes and the "
+                f"special codes mul, und, zxx are refused)"
+            )
+        elif code not in listed:
+            errors.append(
+                f"{where}: language {code!r} is not in the product's `languages`. Coverage "
+                f"records how much a listed language holds; add the code to `languages` first."
+            )
+        for url in entry.get("cites") or []:
+            if url not in cited:
+                errors.append(
+                    f"{where}: {code!r} cites {url!r}, which is not the url of any "
+                    f"capability.sources entry. Cite the card or paper there, with its "
+                    f"`shows` and `accessed`, and point at it from `cites`."
+                )
+    duplicates = sorted({c for c in codes if codes.count(c) > 1})
+    if duplicates:
+        errors.append(f"{where}: each language appears once (repeated: {duplicates})")
+    elif codes != sorted(codes):
+        errors.append(f"{where}: entries must be sorted by language (expected {sorted(codes)})")
+    return errors
 
 
 if __name__ == "__main__":

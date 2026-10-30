@@ -1,0 +1,67 @@
+# A synthetic evaluation set carrying `capability.language_coverage` (R-2026-10-30-h), used by
+# tests/test_language_coverage.py. Not a real product: the slug, org and figures are invented so
+# the fixture cannot be read as a claim about any dataset on the map. Each invalid case in the
+# test is this record with one thing broken.
+product:
+  name: example-eval
+  display_name: Example Eval
+  type: dataset
+  languages: [eng, hau, swh, yor]
+  comments: ''
+score:
+  product: example-eval
+  openness:
+    score: 5
+    class: open
+    sources:
+      - url: https://huggingface.co/datasets/example-org/example-eval
+        shows: 'card license `cc-by-4.0`'
+        accessed: '2026-10-30'
+  adoption:
+    level: 2
+    signal_type: usage_volume
+    sources:
+      - url: https://huggingface.co/datasets/example-org/example-eval
+        shows: '1,200 downloads last month'
+        accessed: '2026-10-30'
+  capability:
+    score: 3
+    basis: feature_matrix
+    sources:
+      - url: https://huggingface.co/datasets/example-org/example-eval
+        shows: "the card's per-language table: 1,000 test questions in each language"
+        accessed: '2026-10-30'
+      - url: https://arxiv.org/pdf/2601.00001
+        shows: 'Table 2: 12.5 hours of read speech per language'
+        accessed: '2026-10-30'
+    language_coverage:
+      - language: eng
+        count: 1000
+        unit: questions
+        provenance: native
+        tasks: [knowledge_exam]
+        pivot: true
+        cites: [https://huggingface.co/datasets/example-org/example-eval]
+      - language: hau
+        count: 12.5
+        unit: hours
+        provenance: native
+        tasks: [speech_recognition]
+        pivot: false
+        cites: [https://arxiv.org/pdf/2601.00001]
+      - language: swh
+        count: 1000
+        unit: questions
+        provenance: human_translated
+        tasks: [knowledge_exam, reading_comprehension]
+        pivot: false
+        cites:
+          - https://huggingface.co/datasets/example-org/example-eval
+          - https://arxiv.org/pdf/2601.00001
+      - language: yor
+        count: 0
+        unit: questions
+        provenance: unknown
+        tasks: [knowledge_exam]
+        pivot: false
+        cites: [https://huggingface.co/datasets/example-org/example-eval]
