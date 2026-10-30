@@ -78,32 +78,46 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  basis_detail: coverage and downstream use for Indonesian instruction data
-  value: Instruction data for Indonesian and local languages, templated over existing NLP datasets (v1) and
-    extended with general and human-centric prompts (v2), documented in the Cendol paper, and used to train
-    the Cendol Instruct and Chat models.
+  basis_detail: coverage, size and downstream use for Indonesian instruction data
+  value: About 53.5 million prompts for Indonesian and local languages by the paper's count (30.2 million
+    in v1 and 12.8 million in v2 on the Hub), templated over existing NLP datasets (v1) and extended with
+    general and human-centric prompts (v2), documented in the Cendol paper, and used to train the Cendol
+    Instruct and Chat models.
   confidence: medium
-  note: The collection trained IndoNLP's Cendol Instruct and Chat models, from 300 million to 13 billion parameters,
-    and the Cendol paper documents it. Like WangchanThaiInstruct it has a paper and named models trained on
-    it, but its task prompts are rebuilt from existing labeled datasets and its cards do not describe the contents.
-  relative_to: wangchan-thai-instruct
+  note: The collection trained IndoNLP's Cendol Instruct and Chat models, from 300 million to 13 billion
+    parameters, and the Cendol paper documents its tens of millions of prompts. Like Inkuba-Instruct it
+    rebuilds existing labeled datasets into prompts, and its Hub cards are copies of the model card that
+    do not describe the contents.
+  relative_to: inkuba-instruct
   relation: at
-  last_verified: '2026-09-24'
+  last_verified: '2026-10-30'
   sources:
   - url: https://raw.githubusercontent.com/IndoNLP/cendol/main/README.md
-    shows: 'Model table: "Cendol mT5-small Instruct | Cendol Collection v1" ... "Cendol mT5-small Chat | Cendol
-      Collection v2"'
-    accessed: '2026-09-24'
+    shows: 'Model table: "Cendol mT5-small Instruct | Cendol Collection v1" ... "Cendol mT5-small Chat |
+      Cendol Collection v2"'
+    accessed: '2026-10-30'
     http_status: 200
     content_sha256: 59b1f368ebd94da867a970715633e8e55f5e9ac9e6b14fdd461d68d4acc89911
   - url: https://arxiv.org/abs/2404.06138
     shows: '"we introduce Cendol, a collection of Indonesian LLMs encompassing both decoder-only and encoder-decoder
       architectures"'
-    accessed: '2026-09-24'
+    accessed: '2026-10-30'
     http_status: 200
-    content_sha256: c0a2e84c19ef38a6be7ea4552e49e26d55e8228c622f996b9e7169376df96487
+    content_sha256: 382752647619053c0c047c8dd7370bc8f7a1b2a9b2d11eb640b435c4cafacbc5
+  - url: https://arxiv.org/pdf/2404.06138
+    shows: '"In total, we create 53.5M prompts, covering a wide range of prompt types including NLP task-based
+      prompts (41M), Indonesian general knowledge prompts (6.2M), local language generative prompts (6.3M),
+      and human-aligned prompts (8.2K)."'
+    accessed: '2026-10-30'
+    http_status: 200
+    content_sha256: f327a2617ddfc6029b570759f2896a758cf76f1b488af7ede14ba642a444a044
   - url: https://huggingface.co/api/datasets/indonlp/cendol_collection_v1
-    shows: size_categories:10M<n<100M
-    accessed: '2026-09-24'
+    shows: '"num_examples":30179364; size_categories:10M<n<100M'
+    accessed: '2026-10-30'
     http_status: 200
-    content_sha256: 7a33f245d24ffee6ef8ecb5eb2cf6b09db42bd39e5d6aa3a26646cd62fed9e8a
+    content_sha256: 534e7a4c10bdf29e2c3b43468e165ff8ba791bb434f7d9a7ffda2c18a80ce8b2
+  - url: https://huggingface.co/api/datasets/indonlp/cendol_collection_v2
+    shows: '"num_examples":12810390; size_categories:10M<n<100M'
+    accessed: '2026-10-30'
+    http_status: 200
+    content_sha256: c7f320a033436a91fd80d559601c98c5ad11d673b967b9f5de5742eb7f6ea02d

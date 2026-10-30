@@ -62,22 +62,32 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  basis_detail: provenance and downstream use for African-language instruction data
-  value: Instruction data for Hausa, Yoruba, Swahili, isiZulu and isiXhosa, recast from existing human-annotated
-    task datasets such as MAFAND-MT, MasakhaNER and AfriSenti, documented in the InkubaLM paper and a card
-    listing every source, with Pula-8B tuned on it.
+  basis_detail: provenance, size and downstream use for African-language instruction data
+  value: About 148 million training examples for Hausa, Yoruba, Swahili, isiZulu and isiXhosa, recast from
+    existing translation and task datasets such as MAFAND-MT, MasakhaNER and AfriSenti, documented in the
+    InkubaLM paper and a card listing every source, with community fine-tunes such as Pula-8B tuned on it.
   confidence: medium
-  note: Inkuba-Instruct turns well-known African task datasets into instruction data for five languages, lists
-    every source on its card, and the Pula-8B model is tuned on it. Like WangchanThaiInstruct it is documented
-    and has a named model tuned on it, but its content recasts existing human-annotated sets rather than new
-    writing by people.
-  relative_to: wangchan-thai-instruct
-  relation: at
-  last_verified: '2026-09-24'
+  note: Inkuba-Instruct recasts African translation and task datasets into nearly a hundred and fifty million
+    instruction examples for five languages, and its card lists every source. Those examples come from existing
+    datasets rather than new writing by people, and the only models tuned on it, such as Pula-8B, are community
+    fine-tunes.
+  last_verified: '2026-10-30'
   sources:
-  - url: https://huggingface.co/datasets/lelapa/Inkuba-instruct
-    shows: Task table naming source datasets (Mafand-MT, MasakhaNER2, MasakhaPOS, afriqa, SIB-200, MasakhaNEWS,
-      AfriSenti); models trained on it include OxxoCodes/Pula-8B-v0.1.
-    accessed: '2026-09-24'
+  - url: https://arxiv.org/pdf/2408.17024
+    shows: '"Across all languages, merging tasks, we created a training instruction dataset of 148M samples,
+      a validation set of 65M samples, and a testing set of size 55M samples."'
+    accessed: '2026-10-30'
     http_status: 200
-    content_sha256: a2e9d2fac9d4850829828258782f99bb168896840bb17280b2e76dbc7fbbf522
+    content_sha256: 261e46329efeab1cc147a126a51fa86197336c58e36c774d3a4f38297e02f603
+  - url: https://huggingface.co/datasets/lelapa/Inkuba-instruct
+    shows: Task table naming source datasets (WMT-22-African, Mafand-MT and Menyo-20k for translation, 359
+      M; MasakhaNER2, MasakhaPOS, AfriQA, SIB-200, MasakhaNEWS, AfriSenti); "Browse 8 models trained on
+      this dataset", including OxxoCodes/Pula-8B-v0.1.
+    accessed: '2026-10-30'
+    http_status: 200
+    content_sha256: d2e2c6c2737f3d71d6a9dc0a3d163c41908b9e8f46eaba989386790b1a52e064
+  - url: https://huggingface.co/api/datasets/lelapa/Inkuba-instruct
+    shows: size_categories:100M<n<1B
+    accessed: '2026-10-30'
+    http_status: 200
+    content_sha256: 94dfd50305baad1d022cdc4e79ffae2b4f71af43658b09f79e5cf6bb93012038
