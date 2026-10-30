@@ -621,6 +621,47 @@ from free text to a code; a consumer that reads contract 1 must ship support for
 registry's `products` table carries `steward`
 and `languages` (the codes joined by a comma), and `organizations` carries `country`.
 
+## Suites and their members
+
+A suite is a dataset that bundles other datasets: an evaluation suite grouping task sets, or a
+loader hub shipping corpora. Where a bundled dataset is published on its own and has its own
+row, that row names its suites in `lineage.part_of`. A hypothetical member row:
+
+```yaml
+name: nusax
+type: dataset
+lineage:
+  part_of:
+  - seacrowd
+```
+
+The relationship is many-to-many. A dataset in two suites lists both, and a suite's members are
+every product that names it. The edge is written on the member only, and the suite carries no
+list of its members, so membership has one owner and nothing has to be reconciled across two
+files (the unmirrored `trains` and `derived_from` edges show what happens otherwise).
+
+`part_of` sits in the `lineage` block beside `derived_from`, `curated_with` and `trains`, and
+reaches the same places: the payload (resolved to display names, rendered as "Part of"), the
+registry's `product_lineage` table and the Neon `lineage_relation` enum. Unlike those three it is
+not free text. `build/validate.py` holds it to four rules:
+
+- **Every entry names another product in `sources/products/`.** Not an alias and not a free-text
+  name, because a group is built from rows on the map.
+- **Member and suite are both `type: dataset`.** The ruling that introduced the relation
+  (R-2026-10-30-e) concerned evaluation suites and their member sets. Using it for a software
+  SDK and the protocol it implements would lower stages in categories that ruling did not
+  consider, so widening it to other types needs a ruling of its own.
+- **No product names itself.**
+- **The edges form no cycle.** A suite inside a suite is allowed. A loop names no suite.
+
+Category is deliberately unconstrained. A member may sit in a different category from its suite.
+The evaluation sets inside a loader hub that is filed with corpora are one example. Groups form
+within a category, so such an edge groups nothing in either category.
+
+The edge is descriptive everywhere except the stage count, where a suite and its members count
+once. That rule, and what it leaves untouched (every row's own scores, tier and visibility), is in
+[`gap-analysis.md`](gap-analysis.md#counting-rule-a-suite-and-its-members-count-once).
+
 ## Where the graph lives
 
 The identity questions this guide describes in prose are also computed as a graph on the OSO
@@ -683,8 +724,8 @@ eval prints them next to the failing row.
 - `docs/reference/openness.md` — the ladders, and the multi-SKU rule the rubric applies
 - `docs/reference/product-copy.md` — the prose fields, and why a curation rationale is not a
   description
-- `docs/schemas/product.schema.json` — `aliases`, `version_in_identity`, `end_of_life`, `steward`
-  and `languages`
+- `docs/schemas/product.schema.json` — `aliases`, `version_in_identity`, `end_of_life`, `steward`,
+  `languages` and `lineage.part_of`
 - `docs/reference/adoption.md` — the instruments a declared artifact routes to, and the
   precedence order `select_route` applies
 - `sources/resolution_ledger.yaml` — where a rejected or reassigned identity is recorded, so

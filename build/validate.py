@@ -150,6 +150,83 @@ def published_products(taxonomy: dict, cats: dict) -> set[str]:
     }
 
 
+def suite_membership_errors(prods: dict) -> list[str]:
+    """Check `lineage.part_of`, the one lineage edge the build reads rather than displays.
+
+    The category stage counts a suite and its members once (`build/serialize.py`
+    `lineage_groups`), so an edge here can lower a stage, and a reference that does not
+    resolve would silently fail to. Every entry must therefore name another product, and that
+    product, like the member, must be a dataset: the ruling that introduced the relation
+    (R-2026-10-30-e) was about evaluation suites and their member sets, and applying it to an
+    SDK and its protocol would move stages in categories nobody ruled on. The edges must form
+    no cycle, because "A is in B and B is in A" names no suite. Category is not constrained: a
+    member may sit in a different category from its suite, and the stage rule only groups rows
+    that share one. docs/reference/identity.md is the rule.
+    """
+    errors: list[str] = []
+    graph: dict[str, list[str]] = {}
+    for slug, product in sorted(prods.items()):
+        lineage = product.get("lineage")
+        suites = lineage.get("part_of") if isinstance(lineage, dict) else None
+        if not isinstance(suites, list):
+            continue
+        if product.get("type") != "dataset":
+            errors.append(
+                f"product {slug!r}: `lineage.part_of` applies to datasets only (this is a "
+                f"{product.get('type')!r})"
+            )
+        resolved: list[str] = []
+        for suite in suites:
+            if not isinstance(suite, str):
+                continue
+            if suite == slug:
+                errors.append(f"product {slug!r}: `lineage.part_of` names the product itself")
+            elif suite not in prods:
+                errors.append(
+                    f"product {slug!r}: `lineage.part_of` names {suite!r}, which has no "
+                    f"sources/products/{suite}.yaml. A suite is a product on the map, so its "
+                    f"members can be counted with it."
+                )
+            elif (prods[suite] or {}).get("type") != "dataset":
+                errors.append(
+                    f"product {slug!r}: `lineage.part_of` names {suite!r}, which is a "
+                    f"{prods[suite].get('type')!r}; a suite must be a dataset"
+                )
+            else:
+                resolved.append(suite)
+        graph[slug] = resolved
+
+    # Depth-first walk for a back edge. Each cycle is reported once, from its smallest slug,
+    # so the message is stable however the walk happens to enter it.
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = {slug: WHITE for slug in graph}
+    reported: set[tuple[str, ...]] = set()
+
+    def visit(slug: str, path: list[str]) -> None:
+        color[slug] = GRAY
+        path.append(slug)
+        for nxt in graph.get(slug, []):
+            if color.get(nxt, BLACK) == GRAY:
+                cycle = path[path.index(nxt):]
+                start = cycle.index(min(cycle))
+                canonical = tuple(cycle[start:] + cycle[:start])
+                if canonical not in reported:
+                    reported.add(canonical)
+                    errors.append(
+                        "`lineage.part_of` forms a cycle: "
+                        + " -> ".join(canonical + (canonical[0],))
+                    )
+            elif color.get(nxt) == WHITE:
+                visit(nxt, path)
+        path.pop()
+        color[slug] = BLACK
+
+    for slug in sorted(graph):
+        if color[slug] == WHITE:
+            visit(slug, [])
+    return errors
+
+
 def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     """`ledger_path` is a seam for tests: it lets a test point every resolution-ledger check at
     a temp file instead of the real `sources/resolution_ledger.yaml`, which this function
@@ -517,6 +594,8 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
                 errors.append(
                     f"product {slug!r}: category {cid!r} requires `languages` on every product"
                 )
+
+    errors.extend(suite_membership_errors(prods))
 
     # --- org handles (sources/org_handles.yaml) ---
     # Handles live outside the org record on purpose (see docs/reference/identity.md): an

@@ -193,9 +193,19 @@
             "minLength": 1
           },
           "description": "The models this artifact was used to train, written on the dataset so a corpus's downstream reach is readable in one place. Rendered as \"Trains\". It is authored, not derived, and nothing reconciles it against the models' own `derived_from`: of the 63 `trains` edges naming an on-map product on 2026-08-08, none is mirrored by a `derived_from` on the other side. Read a missing reciprocal edge as unwritten, not as a denial."
+        },
+        "part_of": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "description": "The suites this dataset is a member of, by product slug: an evaluation set bundled in a benchmark suite, a corpus a loader hub ships. Written on the member, one entry per suite, so a set that sits in two suites names both. Rendered as \"Part of\". Unlike the other three edges it is not free text and it is not display-only: build/validate.py requires every entry to be another dataset product in sources/products/ and the edges to form no cycle, and the category stage counts a suite and its members once (docs/reference/gap-analysis.md). docs/reference/identity.md carries the rule for when to set it."
         }
       },
-      "description": "Display-only provenance: what this product was built from, what curated it, and what it went on to train. It feeds no score and gates nothing. build/serialize.py resolves any reference matching an on-map slug into that product's display name and passes everything else through verbatim, which is deliberate, because a corpus's ancestors are usually off-map (Common Crawl, Project Gutenberg, \"templated NLP datasets\"). Nothing validates a reference, so a mistyped slug renders as literal text rather than failing a check: 98 of 175 references resolve to a product on 2026-08-08 and the remaining 77 are intentional free text, which is why this is not gated. Also emitted to registry/product_lineage.csv as (product_slug, relation, target). 38 of 472 products carry a block, nearly all of them datasets and models."
+      "description": "Provenance: what this product was built from, what curated it, what it went on to train, and which suites it belongs to. `derived_from`, `curated_with` and `trains` are display-only: they feed no score and gate nothing. `part_of` is the exception, described on the key itself. build/serialize.py resolves any reference matching an on-map slug into that product's display name and passes everything else through verbatim, which is deliberate, because a corpus's ancestors are usually off-map (Common Crawl, Project Gutenberg, \"templated NLP datasets\"). Nothing validates a reference on the three display edges, so a mistyped slug there renders as literal text rather than failing a check: 98 of 175 references resolve to a product on 2026-08-08 and the remaining 77 are intentional free text, which is why this is not gated. Also emitted to registry/product_lineage.csv as (product_slug, relation, target). 38 of 472 products carry a block, nearly all of them datasets and models."
     },
     "artifact_exceptions": {
       "type": "object",
