@@ -42,23 +42,46 @@ scoring_recipe:
     ten billion, 2 one billion, and anything smaller is 1. Speech, counted in transcribed hours:
     5 needs a hundred thousand (Emilia and YODAS scale), 4 ten thousand, 3 a thousand, 2 a
     hundred. Parallel text, in sentence pairs: 5 needs a billion, 4 a hundred million, 3 ten
-    million, 2 one million. A product's band is the lower of what the rungs above give it and
-    what its size allows; a cap never raises a band. Words are counted as tokens, which
-    understates token counts, and a size known only in bytes is estimated at four bytes a token;
-    each estimate says so in the product's capability value. Evaluation sets, instruction data,
-    the SEACrowd hub and task annotations such as NCHLT carry no cap, because their size is a
-    count of items rather than a measure of how much of a language they hold, and ArabicMMLU
-    already outnumbers English MMLU. The caps are the category's central finding rather than a
-    penalty: no open corpus here reaches the scale a frontier English or Chinese model is
-    trained on, and the only one that does, Sarvam-2T, is withheld.
+    million, 2 one million. Instruction data, in examples, is measured against the largest open
+    English instruction sets (R-2026-10-30-c): 5 needs ten million (the scale of NVIDIA's two
+    CC-BY-4.0 post-training sets, Llama-Nemotron-Post-Training-Dataset v1.1 at about 33 million
+    examples by its card's distribution table and Nemotron-Post-Training-Dataset-v1 at about 25.7
+    million by its card's split counts), 4 a million, 3 a hundred thousand, 2 ten thousand, and
+    anything smaller is 1. An example is a row as its publisher counts it, a prompt and response
+    or a whole conversation. Generated, translated and templated examples count at face value:
+    how the data was made is what the rungs above judge, and the cap does not judge it a second
+    time. The FLAN Collection is not an anchor, because Google publishes it as code that renders
+    task datasets under prompt templates rather than as a dataset with a stated size; Open-Orca's
+    full rendering of it runs to billions of rows under its component datasets' own licenses.
+    A product's band is the lower of what the rungs above give it and what its size allows; a
+    cap never raises a band. Words are counted as tokens, which understates token counts, and a
+    size known only in bytes is estimated at four bytes a token; each estimate says so in the
+    product's capability value. Evaluation sets, the SEACrowd hub and task annotations such as
+    NCHLT carry no cap, because their size is a count of items rather than a measure of how much
+    of a language they hold, and ArabicMMLU already outnumbers English MMLU. The caps are the
+    category's central finding rather than a penalty: no open corpus here reaches the scale a
+    frontier English or Chinese model is trained on, and the only one that does, Sarvam-2T, is
+    withheld.
 
-    Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
-    at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
-    over the one-third review trigger; it is where the caps put most national corpora and speech
+    The instruction sets read against that cap: Inkuba-Instruct (about 148 million training
+    examples), IndicAlign (74.7 million), Cendol Collection (53.5 million by its paper), Updesh
+    (9.5 million), SEA-Instruct (about 7.2 million on its card), WangchanX-FLAN (3.6 million),
+    Samvaad-Hi (101,476), African UltraChat (about 55,000), WangchanThaiInstruct (40,000) and
+    CIDAR (10,000). Only WangchanThaiInstruct moved, from 4 to 2: it is written by people and
+    used downstream, but forty thousand examples sit two orders of magnitude under the cap's top.
+    Every other set's band is already at or under what its size allows. Inkuba-Instruct is the instruction root and the other sets name it or
+    a same-language peer. The Typhoon-S sovereign capability release (30,053 rows of RL,
+    pretraining, supervised and agent splits) is a boundary case under D2 of the 2026-10-30
+    brief and was not read against the cap; its band, 2, is what the cap would give it anyway.
+
+    Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. Since
+    the instruction cap: 6 at 5, 15 at 4, 36 at 3, 26 at 2, 14 at 1. The six at 5 are all
+    evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97, over the
+    one-third review trigger; it is where the caps put most national corpora and speech
     collections of a few thousand hours, which is the category's shape rather than loose
     wording, and two review passes and the caps moved bands in both directions before this
     count. Top rows per modality: Sangraha (pretraining text), Common Voice (speech), BPCC
-    (parallel text), FLORES+ (evaluation), WangchanThaiInstruct (instruction data).
+    (parallel text), FLORES+ (evaluation), Inkuba-Instruct (instruction data).
 
     The category carries three corpora held back from open release - Meta's unreleased MMS
     recordings, Sarvam-2T, and Te Hiku Media's te reo Māori corpus, which is granted on request
