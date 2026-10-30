@@ -414,6 +414,121 @@
               "description": "What was read on THE ROOT to make that judgment. Its own list, not capability.sources, because these are citations about a different product: folding them in would let a root's page count as this product's own evidence and would corrupt the weak-root check, which reads capability.sources as the root's evidence."
             }
           }
+        },
+        "language_coverage": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "language",
+              "count",
+              "unit",
+              "provenance",
+              "tasks",
+              "pivot",
+              "cites"
+            ],
+            "description": "One language's share of the set: how many items it holds, how they were made, which tasks they fall under, and where that is stated. docs/reference/capability.md, 'Per-language coverage', defines each value.",
+            "properties": {
+              "language": {
+                "type": "string",
+                "pattern": "^[a-z]{3}$",
+                "description": "The ISO 639-3 code, under the same rule as the product's `languages`: scope individual or macrolanguage in sources/snapshots/iso-639-3.tab, so two-letter codes and the special codes `mul`, `und` and `zxx` are refused. It must also be one of the codes the product's `languages` lists, because coverage says how much a listed language holds and never adds a language the identity record does not name. The schema checks the shape; build/validate.py checks both lists. Entries are sorted by this code and name each language once."
+              },
+              "count": {
+                "type": "number",
+                "minimum": 0,
+                "description": "How many items the set holds in this language, in `unit`, as the cited source states it for this language. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state is left out of the record rather than given a share. An integer for every unit except `hours`."
+              },
+              "unit": {
+                "enum": [
+                  "items",
+                  "questions",
+                  "sentences",
+                  "documents",
+                  "utterances",
+                  "hours",
+                  "words",
+                  "tokens"
+                ],
+                "description": "What `count` counts, in the unit the cited source uses. `items` is the generic unit for a test case that is none of the others. Counts in different units are not comparable, and the ladder that reads them decides how they meet."
+              },
+              "provenance": {
+                "enum": [
+                  "native",
+                  "human_translated",
+                  "post_edited",
+                  "machine_translated",
+                  "generated",
+                  "mixed",
+                  "unknown"
+                ],
+                "description": "How this language's items came to be in it: written in the language (`native`), translated into it by people (`human_translated`), machine-translated and then corrected by people (`post_edited`), machine-translated with no correction recorded (`machine_translated`), produced by a model in the language rather than translated (`generated`), more than one of these for this language (`mixed`), or not stated by the source (`unknown`). `unknown` is a recorded state, never a stand-in for `native`."
+              },
+              "tasks": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "instruction_following",
+                    "knowledge_exam",
+                    "language_identification",
+                    "machine_translation",
+                    "natural_language_inference",
+                    "question_answering",
+                    "reading_comprehension",
+                    "reasoning",
+                    "retrieval",
+                    "safety",
+                    "sequence_labeling",
+                    "speech_recognition",
+                    "speech_synthesis",
+                    "speech_translation",
+                    "summarization",
+                    "text_classification",
+                    "text_generation",
+                    "vision_language"
+                  ]
+                },
+                "description": "The tasks this language's items fall under. A closed vocabulary, so a task the list does not name is a schema change rather than a new spelling. A suite whose tasks cover different languages lists, for each language, only the tasks that language takes part in."
+              },
+              "pivot": {
+                "type": "boolean",
+                "description": "True when the set was not built for this language: it is the language the items were translated from, or a high-resource language included for comparison, as English is in most multilingual evaluation sets. Required rather than defaulted, so every entry says which side of the line it is on. The depth ladder leaves pivot languages out of its median (R-2026-10-30-i)."
+              },
+              "cites": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)"
+                },
+                "description": "The `url` of each entry in this axis's `sources` that states this language's figures, the dataset card or the paper. Each must equal the url of a capability source (build/validate.py), so the citation's `shows`, `accessed`, `http_status` and `content_sha256` are written once, on the source list that build/check_verification.py, build/check_refetch.py and build/check_citations.py already read, and are not copied here where no gate would see them."
+              }
+            },
+            "if": {
+              "properties": {
+                "unit": {
+                  "const": "hours"
+                }
+              },
+              "required": [
+                "unit"
+              ]
+            },
+            "else": {
+              "properties": {
+                "count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "description": "Per-language evidence for an evaluation set: for each language it covers, the item count, how the items were made, the tasks, and whether the language is a pivot, each cited to the card or paper through `capability.sources` (R-2026-10-30-h). It records how much the set holds in each language, which `languages` on the product record does not: that field says which languages, and this says how deep. Capability evidence rather than an identity attribute, because a ladder will read it: the depth ladder (R-2026-10-30-g) bands an evaluation set on the median per-language depth across the languages it was built for, pivots left out, with a capped breadth bonus (R-2026-10-30-i). That ladder is not built, so nothing reads this field yet and no band moves because of it. Optional and only valid on a `type: dataset` product; absent means not recorded. Part of the axis, so `capability.last_verified` claims it was re-read like everything else on the axis. Kept out of the notebook payload until the per-language view defines how it ships (build/serialize.py). docs/reference/capability.md is normative."
         }
       },
       "dependentRequired": {

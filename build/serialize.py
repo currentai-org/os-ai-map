@@ -403,6 +403,17 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     return lt
 
 
+def _without_language_coverage(capability):
+    """The capability block as the payload carries it: everything but `language_coverage`.
+
+    Returned unchanged, the same object, when the key is absent, so a record without it
+    serializes byte-for-byte as it did before the field existed.
+    """
+    if isinstance(capability, dict) and "language_coverage" in capability:
+        return {k: v for k, v in capability.items() if k != "language_coverage"}
+    return capability
+
+
 def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
          weights: dict | None, name_map: dict | None = None,
          freshness: dict | None = None) -> dict:
@@ -436,7 +447,11 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
         # route id in front of every reader of the map to answer a question only the audit
         # asks, and would grow a payload whose transport is already its tightest constraint.
         "adoption": {k: v for k, v in (score["adoption"] or {}).items() if k != "derived_from"},
-        "capability": score["capability"],
+        # `language_coverage` stays in the repository until the per-language view
+        # (R-2026-10-30-i) defines how it ships: a many-language set carries one entry per
+        # language, and the payload's transport is already its tightest constraint. Every
+        # other capability key ships as recorded. See docs/reference/capability.md.
+        "capability": _without_language_coverage(score["capability"]),
     }
     # The weighted product maturity score (per-category blend of adoption/capability),
     # already rounded to 2dp by _maturity_score, or null when adoption is missing. The
