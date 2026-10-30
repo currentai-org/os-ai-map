@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A preliminary language_specific_eval_sets category (Language-specific evaluation sets), with an
+  empty roster and an interim capability ladder that compares each set with sets for the same
+  languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets
+  would get. The ladder is not calibrated and the dry-run bands are not adopted
+  ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
 - An optional per-language coverage record on a dataset's capability axis
   (`capability.language_coverage`): for each language, the item count and its unit, how the items
   were made, their tasks, and whether the language is a pivot, cited through `capability.sources`.
