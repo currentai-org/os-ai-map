@@ -12,8 +12,9 @@ to settle before the split PR (step 5):
 - the capability band the new recipe gives every set that would move, with the `relative_to`
   peer it would name in the new category.
 
-Nothing moved. No score, product file or roster changed. The bands below are what the split PR
-starts from. That PR still re-reads each product's sources through `refresh-category`, rewrites
+Nothing moved. No score, product file or roster changed. The bands below are a dry run, not
+adopted: 12 of 22 land at 5, and the maintainer held them until the interim ladder is calibrated
+(#948). The split PR starts from a calibrated version of this table. That PR still re-reads each product's sources through `refresh-category`, rewrites
 the capability notes to the new comparison, and records `comparison` attestations for re-pointed
 edges. This record is not that re-verification.
 
