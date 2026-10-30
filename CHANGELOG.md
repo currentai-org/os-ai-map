@@ -22,7 +22,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   (`capability.language_coverage`): for each language, the item count and its unit, how the items
   were made, their tasks, and whether the language is a pivot, cited through `capability.sources`.
   Codes must be ones the product's `languages` lists. No product carries it yet, nothing scores on
-  it, and the notebook payload leaves it out (R-2026-10-30-h).
+  it, and the notebook payload leaves it out (R-2026-10-30-h,
+  [#952](https://github.com/currentai-org/os-ai-map/pull/952)).
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
   declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
