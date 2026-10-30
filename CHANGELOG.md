@@ -21,7 +21,7 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - A preliminary language_specific_eval_sets category (Language-specific evaluation sets), with an
   empty roster and an interim capability ladder that compares each set with sets for the same
   languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets
-  would get ([#946](https://github.com/currentai-org/os-ai-map/pull/946)).
+  would get ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
   declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
