@@ -174,6 +174,19 @@ def confidence_levels() -> frozenset[str]:
 
 
 @lru_cache(maxsize=1)
+def lineage_relations() -> tuple[str, ...]:
+    """The edges a product's `lineage` block can carry, from `docs/schemas/product.schema.json`.
+
+    In schema order. The payload resolves them, the registry exports them as
+    `product_lineage.relation` and the Neon serving layer enforces them as an enum, and each of
+    the three held its own copy until `part_of` became the fourth edge, which would otherwise
+    have reached the source files and none of the outputs.
+    """
+    schema = json.loads((ROOT / "docs" / "schemas" / "product.schema.json").read_text())
+    return tuple(schema["properties"]["lineage"]["properties"])
+
+
+@lru_cache(maxsize=1)
 def artifact_kinds() -> frozenset[str]:
     """Product artifact keys any routing source declares it consumes, via `artifact_key`.
 

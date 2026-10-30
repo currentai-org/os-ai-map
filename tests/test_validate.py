@@ -1139,3 +1139,114 @@ def test_the_required_categories_all_exist():
 
     categories = {p.stem for p in (ROOT / "sources" / "categories").glob("*.yaml")}
     assert validate.LANGUAGES_REQUIRED_CATEGORIES <= categories
+
+
+# --- suite membership: lineage.part_of (R-2026-10-30-e) ---------------------------------------
+
+
+def _suite_fixture(*slugs):
+    """The base fixture plus one dataset product per slug, all in the published category."""
+    d = _fixture()
+    for slug in slugs:
+        d["products"][slug] = {"name": slug, "display_name": slug.title(), "type": "dataset",
+                               "comments": ""}
+        d["scores"][slug] = {**d["scores"]["llama"], "product": slug}
+        d["organizations"]["meta"]["products"].append(slug)
+        d["categories"]["base_pretrained"]["products"].append(slug)
+    return d
+
+
+def _part_of(d, slug, *suites):
+    d["products"][slug]["lineage"] = {"part_of": list(suites)}
+
+
+def test_a_dataset_may_name_the_suites_it_belongs_to():
+    d = _suite_fixture("suite", "other-suite", "member")
+    _part_of(d, "member", "suite", "other-suite")
+    assert validate_sources(d) == []
+
+
+def test_part_of_sits_beside_the_display_edges():
+    d = _suite_fixture("suite", "member")
+    d["products"]["member"]["lineage"] = {"derived_from": ["Common Crawl"], "part_of": ["suite"]}
+    assert validate_sources(d) == []
+
+
+def test_a_suite_must_be_a_product():
+    d = _suite_fixture("member")
+    _part_of(d, "member", "nonexistent-suite")
+    assert any("'member'" in e and "'nonexistent-suite'" in e and "no sources/products" in e
+               for e in validate_sources(d))
+
+
+def test_a_retired_slug_is_not_a_suite():
+    """An alias resolves for a reader, but a group is built from the rows on the map."""
+    d = _suite_fixture("suite", "member")
+    d["products"]["suite"]["aliases"] = ["old-suite"]
+    _part_of(d, "member", "old-suite")
+    assert any("'old-suite'" in e and "no sources/products" in e for e in validate_sources(d))
+
+
+def test_a_product_may_not_be_part_of_itself():
+    d = _suite_fixture("member")
+    _part_of(d, "member", "member")
+    assert any("'member'" in e and "names the product itself" in e for e in validate_sources(d))
+
+
+@pytest.mark.parametrize("edges, cycle", [
+    ({"a-set": ["b-set"], "b-set": ["a-set"]}, "a-set -> b-set -> a-set"),
+    ({"a-set": ["b-set"], "b-set": ["c-set"], "c-set": ["a-set"]},
+     "a-set -> b-set -> c-set -> a-set"),
+])
+def test_suite_membership_may_not_form_a_cycle(edges, cycle):
+    d = _suite_fixture("a-set", "b-set", "c-set")
+    for slug, suites in edges.items():
+        _part_of(d, slug, *suites)
+    errs = [e for e in validate_sources(d) if "cycle" in e]
+    assert errs == [f"`lineage.part_of` forms a cycle: {cycle}"]
+
+
+def test_a_member_in_two_suites_is_not_a_cycle():
+    """Many-to-many is a shape the relation allows; a diamond is not a loop."""
+    d = _suite_fixture("hub", "suite-a", "suite-b", "member")
+    _part_of(d, "suite-a", "hub")
+    _part_of(d, "suite-b", "hub")
+    _part_of(d, "member", "suite-a", "suite-b")
+    assert validate_sources(d) == []
+
+
+def test_only_a_dataset_may_be_part_of_a_suite():
+    d = _suite_fixture("suite")
+    d["products"]["llama"]["lineage"] = {"part_of": ["suite"]}
+    assert any("'llama'" in e and "datasets only" in e for e in validate_sources(d))
+
+
+def test_a_suite_must_be_a_dataset():
+    d = _suite_fixture("member")
+    _part_of(d, "member", "llama")
+    assert any("'member'" in e and "'llama'" in e and "a suite must be a dataset" in e
+               for e in validate_sources(d))
+
+
+def test_a_suite_may_sit_in_another_category():
+    """The stage rule groups rows within one category, so a member's suite can be elsewhere."""
+    d = _suite_fixture("member")
+    d["taxonomy"]["arcs"][0]["groups"][0]["categories"].append(
+        {"name": "storage", "status": "preliminary"})
+    d["categories"]["storage"] = {
+        "name": "storage", "display_name": "Storage", "description": "Elsewhere.",
+        "weights": {"adopt": 0.6, "cap": 0.4}, "products": ["suite"],
+        "scoring_recipe": {"version": 1}}
+    d["products"]["suite"] = {"name": "suite", "display_name": "Suite", "type": "dataset",
+                              "comments": ""}
+    d["scores"]["suite"] = {**d["scores"]["llama"], "product": "suite"}
+    d["organizations"]["meta"]["products"].append("suite")
+    _part_of(d, "member", "suite")
+    assert validate_sources(d) == []
+
+
+@pytest.mark.parametrize("suites", [[], ["suite", "suite"], ["Suite"]])
+def test_part_of_shape_is_checked_by_the_schema(suites):
+    d = _suite_fixture("suite", "member")
+    _part_of(d, "member", *suites)
+    assert any("part_of" in e for e in validate_sources(d))
