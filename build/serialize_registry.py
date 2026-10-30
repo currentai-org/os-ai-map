@@ -70,6 +70,7 @@ from build.resolution import relation_of as _ledger_relation_of
 from build.serialize import _aliases
 from build.taxonomy import arc_grouped_categories, category_statuses
 from build.validate import load_sources, published_products
+from build.vocabulary import lineage_relations
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "registry"
@@ -85,7 +86,7 @@ ARTIFACT_KINDS = (
     "homebrew",
     "docker",
 )
-LINEAGE_RELATIONS = ("derived_from", "curated_with", "trains")
+LINEAGE_RELATIONS = lineage_relations()
 
 TABLES: dict[str, tuple[str, ...]] = {
     # `steward` and `languages` are appended so the existing column order is undisturbed.

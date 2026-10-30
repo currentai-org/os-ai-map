@@ -14,6 +14,7 @@ import yaml
 
 from build.check_rubric import components_string
 from build.taxonomy import arc_grouped_categories
+from build.vocabulary import lineage_relations
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -172,13 +173,77 @@ def _unreached_axes(fully_open: list[dict]) -> list[str]:
     return gaps
 
 
-def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -> dict:
+def lineage_groups(roster: list[str], prods: dict) -> dict[str, tuple[str, ...]]:
+    """Which lineage group(s) each product in one category's roster counts with.
+
+    A group is a suite plus every product that declares membership in it through
+    `lineage.part_of`, directly or through a member suite, among the rows of THIS roster. It
+    is named by its top suite: the row that has members here and is itself a member of
+    nothing here. A nested suite therefore folds into the suite above it, and a dataset in two
+    suites belongs to both groups. A product with no edge to another row of the roster is in
+    no group and is absent from the result, so a category nobody has linked returns {}. An
+    edge to a suite in another category groups nothing here. The rule is in
+    docs/reference/gap-analysis.md; build/validate.py guarantees the edges are acyclic, and the
+    walk below guards against a cycle anyway so an unvalidated tree cannot hang serialize.
+    """
+    on_roster = set(roster)
+    up: dict[str, list[str]] = {}
+    for slug in roster:
+        lineage = (prods.get(slug) or {}).get("lineage")
+        suites = lineage.get("part_of") if isinstance(lineage, dict) else None
+        up[slug] = [s for s in (suites or []) if s in on_roster and s != slug]
+    has_members = {suite for suites in up.values() for suite in suites}
+
+    def tops(slug: str, trail: frozenset[str]) -> set[str]:
+        parents = [s for s in up[slug] if s not in trail]
+        if not parents:
+            return {slug}
+        return set().union(*(tops(s, trail | {slug}) for s in parents))
+
+    return {slug: tuple(sorted(tops(slug, frozenset())))
+            for slug in roster if up[slug] or slug in has_members}
+
+
+def _leading_count(leading: list[dict], groups: dict[str, tuple[str, ...]]) -> int:
+    """How many of these category-leading fully-open rows count toward the stage (`L`).
+
+    A row in no lineage group counts as itself. A group counts at most once, through its
+    highest-scoring fully-open row, so the group counts exactly when that row is category-
+    leading, however many of its other rows are too. Where a row sits in two groups it can
+    carry only one of them, so `L` is the largest number of distinct groups and ungrouped rows
+    that distinct leading rows can each stand for: a maximum bipartite matching, by augmenting
+    paths. With no groups that is simply len(leading), which is what keeps every category
+    nobody has linked exactly where it was. See docs/reference/gap-analysis.md.
+    """
+    units = [tuple(("group", g) for g in groups[slug]) if (slug := r.get("slug")) in groups
+             else (("row", i),)
+             for i, r in enumerate(leading)]
+    held_by: dict[tuple, int] = {}
+
+    def place(i: int, tried: set) -> bool:
+        for unit in units[i]:
+            if unit in tried:
+                continue
+            tried.add(unit)
+            if unit not in held_by or place(held_by[unit], tried):
+                held_by[unit] = i
+                return True
+        return False
+
+    return sum(place(i, set()) for i in range(len(units)))
+
+
+def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False,
+                    groups: dict[str, tuple[str, ...]] | None = None) -> dict:
     """Assign a maturity stage (0-5) and the set of gaps for one category.
 
     Strict open-only: only fully-open products count toward maturity/stage;
     open-ish only serves to detect the openness gap. See docs/reference/gap-analysis.md.
     `disclosure` is a declared per-category attribute (not inferred): set it where the
     closed frontier's equivalent to these open products is structurally undisclosed.
+    `groups` is `lineage_groups` for this category's roster, keyed by each row's `slug`: a
+    suite and its members count once toward the Stage 4/5 count. Omitted, every row counts
+    as itself.
     """
     w = weights or {"adopt": 0.5, "cap": 0.5}
     # Products with no maturity score (missing adoption) are excluded from the stage
@@ -186,7 +251,9 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
     # depress the category's stage.
     enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
     open_rows = [(r, s) for r, b, s in enr if b == "open" and s is not None]
-    mature_open = sum(1 for _, s in open_rows if s >= _MATURE_MIN)
+    # Only the count reads lineage groups. `best_open` is a maximum and `mature_anywhere` an
+    # existence test, and neither can be inflated by overlap, so both stay per row.
+    mature_open = _leading_count([r for r, s in open_rows if s >= _MATURE_MIN], groups or {})
     best_open = max((s for _, s in open_rows), default=0.0)
     mature_anywhere = any(s >= _MATURE_MIN for _, _, s in enr if s is not None)
 
@@ -422,16 +489,17 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):
         row["version_note"] = prod["comments"]
-    # Lineage is a display-only provenance block (derived_from / curated_with /
-    # trains). It feeds no score. On-map references are resolved to display names
-    # via name_map; anything not on the map (curation tools, external corpora like
-    # Common Crawl) passes through verbatim. Empty edges are dropped; the whole key
-    # is omitted when a product has no lineage.
+    # Lineage is a provenance block (derived_from / curated_with / trains / part_of). It
+    # feeds no score; `part_of` alone is also read by the stage count, through
+    # lineage_groups in build_payload, and not from this row. On-map references are
+    # resolved to display names via name_map; anything not on the map (curation tools,
+    # external corpora like Common Crawl) passes through verbatim. Empty edges are dropped;
+    # the whole key is omitted when a product has no lineage.
     lineage = prod.get("lineage")
     if lineage:
         nm = name_map or {}
         resolved = {}
-        for edge in ("derived_from", "curated_with", "trains"):
+        for edge in lineage_relations():
             refs = lineage.get(edge) or []
             if refs:
                 resolved[edge] = [nm.get(r, r) for r in refs]
@@ -668,7 +736,8 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
                              cat.get("weights"), name_map,
                              (freshness or {}).get(slug)))
             n += 1
-        sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False))
+        sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False),
+                             groups=lineage_groups(cat["products"], prods))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
                          "layer": cid_layer[cid], "group": cid_group[cid],
                          "group_slug": cid_group_slug[cid],
