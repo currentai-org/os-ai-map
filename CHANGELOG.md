@@ -22,6 +22,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   empty roster and an interim capability ladder that compares each set with sets for the same
   languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets
   would get ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
+- `lineage.part_of`, a many-to-many link from a dataset to the suites it belongs to, and the
+  stage rule it feeds: a suite and its members count once toward a category's stage, through the
+  group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No
+  product sets it yet, so no stage moved
+  ([#949](https://github.com/currentai-org/os-ai-map/pull/949)).
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
   declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
