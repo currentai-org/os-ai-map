@@ -1,7 +1,7 @@
 import pytest
 
-from build.serialize import (PAYLOAD_CONTRACT, _GAP_DESC, build_payload, release_date,
-                             repo_version, _stage_and_gaps)
+from build.serialize import (PAYLOAD_CONTRACT, _GAP_DESC, build_payload, lineage_groups,
+                             release_date, repo_version, _stage_and_gaps)
 
 
 def _p(cls, adoption, capability):
@@ -891,3 +891,133 @@ def test_an_organizations_country_reaches_the_payload_as_written():
     s = _sources()
     s["organizations"]["meta"]["country"] = "US"
     assert build_payload(s, frozen_long_tail={}, generated="2026-06-10")["organizations"]["meta"]["country"] == "US"
+
+
+# --- lineage groups: a suite and its members count once (R-2026-10-30-e) --------------------
+# docs/reference/gap-analysis.md, "A suite and its members count once". Only the count of
+# category-leading fully-open products (`L`) reads the groups; every row keeps its own scores.
+
+_EVEN = {"adopt": 0.5, "cap": 0.5}
+
+
+def _sp(slug, cls, adoption, capability):
+    return {**_p(cls, adoption, capability), "slug": slug}
+
+
+def _suite_with_members(n_members, cls="open_source"):
+    """A suite and `n_members` member rows, every one of them category-leading and fully open."""
+    rows = [_sp("suite", cls, 5, 5)] + [_sp(f"member-{i}", cls, 5, 5) for i in range(n_members)]
+    prods = {"suite": {}, **{f"member-{i}": {"lineage": {"part_of": ["suite"]}}
+                             for i in range(n_members)}}
+    return rows, prods
+
+
+def test_a_suite_and_its_members_count_once_toward_the_stage():
+    # AfroBench and ten member rows: eleven leading fully-open rows, one body of work.
+    rows, prods = _suite_with_members(10)
+    roster = [r["slug"] for r in rows]
+    assert _stage_and_gaps(rows, _EVEN)["num"] == 5  # without the groups, eleven rows clear 4
+    sg = _stage_and_gaps(rows, _EVEN, groups=lineage_groups(roster, prods))
+    assert sg["num"] == 4 and sg["gaps"] == ["resiliency"]
+
+
+def test_each_row_keeps_its_own_scores():
+    rows, prods = _suite_with_members(3)
+    before = [dict(r) for r in rows]
+    _stage_and_gaps(rows, _EVEN, groups=lineage_groups([r["slug"] for r in rows], prods))
+    assert rows == before
+
+
+def test_a_group_counts_once_beside_unrelated_products():
+    rows, prods = _suite_with_members(3)
+    unrelated = [_sp(f"other-{i}", "open_source", 5, 5) for i in range(3)]
+    everything = rows + unrelated
+    groups = lineage_groups([r["slug"] for r in everything], prods)
+    # The group is one, the three unrelated products are three: four clears Stage 5.
+    assert _stage_and_gaps(everything, _EVEN, groups=groups)["num"] == 5
+    # The group and two unrelated products make three, which does not.
+    fewer = rows + unrelated[:2]
+    groups = lineage_groups([r["slug"] for r in fewer], prods)
+    assert _stage_and_gaps(fewer, _EVEN, groups=groups)["num"] == 4
+
+
+def test_a_group_counts_through_its_highest_scoring_fully_open_row():
+    # The suite itself is fully open but not leading; one member is both. The group counts.
+    rows = [_sp("suite", "open_source", 3, 3), _sp("member", "open_source", 5, 5),
+            _sp("other-a", "open_source", 5, 5), _sp("other-b", "open_source", 5, 5),
+            _sp("other-c", "open_source", 5, 5)]
+    prods = {"member": {"lineage": {"part_of": ["suite"]}}}
+    groups = lineage_groups([r["slug"] for r in rows], prods)
+    assert _stage_and_gaps(rows, _EVEN, groups=groups)["num"] == 5
+
+
+def test_members_that_are_not_fully_open_do_not_carry_the_group():
+    # Every leading row in the group is open-ish, so the group adds nothing to L, and the
+    # fully-open suite, which is not leading, sets B exactly as it would on its own.
+    rows = [_sp("suite", "open_source", 3, 4), _sp("member-a", "open_weights", 5, 5),
+            _sp("member-b", "gated", 5, 5)]
+    prods = {"member-a": {"lineage": {"part_of": ["suite"]}},
+             "member-b": {"lineage": {"part_of": ["suite"]}}}
+    groups = lineage_groups([r["slug"] for r in rows], prods)
+    grouped, plain = _stage_and_gaps(rows, _EVEN, groups=groups), _stage_and_gaps(rows, _EVEN)
+    assert grouped == plain and grouped["num"] == 3 and "openness" in grouped["gaps"]
+
+
+def test_a_member_of_two_suites_carries_only_one_of_them():
+    rows = [_sp("suite-a", "open_source", 3, 3), _sp("suite-b", "open_source", 3, 3),
+            _sp("shared", "open_source", 5, 5)]
+    prods = {"shared": {"lineage": {"part_of": ["suite-a", "suite-b"]}}}
+    groups = lineage_groups([r["slug"] for r in rows], prods)
+    assert groups == {"suite-a": ("suite-a",), "suite-b": ("suite-b",),
+                      "shared": ("suite-a", "suite-b")}
+    # One leading row cannot stand for two groups.
+    assert _stage_and_gaps(rows, _EVEN, groups=groups)["num"] == 4
+    # With both suites leading too, each group has a row of its own: 2 groups + 2 others = 4.
+    both = [_sp("suite-a", "open_source", 5, 5), _sp("suite-b", "open_source", 5, 5),
+            _sp("shared", "open_source", 5, 5), _sp("other-a", "open_source", 5, 5),
+            _sp("other-b", "open_source", 5, 5)]
+    assert _stage_and_gaps(both, _EVEN, groups=groups)["num"] == 5
+
+
+def test_a_nested_suite_folds_into_the_suite_above_it():
+    prods = {"sub": {"lineage": {"part_of": ["hub"]}},
+             "set": {"lineage": {"part_of": ["sub"]}}}
+    groups = lineage_groups(["hub", "sub", "set", "alone"], prods)
+    assert groups == {"hub": ("hub",), "sub": ("hub",), "set": ("hub",)}
+
+
+def test_lineage_groups_only_join_rows_on_the_same_roster():
+    # The suite sits in another category, so here the member is in no group and counts alone.
+    prods = {"member": {"lineage": {"part_of": ["suite-elsewhere"]}}, "suite-elsewhere": {}}
+    assert lineage_groups(["member", "other"], prods) == {}
+    # The display edges group nothing.
+    assert lineage_groups(["a", "b"], {"a": {"lineage": {"derived_from": ["b"]}}}) == {}
+
+
+def test_lineage_groups_survive_a_cycle_validate_would_reject():
+    prods = {"a": {"lineage": {"part_of": ["b"]}}, "b": {"lineage": {"part_of": ["a"]}}}
+    assert set(lineage_groups(["a", "b"], prods)) == {"a", "b"}
+
+
+def test_build_payload_counts_a_suite_and_its_members_once():
+    # Four leading fully-open datasets in one category, three of them a suite and its members.
+    s = _sources()
+    slugs = ["suite", "member-a", "member-b", "other"]
+    s["organizations"]["meta"]["products"] = list(slugs)
+    s["categories"]["base_pretrained"]["products"] = list(slugs)
+    s["categories"]["base_pretrained"]["weights"] = _EVEN
+    s["products"] = {slug: {"name": slug, "display_name": slug.title(), "type": "dataset",
+                            "description": "d"} for slug in slugs}
+    s["scores"] = {slug: {"product": slug, "openness": {"score": 5, "class": "open_source"},
+                          "adoption": {"level": 5}, "capability": {"score": 5}} for slug in slugs}
+    before = build_payload(s, frozen_long_tail={}, generated="2026-06-10")
+    assert before["categories"]["base_pretrained"]["stage"]["num"] == 5
+    for member in ("member-a", "member-b"):
+        s["products"][member]["lineage"] = {"part_of": ["suite"]}
+    cat = build_payload(s, frozen_long_tail={}, generated="2026-06-10")["categories"]["base_pretrained"]
+    assert cat["stage"]["num"] == 4 and cat["gaps"] == ["resiliency"]
+    # Every row is still there with its own score and tier, and a member names its suite.
+    assert [r["slug"] for r in cat["products"]] == slugs
+    assert all(r["overall_score"] == 5.0 and r["tier"] == "leading" and r["mature"]
+               for r in cat["products"])
+    assert cat["products"][1]["lineage"] == {"part_of": ["Suite"]}

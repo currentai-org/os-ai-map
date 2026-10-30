@@ -18,6 +18,22 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A preliminary language_specific_eval_sets category (Language-specific evaluation sets), with an
+  empty roster and an interim capability ladder that compares each set with sets for the same
+  languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets
+  would get. The ladder is not calibrated and the dry-run bands are not adopted
+  ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
+- An optional per-language coverage record on a dataset's capability axis
+  (`capability.language_coverage`): for each language, the item count and its unit, how the items
+  were made, their tasks, and whether the language is a pivot, cited through `capability.sources`.
+  Codes must be ones the product's `languages` lists. No product carries it yet, nothing scores on
+  it, and the notebook payload leaves it out (R-2026-10-30-h,
+  [#952](https://github.com/currentai-org/os-ai-map/pull/952)).
+- `lineage.part_of`, a many-to-many link from a dataset to the suites it belongs to, and the
+  stage rule it feeds: a suite and its members count once toward a category's stage, through the
+  group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No
+  product sets it yet, so no stage moved
+  ([#949](https://github.com/currentai-org/os-ai-map/pull/949)).
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
   declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the

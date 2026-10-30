@@ -33,6 +33,7 @@ them — are not capable of anything the axis measures, and abstain rather than 
 | `relative_to` | the slug of the product this band was placed **against**, when placed by comparison rather than measured. |
 | `relation` | how this band sits against `relative_to`: `at`, `one_below`, `two_below`, `one_above`. Required with `relative_to`, meaningless without it. |
 | `comparison` | when the spacing recorded by `relative_to`/`relation` was last judged still to hold (`last_attested`), and what was read on the peer to judge it (`sources`). Optional. |
+| `language_coverage` | per-language evidence for an evaluation set: count, unit, provenance, tasks and pivot for each language, cited through `sources`. Optional, datasets only. See [Per-language coverage](#per-language-coverage). |
 | `confidence` | the curator's certainty (`high`/`medium`/`low`). Note it does not encode the strength of the instrument — a `high` can sit on a feature-matrix judgment with no measurement under it. |
 | `note` | the prose behind the band: what the product does well, what it sits below, and against whom. |
 | `sources` | the evidence, at least one for a non-null score. |
@@ -204,6 +205,133 @@ the failure recording comparisons as data exists to prevent.
 `build/check_capability.py` reports weak roots with their fan-out, so remediation runs in the
 order that clears the most dependent bands.
 
+## Per-language coverage
+
+`languages` on a dataset ([`identity.md`](identity.md#languages)) says which languages a set
+covers. It does not say how much the set holds in each, and for a language-targeted evaluation set
+that is the question: two sets listing the same twenty codes can hold a thousand native questions
+per language or fifty machine-translated ones. `capability.language_coverage` records it, one entry
+per language, cited to the card or paper (R-2026-10-30-h).
+
+```yaml
+capability:
+  score: 3
+  basis: feature_matrix
+  sources:
+    - url: https://huggingface.co/datasets/example-org/example-eval
+      shows: "the card's per-language table: 1,000 test questions in each language"
+      accessed: '2026-10-30'
+      http_status: 200
+      content_sha256: <64 hex>
+  language_coverage:
+    - language: eng
+      count: 1000
+      unit: questions
+      provenance: native
+      tasks: [knowledge_exam]
+      pivot: true
+      cites: [https://huggingface.co/datasets/example-org/example-eval]
+    - language: swh
+      count: 1000
+      unit: questions
+      provenance: human_translated
+      tasks: [knowledge_exam]
+      pivot: false
+      cites: [https://huggingface.co/datasets/example-org/example-eval]
+```
+
+### Why it is capability evidence and not an identity attribute
+
+The identity attributes, `languages` among them, are **read by no score, tier, stage or gate**
+(`identity.md`). This record will be read by one. The depth ladder (R-2026-10-30-g) bands an
+evaluation set on the median per-language depth across the languages it was built for, leaving out
+pivot languages, with a capped breadth bonus that breaks ties within a band and never lifts a set
+into the next (R-2026-10-30-i). What a capability ladder reads is capability evidence, and it lives
+on the axis for the same reason `openness.components` lives on openness.
+
+It also ages like evidence. A dataset that adds languages or a test split changes its counts while
+its identity stays put, so the record needs a dated read behind it. On the axis it has one: an entry
+cites its source through `capability.sources`, and `capability.last_verified` claims that
+everything on the axis, this record included, was re-read on that date
+([`evidence-and-freshness.md`](evidence-and-freshness.md)). A product record carries no
+`accessed` date and no freshness gate reads it.
+
+### The fields
+
+Every field is required on an entry. The schema (`docs/schemas/score.schema.json`) is the
+authority on the vocabularies; this section says what each value means.
+
+| field | what it holds |
+|---|---|
+| `language` | the ISO 639-3 code, under the rule `languages` follows: scope individual or macrolanguage, no two-letter or special codes. It must be one of the codes the product's `languages` lists. Entries are sorted by code and name each language once. |
+| `count` | how many items the set holds in this language, in `unit`, as the cited source states it for this language. Non-negative, and an integer for every unit except `hours`. |
+| `unit` | what `count` counts: `items`, `questions`, `sentences`, `documents`, `utterances`, `hours`, `words` or `tokens`, in the unit the source uses. `items` is the generic unit for a test case that is none of the others. |
+| `provenance` | how the items came to be in this language (below). |
+| `tasks` | the tasks this language's items fall under (below). A suite whose tasks cover different languages lists, for each language, only the tasks that language takes part in. |
+| `pivot` | `true` when the set was not built for this language: it is the language the items were translated from, or a high-resource language included for comparison, as English is in most multilingual sets. The ladder leaves pivots out of the median. Required, so every entry says which side of the line it is on. |
+| `cites` | the `url` of each `capability.sources` entry that states this language's figures. |
+
+**Provenance.**
+
+| value | means |
+|---|---|
+| `native` | written in the language, not translated from another |
+| `human_translated` | translated into the language by people |
+| `post_edited` | machine-translated, then corrected by people |
+| `machine_translated` | machine-translated, with no human correction recorded |
+| `generated` | produced by a model in the language rather than translated |
+| `mixed` | more than one of the above, for this language |
+| `unknown` | the source does not say. A recorded state, never a stand-in for `native` |
+
+**Tasks.**
+
+| value | the items test |
+|---|---|
+| `knowledge_exam` | subject or exam knowledge, usually multiple choice (MMLU-style sets, national exams) |
+| `question_answering` | answering a question with no passage supplied |
+| `reading_comprehension` | answering from a supplied passage |
+| `reasoning` | mathematical, logical or commonsense reasoning |
+| `natural_language_inference` | whether one text entails, contradicts or is neutral to another |
+| `text_classification` | assigning a label to a text: topic, sentiment, hate speech |
+| `sequence_labeling` | labeling spans or tokens: named entities, parts of speech |
+| `machine_translation` | translating into or out of the language |
+| `summarization` | condensing a text |
+| `text_generation` | open-ended generation or dialogue not covered by another task |
+| `instruction_following` | carrying out a written instruction |
+| `retrieval` | finding the relevant document or passage |
+| `safety` | toxicity, bias or harmful-content behavior |
+| `language_identification` | naming the language of a text or recording |
+| `speech_recognition` | transcribing speech |
+| `speech_translation` | translating speech |
+| `speech_synthesis` | producing speech from text |
+| `vision_language` | answering about or describing an image in the language |
+
+A task the list does not name is a schema change, not a new spelling.
+
+### Rules
+
+- **A count is the source's, for this language.** Never divide a set-wide total across its
+  languages. A language whose count the card or paper does not state is left out of the record
+  rather than given a share. A language absent from the record has no recorded depth; the ladder
+  PR decides what that means for the band.
+- **The citation lives once.** `cites` points at `capability.sources` by URL, and
+  `build/validate.py` fails a URL with no matching source. The `shows`, `accessed`, `http_status`
+  and `content_sha256` stay on the source, where `check_verification`, `check_refetch` and
+  `check_citations` already read them; a second citation list on the record would be one no gate
+  sees. Unlike `comparison.sources`, which cites a peer's page, these sources are about this
+  product, so they belong on the axis's own list.
+- **Valid only on a `type: dataset` product**, and optional there. Absent means not recorded.
+- **It is not in the notebook payload.** `build/serialize.py` leaves it out until the per-language
+  view (R-2026-10-30-i) defines how it ships.
+
+### What reads it
+
+Nothing yet. The depth ladder (R-2026-10-30-g, R-2026-10-30-i) is not built, so no band moves
+because a record was written, and until it lands each evaluation set is compared with sets covering
+the same languages (R-2026-10-30-g). `refresh-category` fills the record on an evaluation set's next
+pass, from the card or paper it is already reading for the band
+([`../workflows/refresh-category.md`](../workflows/refresh-category.md)).
+
 ## Writing the rungs
 
 The bands are per category, so somebody writes their definitions, and that writing is where the
@@ -297,6 +425,9 @@ re-opens the instrument, not just the band.**
 - [ ] A comparison-placed band records `relative_to` (same category) and `relation`, and the
       arithmetic holds against the peer's score.
 - [ ] A non-null score cites at least one source.
+- [ ] A `language_coverage` record, if present, names only codes in the product's `languages`,
+      takes each count from the cited source for that language rather than dividing a total, marks
+      pivot languages, and cites URLs that are on `capability.sources`.
 - [ ] `last_verified`, if present, satisfies the transitive-freshness rule — or the edge carries
       a `comparison` block whose `last_attested` is no earlier than it and is backed by a fetched
       source read on or after that date.

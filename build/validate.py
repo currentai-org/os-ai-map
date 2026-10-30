@@ -150,6 +150,83 @@ def published_products(taxonomy: dict, cats: dict) -> set[str]:
     }
 
 
+def suite_membership_errors(prods: dict) -> list[str]:
+    """Check `lineage.part_of`, the one lineage edge the build reads rather than displays.
+
+    The category stage counts a suite and its members once (`build/serialize.py`
+    `lineage_groups`), so an edge here can lower a stage, and a reference that does not
+    resolve would silently fail to. Every entry must therefore name another product, and that
+    product, like the member, must be a dataset: the ruling that introduced the relation
+    (R-2026-10-30-e) was about evaluation suites and their member sets, and applying it to an
+    SDK and its protocol would move stages in categories nobody ruled on. The edges must form
+    no cycle, because "A is in B and B is in A" names no suite. Category is not constrained: a
+    member may sit in a different category from its suite, and the stage rule only groups rows
+    that share one. docs/reference/identity.md is the rule.
+    """
+    errors: list[str] = []
+    graph: dict[str, list[str]] = {}
+    for slug, product in sorted(prods.items()):
+        lineage = product.get("lineage")
+        suites = lineage.get("part_of") if isinstance(lineage, dict) else None
+        if not isinstance(suites, list):
+            continue
+        if product.get("type") != "dataset":
+            errors.append(
+                f"product {slug!r}: `lineage.part_of` applies to datasets only (this is a "
+                f"{product.get('type')!r})"
+            )
+        resolved: list[str] = []
+        for suite in suites:
+            if not isinstance(suite, str):
+                continue
+            if suite == slug:
+                errors.append(f"product {slug!r}: `lineage.part_of` names the product itself")
+            elif suite not in prods:
+                errors.append(
+                    f"product {slug!r}: `lineage.part_of` names {suite!r}, which has no "
+                    f"sources/products/{suite}.yaml. A suite is a product on the map, so its "
+                    f"members can be counted with it."
+                )
+            elif (prods[suite] or {}).get("type") != "dataset":
+                errors.append(
+                    f"product {slug!r}: `lineage.part_of` names {suite!r}, which is a "
+                    f"{prods[suite].get('type')!r}; a suite must be a dataset"
+                )
+            else:
+                resolved.append(suite)
+        graph[slug] = resolved
+
+    # Depth-first walk for a back edge. Each cycle is reported once, from its smallest slug,
+    # so the message is stable however the walk happens to enter it.
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = {slug: WHITE for slug in graph}
+    reported: set[tuple[str, ...]] = set()
+
+    def visit(slug: str, path: list[str]) -> None:
+        color[slug] = GRAY
+        path.append(slug)
+        for nxt in graph.get(slug, []):
+            if color.get(nxt, BLACK) == GRAY:
+                cycle = path[path.index(nxt):]
+                start = cycle.index(min(cycle))
+                canonical = tuple(cycle[start:] + cycle[:start])
+                if canonical not in reported:
+                    reported.add(canonical)
+                    errors.append(
+                        "`lineage.part_of` forms a cycle: "
+                        + " -> ".join(canonical + (canonical[0],))
+                    )
+            elif color.get(nxt) == WHITE:
+                visit(nxt, path)
+        path.pop()
+        color[slug] = BLACK
+
+    for slug in sorted(graph):
+        if color[slug] == WHITE:
+            visit(slug, [])
+    return errors
+
+
 def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     """`ledger_path` is a seam for tests: it lets a test point every resolution-ledger check at
     a temp file instead of the real `sources/resolution_ledger.yaml`, which this function
@@ -518,6 +595,8 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
                     f"product {slug!r}: category {cid!r} requires `languages` on every product"
                 )
 
+    errors.extend(suite_membership_errors(prods))
+
     # --- org handles (sources/org_handles.yaml) ---
     # Handles live outside the org record on purpose (see docs/reference/identity.md): an
     # organization's own file is a declaration and folds into declaration_version_id, but who
@@ -585,6 +664,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         cap = sc.get("capability", {})
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
+        errors.extend(language_coverage_errors(slug, prods[slug], cap))
 
     # --- slug stability ---
     # The slug is a product's identity and the key deep links are built on, so a slug may
@@ -888,6 +968,66 @@ def model_family_overlap_warnings(model_families: dict) -> list[str]:
                     "-- the longest matching pattern wins (docs/reference/identity.md)"
                 )
     return warnings
+
+
+def language_coverage_errors(slug: str, product: dict, capability: dict) -> list[str]:
+    """Cross-file checks on `capability.language_coverage` (R-2026-10-30-h).
+
+    The score schema checks each entry's shape: the closed `unit`, `provenance` and `tasks`
+    vocabularies, a non-negative `count`, the required fields. What it cannot see is the
+    product record and the code list, so those checks are here. Each code is held to the rule
+    `languages` is held to, through the same `language_codes()`, and must also be a code the
+    product's `languages` lists: coverage says how deep a listed language goes and may not add
+    one. Entries are sorted by code and name each language once, so one record has one
+    spelling. Every `cites` URL must be the `url` of a `capability.sources` entry, which is
+    where the citation's `shows`, `accessed` and digest live and where the evidence gates read
+    them. docs/reference/capability.md, "Per-language coverage", is normative.
+    """
+    coverage = capability.get("language_coverage") if isinstance(capability, dict) else None
+    if not isinstance(coverage, list):
+        return []
+    errors: list[str] = []
+    where = f"score {slug!r}: capability.language_coverage"
+    if product.get("type") != "dataset":
+        errors.append(f"{where} applies to datasets only (this is a {product.get('type')!r})")
+    listed = product.get("languages")
+    listed = set(listed) if isinstance(listed, list) else set()
+    allowed = language_codes()
+    cited = {
+        s.get("url") for s in capability.get("sources") or [] if isinstance(s, dict)
+    }
+    codes: list[str] = []
+    for entry in coverage:
+        if not isinstance(entry, dict):
+            continue
+        code = entry.get("language")
+        if not isinstance(code, str):
+            continue
+        codes.append(code)
+        if code not in allowed:
+            errors.append(
+                f"{where}: language {code!r} is not an ISO 639-3 code of scope individual or "
+                f"macrolanguage in sources/snapshots/iso-639-3.tab (two-letter codes and the "
+                f"special codes mul, und, zxx are refused)"
+            )
+        elif code not in listed:
+            errors.append(
+                f"{where}: language {code!r} is not in the product's `languages`. Coverage "
+                f"records how much a listed language holds; add the code to `languages` first."
+            )
+        for url in entry.get("cites") or []:
+            if url not in cited:
+                errors.append(
+                    f"{where}: {code!r} cites {url!r}, which is not the url of any "
+                    f"capability.sources entry. Cite the card or paper there, with its "
+                    f"`shows` and `accessed`, and point at it from `cites`."
+                )
+    duplicates = sorted({c for c in codes if codes.count(c) > 1})
+    if duplicates:
+        errors.append(f"{where}: each language appears once (repeated: {duplicates})")
+    elif codes != sorted(codes):
+        errors.append(f"{where}: entries must be sorted by language (expected {sorted(codes)})")
+    return errors
 
 
 if __name__ == "__main__":
