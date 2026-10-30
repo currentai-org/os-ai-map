@@ -1281,3 +1281,194 @@ rulings:
     executor: agent
     lands_in: [sources/scores/muse-spark.yaml, sources/products/muse-spark.yaml, sources/rubrics/model.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/930']
+
+  - id: R-2026-10-30-a
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, benchmark_eval_data]
+    question: >-
+      Language-targeted evaluation sets come off the language_specific_datasets corpus ladder. Do they go
+      into a new category of their own, or into benchmark_eval_data, which weights adoption 0.6?
+    ruling: >-
+      A new category of their own.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-b
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, afrihate, sold, nchlt, afridocmt, americasnlp-shared-task-data, typhoon-s-sovereign-capability, seacrowd]
+    question: >-
+      When the evaluation sets are split out, which side does a task set that ships training and test
+      splits go on, and where does the SEACrowd loader hub go?
+    ruling: >-
+      By what its paper or card says it is for: a set published as a benchmark or shared-task test is an
+      evaluation set, and a labeled set published for training is a corpus. SEACrowd goes with corpora.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-c
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, wangchan-thai-instruct, cendol-collection, inkuba-instruct]
+    question: >-
+      Instruction data is exempt from the language_specific_datasets size caps. Should it be capped?
+    ruling: >-
+      Yes. Cap it by example count against the largest open English instruction sets, one band per order
+      of magnitude. Generated and translated examples count at face value, and how they were made is judged
+      on the capability rungs, not by the cap.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-d
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, warehouse/dependencies.yaml]
+    question: >-
+      What replaces the enumerated list of languages that are not underrepresented (Chinese, Japanese,
+      Korean, Spanish, Portuguese) as the membership line for language_specific_datasets?
+    ruling: >-
+      A per-language resource classification built from several signals, with web share as one input and
+      not the rule, and an explicit unknown state. It is published as a table with the roster changes it
+      implies, for review before anything moves. Membership stays with the purpose test, with no majority
+      rule across a dataset's languages. The classification is built and owned on Artio (OSO), and this
+      repo reads it as a dependency contract in warehouse/dependencies.yaml.
+    reasoning: >-
+      This should be something run on Artio as a dependency for the repo.
+    status: in-force
+    executor: maintainer
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-e
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, afrobench, build/serialize.py]
+    question: >-
+      A category's stage counts its fully open category-leading products, and nothing in the count knows
+      about overlap. How does a suite and its member datasets count toward the stage?
+    ruling: >-
+      As one group. The group counts at most once toward the stage, through its highest-scoring fully open
+      row, and each row keeps its own scores.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-f
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, afrobench, seacrowd, indicxtreme, sea-helm]
+    question: >-
+      A regional suite's members fold into the suite's row, while global sets the suite borrows keep their
+      own. Should independently published members get their own rows?
+    ruling: >-
+      Yes. Each independently published member gets its own row, linked to its suite, after the group
+      counting rule in R-2026-10-30-e lands.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-g
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, flores-plus, sea-helm]
+    question: >-
+      Should evaluation sets be scored on per-language depth and provenance instead of on how many
+      languages they cover?
+    ruling: >-
+      Yes in principle, built only once the evidence model (R-2026-10-30-h) and the aggregation rule
+      (R-2026-10-30-i) are in place. Until then each evaluation set is compared with sets covering the
+      same languages.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-h
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets]
+    question: >-
+      The languages field records which languages a dataset covers, not how much it holds in each. What
+      per-language evidence do evaluation sets carry?
+    ruling: >-
+      A per-language record of item count, provenance and task, cited to the card or paper. It is a schema
+      change in its own PR, filled in by refresh-category.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-i
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets]
+    question: >-
+      A product keeps one capability score. How does per-language depth reduce to one number?
+    ruling: >-
+      The band comes from the median depth across the languages the set was built for, leaving out pivot
+      languages such as English. A capped breadth bonus breaks ties within the band and can never lift a
+      set into the next one. The exact formula is settled in the ladder PR, starting from
+      median + 0.5 x (1 - 1/n). Per-language figures are shown in the language view.
+    reasoning: >-
+      A median alone ties a set scoring 3, 2 and 1 with a single language at 2, and the former should be
+      slightly higher.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-j
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, flores-plus, sea-instruct]
+    question: >-
+      Adoption for a many-language dataset pools demand across every language it serves. Should downloads
+      be divided by the number of languages served?
+    ruling: >-
+      Not for now. Adoption is shown beside same-language peers in the language view, and this is revisited
+      once that view exists.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-k
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, R-2026-10-30-d]
+    question: >-
+      The size caps measure every language against the largest English and Chinese datasets. Is one
+      English-scale yardstick right for every language?
+    ruling: >-
+      No. The caps use different yardsticks for different classes of language: official or regional,
+      many speakers or few, and a large or small body of literature and academic publications. The classes
+      come from the same Artio classification as R-2026-10-30-d. The English-scale gap stays as the
+      category-level finding.
+    reasoning: >-
+      The yardstick is different for official languages than for regional dialects, for languages with
+      many speakers than few, and for languages with a large body of literature and academic publications
+      than those without.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
