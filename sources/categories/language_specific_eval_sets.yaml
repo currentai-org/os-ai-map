@@ -1,0 +1,116 @@
+name: language_specific_eval_sets
+display_name: Language-specific evaluation sets
+description: "Evaluation sets built to test AI in an underrepresented language, or a set of related
+  underrepresented languages: benchmarks and shared-task test sets for text and speech, published
+  to measure models rather than to train them. Training data for the same languages lives in
+  Language-specific datasets, and general benchmarks, including ones translated into many
+  languages, live in Benchmark / eval datasets."
+weights:
+  adopt: 0.3
+  cap: 0.7
+scoring_recipe:
+  version: 1
+  extends: dataset
+  note: |-
+    Inherits the shared dataset ladder for openness, as language_specific_datasets does. An
+    evaluation set is a dataset, and the ladder already asks the questions it raises: whether it
+    can be downloaded and on what terms, under which license, whether its answers are released,
+    and whether a card describes it. benchmark_eval_data reads held-out and answer states through
+    the same ladder.
+
+    Capability is an interim ladder, set by R-2026-10-30-g. It stands until the per-language
+    evidence model (R-2026-10-30-h) and the aggregation rule (R-2026-10-30-i) are in place, and
+    the per-language depth ladder replaces it then, through build-rubric. It carries
+    language_specific_datasets' rungs over for evaluation sets with two changes: there is no size
+    cap, and the breadth clause ("no other open row covers the same languages") is replaced by a
+    same-language peer comparison.
+
+    5: documented; its publisher or a paper names a model evaluated on it, or a leaderboard,
+    harness or benchmark built on it; and no same-language peer holds more for most of the
+    languages it was built for. 4: documented and used downstream by name, but a same-language
+    peer holds more for most of its languages; or no peer holds more, but the only use named
+    beyond its own paper is community fine-tunes listed on the Hub. A narrow single-task set (NER,
+    sentiment, hate speech, transliteration, topic labels) tops out at 4. 3: documented, with no
+    downstream model, leaderboard or benchmark beyond its own paper's experiments or its own
+    shared task; or superseded by the same publisher's newer release; or a narrow single-task set.
+    2: thin documentation, or machine-generated, machine-translated or re-hosted content. 1: a
+    fragment. Held-out and closed sets are judged on the same facts as their owners describe them.
+
+    A same-language peer is another set in this category that tests at least one of the same
+    target languages, in the same modality and the same kind of test, and that is itself
+    documented and used downstream by name, so a set that would sit at 3 or below cannot outrank
+    one above it. Target languages are the product's `languages` less pivot languages such as
+    English, the reading R-2026-10-30-i sets. The kinds are translation; speech; language
+    understanding (reading comprehension and classification); knowledge and exam questions; and
+    multi-task suites. A suite is compared with suites only: the bundling rule makes a suite one
+    product, and comparing it with each kind it contains would either lend it its members' depth
+    or let any single-task set outrank it.
+
+    "Holds more" counts test items per shared language, read from the card or paper. Where only a
+    product-level total is recorded it is divided across the set's languages, and the comparison
+    says so. Languages that only one of the two sets covers count for neither. That is what
+    removes the breadth advantage: a set no longer reaches 5 because nothing else covers all its
+    languages, and it does not lose 5 because a regional set is deeper in a few of them. "Most"
+    is the interim stand-in for the median R-2026-10-30-i adopts, on the same reasoning: a few
+    deep languages do not carry a set, and a few thin ones do not sink it.
+
+    No cap, for the parent's reason: an evaluation set's size is a count of items, not a measure
+    of how much of a language it holds. How much a set holds per language is the question the
+    depth ladder will answer, on that language's own terms rather than against an English-scale
+    yardstick.
+
+    relative_to names a peer in this category (build/check_capability.py rejects any other).
+    Prefer a same-language peer of the same kind; where the relation vocabulary cannot express
+    the gap, take the nearest same-language peer that can. Roots carry no relative_to.
+
+    Dry run, 2026-10-30, against the 22 sets that would move
+    (docs/sweeps/2026-10-30-language-specific-eval-sets-dry-run.md): 12 at 5, 1 at 4, 7 at 3,
+    2 at 2. Rung 5 holds 12 of 22, over the one-third review trigger, with the wording above.
+    Reading: clustering, not loose wording. Each of the twelve is the documented, used open set
+    that holds the most for the languages it tests, and most of the category's languages have
+    exactly one such set. It is also the interim's known limit: nothing here asks how much a set
+    holds per language in absolute terms, so a 590-question national exam can sit at 5 beside
+    FLORES+. That gap is what R-2026-10-30-h and -i close; no rewording of this ladder closes it
+    without becoming the depth ladder early. Recount when the roster moves in.
+products: []
+comments: >-
+  Created 2026-10-30 as a preliminary category with an empty roster, under maintainer rulings
+  R-2026-10-30-a (language-targeted evaluation sets get a category of their own, not
+  benchmark_eval_data) and R-2026-10-30-b (the kind test below). It is step 4 of the sequence in
+  docs/briefs/2026-10-30-language-specific-datasets-structure.md. The roster stays empty until the
+  split PR (step 5) moves the evaluation sets in, rescores them, re-points the peers that cross
+  the line, adds a strapline and publishes the category, all in one PR: a product on a
+  preliminary roster leaves the public payload (published_products in build/validate.py). The
+  bands computed for that move, and the boundary calls, are in
+  docs/sweeps/2026-10-30-language-specific-eval-sets-dry-run.md.
+  Slug. The language_specific_ prefix pairs this category with its corpus sibling and the
+  membership line the two share. eval_sets is the rulings' own term; it covers shared-task test
+  sets and speech test sets as well as benchmarks, and does not read as a sub-category of
+  benchmark_eval_data.
+  Membership is two tests. Language: the set was built for an underrepresented language or a set
+  of related ones, by language_specific_datasets' purpose test and its current line (Chinese,
+  Japanese, Korean, Spanish and Portuguese are out). The per-language classification in
+  R-2026-10-30-d replaces that line for both categories at once. Kind (R-2026-10-30-b): by what
+  the set's paper or card says it is for. A set published as a benchmark or as a shared-task test
+  belongs here even when it ships training splits; a labeled set published for training is a
+  corpus and stays in language_specific_datasets, and so does SEACrowd, a loader hub, as ruled.
+  On that test the AmericasNLP shared-task data belongs here, and AfriHate, SOLD, NCHLT,
+  AfriDocMT and the Typhoon-S sovereign-capability release are corpora. SOLD (card titled a
+  benchmark, paper motivated by training data) and AfriDocMT (paper titled a corpus, with
+  benchmark experiments) were the close calls; the sweep record quotes both sides.
+  Neighbors. A general benchmark translated into many languages, the major ones included
+  (Global-MMLU), is defined by its task and stays in benchmark_eval_data, as the corpus
+  category's comments already rule. The bundling rule carries over unchanged until R-2026-10-30-e
+  and -f land: a regional suite is one product and its members are not separate rows, while a
+  global set a suite borrows a slice of keeps its own row.
+  Weights 0.3 adoption to 0.7 capability, the corpus category's split and for its reason:
+  downloads of a low-resource evaluation set are small by construction, so adoption measures the
+  language before it measures the set. benchmark_eval_data's 0.6/0.4 would rank a Lao benchmark
+  on downloads against MMLU, which is the case R-2026-10-30-a ruled against. R-2026-10-30-j
+  declined to divide downloads by languages served, so this weight is the only discount on
+  pooled demand, and a 200-language set's downloads come from every language it serves. A lower
+  adoption weight was considered and not taken: keeping the parent's split means the move
+  changes only the capability rule, and the per-language adoption view R-2026-10-30-j defers to
+  is where the question returns.
+  When products move in, add this slug to LANGUAGES_REQUIRED_CATEGORIES in build/validate.py, so
+  every row carries the `languages` the peer comparison reads.
