@@ -440,7 +440,7 @@
               "unit",
               "cites"
             ],
-            "description": "One unit of evidence: the items one dataset component holds for one language and one task in one split, how they were made, and where that is stated (R-2026-11-01-c). The record names each (language, task, component, split) once and is sorted by that key. An entry with a `count` of 0 is a documented zero: the cited source states that the component has no items for this language, task and split, so it carries no `provenance` and no `qualifying_count`; every other entry carries a `provenance`. docs/reference/capability.md, 'Per-language coverage', defines each value.",
+            "description": "One unit of evidence: the items one dataset component holds for one language and one task in one split, how they were made, and where that is stated (R-2026-11-01-c). The record names each (language, task, component, split) once and is sorted by that key. An entry with a `count` of 0 is a documented zero: the cited source states that the component has no items for this language, task and split, so it carries no `provenance` and no `qualifying_count`, and it is a measured zero for that language, task, component and split only; every other entry carries a `provenance`. docs/reference/capability.md, 'Per-language coverage', defines each value.",
             "properties": {
               "language": {
                 "type": "string",
@@ -499,7 +499,7 @@
               "count": {
                 "type": "number",
                 "minimum": 0,
-                "description": "How many items this entry holds, in `unit`, as the cited source states it for this language, task, component and split. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state has no entry, and is unknown rather than zero (R-2026-10-30-l, R-2026-11-01-a). 0 is a documented zero: the cited source states that there are no items, as FLORES+ does for a language it carries on its dev split only. On the official evaluation split that is a measured zero, not an unknown; the entry omits `provenance` and `qualifying_count`, since there are no items to describe, and its `cites` names the source that states the absence (build/validate.py). An integer for every unit except `hours`."
+                "description": "How many items this entry holds, in `unit`, as the cited source states it for this language, task, component and split. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state has no entry, and is unknown rather than zero (R-2026-10-30-l, R-2026-11-01-a). 0 is a documented zero: the cited source states that there are no items, as FLORES+ does for a language it carries on its dev split only. On the official evaluation split that is a measured zero, not an unknown, for this language, task, component and split only: it does not imply that the dataset, or the language, has no evaluation coverage on another task or in another component. The entry omits `provenance` and `qualifying_count`, since there are no items to describe, and its `cites` names the source that states the absence (build/validate.py). An integer for every unit except `hours`."
               },
               "unit": {
                 "enum": [

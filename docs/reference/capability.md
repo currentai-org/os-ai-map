@@ -398,9 +398,11 @@ A task the list does not name is a schema change, not a new spelling.
 - **A documented zero is measured.** Where the cited source states that a language has no items
   on a split, as FLORES+ does for a language it carries on its dev split only, the entry records
   `count: 0` with no `provenance` and no `qualifying_count`, and its `cites` names the source that
-  states the absence. On the official evaluation split it is a documented zero: the language is
-  measured, with zero qualifying depth for that task, and it is not unknown. A zero the source does
-  not state is no entry, never a documented zero.
+  states the absence. On the official evaluation split it is a documented zero: a measured zero
+  only for the language, task, component and official evaluation split it describes, and not
+  unknown there. It says nothing about the rest of the set: it does not imply that the dataset, or
+  that language, has no evaluation coverage on another task or in another component. A zero the
+  source does not state is no entry, never a documented zero.
 - **A code the source does not use is recorded as a mapping.** An entry whose cited source names
   the language with another code (an individual language where the product lists its
   macrolanguage, `cmn` under `zho`, or the reverse) records the source's code in
@@ -490,11 +492,14 @@ These are ruled, and they are the rules the ladder PR implements. None of them i
    languages have a usable depth measurement, for example 18 of 20. A target language is measured
    when it has an official-evaluation entry whose qualifying depth is established: `native`,
    `human_translated`, `post_edited`, `machine_translated` or `generated` provenance, `mixed` with
-   a `qualifying_count`, or a documented zero. A measured zero comes from `machine_translated` and
-   `generated` items, the only provenance values that establish one, or from a documented zero,
-   which has no items at all. A language whose official-split entries are all `unknown` provenance,
-   or `mixed` without a `qualifying_count`, is unmeasured: its depth is unknown, and it enters the
-   robustness test as an unknown, never as a zero.
+   a `qualifying_count`, or a documented zero. Measurement is per task: a language is measured on
+   each task for which it has such an entry, and only on those. A measured zero comes from
+   `machine_translated` and `generated` items, the only provenance values that establish one, or
+   from a documented zero, which has no items at all; a documented zero makes the language measured,
+   at zero, for its own task, component and split only, and leaves every other task where its own
+   entries put it. A language whose official-split entries are all `unknown` provenance, or `mixed`
+   without a `qualifying_count`, is unmeasured: its depth is unknown, and it enters the robustness
+   test as an unknown, never as a zero.
 
 ### What reads it
 
