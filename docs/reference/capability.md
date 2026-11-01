@@ -295,8 +295,9 @@ record carries no `accessed` date and no freshness gate reads it.
 
 `pivot_languages` sits on the axis. Every other field is on a `language_coverage` entry. The four
 key fields and `official_eval`, `count`, `unit` and `cites` are required on every entry, and
-`provenance` on every entry except a documented zero. The schema (`docs/schemas/score.schema.json`) is the authority
-on the vocabularies; this section says what each value means.
+`provenance` on every entry except a documented zero. The schema
+(`docs/schemas/score.schema.json`) is the authority on the vocabularies; this section says what each
+value means.
 
 | field | what it holds |
 |---|---|
