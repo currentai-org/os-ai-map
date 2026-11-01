@@ -163,7 +163,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from build.vocabulary import axes
+from build.vocabulary import axes, lineage_relations
 
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
@@ -328,7 +328,9 @@ def check_ids_unique(tables: dict[str, list[dict]]) -> None:
 ENUMS: dict[str, tuple[str, ...]] = {
     "alias_kind": ("product", "organization"),
     "freshness_basis": ("commit", "verified", "partial"),
-    "lineage_relation": ("derived_from", "curated_with", "trains"),
+    # The lineage edges, from the product schema: an edge the schema admits must not reach an
+    # enum that rejects it.
+    "lineage_relation": lineage_relations(),
     "capability_relation": ("tier_below", "tier_above", "peer", "anchor"),
     # The three scored axes, from the score schema rather than restated here — a fourth axis
     # must not reach a serving layer whose enum silently rejects it.
@@ -342,11 +344,7 @@ ENUM_MAPS: dict[str, dict[str, str]] = {
     # `partial`: some axes confirmed, at least one held in sources/verification_queue.yaml.
     # Collapsing it to `verified` would claim a confirmation the hold says did not happen.
     "freshness_basis": {"verified": "verified", "commit": "commit", "partial": "partial"},
-    "lineage_relation": {
-        "derived_from": "derived_from",
-        "curated_with": "curated_with",
-        "trains": "trains",
-    },
+    "lineage_relation": {relation: relation for relation in lineage_relations()},
     # Lossy by construction: the payload carries a signed distance and the enum does not.
     # See the module docstring.
     "capability_relation": {

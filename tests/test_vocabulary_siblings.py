@@ -24,7 +24,7 @@ import json
 
 import yaml
 
-from build.vocabulary import ROOT, artifact_kinds, axes, confidence_levels
+from build.vocabulary import ROOT, artifact_kinds, axes, confidence_levels, lineage_relations
 
 BUILD = ROOT / "build"
 
@@ -125,6 +125,33 @@ def test_artifact_kinds_come_from_the_routing_table():
     # different things, and one source may consume a key that shares no name with it.
     assert "arxiv" in artifact_kinds()
     assert "arxiv" not in routing["sources"]
+
+
+def test_lineage_relations_come_from_the_product_schema():
+    schema = json.loads((ROOT / "docs" / "schemas" / "product.schema.json").read_text())
+    assert lineage_relations() == tuple(schema["properties"]["lineage"]["properties"])
+    assert "part_of" in lineage_relations()
+
+
+def test_no_module_holds_a_private_copy_of_the_lineage_relations():
+    """The payload, the registry export and the Neon enum each held the three display edges as
+    a literal, so a fourth edge would have reached the source files and none of the outputs.
+
+    Any literal collection drawn from two or more of the relations counts, because the copy
+    that matters is the stale one: a tuple of the old three is a subset of the current four.
+    """
+    wanted = frozenset(lineage_relations())
+    offenders = []
+    for name, source in _module_sources().items():
+        if name == "vocabulary.py":
+            continue
+        for lineno, values in _string_collections(ast.parse(source)):
+            if len(values) >= 2 and values <= wanted:
+                offenders.append(f"{name}:{lineno}")
+    assert not offenders, (
+        "these state lineage relations literally instead of calling "
+        f"build.vocabulary.lineage_relations(): {offenders}"
+    )
 
 
 def test_proposer_support_is_defined_by_handlers_not_by_routing():
