@@ -1542,13 +1542,8 @@ rulings:
       threshold.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
 
   - id: R-2026-11-01-b
     date: 2026-11-01
@@ -1569,13 +1564,8 @@ rulings:
       languages in the bonus would let missing records inflate the result indirectly.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
 
   - id: R-2026-11-01-c
     date: 2026-11-01
@@ -1596,13 +1586,8 @@ rulings:
       Breadth of evaluation is valuable, but it is not the same thing as depth.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
 
   - id: R-2026-11-01-d
     date: 2026-11-01
@@ -1619,13 +1604,8 @@ rulings:
       evaluation split, not dev and devtest added together.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
 
   - id: R-2026-11-01-e
     date: 2026-11-01
@@ -1641,13 +1621,8 @@ rulings:
       transliteration. No narrow task labels before the candidate datasets have been examined.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
 
   - id: R-2026-11-01-f
     date: 2026-11-01
@@ -1665,13 +1640,8 @@ rulings:
       is cleaner as more suites and languages are added.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, build/serialize.py]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
 
   - id: R-2026-11-01-g
     date: 2026-11-01
@@ -1687,13 +1657,8 @@ rulings:
       before populating the other datasets.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, docs/workflows/refresh-category.md]
-    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956', 'https://github.com/currentai-org/os-ai-map/pull/958']
 
   - id: R-2026-11-01-h
     date: 2026-11-01
@@ -1719,10 +1684,30 @@ rulings:
       A conservative, reproducible initial rule that leaves room to improve it.
     status: in-force
     executor: agent
-<<<<<<< HEAD
-    lands_in: []
-    applied_in: []
-=======
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
->>>>>>> origin/main
+
+  - id: R-2026-11-01-i
+    date: 2026-11-01
+    by: ccerv1
+    venue: pr-review
+    refs: ["#958", "#953", sea-helm, thai-exam, R-2026-11-01-e, R-2026-11-01-h]
+    question: >-
+      Does a benchmark's own classification of its datasets as created in the target language, as
+      SEA-HELM's "Native" column does, establish native provenance for capability.language_coverage, or
+      must a source state that people rather than models wrote each item?
+    ruling: >-
+      Accept it as sufficient evidence for native, unless more specific evidence contradicts it. A source
+      merely describing the type of content (Thai news articles) does not establish provenance, but a
+      benchmark that explicitly distinguishes datasets originally created in the target language from
+      datasets translated into it makes an affirmative provenance classification. ThaiExam and SEA-HELM's
+      own qualifying datasets keep native. The NusaX Javanese and Sundanese entries stay unknown, because
+      their more specific source contradicts SEA-HELM's classification.
+    reasoning: >-
+      Requiring every paper to state that humans rather than models authored each example, when it already
+      draws a meaningful distinction between original and translated evaluation datasets, would be an
+      unnecessarily restrictive evidence standard.
+    status: in-force
+    executor: none
+    lands_in: [sources/scores/sea-helm.yaml, sources/scores/thai-exam.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/958']
