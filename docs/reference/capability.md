@@ -33,11 +33,12 @@ them — are not capable of anything the axis measures, and abstain rather than 
 | `relative_to` | the slug of the product this band was placed **against**, when placed by comparison rather than measured. |
 | `relation` | how this band sits against `relative_to`: `at`, `one_below`, `two_below`, `one_above`. Required with `relative_to`, meaningless without it. |
 | `comparison` | when the spacing recorded by `relative_to`/`relation` was last judged still to hold (`last_attested`), and what was read on the peer to judge it (`sources`). Optional. |
-| `language_coverage` | per-language evidence for an evaluation set: count, unit, provenance, tasks and pivot for each language, cited through `sources`. Optional, datasets only. See [Per-language coverage](#per-language-coverage). |
+| `pivot_languages` | the listed languages an evaluation set was not built for, declared whether or not they have counts. Required with `language_coverage`, datasets only. See [Per-language coverage](#per-language-coverage). |
+| `language_coverage` | per-language evidence for an evaluation set, one entry per language, task, dataset component and split: count, unit, provenance and whether the split is the official evaluation split, cited through `sources`. Optional, datasets only. See [Per-language coverage](#per-language-coverage). |
 | `confidence` | the curator's certainty (`high`/`medium`/`low`). Note it does not encode the strength of the instrument — a `high` can sit on a feature-matrix judgment with no measurement under it. |
 | `note` | the prose behind the band: what the product does well, what it sits below, and against whom. |
 | `sources` | the evidence, at least one for a non-null score. |
-| `last_verified` | the date the whole axis was last re-confirmed. See `evidence-and-freshness.md`. |
+| `last_verified` | the date the whole axis was last re-confirmed. See `evidence-and-freshness.md`. It dates the band; the `language_coverage` record is dated by its sources' `accessed` dates instead ([Per-language coverage](#per-language-coverage)). |
 
 ## `basis`: four genuinely different instruments
 
@@ -210,8 +211,14 @@ order that clears the most dependent bands.
 `languages` on a dataset ([`identity.md`](identity.md#languages)) says which languages a set
 covers. It does not say how much the set holds in each, and for a language-targeted evaluation set
 that is the question: two sets listing the same twenty codes can hold a thousand native questions
-per language or fifty machine-translated ones. `capability.language_coverage` records it, one entry
-per language, cited to the card or paper (R-2026-10-30-h).
+per language or fifty machine-translated ones. `capability.language_coverage` records it, cited to
+the card or paper (R-2026-10-30-h), and `capability.pivot_languages` declares which listed
+languages the set was not built for (R-2026-11-01-b).
+
+The unit of evidence is one **language x task x dataset component x split** (R-2026-11-01-c). A
+suite whose tasks use different units, sample sizes and sources records each of them as its own
+entry, so translation sentences, speech hours and exam questions never meet in one total, and a
+benchmark's dev and test splits are never added together.
 
 ```yaml
 capability:
@@ -219,71 +226,142 @@ capability:
   basis: feature_matrix
   sources:
     - url: https://huggingface.co/datasets/example-org/example-eval
-      shows: "the card's per-language table: 1,000 test questions in each language"
+      shows: "the card's per-language table: 1,000 test questions per language"
       accessed: '2026-10-30'
       http_status: 200
       content_sha256: <64 hex>
+    - url: https://arxiv.org/pdf/2601.00001
+      shows: "Table 2: 997 dev and 1,012 devtest sentences per language; 600 of the 1,000 Hausa
+        questions written in Hausa"
+      accessed: '2026-10-30'
+      http_status: 200
+      content_sha256: <64 hex>
+  pivot_languages: [eng]
   language_coverage:
-    - language: eng
+    - language: hau
+      task: knowledge_exam
+      component: example-eval        # the suite's own exam: the product's slug
+      split: test
+      official_eval: true
       count: 1000
       unit: questions
-      provenance: native
-      tasks: [knowledge_exam]
-      pivot: true
-      cites: [https://huggingface.co/datasets/example-org/example-eval]
-    - language: swh
-      count: 1000
-      unit: questions
+      provenance: mixed
+      qualifying_count: 600
+      cites:
+        - https://huggingface.co/datasets/example-org/example-eval
+        - https://arxiv.org/pdf/2601.00001
+    - language: hau
+      task: machine_translation
+      component: example-mt          # a translation set the suite imports
+      split: dev
+      official_eval: false           # recorded, and not counted
+      count: 997
+      unit: sentences
       provenance: human_translated
-      tasks: [knowledge_exam]
-      pivot: false
-      cites: [https://huggingface.co/datasets/example-org/example-eval]
+      cites: [https://arxiv.org/pdf/2601.00001]
+    - language: hau
+      task: machine_translation
+      component: example-mt
+      split: devtest
+      official_eval: true
+      count: 1012
+      unit: sentences
+      provenance: human_translated
+      cites: [https://arxiv.org/pdf/2601.00001]
 ```
+
+`tests/fixtures/language_coverage/valid.yaml` is the complete worked example: a pivot, a
+`mixed` entry, an excluded `machine_translated` entry, a training split, a reviewed `generated`
+entry, a documented zero and a mapped entry carrying `source_language`.
 
 ### Why it is capability evidence and not an identity attribute
 
 The identity attributes, `languages` among them, are **read by no score, tier, stage or gate**
-(`identity.md`). This record will be read by one. The depth ladder (R-2026-10-30-g) bands an
-evaluation set on the median per-language depth across the languages it was built for, leaving out
-pivot languages, with a capped breadth bonus that breaks ties within a band and never lifts a set
-into the next (R-2026-10-30-i). What a capability ladder reads is capability evidence, and it lives
-on the axis for the same reason `openness.components` lives on openness.
+(`identity.md`). This record will be read by one: the depth ladder (R-2026-10-30-g), described
+under [How the depth ladder will read it](#how-the-depth-ladder-will-read-it). What a capability
+ladder reads is capability evidence, and it lives on the axis for the same reason
+`openness.components` lives on openness.
 
 It also ages like evidence. A dataset that adds languages or a test split changes its counts while
 its identity stays put, so the record needs a dated read behind it. On the axis it has one: an entry
-cites its source through `capability.sources`, and `capability.last_verified` claims that
-everything on the axis, this record included, was re-read on that date
-([`evidence-and-freshness.md`](evidence-and-freshness.md)). A product record carries no
-`accessed` date and no freshness gate reads it.
+cites its sources through `capability.sources`, and **the record's evidence is dated by the
+`accessed` date of each source it cites**, with that source's `http_status` and `content_sha256`
+beside it. **`capability.last_verified` dates the band, not the coverage record**: it says the score
+and its comparison were re-derived on that date ([`evidence-and-freshness.md`](evidence-and-freshness.md)),
+and a pass that fills or re-reads the record without re-deriving the band leaves it alone. A product
+record carries no `accessed` date and no freshness gate reads it.
 
 ### The fields
 
-Every field is required on an entry. The schema (`docs/schemas/score.schema.json`) is the
-authority on the vocabularies; this section says what each value means.
+`pivot_languages` sits on the axis. Every other field is on a `language_coverage` entry. The four
+key fields and `official_eval`, `count`, `unit` and `cites` are required on every entry, and
+`provenance` on every entry except a documented zero. The schema
+(`docs/schemas/score.schema.json`) is the authority on the vocabularies; this section says what each
+value means.
 
 | field | what it holds |
 |---|---|
-| `language` | the ISO 639-3 code, under the rule `languages` follows: scope individual or macrolanguage, no two-letter or special codes. It must be one of the codes the product's `languages` lists. Entries are sorted by code and name each language once. |
-| `count` | how many items the set holds in this language, in `unit`, as the cited source states it for this language. Non-negative, and an integer for every unit except `hours`. |
+| `pivot_languages` | the listed languages the set was not built for: the language its items were translated from, or a high-resource language included for comparison, as English is in most multilingual sets. A declaration rather than a flag on an entry, so a pivot stays identifiable when the source reports no count for it (R-2026-11-01-b). `[]` declares that the set was built for every language it lists. Required with `language_coverage` and allowed without it. Codes follow the `languages` rule, must be listed in the product's `languages`, are sorted, and leave at least one target language. |
+| `language` | the ISO 639-3 code, under the rule `languages` follows: scope individual or macrolanguage, no two-letter or special codes. It must be one of the codes the product's `languages` lists. |
+| `source_language` | the ISO 639-3 code exactly as the cited source states it, required whenever it differs from `language` and refused when it is the same. Held to the code list, not to the product's `languages`. A two-letter code the source uses is read as its ISO 639-3 equivalent and is no difference. An entry carrying it is an inferred mapping (below). |
+| `task` | the one task the entry's items test (below). |
+| `component` | the dataset, or the subset within a suite, the count comes from, as a kebab-case slug: the map's product slug when the component has a product of its own, otherwise the source's name for it in kebab case. **A set with one component names itself**: `component` is the product's slug. A suite uses its own slug for the items it contributes and a separate slug for each dataset it imports. |
+| `split` | the split the count is taken from, under the source's name for it (below). |
+| `official_eval` | `true` when this split is the one the benchmark evaluates on, the only split that counts toward depth. Required, so every entry says whether it counts. |
+| `count` | how many items the entry holds, in `unit`, as the cited source states it for this language, task, component and split. Non-negative, and an integer for every unit except `hours`. `0` is a documented zero (below). |
 | `unit` | what `count` counts: `items`, `questions`, `sentences`, `documents`, `utterances`, `hours`, `words` or `tokens`, in the unit the source uses. `items` is the generic unit for a test case that is none of the others. |
-| `provenance` | how the items came to be in this language (below). |
-| `tasks` | the tasks this language's items fall under (below). A suite whose tasks cover different languages lists, for each language, only the tasks that language takes part in. |
-| `pivot` | `true` when the set was not built for this language: it is the language the items were translated from, or a high-resource language included for comparison, as English is in most multilingual sets. The ladder leaves pivots out of the median. Required, so every entry says which side of the line it is on. |
-| `cites` | the `url` of each `capability.sources` entry that states this language's figures. |
+| `provenance` | how the items came to be in this language (below). Required on every entry except a documented zero, which has no items to describe and so carries none. |
+| `qualifying_count` | optional, on a `mixed` entry only: how many of its items the source documents as native, human-translated or post-edited. In the entry's unit and no more than `count`. Absent means the source does not separate that portion. |
+| `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. |
+| `subset_of` | optional: the `component` of another entry, for the same language, task and split, whose items contain this entry's. Absent means the source presents the items as distinct. |
+| `cites` | the `url` of each `capability.sources` entry that states this entry's figures, `human_validated` and `qualifying_count` included. |
 
-**Provenance.**
+The key is `(language, task, component, split)`. Each key appears once, and entries are sorted by
+language, then task, then component, then split, each in plain character order.
 
-| value | means |
+**Provenance.** The seven values and their definitions are ruled (R-2026-11-01-e), and so is the
+third column (R-2026-11-01-h). Provenance is never guessed: a source that does not say is
+`unknown`. Three readings follow from that:
+
+- **`native` needs an explicit statement about the items.** Record it only where a cited source
+  states that the evaluated items, the text, questions or references being scored, were written by
+  people in that language. A source that describes the corpus as news articles, tweets or reviews in
+  the language says what genre the text is, not how it came to be in the language; it is enough only
+  when the source also states the items are original text written in the language and describes no
+  translation or generation.
+- **The other qualifying values need the same.** `human_translated` and `post_edited` need a cited
+  source that says people translated or corrected the items. A source that says only that the items
+  were translated is `unknown`.
+- **Sources that disagree give `unknown`.** Where one cited source calls the items native and another
+  says they were translated, the entry is `unknown`, cites both, and the sweep record that filled it
+  quotes both with their URLs. Neither side is picked silently.
+
+| value | means | counts toward depth |
+|---|---|---|
+| `native` | human-authored in the target language | yes |
+| `human_translated` | translated into the language by people | yes |
+| `post_edited` | machine-translated, then corrected by people | yes |
+| `machine_translated` | machine-translated, with no human correction recorded | no |
+| `generated` | model-generated directly in that language | no |
+| `mixed` | more than one of the above in this entry | only its `qualifying_count`, the separately documented qualifying portion; when that is absent, depth is unknown, not zero |
+| `unknown` | the source does not say. A recorded state, never a stand-in for `native` | no qualifying depth is established: the language's depth is unknown, not zero |
+
+`native` and `generated` cannot overlap: one is written by people in the language, the other by a
+model in it.
+
+**Splits.** Each entry records the split its count comes from (R-2026-11-01-d).
+
+| value | the count is |
 |---|---|
-| `native` | written in the language, not translated from another |
-| `human_translated` | translated into the language by people |
-| `post_edited` | machine-translated, then corrected by people |
-| `machine_translated` | machine-translated, with no human correction recorded |
-| `generated` | produced by a model in the language rather than translated |
-| `mixed` | more than one of the above, for this language |
-| `unknown` | the source does not say. A recorded state, never a stand-in for `native` |
+| `train` | training examples. Recorded when the source states them, never official, never counted |
+| `dev` | the split the source calls dev |
+| `validation` | the split the source calls validation |
+| `test` | the split the source calls test |
+| `devtest` | the split the source calls devtest, as FLORES+ does |
+| `official_eval` | an evaluation portion the source names without one of the other words, such as an exam published as one set of test questions. Always official |
 
-**Tasks.**
+**Tasks.** Eighteen classes and `transliteration`, and no narrower labels until the candidate
+datasets have been examined (R-2026-11-01-e).
 
 | value | the items test |
 |---|---|
@@ -295,6 +373,7 @@ authority on the vocabularies; this section says what each value means.
 | `text_classification` | assigning a label to a text: topic, sentiment, hate speech |
 | `sequence_labeling` | labeling spans or tokens: named entities, parts of speech |
 | `machine_translation` | translating into or out of the language |
+| `transliteration` | rewriting text of the language from one script into another |
 | `summarization` | condensing a text |
 | `text_generation` | open-ended generation or dialogue not covered by another task |
 | `instruction_following` | carrying out a written instruction |
@@ -310,27 +389,129 @@ A task the list does not name is a schema change, not a new spelling.
 
 ### Rules
 
-- **A count is the source's, for this language.** Never divide a set-wide total across its
-  languages. A language whose count the card or paper does not state is left out of the record
-  rather than given a share. A language absent from the record has no recorded depth; the ladder
-  PR decides what that means for the band.
+- **A count is the source's, for this entry.** Never divide a set-wide total across its languages
+  (R-2026-10-30-l). A language whose count the card or paper does not state has no entry rather
+  than a share.
+- **A language with no entry is unknown.** It is not zero, and it is not evidence that the set is
+  the strongest available for that language (R-2026-11-01-a). Two sets are comparable only where
+  both have documented counts for the same language and task; where no comparable peer has
+  documented evidence, the finding is "no comparable evidence", never "best in class".
+- **A documented zero is measured.** Where the cited source states that a language has no items
+  on a split, as FLORES+ does for a language it carries on its dev split only, the entry records
+  `count: 0` with no `provenance` and no `qualifying_count`, and its `cites` names the source that
+  states the absence. On the official evaluation split it is a documented zero: a measured zero
+  only for the language, task, component and official evaluation split it describes, and not
+  unknown there. It says nothing about the rest of the set: it does not imply that the dataset, or
+  that language, has no evaluation coverage on another task or in another component. A zero the
+  source does not state is no entry, never a documented zero.
+- **A code the source does not use is recorded as a mapping.** An entry whose cited source names
+  the language with another code (an individual language where the product lists its
+  macrolanguage, `cmn` under `zho`, or the reverse) records the source's code in
+  `source_language`. Such an entry is an inferred mapping, not a directly observed identity, and it
+  flags the product's `languages` for reconciliation: the product lists a code the source does not
+  use. The record never changes `languages` to match; that is a curation pass of its own.
+  ```yaml
+  - language: zho
+    source_language: cmn              # FLORES+ carries cmn_Hans and cmn_Hant
+    task: machine_translation
+    component: flores-plus
+    split: devtest
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: unknown
+    cites: [https://huggingface.co/datasets/openlanguagedata/flores_plus]
+  - language: dar
+    task: machine_translation
+    component: flores-plus
+    split: devtest                    # a documented zero: the card marks Dargwa "dev only"
+    official_eval: true
+    count: 0
+    unit: sentences
+    cites: [https://huggingface.co/datasets/openlanguagedata/flores_plus]
+  ```
+- **Only the official evaluation split counts.** `official_eval: true` marks the portion actually
+  used for benchmark evaluation. A dev or validation split counts when it is the benchmark's
+  official evaluation split, and training examples never count (R-2026-11-01-d).
+  `build/validate.py` refuses `official_eval: true` on a `train` split, `false` on the
+  `official_eval` split, and two official splits for one language, task and component, so
+  FLORES+ translation depth is read from its evaluation split and never from dev and devtest added
+  together.
+- **Entries are distinct unless one records that it is a subset.** An entry without `subset_of`
+  is one whose source presents its items as distinct from every other entry's. An entry whose
+  items are drawn from another's names that entry's component in `subset_of`, so the ladder counts
+  those items once, within the set that contains them (R-2026-11-01-d). `build/validate.py`
+  requires the named entry to exist for the same language, task and split, to carry no
+  `subset_of` itself (name the largest set the items are drawn from), and to hold at least as many
+  items in the same unit. Record containment only where the source states it. Two components that
+  share some items without one containing the other are not containment, and go to the
+  maintainer rather than into `subset_of`.
+- **Provenance decides what counts, and every entry is recorded.** The third column of the
+  provenance table is the rule, with no reduced weights (R-2026-11-01-h). Excluded items stay in
+  the record like any other: zero qualifying depth does not mean a set has no evaluation value,
+  only that its items do not satisfy this measure of credible evaluation depth. If well-validated
+  synthetic evaluations turn out to deserve credit, that is an explicit exception backed by
+  evidence, in a ruling, not a multiplier.
+- **Human validation is not provenance.** `human_validated` records a quality attribute, cited
+  through the entry's `cites` like the rest of the entry. It never changes `provenance`:
+  human-reviewed model-generated items stay `generated`, not `native` or `post_edited`, and
+  nothing reads the field toward depth (R-2026-11-01-h).
 - **The citation lives once.** `cites` points at `capability.sources` by URL, and
   `build/validate.py` fails a URL with no matching source. The `shows`, `accessed`, `http_status`
   and `content_sha256` stay on the source, where `check_verification`, `check_refetch` and
   `check_citations` already read them; a second citation list on the record would be one no gate
   sees. Unlike `comparison.sources`, which cites a peer's page, these sources are about this
   product, so they belong on the axis's own list.
-- **Valid only on a `type: dataset` product**, and optional there. Absent means not recorded.
-- **It is not in the notebook payload.** `build/serialize.py` leaves it out until the per-language
-  view (R-2026-10-30-i) defines how it ships.
+- **Valid only on a `type: dataset` product**, both fields, and optional there. An absent
+  `language_coverage` means not recorded.
+- **It is not in the notebook payload.** `build/serialize.py` leaves `language_coverage` and
+  `pivot_languages` out of the capability block. The per-language evidence ships as a separate
+  structured data asset that the per-language view loads (R-2026-11-01-f), exposing language,
+  task, evaluation split, count and unit, provenance, source references, the observed-coverage
+  fraction, and unknowns marked explicitly. That asset is not built.
+
+### How the depth ladder will read it
+
+These are ruled, and they are the rules the ladder PR implements. None of them is built.
+
+1. **Per task, then per language** (R-2026-11-01-c). Each task's qualifying count on its official
+   evaluation split is banded against a calibrated standard in that task's own units, and a
+   language's task bands aggregate to one language-level band. A suite gets no extra credit for
+   importing several datasets that measure the same task. Breadth of evaluated tasks is tracked
+   separately and is at most a limited tiebreaker.
+2. **The median across the target languages** (R-2026-10-30-i, R-2026-11-01-b). The target
+   languages are the product's `languages` less `pivot_languages`. The median of their bands sets
+   the band. A capped breadth bonus, starting from median + 0.5 x (1 - 1/n), breaks ties within the
+   band and never lifts a set into the next, and it counts only languages with substantiated
+   evaluation evidence, so a missing record cannot inflate the result.
+3. **The robustness test** (R-2026-11-01-a). A target language with no entry is unknown. The
+   median is taken twice, once with every unknown filled at the lowest band and once at the
+   highest. The band stands only when the two agree; otherwise the result is unresolved until more
+   evidence is collected. Bands of 4, 4 and unknown give 4 whatever the missing value is; 5,
+   unknown and unknown cannot establish a 5. There is no completeness threshold.
+4. **Completeness is published** (R-2026-11-01-b). Each record states how many of its target
+   languages have a usable depth measurement, for example 18 of 20. A target language is measured
+   when it has an official-evaluation entry whose qualifying depth is established: `native`,
+   `human_translated`, `post_edited`, `machine_translated` or `generated` provenance, `mixed` with
+   a `qualifying_count`, or a documented zero. Measurement is per task: a language is measured on
+   each task for which it has such an entry, and only on those. A measured zero comes from
+   `machine_translated` and `generated` items, the only provenance values that establish one, or
+   from a documented zero, which has no items at all; a documented zero makes the language measured,
+   at zero, for its own task, component and split only, and leaves every other task where its own
+   entries put it. A language whose official-split entries are all `unknown` provenance, or `mixed`
+   without a `qualifying_count`, is unmeasured: its depth is unknown, and it enters the robustness
+   test as an unknown, never as a zero.
 
 ### What reads it
 
 Nothing yet. The depth ladder (R-2026-10-30-g, R-2026-10-30-i) is not built, so no band moves
 because a record was written, and until it lands each evaluation set is compared with sets covering
-the same languages (R-2026-10-30-g). `refresh-category` fills the record on an evaluation set's next
-pass, from the card or paper it is already reading for the band
-([`../workflows/refresh-category.md`](../workflows/refresh-category.md)).
+the same languages (R-2026-10-30-g). The record is filled first for a calibration sample: FLORES+
+(translation), ThaiExam (single-language exams), SEA-HELM (a mixed-task suite) and AfroBench (a
+large multilingual suite). That sample settles the task-specific depth bands and checks that the
+aggregation gives sensible, explainable outcomes before the other evaluation sets are filled
+(R-2026-11-01-g). `refresh-category` fills a record from the card or paper it is already reading
+for the band ([`../workflows/refresh-category.md`](../workflows/refresh-category.md)).
 
 ## Writing the rungs
 
@@ -426,8 +607,12 @@ re-opens the instrument, not just the band.**
       arithmetic holds against the peer's score.
 - [ ] A non-null score cites at least one source.
 - [ ] A `language_coverage` record, if present, names only codes in the product's `languages`,
-      takes each count from the cited source for that language rather than dividing a total, marks
-      pivot languages, and cites URLs that are on `capability.sources`.
+      records the source's own code in `source_language` wherever it differs, has one entry per
+      language, task, component and split, takes each count from the cited source rather than
+      dividing a total, records a source-stated absence as a documented zero, marks the one
+      official evaluation split, records subsets with `subset_of`, marks `native` only on an
+      explicit statement about the items, declares `pivot_languages`, and cites URLs that are on
+      `capability.sources`.
 - [ ] `last_verified`, if present, satisfies the transitive-freshness rule — or the edge carries
       a `comparison` block whose `last_attested` is no earlier than it and is backed by a fetched
       source read on or after that date.

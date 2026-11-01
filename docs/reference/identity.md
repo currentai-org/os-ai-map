@@ -595,8 +595,9 @@ product file width), because a multilingual corpus can list more codes than a li
 block would keep readable.
 
 `languages` says which languages, not how much of each. How many items an evaluation set holds per
-language, how they were made and which tasks they fall under is capability evidence, recorded as
-`capability.language_coverage` on the score file, because a ladder will read it. Its codes must be
+language, task, component and split, and how they were made, is capability evidence, recorded as
+`capability.language_coverage` on the score file, because a ladder will read it; so is
+`capability.pivot_languages`, the listed languages the set was not built for. Their codes must be
 ones `languages` lists. [`capability.md`](capability.md#per-language-coverage) is normative.
 
 ### Code lists, and who writes the fields

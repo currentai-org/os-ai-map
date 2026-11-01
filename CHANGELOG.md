@@ -24,11 +24,18 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   would get. The ladder is not calibrated and the dry-run bands are not adopted
   ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
 - An optional per-language coverage record on a dataset's capability axis
-  (`capability.language_coverage`): for each language, the item count and its unit, how the items
-  were made, their tasks, and whether the language is a pivot, cited through `capability.sources`.
-  Codes must be ones the product's `languages` lists. No product carries it yet, nothing scores on
-  it, and the notebook payload leaves it out (R-2026-10-30-h,
-  [#952](https://github.com/currentai-org/os-ai-map/pull/952)).
+  (`capability.language_coverage`), one entry per language, task, dataset component and split:
+  count and unit, provenance, whether the split is the benchmark's official evaluation split, an
+  optional qualifying portion for `mixed` items, optional human validation, `subset_of` so a
+  subset is not counted twice, `source_language` for a code the source states differently, and a
+  documented zero (`count: 0`, no provenance) for a language the source says has no items, cited
+  through `capability.sources`. Pivot languages are declared in
+  `capability.pivot_languages`. Codes must be ones the product's `languages` lists. The four
+  calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench) carry it; nothing scores on it, and
+  the notebook payload leaves it out (R-2026-10-30-h, R-2026-11-01-a to -h,
+  [#952](https://github.com/currentai-org/os-ai-map/pull/952),
+  [#956](https://github.com/currentai-org/os-ai-map/pull/956),
+  [#958](https://github.com/currentai-org/os-ai-map/pull/958)).
 - `lineage.part_of`, a many-to-many link from a dataset to the suites it belongs to, and the
   stage rule it feeds: a suite and its members count once toward a category's stage, through the
   group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No

@@ -403,14 +403,21 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     return lt
 
 
-def _without_language_coverage(capability):
-    """The capability block as the payload carries it: everything but `language_coverage`.
+# The per-language evidence on the capability axis: the coverage entries and the pivot
+# declaration they are read against. It ships as its own data asset with the per-language view
+# (R-2026-11-01-f), never inside the notebook payload.
+PER_LANGUAGE_KEYS = ("language_coverage", "pivot_languages")
 
-    Returned unchanged, the same object, when the key is absent, so a record without it
-    serializes byte-for-byte as it did before the field existed.
+
+def _without_language_coverage(capability):
+    """The capability block as the payload carries it: everything but the per-language evidence.
+
+    Drops `language_coverage` and `pivot_languages`. Returned unchanged, the same object, when
+    neither key is present, so a record without them serializes byte-for-byte as it did before
+    the fields existed.
     """
-    if isinstance(capability, dict) and "language_coverage" in capability:
-        return {k: v for k, v in capability.items() if k != "language_coverage"}
+    if isinstance(capability, dict) and any(k in capability for k in PER_LANGUAGE_KEYS):
+        return {k: v for k, v in capability.items() if k not in PER_LANGUAGE_KEYS}
     return capability
 
 
@@ -447,10 +454,11 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
         # route id in front of every reader of the map to answer a question only the audit
         # asks, and would grow a payload whose transport is already its tightest constraint.
         "adoption": {k: v for k, v in (score["adoption"] or {}).items() if k != "derived_from"},
-        # `language_coverage` stays in the repository until the per-language view
-        # (R-2026-10-30-i) defines how it ships: a many-language set carries one entry per
-        # language, and the payload's transport is already its tightest constraint. Every
-        # other capability key ships as recorded. See docs/reference/capability.md.
+        # `language_coverage` and `pivot_languages` never enter this payload: they ship as a
+        # separate structured data asset with the per-language view (R-2026-11-01-f). A
+        # many-language suite carries one entry per language, task, component and split, and
+        # the payload's transport is already its tightest constraint. Every other capability
+        # key ships as recorded. See docs/reference/capability.md.
         "capability": _without_language_coverage(score["capability"]),
     }
     # The weighted product maturity score (per-category blend of adoption/capability),
