@@ -166,6 +166,13 @@ def test_the_fixture_shows_what_its_header_says():
     reviewed = _entry(d, "swh", "knowledge_exam", "example-eval", "train")
     assert reviewed["provenance"] == "generated" and reviewed["human_validated"] is True
     assert reviewed["official_eval"] is False
+    mapped = [e for e in entries if "source_language" in e]
+    assert [(_key(e), e["source_language"]) for e in mapped] == [
+        (("swh", "knowledge_exam", "example-eval", "test"), "swa")
+    ]
+    zeros = [e for e in entries if e["count"] == 0]
+    assert [_key(e) for e in zeros] == [("yor", "speech_recognition", "example-eval", "test")]
+    assert zeros[0]["official_eval"] is True and "provenance" not in zeros[0]
 
 
 def test_hours_may_be_fractional_and_a_count_may_be_zero():
@@ -239,12 +246,21 @@ def test_every_required_field_is_required(field):
 
 
 def test_the_required_fields_are_the_unit_of_evidence_and_its_reading():
+    """`provenance` is required on every entry with items and absent on a documented zero, so it
+    is conditional on `count` rather than in the unconditional list."""
     assert set(ENTRY["required"]) == set(COVERAGE_KEY) | {
-        "official_eval", "count", "unit", "provenance", "cites"
+        "official_eval", "count", "unit", "cites"
     }
     assert set(ENTRY["properties"]) - set(ENTRY["required"]) == {
-        "qualifying_count", "human_validated", "subset_of"
+        "provenance", "qualifying_count", "human_validated", "subset_of", "source_language"
     }
+
+
+def test_provenance_is_required_on_an_entry_with_items():
+    d = _corpus()
+    del _entry(d, "swh", "knowledge_exam", "example-eval", "test")["provenance"]
+    errors = _schema_errors(validate_sources(d))
+    assert errors and "'provenance' is a required property" in errors[0]
 
 
 def test_coverage_requires_a_pivot_declaration():
@@ -414,6 +430,82 @@ def test_the_per_language_fields_apply_to_datasets_only(field):
     d["scores"][SLUG]["openness"]["class"] = "open_source"
     errors = validate_sources(d)
     assert any(f"capability.{field} applies to datasets only" in e for e in errors)
+
+
+# --- source_language: the code as the source states it ----------------------------------------
+
+
+def test_a_source_language_need_not_be_listed_in_the_products_languages():
+    """It is the code the source uses where the product lists another, so the product's list
+    usually does not carry it; it is held to the code list only."""
+    d = _corpus()
+    _entry(d, "yor", "knowledge_exam", "example-eval", "test")["source_language"] = "zul"
+    assert "zul" not in d["products"][SLUG]["languages"]
+    assert validate_sources(d) == []
+
+
+def test_a_source_language_equal_to_the_language_is_refused():
+    d = _corpus()
+    _entry(d, "swh", "knowledge_exam", "example-eval", "test")["source_language"] = "swh"
+    error = _only(validate_sources(d))
+    assert error.startswith(WHERE)
+    assert "(swh, knowledge_exam, example-eval, test) carries source_language 'swh'" in error
+    assert "same code as `language`" in error
+
+
+@pytest.mark.parametrize("bad", ["mul", "und", "xxx"])
+def test_a_source_language_outside_the_iso_list_is_refused(bad):
+    d = _corpus()
+    _entry(d, "swh", "knowledge_exam", "example-eval", "test")["source_language"] = bad
+    error = _only(validate_sources(d))
+    assert error.startswith(WHERE) and f"source_language {bad!r} is not an ISO 639-3" in error
+
+
+@pytest.mark.parametrize("bad", ["sw", "SWA", "swa_Latn"])
+def test_a_source_language_of_the_wrong_shape_fails_the_schema(bad):
+    d = _corpus()
+    _entry(d, "swh", "knowledge_exam", "example-eval", "test")["source_language"] = bad
+    errors = _schema_errors(validate_sources(d))
+    assert errors and "source_language" in errors[0]
+
+
+# --- documented zeros ---------------------------------------------------------------------------
+
+
+def _zero(d: dict) -> dict:
+    return _entry(d, "yor", "speech_recognition", "example-eval", "test")
+
+
+def test_a_documented_zero_carries_no_provenance():
+    """The source states there are no items: a measured zero, not an unknown, and there are no
+    items whose provenance could be described."""
+    d = _corpus()
+    assert "provenance" not in _zero(d) and "qualifying_count" not in _zero(d)
+    assert validate_sources(d) == []
+
+
+@pytest.mark.parametrize("provenance", ["unknown", "native", "machine_translated"])
+def test_a_documented_zero_with_provenance_is_refused(provenance):
+    d = _corpus()
+    _zero(d)["provenance"] = provenance
+    error = _only(validate_sources(d))
+    assert error.startswith(WHERE)
+    assert "(yor, speech_recognition, example-eval, test) is a documented zero" in error
+    assert "carries `provenance`" in error
+
+
+def test_a_documented_zero_with_a_qualifying_count_is_refused():
+    d = _corpus()
+    _zero(d)["qualifying_count"] = 0
+    error = _only(validate_sources(d))
+    assert "is a documented zero (count 0) and carries `qualifying_count`" in error
+
+
+def test_a_non_zero_count_without_provenance_is_refused():
+    d = _corpus()
+    _zero(d)["count"] = 3.5
+    errors = _schema_errors(validate_sources(d))
+    assert errors and "'provenance' is a required property" in errors[0]
 
 
 # --- cross-file: citations --------------------------------------------------------------------

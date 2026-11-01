@@ -985,6 +985,12 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
     - Every code, in an entry or in `pivot_languages`, is held to the rule `languages` is held
       to, through the same `language_codes()`, and must be a code the product's `languages`
       lists. The pivots are sorted and leave at least one target language (R-2026-11-01-b).
+    - `source_language`, the code as the cited source states it, is held to the code list too,
+      but not to the product's `languages`, which by definition does not list it; and it differs
+      from `language`, since an equal code records no mapping.
+    - A documented zero (`count` 0) carries no `provenance` and no `qualifying_count`: the
+      source states there are no items, so there are none to describe. The schema requires
+      `provenance` on every other entry.
     - Each (language, task, component, split) appears once, and entries are sorted by that key,
       so one record has one spelling (R-2026-11-01-c).
     - `official_eval` agrees with `split`, and a language, task and component has at most one
@@ -1012,14 +1018,15 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
     listed = set(listed) if isinstance(listed, list) else set()
     allowed = language_codes()
 
-    def code_error(where: str, code: str) -> str | None:
+    def code_error(where: str, code: str, field: str = "language",
+                   must_be_listed: bool = True) -> str | None:
         if code not in allowed:
             return (
-                f"{where}: language {code!r} is not an ISO 639-3 code of scope individual or "
+                f"{where}: {field} {code!r} is not an ISO 639-3 code of scope individual or "
                 f"macrolanguage in sources/snapshots/iso-639-3.tab (two-letter codes and the "
                 f"special codes mul, und, zxx are refused)"
             )
-        if code not in listed:
+        if must_be_listed and code not in listed:
             return (
                 f"{where}: language {code!r} is not in the product's `languages`. Coverage and "
                 f"pivots describe a listed language; add the code to `languages` first."
@@ -1060,6 +1067,25 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
         code = entry.get("language")
         if isinstance(code, str) and (e := code_error(where, code)):
             errors.append(e)
+        source_code = entry.get("source_language")
+        if isinstance(source_code, str):
+            if source_code == code:
+                errors.append(
+                    f"{where}: {label(entry)} carries source_language {source_code!r}, the same "
+                    f"code as `language`. Record `source_language` only where the cited source "
+                    f"states a different code."
+                )
+            elif e := code_error(f"{where}: {label(entry)}", source_code, "source_language",
+                                 must_be_listed=False):
+                errors.append(e)
+        if entry.get("count") == 0:
+            for field in ("provenance", "qualifying_count"):
+                if field in entry:
+                    errors.append(
+                        f"{where}: {label(entry)} is a documented zero (count 0) and carries "
+                        f"`{field}`. The source states there are no items, so there are none to "
+                        f"describe; cite the source that states the absence and leave `{field}` out."
+                    )
         for url in entry.get("cites") or []:
             if isinstance(url, str) and url not in cited:
                 errors.append(
@@ -1078,7 +1104,8 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
                 f"{where}: {label(entry)} is on the `official_eval` split, so `official_eval` "
                 f"is true. Use the source's own split name if it is not the evaluation split."
             )
-        if "qualifying_count" in entry:
+        # A documented zero's qualifying_count is reported above, as the zero's own error.
+        if "qualifying_count" in entry and entry.get("count") != 0:
             if entry.get("provenance") != "mixed":
                 errors.append(
                     f"{where}: {label(entry)} carries `qualifying_count`, which belongs only on "
