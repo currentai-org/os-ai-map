@@ -326,7 +326,7 @@ third column (R-2026-11-01-h). Provenance is never guessed: a source that does n
 | `machine_translated` | machine-translated, with no human correction recorded | no |
 | `generated` | model-generated directly in that language | no |
 | `mixed` | more than one of the above in this entry | only its `qualifying_count`, the separately documented qualifying portion; none when that is absent |
-| `unknown` | the source does not say. A recorded state, never a stand-in for `native` | no: it establishes no qualifying depth |
+| `unknown` | the source does not say. A recorded state, never a stand-in for `native` | no qualifying depth is established: the language's depth is unknown, not zero |
 
 `native` and `generated` cannot overlap: one is written by people in the language, the other by a
 model in it.
@@ -439,9 +439,10 @@ These are ruled, and they are the rules the ladder PR implements. None of them i
    unknown and unknown cannot establish a 5. There is no completeness threshold.
 4. **Completeness is published** (R-2026-11-01-b). Each record states how many of its target
    languages have a usable depth measurement, for example 18 of 20. A target language is measured
-   when it has an entry on an official evaluation split. Provenance decides how much of that count
-   qualifies, not whether the language was measured, so a language whose items do not qualify has
-   zero qualifying depth rather than an unknown one.
+   when it has an entry on an official evaluation split whose provenance is known. A language whose
+   measured items are all `machine_translated` or `generated` has zero qualifying depth, which is a
+   measurement. A language whose official-split entries are all `unknown` provenance is unmeasured:
+   its depth is unknown, and it enters the robustness test as an unknown, never as a zero.
 
 ### What reads it
 
