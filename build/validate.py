@@ -150,6 +150,83 @@ def published_products(taxonomy: dict, cats: dict) -> set[str]:
     }
 
 
+def suite_membership_errors(prods: dict) -> list[str]:
+    """Check `lineage.part_of`, the one lineage edge the build reads rather than displays.
+
+    The category stage counts a suite and its members once (`build/serialize.py`
+    `lineage_groups`), so an edge here can lower a stage, and a reference that does not
+    resolve would silently fail to. Every entry must therefore name another product, and that
+    product, like the member, must be a dataset: the ruling that introduced the relation
+    (R-2026-10-30-e) was about evaluation suites and their member sets, and applying it to an
+    SDK and its protocol would move stages in categories nobody ruled on. The edges must form
+    no cycle, because "A is in B and B is in A" names no suite. Category is not constrained: a
+    member may sit in a different category from its suite, and the stage rule only groups rows
+    that share one. docs/reference/identity.md is the rule.
+    """
+    errors: list[str] = []
+    graph: dict[str, list[str]] = {}
+    for slug, product in sorted(prods.items()):
+        lineage = product.get("lineage")
+        suites = lineage.get("part_of") if isinstance(lineage, dict) else None
+        if not isinstance(suites, list):
+            continue
+        if product.get("type") != "dataset":
+            errors.append(
+                f"product {slug!r}: `lineage.part_of` applies to datasets only (this is a "
+                f"{product.get('type')!r})"
+            )
+        resolved: list[str] = []
+        for suite in suites:
+            if not isinstance(suite, str):
+                continue
+            if suite == slug:
+                errors.append(f"product {slug!r}: `lineage.part_of` names the product itself")
+            elif suite not in prods:
+                errors.append(
+                    f"product {slug!r}: `lineage.part_of` names {suite!r}, which has no "
+                    f"sources/products/{suite}.yaml. A suite is a product on the map, so its "
+                    f"members can be counted with it."
+                )
+            elif (prods[suite] or {}).get("type") != "dataset":
+                errors.append(
+                    f"product {slug!r}: `lineage.part_of` names {suite!r}, which is a "
+                    f"{prods[suite].get('type')!r}; a suite must be a dataset"
+                )
+            else:
+                resolved.append(suite)
+        graph[slug] = resolved
+
+    # Depth-first walk for a back edge. Each cycle is reported once, from its smallest slug,
+    # so the message is stable however the walk happens to enter it.
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = {slug: WHITE for slug in graph}
+    reported: set[tuple[str, ...]] = set()
+
+    def visit(slug: str, path: list[str]) -> None:
+        color[slug] = GRAY
+        path.append(slug)
+        for nxt in graph.get(slug, []):
+            if color.get(nxt, BLACK) == GRAY:
+                cycle = path[path.index(nxt):]
+                start = cycle.index(min(cycle))
+                canonical = tuple(cycle[start:] + cycle[:start])
+                if canonical not in reported:
+                    reported.add(canonical)
+                    errors.append(
+                        "`lineage.part_of` forms a cycle: "
+                        + " -> ".join(canonical + (canonical[0],))
+                    )
+            elif color.get(nxt) == WHITE:
+                visit(nxt, path)
+        path.pop()
+        color[slug] = BLACK
+
+    for slug in sorted(graph):
+        if color[slug] == WHITE:
+            visit(slug, [])
+    return errors
+
+
 def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     """`ledger_path` is a seam for tests: it lets a test point every resolution-ledger check at
     a temp file instead of the real `sources/resolution_ledger.yaml`, which this function
@@ -518,6 +595,8 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
                     f"product {slug!r}: category {cid!r} requires `languages` on every product"
                 )
 
+    errors.extend(suite_membership_errors(prods))
+
     # --- org handles (sources/org_handles.yaml) ---
     # Handles live outside the org record on purpose (see docs/reference/identity.md): an
     # organization's own file is a declaration and folds into declaration_version_id, but who
@@ -585,6 +664,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         cap = sc.get("capability", {})
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
+        errors.extend(language_coverage_errors(slug, prods[slug], cap))
 
     # --- slug stability ---
     # The slug is a product's identity and the key deep links are built on, so a slug may
@@ -888,6 +968,199 @@ def model_family_overlap_warnings(model_families: dict) -> list[str]:
                     "-- the longest matching pattern wins (docs/reference/identity.md)"
                 )
     return warnings
+
+
+# The key that names one unit of per-language evidence (R-2026-11-01-c), in sort order.
+COVERAGE_KEY = ("language", "task", "component", "split")
+
+
+def language_coverage_errors(slug: str, product: dict, capability: dict) -> list[str]:
+    """Cross-file checks on `capability.language_coverage` and `capability.pivot_languages`.
+
+    The score schema checks each entry's shape: the closed `task`, `split`, `unit` and
+    `provenance` vocabularies, non-negative counts, the required fields, and that a record
+    with coverage also declares its pivots. What it cannot see is the product record, the code
+    list, or one entry against another, so those checks are here:
+
+    - Every code, in an entry or in `pivot_languages`, is held to the rule `languages` is held
+      to, through the same `language_codes()`, and must be a code the product's `languages`
+      lists. The pivots are sorted and leave at least one target language (R-2026-11-01-b).
+    - Each (language, task, component, split) appears once, and entries are sorted by that key,
+      so one record has one spelling (R-2026-11-01-c).
+    - `official_eval` agrees with `split`, and a language, task and component has at most one
+      official evaluation split, so dev and devtest are never added together (R-2026-11-01-d).
+    - `qualifying_count` sits only on a `mixed` entry and does not exceed `count`
+      (R-2026-11-01-h).
+    - `subset_of` names an existing entry for the same language, task and split, which is not
+      itself a subset, and which holds at least as many items in the same unit (R-2026-11-01-d).
+    - Every `cites` URL is the `url` of a `capability.sources` entry, which is where the
+      citation's `shows`, `accessed` and digest live and where the evidence gates read them.
+
+    docs/reference/capability.md, "Per-language coverage", is normative.
+    """
+    if not isinstance(capability, dict):
+        return []
+    coverage = capability.get("language_coverage")
+    pivots = capability.get("pivot_languages")
+    coverage = coverage if isinstance(coverage, list) else None
+    pivots = pivots if isinstance(pivots, list) else None
+    if coverage is None and pivots is None:
+        return []
+    errors: list[str] = []
+    prefix = f"score {slug!r}: capability"
+    listed = product.get("languages")
+    listed = set(listed) if isinstance(listed, list) else set()
+    allowed = language_codes()
+
+    def code_error(where: str, code: str) -> str | None:
+        if code not in allowed:
+            return (
+                f"{where}: language {code!r} is not an ISO 639-3 code of scope individual or "
+                f"macrolanguage in sources/snapshots/iso-639-3.tab (two-letter codes and the "
+                f"special codes mul, und, zxx are refused)"
+            )
+        if code not in listed:
+            return (
+                f"{where}: language {code!r} is not in the product's `languages`. Coverage and "
+                f"pivots describe a listed language; add the code to `languages` first."
+            )
+        return None
+
+    for field, value in (("pivot_languages", pivots), ("language_coverage", coverage)):
+        if value is not None and product.get("type") != "dataset":
+            errors.append(
+                f"{prefix}.{field} applies to datasets only (this is a {product.get('type')!r})"
+            )
+
+    if pivots is not None:
+        where = f"{prefix}.pivot_languages"
+        codes = [c for c in pivots if isinstance(c, str)]
+        errors.extend(e for c in codes if (e := code_error(where, c)))
+        if codes != sorted(codes):
+            errors.append(f"{where}: codes must be sorted (expected {sorted(codes)})")
+        if listed and listed <= set(codes):
+            errors.append(
+                f"{where}: every language the product lists is declared a pivot, which leaves "
+                f"the set no target language. A pivot is a language the set was not built for."
+            )
+
+    if coverage is None:
+        return errors
+    where = f"{prefix}.language_coverage"
+    cited = {s.get("url") for s in capability.get("sources") or [] if isinstance(s, dict)}
+    entries = [e for e in coverage if isinstance(e, dict)]
+
+    def key(entry: dict) -> tuple:
+        return tuple(entry.get(k) for k in COVERAGE_KEY)
+
+    def label(entry: dict) -> str:
+        return "(" + ", ".join(str(v) for v in key(entry)) + ")"
+
+    for entry in entries:
+        code = entry.get("language")
+        if isinstance(code, str) and (e := code_error(where, code)):
+            errors.append(e)
+        for url in entry.get("cites") or []:
+            if isinstance(url, str) and url not in cited:
+                errors.append(
+                    f"{where}: {label(entry)} cites {url!r}, which is not the url of any "
+                    f"capability.sources entry. Cite the card or paper there, with its "
+                    f"`shows` and `accessed`, and point at it from `cites`."
+                )
+        split, official = entry.get("split"), entry.get("official_eval")
+        if split == "train" and official is True:
+            errors.append(
+                f"{where}: {label(entry)} marks a train split as the official evaluation split. "
+                f"Training examples never count toward depth."
+            )
+        if split == "official_eval" and official is False:
+            errors.append(
+                f"{where}: {label(entry)} is on the `official_eval` split, so `official_eval` "
+                f"is true. Use the source's own split name if it is not the evaluation split."
+            )
+        if "qualifying_count" in entry:
+            if entry.get("provenance") != "mixed":
+                errors.append(
+                    f"{where}: {label(entry)} carries `qualifying_count`, which belongs only on "
+                    f"a `mixed` entry. Every item of a single-provenance entry counts or none does."
+                )
+            count, qualifying = entry.get("count"), entry.get("qualifying_count")
+            if (isinstance(count, (int, float)) and isinstance(qualifying, (int, float))
+                    and qualifying > count):
+                errors.append(
+                    f"{where}: {label(entry)} has qualifying_count {qualifying} above its count "
+                    f"{count}. The qualifying portion is part of the entry's items."
+                )
+
+    # A key with a value of the wrong type is the schema's error to report; the checks that
+    # compare entries skip it rather than fail on an unhashable or unorderable value.
+    entries = [e for e in entries if all(isinstance(e.get(k), str) for k in COVERAGE_KEY)]
+    keys = [key(e) for e in entries]
+    duplicates = sorted({k for k in keys if keys.count(k) > 1})
+    if duplicates:
+        errors.append(
+            f"{where}: each (language, task, component, split) appears once "
+            f"(repeated: {[list(k) for k in duplicates]})"
+        )
+    else:
+        for previous, current in zip(entries, entries[1:]):
+            if key(current) < key(previous):
+                errors.append(
+                    f"{where}: entries must be sorted by (language, task, component, split); "
+                    f"{label(current)} comes before {label(previous)}"
+                )
+                break
+
+    # A repeated key is reported above; it is one split, not two official ones.
+    official: dict[tuple, list[str]] = {}
+    for entry in entries:
+        splits = official.setdefault(key(entry)[:3], [])
+        if entry.get("official_eval") is True and entry["split"] not in splits:
+            splits.append(entry["split"])
+    for group, splits in official.items():
+        if len(splits) > 1:
+            errors.append(
+                f"{where}: ({', '.join(group)}) marks {len(splits)} splits as the "
+                f"official evaluation split ({', '.join(splits)}). Only the split the benchmark "
+                f"evaluates on counts, so splits are never added together."
+            )
+
+    by_key = {key(e): e for e in entries}
+    for entry in entries:
+        parent_component = entry.get("subset_of")
+        if not isinstance(parent_component, str):
+            continue
+        if parent_component == entry.get("component"):
+            errors.append(f"{where}: {label(entry)} names its own component in `subset_of`")
+            continue
+        language, task, _, split = key(entry)
+        parent = by_key.get((language, task, parent_component, split))
+        if parent is None:
+            errors.append(
+                f"{where}: {label(entry)} is a subset of {parent_component!r}, but the record has "
+                f"no entry ({language}, {task}, {parent_component}, {split}). A subset names an "
+                f"entry for the same language, task and split."
+            )
+            continue
+        if "subset_of" in parent:
+            errors.append(
+                f"{where}: {label(entry)} is a subset of {label(parent)}, which is itself a "
+                f"subset. Name the largest set the items are drawn from."
+            )
+        if parent.get("unit") != entry.get("unit"):
+            errors.append(
+                f"{where}: {label(entry)} counts {entry.get('unit')!r} but {label(parent)}, the "
+                f"set it is drawn from, counts {parent.get('unit')!r}. A subset is counted in "
+                f"the unit of the set that contains it."
+            )
+        elif (isinstance(entry.get("count"), (int, float))
+              and isinstance(parent.get("count"), (int, float))
+              and entry["count"] > parent["count"]):
+            errors.append(
+                f"{where}: {label(entry)} holds {entry['count']} {entry.get('unit')}, more than "
+                f"the {parent['count']} of {label(parent)}, the set it is drawn from."
+            )
+    return errors
 
 
 if __name__ == "__main__":

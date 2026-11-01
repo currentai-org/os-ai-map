@@ -1281,3 +1281,408 @@ rulings:
     executor: agent
     lands_in: [sources/scores/muse-spark.yaml, sources/products/muse-spark.yaml, sources/rubrics/model.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/930']
+
+  - id: R-2026-10-30-a
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, benchmark_eval_data]
+    question: >-
+      Language-targeted evaluation sets come off the language_specific_datasets corpus ladder. Do they go
+      into a new category of their own, or into benchmark_eval_data, which weights adoption 0.6?
+    ruling: >-
+      A new category of their own.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-b
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, afrihate, sold, nchlt, afridocmt, americasnlp-shared-task-data, typhoon-s-sovereign-capability, seacrowd]
+    question: >-
+      When the evaluation sets are split out, which side does a task set that ships training and test
+      splits go on, and where does the SEACrowd loader hub go?
+    ruling: >-
+      By what its paper or card says it is for: a set published as a benchmark or shared-task test is an
+      evaluation set, and a labeled set published for training is a corpus. SEACrowd goes with corpora.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-c
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, wangchan-thai-instruct, cendol-collection, inkuba-instruct]
+    question: >-
+      Instruction data is exempt from the language_specific_datasets size caps. Should it be capped?
+    ruling: >-
+      Yes. Cap it by example count against the largest open English instruction sets, one band per order
+      of magnitude. Generated and translated examples count at face value, and how they were made is judged
+      on the capability rungs, not by the cap.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-d
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, warehouse/dependencies.yaml]
+    question: >-
+      What replaces the enumerated list of languages that are not underrepresented (Chinese, Japanese,
+      Korean, Spanish, Portuguese) as the membership line for language_specific_datasets?
+    ruling: >-
+      A per-language resource classification built from several signals, with web share as one input and
+      not the rule, and an explicit unknown state. It is published as a table with the roster changes it
+      implies, for review before anything moves. Membership stays with the purpose test, with no majority
+      rule across a dataset's languages. The classification is built and owned on Artio (OSO), and this
+      repo reads it as a dependency contract in warehouse/dependencies.yaml.
+    reasoning: >-
+      This should be something run on Artio as a dependency for the repo.
+    status: in-force
+    executor: maintainer
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-e
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, afrobench, build/serialize.py]
+    question: >-
+      A category's stage counts its fully open category-leading products, and nothing in the count knows
+      about overlap. How does a suite and its member datasets count toward the stage?
+    ruling: >-
+      As one group. The group counts at most once toward the stage, through its highest-scoring fully open
+      row, and each row keeps its own scores.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-f
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, afrobench, seacrowd, indicxtreme, sea-helm]
+    question: >-
+      A regional suite's members fold into the suite's row, while global sets the suite borrows keep their
+      own. Should independently published members get their own rows?
+    ruling: >-
+      Yes. Each independently published member gets its own row, linked to its suite, after the group
+      counting rule in R-2026-10-30-e lands.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-g
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, flores-plus, sea-helm]
+    question: >-
+      Should evaluation sets be scored on per-language depth and provenance instead of on how many
+      languages they cover?
+    ruling: >-
+      Yes in principle, built only once the evidence model (R-2026-10-30-h) and the aggregation rule
+      (R-2026-10-30-i) are in place. Until then each evaluation set is compared with sets covering the
+      same languages.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-h
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets]
+    question: >-
+      The languages field records which languages a dataset covers, not how much it holds in each. What
+      per-language evidence do evaluation sets carry?
+    ruling: >-
+      A per-language record of item count, provenance and task, cited to the card or paper. It is a schema
+      change in its own PR, filled in by refresh-category.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-i
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets]
+    question: >-
+      A product keeps one capability score. How does per-language depth reduce to one number?
+    ruling: >-
+      The band comes from the median depth across the languages the set was built for, leaving out pivot
+      languages such as English. A capped breadth bonus breaks ties within the band and can never lift a
+      set into the next one. The exact formula is settled in the ladder PR, starting from
+      median + 0.5 x (1 - 1/n). Per-language figures are shown in the language view.
+    reasoning: >-
+      A median alone ties a set scoring 3, 2 and 1 with a single language at 2, and the former should be
+      slightly higher.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-j
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, flores-plus, sea-instruct]
+    question: >-
+      Adoption for a many-language dataset pools demand across every language it serves. Should downloads
+      be divided by the number of languages served?
+    ruling: >-
+      Not for now. Adoption is shown beside same-language peers in the language view, and this is revisited
+      once that view exists.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-k
+    date: 2026-10-30
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#946", language_specific_datasets, R-2026-10-30-d]
+    question: >-
+      The size caps measure every language against the largest English and Chinese datasets. Is one
+      English-scale yardstick right for every language?
+    ruling: >-
+      No. The caps use different yardsticks for different classes of language: official or regional,
+      many speakers or few, and a large or small body of literature and academic publications. The classes
+      come from the same Artio classification as R-2026-10-30-d. The English-scale gap stays as the
+      category-level finding.
+    reasoning: >-
+      The yardstick is different for official languages than for regional dialects, for languages with
+      many speakers than few, and for languages with a large body of literature and academic publications
+      than those without.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-l
+    date: 2026-10-30
+    by: ccerv1
+    venue: pr-review
+    refs: ["#950", "#952", "#948", language_specific_eval_sets, R-2026-10-30-g, R-2026-10-30-i]
+    question: >-
+      The dry run of the interim evaluation-set ladder in #950 puts 12 of 22 sets at capability 5.
+      Should those bands be adopted, or a temporary numerical depth floor added, so the sets can move
+      before the depth ladder exists? And may a set-wide total be divided across languages where no
+      per-language count is published?
+    ruling: >-
+      Neither. Twelve of 22 at 5 is not a useful distribution: the interim ladder mostly rewards being
+      the best available option for a language rather than demonstrating sufficient depth or quality.
+      No temporary numerical minimum that would immediately be replaced. The empty preliminary category
+      stays, and the product migration is deferred until the depth ladder of R-2026-10-30-i is ready;
+      if migration must precede it, a defensible provisional floor is preferred over the current
+      distribution. The final scoring uses the evidence rule of #952: source-reported per-language
+      counts only, never a dataset total divided by its number of languages.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_eval_sets.yaml]
+    applied_in: []
+
+  - id: R-2026-10-30-m
+    date: 2026-10-30
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", "#948", language_specific_datasets, wangchan-thai-instruct, R-2026-10-30-c, R-2026-10-30-k]
+    question: >-
+      Applied as written in #951, the instruction-data cap of R-2026-10-30-c drops WangchanThaiInstruct,
+      a curated human-written Thai set of 40,000 examples, from 4 to 2 against English post-training
+      corpora of tens of millions. Is #951 merged as written?
+    ruling: >-
+      No. Hold #951. A size dimension is supported, but not one that mechanically forces a dataset down
+      two levels solely because it has 40,000 examples. R-2026-10-30-k establishes the
+      language-resource-adjusted yardsticks before the cap is applied, and the new approach must at
+      minimum preserve a meaningful distinction between curated human data and large-scale generated
+      data.
+    reasoning: >-
+      Comparing a curated human-written Thai dataset with massive English-oriented post-training corpora,
+      using raw example count as an upper bound, confounds language-resource availability, dataset scale
+      and training value, and risks rewarding huge synthetic collections over smaller, carefully curated
+      datasets.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-a
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-i, R-2026-10-30-l]
+    question: >-
+      Under the per-language depth ladder, how is a language with no source-stated count treated, and
+      when is a set best in class?
+    ruling: >-
+      A missing count is unknown: never zero, and never evidence that a set is the strongest available.
+      Two sets are comparable only where both have documented counts for the same language and task;
+      where no comparable peer has documented evidence, the record says "no comparable evidence", not
+      "best in class". A band stands only when the lowest and highest possible median bands, filling the
+      unknowns either way, agree; where they span different bands the result is unresolved until more
+      evidence is collected. No arbitrary completeness threshold.
+    reasoning: >-
+      Observed bands of 4, 4 and unknown give a median of 4 whatever the missing value is, but 5, unknown
+      and unknown cannot establish a 5. A robustness test is preferable to an arbitrary completeness
+      threshold.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-b
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-i]
+    question: >-
+      What is the population for the per-language median, and how are languages without a recorded
+      count handled in it and in the breadth bonus?
+    ruling: >-
+      The population is every declared target language, less documented pivot languages; unknowns enter
+      through the robustness test of R-2026-11-01-a. A record publishes its evidence completeness (for
+      example, 18 of 20 target languages have usable depth measurements). The breadth bonus of
+      R-2026-10-30-i counts only languages with substantiated evaluation evidence. Pivot languages stay
+      identifiable even with no reported counts, through a separate declaration.
+    reasoning: >-
+      A missing language means no measured depth, not no evaluation data. Counting unsubstantiated
+      languages in the bonus would let missing records inflate the result indirectly.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-c
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, sea-helm, afrobench, indicxtreme]
+    question: >-
+      How is depth recorded and aggregated for a multi-task suite whose tasks use different units,
+      sample sizes and sources?
+    ruling: >-
+      The unit of evidence is one language x task x dataset component x split. Depth is banded per task
+      in comparable units against calibrated standards, then aggregated to a language-level band, and
+      the median of R-2026-10-30-i stays the final aggregation across languages. Translation sentences,
+      speech hours and exam questions are never added into one total, and a suite gets no extra credit
+      for importing several datasets that measure the same task. Breadth of evaluated tasks is tracked
+      separately and is at most a limited tiebreaker.
+    reasoning: >-
+      Breadth of evaluation is valuable, but it is not the same thing as depth.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-d
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, flores-plus]
+    question: >-
+      Which split of a dataset counts toward evaluation depth?
+    ruling: >-
+      Each entry records its split: train, dev, validation, test, devtest or official_eval. Only the
+      portion actually used for benchmark evaluation counts; a dev or validation split counts when it is
+      the benchmark's official evaluation split, and training examples never count. Whether samples are
+      distinct is documented, and subsets are not double-counted. FLORES+ translation depth uses its
+      evaluation split, not dev and devtest added together.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-e
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", "#952", docs/reference/capability.md]
+    question: >-
+      Do the provenance and task vocabularies of capability.language_coverage stand?
+    ruling: >-
+      Keep the seven provenance values. native means human-authored in the target language, and
+      generated means model-generated directly in that language, so the two cannot overlap. Keep
+      post_edited and unknown; do not guess provenance. Keep the 18 task classes and add
+      transliteration. No narrow task labels before the candidate datasets have been examined.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-f
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-j]
+    question: >-
+      Is the per-language evidence published, and where?
+    ruling: >-
+      Yes, with the per-language view, as a separate structured data asset the visualization loads, not
+      inside the notebook's main payload. It exposes language, task, evaluation split, count and unit,
+      provenance, source references, the observed-coverage fraction, and unknowns marked explicitly.
+    reasoning: >-
+      The per-language evidence is what makes the final scores explainable and auditable; a separate asset
+      is cleaner as more suites and languages are added.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, build/serialize.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-g
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", flores-plus, thai-exam, sea-helm, afrobench]
+    question: >-
+      Is the per-language evidence filled for every evaluation set before the depth ladder is built?
+    ruling: >-
+      No. First populate a calibration sample: FLORES+ (translation), ThaiExam (single-language exams),
+      SEA-HELM (mixed-task suite) and AfroBench (large multilingual suite). Use them to settle the
+      task-specific depth bands and verify that the aggregation produces sensible, explainable outcomes
+      before populating the other datasets.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/workflows/refresh-category.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-h
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", R-2026-10-30-g, R-2026-10-30-m]
+    question: >-
+      How does provenance enter evaluation depth? Do machine-translated and generated items count, at
+      full or reduced weight?
+    ruling: >-
+      native, human_translated and post_edited items count toward depth. machine_translated and generated
+      items do not, and no reduced weights are introduced: they establish a measured zero qualifying depth.
+      For mixed, only the separately documented qualifying portion counts; a mixed entry with no documented
+      qualifying portion leaves depth unknown. unknown provenance leaves depth unknown; it does not
+      establish a measured zero. Only machine_translated and generated establish zero qualifying depth. All
+      evidence is preserved, including excluded items: zero qualifying depth does not mean a dataset has no
+      evaluation value, only that its items do not satisfy this measure of credible evaluation depth. Human-reviewed
+      model-generated items are not reclassified as native or post_edited: provenance describes how items
+      were produced, and human validation is a separate quality attribute. If the calibration sets reveal
+      well-validated synthetic evaluations that deserve credit, an explicit exception backed by evidence
+      can be introduced, not an arbitrary multiplier.
+    reasoning: >-
+      A conservative, reproducible initial rule that leaves room to improve it.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']

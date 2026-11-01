@@ -11,7 +11,7 @@ asks for belongs in the score file.
 
 ## Inputs you need
 - The **category** it belongs to (exactly one) and the **organization** that makes it.
-- Its **product type** (`software`, `model`, `dataset`, `hardware`). A dataset also takes `languages` where its card or paper names them, and a product whose governance has moved to a body other than its owner takes `steward`; both are in [`../reference/identity.md`](../reference/identity.md#country-steward-and-languages).
+- Its **product type** (`software`, `model`, `dataset`, `hardware`). A dataset also takes `languages` where its card or paper names them, and a product whose governance has moved to a body other than its owner takes `steward`; both are in [`../reference/identity.md`](../reference/identity.md#country-steward-and-languages). A dataset that a suite on the map bundles names that suite in `lineage.part_of` ([`../reference/identity.md`](../reference/identity.md#suites-and-their-members)).
 - Its open **artifacts**: GitHub / PyPI / npm / crates / HuggingFace model or dataset / arXiv URLs.
 - Enough **primary-source evidence** to score openness, and to say what it is.
 

@@ -849,7 +849,8 @@ def details_payload(DATA, ORDER, mo):
           (p.lineage?('<div class="v3-sect">Lineage</div>'+
             (p.lineage.derived_from&&p.lineage.derived_from.length?row('Derived from',p.lineage.derived_from.join(', ')):'')+
             (p.lineage.curated_with&&p.lineage.curated_with.length?row('Built with',p.lineage.curated_with.join(', ')):'')+
-            (p.lineage.trains&&p.lineage.trains.length?row('Trains',p.lineage.trains.join(', ')):'')):'')+
+            (p.lineage.trains&&p.lineage.trains.length?row('Trains',p.lineage.trains.join(', ')):'')+
+            (p.lineage.part_of&&p.lineage.part_of.length?row('Part of',p.lineage.part_of.join(', ')):'')):'')+
           '</div></div>';
         return h;
       }

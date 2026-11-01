@@ -219,6 +219,32 @@ categories, all in the model layer (measured 2026-09-20: `base_pretrained` 3→5
 `finetuned_chat` 3→4, `edge_hardware` 3→4, `scientific_ai_models` 1→3), and would leave every
 infrastructure and tooling verdict unchanged.
 
+## Counting rule: a suite and its members count once
+
+A suite and the datasets bundled in it are one body of work. Where both have rows, the count of
+category-leading fully-open products (`L` below) would otherwise credit that work once per row:
+a benchmark suite with ten member rows could count eleven times and carry a category to Stage 5
+on its own. So:
+
+- **A lineage group** is a suite plus every product in the same category that declares
+  membership in it through `lineage.part_of`, directly or through a member suite. A nested suite
+  folds into the suite above it. The field and its validation rules are in
+  [`identity.md`](identity.md#suites-and-their-members).
+- **A group counts at most once toward `L`, through its highest-scoring fully-open row.** It
+  counts when that row is category-leading, however many of its other rows are too.
+- **A product in no group counts as itself**, exactly as before.
+- **A product in two groups can carry only one of them.** `L` is the largest number of distinct
+  groups and ungrouped products that distinct category-leading rows can each stand for, so one
+  shared member that leads cannot raise `L` by two.
+- **Groups form within a category.** A member whose suite sits in another category is in no
+  group here and counts as itself; each category's stage counts its own rows.
+
+Only `L` reads the groups. `B` is a maximum and `M` an existence test, and overlap inflates
+neither. **Each row keeps its own scores and stays on the map**: its overall score, tier and
+`mature` flag are computed from its own axes, so a member can be category-leading and `mature`
+without adding to its category's count. The rule changes how many products the stage counts,
+never what any one product scores.
+
 ## Stages
 
 | Stage | Name | Definition | Triggers when |
@@ -233,7 +259,8 @@ infrastructure and tooling verdict unchanged.
 The **Definition** column is quoted verbatim from `_STAGE_DESC` in `build/serialize.py` and is
 what ships in the payload. **Triggers when** is the mechanism, which the payload never carries:
 
-- **`L`** — how many fully-open products score at or above the category-leading bar (4.5).
+- **`L`** — how many fully-open products score at or above the category-leading bar (4.5),
+  counting a suite and its members once (see the counting rule above).
 - **`B`** — the best overall score among fully-open products, or `0` where the category has
   no scored fully-open product at all.
 - **`M`** — whether *any* product, in any openness bucket, reaches the category-leading bar. Only
@@ -381,7 +408,8 @@ rubric or the curation density changes materially.
 ## Where it lives
 
 - **Computed** in `build/serialize.py` (`_stage_and_gaps`), from the per-product scores in
-  `sources/scores/` and the per-category `weights` in `sources/categories/`.
+  `sources/scores/`, the per-category `weights` in `sources/categories/`, and the lineage
+  groups `lineage_groups` reads from `lineage.part_of` in `sources/products/`.
 - **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`). The
   plain-language definitions of every stage, gap and score tier ship in the payload's top-level
   `descriptions` block (`descriptions.stages`, `descriptions.gaps`, `descriptions.tiers`, plus
