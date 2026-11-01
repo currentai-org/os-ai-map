@@ -415,6 +415,15 @@
             }
           }
         },
+        "pivot_languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{3}$"
+          },
+          "description": "The languages in the product's `languages` that the set was not built for: the language its items were translated from, or a high-resource language included for comparison, as English is in most multilingual evaluation sets. A declaration on the axis rather than a flag on a coverage entry, so a pivot stays identifiable when the source reports no count for it (R-2026-11-01-b). The target languages are `languages` less these, and the depth ladder takes its median and its completeness fraction over the target languages only (R-2026-10-30-i, R-2026-11-01-b). `[]` declares that the set was built for every language it lists. Required with `language_coverage`, so a record always says which side of the line each language is on, and allowed without it. Each code follows the rule `languages` follows and must be one of the product's `languages`, at least one listed language must remain a target, and the codes are sorted (build/validate.py). Datasets only. docs/reference/capability.md, 'Per-language coverage', is normative."
+        },
         "language_coverage": {
           "type": "array",
           "minItems": 1,
@@ -423,24 +432,70 @@
             "additionalProperties": false,
             "required": [
               "language",
+              "task",
+              "component",
+              "split",
+              "official_eval",
               "count",
               "unit",
               "provenance",
-              "tasks",
-              "pivot",
               "cites"
             ],
-            "description": "One language's share of the set: how many items it holds, how they were made, which tasks they fall under, and where that is stated. docs/reference/capability.md, 'Per-language coverage', defines each value.",
+            "description": "One unit of evidence: the items one dataset component holds for one language and one task in one split, how they were made, and where that is stated (R-2026-11-01-c). The record names each (language, task, component, split) once and is sorted by that key. docs/reference/capability.md, 'Per-language coverage', defines each value.",
             "properties": {
               "language": {
                 "type": "string",
                 "pattern": "^[a-z]{3}$",
-                "description": "The ISO 639-3 code, under the same rule as the product's `languages`: scope individual or macrolanguage in sources/snapshots/iso-639-3.tab, so two-letter codes and the special codes `mul`, `und` and `zxx` are refused. It must also be one of the codes the product's `languages` lists, because coverage says how much a listed language holds and never adds a language the identity record does not name. The schema checks the shape; build/validate.py checks both lists. Entries are sorted by this code and name each language once."
+                "description": "The ISO 639-3 code, under the same rule as the product's `languages`: scope individual or macrolanguage in sources/snapshots/iso-639-3.tab, so two-letter codes and the special codes `mul`, `und` and `zxx` are refused. It must also be one of the codes the product's `languages` lists, because coverage says how much a listed language holds and never adds a language the identity record does not name. The schema checks the shape; build/validate.py checks both lists."
+              },
+              "task": {
+                "enum": [
+                  "instruction_following",
+                  "knowledge_exam",
+                  "language_identification",
+                  "machine_translation",
+                  "natural_language_inference",
+                  "question_answering",
+                  "reading_comprehension",
+                  "reasoning",
+                  "retrieval",
+                  "safety",
+                  "sequence_labeling",
+                  "speech_recognition",
+                  "speech_synthesis",
+                  "speech_translation",
+                  "summarization",
+                  "text_classification",
+                  "text_generation",
+                  "transliteration",
+                  "vision_language"
+                ],
+                "description": "The one task this entry's items test. A closed vocabulary, so a task the list does not name is a schema change rather than a new spelling (R-2026-11-01-e). A suite records each task a language takes part in as its own entry, because counts in different tasks are banded separately and never added into one total (R-2026-11-01-c)."
+              },
+              "component": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "description": "The dataset, or the subset within a suite, the count comes from, as a kebab-case slug: the map's product slug where the component has its own product, otherwise the name the source gives it in kebab case. A set with a single component names itself: the component is the product's slug. A suite uses its own slug for the items it contributes itself and a separate slug for each dataset it imports, so a suite that imports several datasets for one task shows them as separate entries rather than one larger count (R-2026-11-01-c)."
+              },
+              "split": {
+                "enum": [
+                  "train",
+                  "dev",
+                  "validation",
+                  "test",
+                  "devtest",
+                  "official_eval"
+                ],
+                "description": "The split the count is taken from, under the name the source uses (R-2026-11-01-d). `official_eval` is for an evaluation portion the source names without one of the other words, such as an exam set published as a single file of test questions. Training examples are recorded when the source states them and never count toward depth."
+              },
+              "official_eval": {
+                "type": "boolean",
+                "description": "True when this split is the one the benchmark evaluates on: the only portion that counts toward depth, so a dev or validation split counts when, and only when, it is the official evaluation split (R-2026-11-01-d). Required, so every entry says whether it counts. build/validate.py refuses `true` on a `train` split and `false` on an `official_eval` split, and allows one official split per language, task and component, so a benchmark's dev and devtest are never added together."
               },
               "count": {
                 "type": "number",
                 "minimum": 0,
-                "description": "How many items the set holds in this language, in `unit`, as the cited source states it for this language. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state is left out of the record rather than given a share. An integer for every unit except `hours`."
+                "description": "How many items this entry holds, in `unit`, as the cited source states it for this language, task, component and split. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state has no entry, and is unknown rather than zero (R-2026-10-30-l, R-2026-11-01-a). An integer for every unit except `hours`."
               },
               "unit": {
                 "enum": [
@@ -453,7 +508,7 @@
                   "words",
                   "tokens"
                 ],
-                "description": "What `count` counts, in the unit the cited source uses. `items` is the generic unit for a test case that is none of the others. Counts in different units are not comparable, and the ladder that reads them decides how they meet."
+                "description": "What `count` counts, in the unit the cited source uses. `items` is the generic unit for a test case that is none of the others. Counts in different units are never added together; the ladder bands each task in its own units (R-2026-11-01-c)."
               },
               "provenance": {
                 "enum": [
@@ -465,39 +520,21 @@
                   "mixed",
                   "unknown"
                 ],
-                "description": "How this language's items came to be in it: written in the language (`native`), translated into it by people (`human_translated`), machine-translated and then corrected by people (`post_edited`), machine-translated with no correction recorded (`machine_translated`), produced by a model in the language rather than translated (`generated`), more than one of these for this language (`mixed`), or not stated by the source (`unknown`). `unknown` is a recorded state, never a stand-in for `native`."
+                "description": "How this entry's items came to be in the language: human-authored in the target language (`native`), translated into it by people (`human_translated`), machine-translated and then corrected by people (`post_edited`), machine-translated with no correction recorded (`machine_translated`), model-generated directly in the language (`generated`), more than one of these (`mixed`), or not stated by the source (`unknown`). `native` and `generated` cannot overlap, and provenance is never guessed (R-2026-11-01-e). native, human_translated and post_edited count toward depth; machine_translated and generated do not; mixed counts only its documented `qualifying_count`; unknown establishes none. Every entry is recorded whether or not it counts (R-2026-11-01-h)."
               },
-              "tasks": {
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "enum": [
-                    "instruction_following",
-                    "knowledge_exam",
-                    "language_identification",
-                    "machine_translation",
-                    "natural_language_inference",
-                    "question_answering",
-                    "reading_comprehension",
-                    "reasoning",
-                    "retrieval",
-                    "safety",
-                    "sequence_labeling",
-                    "speech_recognition",
-                    "speech_synthesis",
-                    "speech_translation",
-                    "summarization",
-                    "text_classification",
-                    "text_generation",
-                    "vision_language"
-                  ]
-                },
-                "description": "The tasks this language's items fall under. A closed vocabulary, so a task the list does not name is a schema change rather than a new spelling. A suite whose tasks cover different languages lists, for each language, only the tasks that language takes part in."
+              "qualifying_count": {
+                "type": "number",
+                "minimum": 0,
+                "description": "On a `mixed` entry only: how many of its `count` items the cited source documents as native, human-translated or post-edited, the portion that counts toward depth (R-2026-11-01-h). Absent means the source does not separate that portion, and a mixed entry without it establishes no qualifying depth. In the entry's `unit`, no more than `count`, and an integer for every unit except `hours` (build/validate.py)."
               },
-              "pivot": {
+              "human_validated": {
                 "type": "boolean",
-                "description": "True when the set was not built for this language: it is the language the items were translated from, or a high-resource language included for comparison, as English is in most multilingual evaluation sets. Required rather than defaulted, so every entry says which side of the line it is on. The depth ladder leaves pivot languages out of its median (R-2026-10-30-i)."
+                "description": "Whether the cited source states that people reviewed this entry's items after they were made: true when it says they were, false when it says they were not. Absent means the source does not say. A quality attribute separate from provenance: it never changes `provenance`, so human-reviewed generated items stay `generated`, and nothing reads it toward depth (R-2026-11-01-h). Stated by the same `cites` as the rest of the entry."
+              },
+              "subset_of": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "description": "The `component` of another entry in this record whose items contain this entry's: same language, task and split. Absent means the source presents the items as distinct from every other entry's. Recording containment is what keeps a subset from being counted twice (R-2026-11-01-d). build/validate.py requires the named entry to exist, to carry no `subset_of` of its own (name the largest set the items are drawn from), and, in the same unit, to hold at least as many items."
               },
               "cites": {
                 "type": "array",
@@ -507,7 +544,7 @@
                   "type": "string",
                   "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)"
                 },
-                "description": "The `url` of each entry in this axis's `sources` that states this language's figures, the dataset card or the paper. Each must equal the url of a capability source (build/validate.py), so the citation's `shows`, `accessed`, `http_status` and `content_sha256` are written once, on the source list that build/check_verification.py, build/check_refetch.py and build/check_citations.py already read, and are not copied here where no gate would see them."
+                "description": "The `url` of each entry in this axis's `sources` that states this entry's figures, the dataset card or the paper. Each must equal the url of a capability source (build/validate.py), so the citation's `shows`, `accessed`, `http_status` and `content_sha256` are written once, on the source list that build/check_verification.py, build/check_refetch.py and build/check_citations.py already read, and are not copied here where no gate would see them."
               }
             },
             "if": {
@@ -524,11 +561,14 @@
               "properties": {
                 "count": {
                   "type": "integer"
+                },
+                "qualifying_count": {
+                  "type": "integer"
                 }
               }
             }
           },
-          "description": "Per-language evidence for an evaluation set: for each language it covers, the item count, how the items were made, the tasks, and whether the language is a pivot, each cited to the card or paper through `capability.sources` (R-2026-10-30-h). It records how much the set holds in each language, which `languages` on the product record does not: that field says which languages, and this says how deep. Capability evidence rather than an identity attribute, because a ladder will read it: the depth ladder (R-2026-10-30-g) bands an evaluation set on the median per-language depth across the languages it was built for, pivots left out, with a capped breadth bonus (R-2026-10-30-i). That ladder is not built, so nothing reads this field yet and no band moves because of it. Optional and only valid on a `type: dataset` product; absent means not recorded. Part of the axis, so `capability.last_verified` claims it was re-read like everything else on the axis. Kept out of the notebook payload until the per-language view defines how it ships (build/serialize.py). docs/reference/capability.md is normative."
+          "description": "Per-language evidence for an evaluation set, one entry per language x task x dataset component x split, each with its item count and unit, how the items were made, whether the split is the official evaluation split, and the card or paper that states it through `capability.sources` (R-2026-10-30-h, R-2026-11-01-c, R-2026-11-01-d). It records how much the set holds in each language, which `languages` on the product record does not: that field says which languages, and this says how deep. A language with no entry is unknown, never zero and never evidence that the set is best in class (R-2026-11-01-a). Capability evidence rather than an identity attribute, because a ladder will read it: the depth ladder (R-2026-10-30-g) bands each task, aggregates to a language-level band, and takes the median across the target languages (`languages` less `pivot_languages`), with a capped breadth bonus (R-2026-10-30-i). That ladder is not built, so nothing reads this field yet and no band moves because of it. Optional and only valid on a `type: dataset` product; absent means not recorded, and `pivot_languages` is required beside it. Part of the axis, so `capability.last_verified` claims it was re-read like everything else on the axis. Kept out of the notebook payload: it ships as a separate structured data asset with the per-language view (R-2026-11-01-f; build/serialize.py). docs/reference/capability.md is normative."
         }
       },
       "dependentRequired": {
@@ -541,6 +581,9 @@
         "comparison": [
           "relative_to",
           "relation"
+        ],
+        "language_coverage": [
+          "pivot_languages"
         ]
       },
       "dependencies": {
@@ -553,6 +596,9 @@
         "comparison": [
           "relative_to",
           "relation"
+        ],
+        "language_coverage": [
+          "pivot_languages"
         ]
       },
       "additionalProperties": false
