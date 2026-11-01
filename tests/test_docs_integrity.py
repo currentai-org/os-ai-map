@@ -64,9 +64,12 @@ def test_no_dead_path_references():
 def test_repo_relative_doc_paths_resolve():
     """Every `docs/.../x.md` path named in the doc surface points at a file that exists.
 
-    Covers top-level docs (docs/README.md, docs/methodology.md) as well as the subtrees.
+    Covers top-level docs (docs/README.md, docs/methodology.md) as well as the subtrees. A
+    `docs/` segment inside a URL (another repository's `.../main/docs/x.md`, quoted by a sweep
+    record as a source) is not a path in this repository, so a match must not follow a word
+    character, or a slash that follows one; `../../docs/x.md` from a skill still counts.
     """
-    pat = re.compile(r"docs/[\w./-]+\.(?:md|json)")
+    pat = re.compile(r"(?<![\w-])(?<!\w/)docs/[\w./-]+\.(?:md|json)")
     problems = []
     for f in DOC_FILES:
         for m in pat.findall(f.read_text(encoding="utf-8")):
