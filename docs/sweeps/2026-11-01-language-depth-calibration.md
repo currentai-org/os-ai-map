@@ -18,25 +18,72 @@ halves:
   from task bands to a language band, and the aggregation of `capability.md` ("How the depth ladder
   will read it") run by hand on all four records.
 
-Nothing else moved. No `capability.score`, `relative_to`, `relation`, `value` or `note`, no recipe and
-no roster changed, and the bands below are proposals. `capability.last_verified` stays at
-2026-09-24 on all four; see [The confirmation date](#the-confirmation-date).
+Nothing else moved. No `capability.score`, `relative_to`, `relation`, `value` or `note`, no recipe,
+no roster and no product's `languages` changed, and the bands below are proposals, not adopted. The
+records were revised after review; [Changes after review](#changes-after-review) lists what changed
+and why.
 
-Every source was fetched on 2026-11-01 with `uv run python -m build.fetch_source`; the records cite
-them through `capability.sources` with `shows`, `accessed`, `http_status` and `content_sha256`, and
-[Sources read](#sources-read) lists them with their digests. The script that built the entries from
-the fetched bodies checked that every quoted fragment in a new `shows` appears in the body it cites.
+**How the evidence is dated.** The records' evidence is dated by the `accessed` date of each source
+their entries cite: 2026-11-01 for every source this pass fetched, and 2026-09-24 for four that were
+already on the axes and are cited again (the NLLB abstract on FLORES+, the ThaiExam card README, and
+SEA-HELM's dataset tables on ThaiExam and on SEA-HELM). `capability.last_verified` dates the band,
+not the coverage record, and stays at 2026-09-24 on all four because no band was reassessed; see
+[The confirmation date](#the-confirmation-date).
+
+Every source this pass read was fetched on 2026-11-01 with `uv run python -m build.fetch_source`; the
+records cite them through `capability.sources` with `shows`, `accessed`, `http_status` and
+`content_sha256`, and [Sources read](#sources-read) lists them with their digests. The script that
+built the entries from the fetched bodies checked that every quoted fragment in a new `shows` appears
+in the body it cites, and the fragments added after review were checked the same way.
 
 ## The records
 
-| Set | Entries | Target languages | With entries | Measured | Unmeasured or absent |
-|---|---|---|---|---|---|
-| FLORES+ | 397 | 203 (pivot `eng`) | 199 | 185 | 18 |
-| ThaiExam | 2 | 1 | 1 | 1 | 0 |
-| SEA-HELM | 62 | 11 (pivots `eng`, `zho`) | 10 | 10 | 1 |
-| AfroBench | 275 | 63 (no pivot) | 62 | 58 | 5 |
+| Set | Entries | Target languages | With entries | Measured | Unmeasured or absent | Mapped entries | Documented zeros |
+|---|---|---|---|---|---|---|---|
+| FLORES+ | 400 | 203 (pivot `eng`) | 199 | 188 | 15 | 8 (4 languages) | 3 |
+| ThaiExam | 2 | 1 | 1 | 1 | 0 | 0 | 0 |
+| SEA-HELM | 62 | 11 (pivots `eng`, `zho`) | 10 | 10 | 1 | 1 | 0 |
+| AfroBench | 275 | 63 (no pivot) | 62 | 54 | 9 | 3 (2 languages) | 0 |
 
-"Measured" is the definition in `capability.md`: an official-split entry whose provenance is known.
+"Measured" is the definition in `capability.md`: an official-split entry whose qualifying depth is
+established, by a known provenance or by a documented zero, which counts only for its own
+language, task, component and split. A mapped entry carries
+`source_language`, because its source names the language with another code; it is an inferred
+identity, listed in [Language codes](#language-codes-needs-reconciliation), and is counted as
+measured here. Leaving the mapped entries out changes no proposed band (see the
+[Hand-run](#hand-run)).
+
+### How provenance was read
+
+`native` is recorded only where a cited source says that the evaluated items, the text, questions or
+references being scored, were written by people in that language. A card that describes its corpus
+as news articles, tweets or reviews in the language says what the text is, not how it came to be in
+the language, and is not enough on its own. `human_translated` and `post_edited` need a source that
+says people translated or corrected the items; a source that says only "translated" gives `unknown`.
+Where two sources disagree, the entry is `unknown` and cites both, and
+[Provenance conflicts](#provenance-conflicts) quotes them.
+
+One reading is a judgment the maintainer should confirm. SEA-HELM's paper marks each dataset in a
+"Native" column, and its caption defines the column: "We curate datasets that are created in the
+native language (indicated with "-") and translated datasets (either by humans or machines)". The
+text adds "We selected datasets that comprised of data originally written in the native language as
+far as possible". That is read as the statement the rule asks for, for every dataset Table 1 marks
+native. SEA-HELM's GitHub tables use the same column ("Nativeness") and are read the same way where
+they are the only source on provenance: ThaiExam ("Thai | Thai Exam | Native") and
+Multilingual-Fig-QA in Javanese and Sundanese. LINDSEA and Kalahi need no such reading, since the
+paper says how their items were written. If SEA-HELM's label alone is not enough, ThaiExam becomes
+unresolved (its one language unmeasured, filled with 0 and with 5) and no SEA-HELM result moves: it
+stays a 4 under the highest task band and a 3 under the median of tasks, because translation and
+SEA-HELM's own described items carry its languages.
+
+### Provenance conflicts
+
+| Entries | Says native | Says translated | Recorded |
+|---|---|---|---|
+| SEA-HELM: `jav` and `sun`, `text_classification`, `nusax`, 394 items each | SEA-HELM's dataset tables, <https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md>: the sentiment table's rows "Javanese" and "Sudanese" (sic) read "Native", with no dataset named. The task card, <https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis>, says the items are "sampled from NusaX for Indonesian, Javanese, and Sundanese." | The NusaX paper, <https://aclanthology.org/2023.eacl-main.57.pdf>: "we take an existing dataset in a high-resource local language (Indonesian) as a base for expansion to the other ten languages, and ask human annotators to translate the text." | `unknown`, citing all three |
+
+Neither side is picked. The first version of this record followed the NusaX paper and recorded
+`human_translated`.
 
 ### FLORES+
 
@@ -48,22 +95,31 @@ managed by OLDI and not part of this repository") and the FLORES-101 paper says 
 to be used for testing purposes during the development phase". R-2026-11-01-d names the same split.
 
 Provenance follows the language's history. A language on the FLORES-200 list with no FLORES+ data
-card of its own is `human_translated`, cited to the FLORES-200 README and the NLLB abstract ("a
-human-translated benchmark, Flores-200"); English is `native`. Unknown, with counts recorded:
+card of its own is `human_translated`, cited to the FLORES-200 README, the card ("FLORES+ is based
+on FLORES-200") and the NLLB abstract ("a human-translated benchmark, Flores-200"). English is
+`unknown`: the card says "The original English sentences were sampled in equal amounts from
+Wikinews", Wikijunior and Wikivoyage, and the FLORES-101 paper that "All source sentences were
+extracted from multiple Wikimedia sources", which says where the sentences came from and not who
+wrote them. English is the pivot, so this moves nothing. Unknown, with counts recorded:
 
 - **Recreated or added by OLDI, data card behind the Hub gate (11):** `apd`, `ast`, `kjh`, `lij`, `lld`,
   `mfe`, `mhr`, `nob`, `yue`, `zgh`, `zho`. The card says these "have individual datacards describing
   their creation"; the cards are in the gated repository (HTTP 401), so how their current text was
   made is not stated anywhere this pass could read. `ast`, `lij`, `nob` and `yue` were in FLORES-200,
   but their FLORES+ text has its own card, so FLORES-200's provenance no longer describes it.
-- **Dev split only (3):** `dar`, `udm`, `uzs`. The card marks them "dev only"; each has a `dev`
-  entry and no official entry. They also carry OLDI cards, so their provenance is unknown too.
 
-No entry, because the card no longer lists the product's code (4): `aka`, `kon`, `tgl`, `tzm`. The
-current card has Twi varieties, Kituba (`ktu`), Filipino (`fil`) and Standard Moroccan Tamazight
-(`zgh`) where the FLORES-200 codes were. Four other product codes are recorded from the individual
-language inside the listed macrolanguage: `ara` from `arb`, `est` from `ekk`, `grn` from `gug`, `zho`
-from `cmn`. The FLORES-200 README's own code map pairs "arb_Arab | ara".
+**Dev split only, documented zeros (3):** `dar`, `udm`, `uzs`. The card marks them "dev only". Each
+has its `dev` entry (997 sentences, `unknown`, since they also carry OLDI cards) and a documented zero
+on `devtest`: `count: 0`, no provenance, citing the card. Each is a measured zero for that language,
+`machine_translation`, `flores-plus` and `devtest` only, and no longer unknown there. It says nothing
+about any other task or component: FLORES+ has only this one, so each language's FLORES+ band is 0,
+but the zero does not imply that Dargwa, Udmurt or Southern Uzbek lack evaluation coverage anywhere
+else.
+
+No entry, because the card no longer lists the product's code (4): `aka`, `kon`, `tgl`, `tzm`. Four
+other product codes are recorded from the code the card uses and carry `source_language`: `ara` from
+`arb`, `est` from `ekk`, `grn` from `gug`, `zho` from `cmn`. Both groups, and the card's codes the
+product does not list, are in [Language codes](#language-codes-needs-reconciliation).
 
 A language with two scripts or two varieties (`ace`, `apc`, `bjn`, `cat`, `kas`, `khk`, `knc`,
 `lld`, `lmo`, `min`, `mni`, `nob`, `nya`, `oci`, `snd`, `taq`, `tso`, `twi`) has one entry per split,
@@ -72,25 +128,27 @@ distinct.
 
 ### ThaiExam
 
-One component (`thai-exam`), `knowledge_exam`, `native` (real Thai examinations; SEA-HELM's dataset
-table lists "Thai | Thai Exam | Native"). The Hub's split sizes give the test split per exam (ONET
-162, IC 95, TGAT 65, TPAT-1 116, A-Level 127) and five few-shot examples per exam in `train`. The
-record holds `test` 565, official, and `train` 25, not official. The card's per-exam totals (167,
-100, 70, 121, 132; 590 in all) include the few-shot examples, so the 590 in the current capability
-`value` and `note` counts 25 items no model is scored on. That prose is left for the next
+One component (`thai-exam`), `knowledge_exam`, `native`. The card describes "multiple-choice
+questions from examinations in Thailand" (for IC, "The exam questions were developed by the Stock
+Exchange of Thailand"), and SEA-HELM's dataset tables list "Thai | Thai Exam | Native"; both entries
+cite both ([How provenance was read](#how-provenance-was-read)). The Hub's split sizes give the test
+split per exam (ONET 162, IC 95, TGAT 65, TPAT-1 116, A-Level 127) and five few-shot examples per exam
+in `train`. The record holds `test` 565, official, and `train` 25, not official. The card's per-exam
+totals (167, 100, 70, 121, 132; 590 in all) include the few-shot examples, so the 590 in the current
+capability `value` and `note` counts 25 items no model is scored on. That prose is left for the next
 `refresh-category` pass, as this task does not touch the band's text.
 
 ### SEA-HELM
 
 Counts come from the task repositories' Hugging Face cards, each of which has a per-split table.
 Provenance comes from the paper's Table 1 (native, or translated by "Human" or "Machine"), from the
-GitHub dataset tables where the paper is silent, and from the NusaX paper for the Javanese and
-Sundanese items. Each split the card names by language (`id`, `th`, `en_to_tha_Thai`) is recorded as
-`official_eval`; the `*_fewshot` splits are left out (see the exposures). Imported datasets are named
-by their own slugs (`flores-plus`, `nusax`, `xnli`, `xcopa`, `xl-sum` and so on); SEA-HELM's own items
-(SEA-IFEval, SEA-MTBench, LINDSEA, the Kalahi multiple-choice set) are `sea-helm`. Translation records
-one entry per language for both directions, since the card gives 1,012 sentences each way from the
-same FLORES sentences.
+cards' "manually translated by native speakers", from the GitHub dataset tables where the paper is
+silent, and from the NusaX paper for the Javanese and Sundanese items. Each split the card names by
+language (`id`, `th`, `en_to_tha_Thai`) is recorded as `official_eval`; the `*_fewshot` splits are
+left out (see the exposures). Imported datasets are named by their own slugs (`flores-plus`, `nusax`,
+`xnli`, `xcopa`, `xl-sum` and so on); SEA-HELM's own items (SEA-IFEval, SEA-MTBench, LINDSEA, the
+Kalahi multiple-choice set) are `sea-helm`. Translation records one entry per language for both
+directions, since the card gives 1,012 sentences each way from the same FLORES sentences.
 
 - **Unknown, no entry (1):** `lao`. No published card states a Lao count. The Belebele task card,
   which the GitHub tables say carries Lao, Malay, Burmese, Javanese and Sundanese reading
@@ -100,6 +158,13 @@ same FLORES sentences.
   Malay, Burmese and Lao sentiment and toxicity; SEA-NLI in eight languages; Global MMLU for
   Indonesian, Burmese, Vietnamese, Malay and Filipino; ThaiExam inside SEA-HELM; LINDSEA Tamil;
   SEA-MTBench for Malay, Burmese, Lao and Khmer. These are unknown, not absent.
+- **Recorded with `unknown` provenance:** Javanese and Sundanese NusaX sentiment, where the sources
+  disagree ([Provenance conflicts](#provenance-conflicts)); their NusaX translation items stay
+  `human_translated`, which only the NusaX paper addresses. English on SEA-IFEval, SEA-MTBench and
+  SEA-MT-Bench-Judge, whose cards say how the other languages were translated and nothing about how
+  the English was made. English is a pivot.
+- **Mapped (1):** Malay translation is recorded under the product's `msa` from the card's `zsm_Latn`
+  and carries `source_language: zsm`.
 
 ### AfroBench
 
@@ -115,15 +180,64 @@ Counts come from three places, in this order of preference:
 3. Nothing else. Where neither gives a per-language figure the dataset has no entry.
 
 - **Unknown, no entry (1):** `nqo`. No dataset in Table 11 covers N'Ko.
-- **Unmeasured, entries all `unknown` provenance (4):** `ach`, `lgg`, `nyn`, `teo`. Their only
-  dataset is SALT, whose card says each sentence "is translated into all languages" without saying
-  by whom.
+- **Unmeasured, entries all `unknown` provenance (8):** `ach`, `lgg`, `nyn`, `teo` (SALT only, whose
+  card says each sentence "is translated into all languages" without saying by whom); `arq` and `por`
+  (AfriSenti only); `pcm` (MasakhaPOS, MasakhaNEWS and AfriSenti); `bbj` (MasakhaPOS and AfriADR).
+- **Recorded with `unknown` provenance:** NollySenti (Hausa, Igbo, Yoruba), MasakhaNER-X (Amharic,
+  Luo) and SALT, which no fetched source describes, and four sets whose sources do not say the items
+  were written by people in the language or translated by people:
+  - AfriSenti: the card covers "110,000+ annotated tweets in 14 African languages".
+  - MasakhaNEWS: the card is "the largest publicly available dataset for news topic classification
+    in 16 languages widely spoken in Africa", and "The source language was produced by journalists
+    and writers employed by the news agency and newspaper mentioned above", which says people wrote
+    the text but not that it was written in the language rather than translated into it.
+  - MasakhaPOS: "The source of the data is from the news domain"; AfroBench calls it "created from
+    news articles".
+  - AfriADR: AfroBench "selected the five languages with extensive use of diacritics from Mafand MT
+    dataset" and stripped the diacritics; MAFAND's card says it was "translated from English or
+    French to an African language" and does not say by whom.
+- **Kept as `native`:** InjongoIntent, whose paper's abstract says it has "utterances generated by
+  native speakers", against benchmarks that "rely on translations from English benchmarks".
+- **Kept as `human_translated`, with one citation added:** SIB-200 and Belebele now also cite the
+  NLLB abstract. Their own sources say their text is FLORES-200's ("The dataset is based on
+  Flores-200 machine translation corpus"; "The passages in the Belebele corpus are directly sourced
+  from the FLoRes-200 Machine Translation Benchmark"), and the NLLB abstract is the one that says
+  FLORES-200 was human-translated.
+- **Mapped (3):** Oromo's FLORES and SIB-200 entries come from Table 11's `gaz` row and carry
+  `source_language: gaz`; Plateau Malagasy's NTREX-128 entry comes from the repository's `mlg_Latn`
+  configuration and carries `source_language: mlg`.
 - **Members with no entry at all:** AfriHate (per-language range only, repository gated), AfriQA (the
   card's test splits total 3,560, Table 2 says 3,107), MAFAND (card 29,600 against 29,155),
   MasakhaNER-X other than Amharic and Luo (card 17,285 against 18,192), NaijaRC (range only), XL-Sum
   (range only; the card has no per-language test table).
-- **Recorded with `unknown` provenance:** NollySenti (Hausa, Igbo, Yoruba), MasakhaNER-X (Amharic,
-  Luo), SALT.
+
+## Language codes: needs reconciliation
+
+Every place where a record's codes and its sources' codes differ. Each row needs reconciliation; no
+product's `languages` was changed. "Mapped" rows are entries recorded under the product's code with
+the source's code in `source_language`: an inferred mapping, not a directly observed identity. A
+two-letter code a card uses (`id`, `tl`, `sw`) is read as its ISO 639-3 equivalent and is not listed.
+
+| Set | Product code | Source code | Kind | What the source states | Status |
+|---|---|---|---|---|---|
+| FLORES+ | `ara` | `arb` | mapped (2 entries) | card: `arb` Arab, Modern Standard Arabic; the FLORES-200 README's FLORES-101 map pairs "arb_Arab \| ara" | needs reconciliation |
+| FLORES+ | `est` | `ekk` | mapped (2) | card: `ekk` Latn, Estonian | needs reconciliation |
+| FLORES+ | `grn` | `gug` | mapped (2) | card: `gug` Latn, Paraguayan Guaraní | needs reconciliation |
+| FLORES+ | `zho` | `cmn` | mapped (2) | card: `cmn` Hans and Hant, Mandarin Chinese | needs reconciliation |
+| FLORES+ | `aka` | none | product lists, card does not | card has Akuapem and Asante Twi (`twi`) | needs reconciliation |
+| FLORES+ | `kon` | none | product lists, card does not | card has Kituba (DRC), `ktu` | needs reconciliation |
+| FLORES+ | `tgl` | none | product lists, card does not | card has Filipino, `fil` | needs reconciliation |
+| FLORES+ | `tzm` | none | product lists, card does not | card has Standard Moroccan Tamazight, `zgh`, also listed by the product | needs reconciliation |
+| FLORES+ | none | `arg`, `brx`, `ccp`, `chv`, `dgo`, `fil`, `frp`, `gom`, `kaa`, `ktu`, `myv`, `nqo`, `tyv`, `vmw`, `wuu` | card has, product does not list | Aragonese, Bodo (dev only), Chakma, Chuvash, Dogri (dev only), Filipino, Savoyard, Goan Konkani (dev only), Karakalpak, Kituba (DRC), Erzya, Nko, Tuvan, Emakhuwa (Central), Wu Chinese (dev only) | needs reconciliation |
+| SEA-HELM | `msa` | `zsm` | mapped (1) | translation card: `zsm_Latn` | needs reconciliation |
+| SEA-HELM | `tgl` | `fil` (by name) | not mapped | the cards' splits are `tl`; the paper's Table 1 and the GitHub tables name Filipino ("FIL"), which the paper says "is primarily based on Standard Tagalog" | needs reconciliation |
+| AfroBench | `orm` | `gaz` | mapped (2) | Table 11's `gaz` row marks SIB-200 and Flores; its `orm` row marks the other Oromo datasets | needs reconciliation |
+| AfroBench | `plt` | `mlg` | mapped (1) | NTREX repository configuration `mlg_Latn`; Table 11 marks NTREX-128 under `plt` | needs reconciliation |
+| AfroBench | none | `ara`, `nde`, `ven` | source has, product does not list | Table 11: `ara` (OpenAI-MMLU, XL-SUM), `nde` and `ven` (NTREX-128) | needs reconciliation |
+| AfroBench | `nqo` | none | product lists, source does not | no dataset in Table 11 | needs reconciliation |
+| AfroBench | `por` | `por` (AfriSenti only) | product lists, Table 11 does not | AfriSenti's repository has a `por` (Mozambican Portuguese) configuration; Table 11 has no `por` row | needs reconciliation |
+
+ThaiExam has no discrepancy.
 
 ## Proposed task bands
 
@@ -175,30 +289,37 @@ These steps restate `capability.md`, plus two rules that are not ruled and are p
    R-2026-11-01-b). With an even count, the mean of the two middle values, rounded down.
 4. **Robustness** (R-2026-11-01-a): fill every unmeasured target language with 0, then with 5; the
    band stands only if both medians give the same band.
-5. **Completeness:** measured target languages over target languages.
+5. **Completeness:** measured target languages over target languages. A documented zero is
+   measured, with a band of 0, for its own task, component and split only; the language's other
+   tasks are banded from their own entries.
 6. **Tiebreak:** median + 0.5 x (1 - 1/n), n the measured languages with a band above zero, capped
    below the next band. It orders sets inside a band and is reported, not banded.
 
 ## Hand-run
 
+Recomputed after review under the same proposed ladders and rules. No proposed band moved.
+
 | Set | Current band | Proposed band | Completeness | Low fill / high fill | Tiebreak | Median rule (sensitivity) |
 |---|---|---|---|---|---|---|
-| FLORES+ | 5 | **4** | 185 of 203 | 4 / 4 | 4.50 | 4 |
+| FLORES+ | 5 | **4** | 188 of 203 | 4 / 4 | 4.50 | 4 |
 | ThaiExam | 4 | **3** | 1 of 1 | 3 / 3 | 3.00 | 3 |
 | SEA-HELM | 5 | **4** | 10 of 11 | 4 / 4 | 4.45 | 3 |
-| AfroBench | 5 | **4** | 58 of 63 | 4 / 4 | 4.49 | 3 |
+| AfroBench | 5 | **4** | 54 of 63 | 4 / 4 | 4.49 | 3 |
 
-**FLORES+: 4.** Every measured language has one task, translation, with 1,012 human-translated
-devtest sentences, a 4 on the translation ladder. 185 of 203 target languages are measured; the 18
-others are the four codes the card no longer carries, the 11 languages whose OLDI cards are gated,
-and the three dev-only languages. Filling those 18 with 0 or with 5 leaves the median of 203 at 4, so
-the band stands. It falls from 5 because depth is now measured absolutely: a FLORES devtest is the
-reference translation set, and the ladder keeps 5 for more than it holds.
+**FLORES+: 4.** Every measured language with items has one task, translation, with 1,012
+human-translated devtest sentences, a 4 on the translation ladder. 188 of 203 target languages are
+measured: 185 at 4, and the three dev-only languages at 0, as documented zeros. The 15 others are the
+four codes the card no longer carries and the 11 languages whose OLDI cards are gated. Filling those
+15 with 0 or with 5 leaves the median of 203 at 4, so the band stands. It falls from 5 because depth
+is now measured absolutely: a FLORES devtest is the reference translation set, and the ladder keeps 5
+for more than it holds.
 
 **ThaiExam: 3.** One language, one task: 565 native exam questions on the test split, between 400
 and 1,600, so a 3. Complete (1 of 1). The 25 few-shot examples are training-split items and do not
 count. It falls from 4 because the current band compares it with peers across languages and tasks;
-the depth ladder only asks how much Thai it holds.
+the depth ladder only asks how much Thai it holds. Its `native` rests on the reading of SEA-HELM's
+label described in [How provenance was read](#how-provenance-was-read); without it, ThaiExam is
+unresolved.
 
 **SEA-HELM: 4.** Seven of the ten measured languages reach 4, and in every one of them the 4 comes
 from the 1,012-sentence FLORES sample in translation: Indonesian, Khmer, Malay, Burmese, Tamil, Thai
@@ -206,30 +327,32 @@ and Vietnamese. Javanese, Sundanese and Tagalog reach 3 on SEA-IFEval's 105 prom
 non-translation task in any language is a 3 (1,000-item sentiment, toxicity or NLI sets). Lao is
 unmeasured; filling it with 0 or 5 leaves the median of 11 at 4. Completeness 10 of 11. Under the
 median-of-tasks sensitivity rule it is a 3, because SEA-HELM measures most languages on several
-100-item tasks. Per language:
+100-item tasks. Javanese and Sundanese sentiment are now unknown, which moves neither language's band.
+Per language:
 
 | Language | Task bands (qualifying items, component) | Band (max) | Band (median) |
 |---|---|---|---|
 | `ind` | instruction following 3 (105 sea-helm); MT 4 (1,012 flores-plus); NLI 3 (1,000 indonli); RC 2 (100 tydi-qa-goldp); reasoning 3 (500 xcopa); summarization 2 (100 xl-sum); classification 3 (1,000 mlhsd); generation 2 (58 sea-helm) | 4 | 3 |
-| `jav` | instruction following 3 (105 sea-helm); MT 2 (394 nusax); reasoning 2 (282 multilingual-fig-qa); classification 2 (394 nusax); generation 2 (58 sea-helm) | 3 | 2 |
+| `jav` | instruction following 3 (105 sea-helm); MT 2 (394 nusax); reasoning 2 (282 multilingual-fig-qa); generation 2 (58 sea-helm) | 3 | 2 |
 | `khm` | MT 4 (1,012 flores-plus) | 4 | 4 |
 | `lao` | unknown | unknown | unknown |
 | `msa` | MT 4 (1,012 flores-plus); generation 2 (58 sea-mt-bench-judge) | 4 | 3 |
 | `mya` | MT 4 (1,012 flores-plus) | 4 | 4 |
-| `sun` | instruction following 3 (105 sea-helm); MT 2 (394 nusax); reasoning 2 (295 multilingual-fig-qa); classification 2 (394 nusax); generation 2 (58 sea-helm) | 3 | 2 |
+| `sun` | instruction following 3 (105 sea-helm); MT 2 (394 nusax); reasoning 2 (295 multilingual-fig-qa); generation 2 (58 sea-helm) | 3 | 2 |
 | `tam` | MT 4 (1,012 flores-plus); NLI 0 (0, IndicXNLI is machine-translated); RC 2 (100 indicqa); reasoning 3 (500 xcopa); summarization 2 (100 xl-sum); classification 3 (1,000 indicsentiment); generation 2 (58 sea-mt-bench-judge) | 4 | 2 |
 | `tgl` | instruction following 3 (105 sea-helm); exam 2 (150 sea-helm); generation 2 (58 sea-mt-bench-judge) | 3 | 2 |
 | `tha` | instruction following 3 (105 sea-helm); MT 4 (1,012 flores-plus); NLI 3 (1,000 xnli); RC 2 (100 xquad); reasoning 3 (500 xcopa); summarization 2 (100 xl-sum); classification 3 (1,000 thai-toxicity-tweet); generation 3 (91 mt-bench-thai) | 4 | 3 |
 | `vie` | instruction following 3 (105 sea-helm); MT 4 (1,012 flores-plus); NLI 3 (1,000 xnli); RC 2 (100 xquad); reasoning 3 (500 xcopa); summarization 2 (100 xl-sum); classification 3 (1,000 uit-vsfc); generation 2 (58 sea-helm) | 4 | 3 |
 
-**AfroBench: 4.** Of 58 measured languages, 21 are a 5, 33 a 4, 3 a 3 and 1 a 2. Every 5 comes from
+**AfroBench: 4.** Of 54 measured languages, 21 are a 5, 31 a 4, 1 a 3 and 1 a 2. Every 5 comes from
 NTREX-128's 1,997 sentences in translation, except that Swahili and Yoruba would also reach 5 on
-OpenAI MMMLU's 14,042 human-translated questions. Every 4 comes from FLORES's 1,012 sentences except
-Nigerian Pidgin and Mozambican Portuguese, which reach 4 on AfriSenti; 19 languages are measured only
-on FLORES and SIB-200. Five target languages are unmeasured (`ach`, `lgg`, `nyn`, `teo` on SALT
-alone, `nqo` with no dataset); filling them with 0 or 5 leaves the median of 63 at 4. Completeness 58
-of 63. Under the median-of-tasks rule it is a 3: 50 of the 58 measured languages land on 3, the 19
-FLORES-and-SIB languages among them because the median of a 4 and a 2 is a 3. Per language:
+OpenAI MMMLU's 14,042 human-translated questions. Every 4 comes from FLORES's 1,012 sentences; 23
+languages are measured only on FLORES and SIB-200. Nine target languages are unmeasured (`ach`,
+`lgg`, `nyn`, `teo` on SALT alone; `arq` and `por` on AfriSenti alone; `pcm` on MasakhaPOS,
+MasakhaNEWS and AfriSenti; `bbj` on MasakhaPOS and AfriADR; `nqo` with no dataset); filling them with
+0 or 5 leaves the median of 63 at 4. Completeness 54 of 63. Under the median-of-tasks rule it is a
+3: 49 of the 54 measured languages land on 3, the 23 FLORES-and-SIB languages among them because the
+median of a 4 and a 2 is a 3. Per language:
 
 | Language | Task bands (qualifying items, component) | Band (max) | Band (median) |
 |---|---|---|---|
@@ -237,65 +360,72 @@ FLORES-and-SIB languages among them because the median of a 4 and a 2 is a 3. Pe
 | `aeb` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `afr` | MT 5 (1,997 ntrex-128); RC 3 (900 belebele) | 5 | 4 |
 | `aka` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `amh` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 4 (1,999 afrisenti) | 5 | 3 |
-| `arq` | classification 3 (958 afrisenti) | 3 | 3 |
-| `ary` | MT 4 (1,012 flores-plus); RC 3 (900 belebele); classification 4 (2,961 afrisenti) | 4 | 4 |
+| `amh` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `arq` | unknown | unknown | unknown |
+| `ary` | MT 4 (1,012 flores-plus); RC 3 (900 belebele); classification 2 (204 sib-200) | 4 | 3 |
 | `arz` | MT 4 (1,012 flores-plus); RC 3 (900 belebele); classification 2 (204 sib-200) | 4 | 3 |
-| `bam` | MT 4 (1,012 flores-plus); RC 3 (900 belebele); sequence labeling 3 (619 masakhapos); classification 2 (204 sib-200) | 4 | 3 |
-| `bbj` | sequence labeling 3 (599 masakhapos); generation 3 (1,430 afrobench) | 3 | 3 |
+| `bam` | MT 4 (1,012 flores-plus); RC 3 (900 belebele); classification 2 (204 sib-200) | 4 | 3 |
+| `bbj` | unknown | unknown | unknown |
 | `bem` | MT 5 (1,997 ntrex-128); classification 2 (204 sib-200) | 5 | 3 |
 | `cjk` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `dik` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `dyu` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `ewe` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); sequence labeling 3 (582 masakhapos); classification 3 (640 injongo-intent) | 5 | 3 |
-| `fon` | MT 4 (1,012 flores-plus); sequence labeling 3 (646 masakhapos); classification 2 (204 sib-200); generation 3 (1,579 afrobench) | 4 | 3 |
+| `ewe` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `fon` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `fuv` | classification 2 (204 sib-200) | 2 | 2 |
-| `hau` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (601 masakhapos); classification 4 (5,303 afrisenti) | 5 | 3 |
-| `ibo` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (642 masakhapos); classification 4 (3,682 afrisenti); generation 3 (1,500 afrobench) | 5 | 3 |
+| `hau` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `ibo` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
 | `kab` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `kam` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `kbp` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `kea` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `kik` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `kin` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); sequence labeling 3 (604 masakhapos); classification 3 (1,026 afrisenti) | 5 | 3 |
+| `kin` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
 | `kmb` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `knc` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `kon` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `lgg` | unknown | unknown | unknown |
 | `lin` | exam 3 (500 afrimmlu); MT 4 (1,012 flores-plus); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 4 | 3 |
 | `lua` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `lug` | exam 3 (500 afrimmlu); MT 4 (1,012 flores-plus); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); sequence labeling 3 (586 masakhapos); classification 3 (640 injongo-intent) | 4 | 3 |
-| `luo` | MT 4 (1,012 flores-plus); sequence labeling 3 (606 masakhapos); classification 2 (204 sib-200) | 4 | 3 |
-| `mos` | MT 4 (1,012 flores-plus); sequence labeling 3 (604 masakhapos); classification 2 (204 sib-200) | 4 | 3 |
+| `lug` | exam 3 (500 afrimmlu); MT 4 (1,012 flores-plus); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 4 | 3 |
+| `luo` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
+| `mos` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `nqo` | unknown | unknown | unknown |
 | `nso` | exam 3 (509 uhura-arc-easy); MT 5 (1,997 ntrex-128); classification 2 (204 sib-200) | 5 | 3 |
 | `nus` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `nya` | MT 5 (1,997 ntrex-128); sequence labeling 3 (582 masakhapos); classification 2 (204 sib-200) | 5 | 3 |
+| `nya` | MT 5 (1,997 ntrex-128); classification 2 (204 sib-200) | 5 | 3 |
 | `nyn` | unknown | unknown | unknown |
-| `orm` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 4 (2,096 afrisenti) | 5 | 3 |
-| `pcm` | sequence labeling 3 (600 masakhapos); classification 4 (4,154 afrisenti) | 4 | 3 |
+| `orm` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `pcm` | unknown | unknown | unknown |
 | `plt` | MT 5 (1,997 ntrex-128); classification 2 (204 sib-200) | 5 | 3 |
-| `por` | classification 4 (3,662 afrisenti) | 4 | 4 |
-| `run` | MT 4 (1,012 flores-plus); classification 2 (322 masakhanews) | 4 | 3 |
+| `por` | unknown | unknown | unknown |
+| `run` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `sag` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `sna` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (596 masakhapos); classification 3 (640 injongo-intent) | 5 | 3 |
-| `som` | MT 5 (1,997 ntrex-128); classification 2 (294 masakhanews) | 5 | 3 |
+| `sna` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `som` | MT 5 (1,997 ntrex-128); classification 2 (204 sib-200) | 5 | 3 |
 | `sot` | exam 3 (500 afrimmlu); MT 4 (1,012 flores-plus); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 4 | 3 |
 | `ssw` | MT 5 (1,997 ntrex-128); classification 2 (204 sib-200) | 5 | 3 |
-| `swa` | exam 5 (14,042 openai-mmmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (553 masakhapos); classification 3 (748 afrisenti) | 5 | 3 |
+| `swa` | exam 5 (14,042 openai-mmmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
 | `taq` | MT 4 (1,012 flores-plus) | 4 | 4 |
 | `teo` | unknown | unknown | unknown |
-| `tir` | MT 5 (1,997 ntrex-128); RC 3 (900 belebele); classification 4 (2,000 afrisenti) | 5 | 4 |
-| `tsn` | MT 5 (1,997 ntrex-128); sequence labeling 3 (602 masakhapos) | 5 | 4 |
-| `tso` | RC 3 (900 belebele); classification 2 (254 afrisenti) | 3 | 2 |
+| `tir` | MT 5 (1,997 ntrex-128); RC 3 (900 belebele); classification 2 (204 sib-200) | 5 | 3 |
+| `tsn` | MT 5 (1,997 ntrex-128) | 5 | 5 |
+| `tso` | RC 3 (900 belebele); classification 2 (204 sib-200) | 3 | 2 |
 | `tum` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `twi` | exam 3 (500 afrimmlu); MT 4 (1,012 flores-plus); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); sequence labeling 3 (628 masakhapos); classification 3 (949 afrisenti) | 4 | 3 |
+| `twi` | exam 3 (500 afrimmlu); MT 4 (1,012 flores-plus); NLI 3 (600 afrixnli); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 4 | 3 |
 | `tzm` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
 | `umb` | MT 4 (1,012 flores-plus); classification 2 (204 sib-200) | 4 | 3 |
-| `wol` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); sequence labeling 3 (625 masakhapos); classification 3 (638 injongo-intent); generation 3 (1,500 afrobench) | 5 | 3 |
-| `xho` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (601 masakhapos); classification 3 (640 injongo-intent) | 5 | 3 |
-| `yor` | exam 5 (14,042 openai-mmmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (713 masakhapos); classification 4 (4,515 afrisenti); generation 3 (1,558 afrobench) | 5 | 3 |
-| `zul` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); sequence labeling 3 (601 masakhapos); classification 3 (640 injongo-intent) | 5 | 3 |
+| `wol` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); classification 3 (638 injongo-intent) | 5 | 3 |
+| `xho` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `yor` | exam 5 (14,042 openai-mmmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+| `zul` | exam 3 (500 afrimmlu); MT 5 (1,997 ntrex-128); NLI 3 (600 afrixnli); RC 3 (900 belebele); reasoning 2 (250 afrimgsm); classification 3 (640 injongo-intent) | 5 | 3 |
+
+**Without the mapped entries.** Leaving out the 12 entries that carry `source_language` makes `ara`,
+`est` and `grn` unknown on FLORES+ (185 of 203 measured, still 4 / 4), drops Plateau Malagasy from 5
+to 4 on AfroBench (still 4 / 4) and changes no Oromo band, since its NTREX entry is recorded from the
+source's own `orm`. Under the highest task band no set moves. Under the median-of-tasks sensitivity
+rule SEA-HELM becomes unresolved (medians 2 and 3): Malay is then measured only on
+SEA-MT-Bench-Judge's 58 prompts, a 2.
 
 ## What the calibration exposed
 
@@ -306,8 +436,8 @@ In order of how much each one changes an outcome.
    highest band, a suite's band is the depth of the deepest set it imports: SEA-HELM's 4 rests
    entirely on its FLORES sample, AfroBench's 21 languages at 5 rest entirely on NTREX-128, and
    SEA-HELM ties FLORES+ by sampling it. Dropping the components that have their own row on the map
-   (FLORES+, Belebele, SIB-200, ThaiExam) gives SEA-HELM a 3 and leaves AfroBench unresolved (36
-   measured, 27 unknown, medians 3 and 5). Under the median, adding a 100-item task lowers a
+   (FLORES+, Belebele, SIB-200, ThaiExam) gives SEA-HELM a 3 and leaves AfroBench unresolved (25
+   measured, 38 unknown, medians 0 and 5). Under the median, adding a 100-item task lowers a
    language: Khmer and Burmese, measured on translation alone, outrank Indonesian and Thai, measured
    on eight tasks. A ruling is needed on the rule, and on whether components that have their own
    row count toward a suite's depth (R-2026-10-30-e and -f settle stage counting for groups, not
@@ -324,14 +454,14 @@ In order of how much each one changes an outcome.
    ArabicMMLU's 14,575 questions, Khayyam's 20,192 and VMLU's 10,880 clear 6,400, so the depth ladder
    will place them above FLORES+. Whether that ordering is wanted should be decided before the other
    sets are filled.
-4. **The product's `languages` and the sources' codes have drifted.** FLORES+ lists FLORES-200 codes:
-   `aka`, `kon`, `tgl` and `tzm` are gone from the card, and `ara`, `est`, `grn` and `zho` were
-   recorded from `arb`, `ekk`, `gug` and `cmn`. AfroBench's Table 11 has `gaz`, `nde`, `ven` and `ara`,
-   which the product does not list (`gaz` was recorded as `orm`, NTREX's `mlg` as `plt`), and the
-   product lists `nqo` and `por`, which Table 11 does not. SEA-HELM's Malay is `zsm` in the source and
-   `msa` in the product. This record maps an individual language into the product's listed
-   macrolanguage and nothing else. A ruling is needed on that mapping, or the products' `languages`
-   should be re-derived from the current sources first.
+4. **The products' `languages` and the sources' codes have drifted.**
+   [Language codes](#language-codes-needs-reconciliation) lists every discrepancy. FLORES+ lists
+   FLORES-200 codes the card has since replaced; AfroBench and SEA-HELM each have codes on one side
+   only. Twelve entries are recorded under the product's code with the source's code in
+   `source_language`, an inferred mapping rather than an observed identity. The hand-run counts them,
+   and dropping them moves no proposed band but leaves SEA-HELM unresolved under the median-of-tasks
+   rule. A ruling is needed on whether a mapped entry counts until the products' `languages` are
+   reconciled with the current sources, and the reconciliation itself is a curation pass of its own.
 5. **A suite's own documents disagree about what it contains.** SEA-HELM's paper covers Filipino,
    Indonesian, Tamil, Thai and Vietnamese; its Hugging Face cards cover Indonesian, Javanese,
    Sundanese, Tamil, Thai, Vietnamese and Tagalog, with translation for Khmer, Burmese, Malay and
@@ -345,23 +475,24 @@ In order of how much each one changes an outcome.
    when a suite's paper and a member's repository disagree. This record took the repository where its
    total matches the paper, the paper's single figure otherwise, and dropped the dataset where they
    conflict.
-6. **Provenance is unknown where it matters least to the median and most to the reader.** FLORES+'s
-   OLDI-recreated languages have their creation documented only in gated cards; SALT never says who
-   translated; NollySenti and MasakhaNER-X are not described by any fetched source. The documents also
-   conflict: SEA-HELM's GitHub table calls its Javanese and Sundanese sentiment items "Native", and
-   the NusaX paper, which SEA-HELM's card names as their source, says human annotators translated
-   them from Indonesian. The record follows the NusaX paper. A news-article or tweet dataset in the
-   language (MasakhaPOS, MasakhaNEWS, AfriSenti) is recorded `native` because its card describes text
-   written in the language; the maintainer should confirm that reading is enough.
+6. **Provenance is unknown where it matters least to the median and most to the reader.** Under the
+   rule in [How provenance was read](#how-provenance-was-read), a card that describes news or tweets
+   in the language no longer establishes `native`, so AfriSenti, MasakhaNEWS and MasakhaPOS are
+   unknown, and AfriADR is unknown because MAFAND says its text was translated without saying by
+   whom. FLORES+'s OLDI-recreated languages have their creation documented only in gated cards; SALT
+   never says who translated; NollySenti and MasakhaNER-X are not described by any fetched source.
+   Under the highest-task-band rule this moves no band, because translation sets carry every measured
+   language, but it takes AfroBench from 58 to 54 measured languages of 63 and leaves four languages
+   (`arq`, `bbj`, `pcm`, `por`) with no qualifying evidence at all. The documents also conflict on
+   NusaX ([Provenance conflicts](#provenance-conflicts)), and the record keeps both sides. Whether
+   SEA-HELM's own "Native" label is an explicit enough statement is the open question: ThaiExam's band
+   turns on it.
 7. **Schema gaps the records ran into.**
    - No few-shot split. SEA-HELM's `*_fewshot` splits are left out; ThaiExam's are recorded as
      `train`, because its source calls them that.
    - No script, variety or direction in the key. FLORES+'s two-script and two-variety languages and
      SEA-HELM's two translation directions collapse to one entry each. Fine for depth, and lossy for
      the language view of R-2026-11-01-f.
-   - A source that states zero official items cannot be recorded as a zero. FLORES+'s dev-only
-     languages have no `devtest`, so their official depth is zero by the source's own statement, and
-     the rules make them unknown instead.
    - Task classes. AfriADR (diacritic restoration) has no class and sits in `text_generation` with
      judged chat prompts, though it is scored per sentence; LINDSEA syntax went to
      `text_classification`, LINDSEA pragmatics to `natural_language_inference`, the MABL metaphor set
@@ -383,10 +514,11 @@ In order of how much each one changes an outcome.
    (Mozambican Portuguese in AfriSenti) a target although its paper lists Portuguese among the
    high-resource comparison languages. FLORES-200's intermediate source languages (Spanish, French,
    Russian, Arabic) stay targets of FLORES+.
-10. **The robustness test never bit.** Unknowns are 9%, 0%, 9% and 8% of the target languages, so
-    every median survived both fills. It bites only in the borrowed-rows variant of item 1. The
-    tiebreak barely separates large sets (4.50, 4.49, 4.45) and counts languages, not tasks; task
-    breadth, which R-2026-11-01-c says is tracked separately, has no formula yet.
+10. **The robustness test rarely bit.** Unknowns are 7%, 0%, 9% and 14% of the target languages, so
+    every median survived both fills. It bites in the borrowed-rows variant of item 1 and, under the
+    median-of-tasks rule, in the variant without mapped entries (item 4). The tiebreak barely
+    separates large sets (4.50, 4.49, 4.45) and counts languages, not tasks; task breadth, which
+    R-2026-11-01-c says is tracked separately, has no formula yet.
 
 ## Before the other evaluation sets are filled
 
@@ -396,28 +528,61 @@ The maintainer's calls, in the order they block:
   suite's depth;
 - whether ladders are equated by precision or by reference benchmarks, and the thresholds above
   (items 2 and 3);
-- the language-code mapping, or a re-derivation of the products' `languages` (item 4);
+- whether a mapped entry counts until the products' `languages` are reconciled with the current
+  sources, and the reconciliation itself (item 4);
 - which source wins when a suite's paper and a member's repository disagree (item 5);
-- whether a card describing text in the language is enough to record `native` (item 6);
-- the schema changes in item 7: a few-shot split, a stated-zero official count, and a task class
-  for diacritic restoration at least.
+- whether SEA-HELM's "Native" label is an explicit enough statement for `native` (item 6);
+- the schema changes in item 7: a few-shot split and a task class for diacritic restoration at
+  least.
+
+The open questions on aggregation, cross-task scale and imported components (items 1 to 3) stay with
+the ladder PR.
 
 ## The confirmation date
 
-`capability.last_verified` is unchanged on all four, at 2026-09-24. `evidence-and-freshness.md`
-defines the date as the day everything in the axis was confirmed, and this pass confirmed the new
-record and nothing else: it did not re-derive the band or re-read the peer comparison. A new source
-read after an axis's date fails no gate (the floor asks only that some source was read on or after
-the date), and the new sources carry their own `accessed`, `http_status` and `content_sha256`. The
-existing FLORES+ card entry was re-read in place, since the record quotes it. `capability.md` says a
-date on capability claims the record too, so the record is covered by no confirmation date until the
-next `refresh-category` pass re-derives the band and dates the axis.
+`capability.last_verified` is unchanged on all four, at 2026-09-24. It dates the band, not the
+coverage record: it says the score and its peer comparison were re-derived on that date, and this
+pass did not re-derive the band or re-read the peer comparison. The coverage record is dated by the
+`accessed` date of each source its entries cite ([Scope](#scope) gives them), and each of those
+sources carries its own `http_status` and `content_sha256`. A new source read after an axis's date
+fails no gate (the floor asks only that some source was read on or after the date). The existing
+FLORES+ card entry was re-read in place, since the record quotes it.
+
+## Changes after review
+
+- **Language identity.** A new optional field, `source_language`, holds the code a source states
+  when it differs from `language`, and marks the entry as an inferred mapping. It is on 12 entries:
+  FLORES+ `ara`, `est`, `grn` and `zho` (dev and devtest), SEA-HELM's Malay translation, and
+  AfroBench's Oromo FLORES and SIB-200 and Plateau Malagasy NTREX-128 entries.
+  [Language codes](#language-codes-needs-reconciliation) lists every discrepancy, mapped or not. No
+  product's `languages` changed.
+- **Documented zeros.** An entry with `count: 0`, no provenance and a citation to the source that
+  states the absence is now a measured zero rather than an unknown, for that language, task,
+  component and official split only; it implies nothing about the language's coverage on other
+  tasks or in other components. FLORES+'s three dev-only languages carry one on `devtest`, which
+  takes its completeness from 185 to 188 of 203.
+- **Provenance.** 60 entries changed, all to `unknown`: FLORES+ English (2, from `native`); SEA-HELM
+  English (3, from `native`) and Javanese and Sundanese NusaX sentiment (2, from `human_translated`,
+  now a documented conflict); AfroBench AfriSenti (14), MasakhaNEWS (14) and MasakhaPOS (20), all
+  from `native`, and AfriADR (5, from `human_translated`). The reasons are in
+  [How provenance was read](#how-provenance-was-read). SIB-200 and Belebele (66 entries) keep
+  `human_translated` and now also cite the NLLB abstract; the ThaiExam training entry now also cites
+  SEA-HELM's tables. Two SEA-HELM `shows` were extended with the quotes the native reading relies on.
+- **Freshness.** This record and `capability.md` now say that the coverage evidence is dated by its
+  sources' `accessed` dates and that `capability.last_verified` dates the band.
+- **Dry run.** No proposed band and no median-of-tasks result moved. Completeness moved for FLORES+
+  (185 to 188 of 203) and AfroBench (58 to 54 of 63); AfroBench's borrowed-rows variant stays
+  unresolved (now 25 measured, medians 0 and 5); a variant without mapped entries was added.
+- **Read and not cited.** The Multilingual-Fig-QA abstract (arXiv 2305.16171) was fetched to check
+  the Javanese and Sundanese metaphor items. It names the languages and does not say how the items
+  were written, so it is not on any record.
 
 ## Sources read
 
 All fetched 2026-11-01 with `build.fetch_source`, HTTP 200. Hub and arXiv pages change between
-fetches; the digests are those of the bodies the `shows` were quoted from. The last seven rows are
-the reference benchmarks the ladders cite, and are not on any record.
+fetches; the digests are those of the bodies the `shows` were quoted from. The Multilingual-Fig-QA
+abstract was read after review and is not on any record. The last seven rows are the reference
+benchmarks the ladders cite, and are not on any record either.
 
 | URL | sha256 |
 |---|---|
@@ -465,6 +630,7 @@ the reference benchmarks the ladders cite, and are not on any record.
 | https://huggingface.co/datasets/masakhane/mafand | `0931d995a8d40e1273542f85afae7ea3d13d2b51c146268f6c44a12455bc996e` |
 | https://huggingface.co/datasets/Sunbird/salt | `b94b453901165af5a0d4cd214b169a154d77b7aee0a274f988c0e3e05c802558` |
 | https://huggingface.co/api/datasets/openlanguagedata/flores_plus/tree/main/dataset_cards | `c6e1fb3ff0df5f6cbcd573e4ecb636fe14b90590dee15cf4bae53b8d122983c9` |
+| https://arxiv.org/abs/2305.16171 | `8fbc3c678431e037f546aae3b0a228b526e8b2b24f21ae25c9f942ba34cbdcd5` |
 | https://datasets-server.huggingface.co/size?dataset=cais/mmlu&config=all | `a6628c2aba3d4485bc34739ab14a9a0885ee606d9f0b7db8f11f23171e241147` |
 | https://datasets-server.huggingface.co/size?dataset=facebook/xnli&config=sw | `4daefe07108fa87079431cba6f188f25a8307ddf900d69cc3d7fc03907fa5b2f` |
 | https://datasets-server.huggingface.co/size?dataset=cambridgeltl/xcopa&config=th | `20385aa13f1a09e5e17fefc55c61db43c4847f59b4000c5c5302be990024ecf6` |
