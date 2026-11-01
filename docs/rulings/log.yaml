@@ -1658,7 +1658,7 @@ rulings:
     status: in-force
     executor: agent
     lands_in: [docs/reference/capability.md, docs/workflows/refresh-category.md]
-    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956', 'https://github.com/currentai-org/os-ai-map/pull/958']
 
   - id: R-2026-11-01-h
     date: 2026-11-01
@@ -1686,3 +1686,28 @@ rulings:
     executor: agent
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-i
+    date: 2026-11-01
+    by: ccerv1
+    venue: pr-review
+    refs: ["#958", "#953", sea-helm, thai-exam, R-2026-11-01-e, R-2026-11-01-h]
+    question: >-
+      Does a benchmark's own classification of its datasets as created in the target language, as
+      SEA-HELM's "Native" column does, establish native provenance for capability.language_coverage, or
+      must a source state that people rather than models wrote each item?
+    ruling: >-
+      Accept it as sufficient evidence for native, unless more specific evidence contradicts it. A source
+      merely describing the type of content (Thai news articles) does not establish provenance, but a
+      benchmark that explicitly distinguishes datasets originally created in the target language from
+      datasets translated into it makes an affirmative provenance classification. ThaiExam and SEA-HELM's
+      own qualifying datasets keep native. The NusaX Javanese and Sundanese entries stay unknown, because
+      their more specific source contradicts SEA-HELM's classification.
+    reasoning: >-
+      Requiring every paper to state that humans rather than models authored each example, when it already
+      draws a meaningful distinction between original and translated evaluation datasets, would be an
+      unnecessarily restrictive evidence standard.
+    status: in-force
+    executor: none
+    lands_in: [sources/scores/sea-helm.yaml, sources/scores/thai-exam.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/958']
