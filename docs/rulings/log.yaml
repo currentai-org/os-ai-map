@@ -1520,3 +1520,167 @@ rulings:
     executor: agent
     lands_in: []
     applied_in: []
+
+  - id: R-2026-11-01-a
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-i, R-2026-10-30-l]
+    question: >-
+      Under the per-language depth ladder, how is a language with no source-stated count treated, and
+      when is a set best in class?
+    ruling: >-
+      A missing count is unknown: never zero, and never evidence that a set is the strongest available.
+      Two sets are comparable only where both have documented counts for the same language and task;
+      where no comparable peer has documented evidence, the record says "no comparable evidence", not
+      "best in class". A band stands only when the lowest and highest possible median bands, filling the
+      unknowns either way, agree; where they span different bands the result is unresolved until more
+      evidence is collected. No arbitrary completeness threshold.
+    reasoning: >-
+      Observed bands of 4, 4 and unknown give a median of 4 whatever the missing value is, but 5, unknown
+      and unknown cannot establish a 5. A robustness test is preferable to an arbitrary completeness
+      threshold.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-b
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-i]
+    question: >-
+      What is the population for the per-language median, and how are languages without a recorded
+      count handled in it and in the breadth bonus?
+    ruling: >-
+      The population is every declared target language, less documented pivot languages; unknowns enter
+      through the robustness test of R-2026-11-01-a. A record publishes its evidence completeness (for
+      example, 18 of 20 target languages have usable depth measurements). The breadth bonus of
+      R-2026-10-30-i counts only languages with substantiated evaluation evidence. Pivot languages stay
+      identifiable even with no reported counts, through a separate declaration.
+    reasoning: >-
+      A missing language means no measured depth, not no evaluation data. Counting unsubstantiated
+      languages in the bonus would let missing records inflate the result indirectly.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-c
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, sea-helm, afrobench, indicxtreme]
+    question: >-
+      How is depth recorded and aggregated for a multi-task suite whose tasks use different units,
+      sample sizes and sources?
+    ruling: >-
+      The unit of evidence is one language x task x dataset component x split. Depth is banded per task
+      in comparable units against calibrated standards, then aggregated to a language-level band, and
+      the median of R-2026-10-30-i stays the final aggregation across languages. Translation sentences,
+      speech hours and exam questions are never added into one total, and a suite gets no extra credit
+      for importing several datasets that measure the same task. Breadth of evaluated tasks is tracked
+      separately and is at most a limited tiebreaker.
+    reasoning: >-
+      Breadth of evaluation is valuable, but it is not the same thing as depth.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-d
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, flores-plus]
+    question: >-
+      Which split of a dataset counts toward evaluation depth?
+    ruling: >-
+      Each entry records its split: train, dev, validation, test, devtest or official_eval. Only the
+      portion actually used for benchmark evaluation counts; a dev or validation split counts when it is
+      the benchmark's official evaluation split, and training examples never count. Whether samples are
+      distinct is documented, and subsets are not double-counted. FLORES+ translation depth uses its
+      evaluation split, not dev and devtest added together.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-e
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", "#952", docs/reference/capability.md]
+    question: >-
+      Do the provenance and task vocabularies of capability.language_coverage stand?
+    ruling: >-
+      Keep the seven provenance values. native means human-authored in the target language, and
+      generated means model-generated directly in that language, so the two cannot overlap. Keep
+      post_edited and unknown; do not guess provenance. Keep the 18 task classes and add
+      transliteration. No narrow task labels before the candidate datasets have been examined.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-f
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-j]
+    question: >-
+      Is the per-language evidence published, and where?
+    ruling: >-
+      Yes, with the per-language view, as a separate structured data asset the visualization loads, not
+      inside the notebook's main payload. It exposes language, task, evaluation split, count and unit,
+      provenance, source references, the observed-coverage fraction, and unknowns marked explicitly.
+    reasoning: >-
+      The per-language evidence is what makes the final scores explainable and auditable; a separate asset
+      is cleaner as more suites and languages are added.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-g
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", flores-plus, thai-exam, sea-helm, afrobench]
+    question: >-
+      Is the per-language evidence filled for every evaluation set before the depth ladder is built?
+    ruling: >-
+      No. First populate a calibration sample: FLORES+ (translation), ThaiExam (single-language exams),
+      SEA-HELM (mixed-task suite) and AfroBench (large multilingual suite). Use them to settle the
+      task-specific depth bands and verify that the aggregation produces sensible, explainable outcomes
+      before populating the other datasets.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-h
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", R-2026-10-30-g, R-2026-10-30-m]
+    question: >-
+      How does provenance enter evaluation depth? Do machine-translated and generated items count, at
+      full or reduced weight?
+    ruling: >-
+      native, human_translated and post_edited items count toward depth. machine_translated and generated
+      items do not, and no reduced weights are introduced. For mixed, only the separately documented
+      qualifying portion counts. unknown establishes no qualifying depth. All evidence is preserved,
+      including excluded items: zero qualifying depth does not mean a dataset has no evaluation value, only
+      that its items do not satisfy this measure of credible evaluation depth. Human-reviewed
+      model-generated items are not reclassified as native or post_edited: provenance describes how items
+      were produced, and human validation is a separate quality attribute. If the calibration sets reveal
+      well-validated synthetic evaluations that deserve credit, an explicit exception backed by evidence
+      can be introduced, not an arbitrary multiplier.
+    reasoning: >-
+      A conservative, reproducible initial rule that leaves room to improve it.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
