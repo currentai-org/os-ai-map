@@ -55,6 +55,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `capability.language_coverage` records one entry per language, task, dataset component and
+  split, with whether the split is the benchmark's official evaluation split, an optional
+  qualifying portion for `mixed` items, optional human validation, and `subset_of` so a subset is
+  not counted twice. Pivots moved off the entries into `capability.pivot_languages`, and
+  `transliteration` joined the task vocabulary. No product carries the record yet, and nothing
+  scores on it (R-2026-11-01-a to -h).
 - muse-spark re-scored on Muse Spark Open's weights: openness 1/closed to 3/open_weights with Muse Spark
   Open as the governing release and Muse-Model-License as use_bounded; adoption stays 4, now recorded as
   reported traction with no numeric reach ([#930](https://github.com/currentai-org/os-ai-map/pull/930)).
