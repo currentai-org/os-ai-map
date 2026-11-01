@@ -26,8 +26,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - An optional per-language coverage record on a dataset's capability axis
   (`capability.language_coverage`), one entry per language, task, dataset component and split:
   count and unit, provenance, whether the split is the benchmark's official evaluation split, an
-  optional qualifying portion for `mixed` items, optional human validation, and `subset_of` so a
-  subset is not counted twice, cited through `capability.sources`. Pivot languages are declared in
+  optional qualifying portion for `mixed` items, optional human validation, `subset_of` so a
+  subset is not counted twice, `source_language` for a code the source states differently, and a
+  documented zero (`count: 0`, no provenance) for a language the source says has no items, cited
+  through `capability.sources`. Pivot languages are declared in
   `capability.pivot_languages`. Codes must be ones the product's `languages` lists. No product
   carries it yet, nothing scores on it, and the notebook payload leaves it out (R-2026-10-30-h,
   R-2026-11-01-a to -h, [#952](https://github.com/currentai-org/os-ai-map/pull/952),

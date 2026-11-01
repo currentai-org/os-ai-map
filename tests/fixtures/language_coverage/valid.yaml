@@ -9,7 +9,9 @@
 # one of them the official evaluation split; a pivot declared on the axis; a `mixed` entry with
 # its documented qualifying portion; an excluded `machine_translated` entry; a training split
 # recorded and not counted; a generated entry the source says people reviewed, which stays
-# `generated`; and a fractional `hours` count and a zero count.
+# `generated`; a fractional `hours` count; a documented zero, where the paper states there is no
+# Yoruba speech, so the entry has no provenance; and a mapped entry, whose card labels the Swahili
+# questions with the macrolanguage code `swa` while the product lists `swh`.
 product:
   name: example-eval
   display_name: Example Eval
@@ -37,8 +39,8 @@ score:
     basis: feature_matrix
     sources:
       - url: https://huggingface.co/datasets/example-org/example-eval
-        shows: "the card's per-language table: 1,000 test questions in each language, 4,000
-          reviewed model-written Swahili training questions"
+        shows: "the card's per-language table: 1,000 test questions in each language, the Swahili
+          ones under `swa`, 4,000 reviewed model-written Swahili training questions"
         accessed: '2026-10-30'
       - url: https://arxiv.org/pdf/2601.00001
         shows: 'Table 2: 997 dev and 1,012 devtest sentences per language, 600 of the 1,000 Hausa
@@ -113,6 +115,7 @@ score:
         provenance: native
         cites: [https://arxiv.org/pdf/2601.00001]
       - language: swh
+        source_language: swa
         task: knowledge_exam
         component: example-eval
         split: test
@@ -147,5 +150,4 @@ score:
         official_eval: true
         count: 0
         unit: hours
-        provenance: unknown
         cites: [https://arxiv.org/pdf/2601.00001]

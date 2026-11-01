@@ -438,15 +438,19 @@
               "official_eval",
               "count",
               "unit",
-              "provenance",
               "cites"
             ],
-            "description": "One unit of evidence: the items one dataset component holds for one language and one task in one split, how they were made, and where that is stated (R-2026-11-01-c). The record names each (language, task, component, split) once and is sorted by that key. docs/reference/capability.md, 'Per-language coverage', defines each value.",
+            "description": "One unit of evidence: the items one dataset component holds for one language and one task in one split, how they were made, and where that is stated (R-2026-11-01-c). The record names each (language, task, component, split) once and is sorted by that key. An entry with a `count` of 0 is a documented zero: the cited source states that the component has no items for this language, task and split, so it carries no `provenance` and no `qualifying_count`; every other entry carries a `provenance`. docs/reference/capability.md, 'Per-language coverage', defines each value.",
             "properties": {
               "language": {
                 "type": "string",
                 "pattern": "^[a-z]{3}$",
                 "description": "The ISO 639-3 code, under the same rule as the product's `languages`: scope individual or macrolanguage in sources/snapshots/iso-639-3.tab, so two-letter codes and the special codes `mul`, `und` and `zxx` are refused. It must also be one of the codes the product's `languages` lists, because coverage says how much a listed language holds and never adds a language the identity record does not name. The schema checks the shape; build/validate.py checks both lists."
+              },
+              "source_language": {
+                "type": "string",
+                "pattern": "^[a-z]{3}$",
+                "description": "The ISO 639-3 code exactly as the cited source states it, when that differs from `language`: an individual language the source names inside the macrolanguage the product lists (FLORES+'s `cmn` recorded under `zho`), or the reverse. Required whenever the source's code differs, and refused when equal to `language`. A two-letter code the source uses is read as its ISO 639-3 equivalent and is not a difference. An entry carrying it records an inferred mapping, not a directly observed identity, and flags the product's `languages` for reconciliation. Held to the code-list rule `language` is held to (scope individual or macrolanguage in sources/snapshots/iso-639-3.tab), but not to the product's `languages`, which by definition does not list it (build/validate.py)."
               },
               "task": {
                 "enum": [
@@ -495,7 +499,7 @@
               "count": {
                 "type": "number",
                 "minimum": 0,
-                "description": "How many items this entry holds, in `unit`, as the cited source states it for this language, task, component and split. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state has no entry, and is unknown rather than zero (R-2026-10-30-l, R-2026-11-01-a). An integer for every unit except `hours`."
+                "description": "How many items this entry holds, in `unit`, as the cited source states it for this language, task, component and split. Never derived by dividing a set-wide total across its languages: a language whose count the card or paper does not state has no entry, and is unknown rather than zero (R-2026-10-30-l, R-2026-11-01-a). 0 is a documented zero: the cited source states that there are no items, as FLORES+ does for a language it carries on its dev split only. On the official evaluation split that is a measured zero, not an unknown; the entry omits `provenance` and `qualifying_count`, since there are no items to describe, and its `cites` names the source that states the absence (build/validate.py). An integer for every unit except `hours`."
               },
               "unit": {
                 "enum": [
@@ -520,7 +524,7 @@
                   "mixed",
                   "unknown"
                 ],
-                "description": "How this entry's items came to be in the language: human-authored in the target language (`native`), translated into it by people (`human_translated`), machine-translated and then corrected by people (`post_edited`), machine-translated with no correction recorded (`machine_translated`), model-generated directly in the language (`generated`), more than one of these (`mixed`), or not stated by the source (`unknown`). `native` and `generated` cannot overlap, and provenance is never guessed (R-2026-11-01-e). native, human_translated and post_edited count toward depth; machine_translated and generated do not; mixed counts only its documented `qualifying_count`; unknown establishes none. Every entry is recorded whether or not it counts (R-2026-11-01-h)."
+                "description": "How this entry's items came to be in the language: human-authored in the target language (`native`), translated into it by people (`human_translated`), machine-translated and then corrected by people (`post_edited`), machine-translated with no correction recorded (`machine_translated`), model-generated directly in the language (`generated`), more than one of these (`mixed`), or not stated by the source (`unknown`). `native` and `generated` cannot overlap, and provenance is never guessed (R-2026-11-01-e): `native` needs a cited source that says the evaluated items were written by people in the language, not only that the corpus is news or social media in it. native, human_translated and post_edited count toward depth; machine_translated and generated do not; mixed counts only its documented `qualifying_count`; unknown establishes none. Every entry is recorded whether or not it counts (R-2026-11-01-h). Required on every entry with items, and absent on a documented zero (`count` 0)."
               },
               "qualifying_count": {
                 "type": "number",
@@ -547,28 +551,49 @@
                 "description": "The `url` of each entry in this axis's `sources` that states this entry's figures, the dataset card or the paper. Each must equal the url of a capability source (build/validate.py), so the citation's `shows`, `accessed`, `http_status` and `content_sha256` are written once, on the source list that build/check_verification.py, build/check_refetch.py and build/check_citations.py already read, and are not copied here where no gate would see them."
               }
             },
-            "if": {
-              "properties": {
-                "unit": {
-                  "const": "hours"
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "unit": {
+                      "const": "hours"
+                    }
+                  },
+                  "required": [
+                    "unit"
+                  ]
+                },
+                "else": {
+                  "properties": {
+                    "count": {
+                      "type": "integer"
+                    },
+                    "qualifying_count": {
+                      "type": "integer"
+                    }
+                  }
                 }
               },
-              "required": [
-                "unit"
-              ]
-            },
-            "else": {
-              "properties": {
-                "count": {
-                  "type": "integer"
+              {
+                "if": {
+                  "properties": {
+                    "count": {
+                      "const": 0
+                    }
+                  },
+                  "required": [
+                    "count"
+                  ]
                 },
-                "qualifying_count": {
-                  "type": "integer"
+                "else": {
+                  "required": [
+                    "provenance"
+                  ]
                 }
               }
-            }
+            ]
           },
-          "description": "Per-language evidence for an evaluation set, one entry per language x task x dataset component x split, each with its item count and unit, how the items were made, whether the split is the official evaluation split, and the card or paper that states it through `capability.sources` (R-2026-10-30-h, R-2026-11-01-c, R-2026-11-01-d). It records how much the set holds in each language, which `languages` on the product record does not: that field says which languages, and this says how deep. A language with no entry is unknown, never zero and never evidence that the set is best in class (R-2026-11-01-a). Capability evidence rather than an identity attribute, because a ladder will read it: the depth ladder (R-2026-10-30-g) bands each task, aggregates to a language-level band, and takes the median across the target languages (`languages` less `pivot_languages`), with a capped breadth bonus (R-2026-10-30-i). That ladder is not built, so nothing reads this field yet and no band moves because of it. Optional and only valid on a `type: dataset` product; absent means not recorded, and `pivot_languages` is required beside it. Part of the axis, so `capability.last_verified` claims it was re-read like everything else on the axis. Kept out of the notebook payload: it ships as a separate structured data asset with the per-language view (R-2026-11-01-f; build/serialize.py). docs/reference/capability.md is normative."
+          "description": "Per-language evidence for an evaluation set, one entry per language x task x dataset component x split, each with its item count and unit, how the items were made, whether the split is the official evaluation split, and the card or paper that states it through `capability.sources` (R-2026-10-30-h, R-2026-11-01-c, R-2026-11-01-d). It records how much the set holds in each language, which `languages` on the product record does not: that field says which languages, and this says how deep. A language with no entry is unknown, never zero and never evidence that the set is best in class (R-2026-11-01-a). Capability evidence rather than an identity attribute, because a ladder will read it: the depth ladder (R-2026-10-30-g) bands each task, aggregates to a language-level band, and takes the median across the target languages (`languages` less `pivot_languages`), with a capped breadth bonus (R-2026-10-30-i). That ladder is not built, so nothing reads this field yet and no band moves because of it. Optional and only valid on a `type: dataset` product; absent means not recorded, and `pivot_languages` is required beside it. Its evidence is dated by the `accessed` date of each source its entries cite; `capability.last_verified` dates the band, not this record, so a pass that fills or re-reads the record without re-deriving the band leaves that date alone. Kept out of the notebook payload: it ships as a separate structured data asset with the per-language view (R-2026-11-01-f; build/serialize.py). docs/reference/capability.md is normative."
         }
       },
       "dependentRequired": {

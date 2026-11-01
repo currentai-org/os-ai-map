@@ -129,7 +129,10 @@ is intended:
    capped tier — `use_bounded` or `commercial_forbidden` — so its `data` and `code`
    values never affect the outcome, but
    they are still published claims, so they still have to be confirmed. A fresh
-   license cannot carry a stale corpus claim.
+   license cannot carry a stale corpus claim. One record is dated separately: a dataset's
+   per-language coverage record is dated by the `accessed` date of each source it cites, and
+   capability's `last_verified` dates the band, not that record
+   ([`capability.md`](capability.md#per-language-coverage) is normative).
 2. **Confirmation means the axis was re-checked against its sources**, whether or not
    the value moved. A re-check that changes nothing is still a confirmation and still
    earns the date. This is what makes the field fill in as automation lands. It is the
