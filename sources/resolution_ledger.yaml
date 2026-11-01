@@ -2600,22 +2600,24 @@ resolutions:
 - artifact:
     kind: huggingface_model
     id: handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf
-  verdict: unresolved
+  verdict: existing_product
   relation: product_equivalence
+  resolves_to: nemotron-asr
   decided_in: '#937'
   decided_on: '2026-10-27'
-  note: A GGUF quantization of nvidia/nemotron-3.5-asr-streaming-0.6b. It follows its base model, which is
-    itself unresolved below.
+  note: A GGUF quantization of nvidia/nemotron-3.5-asr-streaming-0.6b, which nemotron-asr declares and which the
+    upload names as its base model. Quantizing does not transfer ownership.
 - artifact:
     kind: huggingface_model
     id: zai-org/glm-ocr
-  verdict: unresolved
+  verdict: existing_product
   relation: product_equivalence
+  resolves_to: glm-ocr
   decided_in: '#937'
   decided_on: '2026-10-27'
-  note: Z.ai's GLM-OCR, a multimodal OCR model with its own GitHub repository, SDK and technical report. It
-    is not the GLM language model the digest proposed. It is a candidate product for the OCR category
-    beside deepseek-ocr and dots-ocr, recorded unresolved until it is promoted or excluded.
+  note: Z.ai's GLM-OCR, a multimodal OCR model with its own GitHub repository, SDK and technical report, not
+    the GLM language model the digest proposed. The maintainer ruled it a product of its own on 2026-10-27,
+    and it was added to document_conversion as glm-ocr.
 - artifact:
     kind: huggingface_model
     id: deepseek-ai/deepseek-v4.1-flash
@@ -2697,13 +2699,14 @@ resolutions:
 - artifact:
     kind: huggingface_model
     id: nvidia/nemotron-3.5-asr-streaming-0.6b
-  verdict: unresolved
+  verdict: existing_product
   relation: product_equivalence
+  resolves_to: nemotron-asr
   decided_in: '#937'
   decided_on: '2026-10-27'
   note: NVIDIA's streaming speech-recognition model. nemotron tracks NVIDIA's language models, so it is not
-    that product. Whether it belongs to parakeet as the same ASR line renamed, or is a speech product of
-    its own, needs a ruling.
+    that product, and NVIDIA ships it under the Nemotron name rather than as parakeet. The maintainer ruled it
+    a speech product of its own on 2026-10-27, and it was added to speech_audio as nemotron-asr.
 - artifact:
     kind: huggingface_model
     id: zai-org/glm-5
