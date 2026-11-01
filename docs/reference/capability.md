@@ -240,7 +240,7 @@ capability:
   language_coverage:
     - language: hau
       task: knowledge_exam
-      component: example-eval        # the suite's own exam: a component named after the product
+      component: example-eval        # the suite's own exam: the product's slug
       split: test
       official_eval: true
       count: 1000
@@ -300,7 +300,7 @@ the vocabularies; this section says what each value means.
 | `pivot_languages` | the listed languages the set was not built for: the language its items were translated from, or a high-resource language included for comparison, as English is in most multilingual sets. A declaration rather than a flag on an entry, so a pivot stays identifiable when the source reports no count for it (R-2026-11-01-b). `[]` declares that the set was built for every language it lists. Required with `language_coverage` and allowed without it. Codes follow the `languages` rule, must be listed in the product's `languages`, are sorted, and leave at least one target language. |
 | `language` | the ISO 639-3 code, under the rule `languages` follows: scope individual or macrolanguage, no two-letter or special codes. It must be one of the codes the product's `languages` lists. |
 | `task` | the one task the entry's items test (below). |
-| `component` | the dataset, or the subset within a suite, the count comes from, as a kebab-case slug: the map's product slug when the component has a product of its own, otherwise the source's name for it in kebab case. **A set with one component names itself**: `component` is the product's own `name`. A suite uses its own `name` for the items it contributes and a separate slug for each dataset it imports. |
+| `component` | the dataset, or the subset within a suite, the count comes from, as a kebab-case slug: the map's product slug when the component has a product of its own, otherwise the source's name for it in kebab case. **A set with one component names itself**: `component` is the product's slug. A suite uses its own slug for the items it contributes and a separate slug for each dataset it imports. |
 | `split` | the split the count is taken from, under the source's name for it (below). |
 | `official_eval` | `true` when this split is the one the benchmark evaluates on, the only split that counts toward depth. Required, so every entry says whether it counts. |
 | `count` | how many items the entry holds, in `unit`, as the cited source states it for this language, task, component and split. Non-negative, and an integer for every unit except `hours`. |
@@ -325,7 +325,7 @@ third column (R-2026-11-01-h). Provenance is never guessed: a source that does n
 | `post_edited` | machine-translated, then corrected by people | yes |
 | `machine_translated` | machine-translated, with no human correction recorded | no |
 | `generated` | model-generated directly in that language | no |
-| `mixed` | more than one of the above in this entry | only its `qualifying_count`, the separately documented qualifying portion; none when that is absent |
+| `mixed` | more than one of the above in this entry | only its `qualifying_count`, the separately documented qualifying portion; when that is absent, depth is unknown, not zero |
 | `unknown` | the source does not say. A recorded state, never a stand-in for `native` | no qualifying depth is established: the language's depth is unknown, not zero |
 
 `native` and `generated` cannot overlap: one is written by people in the language, the other by a
@@ -439,10 +439,12 @@ These are ruled, and they are the rules the ladder PR implements. None of them i
    unknown and unknown cannot establish a 5. There is no completeness threshold.
 4. **Completeness is published** (R-2026-11-01-b). Each record states how many of its target
    languages have a usable depth measurement, for example 18 of 20. A target language is measured
-   when it has an entry on an official evaluation split whose provenance is known. A language whose
-   measured items are all `machine_translated` or `generated` has zero qualifying depth, which is a
-   measurement. A language whose official-split entries are all `unknown` provenance is unmeasured:
-   its depth is unknown, and it enters the robustness test as an unknown, never as a zero.
+   when it has an official-evaluation entry whose qualifying depth is established: `native`,
+   `human_translated`, `post_edited`, `machine_translated` or `generated` provenance, or `mixed` with
+   a `qualifying_count`. Only `machine_translated` and `generated` items establish a measured zero.
+   A language whose official-split entries are all `unknown` provenance, or `mixed` without a
+   `qualifying_count`, is unmeasured: its depth is unknown, and it enters the robustness test as an
+   unknown, never as a zero.
 
 ### What reads it
 

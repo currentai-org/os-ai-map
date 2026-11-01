@@ -24,11 +24,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   would get. The ladder is not calibrated and the dry-run bands are not adopted
   ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
 - An optional per-language coverage record on a dataset's capability axis
-  (`capability.language_coverage`): for each language, the item count and its unit, how the items
-  were made, their tasks, and whether the language is a pivot, cited through `capability.sources`.
-  Codes must be ones the product's `languages` lists. No product carries it yet, nothing scores on
-  it, and the notebook payload leaves it out (R-2026-10-30-h,
-  [#952](https://github.com/currentai-org/os-ai-map/pull/952)).
+  (`capability.language_coverage`), one entry per language, task, dataset component and split:
+  count and unit, provenance, whether the split is the benchmark's official evaluation split, an
+  optional qualifying portion for `mixed` items, optional human validation, and `subset_of` so a
+  subset is not counted twice, cited through `capability.sources`. Pivot languages are declared in
+  `capability.pivot_languages`. Codes must be ones the product's `languages` lists. No product
+  carries it yet, nothing scores on it, and the notebook payload leaves it out (R-2026-10-30-h,
+  R-2026-11-01-a to -h, [#952](https://github.com/currentai-org/os-ai-map/pull/952),
+  [#956](https://github.com/currentai-org/os-ai-map/pull/956)).
 - `lineage.part_of`, a many-to-many link from a dataset to the suites it belongs to, and the
   stage rule it feeds: a suite and its members count once toward a category's stage, through the
   group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No
@@ -55,12 +58,6 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
-- `capability.language_coverage` records one entry per language, task, dataset component and
-  split, with whether the split is the benchmark's official evaluation split, an optional
-  qualifying portion for `mixed` items, optional human validation, and `subset_of` so a subset is
-  not counted twice. Pivots moved off the entries into `capability.pivot_languages`, and
-  `transliteration` joined the task vocabulary. No product carries the record yet, and nothing
-  scores on it (R-2026-11-01-a to -h).
 - muse-spark re-scored on Muse Spark Open's weights: openness 1/closed to 3/open_weights with Muse Spark
   Open as the governing release and Muse-Model-License as use_bounded; adoption stays 4, now recorded as
   reported traction with no numeric reach ([#930](https://github.com/currentai-org/os-ai-map/pull/930)).
