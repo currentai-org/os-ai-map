@@ -80,7 +80,7 @@ SEA-HELM's own described items carry its languages.
 
 | Entries | Says native | Says translated | Recorded |
 |---|---|---|---|
-| SEA-HELM: `jav` and `sun`, `text_classification`, `nusax`, 394 items each | SEA-HELM's dataset tables, <https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md>: the sentiment table's rows "Javanese" and "Sudanese" (sic) read "Native", with no dataset named. The task card, <https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis>, says the items are "sampled from NusaX for Indonesian, Javanese, and Sundanese." | The NusaX paper, <https://aclanthology.org/2023.eacl-main.57.pdf>: "we take an existing dataset in a high-resource local language (Indonesian) as a base for expansion to the other ten languages, and ask human annotators to translate the text." | `unknown`, citing all three |
+| SEA-HELM: `jav` and `sun`, `text_classification`, `nusax`, 394 items each | SEA-HELM's dataset tables (`datasets_and_prompts.md` in the aisingapore/SEA-HELM GitHub repository; full URL on both records): the sentiment table's rows "Javanese" and "Sudanese" (sic) read "Native", with no dataset named. The task card, <https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis>, says the items are "sampled from NusaX for Indonesian, Javanese, and Sundanese." | The NusaX paper, <https://aclanthology.org/2023.eacl-main.57.pdf>: "we take an existing dataset in a high-resource local language (Indonesian) as a base for expansion to the other ten languages, and ask human annotators to translate the text." | `unknown`, citing all three |
 
 Neither side is picked. The first version of this record followed the NusaX paper and recorded
 `human_translated`.
