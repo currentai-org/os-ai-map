@@ -111,9 +111,10 @@ doors above:
   for the score auditor rather than the visitor, one category per pass, never a score or a
   date), `refresh-all-categories` (drive the whole-corpus sweep), and `ruling-session` (clear
   the maintainer's open decisions in one walk-and-talk pass and record them in the rulings log).
-- **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (register a
-  fetcher), `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a
-  versioned release and update the changelog; maintainer only), and `audit-repo-accuracy`
+- **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (record a new
+  data input: an OSO-owned dependency contract or a repo-owned asset, under ADR-003),
+  `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a versioned release and
+  update the changelog; maintainer only), and `audit-repo-accuracy`
   (check that the skills, docs, tests and fixtures still describe the system; read-only).
 
 For the repo map, build pipeline, and data model, see `AGENTS.md`.

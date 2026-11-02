@@ -358,7 +358,7 @@ Claude Code session discovers them by name; if yours does not list them, read
 
 **Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
 openness ladder), `clean-corpus-prose` (rewrite published prose to the reader's vocabulary, one
-category per pass, prose only), `add-data-source` (register a fetcher), `refresh-all-categories`
+category per pass, prose only), `add-data-source` (record a data input under ADR-003), `refresh-all-categories`
 (drive the whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis),
 `publish-release` (cut a versioned release + changelog; maintainer).
 
