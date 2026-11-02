@@ -18,6 +18,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Cited lineage records in `sources/lineage.yaml` for the 39 coverage components of the four
+  calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench), from the lineage audit of
+  R-2026-11-02-i, -j and -u. Batayan's translation task is recorded as derived from FLORES-200,
+  which its paper states. No score changes; the sensitivity check is in
+  `docs/sweeps/2026-11-02-lineage-audit.md`
+  ([#972](https://github.com/currentai-org/os-ai-map/pull/972)).
 - Evidence status for per-language coverage: `build/evidence_status.py` labels each entry
   provisional, estimated or unresolved, and a `precision` block on a coverage entry records a
   statistical estimate under an approved method. No method is approved yet, so no entry is
