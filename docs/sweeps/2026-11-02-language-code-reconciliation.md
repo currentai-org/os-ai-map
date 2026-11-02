@@ -39,7 +39,7 @@ where the source names that variety and the macrolanguage only where the source 
 ### FLORES+
 
 The product's `languages` was built on 2026-09-30 from the card's metadata header, read through the
-Hub API (`docs/sweeps/2026-09-30-identity-attributes/languages/batch-02.jsonl`: "card language list
+Hub API (`batch-02.jsonl` in `docs/sweeps/2026-09-30-identity-attributes/languages/`: "card language list
 (gated repo, read via Hugging Face API)"). That header still carries FLORES-200's codes, as
 two-letter codes where one exists, while the card's Language Coverage table and the repository's
 data configurations use the current ones. The table and the configs agree with each other exactly
@@ -91,7 +91,7 @@ Source inconsistencies in FLORES+, documented and not followed:
 | Old code | New code | Kind | What the source states |
 |---|---|---|---|
 | `msa` | `zsm` | coding difference: macrolanguage to individual | The translation card, <https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation>: "It is sampled from FLORES 200 for Burmese, Chinese, English, Indonesian, Khmer, Malay, Tamil, Thai, and Vietnamese", with splits "en_to_zsm_Latn" and "zsm_Latn_to_en", 1012 each. Its translation entry drops `source_language: zsm`. The judge card, <https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench-Judge>, says "Malay (ms)"; `ms` reads as `msa`, so that entry now carries `source_language: msa`. No source names a Malay other than Standard Malay |
-| `tgl` | `tgl`, unchanged | source inconsistency, **needs ruling** | The Kalahi card, <https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi>: "Languages Tagalog (tl)", "Kalahi only has a Tagalog (tl) split". The judge card on the same `tl` split: "Filipino (tl)". The paper, <https://arxiv.org/html/2502.14301>: Kalahi is "composed of 150 high-quality Filipino-language" prompts, and "Filipino is the national language of the Philippines ... and is primarily based on Standard Tagalog". The GitHub tables, <https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md>, name only "Filipino" ("\| Filipino \| Kalahi MC \| Native \|"). The suite names one language both ways |
+| `tgl` | `tgl`, unchanged | source inconsistency, **needs ruling** | The Kalahi card, <https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi>: "Languages Tagalog (tl)", "Kalahi only has a Tagalog (tl) split". The judge card on the same `tl` split: "Filipino (tl)". The paper, <https://arxiv.org/html/2502.14301>: Kalahi is "composed of 150 high-quality Filipino-language" prompts, and "Filipino is the national language of the Philippines ... and is primarily based on Standard Tagalog". The GitHub tables (`datasets_and_prompts.md` in the aisingapore/SEA-HELM repository) name only "Filipino" ("\| Filipino \| Kalahi MC \| Native \|"). The suite names one language both ways |
 
 Source errors and inconsistencies in SEA-HELM, documented and not followed:
 
@@ -235,7 +235,7 @@ stable across two fetches.
 | https://huggingface.co/api/datasets/aisingapore/Cultural-Evaluation-Kalahi | 200 | `2968388ecbc40d40f12cd8aa62bfecb5b8e33f51d569f4a69384f4bee5803eaa` |
 | https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval | 200 | `4b610d0820de4acca2a4eebde70ccde44419b9c591ea461458873cbaba42025c` |
 | https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA | 200 | `583b61f88fc26285145aaec67d0861c0f5d506e6015d52b0f4624bfb8107b900` |
-| https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md | 200 | `3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f` |
+| SEA-HELM's dataset tables, `datasets_and_prompts.md` in the aisingapore/SEA-HELM GitHub repository, raw from its `main` branch | 200 | `3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f` |
 | https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/README.md | 200 | `9739ddc4df04eb4b54c1005625549ae11143ed62651474102c4122e551c5d2b3` |
 | https://arxiv.org/html/2502.14301 | 200 | `bcbe21592334eaffe4424505c065cf1e4e806929c5203618cb7f0a8b9ef85a25` (a second fetch the same day returned `7021b8e7ca3b0847fa4cd62ee04d69f6aed6cd911a6a3a8ae70ff7aec22274f6`, the digest the calibration recorded) |
 | https://arxiv.org/html/2311.07978 | 200 | `ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822` |
