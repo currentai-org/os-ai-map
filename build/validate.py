@@ -8,6 +8,7 @@ import jsonschema
 import yaml
 
 from build.identity import fold_for_proposal, fold_handle, id_from_url
+from build.evidence_status import precision_errors
 from build.lineage import lineage_errors, lineage_warnings, load as load_lineage
 from build.resolution import LEDGER
 from build.vocabulary import axes, country_codes, language_codes, SIGNAL_TYPES
@@ -1101,6 +1102,9 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
                     f"capability.sources entry. Cite the card or paper there, with its "
                     f"`shows` and `accessed`, and point at it from `cites`."
                 )
+        # A `precision` block: an approved method, two model families, real intervals and dates,
+        # and citations on capability.sources (R-2026-11-02-f, -t).
+        errors.extend(precision_errors(entry, f"{where}: {label(entry)}", cited=cited))
         split, official = entry.get("split"), entry.get("official_eval")
         if split == "train" and official is True:
             errors.append(

@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Evidence status for per-language coverage: `build/evidence_status.py` labels each entry
+  provisional, estimated or unresolved, and a `precision` block on a coverage entry records a
+  statistical estimate under an approved method. No method is approved yet, so no entry is
+  estimated and no score changes (R-2026-11-02-e, -f, -t).
 - A component lineage registry (`sources/lineage.yaml`, schema `docs/schemas/lineage.schema.json`)
   and `build/lineage.py`, which derives whether two evaluation components are independent,
   dependent or unverified for a language; `build.validate` checks its structure and warns on

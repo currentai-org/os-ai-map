@@ -252,7 +252,8 @@ def test_the_required_fields_are_the_unit_of_evidence_and_its_reading():
         "official_eval", "count", "unit", "cites"
     }
     assert set(ENTRY["properties"]) - set(ENTRY["required"]) == {
-        "provenance", "qualifying_count", "human_validated", "subset_of", "source_language"
+        "provenance", "qualifying_count", "human_validated", "subset_of", "source_language",
+        "precision",
     }
 
 
