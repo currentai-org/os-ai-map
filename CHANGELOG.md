@@ -78,6 +78,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- AfroBench's NollySenti coverage entries for Hausa, Igbo and Yoruba record `human_translated`
+  provenance, from the NollySenti paper's statement that professional translators produced them;
+  they were `unknown`. No band moves.
 - The `add-data-source` skill follows ADR-003: an OSO-owned input is a dependency contract in
   `warehouse/dependencies.yaml` with its reader landing in the same PR, a repo-owned file is a
   governed asset with a `role`, and both routes run the scope gates. It no longer points at the
