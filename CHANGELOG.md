@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Cited lineage records in `sources/lineage.yaml` for the 39 coverage components of the four
+  calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench), from the lineage audit of
+  R-2026-11-02-i, -j and -u. Batayan's translation task is recorded as derived from FLORES-200,
+  which its paper states. No score changes; the sensitivity check is in
+  `docs/sweeps/2026-11-02-lineage-audit.md`.
 - A component lineage registry (`sources/lineage.yaml`, schema `docs/schemas/lineage.schema.json`)
   and `build/lineage.py`, which derives whether two evaluation components are independent,
   dependent or unverified for a language; `build.validate` checks its structure and warns on
