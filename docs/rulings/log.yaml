@@ -1711,3 +1711,36 @@ rulings:
     executor: none
     lands_in: [sources/scores/sea-helm.yaml, sources/scores/thai-exam.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/958']
+
+  - id: R-2026-11-02-a
+    date: 2026-11-02
+    by: ccerv1
+    venue: pr-review
+    refs: ["#965", "#953", flores-plus, sea-helm, afrobench, R-2026-11-01-b]
+    question: >-
+      How should the four language codes the 2026-11-02 reconciliation left open be declared:
+      SEA-HELM's Tagalog or Filipino split, AfroBench's North Ndebele and Venda (in its per-dataset
+      coverage but not its language list), AfroBench's N'Ko (listed but evaluated by no dataset), and
+      AfroBench's Portuguese (listed as African, described as a high-resource comparison language)?
+      And which of SEA-HELM's two Burmese translation counts, 1,012 in the card's README or 600 in its
+      data files, does the coverage record use?
+    ruling: >-
+      A set's declared target languages are what it actually evaluates as targets; comparison languages
+      are declared separately as pivots. SEA-HELM uses fil, keeping tgl as source_language where the
+      cited source codes or names the split Tagalog. AfroBench adds nde and ven, since its component
+      coverage and NTREX's configurations evaluate them, removes nqo, which no component evaluates (the
+      discrepancy stays in the reconciliation record), and treats por as a pivot alongside eng, fra and
+      arb. SEA-HELM's Burmese translation entry records 600, citing the dataset's own configuration, on
+      the assumption that those files are the official evaluation split; the discrepancy is documented.
+      No capability score changes in this PR, and any sensitivity difference is documented for the
+      depth-ladder PR rather than resolved here. FLORES+'s newly declared languages are unknown depth,
+      not documented zeros.
+    reasoning: >-
+      Actual evaluation coverage and a dataset's own contents are stronger evidence than a summary list
+      or a README, and the paper's own description of a comparison language is more informative for
+      scoring than its row in a regional table.
+    status: in-force
+    executor: agent
+    lands_in: [sources/products/sea-helm.yaml, sources/products/afrobench.yaml, sources/scores/sea-helm.yaml,
+      sources/scores/afrobench.yaml, docs/sweeps/2026-11-02-language-code-reconciliation.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/965']
