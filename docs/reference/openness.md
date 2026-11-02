@@ -643,9 +643,9 @@ because the source itself is published.
   repository as its Sustainable-Use-License core. The source is published and readable, and
   running the gated pieces needs a paid license key — this tier's definition almost word for
   word.
-- **`MAX-License`**, for `max`, is Modular's MAX License, the same license under its earlier
-  name `Modular-Community-License`; both spellings are listed, because records and history use
-  the old one. It lets MAX and works derived from it be redistributed only "in object code
+- **`MAX-License`**, for `max`, is Modular's MAX License. `Modular-Community-License` names
+  the same license and stays listed beside it, because records and history spell it that way.
+  It lets MAX and works derived from it be redistributed only "in object code
   form", forbids using MAX as training data "to produce software that reimplements or
   substitutes for MAX", and requires a company that offers MAX commercially as a hosted or
   managed AI service to carry Modular's mark. Each restricts a class of use; none is
