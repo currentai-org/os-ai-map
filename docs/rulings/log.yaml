@@ -1744,3 +1744,508 @@ rulings:
     lands_in: [sources/products/sea-helm.yaml, sources/products/afrobench.yaml, sources/scores/sea-helm.yaml,
       sources/scores/afrobench.yaml, docs/sweeps/2026-11-02-language-code-reconciliation.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/965']
+
+  - id: R-2026-11-02-b
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1]
+    question: >-
+      What does a depth band mean across evaluation tasks: one count ladder for every bounded
+      metric, per-task ladders anchored on reference benchmarks, or one shared meaning with a
+      measurement model per task family?
+    ruling: >-
+      Adopt the shared meaning. A depth band is the statistical precision with which an evaluation
+      measures model performance for a particular language and task, and each task family has an
+      explicit measurement model appropriate to its metric and evaluation design. The count ladder
+      (100 / 400 / 1,600 / 6,400) is provisional, used only where item counts are a defensible
+      approximation of measurement precision, with clustering and dependence accounted for where
+      the evidence supports it. Unknown precision is not zero depth: a task without a defensible
+      measurement model stays unresolved, with no arbitrary band substituted and its evidence not
+      silently excluded. Precision is not validity: a large benchmark can precisely measure a
+      narrow or flawed construct, so depth bands measure statistical resolution, not benchmark
+      quality, representativeness or usefulness, and the methodology keeps that visible. The
+      provisional treatment of reading comprehension, judge-scored evaluations and speech is
+      accepted, with their assumptions and limitations documented. No score changes until the
+      task-family models and the aggregation decisions are settled.
+    reasoning: >-
+      It is the only option whose results do not flip with the choice of a reference benchmark.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-c
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1]
+    question: >-
+      Which precision targets define the depth bands?
+    ruling: >-
+      Adopt the targets provisionally, as the 95% margin of error on a 0 to 100 score: band 1 wider
+      than ±10 points, band 2 about ±10, band 3 about ±5, band 4 about ±2.5, band 5 about ±1.25.
+      Bands are set on effective sample size, not necessarily raw item count; the raw-count ladder
+      gives a provisional upper bound on the band when dependence is unaccounted for. The number
+      of clusters is not a guaranteed floor, because unequal cluster sizes and within-cluster
+      correlation can make the effective sample size smaller than the cluster count; where
+      defensible, estimate a cluster-adjusted effective sample size, and otherwise report the
+      band's uncertainty rather than assert precision. Calibrate before implementation: once the
+      large native exams have coverage records, inspect the complete band distribution; more than
+      one-third at band 5 triggers a methodology review, not an automatic adjustment of the
+      thresholds. A ±5-point interval on a model's score does not by itself mean two models five
+      points apart can be distinguished; comparisons need uncertainty for the difference,
+      preferably from paired evaluations. Band 5 does not establish adequate precision for
+      individual subject areas.
+    reasoning: >-
+      The fourfold increase in effective sample size per band is mathematically coherent and gives
+      the ladder a consistent interpretation.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-d
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1, flores-plus]
+    question: >-
+      Is translation placed on the shared precision scale, so that FLORES+'s 1,012 devtest
+      sentences give at most band 3 per language rather than the 4 its own anchored ladder gave?
+    ruling: >-
+      Yes. Translation uses the same precision targets as other task families. The official
+      evaluation split is measured in sentences per target language, and dev and devtest are never
+      combined. Raw sentence counts set provisional ceilings, not guaranteed precision. Corpus-level
+      chrF, like BLEU, is computed from aggregated statistics and is not a simple average of
+      independent sentence scores, so a count-based formula is a conservative screening proxy, not
+      a demonstrated confidence interval. Corpus metrics need metric-appropriate uncertainty
+      estimation; document- or article-level bootstrap resampling that recomputes corpus chrF or
+      BLEU for each replicate is the preferred method, and a validated alternative or a qualifying
+      source-provided interval can also satisfy R-2026-11-02-f. Until a qualifying precision
+      estimate exists, the count-derived depth band is published with provisional status, stating
+      that its statistical confidence interval has not been independently estimated. FLORES+'s
+      current evidence supports a provisional ceiling of 3, not a confirmed band of 3, and its
+      multilingual breadth
+      stays visible through completeness and breadth measures rather than inflating depth. Under
+      the count proxy: FLORES+ 1,012 sentences, ceiling 3; NTREX-128 1,997, ceiling 4; SEA-HELM
+      Burmese and Filipino 600, ceiling 3; SEA-HELM Lao 1,012, ceiling 3. No published scores
+      change yet.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-e
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1]
+    question: >-
+      How do count-based ceilings enter the aggregation: as the band, as a range from 1 to the
+      ceiling, or not at all until estimates exist? And how are the remaining task families
+      (exams, reading comprehension, prompt-level instruction following, judged generation,
+      summarization, sequence labeling, speech) treated?
+    ruling: >-
+      Compute using provisional count-based bands; the task, language and dataset aggregation rules
+      operate on these values, and every derived result inherits the provisional label unless its
+      contributing evidence supports an established precision estimate. Publish the distinction
+      explicitly, so a reader can tell provisional (derived from item counts and assumptions),
+      estimated (derived from a task-appropriate statistical procedure such as a cluster-aware
+      bootstrap) and unresolved (insufficient information to assign even a provisional band); the
+      label stays visible at the aggregate dataset level and does not disappear when task bands
+      are combined. Keep the robustness rule for missing evidence: unknown counts and tasks without
+      a measurement model stay unknown, not zero, and take part in the low/high sensitivity test
+      where relevant rather than being silently excluded. Uncertainty about clustering alone does
+      not make an otherwise countable task unresolved. The count ceiling is not a mathematical
+      bound on actual precision, since correlation can reduce effective sample size and low
+      observed variance can tighten intervals; the provisional band is a conservative operational
+      cap under the count-based methodology. Adopt the proposed task-family treatments; prompt-level
+      scoring still needs a dependence check, and judge-scored evaluations keep judge validity
+      separate from sampling precision. Publish a result in the form "3, provisional count-based
+      depth, based on 1,012 evaluation sentences; statistical precision not independently
+      estimated; document-level dependence may affect the result". No published capability-score
+      changes until D2, D12, D7 and D5 are resolved and the implementation is validated.
+    reasoning: >-
+      Treating every ceiling as a range would make the methodology practically unusable before
+      per-item evaluation results exist; this keeps useful information about evaluation size while
+      being explicit about what has and has not been measured.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-f
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D2]
+    question: >-
+      What evidence moves a dataset's depth from provisional to estimated?
+    ruling: >-
+      A dataset earns estimated status when its statistical precision has been evaluated with a
+      validated, task-appropriate method. Minimum evidence: at least two published model runs from
+      different model families, with per-item results or enough information to reproduce their
+      confidence intervals; checkpoints of one model family do not satisfy this. Calculate a 95%
+      confidence interval for each model with the task family's approved method, use the widest to
+      set the estimated band, and record the individual intervals, not just the band. Choose models
+      by a documented rule before examining their interval widths, ideally at meaningfully
+      different performance levels; two families are a minimum, not proof that the widest observed
+      interval represents every possible model. Accept source-provided intervals without
+      recomputation when their methods, clustering assumptions, model identities and evaluation
+      splits are documented and meet the same standard; a published interval for one model is
+      useful evidence but does not by itself establish estimated status. Each task family's
+      procedure needs one ruling, supported by a calibration example comparing provisional and
+      estimated bands; once approved, applying it to further datasets is routine curation. Record
+      the benchmark version, official split, evaluated models, metric, resampling unit,
+      confidence-interval method and evidence date; later model runs do not change a published band
+      without review. The widest interval across two model families is the worst observed precision
+      among the selected models, not a guarantee of worst-case precision across all models, and the
+      documentation says so. For example, margins of ±2.1 and ±3.4 points give an estimated band of
+      3, not 4. No scores move now; all four calibration datasets stay provisional until qualifying
+      model-run evidence and approved procedures exist.
+    reasoning: >-
+      Otherwise one unsupported precision claim is replaced with another.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-g
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D12, R-2026-11-01-c]
+    question: >-
+      Within one task, how do several evaluation components for a language become one task band?
+    ruling: >-
+      One component determines each task band: for each language and task, take the highest band
+      achieved by a single qualifying component, and never sum item counts across components. The
+      same rule applies to original and imported components, with no special treatment for either,
+      which avoids double-counting overlapping evaluations. When two components reach the same
+      numerical band, prefer estimated over provisional. The winning component's status is
+      preserved: an estimated 3 does not outrank a provisional 4; the 4 wins numerically and the
+      task result stays explicitly provisional, with the estimated 3 visible as separately
+      established evidence. Keep all component-level evidence, including the best original and
+      imported components separately and the complete component lineage of nonwinning components,
+      so D7 can identify independent corroboration. A suite that publishes a genuine pooled metric
+      can have it assessed as a distinct measurement instrument once its pooling, overlap handling
+      and uncertainty estimation are documented and approved; it cannot simply add component counts.
+      No proposed band changes; SEA-HELM's Thai and Vietnamese classification components cannot be
+      summed to reach band 4.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-h
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D7, afrobench]
+    question: >-
+      When do two evaluation components count as independent corroboration, and does shared
+      underlying source text make them dependent even when the tasks built on it differ?
+    ruling: >-
+      Adopt the three-part independence definition (distinct items, distinct creation efforts,
+      neither derived from the other) with strict source-level independence: new questions, labels,
+      translations or tasks derived from the same underlying source examples do not qualify as
+      independent corroboration, though they still count as distinct task evidence. Shared source
+      text is defined at the example or dataset-family level: FLORES, SIB-200 and Belebele share an
+      underlying collection of source passages and are dependent, while two datasets that sample
+      different articles from Wikipedia are not dependent merely because both use Wikipedia;
+      sharing a broad domain or corpus provider is not enough. Distinct creation efforts matter
+      more than distinct organizations: two independently collected datasets from one research
+      group can corroborate each other, and two datasets made by different groups from the same
+      original questions cannot; different translators working from the same MMLU questions do not
+      establish independence. Independence needs evidence; where lineage is unknown or partial
+      overlap cannot be ruled out, corroboration is unverified rather than assumed, and the
+      components and their individual depth bands are kept. AfroBench's provisional corroborated
+      band of 1 is accepted, subject to D5; it does not mean its 1,997-sentence NTREX evaluation
+      gives band-1 precision, but that the aggregation rule cannot establish deeper independently
+      corroborated coverage for the median language. Its face-value band (3), corroborated band (1),
+      task breadth and completeness are published together, so statistical precision is not
+      conflated with diversity of underlying evidence.
+    reasoning: >-
+      The aim is independent corroboration, not task diversity. Reusing the same underlying text
+      can reproduce its sampling biases, linguistic choices and domain limitations.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-i
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D7, batayan]
+    question: >-
+      How is a pair of components treated when the sources do not state their lineage?
+    ruling: >-
+      Three pairwise lineage statuses. Independent: both components have documented,
+      non-overlapping source origins and separate collection or creation efforts; counts as
+      independent backing. Dependent: they share underlying examples, derive from a common source
+      set, or reuse the same underlying creation effort; does not count. Unverified: the evidence
+      establishes neither; does not count. Shared creators alone do not establish dependence, and
+      different groups can produce dependent datasets: the criterion is the evidence-generating
+      effort, not author identity. Distinct dataset names alone are not enough, since two named
+      datasets may derive from a common parent collection; the evidence must support
+      non-overlapping origins, though no item-by-item comparison is needed when credible provenance
+      documentation establishes independent collection. Unverified pairings do not contribute to
+      D5's independent backing. The implementation PR audits pairwise lineage, keeps the evidence
+      and status for each pairing, reports score movements, and runs a sensitivity analysis with
+      unverified pairings excluded and, hypothetically, treated as independent, before any
+      published score changes. Batayan is unverified: sharing broad content domains with FLORES
+      does not establish dependence.
+    reasoning: >-
+      The sensitivity analysis separates a low corroborated band caused by known dependence from one
+      caused by incomplete provenance documentation.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-j
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D7]
+    question: >-
+      Where is component lineage recorded: on each coverage entry, in a component-level registry, or
+      in code?
+    ruling: >-
+      A cited, component-level lineage registry, introduced in its own schema PR before the
+      depth-ladder implementation. Lineage describes the underlying evidence, not the suite that
+      imports it, so FLORES+ does not acquire different lineage facts because it appears in SEA-HELM
+      or AfroBench. Support language- and split-specific lineage: one canonical component record,
+      with overrides where translation or annotation efforts differ by language. Represent
+      derivation as a graph of parent datasets and source collections, so transitive dependence
+      (FLORES to SIB-200 to a suite importing SIB-200) is detected. Distinguish overlapping source
+      collections from broad provenance with enough specificity to tell them apart. Separate
+      structural validation from evidence verification: build.validate checks schema integrity,
+      references, identifiers and citation presence; whether a citation supports a lineage claim
+      remains evidence review. The build derives independent, dependent or unverified from the
+      registry, including transitive ancestry and language-specific overrides. An explicitly
+      documented pairwise relationship can resolve cases the automatic rules cannot, with a citation
+      and rationale. A missing registry entry produces an unverified pairing and a validation
+      warning, not a build failure or an assumption of independence, and the record distinguishes a
+      genuinely unverified origin from an entry not yet curated; both score as unverified. The
+      sensitivity analysis of R-2026-11-02-i is retained.
+    reasoning: >-
+      Lineage is a property of the evidence; centralizing it keeps one set of facts per component.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-k
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D5]
+    question: >-
+      How do task bands become a language band, and how far does independent corroboration let
+      imported depth carry?
+    ruling: >-
+      The corroborated maximum with a cap of one band. For each language, D = max(O, max over
+      imports i of min(b_i, C_i + 1)), where O is the highest band from the suite's own components,
+      b_i an imported component's band, and C_i the strongest independently verified corroborating
+      band for that import, 0 if none is verified. An imported component at band 4 with no
+      independent backing contributes at most 1; with independent backing at band 2, at most 3.
+      D12 and D7 hold: components within a task are never pooled, multiple imports of the same task
+      cannot corroborate one another, and an independently collected original component may support
+      an import, including on the same task, once its independence is established. Statistical
+      precision and corroboration stay distinct: the face-value band is the component's provisional
+      or estimated precision, the corroborated band is an evidence-aggregation policy measuring
+      independently supported depth, not a statistical precision estimate or a new confidence
+      interval, and a corroborated 1 is never described as measuring performance to ±10 points.
+      Where an estimated import is capped by provisional backing, the aggregate discloses that
+      provisional dependency; the winning component's status alone is not enough when the cap
+      binds. Publish the corroborated band, face-value band, best original band, task breadth,
+      completeness and whether the cap binds, and keep the sensitivity analysis treating unverified
+      pairings as independent. Calibration accepted, all provisional and subject to the lineage
+      audit and implementation validation: face-value and corroborated bands FLORES+ 3 and 3,
+      ThaiExam 3 and 3, SEA-HELM 3 and 2, AfroBench 3 and 1. No published score changes until the
+      lineage registry, task-family rules, full-roster calibration and sensitivity tests have been
+      validated.
+    reasoning: >-
+      It rewards independently supported depth, prevents a single imported benchmark from
+      determining a suite's depth, and never penalizes a language for gaining qualifying evidence.
+      The AfroBench result is consequential but defensible: it shows limited independent
+      corroboration for the median language, not poor statistical precision in its evaluations.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-l
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D3]
+    question: >-
+      Are speech ladders (hours, utterances, word error rate) deferred until a speech set is in the
+      calibration?
+    ruling: >-
+      Adopt the deferral. Speech remains unresolved until an appropriate measurement model is
+      validated. Missing methodology is never treated as zero depth.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-m
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D4]
+    question: >-
+      Does the depth band measure the evaluation resource, imports included?
+    ruling: >-
+      Adopt. Depth measures the evaluation resources available, including imports. D5
+      (R-2026-11-02-k) governs how much imported evidence contributes to corroborated depth.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-n
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D6, R-2026-10-30-e, R-2026-10-30-f]
+    question: >-
+      Is a dataset's own row on the map used only for linking and stage counting, never to change a
+      suite's band?
+    ruling: >-
+      Adopt. A dataset's own product row supports linking and the existing stage-counting logic, but
+      must not create additional evaluation evidence or count itself twice.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-o
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D8, R-2026-11-01-f]
+    question: >-
+      Which companion figures are published beside the depth band?
+    ruling: >-
+      Adopt the extended publication requirements: corroborated band, face-value band, best
+      original band, task count, completeness, cap status, evidence status and sensitivity to
+      unverified lineage. Absent original evidence is shown as unavailable, not zero. Why a cap
+      binds is inspectable: which component supplied the face-value band, which independent
+      component supported it, and which relationships were dependent or unverified.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-p
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D9]
+    question: >-
+      Does assembly value (harness, prompts, leaderboard) stay out of the depth band?
+    ruling: >-
+      Adopt. Assembling, maintaining, documenting or integrating a suite does not increase its
+      statistical depth band. It can be recognized separately.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-q
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D10, flores-plus]
+    question: >-
+      Is it accepted that large single-language native exams rank above FLORES+ on depth?
+    ruling: >-
+      Adopt. A sufficiently large, well-supported native exam may outrank FLORES+ on depth, and it is
+      not artificially capped to preserve benchmark rankings. This does not imply greater breadth or
+      overall quality.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-r
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D11, R-2026-10-30-l, R-2026-11-01-d]
+    question: >-
+      Is a set whose official evaluation split is not stated unresolved until a source states it?
+    ruling: >-
+      Adopt. Without a documented official evaluation split or an explicitly supported official
+      evaluation convention, depth is unresolved. Eligible counts are never inferred from a
+      dataset's total size.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-s
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#962", "#953", R-2026-11-02-c]
+    question: >-
+      Does the depth brief's claim that a cluster count bounds a band from below still stand?
+    ruling: >-
+      No. The claim in docs/briefs/2026-11-02-language-depth-methodology.md that the band of the
+      cluster count bounds the band from below, whatever the within-cluster correlation, is
+      withdrawn. Unequal cluster sizes and within-cluster correlation can make the effective sample
+      size smaller than the cluster count, so the floors the brief derived from it (FLORES+ from its
+      281 articles, Belebele from its 488 passages) are not established; those count bands are
+      provisional, with their uncertainty reported, as R-2026-11-02-c sets out. The brief stays as
+      published, as a dated record, and this entry carries the correction.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-t
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", R-2026-11-02-e, R-2026-11-02-f]
+    question: >-
+      What must the schema carry so a published depth band shows its evidence status?
+    ruling: >-
+      A schema change in its own PR, not implemented here: every task, language and dataset depth
+      band carries its evidence status, provisional, estimated or unresolved, and the status is
+      published with the band at every level of aggregation, including the dataset level. An
+      estimated band records the evidence R-2026-11-02-f requires (benchmark version, official
+      split, evaluated models, metric, resampling unit, interval method, evidence date and each
+      model's interval).
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-u
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", R-2026-11-02-j]
+    question: >-
+      What schema does the component lineage registry need?
+    ruling: >-
+      A schema change in its own PR, before the depth-ladder PR and not implemented here: the
+      component-level lineage registry of R-2026-11-02-j, with one canonical cited record per
+      component (its origin, the source collections its items come from, its parent datasets and
+      the creation effort that produced its text in each language), language- and split-specific
+      overrides, explicit cited pairwise relationships with a rationale, and a curation state that
+      tells a genuinely unverified origin from an entry not yet curated. build.validate checks the
+      registry's structure, references, identifiers and citations, and warns on a qualifying
+      component with no entry.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
