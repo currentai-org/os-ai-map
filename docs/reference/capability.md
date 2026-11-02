@@ -536,8 +536,10 @@ AfroBench. The schema is [`../schemas/lineage.schema.json`](../schemas/lineage.s
   writing or annotation work rather than the research group behind it.
 - **`domains`**: broad provenance (wikinews, news) for readers. It never enters the derivation.
 - **`overrides`**: language-, split- or task-specific lineage, for a component whose upstream
-  source is shared but whose translation or annotation effort differs by language. The first
-  override whose selectors all match replaces the fields it states.
+  source is shared but whose translation or annotation effort differs by language. The override
+  whose selectors all match replaces the fields it states. Two overrides of one component that
+  could both match some language, split and task are refused, so at most one ever applies and a
+  language override cannot silently mask a task one.
 - **`curation`**: `curated` when the record was written from its cited sources, `uncurated` for a
   placeholder. Both score as unverified when the facts are missing; the distinction says where
   evidence work should start.
@@ -550,26 +552,35 @@ languages it names.
 ### How a pair's status is derived
 
 `build/lineage.py` derives one of three statuses for two components on one language
-(R-2026-11-02-i), in this order:
+(R-2026-11-02-i). Each component is resolved in its own context, the task and split of its own
+coverage entry, because corroboration compares evidence across tasks and often across splits. In
+this order:
 
 1. An explicit relationship for the pair decides.
 2. A component with no registry entry, or an `uncurated` one, makes the pair **unverified**.
-3. Overrides for the language, split and task are applied.
+3. Each component's overrides are applied for the language and its own split and task. An
+   ancestor reached through `parents` is resolved for the language only, since a parent's split
+   and task are not the child's.
 4. **Dependent** when either component derives from the other through `parents`, when their source
-   collections overlap (each ancestor's collections included), or when they share a creation effort.
-5. **Unverified** when either origin is `unknown`, or either names no collection or no effort.
-6. **Independent** otherwise: both origins documented, collections disjoint, efforts separate.
+   collections overlap (each ancestor's collections included), or when they share a creation
+   effort. Known overlap decides before missing provenance does.
+5. **Unverified** when provenance is undocumented anywhere in either ancestry: a component or
+   ancestor with no entry, an uncurated entry, origin `unknown`, no collection, or no effort.
+6. **Independent** otherwise: provenance documented all the way up both ancestries, collections
+   disjoint, efforts separate.
 
 Only independent pairs count as backing in the corroboration step (R-2026-11-02-k). A stated
 dependence wins over an unknown origin. Shared research authors, a shared domain or corpus provider,
 and distinct dataset names do not by themselves decide anything (R-2026-11-02-h, -i). Pair the CLI
 with any two slugs to see the status and the rule that set it:
-`uv run python -m build.lineage pair flores-plus sib-200 --language hau`.
+`uv run python -m build.lineage pair flores-plus sib-200 --language hau`, adding `--a-task`,
+`--a-split`, `--b-task` and `--b-split` for each side's own context.
 
 ### What the build checks, and what it does not
 
 `build.validate` checks the registry's structure: the schema, unique ids, that every parent and
-collection exists, that `parents` has no cycle, that a curated record cites sources and that an
+collection exists, that `parents` has no cycle, that no two overrides of a component can both
+match, that override tasks are task classes, that a curated record cites sources and that an
 `original` or `derived` origin names what it comes from, that override and relationship languages
 are ISO 639-3 codes, and that a relationship is not repeated. It cannot check that a citation
 supports the lineage claim; that is evidence review (R-2026-11-02-j). A coverage component with no

@@ -34,6 +34,11 @@
       "pattern": "^[a-z]{3}$",
       "description": "An ISO 639-3 code, checked against sources/snapshots/iso-639-3.tab by build.validate."
     },
+    "task": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "A task class as capability.language_coverage names it, in underscore_form (machine_translation, knowledge_exam)."
+    },
     "split": {
       "enum": ["train", "dev", "validation", "test", "devtest", "official_eval"]
     },
@@ -121,7 +126,7 @@
             "properties": {
               "languages": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/language"}},
               "splits": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/split"}},
-              "tasks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/id"}},
+              "tasks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/task"}},
               "origin": {"$ref": "#/$defs/lineage_fields/properties/origin"},
               "collections": {"$ref": "#/$defs/lineage_fields/properties/collections"},
               "parents": {"$ref": "#/$defs/lineage_fields/properties/parents"},

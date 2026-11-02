@@ -7,28 +7,37 @@ here from `sources/lineage.yaml`, one cited record per component (R-2026-11-02-j
 reviewer can see why a language was capped and the same component never carries two sets of
 lineage facts because two suites import it.
 
-The derivation, in order, for a pair of components on one language (and optionally a split and
-task):
+The derivation, in order, for a pair of components on one language. Each component is resolved
+in its own context, the task and split of its own coverage entry, because corroboration compares
+evidence from different tasks and often different splits (R-2026-11-02-k):
 
 1. An explicit `relationships` entry for the pair, and for the language where it names any,
    decides.
 2. A component with no registry entry, or an entry marked `uncurated`, makes the pair unverified.
    The reason says which, because "not yet curated" and "origin unknown" both score as unverified
    but point evidence work in different directions.
-3. Overrides are applied: the first override whose `languages`, `splits` and `tasks` selectors all
-   match replaces the fields it states.
+3. Overrides are applied to each component in its own context: the override whose `languages`,
+   `splits` and `tasks` selectors all match replaces the fields it states. Validation refuses two
+   overrides that could both match, so at most one ever applies. Ancestors reached through
+   `parents` are resolved for the language only, since a parent's split and task are not the
+   child's.
 4. Dependent when either component is an ancestor of the other through `parents`, followed
    transitively; when their source collections overlap, counting each ancestor's collections; or
-   when they share a creation `effort`, counting each ancestor's effort.
-5. Unverified when either component's origin is unknown, or it names no collection or no effort.
-6. Independent otherwise: both origins documented, collections disjoint, efforts separate.
+   when they share a creation `effort`, counting each ancestor's effort. Known overlap decides
+   before missing provenance does.
+5. Unverified when provenance is undocumented anywhere in either component's ancestry: a
+   component or ancestor with origin unknown, no collection, no effort, no registry entry, or an
+   uncurated entry. Independence needs documented provenance all the way up.
+6. Independent otherwise: every origin in both ancestries documented, collections disjoint,
+   efforts separate.
 
 `domains` never enters the derivation: two sets drawn from the same broad domain are not
 dependent for that reason alone (R-2026-11-02-h).
 
 Usage:
     uv run python -m build.lineage pair flores-plus sib-200 --language hau
-    uv run python -m build.lineage pair batayan flores-plus --language fil --registry <path>
+    uv run python -m build.lineage pair afrimmlu flores-plus --language hau \
+        --a-task knowledge_exam --b-task machine_translation --b-split devtest
 """
 from __future__ import annotations
 
@@ -43,6 +52,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "sources" / "lineage.yaml"
 SCHEMA = ROOT / "docs" / "schemas" / "lineage.schema.json"
+SCORE_SCHEMA = ROOT / "docs" / "schemas" / "score.schema.json"
 EMPTY = {"version": 1, "collections": [], "components": [], "relationships": []}
 LINEAGE_FIELDS = ("origin", "collections", "parents", "effort", "domains")
 
@@ -72,7 +82,11 @@ def _index(doc: dict) -> tuple[dict, dict]:
 
 def effective(record: dict, language: str | None = None, split: str | None = None,
               task: str | None = None) -> dict:
-    """The record's lineage fields for one language, split and task, overrides applied."""
+    """The record's lineage fields for one language, split and task, overrides applied.
+
+    Validation guarantees that at most one override can match any context, so taking the first
+    match is not a precedence rule; it is the only match.
+    """
     out = {f: record.get(f) for f in LINEAGE_FIELDS}
     for ov in record.get("overrides") or []:
         if "languages" in ov and language not in ov["languages"]:
@@ -86,25 +100,44 @@ def effective(record: dict, language: str | None = None, split: str | None = Non
     return out
 
 
-def _closure(cid: str, comps: dict, language, split, task) -> tuple[set, set, set]:
-    """Ancestors, collections and efforts of a component, followed through `parents`."""
-    ancestors: set[str] = set()
-    collections: set[str] = set()
-    efforts: set[str] = set()
-    stack, seen = [cid], set()
+@dataclass
+class _Ancestry:
+    ancestors: set
+    collections: set
+    efforts: set
+    gaps: list  # (component, reason) where provenance is undocumented, in visiting order
+
+
+def _closure(cid: str, comps: dict, language, split, task) -> _Ancestry:
+    """Ancestors, collections, efforts and provenance gaps of a component, through `parents`.
+
+    The component itself is resolved in its own split and task; each ancestor for the language
+    only. A gap is any node whose provenance is undocumented: no registry entry, an uncurated
+    entry, origin unknown, no collection, or no effort.
+    """
+    out = _Ancestry(set(), set(), set(), [])
+    stack, seen = [(cid, split, task)], set()
     while stack:
-        cur = stack.pop()
-        if cur in seen or cur not in comps:
+        cur, cur_split, cur_task = stack.pop()
+        if cur in seen:
             continue
         seen.add(cur)
-        rec = effective(comps[cur], language, split, task)
-        collections.update(rec.get("collections") or [])
+        if cur not in comps:
+            out.gaps.append((cur, "not_in_registry"))
+            continue
+        if comps[cur].get("curation") != "curated":
+            out.gaps.append((cur, "not_curated"))
+        rec = effective(comps[cur], language, cur_split, cur_task)
+        cols = rec.get("collections") or []
+        out.collections.update(cols)
         if rec.get("effort"):
-            efforts.add(rec["effort"])
+            out.efforts.add(rec["effort"])
+        if rec.get("origin") == "unknown" or not cols and not rec.get("parents") or not rec.get("effort"):
+            out.gaps.append((cur, "origin_unknown"))
         for parent in rec.get("parents") or []:
-            ancestors.add(parent)
-            stack.append(parent)
-    return ancestors, collections, efforts
+            out.ancestors.add(parent)
+            stack.append((parent, None, None))
+    return out
 
 
 def _explicit(doc: dict, a: str, b: str, language: str | None) -> dict | None:
@@ -118,9 +151,14 @@ def _explicit(doc: dict, a: str, b: str, language: str | None) -> dict | None:
     return None
 
 
-def pair_status(doc: dict, a: str, b: str, language: str | None = None, split: str | None = None,
-                task: str | None = None) -> PairStatus:
-    """Whether components `a` and `b` corroborate each other for one language (R-2026-11-02-i)."""
+def pair_status(doc: dict, a: str, b: str, language: str | None = None, *,
+                a_task: str | None = None, a_split: str | None = None,
+                b_task: str | None = None, b_split: str | None = None) -> PairStatus:
+    """Whether components `a` and `b` corroborate each other for one language (R-2026-11-02-i).
+
+    Each component is resolved in its own context: `a_task`/`a_split` are the task and split of
+    `a`'s coverage entry, `b_task`/`b_split` of `b`'s.
+    """
     if a == b:
         return PairStatus("dependent", "same_component")
     rel = _explicit(doc, a, b, language)
@@ -134,21 +172,44 @@ def pair_status(doc: dict, a: str, b: str, language: str | None = None, split: s
     if uncurated:
         return PairStatus("unverified", "not_curated", ", ".join(uncurated))
 
-    anc_a, col_a, eff_a = _closure(a, comps, language, split, task)
-    anc_b, col_b, eff_b = _closure(b, comps, language, split, task)
-    if b in anc_a or a in anc_b:
-        child, parent = (a, b) if b in anc_a else (b, a)
+    x = _closure(a, comps, language, a_split, a_task)
+    y = _closure(b, comps, language, b_split, b_task)
+    if b in x.ancestors or a in y.ancestors:
+        child, parent = (a, b) if b in x.ancestors else (b, a)
         return PairStatus("dependent", "derived", f"{child} derives from {parent}")
-    if col_a & col_b:
-        return PairStatus("dependent", "shared_collection", ", ".join(sorted(col_a & col_b)))
-    if eff_a & eff_b:
-        return PairStatus("dependent", "shared_effort", ", ".join(sorted(eff_a & eff_b)))
+    if x.collections & y.collections:
+        return PairStatus("dependent", "shared_collection", ", ".join(sorted(x.collections & y.collections)))
+    if x.efforts & y.efforts:
+        return PairStatus("dependent", "shared_effort", ", ".join(sorted(x.efforts & y.efforts)))
 
-    for c, cols, effs in ((a, col_a, eff_a), (b, col_b, eff_b)):
-        rec = effective(comps[c], language, split, task)
-        if rec.get("origin") == "unknown" or not cols or not effs:
-            return PairStatus("unverified", "origin_unknown", c)
+    gaps = x.gaps + y.gaps
+    if gaps:
+        # not_in_registry and not_curated are reported as such for an ancestor too, so the
+        # evidence work they point to is visible; otherwise the gap is undocumented origin.
+        for reason in ("not_in_registry", "not_curated", "origin_unknown"):
+            hit = [c for c, r in gaps if r == reason]
+            if hit:
+                return PairStatus("unverified", reason, ", ".join(dict.fromkeys(hit)))
     return PairStatus("independent", "disjoint")
+
+
+def _could_both_match(x: dict, y: dict) -> bool:
+    """True when some language, split and task satisfies both overrides' selectors.
+
+    A selector an override omits matches everything, so two overrides are disjoint only when
+    some selector both state has no value in common.
+    """
+    for key in ("languages", "splits", "tasks"):
+        if key in x and key in y and not set(x[key]) & set(y[key]):
+            return False
+    return True
+
+
+def task_classes() -> set[str]:
+    """The task classes capability.language_coverage allows, read from the score schema."""
+    score = json.loads(SCORE_SCHEMA.read_text())
+    entry = score["properties"]["capability"]["properties"]["language_coverage"]["items"]
+    return set(entry["properties"]["task"]["enum"])
 
 
 def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
@@ -172,6 +233,7 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
         for dup in sorted({i for i in ids if ids.count(i) > 1}):
             errors.append(f"lineage.yaml: {kind}: id {dup!r} appears more than once")
     comps, cols = _index(doc)
+    tasks = task_classes()
 
     def check_refs(where: str, fields: dict) -> None:
         for p in fields.get("parents") or []:
@@ -193,8 +255,18 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
                 errors.append(f"{where}: origin original names no collection of its own")
             if rec["origin"] == "derived" and not (rec.get("parents") or rec.get("collections")):
                 errors.append(f"{where}: origin derived names no parent and no collection")
-        for i, ov in enumerate(rec.get("overrides") or []):
+        overrides = rec.get("overrides") or []
+        for i, ov in enumerate(overrides):
+            for j in range(i):
+                if _could_both_match(overrides[j], ov):
+                    errors.append(f"{where}: overrides[{j}] and overrides[{i}] can both match one "
+                                  f"language, split and task; make their selectors disjoint, so a "
+                                  f"language override cannot silently mask a task one")
             check_refs(f"{where}: overrides[{i}]", ov)
+            for t in ov.get("tasks") or []:
+                if t not in tasks:
+                    errors.append(f"{where}: overrides[{i}]: task {t!r} is not a task class in "
+                                  f"capability.language_coverage")
             if allowed_languages is not None:
                 for lang in ov.get("languages") or []:
                     if lang not in allowed_languages:
@@ -274,12 +346,15 @@ def main() -> None:
     p.add_argument("a")
     p.add_argument("b")
     p.add_argument("--language")
-    p.add_argument("--split")
-    p.add_argument("--task")
+    p.add_argument("--a-task")
+    p.add_argument("--a-split")
+    p.add_argument("--b-task")
+    p.add_argument("--b-split")
     p.add_argument("--registry", type=Path, default=REGISTRY)
     args = ap.parse_args()
     doc = load(args.registry)
-    s = pair_status(doc, args.a, args.b, args.language, args.split, args.task)
+    s = pair_status(doc, args.a, args.b, args.language, a_task=args.a_task, a_split=args.a_split,
+                    b_task=args.b_task, b_split=args.b_split)
     print(json.dumps({"a": args.a, "b": args.b, "language": args.language, "status": s.status,
                       "reason": s.reason, "detail": s.detail}))
 

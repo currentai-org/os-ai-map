@@ -113,6 +113,40 @@ def test_missing_effort_is_unverified(doc):
     assert (got.status, got.reason) == ("unverified", "origin_unknown")
 
 
+def test_each_component_is_resolved_in_its_own_task(doc):
+    # Regression: one task for both sides applied example-suite-own's exam override to the wrong
+    # component, or skipped it. The exam items share the FLORES translators; its other items don't.
+    exam = pair_status(doc, "example-suite-own", "flores-plus", "hau",
+                       a_task="knowledge_exam", b_task="machine_translation", b_split="devtest")
+    assert (exam.status, exam.reason) == ("dependent", "shared_effort")
+    other = pair_status(doc, "example-suite-own", "flores-plus", "hau",
+                        a_task="instruction_following", b_task="machine_translation")
+    assert other.status == "independent"
+    # The same pair read the other way round gives the same answer.
+    flipped = pair_status(doc, "flores-plus", "example-suite-own", "hau",
+                          a_task="machine_translation", b_task="knowledge_exam")
+    assert flipped.status == "dependent"
+
+
+def test_unknown_ancestor_makes_the_pair_unverified(doc):
+    # child-of-batayan documents its own effort, but its parent's origin is unknown, so its
+    # provenance is not documented all the way up.
+    got = pair_status(doc, "child-of-batayan", "ntrex-128", "fil")
+    assert (got.status, got.reason, got.detail) == ("unverified", "origin_unknown", "batayan")
+
+
+def test_known_overlap_still_wins_over_an_unknown_ancestor(doc):
+    d = copy.deepcopy(doc)
+    component(d, "child-of-batayan")["collections"] = ["newstest2019"]
+    got = pair_status(d, "child-of-batayan", "ntrex-128", "fil")
+    assert (got.status, got.reason) == ("dependent", "shared_collection")
+
+
+def test_uncurated_ancestor_makes_the_pair_unverified(doc):
+    got = pair_status(doc, "child-of-uncurated", "ntrex-128", "hau")
+    assert (got.status, got.reason, got.detail) == ("unverified", "not_curated", "example-uncurated")
+
+
 # --- structural validation --------------------------------------------------------------------
 
 
@@ -160,6 +194,29 @@ def test_duplicate_component_id(doc):
 def test_override_language_must_be_iso_639_3(doc):
     errs = broken(doc, lambda d: component(d, "example-mt")["overrides"][0].update(languages=["xqz"]))
     assert any("language 'xqz' is not an ISO 639-3 code" in e for e in errs)
+
+
+def test_overlapping_overrides_are_refused(doc):
+    # A language override and a task override that can both match one context are ambiguous.
+    def change(d):
+        component(d, "example-suite-own")["overrides"].append(
+            {"languages": ["hau"], "effort": "someone-else",
+             "sources": component(d, "example-suite-own")["sources"]})
+    errs = broken(doc, change)
+    assert any("overrides[0] and overrides[1] can both match" in e for e in errs)
+
+
+def test_disjoint_overrides_are_accepted(doc):
+    def change(d):
+        component(d, "example-suite-own")["overrides"].append(
+            {"tasks": ["instruction_following"], "effort": "someone-else",
+             "sources": component(d, "example-suite-own")["sources"]})
+    assert broken(doc, change) == []
+
+
+def test_override_task_must_be_a_task_class(doc):
+    errs = broken(doc, lambda d: component(d, "example-suite-own")["overrides"][0].update(tasks=["exam"]))
+    assert any("task 'exam' is not a task class" in e for e in errs)
 
 
 def test_relationship_needs_a_citation(doc):
