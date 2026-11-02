@@ -350,8 +350,8 @@ carry a ruling worth reading:
   for object-code-only redistribution — and adds no cap on who may use the software or at
   what scale, so SPDX and OSI both treat the combination as Apache-2.0. `max` records the
   identical string under a `repo-license` key this ladder does not read, and carries a
-  separate, non-OSI Modular Community License as its governing terms: the Apache text there
-  covers the repository, not the product's usage terms. `cuda-tile` carries no such wrapper —
+  separate, non-OSI MAX License as its governing terms: the Apache text there covers Mojo and
+  part of the repository, not MAX's binaries or the rest of its source. `cuda-tile` carries no such wrapper —
   its `LICENSE` body is the Apache-2.0-WITH-LLVM-exception text and nothing else — so the name
   resolves cleanly on its own there.
 
@@ -643,9 +643,13 @@ because the source itself is published.
   repository as its Sustainable-Use-License core. The source is published and readable, and
   running the gated pieces needs a paid license key — this tier's definition almost word for
   word.
-- **`Modular-Community-License`** caps capacity by device architecture — eight devices on any
-  accelerator other than x86/ARM/NVIDIA-PTX — and grants only "a limited right to redistribute
-  certain components of the SDK". Scale, not attribution.
+- **`MAX-License`**, for `max`, is Modular's MAX License, the same license under its earlier
+  name `Modular-Community-License`; both spellings are listed, because records and history use
+  the old one. It lets MAX and works derived from it be redistributed only "in object code
+  form", forbids using MAX as training data "to produce software that reimplements or
+  substitutes for MAX", and requires a company that offers MAX commercially as a hosted or
+  managed AI service to carry Modular's mark. Each restricts a class of use; none is
+  attribution alone.
 - **`Dify-Open-Source-License`** is Apache-2.0 plus a multi-tenant service restriction and
   branding conditions; the multi-tenant clause is the anti-compete clause.
 - **`Open-WebUI-License`** is BSD-3-Clause plus a branding-retention clause that binds above 50
