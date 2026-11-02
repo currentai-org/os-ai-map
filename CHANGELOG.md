@@ -62,6 +62,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- SEA-HELM's coverage record adds its Lao (FLORES, 1,012 sentences) and Filipino (Batayan, 600)
+  translation splits from the dataset's own configuration; every SEA-HELM target language now has
+  evidence, and no score moved ([#966](https://github.com/currentai-org/os-ai-map/pull/966)).
 - FLORES+, SEA-HELM and AfroBench declare the language codes their current sources use: FLORES+ moves
   to its card's codes (`arb`, `ekk`, `gug`, `cmn`, `fil`, `ktu`) and adds 14 languages; SEA-HELM lists
   Malay as `zsm` and Filipino as `fil`, and records Burmese translation at 600 sentences, its data files'
