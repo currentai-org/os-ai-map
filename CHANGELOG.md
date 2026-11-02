@@ -81,7 +81,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - The `add-data-source` skill follows ADR-003: an OSO-owned input is a dependency contract in
   `warehouse/dependencies.yaml` with its reader landing in the same PR, a repo-owned file is a
   governed asset with a `role`, and both routes run the scope gates. It no longer points at the
-  retired `warehouse/models/catalog/` fetchers.
+  retired `warehouse/models/catalog/` fetchers
+  ([#973](https://github.com/currentai-org/os-ai-map/pull/973)).
 - SEA-HELM's coverage record adds its Lao (FLORES, 1,012 sentences) and Filipino (Batayan, 600)
   translation splits from the dataset's own configuration; every SEA-HELM target language now has
   evidence, and no score moved ([#966](https://github.com/currentai-org/os-ai-map/pull/966)).
