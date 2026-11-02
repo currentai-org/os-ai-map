@@ -65,7 +65,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - FLORES+, SEA-HELM and AfroBench declare the language codes their current sources use: FLORES+ moves
   to its card's codes (`arb`, `ekk`, `gug`, `cmn`, `fil`, `ktu`) and adds 14 languages, SEA-HELM lists
   Malay as `zsm`, and AfroBench declares English, French and Arabic as pivots; no score moved, and four
-  ambiguous cases wait on a ruling (`docs/sweeps/2026-11-02-language-code-reconciliation.md`).
+  ambiguous cases wait on a ruling (`docs/sweeps/2026-11-02-language-code-reconciliation.md`;
+  [#965](https://github.com/currentai-org/os-ai-map/pull/965)).
+- The software ladder recognizes `MAX-License`, Modular's renamed Community License, in
+  `competition_restricted`, and max records it from the 2026-10-21 text; max stays 2/source_available
+  ([#964](https://github.com/currentai-org/os-ai-map/pull/964)).
 - muse-spark re-scored on Muse Spark Open's weights: openness 1/closed to 3/open_weights with Muse Spark
   Open as the governing release and Muse-Model-License as use_bounded; adoption stays 4, now recorded as
   reported traction with no numeric reach ([#930](https://github.com/currentai-org/os-ai-map/pull/930)).
