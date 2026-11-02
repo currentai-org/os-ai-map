@@ -200,6 +200,12 @@ NON_DECLARATION_INPUTS: dict[str, str] = {
         "product's tier, the same kind of decision resolution_ledger.yaml records for "
         "artifact identity -- not a claim about what that product is, owns or scores."
     ),
+    "lineage.yaml": (
+        "the component lineage registry (R-2026-11-02-j): where each evaluation component's "
+        "items come from. Nothing reads it to set a score yet, so a change to it changes no "
+        "product's declaration. The depth-ladder PR, which makes corroborated depth depend on "
+        "it, moves it into DECLARATION_INPUTS in the same change."
+    ),
     "org_handles.yaml": (
         "ownership evidence for identity resolution; never joined for scores; changes no "
         "product declaration. Kept out of the declaration inputs deliberately -- unlike a "

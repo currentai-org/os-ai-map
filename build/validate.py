@@ -8,6 +8,7 @@ import jsonschema
 import yaml
 
 from build.identity import fold_for_proposal, fold_handle, id_from_url
+from build.lineage import lineage_errors, lineage_warnings, load as load_lineage
 from build.resolution import LEDGER
 from build.vocabulary import axes, country_codes, language_codes, SIGNAL_TYPES
 
@@ -124,6 +125,7 @@ def load_sources(root: Path) -> dict:
         "org_handles": _load_optional_yaml(
             root / "sources" / "org_handles.yaml", {"version": 1, "handles": []}
         ),
+        "lineage": load_lineage(root / "sources" / "lineage.yaml"),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():
@@ -933,6 +935,12 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
             label = entry.get("repo") or (entry.get("artifact") or {}).get("id") or f"entry {i}"
             errors.append(f"resolution_ledger.yaml: {label}: schema: {_schema_msg(e)}")
 
+    # `sources/lineage.yaml`, the component lineage registry (R-2026-11-02-j, -u): structure,
+    # references, parent cycles and citation presence. Whether a citation supports a lineage
+    # claim is evidence review, not this gate. A data dict built by a test without the key skips it.
+    if "lineage" in data:
+        errors.extend(lineage_errors(data["lineage"], allowed_languages=set(language_codes())))
+
     return errors
 
 
@@ -1197,6 +1205,7 @@ if __name__ == "__main__":
     for e in errs:
         print("ERROR:", e)
     warns = model_family_overlap_warnings(src.get("model_families") or {})
+    warns += lineage_warnings(src.get("lineage") or {}, src.get("scores") or {})
     for w in warns:
         print("WARNING:", w)
     print(f"\n{len(errs)} error(s), {len(warns)} warning(s)")

@@ -513,6 +513,89 @@ aggregation gives sensible, explainable outcomes before the other evaluation set
 (R-2026-11-01-g). `refresh-category` fills a record from the card or paper it is already reading
 for the band ([`../workflows/refresh-category.md`](../workflows/refresh-category.md)).
 
+## Component lineage
+
+Whether two pieces of evidence for one language corroborate each other depends on where their items
+came from, so the depth ladder reads lineage from a registry rather than from the coverage entries
+(R-2026-11-02-j, -u). `sources/lineage.yaml` holds one cited record per evaluation component, keyed
+by the `component` slug the coverage entries use. Lineage describes the evidence, not the suite that
+imports it: FLORES+ has one record whether it appears on its own row, inside SEA-HELM or inside
+AfroBench. The schema is [`../schemas/lineage.schema.json`](../schemas/lineage.schema.json).
+
+### What a record states
+
+- **`origin`**: `original` (items collected or written for the component, from a collection of
+  its own), `derived` (items taken from a parent component or an existing collection: a
+  translation, sample, relabeling or re-host) or `unknown` (no source states it).
+- **`collections`**: the named collections of underlying source examples the items come from,
+  such as FLORES-200's sentences or MMLU's questions. A collection is a specific set of examples,
+  never a broad domain.
+- **`parents`**: the components this one derives from. The build follows them transitively, so a
+  suite that imports SIB-200 is still dependent on FLORES.
+- **`effort`**: the effort that produced the component's text in the language, the translation,
+  writing or annotation work rather than the research group behind it.
+- **`domains`**: broad provenance (wikinews, news) for readers. It never enters the derivation.
+- **`overrides`**: language-, split- or task-specific lineage, for a component whose upstream
+  source is shared but whose translation or annotation effort differs by language. The override
+  whose selectors all match replaces the fields it states. Two overrides of one component that
+  could both match some language, split and task are refused, so at most one ever applies and a
+  language override cannot silently mask a task one.
+- **`curation`**: `curated` when the record was written from its cited sources, `uncurated` for a
+  placeholder. Both score as unverified when the facts are missing; the distinction says where
+  evidence work should start.
+- **`sources`**: citations in the shape score records use, digest required.
+
+`relationships` holds explicit, cited pairwise statements, each with a rationale, for cases the
+automatic rules cannot resolve. An explicit relationship takes precedence for the pair, and for the
+languages it names.
+
+### How a pair's status is derived
+
+`build/lineage.py` derives one of three statuses for two components on one language
+(R-2026-11-02-i). Each component is resolved in its own context, the task and split of its own
+coverage entry, because corroboration compares evidence across tasks and often across splits. In
+this order:
+
+1. An explicit relationship for the pair decides.
+2. Each component's overrides are applied for the language and its own split and task. An
+   ancestor reached through `parents` is resolved for the language only, since a parent's split
+   and task are not the child's.
+3. **Dependent** when either component derives from the other through `parents`, when their source
+   collections overlap (each ancestor's collections included), or when they share a creation
+   effort. This is checked first, before any gap in provenance, so known dependence decides even
+   where a component has no entry or an uncurated one.
+4. **Unverified** when provenance is undocumented anywhere in either ancestry: a component or
+   ancestor with no entry, an uncurated entry, origin `unknown`, no effort, or no source collection
+   either of its own or inherited through a documented parent. The reason names which, because "not
+   yet curated" and "origin unknown" both score as unverified but point evidence work in different
+   directions.
+5. **Independent** otherwise: provenance documented all the way up both ancestries, collections
+   disjoint, efforts separate.
+
+Only independent pairs count as backing in the corroboration step (R-2026-11-02-k). A stated
+dependence wins over an unknown origin. Shared research authors, a shared domain or corpus provider,
+and distinct dataset names do not by themselves decide anything (R-2026-11-02-h, -i). Pair the CLI
+with any two slugs to see the status and the rule that set it:
+`uv run python -m build.lineage pair flores-plus sib-200 --language hau`, adding `--a-task`,
+`--a-split`, `--b-task` and `--b-split` for each side's own context.
+
+### What the build checks, and what it does not
+
+`build.validate` checks the registry's structure: that the file is a mapping (only a missing file
+reads as an empty registry), the schema, unique ids, that every parent and
+collection exists, that `parents` has no cycle, that no two overrides of a component can both
+match, that override tasks are task classes, that a curated record cites sources and that an
+`original` or `derived` origin names what it comes from, in the canonical record and under each
+override, that override and relationship languages are ISO 639-3 codes, and that no two
+relationships for one pair can both apply to a language. The cycle check covers every parent edge
+any record or override states, since an override can replace `parents`. Every citation's `accessed`
+must be a real ISO date no later than today, the rule score citations follow. It cannot check that a
+citation supports the lineage claim; that is evidence review (R-2026-11-02-j). A coverage component
+with no registry entry is a warning, never an error, and every pair it is in is unverified, unless
+dependence is already known, until the entry is written. The depth ladder is not built, so nothing reads the statuses yet; the lineage audit
+fills the registry and reports the sensitivity of each result to unverified pairs before any score
+moves (R-2026-11-02-i).
+
 ## Writing the rungs
 
 The bands are per category, so somebody writes their definitions, and that writing is where the

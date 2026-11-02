@@ -1,0 +1,177 @@
+# A small lineage registry for tests/test_lineage.py. Each component exists to exercise one rule
+# of build/lineage.py; the URLs and digests are placeholders, not citations.
+version: 1
+collections:
+  - id: flores-200
+    description: FLORES-200's sentences, sampled from Wikinews, Wikijunior and Wikivoyage.
+  - id: newstest2019
+    description: The WMT newstest2019 English source sentences.
+  - id: wiki-qa-a-articles
+    description: Articles sampled from Wikipedia for wiki-qa-a.
+  - id: wiki-qa-b-articles
+    description: A separate sample of Wikipedia articles for wiki-qa-b.
+  - id: example-mt-corpus
+    description: Sentences collected for example-mt.
+  - id: example-suite-items
+    description: Items written for example-suite-own.
+components:
+  - id: flores-plus
+    curation: curated
+    origin: original
+    collections: [flores-200]
+    parents: []
+    effort: flores-translation
+    domains: [wikinews, wikijunior, wikivoyage]
+    sources:
+      - url: https://example.org/flores-plus
+        shows: translated from FLORES-200's English sentences
+        accessed: '2026-11-02'
+        content_sha256: '1111111111111111111111111111111111111111111111111111111111111111'
+  - id: sib-200
+    curation: curated
+    origin: derived
+    collections: []
+    parents: [flores-plus]
+    effort: sib-200-annotation
+    sources:
+      - url: https://example.org/sib-200
+        shows: topic labels on FLORES-200 sentences
+        accessed: '2026-11-02'
+        content_sha256: '2222222222222222222222222222222222222222222222222222222222222222'
+  - id: example-suite-topic
+    curation: curated
+    origin: derived
+    collections: []
+    parents: [sib-200]
+    effort: example-suite-relabel
+    sources:
+      - url: https://example.org/example-suite
+        shows: a suite's topic task, re-hosting SIB-200
+        accessed: '2026-11-02'
+        content_sha256: '3333333333333333333333333333333333333333333333333333333333333333'
+  - id: ntrex-128
+    curation: curated
+    origin: derived
+    collections: [newstest2019]
+    parents: []
+    effort: ntrex-translation
+    domains: [news]
+    sources:
+      - url: https://example.org/ntrex
+        shows: references translated from newstest2019
+        accessed: '2026-11-02'
+        content_sha256: '4444444444444444444444444444444444444444444444444444444444444444'
+  - id: batayan
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    domains: [wikinews, wikijunior, wikivoyage]
+    notes: Same domains as FLORES; no source states where its translation items come from.
+    sources:
+      - url: https://example.org/batayan
+        shows: Filipino translation, Wikinews, Wikijunior and Wikivoyage domains
+        accessed: '2026-11-02'
+        content_sha256: '5555555555555555555555555555555555555555555555555555555555555555'
+  - id: wiki-qa-a
+    curation: curated
+    origin: original
+    collections: [wiki-qa-a-articles]
+    parents: []
+    effort: wiki-qa-a-annotation
+    domains: [wikipedia]
+    sources:
+      - url: https://example.org/wiki-qa-a
+        shows: questions written on its own sample of Wikipedia articles
+        accessed: '2026-11-02'
+        content_sha256: '6666666666666666666666666666666666666666666666666666666666666666'
+  - id: wiki-qa-b
+    curation: curated
+    origin: original
+    collections: [wiki-qa-b-articles]
+    parents: []
+    effort: wiki-qa-b-annotation
+    domains: [wikipedia]
+    sources:
+      - url: https://example.org/wiki-qa-b
+        shows: questions written on a separate sample of Wikipedia articles
+        accessed: '2026-11-02'
+        content_sha256: '7777777777777777777777777777777777777777777777777777777777777777'
+  - id: example-mt
+    curation: curated
+    origin: original
+    collections: [example-mt-corpus]
+    parents: []
+    effort: example-mt-translators
+    overrides:
+      - languages: [hau]
+        effort: flores-translation
+        sources:
+          - url: https://example.org/example-mt-hausa
+            shows: the Hausa side was translated by the FLORES Hausa translators
+            accessed: '2026-11-02'
+            content_sha256: '8888888888888888888888888888888888888888888888888888888888888888'
+    sources:
+      - url: https://example.org/example-mt
+        shows: sentences collected and translated for example-mt
+        accessed: '2026-11-02'
+        content_sha256: '9999999999999999999999999999999999999999999999999999999999999999'
+  - id: example-suite-own
+    curation: curated
+    origin: original
+    collections: [example-suite-items]
+    parents: []
+    effort: example-suite-writers
+    overrides:
+      - tasks: [knowledge_exam]
+        effort: flores-translation
+        sources:
+          - url: https://example.org/example-suite-exam
+            shows: the suite's exam questions were translated by the FLORES translators
+            accessed: '2026-11-02'
+            content_sha256: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
+    sources:
+      - url: https://example.org/example-suite-own
+        shows: items written for the suite
+        accessed: '2026-11-02'
+        content_sha256: 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+  - id: child-of-batayan
+    curation: curated
+    origin: derived
+    collections: []
+    parents: [batayan]
+    effort: child-of-batayan-annotation
+    sources:
+      - url: https://example.org/child-of-batayan
+        shows: labels added to Batayan's sentences
+        accessed: '2026-11-02'
+        content_sha256: 'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'
+  - id: child-of-uncurated
+    curation: curated
+    origin: derived
+    collections: []
+    parents: [example-uncurated]
+    effort: child-of-uncurated-annotation
+    sources:
+      - url: https://example.org/child-of-uncurated
+        shows: derived from a set whose record is not written yet
+        accessed: '2026-11-02'
+        content_sha256: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+  - id: example-uncurated
+    curation: uncurated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    sources: []
+relationships:
+  - between: [wiki-qa-a, wiki-qa-b]
+    status: dependent
+    languages: [swh]
+    rationale: The Swahili sides of both sets were written by one annotation team.
+    sources:
+      - url: https://example.org/wiki-qa-swahili
+        shows: one Swahili annotation team for both sets
+        accessed: '2026-11-02'
+        content_sha256: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
