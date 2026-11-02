@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A component lineage registry (`sources/lineage.yaml`, schema `docs/schemas/lineage.schema.json`)
+  and `build/lineage.py`, which derives whether two evaluation components are independent,
+  dependent or unverified for a language; `build.validate` checks its structure and warns on
+  coverage components with no entry. The registry starts empty and no score changes
+  (R-2026-11-02-j, -u).
 - A preliminary language_specific_eval_sets category (Language-specific evaluation sets), with an
   empty roster and an interim capability ladder that compares each set with sets for the same
   languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets

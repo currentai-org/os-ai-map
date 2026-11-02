@@ -29,6 +29,9 @@ sources/verification_queue.yaml  Axes deliberately held: a value whose evidence 
 sources/signal_routing.yaml  Which machine signal is authoritative per dimension, and
                        which values mean "this source has no answer" (abstain_values)
 sources/evidence_policy.yaml  When an observation is admissible as evidence
+sources/lineage.yaml  Component lineage registry: where each evaluation component's items come
+                       from, so the depth ladder can tell independent corroboration from dependent
+                       evidence (build/lineage.py derives pair statuses; R-2026-11-02-j)
 sources/rubrics/       Shared scoring ladders. A category inherits one with
                        `scoring_recipe: {extends: <name>}` rather than copying it;
                        or, for a category whose products don't all climb the same
