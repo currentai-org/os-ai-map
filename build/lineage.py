@@ -44,6 +44,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 
 import jsonschema
@@ -67,14 +68,24 @@ class PairStatus:
     detail: str = ""
 
 
-def load(path: Path = REGISTRY) -> dict:
-    """The registry, or an empty one where the file does not exist at the tree being read."""
+def load(path: Path = REGISTRY):
+    """The registry, or an empty one where the file does not exist at the tree being read.
+
+    Only a missing file falls back to the empty registry. A file that exists is returned as
+    parsed, so an empty file or a root that is not a mapping reaches `lineage_errors` and fails
+    there instead of passing as an empty registry.
+    """
     if not path.exists():
         return dict(EMPTY)
-    return yaml.safe_load(path.read_text()) or dict(EMPTY)
+    return yaml.safe_load(path.read_text())
+
+
+def _as_doc(doc) -> dict:
+    return doc if isinstance(doc, dict) else {}
 
 
 def _index(doc: dict) -> tuple[dict, dict]:
+    doc = _as_doc(doc)
     comps = {c["id"]: c for c in doc.get("components") or [] if isinstance(c, dict) and "id" in c}
     cols = {c["id"]: c for c in doc.get("collections") or [] if isinstance(c, dict) and "id" in c}
     return comps, cols
@@ -141,7 +152,7 @@ def _closure(cid: str, comps: dict, language, split, task) -> _Ancestry:
 
 
 def _explicit(doc: dict, a: str, b: str, language: str | None) -> dict | None:
-    for rel in doc.get("relationships") or []:
+    for rel in _as_doc(doc).get("relationships") or []:
         if set(rel.get("between") or []) != {a, b}:
             continue
         langs = rel.get("languages")
@@ -218,6 +229,9 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
     (R-2026-11-02-j).
     """
     errors: list[str] = []
+    if not isinstance(doc, dict):
+        return [f"lineage.yaml: the file must be a mapping with version, collections, components "
+                f"and relationships; it parsed as {type(doc).__name__}"]
     schema = schema or json.loads(SCHEMA.read_text())
     try:
         jsonschema.validate(doc, schema)
@@ -328,7 +342,36 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
                 if lang not in allowed_languages:
                     errors.append(f"{where}: language {lang!r} is not an ISO 639-3 code in "
                                   f"sources/snapshots/iso-639-3.tab")
+
+    # Citation dates, held to the rule score citations follow in build/validate.py: a real ISO
+    # date, and not later than today, since `accessed` records when somebody read the source.
+    today = date.today()
+    for where, src in _citations(doc):
+        try:
+            when = date.fromisoformat(str(src.get("accessed")))
+        except ValueError:
+            errors.append(f"{where}: accessed {src.get('accessed')!r} is not an ISO date")
+            continue
+        if when > today:
+            errors.append(f"{where}: accessed is {when}, later than today ({today}); a source "
+                          f"cannot have been read in the future")
     return errors
+
+
+def _citations(doc: dict):
+    """Every citation in the registry, with where it sits."""
+    for i, col in enumerate(doc.get("collections") or []):
+        for k, src in enumerate(col.get("sources") or []):
+            yield f"lineage.yaml: collections[{i}].sources[{k}]", src
+    for i, comp in enumerate(doc.get("components") or []):
+        for k, src in enumerate(comp.get("sources") or []):
+            yield f"lineage.yaml: component {comp.get('id')!r}: sources[{k}]", src
+        for j, ov in enumerate(comp.get("overrides") or []):
+            for k, src in enumerate(ov.get("sources") or []):
+                yield f"lineage.yaml: component {comp.get('id')!r}: overrides[{j}].sources[{k}]", src
+    for i, rel in enumerate(doc.get("relationships") or []):
+        for k, src in enumerate(rel.get("sources") or []):
+            yield f"lineage.yaml: relationships[{i}].sources[{k}]", src
 
 
 def qualifying_components(scores: dict) -> set[str]:

@@ -304,6 +304,30 @@ def test_undigested_source_is_refused(doc):
     assert any("schema" in e for e in errs)
 
 
+@pytest.mark.parametrize("text", ["", "false\n", "[]\n", "{}\n"])
+def test_malformed_registry_file_is_an_error_not_an_empty_registry(tmp_path, text):
+    # Regression: an existing file whose root was empty, false or a list loaded as the empty
+    # registry and passed. Only a missing file may fall back to empty.
+    path = tmp_path / "lineage.yaml"
+    path.write_text(text)
+    assert lineage_errors(load(path), allowed_languages=LANGS) != []
+
+
+def test_missing_registry_file_loads_as_empty(tmp_path):
+    assert lineage_errors(load(tmp_path / "absent.yaml"), allowed_languages=LANGS) == []
+
+
+@pytest.mark.parametrize("accessed", ["2026-02-30", "2026-99-99"])
+def test_impossible_citation_date_is_refused(doc, accessed):
+    errs = broken(doc, lambda d: component(d, "ntrex-128")["sources"][0].update(accessed=accessed))
+    assert any("is not an ISO date" in e for e in errs)
+
+
+def test_future_citation_date_is_refused(doc):
+    errs = broken(doc, lambda d: d["relationships"][0]["sources"][0].update(accessed="2999-01-01"))
+    assert any("later than today" in e for e in errs)
+
+
 # --- warnings ---------------------------------------------------------------------------------
 
 

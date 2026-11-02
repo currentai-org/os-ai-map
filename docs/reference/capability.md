@@ -581,13 +581,15 @@ with any two slugs to see the status and the rule that set it:
 
 ### What the build checks, and what it does not
 
-`build.validate` checks the registry's structure: the schema, unique ids, that every parent and
+`build.validate` checks the registry's structure: that the file is a mapping (only a missing file
+reads as an empty registry), the schema, unique ids, that every parent and
 collection exists, that `parents` has no cycle, that no two overrides of a component can both
 match, that override tasks are task classes, that a curated record cites sources and that an
 `original` or `derived` origin names what it comes from, in the canonical record and under each
 override, that override and relationship languages are ISO 639-3 codes, and that no two
 relationships for one pair can both apply to a language. The cycle check covers every parent edge
-any record or override states, since an override can replace `parents`. It cannot check that a
+any record or override states, since an override can replace `parents`. Every citation's `accessed`
+must be a real ISO date no later than today, the rule score citations follow. It cannot check that a
 citation supports the lineage claim; that is evidence review (R-2026-11-02-j). A coverage component
 with no registry entry is a warning, never an error, and every pair it is in is unverified, unless
 dependence is already known, until the entry is written. The depth ladder is not built, so nothing reads the statuses yet; the lineage audit
