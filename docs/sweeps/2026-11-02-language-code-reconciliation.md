@@ -21,15 +21,19 @@ discrepancy is recorded below as one of three kinds:
   missed it, the row says that instead, since the target population moves either way.
 - **Source error or inconsistency:** the source's own documents disagree, or it uses a code
   inconsistently. It is documented and coverage is not changed to follow it. Where the case is
-  genuinely ambiguous the code is left as it is and marked **needs ruling**.
+  genuinely ambiguous the code was left for a ruling; the four such cases were ruled in review
+  (R-2026-11-02-a) and applied in this pass.
 
 What changed: `languages` on the three product files; on the score files, the `language` of every
 `capability.language_coverage` entry whose code changed (with `source_language` dropped where it
 now equals `language`, and added where the cited source's code now differs), and AfroBench's
-`pivot_languages`. Nothing else moved: no `capability.score`, band, `relative_to`, `value`, `note`,
-`last_verified`, count, provenance or source, and no description, since none names a count that
-changed. No coverage entry was added for a language this pass adds; those languages are unknown
-until a fill pass records them ([Evidence completeness](#evidence-completeness)).
+`pivot_languages`. After review, three more changes under R-2026-11-02-a: AfroBench gains NTREX-128
+entries for `nde` and `ven`, cited exactly as its other NTREX languages are; SEA-HELM's Burmese
+translation count is corrected from 1,012 to 600, with one capability source added for it; and the
+SEA-HELM coverage list is re-sorted after the `fil` recode. Nothing else moved: no
+`capability.score`, band, `relative_to`, `value`, `note`, `last_verified` or provenance, and no
+description, since none names a count that changed. FLORES+'s added languages have no coverage
+entry; they are unknown until a fill pass records them ([Evidence completeness](#evidence-completeness)).
 
 Rule followed throughout: use the most specific code the source supports, the individual language
 where the source names that variety and the macrolanguage only where the source means it.
@@ -91,7 +95,7 @@ Source inconsistencies in FLORES+, documented and not followed:
 | Old code | New code | Kind | What the source states |
 |---|---|---|---|
 | `msa` | `zsm` | coding difference: macrolanguage to individual | The translation card, <https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation>: "It is sampled from FLORES 200 for Burmese, Chinese, English, Indonesian, Khmer, Malay, Tamil, Thai, and Vietnamese", with splits "en_to_zsm_Latn" and "zsm_Latn_to_en", 1012 each. Its translation entry drops `source_language: zsm`. The judge card, <https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench-Judge>, says "Malay (ms)"; `ms` reads as `msa`, so that entry now carries `source_language: msa`. No source names a Malay other than Standard Malay |
-| `tgl` | `tgl`, unchanged | source inconsistency, **needs ruling** | The Kalahi card, <https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi>: "Languages Tagalog (tl)", "Kalahi only has a Tagalog (tl) split". The judge card on the same `tl` split: "Filipino (tl)". The paper, <https://arxiv.org/html/2502.14301>: Kalahi is "composed of 150 high-quality Filipino-language" prompts, and "Filipino is the national language of the Philippines ... and is primarily based on Standard Tagalog". The GitHub tables (`datasets_and_prompts.md` in the aisingapore/SEA-HELM repository) name only "Filipino" ("\| Filipino \| Kalahi MC \| Native \|"). The suite names one language both ways |
+| `tgl` | `fil`, by ruling R-2026-11-02-a | source inconsistency, ruled | The Kalahi card, <https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi>: "Languages Tagalog (tl)", "Kalahi only has a Tagalog (tl) split". The judge card on the same `tl` split: "Filipino (tl)". The paper, <https://arxiv.org/html/2502.14301>: Kalahi is "composed of 150 high-quality Filipino-language" prompts, and "Filipino is the national language of the Philippines ... and is primarily based on Standard Tagalog". The GitHub tables (`datasets_and_prompts.md` in the aisingapore/SEA-HELM repository) name only "Filipino" ("\| Filipino \| Kalahi MC \| Native \|"). The suite names one language both ways. The four entries move to `fil` and carry `source_language: tgl`, since each cited card codes the split `tl` and the IFEval and Kalahi cards name it Tagalog |
 
 Source errors and inconsistencies in SEA-HELM, documented and not followed:
 
@@ -99,7 +103,7 @@ Source errors and inconsistencies in SEA-HELM, documented and not followed:
 |---|---|---|
 | The translation card's language list | "Languages Burmese (my) Chinese (zh) English (en) Indonesian (id) Javanese Khmer (km) Malay (ml) ..."; its metadata header also has `ml`. `ml` is Malayalam's ISO 639-1 code | none: Malayalam is not added |
 | The GitHub tables' spelling | "Sudanese" for Sundanese (the sentiment and metaphor tables) | none: `sun` stays; Sudanese Arabic (`apd`) is not added |
-| The translation card's README against its own YAML and data files | The README's table lists `en_to_zsm_Latn`, `en_to_mya_Mymr` and the rest at 1012, and no Lao or Filipino split. The card's YAML (`dataset_info` and `configs`, read through <https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation>) and its data files use two-letter configurations instead: `en_to_ms` 1012, `en_to_lo` 1012, `en_to_my` 600, `en_to_tl` 600, and the reverse directions | none on `languages`: Lao and Filipino are already listed. It does bear on the coverage record; see [Needs a maintainer decision](#needs-a-maintainer-decision) |
+| The translation card's README against its own YAML and data files | The README's table lists `en_to_zsm_Latn`, `en_to_mya_Mymr` and the rest at 1012, and no Lao or Filipino split. The card's YAML (`dataset_info` and `configs`, read through <https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation>) and its data files use two-letter configurations instead: `en_to_ms` 1012, `en_to_lo` 1012, `en_to_my` 600, `en_to_tl` 600, and the reverse directions | none on `languages`: Lao and Filipino are already listed. Burmese's entry now records 600; see [Rulings and evidence corrections](#rulings-and-evidence-corrections) |
 
 Not a discrepancy: SEA-HELM's sources name Chinese as Chinese ("Chinese (zh)", `zho_Hans`, and the
 Belebele task's `zh` and `zh_t` configurations), so its pivot stays `zho`. FLORES+'s move to `cmn` is
@@ -120,10 +124,10 @@ one code.
 | `orm` | `orm`, unchanged | source inconsistency | Table 10: "Oromo (orm)". Table 11 has an `orm` row (AfriHate, AfriSenti, AfriXNLI, Injongo-Intent, MasakhaNEWS, AfriMGSM, AfriMMLU, NTREX-128, XL-SUM) and a separate `gaz` row (SIB-200, Flores), the FLORES-200 code for West Central Oromo. One language under two codes; the paper counts it once. `orm` is kept because the language list and nine of the eleven datasets use it; the two FLORES-derived entries keep `source_language: gaz` |
 | `plt` | `plt`, unchanged | coding difference: individual against macrolanguage | Table 10: "Malagasy (plt)"; Table 11 marks NTREX-128 under `plt`. The NTREX repository's configuration is `mlg_Latn` (<https://datasets-server.huggingface.co/size?dataset=masakhane/ntrex_african>). The suite names the individual language; its NTREX entry keeps `source_language: mlg` |
 | `tir` | `tir`, unchanged | source error | Table 10: "Tigrinya (tig)"; `tig` is Tigre's code. Table 11 has `tir`. Already recorded as `tir` on 2026-09-30 |
-| none | `nde`, not added | source inconsistency, **needs ruling** | Table 11 marks North Ndebele (`nde`) under NTREX-128; Table 10 does not list it. The NTREX repository has an `nde_Latn` configuration with 1997 test rows |
-| none | `ven`, not added | source inconsistency, **needs ruling** | Table 11 marks Venda (`ven`) under NTREX-128; Table 10 does not list it. The NTREX repository has a `ven_Latn` configuration with 1997 test rows |
-| `nqo` | `nqo`, unchanged | source inconsistency, **needs ruling** | Table 10: "N’Ko (nqo) \| Mande \| West \| Latin". Table 11 has no `nqo` row, and no AfroBench dataset carries it |
-| `por` | `por`, unchanged | source inconsistency, **needs ruling** | Table 10 lists "Mozambican Portuguese (pt-MZ)" among the 64 African languages; Section 3.2 lists Portuguese among the "select high-resource languages"; Table 11 has no `por` row; AfriSenti's repository has a `por` configuration, 3,662 test rows (<https://datasets-server.huggingface.co/size?dataset=masakhane/afrisenti>) |
+| none | `nde`, added by ruling R-2026-11-02-a | source inconsistency, ruled | Table 11 marks North Ndebele (`nde`) under NTREX-128; Table 10 does not list it. The NTREX repository has an `nde_Latn` configuration with 1997 test rows; an NTREX-128 entry like the other NTREX languages' is added |
+| none | `ven`, added by ruling R-2026-11-02-a | source inconsistency, ruled | Table 11 marks Venda (`ven`) under NTREX-128; Table 10 does not list it. The NTREX repository has a `ven_Latn` configuration with 1997 test rows; an NTREX-128 entry like the other NTREX languages' is added |
+| `nqo` | removed by ruling R-2026-11-02-a | source inconsistency, ruled | Table 10: "N’Ko (nqo) \| Mande \| West \| Latin". Table 11 has no `nqo` row, and no AfroBench dataset carries it |
+| `por` | `por`, a pivot by ruling R-2026-11-02-a | source inconsistency, ruled | Table 10 lists "Mozambican Portuguese (pt-MZ)" among the 64 African languages; Section 3.2 lists Portuguese among the "select high-resource languages"; Table 11 has no `por` row; AfriSenti's repository has a `por` configuration, 3,662 test rows (<https://datasets-server.huggingface.co/size?dataset=masakhane/afrisenti>) |
 
 Not discrepancies: Table 10 counts 64 African languages over 63 ISO 639-3 codes because it lists
 Kanuri (`knc`) twice, once per script, so the description's "64 African languages" is the paper's own
@@ -136,11 +140,12 @@ coding of the data it uses; that FLORES+ has since recoded its text is FLORES+'s
 |---|---|---|---|---|
 | Coding difference | 8 (`ara`, `est`, `grn`, `zho`, `tgl`, `kon`, `aka`, `tzm`) | 1 (`msa`) | 1 (`plt`, unchanged) | 10 |
 | Coverage change | 14 (3 added since the record, 11 record omissions) | 0 | 3 (pivots `arb`, `eng`, `fra`) | 17 |
-| Source error or inconsistency | 2 | 4 (one needs ruling) | 6 (four need rulings, covering `nde`, `ven`, `nqo`, `por`) | 12 |
+| Source error or inconsistency | 2 | 4 (one ruled) | 6 (four ruled, covering `nde`, `ven`, `nqo`, `por`) | 12 |
 
-The mapped entries the calibration counted fall from 12 to 4: FLORES+'s eight and SEA-HELM's
+The mapped entries the calibration counted go from 12 to 8: FLORES+'s eight and SEA-HELM's
 translation entry no longer need `source_language`; SEA-HELM's judge entry now carries one
-(`msa`); AfroBench's three (`gaz` twice, `mlg`) stand.
+(`msa`), and its four Filipino entries carry `tgl` under R-2026-11-02-a; AfroBench's three (`gaz`
+twice, `mlg`) stand.
 
 ## Target population, before and after
 
@@ -150,8 +155,8 @@ over (R-2026-11-01-b).
 | Set | Before | After | Codes added | Codes removed | Codes recoded |
 |---|---|---|---|---|---|
 | FLORES+ | 203 (204 listed, pivot `eng`) | 215 (216 listed, pivot `eng`) | `arg`, `brx`, `ccp`, `chv`, `dgo`, `frp`, `gom`, `kaa`, `myv`, `nqo`, `seh`, `tyv`, `vmw`, `wuu` (14) | none outright; `aka` and `tzm` fold into the already-listed `twi` and `zgh` (2) | `ara` to `arb`, `est` to `ekk`, `grn` to `gug`, `zho` to `cmn`, `tgl` to `fil`, `kon` to `ktu` (6) |
-| SEA-HELM | 11 (13 listed, pivots `eng`, `zho`) | 11 (13 listed, same pivots) | none | none | `msa` to `zsm` (1) |
-| AfroBench | 63 (63 listed, no pivot) | 63 (66 listed, pivots `arb`, `eng`, `fra`) | none to the targets; `arb`, `eng`, `fra` added to `languages` as pivots | none | none |
+| SEA-HELM | 11 (13 listed, pivots `eng`, `zho`) | 11 (13 listed, same pivots) | none | none | `msa` to `zsm`, `tgl` to `fil` (2) |
+| AfroBench | 63 (63 listed, no pivot) | 63 (67 listed, pivots `arb`, `eng`, `fra`, `por`) | `nde`, `ven` (2); `arb`, `eng`, `fra` added to `languages` as pivots | `nqo` (1); `por` moves from target to pivot (1) | none |
 
 FLORES+: 203, less the two folded codes, plus the fourteen added, is 215. No variety split here
 changes a median: Akuapem and Asante Twi share one ISO 639-3 code, and the six recodes keep one code
@@ -166,8 +171,8 @@ recomputed from the files before and after this change.
 | Set | Before | After | Why |
 |---|---|---|---|
 | FLORES+ | 188 of 203 | **188 of 215** | The recodes keep every entry and every measured language (`arb`, `ekk`, `gug` measured as before; `cmn` unmeasured as `zho` was). `aka` and `tzm`, unmeasured, fold away; `ktu` and `fil` replace the unmeasured `kon` and `tgl`; the fourteen added languages have no entry yet. Unmeasured: `apd`, `ast`, `cmn`, `kjh`, `lij`, `lld`, `mfe`, `mhr`, `nob`, `yue`, `zgh` (gated data cards, as before), `fil`, `ktu`, and the fourteen added |
-| SEA-HELM | 10 of 11 | 10 of 11 | `zsm` is measured as `msa` was; Lao is still the one unmeasured language |
-| AfroBench | 54 of 63 | 54 of 63 | No target changed; the pivots are outside the population |
+| SEA-HELM | 10 of 11 | 10 of 11 | `zsm` is measured as `msa` was, and `fil` as `tgl` was; Lao is still the one unmeasured language (see the translation count below) |
+| AfroBench | 54 of 63 | **56 of 63** | `nde` and `ven` come in measured, on NTREX-128's 1,997 human-translated sentences; `nqo` and `por` leave the population, both unmeasured (`por`'s AfriSenti entry has unknown provenance and stays, now on a pivot). Unmeasured: `ach`, `arq`, `bbj`, `lgg`, `nyn`, `pcm`, `teo` |
 
 As a check only, under the calibration's proposed and unadopted bands (highest task band per
 language), the robustness test still agrees for all three: filling FLORES+'s 27 unmeasured
@@ -178,38 +183,46 @@ would make those four documented zeros on `devtest`, and `ktu` has no data card 
 under the calibration's reading makes it FLORES-200 text. How the other new languages' text was made
 is in data cards behind the gate.
 
-## Needs a maintainer decision
+## Rulings and evidence corrections
 
-Left as they are and marked **needs ruling**:
+The four codes this pass first left for a decision were ruled in review of #965, and are recorded
+as R-2026-11-02-a. The principle: a set's declared target languages are what it actually evaluates
+as targets, and its comparison languages are declared separately as pivots.
 
-1. **SEA-HELM: `tgl` or `fil`.** The Hugging Face cards call the `tl` split Tagalog (Kalahi) and
-   Filipino (the judge card); the paper and the GitHub tables say Filipino, which the paper says "is
-   primarily based on Standard Tagalog". Both are individual codes and the population is one
-   language either way. Recommended: `fil`, since the suite's own prose names Filipino and its
-   two-letter `tl` is the nearest ISO 639-1 code available for it. FLORES+, whose card names only
-   Filipino, moved to `fil` in this pass.
-2. **AfroBench: `nde` and `ven`.** Table 11 and the NTREX repository have them; Table 10, the
-   64-language list, does not. Adding them makes 65 targets, both unmeasured until filled (NTREX's
-   1997 sentences would place each with the other NTREX languages). Recommended: add, since Table 11
-   is the per-dataset coverage and the data exists.
-3. **AfroBench: `nqo`.** Table 10 lists it and no dataset in Table 11 covers it. It is one of the nine
-   unmeasured target languages, and can never be measured from AfroBench's own sources.
-   Recommended: remove.
-4. **AfroBench: `por`.** Table 10 counts Mozambican Portuguese among the African languages;
-   Section 3.2 calls Portuguese a high-resource comparison language, the same footing as the three
-   pivots added here. Target, pivot, or neither is the question the calibration raised (its item 9).
-   As a pivot, the population falls to 62 and completeness to 54 of 62.
+1. **SEA-HELM: `fil`.** The paper and the suite's GitHub tables name Filipino, and the cards use
+   Filipino and Tagalog for one `tl` split. The language becomes `fil`; each of its four entries
+   keeps `source_language: tgl`, the code its card states (`tl`, which the IFEval and Kalahi cards
+   name Tagalog).
+2. **AfroBench: `nde` and `ven` added.** Table 11, the per-dataset coverage, and the NTREX
+   repository's configurations carry both; Table 10's 64-language list is the incomplete summary.
+   Each gets an NTREX-128 entry, 1,997 test sentences, cited as the other NTREX languages are.
+3. **AfroBench: `nqo` removed.** No AfroBench dataset evaluates N'Ko, so it is not part of the
+   suite's target population. The discrepancy with Table 10 stays recorded above.
+4. **AfroBench: `por` a pivot.** Section 3.2 names Portuguese with English, French and Arabic as the
+   high-resource comparison languages; that outweighs its row in Table 10. Its AfriSenti entry
+   stays, on a pivot.
 
-None of these four moves a proposed median: each is one or two unmeasured languages in a population
-whose robustness test already agrees.
+None of the four moves a proposed median: each is one or two languages in a population whose
+robustness test already agrees.
 
-Also for the maintainer, outside `languages`:
+**Evidence correction: SEA-HELM's Burmese translation count is 600, not 1,012.** The translation
+card's README states 1012 for `en_to_mya_Mymr`; the card's `dataset_info`, which its data files
+follow (<https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation>), gives 600
+eval examples for `en_to_my` and `my_to_en`. The dataset's own contents are the more specific
+evidence for the count, so the Burmese entry now records 600 and cites the API record beside the
+card. This assumes the files are the official evaluation split SEA-HELM scores, which the card's
+`eval` split name supports. No capability score changes here. On the proposed (unadopted)
+translation ladder 600 sits a band below 1,012; that difference belongs to the depth-ladder PR,
+not to this reconciliation.
 
-- **SEA-HELM's translation card disagrees with itself on counts.** Its README states 1012 for
-  `en_to_mya_Mymr`; its YAML and data files have 600 for `en_to_my` and `en_to_tl`, and 1012 for
-  `en_to_lo`. The calibration recorded Burmese at 1012 from the README. On the proposed translation
-  ladder, 600 is a 3 rather than a 4, and Lao gains a stated count. Which half of the card is current
-  is a coverage question for the next fill, not settled here.
+Left for the next fill pass, outside this PR's scope:
+
+- **Lao and Filipino translation entries.** The same `dataset_info` gives `en_to_lo` 1012 and
+  `en_to_tl` 600, splits the README does not list and the record has no entry for. Lao is SEA-HELM's
+  one unmeasured target; an entry would make it measured.
+- **FLORES+'s new languages are unknown depth, not documented zeros.** The twelve net additions
+  have no entry yet; until a fill pass reads them they count as unmeasured. The four the card marks
+  "dev only" (`brx`, `dgo`, `gom`, `wuu`) would be documented zeros on `devtest` once recorded.
 - **FLORES+'s 230 against 236** is in the capability `value` and `note`, band prose this pass does
   not touch.
 

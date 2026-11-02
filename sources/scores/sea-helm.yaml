@@ -219,6 +219,13 @@ capability:
     accessed: '2026-11-01'
     http_status: 200
     content_sha256: c833d594332191f54afcc345005d5d8ad9b9a708a0737fee54a5c6f6f45b820e
+  - url: https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation
+    shows: 'the card''s dataset_info, which the data files follow: "en_to_my" and "my_to_en" 600 eval examples
+      each, "en_to_tl" and "tl_to_en" 600, "en_to_lo" and "lo_to_en" 1012; the README''s table lists Burmese at
+      1012 and has no Lao or Filipino split'
+    accessed: '2026-11-02'
+    http_status: 200
+    content_sha256: b9d7d37207788ea7b11af79cd019d4a575bc1cef9f5cf75080828fcee86ad95f
   - url: https://huggingface.co/datasets/aisingapore/NLG-Abstractive-Summarization
     shows: '"It is sampled from XL-Sum for Indonesian, Tamil, Thai, and Vietnamese."; 100 examples in each of the
       "id", "ta", "th" and "vi" splits'
@@ -337,6 +344,52 @@ capability:
     count: 58
     unit: items
     provenance: unknown
+    cites:
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench-Judge
+  - language: fil
+    source_language: tgl
+    task: instruction_following
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+  - language: fil
+    source_language: tgl
+    task: knowledge_exam
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 150
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/html/2502.14301
+    - https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi
+  - language: fil
+    source_language: tgl
+    task: text_generation
+    component: kalahi-judge
+    split: official_eval
+    official_eval: true
+    count: 27
+    unit: items
+    provenance: native
+    cites:
+    - https://arxiv.org/html/2502.14301
+    - https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi-Judge
+  - language: fil
+    source_language: tgl
+    task: text_generation
+    component: sea-mt-bench-judge
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
     cites:
     - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench-Judge
   - language: ind
@@ -549,12 +602,13 @@ capability:
     component: flores-plus
     split: official_eval
     official_eval: true
-    count: 1012
+    count: 600
     unit: sentences
     provenance: human_translated
     cites:
     - https://arxiv.org/abs/2207.04672
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
+    - https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation
   - language: sun
     task: instruction_following
     component: sea-helm
@@ -676,48 +730,6 @@ capability:
     - https://arxiv.org/html/2502.14301
     - https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis
   - language: tam
-    task: text_generation
-    component: sea-mt-bench-judge
-    split: official_eval
-    official_eval: true
-    count: 58
-    unit: items
-    provenance: human_translated
-    cites:
-    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench-Judge
-  - language: tgl
-    task: instruction_following
-    component: sea-helm
-    split: official_eval
-    official_eval: true
-    count: 105
-    unit: items
-    provenance: human_translated
-    cites:
-    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
-  - language: tgl
-    task: knowledge_exam
-    component: sea-helm
-    split: official_eval
-    official_eval: true
-    count: 150
-    unit: questions
-    provenance: native
-    cites:
-    - https://arxiv.org/html/2502.14301
-    - https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi
-  - language: tgl
-    task: text_generation
-    component: kalahi-judge
-    split: official_eval
-    official_eval: true
-    count: 27
-    unit: items
-    provenance: native
-    cites:
-    - https://arxiv.org/html/2502.14301
-    - https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi-Judge
-  - language: tgl
     task: text_generation
     component: sea-mt-bench-judge
     split: official_eval

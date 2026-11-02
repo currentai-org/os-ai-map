@@ -63,9 +63,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Changed
 
 - FLORES+, SEA-HELM and AfroBench declare the language codes their current sources use: FLORES+ moves
-  to its card's codes (`arb`, `ekk`, `gug`, `cmn`, `fil`, `ktu`) and adds 14 languages, SEA-HELM lists
-  Malay as `zsm`, and AfroBench declares English, French and Arabic as pivots; no score moved, and four
-  ambiguous cases wait on a ruling (`docs/sweeps/2026-11-02-language-code-reconciliation.md`;
+  to its card's codes (`arb`, `ekk`, `gug`, `cmn`, `fil`, `ktu`) and adds 14 languages; SEA-HELM lists
+  Malay as `zsm` and Filipino as `fil`, and records Burmese translation at 600 sentences, its data files'
+  count; AfroBench adds `nde` and `ven`, drops `nqo`, and declares English, French, Arabic and
+  Portuguese as pivots (R-2026-11-02-a). No score moved
+  (`docs/sweeps/2026-11-02-language-code-reconciliation.md`;
   [#965](https://github.com/currentai-org/os-ai-map/pull/965)).
 - The software ladder recognizes `MAX-License`, Modular's renamed Community License, in
   `competition_restricted`, and max records it from the 2026-10-21 text; max stays 2/source_available
