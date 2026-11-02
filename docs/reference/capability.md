@@ -557,16 +557,19 @@ coverage entry, because corroboration compares evidence across tasks and often a
 this order:
 
 1. An explicit relationship for the pair decides.
-2. A component with no registry entry, or an `uncurated` one, makes the pair **unverified**.
-3. Each component's overrides are applied for the language and its own split and task. An
+2. Each component's overrides are applied for the language and its own split and task. An
    ancestor reached through `parents` is resolved for the language only, since a parent's split
    and task are not the child's.
-4. **Dependent** when either component derives from the other through `parents`, when their source
+3. **Dependent** when either component derives from the other through `parents`, when their source
    collections overlap (each ancestor's collections included), or when they share a creation
-   effort. Known overlap decides before missing provenance does.
-5. **Unverified** when provenance is undocumented anywhere in either ancestry: a component or
-   ancestor with no entry, an uncurated entry, origin `unknown`, no collection, or no effort.
-6. **Independent** otherwise: provenance documented all the way up both ancestries, collections
+   effort. This is checked first, before any gap in provenance, so known dependence decides even
+   where a component has no entry or an uncurated one.
+4. **Unverified** when provenance is undocumented anywhere in either ancestry: a component or
+   ancestor with no entry, an uncurated entry, origin `unknown`, no effort, or no source collection
+   either of its own or inherited through a documented parent. The reason names which, because "not
+   yet curated" and "origin unknown" both score as unverified but point evidence work in different
+   directions.
+5. **Independent** otherwise: provenance documented all the way up both ancestries, collections
    disjoint, efforts separate.
 
 Only independent pairs count as backing in the corroboration step (R-2026-11-02-k). A stated
@@ -581,11 +584,13 @@ with any two slugs to see the status and the rule that set it:
 `build.validate` checks the registry's structure: the schema, unique ids, that every parent and
 collection exists, that `parents` has no cycle, that no two overrides of a component can both
 match, that override tasks are task classes, that a curated record cites sources and that an
-`original` or `derived` origin names what it comes from, that override and relationship languages
-are ISO 639-3 codes, and that a relationship is not repeated. It cannot check that a citation
-supports the lineage claim; that is evidence review (R-2026-11-02-j). A coverage component with no
-registry entry is a warning, never an error, and every pair it is in is unverified until the entry
-is written. The depth ladder is not built, so nothing reads the statuses yet; the lineage audit
+`original` or `derived` origin names what it comes from, in the canonical record and under each
+override, that override and relationship languages are ISO 639-3 codes, and that no two
+relationships for one pair can both apply to a language. The cycle check covers every parent edge
+any record or override states, since an override can replace `parents`. It cannot check that a
+citation supports the lineage claim; that is evidence review (R-2026-11-02-j). A coverage component
+with no registry entry is a warning, never an error, and every pair it is in is unverified, unless
+dependence is already known, until the entry is written. The depth ladder is not built, so nothing reads the statuses yet; the lineage audit
 fills the registry and reports the sensitivity of each result to unverified pairs before any score
 moves (R-2026-11-02-i).
 

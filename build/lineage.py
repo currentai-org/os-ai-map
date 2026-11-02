@@ -13,22 +13,22 @@ evidence from different tasks and often different splits (R-2026-11-02-k):
 
 1. An explicit `relationships` entry for the pair, and for the language where it names any,
    decides.
-2. A component with no registry entry, or an entry marked `uncurated`, makes the pair unverified.
-   The reason says which, because "not yet curated" and "origin unknown" both score as unverified
-   but point evidence work in different directions.
-3. Overrides are applied to each component in its own context: the override whose `languages`,
+2. Overrides are applied to each component in its own context: the override whose `languages`,
    `splits` and `tasks` selectors all match replaces the fields it states. Validation refuses two
    overrides that could both match, so at most one ever applies. Ancestors reached through
    `parents` are resolved for the language only, since a parent's split and task are not the
    child's.
-4. Dependent when either component is an ancestor of the other through `parents`, followed
+3. Dependent when either component is an ancestor of the other through `parents`, followed
    transitively; when their source collections overlap, counting each ancestor's collections; or
-   when they share a creation `effort`, counting each ancestor's effort. Known overlap decides
-   before missing provenance does.
-5. Unverified when provenance is undocumented anywhere in either component's ancestry: a
-   component or ancestor with origin unknown, no collection, no effort, no registry entry, or an
-   uncurated entry. Independence needs documented provenance all the way up.
-6. Independent otherwise: every origin in both ancestries documented, collections disjoint,
+   when they share a creation `effort`, counting each ancestor's effort. This runs before any gap
+   is considered, so known dependence decides even for a component with no entry or an uncurated
+   one.
+4. Unverified when provenance is undocumented anywhere in either component's ancestry: a
+   component or ancestor with no registry entry, an uncurated entry, origin unknown, no effort, or
+   no source collection of its own or inherited through a documented parent. The reason says
+   which, because "not yet curated" and "origin unknown" both score as unverified but point
+   evidence work in different directions. Independence needs documented provenance all the way up.
+5. Independent otherwise: every origin in both ancestries documented, collections disjoint,
    efforts separate.
 
 `domains` never enters the derivation: two sets drawn from the same broad domain are not
@@ -165,13 +165,10 @@ def pair_status(doc: dict, a: str, b: str, language: str | None = None, *,
     if rel is not None:
         return PairStatus(rel["status"], "explicit", rel.get("rationale", ""))
     comps, _ = _index(doc)
-    missing = [c for c in (a, b) if c not in comps]
-    if missing:
-        return PairStatus("unverified", "not_in_registry", ", ".join(missing))
-    uncurated = [c for c in (a, b) if comps[c].get("curation") != "curated"]
-    if uncurated:
-        return PairStatus("unverified", "not_curated", ", ".join(uncurated))
-
+    # Known dependence is checked before any provenance gap, including a component with no
+    # entry or an uncurated one: a stated derivation or overlap establishes dependence even
+    # where the rest of the lineage is incomplete (R-2026-11-02-h). Dependence only lowers
+    # credit, so reading it from a placeholder record never overstates independence.
     x = _closure(a, comps, language, a_split, a_task)
     y = _closure(b, comps, language, b_split, b_task)
     if b in x.ancestors or a in y.ancestors:
@@ -257,6 +254,14 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
                 errors.append(f"{where}: origin derived names no parent and no collection")
         overrides = rec.get("overrides") or []
         for i, ov in enumerate(overrides):
+            eff = {**{f: rec.get(f) for f in LINEAGE_FIELDS}, **{f: ov[f] for f in LINEAGE_FIELDS if f in ov}}
+            if cid in (eff.get("parents") or []):
+                errors.append(f"{where}: overrides[{i}]: names the component itself as a parent")
+            if rec["curation"] == "curated":
+                if eff.get("origin") == "original" and not eff.get("collections"):
+                    errors.append(f"{where}: overrides[{i}]: origin original names no collection of its own")
+                if eff.get("origin") == "derived" and not (eff.get("parents") or eff.get("collections")):
+                    errors.append(f"{where}: overrides[{i}]: origin derived names no parent and no collection")
             for j in range(i):
                 if _could_both_match(overrides[j], ov):
                     errors.append(f"{where}: overrides[{j}] and overrides[{i}] can both match one "
@@ -273,12 +278,20 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
                         errors.append(f"{where}: overrides[{i}]: language {lang!r} is not an "
                                       f"ISO 639-3 code in sources/snapshots/iso-639-3.tab")
 
-    # A parent cycle would make "derives from" meaningless; report each cycle once.
+    # A parent cycle would make "derives from" meaningless; report each cycle once. Overrides
+    # can replace `parents`, so the graph checked is the union of every parent edge any record or
+    # override states: a cycle reachable under some language or task is still a cycle.
+    edges: dict[str, set[str]] = {}
+    for cid, rec in comps.items():
+        es = set(rec.get("parents") or [])
+        for ov in rec.get("overrides") or []:
+            es.update(ov.get("parents") or [])
+        edges[cid] = es
     state: dict[str, int] = {}
 
     def visit(cid: str, trail: list[str]) -> None:
         state[cid] = 1
-        for p in comps[cid].get("parents") or []:
+        for p in sorted(edges[cid]):
             if p not in comps:
                 continue
             if state.get(p) == 1:
@@ -292,7 +305,7 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
         if state.get(cid) is None:
             visit(cid, [cid])
 
-    seen_pairs: set[tuple] = set()
+    scopes: dict[frozenset, list[tuple[int, set | None]]] = {}
     for i, rel in enumerate(doc["relationships"]):
         where = f"lineage.yaml: relationships[{i}]"
         a, b = rel["between"]
@@ -301,10 +314,15 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
         for c in (a, b):
             if c not in comps:
                 errors.append(f"{where}: {c!r} is not a component in the registry")
-        key = (frozenset((a, b)), tuple(sorted(rel.get("languages") or [])))
-        if key in seen_pairs:
-            errors.append(f"{where}: repeats a relationship already stated for {a!r} and {b!r}")
-        seen_pairs.add(key)
+        # Two statements for one pair may not both apply to a language: an unrestricted one
+        # applies to every language, so it overlaps any other for the pair. Otherwise the answer
+        # would depend on which came first in the file.
+        langs = set(rel["languages"]) if rel.get("languages") else None
+        for j, other in scopes.get(frozenset((a, b)), []):
+            if langs is None or other is None or langs & other:
+                errors.append(f"{where}: overlaps relationships[{j}] for {a!r} and {b!r}; give "
+                              f"each language one statement")
+        scopes.setdefault(frozenset((a, b)), []).append((i, langs))
         if allowed_languages is not None:
             for lang in rel.get("languages") or []:
                 if lang not in allowed_languages:
@@ -327,8 +345,8 @@ def qualifying_components(scores: dict) -> set[str]:
 def lineage_warnings(doc: dict, scores: dict) -> list[str]:
     """One non-fatal line naming coverage components with no registry entry.
 
-    A missing entry makes every pair it is in unverified; it never fails the build and never
-    reads as independence (R-2026-11-02-j).
+    A missing entry makes a pair unverified unless dependence is already known; it never fails
+    the build and never reads as independence (R-2026-11-02-j).
     """
     comps, _ = _index(doc)
     missing = sorted(qualifying_components(scores) - set(comps))
@@ -336,7 +354,7 @@ def lineage_warnings(doc: dict, scores: dict) -> list[str]:
         return []
     shown = ", ".join(missing[:8]) + (", ..." if len(missing) > 8 else "")
     return [f"lineage: {len(missing)} coverage component(s) have no sources/lineage.yaml entry, "
-            f"so their pairs are unverified: {shown}"]
+            f"so their pairs are unverified unless dependence is known: {shown}"]
 
 
 def main() -> None:

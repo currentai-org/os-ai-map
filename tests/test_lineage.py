@@ -142,6 +142,20 @@ def test_known_overlap_still_wins_over_an_unknown_ancestor(doc):
     assert (got.status, got.reason) == ("dependent", "shared_collection")
 
 
+def test_known_derivation_wins_over_an_uncurated_entry(doc):
+    # Regression: the uncurated early return ran before the derivation check, so a component
+    # paired with its own stated parent read as unverified rather than dependent.
+    got = pair_status(doc, "child-of-uncurated", "example-uncurated", "hau")
+    assert (got.status, got.reason) == ("dependent", "derived")
+
+
+def test_known_derivation_wins_over_a_missing_entry(doc):
+    d = copy.deepcopy(doc)
+    component(d, "child-of-uncurated")["parents"] = ["not-in-registry"]
+    got = pair_status(d, "child-of-uncurated", "not-in-registry", "hau")
+    assert (got.status, got.reason) == ("dependent", "derived")
+
+
 def test_uncurated_ancestor_makes_the_pair_unverified(doc):
     got = pair_status(doc, "child-of-uncurated", "ntrex-128", "hau")
     assert (got.status, got.reason, got.detail) == ("unverified", "not_curated", "example-uncurated")
@@ -231,7 +245,58 @@ def test_relationship_to_unknown_component(doc):
 
 def test_repeated_relationship(doc):
     errs = broken(doc, lambda d: d["relationships"].append(copy.deepcopy(d["relationships"][0])))
-    assert any("repeats a relationship" in e for e in errs)
+    assert any("overlaps relationships[0]" in e for e in errs)
+
+
+def test_relationships_with_overlapping_languages_are_refused(doc):
+    # [swh, yor] and [swh] both speak for Swahili; the answer would depend on file order.
+    def change(d):
+        extra = copy.deepcopy(d["relationships"][0])
+        extra.update(status="independent", languages=["swh", "yor"])
+        d["relationships"].append(extra)
+    assert any("overlaps relationships[0]" in e for e in broken(doc, change))
+
+
+def test_unrestricted_relationship_overlaps_a_language_one(doc):
+    def change(d):
+        extra = copy.deepcopy(d["relationships"][0])
+        extra.pop("languages")
+        extra["status"] = "independent"
+        d["relationships"].append(extra)
+    assert any("overlaps relationships[0]" in e for e in broken(doc, change))
+
+
+def test_relationships_for_disjoint_languages_are_accepted(doc):
+    def change(d):
+        extra = copy.deepcopy(d["relationships"][0])
+        extra.update(status="independent", languages=["yor"])
+        d["relationships"].append(extra)
+    assert broken(doc, change) == []
+
+
+def test_override_naming_the_component_as_its_own_parent_is_refused(doc):
+    # Regression: an override could replace `parents` with the component itself and pass, and
+    # the component then read as independent with no source examples at all.
+    def change(d):
+        component(d, "example-mt")["overrides"][0].update(origin="derived", collections=[],
+                                                          parents=["example-mt"])
+    errs = broken(doc, change)
+    assert any("overrides[0]: names the component itself as a parent" in e for e in errs)
+
+
+def test_cycle_introduced_by_an_override_is_refused(doc):
+    def change(d):
+        component(d, "flores-plus").setdefault("overrides", []).append(
+            {"languages": ["hau"], "parents": ["example-suite-topic"],
+             "sources": component(d, "flores-plus")["sources"]})
+    assert any("parents form a cycle" in e for e in broken(doc, change))
+
+
+def test_override_origin_rules_apply_to_the_effective_record(doc):
+    def change(d):
+        component(d, "example-mt")["overrides"][0].update(origin="derived", collections=[])
+    errs = broken(doc, change)
+    assert any("overrides[0]: origin derived names no parent and no collection" in e for e in errs)
 
 
 def test_undigested_source_is_refused(doc):
