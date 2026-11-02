@@ -540,6 +540,112 @@
                 "pattern": "^[a-z0-9][a-z0-9-]*$",
                 "description": "The `component` of another entry in this record whose items contain this entry's: same language, task and split. Absent means the source presents the items as distinct from every other entry's. Recording containment is what keeps a subset from being counted twice (R-2026-11-01-d). build/validate.py requires the named entry to exist, to carry no `subset_of` of its own (name the largest set the items are drawn from), and, in the same unit, to hold at least as many items."
               },
+              "precision": {
+                "type": "object",
+                "description": "A statistical estimate of this evaluation's precision, which moves its band from provisional to estimated (R-2026-11-02-f, -t). Absent on every entry until a task family's estimation method is approved by ruling, with a calibration example; build/evidence_status.py holds the approved methods and checks the block. The widest run interval sets the estimated band, against the targets of R-2026-11-02-c, and every run's interval is recorded. The widest interval is the worst observed precision among the selected models, not a guarantee across all models. docs/reference/capability.md, \"Evidence status\", is normative.",
+                "required": [
+                  "method",
+                  "metric",
+                  "resampling_unit",
+                  "benchmark_version",
+                  "model_selection",
+                  "evidence_date",
+                  "runs",
+                  "cites"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9_-]*$",
+                    "description": "The approved estimation procedure, by id, for example a document-level bootstrap that recomputes corpus chrF per replicate."
+                  },
+                  "metric": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The metric whose interval is estimated, as the benchmark reports it (accuracy, chrF, BLEU, judge win rate)."
+                  },
+                  "resampling_unit": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "What the procedure resamples: item, prompt, passage, document, question stem."
+                  },
+                  "benchmark_version": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The benchmark release the runs used."
+                  },
+                  "model_selection": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The documented rule that chose the models, fixed before their interval widths were examined."
+                  },
+                  "evidence_date": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+                    "description": "When the estimate was computed or the source intervals were read. build/evidence_status.py rejects an impossible or future date."
+                  },
+                  "source_reported": {
+                    "type": "boolean",
+                    "description": "True when the intervals are the source's own, accepted without recomputation because the source documents its method, clustering assumptions, models and split to the same standard (R-2026-11-02-f)."
+                  },
+                  "runs": {
+                    "type": "array",
+                    "minItems": 2,
+                    "description": "One per evaluated model: at least two, from different model families (checkpoints of one family do not count).",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "model",
+                        "model_family",
+                        "interval",
+                        "cites"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "model": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "model_family": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "interval": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100
+                          },
+                          "description": "The 95% confidence interval on the 0 to 100 score, [low, high]."
+                        },
+                        "cites": {
+                          "type": "array",
+                          "minItems": 1,
+                          "uniqueItems": true,
+                          "items": {
+                            "type": "string",
+                            "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "cites": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)"
+                    },
+                    "description": "capability.sources urls for the procedure and the per-item results it read."
+                  }
+                }
+              },
               "cites": {
                 "type": "array",
                 "minItems": 1,

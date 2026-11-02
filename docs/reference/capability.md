@@ -314,6 +314,7 @@ value means.
 | `qualifying_count` | optional, on a `mixed` entry only: how many of its items the source documents as native, human-translated or post-edited. In the entry's unit and no more than `count`. Absent means the source does not separate that portion. |
 | `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. |
 | `subset_of` | optional: the `component` of another entry, for the same language, task and split, whose items contain this entry's. Absent means the source presents the items as distinct. |
+| `precision` | optional: a statistical estimate of the evaluation's precision under an approved method, which makes the entry's band estimated rather than provisional. Absent on every entry until a method is approved by ruling; see [Evidence status](#evidence-status). |
 | `cites` | the `url` of each `capability.sources` entry that states this entry's figures, `human_validated` and `qualifying_count` included. |
 
 The key is `(language, task, component, split)`. Each key appears once, and entries are sorted by
@@ -501,6 +502,53 @@ These are ruled, and they are the rules the ladder PR implements. None of them i
    entries put it. A language whose official-split entries are all `unknown` provenance, or `mixed`
    without a `qualifying_count`, is unmeasured: its depth is unknown, and it enters the robustness
    test as an unknown, never as a zero.
+
+### Evidence status
+
+Every depth band says how it was established (R-2026-11-02-e, -t), and the label travels with the
+band at every level, task, language and dataset, so a reader can tell a count from a measurement:
+
+- **provisional**: derived from item counts and the task family's stated assumptions. A count band
+  is a conservative operational cap under the count method, not a proven bound on precision.
+- **estimated**: derived from a task-appropriate statistical procedure, recorded on the entry as a
+  `precision` block that meets R-2026-11-02-f.
+- **unresolved**: not enough information to assign even a provisional band.
+
+`build/evidence_status.py` decides the status of one coverage entry, in this order:
+
+1. An entry that is not on the official evaluation split has no status; it does not count.
+2. **Unresolved** when the entry's qualifying depth is unknown: `unknown` provenance, or `mixed`
+   without a `qualifying_count`. An interval never stands in for provenance.
+3. **Unresolved** when the task family has no measurement model, or the unit is not one a count
+   model reads, a zero included: a family without a model stays unresolved (R-2026-11-02-b, -l). The task families with a count model are machine translation, text
+   classification, natural language inference, reasoning, knowledge exams, reading comprehension
+   and question answering, prompt-level instruction following, judged generation and
+   summarization (R-2026-11-02-e). Sequence labeling and speech are ruled unresolved; language
+   identification, retrieval, safety, transliteration and vision-language have no ruling yet and
+   stay unresolved until one gives them a model (R-2026-11-02-b). Hours, words and tokens are not
+   item counts.
+4. **Provisional** for a measured zero (`machine_translated` or `generated` items, or a documented
+   zero) in a family with a model: no qualifying items is a count-derived fact.
+5. **Estimated** when the entry carries a valid `precision` block under an approved method.
+6. **Provisional** otherwise.
+
+A `precision` block records what R-2026-11-02-f requires: the approved `method`, the `metric`, the
+`resampling_unit`, the `benchmark_version`, the documented `model_selection` rule, the
+`evidence_date`, and at least two `runs` from different model families, each with its 95%
+`interval` on the 0 to 100 score and its citation; `source_reported` marks intervals taken from the
+source without recomputation. The widest run interval sets the estimated band, and every run's
+interval stays recorded. The widest interval is the worst precision observed among the chosen
+models, not a guarantee across all models: margins of ±2.1 and ±3.4 points give an estimated 3, not
+a 4. `build.validate` refuses a block whose method has no approving ruling or is not approved for
+the entry's task, with fewer than two model families, with an interval out of order or off the
+scale, with an impossible or future evidence date, or citing a URL that is not a capability source.
+
+No method is approved yet. Each task family's procedure needs its own ruling, backed by a
+calibration example that compares provisional and estimated bands (R-2026-11-02-f), and the PR that
+applies it adds the method to `APPROVED_METHODS` in `build/evidence_status.py`. Until then every
+entry is provisional or unresolved. `uv run python -m build.evidence_status <score file>` tallies a
+record's entries by status. The depth ladder publishes the status beside each band it derives; that
+publication is the ladder PR's, since no band is computed yet.
 
 ### What reads it
 
