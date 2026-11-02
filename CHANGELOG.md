@@ -62,6 +62,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- The software ladder recognizes `MAX-License`, Modular's renamed Community License, in
+  `competition_restricted`, and max records it from the 2026-10-21 text; max stays 2/source_available.
 - muse-spark re-scored on Muse Spark Open's weights: openness 1/closed to 3/open_weights with Muse Spark
   Open as the governing release and Muse-Model-License as use_bounded; adoption stays 4, now recorded as
   reported traction with no numeric reach ([#930](https://github.com/currentai-org/os-ai-map/pull/930)).
