@@ -157,6 +157,35 @@ collections:
     description: Kalahi's Filipino prompts, created with native Filipino speakers.
   - id: lindsea
     description: LINDSEA's syntax and pragmatics examples, handcrafted by linguists with native speakers.
+  - id: m3exam-questions
+    description: 'M3Exam''s questions: official primary, middle and high school graduation exam papers from nine
+      countries, collected by native speakers of each language (Zhang et al., 2023).'
+  - id: seaexam-indonesian-exams
+    description: The official Indonesian school exam questions the SeaExam authors collected with native linguists,
+      a language M3Exam does not carry.
+  - id: laobench-items
+    description: LaoBench's Lao items, written by its expert linguists and domain specialists from K12 textbooks,
+      government and legal documents and other Lao sources.
+  - id: emot-tweets
+    description: The Indonesian tweets EmoT collected and labeled by emotion (Saputri et al., 2018).
+  - id: casa-reviews
+    description: The Indonesian car reviews CASA collected from online automobile platforms (Ilmania et al., 2018).
+  - id: hoasa-reviews
+    description: The AiryRooms hotel reviews HoASA collected (Azhar et al., 2019).
+  - id: terma-reviews
+    description: The AiryRooms hotel reviews TermA collected (Septiandri and Sutiono, 2019; Fernando et al., 2019).
+  - id: wrete-pairs
+    description: WReTE's sentence pairs, built from Wikipedia revision history (Setya and Mahendra, 2018).
+  - id: hoesen-purwarianti-news
+    description: The Indonesian news-website text of Hoesen and Purwarianti (2018), the source IndoNLU names for both
+      POSP and NERP.
+  - id: panl10n-sentences
+    description: Sentences from the PAN Localization Project, which BaPOS tagged (Dinakaramani et al., 2014).
+  - id: keps-tweets
+    description: The Indonesian tweets on banking products and services that KEPS collected (Mahfuzh et al., 2019).
+  - id: facqa-passages
+    description: FacQA's questions and the short news-article passages they are answered from (Purwarianti et al.,
+      2007).
 components:
   - id: flores-plus
     curation: curated
@@ -1083,4 +1112,328 @@ components:
         accessed: '2026-11-02'
         http_status: 200
         content_sha256: 483eb8b8f2dd43c640c2efcf76959b85bc7706c650c20030e0235e950eadceda
+  - id: m3exam
+    curation: curated
+    origin: original
+    collections:
+      - m3exam-questions
+    parents: []
+    effort: m3exam-official-exams
+    notes: The effort is the national examinations whose papers M3Exam collected, as ThaiExam's is. SeaExam carries
+      M3Exam's English and Chinese questions in its m3exam-english and m3exam-chinese configs, trimmed to four options
+      and shuffled. M3Exam's Thai questions come from Thai graduation exams; no source read says whether any of them
+      are among ThaiExam's.
+    sources:
+      - url: https://arxiv.org/pdf/2306.05179
+        shows: '"we select 9 languages including English (from the US), Chinese (from China)"; "We then engage native
+          speakers from each of the selected countries to collect official exam papers along with their answers"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d77cd914b94ced54959d84a4844fd6d59a26d58659038ea1607364822fabff26
+      - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+        shows: '"M3Exam (with adjustments)"; "We further process the original dataset with the following operations";
+          "We standardized the total number of answer options to four"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+  - id: mmlu
+    curation: curated
+    origin: original
+    collections:
+      - mmlu
+    parents: []
+    effort: mmlu-question-collection
+    notes: MMLU's own English questions. Translations of them carry their own text, so they name the mmlu collection
+      rather than this component as a parent.
+    sources:
+      - url: https://arxiv.org/pdf/2009.03300
+        shows: '"The questions in the dataset were manually collected by graduate and undergraduate students from
+          freely available sources online"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d3a7b0f8589f5365ebfd34a3876a9a8b3fde83e0adb9ed19ccf8f0034bb48fc1
+  - id: mmlu-sea
+    curation: curated
+    origin: derived
+    collections:
+      - mmlu
+    parents: []
+    effort: mmlu-sea-google-translate
+    notes: 'SeaExam''s translation of 2,850 MMLU questions, 50 per subject, into Chinese, Indonesian, Thai and Vietnamese
+      with Google Translate. The SeaExam paper calls it MMLU-SEA. The effort is that machine translation run.'
+    sources:
+      - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+        shows: '"We randomly selected 50 questions from each subject, totaling 2850 questions"; "These questions have
+          been translated from English into Chinese, Indonesian, Thai, and Vietnamese using Google Translate"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+      - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+        shows: '"Then we translate the questions and the choices from English into Indonesian, Thai, and Vietnamese
+          using Google Translate API"; "We call the curated benchmark MMLU-SEA"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+  - id: seaexam
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: 'SeaExam''s own exam questions, in Indonesian, Thai and Vietnamese. Its sources disagree on where they come
+      from. The paper says the authors collected official exam papers with native linguists, following M3Exam''s
+      procedure; the card and the GitHub README call the same configs M3Exam with adjustments. M3Exam carries Thai
+      and Vietnamese, so for those two the sources do not settle whether the items are M3Exam''s, and the canonical
+      record stays unknown. M3Exam has no Indonesian, so the Indonesian questions can only be the collection the
+      paper describes (the override).'
+    overrides:
+      - languages:
+          - ind
+        origin: original
+        collections:
+          - seaexam-indonesian-exams
+        effort: seaexam-exam-collection
+        sources:
+          - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+            shows: '"we decide to manually collect exam questions from the SEA region (Indonesian (id), Thai (th),
+              and Vietnamese (vi))"; "we collaborate with native linguists from the SEA region to systematically
+              collect official region-specific exam questions"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+          - url: https://arxiv.org/pdf/2306.05179
+            shows: 'M3Exam''s nine languages: "we select 9 languages including English (from the US), Chinese (from
+              China)", ending "and Javanese (from Indonesia)"; Indonesian is not among them'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: d77cd914b94ced54959d84a4844fd6d59a26d58659038ea1607364822fabff26
+    sources:
+      - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+        shows: '"we decide to manually collect exam questions from the SEA region (Indonesian (id), Thai (th), and
+          Vietnamese (vi))"; "Following the construction of M3Exam dataset (Zhang et al., 2023), we engage native
+          speakers from the SEA region to collect official exam papers"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+      - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+        shows: '"M3Exam (with adjustments)"; "We further process the original dataset with the following operations";
+          configs "m3exam-indonesian", "m3exam-thai", "m3exam-vietnamese"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+      - url: https://raw.githubusercontent.com/DAMO-NLP-SG/SeaExam/main/README.md
+        shows: '"The evaluation dataset consists of [M3Exam](https://github.com/DAMO-NLP-SG/M3Exam) and translated
+          [MMLU](https://github.com/hendrycks/test) datsets"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 3ae9329ba76379b14f3299ccf8cfc1e67ef3b6786256806132b9c26939062e31
+  - id: laobench
+    curation: curated
+    origin: original
+    collections:
+      - laobench-items
+    parents: []
+    effort: laobench-expert-writing
+    sources:
+      - url: https://arxiv.org/pdf/2511.11334
+        shows: '"expert linguists and domain specialists create" the multiple-choice questions, "writing question
+          stems in Lao"; "Lao-7k contains 7,000 expert-written multiple-choice questions released publicly to enable
+          reproducible benchmarking"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 41a83590461f750dafa70e2e07a43039244639b1c977e388837deaee3d010f99
+  - id: emot
+    curation: curated
+    origin: original
+    collections:
+      - emot-tweets
+    parents: []
+    effort: emot-annotation
+    domains:
+      - twitter
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"An emotion classification dataset collected from the social media platform Twitter (Saputri et al.,
+          2018)"; "consists of around 4000 Indonesian colloquial language tweets"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: smsa
+    curation: curated
+    origin: original
+    collections:
+      - smsa
+    parents: []
+    effort: smsa-annotation
+    notes: NusaX translated this text, and NusaX's Indonesian is SmSA's own text, recorded there with this effort.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This sentence-level sentiment analysis dataset (Purwarianti and Crisdayanti, 2019) is a collection of
+          comments and reviews in Indonesian obtained from multiple online platforms"; "The text was crawled and then
+          annotated by several Indonesian linguists to construct this dataset"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: casa
+    curation: curated
+    origin: original
+    collections:
+      - casa-reviews
+    parents: []
+    effort: casa-annotation
+    domains:
+      - car reviews
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"around a thousand car reviews collected from multiple Indonesian online automobile platforms"; "(Ilmania
+          et al., 2018)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: hoasa
+    curation: curated
+    origin: original
+    collections:
+      - hoasa-reviews
+    parents: []
+    effort: hoasa-annotation
+    domains:
+      - airyrooms hotel reviews
+    notes: TermA also draws hotel reviews from AiryRooms, cited to different papers; no source read says whether the
+      two sets of reviews overlap.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"hotel reviews collected from the hotel aggregator platform, AiryRooms", cited to Azhar et al. (2019)'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: wrete
+    curation: curated
+    origin: original
+    collections:
+      - wrete-pairs
+    parents: []
+    effort: wrete-annotation
+    domains:
+      - wikipedia
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"consists of 450 sentence pairs constructed from Wikipedia revision history"; "(Setya and Mahendra,
+          2018)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: posp
+    curation: curated
+    origin: original
+    collections:
+      - hoesen-purwarianti-news
+    parents: []
+    effort: posp-annotation
+    domains:
+      - news
+    notes: IndoNLU cites POSP and NERP to the same source, Hoesen and Purwarianti (2018), describes both as collected
+      from Indonesian news websites, and gives both 6,720, 840 and 840 items, so the two share a collection.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This Indonesian part-of-speech tagging (POS) dataset (Hoesen and Purwarianti, 2018)"; "is collected
+          from Indonesian news websites"; Table 1: POSP 6,720 train, 840 valid, 840 test'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: bapos
+    curation: curated
+    origin: derived
+    collections:
+      - panl10n-sentences
+    parents: []
+    effort: bapos-annotation
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This POS tagging dataset (Dinakaramani et al., 2014)"; "contains about 1000 sentences, collected from
+          the PAN Localization Project"; "each word is tagged by one of 23 POS tag classes"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: terma
+    curation: curated
+    origin: original
+    collections:
+      - terma-reviews
+    parents: []
+    effort: terma-annotation
+    domains:
+      - airyrooms hotel reviews
+    notes: HoASA also draws hotel reviews from AiryRooms, cited to a different paper; no source read says whether the
+      two sets of reviews overlap.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This span-extraction dataset is collected from the hotel aggregator platform, AiryRooms"; "(Septiandri
+          and Sutiono, 2019; Fernando et al., 2019)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: keps
+    curation: curated
+    origin: original
+    collections:
+      - keps-tweets
+    parents: []
+    effort: keps-annotation
+    domains:
+      - twitter
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This keyphrase extraction dataset (Mahfuzh et al., 2019)"; "consists of text from Twitter discussing
+          banking products and services and is written in the Indonesian language"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: nergrit
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: IndoNLU says only that the data is taken from the Grit-ID repository. No source read says where its text
+      came from or who labeled it.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This NER dataset is taken from the Grit-ID repository"; "the labels are spans in IOB chunking representation"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: nerp
+    curation: curated
+    origin: original
+    collections:
+      - hoesen-purwarianti-news
+    parents: []
+    effort: nerp-annotation
+    domains:
+      - news
+    notes: Shares its collection with POSP; see that record.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This NER dataset (Hoesen and Purwarianti, 2018)"; "contains texts collected from several Indonesian
+          news websites"; Table 1: NERP 6,720 train, 840 valid, 840 test'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: facqa
+    curation: curated
+    origin: original
+    collections:
+      - facqa-passages
+    parents: []
+    effort: facqa-annotation
+    domains:
+      - news
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"from a news article (Purwarianti et al., 2007)"; "Each row in the FacQA dataset consists of a question,
+          a short passage, and a label phrase"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
 relationships: []
