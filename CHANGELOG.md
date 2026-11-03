@@ -18,18 +18,20 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
-- Machine-translated evaluation items that a cited source says people reviewed now count toward
-  evaluation depth; their provenance stays `machine_translated`, and generated items still do not
-  count (R-2026-11-03-b, replacing R-2026-11-01-h). No published score changes until the ladder PR
-  ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
+- Machine-translated evaluation items that a cited source says people reviewed, every item, now
+  count toward evaluation depth; their provenance stays `machine_translated`, a review of unstated
+  scope (`review_scope: unstated`) leaves depth unknown, and generated items still do not count
+  (R-2026-11-03-b, replacing R-2026-11-01-h, and -h). No published score changes until the ladder
+  PR ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
 
 ### Added
 
 - Per-language coverage and lineage records for the 18 remaining evaluation sets, and the full-roster
-  depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 18 of 22 sets
-  resolve, 5 compute to band 5 (under the one-third review trigger), and the lineage sensitivity runs
-  agree for every set. No score changes; the ladder PR applies the bands once they are accepted
-  ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
+  depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 17 of 22 sets
+  resolve, 4 compute to band 5 (under the one-third review trigger), and the lineage sensitivity runs
+  agree for every set. `build/depth_calibration.py` reproduces it from `sources/`, and
+  `tests/test_depth_calibration.py` pins its figures. No score changes; the ladder PR applies the
+  bands once they are accepted ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
 - Cited lineage records in `sources/lineage.yaml` for the 39 coverage components of the four
   calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench), from the lineage audit of
   R-2026-11-02-i, -j and -u. Batayan's translation task is recorded as derived from FLORES-200,

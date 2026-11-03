@@ -26,7 +26,7 @@ What changed:
 - `languages` on two products: `otz` added to AmericasNLP, and `brx`, `kas` and `mni` added to
   IndicXTREME, from the sets' own papers.
 
-After the maintainer answered the decisions below (R-2026-11-03-a to -g), three more changes
+After the maintainer answered the decisions below (R-2026-11-03-a to -h), these changes
 followed. SIB-200's Arabic is recorded as `arb`. IndicXNLI's qualifying counts are its paper's
 verified column. The provenance rule now counts reviewed machine translation
 (`build/evidence_status.py`, `docs/reference/capability.md`, the schema), which also makes all
@@ -35,6 +35,15 @@ where needed, corrected every machine translation and wrote every paraphrase the
 every coverage entry found no other entry the rule moves. SeaExam's MMLU-SEA has no review stated
 ("curated" in its paper refers to the question selection), and IndicXNLI's Gujarati, Punjabi and
 Tamil have no verified items.
+
+A second review then asked for three things, and each is now in the record. The calibration
+reproduces from the repository: `build/depth_calibration.py` computes every figure below from
+`sources/`, and `tests/test_depth_calibration.py` pins them. INCLUDE's Arabic, Persian and Turkish
+pools are the parent benchmarks' own text, as its lineage record says, so they count as imported
+items, not INCLUDE's own. And DarijaMMLU's review turned out to have no stated scope: its paper's
+account of how the set was built names only translation by Claude 3.5 Sonnet, and its card
+describes "manual review" without saying how many items it touched. R-2026-11-03-h makes such an
+entry unresolved (`review_scope: unstated`), so DarijaMMLU no longer counts at band 5.
 
 ## How the evidence was gathered
 
@@ -68,7 +77,10 @@ The computation follows the rulings exactly; nothing in it is tuned to this rost
   IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and IndicSentiment, and IndicGenBench's
   XQuAD-In in full, FLORES-In for its seven new languages, CrossSum-In except the ten languages
   that may reuse CrossSum, and XorQA-In except Bengali and Telugu. The schema does not carry these
-  claims yet; the calibration script holds them, and `capability.own_components` will.
+  claims yet; `build/depth_calibration.py` holds them, and `capability.own_components` will.
+  The scope runs the other way for INCLUDE: its own slug is not its own in Arabic, Persian and
+  Turkish, where the lineage record names ArabicMMLU, Khayyam Challenge and TurkishMMLU as the
+  parents whose text it carries (D5, R-2026-11-02-k).
 - **Across languages.** The median over target languages (`languages` less `pivot_languages`), with
   languages that have no usable measurement filled at 0 and at 5; the band stands only where both
   agree (R-2026-11-01-a). Breadth bonus median + 0.5 x (1 - 1/n) over languages with a band above
@@ -89,7 +101,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | FLEURS | 5 | unresolved (0-5) | same | unresolved | | 0 / 101 | 0 |
 | Belebele | 5 | 3 | 3 | 3 | 3.50 | 114 / 114 | 0 |
 | SIB-200 | 3 | 2 | 2 | 2 | 2.50 | 194 / 195 | 0 |
-| INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 0 |
+| INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 3 |
 | AfroBench | 5 | 1 | 1 | 3 | 1.49 | 56 / 63 | 37 |
 | MILU | 3 | 4 | 4 | 4 | 4.45 | 10 / 10 | 0 |
 | IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 1 |
@@ -102,7 +114,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | LaoBench | 3 | 4 | 4 | 4 | 4.00 | 1 / 1 | 0 |
 | IndoNLU | 4 | unresolved (0-5) | same | unresolved | | 0 / 1 | 0 |
 | ArabicMMLU | 5 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
-| DarijaMMLU | 2 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
+| DarijaMMLU | 2 | unresolved (0-5) | same | unresolved | | 0 / 1 | 0 |
 | TurkishMMLU | 3 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
 | KazMMLU | 3 | 5 | 5 | 5 | 5.25 | 2 / 2 | 0 |
 | Khayyam Challenge | 4 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
@@ -111,15 +123,14 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 "Score now" is the published capability score, set by the interim same-language peer ladder; the
 other columns are depth bands, a different measure, so the two are not expected to agree.
 
-**The band-5 check (R-2026-11-02-c).** 5 of 22 sets compute to 5: ArabicMMLU, DarijaMMLU,
-TurkishMMLU, KazMMLU and Khayyam Challenge, all large knowledge exams (four single-language, KazMMLU
-two-language), as R-2026-11-02-q anticipated. Four are native; DarijaMMLU is reviewed machine
-translation, which counts under R-2026-11-03-b. That is 23%, below the one-third review trigger
-(7.3 sets). The trigger does not fire. All five rest on one task, multiple-choice exams: the
+**The band-5 check (R-2026-11-02-c).** 4 of 22 sets compute to 5: ArabicMMLU, TurkishMMLU,
+KazMMLU and Khayyam Challenge, all large native knowledge exams (three single-language, KazMMLU
+two-language), as R-2026-11-02-q anticipated. That is 18%, below the one-third review trigger
+(7.3 sets). The trigger does not fire. All four rest on one task, multiple-choice exams: the
 method takes the strongest single task per language and gives no credit for task breadth beyond
 the bonus inside a band.
 
-**Resolved.** 18 of 22 sets resolve. The four that do not:
+**Resolved.** 17 of 22 sets resolve. The five that do not:
 
 - FLEURS and Lahaja are speech sets. Speech has no measurement model (R-2026-11-02-l), so every entry
   is unresolved, as ruled.
@@ -127,6 +138,8 @@ the bonus inside a band.
   Vietnamese has no qualifying entry (R-2026-11-02-r).
 - IndoNLU: its sources describe genre and collection (crawled reviews, tweets, news) but not who
   wrote the text, so every entry's provenance is unknown and its depth is unknown.
+- DarijaMMLU: its machine translation was reviewed to an extent no source states, so its depth is
+  unknown (R-2026-11-03-h). A source saying every item was reviewed would make it 5.
 
 **Sensitivity to lineage.** Runs (a) and (b) agree for all 22 sets. No set's band depends on
 treating unverified lineage as independent.
@@ -137,11 +150,19 @@ distributions move (7 and 9 languages capped to 1). Scoping the claims as R-2026
 caps one IndicGenBench language, Nepali, whose CrossSum-In items may be reused CrossSum data. The
 reading changes no set band.
 
+**Sensitivity to INCLUDE's mixed pools.** In nine more languages (Albanian, Chinese, French,
+German, Italian, Lithuanian, Polish, Portuguese and Vietnamese) INCLUDE's paper says the pool joins
+existing benchmark data with exams it collected, with no per-language share. They count as its own
+here. Treated as imported, all nine fall to 1 with the three above, and INCLUDE stays 3 with the
+same bonus.
+
 **Where corroboration caps.** A language is capped when its corroborated band sits below its face
-value. Five sets have capped languages, and three of them lose depth at the set level. AfroBench (37
+value. Six sets have capped languages, and three of them lose depth at the set level. AfroBench (37
 capped languages) and SEA-HELM (4) were described in the depth brief and the lineage audit.
 SeaExam (1): its Chinese, whose qualifying items are imported M3Exam questions, falls from 3 to 1,
-and the set stays 3. IndicGenBench (1): Nepali falls from 3 to 1, and the set stays 3.
+and the set stays 3. IndicGenBench (1): Nepali falls from 3 to 1, and the set stays 3. INCLUDE
+(3): Arabic, Persian and Turkish fall from 3 to 1, since nothing independent of the parent
+benchmarks backs them inside INCLUDE, and the set stays 3.
 AmericasNLP (9): its
 AmericasNLI test sets are imported translations of XNLI, and nothing independent of them on another
 task measures those nine languages, so each sits at one band above nothing; its own Chatino test set
@@ -149,8 +170,8 @@ task measures those nine languages, so each sits at one band above nothing; its 
 
 ## Decisions, as ruled
 
-Each was put to the maintainer on 2026-11-03; the answers are R-2026-11-03-a to -g. Three were
-delegated to a Codex review, whose recommendations were adopted.
+Each was put to the maintainer on 2026-11-03; the answers are R-2026-11-03-a to -g, and -h
+narrows the second. Three were delegated to a Codex review, whose recommendations were adopted.
 
 1. **TurkishMMLU's 5 rests on questions the public cannot see** (R-2026-11-03-a). The official test
    split is 9,807 questions, obtainable by email request; the Hub holds 900 (100 per subject) and
@@ -160,7 +181,8 @@ delegated to a Codex review, whose recommendations were adopted.
    review" and "manual curation for quality control". Ruled: machine translation that a source says
    people reviewed counts toward depth, replacing R-2026-11-01-h. The entry stays
    `machine_translated` with `human_validated: true`; the counting rule changed, not the record.
-   Darija moves from 0 to band 5.
+   A later check found no source saying how far the review went, and R-2026-11-03-h requires the
+   review to cover the items, so DarijaMMLU is unresolved rather than 5.
 3. **Own items under a second slug** (R-2026-11-03-c). Ruled: `capability.own_components`, cited
    claims scoped by language, task or split, in a schema PR of its own before the ladder PR. The
    scopes above follow it.
@@ -211,7 +233,8 @@ delegated to a Codex review, whose recommendations were adopted.
 ## Next
 
 When these bands are accepted, the `capability.own_components` schema lands in its own PR
-(R-2026-11-03-c), and then the ladder PR implements the method in
+(R-2026-11-03-c), carrying the scopes `build/depth_calibration.py` now holds, INCLUDE's included,
+and then the ladder PR implements the method in
 `build/` and moves the evaluation sets into `language_specific_eval_sets` with their new capability
 scores, the evidence status and the R-2026-11-02-o companion figures, one PR with publication, as
 R-2026-10-30-l set out. Until then no published score changes.
