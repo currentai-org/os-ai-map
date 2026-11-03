@@ -80,7 +80,9 @@ def test_the_record_s_table_matches_the_calibration(results):
         assert now == str(a["score_now"]), slug
         assert a_band == a["band"], slug
         assert b_band == ("same" if unresolved and b["band"] == a["band"] else b["band"]), slug
-        assert face == ("unresolved" if unresolved else a["face_value"]), slug
+        # The table shortens an unresolved face value to "unresolved"; anything else is exact.
+        face_unresolved = a["face_value"].startswith("unresolved")
+        assert face == ("unresolved" if face_unresolved else a["face_value"]), slug
         assert bonus == ("" if a["bonus"] is None else f"{a['bonus']:.2f}"), slug
         assert measured == f"{a['measured']} / {a['targets']}", slug
         assert capped == str(len(a["capped"])), slug
