@@ -26,6 +26,11 @@ What changed:
 - `languages` on two products: `otz` added to AmericasNLP, and `brx`, `kas` and `mni` added to
   IndicXTREME, from the sets' own papers.
 
+After the maintainer answered the decisions below (R-2026-11-03-a to -g), three more changes
+followed. SIB-200's Arabic is recorded as `arb`. IndicXNLI's qualifying counts are its paper's
+verified column. The provenance rule now counts reviewed machine translation
+(`build/evidence_status.py`, `docs/reference/capability.md`, the schema).
+
 ## How the evidence was gathered
 
 Four groups worked in parallel, each from `main`, each set by one brief: read the rulings and
@@ -44,18 +49,21 @@ The computation follows the rulings exactly; nothing in it is tuned to this rost
 
 - **Entries.** Only official-evaluation entries count (R-2026-11-01-d). `build/evidence_status.py`
   gives each one its status (R-2026-11-02-e): an unresolved entry (unknown provenance, a task family
-  with no measurement model, a unit no count model reads) gives no band; a measured zero gives band
-  0; otherwise the qualifying count gives a provisional band on the count ladder of 100, 400, 1,600
+  with no measurement model, a unit no count model reads) gives no band; a measured zero
+  (unreviewed machine translation, generated items, a documented zero) gives band 0; otherwise the qualifying count gives a provisional band on the count ladder of 100, 400, 1,600
   and 6,400 items (R-2026-11-02-b, -c).
 - **Within a task.** The highest band of one component, never a sum (R-2026-11-02-g).
 - **Across tasks.** D = max(O, max over imported components i of min(b_i, C_i + 1))
   (R-2026-11-02-k), with C_i the best band among the language's other components that are
   independent of i under `build.lineage.pair_status`, each component resolved in its own task and
   split; imports on the same task never back one another (R-2026-11-01-c).
-- **Own items.** A suite's own items count in full. The product's own slug is its own, and so are
-  items a suite's paper presents as its own under a second slug: SEA-HELM's two judged sets (the
-  audit's precedent), IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and IndicSentiment, and
-  IndicGenBench's FLORES-In, CrossSum-In, XQuAD-In and XorQA-In.
+- **Own items.** A suite's own items count in full (R-2026-11-03-c). The product's own slug is
+  its own, and so are items a suite's paper presents as its own under a second slug, scoped to the
+  languages where the suite made them: SEA-HELM's two judged sets (the audit's precedent),
+  IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and IndicSentiment, and IndicGenBench's
+  XQuAD-In in full, FLORES-In for its seven new languages, CrossSum-In except the ten languages
+  that may reuse CrossSum, and XorQA-In except Bengali and Telugu. The schema does not carry these
+  claims yet; the calibration script holds them, and `capability.own_components` will.
 - **Across languages.** The median over target languages (`languages` less `pivot_languages`), with
   languages that have no usable measurement filled at 0 and at 5; the band stands only where both
   agree (R-2026-11-01-a). Breadth bonus median + 0.5 x (1 - 1/n) over languages with a band above
@@ -79,7 +87,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 0 |
 | AfroBench | 5 | 1 | 1 | 3 | 1.49 | 56 / 63 | 37 |
 | MILU | 3 | 4 | 4 | 4 | 4.45 | 10 / 10 | 0 |
-| IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 0 |
+| IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 1 |
 | IndicXTREME | 4 | 4 | 4 | 4 | 4.47 | 19 / 21 | 0 |
 | Lahaja | 3 | unresolved (0-5) | same | unresolved | | 0 / 1 | 0 |
 | SEA-HELM | 5 | 2 | 2 | 3 | 2.45 | 11 / 11 | 4 |
@@ -89,7 +97,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | LaoBench | 3 | 4 | 4 | 4 | 4.00 | 1 / 1 | 0 |
 | IndoNLU | 4 | unresolved (0-5) | same | unresolved | | 0 / 1 | 0 |
 | ArabicMMLU | 5 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
-| DarijaMMLU | 2 | 0 | 0 | 0 | | 1 / 1 | 0 |
+| DarijaMMLU | 2 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
 | TurkishMMLU | 3 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
 | KazMMLU | 3 | 5 | 5 | 5 | 5.25 | 2 / 2 | 0 |
 | Khayyam Challenge | 4 | 5 | 5 | 5 | 5.00 | 1 / 1 | 0 |
@@ -98,10 +106,13 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 "Score now" is the published capability score, set by the interim same-language peer ladder; the
 other columns are depth bands, a different measure, so the two are not expected to agree.
 
-**The band-5 check (R-2026-11-02-c).** 4 of 22 sets compute to 5: ArabicMMLU, TurkishMMLU, KazMMLU
-and Khayyam Challenge, all large native exams (three single-language, KazMMLU two-language), as
-R-2026-11-02-q anticipated. That is
-18%, below the one-third review trigger (7.3 sets). The trigger does not fire.
+**The band-5 check (R-2026-11-02-c).** 5 of 22 sets compute to 5: ArabicMMLU, DarijaMMLU,
+TurkishMMLU, KazMMLU and Khayyam Challenge, all large knowledge exams (four single-language, KazMMLU
+two-language), as R-2026-11-02-q anticipated. Four are native; DarijaMMLU is reviewed machine
+translation, which counts under R-2026-11-03-b. That is 23%, below the one-third review trigger
+(7.3 sets). The trigger does not fire. All five rest on one task, multiple-choice exams: the
+method takes the strongest single task per language and gives no credit for task breadth beyond
+the bonus inside a band.
 
 **Resolved.** 18 of 22 sets resolve. The four that do not:
 
@@ -117,49 +128,49 @@ treating unverified lineage as independent.
 
 **Sensitivity to the own-items reading.** With IndicXTREME's and IndicGenBench's second-slug sets
 treated as imports instead, IndicXTREME stays 4 and IndicGenBench 3; only their per-language
-distributions move (7 and 9 languages capped to 1). The reading changes no set band.
+distributions move (7 and 9 languages capped to 1). Scoping the claims as R-2026-11-03-c does
+caps one IndicGenBench language, Nepali, whose CrossSum-In items may be reused CrossSum data. The
+reading changes no set band.
 
 **Where corroboration caps.** A language is capped when its corroborated band sits below its face
-value. Four sets have capped languages, and three of them lose depth at the set level. AfroBench (37
+value. Five sets have capped languages, and three of them lose depth at the set level. AfroBench (37
 capped languages) and SEA-HELM (4) were described in the depth brief and the lineage audit.
-SeaExam (1): its Chinese, measured only on imported M3Exam questions, falls from 3 to 1, and the set
-stays 3. AmericasNLP (9): its
+SeaExam (1): its Chinese, whose qualifying items are imported M3Exam questions, falls from 3 to 1,
+and the set stays 3. IndicGenBench (1): Nepali falls from 3 to 1, and the set stays 3.
+AmericasNLP (9): its
 AmericasNLI test sets are imported translations of XNLI, and nothing independent of them on another
 task measures those nine languages, so each sits at one band above nothing; its own Chatino test set
 (1,000 sentences) is the one language at 3.
 
-## Decisions for the maintainer
+## Decisions, as ruled
 
-None of these changes this record's evidence; each changes how it is read.
+Each was put to the maintainer on 2026-11-03; the answers are R-2026-11-03-a to -g. Three were
+delegated to a Codex review, whose recommendations were adopted.
 
-1. **TurkishMMLU's 5 rests on questions the public cannot see.** The official test split is 9,807
-   questions, obtainable by email request; the Hub holds 900 (100 per subject) and the evaluation
-   harness scores those. Recorded as 9,807, Turkish is band 5. If depth should count only what can be
-   evaluated openly, it is band 3 on the 900, and band 5 falls to 3 of 22 sets.
-2. **DarijaMMLU: is "manual review" correction?** Its card says "machine translation and manual
-   review" and "manual curation for quality control". Recorded as `machine_translated` with
-   `human_validated: true`, Darija is a measured zero, as R-2026-11-01-h rules for review that is not
-   stated to be correction. Read as `post_edited`, its 21,792 questions give band 5, and band 5 rises
-   to 5 of 22, still under the trigger.
-3. **Own items under a second slug.** The calibration counts a suite's own sets in full when its
-   paper presents them as its own, under any slug. The schema does not record ownership, so the
-   ladder PR needs a way to: a per-product list, or a field on the coverage entry. The choice changes
-   no set band today.
-4. **IndicXNLI's qualifying portion.** Its paper's Table 9 counts both verified items and corrected
-   ones. Only corrected items are counted as post-edited, by R-2026-11-01-h's line between human
-   validation and provenance. Counting every verified item instead raises the qualifying counts
-   (Assamese 1,918 to 3,000, for example); not computed, since IndicXNLI is an import that does not
-   set IndicXTREME's band.
-5. **KazMMLU's Russian.** Recorded as a target: its items are separate Kazakhstani exam questions,
-   not translations. Its abstract says the set is "designed for Kazakh language", which could make
-   Russian a pivot. Kazakh alone gives the same band 5.
-6. **SeaExam's Chinese.** Recorded as a target because SeaExam's card lists Chinese among the
-   evaluated languages. The SeaExam paper covers Indonesian, Thai and Vietnamese only, and Chinese
-   appears only in the imported M3Exam questions. As a pivot, SeaExam's three remaining languages
-   (3, 4, 4) give 4 instead of 3.
-7. **Two language codes.** FLEURS records Tagalog as `tgl` (its paper's code, the Hub config is
-   `fil_ph`), and SIB-200 records Arabic as `ara` where FLORES+ now uses `arb` (#965). Both are
-   language-code decisions of the kind #965 settled, left as they stand here.
+1. **TurkishMMLU's 5 rests on questions the public cannot see** (R-2026-11-03-a). The official test
+   split is 9,807 questions, obtainable by email request; the Hub holds 900 (100 per subject) and
+   the evaluation harness scores those. Ruled: depth counts the official split's test questions,
+   and whether they are public is an openness attribute. Turkish stays band 5.
+2. **DarijaMMLU's "manual review"** (R-2026-11-03-b). Its card says "machine translation and manual
+   review" and "manual curation for quality control". Ruled: machine translation that a source says
+   people reviewed counts toward depth, replacing R-2026-11-01-h. The entry stays
+   `machine_translated` with `human_validated: true`; the counting rule changed, not the record.
+   Darija moves from 0 to band 5.
+3. **Own items under a second slug** (R-2026-11-03-c). Ruled: `capability.own_components`, cited
+   claims scoped by language, task or split, in a schema PR of its own before the ladder PR. The
+   scopes above follow it.
+4. **IndicXNLI's qualifying portion** (R-2026-11-03-d). Ruled, following from 2: every item its
+   paper's Table 9 counts as verified qualifies, not only the corrected ones (Assamese 1,918 to
+   3,000, Hindi 1,142 to 4,000). IndicXNLI is an import that does not set IndicXTREME's band, which
+   stays 4.
+5. **KazMMLU's Russian** (R-2026-11-03-e, delegated). Ruled a target: its items are separate
+   Kazakhstani exam questions, not translations, and the title names both languages. Kazakh alone
+   gives the same band 5.
+6. **SeaExam's Chinese** (R-2026-11-03-f, delegated). Ruled a target: SeaExam carries Chinese
+   evaluation configurations, and imported items do not make a language a pivot. SeaExam stays 3.
+7. **Two language codes** (R-2026-11-03-g, delegated). FLEURS keeps `tgl`, its paper's code, with
+   `fil` recorded as the Hub's. SIB-200's Arabic is now `arb`, the code its `arb_Arab` configuration
+   supports, matching FLORES+ (#965). Neither moves a band.
 
 ## What the sources contradict
 
@@ -193,7 +204,8 @@ None of these changes this record's evidence; each changes how it is read.
 
 ## Next
 
-When these bands are accepted, with the decisions above, the ladder PR implements the method in
+When these bands are accepted, the `capability.own_components` schema lands in its own PR
+(R-2026-11-03-c), and then the ladder PR implements the method in
 `build/` and moves the evaluation sets into `language_specific_eval_sets` with their new capability
 scores, the evidence status and the R-2026-11-02-o companion figures, one PR with publication, as
 R-2026-10-30-l set out. Until then no published score changes.
