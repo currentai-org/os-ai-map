@@ -29,7 +29,12 @@ What changed:
 After the maintainer answered the decisions below (R-2026-11-03-a to -g), three more changes
 followed. SIB-200's Arabic is recorded as `arb`. IndicXNLI's qualifying counts are its paper's
 verified column. The provenance rule now counts reviewed machine translation
-(`build/evidence_status.py`, `docs/reference/capability.md`, the schema).
+(`build/evidence_status.py`, `docs/reference/capability.md`, the schema), which also makes all
+2,002 IndicXParaphrase test items in each of its ten languages qualify: annotators verified and,
+where needed, corrected every machine translation and wrote every paraphrase themselves. A sweep of
+every coverage entry found no other entry the rule moves. SeaExam's MMLU-SEA has no review stated
+("curated" in its paper refers to the question selection), and IndicXNLI's Gujarati, Punjabi and
+Tamil have no verified items.
 
 ## How the evidence was gathered
 
@@ -162,7 +167,8 @@ delegated to a Codex review, whose recommendations were adopted.
 4. **IndicXNLI's qualifying portion** (R-2026-11-03-d). Ruled, following from 2: every item its
    paper's Table 9 counts as verified qualifies, not only the corrected ones (Assamese 1,918 to
    3,000, Hindi 1,142 to 4,000). IndicXNLI is an import that does not set IndicXTREME's band, which
-   stays 4.
+   stays 4. The same rule makes IndicXParaphrase qualify in full, which lifts Punjabi from 3 to 4
+   without moving the set band or its bonus.
 5. **KazMMLU's Russian** (R-2026-11-03-e, delegated). Ruled a target: its items are separate
    Kazakhstani exam questions, not translations, and the title names both languages. Kazakh alone
    gives the same band 5.
