@@ -290,6 +290,22 @@ collections:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
+  - id: kazmmlu-questions
+    description: KazMMLU's multiple-choice questions, collected from Kazakhstani national exams, school
+      textbooks and professional certification tests (iTest.kz, ymnik.kz, oltest.kz and Shyn Kitap's
+      books), in Kazakh and Russian.
+  - id: milu-exam-questions
+    description: MILU's multiple-choice questions, scraped from published question papers of more than
+      40 Indian national and state examinations, together with MILU's own GPT-4o translations of some
+      of its English questions.
+  - id: slurp
+    description: SLURP's English virtual-assistant utterances, which MASSIVE localizes into 50 languages.
+  - id: indicxparaphrase-sentences
+    description: The 1,001 English sentences IndicXParaphrase took from Kumar et al. (2022) and machine-translated
+      into each of its languages.
+  - id: samanantar
+    description: Samanantar's English-Indic parallel sentence pairs, whose Indic side Naamapadam annotates
+      for named entities.
 components:
   - id: flores-plus
     curation: curated
@@ -1891,4 +1907,314 @@ components:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
+  - id: kazmmlu
+    curation: curated
+    origin: original
+    collections:
+      - kazmmlu-questions
+    parents: []
+    effort: kazmmlu-source-exams
+    notes: The effort is the authors of the exams, textbooks and certification tests whose questions
+      KazMMLU collected, not the MBZUAI team that collected and validated them.
+    sources:
+      - url: https://arxiv.org/pdf/2502.12829
+        shows: '"KazMMLU is sourced from authentic educational materials, including national exams,
+          textbooks, and professional certification repositories"; "the question and answer choices
+          remain in their original language (Kazakh or Russian)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 1724454232a76f3d821777308bd8c94d380442e4165d9f552410c478e32928bd
+  - id: milu
+    curation: curated
+    origin: original
+    collections:
+      - milu-exam-questions
+    parents: []
+    effort: milu-exam-sources
+    notes: The effort is the Indian examination bodies whose question papers MILU scraped. 19,915 of
+      its questions, none of them in English, are MILU's GPT-4o translations of its own English questions,
+      which come from the same collection; no source separates them item by item, so no override is
+      recorded.
+    sources:
+      - url: https://arxiv.org/pdf/2411.02538
+        shows: '"We gathered exam-specific questions by scraping various online exam portals"; "only
+          25% of questions are translated from English, with the remainder"; "we sampled questions from
+          the English set from that subject and translated them into the required language using GPT-4"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a862d7eb687765fd056e0d312fdc0820e821fa924af286384da253bebd10aae6
+  - id: crosssum-in
+    curation: curated
+    origin: derived
+    collections:
+      - xl-sum-bbc
+    parents: []
+    effort: indicgenbench-translation
+    domains:
+      - news
+    notes: 'CrossSum pairs BBC articles with summaries across XL-Sum''s language services. IndicGenBench
+      had the English summaries of 700 English pairs translated into its languages and, for 9 languages
+      it does not name, took 100/100/500 pairs from CrossSum itself. CrossSum carries 10 of IndicGenBench''s
+      29 languages, so for those 10 the effort behind the summaries is not stated (the override). IndicGenBench''s
+      CrossSum-IN, FLORES-IN, XQuAD-IN and XorQA-IN translations share one effort: its card describes
+      one annotator pool per language across the datasets.'
+    overrides:
+      - languages:
+          - ben
+          - guj
+          - hin
+          - mar
+          - nep
+          - pan
+          - pus
+          - tam
+          - tel
+          - urd
+        effort: null
+        sources:
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"CrossSum already contains data for 9 of our 29 target languages; for these languages
+              we sample 100/100/500 examples from the original dataset"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+          - url: https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+            shows: 'the language table''s header row lists bn, gu, hi, mr, np, ps, pa, ta, te and ur
+              among CrossSum''s languages: "Language (ISO 639-1-Code) | am | ar | az | bn | my | zh-CN
+              | zh-TW | en | fr | gu | ha | hi | ig | id | ja | rn | ko | ky | mr | np | om | ps | fa
+              | pcm | pt | pa | ru | gd | sr | sr | si | so | es | sw | ta | te | th | ti | tr | uk
+              | ur | uz | vi | cy | yo"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: bd911faf378b29dbfb1faa5abf8464b01c39802db884d0fb00a2aa7070b70e72
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"a dataset for crosslingual summarization, which in turn is derived from XL-Sum"; "We
+          sample 700 English article-summary pairs (100 each from train/dev and 500 from test) and ask
+          human translators to translate the English summary into the target Indic languages"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://huggingface.co/datasets/google/IndicGenBench_crosssum_in/raw/main/README.md
+        shows: '"We used professional annotators to collect translations in 29 Indic languages for our
+          benchmark."; "All examples across datasets were equally divided based on the number of available
+          annotators and we collected one translation per example in this manner."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: cdb4d05e96ff89702988b754782caba56f27c08e5adebac424bf1c952e51d556
+  - id: flores-in
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - flores-plus
+    effort: flores-200-translation
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    notes: FLORES-IN reuses FLORES-200's own translations of the dev and devtest sentences for the 22
+      of its languages FLORES-200 carries, and IndicGenBench translated those sentences into the other
+      7 (the first override). FLORES-200 carries Manipuri in Bengali script and IndicGenBench in Meitei
+      script, and no source says how the Meitei text was made, so Manipuri carries no effort (the second
+      override).
+    overrides:
+      - languages:
+          - bgc
+          - brx
+          - gbm
+          - gom
+          - hoj
+          - mup
+          - mwr
+        parents: []
+        collections:
+          - flores-200
+        effort: indicgenbench-translation
+        sources:
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"It contains data in 22 of our 29 target languages; we extend this by collecting
+              human translations for the remaining 7 new languages"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+          - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
+            shows: the FLORES-200 language list carries "asm_Beng", "awa_Deva", "ben_Beng", "bho_Deva",
+              "bod_Tibt", "guj_Gujr", "hin_Deva", "hne_Deva", "kan_Knda", "mai_Deva", "mal_Mlym", "mar_Deva",
+              "mni_Beng", "npi_Deva", "ory_Orya", "pan_Guru", "pbt_Arab", "san_Deva", "sat_Olck", "tam_Taml",
+              "tel_Telu" and "urd_Arab", and none of bgc, brx, gbm, gom, hoj, mup or mwr
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
+      - languages:
+          - mni
+        parents: []
+        collections:
+          - flores-200
+        effort: null
+        sources:
+          - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
+            shows: '"Meitei (Bengali script) | mni_Beng"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"extremely low-resource languages such as Manipuri in Meitei script"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"It contains data in 22 of our 29 target languages"; "We collect translations for all
+          997 dev and 1012 devtest sentences, yielding 2009 sentences per language"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+        shows: '"the ''dev'' and ''test'' split of flores_in corresponds to the ''dev'' and ''devtest''
+          split of the original flores dataset"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 2b36a3735001317d99551905243bf8b6b1165876f0511c52e34880a7a892bea1
+  - id: xquad-in
+    curation: curated
+    origin: derived
+    collections:
+      - squad-v1-1
+    parents: []
+    effort: indicgenbench-translation
+    domains:
+      - wikipedia
+    notes: The test set is XQuAD's 240 passages and 1,190 questions and the train and dev sets 100 SQuAD
+      v1.1 questions each. IndicGenBench says it collected translations of all of them in its 12 languages,
+      Hindi included, though XQuAD already had Hindi; either way the items come from SQuAD v1.1, so
+      XQuAD-IN and XQuAD are dependent.
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"we use the 240 passages and 1190 QA pairs from XQuAD as our test set"; "For all the
+          280 passages and 1390 QA pairs we collect professional human translations in 12 Indic languages"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://huggingface.co/datasets/google/IndicGenBench_crosssum_in/raw/main/README.md
+        shows: '"All examples across datasets were equally divided based on the number of available
+          annotators and we collected one translation per example in this manner."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: cdb4d05e96ff89702988b754782caba56f27c08e5adebac424bf1c952e51d556
+  - id: xorqa-in
+    curation: curated
+    origin: derived
+    collections:
+      - tydi-qa
+    parents: []
+    effort: indicgenbench-translation
+    domains:
+      - wikipedia
+    notes: XOR-TyDi QA's questions are TyDi QA questions with no same-language answer, paired with English
+      passages. IndicGenBench took 302 Bengali and 237 Telugu ones, had them translated into English
+      and then into each target language. Whether the Bengali and Telugu items keep XOR-TyDi's original
+      questions is not stated, so those two languages carry no effort (the override).
+    overrides:
+      - languages:
+          - ben
+          - tel
+        effort: null
+        sources:
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"Some target languages are already covered by the source datasets in which case
+              we re-purpose this existing data and only collect translations for the remaining languages";
+              "we first ask the human translators to translate the Bengali or Telugu question"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"we select the 302 Bengali and 237 Telugu examples"; "we first ask the human translators
+          to translate the Bengali or Telugu question"; "In the second stage, we collect translations
+          for these English questions"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://arxiv.org/abs/2010.11856
+        shows: '"We construct a large-scale dataset built on questions from TyDi QA lacking same-language
+          answers."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 2e2322a1dcab76fe1731541ea40d62893e04719011db85237a8a9217633bd0ea
+  - id: indiccopa
+    curation: curated
+    origin: derived
+    collections:
+      - copa
+    parents: []
+    effort: indiccopa-translation
+    sources:
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"We manually translate the COPA (Roemmele et al., 2011) test set into 18 Indic languages
+          to create IndicCOPA."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: indicxparaphrase
+    curation: curated
+    origin: derived
+    collections:
+      - indicxparaphrase-sentences
+    parents: []
+    effort: indicxparaphrase-annotation
+    notes: Each language's sentences are IndicTrans machine translations that annotators verified and
+      corrected where needed; the same annotators wrote a paraphrase and a non-paraphrase for each sentence.
+    sources:
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"We randomly choose 1001 English sentences from the dataset introduced in Kumar et al.
+          (2022)"; "we machine-translate these sentences into the required languages using the IndicTrans
+          model"; "verify and correct the translations, if required, and (ii) create one paraphrase
+          and a non-paraphrase for each sentence"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: massive
+    curation: curated
+    origin: derived
+    collections:
+      - slurp
+    parents: []
+    effort: massive-localization
+    sources:
+      - url: https://arxiv.org/abs/2204.08582
+        shows: '"MASSIVE was created by tasking professional translators to localize the English-only
+          SLURP dataset into 50 typologically diverse languages"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 3a6ed49012479370c08ac14d9f2cd182440a4b79074646f92fe105fb828dc241
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"is created using user queries collected by Amazon Alexa"; "We take a subset of it consisting
+          of seven Indic languages to be part of IndicXTREME."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: naamapadam
+    curation: curated
+    origin: derived
+    collections:
+      - samanantar
+    parents: []
+    effort: naamapadam-annotation
+    notes: The sentences are the Indic side of Samanantar's English-Indic parallel corpus, and no source
+      read here says how that text was produced. The effort recorded is Naamapadam's annotation of its
+      test sets.
+    sources:
+      - url: https://huggingface.co/datasets/ai4bharat/naamapadam/raw/main/README.md
+        shows: '"We use the parallel corpus from the Samanantar Dataset between English and the 11 major
+          Indian languages to create the NER dataset."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 2f6a5559ac0c9035f5b8b9c06e67a43f66c4f7b57d048a6ff36aac09b90221f3
+      - url: https://arxiv.org/pdf/2212.10168
+        shows: '"The annotators had to verify if the projected NER annotations were correct and rectify
+          the annotations if incorrect."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: ccd4fdc95ba32546f941b403aa494a074411e79b190d5c15fd548535627ed7fb
 relationships: []
