@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Per-language coverage and lineage records for the 18 remaining evaluation sets, and the full-roster
+  depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 18 of 22 sets
+  resolve, 4 compute to band 5 (under the one-third review trigger), and the lineage sensitivity runs
+  agree for every set. No score changes; the ladder PR applies the bands once they are accepted.
 - Cited lineage records in `sources/lineage.yaml` for the 39 coverage components of the four
   calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench), from the lineage audit of
   R-2026-11-02-i, -j and -u. Batayan's translation task is recorded as derived from FLORES-200,
