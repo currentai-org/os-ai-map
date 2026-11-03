@@ -186,6 +186,79 @@ collections:
   - id: facqa-passages
     description: FacQA's questions and the short news-article passages they are answered from (Purwarianti et al.,
       2007).
+  - id: arabicmmlu-questions
+    description: ArabicMMLU's 14,575 school-exam questions in Modern Standard Arabic, collected by ten native
+      speakers from exams in eight countries. INCLUDE consolidates them for Arabic, and DarijaMMLU translates
+      selected subjects of them.
+    sources:
+      - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+        shows: '"The data construction process involved a total of 10 Arabic native speakers from different
+          countries"; "The resulting corpus is sourced from the eight countries"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
+  - id: turkishmmlu-questions
+    description: TurkishMMLU's 10,032 questions, taken from the Turkish Ministry of Education's EBA learning
+      platform, where curriculum experts wrote them.
+    sources:
+      - url: https://arxiv.org/html/2407.12402
+        shows: '"Our dataset includes 10,032 multiple-choice questions"; "These questions are sourced from a high-quality
+          online learning platform created by the Turkish Ministry of Education"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - id: khayyam-questions
+    description: The Khayyam Challenge's 20,192 Persian questions, from Iran's national university entrance
+      exam and Kanoon Farhangi Amoozesh (Cultural Educational Center).
+    sources:
+      - url: https://arxiv.org/html/2404.06644
+        shows: 'questions come from "Iran’s national university entrance" and "Kanoon Farhangi Amoozesh (Cultural
+          Educational Center), wherein questions are not only verified and validated by experts in each subject"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c785d9dfad69ef6f8408e514fd681e5ae2f40b72c79350130c85dc64b17e8bbd
+  - id: include-local-exams
+    description: The exam questions INCLUDE collected itself from local academic, professional and licensing
+      exams with native speakers and regional associations (118,606 samples from 1,926 exam sources, 60.2% of
+      INCLUDE). It excludes the published benchmarks INCLUDE consolidated, which have collections of their own.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: '"we collect sources of multiple-choice exams in collaboration with native speakers and regional
+          associations"; "In total, we parsed and verified 118,606 samples across 1,926 exam sources"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: cmmlu-questions
+    description: CMMLU's (ChineseMMLU's) Chinese questions, which INCLUDE consolidates for Chinese.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: 'Section 3.1 lists ChineseMMLU among the existing datasets INCLUDE consolidates ("we also consolidate
+          existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives CMMLU''s
+          language as Chinese'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: vnhsge-questions
+    description: VNHSGE's Vietnamese high school graduation exam questions, which INCLUDE consolidates for
+      Vietnamese.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: 'Section 3.1 lists VNHSGE among the existing datasets INCLUDE consolidates ("we also consolidate
+          existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives VNHSGE''s
+          language as Vietnamese'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: exams-questions
+    description: EXAMS's multilingual high school exam questions (Hardalov et al., 2020), which INCLUDE consolidates
+      for some of its European languages.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: 'Section 3.1 consolidates EXAMS, "a multilingual benchmark with limited domain coverage across multiple
+          European languages"; Table 15 gives its coverage as 16 languages without naming them'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
 components:
   - id: flores-plus
     curation: curated
@@ -1436,4 +1509,234 @@ components:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: arabicmmlu
+    curation: curated
+    origin: original
+    collections:
+      - arabicmmlu-questions
+    parents: []
+    effort: arabicmmlu-school-exams
+    notes: The effort is the school-exam authors in the eight source countries, whose questions ten native
+      speakers collected. No translation is described.
+    sources:
+      - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+        shows: '"sourced from school exams across diverse educational levels in different countries spanning North
+          Africa, the Levant, and the Gulf regions"; "These questions are written in Arabic."'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
+      - url: https://arxiv.org/html/2402.12840
+        shows: '"sourced from school exams across Arabic-speaking countries"; "the internal workers were tasked
+          with collecting relevant sources for data collection"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 921c68cb01cb88e4ada1e82094882023a69b16f2806960968bdb15f22843eecd
+  - id: darijammlu
+    curation: curated
+    origin: derived
+    collections:
+      - arabicmmlu-questions
+      - mmlu
+    parents: []
+    effort: darijammlu-translation
+    notes: Selected MMLU subjects translated from English and selected ArabicMMLU subjects translated from Modern
+      Standard Arabic, both into Darija with Claude 3.5 Sonnet and then reviewed by people. It carries neither
+      source's own text, so it names their collections rather than parents. Its items share ArabicMMLU's questions
+      with `arabicmmlu` and MMLU's with `afrimmlu` and `openai-mmmlu`.
+    sources:
+      - url: https://huggingface.co/datasets/MBZUAI-Paris/DarijaMMLU/raw/main/README.md
+        shows: '"translated from selected subsets of the Massive Multitask Language Understanding (MMLU) and ArabicMMLU
+          benchmarks"; "The selected subsets were translated into Darija using Claude 3.5 Sonnet."; "The translations
+          were produced using machine translation with manual curation for quality control."'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: a8fc1cad343e5f3bc627875aaa17b4e6df608af5c873ba1a07f9d6bb053e8fd3
+      - url: https://arxiv.org/html/2409.17912
+        shows: '"It is constructed by translating two major benchmarks into Darija from English and MSA"; subsets
+          "either too technical (beyond typical user needs) or culturally inappropriate for the Moroccan context
+          were excluded"; "The remaining samples were translated into Darija using Claude 3.5 Sonnet."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eb1879217fcf050587034ac290e0248996f990f2ed480962eb5cb3088978dedb
+  - id: include-benchmark
+    curation: curated
+    origin: original
+    collections:
+      - include-local-exams
+    parents: []
+    effort: include-local-exams
+    notes: INCLUDE-base samples INCLUDE's pool, which joins exams INCLUDE collected itself with six published
+      benchmarks (existing data is 39.8% of INCLUDE and 31.7% of INCLUDE-base, with no per-language share
+      published). The overrides name the published benchmark a language's pool contains, so a pair is dependent
+      wherever overlap cannot be ruled out. Arabic, Persian and Turkish carry the parent benchmark's own text,
+      so those are parents. Albanian, French, German, Italian, Lithuanian, Polish and Portuguese are the languages
+      the paper says hold both existing and newly collected data that no single-language benchmark covers, so
+      their existing data is EXAMS. Whether EXAMS also feeds INCLUDE's other EXAMS languages is not stated.
+    overrides:
+      - languages:
+          - ara
+        parents:
+          - arabicmmlu
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates ArabicMMLU ("we also consolidate existing datasets with extensive
+              domain coverage in single non-English languages"); Table 15 gives its language as Arabic'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - fas
+        parents:
+          - khayyam-challenge
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates PersianMMLU, the Khayyam Challenge''s other name ("we also consolidate
+              existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives
+              its language as Persian'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+          - url: https://arxiv.org/abs/2404.06644
+            shows: '"Khayyam Challenge (also known as PersianMMLU)"'
+            accessed: '2026-09-24'
+            http_status: 200
+            content_sha256: f045cb12c69ed9c98ea845cbc7ac0224211ca799b11ef12761e21ae6d176a32b
+      - languages:
+          - tur
+        parents:
+          - turkishmmlu
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates TurkishMMLU ("we also consolidate existing datasets with extensive
+              domain coverage in single non-English languages"); Table 15 gives its language as Turkish'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - zho
+        collections:
+          - cmmlu-questions
+          - include-local-exams
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates ChineseMMLU; Table 15 gives CMMLU''s language as Chinese; Figure 9 and
+              Table 14 list Chinese among "languages where both existing benchmark data and newly collected data
+              are available"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - vie
+        collections:
+          - include-local-exams
+          - vnhsge-questions
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates VNHSGE; Table 15 gives its language as Vietnamese'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - deu
+          - fra
+          - ita
+          - lit
+          - pol
+          - por
+          - sqi
+        collections:
+          - exams-questions
+          - include-local-exams
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Table 14 and Figure 9 cover the "languages where both existing benchmark data and newly collected
+              data are available": Albanian, Chinese, French, German, Italian, Lithuanian, Persian, Polish and Portuguese;
+              of the consolidated benchmarks only EXAMS, "a multilingual benchmark with limited domain coverage across
+              multiple European languages", can supply the existing data for the seven that are not Chinese or Persian'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: '"All questions in the dataset are presented in their native languages and scripts."; "we also consolidate
+          existing datasets with extensive domain coverage in single non-English languages"; "We repurpose 78,637
+          samples from these published benchmarks"; existing datasets "account for 39.8% of the total collected
+          data and 31.7% of the" INCLUDE-base benchmark; INCLUDE-base "uniformly samples 22,635 QA pairs"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: include-lite
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - include-benchmark
+    effort: include-local-exams
+    notes: A uniform sample of INCLUDE-base carrying its text, so it inherits INCLUDE-base's per-language parents
+      and collections.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: INCLUDE-lite is "uniformly drawn from" INCLUDE-base "with a total of 10,770 samples"
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: khayyam-challenge
+    curation: curated
+    origin: original
+    collections:
+      - khayyam-questions
+    parents: []
+    effort: khayyam-source-exams
+    notes: The effort is the exam writers of Iran's national university entrance exam and Kanoon Farhangi Amoozesh,
+      whose questions the dataset collects. No translation is described.
+    sources:
+      - url: https://arxiv.org/abs/2404.06644
+        shows: '"20,192 four-choice questions sourced from 38 diverse tasks extracted from Persian examinations";
+          "its use of original, non-translated data tailored for Persian speakers"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: f045cb12c69ed9c98ea845cbc7ac0224211ca799b11ef12761e21ae6d176a32b
+      - url: https://arxiv.org/html/2404.06644
+        shows: '"originally constructed in Persian"; questions from "Iran’s national university entrance" and "Kanoon
+          Farhangi Amoozesh (Cultural Educational Center), wherein questions are not only verified and validated
+          by experts in each subject"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c785d9dfad69ef6f8408e514fd681e5ae2f40b72c79350130c85dc64b17e8bbd
+  - id: turkishmmlu
+    curation: curated
+    origin: original
+    collections:
+      - turkishmmlu-questions
+    parents: []
+    effort: eba-curriculum-experts
+    notes: The effort is the curriculum experts who wrote the questions on the Ministry of Education's EBA platform,
+      not the TurkishMMLU team that collected them.
+    sources:
+      - url: https://arxiv.org/abs/2407.12402
+        shows: '"These questions are written by curriculum experts"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 5e66fa69b91a4d9e16dd67166a15b4a099cbaba81d10359f496f8e7adff4fe1a
+      - url: https://arxiv.org/html/2407.12402
+        shows: '"These questions are sourced from a high-quality online learning platform created by the Turkish
+          Ministry of Education"; "each question is crafted and verified by domain experts"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - id: turkishmmlu-sub
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - turkishmmlu
+    effort: eba-curriculum-experts
+    notes: A random sample of TurkishMMLU's test set carrying its text.
+    sources:
+      - url: https://arxiv.org/html/2407.12402
+        shows: '"The large scale of our test dataset, including 9,807 questions" led to "TurkishMMLU sub with 100
+          randomly selected questions per subject, totaling 900"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
 relationships: []
