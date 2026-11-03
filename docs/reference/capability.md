@@ -503,14 +503,17 @@ These are ruled, and they are the rules the ladder PR implements. None of them i
    languages have a usable depth measurement, for example 18 of 20. A target language is measured
    when it has an official-evaluation entry whose qualifying depth is established: `native`,
    `human_translated`, `post_edited`, `machine_translated` or `generated` provenance, `mixed` with
-   a `qualifying_count`, or a documented zero. Measurement is per task: a language is measured on
+   a `qualifying_count`, or a documented zero. A `machine_translated` entry with
+   `human_validated: true` establishes depth only with `review_scope: all_items`
+   (R-2026-11-03-h). Measurement is per task: a language is measured on
    each task for which it has such an entry, and only on those. A measured zero comes from
    `machine_translated` items with no stated review and `generated` items, the only provenance
    values that establish one, or from a documented zero, which has no items at all; a documented
    zero makes the language measured,
    at zero, for its own task, component and split only, and leaves every other task where its own
-   entries put it. A language whose official-split entries are all `unknown` provenance, or `mixed`
-   without a `qualifying_count`, is unmeasured: its depth is unknown, and it enters the robustness
+   entries put it. A language whose official-split entries are all `unknown` provenance, `mixed`
+   without a `qualifying_count`, or reviewed `machine_translated` whose `review_scope` is not
+   `all_items`, is unmeasured: its depth is unknown, and it enters the robustness
    test as an unknown, never as a zero.
 
 ### Evidence status

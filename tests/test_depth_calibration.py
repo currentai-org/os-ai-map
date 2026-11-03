@@ -62,6 +62,15 @@ def test_each_set_reproduces(results, slug):
 
 
 RECORD = ROOT / "docs/sweeps/2026-11-03-depth-calibration-full-roster.md"
+LABELS = {
+    "flores-plus": "FLORES+", "fleurs": "FLEURS", "belebele": "Belebele", "sib-200": "SIB-200",
+    "include-benchmark": "INCLUDE", "afrobench": "AfroBench", "milu": "MILU",
+    "indicgenbench": "IndicGenBench", "indicxtreme": "IndicXTREME", "lahaja": "Lahaja",
+    "sea-helm": "SEA-HELM", "seaexam": "SeaExam", "thai-exam": "ThaiExam", "vmlu": "VMLU",
+    "laobench": "LaoBench", "indonlu": "IndoNLU", "arabicmmlu": "ArabicMMLU",
+    "darijammlu": "DarijaMMLU", "turkishmmlu": "TurkishMMLU", "kazmmlu": "KazMMLU",
+    "khayyam-challenge": "Khayyam Challenge", "americasnlp-shared-task-data": "AmericasNLP",
+}
 
 
 def _table_rows() -> list[list[str]]:
@@ -74,6 +83,7 @@ def test_the_record_s_table_matches_the_calibration(results):
     """Every row of the record's results table, in roster order, against the module's output."""
     rows = _table_rows()
     assert len(rows) == len(dc.ROSTER)
+    assert [r[0] for r in rows] == [LABELS[slug] for slug in dc.ROSTER]
     for slug, (_, now, a_band, b_band, face, bonus, measured, capped) in zip(dc.ROSTER, rows):
         a, b = results[slug]["a"], results[slug]["b"]
         unresolved = a["band"].startswith("unresolved")
@@ -127,6 +137,20 @@ def test_include_s_ownership_follows_its_lineage_record(doc):
             mixed |= set(ov["languages"])
     assert imported == dc.INCLUDE_IMPORTED
     assert mixed == dc.INCLUDE_MIXED
+
+
+def test_include_s_imported_languages_are_derived_in_lineage(doc):
+    """R-2026-11-03-i: where INCLUDE carries a parent's items, its effective lineage is the
+    parent's, not INCLUDE's own exams, so later comparisons see no false shared collection."""
+    rec = next(c for c in doc["components"] if c["id"] == "include-benchmark")
+    for lang in dc.INCLUDE_IMPORTED:
+        eff = lineage.effective(rec, lang)
+        assert eff["origin"] == "derived" and eff["collections"] == [], lang
+        assert "include-local-exams" not in (eff["effort"], *eff["collections"]), lang
+        parent = next(c for c in doc["components"] if c["id"] == eff["parents"][0])
+        assert eff["effort"] == parent["effort"], lang
+    for lang in dc.INCLUDE_MIXED:
+        assert "include-local-exams" in lineage.effective(rec, lang)["collections"], lang
 
 
 @pytest.mark.parametrize("count, expected", [

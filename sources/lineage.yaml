@@ -1634,16 +1634,19 @@ components:
     notes: INCLUDE-base samples INCLUDE's pool, which joins exams INCLUDE collected itself with six published
       benchmarks (existing data is 39.8% of INCLUDE and 31.7% of INCLUDE-base, with no per-language share
       published). The overrides name the published benchmark a language's pool contains, so a pair is dependent
-      wherever overlap cannot be ruled out. Arabic and Turkish carry the parent benchmark's own text, so those
-      are parents. Persian joins the Khayyam Challenge's questions with exams INCLUDE collected (Table 14), so
+      wherever overlap cannot be ruled out. Arabic and Turkish carry the parent benchmark's own text, so there
+      INCLUDE is derived from the parent, with the parent's effort and none of its own exams. Persian joins the Khayyam Challenge's questions with exams INCLUDE collected (Table 14), so
       it takes both collections, as Chinese does with CMMLU. Albanian, French, German, Italian, Lithuanian, Polish and Portuguese are the languages
       the paper says hold both existing and newly collected data that no single-language benchmark covers, so
       their existing data is EXAMS. Whether EXAMS also feeds INCLUDE's other EXAMS languages is not stated.
     overrides:
       - languages:
           - ara
+        origin: derived
+        collections: []
         parents:
           - arabicmmlu
+        effort: arabicmmlu-school-exams
         sources:
           - url: https://arxiv.org/html/2411.19799
             shows: 'Section 3.1 consolidates ArabicMMLU ("we also consolidate existing datasets with extensive
@@ -1672,8 +1675,11 @@ components:
             content_sha256: f045cb12c69ed9c98ea845cbc7ac0224211ca799b11ef12761e21ae6d176a32b
       - languages:
           - tur
+        origin: derived
+        collections: []
         parents:
           - turkishmmlu
+        effort: eba-curriculum-experts
         sources:
           - url: https://arxiv.org/html/2411.19799
             shows: 'Section 3.1 consolidates TurkishMMLU ("we also consolidate existing datasets with extensive
