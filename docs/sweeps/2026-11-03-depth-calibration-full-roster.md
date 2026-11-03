@@ -38,9 +38,11 @@ Tamil have no verified items.
 
 A second review then asked for three things, and each is now in the record. The calibration
 reproduces from the repository: `build/depth_calibration.py` computes every figure below from
-`sources/`, and `tests/test_depth_calibration.py` pins them. INCLUDE's Arabic, Persian and Turkish
-pools are the parent benchmarks' own text, as its lineage record says, so they count as imported
-items, not INCLUDE's own. And DarijaMMLU's review turned out to have no stated scope: its paper's
+`sources/`, and `tests/test_depth_calibration.py` pins them. INCLUDE's Arabic and Turkish pools
+are the parent benchmarks' own text, as its lineage record says, so they count as imported items,
+not INCLUDE's own. Its Persian pool joins the Khayyam Challenge's questions with exams INCLUDE
+collected, so it counts with the mixed pools (a third review caught an earlier reading that
+treated it as wholly imported). And DarijaMMLU's review turned out to have no stated scope: its paper's
 account of how the set was built names only translation by Claude 3.5 Sonnet, and its card
 describes "manual review" without saying how many items it touched. R-2026-11-03-h makes such an
 entry unresolved (`review_scope: unstated`), so DarijaMMLU no longer counts at band 5.
@@ -78,9 +80,9 @@ The computation follows the rulings exactly; nothing in it is tuned to this rost
   XQuAD-In in full, FLORES-In for its seven new languages, CrossSum-In except the ten languages
   that may reuse CrossSum, and XorQA-In except Bengali and Telugu. The schema does not carry these
   claims yet; `build/depth_calibration.py` holds them, and `capability.own_components` will.
-  The scope runs the other way for INCLUDE: its own slug is not its own in Arabic, Persian and
-  Turkish, where the lineage record names ArabicMMLU, Khayyam Challenge and TurkishMMLU as the
-  parents whose text it carries (D5, R-2026-11-02-k).
+  The scope runs the other way for INCLUDE: its own slug is not its own in Arabic and Turkish,
+  where the lineage record names ArabicMMLU and TurkishMMLU as the parents whose text it carries
+  (D5, R-2026-11-02-k).
 - **Across languages.** The median over target languages (`languages` less `pivot_languages`), with
   languages that have no usable measurement filled at 0 and at 5; the band stands only where both
   agree (R-2026-11-01-a). Breadth bonus median + 0.5 x (1 - 1/n) over languages with a band above
@@ -150,19 +152,19 @@ distributions move (7 and 9 languages capped to 1). Scoping the claims as R-2026
 caps one IndicGenBench language, Nepali, whose CrossSum-In items may be reused CrossSum data. The
 reading changes no set band.
 
-**Sensitivity to INCLUDE's mixed pools.** In nine more languages (Albanian, Chinese, French,
-German, Italian, Lithuanian, Polish, Portuguese and Vietnamese) INCLUDE's paper says the pool joins
-existing benchmark data with exams it collected, with no per-language share. They count as its own
-here. Treated as imported, all nine fall to 1 with the three above, and INCLUDE stays 3 with the
-same bonus.
+**Sensitivity to INCLUDE's mixed pools.** In ten more languages (Albanian, Chinese, French,
+German, Italian, Lithuanian, Persian, Polish, Portuguese and Vietnamese) INCLUDE's paper says the
+pool joins existing benchmark data with exams it collected, with no per-language share. They count
+as its own here. Treated as imported, all ten fall to 1 with the two above, and INCLUDE stays 3
+with the same bonus.
 
 **Where corroboration caps.** A language is capped when its corroborated band sits below its face
 value. Six sets have capped languages, and three of them lose depth at the set level. AfroBench (37
 capped languages) and SEA-HELM (4) were described in the depth brief and the lineage audit.
 SeaExam (1): its Chinese, whose qualifying items are imported M3Exam questions, falls from 3 to 1,
 and the set stays 3. IndicGenBench (1): Nepali falls from 3 to 1, and the set stays 3. INCLUDE
-(3): Arabic, Persian and Turkish fall from 3 to 1, since nothing independent of the parent
-benchmarks backs them inside INCLUDE, and the set stays 3.
+(2): Arabic and Turkish fall from 3 to 1, since nothing independent of the parent benchmarks backs
+them inside INCLUDE, and the set stays 3.
 AmericasNLP (9): its
 AmericasNLI test sets are imported translations of XNLI, and nothing independent of them on another
 task measures those nine languages, so each sits at one band above nothing; its own Chatino test set

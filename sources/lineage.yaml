@@ -1634,8 +1634,9 @@ components:
     notes: INCLUDE-base samples INCLUDE's pool, which joins exams INCLUDE collected itself with six published
       benchmarks (existing data is 39.8% of INCLUDE and 31.7% of INCLUDE-base, with no per-language share
       published). The overrides name the published benchmark a language's pool contains, so a pair is dependent
-      wherever overlap cannot be ruled out. Arabic, Persian and Turkish carry the parent benchmark's own text,
-      so those are parents. Albanian, French, German, Italian, Lithuanian, Polish and Portuguese are the languages
+      wherever overlap cannot be ruled out. Arabic and Turkish carry the parent benchmark's own text, so those
+      are parents. Persian joins the Khayyam Challenge's questions with exams INCLUDE collected (Table 14), so
+      it takes both collections, as Chinese does with CMMLU. Albanian, French, German, Italian, Lithuanian, Polish and Portuguese are the languages
       the paper says hold both existing and newly collected data that no single-language benchmark covers, so
       their existing data is EXAMS. Whether EXAMS also feeds INCLUDE's other EXAMS languages is not stated.
     overrides:
@@ -1652,13 +1653,15 @@ components:
             content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
       - languages:
           - fas
-        parents:
-          - khayyam-challenge
+        collections:
+          - include-local-exams
+          - khayyam-questions
         sources:
           - url: https://arxiv.org/html/2411.19799
             shows: 'Section 3.1 consolidates PersianMMLU, the Khayyam Challenge''s other name ("we also consolidate
               existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives
-              its language as Persian'
+              its language as Persian; Figure 9 and Table 14 list Persian among "languages where both existing
+              benchmark data and newly collected data are available"'
             accessed: '2026-11-03'
             http_status: 200
             content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f

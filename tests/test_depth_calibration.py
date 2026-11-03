@@ -18,7 +18,7 @@ EXPECTED = {
     "fleurs": ("unresolved (0-5)", "unresolved (0-5)", None, 0, 101, 0),
     "belebele": ("3", "3", 3.5, 114, 114, 0),
     "sib-200": ("2", "2", 2.5, 194, 195, 0),
-    "include-benchmark": ("3", "3", 3.49, 44, 44, 3),
+    "include-benchmark": ("3", "3", 3.49, 44, 44, 2),
     "afrobench": ("1", "3", 1.49, 56, 63, 37),
     "milu": ("4", "4", 4.45, 10, 10, 0),
     "indicgenbench": ("3", "3", 3.48, 29, 29, 1),

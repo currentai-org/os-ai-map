@@ -57,13 +57,13 @@ ROSTER: tuple[str, ...] = (
 # language), ("only", languages) or ("except", languages).
 FLORES_IN_NEW = frozenset({"bgc", "brx", "gbm", "gom", "hoj", "mup", "mwr"})
 CROSSSUM_REUSED = frozenset({"ben", "guj", "hin", "mar", "nep", "pan", "pus", "tam", "tel", "urd"})
-# INCLUDE's pool in these languages is the parent benchmark's own text (ArabicMMLU, Khayyam
-# Challenge, TurkishMMLU): the lineage record names the parent, so the items are imported (D5).
-INCLUDE_IMPORTED = frozenset({"ara", "fas", "tur"})
+# INCLUDE's pool in these languages is the parent benchmark's own text (ArabicMMLU, TurkishMMLU):
+# the lineage record names the parent, so the items are imported (D5).
+INCLUDE_IMPORTED = frozenset({"ara", "tur"})
 # Languages where INCLUDE says its pool joins existing benchmark data with exams it collected, with
 # no per-language share: the lineage record gives them a second collection. Own as recorded; the
 # sensitivity treats them as imported too.
-INCLUDE_MIXED = frozenset({"deu", "fra", "ita", "lit", "pol", "por", "sqi", "vie", "zho"})
+INCLUDE_MIXED = frozenset({"deu", "fas", "fra", "ita", "lit", "pol", "por", "sqi", "vie", "zho"})
 
 Scope = tuple[str, frozenset[str]] | None
 OWN_COMPONENTS: dict[str, dict[str, Scope]] = {
