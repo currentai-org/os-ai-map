@@ -259,6 +259,37 @@ collections:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: scjn-press-releases
+    description: The Mexican Supreme Court press releases from which AmericasNLP 2023 sampled the Spanish
+      source sentences of its Chatino evaluation set.
+    sources:
+      - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+        shows: '"To create the dataset, we crawl 10,000 instances from the Supreme Court press releases, and
+          randomly select a subset for translation."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+  - id: lahaja-recordings
+    description: The read and extempore Hindi speech Lahaja recorded from 132 speakers for the benchmark,
+      with its transcripts.
+    sources:
+      - url: https://arxiv.org/pdf/2408.11440
+        shows: '"a total of 12.5 hours of Hindi audio, sourced from 132 speakers"; "Each participant thus
+          reads 20 sentences across both read speech and digital interactions, and answers 8 questions on
+          selected domains and topics of interest."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
+  - id: indicvoices-read-sentences
+    description: The 1K Wikipedia sentences IndicVoices released for read speech. Lahaja's read-speech
+      portion is recordings of them.
+    sources:
+      - url: https://arxiv.org/pdf/2408.11440
+        shows: '"Read speech: To ensure good vocabulary coverage we use 1K sentences from Wikipedia articles
+          covering 13 domains, as released by [1]."; [1] is IndicVoices'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
 components:
   - id: flores-plus
     curation: curated
@@ -277,6 +308,9 @@ components:
       this record. A language whose only FLORES+ text has its own OLDI data card, behind the Hub gate,
       carries no effort (the override). A language that only gained a second variety with its own card
       (cat, khk, lmo, mni, nya, oci, tso) keeps the FLORES-200 effort for the variety FLORES-200 translated.
+      N'Ko carries no effort either, through a second override. SIB-200's paper says it was added to
+      FLORES-200 later, citing Doumbouya et al. (2023), and NLLB's FLORES-200 language table has no N'Ko
+      row, so its text is not the NLLB translation and no source read names who produced it.
     overrides:
       - languages:
           - apd
@@ -322,6 +356,22 @@ components:
             accessed: '2026-11-02'
             http_status: 200
             content_sha256: c6e1fb3ff0df5f6cbcd573e4ecb636fe14b90590dee15cf4bae53b8d122983c9
+      - languages:
+          - nqo
+        effort: null
+        sources:
+          - url: https://arxiv.org/pdf/2309.07445
+            shows: '"Additionally, we added N’Ko—a West African language that was recently added to Flores-200
+              dataset (Doumbouya et al., 2023)"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 6ebd11657d6246784e07193fc69754f1b64d8329b87d0cf38fcc865d2594216e
+          - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
+            shows: the FLORES-200 language table lists every code from ace_Arab to zul_Latn and has no nqo_Nkoo
+              row
+            accessed: '2026-11-01'
+            http_status: 200
+            content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
     sources:
       - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
         shows: '"The data consists of translations primarily from English into over 200 language varieties";
@@ -1739,4 +1789,106 @@ components:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - id: fleurs
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - flores-plus
+    effort: fleurs-recording
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    notes: FLEURS is speech recorded from FLORES-101's dev and devtest sentences, so its transcripts are the
+      FLORES text in each language and it names flores-plus as its parent, as SIB-200 and Belebele do. The
+      effort recorded here is the recording; the text's translation effort comes from the parent.
+    sources:
+      - url: https://arxiv.org/pdf/2205.12446
+        shows: '"FLoRes-101 contains 3001 sentences extracted from English Wikipedia"; "we only use the dev
+          and devtest sets, which contain 2009 sentences in total"; "we collected three recordings by three
+          different native speakers"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 670824d0dfaa98f56b7f774116d5d70bdeb7990ce031ebe690e9c86c6053283f
+  - id: americasnli
+    curation: curated
+    origin: derived
+    collections:
+      - xnli-english
+    parents: []
+    effort: americasnli-translation
+    notes: AmericasNLI translates the Spanish version of XNLI into ten Indigenous languages of the Americas,
+      and the AmericasNLP shared tasks of 2021 and 2023 use its sentences as their dev and test sets for those
+      languages. It made its own text from XNLI's examples, so it names XNLI's collection rather than a parent,
+      as AfriXNLI and IndicXNLI do. One translation effort is recorded for all ten languages; the sources
+      describe one dataset and no separate efforts.
+    sources:
+      - url: https://aclanthology.org/2021.americasnlp-1.23.pdf
+        shows: '"we leveraged individual pairs of parallel sentences from AmericasNLI"; "a manual translation
+          of the Spanish version of the multilingual XNLI dataset"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: ae950b2ea49b13e4f72912264e75a5e171976e5c333c0ce3db3ce96273f97b57
+      - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+        shows: '"the AmericasNLP 2021 shared task used multi-way parallel translations of the Spanish XNLI test
+          set across 10 languages"; "For this edition of the shared task, we use the same evaluation set"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+  - id: americasnlp-shared-task-data
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: The shared task's own items. Its training sets gather existing corpora that differ by language and
+      are not named collections here, and none of its training entries counts, so the canonical record stays
+      unknown. Its dev and test sets in the ten 2021 languages are AmericasNLI's, a component of their own.
+      The 2023 Chatino dev and test sets are the override.
+    overrides:
+      - languages:
+          - ctp
+        splits:
+          - dev
+          - test
+        origin: original
+        collections:
+          - scjn-press-releases
+        effort: americasnlp-chatino-translation
+        domains:
+          - legal
+        sources:
+          - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+            shows: '"To create the dataset, we crawl 10,000 instances from the Supreme Court press releases,
+              and randomly select a subset for translation."; "Translations are jointly done by two professional
+              translators, who are native San Juan Quiahije Chatino speakers"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+    sources:
+      - url: https://aclanthology.org/2021.americasnlp-1.23.pdf
+        shows: '"We provided training sets consisting of data collected from various sources, as well as manually
+          translated sentences for the development and test sets."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: ae950b2ea49b13e4f72912264e75a5e171976e5c333c0ce3db3ce96273f97b57
+  - id: lahaja
+    curation: curated
+    origin: original
+    collections:
+      - lahaja-recordings
+      - indicvoices-read-sentences
+    parents: []
+    effort: lahaja-recording
+    notes: Lahaja recorded its own speakers. Its read-speech portion is those speakers reading IndicVoices'
+      released Wikipedia sentences, so it also names that collection.
+    sources:
+      - url: https://arxiv.org/pdf/2408.11440
+        shows: '"a total of 12.5 hours of Hindi audio, sourced from 132 speakers"; "Read speech: To ensure good
+          vocabulary coverage we use 1K sentences from Wikipedia articles covering 13 domains, as released by
+          [1]."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
 relationships: []
