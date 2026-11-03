@@ -11,6 +11,7 @@ import pytest
 
 from build import depth_calibration as dc
 from build import lineage
+from build.depth_calibration import ROOT
 
 # slug: (corroborated band, face value, bonus, measured, targets, capped languages)
 EXPECTED = {
@@ -58,6 +59,31 @@ def test_each_set_reproduces(results, slug):
     a = results[slug]["a"]
     got = (a["band"], a["face_value"], a["bonus"], a["measured"], a["targets"], len(a["capped"]))
     assert got == EXPECTED[slug]
+
+
+RECORD = ROOT / "docs/sweeps/2026-11-03-depth-calibration-full-roster.md"
+
+
+def _table_rows() -> list[list[str]]:
+    lines = RECORD.read_text().split("## Results", 1)[1].splitlines()
+    rows = [ln for ln in lines if ln.startswith("| ")]
+    return [[c.strip() for c in r.strip("|").split("|")] for r in rows[1:]]  # skip the header
+
+
+def test_the_record_s_table_matches_the_calibration(results):
+    """Every row of the record's results table, in roster order, against the module's output."""
+    rows = _table_rows()
+    assert len(rows) == len(dc.ROSTER)
+    for slug, (_, now, a_band, b_band, face, bonus, measured, capped) in zip(dc.ROSTER, rows):
+        a, b = results[slug]["a"], results[slug]["b"]
+        unresolved = a["band"].startswith("unresolved")
+        assert now == str(a["score_now"]), slug
+        assert a_band == a["band"], slug
+        assert b_band == ("same" if unresolved and b["band"] == a["band"] else b["band"]), slug
+        assert face == ("unresolved" if unresolved else a["face_value"]), slug
+        assert bonus == ("" if a["bonus"] is None else f"{a['bonus']:.2f}"), slug
+        assert measured == f"{a['measured']} / {a['targets']}", slug
+        assert capped == str(len(a["capped"])), slug
 
 
 def test_the_headline_figures(results):

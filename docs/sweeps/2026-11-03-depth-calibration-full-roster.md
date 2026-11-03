@@ -104,7 +104,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | FLEURS | 5 | unresolved (0-5) | same | unresolved | | 0 / 101 | 0 |
 | Belebele | 5 | 3 | 3 | 3 | 3.50 | 114 / 114 | 0 |
 | SIB-200 | 3 | 2 | 2 | 2 | 2.50 | 194 / 195 | 0 |
-| INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 3 |
+| INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 2 |
 | AfroBench | 5 | 1 | 1 | 3 | 1.49 | 56 / 63 | 37 |
 | MILU | 3 | 4 | 4 | 4 | 4.45 | 10 / 10 | 0 |
 | IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 1 |
