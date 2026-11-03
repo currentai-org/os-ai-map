@@ -58,7 +58,7 @@ ROSTER: tuple[str, ...] = (
 FLORES_IN_NEW = frozenset({"bgc", "brx", "gbm", "gom", "hoj", "mup", "mwr"})
 CROSSSUM_REUSED = frozenset({"ben", "guj", "hin", "mar", "nep", "pan", "pus", "tam", "tel", "urd"})
 # INCLUDE's pool in these languages is the parent benchmark's own text (ArabicMMLU, TurkishMMLU):
-# the lineage record names the parent, so the items are imported (D5).
+# cited reuse of complete items withdraws the own slug there (D5, R-2026-11-03-i).
 INCLUDE_IMPORTED = frozenset({"ara", "tur"})
 # Languages where INCLUDE says its pool joins existing benchmark data with exams it collected, with
 # no per-language share: the lineage record gives them a second collection. Own as recorded; the

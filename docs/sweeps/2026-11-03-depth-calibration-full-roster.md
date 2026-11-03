@@ -26,7 +26,7 @@ What changed:
 - `languages` on two products: `otz` added to AmericasNLP, and `brx`, `kas` and `mni` added to
   IndicXTREME, from the sets' own papers.
 
-After the maintainer answered the decisions below (R-2026-11-03-a to -h), these changes
+After the maintainer answered the decisions below (R-2026-11-03-a to -i), these changes
 followed. SIB-200's Arabic is recorded as `arb`. IndicXNLI's qualifying counts are its paper's
 verified column. The provenance rule now counts reviewed machine translation
 (`build/evidence_status.py`, `docs/reference/capability.md`, the schema), which also makes all
@@ -82,7 +82,8 @@ The computation follows the rulings exactly; nothing in it is tuned to this rost
   claims yet; `build/depth_calibration.py` holds them, and `capability.own_components` will.
   The scope runs the other way for INCLUDE: its own slug is not its own in Arabic and Turkish,
   where the lineage record names ArabicMMLU and TurkishMMLU as the parents whose text it carries
-  (D5, R-2026-11-02-k).
+  (D5, R-2026-11-02-k, R-2026-11-03-i). A parent edge alone does not withdraw ownership: Belebele
+  and SIB-200 write new questions and labels over FLORES+ text and stay their own.
 - **Across languages.** The median over target languages (`languages` less `pivot_languages`), with
   languages that have no usable measurement filled at 0 and at 5; the band stands only where both
   agree (R-2026-11-01-a). Breadth bonus median + 0.5 x (1 - 1/n) over languages with a band above
@@ -172,8 +173,8 @@ task measures those nine languages, so each sits at one band above nothing; its 
 
 ## Decisions, as ruled
 
-Each was put to the maintainer on 2026-11-03; the answers are R-2026-11-03-a to -g, and -h
-narrows the second. Three were delegated to a Codex review, whose recommendations were adopted.
+Each was put to the maintainer on 2026-11-03; the answers are R-2026-11-03-a to -g, -h
+narrows the second, and -i settles which items INCLUDE owns. Three were delegated to a Codex review, whose recommendations were adopted.
 
 1. **TurkishMMLU's 5 rests on questions the public cannot see** (R-2026-11-03-a). The official test
    split is 9,807 questions, obtainable by email request; the Hub holds 900 (100 per subject) and
