@@ -86,7 +86,8 @@ capability:
     http_status: 200
     content_sha256: b14ea0cec0300308613e3e2354a5d56dedd47081bc619a1547d28f1db3adb613
   - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
-    shows: '"The data construction process involved a total of 10 Arabic native speakers from different countries".'
+    shows: '"The data construction process involved a total of 10 Arabic native speakers from different countries";
+      "These questions are written in Arabic."'
     accessed: '2026-09-24'
     http_status: 200
     content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
@@ -96,3 +97,50 @@ capability:
     accessed: '2026-09-24'
     http_status: 200
     content_sha256: a8fc1cad343e5f3bc627875aaa17b4e6df608af5c873ba1a07f9d6bb053e8fd3
+  - url: https://datasets-server.huggingface.co/size?dataset=MBZUAI/ArabicMMLU
+    shows: 'the Hub''s split sizes for the "All" config: "split":"test" "num_rows":14455 and "split":"dev" "num_rows":120;
+      the 40 subject configs sum to the same totals'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: d7d639ec5cad6d21583529b2a9689baf9cf9958b6e71d03f3be877ca8c6df2e8
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/arabicmmlu/_default_arabicmmlu_template_yaml
+    shows: 'the harness''s ArabicMMLU template: "dataset_path: MBZUAI/ArabicMMLU", "test_split: test", "fewshot_split:
+      dev"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: 092a25dec6000f8e778403bf0a8b66b962d5b6bf740fad0e3b50f5ecd93dab3c
+  - url: https://arxiv.org/html/2402.12840
+    shows: 'knowledge evaluation for Arabic models "primarily conducted using datasets translated from English to
+      Arabic"; ArabicMMLU is "sourced from school exams across Arabic-speaking countries"; filtering reduced "the
+      initial set of over 15,000 questions to 14,575 unique questions"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: 921c68cb01cb88e4ada1e82094882023a69b16f2806960968bdb15f22843eecd
+  pivot_languages: []
+  language_coverage:
+  - language: ara
+    task: knowledge_exam
+    component: arabicmmlu
+    split: dev
+    official_eval: false
+    count: 120
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=MBZUAI/ArabicMMLU
+    - https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/arabicmmlu/_default_arabicmmlu_template_yaml
+    - https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+    - https://arxiv.org/html/2402.12840
+  - language: ara
+    task: knowledge_exam
+    component: arabicmmlu
+    split: test
+    official_eval: true
+    count: 14455
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=MBZUAI/ArabicMMLU
+    - https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/arabicmmlu/_default_arabicmmlu_template_yaml
+    - https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+    - https://arxiv.org/html/2402.12840
