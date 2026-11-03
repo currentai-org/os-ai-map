@@ -1005,7 +1005,7 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
     - `official_eval` agrees with `split`, and a language, task and component has at most one
       official evaluation split, so dev and devtest are never added together (R-2026-11-01-d).
     - `qualifying_count` sits only on a `mixed` entry and does not exceed `count`
-      (R-2026-11-01-h).
+      (R-2026-11-03-b).
     - `subset_of` names an existing entry for the same language, task and split, which is not
       itself a subset, and which holds at least as many items in the same unit (R-2026-11-01-d).
     - Every `cites` URL is the `url` of a `capability.sources` entry, which is where the

@@ -86,7 +86,11 @@ capability:
   sources:
   - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
     shows: '"The original M3Exam dataset is constructed with real human exam questions"; "We randomly selected
-      50 questions from each subject, totaling 2850 questions"'
+      50 questions from each subject, totaling 2850 questions"; under "Translated MMLU": "We translate the original
+      English questions to different languages to measure the cross-lingual alignment" and "These questions have
+      been translated from English into Chinese, Indonesian, Thai, and Vietnamese using Google Translate"; configs
+      "m3exam-indonesian", "m3exam-thai", "m3exam-vietnamese", "m3exam-english", "m3exam-chinese" and "mmlu-english",
+      "mmlu-chinese", "mmlu-thai", "mmlu-vietnamese", "mmlu-indonesian", each with a dev and a test split'
     accessed: '2026-09-24'
     http_status: 200
     content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
@@ -107,3 +111,264 @@ capability:
     accessed: '2026-09-24'
     http_status: 200
     content_sha256: 12dde30798ec5cd8f0c58ae2777e4870bcc99dea341a299a018f112960bce179
+  - url: https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    shows: 'the Hub''s split sizes per config, test: "m3exam-english" 1908, "m3exam-chinese" 644, "m3exam-indonesian"
+      1580, "m3exam-thai" 2126, "m3exam-vietnamese" 1745, and 2850 in each of "mmlu-english", "mmlu-chinese",
+      "mmlu-indonesian", "mmlu-thai" and "mmlu-vietnamese"; dev: 32, 25, 27, 26 and 25 in the same m3exam configs,
+      and 285 in each mmlu config'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: 042f2d60069a695da0408adee290154df5d3b078f64ebc05abdebe26a9d44ffd
+  - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+    shows: '"we decide to manually collect exam questions from the SEA region (Indonesian (id), Thai (th), and Vietnamese
+      (vi))"; "we collaborate with native linguists from the SEA region to systematically collect official region-specific
+      exam questions"; "The final SeaExam comprises a total of 5,451 test samples", Table 1 totals 1,580 (id), 2,126
+      (th) and 1,745 (vi); on MMLU, "Then we translate the questions and the choices from English into Indonesian,
+      Thai, and Vietnamese using Google Translate API" and "We call the curated benchmark MMLU-SEA"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+  - url: https://arxiv.org/pdf/2306.05179
+    shows: 'M3Exam: "we select 9 languages including English (from the US), Chinese (from China)" and the rest,
+      ending "and Javanese (from Indonesia)"; "We then engage native speakers from each of the selected countries
+      to collect official exam papers along with their answers"; "collecting real-world natural data of different
+      languages instead of translating from English data"; "separate these as held-out development data"; "The
+      remaining questions are used as test data during the experiment"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: d77cd914b94ced54959d84a4844fd6d59a26d58659038ea1607364822fabff26
+  pivot_languages: [eng]
+  language_coverage:
+  - language: eng
+    task: knowledge_exam
+    component: m3exam
+    split: dev
+    official_eval: false
+    count: 32
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://arxiv.org/pdf/2306.05179
+  - language: eng
+    task: knowledge_exam
+    component: m3exam
+    split: test
+    official_eval: true
+    count: 1908
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://arxiv.org/pdf/2306.05179
+  - language: eng
+    task: knowledge_exam
+    component: mmlu
+    split: dev
+    official_eval: false
+    count: 285
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+  - language: eng
+    task: knowledge_exam
+    component: mmlu
+    split: test
+    official_eval: true
+    count: 2850
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+  - language: ind
+    task: knowledge_exam
+    component: mmlu-sea
+    split: dev
+    official_eval: false
+    count: 285
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+  - language: ind
+    task: knowledge_exam
+    component: mmlu-sea
+    split: test
+    official_eval: true
+    count: 2850
+    unit: questions
+    provenance: machine_translated
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: ind
+    task: knowledge_exam
+    component: seaexam
+    split: dev
+    official_eval: false
+    count: 27
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: ind
+    task: knowledge_exam
+    component: seaexam
+    split: test
+    official_eval: true
+    count: 1580
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: tha
+    task: knowledge_exam
+    component: mmlu-sea
+    split: dev
+    official_eval: false
+    count: 285
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+  - language: tha
+    task: knowledge_exam
+    component: mmlu-sea
+    split: test
+    official_eval: true
+    count: 2850
+    unit: questions
+    provenance: machine_translated
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: tha
+    task: knowledge_exam
+    component: seaexam
+    split: dev
+    official_eval: false
+    count: 26
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: tha
+    task: knowledge_exam
+    component: seaexam
+    split: test
+    official_eval: true
+    count: 2126
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: vie
+    task: knowledge_exam
+    component: mmlu-sea
+    split: dev
+    official_eval: false
+    count: 285
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+  - language: vie
+    task: knowledge_exam
+    component: mmlu-sea
+    split: test
+    official_eval: true
+    count: 2850
+    unit: questions
+    provenance: machine_translated
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: vie
+    task: knowledge_exam
+    component: seaexam
+    split: dev
+    official_eval: false
+    count: 25
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: vie
+    task: knowledge_exam
+    component: seaexam
+    split: test
+    official_eval: true
+    count: 1745
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://aclanthology.org/2025.findings-naacl.341.pdf
+  - language: zho
+    task: knowledge_exam
+    component: m3exam
+    split: dev
+    official_eval: false
+    count: 25
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://arxiv.org/pdf/2306.05179
+  - language: zho
+    task: knowledge_exam
+    component: m3exam
+    split: test
+    official_eval: true
+    count: 644
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    - https://arxiv.org/pdf/2306.05179
+  - language: zho
+    task: knowledge_exam
+    component: mmlu-sea
+    split: dev
+    official_eval: false
+    count: 285
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+  - language: zho
+    task: knowledge_exam
+    component: mmlu-sea
+    split: test
+    official_eval: true
+    count: 2850
+    unit: questions
+    provenance: machine_translated
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=SeaLLMs/SeaExam
+    - https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md

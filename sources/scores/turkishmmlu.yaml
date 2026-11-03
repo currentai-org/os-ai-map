@@ -94,3 +94,71 @@ capability:
     accessed: '2026-09-24'
     http_status: 200
     content_sha256: c410b3c1b2ed10de8a26aaa66196faa9caf556c91d8ea60f33721813ccf14454
+  - url: https://arxiv.org/html/2407.12402
+    shows: '"The test set comprises 9,807 multiple-choice questions, with an additional 225 (25 per subject) in the
+      development set."; "The large scale of our test dataset, including 9,807 questions" led to "TurkishMMLU sub
+      with 100 randomly selected questions per subject, totaling 900"; "In all of our evaluations, we use a small
+      subset of TurkishMMLU, TurkishMMLU sub", and for public models "we calculate performance on both TurkishMMLU
+      and TurkishMMLU sub"; "These questions are sourced from a high-quality online learning platform created by
+      the Turkish Ministry of Education"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - url: https://datasets-server.huggingface.co/size?dataset=AYueksel/TurkishMMLU
+    shows: 'the Hub''s split sizes: "config":"All","split":"test" with "num_rows":900; each of the nine subject configs
+      holds test 100 and dev 5. The dataset''s total of 1,845 rows adds the All config''s 900 test rows to the subject
+      configs'' 900 test and 45 dev rows.'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: 036d51ea68b53efc38228508cf0582d881ea8475e78b5e68f8408cb7efc77ec3
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/turkishmmlu/config/_turkishmmlu_default_yaml
+    shows: 'the harness''s TurkishMMLU template: "dataset_path: AYueksel/TurkishMMLU", "test_split: test", "fewshot_split:
+      dev"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: d8ae99801eb61484dfc8a8b83e4e07b0ced05f601fca360a31afd23e5fdbc7e2
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/turkishmmlu/README.md
+    shows: '"Using these configurations with LM Evaluation Harness, the results of this study are obtained."; repeats
+      "To access this dataset please send an email to"'
+    accessed: '2026-11-03'
+    http_status: 200
+    content_sha256: c474e5e99324bd1e8ed74e4822bae2c74b79731cd14191507cd8f386d80e33fe
+  pivot_languages: []
+  language_coverage:
+  - language: tur
+    task: knowledge_exam
+    component: turkishmmlu
+    split: dev
+    official_eval: false
+    count: 225
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/html/2407.12402
+    - https://arxiv.org/abs/2407.12402
+  - language: tur
+    task: knowledge_exam
+    component: turkishmmlu
+    split: test
+    official_eval: true
+    count: 9807
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/html/2407.12402
+    - https://arxiv.org/abs/2407.12402
+  - language: tur
+    task: knowledge_exam
+    component: turkishmmlu-sub
+    split: test
+    official_eval: true
+    count: 900
+    unit: questions
+    provenance: native
+    subset_of: turkishmmlu
+    cites:
+    - https://arxiv.org/html/2407.12402
+    - https://arxiv.org/abs/2407.12402
+    - https://datasets-server.huggingface.co/size?dataset=AYueksel/TurkishMMLU
+    - https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/turkishmmlu/config/_turkishmmlu_default_yaml
+    - https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/turkishmmlu/README.md

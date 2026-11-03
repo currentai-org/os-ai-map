@@ -216,7 +216,7 @@ def test_a_qualifying_count_may_equal_the_count():
 
 def test_a_mixed_entry_may_leave_the_qualifying_portion_unrecorded():
     """Absent means the source does not separate it, and the entry then establishes no
-    qualifying depth (R-2026-11-01-h); that is a reading, not an error."""
+    qualifying depth (R-2026-11-03-b); that is a reading, not an error."""
     d = _corpus()
     del _entry(d, "hau", "knowledge_exam", "example-eval", "test")["qualifying_count"]
     assert validate_sources(d) == []
@@ -252,8 +252,8 @@ def test_the_required_fields_are_the_unit_of_evidence_and_its_reading():
         "official_eval", "count", "unit", "cites"
     }
     assert set(ENTRY["properties"]) - set(ENTRY["required"]) == {
-        "provenance", "qualifying_count", "human_validated", "subset_of", "source_language",
-        "precision",
+        "provenance", "qualifying_count", "human_validated", "review_scope", "subset_of",
+        "source_language", "precision",
     }
 
 
@@ -278,6 +278,7 @@ def test_coverage_requires_a_pivot_declaration():
     ("task", "sentiment"),
     ("official_eval", "yes"),
     ("human_validated", "reviewed"),
+    ("review_scope", "sample"),
 ])
 def test_closed_vocabularies_refuse_other_values(field, bad):
     d = _corpus()
@@ -621,7 +622,7 @@ def test_a_qualifying_count_cannot_exceed_the_count():
 def test_human_validation_never_changes_provenance():
     """A generated entry the source says people reviewed is valid as `generated`; the field
     records a quality attribute and does not stand in for `native` or `post_edited`
-    (R-2026-11-01-h)."""
+    (R-2026-11-03-b)."""
     d = _corpus()
     entry = _entry(d, "swh", "knowledge_exam", "example-eval", "train")
     assert entry["provenance"] == "generated" and entry["human_validated"] is True
@@ -766,14 +767,17 @@ def test_the_doc_states_native_and_generated_as_ruled():
 
 
 def test_the_doc_states_which_provenance_counts_toward_depth():
-    """R-2026-11-01-h, as a column of the provenance table, so the rule sits beside the value."""
+    """R-2026-11-03-b, as a column of the provenance table, so the rule sits beside the value."""
     rows = {m.group(1): line.split("|")[3].strip()
             for line in _table(_doc_section(), "**Provenance.**")
             if (m := re.match(r"\|\s*`([a-z_]+)`\s*\|", line))}
     for value in ("native", "human_translated", "post_edited"):
         assert rows[value].startswith("yes"), value
-    for value in ("machine_translated", "generated", "unknown"):
+    for value in ("generated", "unknown"):
         assert rows[value].startswith("no"), value
+    # Reviewed machine translation counts; unreviewed does not (R-2026-11-03-b).
+    assert rows["machine_translated"].startswith("only when") and "review_scope" in rows[
+        "machine_translated"]
     assert "qualifying_count" in rows["mixed"]
 
 
@@ -781,6 +785,8 @@ def test_the_doc_cites_the_rulings_it_implements():
     section = _doc_section()
     for suffix in "abcdefgh":
         assert f"R-2026-11-01-{suffix}" in section, suffix
+    for ruling in ("R-2026-11-03-a", "R-2026-11-03-b", "R-2026-11-03-h"):
+        assert ruling in section, ruling
 
 
 def test_the_docs_say_the_ladder_is_not_built():
