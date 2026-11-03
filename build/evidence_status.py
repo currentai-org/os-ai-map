@@ -68,10 +68,12 @@ class EntryStatus:
 
 
 def _depth(entry: dict) -> str:
-    """measured, zero or unknown, by the provenance rule of R-2026-11-03-b.
+    """measured, zero or unknown, by the provenance rule of R-2026-11-03-b and -h.
 
-    Machine translation the cited source says people reviewed (`human_validated: true`) counts;
-    its provenance stays `machine_translated`. Generated items never count, reviewed or not.
+    Machine translation the cited source says people reviewed (`human_validated: true`) counts
+    when the source says the review covered every item (`review_scope: all_items`); a review of
+    unstated scope leaves depth unknown. Its provenance stays `machine_translated` either way.
+    Generated items never count, reviewed or not.
     """
     if entry.get("count") == 0 and "provenance" not in entry:
         return "zero"  # a documented zero
@@ -79,7 +81,7 @@ def _depth(entry: dict) -> str:
     if prov in QUALIFYING:
         return "measured"
     if prov == "machine_translated" and entry.get("human_validated") is True:
-        return "measured"
+        return "measured" if entry.get("review_scope") == "all_items" else "unknown"
     if prov in MEASURED_ZERO:
         return "zero"
     if prov == "mixed" and "qualifying_count" in entry:

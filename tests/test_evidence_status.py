@@ -106,10 +106,21 @@ def test_measured_zero_is_provisional(entry):
 
 
 def test_reviewed_machine_translation_counts():
-    # R-2026-11-03-b: a source stating people reviewed the translations makes them qualify, and
-    # the provenance stays machine_translated.
-    reviewed = {**ENTRY, "provenance": "machine_translated", "human_validated": True}
+    # R-2026-11-03-b, -h: a source stating people reviewed every translation makes them qualify,
+    # and the provenance stays machine_translated.
+    reviewed = {**ENTRY, "provenance": "machine_translated", "human_validated": True,
+                "review_scope": "all_items"}
     assert status(reviewed) == ("provisional", "count_model")
+
+
+@pytest.mark.parametrize("scope", ["unstated", None])
+def test_a_review_of_unstated_scope_leaves_depth_unknown(scope):
+    """R-2026-11-03-h: a review the source describes without saying how many items it covered
+    is neither a count nor a zero."""
+    reviewed = {**ENTRY, "provenance": "machine_translated", "human_validated": True}
+    if scope:
+        reviewed["review_scope"] = scope
+    assert status(reviewed) == ("unresolved", "depth_unknown")
 
 
 @pytest.mark.parametrize("task", sorted(TASKS - COUNT_MODEL_TASKS))

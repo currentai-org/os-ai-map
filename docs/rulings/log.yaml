@@ -2408,3 +2408,27 @@ rulings:
     executor: agent
     lands_in: [sources/scores/sib-200.yaml, sources/products/sib-200.yaml]
     applied_in: []
+
+  - id: R-2026-11-03-h
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", darijammlu, R-2026-11-03-b]
+    question: >-
+      Does reviewed machine translation count toward depth when the cited source says people
+      reviewed it but not how many items the review covered? DarijaMMLU's card describes "a
+      combination of machine translation and manual review" and "manual curation for quality
+      control"; the Atlas-Chat paper's account of how it was built names only translation.
+    ruling: >-
+      Only when the source says the review covered the entry's items. A review of unstated scope
+      leaves depth unknown, not zero: the entry records `review_scope: unstated` and is
+      unresolved. DarijaMMLU becomes unresolved.
+    reasoning: >-
+      A quality-control pass over a sample and a review of every item read the same on a card.
+      Counting the first as the second would move a set to band 5 on an assumption, and calling
+      it zero would ignore a review the source does describe.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json,
+      build/evidence_status.py, sources/scores/darijammlu.yaml]
+    applied_in: []

@@ -533,7 +533,12 @@
               },
               "human_validated": {
                 "type": "boolean",
-                "description": "Whether the cited source states that people reviewed this entry's items after they were made: true when it says they were, false when it says they were not. Absent means the source does not say. It never changes `provenance`: reviewed machine translation stays `machine_translated` and reviewed generated items stay `generated`. On a `machine_translated` entry, true makes the items count toward depth; on any other entry nothing reads it toward depth (R-2026-11-03-b). Stated by the same `cites` as the rest of the entry."
+                "description": "Whether the cited source states that people reviewed this entry's items after they were made: true when it says they were, false when it says they were not. Absent means the source does not say. It never changes `provenance`: reviewed machine translation stays `machine_translated` and reviewed generated items stay `generated`. On a `machine_translated` entry, true with `review_scope: all_items` makes the items count toward depth (R-2026-11-03-h); on any other entry nothing reads it toward depth (R-2026-11-03-b). Stated by the same `cites` as the rest of the entry."
+              },
+              "review_scope": {
+                "type": "string",
+                "enum": ["all_items", "unstated"],
+                "description": "On an entry with `human_validated: true`, whether the cited source says the review covered every item (`all_items`) or does not say how many it covered (`unstated`). Reviewed machine translation counts toward depth only with `all_items`; with `unstated`, or absent, its depth is unknown (R-2026-11-03-h). Stated by the same `cites` as the rest of the entry."
               },
               "subset_of": {
                 "type": "string",

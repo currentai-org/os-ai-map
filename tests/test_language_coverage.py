@@ -252,8 +252,8 @@ def test_the_required_fields_are_the_unit_of_evidence_and_its_reading():
         "official_eval", "count", "unit", "cites"
     }
     assert set(ENTRY["properties"]) - set(ENTRY["required"]) == {
-        "provenance", "qualifying_count", "human_validated", "subset_of", "source_language",
-        "precision",
+        "provenance", "qualifying_count", "human_validated", "review_scope", "subset_of",
+        "source_language", "precision",
     }
 
 
@@ -278,6 +278,7 @@ def test_coverage_requires_a_pivot_declaration():
     ("task", "sentiment"),
     ("official_eval", "yes"),
     ("human_validated", "reviewed"),
+    ("review_scope", "sample"),
 ])
 def test_closed_vocabularies_refuse_other_values(field, bad):
     d = _corpus()
@@ -775,7 +776,7 @@ def test_the_doc_states_which_provenance_counts_toward_depth():
     for value in ("generated", "unknown"):
         assert rows[value].startswith("no"), value
     # Reviewed machine translation counts; unreviewed does not (R-2026-11-03-b).
-    assert rows["machine_translated"].startswith("only when") and "human_validated" in rows[
+    assert rows["machine_translated"].startswith("only when") and "review_scope" in rows[
         "machine_translated"]
     assert "qualifying_count" in rows["mixed"]
 
@@ -784,7 +785,7 @@ def test_the_doc_cites_the_rulings_it_implements():
     section = _doc_section()
     for suffix in "abcdefgh":
         assert f"R-2026-11-01-{suffix}" in section, suffix
-    for ruling in ("R-2026-11-03-a", "R-2026-11-03-b"):
+    for ruling in ("R-2026-11-03-a", "R-2026-11-03-b", "R-2026-11-03-h"):
         assert ruling in section, ruling
 
 

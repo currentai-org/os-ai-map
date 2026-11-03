@@ -312,7 +312,8 @@ value means.
 | `unit` | what `count` counts: `items`, `questions`, `sentences`, `documents`, `utterances`, `hours`, `words` or `tokens`, in the unit the source uses. `items` is the generic unit for a test case that is none of the others. |
 | `provenance` | how the items came to be in this language (below). Required on every entry except a documented zero, which has no items to describe and so carries none. |
 | `qualifying_count` | optional, on a `mixed` entry only: how many of its items the source documents as native, human-translated, post-edited, or machine-translated and then reviewed by people. In the entry's unit and no more than `count`. Absent means the source does not separate that portion. |
-| `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. On a `machine_translated` entry, `true` makes the items count toward depth (R-2026-11-03-b). |
+| `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. On a `machine_translated` entry, `true` makes the items count toward depth when `review_scope` is `all_items` (R-2026-11-03-b, -h). |
+| `review_scope` | optional, with `human_validated: true`: `all_items` when the cited source says the review covered every item, `unstated` when it describes a review without saying how many items it covered. Absent reads as `unstated`. |
 | `subset_of` | optional: the `component` of another entry, for the same language, task and split, whose items contain this entry's. Absent means the source presents the items as distinct. |
 | `precision` | optional: a statistical estimate of the evaluation's precision under an approved method, which makes the entry's band estimated rather than provisional. Absent on every entry until a method is approved by ruling; see [Evidence status](#evidence-status). |
 | `cites` | the `url` of each `capability.sources` entry that states this entry's figures, `human_validated` and `qualifying_count` included. |
@@ -342,7 +343,7 @@ third column (R-2026-11-03-b, replacing R-2026-11-01-h). Provenance is never gue
 | `native` | human-authored in the target language | yes |
 | `human_translated` | translated into the language by people | yes |
 | `post_edited` | machine-translated, then corrected by people | yes |
-| `machine_translated` | machine-translated, with no human correction recorded | only when `human_validated` is `true`: the cited source states that people reviewed the items |
+| `machine_translated` | machine-translated, with no human correction recorded | only when `human_validated` is `true` and `review_scope` is `all_items`: the cited source states that people reviewed every item. A review of unstated scope leaves depth unknown, not zero |
 | `generated` | model-generated directly in that language | no, reviewed or not |
 | `mixed` | more than one of the above in this entry | only its `qualifying_count`, the separately documented qualifying portion; when that is absent, depth is unknown, not zero |
 | `unknown` | the source does not say. A recorded state, never a stand-in for `native` | no qualifying depth is established: the language's depth is unknown, not zero |
@@ -458,7 +459,10 @@ A task the list does not name is a schema change, not a new spelling.
   machine translation stays `machine_translated`, not `post_edited`, and reviewed model-generated
   items stay `generated`, not `native`. It is read toward depth on a `machine_translated` entry
   only, where `true` makes the items count; review of `generated` items does not (R-2026-11-03-b).
-  On a `mixed` entry, reviewed machine-translated items belong to the `qualifying_count`.
+  The review has to cover the items: a card that describes "manual review" or "quality control"
+  without saying how much of the set it touched records `review_scope: unstated`, and the entry's
+  depth is unknown rather than counted or zero (R-2026-11-03-h). On a `mixed` entry, reviewed
+  machine-translated items belong to the `qualifying_count`.
 - **Availability is not depth.** The official evaluation split counts whether its items are
   public, released on request, or held back for a leaderboard, as long as a source states its size.
   Whether the questions can be downloaded is an openness attribute (R-2026-11-03-a).
