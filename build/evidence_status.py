@@ -68,11 +68,17 @@ class EntryStatus:
 
 
 def _depth(entry: dict) -> str:
-    """measured, zero or unknown, by the provenance rule of R-2026-11-01-h."""
+    """measured, zero or unknown, by the provenance rule of R-2026-11-03-b.
+
+    Machine translation the cited source says people reviewed (`human_validated: true`) counts;
+    its provenance stays `machine_translated`. Generated items never count, reviewed or not.
+    """
     if entry.get("count") == 0 and "provenance" not in entry:
         return "zero"  # a documented zero
     prov = entry.get("provenance")
     if prov in QUALIFYING:
+        return "measured"
+    if prov == "machine_translated" and entry.get("human_validated") is True:
         return "measured"
     if prov in MEASURED_ZERO:
         return "zero"

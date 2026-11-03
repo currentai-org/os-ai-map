@@ -311,8 +311,8 @@ value means.
 | `count` | how many items the entry holds, in `unit`, as the cited source states it for this language, task, component and split. Non-negative, and an integer for every unit except `hours`. `0` is a documented zero (below). |
 | `unit` | what `count` counts: `items`, `questions`, `sentences`, `documents`, `utterances`, `hours`, `words` or `tokens`, in the unit the source uses. `items` is the generic unit for a test case that is none of the others. |
 | `provenance` | how the items came to be in this language (below). Required on every entry except a documented zero, which has no items to describe and so carries none. |
-| `qualifying_count` | optional, on a `mixed` entry only: how many of its items the source documents as native, human-translated or post-edited. In the entry's unit and no more than `count`. Absent means the source does not separate that portion. |
-| `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. |
+| `qualifying_count` | optional, on a `mixed` entry only: how many of its items the source documents as native, human-translated, post-edited, or machine-translated and then reviewed by people. In the entry's unit and no more than `count`. Absent means the source does not separate that portion. |
+| `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. On a `machine_translated` entry, `true` makes the items count toward depth (R-2026-11-03-b). |
 | `subset_of` | optional: the `component` of another entry, for the same language, task and split, whose items contain this entry's. Absent means the source presents the items as distinct. |
 | `precision` | optional: a statistical estimate of the evaluation's precision under an approved method, which makes the entry's band estimated rather than provisional. Absent on every entry until a method is approved by ruling; see [Evidence status](#evidence-status). |
 | `cites` | the `url` of each `capability.sources` entry that states this entry's figures, `human_validated` and `qualifying_count` included. |
@@ -321,7 +321,7 @@ The key is `(language, task, component, split)`. Each key appears once, and entr
 language, then task, then component, then split, each in plain character order.
 
 **Provenance.** The seven values and their definitions are ruled (R-2026-11-01-e), and so is the
-third column (R-2026-11-01-h). Provenance is never guessed: a source that does not say is
+third column (R-2026-11-03-b, replacing R-2026-11-01-h). Provenance is never guessed: a source that does not say is
 `unknown`. Three readings follow from that:
 
 - **`native` needs an explicit statement about the items.** Record it only where a cited source
@@ -342,8 +342,8 @@ third column (R-2026-11-01-h). Provenance is never guessed: a source that does n
 | `native` | human-authored in the target language | yes |
 | `human_translated` | translated into the language by people | yes |
 | `post_edited` | machine-translated, then corrected by people | yes |
-| `machine_translated` | machine-translated, with no human correction recorded | no |
-| `generated` | model-generated directly in that language | no |
+| `machine_translated` | machine-translated, with no human correction recorded | only when `human_validated` is `true`: the cited source states that people reviewed the items |
+| `generated` | model-generated directly in that language | no, reviewed or not |
 | `mixed` | more than one of the above in this entry | only its `qualifying_count`, the separately documented qualifying portion; when that is absent, depth is unknown, not zero |
 | `unknown` | the source does not say. A recorded state, never a stand-in for `native` | no qualifying depth is established: the language's depth is unknown, not zero |
 
@@ -448,15 +448,20 @@ A task the list does not name is a schema change, not a new spelling.
   share some items without one containing the other are not containment, and go to the
   maintainer rather than into `subset_of`.
 - **Provenance decides what counts, and every entry is recorded.** The third column of the
-  provenance table is the rule, with no reduced weights (R-2026-11-01-h). Excluded items stay in
+  provenance table is the rule, with no reduced weights (R-2026-11-03-b). Excluded items stay in
   the record like any other: zero qualifying depth does not mean a set has no evaluation value,
   only that its items do not satisfy this measure of credible evaluation depth. If well-validated
   synthetic evaluations turn out to deserve credit, that is an explicit exception backed by
   evidence, in a ruling, not a multiplier.
-- **Human validation is not provenance.** `human_validated` records a quality attribute, cited
-  through the entry's `cites` like the rest of the entry. It never changes `provenance`:
-  human-reviewed model-generated items stay `generated`, not `native` or `post_edited`, and
-  nothing reads the field toward depth (R-2026-11-01-h).
+- **Human validation is not provenance, and it decides one case.** `human_validated` is cited
+  through the entry's `cites` like the rest of the entry. It never changes `provenance`: reviewed
+  machine translation stays `machine_translated`, not `post_edited`, and reviewed model-generated
+  items stay `generated`, not `native`. It is read toward depth on a `machine_translated` entry
+  only, where `true` makes the items count; review of `generated` items does not (R-2026-11-03-b).
+  On a `mixed` entry, reviewed machine-translated items belong to the `qualifying_count`.
+- **Availability is not depth.** The official evaluation split counts whether its items are
+  public, released on request, or held back for a leaderboard, as long as a source states its size.
+  Whether the questions can be downloaded is an openness attribute (R-2026-11-03-a).
 - **The citation lives once.** `cites` points at `capability.sources` by URL, and
   `build/validate.py` fails a URL with no matching source. The `shows`, `accessed`, `http_status`
   and `content_sha256` stay on the source, where `check_verification`, `check_refetch` and
@@ -496,8 +501,9 @@ These are ruled, and they are the rules the ladder PR implements. None of them i
    `human_translated`, `post_edited`, `machine_translated` or `generated` provenance, `mixed` with
    a `qualifying_count`, or a documented zero. Measurement is per task: a language is measured on
    each task for which it has such an entry, and only on those. A measured zero comes from
-   `machine_translated` and `generated` items, the only provenance values that establish one, or
-   from a documented zero, which has no items at all; a documented zero makes the language measured,
+   `machine_translated` items with no stated review and `generated` items, the only provenance
+   values that establish one, or from a documented zero, which has no items at all; a documented
+   zero makes the language measured,
    at zero, for its own task, component and split only, and leaves every other task where its own
    entries put it. A language whose official-split entries are all `unknown` provenance, or `mixed`
    without a `qualifying_count`, is unmeasured: its depth is unknown, and it enters the robustness
@@ -527,8 +533,9 @@ band at every level, task, language and dataset, so a reader can tell a count fr
    identification, retrieval, safety, transliteration and vision-language have no ruling yet and
    stay unresolved until one gives them a model (R-2026-11-02-b). Hours, words and tokens are not
    item counts.
-4. **Provisional** for a measured zero (`machine_translated` or `generated` items, or a documented
-   zero) in a family with a model: no qualifying items is a count-derived fact.
+4. **Provisional** for a measured zero (`machine_translated` items with no stated review,
+   `generated` items, or a documented zero) in a family with a model: no qualifying items is a
+   count-derived fact.
 5. **Estimated** when the entry carries a valid `precision` block under an approved method.
 6. **Provisional** otherwise.
 

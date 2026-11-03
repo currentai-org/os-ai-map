@@ -97,10 +97,19 @@ def test_unknown_depth_is_unresolved(change):
 
 @pytest.mark.parametrize("entry", [
     {**ENTRY, "provenance": "machine_translated"},
+    {**ENTRY, "provenance": "machine_translated", "human_validated": False},
+    {**ENTRY, "provenance": "generated", "human_validated": True},  # review never rescues generated
     {k: v for k, v in {**ENTRY, "count": 0}.items() if k != "provenance"},  # documented zero
 ])
 def test_measured_zero_is_provisional(entry):
     assert status(entry) == ("provisional", "measured_zero")
+
+
+def test_reviewed_machine_translation_counts():
+    # R-2026-11-03-b: a source stating people reviewed the translations makes them qualify, and
+    # the provenance stays machine_translated.
+    reviewed = {**ENTRY, "provenance": "machine_translated", "human_validated": True}
+    assert status(reviewed) == ("provisional", "count_model")
 
 
 @pytest.mark.parametrize("task", sorted(TASKS - COUNT_MODEL_TASKS))

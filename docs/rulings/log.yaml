@@ -1682,10 +1682,11 @@ rulings:
       can be introduced, not an arbitrary multiplier.
     reasoning: >-
       A conservative, reproducible initial rule that leaves room to improve it.
-    status: in-force
+    status: replaced
     executor: agent
     lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+    replaced_by: R-2026-11-03-b
 
   - id: R-2026-11-01-i
     date: 2026-11-01
@@ -2248,4 +2249,162 @@ rulings:
     status: in-force
     executor: agent
     lands_in: [docs/reference/capability.md, docs/schemas/lineage.schema.json, sources/lineage.yaml]
+    applied_in: []
+
+  - id: R-2026-11-03-a
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#953", turkishmmlu, R-2026-11-01-d]
+    question: >-
+      Does evaluation depth count an official test split that the public cannot download, such as
+      TurkishMMLU's 9,807 test questions, obtainable by request while the Hub holds 900?
+    ruling: >-
+      Yes. Depth counts the test questions of the official evaluation split. Whether they are
+      public is an openness attribute, not a capability one, and is recorded on the openness axis.
+      TurkishMMLU's coverage stays at 9,807.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: []
+
+  - id: R-2026-11-03-b
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#953", darijammlu, indicxtreme, R-2026-11-01-h]
+    question: >-
+      Do machine-translated items that a cited source says people reviewed count toward depth, as
+      DarijaMMLU's "machine translation and manual review" and IndicXNLI's verified test items are
+      described?
+    ruling: >-
+      Yes. This replaces R-2026-11-01-h and restates it with that one change. native,
+      human_translated and post_edited items count toward depth, and so do machine_translated items
+      whose cited source states that people reviewed them (human_validated true).
+      machine_translated items with no such statement, and generated items whether reviewed or not,
+      do not count and establish a measured zero qualifying depth, with no reduced weights. For
+      mixed, only the separately documented qualifying portion counts, now including reviewed
+      machine-translated items; a mixed entry with no documented qualifying portion leaves depth
+      unknown. unknown provenance leaves depth unknown and does not establish a measured zero. All
+      evidence is preserved, including excluded items. Provenance still describes how items were
+      produced: reviewed machine translation stays machine_translated with human_validated true,
+      and is not reclassified as post_edited.
+    reasoning: >-
+      Answer to the calibration's second decision, read back and confirmed on 2026-11-03.
+      DarijaMMLU's 21,792 questions then give Darija band 5, and IndicXNLI's qualifying counts
+      become its paper's verified column.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/evidence_status.py]
+    applied_in: []
+
+  - id: R-2026-11-03-c
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#953", sea-helm, indicxtreme, indicgenbench, R-2026-11-02-k]
+    question: >-
+      How does the record say that a suite's own items sit under a second slug, so they count in
+      full rather than as imports, and how far does that ownership reach?
+    ruling: >-
+      A schema change in its own PR, before the depth-ladder PR: capability.own_components, a list
+      of cited claims, each naming a component and optionally the languages, tasks or splits it
+      covers, with omitted selectors covering every matching coverage entry. Each claim cites a
+      capability.sources entry whose shows text establishes authorship or commissioned
+      translation, not hosting. Validation rejects claims that overlap, selectors that match no
+      coverage entry, empty selectors and citations that resolve to no source. The product's own
+      slug stays its own by default. Ownership applies only after an entry's evidence is
+      established, so it cannot rescue unknown provenance, an uncountable unit or a split that is
+      not the official evaluation, and it never changes lineage: an owned component can still share
+      ancestry with an import. The claims are scoped to what each suite made: SEA-HELM's two
+      judged sets, IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and IndicSentiment, and
+      IndicGenBench's XQuAD-In in full, FLORES-In for its seven new languages only, CrossSum-In
+      except the ten languages that may reuse CrossSum, and XorQA-In except Bengali and Telugu.
+    reasoning: >-
+      The maintainer asked for a Codex review of the representation and adopted its design.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-03-d
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", indicxtreme, R-2026-11-03-b]
+    question: >-
+      Which IndicXNLI test items qualify: those its paper's Table 9 counts as corrected, or every
+      item it counts as verified?
+    ruling: >-
+      Every verified item, by R-2026-11-03-b. The qualifying count of each IndicXNLI test entry is
+      the paper's Ver. column (Assamese 3,000, Bengali 1,510, Hindi 4,000, Kannada 1,370,
+      Malayalam 3,200, Marathi 1,648, Odia 2,107, Telugu 872); Gujarati, Punjabi and Tamil have
+      none verified and stay machine-translated.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/indicxtreme.yaml]
+    applied_in: []
+
+  - id: R-2026-11-03-e
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", kazmmlu, R-2026-11-02-a]
+    question: >-
+      Is KazMMLU's Russian a target language or a pivot, given an abstract that calls the set
+      designed for Kazakh?
+    ruling: >-
+      A target. Its Russian questions are original Kazakhstani exam and educational material, not
+      translations, the set's title names both languages, and its university section is
+      Russian-only. Emphasis on Kazakh in the abstract does not make Russian a comparison-only
+      language.
+    reasoning: >-
+      Delegated by the maintainer to a Codex review, whose recommendation was adopted. Kazakh
+      alone gives the same band.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-03-f
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", seaexam, R-2026-11-02-a]
+    question: >-
+      Is SeaExam's Chinese a target language or a pivot, when its card lists Chinese among the
+      evaluated languages but its paper covers Indonesian, Thai and Vietnamese only?
+    ruling: >-
+      A target. SeaExam carries Chinese evaluation configurations, and neither imported items nor
+      absence from the narrower paper makes a language comparison-only. English stays the
+      documented pivot. Chinese's low depth is a matter of qualifying evidence, which the
+      corroboration rule already handles, not of its role.
+    reasoning: >-
+      Delegated by the maintainer to a Codex review, whose recommendation was adopted. SeaExam
+      stays at band 3; as a pivot it would have been 4.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-03-g
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#965", fleurs, sib-200]
+    question: >-
+      Which codes do FLEURS's Tagalog (recorded tgl, Hub config fil_ph) and SIB-200's Arabic
+      (recorded ara, FLORES-200 config arb_Arab) carry?
+    ruling: >-
+      FLEURS keeps tgl, its paper's own code for "Filipino (Tagalog)", with fil recorded as the
+      source's code where the Hub is cited; the Hub's fil_ph is a source inconsistency, not a
+      change of language. SIB-200's Arabic becomes arb, the most specific code its arb_Arab
+      configuration supports, matching the reconciliation's reading of the same FLORES-200
+      configuration.
+    reasoning: >-
+      Delegated by the maintainer to a Codex review, whose recommendation was adopted. Neither
+      change moves a band.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/sib-200.yaml, sources/products/sib-200.yaml]
     applied_in: []
