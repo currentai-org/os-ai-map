@@ -77,7 +77,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | Belebele | 5 | 3 | 3 | 3 | 3.50 | 114 / 114 | 0 |
 | SIB-200 | 3 | 2 | 2 | 2 | 2.50 | 194 / 195 | 0 |
 | INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 0 |
-| AfroBench | 5 | 1 | 1 | 3 | 1.49 | 56 / 63 | 39 |
+| AfroBench | 5 | 1 | 1 | 3 | 1.49 | 56 / 63 | 37 |
 | MILU | 3 | 4 | 4 | 4 | 4.45 | 10 / 10 | 0 |
 | IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 0 |
 | IndicXTREME | 4 | 4 | 4 | 4 | 4.47 | 19 / 21 | 0 |
@@ -99,7 +99,8 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 other columns are depth bands, a different measure, so the two are not expected to agree.
 
 **The band-5 check (R-2026-11-02-c).** 4 of 22 sets compute to 5: ArabicMMLU, TurkishMMLU, KazMMLU
-and Khayyam Challenge, all large single-language native exams, as R-2026-11-02-q anticipated. That is
+and Khayyam Challenge, all large native exams (three single-language, KazMMLU two-language), as
+R-2026-11-02-q anticipated. That is
 18%, below the one-third review trigger (7.3 sets). The trigger does not fire.
 
 **Resolved.** 18 of 22 sets resolve. The four that do not:
@@ -118,8 +119,11 @@ treating unverified lineage as independent.
 treated as imports instead, IndicXTREME stays 4 and IndicGenBench 3; only their per-language
 distributions move (7 and 9 languages capped to 1). The reading changes no set band.
 
-**Where corroboration caps.** Three sets lose depth to the cap. AfroBench (39 capped languages) and
-SEA-HELM (4) were described in the depth brief and the lineage audit. AmericasNLP (9): its
+**Where corroboration caps.** A language is capped when its corroborated band sits below its face
+value. Four sets have capped languages, and three of them lose depth at the set level. AfroBench (37
+capped languages) and SEA-HELM (4) were described in the depth brief and the lineage audit.
+SeaExam (1): its Chinese, measured only on imported M3Exam questions, falls from 3 to 1, and the set
+stays 3. AmericasNLP (9): its
 AmericasNLI test sets are imported translations of XNLI, and nothing independent of them on another
 task measures those nine languages, so each sits at one band above nothing; its own Chatino test set
 (1,000 sentences) is the one language at 3.
@@ -149,7 +153,11 @@ None of these changes this record's evidence; each changes how it is read.
 5. **KazMMLU's Russian.** Recorded as a target: its items are separate Kazakhstani exam questions,
    not translations. Its abstract says the set is "designed for Kazakh language", which could make
    Russian a pivot. Kazakh alone gives the same band 5.
-6. **Two language codes.** FLEURS records Tagalog as `tgl` (its paper's code, the Hub config is
+6. **SeaExam's Chinese.** Recorded as a target because SeaExam's card lists Chinese among the
+   evaluated languages. The SeaExam paper covers Indonesian, Thai and Vietnamese only, and Chinese
+   appears only in the imported M3Exam questions. As a pivot, SeaExam's three remaining languages
+   (3, 4, 4) give 4 instead of 3.
+7. **Two language codes.** FLEURS records Tagalog as `tgl` (its paper's code, the Hub config is
    `fil_ph`), and SIB-200 records Arabic as `ara` where FLORES+ now uses `arb` (#965). Both are
    language-code decisions of the kind #965 settled, left as they stand here.
 
