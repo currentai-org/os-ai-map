@@ -527,8 +527,9 @@ band at every level, task, language and dataset, so a reader can tell a count fr
 `build/evidence_status.py` decides the status of one coverage entry, in this order:
 
 1. An entry that is not on the official evaluation split has no status; it does not count.
-2. **Unresolved** when the entry's qualifying depth is unknown: `unknown` provenance, or `mixed`
-   without a `qualifying_count`. An interval never stands in for provenance.
+2. **Unresolved** when the entry's qualifying depth is unknown: `unknown` provenance, `mixed`
+   without a `qualifying_count`, or `machine_translated` with `human_validated: true` whose
+   `review_scope` is not `all_items` (R-2026-11-03-h). An interval never stands in for provenance.
 3. **Unresolved** when the task family has no measurement model, or the unit is not one a count
    model reads, a zero included: a family without a model stays unresolved (R-2026-11-02-b, -l). The task families with a count model are machine translation, text
    classification, natural language inference, reasoning, knowledge exams, reading comprehension

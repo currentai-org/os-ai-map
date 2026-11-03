@@ -116,3 +116,78 @@ def test_own_ids_scopes():
     assert "flores-in" not in dc.own_ids("indicgenbench", "hin", own)
     assert "crosssum-in" not in dc.own_ids("indicgenbench", "nep", own)
     assert "crosssum-in" in dc.own_ids("indicgenbench", "asm", own)
+
+
+# --- the method on hand-built inputs -----------------------------------------------------------
+# The figures above pin the method's output on the records; these check the method itself, so a
+# change to D5 or the median that happened to leave the roster's bands alone still fails here.
+
+
+def comp(component, band, task="knowledge_exam"):
+    return {"component": component, "band": band, "task": task, "split": "test"}
+
+
+@pytest.fixture
+def pairs(monkeypatch):
+    """Stub lineage: `table` maps a frozenset pair to its status; anything else is dependent."""
+    table = {}
+
+    def pair_status(doc, a, b, language=None, **kw):
+        return lineage.PairStatus(table.get(frozenset((a, b)), "dependent"), "stub")
+
+    monkeypatch.setattr(dc.lineage, "pair_status", pair_status)
+    return table
+
+
+def band_of(comps, *, loose=False):
+    return dc.language_band({}, "own", "xxx", comps, loose=loose, own={})
+
+
+def test_own_items_count_at_face_value(pairs):
+    assert band_of([comp("own", 4)]) == (4, 4)
+
+
+def test_an_uncorroborated_import_is_capped_at_one(pairs):
+    assert band_of([comp("imported", 5)]) == (1, 5)
+
+
+def test_an_import_rises_one_band_above_its_independent_backing(pairs):
+    pairs[frozenset(("imported", "own"))] = "independent"
+    assert band_of([comp("own", 2), comp("imported", 5)]) == (3, 5)
+    # Backing never lifts an import above its own band.
+    assert band_of([comp("own", 5), comp("imported", 3)]) == (5, 5)
+
+
+def test_a_dependent_backer_gives_no_backing(pairs):
+    assert band_of([comp("own", 2), comp("imported", 5)]) == (2, 5)
+
+
+def test_an_import_of_the_same_task_cannot_back_another(pairs):
+    pairs[frozenset(("a", "b"))] = "independent"
+    assert band_of([comp("a", 5), comp("b", 4)]) == (1, 5)
+    # A different task can.
+    assert band_of([comp("a", 5), comp("b", 4, task="reading_comprehension")]) == (5, 5)
+
+
+def test_unverified_lineage_backs_only_in_the_loose_run(pairs):
+    pairs[frozenset(("imported", "own"))] = "unverified"
+    assert band_of([comp("own", 3), comp("imported", 5)]) == (3, 5)
+    assert band_of([comp("own", 3), comp("imported", 5)], loose=True) == (4, 5)
+
+
+@pytest.mark.parametrize("values, expected", [
+    ([], None), ([3], 3), ([1, 5, 5], 5), ([1, 2, 3, 4], 2), ([0, 5], 2), ([4, 5], 4),
+])
+def test_the_median_rounds_down_on_an_even_count(values, expected):
+    assert dc.median_band(values) == expected
+
+
+@pytest.mark.parametrize("values, unknown, expected", [
+    ([3, 3, 3], 0, "3"),
+    ([3, 3, 3], 1, "3"),                 # one unknown can't move a median of three agreeing bands
+    ([3], 1, "unresolved (1-4)"),        # 0-fill and 5-fill disagree
+    ([], 1, "unresolved (0-5)"),
+    ([], 0, None),
+])
+def test_unmeasured_targets_fill_zero_and_five(values, unknown, expected):
+    assert dc._set_band(values, unknown) == expected
