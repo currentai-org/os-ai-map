@@ -16,7 +16,8 @@ The method, in order:
   400 / 1,600 / 6,400 (R-2026-11-02-b, -c, R-2026-11-03-b, -h).
 - Within a task: the highest band of one component, never a sum (R-2026-11-02-g).
 - Across tasks: D = max(O, max over imported components i of min(b_i, C_i + 1)) (R-2026-11-02-k).
-  O is the best band among the set's own components for that language (OWN_COMPONENTS), and C_i
+  O is the best band among the set's own components for that language (`capability.own_components`,
+  read through `build.own_components.is_own`), and C_i
   the best band among the language's other components independent of i under
   `build.lineage.pair_status`; imports on the same task never back one another (R-2026-11-01-c).
 - Across languages: the median over target languages, with unmeasured ones filled at 0 and at 5;
@@ -41,6 +42,7 @@ import yaml
 
 from build import lineage
 from build.evidence_status import entry_status
+from build.own_components import is_own, without_mixed_pools, without_second_slugs
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -52,29 +54,9 @@ ROSTER: tuple[str, ...] = (
     "americasnlp-shared-task-data",
 )
 
-# The calibration's ownership claims, until `capability.own_components` carries them (R-2026-11-03-c).
-# Each set's own slug is its own in every language unless scoped here. A scope is None (every
-# language), ("only", languages) or ("except", languages).
-FLORES_IN_NEW = frozenset({"bgc", "brx", "gbm", "gom", "hoj", "mup", "mwr"})
-CROSSSUM_REUSED = frozenset({"ben", "guj", "hin", "mar", "nep", "pan", "pus", "tam", "tel", "urd"})
-# INCLUDE's pool in these languages is the parent benchmark's own text (ArabicMMLU, TurkishMMLU):
-# cited reuse of complete items withdraws the own slug there (D5, R-2026-11-03-i).
-INCLUDE_IMPORTED = frozenset({"ara", "tur"})
-# Languages where INCLUDE says its pool joins existing benchmark data with exams it collected, with
-# no per-language share: the lineage record gives them a second collection. Own as recorded; the
-# sensitivity treats them as imported too.
-INCLUDE_MIXED = frozenset({"deu", "fas", "fra", "ita", "lit", "pol", "por", "sqi", "vie", "zho"})
-
-Scope = tuple[str, frozenset[str]] | None
-OWN_COMPONENTS: dict[str, dict[str, Scope]] = {
-    "include-benchmark": {"include-benchmark": ("except", INCLUDE_IMPORTED)},
-    "sea-helm": {"sea-mt-bench-judge": None, "kalahi-judge": None},
-    "indicxtreme": {"indiccopa": None, "indicqa": None, "indicxparaphrase": None,
-                    "indicsentiment": None},
-    "indicgenbench": {"flores-in": ("only", FLORES_IN_NEW),
-                      "crosssum-in": ("except", CROSSSUM_REUSED), "xquad-in": None,
-                      "xorqa-in": ("except", frozenset({"ben", "tel"}))},
-}
+# Ownership comes from each record's `capability.own_components` (R-2026-11-03-c, -i): the own
+# slug is the set's own unless a claim scopes it, and a second slug is its own where a claim covers
+# it. The scopes this module once held as constants now live, cited, in the records.
 
 LADDER = ((6400, 5), (1600, 4), (400, 3), (100, 2), (1, 1))
 
@@ -93,16 +75,6 @@ def median_band(values: list[int]) -> int | None:
     return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) // 2
 
 
-def own_ids(slug: str, language: str, own: dict[str, dict[str, Scope]]) -> set[str]:
-    """The components that are the set's own items in one language."""
-    scopes = {slug: None, **own.get(slug, {})}
-    out = set()
-    for comp, scope in scopes.items():
-        if scope is None or (scope[0] == "only") == (language in scope[1]):
-            out.add(comp)
-    return out
-
-
 def _qualifying(entry: dict) -> int:
     status = entry_status(entry)
     if status.reason == "measured_zero":
@@ -110,6 +82,12 @@ def _qualifying(entry: dict) -> int:
     if entry.get("provenance") == "mixed":
         return entry["qualifying_count"]
     return entry["count"]
+
+
+def record_claims(slug: str, root: Path = ROOT) -> list[dict]:
+    """The set's `capability.own_components` claims, as its score record states them."""
+    rec = yaml.safe_load((root / "sources/scores" / f"{slug}.yaml").read_text())
+    return list((rec.get("capability") or {}).get("own_components") or [])
 
 
 def _load(slug: str, root: Path) -> tuple[list[str], dict[str, list[dict]], Counter, object]:
@@ -129,23 +107,25 @@ def _load(slug: str, root: Path) -> tuple[list[str], dict[str, list[dict]], Coun
             continue
         q = _qualifying(e)
         comps.setdefault(e["language"], []).append({
-            "component": e["component"], "task": e["task"], "split": e["split"], "band": band(q)})
+            "component": e["component"], "language": e["language"], "task": e["task"],
+            "split": e["split"], "band": band(q)})
     return targets, comps, tally, cap.get("score")
 
 
 def language_band(doc: dict, slug: str, language: str, comps: list[dict], *, loose: bool,
-                  own: dict[str, dict[str, Scope]]) -> tuple[int, int]:
+                  claims: list[dict] | None) -> tuple[int, int]:
     """(corroborated band, face value) for one language."""
-    mine = own_ids(slug, language, own)
-    best = max((c["band"] for c in comps if c["component"] in mine), default=0)
+    for c in comps:
+        c["own"] = is_own(slug, {**c, "language": language}, claims)
+    best = max((c["band"] for c in comps if c["own"]), default=0)
     for i in comps:
-        if i["component"] in mine or i["band"] == 0:
+        if i["own"] or i["band"] == 0:
             continue
         backing = 0
         for j in comps:
             if j is i or j["band"] == 0:
                 continue
-            if j["component"] not in mine and j["task"] == i["task"]:
+            if not j["own"] and j["task"] == i["task"]:
                 continue
             s = lineage.pair_status(doc, i["component"], j["component"], language,
                                     a_task=i["task"], a_split=i["split"],
@@ -164,12 +144,14 @@ def _set_band(values: list[int], unknown: int) -> str | None:
 
 
 def calibrate_set(doc: dict, slug: str, *, loose: bool = False,
-                  own: dict[str, dict[str, Scope]] | None = None,
-                  root: Path = ROOT) -> dict:
-    """One set's calibration: band, face value, bonus and the per-language detail."""
-    own = OWN_COMPONENTS if own is None else own
+                  claims: list[dict] | None = None, root: Path = ROOT) -> dict:
+    """One set's calibration: band, face value, bonus and the per-language detail.
+
+    `claims` replaces the record's own `capability.own_components`, for the sensitivity readings.
+    """
+    claims = record_claims(slug, root) if claims is None else claims
     targets, comps, tally, current = _load(slug, root)
-    per = {lang: language_band(doc, slug, lang, comps[lang], loose=loose, own=own)
+    per = {lang: language_band(doc, slug, lang, comps[lang], loose=loose, claims=claims)
            for lang in targets if lang in comps}
     unknown = len(targets) - len(per)
     bands = [v[0] for v in per.values()]
@@ -192,17 +174,14 @@ def calibrate_set(doc: dict, slug: str, *, loose: bool = False,
     }
 
 
-def second_slugs_as_imports() -> dict[str, dict[str, Scope]]:
-    """Ownership with every second-slug claim dropped: only each set's own slug is its own."""
-    return {slug: {c: s for c, s in scopes.items() if c == slug}
-            for slug, scopes in OWN_COMPONENTS.items()}
+def second_slugs_as_imports(slug: str, root: Path = ROOT) -> list[dict]:
+    """The set's claims with every second-slug claim dropped: only its own slug can be its own."""
+    return without_second_slugs(slug, record_claims(slug, root))
 
 
-def include_mixed_as_imports() -> dict[str, dict[str, Scope]]:
-    """Ownership with INCLUDE's mixed-pool languages treated as imported as well."""
-    return {**OWN_COMPONENTS,
-            "include-benchmark": {"include-benchmark": ("except",
-                                                        INCLUDE_IMPORTED | INCLUDE_MIXED)}}
+def mixed_pools_as_imports(slug: str, root: Path = ROOT) -> list[dict]:
+    """The set's claims with each claim's mixed-pool languages treated as imported as well."""
+    return without_mixed_pools(record_claims(slug, root))
 
 
 def calibrate(doc: dict | None = None, *, root: Path = ROOT) -> dict:
@@ -226,11 +205,14 @@ def summary(results: dict) -> dict:
 def sensitivity(doc: dict | None = None, *, root: Path = ROOT) -> dict:
     """The two ownership readings the record reports beside runs (a) and (b)."""
     doc = lineage.load() if doc is None else doc
-    readings = {"second_slugs_as_imports": (second_slugs_as_imports(),
-                                            ("indicxtreme", "indicgenbench", "sea-helm")),
-                "include_mixed_as_imports": (include_mixed_as_imports(), ("include-benchmark",))}
-    return {name: {slug: calibrate_set(doc, slug, own=own, root=root) for slug in slugs}
-            for name, (own, slugs) in readings.items()}
+    # The sets each reading changes: those with a second-slug claim, and those with a mixed pool.
+    second = [s for s in ROSTER if any(c["component"] != s for c in record_claims(s, root))]
+    mixed = [s for s in ROSTER if any(c.get("mixed_languages") for c in record_claims(s, root))]
+    readings = {"second_slugs_as_imports": (second_slugs_as_imports, second),
+                "include_mixed_as_imports": (mixed_pools_as_imports, mixed)}
+    return {name: {slug: calibrate_set(doc, slug, claims=reading(slug, root), root=root)
+                   for slug in slugs}
+            for name, (reading, slugs) in readings.items()}
 
 
 def main() -> None:

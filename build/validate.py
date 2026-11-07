@@ -10,6 +10,7 @@ import yaml
 from build.identity import fold_for_proposal, fold_handle, id_from_url
 from build.evidence_status import precision_errors
 from build.lineage import lineage_errors, lineage_warnings, load as load_lineage
+from build.own_components import own_components_errors
 from build.resolution import LEDGER
 from build.vocabulary import axes, country_codes, language_codes, SIGNAL_TYPES
 
@@ -668,6 +669,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
         errors.extend(language_coverage_errors(slug, prods[slug], cap))
+        errors.extend(own_components_errors(slug, cap))
 
     # --- slug stability ---
     # The slug is a product's identity and the key deep links are built on, so a slug may

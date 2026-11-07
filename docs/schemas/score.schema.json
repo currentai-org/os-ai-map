@@ -705,6 +705,97 @@
             ]
           },
           "description": "Per-language evidence for an evaluation set, one entry per language x task x dataset component x split, each with its item count and unit, how the items were made, whether the split is the official evaluation split, and the card or paper that states it through `capability.sources` (R-2026-10-30-h, R-2026-11-01-c, R-2026-11-01-d). It records how much the set holds in each language, which `languages` on the product record does not: that field says which languages, and this says how deep. A language with no entry is unknown, never zero and never evidence that the set is best in class (R-2026-11-01-a). Capability evidence rather than an identity attribute, because a ladder will read it: the depth ladder (R-2026-10-30-g) bands each task, aggregates to a language-level band, and takes the median across the target languages (`languages` less `pivot_languages`), with a capped breadth bonus (R-2026-10-30-i). That ladder is not built, so nothing reads this field yet and no band moves because of it. Optional and only valid on a `type: dataset` product; absent means not recorded, and `pivot_languages` is required beside it. Its evidence is dated by the `accessed` date of each source its entries cite; `capability.last_verified` dates the band, not this record, so a pass that fills or re-reads the record without re-deriving the band leaves that date alone. Kept out of the notebook payload: it ships as a separate structured data asset with the per-language view (R-2026-11-01-f; build/serialize.py). docs/reference/capability.md is normative."
+        },
+        "own_components": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Cited claims that coverage components other than the product's own slug are the suite's own items, made or commissioned by the suite, and so count in full rather than as imports in the depth ladder's corroboration step (R-2026-11-03-c, R-2026-11-02-k). The product's own slug is its own by default; a claim naming the own slug replaces that default with the claim's scope, which is how cited reuse of complete items withdraws ownership in some languages (R-2026-11-03-i). Each claim's selectors (`languages` or `except_languages`, `tasks`, `splits`) narrow it to the coverage entries it covers; an omitted selector covers every matching entry. Ownership applies only to entries whose evidence is already established: it cannot rescue unknown provenance, an uncountable unit or a split that is not the official evaluation, and it never changes lineage. build/validate.py rejects overlapping claims, selectors that match no coverage entry, and citations that resolve to no `capability.sources` entry. docs/reference/capability.md, \"Own components\", is normative.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "component",
+              "cites"
+            ],
+            "not": {
+              "required": [
+                "languages",
+                "except_languages"
+              ]
+            },
+            "properties": {
+              "component": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "description": "The `component` slug, as capability.language_coverage names it, that the claim covers."
+              },
+              "languages": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z]{3}$"
+                },
+                "description": "The claim covers these languages only. Exclusive with `except_languages`."
+              },
+              "except_languages": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z]{3}$"
+                },
+                "description": "The claim covers every language of the component except these: the languages where a source says the suite reused another set's complete items rather than making its own (R-2026-11-03-i)."
+              },
+              "tasks": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "description": "The claim covers these task classes only."
+              },
+              "splits": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "train",
+                    "dev",
+                    "validation",
+                    "test",
+                    "devtest",
+                    "official_eval"
+                  ]
+                },
+                "description": "The claim covers these splits only."
+              },
+              "mixed_languages": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z]{3}$"
+                },
+                "description": "Languages the claim covers where the source says the suite's pool joins items it made with existing benchmark data, with no per-language share. Owned as claimed; the calibration's sensitivity reading treats them as imported too. Each must be a language the claim covers."
+              },
+              "cites": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string"
+                },
+                "description": "URLs of `capability.sources` entries whose `shows` establishes that the suite authored the items or commissioned their translation, not that it hosts them."
+              }
+            }
+          }
         }
       },
       "dependentRequired": {
@@ -720,6 +811,9 @@
         ],
         "language_coverage": [
           "pivot_languages"
+        ],
+        "own_components": [
+          "language_coverage"
         ]
       },
       "dependencies": {
@@ -735,6 +829,9 @@
         ],
         "language_coverage": [
           "pivot_languages"
+        ],
+        "own_components": [
+          "language_coverage"
         ]
       },
       "additionalProperties": false

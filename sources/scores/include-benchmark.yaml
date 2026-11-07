@@ -125,7 +125,10 @@ capability:
     shows: '"All questions in the dataset are presented in their native languages and scripts."; regional resources
       "originally created by native speakers of each country’s official languages. This collection avoids translationese";
       Include-base "uniformly samples 22,635 QA pairs"; "Each language has a maximum of 550 samples"; Include-lite
-      is "uniformly drawn from" Include-base "with a total of 10,770 samples"'
+      is "uniformly drawn from" Include-base "with a total of 10,770 samples"; Section 3.1: "we also consolidate
+      existing datasets with extensive domain coverage in single non-English languages", Table 15 naming ArabicMMLU
+      for Arabic and TurkishMMLU for Turkish; Table 14 and Figure 9 cover the "languages where both existing benchmark
+      data and newly collected data are available"'
     accessed: '2026-11-03'
     http_status: 200
     content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
@@ -1720,4 +1723,10 @@ capability:
     subset_of: include-benchmark
     cites:
     - https://datasets-server.huggingface.co/size?dataset=CohereLabs/include-lite-44
+    - https://arxiv.org/html/2411.19799
+  own_components:
+  - component: include-benchmark
+    except_languages: [ara, tur]
+    mixed_languages: [deu, fas, fra, ita, lit, pol, por, sqi, vie, zho]
+    cites:
     - https://arxiv.org/html/2411.19799
