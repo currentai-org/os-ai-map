@@ -659,6 +659,53 @@ dependence is already known, until the entry is written. The depth ladder is not
 fills the registry and reports the sensitivity of each result to unverified pairs before any score
 moves (R-2026-11-02-i).
 
+## Own components
+
+The corroboration step counts a suite's own items in full and caps an imported component one band
+above the best independent evidence beside it (R-2026-11-02-k), so the record has to say which
+components a suite made. `capability.own_components` says it, as a list of cited claims
+(R-2026-11-03-c). `build/own_components.py` reads them.
+
+### What a claim says
+
+- **`component`**: a `component` slug the record's coverage entries use.
+- **Selectors**, each optional and never empty: `languages` or `except_languages` (not both),
+  `tasks` and `splits`. An omitted selector covers every entry; the claim covers the entries that
+  match all of the selectors it states.
+- **`mixed_languages`**: languages the claim covers where the source says the suite's pool joins
+  items it made with existing benchmark data, with no per-language share. They count as owned; the
+  calibration's sensitivity reading treats them as imported too.
+- **`cites`**: URLs of `capability.sources` entries whose `shows` establishes that the suite wrote
+  the items or commissioned their translation. Hosting, sampling or re-publishing another set's
+  items is not authorship.
+
+### How ownership is read
+
+- The product's own slug is its own in every entry by default.
+- A claim on a second slug makes that component the suite's own where the claim matches, and
+  nowhere else: SEA-HELM's judged sets, IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and
+  IndicSentiment, and IndicGenBench's four tasks, each scoped to the languages where the suite made
+  them.
+- A claim on the own slug replaces the default with its own scope. That is how cited reuse of
+  complete items withdraws ownership (R-2026-11-03-i): INCLUDE's own slug is not its own in Arabic
+  and Turkish, where its pool is ArabicMMLU's and TurkishMMLU's questions. A parent edge in the
+  lineage registry alone does not withdraw ownership; Belebele and SIB-200 write new questions and
+  labels over FLORES text and stay their own.
+- Ownership is read only after an entry's evidence is established, so it cannot rescue unknown
+  provenance, an uncountable unit or a split that is not the official evaluation. It never changes
+  lineage: an owned component can still share ancestry with an import, and the independence test
+  of [Component lineage](#component-lineage) still applies to it.
+
+### What validation checks
+
+`build.validate` refuses a claim whose component has no coverage entry; a selector value no entry
+of that component has, including an `except_languages` value, so no selector is a dead letter;
+selectors that together match no entry; a `mixed_languages` value the claim does not cover; two
+claims that cover the same entry; and a `cites` URL that is not a `capability.sources` entry. The
+schema refuses `languages` beside `except_languages`, an empty selector, a claim without a
+citation, and `own_components` without `language_coverage`. Whether a citation shows authorship is
+evidence review, not a gate.
+
 ## Writing the rungs
 
 The bands are per category, so somebody writes their definitions, and that writing is where the

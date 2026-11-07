@@ -78,8 +78,10 @@ The computation follows the rulings exactly; nothing in it is tuned to this rost
   languages where the suite made them: SEA-HELM's two judged sets (the audit's precedent),
   IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and IndicSentiment, and IndicGenBench's
   XQuAD-In in full, FLORES-In for its seven new languages, CrossSum-In except the ten languages
-  that may reuse CrossSum, and XorQA-In except Bengali and Telugu. The schema does not carry these
-  claims yet; `build/depth_calibration.py` holds them, and `capability.own_components` will.
+  that may reuse CrossSum, and XorQA-In except Bengali and Telugu. These claims now live, cited, in
+  each record's `capability.own_components` (#978), and the calibration reads them from there; when
+  this record was written `build/depth_calibration.py` held them as constants, with the same scopes
+  and the same results.
   The scope runs the other way for INCLUDE: its own slug is not its own in Arabic and Turkish,
   where the lineage record names ArabicMMLU and TurkishMMLU as the parents whose text it carries
   (D5, R-2026-11-02-k, R-2026-11-03-i). A parent edge alone does not withdraw ownership: Belebele

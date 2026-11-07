@@ -12,6 +12,17 @@ import pytest
 from build import depth_calibration as dc
 from build import lineage
 from build.depth_calibration import ROOT
+from build.own_components import is_own
+
+
+def include_claim() -> dict:
+    """INCLUDE's own-slug claim, as its score record states it (R-2026-11-03-i)."""
+    return next(c for c in dc.record_claims("include-benchmark")
+                if c["component"] == "include-benchmark")
+
+
+INCLUDE_IMPORTED = frozenset(include_claim()["except_languages"])
+INCLUDE_MIXED = frozenset(include_claim()["mixed_languages"])
 
 # slug: (corroborated band, face value, bonus, measured, targets, capped languages)
 EXPECTED = {
@@ -119,9 +130,9 @@ def test_the_ownership_readings_move_no_set_band(doc, results):
 
 
 def test_include_s_imported_languages_are_capped(results):
-    assert results["include-benchmark"]["a"]["capped"] == sorted(dc.INCLUDE_IMPORTED)
+    assert results["include-benchmark"]["a"]["capped"] == sorted(INCLUDE_IMPORTED)
     assert all(results["include-benchmark"]["a"]["per_language"][lang] == 1
-               for lang in dc.INCLUDE_IMPORTED)
+               for lang in INCLUDE_IMPORTED)
 
 
 def test_include_s_ownership_follows_its_lineage_record(doc):
@@ -135,21 +146,21 @@ def test_include_s_ownership_follows_its_lineage_record(doc):
             imported |= set(ov["languages"])
         elif set(ov.get("collections") or []) - own_collections:
             mixed |= set(ov["languages"])
-    assert imported == dc.INCLUDE_IMPORTED
-    assert mixed == dc.INCLUDE_MIXED
+    assert imported == INCLUDE_IMPORTED
+    assert mixed == INCLUDE_MIXED
 
 
 def test_include_s_imported_languages_are_derived_in_lineage(doc):
     """R-2026-11-03-i: where INCLUDE carries a parent's items, its effective lineage is the
     parent's, not INCLUDE's own exams, so later comparisons see no false shared collection."""
     rec = next(c for c in doc["components"] if c["id"] == "include-benchmark")
-    for lang in dc.INCLUDE_IMPORTED:
+    for lang in INCLUDE_IMPORTED:
         eff = lineage.effective(rec, lang)
         assert eff["origin"] == "derived" and eff["collections"] == [], lang
         assert "include-local-exams" not in (eff["effort"], *eff["collections"]), lang
         parent = next(c for c in doc["components"] if c["id"] == eff["parents"][0])
         assert eff["effort"] == parent["effort"], lang
-    for lang in dc.INCLUDE_MIXED:
+    for lang in INCLUDE_MIXED:
         assert "include-local-exams" in lineage.effective(rec, lang)["collections"], lang
 
 
@@ -160,14 +171,58 @@ def test_the_count_ladder(count, expected):
     assert dc.band(count) == expected
 
 
-def test_own_ids_scopes():
-    own = dc.OWN_COMPONENTS
-    assert dc.own_ids("include-benchmark", "ara", own) == set()
-    assert dc.own_ids("include-benchmark", "deu", own) == {"include-benchmark"}
-    assert "flores-in" in dc.own_ids("indicgenbench", "brx", own)
-    assert "flores-in" not in dc.own_ids("indicgenbench", "hin", own)
-    assert "crosssum-in" not in dc.own_ids("indicgenbench", "nep", own)
-    assert "crosssum-in" in dc.own_ids("indicgenbench", "asm", own)
+def owns(slug, component, language):
+    entry = {"component": component, "language": language, "task": "any", "split": "test"}
+    return is_own(slug, entry, dc.record_claims(slug))
+
+
+def test_ownership_scopes_from_the_records():
+    assert not owns("include-benchmark", "include-benchmark", "ara")
+    assert owns("include-benchmark", "include-benchmark", "deu")
+    assert owns("indicgenbench", "flores-in", "brx")
+    assert not owns("indicgenbench", "flores-in", "hin")
+    assert not owns("indicgenbench", "crosssum-in", "nep")
+    assert owns("indicgenbench", "crosssum-in", "asm")
+    # A set's own slug is its own by default; an unclaimed import is not.
+    assert owns("sea-helm", "sea-helm", "tha")
+    assert not owns("sea-helm", "xnli", "tha")
+
+
+# The scopes build/depth_calibration.py held as constants before #978 moved them into the records.
+# Pinned here so that an edit to a claim, which would move a band, fails until the record and these
+# figures change together.
+EXPECTED_CLAIMS = {
+    "include-benchmark": {"include-benchmark": ("except", {"ara", "tur"})},
+    "sea-helm": {"sea-mt-bench-judge": None, "kalahi-judge": None},
+    "indicxtreme": {"indiccopa": None, "indicqa": None, "indicxparaphrase": None,
+                    "indicsentiment": None},
+    "indicgenbench": {
+        "flores-in": ("only", {"bgc", "brx", "gbm", "gom", "hoj", "mup", "mwr"}),
+        "crosssum-in": ("except", {"ben", "guj", "hin", "mar", "nep", "pan", "pus", "tam", "tel",
+                                   "urd"}),
+        "xquad-in": None,
+        "xorqa-in": ("except", {"ben", "tel"}),
+    },
+}
+
+
+def test_the_record_claims_are_the_calibrated_scopes():
+    got = {}
+    for slug in dc.ROSTER:
+        claims = dc.record_claims(slug)
+        if not claims:
+            continue
+        got[slug] = {}
+        for c in claims:
+            assert not (c.keys() & {"tasks", "splits"}), (slug, c["component"])
+            if "languages" in c:
+                got[slug][c["component"]] = ("only", set(c["languages"]))
+            elif "except_languages" in c:
+                got[slug][c["component"]] = ("except", set(c["except_languages"]))
+            else:
+                got[slug][c["component"]] = None
+    assert got == EXPECTED_CLAIMS
+    assert INCLUDE_MIXED == {"deu", "fas", "fra", "ita", "lit", "pol", "por", "sqi", "vie", "zho"}
 
 
 # --- the method on hand-built inputs -----------------------------------------------------------
@@ -176,7 +231,7 @@ def test_own_ids_scopes():
 
 
 def comp(component, band, task="knowledge_exam"):
-    return {"component": component, "band": band, "task": task, "split": "test"}
+    return {"component": component, "language": "xxx", "band": band, "task": task, "split": "test"}
 
 
 @pytest.fixture
@@ -192,7 +247,7 @@ def pairs(monkeypatch):
 
 
 def band_of(comps, *, loose=False):
-    return dc.language_band({}, "own", "xxx", comps, loose=loose, own={})
+    return dc.language_band({}, "own", "xxx", comps, loose=loose, claims=[])
 
 
 def test_own_items_count_at_face_value(pairs):
