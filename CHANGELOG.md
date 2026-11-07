@@ -26,6 +26,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- `capability.own_components`: cited, schema-validated claims that a suite's second-slug components
+  are its own items, scoped by language, task or split, with INCLUDE's Arabic and Turkish withdrawn
+  and its mixed pools marked (R-2026-11-03-c, -i). The depth calibration reads them from the records
+  and reproduces its earlier results exactly; no score changes
+  ([#978](https://github.com/currentai-org/os-ai-map/pull/978)).
 - Per-language coverage and lineage records for the 18 remaining evaluation sets, and the full-roster
   depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 17 of 22 sets
   resolve, 4 compute to band 5 (under the one-third review trigger), and the lineage sensitivity runs

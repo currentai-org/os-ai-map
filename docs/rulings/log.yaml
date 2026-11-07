@@ -2324,7 +2324,7 @@ rulings:
       The maintainer asked for a Codex review of the representation and adopted its design.
     status: in-force
     executor: agent
-    lands_in: []
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/own_components.py]
     applied_in: []
 
   - id: R-2026-11-03-d
@@ -2453,5 +2453,37 @@ rulings:
       that writes new questions over shared text does, and lineage records the ancestry either way.
     status: in-force
     executor: agent
-    lands_in: [build/depth_calibration.py, docs/sweeps/2026-11-03-depth-calibration-full-roster.md]
+    lands_in: [build/depth_calibration.py, docs/sweeps/2026-11-03-depth-calibration-full-roster.md,
+      docs/reference/capability.md, sources/scores/include-benchmark.yaml]
     applied_in: []
+
+  - id: R-2026-11-07-a
+    date: 2026-11-07
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#978", "#953", R-2026-11-02-c, R-2026-11-02-k]
+    question: >-
+      Are the full-roster calibration bands of #975 accepted as the baseline the depth-ladder
+      implementation builds on, or does anything in them call for revisiting the method first?
+    ruling: >-
+      Accepted, as the provisional, count-based implementation baseline for the 22 evaluation sets.
+      17 of 22 sets resolve, with five appropriately unresolved. Four reach band 5, below the
+      one-third methodology-review trigger. All 22 set-level bands are stable under the documented
+      unverified-lineage sensitivity test. The substantial downward adjustments for FLORES+,
+      AfroBench and SEA-HELM are consistent with the corroboration policy deliberately adopted. The
+      bands remain provisional depth measures, not demonstrated statistical confidence intervals.
+      There is no reason to revisit the methodology or change these results before implementation.
+      The capability.own_components schema PR is authorized next, moving the ownership declarations
+      into cited, schema-validated records with language, task and split scoping, INCLUDE's Arabic
+      and Turkish exception and its mixed-pool treatment, and showing that the calibration
+      reproduces identical results; no published score changes in it. The ladder implementation and
+      publication PR follows, reviewed with its score movements, companion figures, evidence-status
+      labels and declaration-version behavior together.
+    reasoning: >-
+      The two issues from the final review of #975 were corrected before merge: INCLUDE's Arabic and
+      Turkish lineage overrides identify imported evidence, and the completeness rule handles machine
+      translation with an unstated review scope.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-03-depth-calibration-full-roster.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/978']
