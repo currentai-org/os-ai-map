@@ -118,13 +118,6 @@ def test_the_basis_must_be_evaluation_depth(doc):
     assert any("basis is 'feature_matrix'" in e for e in dl.ladder_errors(scores, ["thai-exam"], doc))
 
 
-def test_a_computed_band_carries_no_last_verified(doc):
-    scores = scores_for("thai-exam")
-    scores["thai-exam"]["capability"]["last_verified"] = "2026-11-08"
-    assert any("may not write last_verified" in e
-               for e in dl.ladder_errors(scores, ["thai-exam"], doc))
-
-
 def test_a_computed_band_has_no_peer(doc):
     scores = scores_for("thai-exam")
     scores["thai-exam"]["capability"].update(relative_to="sea-helm", relation="one_below")

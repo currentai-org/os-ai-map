@@ -12,7 +12,8 @@ import re
 import tomllib
 import yaml
 
-from build import depth_ladder
+from build.depth_ladder import CATEGORY as DEPTH_CATEGORY, UNRESOLVED_REASONS
+from build.depth_ladder import compute as depth_compute
 from build.check_rubric import components_string
 from build.taxonomy import arc_grouped_categories
 from build.vocabulary import lineage_relations
@@ -178,7 +179,7 @@ def _depth_block(result: dict) -> dict:
     return {
         "status": result["status"],
         "unresolved_reason": reason,
-        "unresolved_reason_text": depth_ladder.UNRESOLVED_REASONS.get(reason) if reason else None,
+        "unresolved_reason_text": UNRESOLVED_REASONS.get(reason) if reason else None,
         "face_value": result["face_value"],
         "best_original": result["best_original"],
         "task_count": result["task_count"],
@@ -811,9 +812,9 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     # itself is recorded, and build/validate.py holds the record to it). Needs the lineage
     # registry, which a test's hand-built sources may not carry.
     depth: dict[str, dict] = {}
-    if "lineage" in sources and depth_ladder.CATEGORY in order:
-        depth = {slug: depth_ladder.compute(sources["lineage"], slug)
-                 for slug in cats[depth_ladder.CATEGORY]["products"]}
+    if "lineage" in sources and DEPTH_CATEGORY in order:
+        depth = {slug: depth_compute(sources["lineage"], slug)
+                 for slug in cats[DEPTH_CATEGORY]["products"]}
     out_cats = {}
     n = 0
     published_slugs: set[str] = set()

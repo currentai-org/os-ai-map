@@ -19,8 +19,9 @@ What changed:
   whose basis is not `evaluation_depth`, or that names a `relative_to` peer.
 - `capability.basis` gains `evaluation_depth` (R-2026-11-08-b).
 - In each of the 22 records, the capability header (`score`, `basis`, `basis_detail`, `value`,
-  `confidence`, `note`) is rewritten from the computed result, and `relative_to`, `relation` and
-  `last_verified` are removed. Sources, coverage, pivots and ownership claims are untouched.
+  `confidence`, `note`) is rewritten from the computed result, and `relative_to` and `relation` are
+  removed. Every capability source was re-read on 2026-11-08, and the axis is dated by that re-read
+  ([Freshness](#freshness)). Coverage, pivots and ownership claims are untouched.
 - The payload carries `capability.depth` on each row of the category, and `overall_basis` on every
   row of the map.
 - `sources/lineage.yaml` becomes a declaration input.
@@ -174,10 +175,23 @@ declaration input.
 
 ## Freshness
 
-The 22 records carry no `capability.last_verified`. The evidence-and-freshness rule forbids writing
-that date from a computation over recorded values, and a depth band is exactly that. Each coverage
-entry stays dated by its sources' `accessed` dates, and the band's freshness falls back to the commit
-that last changed the record.
+The ladder writes no date: a computation over recorded values confirms nothing. The 22 capability
+axes are dated 2026-11-08 by a re-read instead. All 138 capability sources on the 22 records (127
+distinct URLs) were fetched with `build.fetch_source` on 2026-11-08:
+
+- 83 returned the recorded body byte for byte.
+- 43 had changed, and every quoted fragment of their `shows` was found in the new body.
+- 12 were checked by hand against the fetched body, because their `shows` carries no quote or the
+  automatic match missed on an emoji or a nested quote. Each still says what it is cited for: the
+  SEA-HELM paper's Table 1 and caption, the NLR-NLI and MultiTurn-Chat-MT-Bench split sizes (1,000
+  per language; 58, and 91 in Thai), the SeaExam, ThaiExam, TurkishMMLU and Khayyam Hub pages,
+  LaoBench's abstract and its 7k-row test split, IndoNLU's fine-tuned models and SeaExam's paper.
+
+Every source's `accessed`, `http_status` and `content_sha256` now record that fetch, and each axis
+carries `last_verified: '2026-11-08'`. That includes the five unresolved sets, whose re-read
+re-confirms that the evidence is still short. A `shows` was not rewritten. Without a date the axes
+would break the published contract that every axis is either dated or held
+(`build/axis_assessments.py`). No source was dead, and nothing needed a hold.
 
 ## Comparisons into the departing sets
 

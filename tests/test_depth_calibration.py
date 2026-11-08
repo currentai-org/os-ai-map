@@ -10,6 +10,7 @@ from __future__ import annotations
 import pytest
 
 from build import depth_calibration as dc
+from build import depth_ladder
 from build import lineage
 from build.depth_calibration import ROOT
 from build.own_components import is_own
@@ -90,15 +91,35 @@ def _table_rows() -> list[list[str]]:
     return [[c.strip() for c in r.strip("|").split("|")] for r in rows[1:]]  # skip the header
 
 
+PUBLICATION = ROOT / "docs/sweeps/2026-11-08-depth-ladder-publication.md"
+
+
+def _scores_before_publication() -> dict[str, str]:
+    """The publication record's "Main score" column: each set's score before the ladder published
+    (R-2026-11-07-b), keyed by the record's display name."""
+    section = PUBLICATION.read_text().split("## The score-change diff", 1)[1].split("\n## ", 1)[0]
+    lines = section.splitlines()
+    rows = [[c.strip() for c in ln.strip("|").split("|")] for ln in lines if ln.startswith("| ")]
+    return {r[0]: r[1] for r in rows[1:]}  # skip the header
+
+
 def test_the_record_s_table_matches_the_calibration(results):
-    """Every row of the record's results table, in roster order, against the module's output."""
+    """Every row of the record's results table, in roster order, against the module's output.
+
+    The table's "now" column is the score the map published on 2026-11-03, before the ladder
+    replaced it. It is checked against the publication record's "Main score" column, which states
+    the same pre-publication score, and the score recorded today is checked against the band the
+    ladder publishes."""
     rows = _table_rows()
     assert len(rows) == len(dc.ROSTER)
     assert [r[0] for r in rows] == [LABELS[slug] for slug in dc.ROSTER]
+    before = _scores_before_publication()
+    names = {"americasnlp-shared-task-data": "AmericasNLP shared-task data"}
     for slug, (_, now, a_band, b_band, face, bonus, measured, capped) in zip(dc.ROSTER, rows):
         a, b = results[slug]["a"], results[slug]["b"]
         unresolved = a["band"].startswith("unresolved")
-        assert now == str(a["score_now"]), slug
+        assert now == before[names.get(slug, LABELS[slug])], slug
+        assert a["score_now"] == (None if unresolved else int(a["band"])), slug
         assert a_band == a["band"], slug
         assert b_band == ("same" if unresolved and b["band"] == a["band"] else b["band"]), slug
         # The table shortens an unresolved face value to "unresolved"; anything else is exact.
@@ -242,7 +263,8 @@ def pairs(monkeypatch):
     def pair_status(doc, a, b, language=None, **kw):
         return lineage.PairStatus(table.get(frozenset((a, b)), "dependent"), "stub")
 
-    monkeypatch.setattr(dc.lineage, "pair_status", pair_status)
+    # The ladder binds `pair_status` by name, so the stub replaces it where the ladder reads it.
+    monkeypatch.setattr(depth_ladder, "pair_status", pair_status)
     return table
 
 

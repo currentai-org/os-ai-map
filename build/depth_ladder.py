@@ -39,7 +39,7 @@ from pathlib import Path
 
 import yaml
 
-from build import lineage
+from build.lineage import load as load_lineage, pair_status
 from build.evidence_status import entry_status
 from build.own_components import is_own
 
@@ -144,7 +144,7 @@ def language_detail(doc: dict, slug: str, language: str, comps: list[dict], *, l
                 continue
             if not j["own"] and j["task"] == i["task"]:
                 continue
-            s = lineage.pair_status(doc, i["component"], j["component"], language,
+            s = pair_status(doc, i["component"], j["component"], language,
                                     a_task=i["task"], a_split=i["split"],
                                     b_task=j["task"], b_split=j["split"])
             if (s.status == "independent" or (loose and s.status == "unverified")) \
@@ -170,7 +170,7 @@ def language_detail(doc: dict, slug: str, language: str, comps: list[dict], *, l
         for j in comps:
             if j is face or j["band"] == 0 or (not j["own"] and j["task"] == face["task"]):
                 continue
-            s = lineage.pair_status(doc, face["component"], j["component"], language,
+            s = pair_status(doc, face["component"], j["component"], language,
                                     a_task=face["task"], a_split=face["split"],
                                     b_task=j["task"], b_split=j["split"])
             if s.status in pairs:
@@ -263,7 +263,7 @@ def ladder_errors(scores: dict, roster: list[str], doc: dict | None = None,
     A recorded band that drifts from the evidence fails here, so a coverage, lineage or ownership
     change that moves a band has to move the record in the same PR.
     """
-    doc = lineage.load() if doc is None else doc
+    doc = load_lineage() if doc is None else doc
     errors = []
     for slug in roster:
         cap = (scores.get(slug) or {}).get("capability") or {}
@@ -275,10 +275,6 @@ def ladder_errors(scores: dict, roster: list[str], doc: dict | None = None,
         if cap.get("relative_to") or cap.get("relation"):
             errors.append(f"{where}: a depth-ladder band is computed, not placed against a peer; "
                           f"drop relative_to and relation")
-        if cap.get("last_verified"):
-            errors.append(f"{where}: a depth-ladder band is computed from recorded values, and a "
-                          f"computation may not write last_verified "
-                          f"(docs/reference/evidence-and-freshness.md); drop it")
         got = compute(doc, slug, root=root)
         if cap.get("score") != got["band"]:
             errors.append(f"{where}: records score {cap.get('score')!r}, but the depth ladder "

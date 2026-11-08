@@ -791,10 +791,14 @@ lift the category from stage 2 to 3. A null capability elsewhere on the map, an 
 The record still states its band, so a reader of the YAML sees what the map shows, but nobody
 chooses it. `build.validate` recomputes every band in the category and refuses a record whose
 `score` differs from the computed band, whose `basis` is not `evaluation_depth`, or that names a
-`relative_to` peer: a computed band is not placed against a peer. It also refuses a
-`capability.last_verified` on the record, because the evidence-and-freshness rule forbids writing that date from
-a computation over recorded values; each `language_coverage` entry is dated by its sources'
-`accessed` dates, and the band falls back to the commit that last changed it.
+`relative_to` peer: a computed band is not placed against a peer.
+
+`capability.last_verified` dates the axis the way it dates any other: by a re-read of every source
+behind it that found each still says what it is cited for. The ladder never writes it, because a
+computation over recorded values confirms nothing (`evidence-and-freshness.md`, "Who may write
+`last_verified`"). What the date confirms is the evidence; the band follows from that evidence
+deterministically, and the gate above holds the two together. A null band earns the date the same
+way, since re-reading the sources re-confirms that the evidence is still short.
 
 `sources/lineage.yaml` is a declaration input (`build/declaration_version.py`): an edit to it can
 move a band, so it changes the declaration version the way an edit to a score record does.
@@ -884,7 +888,7 @@ re-opens the instrument, not just the band.**
 
 - [ ] `score` is 1-5 and comparable only within the category, or null with `basis: n/a`. In
       `language_specific_eval_sets` it is the computed band, or null when the band is unresolved,
-      with `basis: evaluation_depth` and no `relative_to` or `last_verified`.
+      with `basis: evaluation_depth` and no `relative_to`.
 - [ ] `basis` names the instrument; `basis_detail` and `value` carry what it was and what it said.
 - [ ] `basis_detail` names the instrument for THIS product - not one inherited from a cluster of
       peers, and not a harness the product is absent from.
