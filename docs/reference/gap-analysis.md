@@ -136,6 +136,15 @@ Worth stating plainly, because the code makes them look alike and they behave op
   `benchmark_eval_data` is the category that reaches it whenever its capability recipe is live
   rather than abstaining. The shape is general, which is why it is documented rather than left to
   be rediscovered.
+- **An unresolved depth band abstains from the stage.** In `language_specific_eval_sets` the
+  capability band is computed by the depth ladder, and a set whose band does not stand publishes a
+  null with `capability.depth.status: unresolved` (R-2026-11-08-a). That null is not an editorial
+  judgment that the category lacks a capability signal; it says the evidence is not yet enough to
+  read one. So `_stage_score` drops the row from the stage the way a null adoption is dropped, and
+  the row takes no tier and is never `mature`. Its overall score is still published, on adoption
+  alone and labeled so. Without the exclusion FLEURS, fully open at adoption 4, would lift the
+  category from stage 2 to 3 on adoption alone. A null capability with no `depth` block keeps the
+  behavior above.
 
 That fallback is right for the case it was written for. Most null-capability products
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
@@ -162,15 +171,14 @@ adoption alone is the honest reading rather than a fallback that happens to be r
 tested, and rejected, and the category returned to abstaining.
 
 Grading on adoption alone is therefore a **convention of this methodology**, not a per-category
-declaration and not a flag a reader sees. It follows from the axis being null, which is itself a
+declaration. It follows from the axis being null, which is itself a
 recorded editorial judgment carrying its own reasoning in the score file. Two consequences a
 reader of the map should know:
 
 - an overall score built from adoption alone is on the same 1-5 scale as one built from both
-  axes, and `overall_score` itself carries no marker of which. The payload does not hide the
-  difference — the product's `capability` block is emitted with `score: null` beside a non-null
-  `adoption.level`, so a consumer can tell — but nothing in the blended number says so, and
-  nothing in the category's stage or gaps does either;
+  axes. Each row says which in `overall_basis`, `adoption_only` or `adoption_and_capability`
+  (null when there is no overall score), and the payload's `descriptions` define both
+  (R-2026-11-08-a). Nothing in the category's stage or gaps says so;
 - a category can sit at Stages 1-3 with no gaps named. That is not by itself evidence of an
   ungraded shortfall: the paragraph below on the two gapless states describes a second route to
   it, where both axes have been topped but never in the same product. Which one a category is in

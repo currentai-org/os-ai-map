@@ -11,6 +11,7 @@ from build.identity import fold_for_proposal, fold_handle, id_from_url
 from build.evidence_status import precision_errors
 from build.lineage import lineage_errors, lineage_warnings, load as load_lineage
 from build.own_components import own_components_errors
+from build.depth_ladder import CATEGORY as DEPTH_CATEGORY, ladder_errors
 from build.resolution import LEDGER
 from build.vocabulary import axes, country_codes, language_codes, SIGNAL_TYPES
 
@@ -107,7 +108,8 @@ def _load_optional_yaml(path: Path, empty: dict) -> dict:
 # on any other dataset it is optional. Read at call time by `validate_sources`, so a test can
 # name a synthetic category. Adding a category here is the same change that fills the field
 # on its roster: a gate that fires on a corpus not yet filled in only teaches people to ignore it.
-LANGUAGES_REQUIRED_CATEGORIES: frozenset[str] = frozenset({"language_specific_datasets"})
+LANGUAGES_REQUIRED_CATEGORIES: frozenset[str] = frozenset({"language_specific_datasets",
+                                                       "language_specific_eval_sets"})
 
 
 def load_sources(root: Path) -> dict:
@@ -937,6 +939,14 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         except jsonschema.ValidationError as e:
             label = entry.get("repo") or (entry.get("artifact") or {}).get("id") or f"entry {i}"
             errors.append(f"resolution_ledger.yaml: {label}: schema: {_schema_msg(e)}")
+
+    # The depth ladder's category: every roster product records `basis: evaluation_depth` and the
+    # band `build.depth_ladder` computes from its evidence, null where the band does not stand
+    # (R-2026-11-02-k, R-2026-11-07-a, R-2026-11-08-a, -b). The evidence is read from the records
+    # on disk, as the ladder reads it.
+    depth_roster = list((cats.get(DEPTH_CATEGORY) or {}).get("products") or [])
+    if depth_roster and "lineage" in data:
+        errors.extend(ladder_errors(scores, depth_roster, data["lineage"]))
 
     # `sources/lineage.yaml`, the component lineage registry (R-2026-11-02-j, -u): structure,
     # references, parent cycles and citation presence. Whether a citation supports a lineage

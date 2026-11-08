@@ -100,7 +100,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Bumped when the classified inventory, the serialization, or the id composition changes, so a
 # value computed under an older rule cannot silently pass for a current one.
-CANONICALIZATION_VERSION = 1
+CANONICALIZATION_VERSION = 2
 
 # The repository-owned evaluator cutover (#411) has not happened; it does
 # not exist yet. Until it lands, the evaluator component is a declared sentinel rather than a
@@ -121,6 +121,7 @@ DECLARATION_INPUTS: tuple[str, ...] = (
     "allowlists",
     "categories",
     "evidence_policy.yaml",
+    "lineage.yaml",
     "organizations",
     "products",
     "registry",
@@ -199,12 +200,6 @@ NON_DECLARATION_INPUTS: dict[str, str] = {
         "declaration. It records that a discovered release name matches an EXISTING "
         "product's tier, the same kind of decision resolution_ledger.yaml records for "
         "artifact identity -- not a claim about what that product is, owns or scores."
-    ),
-    "lineage.yaml": (
-        "the component lineage registry (R-2026-11-02-j): where each evaluation component's "
-        "items come from. Nothing reads it to set a score yet, so a change to it changes no "
-        "product's declaration. The depth-ladder PR, which makes corroborated depth depend on "
-        "it, moves it into DECLARATION_INPUTS in the same change."
     ),
     "org_handles.yaml": (
         "ownership evidence for identity resolution; never joined for scores; changes no "

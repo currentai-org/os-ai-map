@@ -14,10 +14,12 @@ A model, a training framework and a dataset are capable of different things, so 
 
 Capability is the axis the map is weakest at, and it says so plainly. Openness is
 reproducible from recorded evidence and adoption is a banded signal, but capability is
-**neither measured nor computed** here. Nothing in `build/` derives it. Most `value` fields
-are prose rather than a bare number, by design. The band is a curator's
-judgment, and the honest thing the axis does is record what that judgment rested on so it can
-be checked and refreshed.
+**neither measured nor computed** here, with one exception. Outside
+`language_specific_eval_sets`, nothing in `build/` derives it. Most `value` fields are prose rather
+than a bare number, by design. The band is a curator's judgment, and the honest thing the axis does
+is record what that judgment rested on so it can be checked and refreshed. The exception is the
+evaluation sets, whose band `build/depth_ladder.py` computes from their recorded evidence
+([The depth ladder](#the-depth-ladder)).
 
 A null score is an abstention, not a gap: some records — datasets and a wire protocol among
 them — are not capable of anything the axis measures, and abstain rather than score 0.
@@ -27,7 +29,7 @@ them — are not capable of anything the axis measures, and abstain rather than 
 | field | what it holds |
 |---|---|
 | `score` | the 1-5 band, or null to abstain. Non-null needs a `sources` entry. |
-| `basis` | which **instrument** the band was read with: `benchmark`, `feature_matrix`, `training_value`, or `n/a`. |
+| `basis` | which **instrument** the band was read with: `benchmark`, `feature_matrix`, `training_value`, `evaluation_depth`, or `n/a`. |
 | `basis_detail` | what that instrument was, in prose (the benchmark's name, the kind of coverage). Free text. |
 | `value` | the recorded observation the band rests on: exact and quoted for a benchmark or arena placement, and often a synthesized summary of documented features for a `feature_matrix` band, not a verbatim quote. |
 | `relative_to` | the slug of the product this band was placed **against**, when placed by comparison rather than measured. |
@@ -40,10 +42,10 @@ them — are not capable of anything the axis measures, and abstain rather than 
 | `sources` | the evidence, at least one for a non-null score. |
 | `last_verified` | the date the whole axis was last re-confirmed. See `evidence-and-freshness.md`. It dates the band; the `language_coverage` record is dated by its sources' `accessed` dates instead ([Per-language coverage](#per-language-coverage)). |
 
-## `basis`: four genuinely different instruments
+## `basis`: five genuinely different instruments
 
 The enum is what a checker reads, so it stays small and controlled while `basis_detail`
-carries the prose. The four are not grades of the same thing; they are different kinds of
+carries the prose. The five are not grades of the same thing; they are different kinds of
 evidence, and a checker that could not tell them apart could not route or gate the axis.
 
 - **`benchmark`** — a published number (a leaderboard placement, an eval score). Re-reading
@@ -53,6 +55,10 @@ evidence, and a checker that could not tell them apart could not route or gate t
   the map carry. `uv run python -m build.check_capability` prints the live split.
 - **`training_value`** — ablation or downstream-model evidence that a dataset or recipe
   improves what is trained on it (`basis_detail` names it `ablation` or `superseded`).
+- **`evaluation_depth`** — the band the depth ladder computes for an evaluation set in
+  `language_specific_eval_sets` from its per-language evidence (R-2026-11-08-b). It is the only
+  computed basis, and the only one a gate recomputes: `build.validate` refuses a record whose
+  `score` differs from the computed band. See [The depth ladder](#the-depth-ladder).
 - **`n/a`** — an honest abstention. By convention it pairs with a null score, but nothing gates
   that pairing today, so the corpus is not uniform (e.g. `lamini` carries `score: null` under
   `basis: feature_matrix`). Treat `score: null` + `basis: n/a` as the intended shape for an
@@ -277,8 +283,8 @@ entry, a documented zero and a mapped entry carrying `source_language`.
 ### Why it is capability evidence and not an identity attribute
 
 The identity attributes, `languages` among them, are **read by no score, tier, stage or gate**
-(`identity.md`). This record will be read by one: the depth ladder (R-2026-10-30-g), described
-under [How the depth ladder will read it](#how-the-depth-ladder-will-read-it). What a capability
+(`identity.md`). This record is read by one: the depth ladder (R-2026-10-30-g), described
+under [How the depth ladder reads it](#how-the-depth-ladder-reads-it). What a capability
 ladder reads is capability evidence, and it lives on the axis for the same reason
 `openness.components` lives on openness.
 
@@ -478,11 +484,14 @@ A task the list does not name is a schema change, not a new spelling.
   `pivot_languages` out of the capability block. The per-language evidence ships as a separate
   structured data asset that the per-language view loads (R-2026-11-01-f), exposing language,
   task, evaluation split, count and unit, provenance, source references, the observed-coverage
-  fraction, and unknowns marked explicitly. That asset is not built.
+  fraction, and unknowns marked explicitly. That asset is not built. What the depth ladder
+  computes from the record is in the payload, as `capability.depth`
+  ([The depth ladder](#the-depth-ladder)).
 
-### How the depth ladder will read it
+### How the depth ladder reads it
 
-These are ruled, and they are the rules the ladder PR implements. None of them is built.
+These are ruled, and `build/depth_ladder.py` implements them; [The depth ladder](#the-depth-ladder)
+covers what it publishes.
 
 1. **Per task, then per language** (R-2026-11-01-c). Each task's qualifying count on its official
    evaluation split is banded against a calibrated standard in that task's own units, and a
@@ -562,19 +571,17 @@ No method is approved yet. Each task family's procedure needs its own ruling, ba
 calibration example that compares provisional and estimated bands (R-2026-11-02-f), and the PR that
 applies it adds the method to `APPROVED_METHODS` in `build/evidence_status.py`. Until then every
 entry is provisional or unresolved. `uv run python -m build.evidence_status <score file>` tallies a
-record's entries by status. The depth ladder publishes the status beside each band it derives; that
-publication is the ladder PR's, since no band is computed yet.
+record's entries by status. The depth ladder publishes the status beside each band it derives.
 
 ### What reads it
 
-Nothing yet. The depth ladder (R-2026-10-30-g, R-2026-10-30-i) is not built, so no band moves
-because a record was written, and until it lands each evaluation set is compared with sets covering
-the same languages (R-2026-10-30-g). The record is filled first for a calibration sample: FLORES+
-(translation), ThaiExam (single-language exams), SEA-HELM (a mixed-task suite) and AfroBench (a
-large multilingual suite). That sample settles the task-specific depth bands and checks that the
-aggregation gives sensible, explainable outcomes before the other evaluation sets are filled
-(R-2026-11-01-g). `refresh-category` fills a record from the card or paper it is already reading
-for the band ([`../workflows/refresh-category.md`](../workflows/refresh-category.md)).
+The depth ladder ([The depth ladder](#the-depth-ladder)). For a product in
+`language_specific_eval_sets` the record is the band: editing an entry can move the computed band,
+and `build.validate` then refuses the record until its `score` is rewritten to match. The method was
+calibrated on the full roster before it published anything (R-2026-11-01-g, R-2026-11-07-a;
+`docs/sweeps/2026-11-03-depth-calibration-full-roster.md`). `refresh-category` fills a record from
+the card or paper it is already reading for the band
+([`../workflows/refresh-category.md`](../workflows/refresh-category.md)).
 
 ## Component lineage
 
@@ -655,9 +662,8 @@ any record or override states, since an override can replace `parents`. Every ci
 must be a real ISO date no later than today, the rule score citations follow. It cannot check that a
 citation supports the lineage claim; that is evidence review (R-2026-11-02-j). A coverage component
 with no registry entry is a warning, never an error, and every pair it is in is unverified, unless
-dependence is already known, until the entry is written. The depth ladder is not built, so nothing reads the statuses yet; the lineage audit
-fills the registry and reports the sensitivity of each result to unverified pairs before any score
-moves (R-2026-11-02-i).
+dependence is already known, until the entry is written. The depth ladder reads the statuses, and
+publishes beside each band its sensitivity to unverified pairs (R-2026-11-02-i, -m).
 
 ## Own components
 
@@ -705,6 +711,94 @@ claims that cover the same entry; and a `cites` URL that is not a `capability.so
 schema refuses `languages` beside `except_languages`, an empty selector, a claim without a
 citation, and `own_components` without `language_coverage`. Whether a citation shows authorship is
 evidence review, not a gate.
+
+## The depth ladder
+
+`language_specific_eval_sets` is the one category whose capability band `build/` computes. Its
+products are evaluation sets built for underrepresented languages, and the question the band answers
+is how deeply each set can test a model in the languages it was built for. `build/depth_ladder.py`
+computes the band from the record's `language_coverage`, `own_components`, the lineage registry
+(`sources/lineage.yaml`) and the rulings, using the rules in
+[How the depth ladder reads it](#how-the-depth-ladder-reads-it),
+[Evidence status](#evidence-status), [Component lineage](#component-lineage) and
+[Own components](#own-components). The roster was frozen at publication to the 22 calibrated sets,
+and the category's boundary is provisional (R-2026-11-07-b).
+
+### Three things the band is not the same as
+
+The ladder keeps three quantities apart, and so does every published figure (R-2026-11-02-b, -d,
+-k):
+
+- **Statistical precision** is what one component's evaluation split can resolve. On the count
+  ladder (100, 400, 1,600 and 6,400 qualifying items for bands 2 to 5) every band is
+  **provisional**: a conservative ceiling read from an item count and the task family's stated
+  assumptions, not an estimated confidence interval. An **estimated** band needs a `precision`
+  block under an approved method, and no method is approved yet, so no published band is estimated.
+- **Corroborated depth** is what remains after the corroboration policy caps each imported
+  component one band above the best independent evidence beside it (R-2026-11-02-k). It is a rule
+  about how much a suite may claim from other people's items, not a precision estimate, and it can
+  only lower a band. The uncapped reading is the **face value**.
+- **The published capability band** is the set's corroborated depth: the median over its target
+  languages, standing only where the robustness test agrees. It is the `score` in the record and
+  on the map.
+
+A reader comparing two sets should read the band; a reader asking why a set sits where it does
+should read the figures beside it.
+
+### What is published beside the band
+
+Each row in the category carries `capability.depth` with the companion figures D8 requires
+(R-2026-11-02-o):
+
+| field | what it says |
+|---|---|
+| `status` | `provisional`, `estimated` or `unresolved`, for the set as a whole. |
+| `unresolved_reason`, `unresolved_reason_text` | why an unresolved band does not stand, as a code derived from the entries' own statuses and its plain reading. Null when the band stands. |
+| `face_value` | the median before the corroboration cap. |
+| `best_original` | the best band among the set's own components, or `unavailable` when it has none that qualify. Absent original evidence is not zero. |
+| `task_count` | how many tasks have a band in at least one target language. |
+| `completeness` | measured target languages out of all target languages, for example 18 of 20. |
+| `cap` | whether the cap binds in any target language, in how many, and for each such language which component set the face value, which independent component backs it, and which components were dependent or unverified. |
+| `sensitivity` | the band if every `unverified` lineage pair were read as independent (R-2026-11-02-m). |
+
+The record's `value` states the band, its status, completeness, task count, face value and best
+original band in prose, and its `note` says whether the cap binds.
+
+### An unresolved band
+
+A set whose band does not stand publishes `capability.score: null` with `status: unresolved` and
+its reason (R-2026-11-08-a). No interim score is kept. The reasons in the roster today:
+
+- `no_measurement_model`: the task family has no approved model (speech, R-2026-11-02-l). FLEURS
+  and Lahaja.
+- `no_official_split`: no source states the size of the official evaluation split
+  (R-2026-11-02-r). VMLU.
+- `provenance_unknown`: the sources do not say who wrote the items. IndoNLU.
+- `review_scope_unstated`: machine-translated items with a human review whose extent no source
+  states (R-2026-11-03-h). DarijaMMLU.
+
+An unresolved band is not a zero, and it is not evidence of maturity. Its overall score is the
+category's usual weighted mean over the axes that have a value, which leaves adoption alone, so the
+row carries `overall_basis: adoption_only`, which the payload's `descriptions` spell out. Every other row carries
+`adoption_and_capability`. An unresolved row also takes no tier, cannot be `mature`, and is left
+out of the stage computation, so an adoption-only score cannot lift the category's stage
+(`_stage_score` in `build/serialize.py`). Without that exclusion FLEURS, open with adoption 4, would
+lift the category from stage 2 to 3. A null capability elsewhere on the map, an abstention with no
+`depth` block, counts on adoption alone as it always has.
+
+### What the record keeps, and the gate
+
+The record still states its band, so a reader of the YAML sees what the map shows, but nobody
+chooses it. `build.validate` recomputes every band in the category and refuses a record whose
+`score` differs from the computed band, whose `basis` is not `evaluation_depth`, or that names a
+`relative_to` peer: a computed band is not placed against a peer. It also refuses a
+`capability.last_verified` on the record, because the evidence-and-freshness rule forbids writing that date from
+a computation over recorded values; each `language_coverage` entry is dated by its sources'
+`accessed` dates, and the band falls back to the commit that last changed it.
+
+`sources/lineage.yaml` is a declaration input (`build/declaration_version.py`): an edit to it can
+move a band, so it changes the declaration version the way an edit to a score record does.
+
 
 ## Writing the rungs
 
@@ -782,13 +876,15 @@ re-opens the instrument, not just the band.**
   current independent leaderboard would reopen it. In both cases a result for the exact release
   a record reads stays valid per-product evidence.
 - **`value` is not structured into components.** Most of the field is prose, on the same measure
-  that stopped `edge_hardware`'s ladder, and four instruments share the one field, so there is no
+  that stopped `edge_hardware`'s ladder, and five instruments share the one field, so there is no
   shared ladder at the end of that work the way openness has four. The peer comparison, not a
   component structure, is what is checkable instead.
 
 ## Checklist
 
-- [ ] `score` is 1-5 and comparable only within the category, or null with `basis: n/a`.
+- [ ] `score` is 1-5 and comparable only within the category, or null with `basis: n/a`. In
+      `language_specific_eval_sets` it is the computed band, or null when the band is unresolved,
+      with `basis: evaluation_depth` and no `relative_to` or `last_verified`.
 - [ ] `basis` names the instrument; `basis_detail` and `value` carry what it was and what it said.
 - [ ] `basis_detail` names the instrument for THIS product - not one inherited from a cluster of
       peers, and not a harness the product is absent from.
