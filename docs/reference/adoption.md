@@ -600,7 +600,7 @@ it does not make the claim automatic, it makes it falsifiable.
   it.
 - **OpenRouter rankings** — usage through one API router, via
   `/api/v1/datasets/rankings-daily`. It is not routed: the only OpenRouter table in the warehouse
-  is the model catalog, used to enrich candidates, and score files cite the rankings page by hand.
+  is the model catalog, which feeds candidate enrichment, and score files cite the rankings page by hand.
   Token share is relative, with no absolute scale, so it corroborates a band rather than setting
   one (R-2026-11-08-o, the reasoning of R-2026-10-08-i), and no collector is requested. Two further
   limits: it returns the top 50 models per day, and its `hugging_face_id` bridge is empty for
