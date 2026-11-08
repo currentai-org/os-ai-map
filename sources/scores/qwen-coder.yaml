@@ -15,56 +15,74 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI permissive, no use restrictions
-  governing_release: qwen3-coder
+  governing_release: qwen3-coder-next
   confidence: high
-  note: Qwen3-Coder and its Qwen2.5-Coder predecessor both ship Apache-2.0 weights with no use restrictions,
-    but the training corpus is closed and only inference code and a chat template are released, with no
-    training pipeline. That keeps the family at open weights rather than open source, across both generations.
+  note: Qwen3-Coder-Next, the newest release in the line, ships Apache-2.0 weights with no use restrictions,
+    as the earlier Qwen3-Coder and Qwen2.5-Coder checkpoints do. The training corpus is closed, and only
+    inference code and a chat template are released, with no training pipeline. That keeps the line at open
+    weights rather than open source.
   raw: weights:open(Apache-2.0, on HF);data:closed(no training corpus released);code:partial(inference/usage
     + chat template; no training pipeline or post-training/SFT data);license:Apache-2.0(OSI permissive,
     no use restrictions)
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-08'
   sources:
-  - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
-    shows: 'Model card lists "Training Stage: Pretraining & Post-training" and covers quickstart and agentic-coding
-      usage; searched the body for training corpus, post-training data, SFT recipe and training pipeline:
-      none released.'
-    accessed: '2026-09-29'
+  - url: https://huggingface.co/Qwen/Qwen3-Coder-Next/raw/main/README.md
+    shows: 'Model card front matter reads "license: apache-2.0"; the card lists "Training Stage: Pretraining
+      & Post-training" and covers quickstart, deployment and tool-calling usage. Searched the body for a
+      training corpus, post-training data, an SFT recipe and a training pipeline: none released.'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 889b449f503d11faf993175f186ce6ec810513a0311b03b7a4c174692811c532
+    content_sha256: 548db6d595e3bd88d7f6e7f4eae8e66ce8e6f980fd5ce52d7daf222e38559af6
     establishes:
     - data
     - code
-  - url: https://huggingface.co/api/models/Qwen/Qwen3-Coder-480B-A35B-Instruct
-    shows: Hub API record for "Qwen/Qwen3-Coder-480B-A35B-Instruct" carries the tag "license:apache-2.0",
-      with safetensors weights and the repo not gated.
-    accessed: '2026-09-29'
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Coder-Next
+    shows: 'Hub API record for "Qwen/Qwen3-Coder-Next" carries the tag "license:apache-2.0" and "gated":
+      false, with safetensors weights, a chat_template.jinja and vLLM and SGLang tool-call parsers in the
+      repository.'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: ea4544d41d79d50915fee83703f438fb7e160a70d2adf8ca7e3c9e83675add48
+    content_sha256: 533d96b65d754b0e7449f78af02be99464be2c6f5b9ad4cb64f12adea5de4bf2
     establishes:
     - weights
     - license
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-Coder/main/README.md
+    shows: The Qwen3-Coder README says the line "is available in multiple sizes, Qwen3-Coder-480B-A35B-Instruct,
+      Qwen3-Coder-30B-A3B-Instruct, Qwen3-Coder-Next" and lists them in one download table; its sections
+      cover chat and fill-in-the-middle usage, with no training or fine-tuning section.
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 7553f06c6f17a7ce22a76995a210b07fb6724d32a0cdc7bd4961ed2866d80fd4
+    establishes:
+    - code
+  - url: https://artificialanalysis.ai/models/qwen3-coder-480b-a35b-instruct
+    shows: 'Artificial Analysis marks Qwen3 Coder 480B deprecated: "Alibaba has launched a newer release,
+      Qwen3 Coder Next. We suggest considering it instead."'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 98ec98379f8506a164973aae3b6482dbb081e377498488700d15cbab4b67839a
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Adoption is measured as Hugging Face downloads summed across the four declared Qwen Coder SKUs,
-    spanning both the 2.5 and 3 generations. Most of that volume comes from the older Qwen2.5-Coder SKUs,
-    and the largest single SKU alone draws enough downloads to support the same reading as the four combined.
-  last_verified: '2026-10-25'
-  derived_from:
-    observation_snapshot_id: 23ea574dc103b8180b77fdd1df7fe0bf8e11aa854b2aebb84925a6ead2148a0d
-    source_run_id: 2e6d66cd-2f46-4950-8f46-04339f192bfb
-    route_id: huggingface_model.downloads_30d
-    measured_level: 4
-    measurement_as_of: '2026-10-25'
+  note: Adoption is measured as Hugging Face downloads summed across the declared checkpoints of the Qwen2.5-Coder,
+    Qwen3-Coder and Qwen3-Coder-Next releases, including the Qwen3-Coder-Next base model. Qwen's FP8 and
+    GGUF builds of Qwen3-Coder-Next are quantized copies of the same weights and are left out. Qwen3-Coder-30B-A3B-Instruct
+    draws the most downloads of any one checkpoint.
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct
     shows: 1,242,001 downloads in the trailing 30 days
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a594c2f0a721aece8997fba00f1cb43fce9a211199273c65451badb3f2bef090
+  - url: https://huggingface.co/api/models?author=Qwen&search=Coder
+    shows: 'Trailing-30-day downloads for Qwen''s newest coder repositories: Qwen3-Coder-Next 427,397, Qwen3-Coder-Next-FP8
+      411,181, Qwen3-Coder-Next-GGUF 70,297 and Qwen3-Coder-Next-Base 1,327. Qwen3-Coder-30B-A3B-Instruct,
+      at 1,564,970, is the largest declared checkpoint.'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 26ade73e7db5cc222cb3e39ad01576f89a5485720a9d72f27db30b907a9a5bef
 capability:
   score: 4
   basis: benchmark
