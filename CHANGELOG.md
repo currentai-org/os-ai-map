@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Language-specific evaluation sets are published as their own category, scored by the depth ladder:
+  22 sets moved from Language-specific datasets with computed, provisional bands, five of them
+  unresolved with a null band and an adoption-only overall score, and `overall_basis` now marks
+  every overall score (R-2026-11-07-b, R-2026-11-08-a, -b)
+  ([#979](https://github.com/currentai-org/os-ai-map/pull/979)).
 - Machine-translated evaluation items that a cited source says people reviewed, every item, now
   count toward evaluation depth; their provenance stays `machine_translated`, a review of unstated
   scope (`review_scope: unstated`) leaves depth unknown, and generated items still do not count

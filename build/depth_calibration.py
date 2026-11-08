@@ -38,13 +38,18 @@ import json
 from collections import Counter
 from pathlib import Path
 
-import yaml
-
 from build import lineage
-from build.evidence_status import entry_status
-from build.own_components import is_own, without_mixed_pools, without_second_slugs
-
-ROOT = Path(__file__).resolve().parent.parent
+from build.depth_ladder import (  # noqa: F401  (re-exported: the calibration's tests and record use them)
+    LADDER,
+    ROOT,
+    band,
+    language_detail,
+    load_set,
+    median_band,
+    record_claims,
+)
+from build.depth_ladder import set_band as _set_band
+from build.own_components import without_mixed_pools, without_second_slugs
 
 # The 22 sets the 2026-10-30 dry run places in language_specific_eval_sets.
 ROSTER: tuple[str, ...] = (
@@ -54,93 +59,17 @@ ROSTER: tuple[str, ...] = (
     "americasnlp-shared-task-data",
 )
 
-# Ownership comes from each record's `capability.own_components` (R-2026-11-03-c, -i): the own
-# slug is the set's own unless a claim scopes it, and a second slug is its own where a claim covers
-# it. The scopes this module once held as constants now live, cited, in the records.
-
-LADDER = ((6400, 5), (1600, 4), (400, 3), (100, 2), (1, 1))
-
-
-def band(count: int) -> int:
-    """The count ladder's band for a qualifying count (R-2026-11-02-c)."""
-    return next((b for lo, b in LADDER if count >= lo), 0)
-
-
-def median_band(values: list[int]) -> int | None:
-    """The median band, the lower of the two middle values' mean rounded down on an even count."""
-    v = sorted(values)
-    if not v:
-        return None
-    n = len(v)
-    return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) // 2
-
-
-def _qualifying(entry: dict) -> int:
-    status = entry_status(entry)
-    if status.reason == "measured_zero":
-        return 0
-    if entry.get("provenance") == "mixed":
-        return entry["qualifying_count"]
-    return entry["count"]
-
-
-def record_claims(slug: str, root: Path = ROOT) -> list[dict]:
-    """The set's `capability.own_components` claims, as its score record states them."""
-    rec = yaml.safe_load((root / "sources/scores" / f"{slug}.yaml").read_text())
-    return list((rec.get("capability") or {}).get("own_components") or [])
-
 
 def _load(slug: str, root: Path) -> tuple[list[str], dict[str, list[dict]], Counter, object]:
-    rec = yaml.safe_load((root / "sources/scores" / f"{slug}.yaml").read_text())
-    prod = yaml.safe_load((root / "sources/products" / f"{slug}.yaml").read_text())
-    cap = rec["capability"]
-    pivots = set(cap.get("pivot_languages") or [])
-    targets = [lang for lang in prod.get("languages") or [] if lang not in pivots]
-    comps: dict[str, list[dict]] = {}
-    tally: Counter = Counter()
-    for e in cap.get("language_coverage") or []:
-        s = entry_status(e)
-        if s is None:
-            continue
-        tally[f"{s.status}/{s.reason}"] += 1
-        if s.status == "unresolved":
-            continue
-        q = _qualifying(e)
-        comps.setdefault(e["language"], []).append({
-            "component": e["component"], "language": e["language"], "task": e["task"],
-            "split": e["split"], "band": band(q)})
-    return targets, comps, tally, cap.get("score")
+    loaded = load_set(slug, root)
+    return loaded["targets"], loaded["comps"], loaded["tally"], loaded["score"]
 
 
 def language_band(doc: dict, slug: str, language: str, comps: list[dict], *, loose: bool,
                   claims: list[dict] | None) -> tuple[int, int]:
-    """(corroborated band, face value) for one language."""
-    for c in comps:
-        c["own"] = is_own(slug, {**c, "language": language}, claims)
-    best = max((c["band"] for c in comps if c["own"]), default=0)
-    for i in comps:
-        if i["own"] or i["band"] == 0:
-            continue
-        backing = 0
-        for j in comps:
-            if j is i or j["band"] == 0:
-                continue
-            if not j["own"] and j["task"] == i["task"]:
-                continue
-            s = lineage.pair_status(doc, i["component"], j["component"], language,
-                                    a_task=i["task"], a_split=i["split"],
-                                    b_task=j["task"], b_split=j["split"])
-            if s.status == "independent" or (loose and s.status == "unverified"):
-                backing = max(backing, j["band"])
-        best = max(best, min(i["band"], backing + 1))
-    return best, max((c["band"] for c in comps), default=0)
-
-
-def _set_band(values: list[int], unknown: int) -> str | None:
-    lo, hi = median_band(values + [0] * unknown), median_band(values + [5] * unknown)
-    if lo is None:
-        return None
-    return str(lo) if lo == hi else f"unresolved ({lo}-{hi})"
+    """(corroborated band, face value) for one language, by `build.depth_ladder`."""
+    d = language_detail(doc, slug, language, comps, loose=loose, claims=claims)
+    return d["band"], d["face_value"]
 
 
 def calibrate_set(doc: dict, slug: str, *, loose: bool = False,

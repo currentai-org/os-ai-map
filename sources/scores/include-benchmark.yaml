@@ -65,33 +65,32 @@ adoption:
     http_status: 200
     content_sha256: 173cb75d28681bc42e1259353438254cd1f84cec6a9d8f03f156d8b0d6995c09
 capability:
-  score: 4
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for multilingual regional-knowledge evaluation
-  value: 22,637 multiple-choice questions from local academic, professional and licensing exams in 44 languages,
-    documented in a paper and card, and included as a task in EleutherAI's lm-evaluation-harness.
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 44 of 44 measured, across 1 task. Face value 3; best original band 3.'
   confidence: medium
-  note: INCLUDE draws its questions from each region's own exams rather than translated English tests, is documented
-    in its paper, and ships as a task in EleutherAI's evaluation harness. Its 44 languages are fewer than the
-    122 variants of Belebele.
-  relative_to: belebele
-  relation: one_below
-  last_verified: '2026-09-24'
+  note: In the typical language INCLUDE targets, its deepest test has four hundred to sixteen hundred items
+    that count toward depth. In 2 of its 44 languages a test taken from another dataset counts for less,
+    because nothing independent backs it there. An item count says how much a set can test, not how precisely
+    it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/include/README.md
     shows: '"INCLUDE is a comprehensive knowledge- and reasoning-centric benchmark across 44 languages"; points
       to CohereForAI/include-base-44.'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 2a0f49b3aa41ebea2f616b41e0ef50bb0546c2c4b09205e2ed5e07e22b98f19a
   - url: https://arxiv.org/abs/2411.19799
     shows: '"we construct an evaluation suite of 197,243 QA pairs from local exam sources".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: a60e455c0790afe01aaf7089e6ca8aba7b791a4f4bc77b4d0f49dac54a48e513
+    content_sha256: 946fd3f29a91f5f90363535ddbc8a4acbe87b5180a3a51ae3fde2ef8ba067714
   - url: https://huggingface.co/datasets/CohereLabs/include-base-44/raw/main/README.md
     shows: 'Model performance table: Llama3.1-70B-Instruct 70.6, Qwen2.5-14B 62.3, Aya-expanse-32b 59.1.'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 47002160b4dfeaea142eb8e11c85d601d4e6f02d2b5e931899e4047b1aa382ab
   - url: https://datasets-server.huggingface.co/size?dataset=CohereLabs/include-base-44
@@ -107,7 +106,7 @@ capability:
       5, Korean 10, Lithuanian 25, Malay 15, Malayalam 30, Nepali 10, North Macedonian 20, Persian 25, Polish
       15, Portuguese 30, Russian 40, Serbian 15, Spanish 20, Tagalog 10, Tamil 10, Telugu 20, Turkish 20, Ukrainian
       15, Urdu 15, Uzbek 20, Vietnamese 15; the "Dutch - Flemish" and "Dutch-Flemish" configs are listed as failed'
-    accessed: '2026-11-03'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: d7726d51a39c1b53a5c86e006a0c03f93e581c94921a7f0fbf85ef33577846d0
   - url: https://datasets-server.huggingface.co/size?dataset=CohereLabs/include-lite-44
@@ -118,7 +117,7 @@ capability:
       252, Nepali 250, North Macedonian 251, Persian 248, Polish 250, Portuguese 253, Russian 252, Serbian 250,
       Spanish 250, Tagalog 250, Tamil 250, Telugu 249, Turkish 249, Ukrainian 250, Urdu 250, Uzbek 251, Vietnamese
       250 (10,770 in all)'
-    accessed: '2026-11-03'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 08aa21fb0b53c2bb8bd26a0d60cff0ad02ae9f201cb65544af34518f8efa0862
   - url: https://arxiv.org/html/2411.19799
@@ -129,13 +128,13 @@ capability:
       existing datasets with extensive domain coverage in single non-English languages", Table 15 naming ArabicMMLU
       for Arabic and TurkishMMLU for Turkish; Table 14 and Figure 9 cover the "languages where both existing benchmark
       data and newly collected data are available"'
-    accessed: '2026-11-03'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+    content_sha256: dd8e2c689915a82271ca92a1807373b1caeb894061bef222891476abed97bcf0
   - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/include/default/Albanian/_albanian_template_yaml
     shows: 'the harness''s per-language INCLUDE template: "dataset_path: CohereForAI/include-base-44", "test_split:
       test", with no few-shot split in the zero-shot default task'
-    accessed: '2026-11-03'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 44f28a1c3d3095310abdba322c53510a33d40d2d69dc260f13857bcdd1497709
   pivot_languages: []

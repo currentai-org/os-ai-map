@@ -12,6 +12,8 @@ import re
 import tomllib
 import yaml
 
+from build.depth_ladder import CATEGORY as DEPTH_CATEGORY, UNRESOLVED_REASONS
+from build.depth_ladder import compute as depth_compute
 from build.check_rubric import components_string
 from build.taxonomy import arc_grouped_categories
 from build.vocabulary import lineage_relations
@@ -20,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "steward", "languages",
                      "description",
-                     "openness", "adoption", "capability", "overall_score", "tier",
+                     "openness", "adoption", "capability", "overall_score", "overall_basis", "tier",
                      "maturity", "mature", "end_of_life",
                      "freshness", "version_note", "lineage"]
 
@@ -104,6 +106,16 @@ _TIER_DESC = {
 }
 
 
+# What a row's overall score rests on (`overall_basis`), so a reader can tell a score blended from
+# both axes from one read off adoption alone (R-2026-11-08-a).
+_OVERALL_BASIS_DESC = {
+    "adoption_and_capability": "the overall score blends adoption and capability.",
+    "adoption_only": "the overall score is adoption alone, because capability has no band; it is "
+                     "not comparable to a blended score, and an unresolved capability is not a "
+                     "low one.",
+}
+
+
 def _gap_bucket(cls: str) -> str:
     if cls in _GAP_OPEN:
         return "open"
@@ -129,6 +141,52 @@ def _maturity_score(row: dict, w: dict) -> float | None:
         return round(float(adoption), 2)
     wa, wc = w.get("adopt", 0.5), w.get("cap", 0.5)
     return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
+
+
+def _unresolved_depth(row: dict) -> bool:
+    """True for a depth-ladder row whose band does not stand (R-2026-11-08-a).
+
+    Its capability is unknown, not zero and not a pass: the row keeps an overall score, labeled
+    adoption-only, but carries no tier, is never `mature`, and stays out of the stage arithmetic,
+    so an unresolved capability cannot read as capability maturity.
+    """
+    depth = (row.get("capability") or {}).get("depth") or {}
+    return depth.get("status") == "unresolved"
+
+
+def _stage_score(row: dict, w: dict) -> float | None:
+    """The score the stage engine reads: the overall score, except None for an unresolved
+    depth-ladder row, which is excluded from the stage as a row with no adoption is."""
+    return None if _unresolved_depth(row) else _maturity_score(row, w)
+
+
+def _overall_basis(row: dict) -> str | None:
+    """What the overall score rests on: both axes, adoption alone, or nothing (no adoption)."""
+    if (row.get("adoption") or {}).get("level") is None:
+        return None
+    if (row.get("capability") or {}).get("score") is None:
+        return "adoption_only"
+    return "adoption_and_capability"
+
+
+def _depth_block(result: dict) -> dict:
+    """The depth ladder's companion figures as the payload carries them (R-2026-11-02-o).
+
+    The per-language bands stay out: they ship with the per-language data asset
+    (R-2026-11-01-f), not in this payload.
+    """
+    reason = result.get("unresolved_reason")
+    return {
+        "status": result["status"],
+        "unresolved_reason": reason,
+        "unresolved_reason_text": UNRESOLVED_REASONS.get(reason) if reason else None,
+        "face_value": result["face_value"],
+        "best_original": result["best_original"],
+        "task_count": result["task_count"],
+        "completeness": result["completeness"],
+        "cap": result["cap"],
+        "sensitivity": result["sensitivity"],
+    }
 
 
 def _unreached_axes(fully_open: list[dict]) -> list[str]:
@@ -249,7 +307,7 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False,
     # Products with no maturity score (missing adoption) are excluded from the stage
     # computation — we can't judge what we can't measure, so they neither advance nor
     # depress the category's stage.
-    enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
+    enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _stage_score(r, w)) for r in rows]
     open_rows = [(r, s) for r, b, s in enr if b == "open" and s is not None]
     # Only the count reads lineage groups. `best_open` is a maximum and `mature_anywhere` an
     # existence test, and neither can be inflated by overlap, so both stay per row.
@@ -423,7 +481,7 @@ def _without_language_coverage(capability):
 
 def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
          weights: dict | None, name_map: dict | None = None,
-         freshness: dict | None = None) -> dict:
+         freshness: dict | None = None, depth: dict | None = None) -> dict:
     # Pre-compute the open / open-ish / closed bucket alongside the raw class, so
     # consumers get a stable 3-way verdict that survives changes to the openness.class
     # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
@@ -461,6 +519,11 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
         # key ships as recorded. See docs/reference/capability.md.
         "capability": _without_language_coverage(score["capability"]),
     }
+    # A depth-ladder row (`basis: evaluation_depth`) carries the ladder's companion figures beside
+    # its band: evidence status, face value, best original band, task count, completeness, whether
+    # the corroboration cap binds and why, and the unverified-lineage sensitivity (R-2026-11-02-o).
+    if depth is not None:
+        row["capability"] = {**row["capability"], "depth": _depth_block(depth)}
     # The weighted product maturity score (per-category blend of adoption/capability),
     # already rounded to 2dp by _maturity_score, or null when adoption is missing. The
     # category stage thresholds in _stage_and_gaps compare this same 2dp value.
@@ -472,9 +535,13 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # age for, and it is not the category-level Maturity Stage that shares the old word.
     row["overall_score"] = m
     row["maturity"] = m
+    # What the overall score rests on, so an adoption-only score is never read as comparable to
+    # one that blends both axes (R-2026-11-08-a): adoption_and_capability, adoption_only, or null
+    # where there is no adoption and so no overall score.
+    row["overall_basis"] = _overall_basis(row)
     # Leading / Strong / null, derived from the score alone (see _LEADING_MIN). Emitted rather
     # than left to each consumer so the two tier boundaries stay methodology constants.
-    row["tier"] = (None if m is None else
+    row["tier"] = (None if m is None or _unresolved_depth(row) else
                    "leading" if m >= _LEADING_MIN else
                    "strong" if m >= _STRONG_MIN else None)
     # Canonical `mature` flag: the SAME rule the category stage engine uses
@@ -483,6 +550,7 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # looser threshold. Uses the unrounded score `m` to match the stage logic.
     row["mature"] = (
         m is not None and m >= _MATURE_MIN and openness["bucket"] == "open"
+        and not _unresolved_depth(row)
     )
     # A declared end-of-life date: the product still works and stops on that day. Emitted as
     # the date and the announcement link, so a consumer can say the product is ending and point
@@ -740,6 +808,13 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             cid_layer[cid] = lyr
             cid_group[cid] = gname
             cid_group_slug[cid] = gslug
+    # The depth ladder's results for its category's roster, computed from the records (the band
+    # itself is recorded, and build/validate.py holds the record to it). Needs the lineage
+    # registry, which a test's hand-built sources may not carry.
+    depth: dict[str, dict] = {}
+    if "lineage" in sources and DEPTH_CATEGORY in order:
+        depth = {slug: depth_compute(sources["lineage"], slug)
+                 for slug in cats[DEPTH_CATEGORY]["products"]}
     out_cats = {}
     n = 0
     published_slugs: set[str] = set()
@@ -757,7 +832,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(slug, p, org_slug, org_name, scores[slug],
                              cat.get("weights"), name_map,
-                             (freshness or {}).get(slug)))
+                             (freshness or {}).get(slug), depth.get(slug)))
             n += 1
         sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False),
                              groups=lineage_groups(cat["products"], prods))
@@ -777,6 +852,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         "stages": {str(k): v for k, v in _STAGE_DESC.items()},
         "gaps": dict(_GAP_DESC),
         "tiers": dict(_TIER_DESC),
+        "overall_basis": dict(_OVERALL_BASIS_DESC),
         "categories": {cid: cats[cid].get("description", "") for cid in order},
     }
     return {"descriptions": descriptions, "layer_order": layer_order,

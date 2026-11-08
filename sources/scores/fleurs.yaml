@@ -51,40 +51,38 @@ adoption:
     http_status: 200
     content_sha256: a621473a1bf7b55da1e53ee8aaf0ab5ac1f70e9759ea6a78fbe48eb2351b15cb
 capability:
-  score: 5
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for multilingual speech evaluation
-  value: Speech recorded by people reading 2,009 FLORES sentences in 102 languages, about 10 to 12 hours per
-    language, documented in its paper, and used in Meta's MMS paper to compare its recognizer against Whisper.
-  confidence: medium
-  note: FLEURS gives 102 languages the same read sentences, so speech recognition, language identification
-    and speech translation can be compared across all of them. It is documented in its paper, and Meta's MMS
-    work reports its word error rates against Whisper on it.
-  last_verified: '2026-09-24'
+  score: null
+  basis: evaluation_depth
+  basis_detail: depth ladder; the band does not stand
+  value: 'Unresolved: no approved measurement model for its task family.'
+  confidence: low
+  note: FLEURS is a speech test, and the map has no agreed way yet to turn hours of recorded speech into a
+    measure of test depth, so it shows no capability score for now. Its overall score reflects adoption alone.
+  last_verified: '2026-11-08'
   sources:
   - url: https://arxiv.org/abs/2205.12446
     shows: '"an n-way parallel speech dataset in 102 languages ... with approximately 12 hours of speech supervision
       per language".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 5677a7c4030171b138ba33fd90ab63034b24e816aea4a7febd99038f4b13dafe
+    content_sha256: d1cdb917c2cd2e8cce34e8f10e132fab3e69b3d24a7447a56b09e49ee6581847
   - url: https://huggingface.co/datasets/google/fleurs
     shows: '"We use 2009 n-way parallel sentences from the FLoRes dev and devtest publicly available sets,
       in 102 languages. Training sets have around 10 hours of supervision."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: e877fd64182218836d2f81c6698591dcd0e497706e64beabd2b6b384c6cd84d4
+    content_sha256: 2e47f305a2802d345ae92ddf8efbca0c084a9d344fab2c9416329d1cdab01c81
   - url: https://arxiv.org/abs/2305.13516
     shows: '"more than halves the word error rate of Whisper on 54 languages of the FLEURS benchmark".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: f05167a89c4952954d411f7ae7e1d0ae3513e4b7908a902b689ec226356680ca
+    content_sha256: 8e80ec59ed18c5437b6697a53f0f2f73f296c3c51ab7fa0571855eefa4f24e3b
   - url: https://huggingface.co/datasets/google/fleurs/raw/main/README.md
     shows: 'the card''s dataset_info gives every language config''s split sizes in num_examples (af_za: train 1032,
       validation 198, test 264), the same figures the Hub''s size endpoint reports for all 102 language configs; "Speakers
       of the train sets are different than speakers from the dev/test sets"; "FLEURS-LangID is splitted in train/valid/test
       for each language"; "Results have to be reported on the test sets of Retrieval"'
-    accessed: '2026-11-03'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 688f79f2a5c731af3796e9f683eb02f9b3f09d040decd8c5625d0f37098e71c6
   - url: https://arxiv.org/pdf/2205.12446
@@ -94,7 +92,7 @@ capability:
       sentence"; "we focus on speech recognition, speech language identification and speech-text retrieval"; retrieval
       keys are "collected from the FLEURS test set"; Table 9 gives each language''s ISO 639-3 code, listing "Filipino
       (Tagalog)" as tgl'
-    accessed: '2026-11-03'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 670824d0dfaa98f56b7f774116d5d70bdeb7990ce031ebe690e9c86c6053283f
   pivot_languages: [eng]

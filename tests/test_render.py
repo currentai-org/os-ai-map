@@ -93,3 +93,43 @@ def test_the_order_tolerates_a_payload_that_names_a_category_sources_no_longer_h
     literal = _build_straplines_literal(order, cats)
     assert '"kept": "still here"' in literal
     assert "renamed-away" not in literal
+
+
+# --- the depth ladder's unresolved sets (R-2026-11-08-a) ---------------------------------------
+
+
+def _helpers_namespace(data: dict) -> dict:
+    """The notebook's `helpers` cell's inner functions, executed against `data` with stub styles,
+    so a row can be rendered without running marimo."""
+    from build import render
+
+    tree = ast.parse(render.NB)
+    cell = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "helpers")
+    inner = [n for n in cell.body if isinstance(n, ast.FunctionDef)]
+    ns = {"_html": html, "C": _StubStyle(), "F": _StubStyle(), "DATA": data}
+    exec(compile(ast.Module(body=inner, type_ignores=[]), "helpers", "exec"), ns)
+    return ns
+
+
+class _StubStyle(dict):
+    def __missing__(self, key):
+        return "x"
+
+
+def test_an_unresolved_set_reads_unresolved_not_na():
+    ns = _helpers_namespace({})
+    cap = {"score": None, "basis": "evaluation_depth",
+           "depth": {"status": "unresolved", "unresolved_reason_text": "no approved measurement model"}}
+    cell = ns["capability_cell"](cap)
+    assert ">unresolved</span>" in cell and 'title="no approved measurement model"' in cell
+    assert "n/a" not in cell
+    # A banded set draws its bars, and an abstention elsewhere keeps the generic n/a.
+    assert "unresolved" not in ns["capability_cell"]({"score": 3, "depth": {"status": "provisional"}})
+    assert "n/a" in ns["capability_cell"]({"score": None, "basis": "n/a"})
+
+
+def test_the_eval_sets_summary_names_evaluation_depth():
+    data = {"categories": {"evals": {"products": [{"type": "dataset",
+                                                   "capability": {"basis": "evaluation_depth"}}]}}}
+    summary = _helpers_namespace(data)["_cap_summary"]("evals")
+    assert summary.startswith("evaluation depth") and "unresolved" in summary

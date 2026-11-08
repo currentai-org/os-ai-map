@@ -2487,3 +2487,77 @@ rulings:
     executor: agent
     lands_in: [docs/sweeps/2026-11-03-depth-calibration-full-roster.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/978']
+
+  - id: R-2026-11-07-b
+    date: 2026-11-07
+    by: ccerv1
+    venue: pr-review
+    refs: ["#978", "#953", "#948", language_specific_eval_sets, language_specific_datasets,
+      R-2026-11-07-a]
+    question: >-
+      The depth ladder can publish now with the 22 calibrated evaluation sets as the new category's
+      membership, or wait until the boundary between language-specific evaluation sets and general
+      benchmarks is settled. Which, and on what conditions?
+    ruling: >-
+      Publish with the interim membership, under three safeguards. Freeze the initial membership to
+      the 22 reviewed evaluation sets, and document that the category boundary remains provisional.
+      Publish the complete score-change diff, with face-value bands, corroborated bands, evidence
+      statuses and the companion figures D8 requires. Make sure the migration preserves the
+      suite/member deduplication rule and does not double-count products in stage calculations.
+    reasoning: >-
+      The calibration settled the bands for these 22; the open boundary question concerns which
+      other sets join them, and it need not hold back the ones already measured.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_eval_sets.yaml, build/depth_ladder.py,
+      docs/reference/capability.md, docs/sweeps/2026-11-08-depth-ladder-publication.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-a
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, fleurs, lahaja, vmlu, indonlu, darijammlu,
+      R-2026-11-07-b]
+    question: >-
+      Five of the 22 sets have no band that stands: FLEURS and Lahaja (speech, no measurement
+      model), VMLU (official split size unstated), IndoNLU (provenance unknown) and DarijaMMLU
+      (review scope unstated). Should they (a) publish a null capability with an unresolved status
+      and reason, or (b) keep their interim scores until the evidence is filled? And how are the
+      five comparisons from language_specific_datasets to sets leaving the category, and the
+      migrated category's stage counting, to be handled?
+    ruling: >-
+      Adopt (a). The five publish capability.score null with an unresolved status and reason, and
+      do not retain their interim capability scores. They stay visible in the category, and their
+      adoption-only overall scores are labeled explicitly. An unresolved capability must not be read
+      as zero or as evidence of capability maturity, and the PR shows exactly how the five affect
+      rankings and stage calculations. Re-point the five cross-category comparisons only where a
+      defensible, cited comparison exists against a product remaining in language_specific_datasets;
+      do not invent a relative ranking to satisfy validation, and where no suitable peer can be
+      established, handle that explicitly. Test the actual stage-counting behavior in the migrated
+      category, not only the absence of part_of links.
+    reasoning: >-
+      An interim score would publish a band the method says it cannot establish. Labeling the
+      adoption-only overall keeps the products visible without passing adoption off as capability.
+    status: in-force
+    executor: agent
+    lands_in: [build/depth_ladder.py, build/serialize.py, docs/reference/capability.md,
+      docs/reference/gap-analysis.md, tests/test_depth_ladder.py,
+      docs/sweeps/2026-11-08-depth-ladder-publication.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-b
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-11-02-b, R-2026-11-02-k]
+    question: >-
+      A depth-ladder band is computed from recorded evidence, not read from a benchmark or judged
+      from features. Does it get its own capability.basis value?
+    ruling: >-
+      Yes: evaluation_depth becomes the fifth basis value. Document the distinction between
+      provisional statistical precision, corroborated depth and the published capability band.
+    status: in-force
+    executor: agent
+    lands_in: [docs/schemas/score.schema.json, docs/reference/capability.md, build/depth_ladder.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']

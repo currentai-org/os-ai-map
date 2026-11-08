@@ -59,55 +59,54 @@ adoption:
     http_status: 200
     content_sha256: e28922efe3c48d9b7036230389356ee0fb9f7fa80df55262f7f057c115fe57b7
 capability:
-  score: 5
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for multilingual translation evaluation
-  value: Human-translated benchmark of 997 dev and 1,012 devtest sentences in each of 230 language varieties,
-    documented in the FLORES-101 and NLLB papers, on which FLEURS and Belebele are built and against which
-    NLLB-200 was evaluated.
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 188 of 215 measured, across 1 task. Face value 3; best original band 3.'
   confidence: medium
-  note: FLORES+ is the reference translation benchmark for low-resource languages, with the same human-translated
-    sentences in 230 varieties and documentation in the FLORES and NLLB papers. Meta evaluated NLLB-200 on
-    it, and other benchmarks reuse its sentences, among them FLEURS for speech and Belebele for reading comprehension.
-  last_verified: '2026-09-24'
+  note: In the typical language FLORES+ targets, its deepest test has four hundred to sixteen hundred items
+    that count toward depth. Of its 215 target languages, 188 have a countable test. An item count says how
+    much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
     shows: '"For each language, the dataset has 997 sentences for the dev split and 1012 sentences for the devtest
       split"; "The data consists of translations primarily from English into over 200 language varieties"; "The separate
       blind test set, originally developed by Meta, is not managed by OLDI and not part of this repository"; "Currently
       230 language varieties"; the coverage table marks Dargwa, Udmurt and Southern Uzbek "dev only"'
-    accessed: '2026-11-01'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 930bd24e2c381e335bcfe9a1f6d0cff88a28fd040d891cebef1f629dbb52d41f
+    content_sha256: 484ef4c608381fcabc17ad5a95bc1373d0f90a31ee1c5d38f765b3f9cbf2b481
   - url: https://arxiv.org/abs/2205.12446
     shows: FLEURS "is an n-way parallel speech dataset in 102 languages built on top of the machine translation
       FLoRes-101 benchmark".
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 5677a7c4030171b138ba33fd90ab63034b24e816aea4a7febd99038f4b13dafe
+    content_sha256: d1cdb917c2cd2e8cce34e8f10e132fab3e69b3d24a7447a56b09e49ee6581847
   - url: https://raw.githubusercontent.com/facebookresearch/belebele/main/README.md
     shows: '"Each question has four multiple-choice answers and is linked to a short passage from the FLORES-200
       dataset."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: f7a9aead9af9056c96837eeb8eafa301ec37a4512e52520f1c3d7903b69ce145
   - url: https://arxiv.org/abs/2207.04672
     shows: '"we evaluated the performance of over 40,000 different translation directions using a human-translated
       benchmark, Flores-200".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: eb8f68814e4e67675fb2a90e01e2a25931b64d3bf674fc6223dee700c46e8b48
+    content_sha256: 4807d538486a3ff6cddf0be6c796025e47074b13a857f86101059b7c3d3c3969
   - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
     shows: '"FLORES-200 has several languages which were not translated from English. Specifically, several languages
       were translated from Spanish, French, Russian and Modern Standard Arabic."; the README''s language table lists
       each FLORES-200 code, ace_Arab to zul_Latn, and its FLORES-101 map pairs "arb_Arab | ara"'
-    accessed: '2026-11-01'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
   - url: https://aclanthology.org/2022.tacl-1.30.pdf
     shows: '"The dev set is meant to be used for hyperparameter tuning. The devtest is meant to be used for testing
       purposes during the development phase. The test set will not be released"'
-    accessed: '2026-11-01'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: f51863eaed9c58c408e917d6c1e6d7c02df0c5d343280eb56741c84dd2e4637d
   pivot_languages: [eng]
