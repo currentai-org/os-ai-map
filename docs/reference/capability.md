@@ -782,7 +782,7 @@ category's usual weighted mean over the axes that have a value, which leaves ado
 row carries `overall_basis: adoption_only`, which the payload's `descriptions` spell out. Every other row carries
 `adoption_and_capability`. An unresolved row also takes no tier, cannot be `mature`, and is left
 out of the stage computation, so an adoption-only score cannot lift the category's stage
-(`_stage_score` in `build/serialize.py`). Without that exclusion FLEURS, open with adoption 4, would
+(`_stage_score` in `build/serialize.py`). The map's notebook shows its capability as "unresolved", with the reason on hover, never as the "n/a" an abstention shows. Without that exclusion FLEURS, open with adoption 4, would
 lift the category from stage 2 to 3. A null capability elsewhere on the map, an abstention with no
 `depth` block, counts on adoption alone as it always has.
 

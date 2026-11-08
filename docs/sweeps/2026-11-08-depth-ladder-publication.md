@@ -125,11 +125,22 @@ and a reason, and no interim score (R-2026-11-08-a). Each stays in the category 
 score labeled `overall_basis: adoption_only`. It takes no tier, is never `mature`, and is left out of
 the stage computation.
 
-Their effect on rankings: an adoption-only overall sorts beside the resolved rows. FLEURS, open
-with adoption 4, has an overall of 4.0 and sits second of 22, above every resolved set but
-ArabicMMLU. DarijaMMLU's 2.0 sits seventeenth, above AfroBench and AmericasNLP. IndoNLU, Lahaja and
-VMLU are at 1.0, tied with AfroBench and AmericasNLP. The label marks these scores as adoption alone, but the sort order does not.
-Whether an unresolved row should sort after the resolved ones is left for review.
+Their effect on rankings. Ordered by overall score, an adoption-only overall would sit among the
+blended ones:
+- FLEURS, open with adoption 4, has an overall of 4.0 and would sit second of 22, above every
+  resolved set but ArabicMMLU.
+- DarijaMMLU's 2.0 would sit seventeenth, above AfroBench and AmericasNLP.
+- IndoNLU, Lahaja and VMLU, at 1.0, tie with AfroBench and AmericasNLP.
+
+Three things keep that from reading as a capability result:
+- Every row says what its overall score rests on in `overall_basis`, and an unresolved row has
+  `adoption_only` and no tier. A consumer that ranks by overall score can tell those rows apart.
+- The map's notebook does not rank by overall score at all. It sorts each category by openness,
+  then adoption, then capability, and it does not show the overall score.
+- In the notebook, an unresolved set's capability cell now reads "unresolved", with the reason on
+  hover, instead of the generic "n/a", and the category's scoring note describes evaluation depth.
+  Under the notebook's sort, an unresolved capability sorts below every banded one at equal
+  openness and adoption, so it can never place a set above a banded peer on capability.
 
 Their effect on stages: the category is at stage 2, gaps `capability` and `adoption`. Its best open
 resolved rows are Belebele and INCLUDE, both at 3.0 overall. If FLEURS counted on adoption alone, it
