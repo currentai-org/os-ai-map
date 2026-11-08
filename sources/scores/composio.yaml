@@ -1,36 +1,42 @@
 product: composio
 openness:
-  score: 4
-  class: open_core
+  score: 1
+  class: closed
   components:
     license:
-    - name: MIT
-      detail: OSI, SDK/core public on GitHub
+    - name: Proprietary
+      detail: the hosted platform's code is not published
     source:
-      value: public
-      detail: Python + TypeScript SDKs
-    core-gated:
-      value: gated
-      detail: the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only
-        and toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev
-        behind a COMPOSIO_API_KEY with no self-host option documented
+      value: closed
+      detail: toolkit execution, the app catalog and managed authentication run on Composio Cloud, and no
+        repository publishes them
     context:
       managed-tier:
         value: Composio hosted platform + Rube MCP server
         detail: auth, hosted tool execution) is the commercial layer
         raw: Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial
           layer
+      clients:
+        value: MIT
+        detail: the ComposioHQ/composio monorepo publishes the Python and TypeScript SDKs, a CLI and provider
+          adapters, all clients of the hosted platform
+      deployment:
+        value: Composio Cloud by default
+        detail: a private VPC or a self-hosted deployment with Helm support is offered as an Enterprise
+          arrangement, not as published source
   confidence: high
-  note: Composio's SDKs and provider adapters are MIT-licensed and public, but the toolkit-execution engine,
-    the app catalog and OAuth management run only on Composio's own servers, with no self-hosting option
-    documented. The published tree contains no server or auth service, and every path to running a tool
-    requires a hosted API key, which is what makes this open core rather than open source.
-  raw: license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio
-    hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the
-    execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution
-    the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev behind a COMPOSIO_API_KEY
-    with no self-host option documented)
-  last_verified: '2026-09-29'
+  note: Composio's tool execution, app catalog and credential management run on Composio's own servers,
+    and their code is not published. What the company publishes under the MIT license is the SDKs, command-line
+    tool and framework adapters that call that hosted platform, which show how to use the service without
+    letting anyone run it. Enterprise customers can arrange a private or self-hosted deployment, but that
+    is a commercial agreement, not published source.
+  raw: license:Proprietary(the hosted platform's code is not published);source:closed(toolkit execution,
+    the app catalog and managed authentication run on Composio Cloud, and no repository publishes them);managed-tier:Composio
+    hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;clients:MIT(the
+    ComposioHQ/composio monorepo publishes the Python and TypeScript SDKs, a CLI and provider adapters,
+    all clients of the hosted platform);deployment:Composio Cloud by default(a private VPC or a self-hosted
+    deployment with Helm support is offered as an Enterprise arrangement, not as published source)
+  last_verified: '2026-11-08'
   sources:
   - url: https://github.com/ComposioHQ/composio
     shows: MIT LICENSE, public SDK source, 1000+ toolkits, ~28.6k stars
@@ -39,13 +45,9 @@ openness:
     shows: The README says "This is the Composio SDK monorepo. It contains:" and lists the TypeScript SDK,
       the Python SDK, a CLI and provider adapters; it says "Grab a `COMPOSIO_API_KEY` from the [dashboard](https://dashboard.composio.dev/settings)
       first." and ends "MIT. See [LICENSE](LICENSE)."
-    accessed: '2026-09-29'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 4dda711b7fb9d50ce6bc7bbfb86a1e9b04b816e8b89ee8b11e7139211816cf34
-    establishes:
-    - license
-    - source
-    - core-gated
+    content_sha256: 740d677511897313d5342b0d4cf7ff2bf84c54bf0ce08ad7b4563661ae25f3e6
   - url: https://api.github.com/repos/ComposioHQ/composio/contents/ts/packages
     shows: 'The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core,
       experimental, json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The
@@ -54,34 +56,37 @@ openness:
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239
-    establishes:
-    - core-gated
   - url: https://docs.composio.dev/docs/welcome
-    shows: 'The docs welcome page describes the product as "Give your agents tools, managed authentication,
-      and secure execution." Searched the body for self-host, self host, on-prem and on prem: none.'
-    accessed: '2026-09-29'
+    shows: The docs home, served at docs.composio.dev/docs, describes the product as "Give your agents tools,
+      managed authentication, and secure execution." and says "Composio stores and refreshes each user's
+      credentials."
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: d31362b8a0b06ff033fad6e0d04fc8d050b49a3ab30c5e2d996b67dedfb732b1
+    content_sha256: 0a5010d60fe4d61ce408db695256e55c84b06014a36c2b917b3c710e8ddc134d
     establishes:
-    - core-gated
+    - source
   - url: https://api.github.com/repos/ComposioHQ/composio
     shows: 'Repo metadata: license spdx_id MIT, default branch next, 29,636 stars, not archived. The published
-      tree is the SDK monorepo - python/ and ts/ - which is what `source: public` refers to; it is not the
-      tool-execution platform, which is not published anywhere.'
+      tree is the SDK monorepo, python/ and ts/.'
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: 861c607a1a550bb533a6cd236f543b6d800a2ca473f55e59532d66c4930c1a52
-    establishes:
-    - license
-    - source
   - url: https://raw.githubusercontent.com/ComposioHQ/composio/next/LICENSE
-    accessed: '2026-09-29'
-    establishes:
-    - license
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 558da505ef85e06792d746b50b03845a7af36ac75eb2eb94d388cda598c6e9f9
     shows: The repository LICENSE is the plain MIT License text headed "MIT License" and "Copyright (c)
       2025 Sampark Inc.".
+  - url: https://composio.dev/enterprise
+    shows: 'Under "Deploy on your terms": "Use Composio Cloud, or arrange a private VPC or self-hosted deployment
+      for your enterprise requirements." Composio Cloud is "The default hosted deployment"; self-hosted
+      is "An Enterprise arrangement in your environment, with Helm support."'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: b85891113c78af3af05e84a8ce0300c536dd5101119e47f774b9d6da8a896db4
+    establishes:
+    - license
+    - source
 adoption:
   level: 3
   reach: 100K-1M
