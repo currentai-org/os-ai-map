@@ -1,65 +1,130 @@
 product: guardrails-ai
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
     - name: Apache-2.0
-      detail: OSI) for the framework
-      raw: Apache-2.0(OSI) for the framework
+      detail: OSI, one root LICENSE for the whole guardrails repository
     source:
       value: public
     core-gated:
-      value: gated
+      value: ungated
+      detail: no enterprise directory or license-key module in the repository tree; the guardrails-api server
+        is an optional extra the library runs without, and an optional dependency does not gate
     context:
       hub:
         value: Guardrails Hub validator registry
       commercial:
-        value: hosted/enterprise tier
+        value: Snowglobe
+        detail: a separate simulation product; the README announces the end of hosted remote validator inference
+      optional-server:
+        value: guardrails-api
+        detail: the REST server behind guardrails start, under a license adapted from the Elastic License
+          that forbids offering it to third parties as a hosted service; installed only through the optional
+          api extra, so under the bundled-part rule it does not govern
   confidence: medium
-  note: 'Guardrails AI''s framework and validator hub are unrestricted: one Apache-2.0 license covers the
-    repository, and the once token-gated validator registry has moved to public PyPI. But guardrails-api,
-    the FastAPI server that `guardrails start` launches, ships under an Elastic License adaptation that
-    forbids offering the software to third parties as a hosted service, which is what keeps this at open
-    core rather than open source.'
-  raw: license:Apache-2.0(OSI) for the framework;source:public;hub:Guardrails Hub validator registry;commercial:hosted/enterprise
-    tier;core-gated:gated
+  note: Guardrails AI's framework is Apache 2.0 across its whole repository, and its validators install
+    from public PyPI without a token. The guardrails-api server behind `guardrails start` carries a license,
+    adapted from Elastic's, that forbids offering it to others as a hosted service, but it is an optional
+    install the library does not need, so it does not limit the framework. What the company sells, the Snowglobe
+    simulation product, is separate from the open-source code.
+  raw: license:Apache-2.0(OSI, one root LICENSE for the whole guardrails repository);source:public;core-gated:ungated(no
+    enterprise directory or license-key module in the repository tree; the guardrails-api server is an optional
+    extra the library runs without, and an optional dependency does not gate);hub:Guardrails Hub validator
+    registry;commercial:Snowglobe(a separate simulation product; the README announces the end of hosted
+    remote validator inference);optional-server:guardrails-api(the REST server behind guardrails start,
+    under a license adapted from the Elastic License that forbids offering it to third parties as a hosted
+    service; installed only through the optional api extra, so under the bundled-part rule it does not govern)
+  last_verified: '2026-11-08'
   sources:
-  - url: https://github.com/guardrails-ai/guardrails
-    shows: Apache-2.0 framework; ~7.1k stars; Guardrails Hub validators; commercial offerings
-    accessed: '2026-06-29'
-  - url: https://api.github.com/repos/guardrails-ai/guardrails/git/trees/main?recursive=1
-    shows: Full untruncated recursive tree, 661 entries. One license path, the root LICENSE. No ee/, enterprise/,
-      commercial/ or proprietary/ directory, and no license-key module. server_ci/ carries a Dockerfile,
-      fastapi-entry.sh and compose scripts for running the server yourself.
-    accessed: '2026-08-12'
+  - url: https://raw.githubusercontent.com/guardrails-ai/guardrails/main/LICENSE
+    shows: The repository's one LICENSE file is the "Apache License", "Version 2.0, January 2004".
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 25bc6170f996e51ebca3d6ddc356cbf560bf89bb60a125826c73986349a418fa
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/guardrails-ai/json
+    shows: 'The guardrails-ai 0.11.0 metadata gives the license as Apache-2.0 and lists the server only
+      under an optional extra: guardrails-api<0.5.0,>=0.4.3; extra == "api".'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 9e3b35e6eb3c5d3ae517075bcd35e6c8af796c8d0e82c0fa6d9dbb16ca0ca314
+    establishes:
+    - license
+    - core-gated
+  - url: https://api.github.com/repos/guardrails-ai/guardrails/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree of main, 662 entries, read from the API. One license path, the
+      root LICENSE, and no ee/, enterprise, commercial, proprietary, pro/, license-key, entitlement or activation
+      path.
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: b6274c9e0ff4015feaeb958aecc910aa9a3d945751f23a007774b2f0fc67447b
     establishes:
     - source
+    - core-gated
+  - url: https://data.jsdelivr.com/v1/packages/gh/guardrails-ai/guardrails@main?structure=flat
+    shows: jsDelivr's flat file listing of the main branch, 664 files under guardrails/, tests/, docs/,
+      server_ci/ and other folders. /LICENSE is the only license path, and no path contains ee/, enterprise,
+      commercial, proprietary, license_key, entitlement or activation.
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: f95600c1472176e5d498833d96b523509c877c68a751f925386e7b9488c6c8e8
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/guardrails-ai/guardrails/main/README.md
+    shows: The README says "Guardrails runs Input/Output Guards in your application" and, separately, "Guardrails
+      can be set up as a standalone service served by Flask with `guardrails start`". Its news section says
+      "Guardrails is discontinuing its hosted remote inferencing".
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 6031353db4bfd3cd632034193b2958ccdf940943b8dbc33ee04aeee7c3a99c0e
+    establishes:
     - core-gated
   - url: https://raw.githubusercontent.com/guardrails-ai/guardrails/main/docs/migration_guides/hub-to-public-pypi.md
     shows: The token-gated validator registry is gone. "As of Guardrails 0.11.0, Guardrails-AI-owned validators
       have moved from the private Guardrails registry (pypi.guardrailsai.com, installed via guardrails hub
       install) to public PyPI." The change table reads "Private registry pypi.guardrailsai.com (token required)"
       -> "Public PyPI (no token)".
-    accessed: '2026-08-12'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: c335d818b052fd514021fa010d80c4524a4d0f94e8d4fcfeb325e91c67517133
     establishes:
     - core-gated
+  - url: https://guardrailsai.com/guardrailsoss
+    shows: The framework page is headed "#1 Open Source Guardrails Framework" and says "Run it in your cloud
+      or fully on-prem." The site's Product menu lists two products, Snowglobe and Guardrails.
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: f410f8c6c9199e6ba6928961f391ab37bb635e78f01a96926ce6448adfaf584e
+    establishes:
+    - core-gated
+  - url: https://guardrailsai.com/blog/guardrails-ai-joins-harvey
+    shows: The acquisition post says the team "created the first open-source AI guardrails" and "They also
+      created Snowglobe, a simulation environment where synthetic users stress-test agent behavior".
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: dcd945dad8b4943a5446bb9bbf181b8bb39c9d2db9e432e360f41bfd88a4a548
+    establishes:
+    - core-gated
+  - url: https://guardrailsai.com/snowglobe
+    shows: Snowglobe has its own product page, with a "Start Simulating Now" sign-up, a sales-call link
+      and the question "How is Snowglobe priced?".
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: c52bed18f8d21ff41d72b1a1e1c817e0a61bd8179de4005002e1aa4d4c147444
+    establishes:
+    - core-gated
   - url: https://raw.githubusercontent.com/guardrails-ai/guardrails-api/main/LICENSE
-    shows: The server package is not Apache-2.0. "THE FOLLOWING LICENSE HAS BEEN ADOPTED FROM THE ELSSTIC
+    shows: 'The server package is not Apache-2.0: "THE FOLLOWING LICENSE HAS BEEN ADOPTED FROM THE ELSSTIC
       LICENSE" [sic], with the limitation "You may not provide the software to third parties as a hosted
       or managed service, where the service provides users with access to any substantial set of the features
-      or functionality of the software." The repo describes itself as the "FastAPI server for hosting Guardrails
-      AI in your own environment" and its 149-entry tree contains no license-key module, so the source is
-      published in full - the restriction is on redistribution as a service, not on what ships.
-    accessed: '2026-08-12'
+      or functionality of the software."'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 552b98bc84235d75a10f486ce1b071777dd6d0e2ce12457bc7ae2f82f0a7f23b
-    establishes:
-    - license
 adoption:
   level: 2
   reach: 1K-10K stars
