@@ -794,6 +794,24 @@ is the smaller cost: an abstract page cited for a table or a figure it does not 
 that is unfalsifiable as recorded. `build/check_citations.py` gates it, on the record's own words
 rather than on a fetch, so it is free and runs per pull request.
 
+### Citing a file inside an archive
+
+Some terms are published only as a file inside a downloadable archive: the Qualcomm AI Runtime
+SDK states its license in a `LICENSE.pdf` inside a 2.6 GB zip. That citation is accepted
+(R-2026-11-08-n) in one form. `url` is the archive's download URL, and `shows` carries the exact
+member path, the member's SHA-256, the quoted text, and a one-line extraction procedure (for a
+zip, the byte ranges of the central directory and of the member, read with HTTP range requests,
+then inflated). `http_status` is what the range read returned, normally 206.
+
+Such a source carries no `content_sha256`, because that field is the digest of the whole response
+body: `build/fetch_source.py` cannot take it without downloading the archive, and `check_refetch`
+would then download it again on every sampled run. The member digest in `shows` stands in for it,
+and a re-check repeats the extraction and compares that digest. Lacking a digest, the source is
+listed by name in `sources/allowlists/undigested_sources.txt`, `check_refetch` never samples it,
+and `build/reverify.py` cannot confirm it. The digest gate in `check_verification` has no
+exemption for it either, so an axis cannot be dated on an archive source read on or after the
+claimed date without a `DIGEST_EXEMPT` entry.
+
 ## The gates, and why they ratchet
 
 Every failure mode this project has actually hit gets a mechanism, not a note. Cheap ones

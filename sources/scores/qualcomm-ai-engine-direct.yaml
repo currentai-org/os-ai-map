@@ -16,10 +16,10 @@ openness:
         detail: qualcomm/qai-appbuilder, formerly quic/ai-engine-direct-helper -- a convenience API layer
           that requires the proprietary SDK libraries
   confidence: high
-  note: Qualcomm publishes no source for the QNN/Qualcomm AI Runtime SDK; it ships only as an EULA-gated
-    binary from the Qualcomm Software Center. A BSD-3-Clause convenience wrapper, qai-appbuilder (formerly
-    ai-engine-direct-helper), still requires libraries from that same proprietary SDK, so it does not open
-    the engine underneath.
+  note: Qualcomm publishes no source for the Qualcomm AI Runtime SDK. It is a free download, but its AI
+    Stack License only lets developers use it to build their own applications, pass it on in object code
+    inside them, and never reverse engineer it. A BSD-3-Clause convenience wrapper, qai-appbuilder (formerly
+    ai-engine-direct-helper), still requires libraries from that SDK, so it does not open the engine underneath.
   raw: source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed as
     a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license
     to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly
@@ -41,6 +41,27 @@ openness:
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: e0a3c0d0547d1ba10c0733b575a5253a5bd6a55661f72fd36f68e84a4d72ea46
+  - url: https://softwarecenter.qualcomm.com/api/download/software/sdks/Qualcomm_AI_Runtime_Community/All/2.50.0.260828/v2.50.0.260828.zip
+    shows: 'Archive member qairt/2.50.0.260828/LICENSE.pdf (sha256 ec1dccfdcba5c6e64126e84199b8362bf4999107bfa567ebe831dbb4c461692b),
+      the "AI Stack License": a "non-exclusive, non-transferable, revocable, limited royalty-and-fee-free
+      license" to "use and copy the Software solely to develop Your software applications" and "distribute
+      and sublicense the Software solely in object code format and as incorporated in Your software application";
+      licensees may not "reverse engineer, reverse assemble, decompile or disassemble the Software delivered
+      in object code". The central directory lists C/C++ source only under examples/ and share/, and the
+      runtime as prebuilt libraries such as lib/x86_64-linux-clang/libQnnHtp.so. Extraction: range-read
+      the central directory (bytes 2599599446-2601473166), then member bytes 2599321166-2599457208; raw-inflate,
+      check the CRC-32, pdftotext.'
+    accessed: '2026-11-08'
+    http_status: 206
+    establishes:
+    - source
+    - license
+  - url: https://dragonwingdocs.qualcomm.com/Key-Documents/AI-Developer-Workflow/topic/qairt-install.md
+    shows: Qualcomm's install page lists "Direct Download" of the v2.50.0.260828.zip SDK archive with "No
+      prerequisites for download".
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: ad4ceef60cb965b0a99507bd04842109430010daee63532f833ca99b3d9ed7d9
 adoption:
   level: 4
   reach: null
