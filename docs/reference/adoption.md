@@ -598,10 +598,14 @@ it does not make the claim automatic, it makes it falsifiable.
   membership failure. **An SDK covering N products may not be attributed wholly to one** — the
   rule is in "When a re-read may re-band" above, along with the transitive-dependency case beside
   it.
-- **OpenRouter rankings** — the only true API-channel signal, via
-  `/api/v1/datasets/rankings-daily`. Two limits: it returns the top 50 models per day, and its
-  `hugging_face_id` bridge is empty for exactly the closed and API-first models that need it
-  most. `mistral-large`'s three OpenRouter entries all carry an empty id.
+- **OpenRouter rankings** — usage through one API router, via
+  `/api/v1/datasets/rankings-daily`. It is not routed: the only OpenRouter table in the warehouse
+  is the model catalog, which feeds candidate enrichment, and score files cite the rankings page by hand.
+  Token share is relative, with no absolute scale, so it corroborates a band rather than setting
+  one (R-2026-11-08-o, the reasoning of R-2026-10-08-i), and no collector is requested. Two further
+  limits: it returns the top 50 models per day, and its `hugging_face_id` bridge is empty for
+  exactly the closed and API-first models that need it most. `mistral-large`'s three OpenRouter
+  entries all carry an empty id.
 - **Lifetime counters: GitHub release-asset downloads and Docker Hub pulls** — both are lifetime
   totals with no window, so a monthly figure has to be an increment between readings.
   `sources/snapshots/asset_counters.csv` holds one raw reading per counter per weekly refresh, and

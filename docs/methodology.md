@@ -55,7 +55,7 @@ We grade each product on three axes, each answering a different question:
 - How used is it? (adoption)
 - How good is it? (capability)
 
-The grading is deliberately multi-source. Each axis pulls from a different family (adoption from registries, OpenRouter, and trackers; capability from benchmark leaderboards and papers; openness from primary vendor and repository sources), so no single source determines a product's standing.
+The grading is deliberately multi-source. Each axis pulls from a different family (adoption from registries, download and traffic trackers, and cited usage pages; capability from benchmark leaderboards and papers; openness from primary vendor and repository sources), so no single source determines a product's standing.
 
 Every value also records what the source showed and when we accessed it. Across the scored set this comes to {n_citations} primary citations spanning {n_domains} distinct source domains. We excluded any product we could not verify against a primary source rather than estimating it. The result is sourced and auditable: every value is citation-backed and checkable against its primary source. The scores themselves are editorial judgments rather than the output of a deterministic formula, so this is an open trail to follow, not an independently reproducible computation.
 
@@ -83,7 +83,7 @@ MOF and the OSI's Open Source AI Definition are both binary — a release is ope
 
 Adoption is graded 1–5 and measures real usage (downloads, active users, and deployments) rather than repository popularity. GitHub stars are treated as a weak last-resort signal and never raise a product above level 3.
 
-The sources differ by product type. For repositories we use GitHub stars, forks, and developer activity; for models and datasets, Hugging Face downloads and likes; for packages, registry download statistics (PyPI via pypistats.org, pepy.tech, and pypi.org, together with npm). Relative usage across models is estimated from OpenRouter's per-model token-share leaderboard. For the large closed consumer surfaces, where first-party usage figures are unavailable, we rely on traffic and monthly-active-user trackers such as Business of Apps and DemandSage.
+The sources differ by product type. For repositories we use GitHub stars, forks, and developer activity; for models and datasets, Hugging Face downloads and likes; for packages, registry download statistics (PyPI via pypistats.org, pepy.tech, and pypi.org, together with npm). OpenRouter's public rankings, which show each model's share of the tokens routed through it, are cited by hand as corroborating context for some models; because that share is relative and has no absolute scale, it does not set an adoption band on its own. For the large closed consumer surfaces, where first-party usage figures are unavailable, we rely on traffic and monthly-active-user trackers such as Business of Apps and DemandSage.
 
 PyPI changed how it counts downloads on 24 August 2026: from that day only requests for distribution files count, so metadata fetches no longer add to the figures. Package download counts fell sharply at that date, and the drop reflects a change in measurement, not in use. We re-baselined the PyPI-measured adoption bands once against the post-change counts, in October 2026, and left the band thresholds unchanged.
 
