@@ -77351,7 +77351,7 @@
             "class": "closed",
             "components": "source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed as a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly quic/ai-engine-direct-helper -- a convenience API layer that requires the proprietary SDK libraries)",
             "confidence": "high",
-            "note": "Qualcomm publishes no source for the QNN/Qualcomm AI Runtime SDK; it ships only as an EULA-gated binary from the Qualcomm Software Center. A BSD-3-Clause convenience wrapper, qai-appbuilder (formerly ai-engine-direct-helper), still requires libraries from that same proprietary SDK, so it does not open the engine underneath.",
+            "note": "Qualcomm publishes no source for the Qualcomm AI Runtime SDK. It is a free download, but its AI Stack License only lets developers use it to build their own applications, pass it on in object code inside them, and never reverse engineer it. A BSD-3-Clause convenience wrapper, qai-appbuilder (formerly ai-engine-direct-helper), still requires libraries from that SDK, so it does not open the engine underneath.",
             "sources": [
               {
                 "url": "https://github.com/qualcomm/qai-appbuilder",
@@ -77370,6 +77370,23 @@
                 "accessed": "2026-08-09",
                 "http_status": 200,
                 "content_sha256": "e0a3c0d0547d1ba10c0733b575a5253a5bd6a55661f72fd36f68e84a4d72ea46"
+              },
+              {
+                "url": "https://softwarecenter.qualcomm.com/api/download/software/sdks/Qualcomm_AI_Runtime_Community/All/2.50.0.260828/v2.50.0.260828.zip",
+                "shows": "Archive member qairt/2.50.0.260828/LICENSE.pdf (sha256 ec1dccfdcba5c6e64126e84199b8362bf4999107bfa567ebe831dbb4c461692b), the \"AI Stack License\": a \"non-exclusive, non-transferable, revocable, limited royalty-and-fee-free license\" to \"use and copy the Software solely to develop Your software applications\" and \"distribute and sublicense the Software solely in object code format and as incorporated in Your software application\"; licensees may not \"reverse engineer, reverse assemble, decompile or disassemble the Software delivered in object code\". The central directory lists C/C++ source only under examples/ and share/, and the runtime as prebuilt libraries such as lib/x86_64-linux-clang/libQnnHtp.so. Extraction: range-read the central directory (bytes 2599599446-2601473166), then member bytes 2599321166-2599457208; raw-inflate, check the CRC-32, pdftotext.",
+                "accessed": "2026-11-08",
+                "http_status": 206,
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://dragonwingdocs.qualcomm.com/Key-Documents/AI-Developer-Workflow/topic/qairt-install.md",
+                "shows": "Qualcomm's install page lists \"Direct Download\" of the v2.50.0.260828.zip SDK archive with \"No prerequisites for download\".",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "ad4ceef60cb965b0a99507bd04842109430010daee63532f833ca99b3d9ed7d9"
               }
             ],
             "bucket": "closed"
@@ -77444,12 +77461,12 @@
             "verification_holds": [
               {
                 "axis": "openness",
-                "since": "2026-09-29",
-                "reason": "No source dated in this run states the SDK's own source or license terms. The raw README/LICENSE only cover the BSD-3-Clause qai-appbuilder wrapper (components.context.open-wrapper) and show the SDK is a separate download. Would be settled by the Qualcomm AI Runtime SDK EULA or Software Center license page (read by a maintainer with browser access), or by the github.com qai- appbuilder page fetching 200 again. last_verified stays 2026-08-13; value unchanged (score 1, closed)."
+                "since": "2026-11-08",
+                "reason": "The license question is settled: the SDK's own license, LICENSE.pdf inside the public QAIRT 2.50 zip, was read 2026-11-08 under R-2026-11-08-n and is a proprietary AI Stack License (object-code distribution only, no reverse engineering). The axis is not dated only because the repository pages that also establish it, github.com/qualcomm/qai-appbuilder and github.com/quic/ai-engine-direct-helper, returned 403 to every fetch from this environment. Re-reading them dates the axis and releases this hold; dating it with the zip source also needs a DIGEST_EXEMPT entry in build/check_verification.py, since that source has no whole-body digest."
               }
             ]
           },
-          "version_note": "Qualcomm's own documentation and Software Center pages could not be read, so the entry draws on the documentation of the projects that integrate the SDK."
+          "version_note": "The SDK's license was read from the LICENSE.pdf inside Qualcomm's SDK download. Usage and capability draw on the documentation of the projects that integrate the SDK."
         },
         {
           "slug": "vllm",
@@ -85425,7 +85442,7 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public;no-feature-gated-core;implements OpenAI + Anthropic API surfaces; 23 pluggable inference providers;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open: MIT-licensed with the full source public, and nothing in the core is withheld.",
+            "note": "Fully open: MIT-licensed with the full source public, and nothing in the core is withheld. The project homepage calls OGX Apache 2.0 licensed, but the repository's LICENSE file and its package metadata both say MIT, and the LICENSE file is what governs.",
             "sources": [
               {
                 "url": "https://github.com/ogx-ai/ogx",
@@ -85448,6 +85465,33 @@
                 "establishes": [
                   "source"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ogx-ai/ogx/main/LICENSE",
+                "shows": "\"MIT License\" and \"Copyright (c) The OGX Contributors\", followed by the standard MIT grant, \"Permission is hereby granted, free of charge\".",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "9d14df00e94ae382991088334d22674be86da75921525512a6d472a484bca0e1",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ogx-ai/ogx/main/pyproject.toml",
+                "shows": "The package metadata declares license = { \"text\" = \"MIT\" } and the classifier \"License :: OSI Approved :: MIT License\".",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "50a41ddba4ebbb0d26216d3f9ec98ced9fc397969c259d8725d7beb2cdc25a29",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://ogx-ai.github.io/",
+                "shows": "The home page's \"Open source\" section reads \"Apache 2.0 licensed. Contributions welcome.\"",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "27bae23eb12c3f618733edf78fce606ed68d35b1ed83ed495e8933116dbd6437"
               }
             ],
             "bucket": "open"
@@ -85515,8 +85559,8 @@
             "verification_holds": [
               {
                 "axis": "openness",
-                "since": "2026-09-29",
-                "reason": "The project homepage now reads \"Apache 2.0 licensed\" while the recorded license and the warehouse repository row (license_spdx_id MIT) say MIT, and every raw.githubusercontent.com LICENSE/README/pyproject fetch returned 404, so the LICENSE file itself could not be read. Settled by reading the repository LICENSE at a maintainer-reachable URL (or the GitHub license API) and recording whichever license it carries."
+                "since": "2026-11-08",
+                "reason": "The license question is settled: the repository LICENSE file and pyproject.toml, read 2026-11-08, both say MIT, and the LICENSE file governs over the homepage's \"Apache 2.0 licensed\". The axis is not dated only because the repository page github.com/ogx-ai/ogx, which also establishes this axis, returned 403 to every fetch from this environment. Re-reading that page dates the axis and releases this hold."
               }
             ]
           },
@@ -101428,12 +101472,12 @@
           "type": "software",
           "description": "Agent tooling platform providing more than a thousand pre-built tool integrations with managed authentication, context management and a sandboxed execution environment. It handles OAuth flows, API pagination and rate limiting so agent builders do not have to, adds tool search and a sandboxed workbench, and can expose a session's tools as a hosted MCP endpoint.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev behind a COMPOSIO_API_KEY with no self-host option documented)",
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary(the hosted platform's code is not published);source:closed(toolkit execution, the app catalog and managed authentication run on Composio Cloud, and no repository publishes them);managed-tier:Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;clients:MIT(the ComposioHQ/composio monorepo publishes the Python and TypeScript SDKs, a CLI and provider adapters, all clients of the hosted platform);deployment:Composio Cloud by default(a private VPC or a self-hosted deployment with Helm support is offered as an Enterprise arrangement, not as published source)",
             "confidence": "high",
-            "note": "Composio's SDKs and provider adapters are MIT-licensed and public, but the toolkit-execution engine, the app catalog and OAuth management run only on Composio's own servers, with no self-hosting option documented. The published tree contains no server or auth service, and every path to running a tool requires a hosted API key, which is what makes this open core rather than open source.",
-            "last_verified": "2026-09-29",
+            "note": "Composio's tool execution, app catalog and credential management run on Composio's own servers, and their code is not published. What the company publishes under the MIT license is the SDKs, command-line tool and framework adapters that call that hosted platform, which show how to use the service without letting anyone run it. Enterprise customers can arrange a private or self-hosted deployment, but that is a commercial agreement, not published source.",
+            "last_verified": "2026-11-08",
             "sources": [
               {
                 "url": "https://github.com/ComposioHQ/composio",
@@ -101443,58 +101487,54 @@
               {
                 "url": "https://raw.githubusercontent.com/ComposioHQ/composio/next/README.md",
                 "shows": "The README says \"This is the Composio SDK monorepo. It contains:\" and lists the TypeScript SDK, the Python SDK, a CLI and provider adapters; it says \"Grab a `COMPOSIO_API_KEY` from the [dashboard](https://dashboard.composio.dev/settings) first.\" and ends \"MIT. See [LICENSE](LICENSE).\"",
-                "accessed": "2026-09-29",
+                "accessed": "2026-11-08",
                 "http_status": 200,
-                "content_sha256": "4dda711b7fb9d50ce6bc7bbfb86a1e9b04b816e8b89ee8b11e7139211816cf34",
-                "establishes": [
-                  "license",
-                  "source",
-                  "core-gated"
-                ]
+                "content_sha256": "740d677511897313d5342b0d4cf7ff2bf84c54bf0ce08ad7b4563661ae25f3e6"
               },
               {
                 "url": "https://api.github.com/repos/ComposioHQ/composio/contents/ts/packages",
                 "shows": "The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core, experimental, json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The python/ tree is the same shape - composio plus providers. There is no server, no toolkit runtime and no auth service anywhere in the repository, which is the functionality the paid platform holds.",
                 "accessed": "2026-08-12",
                 "http_status": 200,
-                "content_sha256": "f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239",
-                "establishes": [
-                  "core-gated"
-                ]
+                "content_sha256": "f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239"
               },
               {
                 "url": "https://docs.composio.dev/docs/welcome",
-                "shows": "The docs welcome page describes the product as \"Give your agents tools, managed authentication, and secure execution.\" Searched the body for self-host, self host, on-prem and on prem: none.",
-                "accessed": "2026-09-29",
+                "shows": "The docs home, served at docs.composio.dev/docs, describes the product as \"Give your agents tools, managed authentication, and secure execution.\" and says \"Composio stores and refreshes each user's credentials.\"",
+                "accessed": "2026-11-08",
                 "http_status": 200,
-                "content_sha256": "d31362b8a0b06ff033fad6e0d04fc8d050b49a3ab30c5e2d996b67dedfb732b1",
+                "content_sha256": "0a5010d60fe4d61ce408db695256e55c84b06014a36c2b917b3c710e8ddc134d",
                 "establishes": [
-                  "core-gated"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/ComposioHQ/composio",
-                "shows": "Repo metadata: license spdx_id MIT, default branch next, 29,636 stars, not archived. The published tree is the SDK monorepo - python/ and ts/ - which is what `source: public` refers to; it is not the tool-execution platform, which is not published anywhere.",
-                "accessed": "2026-08-12",
-                "http_status": 200,
-                "content_sha256": "861c607a1a550bb533a6cd236f543b6d800a2ca473f55e59532d66c4930c1a52",
-                "establishes": [
-                  "license",
                   "source"
                 ]
               },
               {
+                "url": "https://api.github.com/repos/ComposioHQ/composio",
+                "shows": "Repo metadata: license spdx_id MIT, default branch next, 29,636 stars, not archived. The published tree is the SDK monorepo, python/ and ts/.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "861c607a1a550bb533a6cd236f543b6d800a2ca473f55e59532d66c4930c1a52"
+              },
+              {
                 "url": "https://raw.githubusercontent.com/ComposioHQ/composio/next/LICENSE",
-                "accessed": "2026-09-29",
-                "establishes": [
-                  "license"
-                ],
+                "accessed": "2026-11-08",
                 "http_status": 200,
                 "content_sha256": "558da505ef85e06792d746b50b03845a7af36ac75eb2eb94d388cda598c6e9f9",
                 "shows": "The repository LICENSE is the plain MIT License text headed \"MIT License\" and \"Copyright (c) 2025 Sampark Inc.\"."
+              },
+              {
+                "url": "https://composio.dev/enterprise",
+                "shows": "Under \"Deploy on your terms\": \"Use Composio Cloud, or arrange a private VPC or self-hosted deployment for your enterprise requirements.\" Composio Cloud is \"The default hosted deployment\"; self-hosted is \"An Enterprise arrangement in your environment, with Helm support.\"",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "b85891113c78af3af05e84a8ce0300c536dd5101119e47f774b9d6da8a896db4",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 3,
@@ -101538,9 +101578,8 @@
           "freshness": {
             "date": "2026-09-17",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-15"
-          },
-          "version_note": "Whether the source component should read partial rather than public is flagged as an open question for a future review."
+            "latest_axis_confirmation": "2026-11-08"
+          }
         },
         {
           "slug": "open-connector",
@@ -134126,12 +134165,12 @@
           "type": "software",
           "description": "Daytona provisions stateful sandboxes for running AI-generated code, putting sandbox creation, execution and deletion under programmatic control through SDKs for Python, TypeScript, Ruby, Go and Java. The same API exposes process execution with streamed output, file system operations, Git and a built-in language server. Daytona sells it as a hosted cloud.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated(core development moved to a private codebase in June 2026 - daytonaio/daytona now holds only a README and logos, and the daytona org publishes SDKs and clients but no server or runtime)",
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary(the production codebase is private and no license to it is published);source:closed(core development moved to a private codebase in June 2026, and the public daytonaio/daytona repository now holds only a README and two logo files);managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);prior-release:AGPL-3.0(v0.190.0, the last public server release, stays forkable at its tag in daytonaio/daytona but receives no further updates, fixes or releases. The private codebase has superseded it, so its license does not govern);clients:SDKs, API clients and CLI/MCP tools(published in the daytona GitHub organization as clients of the hosted service, with no server, control plane or sandbox runtime)",
             "confidence": "high",
-            "note": "Daytona's AGPL-3.0 license and public source describe the project at its last tagged release, v0.190.0; since then, core development has moved to a private codebase, and the default branch holds only a README and two logo files, with no server or runtime published anywhere in the daytona org. Judged against what currently ships, the source would read as partial rather than open core.",
-            "last_verified": "2026-10-13",
+            "note": "Daytona's server and sandbox runtime are developed in a private codebase, as the notice at the top of its public repository says. The open SDKs and command-line tools are clients of the hosted service, and the last public server release, still forkable under the AGPL, is an archive that gets no fixes or updates. Neither is the software Daytona runs today, so neither makes the service open.",
+            "last_verified": "2026-11-08",
             "sources": [
               {
                 "url": "https://github.com/daytonaio/daytona",
@@ -134143,21 +134182,17 @@
                 "shows": "Full untruncated recursive tree of the default branch: 5 entries in total - README.md, assets/, assets/images/ and two logo PNGs. No source, no LICENSE file. The repo is not archived and was last pushed 2026-07-24.",
                 "accessed": "2026-10-13",
                 "http_status": 200,
-                "content_sha256": "c74e6d23cbdca0c1ee85dc1095518f3af94c7186491a2523a94a6445f9aea95e",
-                "establishes": [
-                  "source",
-                  "core-gated"
-                ]
+                "content_sha256": "c74e6d23cbdca0c1ee85dc1095518f3af94c7186491a2523a94a6445f9aea95e"
               },
               {
                 "url": "https://raw.githubusercontent.com/daytonaio/daytona/main/README.md",
-                "shows": "\"This repository is no longer maintained. As of June 2026, Daytona’s core development has moved to a private codebase. This repository will receive no further updates, fixes, or releases. It remains public and free to use, fork, and build on under the LICENSE (linked at tag v0.190.0), as is and without support or warranty.\"",
-                "accessed": "2026-10-13",
+                "shows": "\"This repository is no longer maintained.\" and \"As of June 2026, Daytona's core development has moved to a private codebase. This repository will receive no further updates, fixes, or releases.\"",
+                "accessed": "2026-11-08",
                 "http_status": 200,
                 "content_sha256": "7e1a14b044fe1bb8f8af50d6de6d8b306d97507a278809184af58af4b1fb8054",
                 "establishes": [
                   "source",
-                  "core-gated"
+                  "license"
                 ]
               },
               {
@@ -134165,23 +134200,17 @@
                 "shows": "The org the README redirects to publishes SDKs and clients (daytona/sdk, daytona/clients - \"Official SDKs, API clients, and CLI/MCP tools\"), legacy provider plugins and samples. No server, control plane or sandbox runtime repository.",
                 "accessed": "2026-10-13",
                 "http_status": 200,
-                "establishes": [
-                  "core-gated"
-                ],
                 "content_sha256": "1e4919734225e5391a339ae801afd4fc9a48f9c693789905319b76e529534c6e"
               },
               {
                 "url": "https://raw.githubusercontent.com/daytonaio/daytona/v0.190.0/LICENSE",
-                "shows": "The GNU Affero General Public License v3, verbatim. This is the tag the unmaintained README points at, and it is the only place the AGPL-3.0 grant now lives - the default branch carries no LICENSE file at all, and GitHub's repo metadata reports a null license for daytonaio/daytona as a result. So the recorded AGPL-3.0 is a fact about v0.190.0, not about anything Daytona currently ships.",
-                "accessed": "2026-10-13",
+                "shows": "The full \"GNU AFFERO GENERAL PUBLIC LICENSE\", \"Version 3, 19 November 2007\", at tag v0.190.0, the release the README's LICENSE link points to.",
+                "accessed": "2026-11-08",
                 "http_status": 200,
-                "content_sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b",
-                "establishes": [
-                  "license"
-                ]
+                "content_sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 4,
@@ -134261,7 +134290,7 @@
           "freshness": {
             "date": "2026-09-29",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-15"
+            "latest_axis_confirmation": "2026-11-08"
           }
         },
         {
@@ -155254,7 +155283,7 @@
     }
   },
   "n_total": 1152,
-  "generated": "2026-11-08",
+  "generated": "2026-11-09",
   "version": "0.5.0",
   "released": "2026-10-03",
   "contract": 2,
