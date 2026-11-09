@@ -5301,37 +5301,54 @@
           "org_slug": "alibaba-cloud",
           "org": "Alibaba Cloud",
           "type": "model",
-          "description": "Qwen3-Coder-480B-A35B-Instruct is a mixture-of-experts model with 480 billion total and 35 billion active parameters across 160 experts, tuned for non-thinking instruction-following and agentic coding. It supports a native context window of 256K tokens, extendable to 1M tokens with Yarn.",
+          "description": "Qwen3-Coder is a line of open-weight models for agentic coding, tool calling and repository-scale code work. It spans Qwen3-Coder-Next, an 80B mixture-of-experts model with 3B active parameters built for coding agents and local development, and the larger Qwen3-Coder-480B-A35B-Instruct, with 35B of its 480B parameters active; both have a native context of 256K tokens. The earlier Qwen2.5-Coder checkpoints from Alibaba's Qwen team belong to the same line.",
           "openness": {
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(Apache-2.0, on HF);data:closed(no training corpus released);code:partial(inference/usage + chat template; no training pipeline or post-training/SFT data);license:Apache-2.0(OSI permissive, no use restrictions)",
-            "governing_release": "qwen3-coder",
+            "governing_release": "qwen3-coder-next",
             "confidence": "high",
-            "note": "Qwen3-Coder and its Qwen2.5-Coder predecessor both ship Apache-2.0 weights with no use restrictions, but the training corpus is closed and only inference code and a chat template are released, with no training pipeline. That keeps the family at open weights rather than open source, across both generations.",
-            "last_verified": "2026-09-29",
+            "note": "Qwen3-Coder-Next, the newest release in the line, ships Apache-2.0 weights with no use restrictions, as the earlier Qwen3-Coder and Qwen2.5-Coder checkpoints do. The training corpus is closed, and only inference code and a chat template are released, with no training pipeline. That keeps the line at open weights rather than open source.",
+            "last_verified": "2026-11-08",
             "sources": [
               {
-                "url": "https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct",
-                "shows": "Model card lists \"Training Stage: Pretraining & Post-training\" and covers quickstart and agentic-coding usage; searched the body for training corpus, post-training data, SFT recipe and training pipeline: none released.",
-                "accessed": "2026-09-29",
+                "url": "https://huggingface.co/Qwen/Qwen3-Coder-Next/raw/main/README.md",
+                "shows": "Model card front matter reads \"license: apache-2.0\"; the card lists \"Training Stage: Pretraining & Post-training\" and covers quickstart, deployment and tool-calling usage. Searched the body for a training corpus, post-training data, an SFT recipe and a training pipeline: none released.",
+                "accessed": "2026-11-08",
                 "http_status": 200,
-                "content_sha256": "889b449f503d11faf993175f186ce6ec810513a0311b03b7a4c174692811c532",
+                "content_sha256": "548db6d595e3bd88d7f6e7f4eae8e66ce8e6f980fd5ce52d7daf222e38559af6",
                 "establishes": [
                   "data",
                   "code"
                 ]
               },
               {
-                "url": "https://huggingface.co/api/models/Qwen/Qwen3-Coder-480B-A35B-Instruct",
-                "shows": "Hub API record for \"Qwen/Qwen3-Coder-480B-A35B-Instruct\" carries the tag \"license:apache-2.0\", with safetensors weights and the repo not gated.",
-                "accessed": "2026-09-29",
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3-Coder-Next",
+                "shows": "Hub API record for \"Qwen/Qwen3-Coder-Next\" carries the tag \"license:apache-2.0\" and \"gated\": false, with safetensors weights, a chat_template.jinja and vLLM and SGLang tool-call parsers in the repository.",
+                "accessed": "2026-11-08",
                 "http_status": 200,
-                "content_sha256": "ea4544d41d79d50915fee83703f438fb7e160a70d2adf8ca7e3c9e83675add48",
+                "content_sha256": "533d96b65d754b0e7449f78af02be99464be2c6f5b9ad4cb64f12adea5de4bf2",
                 "establishes": [
                   "weights",
                   "license"
                 ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/QwenLM/Qwen3-Coder/main/README.md",
+                "shows": "The Qwen3-Coder README says the line \"is available in multiple sizes, Qwen3-Coder-480B-A35B-Instruct, Qwen3-Coder-30B-A3B-Instruct, Qwen3-Coder-Next\" and lists them in one download table; its sections cover chat and fill-in-the-middle usage, with no training or fine-tuning section.",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "7553f06c6f17a7ce22a76995a210b07fb6724d32a0cdc7bd4961ed2866d80fd4",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/qwen3-coder-480b-a35b-instruct",
+                "shows": "Artificial Analysis marks Qwen3 Coder 480B deprecated: \"Alibaba has launched a newer release, Qwen3 Coder Next. We suggest considering it instead.\"",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "98ec98379f8506a164973aae3b6482dbb081e377498488700d15cbab4b67839a"
               }
             ],
             "bucket": "open-ish"
@@ -5341,8 +5358,7 @@
             "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is measured as Hugging Face downloads summed across the four declared Qwen Coder SKUs, spanning both the 2.5 and 3 generations. Most of that volume comes from the older Qwen2.5-Coder SKUs, and the largest single SKU alone draws enough downloads to support the same reading as the four combined.",
-            "last_verified": "2026-10-25",
+            "note": "This reading is carried over from the last scheduled measurement, which summed Hugging Face downloads across the four earlier Qwen2.5-Coder and Qwen3-Coder checkpoints. Qwen3-Coder-Next and its base model have since been added to the declared checkpoints, and a measurement of the expanded set is pending. Qwen's FP8 and GGUF builds of Qwen3-Coder-Next are quantized copies of the same weights and are left out.",
             "sources": [
               {
                 "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct",
@@ -5350,6 +5366,13 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "a594c2f0a721aece8997fba00f1cb43fce9a211199273c65451badb3f2bef090"
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=Qwen&search=Coder",
+                "shows": "Trailing-30-day downloads for Qwen's newest coder repositories: Qwen3-Coder-Next 427,397, Qwen3-Coder-Next-FP8 411,181, Qwen3-Coder-Next-GGUF 70,297 and Qwen3-Coder-Next-Base 1,327. Qwen3-Coder-30B-A3B-Instruct, at 1,564,970, is the largest declared checkpoint.",
+                "accessed": "2026-11-08",
+                "http_status": 200,
+                "content_sha256": "26ade73e7db5cc222cb3e39ad01576f89a5485720a9d72f27db30b907a9a5bef"
               }
             ]
           },
@@ -5376,21 +5399,26 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-29",
+            "date": "2026-11-08",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-10-25",
             "unconfirmed_axes": [
+              "adoption",
               "capability"
             ],
             "verification_holds": [
               {
+                "axis": "adoption",
+                "since": "2026-11-08",
+                "reason": "Qwen3-Coder-Next and Qwen3-Coder-Next-Base were added to the declared checkpoints on 2026-11-08 under R-2026-11-08-m, and the scheduled measurement that dated the axis covered only the four earlier checkpoints. The level is unchanged. The first scheduled reconciliation that measures the same level on the full declaration dates the axis and releases this hold."
+              },
+              {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Only vendor-reported evidence is available: the card's 'comparable to Claude Sonnet' claim and a Hub eval entry (Terminal-Bench 2.0 23.9). The note's placement below DeepSeek-V4-Pro, Kimi K2.6 and GLM-5.1 could not be confirmed from a primary source in this run, and a newer Qwen3-Coder- Next (80B total, 3B active, Apache-2.0, Hub eval SWE-Bench Pro 44.3) exists, so whether the governing flagship is superseded needs a maintainer call."
+                "reason": "R-2026-11-08-m makes Qwen3-Coder-Next a release of this line, so whether it supersedes the 480B flagship no longer matters: capability is the best of the releases. What is still missing is an independent reading that places either release against its peers. The band rests only on vendor claims, the card's 'comparable to Claude Sonnet' and Qwen3-Coder-Next's own benchmark charts. Artificial Analysis, read 2026-11-08, runs some of its own evaluations on both models but publishes no Intelligence Index score for either, so the category's benchmark cannot place the line yet, and the note's placement a step below current frontier coding models is unconfirmed."
               }
             ]
           },
-          "version_note": "The model card gives no release date; the repository was created on 2025-07-22."
+          "version_note": "Scored as one line across the Qwen2.5-Coder, Qwen3-Coder and Qwen3-Coder-Next releases. The Qwen3-Coder-Next model card gives no release date; its repository was created on 2026-01-30."
         },
         {
           "slug": "qwen-instruct",
