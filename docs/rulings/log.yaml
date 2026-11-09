@@ -3,6 +3,80 @@
 version: 1
 
 rulings:
+  - id: R-2026-09-23-a
+    date: 2026-09-23
+    by: ccerv1
+    venue: issue
+    refs: ["#384", "#412", "#671"]
+    question: >-
+      Historical decision, back-filled on 2026-11-08 from the issue thread, with its original
+      conditions. Phase 7 retires the duplicate warehouse openness computation once the repo-owned
+      trace agrees "across multiple releases", but evaluation.axis_results holds one generation,
+      replaced in place on each publish. Is the condition kept and made observable through #412's
+      release-scoped tables, restated as "agrees whenever checked", or met through an interim
+      per-publish record?
+    ruling: >-
+      Phase 7 waits for release-scoped tables. The condition stays as written, agreement across
+      multiple releases, and becomes observable when #412 binds release_id into the evaluation
+      tables. It is not restated as "agrees whenever checked", and no interim per-publish record is
+      added. #384 (Phase 7) is blocked on #412 (Phase 8). The weekly scoring-trace cadence stays,
+      to keep the trace current and re-check the agreement every week.
+    status: replaced
+    executor: none
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/671']
+    replaced_by: R-2026-11-08-t
+
+  - id: R-2026-09-25-a
+    date: 2026-09-25
+    by: ccerv1
+    venue: issue
+    refs: ["#410", "#355", "#637", "#706", "#584"]
+    question: >-
+      Historical decision, back-filled on 2026-11-08 from the issue thread, with its original
+      conditions. The read-time run binding from #637 lives repo-side, so the warehouse table still
+      reports source_unavailable for 309 rows. Does the blocking adoption gate carry the binding into
+      the warehouse (route 1, a platform change) or move repo-side to where the binding already
+      exists (route 2)?
+    ruling: >-
+      Route 2. The gate moves repo-side, next to the read-time binding from #637; #355 closes as not
+      planned and the platform ask is dropped. The blocking gate reads a repo-side reconciliation,
+      not evaluation.adoption_reconciliation. An observation counts as current only when the read is
+      bound to a scheduled, successful materialization of product_adoption_current within the 14-day
+      binding bound; the latest scheduled fetch of its source dataset that finished before that
+      materialization's run started succeeded, within the same bound, and an older success behind a
+      newer failure does not count; and source_runs was captured after the bound read completed.
+      Otherwise it stays source_unavailable. The evidence is per dataset, not per row, and the blind
+      spot of an artifact dropped by a partial run that still reported success is accepted. The
+      warehouse table keeps its source_unavailable rows as its settled state. This no longer depends
+      on #584's adoption-pair publish. The gate reports first and blocks second.
+    status: in-force
+    executor: agent
+    lands_in: [docs/architecture/data-architecture.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/706']
+
+  - id: R-2026-09-25-b
+    date: 2026-09-25
+    by: ccerv1
+    venue: issue
+    refs: ["#411", "#412", "#384"]
+    question: >-
+      Historical decision, back-filled on 2026-11-08 from the issue thread, with its original
+      conditions. The evaluator_version cutover from the v0 sentinel re-keys the whole corpus. Does
+      it run now or stay parked?
+    ruling: >-
+      It stays parked: nothing depends on the cutover, and it re-keys the whole corpus, so it runs
+      only once something needs it. When it is unparked, it runs before release manifests (#412),
+      because release_id is built from declaration_version_id, which the cutover re-keys; if #412
+      landed first, release history would start on the v0 sentinel and cross-release agreement for
+      #384 would span the version change. The weekly scoring-trace publish stays without
+      --deploy-artifact for now, and moves to the release-backed path at the same time the cutover is
+      unparked. Back-filling this decision on 2026-11-08 does not authorize the evaluator cutover.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
   - id: R-2026-09-30-a
     date: 2026-09-30
     by: ccerv1
@@ -2561,3 +2635,359 @@ rulings:
     executor: agent
     lands_in: [docs/schemas/score.schema.json, docs/reference/capability.md, build/depth_ladder.py]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-c
+    date: 2026-11-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#979", afrihate, sold]
+    question: >-
+      AfriHate became an explicit root at 3 when its peer left the category. Does it stay at 3, or
+      does the "largest for its languages with only community fine-tunes listed on the Hub" rung
+      support 4? SOLD sits level with it.
+    ruling: >-
+      AfriHate stays at 3. Its documentation and native-speaker annotations support that band;
+      three small community fine-tunes do not establish the stronger downstream use needed for 4.
+      SOLD remains at 3.
+    status: in-force
+    executor: none
+    lands_in: [sources/scores/afrihate.yaml, sources/scores/sold.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-d
+    date: 2026-11-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#979", chren, jojajovai, oldi-seed, smol, afridocmt, iitb-english-hindi,
+      R-2026-10-30-k]
+    question: >-
+      Five products in language_specific_datasets sit one below IITB English-Hindi on the
+      parallel-text size cap: ChrEn and Jojajovai (re-pointed in #979), and OLDI-Seed, SMOL and
+      AfriDocMT. R-2026-10-30-k will give each class of language its own size yardstick. What
+      happens to the five comparisons until then?
+    ruling: >-
+      Retain all five IIT Bombay comparisons provisionally, pending the language-class yardsticks.
+      ChrEn, Jojajovai, OLDI-Seed, SMOL and AfriDocMT remain at band 1, one below IIT Bombay at
+      band 2. Reassess all five together when R-2026-10-30-k's language-class-specific size
+      thresholds are implemented.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-e
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#948", "#951", R-2026-10-30-d, R-2026-10-30-k]
+    question: >-
+      Three held items wait on the per-language resource classification R-2026-10-30-d places on
+      Artio: the per-class size yardsticks, the membership re-routing and #951. Should an agent
+      draft its inputs and a proposed table for the maintainer to build from?
+    ruling: >-
+      Yes. Draft the Artio language classification for review. Keep the class definitions and
+      thresholds separate from the initial data table.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-f
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-02-l, fleurs, lahaja, language_specific_eval_sets]
+    question: >-
+      FLEURS and Lahaja publish no capability band because speech has no measurement model. Their
+      sources state per-language test utterances, which a count model could read; hours cannot
+      be. Should an agent draft a speech measurement model?
+    ruling: >-
+      Yes. Draft and calibrate an utterance-based speech model. It is a proposal only; no bands
+      change until it is approved.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-g
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-07-b, language_specific_eval_sets, sold, "#948"]
+    question: >-
+      language_specific_eval_sets is frozen at the 22 calibrated sets with its boundary
+      provisional, and the membership re-routing waits on the classification. Should membership
+      stay frozen until then, SOLD's corpus-or-evaluation placement included?
+    ruling: >-
+      Yes. Freeze evaluation-set membership until the classification lands, including SOLD.
+    status: in-force
+    executor: none
+    lands_in: [sources/categories/language_specific_eval_sets.yaml]
+    applied_in: []
+
+  - id: R-2026-11-08-h
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-02-f, language_specific_eval_sets]
+    question: >-
+      Every published depth band is provisional because no task family has an approved estimation
+      method. Should the first method be commissioned now, or wait until the classification and
+      the speech model land?
+    ruling: >-
+      Wait. Prioritize the classification and the speech model before statistical estimation.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-i
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets]
+    question: >-
+      The coverage record cannot yet express few-shot splits, script, variety or translation
+      direction, diacritic restoration, or partial overlap. None blocked the 22 published bands.
+      Are these added ahead of need or when a set needs them?
+    ruling: >-
+      Extend the coverage schema when concrete cases require it.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-j
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#932", language_specific_datasets, R-2026-10-30-f]
+    question: >-
+      Mozilla Data Collective holds about 485 underrepresented-language datasets, many uploaded as
+      one file per language from a single publisher program. Is one publisher program one product,
+      or does any per-language dataset above a size threshold get its own row?
+    ruling: >-
+      One publisher program per product. Independently published members may have their own rows.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-k
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#645", "#652", "#757", blip, climax, content-seal, daytona-sandbox, habitat, klavis,
+      openpai, text-generation-inference]
+    question: >-
+      Nine products have an archived repository and no end_of_life. The #645 rule, applied in #652
+      and #757, says an archive never sets end_of_life on its own, but it is not in the log. Is it
+      recorded, and the nine resolved under it?
+    ruling: >-
+      Yes. Record the archival ruling and resolve all nine products. Archival alone never
+      establishes an end date.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/evidence-and-freshness.md, docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-11-08-l
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [daytona-sandbox, composio, R-2026-10-09-n, R-2026-10-08-m, R-2026-10-08-z]
+    question: >-
+      Daytona moved its server to a private codebase in June 2026; its SDKs stay open and the
+      archived AGPL v0.190.0 can still be forked. It and Composio, the same shape, are recorded
+      4/open_core. Do they score 4, 2 (source available, partial) or 1 (closed)?
+    ruling: >-
+      Closed (1) for both Daytona and Composio. The current product's essential engine is private.
+      Open SDKs and an archived server release do not make the current service source-available.
+      Daytona explicitly confirms that its production codebase is closed. Preserve the archived
+      release's provenance separately.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-m
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [qwen-coder, R-2026-10-17-b]
+    question: >-
+      qwen-coder is scored on the July 2025 Qwen3-Coder-480B. Qwen3-Coder-Next (80B total, 3B
+      active, Apache-2.0) shipped on 2026-01-30 from the same QwenLM/Qwen3-Coder repository. Is it
+      a release inside the qwen-coder slug or a separate product?
+    ruling: >-
+      Treat Qwen3-Coder-Next as another release of qwen-coder, retaining the earlier checkpoints.
+      The official Qwen repository lists both generations in the same model family.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-n
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [qualcomm-ai-engine-direct]
+    question: >-
+      The Qualcomm AI Runtime SDK's own license was read as a file inside the public 2.6 GB SDK
+      zip, which fetch_source cannot digest whole. Is a file inside a downloadable archive an
+      acceptable citation?
+    ruling: >-
+      Yes. Accept the archive citation with the ZIP URL, the exact member path, the member's
+      SHA-256 digest and the extraction procedure.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-o
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#724", R-2026-10-08-i]
+    question: >-
+      methodology.md says relative usage is estimated from OpenRouter's token-share leaderboard, but
+      no such route exists and score files cite openrouter.ai by hand. Is the sentence corrected, or
+      is a rankings collector requested?
+    ruling: >-
+      Correct the OpenRouter methodology. No collector is needed now.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-p
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#99", world_models]
+    question: >-
+      world_models was created as a preliminary category on 2026-09-27 with promotion gated for
+      late October. The gate has passed; it has 21 registry rows from 20 organizations and no head
+      products. Does promotion start?
+    ruling: >-
+      Yes. Run the world-models promotion research. Publish only if all existing promotion gates
+      pass.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-q
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#920", inference_code, deployment, ml_orchestration, ray]
+    question: >-
+      KServe, BentoML, Seldon Core and Triton are on no roster. inference_code already holds
+      TensorFlow Serving, llm-d and Dynamo, and deployment's isolation ladder cannot order serving
+      platforms. Where do they go?
+    ruling: >-
+      Put the four serving platforms in inference_code, retain Ray Serve under Ray, and correct the
+      taxonomy wording.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-r
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#918", "#352", "#664", "#446"]
+    question: >-
+      Incremental models run only in a versioned org, and turning versioning on for currentai is a
+      one-way admin action. Should the maintainer ask the OSO admins to enable it?
+    ruling: >-
+      Yes. Prepare the release tooling, the runbooks and a no-op verification before requesting the
+      one-way Artio versioning switch.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-s
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#918", "#352", R-2026-11-08-r]
+    question: >-
+      A release that requires a recompute rebuilds a history table from its start, which loses for
+      good the history of a source that reports only its current state. Must every history-table
+      release be forwardsOnly, and enforced how?
+    ruling: >-
+      Yes. Enforce forwardsOnly for history tables in code, with tests.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-t
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#384", "#412", "#411", R-2026-09-23-a]
+    question: >-
+      R-2026-09-23-a blocked Phase 7 on #412's release-scoped tables and ruled out an interim
+      per-publish record. Static models now accept APPEND without versioning. May appended weekly
+      trace generations supply the cross-release agreement Phase 7 needs?
+    ruling: >-
+      Yes, conditionally. Start appending weekly, release-keyed trace generations. Four genuinely
+      agreeing generations can satisfy the evidence requirement, but 1,117 of 1,118 is not complete
+      agreement: reconcile or formally adjudicate the remaining difference, and verify release
+      identity. Retiring the duplicate computation keeps its own separate authorization.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-u
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#584", evaluation.adoption_reconciliation, evaluation.product_adoption_measurements]
+    question: >-
+      The two adoption tables were published once, by hand, in August. They are two months stale,
+      no workflow publishes them and nothing reads them. Do they keep being published, or stop?
+    ruling: >-
+      Freeze the two stale adoption tables with explicit staleness notices. Do not drop them.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-v
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#410", R-2026-10-16-a, R-2026-10-16-b, R-2026-09-25-a]
+    question: >-
+      The adoption release gate can block only after runs with zero would-block rows, while
+      R-2026-10-16-a and -b keep some recorded bands against the measurement on purpose (AG-UI at 5
+      against PyPI's 4). Is sources/reconciliation_overrides.yaml created now?
+    ruling: >-
+      Yes. Create the cited reconciliation overrides now, preserving the distinction between an
+      approved exception and an unexplained mismatch.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-w
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#951", R-2026-10-30-k, R-2026-11-08-e]
+    question: >-
+      #951 (capping instruction data by example count in language_specific_datasets) has been held
+      since 2026-10-30. Does it stay held?
+    ruling: >-
+      Keep #951 held until the classification work supplies its missing policy.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
