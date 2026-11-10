@@ -28,7 +28,6 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 import zipfile
 from types import SimpleNamespace
-from collections.abc import AsyncIterator
 from typing import Any
 
 import oso
@@ -65,11 +64,12 @@ CC_URL = "https://commoncrawl.github.io/cc-crawl-statistics/plots/languages.csv"
 WIKIDATA_URL = "https://query.wikidata.org/sparql"
 SITEMATRIX_URL = "https://meta.wikimedia.org/w/api.php?action=sitematrix&format=json&smtype=language&smlangprop=code%7Csite&smsiteprop=url%7Cdbname%7Ccode"
 OPENALEX_URL = "https://api.openalex.org/works?group_by=language&per_page=200"
-# Open Library: one count per MARC language code (ISO 639-2/B, the ISO 639-3 table's Part2b column).
-OPEN_LIBRARY_SEARCH = "https://openlibrary.org/search.json?q=language:{marc}&limit=0&fields=key"
-OPEN_LIBRARY_CONCURRENCY = 3
-OPEN_LIBRARY_PAUSE = 1.0  # seconds each worker waits after a request: at most 3 requests per second
-OPEN_LIBRARY_TRIES = 4
+# Open Library is read from a reproducible extract of its monthly data dumps, never from its search API
+# (maintainer ruling 2026-11-10). Until that extract exists, every code is unmeasured; no request is made.
+OPEN_LIBRARY_VERSION = "pending-dump-extract"
+OPEN_LIBRARY_URL = "https://openlibrary.org/developers/dumps"
+OPEN_LIBRARY_BASIS = ("Open Library is read from a reproducible extract of its monthly data dumps; the scheduled "
+                      "search API is not used (maintainer ruling 2026-11-10). Not yet measured.")
 
 # Wikipedia edition prefixes that add to another code, or that measure no single ISO 639-3 code.
 WIKI_COMPOSITE = {"be-tarask": "bel", "nds-nl": "nds", "cbk-zam": "cbk"}
@@ -151,50 +151,6 @@ async def read_source(context: oso.AsyncContext, source: str, version: str, url:
     return Src(source, version, url, body, at)
 
 
-async def open_library_count(context: oso.AsyncContext, marc: str) -> SimpleNamespace:
-    """One Open Library search count. count is None unless the search answered HTTP 200 with a count."""
-    url = OPEN_LIBRARY_SEARCH.format(marc=marc)
-    status, note, body, wait = 0, "", b"", 0.0
-    for attempt in range(OPEN_LIBRARY_TRIES):
-        try:
-            async with context.stream(url, headers={"User-Agent": USER_AGENT}, timeout=30.0) as res:
-                status = res.status
-                chunks = []
-                async for chunk in res.aiter_bytes():
-                    chunks.append(chunk)
-                body = b"".join(chunks)
-                if status == 200:
-                    break
-                note = f"HTTP {status}"
-                retry = res.headers.get("retry-after") or res.headers.get("Retry-After") or ""
-                if status not in (429, 500, 502, 503, 504):
-                    break
-                wait = float(retry) if retry.isdigit() else 2.0 * (2 ** attempt)
-        except Exception as exc:  # transport error or timeout: retry
-            status, note = 0, f"transport error: {type(exc).__name__}"
-            wait = 2.0 * (2 ** attempt)
-        if attempt + 1 < OPEN_LIBRARY_TRIES:
-            await asyncio.sleep(min(wait, 60.0))
-    at = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
-    count: float | None = None
-    if status == 200:
-        try:
-            n = json.loads(body.decode("utf-8")).get("numFound")
-            if isinstance(n, int) and not isinstance(n, bool):
-                count = float(n)
-                note = f"HTTP 200, numFound {n}"
-            else:
-                note = "HTTP 200 without numFound"
-        except Exception:
-            note = "HTTP 200 with a body that is not JSON"
-    elif status:
-        note = f"{note} after {OPEN_LIBRARY_TRIES} tries"
-    else:
-        note = f"{note or 'no response'} after {OPEN_LIBRARY_TRIES} tries"
-    return SimpleNamespace(marc=marc, url=url, count=count, status=status, note=note, at=at,
-                           sha=hashlib.sha256(body).hexdigest())
-
-
 def iso_tables(src: SimpleNamespace) -> tuple[dict[str, dict[str, str]], dict[str, list[str]], str]:
     z = zipfile.ZipFile(io.BytesIO(src.body))
     names = z.namelist()
@@ -212,8 +168,7 @@ def iso_tables(src: SimpleNamespace) -> tuple[dict[str, dict[str, str]], dict[st
 
 
 def run_model(srcs: dict[str, SimpleNamespace], wiki: dict[str, tuple[SimpleNamespace, dict]],
-              ol: dict[str, SimpleNamespace], run_at: dt.datetime, open_library: bool) -> pl.DataFrame:
-    """Rows of every measure but open_library_works (open_library=False), or of that measure alone."""
+              run_at: dt.datetime) -> pl.DataFrame:
     codes, members, release = iso_tables(srcs["iso"])
     scope = sorted(c for c, r in codes.items() if r["Scope"] != "S")
     in_scope = set(scope)
@@ -541,35 +496,10 @@ def run_model(srcs: dict[str, SimpleNamespace], wiki: dict[str, tuple[SimpleName
                  "no edition for the code or its macrolanguage in the Wikimedia site matrix, which lists every edition")
 
     # ---------------- Open Library (context; corroboration only) ----------------
-    # One search per MARC language code. A count is read only from an HTTP 200 answer with numFound
-    # above zero: the search answers 0 (or HTTP 500) when it times out, so a zero is never an observation.
-    ol_version = f"search.json@{run_at.date().isoformat()}"
-
-    def ol_of(code: str) -> SimpleNamespace | None:
-        b = codes[code]["Part2b"] if code in codes else ""
-        return ol.get(b) if b else None
-
+    ol_sha = hashlib.sha256(OPEN_LIBRARY_BASIS.encode("utf-8")).hexdigest()
     for c in scope:
-        M = member_of.get(c)
-        own, broad = ol_of(c), (ol_of(M) if M else None)
-        if own is not None and own.count:
-            emit(c, "open_library_works", None, own.marc, own.count, own.count, "measured", [c] + members.get(c, []),
-                 "exact", f"Open Library works with MARC language code {own.marc} (ISO 639-2/B); {own.note}",
-                 source="open-library", version=ol_version, url=own.url, at=own.at, sha=own.sha)
-        elif M and broad is not None and broad.count:
-            why = f"; own code {own.marc}: {own.note}, not read as a count" if own is not None else ""
-            emit(c, "open_library_works", None, broad.marc, 0.0, broad.count, "bounded", [M] + members.get(M, []),
-                 "broader", f"MARC code {broad.marc} for the macrolanguage {M} covers the member; {broad.note}{why}",
-                 source="open-library", version=ol_version, url=broad.url, at=broad.at, sha=broad.sha)
-        elif own is not None:
-            emit(c, "open_library_works", None, own.marc, None, None, "unmeasured", [c], "exact",
-                 f"MARC language code {own.marc}: {own.note}; a failed search or a zero count is not read as a count",
-                 source="open-library", version=ol_version, url=own.url, at=own.at, sha=own.sha)
-        else:
-            emit(c, "open_library_works", None, "(none)", None, None, "unmeasured", [c], "exact",
-                 "no MARC language code (ISO 639-2/B) for the code or its macrolanguage, so Open Library was not searched",
-                 source="open-library", version=ol_version, url=OPEN_LIBRARY_SEARCH, at=run_at,
-                 sha=hashlib.sha256(b"").hexdigest())
+        emit(c, "open_library_works", None, "(none)", None, None, "unmeasured", [c], "exact", OPEN_LIBRARY_BASIS,
+             source="open-library", version=OPEN_LIBRARY_VERSION, url=OPEN_LIBRARY_URL, at=run_at, sha=ol_sha)
 
     # ---------------- OpenAlex (context) ----------------
     oa = srcs.get("openalex")
@@ -599,7 +529,6 @@ def run_model(srcs: dict[str, SimpleNamespace], wiki: dict[str, tuple[SimpleName
     for o in OVERRIDES:
         out.append(dict(o))
 
-    out = [r for r in out if (r["measure"] == "open_library_works") == open_library]
     return pl.DataFrame(out, schema={
         "iso639_3": pl.Utf8, "measure": pl.Utf8, "source": pl.Utf8, "source_version": pl.Utf8,
         "source_label": pl.Utf8, "value_low": pl.Float64, "value_high": pl.Float64, "state": pl.Utf8,
@@ -609,7 +538,7 @@ def run_model(srcs: dict[str, SimpleNamespace], wiki: dict[str, tuple[SimpleName
 
 
 @oso.model(
-    external_origins=["https://raw.githubusercontent.com", "https://iso639-3.sil.org", "https://commoncrawl.github.io", "https://query.wikidata.org", "https://meta.wikimedia.org", "https://api.openalex.org", "https://openlibrary.org", "https://aa.wikipedia.org", "https://ab.wikipedia.org", "https://ace.wikipedia.org", "https://ady.wikipedia.org", "https://af.wikipedia.org", "https://ak.wikipedia.org", "https://als.wikipedia.org", "https://alt.wikipedia.org", "https://am.wikipedia.org", "https://ami.wikipedia.org", "https://an.wikipedia.org", "https://ang.wikipedia.org", "https://ann.wikipedia.org", "https://anp.wikipedia.org", "https://ar.wikipedia.org", "https://arc.wikipedia.org", "https://ary.wikipedia.org", "https://arz.wikipedia.org", "https://as.wikipedia.org", "https://ast.wikipedia.org", "https://atj.wikipedia.org", "https://av.wikipedia.org", "https://avk.wikipedia.org", "https://awa.wikipedia.org", "https://ay.wikipedia.org", "https://az.wikipedia.org", "https://azb.wikipedia.org", "https://ba.wikipedia.org", "https://ban.wikipedia.org", "https://bar.wikipedia.org", "https://bat-smg.wikipedia.org", "https://bbc.wikipedia.org", "https://bcl.wikipedia.org", "https://bdr.wikipedia.org", "https://be-tarask.wikipedia.org", "https://be.wikipedia.org", "https://bew.wikipedia.org", "https://bg.wikipedia.org", "https://bh.wikipedia.org", "https://bi.wikipedia.org", "https://bjn.wikipedia.org", "https://blk.wikipedia.org", "https://bm.wikipedia.org", "https://bn.wikipedia.org", "https://bo.wikipedia.org", "https://bol.wikipedia.org", "https://bpy.wikipedia.org", "https://br.wikipedia.org", "https://bs.wikipedia.org", "https://btm.wikipedia.org", "https://bug.wikipedia.org", "https://bxr.wikipedia.org", "https://ca.wikipedia.org", "https://cbk-zam.wikipedia.org", "https://cdo.wikipedia.org", "https://ce.wikipedia.org", "https://ceb.wikipedia.org", "https://ch.wikipedia.org", "https://cho.wikipedia.org", "https://chr.wikipedia.org", "https://chy.wikipedia.org", "https://ckb.wikipedia.org", "https://co.wikipedia.org", "https://cr.wikipedia.org", "https://crh.wikipedia.org", "https://cs.wikipedia.org", "https://csb.wikipedia.org", "https://cu.wikipedia.org", "https://cv.wikipedia.org", "https://cy.wikipedia.org", "https://da.wikipedia.org", "https://dag.wikipedia.org", "https://de.wikipedia.org", "https://dga.wikipedia.org", "https://din.wikipedia.org", "https://diq.wikipedia.org", "https://dsb.wikipedia.org", "https://dtp.wikipedia.org", "https://dty.wikipedia.org", "https://dv.wikipedia.org", "https://dz.wikipedia.org", "https://ee.wikipedia.org", "https://el.wikipedia.org", "https://eml.wikipedia.org", "https://en.wikipedia.org", "https://eo.wikipedia.org", "https://es.wikipedia.org", "https://et.wikipedia.org", "https://eu.wikipedia.org", "https://ext.wikipedia.org", "https://fa.wikipedia.org", "https://fat.wikipedia.org", "https://ff.wikipedia.org", "https://fi.wikipedia.org", "https://fiu-vro.wikipedia.org", "https://fj.wikipedia.org", "https://fo.wikipedia.org", "https://fon.wikipedia.org", "https://fr.wikipedia.org", "https://frp.wikipedia.org", "https://frr.wikipedia.org", "https://fur.wikipedia.org", "https://fy.wikipedia.org", "https://ga.wikipedia.org", "https://gag.wikipedia.org", "https://gan.wikipedia.org", "https://gcr.wikipedia.org", "https://gd.wikipedia.org", "https://gl.wikipedia.org", "https://glk.wikipedia.org", "https://gn.wikipedia.org", "https://gom.wikipedia.org", "https://gor.wikipedia.org", "https://got.wikipedia.org", "https://gpe.wikipedia.org", "https://gu.wikipedia.org", "https://guc.wikipedia.org", "https://gur.wikipedia.org", "https://guw.wikipedia.org", "https://gv.wikipedia.org", "https://ha.wikipedia.org", "https://hak.wikipedia.org", "https://haw.wikipedia.org", "https://he.wikipedia.org", "https://hi.wikipedia.org", "https://hif.wikipedia.org", "https://ho.wikipedia.org", "https://hr.wikipedia.org", "https://hsb.wikipedia.org", "https://ht.wikipedia.org", "https://hu.wikipedia.org", "https://hy.wikipedia.org", "https://hyw.wikipedia.org", "https://hz.wikipedia.org", "https://ia.wikipedia.org", "https://iba.wikipedia.org", "https://id.wikipedia.org", "https://ie.wikipedia.org", "https://ig.wikipedia.org", "https://igl.wikipedia.org", "https://ii.wikipedia.org", "https://ik.wikipedia.org", "https://ilo.wikipedia.org", "https://inh.wikipedia.org", "https://io.wikipedia.org", "https://is.wikipedia.org", "https://isv.wikipedia.org", "https://it.wikipedia.org", "https://iu.wikipedia.org", "https://ja.wikipedia.org", "https://jam.wikipedia.org", "https://jbo.wikipedia.org", "https://jv.wikipedia.org", "https://ka.wikipedia.org", "https://kaa.wikipedia.org", "https://kab.wikipedia.org", "https://kai.wikipedia.org", "https://kaj.wikipedia.org", "https://kbd.wikipedia.org", "https://kbp.wikipedia.org", "https://kcg.wikipedia.org", "https://kg.wikipedia.org", "https://kge.wikipedia.org", "https://ki.wikipedia.org", "https://kj.wikipedia.org", "https://kk.wikipedia.org", "https://kl.wikipedia.org", "https://km.wikipedia.org", "https://kn.wikipedia.org", "https://knc.wikipedia.org", "https://ko.wikipedia.org", "https://koi.wikipedia.org", "https://kr.wikipedia.org", "https://krc.wikipedia.org", "https://ks.wikipedia.org", "https://ksh.wikipedia.org", "https://ku.wikipedia.org", "https://kus.wikipedia.org", "https://kv.wikipedia.org", "https://kw.wikipedia.org", "https://ky.wikipedia.org", "https://la.wikipedia.org", "https://lad.wikipedia.org", "https://lb.wikipedia.org", "https://lbe.wikipedia.org", "https://lez.wikipedia.org", "https://lfn.wikipedia.org", "https://lg.wikipedia.org", "https://li.wikipedia.org", "https://lij.wikipedia.org", "https://lld.wikipedia.org", "https://lmo.wikipedia.org", "https://ln.wikipedia.org", "https://lo.wikipedia.org", "https://lrc.wikipedia.org", "https://lt.wikipedia.org", "https://ltg.wikipedia.org", "https://lv.wikipedia.org", "https://mad.wikipedia.org", "https://mag.wikipedia.org", "https://mai.wikipedia.org", "https://map-bms.wikipedia.org", "https://mdf.wikipedia.org", "https://mg.wikipedia.org", "https://mh.wikipedia.org", "https://mhr.wikipedia.org", "https://mi.wikipedia.org", "https://min.wikipedia.org", "https://mk.wikipedia.org", "https://ml.wikipedia.org", "https://mn.wikipedia.org", "https://mni.wikipedia.org", "https://mnw.wikipedia.org", "https://mos.wikipedia.org", "https://mr.wikipedia.org", "https://mrj.wikipedia.org", "https://ms.wikipedia.org", "https://mt.wikipedia.org", "https://mus.wikipedia.org", "https://mwl.wikipedia.org", "https://my.wikipedia.org", "https://myv.wikipedia.org", "https://mzn.wikipedia.org", "https://na.wikipedia.org", "https://nah.wikipedia.org", "https://nap.wikipedia.org", "https://nds-nl.wikipedia.org", "https://nds.wikipedia.org", "https://ne.wikipedia.org", "https://new.wikipedia.org", "https://ng.wikipedia.org", "https://nia.wikipedia.org", "https://nl.wikipedia.org", "https://nn.wikipedia.org", "https://no.wikipedia.org", "https://nov.wikipedia.org", "https://nqo.wikipedia.org", "https://nr.wikipedia.org", "https://nrm.wikipedia.org", "https://nso.wikipedia.org", "https://nup.wikipedia.org", "https://nv.wikipedia.org", "https://ny.wikipedia.org", "https://oc.wikipedia.org", "https://olo.wikipedia.org", "https://om.wikipedia.org", "https://or.wikipedia.org", "https://os.wikipedia.org", "https://pa.wikipedia.org", "https://pag.wikipedia.org", "https://pam.wikipedia.org", "https://pap.wikipedia.org", "https://pcd.wikipedia.org", "https://pcm.wikipedia.org", "https://pdc.wikipedia.org", "https://pfl.wikipedia.org", "https://pi.wikipedia.org", "https://pih.wikipedia.org", "https://pl.wikipedia.org", "https://pms.wikipedia.org", "https://pnb.wikipedia.org", "https://pnt.wikipedia.org", "https://ppl.wikipedia.org", "https://ps.wikipedia.org", "https://pt.wikipedia.org", "https://pwn.wikipedia.org", "https://qu.wikipedia.org", "https://rki.wikipedia.org", "https://rm.wikipedia.org", "https://rmy.wikipedia.org", "https://rn.wikipedia.org", "https://ro.wikipedia.org", "https://roa-rup.wikipedia.org", "https://roa-tara.wikipedia.org", "https://rsk.wikipedia.org", "https://ru.wikipedia.org", "https://rue.wikipedia.org", "https://rw.wikipedia.org", "https://sa.wikipedia.org", "https://sah.wikipedia.org", "https://sat.wikipedia.org", "https://sc.wikipedia.org", "https://scn.wikipedia.org", "https://sco.wikipedia.org", "https://sd.wikipedia.org", "https://se.wikipedia.org", "https://sg.wikipedia.org", "https://sh.wikipedia.org", "https://shi.wikipedia.org", "https://shn.wikipedia.org", "https://si.wikipedia.org", "https://simple.wikipedia.org", "https://sk.wikipedia.org", "https://skr.wikipedia.org", "https://sl.wikipedia.org", "https://sm.wikipedia.org", "https://smn.wikipedia.org", "https://sn.wikipedia.org", "https://so.wikipedia.org", "https://sq.wikipedia.org", "https://sr.wikipedia.org", "https://srn.wikipedia.org", "https://ss.wikipedia.org", "https://st.wikipedia.org", "https://stq.wikipedia.org", "https://su.wikipedia.org", "https://sv.wikipedia.org", "https://sw.wikipedia.org", "https://syl.wikipedia.org", "https://szl.wikipedia.org", "https://szy.wikipedia.org", "https://ta.wikipedia.org", "https://tay.wikipedia.org", "https://tcy.wikipedia.org", "https://tdd.wikipedia.org", "https://te.wikipedia.org", "https://tet.wikipedia.org", "https://tg.wikipedia.org", "https://th.wikipedia.org", "https://ti.wikipedia.org", "https://tig.wikipedia.org", "https://tk.wikipedia.org", "https://tl.wikipedia.org", "https://tly.wikipedia.org", "https://tn.wikipedia.org", "https://to.wikipedia.org", "https://tok.wikipedia.org", "https://tpi.wikipedia.org", "https://tr.wikipedia.org", "https://trv.wikipedia.org", "https://ts.wikipedia.org", "https://tt.wikipedia.org", "https://tum.wikipedia.org", "https://tw.wikipedia.org", "https://ty.wikipedia.org", "https://tyv.wikipedia.org", "https://udm.wikipedia.org", "https://ug.wikipedia.org", "https://uk.wikipedia.org", "https://ur.wikipedia.org", "https://uz.wikipedia.org", "https://ve.wikipedia.org", "https://vec.wikipedia.org", "https://vep.wikipedia.org", "https://vi.wikipedia.org", "https://vls.wikipedia.org", "https://vo.wikipedia.org", "https://wa.wikipedia.org", "https://war.wikipedia.org", "https://wo.wikipedia.org", "https://wuu.wikipedia.org", "https://xal.wikipedia.org", "https://xh.wikipedia.org", "https://xmf.wikipedia.org", "https://yi.wikipedia.org", "https://yo.wikipedia.org", "https://za.wikipedia.org", "https://zea.wikipedia.org", "https://zgh.wikipedia.org", "https://zh-classical.wikipedia.org", "https://zh-min-nan.wikipedia.org", "https://zh-yue.wikipedia.org", "https://zh.wikipedia.org", "https://zu.wikipedia.org"],
+    external_origins=["https://raw.githubusercontent.com", "https://iso639-3.sil.org", "https://commoncrawl.github.io", "https://query.wikidata.org", "https://meta.wikimedia.org", "https://api.openalex.org", "https://aa.wikipedia.org", "https://ab.wikipedia.org", "https://ace.wikipedia.org", "https://ady.wikipedia.org", "https://af.wikipedia.org", "https://ak.wikipedia.org", "https://als.wikipedia.org", "https://alt.wikipedia.org", "https://am.wikipedia.org", "https://ami.wikipedia.org", "https://an.wikipedia.org", "https://ang.wikipedia.org", "https://ann.wikipedia.org", "https://anp.wikipedia.org", "https://ar.wikipedia.org", "https://arc.wikipedia.org", "https://ary.wikipedia.org", "https://arz.wikipedia.org", "https://as.wikipedia.org", "https://ast.wikipedia.org", "https://atj.wikipedia.org", "https://av.wikipedia.org", "https://avk.wikipedia.org", "https://awa.wikipedia.org", "https://ay.wikipedia.org", "https://az.wikipedia.org", "https://azb.wikipedia.org", "https://ba.wikipedia.org", "https://ban.wikipedia.org", "https://bar.wikipedia.org", "https://bat-smg.wikipedia.org", "https://bbc.wikipedia.org", "https://bcl.wikipedia.org", "https://bdr.wikipedia.org", "https://be-tarask.wikipedia.org", "https://be.wikipedia.org", "https://bew.wikipedia.org", "https://bg.wikipedia.org", "https://bh.wikipedia.org", "https://bi.wikipedia.org", "https://bjn.wikipedia.org", "https://blk.wikipedia.org", "https://bm.wikipedia.org", "https://bn.wikipedia.org", "https://bo.wikipedia.org", "https://bol.wikipedia.org", "https://bpy.wikipedia.org", "https://br.wikipedia.org", "https://bs.wikipedia.org", "https://btm.wikipedia.org", "https://bug.wikipedia.org", "https://bxr.wikipedia.org", "https://ca.wikipedia.org", "https://cbk-zam.wikipedia.org", "https://cdo.wikipedia.org", "https://ce.wikipedia.org", "https://ceb.wikipedia.org", "https://ch.wikipedia.org", "https://cho.wikipedia.org", "https://chr.wikipedia.org", "https://chy.wikipedia.org", "https://ckb.wikipedia.org", "https://co.wikipedia.org", "https://cr.wikipedia.org", "https://crh.wikipedia.org", "https://cs.wikipedia.org", "https://csb.wikipedia.org", "https://cu.wikipedia.org", "https://cv.wikipedia.org", "https://cy.wikipedia.org", "https://da.wikipedia.org", "https://dag.wikipedia.org", "https://de.wikipedia.org", "https://dga.wikipedia.org", "https://din.wikipedia.org", "https://diq.wikipedia.org", "https://dsb.wikipedia.org", "https://dtp.wikipedia.org", "https://dty.wikipedia.org", "https://dv.wikipedia.org", "https://dz.wikipedia.org", "https://ee.wikipedia.org", "https://el.wikipedia.org", "https://eml.wikipedia.org", "https://en.wikipedia.org", "https://eo.wikipedia.org", "https://es.wikipedia.org", "https://et.wikipedia.org", "https://eu.wikipedia.org", "https://ext.wikipedia.org", "https://fa.wikipedia.org", "https://fat.wikipedia.org", "https://ff.wikipedia.org", "https://fi.wikipedia.org", "https://fiu-vro.wikipedia.org", "https://fj.wikipedia.org", "https://fo.wikipedia.org", "https://fon.wikipedia.org", "https://fr.wikipedia.org", "https://frp.wikipedia.org", "https://frr.wikipedia.org", "https://fur.wikipedia.org", "https://fy.wikipedia.org", "https://ga.wikipedia.org", "https://gag.wikipedia.org", "https://gan.wikipedia.org", "https://gcr.wikipedia.org", "https://gd.wikipedia.org", "https://gl.wikipedia.org", "https://glk.wikipedia.org", "https://gn.wikipedia.org", "https://gom.wikipedia.org", "https://gor.wikipedia.org", "https://got.wikipedia.org", "https://gpe.wikipedia.org", "https://gu.wikipedia.org", "https://guc.wikipedia.org", "https://gur.wikipedia.org", "https://guw.wikipedia.org", "https://gv.wikipedia.org", "https://ha.wikipedia.org", "https://hak.wikipedia.org", "https://haw.wikipedia.org", "https://he.wikipedia.org", "https://hi.wikipedia.org", "https://hif.wikipedia.org", "https://ho.wikipedia.org", "https://hr.wikipedia.org", "https://hsb.wikipedia.org", "https://ht.wikipedia.org", "https://hu.wikipedia.org", "https://hy.wikipedia.org", "https://hyw.wikipedia.org", "https://hz.wikipedia.org", "https://ia.wikipedia.org", "https://iba.wikipedia.org", "https://id.wikipedia.org", "https://ie.wikipedia.org", "https://ig.wikipedia.org", "https://igl.wikipedia.org", "https://ii.wikipedia.org", "https://ik.wikipedia.org", "https://ilo.wikipedia.org", "https://inh.wikipedia.org", "https://io.wikipedia.org", "https://is.wikipedia.org", "https://isv.wikipedia.org", "https://it.wikipedia.org", "https://iu.wikipedia.org", "https://ja.wikipedia.org", "https://jam.wikipedia.org", "https://jbo.wikipedia.org", "https://jv.wikipedia.org", "https://ka.wikipedia.org", "https://kaa.wikipedia.org", "https://kab.wikipedia.org", "https://kai.wikipedia.org", "https://kaj.wikipedia.org", "https://kbd.wikipedia.org", "https://kbp.wikipedia.org", "https://kcg.wikipedia.org", "https://kg.wikipedia.org", "https://kge.wikipedia.org", "https://ki.wikipedia.org", "https://kj.wikipedia.org", "https://kk.wikipedia.org", "https://kl.wikipedia.org", "https://km.wikipedia.org", "https://kn.wikipedia.org", "https://knc.wikipedia.org", "https://ko.wikipedia.org", "https://koi.wikipedia.org", "https://kr.wikipedia.org", "https://krc.wikipedia.org", "https://ks.wikipedia.org", "https://ksh.wikipedia.org", "https://ku.wikipedia.org", "https://kus.wikipedia.org", "https://kv.wikipedia.org", "https://kw.wikipedia.org", "https://ky.wikipedia.org", "https://la.wikipedia.org", "https://lad.wikipedia.org", "https://lb.wikipedia.org", "https://lbe.wikipedia.org", "https://lez.wikipedia.org", "https://lfn.wikipedia.org", "https://lg.wikipedia.org", "https://li.wikipedia.org", "https://lij.wikipedia.org", "https://lld.wikipedia.org", "https://lmo.wikipedia.org", "https://ln.wikipedia.org", "https://lo.wikipedia.org", "https://lrc.wikipedia.org", "https://lt.wikipedia.org", "https://ltg.wikipedia.org", "https://lv.wikipedia.org", "https://mad.wikipedia.org", "https://mag.wikipedia.org", "https://mai.wikipedia.org", "https://map-bms.wikipedia.org", "https://mdf.wikipedia.org", "https://mg.wikipedia.org", "https://mh.wikipedia.org", "https://mhr.wikipedia.org", "https://mi.wikipedia.org", "https://min.wikipedia.org", "https://mk.wikipedia.org", "https://ml.wikipedia.org", "https://mn.wikipedia.org", "https://mni.wikipedia.org", "https://mnw.wikipedia.org", "https://mos.wikipedia.org", "https://mr.wikipedia.org", "https://mrj.wikipedia.org", "https://ms.wikipedia.org", "https://mt.wikipedia.org", "https://mus.wikipedia.org", "https://mwl.wikipedia.org", "https://my.wikipedia.org", "https://myv.wikipedia.org", "https://mzn.wikipedia.org", "https://na.wikipedia.org", "https://nah.wikipedia.org", "https://nap.wikipedia.org", "https://nds-nl.wikipedia.org", "https://nds.wikipedia.org", "https://ne.wikipedia.org", "https://new.wikipedia.org", "https://ng.wikipedia.org", "https://nia.wikipedia.org", "https://nl.wikipedia.org", "https://nn.wikipedia.org", "https://no.wikipedia.org", "https://nov.wikipedia.org", "https://nqo.wikipedia.org", "https://nr.wikipedia.org", "https://nrm.wikipedia.org", "https://nso.wikipedia.org", "https://nup.wikipedia.org", "https://nv.wikipedia.org", "https://ny.wikipedia.org", "https://oc.wikipedia.org", "https://olo.wikipedia.org", "https://om.wikipedia.org", "https://or.wikipedia.org", "https://os.wikipedia.org", "https://pa.wikipedia.org", "https://pag.wikipedia.org", "https://pam.wikipedia.org", "https://pap.wikipedia.org", "https://pcd.wikipedia.org", "https://pcm.wikipedia.org", "https://pdc.wikipedia.org", "https://pfl.wikipedia.org", "https://pi.wikipedia.org", "https://pih.wikipedia.org", "https://pl.wikipedia.org", "https://pms.wikipedia.org", "https://pnb.wikipedia.org", "https://pnt.wikipedia.org", "https://ppl.wikipedia.org", "https://ps.wikipedia.org", "https://pt.wikipedia.org", "https://pwn.wikipedia.org", "https://qu.wikipedia.org", "https://rki.wikipedia.org", "https://rm.wikipedia.org", "https://rmy.wikipedia.org", "https://rn.wikipedia.org", "https://ro.wikipedia.org", "https://roa-rup.wikipedia.org", "https://roa-tara.wikipedia.org", "https://rsk.wikipedia.org", "https://ru.wikipedia.org", "https://rue.wikipedia.org", "https://rw.wikipedia.org", "https://sa.wikipedia.org", "https://sah.wikipedia.org", "https://sat.wikipedia.org", "https://sc.wikipedia.org", "https://scn.wikipedia.org", "https://sco.wikipedia.org", "https://sd.wikipedia.org", "https://se.wikipedia.org", "https://sg.wikipedia.org", "https://sh.wikipedia.org", "https://shi.wikipedia.org", "https://shn.wikipedia.org", "https://si.wikipedia.org", "https://simple.wikipedia.org", "https://sk.wikipedia.org", "https://skr.wikipedia.org", "https://sl.wikipedia.org", "https://sm.wikipedia.org", "https://smn.wikipedia.org", "https://sn.wikipedia.org", "https://so.wikipedia.org", "https://sq.wikipedia.org", "https://sr.wikipedia.org", "https://srn.wikipedia.org", "https://ss.wikipedia.org", "https://st.wikipedia.org", "https://stq.wikipedia.org", "https://su.wikipedia.org", "https://sv.wikipedia.org", "https://sw.wikipedia.org", "https://syl.wikipedia.org", "https://szl.wikipedia.org", "https://szy.wikipedia.org", "https://ta.wikipedia.org", "https://tay.wikipedia.org", "https://tcy.wikipedia.org", "https://tdd.wikipedia.org", "https://te.wikipedia.org", "https://tet.wikipedia.org", "https://tg.wikipedia.org", "https://th.wikipedia.org", "https://ti.wikipedia.org", "https://tig.wikipedia.org", "https://tk.wikipedia.org", "https://tl.wikipedia.org", "https://tly.wikipedia.org", "https://tn.wikipedia.org", "https://to.wikipedia.org", "https://tok.wikipedia.org", "https://tpi.wikipedia.org", "https://tr.wikipedia.org", "https://trv.wikipedia.org", "https://ts.wikipedia.org", "https://tt.wikipedia.org", "https://tum.wikipedia.org", "https://tw.wikipedia.org", "https://ty.wikipedia.org", "https://tyv.wikipedia.org", "https://udm.wikipedia.org", "https://ug.wikipedia.org", "https://uk.wikipedia.org", "https://ur.wikipedia.org", "https://uz.wikipedia.org", "https://ve.wikipedia.org", "https://vec.wikipedia.org", "https://vep.wikipedia.org", "https://vi.wikipedia.org", "https://vls.wikipedia.org", "https://vo.wikipedia.org", "https://wa.wikipedia.org", "https://war.wikipedia.org", "https://wo.wikipedia.org", "https://wuu.wikipedia.org", "https://xal.wikipedia.org", "https://xh.wikipedia.org", "https://xmf.wikipedia.org", "https://yi.wikipedia.org", "https://yo.wikipedia.org", "https://za.wikipedia.org", "https://zea.wikipedia.org", "https://zgh.wikipedia.org", "https://zh-classical.wikipedia.org", "https://zh-min-nan.wikipedia.org", "https://zh-yue.wikipedia.org", "https://zh.wikipedia.org", "https://zu.wikipedia.org"],
     capabilities=oso.Capabilities(fetch=True),
     columns=[
         oso.Column(name="iso639_3", type="varchar"),
@@ -628,23 +557,10 @@ def run_model(srcs: dict[str, SimpleNamespace], wiki: dict[str, tuple[SimpleName
         oso.Column(name="content_sha256", type="varchar"),
     ],
 )
-async def measurements_src(context: oso.AsyncContext) -> AsyncIterator[oso.DataFrame]:
-    # Output goes out in two chunks, because the host waits at most five minutes for each chunk:
-    # every measure except Open Library first, then Open Library, whose searches run alongside.
+async def measurements_src(context: oso.AsyncContext) -> oso.DataFrame:
     form = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/csv"}
-    iso_src = await read_source(context, "iso639-3", ISO_RELEASE, ISO_ZIP_URL)
-    iso_codes, _, _ = iso_tables(iso_src)
-    marcs = sorted({r["Part2b"] for r in iso_codes.values() if r["Part2b"] and r["Scope"] != "S"})
-    ol_sem = asyncio.Semaphore(OPEN_LIBRARY_CONCURRENCY)
-    ol: dict[str, SimpleNamespace] = {}
-
-    async def ol_one(marc: str) -> None:
-        async with ol_sem:
-            ol[marc] = await open_library_count(context, marc)
-            await asyncio.sleep(OPEN_LIBRARY_PAUSE)
-
-    ol_task = asyncio.ensure_future(asyncio.gather(*(ol_one(m) for m in marcs)))
     reads = await asyncio.gather(
+        read_source(context, "iso639-3", ISO_RELEASE, ISO_ZIP_URL),
         read_source(context, "cldr", CLDR_VERSION, CLDR_URL),
         read_source(context, "glottolog", GLOTTOLOG_VERSION, GLOTTOLOG_LANGUAGES_URL),
         read_source(context, "glottolog", GLOTTOLOG_VERSION, GLOTTOLOG_VALUES_URL, timeout=300.0),
@@ -654,9 +570,8 @@ async def measurements_src(context: oso.AsyncContext) -> AsyncIterator[oso.DataF
         read_source(context, "commoncrawl-cld2", "latest", CC_URL),
         read_source(context, "meta.wikimedia.org", "sitematrix", SITEMATRIX_URL),
     )
-    keys = ["cldr", "gl_languages", "gl_values", "gl_codes", "fineweb2", "glotlid", "cc", "sitematrix"]
+    keys = ["iso", "cldr", "gl_languages", "gl_values", "gl_codes", "fineweb2", "glotlid", "cc", "sitematrix"]
     srcs = dict(zip(keys, reads))
-    srcs["iso"] = iso_src
     # Wikidata: sequential, one query at a time.
     for key, q in (("wd_speakers", SPARQL_SPEAKERS), ("wd_official", SPARQL_OFFICIAL)):
         body = "query=" + urllib.parse.quote(q)
@@ -699,6 +614,4 @@ async def measurements_src(context: oso.AsyncContext) -> AsyncIterator[oso.DataF
         raise RuntimeError(f"Wikipedia editions could not be read: {failures}")
 
     run_at = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
-    yield run_model(srcs, wiki, {}, run_at, False)
-    await ol_task
-    yield run_model(srcs, wiki, ol, run_at, True)
+    return run_model(srcs, wiki, run_at)
