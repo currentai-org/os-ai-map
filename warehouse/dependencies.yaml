@@ -527,3 +527,83 @@ dependencies:
     cron: 0 1 * * 0
     timezone: UTC
     last_observed_trigger: SCHEDULED
+- table: currentai.language_representation.classification
+  purpose: language_classification
+  expected_grain: one row per ISO 639-3 code of scope individual or macrolanguage in the pinned code-table release
+  freshness_requirement: <= 100 days (quarterly platform refresh)
+  required_by:
+  - build/language_representation.py
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/language_representation/classification.sql
+  mirror:
+    model_id: 372c18ae-1c0f-4811-99b4-03b7e430a1e2
+    revision: 3
+    hash: e97de962b0ca5e01747157b7ac10f95ea6f7a6b160a9e4b9443b9659ccbbddfd
+    local_sha256: c71fdd620e1539ec7e1354aeeb611e69e8b844577491c872fe1f989af1293daa
+    synced_at: '2026-11-10'
+  platform_schedule:
+    cron: 11 5 2 1,4,7,10 *
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.language_representation.classification_src
+  purpose: language_classification_source
+  expected_grain: one row per ISO 639-3 code in scope (array columns as JSON text; read classification instead)
+  freshness_requirement: <= 100 days (quarterly platform refresh)
+  required_by:
+  - warehouse/models/language_representation/classification.sql
+  verified_revision: 6
+  owner: oso
+  files:
+    model: warehouse/models/language_representation/classification_src.py
+  mirror:
+    model_id: 6088e1cb-41ca-42e5-bb5b-c0ae74a83f3a
+    revision: 6
+    hash: d0257d19f95569f1d202f075f5c483c5f2f8bf3b306f62383b40fa8e7c50cafc
+    local_sha256: ed7bc80c64dad5221e90d25e0bb64aa15b8ae691624d97f8ff6aaab012836ab0
+    synced_at: '2026-11-10'
+  platform_schedule:
+    cron: 41 4 2 1,4,7,10 *
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.language_representation.measurements
+  purpose: language_classification_measurements
+  expected_grain: one row per (iso639_3, measure, source, source_version, source_label)
+  freshness_requirement: <= 100 days (quarterly platform refresh)
+  required_by:
+  - warehouse/models/language_representation/classification_src.py
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/language_representation/measurements.sql
+  mirror:
+    model_id: 6fdd7f14-fc7e-4e92-a040-209d1cab385d
+    revision: 3
+    hash: f8e773b1376da1e8d85fde4af62a0d69ef539ce57e0b48ee6d03477d8d3d5c17
+    local_sha256: fa8148c78f900a5ff66a27c41207aa93136557452596c76edb0a47be643a5397
+    synced_at: '2026-11-10'
+  platform_schedule:
+    cron: 11 4 2 1,4,7,10 *
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.language_representation.measurements_src
+  purpose: language_classification_measurements_source
+  expected_grain: one row per (iso639_3, measure, source, source_version, source_label) (label_population as JSON text; read measurements instead)
+  freshness_requirement: <= 100 days (quarterly platform refresh)
+  required_by:
+  - warehouse/models/language_representation/measurements.sql
+  verified_revision: 10
+  owner: oso
+  files:
+    model: warehouse/models/language_representation/measurements_src.py
+  mirror:
+    model_id: ab680cec-edcd-458f-92ec-4b4e79fd27a9
+    revision: 10
+    hash: cca5cb0ae9e5ddb7e9e0da6a51a2b4c3cc4443c3ead0b1dc2d3c006f179b754f
+    local_sha256: 2b66803770c55fd53b0b0bd3926078832d83bdbb1ea1bd7c0a48f18fff324a96
+    synced_at: '2026-11-10'
+  platform_schedule:
+    cron: 41 3 2 1,4,7,10 *
+    timezone: UTC
+    last_observed_trigger: MANUAL
