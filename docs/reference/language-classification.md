@@ -117,8 +117,10 @@ language, such as grammars and descriptive literature, is context and not an inp
 - **Open Library** works are published as context, and count only through the corroboration path
   of the `large_written_material` axis below. They are read from a reproducible extract of Open
   Library's monthly data dumps, never from its search API, which Open Library intends for
-  human-facing discovery rather than as a data backend. Until that extract exists, the measure is
-  `unmeasured` for every language and the corroboration path cannot pass on it.
+  human-facing discovery rather than as a data backend. `build/openlibrary_extract.py` builds the
+  extract from one editions dump, counting distinct works per MARC language code, and the result is
+  pinned in `sources/snapshots/` with the dump's URL and SHA-256. The model refuses an extract whose
+  digest differs. A language the extract does not count is `unmeasured`, never zero.
 
 Written material is banded **A** (high) to **D** (very low).
 
@@ -353,7 +355,7 @@ broader rights. Per-language data is published only from sources whose terms per
 ### Refresh
 
 Quarterly, with every source pinned: the crawl id, the FineWeb-2 release, the CLDR release, the
-Glottolog release, the ISO 639-3 table date, and a retrieval time and content digest for each live
+Glottolog release, the ISO 639-3 table date, the Open Library dump date, and a retrieval time and content digest for each live
 API. A refresh never moves a product. It produces a diff of changed classes and profiles and the
 roster changes they imply, which is reviewed as a proposal (ADR-004).
 

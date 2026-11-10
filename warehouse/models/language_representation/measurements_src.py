@@ -10,7 +10,7 @@ label_population is written here as a JSON array in text; the SQL model
 currentai.language_representation.measurements casts it to array(varchar) and is the contract.
 
 Method version 1 (os-ai-map docs/reference/language-classification.md, PR #995, rulings
-R-2026-11-10-a to -q). One row per (iso639_3, measure, source, source_version, source_label),
+R-2026-11-10-a to -r). One row per (iso639_3, measure, source, source_version, source_label),
 each with its value state and declared mapping. Every source is fetched here at run time and
 pinned where the source allows. No verdict is computed in this model.
 """
@@ -65,11 +65,15 @@ WIKIDATA_URL = "https://query.wikidata.org/sparql"
 SITEMATRIX_URL = "https://meta.wikimedia.org/w/api.php?action=sitematrix&format=json&smtype=language&smlangprop=code%7Csite&smsiteprop=url%7Cdbname%7Ccode"
 OPENALEX_URL = "https://api.openalex.org/works?group_by=language&per_page=200"
 # Open Library is read from a reproducible extract of its monthly data dumps, never from its search API
-# (maintainer ruling 2026-11-10). Until that extract exists, every code is unmeasured; no request is made.
-OPEN_LIBRARY_VERSION = "pending-dump-extract"
-OPEN_LIBRARY_URL = "https://openlibrary.org/developers/dumps"
-OPEN_LIBRARY_BASIS = ("Open Library is read from a reproducible extract of its monthly data dumps; the scheduled "
-                      "search API is not used (maintainer ruling 2026-11-10). Not yet measured.")
+# (maintainer rulings 2026-11-10 and R-2026-11-10-r): a CSV of works per MARC language code, pinned at a commit
+# of the public repo. The run refuses to proceed if the CSV's sha256 differs from the pinned one.
+OPEN_LIBRARY_URL = ("https://raw.githubusercontent.com/currentai-org/os-ai-map/08db01760a6bf9a10b87f102cf22a91ac8c3520f/"
+                    "sources/snapshots/openlibrary-works-by-language-2026-10-31.csv")
+OPEN_LIBRARY_SHA256 = "3ab3e79b89f530d651690d6ff93db020430296905c5647894efcb6e4770a39a5"
+OPEN_LIBRARY_VERSION = "ol_dump_editions_2026-10-31"
+OPEN_LIBRARY_BASIS = ("Extract of the Open Library dump ol_dump_editions_2026-10-31.txt.gz (12,630,804,778 bytes, "
+                      "sha256 6da353c0a2ef67439690bf76cf9ac3017491e852db1058b9018a1508b95c36cf, 56,900,885 lines); "
+                      "works = distinct work keys with at least one edition in the language")
 
 # Wikipedia edition prefixes that add to another code, or that measure no single ISO 639-3 code.
 WIKI_COMPOSITE = {"be-tarask": "bel", "nds-nl": "nds", "cbk-zam": "cbk"}
@@ -496,10 +500,36 @@ def run_model(srcs: dict[str, SimpleNamespace], wiki: dict[str, tuple[SimpleName
                  "no edition for the code or its macrolanguage in the Wikimedia site matrix, which lists every edition")
 
     # ---------------- Open Library (context; corroboration only) ----------------
-    ol_sha = hashlib.sha256(OPEN_LIBRARY_BASIS.encode("utf-8")).hexdigest()
+    # One count per MARC language code (ISO 639-2/B, the ISO 639-3 table's Part2b column), from the pinned dump
+    # extract. A code with no row or a count of 0 is unmeasured, never zero.
+    ols = srcs["open_library"]
+    ol: dict[str, float] = {}
+    for r in csv.DictReader(io.StringIO(ols.body.decode("utf-8-sig"))):
+        ol[r["marc_code"].strip()] = float(r["works"] or 0)
+
+    def ol_of(code: str) -> str:
+        return codes[code]["Part2b"] if code in codes else ""
+
+    def ol_emit(c: str, label: str, lo: float | None, hi: float | None, state: str, pop: list[Any],
+                relation: str, basis: str) -> None:
+        emit(c, "open_library_works", ols, label, lo, hi, state, pop, relation, f"{basis}. {OPEN_LIBRARY_BASIS}")
+
     for c in scope:
-        emit(c, "open_library_works", None, "(none)", None, None, "unmeasured", [c], "exact", OPEN_LIBRARY_BASIS,
-             source="open-library", version=OPEN_LIBRARY_VERSION, url=OPEN_LIBRARY_URL, at=run_at, sha=ol_sha)
+        M = member_of.get(c)
+        own, broad = ol_of(c), (ol_of(M) if M else "")
+        if own and ol.get(own):
+            ol_emit(c, own, ol[own], ol[own], "measured", [c] + members.get(c, []), "exact",
+                    f"Open Library works with MARC language code {own} (ISO 639-2/B)")
+        elif broad and ol.get(broad):
+            why = f"; own code {own} has no works in the extract, not read as a count" if own else ""
+            ol_emit(c, broad, 0.0, ol[broad], "bounded", [M] + members.get(M, []), "broader",
+                    f"MARC code {broad} for the macrolanguage {M} covers the member{why}")
+        elif own:
+            ol_emit(c, own, None, None, "unmeasured", [c], "exact",
+                    f"MARC language code {own} has no row or a count of 0 in the extract; not read as a count")
+        else:
+            ol_emit(c, "(none)", None, None, "unmeasured", [c], "exact",
+                    "no MARC language code (ISO 639-2/B) for the code or its macrolanguage")
 
     # ---------------- OpenAlex (context) ----------------
     oa = srcs.get("openalex")
@@ -579,6 +609,10 @@ async def measurements_src(context: oso.AsyncContext) -> oso.DataFrame:
         if status != 200:
             raise RuntimeError(f"Wikidata returned HTTP {status}")
         srcs[key] = Src("wikidata", f"wdqs@{at.isoformat()}Z", WIKIDATA_URL + " (SPARQL: " + q.split("WHERE")[0].strip() + ")", b, at)
+    ol = await read_source(context, "open-library", OPEN_LIBRARY_VERSION, OPEN_LIBRARY_URL)
+    if ol.sha != OPEN_LIBRARY_SHA256:
+        raise RuntimeError(f"{OPEN_LIBRARY_URL} has sha256 {ol.sha}, expected {OPEN_LIBRARY_SHA256}; refusing to proceed")
+    srcs["open_library"] = ol
     try:
         srcs["openalex"] = await read_source(context, "openalex", "api", OPENALEX_URL, tries=3)
     except Exception:
