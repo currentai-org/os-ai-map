@@ -3233,3 +3233,80 @@ rulings:
     executor: maintainer
     lands_in: [docs/reference/language-classification.md]
     applied_in: []
+
+  - id: R-2026-11-10-m
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-b]
+    question: >-
+      R-2026-11-10-b adopted the calibration procedure for the written-material bands and reserved the
+      numerical edges. The calibration fits FineWeb-2 words without the Bible share against CLD2 page share
+      over the 137 languages both measure (R² 0.91; 90.5% band agreement; no two-band disagreement). Are its
+      edges adopted?
+    ruling: >-
+      Adopt the fitted edges as the method version 1 thresholds: high at 60 billion words or more, mid at 4
+      billion, low at 300 million, very low below 300 million. Adopting them does not authorize any category
+      migration; membership remains subject to the review R-2026-11-10-j describes.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-n
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-b]
+    question: >-
+      Bot-written Wikipedia editions such as Cebuano's pass a 100-active-user minimum. Is a further guard
+      needed, and where does it apply?
+    ruling: >-
+      A Wikipedia edition is eligible only with at least 100 active users and at most 1,000 content articles
+      per active user. The guard applies wherever Wikipedia can influence a classification or
+      resource-profile verdict: widening the written-material interval, and the corroboration path of
+      large_written_material. An ineligible edition's counts are recorded as excluded.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-o
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-c, R-2026-11-10-f]
+    question: >-
+      No language can read no on the official axis, because only CLDR's national list is complete by
+      construction. Should CLDR's regional entries and Wikidata's subdivision statements be read together as
+      a complete register, so that a language neither lists is not official?
+    ruling: >-
+      No. Absence from CLDR and Wikidata does not establish that a language lacks subnational official
+      status, and combining two incomplete registers does not make them complete. Record not_listed when
+      neither source identifies national or subnational status, and treat subnational status as unknown, not
+      none, unless a complete authoritative jurisdictional source or a cited, ruled determination establishes
+      otherwise. not_listed stays an evidence state, and an unresolved official axis propagates through the
+      resource profile. Fewer fully resolved profiles is preferable to resolving them from unsupported
+      negative evidence; explicitly labeled policy assumptions, with sensitivity analysis, can be considered
+      later if coverage becomes an operational bottleneck.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-p
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-e]
+    question: >-
+      Glottolog files the N'Ko written standard as an extinct language, which bounds its speakers below one
+      million. Is that handled by a general rule or a named exception?
+    ruling: >-
+      A general rule. The endangerment bound applies only to Glottolog entries of level language outside the
+      Bookkeeping and Artificial Language families. An excluded rating stays in the measurements table with
+      the source's classification and the reason it was excluded. No separate N'Ko exception.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']

@@ -55,11 +55,13 @@ between the two, so the two are measured independently. See [Excluded inputs](#e
   source names the member.
 
 CLDR's list of national official languages is complete by construction, so absence from it rules
-out `national`. For `subnational`, CLDR's regional entries and Wikidata's subdivision statements are
-read together as the register of official languages: a language neither of them lists is `none`,
-with state `not_listed`. This is the one place absence from a list that is not complete by
-construction counts. Official status is a matter of public law that both registers track, and a
-missing entry is corrected by an override ([Overrides](#overrides)), not left as an unknown.
+out `national`. Neither CLDR's regional entries nor Wikidata's subdivision statements is shown to be
+exhaustive, and combining two incomplete registers does not make them complete. So a language that
+neither source lists as official at any level records the evidence state `not_listed`, and its
+status interval runs from `none` to `subnational`: subnational status is unknown, not absent. The
+interval narrows to `none` only on a complete, authoritative source for the jurisdiction concerned,
+or on a cited override approved by a ruling ([Overrides](#overrides)). An unresolved status leaves
+the `official` axis unresolved, and that carries through the resource profile.
 
 ### Speakers
 
@@ -78,7 +80,8 @@ instead of choosing a definition.
   `bound_from_endangerment`. The bound applies only when the code maps to a Glottolog languoid of
   level `language` outside the `Bookkeeping` and `Artificial Language` families. An entry in those
   families, such as the one for the N'Ko written standard, carries no information about a speaker
-  community and is ignored. `shifting` and `threatened` describe transmission between
+  community. Its rating is recorded with state `excluded`, with the languoid's level and family and
+  the reason, and does not bound the speaker value. `shifting` and `threatened` describe transmission between
   generations, not population size, and do not touch the speaker value. Large languages can be
   rated shifting.
 - Historical and extinct languages have no living first-language community. Their speaker axis
@@ -99,9 +102,12 @@ language, such as grammars and descriptive literature, is context and not an inp
   parameters of the method version ([Parameters](#parameters)). Where both witnesses measure a
   language and fall in different bands, the value is the interval spanning both.
 - **Wikipedia** never sets a band on its own, because bot-generated editions can be very large with
-  few editors. It widens the interval only when it disagrees with web text by two or more bands,
-  the edition has at least 100 active users, **and** it holds at most 1,000 content articles per
-  active user. Editions written largely by bots fail the last test. Counts are read from Wikimedia's own
+  few editors. An edition is **eligible** only when it has at least 100 active users and at most
+  1,000 content articles per active user; editions written largely by bots fail the second test.
+  The guard applies wherever Wikipedia can move a verdict: an eligible edition widens the
+  written-material interval when it disagrees with web text by two or more bands, and only an
+  eligible edition counts toward the corroboration path of `large_written_material`. An ineligible
+  edition's counts are recorded with state `excluded`. Counts are read from Wikimedia's own
   statistics, per edition.
 - **Open Library** works are published as context, and count only through the corroboration path
   of the `large_written_material` axis below.
@@ -117,7 +123,8 @@ Every measured value is an interval of bands. Each value records its state:
 | `measured` | A source measures this language's population exactly, or as the sum of separately labeled members | A point |
 | `bounded` | A source's label covers a broader or narrower population than the code | The bound the mapping gives |
 | `observed_absent` | The source's list is complete by construction and the language is not on it | An observed zero |
-| `not_listed` | Official status only: neither CLDR nor Wikidata lists the language as official at any level | `none` |
+| `not_listed` | Official status only: neither CLDR nor Wikidata lists the language as official at any level | `none` to `subnational`: national is ruled out, subnational is unknown |
+| `excluded` | The observation is recorded but enters no verdict, for a reason the method states (an endangerment rating outside the bound's scope, a Wikipedia edition that fails the bot guard) | None; the reason is kept in `mapping_basis` |
 | `not_detected` | A detector able to label the language reported nothing for it | Unknown: the full range |
 | `unmeasured` | The language is outside the source's scope | Unknown: the full range |
 
@@ -215,7 +222,7 @@ profile is published as the three values, not as a sum.
 |---|---|
 | `official` | `national` or `subnational` at both ends of the status interval |
 | `many_speakers` | At least 1,000,000 speakers at both ends of the speaker interval |
-| `large_written_material` | Written material at B or above at both ends; or, as corroboration, Wikipedia at 100,000 or more content articles with at least 100 active users **and** Open Library at 10,000 or more works |
+| `large_written_material` | Written material at B or above at both ends; or, as corroboration, an eligible Wikipedia edition ([Written material](#written-material)) with 100,000 or more content articles **and** Open Library at 10,000 or more works |
 
 **The reference profile** is all three axes `yes`. A language with the reference profile keeps the
 English-scale yardstick, unrelaxed. The size yardsticks for the other seven profiles, and for
@@ -276,7 +283,7 @@ the classification, with its declared mapping.
 | `state` | varchar | no | a [value state](#value-states-and-unknowns) |
 | `label_population` | array(varchar) | no | the ISO 639-3 codes the label is declared to measure |
 | `relation` | varchar | no | a [relation](#code-levels-and-macrolanguages), or `override` |
-| `mapping_basis` | varchar | no | why the declaration holds, with a URL where it rests on a document, or the ruling id for an override |
+| `mapping_basis` | varchar | no | why the declaration holds, with a URL where it rests on a document; the ruling id for an override; for state `excluded`, the reason and the source's own classification (for Glottolog, the languoid's level and family) |
 | `source_url` | varchar | no | the file or endpoint read |
 | `retrieved_at` | timestamp(6) | no | when it was read |
 | `content_sha256` | varchar | no | the digest of what was read |
@@ -350,8 +357,9 @@ Method version 1:
 |---|---|
 | Written-material bands, CLD2 page share | A ≥ 1%; B 0.1% to 1%; C 0.01% to 0.1%; D < 0.01% |
 | Written-material bands, FineWeb-2 words without the Bible share | A ≥ 60 billion; B 4 billion to 60 billion; C 300 million to 4 billion; D < 300 million. Fitted as a log-log line of FineWeb-2 words on CLD2 page share over the languages both measure, rounded to one significant figure |
-| Wikipedia widening | Disagreement of two or more bands; edition with at least 100 active users and at most 1,000 content articles per active user |
+| Wikipedia eligibility | At least 100 active users and at most 1,000 content articles per active user; applies to widening and to the corroboration path |
+| Wikipedia widening | Disagreement of two or more bands, from an eligible edition |
 | Membership line | Below `high` |
 | `many_speakers` | 1,000,000 |
-| `large_written_material` | Band B or above; or Wikipedia ≥ 100,000 content articles with ≥ 100 active users and Open Library ≥ 10,000 works |
+| `large_written_material` | Band B or above; or an eligible Wikipedia edition with ≥ 100,000 content articles and Open Library ≥ 10,000 works |
 | Endangerment bound | AES `moribund`, `nearly extinct`, `extinct`: speakers below 1,000,000; level `language` only, outside the `Bookkeeping` and `Artificial Language` families |
