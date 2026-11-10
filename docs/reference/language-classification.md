@@ -55,7 +55,11 @@ between the two, so the two are measured independently. See [Excluded inputs](#e
   source names the member.
 
 CLDR's list of national official languages is complete by construction, so absence from it rules
-out `national`. It does not rule out `subnational`, which stays unknown unless a source settles it.
+out `national`. For `subnational`, CLDR's regional entries and Wikidata's subdivision statements are
+read together as the register of official languages: a language neither of them lists is `none`,
+with state `not_listed`. This is the one place absence from a list that is not complete by
+construction counts. Official status is a matter of public law that both registers track, and a
+missing entry is corrected by an override ([Overrides](#overrides)), not left as an unknown.
 
 ### Speakers
 
@@ -71,7 +75,9 @@ instead of choosing a definition.
   value, whatever its other dimensions say.
 - **Endangerment bounds speakers only where it implies a small population.** A Glottolog AES rating
   of `moribund`, `nearly extinct` or `extinct` bounds speakers below one million, tagged
-  `bound_from_endangerment`. `shifting` and `threatened` describe transmission between
+  `bound_from_endangerment`. The bound applies only when the code maps to a Glottolog languoid of
+  level `language`. A bookkeeping entry, or an entry for a written standard such as N'Ko, carries no
+  information about a speaker community and is ignored. `shifting` and `threatened` describe transmission between
   generations, not population size, and do not touch the speaker value. Large languages can be
   rated shifting.
 - Historical and extinct languages have no living first-language community. Their speaker axis
@@ -109,6 +115,7 @@ Every measured value is an interval of bands. Each value records its state:
 | `measured` | A source measures this language's population exactly, or as the sum of separately labeled members | A point |
 | `bounded` | A source's label covers a broader or narrower population than the code | The bound the mapping gives |
 | `observed_absent` | The source's list is complete by construction and the language is not on it | An observed zero |
+| `not_listed` | Official status only: neither CLDR nor Wikidata lists the language as official at any level | `none` |
 | `not_detected` | A detector able to label the language reported nothing for it | Unknown: the full range |
 | `unmeasured` | The language is outside the source's scope | Unknown: the full range |
 
@@ -340,7 +347,7 @@ Method version 1:
 | Parameter | Value |
 |---|---|
 | Written-material bands, CLD2 page share | A ≥ 1%; B 0.1% to 1%; C 0.01% to 0.1%; D < 0.01% |
-| Written-material bands, FineWeb-2 words without the Bible share | Calibrated to the CLD2 edges: A ≥ PARAM_A; B PARAM_B to PARAM_A; C PARAM_C to PARAM_B; D < PARAM_C |
+| Written-material bands, FineWeb-2 words without the Bible share | A ≥ 60 billion; B 4 billion to 60 billion; C 300 million to 4 billion; D < 300 million. Fitted as a log-log line of FineWeb-2 words on CLD2 page share over the languages both measure, rounded to one significant figure |
 | Wikipedia widening | Disagreement of two or more bands, edition with at least 100 active users |
 | Membership line | Below `high` |
 | `many_speakers` | 1,000,000 |
