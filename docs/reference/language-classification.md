@@ -234,9 +234,19 @@ profile is published as the three values, not as a sum.
 | `many_speakers` | At least 1,000,000 speakers at both ends of the speaker interval |
 | `large_written_material` | Written material at B or above at both ends; or, as corroboration, an eligible Wikipedia edition ([Written material](#written-material)) with 100,000 or more content articles **and** Open Library at 10,000 or more works |
 
+`large_written_material` has two routes, and they combine under the interval rule. The web-text
+route reads `yes`, `no` or `unresolved` from the written-material interval. The corroboration route
+needs both of its parts: it is `no` when either part is `no`, `yes` when both are `yes`, and
+`unresolved` otherwise. A part with no measurement, such as Open Library before its dump extract,
+is `unresolved`, never `no`. The axis is `yes` when either route is `yes`, `no` when both are `no`,
+and `unresolved` otherwise. Missing evidence for a positive route is not evidence that the route
+fails.
+
 **The reference profile** is all three axes `yes`. A language with the reference profile keeps the
 English-scale yardstick, unrelaxed. The size yardsticks for the other seven profiles, and for
-unresolved profiles, are set in the category's `scoring_recipe` (R-2026-10-30-k), not here. A product
+unresolved profiles, are set in the category's `scoring_recipe` (R-2026-10-30-k), not here. An
+unresolved axis never relaxes a yardstick: a relaxed yardstick needs the profile that earns it to
+hold at both ends. A product
 that spans several languages takes its profile under the recipe's multilingual rule, which this
 classification does not set.
 
