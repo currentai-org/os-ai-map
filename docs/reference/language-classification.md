@@ -50,7 +50,10 @@ between the two, so the two are measured independently. See [Excluded inputs](#e
   language (P37) of a first-level subdivision.
 - **`recognized`**: a state-level P37 statement without CLDR support. It is recorded in its own
   column and does not count as official. Recognition, such as minority-language protection, does
-  not always confer official administrative status.
+  not always confer official administrative status. The column reads `yes` for such a statement,
+  `no` when CLDR lists the language as official at some level, and `unknown` otherwise. `no`
+  therefore means the question is settled by CLDR's listing; it does not mean the language lacks
+  legal recognition.
 - A macrolanguage's status gives each member the interval from `none` to that status, unless a
   source names the member.
 
@@ -66,9 +69,11 @@ the `official` axis unresolved, and that carries through the resource profile.
 ### Speakers
 
 The speaker figure is the **interval** between the CLDR estimate and the Wikidata figure, not the
-larger or smaller of the two. Both sources mix first- and second-language use, and they disagree
-most for languages with large second-language populations. The interval carries that disagreement
-instead of choosing a definition.
+larger or smaller of the two. The sources count differently: CLDR's figure is users, first and
+second language together, and Wikidata's is the statement of preferred rank, which is usually
+first-language speakers. They disagree most for languages with large second-language populations.
+The interval carries that disagreement instead of choosing a definition, and each source's figure,
+definition and provenance stay in the measurements table.
 
 - **A placeholder is not a measurement.** A CLDR figure whose own notes say it is an estimate made
   without a count (for example, a fixed share of a territory's population) is dropped. The
@@ -110,7 +115,10 @@ language, such as grammars and descriptive literature, is context and not an inp
   edition's counts are recorded with state `excluded`. Counts are read from Wikimedia's own
   statistics, per edition.
 - **Open Library** works are published as context, and count only through the corroboration path
-  of the `large_written_material` axis below.
+  of the `large_written_material` axis below. They are read from a reproducible extract of Open
+  Library's monthly data dumps, never from its search API, which Open Library intends for
+  human-facing discovery rather than as a data backend. Until that extract exists, the measure is
+  `unmeasured` for every language and the corroboration path cannot pass on it.
 
 Written material is banded **A** (high) to **D** (very low).
 
@@ -173,8 +181,10 @@ Defaults follow from each source's construction. Any of them can be overridden w
   source reports only through its macrolanguage label (`arb` through `ara`, `cmn` through `zho`,
   `zsm` through `msa`) gets a bound.
 - **Related standards stay separate.** Two codes that name overlapping varieties, such as Filipino
-  (`fil`) and Tagalog (`tgl`), are separate rows with an explicit `related_to` relation. A source
-  that files one under the other is `broader` for it, and no count is shared between them.
+  (`fil`) and Tagalog (`tgl`), or a written standard and its spoken language, such as N'Ko (`nqo`)
+  and Manding (`man`), are separate rows with an explicit `related_to` relation. The relation
+  records a relationship, never an equivalence: a source that files one under the other is
+  `broader` for it, and no count is shared between them.
 - **Historical and constructed languages** carry a flag. The flag does not change any band.
 
 Curators should declare the individual code in a product's `languages` when the dataset was built
@@ -324,10 +334,11 @@ Neither table carries a count of datasets, benchmarks or models per language.
 ### Redistribution
 
 The tables carry ISO 639-3 codes and derived values only, never the code tables' reference names.
-The scope of the classification table is every code of scope individual or macrolanguage in the
-pinned code-table release, provided SIL's terms permit a table keyed on the full code set. If they
-do not, the scope is the codes declared in the map's products. Per-language data is published only
-from sources whose terms permit it.
+On the platform, the classification table covers every code of scope individual or macrolanguage in
+the pinned code-table release, and it stays private there while SIL's terms for a table keyed on
+the full code set are unresolved. Anything redistributed, whether a public table, an export or a
+file in this repository, carries only the codes declared in the map's products, unless SIL confirms
+broader rights. Per-language data is published only from sources whose terms permit it.
 
 ### Refresh
 
