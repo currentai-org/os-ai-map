@@ -92,6 +92,49 @@ def verdict(low_yes: bool, high_yes: bool) -> str:
     return "unresolved"
 
 
+def and3(a: str, b: str) -> str:
+    """Three-valued AND: no if either side is no, yes if both are yes, else unresolved."""
+    if a == "no" or b == "no":
+        return "no"
+    if a == "yes" and b == "yes":
+        return "yes"
+    return "unresolved"
+
+
+def or3(a: str, b: str) -> str:
+    """Three-valued OR: yes if either side is yes, no if both are no, else unresolved."""
+    if a == "yes" or b == "yes":
+        return "yes"
+    if a == "no" and b == "no":
+        return "no"
+    return "unresolved"
+
+
+def threshold_route(rows: list[dict], measure: str, threshold: float, absent_states: tuple[str, ...]) -> str:
+    """yes/no/unresolved for 'some row of the measure is at or above the threshold'.
+
+    measured rows decide at their value; bounded rows decide only when the whole interval lies on one side;
+    rows in absent_states read as no; any other state (unmeasured) leaves the route unresolved.
+    """
+    out = "no"
+    seen = False
+    for r in rows:
+        if r["measure"] != measure:
+            continue
+        seen = True
+        if r["state"] == "measured":
+            v = "yes" if r["value_low"] >= threshold else "no"
+        elif r["state"] == "bounded":
+            lo, hi = r["value_low"] or 0.0, r["value_high"]
+            v = "yes" if lo >= threshold else ("no" if hi is not None and hi < threshold else "unresolved")
+        elif r["state"] in absent_states:
+            v = "no"
+        else:
+            v = "unresolved"
+        out = or3(out, v)
+    return out if seen else "unresolved"
+
+
 def label_name(label: str) -> str:
     return label.split(":", 1)[1] if ":" in label else label
 
@@ -256,19 +299,18 @@ def classify(meas: pl.DataFrame, iso_body: bytes, computed_at: dt.datetime) -> p
         if web is None:
             w_best, w_worst = "A", "D"
             cls, cls_best, cls_worst = "unknown", "unknown", "unknown"
-            large = "unresolved"
+            web_route = "unresolved"
         else:
             w_best, w_worst = BANDS[web[0]], BANDS[web[1]]
             cls_best, cls_worst = CLASS_OF_BAND[w_best], CLASS_OF_BAND[w_worst]
             cls = cls_best if cls_best == cls_worst else "unresolved"
-            large = verdict(web[1] <= 1, web[0] <= 1)
-        # Corroboration: an eligible, measured Wikipedia edition ≥ 100k articles and Open Library ≥ 10k works.
-        wp_ok = any(r["measure"] == "wikipedia_articles" and r["state"] == "measured"
-                    and r["value_low"] >= CORROBORATION_WIKIPEDIA for r in rows)
-        ol_ok = any(r["measure"] == "open_library_works" and r["state"] == "measured"
-                    and r["value_low"] >= CORROBORATION_OPEN_LIBRARY for r in rows)
-        if wp_ok and ol_ok:
-            large = "yes"
+            web_route = verdict(web[1] <= 1, web[0] <= 1)
+        # Interval rule (R-2026-11-10-h), three-valued: large = web OR (Wikipedia AND Open Library).
+        # Wikipedia: an eligible edition >= 100k content articles; observed_absent and excluded (ineligible) read as no.
+        # Open Library: >= 10k works; unmeasured leaves the route unresolved, never no.
+        wp_route = threshold_route(rows, "wikipedia_articles", CORROBORATION_WIKIPEDIA, ("observed_absent", "excluded"))
+        ol_route = threshold_route(rows, "open_library_works", CORROBORATION_OPEN_LIBRARY, ())
+        large = or3(web_route, and3(wp_route, ol_route))
 
         s_best, s_worst, s_state, recognized = official_status(rows)
         official = verdict(s_worst >= 1, s_best >= 1)
