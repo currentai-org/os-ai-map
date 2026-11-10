@@ -77,6 +77,7 @@ both read as authoritative. This applies within a file as much as across them.
 | [`reference/where-scores-live.md`](reference/where-scores-live.md) | Which axis is in the repo, which is in the warehouse, and which tables only look like scores |
 | [`reference/product-copy.md`](reference/product-copy.md) | The prose guide: `description`, `comments`, the score notes, `shows`, and editor-facing prose |
 | [`reference/gap-analysis.md`](reference/gap-analysis.md) | How the map derives gaps from scores |
+| [`reference/language-classification.md`](reference/language-classification.md) | How a language is classified, and how the classification feeds category membership and the size yardsticks |
 | [`reference/queries.md`](reference/queries.md) | Query conventions for the warehouse |
 | [`reference/sibling-invariants.md`](reference/sibling-invariants.md) | What must hold between a product and its siblings |
 | [`reference/notebook-design.md`](reference/notebook-design.md) | The published map's visual style |

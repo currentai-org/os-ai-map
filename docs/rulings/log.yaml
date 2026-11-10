@@ -3034,3 +3034,300 @@ rulings:
     executor: agent
     lands_in: [sources/scores/guardrails-ai.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/988']
+
+  - id: R-2026-11-10-a
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", "#948", R-2026-10-30-d, R-2026-10-30-k]
+    question: >-
+      The 2026-11-02 classification specification derives two views from separate dimensions, and the
+      2026-11-08 draft sums three axes into one A-D class. Which structure does the classification use?
+    ruling: >-
+      Two views from one evidence base. A digital representation class, read from written material only,
+      decides membership. A resource profile of three yes/no axes (official status, speakers, written
+      material) decides the size yardstick. No weighted index, and no A-D sum in the table.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-b
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-a]
+    question: >-
+      How is written material measured, and which sources may set or move its band?
+    ruling: >-
+      FineWeb-2 words without the Bible share are the primary witness, with band edges calibrated to CLD2
+      page shares of 1%, 0.1% and 0.01% over the languages both measure. CLD2 is the second witness where it
+      measures the language. Wikipedia only widens the interval, on a disagreement of two or more bands and
+      an edition with at least 100 active users. Open Library is context. OpenAlex is context only, in
+      neither view. The calibration procedure is approved; the resulting numerical edges are reserved for a
+      separate decision before the method is published.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-c
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      When does a source's silence about a language count as evidence?
+    ruling: >-
+      Absence is an observation only in a list complete by construction: the Wikipedia editions in the site
+      matrix and CLDR's national official languages. A detector that can label a language but reports
+      nothing for it records not_detected, which is treated as unknown, never as small.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-d
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      How is the speaker figure defined, and where do CLDR and Wikidata disagree?
+    ruling: >-
+      The speaker value is the interval between CLDR and Wikidata, not the larger figure. The many_speakers
+      cut is 1,000,000. A CLDR figure its own notes describe as an estimate without a count is dropped. A
+      missing count is unknown, never few.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-e
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      Does Glottolog's endangerment rating stand in for a missing speaker count?
+    ruling: >-
+      Only moribund, nearly extinct and extinct ratings bound speakers below 1,000,000. Shifting and
+      threatened have no effect on the speaker axis.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-f
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      Which statuses count as official, and how does a primary legal text that CLDR has not yet recorded
+      enter?
+    ruling: >-
+      National and subnational official status count. Recognized status is recorded in its own column and
+      does not count. A primary legal text that CLDR has not caught up with enters only as a cited override
+      approved by a ruling.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-g
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      How are macrolanguages, their members and related standards measured?
+    ruling: >-
+      Each source's labels are mapped, per source, to the population they measure, and a broader label gives
+      a bound. A macrolanguage takes what its sources measure at that level, or else its members' range, and
+      never one member's value. A member that a source reports only through its macrolanguage (arb, swh, zsm,
+      cmn) gets a bound, not a borrowed point value. Filipino and Tagalog stay separate codes with an
+      explicit related_to relation. Historical and constructed languages are flagged.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-h
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-01-a]
+    question: >-
+      When does a classification or profile verdict stand?
+    ruling: >-
+      Every value is an interval. A verdict stands only when it holds at both ends of every interval it
+      reads; otherwise it is published as unresolved with both ends, and no consumer collapses it to either
+      end.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-i
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      Which inputs are excluded from the classification?
+    ruling: >-
+      The map's own counts, any count of AI resources such as Hugging Face language tags, Joshi et al.
+      (2020), which may be used for internal validation and is not redistributed, and Ethnologue.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-j
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-10-30-d]
+    question: >-
+      Where is the membership line, and how does a many-language dataset's membership follow from its
+      languages?
+    ruling: >-
+      As a starting rule, not a decision to move any product: the purpose test comes first, then a dataset
+      is in when any target language is robustly below the line and out when every target language is
+      robustly at or above it, with no majority rule. The line is below high. It is confirmed or changed
+      when the membership review table is read.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-k
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-10-30-k]
+    question: >-
+      How does the resource profile link to the size yardsticks?
+    ruling: >-
+      The reference profile (official, many speakers and large written material all yes) keeps the
+      English-scale yardstick unrelaxed. The multipliers for the other profiles, and the rule for
+      multilingual corpora, are not set here; they are set after a scored dry run of every band movement.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-l
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-10-30-d, warehouse/dependencies.yaml]
+    question: >-
+      What do the Artio tables and their contracts look like, and how are they refreshed and versioned?
+    ruling: >-
+      Two Artio tables, measurements and classification, each read through its own contract. A quarterly
+      refresh with every source pinned. method_version is semver. A refresh produces a review diff and never
+      moves a product on its own. This authorizes the method, not any change to Artio production tables.
+    status: in-force
+    executor: maintainer
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: []
+
+  - id: R-2026-11-10-m
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-b]
+    question: >-
+      R-2026-11-10-b adopted the calibration procedure for the written-material bands and reserved the
+      numerical edges. The calibration fits FineWeb-2 words without the Bible share against CLD2 page share
+      over the 137 languages both measure (R² 0.91; 90.5% band agreement; no two-band disagreement). Are its
+      edges adopted?
+    ruling: >-
+      Adopt the fitted edges as the method version 1 thresholds: high at 60 billion words or more, mid at 4
+      billion, low at 300 million, very low below 300 million. Adopting them does not authorize any category
+      migration; membership remains subject to the review R-2026-11-10-j describes.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-n
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-b]
+    question: >-
+      Bot-written Wikipedia editions such as Cebuano's pass a 100-active-user minimum. Is a further guard
+      needed, and where does it apply?
+    ruling: >-
+      A Wikipedia edition is eligible only with at least 100 active users and at most 1,000 content articles
+      per active user. The guard applies wherever Wikipedia can influence a classification or
+      resource-profile verdict: widening the written-material interval, and the corroboration path of
+      large_written_material. An ineligible edition's counts are recorded as excluded.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-o
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-c, R-2026-11-10-f]
+    question: >-
+      No language can read no on the official axis, because only CLDR's national list is complete by
+      construction. Should CLDR's regional entries and Wikidata's subdivision statements be read together as
+      a complete register, so that a language neither lists is not official?
+    ruling: >-
+      No. Absence from CLDR and Wikidata does not establish that a language lacks subnational official
+      status, and combining two incomplete registers does not make them complete. Record not_listed when
+      neither source identifies national or subnational status, and treat subnational status as unknown, not
+      none, unless a complete authoritative jurisdictional source or a cited, ruled determination establishes
+      otherwise. not_listed stays an evidence state, and an unresolved official axis propagates through the
+      resource profile. Fewer fully resolved profiles is preferable to resolving them from unsupported
+      negative evidence; explicitly labeled policy assumptions, with sensitivity analysis, can be considered
+      later if coverage becomes an operational bottleneck.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-p
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-e]
+    question: >-
+      Glottolog files the N'Ko written standard as an extinct language, which bounds its speakers below one
+      million. Is that handled by a general rule or a named exception?
+    ruling: >-
+      A general rule. The endangerment bound applies only to Glottolog entries of level language outside the
+      Bookkeeping and Artificial Language families. An excluded rating stays in the measurements table with
+      the source's classification and the reason it was excluded. No separate N'Ko exception.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-q
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-n]
+    question: >-
+      Under R-2026-11-10-n's cap of 1,000 content articles per active user, the Urdu and Welsh Wikipedia
+      editions, which have substantial editor communities, no longer corroborate large_written_material, and
+      both read no. Is the cap kept, or raised to about 2,100 to restore them?
+    ruling: >-
+      Keep the cap. Urdu and Welsh have measured web-text evidence below the large_written_material
+      threshold, and an editor community alone does not establish that an edition's article count is
+      comparable to a predominantly human-authored collection. Raising the cap to restore these cases would be
+      retrospective threshold tuning; the consistent rule is preferred even where it is counterintuitive. The
+      method version 1 dry-run distribution, with 242 fully resolved resource profiles, is accepted. Changes
+      to product membership and capability bands still need separate review.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
