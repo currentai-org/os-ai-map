@@ -235,9 +235,111 @@ def summary(rows: list[dict], declared: dict[str, list[str]]) -> str:
     return "\n".join(lines)
 
 
+# The categories whose membership turns on the language line (R-2026-10-30-d).
+LANGUAGE_CATEGORIES = ("language_specific_datasets", "language_specific_eval_sets")
+BELOW_LINE = ("mid", "low", "very_low")  # the membership line is `high` (R-2026-11-10-j)
+
+
+def language_verdict(code: str, classes: dict[str, dict]) -> str:
+    """`below`, `at_or_above` or `undecided` for one target language, robust across its interval."""
+    row = classes.get(code)
+    if row is None:
+        return "undecided"
+    if row["representation_class_best"] in BELOW_LINE:
+        return "below"
+    if row["representation_class_worst"] == "high":
+        return "at_or_above"
+    return "undecided"
+
+
+def product_verdict(targets: list[str], classes: dict[str, dict]) -> tuple[str, dict[str, list[str]]]:
+    """The language half of the membership rule for one product's target languages.
+
+    `in` when any target is robustly below the line, `out` when every target is robustly at or
+    above it, and `purpose_test` otherwise, in which case the purpose test decides alone. There
+    is no majority rule.
+    """
+    by: dict[str, list[str]] = {"below": [], "at_or_above": [], "undecided": []}
+    for code in targets:
+        by[language_verdict(code, classes)].append(code)
+    if by["below"]:
+        return "in", by
+    if targets and len(by["at_or_above"]) == len(targets):
+        return "out", by
+    return "purpose_test", by
+
+
+def category_of(root: Path = ROOT) -> dict[str, str]:
+    owner: dict[str, str] = {}
+    for path in sorted((root / "sources" / "categories").glob("*.yaml")):
+        record = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for slug in record.get("products") or []:
+            owner[slug] = record.get("name", path.stem)
+    return owner
+
+
+def pivot_languages(slug: str, root: Path = ROOT) -> list[str]:
+    path = root / "sources" / "scores" / f"{slug}.yaml"
+    if not path.exists():
+        return []
+    score = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return list((score.get("capability") or {}).get("pivot_languages") or [])
+
+
+def membership_review(classes: dict[str, dict], root: Path = ROOT) -> list[dict]:
+    """One row per product that declares `languages`: its category and the language half's verdict."""
+    owner = category_of(root)
+    review = []
+    for path in sorted((root / "sources" / "products").glob("*.yaml")):
+        record = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        languages = record.get("languages") or []
+        if not languages:
+            continue
+        pivots = set(pivot_languages(path.stem, root))
+        targets = [code for code in languages if code not in pivots]
+        verdict, by = product_verdict(targets, classes)
+        category = owner.get(path.stem, "")
+        review.append({
+            "slug": path.stem,
+            "category": category,
+            "targets": len(targets),
+            "verdict": verdict,
+            "below": by["below"],
+            "at_or_above": by["at_or_above"],
+            "undecided": by["undecided"],
+            "in_language_category": category in LANGUAGE_CATEGORIES,
+        })
+    return review
+
+
+def render_review(review: list[dict], classes: dict[str, dict]) -> str:
+    """The review as markdown: where the language half disagrees with today's category."""
+    def codes(values: list[str], limit: int = 8) -> str:
+        shown = ", ".join(
+            f"`{c}` ({classes[c]['representation_class']})" if c in classes else f"`{c}`"
+            for c in values[:limit]
+        )
+        return shown + (f" and {len(values) - limit} more" if len(values) > limit else "")
+
+    lines = ["| Product | Category | Targets | Language half | Below the line | At or above | Undecided |",
+             "|---|---|---|---|---|---|---|"]
+    for row in review:
+        flagged = (row["in_language_category"] and row["verdict"] != "in") or (
+            not row["in_language_category"] and row["verdict"] != "out")
+        if not flagged:
+            continue
+        lines.append(
+            f"| `{row['slug']}` | {row['category']} | {row['targets']} | {row['verdict']} | "
+            f"{codes(row['below'])} | {codes(row['at_or_above'])} | {codes(row['undecided'])} |"
+        )
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--check", action="store_true", help="check the contract only")
+    parser.add_argument("--membership-review", action="store_true",
+                        help="print the products whose language half disagrees with their category")
     args = parser.parse_args(argv)
 
     from build.warehouse import query
@@ -250,7 +352,10 @@ def main(argv: list[str] | None = None) -> int:
     if errors:
         print(f"{len(errors)} contract failure(s)", file=sys.stderr)
         return 1
-    if not args.check:
+    if args.membership_review:
+        classes = {row["iso639_3"]: row for row in rows}
+        print(render_review(membership_review(classes), classes))
+    elif not args.check:
         print(summary(rows, declared))
     print(f"language_representation.classification: {len(rows)} rows, contract holds")
     return 0
