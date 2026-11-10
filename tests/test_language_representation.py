@@ -151,3 +151,13 @@ def test_reader_is_an_audit_root_reading_the_table():
     assert "build/language_representation.py" in assets.AUDIT_ROOTS
     internal, _ = assets.reads_of(assets.ROOT / "build" / "language_representation.py")
     assert internal == {"language_representation.classification"}
+
+
+def test_large_written_material_no_needs_the_web_route_to_fail():
+    errors = row_errors(good_row(large_written_material="no", written_best="B", written_worst="C",
+                                 representation_class="unresolved",
+                                 representation_class_best="mid", representation_class_worst="low"))
+    assert errors == ["kor: large_written_material is no but written material reaches B"]
+    assert row_errors(good_row(large_written_material="no", written_best="C", written_worst="C",
+                               representation_class="low", representation_class_best="low",
+                               representation_class_worst="low")) == []

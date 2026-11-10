@@ -168,6 +168,13 @@ def row_errors(row: dict) -> list[str]:
     if cls == "unknown" and not (best == worst == "unknown"):
         errors.append(f"{where}: unknown class has ends {best}..{worst}")
 
+    # `no` needs both routes to fail; the web-text route fails only when the written interval's best
+    # end is below B (docs/reference/language-classification.md, "Resource profile").
+    if row["large_written_material"] == "no" and row["written_best"] in ("A", "B"):
+        errors.append(
+            f"{where}: large_written_material is no but written material reaches {row['written_best']}"
+        )
+
     low, high = row["speakers_low"], row["speakers_high"]
     if not is_null(low) and not is_null(high) and low > high:
         errors.append(f"{where}: speaker interval runs backwards")
