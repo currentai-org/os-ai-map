@@ -76,8 +76,9 @@ instead of choosing a definition.
 - **Endangerment bounds speakers only where it implies a small population.** A Glottolog AES rating
   of `moribund`, `nearly extinct` or `extinct` bounds speakers below one million, tagged
   `bound_from_endangerment`. The bound applies only when the code maps to a Glottolog languoid of
-  level `language`. A bookkeeping entry, or an entry for a written standard such as N'Ko, carries no
-  information about a speaker community and is ignored. `shifting` and `threatened` describe transmission between
+  level `language` outside the `Bookkeeping` and `Artificial Language` families. An entry in those
+  families, such as the one for the N'Ko written standard, carries no information about a speaker
+  community and is ignored. `shifting` and `threatened` describe transmission between
   generations, not population size, and do not touch the speaker value. Large languages can be
   rated shifting.
 - Historical and extinct languages have no living first-language community. Their speaker axis
@@ -98,8 +99,9 @@ language, such as grammars and descriptive literature, is context and not an inp
   parameters of the method version ([Parameters](#parameters)). Where both witnesses measure a
   language and fall in different bands, the value is the interval spanning both.
 - **Wikipedia** never sets a band on its own, because bot-generated editions can be very large with
-  few editors. It widens the interval only when it disagrees with web text by two or more bands
-  **and** the edition has at least 100 active users. Counts are read from Wikimedia's own
+  few editors. It widens the interval only when it disagrees with web text by two or more bands,
+  the edition has at least 100 active users, **and** it holds at most 1,000 content articles per
+  active user. Editions written largely by bots fail the last test. Counts are read from Wikimedia's own
   statistics, per edition.
 - **Open Library** works are published as context, and count only through the corroboration path
   of the `large_written_material` axis below.
@@ -348,8 +350,8 @@ Method version 1:
 |---|---|
 | Written-material bands, CLD2 page share | A ≥ 1%; B 0.1% to 1%; C 0.01% to 0.1%; D < 0.01% |
 | Written-material bands, FineWeb-2 words without the Bible share | A ≥ 60 billion; B 4 billion to 60 billion; C 300 million to 4 billion; D < 300 million. Fitted as a log-log line of FineWeb-2 words on CLD2 page share over the languages both measure, rounded to one significant figure |
-| Wikipedia widening | Disagreement of two or more bands, edition with at least 100 active users |
+| Wikipedia widening | Disagreement of two or more bands; edition with at least 100 active users and at most 1,000 content articles per active user |
 | Membership line | Below `high` |
 | `many_speakers` | 1,000,000 |
 | `large_written_material` | Band B or above; or Wikipedia ≥ 100,000 content articles with ≥ 100 active users and Open Library ≥ 10,000 works |
-| Endangerment bound | AES `moribund`, `nearly extinct`, `extinct`: speakers below 1,000,000 |
+| Endangerment bound | AES `moribund`, `nearly extinct`, `extinct`: speakers below 1,000,000; level `language` only, outside the `Bookkeeping` and `Artificial Language` families |
