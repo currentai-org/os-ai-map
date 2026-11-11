@@ -56,30 +56,33 @@ adoption:
     http_status: 200
     content_sha256: bf3d36a375881972a1c9a6dbf137a67c567f65d9ba4eec6de47efee5733159ff
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
   basis_detail: coverage and downstream use for Khmer speech
   value: About 728 hours of Khmer read from written prompts by 12 native speakers with curated transcripts,
-    documented in a detailed card without a paper, with community Qwen3-ASR and Whisper Khmer models trained
-    on it.
+    documented in a detailed card without a paper, with a community Qwen3-ASR Khmer recognizer whose card names
+    it as training data.
   confidence: medium
   note: The corpus dwarfs OpenSLR's earlier Khmer speech-text set of under four hours, pairing prompted readings
-    with curated transcripts, and community Khmer recognizers built on Whisper and Qwen are trained on it.
-    At about seven hundred hours from twelve speakers reading prepared sentences it is small beside English
-    speech corpora of hundreds of thousands of hours, and IndicVoices draws spontaneous speech from tens of
-    thousands of speakers.
-  relative_to: indicvoices
-  relation: two_below
-  last_verified: '2026-09-24'
+    with curated transcripts, and community Khmer recognizers are trained on it, one of them naming it as its
+    training data. At about seven hundred hours from twelve speakers reading prepared sentences it is small
+    beside English speech corpora of hundreds of thousands of hours. Its band is measured against what Khmer
+    has, an official language with more than a million speakers and a small written web, and on that yardstick
+    it sits one below the larger Kazakh Speech Corpus 2.
+  relative_to: kazakh-speech-corpus-2
+  relation: one_below
+  last_verified: '2026-11-11'
   sources:
-  - url: https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset/raw/main/README.md
-    shows: '"727.94 hours of manually curated speech-text pairs by native speakers"; "there was only one Khmer
-      speech-text dataset: OpenSLR 42 with 3.97 hours"'
-    accessed: '2026-09-24'
-    http_status: 200
-    content_sha256: 4b7c87b25ae2921e3b1dc088be9bf858ac596c3066fb63e26933c83f9c25e2d4
   - url: https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset
-    shows: 'Number of rows: 450,396; Models trained or fine-tuned: seanghay/Qwen3-ASR-0.6B-Khmer, sengtha/whisper-base-khmer'
-    accessed: '2026-09-24'
+    shows: '"727.94 hours of manually curated speech-text pairs by native speakers"; "there was only one Khmer
+      speech-text dataset:"; "with 3.97 hours of speech-text pairs (male only)"; the "Models trained or fine-tuned
+      on" panel lists "seanghay/Qwen3-ASR-0.6B-Khmer".'
+    accessed: '2026-11-11'
     http_status: 200
-    content_sha256: 2521039619c634cd06f01a9c88b5b0340437edab9dd8c5481eb2b485c03d1479
+    content_sha256: 2e84a35d141214bac177b634c4de55c93cc3f38c8bbad2f7fb6942371595eeca
+  - url: https://huggingface.co/seanghay/Qwen3-ASR-0.6B-Khmer/raw/main/README.md
+    shows: '"A Khmer (ខ្មែរ) automatic speech recognition model, fine-tuned from"; "~700 hours of Khmer speech
+      from the"; trained on DDD-Cambodia/khmer-speech-dataset.'
+    accessed: '2026-11-11'
+    http_status: 200
+    content_sha256: 10741fd3ccc26de1438e0d23edc3991cbf141b85eb960cb5053a82fc13165f08

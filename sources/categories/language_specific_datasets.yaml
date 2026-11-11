@@ -53,6 +53,23 @@ scoring_recipe:
     penalty: no open corpus here reaches the scale a frontier English or Chinese model is
     trained on, and the only one that does, Sarvam-2T, is withheld.
 
+    Since 2026-11-11 the caps measure each language against its own resources rather than
+    against English alone (R-2026-10-30-k, R-2026-11-11-h). The resource profile is read from
+    the per-language classification, currentai.language_representation.classification
+    (docs/reference/language-classification.md): official status, at least a million speakers,
+    and a large body of written material, each yes, no or unresolved. A single-language
+    product's thresholds are divided by a multiplier set by how many of the three are confirmed
+    yes. Text and parallel text: 1, 10, 100 and 1,000 for three, two, one and none. Speech: 1,
+    10, 30 and 100. Three confirmed is the reference profile and keeps the English-scale
+    yardstick. An unresolved axis earns no relaxation: the cap uses the least relaxed profile
+    the evidence allows, and the more generous reading is recorded in the product's evidence. A
+    product declaring more than one language keeps the unrelaxed caps, because a total over
+    several languages says nothing about any one of them (M2). A relaxed cap still never raises
+    a band above what the rungs give, and a peer comparison names a product judged on the same
+    yardstick, or the band carries no relative_to and is justified from the rungs. The scored
+    proposal and the rung reading of each product that moved are in
+    docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md.
+
     Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
     at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
     over the one-third review trigger; it is where the caps put most national corpora and speech
@@ -65,6 +82,12 @@ scoring_recipe:
     bands (R-2026-11-07-b), so the distribution above, taken at promotion, is history. The 75
     that remain: 10 at 4, 27 at 3, 24 at 2, 14 at 1, none at 5. The six at 5 were all evaluation
     sets, and no corpus here reaches 5 under the size caps.
+    The language-adjusted caps of 2026-11-11 moved nine single-language corpora up (Icelandic
+    Gigaword, Korpus Malti, CorpusNós, Latxa, Nepali Text Corpus, the Khmer ASR Cultural
+    Dataset, Kazakh Speech Corpus 2, the Northern Sámi web corpus and ViXSD): 12 at 4, 31 at 3,
+    21 at 2, 11 at 1. Rung 3 now holds 31 of 75, over the one-third review trigger, because the
+    caps that held national corpora at 1 and 2 against English now let most of them reach the
+    rungs' 3; the rungs, not size, are what separate them there.
 
     The category carries three corpora held back from open release - Meta's unreleased MMS
     recordings, Sarvam-2T, and Te Hiku Media's te reo Māori corpus, which is granted on request
