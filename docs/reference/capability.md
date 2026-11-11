@@ -721,8 +721,9 @@ computes the band from the record's `language_coverage`, `own_components`, the l
 (`sources/lineage.yaml`) and the rulings, using the rules in
 [How the depth ladder reads it](#how-the-depth-ladder-reads-it),
 [Evidence status](#evidence-status), [Component lineage](#component-lineage) and
-[Own components](#own-components). The roster was frozen at publication to the 22 calibrated sets,
-and the category's boundary is provisional (R-2026-11-07-b).
+[Own components](#own-components). The roster was frozen at publication to the 22 calibrated sets
+(R-2026-11-07-b). It changes only by a recorded membership ruling, read from the per-language
+classification: IndoNLU moved to `benchmark_eval_data` on 2026-11-11 (R-2026-11-11-b), leaving 21.
 
 ### Three things the band is not the same as
 
