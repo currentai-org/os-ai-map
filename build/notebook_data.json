@@ -65728,6 +65728,137 @@
           "version_note": "The Hub README is empty; the description follows the paper and the gating terms."
         },
         {
+          "slug": "kmmlu",
+          "product": "KMMLU",
+          "org_slug": "hae-rae",
+          "org": "HAE-RAE",
+          "type": "dataset",
+          "languages": [
+            "kor"
+          ],
+          "description": "KMMLU tests language models on 35,030 expert-level multiple-choice questions in Korean across 45 subjects, from the humanities to STEM. The questions come from original Korean exams, mostly professional license tests, rather than translations of English benchmarks. The release adds a 208,522-question training split and 225 few-shot examples. Researchers from Yonsei University, EleutherAI, NAVER Cloud and other labs built it, and the HAE-RAE team publishes it on the Hub.",
+          "openness": {
+            "score": 2,
+            "class": "restricted",
+            "components": "license:cc-by-nd-4.0(card metadata and API tag);access:public(ungated on the Hub);dataset_card:present(card describes the benchmark, its splits and statistics, and links the paper)",
+            "confidence": "high",
+            "note": "The questions download freely, but the license forbids distributing changed versions, so a translation or a derived benchmark cannot be shared. The card and paper describe how the questions were collected.",
+            "last_verified": "2026-11-11",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HAERAE-HUB/KMMLU/raw/main/README.md",
+                "shows": "Card metadata \"license: cc-by-nd-4.0\"; body: \"KMMLU is collected from original Korean exams\"; statistics table \"Train 208,522\", \"Validation 225\", \"Test 35,030\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "b561eccc2880a3704c16d0069746c14cb786f0eca19178afb5df1989e0a126ec",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/HAERAE-HUB/KMMLU",
+                "shows": "API JSON: \"gated\":false; tag license:cc-by-nd-4.0.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "198163031eed54f09e965bde719c33e1795f948c867afd73a8917dfd6668f507",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads of the Hub repository. Evaluation harnesses fetch a benchmark on each run, so the figure counts runs rather than groups.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/HAERAE-HUB/KMMLU",
+                "shows": "\"downloads\":11793 for HAERAE-HUB/KMMLU.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "198163031eed54f09e965bde719c33e1795f948c867afd73a8917dfd6668f507"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "evaluation_depth",
+            "basis_detail": "depth ladder: corroborated median of per-language task bands, count-based and provisional",
+            "value": "Depth band 5 of 5, provisional and count-based: the median corroborated band over its target languages, 1 of 1 measured, across 1 task. Face value 5; best original band 5.",
+            "confidence": "medium",
+            "note": "In its one target language, KMMLU's test has more than sixty-four hundred items that count toward depth. An item count says how much a set can test, not how precisely it ranks models.",
+            "last_verified": "2026-11-11",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2402.11548",
+                "shows": "Abstract: \"We propose KMMLU, a new Korean benchmark with 35,030 expert-level multiple-choice questions across 45 subjects ranging from humanities to STEM\"; \"KMMLU is collected from original Korean exams\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "75af60019be893b76708702650bf51a25601a48bbd50c4e2fc5509cee5bc5104"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2402.11548",
+                "shows": "\"all sourced from original Korean exams without any translated content\"; \"We predominantly source the questions from Korean License Tests\"; \"This filtering reduces the dataset by 34% to 243,777 questions\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "f46cf09b50dd6a7f7b15825e3192e9541dddfd02816c1e6e50167a76286b79fa"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=HAERAE-HUB/KMMLU",
+                "shows": "The Hub's row counts over 45 subject configurations, complete (\"partial\":false): test 35,030, dev 225 and train 208,522 rows, 243,777 in all.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "b599d7eb54445ca22dc0e814d582952aa1b457831cc69904cd63cd1fa3210a85"
+              }
+            ],
+            "depth": {
+              "status": "provisional",
+              "unresolved_reason": null,
+              "unresolved_reason_text": null,
+              "face_value": "5",
+              "best_original": "5",
+              "task_count": 1,
+              "completeness": {
+                "measured": 1,
+                "targets": 1
+              },
+              "cap": {
+                "binds": false,
+                "languages": 0,
+                "detail": {}
+              },
+              "sensitivity": {
+                "unverified_as_independent": "5"
+              }
+            }
+          },
+          "overall_score": 4.4,
+          "overall_basis": "adoption_and_capability",
+          "tier": "strong",
+          "maturity": 4.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-11",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-11",
+                "reason": "The initial level was set on 2026-11-11 from a hand-read count of Hugging Face downloads of HAERAE-HUB/KMMLU, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
           "slug": "lahaja",
           "product": "Lahaja",
           "org_slug": "ai4bharat",
@@ -149785,6 +149916,17 @@
         "h2o-3"
       ]
     },
+    "hae-rae": {
+      "slug": "hae-rae",
+      "display_name": "HAE-RAE",
+      "type": "lab",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "kmmlu"
+      ]
+    },
     "hailo": {
       "slug": "hailo",
       "display_name": "Hailo Technologies",
@@ -155394,7 +155536,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1152,
+  "n_total": 1153,
   "generated": "2026-11-11",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -155407,8 +155549,8 @@
       "total": 60613,
       "matched": 1366,
       "overlap": 673,
-      "scored": 1152,
-      "scored_outside": 479,
+      "scored": 1153,
+      "scored_outside": 480,
       "uncategorized": 59247
     },
     "top": [
