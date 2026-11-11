@@ -108,6 +108,10 @@ graph LR
   currentai__identity__membership_edges[currentai.identity.membership_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
   currentai__identity__org_edges[currentai.identity.org_edges]:::dep --> build/identity_eval__py[build/identity_eval.py]:::audit
   currentai__identity__org_edges[currentai.identity.org_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
+  currentai__language_representation__classification[currentai.language_representation.classification]:::dep --> build/language_representation__py[build/language_representation.py]:::audit
+  currentai__language_representation__classification_src[currentai.language_representation.classification_src]:::dep --> currentai__language_representation__classification[currentai.language_representation.classification]:::dep
+  currentai__language_representation__measurements[currentai.language_representation.measurements]:::dep --> currentai__language_representation__classification_src[currentai.language_representation.classification_src]:::dep
+  currentai__language_representation__measurements_src[currentai.language_representation.measurements_src]:::dep --> currentai__language_representation__measurements[currentai.language_representation.measurements]:::dep
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/apply_scores__py[build/apply_scores.py]:::audit
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/check_parity__py[build/check_parity.py]:::audit
   currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep --> currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep

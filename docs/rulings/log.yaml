@@ -3331,3 +3331,82 @@ rulings:
     executor: agent
     lands_in: [docs/reference/language-classification.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-r
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-n, R-2026-11-10-q]
+    question: >-
+      The built measurements model queried Open Library's /search.json once per MARC language code each
+      quarter, at up to three requests per second. Open Library documents that endpoint and that rate for
+      identified clients, but its robots.txt disallows /search. Is the scheduled API integration approved?
+    ruling: >-
+      Keep Open Library in the method; do not approve the scheduled API integration. Open Library's usage
+      policy describes the API as intended for human-facing discovery, not as a bulk data backend, so its
+      rate limit is not permission for quarterly automated harvesting. Read Open Library from a reproducible
+      extract of its monthly data dumps, or obtain explicit permission for scheduled queries. Until then the
+      scheduled computation omits Open Library corroboration, and Latin's Open Library-dependent verdict is
+      flagged as provisional rather than treated as approved. Any future direct use must also identify the
+      project with the contact address Open Library requires for its higher rate limit.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-s
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-l]
+    question: >-
+      The platform classification table covers every ISO 639-3 individual and macrolanguage code while
+      SIL's terms for a table keyed on the full code set are unresolved. What scope may be redistributed?
+    ruling: >-
+      Keep the broader table private on the platform while the terms are unresolved. Any redistribution uses
+      the declared-code fallback, the codes the map's products declare, unless SIL confirms broader rights.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-t
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-d, R-2026-11-10-g, R-2026-11-10-f]
+    question: >-
+      Three implementation readings in the built tables: the speaker interval joins CLDR users (L1 and L2)
+      with Wikidata's preferred-rank figure; N'Ko is related_to Manding; and recognized reads yes, no or
+      unknown. Do they stand?
+    ruling: >-
+      Accept all three. The speaker interval stands, with each source's differing definition and provenance
+      retained. N'Ko and Manding are related as a relationship, not an equivalence. The three-state
+      recognized column stands, documented so that no is not read as a language lacking legal recognition.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-u
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-h, R-2026-11-10-n, R-2026-11-10-r]
+    question: >-
+      With Open Library unmeasured, 15 languages whose eligible Wikipedia edition passes the corroboration
+      route read large_written_material from web text alone, so 13 read no. Is the missing Open Library part
+      a failed route or an unknown one?
+    ruling: >-
+      Unknown. large_written_material is web text at B or above, or an eligible Wikipedia edition with
+      100,000 articles and Open Library with 10,000 works, combined under the interval rule: absence of
+      evidence for a positive route is not evidence that it fails. The 15 affected languages (lat, afr,
+      aze, bel, hye, kat, mar, mkd, mya, sqi, tam, tel, uzb, lav, srp), and every other language whose
+      corroboration route turns only on the missing Open Library part, read unresolved until the dump
+      extract is available, unless another independent source establishes yes. Their representation classes
+      are unchanged. An unresolved profile is never used to assign a relaxed yardstick. The scored yardstick
+      dry run waits until the dump extract and these verdicts are settled.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
