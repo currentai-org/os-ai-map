@@ -202,24 +202,34 @@ The sensitivity analysis showed three byte-sized corpora's token estimates under
 Nepali Text Corpus, the Llamacha Quechua corpus and the Northern Sámi web corpus. This PR relabels
 them, for example "27.5 GB (about 6.9B tokens, estimated)". The bands it computed were correct.
 
-## Decisions for the maintainer
+## Decisions (2026-11-11)
 
-None is approved by this record.
+The maintainer ruled on all five (R-2026-11-11-h to -m). This record is the decision record; the
+changes are made in a separate implementation PR.
 
-1. **Adopt S3 with M2 for the nine products above?**
-2. **The three contested rung readings:**
-   - Icelandic Gigaword Corpus: 4 or 3.
-   - Kazakh Speech Corpus 2: 4 or 3.
-   - Khmer ASR Cultural Dataset: 4 or 2.
+1. **S3 with M2 is adopted as scoring policy (R-2026-11-11-h).**
+   - Multipliers, keyed on the number of confirmed `yes` axes (three, two, one, none):
+     - text and parallel text: 1×, 10×, 100×, 1,000×;
+     - speech: 1×, 10×, 30×, 100×.
+   - Unresolved axes earn no relaxation.
+   - Multilingual products keep today's caps.
+   - The nine bands in the table above are approved. Latxa Corpus publishes 3, the least-relaxed
+     score, and keeps its range to 4 in the evidence.
+2. **The three contested rung readings are 4 (R-2026-11-11-i):** Icelandic Gigaword Corpus, Kazakh
+   Speech Corpus 2 and the Khmer ASR Cultural Dataset.
+   - A paper is not required for a documented resource.
+   - A community fine-tune is legitimate downstream use when its attribution to the dataset is
+     explicit and verifiable. A generic Hugging Face tag alone is not enough.
+3. **Peer relations (R-2026-11-11-j).** Each of the nine is re-pointed to a same-modality,
+   same-yardstick peer where a defensible comparison exists. Otherwise `relative_to` is removed and
+   the band is justified from the rubric directly. Weak comparisons are not invented. Outgoing
+   relations and references from other products, including SMUGRI data and L3Cube-MahaCorpus, are
+   both checked.
+4. **The eight set-aside products do not block S3 with M2 (R-2026-11-11-k).** Their five
+   source-accuracy questions go to a separate re-verification pass. This does not approve their
+   current recorded sizes or bands.
+5. **Glot500-c's cap reads the 308 GB public release, not the 600 GB assembled corpus
+   (R-2026-11-11-l).** The full corpus is context only.
 
-   The question underneath is whether Hub-listed community fine-tunes count as downstream use, and
-   whether a detailed card without a paper counts as documentation.
-
-   **Recommendation:** count both. Rung 4 already names community fine-tunes, and the recipe asks
-   for documentation, not a paper.
-3. **Peer relations:** re-point to same-yardstick peers, or make the band a root where no such peer
-   exists?
-4. **The set-aside products:** accept that under M2 they do not block adoption, and route the five
-   record-accuracy questions to `refresh-category`?
-5. **Glot500-c:** does the cap measure the full corpus or the redistributable release? This matters
-   only to a `refresh-category` pass, not to S3 with M2.
+The maintainer also lifted the hold on #951 for revision against the adopted yardsticks
+(R-2026-11-11-m).
