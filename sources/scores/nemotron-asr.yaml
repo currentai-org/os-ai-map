@@ -1,0 +1,96 @@
+product: nemotron-asr
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: .nemo and safetensors checkpoints, ungated
+    data:
+      value: partial
+      detail: Granary, MLS, Common Voice, FLEURS and VoxPopuli are public; the NVIDIA Riva multilingual training
+        set is proprietary
+    code:
+      value: partial
+      detail: NeMo inference and streaming scripts and a fine-tuning guide; no training recipe for this model is
+        linked
+    license:
+    - name: OpenMDW-1.1
+      detail: Nemotron 3.5 ASR weights
+    - name: NVIDIA-Open-Model-License
+      detail: English Nemotron ASR Streaming weights
+  confidence: medium
+  note: Nemotron ASR's weights download freely under licenses that ask for attribution and impose no limit on who
+    may use them or at what scale. NVIDIA names the public speech corpora in the mixture, but part of it is the
+    proprietary Riva training set, and the card points to NeMo for inference and fine-tuning rather than publishing
+    the recipe that trained this model, so it cannot be reproduced from what is released.
+  raw: weights:open(.nemo and safetensors checkpoints, ungated);data:partial(Granary, MLS, Common Voice, FLEURS
+    and VoxPopuli are public; the NVIDIA Riva multilingual training set is proprietary);code:partial(NeMo inference
+    and streaming scripts and a fine-tuning guide; no training recipe for this model is linked);license:OpenMDW-1.1(Nemotron
+    3.5 ASR weights)+NVIDIA-Open-Model-License(English Nemotron ASR Streaming weights)
+  last_verified: '2026-10-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/nemotron-3.5-asr-streaming-0.6b
+    shows: '"gated":false; cardData "license":"other", "license_name":"openmdw-1.1"; files include nemotron-3.5-asr-streaming-0.6b.nemo
+      and model.safetensors.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: d5e1fb9ba3b56226b6db0a85653bad10fe6a78ad67e42d1a9ce60b53082d1078
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b/raw/main/README.md
+    shows: '"The training data is a dynamic blend of public and proprietary internal datasets ... including: NVIDIA
+      Riva multilingual ASR training set (Proprietary), NVIDIA Granary, Multilingual LibriSpeech (MLS), Mozilla
+      Common Voice, FLEURS, VoxPopuli / Europarl-ASR"; "To train, fine-tune or perform inference with this model,
+      install NVIDIA NeMo"; links the cache-aware streaming inference script and a fine-tuning blog post.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: a3344caadf796c084c6b90a9fa5978068fd45e3a019790bebe50489bb3c0f7b7
+    establishes:
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/nvidia/nemotron-speech-streaming-en-0.6b
+    shows: '"gated":false; cardData "license":"other", "license_name":"nvidia-open-model-license"; files include
+      nemotron-speech-streaming-en-0.6b.nemo and model.safetensors.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: 52eea70887cd98ba1a3635fac1686204bae7cbf2e94760ca658799ad11819617
+    establishes:
+    - weights
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the two declared checkpoints, led by the multilingual model. Downloads
+    count file fetches, not transcriptions.
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/nemotron-3.5-asr-streaming-0.6b
+    shows: '"downloads":977899 for nvidia/nemotron-3.5-asr-streaming-0.6b.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: d5e1fb9ba3b56226b6db0a85653bad10fe6a78ad67e42d1a9ce60b53082d1078
+  - url: https://huggingface.co/api/models/nvidia/nemotron-speech-streaming-en-0.6b
+    shows: '"downloads":107522 for nvidia/nemotron-speech-streaming-en-0.6b.'
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: 52eea70887cd98ba1a3635fac1686204bae7cbf2e94760ca658799ad11819617
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: low
+  note: Nemotron ASR reports word error rates on FLEURS under its own text normalization, while the category places
+    recognizers by the Open ASR Leaderboard, which does not list it. With no shared benchmark against parakeet or
+    qwen-asr, it is left unplaced rather than placed by guesswork.
+  last_verified: '2026-10-27'
+  sources:
+  - url: https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b/raw/main/README.md
+    shows: Per-language FLEURS WER tables across chunk sizes, "WER/CER are computed after text normalization that
+      aligns the reference and hypothesis"; no Open ASR Leaderboard result is cited.
+    accessed: '2026-10-27'
+    http_status: 200
+    content_sha256: a3344caadf796c084c6b90a9fa5978068fd45e3a019790bebe50489bb3c0f7b7

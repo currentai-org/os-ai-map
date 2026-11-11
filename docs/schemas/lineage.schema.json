@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/currentai-org/os-ai-map/docs/schemas/lineage.schema.json",
+  "title": "Component lineage registry",
+  "description": "sources/lineage.yaml: where the items of each evaluation component come from, so the depth ladder can tell independent corroboration from dependent evidence (R-2026-11-02-h, -i, -j, -u). One canonical record per component, not per suite that imports it. Pairwise statuses (independent, dependent, unverified) are derived by build/lineage.py, never written by hand except as a cited `relationships` entry. docs/reference/capability.md, \"Component lineage\", is normative.",
+  "type": "object",
+  "required": ["version", "collections", "components", "relationships"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "collections": {
+      "type": "array",
+      "description": "Named collections of underlying source examples: the sentences, passages or questions that components draw their items from. Two components whose items come from one collection are dependent (R-2026-11-02-h). A collection is a specific set of examples, such as FLORES-200's sentences or MMLU's questions, never a broad domain or corpus provider such as Wikipedia, which goes in a component's `domains`.",
+      "items": {"$ref": "#/$defs/collection"}
+    },
+    "components": {
+      "type": "array",
+      "description": "One canonical record per evaluation component, keyed by the `component` slug that capability.language_coverage entries use.",
+      "items": {"$ref": "#/$defs/component"}
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Explicit, cited pairwise statements for cases the automatic rules cannot resolve, such as a paper that compares two sets directly. An explicit relationship takes precedence over the derived status for the pair it names.",
+      "items": {"$ref": "#/$defs/relationship"}
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{3}$",
+      "description": "An ISO 639-3 code, checked against sources/snapshots/iso-639-3.tab by build.validate."
+    },
+    "task": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "A task class as capability.language_coverage names it, in underscore_form (machine_translation, knowledge_exam)."
+    },
+    "split": {
+      "enum": ["train", "dev", "validation", "test", "devtest", "official_eval"]
+    },
+    "source": {
+      "type": "object",
+      "description": "One citation, in the shape score records use: a URL, what it showed, when it was read, and the digest of the body read. build.validate checks that the citation is present and well formed; whether it supports the lineage claim is evidence review (R-2026-11-02-j).",
+      "required": ["url", "shows", "accessed", "content_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {"type": "string", "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)"},
+        "shows": {"type": "string", "minLength": 1},
+        "accessed": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+        "http_status": {"type": "integer"},
+        "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "collection": {
+      "type": "object",
+      "required": ["id", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "description": {"type": "string", "minLength": 1},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
+      }
+    },
+    "lineage_fields": {
+      "type": "object",
+      "description": "The lineage facts a component record, or one of its overrides, can state.",
+      "properties": {
+        "origin": {
+          "enum": ["original", "derived", "unknown"],
+          "description": "original: the component's items were collected or written for it, from a collection of its own. derived: its items come from a parent component or an existing collection (a translation, sample, relabeling or re-host). unknown: no source states where the items came from."
+        },
+        "collections": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/id"},
+          "description": "The `collections` ids the component's items come from, including its own collection when its origin is original."
+        },
+        "parents": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/id"},
+          "description": "Components this one derives from. The build follows parents transitively, so a suite that imports SIB-200 is still detected as dependent on FLORES (R-2026-11-02-j)."
+        },
+        "effort": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "An identifier for the effort that produced the component's text in the language: the translation, writing or annotation work, not the research group. Two components that share an effort are dependent; two components from one group but separate efforts are not (R-2026-11-02-h). null when no source states it."
+        },
+        "domains": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "description": "Broad provenance, such as wikinews or news, recorded for readers. Never used to derive dependence: sharing a domain or corpus provider is not enough (R-2026-11-02-h)."
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["id", "curation", "origin", "collections", "parents", "effort", "sources"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "curation": {
+          "enum": ["curated", "uncurated"],
+          "description": "curated: the record was written from the cited sources. uncurated: a placeholder not yet researched. Both score as unverified when the facts are missing, but the distinction tells evidence work where to start (R-2026-11-02-j)."
+        },
+        "origin": {"$ref": "#/$defs/lineage_fields/properties/origin"},
+        "collections": {"$ref": "#/$defs/lineage_fields/properties/collections"},
+        "parents": {"$ref": "#/$defs/lineage_fields/properties/parents"},
+        "effort": {"$ref": "#/$defs/lineage_fields/properties/effort"},
+        "domains": {"$ref": "#/$defs/lineage_fields/properties/domains"},
+        "notes": {"type": "string"},
+        "overrides": {
+          "type": "array",
+          "description": "Language-, split- or task-specific lineage, where a component's upstream source is shared but its translation or annotation effort differs (R-2026-11-02-j). The first override whose selectors all match replaces the fields it states; fields it omits keep the canonical value.",
+          "items": {
+            "type": "object",
+            "required": ["sources"],
+            "additionalProperties": false,
+            "anyOf": [
+              {"required": ["languages"]},
+              {"required": ["splits"]},
+              {"required": ["tasks"]}
+            ],
+            "properties": {
+              "languages": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/language"}},
+              "splits": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/split"}},
+              "tasks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/task"}},
+              "origin": {"$ref": "#/$defs/lineage_fields/properties/origin"},
+              "collections": {"$ref": "#/$defs/lineage_fields/properties/collections"},
+              "parents": {"$ref": "#/$defs/lineage_fields/properties/parents"},
+              "effort": {"$ref": "#/$defs/lineage_fields/properties/effort"},
+              "domains": {"$ref": "#/$defs/lineage_fields/properties/domains"},
+              "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}}
+            }
+          }
+        },
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "required": ["between", "status", "rationale", "sources"],
+      "additionalProperties": false,
+      "properties": {
+        "between": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"$ref": "#/$defs/id"}
+        },
+        "status": {"enum": ["independent", "dependent"]},
+        "languages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/language"},
+          "description": "When present, the statement holds for these languages only."
+        },
+        "rationale": {"type": "string", "minLength": 1},
+        "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}}
+      }
+    }
+  }
+}

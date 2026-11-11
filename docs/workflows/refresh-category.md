@@ -69,7 +69,12 @@ The unit is the product, not the axis, because prose and scores come from the sa
    a cited figure that no longer appears on a page that still returns 200.
 3. **Re-derive each recorded dimension and attribute it** with `establishes: [...]`. On
    capability, record the peer comparison as `relative_to` + `relation` and confirm the peer at
-   least as recently.
+   least as recently. On an evaluation set in the calibration sample, write or re-check
+   `capability.language_coverage` and `capability.pivot_languages` from the same card or paper,
+   one entry per language, task, component and split; the other evaluation sets wait until the
+   sample has settled the depth bands. The record's evidence is dated by its sources' `accessed`
+   dates, and `capability.last_verified` dates the band, not the record
+   ([`../reference/capability.md`](../reference/capability.md#per-language-coverage)).
 4. **Rewrite the prose** per [`../reference/product-copy.md`](../reference/product-copy.md) —
    `description` load-bearing and within the length band, `comments` a footnote about the
    reading or nothing, each axis `note` in the two-sentence shape and the reader's vocabulary.

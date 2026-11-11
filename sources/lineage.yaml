@@ -1,0 +1,2229 @@
+# Component lineage: where each evaluation component's items come from, so the depth ladder can
+# tell independent corroboration from dependent evidence (R-2026-11-02-h, -i, -j, -u). One cited
+# record per component, never per suite that imports it. Pairwise statuses are derived by
+# build/lineage.py. Schema: docs/schemas/lineage.schema.json. Normative: docs/reference/capability.md,
+# "Component lineage". Filled by the lineage audit; until a component has an entry, every pair it is
+# in is unverified unless dependence is already known, and `build.validate` says how many are missing.
+version: 1
+collections:
+  - id: flores-200
+    description: 'FLORES-200''s sentences: the English sentences FLORES-101 sampled in equal amounts from
+      Wikinews, Wikijunior and Wikivoyage for its dev and devtest splits, and every translation aligned
+      to them by sentence id. FLORES+ continues this set.'
+    sources:
+      - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
+        shows: '"The original English sentences were sampled in equal amounts from Wikinews (an international
+          news source), Wikijunior (a collection of age-appropriate non-fiction books), and Wikivoyage
+          (a travel guide)"; "FLORES+ is based on FLORES-200"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9a32fd3840e9b6b28c1896b1f78b0c7ad8a79e24ae90d617cc6206b31dbf8bd9
+  - id: newstest2019
+    description: The WMT19 newstest2019 English source sentences, which NTREX-128 translates.
+    sources:
+      - url: https://raw.githubusercontent.com/MicrosoftTranslator/NTREX/main/README.md
+        shows: '"`NTREX-128/newstest2019-src.eng.txt` - original source data"; "the WMT 2019 paper that
+          provided the English source data NTREX-128 is based on"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: d00240af5232e2b89d1e1fb1af23117339fabee04d0d01f72df64162cc207f35
+  - id: mmlu
+    description: MMLU's English multiple-choice questions (Hendrycks et al.), test split.
+    sources:
+      - url: https://huggingface.co/datasets/openai/MMMLU
+        shows: '"We translated the MMLU’s test set into 14 languages using professional human translators"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9dd8d63231b6a41327257daba8fa801707c5f0170e497bb2aa3474f352968745
+  - id: xnli-english
+    description: XNLI's English premise and hypothesis pairs, collected for XNLI with MultiNLI's procedure
+      from sentences that do not overlap the distributed MultiNLI corpus.
+    sources:
+      - url: https://arxiv.org/pdf/1809.05053
+        shows: '"Our collection procedure for the English portion of the XNLI corpus follows the same
+          procedure as the MultiNLI corpus"; "We sample 250 sentences from each of the ten sources that
+          were used in that corpus, ensuring that none of those selected sentences overlap with the distributed
+          corpus"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 220fe6b9bf048b4b9fb9016db10bddd2752fe2b2aa34519af20bc727efdf81e5
+  - id: mgsm
+    description: MGSM's 250 English grade-school math word problems (Shi et al., 2023).
+  - id: arc-easy
+    description: ARC-Easy's English multiple-choice science questions.
+  - id: copa
+    description: COPA's English premises and alternatives (Roemmele et al., 2011), validation and test
+      sets.
+    sources:
+      - url: https://raw.githubusercontent.com/cambridgeltl/xcopa/master/README.md
+        shows: '"The dataset is the translation and reannotation of the English [**COPA**]"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9e6fea9f512dba9616cfa3f22cc77a557636a14100da2dc92493e9828e0a7058
+  - id: squad-v1-1
+    description: SQuAD v1.1's English Wikipedia paragraphs and questions; XQuAD takes 240 paragraphs and
+      1,190 question-answer pairs from it.
+    sources:
+      - url: https://arxiv.org/abs/1910.11856
+        shows: '"240 paragraphs and 1190 question-answer pairs from SQuAD v1.1 translated into ten languages
+          by professional translators"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: d4c8a13c0fd5003dec879f5be392b5f617976f3e37558d933e4e2e9b7348a533
+  - id: ifeval
+    description: IFEval's English prompts with verifiable instructions (Zhou et al., 2023).
+  - id: mt-bench
+    description: MT-Bench's English multi-turn prompts (Zheng et al., 2023).
+  - id: mt-bench-thai-knowledge-iii
+    description: MT-Bench Thai's Knowledge III category, written for the Thai set on Thai cultural context.
+    sources:
+      - url: https://huggingface.co/datasets/ThaiLLM-Leaderboard/mt-bench-thai
+        shows: '"We introduce the final category, Knowledge III, which evaluates understanding of Thai
+          cultural context."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: bfc5a658080315e32a341509b901997208590875a54888a4273ccc364bdc8668
+  - id: smsa
+    description: SmSA, IndoNLU's Indonesian sentiment set of comments and reviews, which NusaX translates.
+    sources:
+      - url: https://aclanthology.org/2023.eacl-main.57.pdf
+        shows: '"The NusaX dataset was created by translating SmSA (Purwarianti and Crisdayanti, 2019)";
+          "an existing Indonesian sentiment analysis dataset containing comments and reviews from the
+          IndoNLU"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 0f2224a02e1d74cfb2410e82ee15f87bce5495bde6a3fe5f26b4bdc56af5e1f0
+  - id: mafand-mt
+    description: MAFAND-MT's news sentences, translated from English or French into African languages.
+    sources:
+      - url: https://huggingface.co/datasets/masakhane/mafand
+        shows: '"MAFAND was created from the news domain, translated from English or French to an African
+          language"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: f488da444ac3cacc35fd93c7cda0db9883e8a0a79ca055004d08242d9d8aab4c
+  - id: masakhapos-news
+    description: The monolingual news text MasakhaPOS collected from African-language newspapers and broadcasters
+      for the languages it did not draw from MAFAND-MT.
+    sources:
+      - url: https://arxiv.org/pdf/2305.13989
+        shows: '"We collected monolingual news corpus with an open license for about eight African languages,
+          mostly from local newspapers."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 921e095268f5611ce5146cdb50bfdb22ae2b848da4d939c0fcc93ecebbe324f2
+  - id: masakhaner
+    description: MasakhaNER's annotated sentences, which MasakhaNER-X reformats as a generation task.
+  - id: masakhanews-articles
+    description: The news articles MasakhaNEWS collected and labeled by topic.
+  - id: afrisenti-tweets
+    description: The tweets AfriSenti collected and had annotated for sentiment.
+  - id: injongo-utterances
+    description: InjongoIntent's utterances, written by native speakers for the dataset.
+  - id: nollysenti-reviews
+    description: NollySenti's English Nollywood movie reviews, collected for the dataset; 1,010 of them
+      were translated into Hausa, Igbo, Nigerian Pidgin and Yoruba.
+  - id: salt-sentences
+    description: SALT's core set of sentences on topics of local relevance, translated into every SALT
+      language.
+  - id: thai-exam-questions
+    description: 'Questions from five Thai examinations: ONET, IC, TGAT, TPAT-1 and A-Level.'
+  - id: tydi-qa
+    description: TyDi QA's questions and passages, written and collected directly in each language.
+  - id: xl-sum-bbc
+    description: XL-Sum's BBC article and summary pairs, extracted from each BBC language service.
+  - id: indicqa-paragraphs
+    description: IndicQA's Wikipedia paragraphs on Indic topics and the questions annotators wrote on
+      them.
+  - id: indicsentiment-reviews
+    description: IndicSentiment's product reviews, written in English by annotators for the dataset.
+  - id: indonli-pairs
+    description: IndoNLI's Indonesian sentence pairs, elicited from crowd workers and experts.
+  - id: mlhsd-tweets
+    description: 'MLHSD''s Indonesian tweets: tweets from earlier Indonesian hate-speech datasets (Alfina
+      et al. 2017, 2018; Putri 2018; Ibrohim and Budi 2018) and tweets crawled for MLHSD.'
+  - id: thai-toxicity-tweets
+    description: The Thai tweets of the Thai Toxicity Tweet Corpus.
+  - id: wisesight-messages
+    description: The Thai social media messages of the Wisesight Sentiment Corpus.
+  - id: uit-vsfc-sentences
+    description: The Vietnamese student feedback sentences of UIT-VSFC.
+  - id: vihsd-comments
+    description: The Vietnamese social media comments of ViHSD.
+  - id: mabl-metaphors
+    description: 'MABL (Multilingual Fig-QA): paired metaphors written by crowdsourced native speakers
+      in each language.'
+  - id: kalahi
+    description: Kalahi's Filipino prompts, created with native Filipino speakers.
+  - id: lindsea
+    description: LINDSEA's syntax and pragmatics examples, handcrafted by linguists with native speakers.
+  - id: m3exam-questions
+    description: 'M3Exam''s questions: official primary, middle and high school graduation exam papers from nine
+      countries, collected by native speakers of each language (Zhang et al., 2023).'
+  - id: seaexam-indonesian-exams
+    description: The official Indonesian school exam questions the SeaExam authors collected with native linguists,
+      a language M3Exam does not carry.
+  - id: laobench-items
+    description: LaoBench's Lao items, written by its expert linguists and domain specialists from K12 textbooks,
+      government and legal documents and other Lao sources.
+  - id: emot-tweets
+    description: The Indonesian tweets EmoT collected and labeled by emotion (Saputri et al., 2018).
+  - id: casa-reviews
+    description: The Indonesian car reviews CASA collected from online automobile platforms (Ilmania et al., 2018).
+  - id: hoasa-reviews
+    description: The AiryRooms hotel reviews HoASA collected (Azhar et al., 2019).
+  - id: terma-reviews
+    description: The AiryRooms hotel reviews TermA collected (Septiandri and Sutiono, 2019; Fernando et al., 2019).
+  - id: wrete-pairs
+    description: WReTE's sentence pairs, built from Wikipedia revision history (Setya and Mahendra, 2018).
+  - id: hoesen-purwarianti-news
+    description: The Indonesian news-website text of Hoesen and Purwarianti (2018), the source IndoNLU names for both
+      POSP and NERP.
+  - id: panl10n-sentences
+    description: Sentences from the PAN Localization Project, which BaPOS tagged (Dinakaramani et al., 2014).
+  - id: keps-tweets
+    description: The Indonesian tweets on banking products and services that KEPS collected (Mahfuzh et al., 2019).
+  - id: facqa-passages
+    description: FacQA's questions and the short news-article passages they are answered from (Purwarianti et al.,
+      2007).
+  - id: arabicmmlu-questions
+    description: ArabicMMLU's 14,575 school-exam questions in Modern Standard Arabic, collected by ten native
+      speakers from exams in eight countries. INCLUDE consolidates them for Arabic, and DarijaMMLU translates
+      selected subjects of them.
+    sources:
+      - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+        shows: '"The data construction process involved a total of 10 Arabic native speakers from different
+          countries"; "The resulting corpus is sourced from the eight countries"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
+  - id: turkishmmlu-questions
+    description: TurkishMMLU's 10,032 questions, taken from the Turkish Ministry of Education's EBA learning
+      platform, where curriculum experts wrote them.
+    sources:
+      - url: https://arxiv.org/html/2407.12402
+        shows: '"Our dataset includes 10,032 multiple-choice questions"; "These questions are sourced from a high-quality
+          online learning platform created by the Turkish Ministry of Education"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - id: khayyam-questions
+    description: The Khayyam Challenge's 20,192 Persian questions, from Iran's national university entrance
+      exam and Kanoon Farhangi Amoozesh (Cultural Educational Center).
+    sources:
+      - url: https://arxiv.org/html/2404.06644
+        shows: 'questions come from "Iran’s national university entrance" and "Kanoon Farhangi Amoozesh (Cultural
+          Educational Center), wherein questions are not only verified and validated by experts in each subject"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c785d9dfad69ef6f8408e514fd681e5ae2f40b72c79350130c85dc64b17e8bbd
+  - id: include-local-exams
+    description: The exam questions INCLUDE collected itself from local academic, professional and licensing
+      exams with native speakers and regional associations (118,606 samples from 1,926 exam sources, 60.2% of
+      INCLUDE). It excludes the published benchmarks INCLUDE consolidated, which have collections of their own.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: '"we collect sources of multiple-choice exams in collaboration with native speakers and regional
+          associations"; "In total, we parsed and verified 118,606 samples across 1,926 exam sources"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: cmmlu-questions
+    description: CMMLU's (ChineseMMLU's) Chinese questions, which INCLUDE consolidates for Chinese.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: 'Section 3.1 lists ChineseMMLU among the existing datasets INCLUDE consolidates ("we also consolidate
+          existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives CMMLU''s
+          language as Chinese'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: vnhsge-questions
+    description: VNHSGE's Vietnamese high school graduation exam questions, which INCLUDE consolidates for
+      Vietnamese.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: 'Section 3.1 lists VNHSGE among the existing datasets INCLUDE consolidates ("we also consolidate
+          existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives VNHSGE''s
+          language as Vietnamese'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: exams-questions
+    description: EXAMS's multilingual high school exam questions (Hardalov et al., 2020), which INCLUDE consolidates
+      for some of its European languages.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: 'Section 3.1 consolidates EXAMS, "a multilingual benchmark with limited domain coverage across multiple
+          European languages"; Table 15 gives its coverage as 16 languages without naming them'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: scjn-press-releases
+    description: The Mexican Supreme Court press releases from which AmericasNLP 2023 sampled the Spanish
+      source sentences of its Chatino evaluation set.
+    sources:
+      - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+        shows: '"To create the dataset, we crawl 10,000 instances from the Supreme Court press releases, and
+          randomly select a subset for translation."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+  - id: lahaja-recordings
+    description: The read and extempore Hindi speech Lahaja recorded from 132 speakers for the benchmark,
+      with its transcripts.
+    sources:
+      - url: https://arxiv.org/pdf/2408.11440
+        shows: '"a total of 12.5 hours of Hindi audio, sourced from 132 speakers"; "Each participant thus
+          reads 20 sentences across both read speech and digital interactions, and answers 8 questions on
+          selected domains and topics of interest."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
+  - id: indicvoices-read-sentences
+    description: The 1K Wikipedia sentences IndicVoices released for read speech. Lahaja's read-speech
+      portion is recordings of them.
+    sources:
+      - url: https://arxiv.org/pdf/2408.11440
+        shows: '"Read speech: To ensure good vocabulary coverage we use 1K sentences from Wikipedia articles
+          covering 13 domains, as released by [1]."; [1] is IndicVoices'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
+  - id: kazmmlu-questions
+    description: KazMMLU's multiple-choice questions, collected from Kazakhstani national exams, school
+      textbooks and professional certification tests (iTest.kz, ymnik.kz, oltest.kz and Shyn Kitap's
+      books), in Kazakh and Russian.
+  - id: milu-exam-questions
+    description: MILU's multiple-choice questions, scraped from published question papers of more than
+      40 Indian national and state examinations, together with MILU's own GPT-4o translations of some
+      of its English questions.
+  - id: slurp
+    description: SLURP's English virtual-assistant utterances, which MASSIVE localizes into 50 languages.
+  - id: indicxparaphrase-sentences
+    description: The 1,001 English sentences IndicXParaphrase took from Kumar et al. (2022) and machine-translated
+      into each of its languages.
+  - id: samanantar
+    description: Samanantar's English-Indic parallel sentence pairs, whose Indic side Naamapadam annotates
+      for named entities.
+components:
+  - id: flores-plus
+    curation: curated
+    origin: original
+    collections:
+      - flores-200
+    parents: []
+    effort: flores-200-translation
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    notes: One translation effort is recorded for every FLORES-200 language. The FLORES-101 and NLLB translations
+      are both Meta-commissioned professional translations of the same sentences; merging them can only
+      make a pair more dependent, never less. Suites that import FLORES-200 (SEA-HELM, AfroBench) use
+      this record. A language whose only FLORES+ text has its own OLDI data card, behind the Hub gate,
+      carries no effort (the override). A language that only gained a second variety with its own card
+      (cat, khk, lmo, mni, nya, oci, tso) keeps the FLORES-200 effort for the variety FLORES-200 translated.
+      N'Ko carries no effort either, through a second override. SIB-200's paper says it was added to
+      FLORES-200 later, citing Doumbouya et al. (2023), and NLLB's FLORES-200 language table has no N'Ko
+      row, so its text is not the NLLB translation and no source read names who produced it.
+    overrides:
+      - languages:
+          - apd
+          - arg
+          - ast
+          - ccp
+          - chv
+          - cmn
+          - dar
+          - fil
+          - frp
+          - kaa
+          - kjh
+          - lij
+          - lld
+          - mfe
+          - mhr
+          - myv
+          - nob
+          - seh
+          - tyv
+          - udm
+          - uzs
+          - vmw
+          - wuu
+          - yue
+          - zgh
+        effort: null
+        sources:
+          - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
+            shows: '"The datasets for some language varieties have individual datacards describing their
+              creation. These can be found in the dataset_cards directory."'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: 9a32fd3840e9b6b28c1896b1f78b0c7ad8a79e24ae90d617cc6206b31dbf8bd9
+          - url: https://huggingface.co/api/datasets/openlanguagedata/flores_plus/tree/main/dataset_cards
+            shows: the dataset_cards directory lists "apd_Arab.md", "arg_Latn.md", "ast_Latn.md", "ccp_Cakm.md",
+              "chv_Cyrl.md", "cmn_Hans.md", "cmn_Hant.md", "dar_Cyrl.md", "fil_Latn.md", "frp_Latn.md",
+              "kaa_Latn.md", "kjh_Cyrl.md", "lij_Latn.md", "lld_Latn.md", "mfe_Latn.md", "mhr_Cyrl.md",
+              "myv_Cyrl.md", "nob_Latn.md", "seh_Latn_MZ.md", "tyv_Cyrl.md", "udm_Cyrl.md", "uzs_Arab.md",
+              "vmw_Latn.md", "wuu_Hans.md", "yue_Hant.md" and "zgh_Tfng.md"; fetching a card itself returns
+              HTTP 401 (gated), so who produced these texts is not stated anywhere readable
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: c6e1fb3ff0df5f6cbcd573e4ecb636fe14b90590dee15cf4bae53b8d122983c9
+      - languages:
+          - nqo
+        effort: null
+        sources:
+          - url: https://arxiv.org/pdf/2309.07445
+            shows: '"Additionally, we added N’Ko—a West African language that was recently added to Flores-200
+              dataset (Doumbouya et al., 2023)"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 6ebd11657d6246784e07193fc69754f1b64d8329b87d0cf38fcc865d2594216e
+          - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
+            shows: the FLORES-200 language table lists every code from ace_Arab to zul_Latn and has no nqo_Nkoo
+              row
+            accessed: '2026-11-01'
+            http_status: 200
+            content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
+    sources:
+      - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
+        shows: '"The data consists of translations primarily from English into over 200 language varieties";
+          "FLORES+ is based on FLORES-200"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9a32fd3840e9b6b28c1896b1f78b0c7ad8a79e24ae90d617cc6206b31dbf8bd9
+      - url: https://arxiv.org/abs/2207.04672
+        shows: '"a human-translated benchmark, Flores-200"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 4807d538486a3ff6cddf0be6c796025e47074b13a857f86101059b7c3d3c3969
+      - url: https://arxiv.org/html/2308.16884
+        shows: 'on FLORES-200: "The parallel dataset was constructed by sourcing English passages from
+          Wikinews, Wikijunior, and WikiVoyage. The translations were performed by native speakers with
+          high English fluency and translation experience."'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 5ebf36305c18085e44fa25a809dddf037afb04823923ff10d70c3224e1ebb535
+  - id: sib-200
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - flores-plus
+    effort: sib-200-annotation
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    sources:
+      - url: https://arxiv.org/abs/2309.07445
+        shows: '"The dataset is based on Flores-200 machine translation corpus. We annotated the English
+          portion of the dataset and extended the sentence-level annotation to the remaining 203 languages
+          covered in the corpus."'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 3871243edcb5f0682a105baebbb2645d6297a6947280f15627375e4b66c11cd4
+  - id: belebele
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - flores-plus
+    effort: belebele-translation
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    sources:
+      - url: https://arxiv.org/html/2308.16884
+        shows: '"For all languages included in the corpus, the context passages were taken directly from
+          the FLoRes -200 dataset"; "We opted to create multiple-choice questions and answers in English
+          and then translate"; "Belebele was created end-to-end without the use of machine translation
+          technology, relying solely on experts fluent in English and the target language."'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 5ebf36305c18085e44fa25a809dddf037afb04823923ff10d70c3224e1ebb535
+      - url: https://raw.githubusercontent.com/facebookresearch/belebele/main/README.md
+        shows: '"Each question has four multiple-choice answers and is linked to a short passage from
+          the" FLORES-200 dataset'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: f7a9aead9af9056c96837eeb8eafa301ec37a4512e52520f1c3d7903b69ce145
+  - id: batayan
+    curation: curated
+    origin: derived
+    collections:
+      - flores-200
+    parents: []
+    effort: batayan-native-retranslation
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    notes: 'R-2026-11-02-i ruled Batayan unverified because no source then stated its origin and a shared
+      domain alone does not establish dependence. The Batayan paper states it: the MT task is the Filipino
+      subset of FLORES-200, re-translated by native speakers. New translations of the same source sentences
+      are dependent under R-2026-11-02-h.'
+    sources:
+      - url: https://arxiv.org/html/2502.14911
+        shows: 'Table 1 row: "MT FLORES 200 NLLB Team et al. (2022) 1,012 translation Filipino English-adapted
+          Native re-translation"; "This task leveraged the Filipino subset of FLORES 200"; "We observed
+          that the QA and MT datasets were of subpar quality and suffered from issues with inaccuracies
+          and translationese"; "As such, these were re-translated to enhance contextual and linguistic
+          accuracy."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: da7a50bbce3c255e526fef6061fbce9fb8f4d034b26cb61d7d9b09f3f199a093
+      - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+        shows: 'translation table: "Filipino | Batayan | Human translations | Wikinews, Wikijunior, and
+          Wikivoyage"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
+      - url: https://arxiv.org/html/2502.14301
+        shows: 'Table 1: "Translation FLORES Team et al. (2022) FIL, ID, TA, TH, VI"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: f8685c55a37769a70027bb5c1cb8a227e448156727dce92b9bdea48493036b8d
+  - id: ntrex-128
+    curation: curated
+    origin: derived
+    collections:
+      - newstest2019
+    parents: []
+    effort: ntrex-128-translation
+    domains:
+      - news
+    sources:
+      - url: https://raw.githubusercontent.com/MicrosoftTranslator/NTREX/main/README.md
+        shows: '"`NTREX-128/newstest2019-src.eng.txt` - original source data"; "`NTREX-128/newstest2019-ref.*`
+          - human translated references for the original 128 languages"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: d00240af5232e2b89d1e1fb1af23117339fabee04d0d01f72df64162cc207f35
+  - id: afrimmlu
+    curation: curated
+    origin: derived
+    collections:
+      - mmlu
+    parents: []
+    effort: irokobench-translation
+    notes: 'AfriMMLU, AfriXNLI and AfriMGSM share one effort: IrokoBench describes one translation process
+      per language that worked through the three tasks in turn, and states no separate translator pools.'
+    sources:
+      - url: https://arxiv.org/html/2406.03368
+        shows: '"The datasets were created by human translating a subset of English cross-lingual NLI
+          (XNLI) ( Conneau et al., 2018 ) , English Multilingual Grade School Math (MGSM) ( Shi et al.,
+          2023 ) , and Massive Multitask Language Understanding (MMLU) ( Hendrycks et al., 2021a ) , evaluation
+          datasets into each of the 16 languages using professional translators."; "We recruited language
+          coordinators for each of the 16 African languages and French, and asked them to recruit professional
+          translators to translate the sentences. The translation process took about two months, they
+          started with XNLI, then MGSM and MMLU."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8d5940c1e236940dece89ef505c206ccd3f0dd8724e93d73ff7f0cac8e56e698
+      - url: https://arxiv.org/html/2311.07978
+        shows: '"We focus on two human-translated MMLU datasets"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822
+  - id: afrixnli
+    curation: curated
+    origin: derived
+    collections:
+      - xnli-english
+    parents: []
+    effort: irokobench-translation
+    sources:
+      - url: https://arxiv.org/html/2406.03368
+        shows: '"The datasets were created by human translating a subset of English cross-lingual NLI
+          (XNLI)"; "they started with XNLI, then MGSM and MMLU"; "We selected an equal number of instances
+          from the 10 domains of XNLI."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8d5940c1e236940dece89ef505c206ccd3f0dd8724e93d73ff7f0cac8e56e698
+  - id: afrimgsm
+    curation: curated
+    origin: derived
+    collections:
+      - mgsm
+    parents: []
+    effort: irokobench-translation
+    sources:
+      - url: https://arxiv.org/html/2406.03368
+        shows: '"AfriMGSM expands the original MGSM dataset ( Shi et al., 2023 ) , which contains 250
+          QA pairs and 11 languages (including Swahili), to 15 more languages."; "they started with XNLI,
+          then MGSM and MMLU"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8d5940c1e236940dece89ef505c206ccd3f0dd8724e93d73ff7f0cac8e56e698
+      - url: https://arxiv.org/abs/2406.03368
+        shows: '"a human-translated benchmark dataset for 17 typologically-diverse low-resource African
+          languages covering three tasks"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 53df52b2305ce9322362d95a290fc44871149d7211bf434eb8557ea8bc89f1a5
+  - id: openai-mmmlu
+    curation: curated
+    origin: derived
+    collections:
+      - mmlu
+    parents: []
+    effort: openai-mmmlu-translation
+    sources:
+      - url: https://huggingface.co/datasets/openai/MMMLU
+        shows: '"We translated the MMLU’s test set into 14 languages using professional human translators."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9dd8d63231b6a41327257daba8fa801707c5f0170e497bb2aa3474f352968745
+      - url: https://arxiv.org/html/2311.07978
+        shows: '"We focus on two human-translated MMLU datasets: OpenAI-MMLU"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822
+  - id: uhura-arc-easy
+    curation: curated
+    origin: derived
+    collections:
+      - arc-easy
+    parents: []
+    effort: uhura-translation
+    sources:
+      - url: https://arxiv.org/abs/2412.00948
+        shows: '"created via human translation of existing English benchmarks. The first dataset, Uhura-ARC-Easy,
+          is composed of multiple-choice science questions."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 62db8e36844c6777f3edad6b1bba1cc12c85cde5d92fd6e24d063b998965d05c
+      - url: https://arxiv.org/html/2311.07978
+        shows: '"the human translation of scientific Arc-Easy benchmark in six African languages Uhura"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822
+  - id: injongo-intent
+    curation: curated
+    origin: original
+    collections:
+      - injongo-utterances
+    parents: []
+    effort: injongo-native-writing
+    sources:
+      - url: https://arxiv.org/abs/2502.09814
+        shows: '"a multicultural, open-source benchmark dataset for 16 African languages with utterances
+          generated by native speakers"; "current large-scale benchmarks for these tasks often exclude
+          evaluations of low-resource languages and rely on translations from English benchmarks"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 26b9d6c7e6d3850bd0e75eeeba2fb75930f71484925b5289ec6518c0d5bfc863
+  - id: afrisenti
+    curation: curated
+    origin: original
+    collections:
+      - afrisenti-tweets
+    parents: []
+    effort: afrisenti-annotation
+    domains:
+      - twitter
+    sources:
+      - url: https://arxiv.org/abs/2302.08956
+        shows: '"a sentiment analysis benchmark that contains a total of >110,000 tweets in 14 African
+          languages"; "The tweets were annotated by native speakers"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 1675c998f0bb6fa06b9094d642b5c14de93793ac6bb001f8ed8cde513df1f78d
+  - id: masakhanews
+    curation: curated
+    origin: original
+    collections:
+      - masakhanews-articles
+    parents: []
+    effort: masakhanews-annotation
+    domains:
+      - news
+    sources:
+      - url: https://arxiv.org/abs/2304.09972
+        shows: '"we develop MasakhaNEWS -- a new benchmark dataset for news topic classification covering
+          16 languages widely spoken in Africa"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: bc2ef8ef9b5c43e3dc779800399af8a6f525c43b6ba8f27f866aeacbbfd5d898
+      - url: https://huggingface.co/datasets/masakhane/masakhanews
+        shows: '"The source language was produced by journalists and writers employed by the news agency
+          and newspaper mentioned above"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: b9bba47e2c9481fea984fd70d684f330be805ea0dcbf58aa64a5ae3c6730807b
+  - id: masakhapos
+    curation: curated
+    origin: original
+    collections:
+      - masakhapos-news
+    parents: []
+    effort: masakhapos-annotation
+    domains:
+      - news
+    overrides:
+      - languages:
+          - bam
+          - bbj
+          - ewe
+          - fon
+          - lug
+          - luo
+          - mos
+          - pcm
+          - tsn
+          - twi
+          - wol
+        origin: derived
+        collections:
+          - mafand-mt
+        sources:
+          - url: https://arxiv.org/pdf/2305.13989
+            shows: '"we make use of MAFAND-MT (Adelani et al., 2022a) translation corpus that is based
+              on the news domain"; Table 1 gives "MAFAND-MT" as the source for Bambara, Ghomala, Ewe,
+              Fon, Luganda, Luo, Mossi, Naija, Setswana, Twi and Wolof'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: 921e095268f5611ce5146cdb50bfdb22ae2b848da4d939c0fcc93ecebbe324f2
+    sources:
+      - url: https://arxiv.org/pdf/2305.13989
+        shows: '"Table 1 provides the data source used for POS annotation"; "We collected monolingual
+          news corpus with an open license for about eight African languages, mostly from local newspapers.";
+          Table 1 names a newspaper or broadcaster as the source for Hausa, Igbo, Kinyarwanda, Chichewa,
+          chiShona, Kiswahili, isiXhosa, Yoruba and isiZulu'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 921e095268f5611ce5146cdb50bfdb22ae2b848da4d939c0fcc93ecebbe324f2
+  - id: masakhaner-x
+    curation: curated
+    origin: derived
+    collections:
+      - masakhaner
+    parents: []
+    effort: null
+    domains:
+      - news
+    notes: Derived from MasakhaNER, so its items are MasakhaNER's sentences. No source read for this audit
+      says where MasakhaNER's Amharic and Luo sentences came from or who produced them, so whether they
+      overlap MAFAND-MT (which MasakhaPOS's Luo uses) is not established; effort stays null and its pairs
+      stay unverified.
+    sources:
+      - url: https://arxiv.org/html/2311.07978
+        shows: '"MasakhaNER-X ( Ruder et al., 2023 ) —an extension of MasakhaNER dataset ( Adelani et
+          al., 2021 ; Adelani et al., 2022b ) that converts NER tags from CoNLL format into a text generation
+          task"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822
+  - id: nollysenti
+    curation: curated
+    origin: original
+    collections:
+      - nollysenti-reviews
+    parents: []
+    effort: nollysenti-translation
+    domains:
+      - movie reviews
+    sources:
+      - url: https://arxiv.org/pdf/2305.10971
+        shows: '"We hire professional translators in Nigeria and ask them to translate 1,010 reviews randomly
+          chosen from the 1,900 English reviews."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 82e66680790296604f29808ffe4afeaf93c5506085585779cb5d785408d11082
+      - url: https://arxiv.org/html/2311.07978
+        shows: '"NollySenti focuses on movie review sentiment in four African languages"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822
+  - id: salt
+    curation: curated
+    origin: original
+    collections:
+      - salt-sentences
+    parents: []
+    effort: salt-translation
+    sources:
+      - url: https://huggingface.co/datasets/Sunbird/salt
+        shows: '"The core of the dataset is a set of 25,000 sentences covering a range of topics of local
+          relevance, such as agriculture, health and society. Each sentence is translated into all languages,
+          to support machine translation"; "This dataset was collected in practical collaboration between
+          Sunbird AI and the Makerere University AI Lab (Ugandan languages) and KenCorpus, Maseno University
+          (Swahili)."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: e31f5ffd14dd69622fddc675a0de62995095ced977b42c76e84d78fcdba5b14c
+  - id: afrobench
+    curation: curated
+    origin: derived
+    collections:
+      - mafand-mt
+    parents: []
+    effort: mafand-translation
+    domains:
+      - news
+    notes: 'AfroBench''s own items are AfriADR: MAFAND-MT sentences with their diacritics stripped. The
+      text in each language is MAFAND''s, so the effort recorded is MAFAND''s translation.'
+    sources:
+      - url: https://arxiv.org/html/2311.07978
+        shows: '"To create AfriADR , we selected the five languages with extensive use of diacritics from
+          Mafand MT dataset, then, we strip all accents and diacritics on each sentence"'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: ef2b0d2751fd66adfd660ee0f45c3e2c928ff04cf846b4c5b7130df0243f6822
+      - url: https://huggingface.co/datasets/masakhane/mafand
+        shows: '"MAFAND was created from the news domain, translated from English or French to an African
+          language"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: f488da444ac3cacc35fd93c7cda0db9883e8a0a79ca055004d08242d9d8aab4c
+  - id: thai-exam
+    curation: curated
+    origin: original
+    collections:
+      - thai-exam-questions
+    parents: []
+    effort: thai-national-exams
+    notes: The effort is the Thai examination bodies that wrote the questions, not the Typhoon team that
+      collected them.
+    sources:
+      - url: https://huggingface.co/datasets/typhoon-ai/thai_exam/raw/main/README.md
+        shows: '"ThaiExam is a Thai knowledge benchmarking dataset, consisting of multiple-choice questions
+          from examinations in Thailand."; "The exam questions were developed by the Stock Exchange of
+          Thailand (SET)"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 860459e28fcaf606f68f1fb40bbdb9bd6b47e74c62fb390e37ac133c0b53b3ff
+      - url: https://arxiv.org/abs/2312.13951
+        shows: '"we develop ThaiExam, a benchmark based on examinations for high-school students and investment
+          professionals in Thailand"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: c68254a369ca65b2980596deec80896f7134135b6afcacade7421c029ed2c74f
+  - id: sea-helm
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: SEA-HELM's own items differ by task, so each task its coverage entries use has an override.
+      A task with no override has no documented lineage and reads as unknown.
+    overrides:
+      - tasks:
+          - instruction_following
+        origin: derived
+        collections:
+          - ifeval
+        effort: sea-ifeval-translation
+        sources:
+          - url: https://arxiv.org/html/2502.14301
+            shows: '"SEA-IFEval is an instruction-following benchmark we created collaboratively with
+              native speakers. It was manually translated from the English IF-Eval benchmark"'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: f8685c55a37769a70027bb5c1cb8a227e448156727dce92b9bdea48493036b8d
+          - url: https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+            shows: '"It is based on IFEval and was manually translated by native speakers for Indonesian,
+              Javanese, Sundanese, Thai, Tagalog, and Vietnamese."'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: aa3e283f62eaf02aa7855ba24aa3022f6c86748349fa3fe81c9a123e619b41fb
+      - tasks:
+          - text_generation
+        origin: derived
+        collections:
+          - mt-bench
+        effort: sea-mtbench-translation
+        sources:
+          - url: https://arxiv.org/html/2502.14301
+            shows: '"SEA-MTBench is a manually translated and localised version of the popular MT-Bench
+              dataset"'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: f8685c55a37769a70027bb5c1cb8a227e448156727dce92b9bdea48493036b8d
+          - url: https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+            shows: '"It is based on MT-Bench and was manually translated by native speakers for Indonesian
+              (id), Javanese (jv), Sundanese (su), and Vietnamese (vi)."'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: c1ede97f6a6759547a32987e9f0d2bb9c8a601515eb803cf30f6948706585699
+      - tasks:
+          - knowledge_exam
+        origin: original
+        collections:
+          - kalahi
+        effort: kalahi-writing
+        sources:
+          - url: https://arxiv.org/html/2502.14301
+            shows: '"the dataset is composed of 150 high-quality Filipino-language"; "prompts created
+              in collaboration with native Filipino speakers"'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: f8685c55a37769a70027bb5c1cb8a227e448156727dce92b9bdea48493036b8d
+          - url: https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi
+            shows: '"This dataset contains a MCQ-compatible version of the Kalahi dataset that is used
+              in SEA-HELM ."'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: 7370d321af7e64125d60ac4c96535a9d18b78ad49a0d9af3582f50484b4de71f
+      - tasks:
+          - natural_language_inference
+          - text_classification
+        origin: original
+        collections:
+          - lindsea
+        effort: lindsea-writing
+        sources:
+          - url: https://arxiv.org/html/2502.14301
+            shows: '"the examples in LINDSEA are handcrafted from scratch by linguists in collaboration
+              with native speakers"'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: f8685c55a37769a70027bb5c1cb8a227e448156727dce92b9bdea48493036b8d
+          - url: https://huggingface.co/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+            shows: '"LINDSEA Pragmatics only has an Indonesian (id) split"'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: 6de4f2a1605fb70e92b59721c6625c3aae4b7130456f990e7f45fd8fcccf6d56
+          - url: https://huggingface.co/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+            shows: '"LINDSEA Syntax only has an Indonesian (id) split"'
+            accessed: '2026-11-02'
+            http_status: 200
+            content_sha256: f47427b5c6994b9707ba31082e3660b1f12ff5ead48dd8c13b45500702dab9bf
+    sources:
+      - url: https://arxiv.org/html/2502.14301
+        shows: '"created the human-translated SEA-IFEval and SEA-MTBench datasets"; "SEA-HELM includes
+          new datasets we developed for granular linguistic diagnostics (LINDSEA)"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: f8685c55a37769a70027bb5c1cb8a227e448156727dce92b9bdea48493036b8d
+  - id: sea-mt-bench-judge
+    curation: curated
+    origin: derived
+    collections:
+      - mt-bench
+    parents: []
+    effort: sea-mt-bench-judge-translation
+    notes: Whether these translations are the ones SEA-MTBench uses is not stated, so the effort is recorded
+      separately; the shared MT-Bench prompts already make the two dependent.
+    sources:
+      - url: https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench-Judge
+        shows: '"The prompts are based on MT-Bench and was manually translated by native speakers."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: edf85c8d34d7445766aaa42802f02a5e689d27b0492bd69220bc24f0f2a90d91
+  - id: kalahi-judge
+    curation: curated
+    origin: derived
+    collections:
+      - kalahi
+    parents: []
+    effort: kalahi-writing
+    sources:
+      - url: https://huggingface.co/datasets/aisingapore/Cultural-Evaluation-Kalahi-Judge
+        shows: '"This dataset extends the prompts found in Kalahi dataset to use a criteria-based judging
+          metric."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: a225b51958b6675edf80695cd2f4917553e02861498a1776b58ae0b6cb4ceace
+  - id: mt-bench-thai
+    curation: curated
+    origin: derived
+    collections:
+      - mt-bench
+      - mt-bench-thai-knowledge-iii
+    parents: []
+    effort: mt-bench-thai-annotation
+    sources:
+      - url: https://huggingface.co/datasets/ThaiLLM-Leaderboard/mt-bench-thai
+        shows: '"a sample can be translated from English to Thai unless it meets one of the following
+          conditions"; "we will rewrite the questions on similar topics to localize or simplify them";
+          "We introduce the final category, Knowledge III, which evaluates understanding of Thai cultural
+          context."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: bfc5a658080315e32a341509b901997208590875a54888a4273ccc364bdc8668
+      - url: https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+        shows: '"The Thai split of this dataset uses MT-Bench Thai from the ThaiLLM leaderboard."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: c1ede97f6a6759547a32987e9f0d2bb9c8a601515eb803cf30f6948706585699
+  - id: nusax
+    curation: curated
+    origin: derived
+    collections:
+      - smsa
+    parents: []
+    effort: nusax-translation
+    overrides:
+      - languages:
+          - ind
+        effort: smsa-annotation
+        sources:
+          - url: https://aclanthology.org/2023.eacl-main.57.pdf
+            shows: '"an existing Indonesian sentiment analysis dataset containing comments and reviews
+              from the IndoNLU"'
+            accessed: '2026-11-01'
+            http_status: 200
+            content_sha256: 0f2224a02e1d74cfb2410e82ee15f87bce5495bde6a3fe5f26b4bdc56af5e1f0
+    sources:
+      - url: https://aclanthology.org/2023.eacl-main.57.pdf
+        shows: '"The NusaX dataset was created by translating SmSA (Purwarianti and Crisdayanti, 2019)";
+          "we take an existing dataset in a high-resource local language (Indonesian) as a base for expansion
+          to the other ten languages, and ask human annotators to translate the text."'
+        accessed: '2026-11-01'
+        http_status: 200
+        content_sha256: 0f2224a02e1d74cfb2410e82ee15f87bce5495bde6a3fe5f26b4bdc56af5e1f0
+      - url: https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis
+        shows: '"It is sampled from NusaX for Indonesian, Javanese, and Sundanese"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 5d5baec03654ba5462d13189a43e209c9b9fc048abe7823cbbdceaafa9bf122e
+  - id: xnli
+    curation: curated
+    origin: original
+    collections:
+      - xnli-english
+    parents: []
+    effort: xnli-translation
+    sources:
+      - url: https://arxiv.org/abs/1809.05053
+        shows: '"we construct an evaluation set for XLU by extending the development and test sets of
+          the Multi-Genre Natural Language Inference Corpus (MultiNLI) to 15 languages"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 1cb3568655b7fe32880111e036e1b5ef5d2e27ba3f63bcfc4ae52e38ecee3649
+      - url: https://arxiv.org/pdf/1809.05053
+        shows: '"Our collection procedure for the English portion of the XNLI corpus follows the same
+          procedure as the MultiNLI corpus"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 220fe6b9bf048b4b9fb9016db10bddd2752fe2b2aa34519af20bc727efdf81e5
+      - url: https://huggingface.co/datasets/aisingapore/NLR-NLI
+        shows: '"XNLI for Thai and Vietnamese"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 43336824c106532e433dc70c39fe4bab72c6db1b8d5f7e49a9a7a0103a86ff17
+  - id: indicxnli
+    curation: curated
+    origin: derived
+    collections:
+      - xnli-english
+    parents: []
+    effort: indicxnli-machine-translation
+    sources:
+      - url: https://arxiv.org/abs/2204.08776
+        shows: '"It has been created by high-quality machine translation of the original English XNLI
+          dataset"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: f2caec053c5f48092f03c8c5c716b002f8e1a0de4ba2bd3fdd430cc020b37721
+  - id: indonli
+    curation: curated
+    origin: original
+    collections:
+      - indonli-pairs
+    parents: []
+    effort: indonli-annotation
+    sources:
+      - url: https://arxiv.org/abs/2110.14566
+        shows: '"We present IndoNLI, the first human-elicited NLI dataset for Indonesian."; "collect nearly
+          18K sentence pairs annotated by crowd workers and experts"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9aa219bbbf48a121273c98eee30447ea18da66afb724a1333853cf3106e95d76
+  - id: xcopa
+    curation: curated
+    origin: derived
+    collections:
+      - copa
+    parents: []
+    effort: xcopa-translation
+    sources:
+      - url: https://arxiv.org/pdf/2005.00333
+        shows: '"which are translations from the respective English COPA validation and test set"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 3e9886db5983db5da6be884d6e778ef233745c0df9f360dab110b004ebb40943
+      - url: https://raw.githubusercontent.com/cambridgeltl/xcopa/master/README.md
+        shows: '"The dataset is the translation and reannotation of the English [**COPA**]"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9e6fea9f512dba9616cfa3f22cc77a557636a14100da2dc92493e9828e0a7058
+  - id: xquad
+    curation: curated
+    origin: derived
+    collections:
+      - squad-v1-1
+    parents: []
+    effort: xquad-translation
+    domains:
+      - wikipedia
+    sources:
+      - url: https://arxiv.org/abs/1910.11856
+        shows: '"240 paragraphs and 1190 question-answer pairs from SQuAD v1.1 translated into ten languages
+          by professional translators"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: d4c8a13c0fd5003dec879f5be392b5f617976f3e37558d933e4e2e9b7348a533
+  - id: tydi-qa-goldp
+    curation: curated
+    origin: original
+    collections:
+      - tydi-qa
+    parents: []
+    effort: tydi-qa-annotation
+    domains:
+      - wikipedia
+    sources:
+      - url: https://arxiv.org/abs/2003.05002
+        shows: '"questions are written by people who want to know the answer, but don''t know the answer
+          yet, and the data is collected directly in each language without the use of translation"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9ffde4aa47fb1c61ed80c60b4723474b8238d97345cb78490a374641ca74001e
+      - url: https://huggingface.co/datasets/aisingapore/NLU-Question-Answering
+        shows: '"It is sampled from TyDi QA-GoldP for Indonesian"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: c6bbce2ff4ba0a2a635424131506b504c87d9b51e7cd9462bec06c1e9900a1b6
+  - id: indicqa
+    curation: curated
+    origin: original
+    collections:
+      - indicqa-paragraphs
+    parents: []
+    effort: indicqa-annotation
+    domains:
+      - wikipedia
+    sources:
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"We introduce IndicQA, a manually curated cloze-style reading comprehension dataset";
+          "A list of topics related to Indic history, monuments, authors, politicians, festivals, etc.,
+          was manually collected."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: indicsentiment
+    curation: curated
+    origin: original
+    collections:
+      - indicsentiment-reviews
+    parents: []
+    effort: indicsentiment-translation
+    domains:
+      - product reviews
+    sources:
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"we ask annotators to create synthetic reviews for real products"; "All the reviews are
+          first written in English and then manually translated to 13 Indic languages"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: xl-sum
+    curation: curated
+    origin: original
+    collections:
+      - xl-sum-bbc
+    parents: []
+    effort: xl-sum-bbc
+    domains:
+      - news
+    sources:
+      - url: https://arxiv.org/abs/2106.13822
+        shows: '"a comprehensive and diverse dataset comprising 1 million professionally annotated article-summary
+          pairs from BBC"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 9eeed97d9be515ee7cd860ef39c09c40a03f3b059b18cf51ea0eb53fedfba4fd
+      - url: https://huggingface.co/datasets/aisingapore/NLG-Abstractive-Summarization
+        shows: '"It is sampled from XL-Sum for Indonesian, Tamil, Thai, and Vietnamese."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: db9393ff683582f5ddf543addec964cc8a015d15fe96a040a17006ff5017e51d
+  - id: mlhsd
+    curation: curated
+    origin: derived
+    collections:
+      - mlhsd-tweets
+    parents: []
+    effort: mlhsd-annotation
+    domains:
+      - twitter
+    notes: Derived because part of its text comes from earlier Indonesian hate-speech datasets; none of
+      them is a component in this registry.
+    sources:
+      - url: https://aclanthology.org/W19-3506.pdf
+        shows: '"we used hate speech and abusive language Twitter dataset from several previous researches";
+          "we also crawled tweets in order to enrich dataset"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 7e63c3c8e59f429f41dbeeb1c0b7215ec89a99e112ae343d493358148666a0fc
+      - url: https://huggingface.co/datasets/aisingapore/Safety-Toxicity-Detection
+        shows: '"It is sampled from MLHSD for Indonesian, TTD for Thai, and ViHSD for Vietnamese."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: bf549474bbe51041544485f90390a3dabab84e2e6caa7dd734bc8987ab2d3e2a
+  - id: thai-toxicity-tweet
+    curation: curated
+    origin: original
+    collections:
+      - thai-toxicity-tweets
+    parents: []
+    effort: thai-toxicity-tweet-annotation
+    domains:
+      - twitter
+    sources:
+      - url: https://huggingface.co/datasets/tmu-nlp/thai_toxicity_tweet
+        shows: '"Thai Toxicity Tweet Corpus contains 3,300 tweets (506 tweets with texts missing) annotated
+          by humans"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 205d529b88ad26cf994658b3f422fdeab12ed097d2b1de901d2f71b1d930debf
+  - id: wisesight-sentiment
+    curation: curated
+    origin: original
+    collections:
+      - wisesight-messages
+    parents: []
+    effort: wisesight-annotation
+    domains:
+      - social media
+    sources:
+      - url: https://huggingface.co/datasets/pythainlp/wisesight_sentiment
+        shows: '"Wisesight Sentiment Corpus: Social media messages in Thai language with sentiment label";
+          "Who are the source language producers? Social media users in Thailand"; "Sentiment values are
+          assigned by human annotators."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 3147cde790eaaed36a468ef0f48c5e944fd0ebd7f0f5325dfadcc14f42523a2c
+  - id: uit-vsfc
+    curation: curated
+    origin: original
+    collections:
+      - uit-vsfc-sentences
+    parents: []
+    effort: uit-vsfc-annotation
+    sources:
+      - url: https://huggingface.co/datasets/uitnlp/vietnamese_students_feedback
+        shows: '"Vietnamese Students’ Feedback Corpus (UIT-VSFC) is the resource consists of over 16,000
+          sentences which are human-annotated"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 67ee2b6dd18f2ba9e774c8fc954601c3c6308cdd9a519e9dba45c08d08a508ab
+  - id: vihsd
+    curation: curated
+    origin: original
+    collections:
+      - vihsd-comments
+    parents: []
+    effort: vihsd-annotation
+    domains:
+      - social media
+    sources:
+      - url: https://arxiv.org/abs/2103.11528
+        shows: '"we introduce the ViHSD - a human-annotated dataset for automatically detecting hate speech
+          on the social network. This dataset contains over 30,000 comments"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 2e17616a97de06c893e237c7843f29a068b774375de5449472871e2ab07c5a59
+  - id: multilingual-fig-qa
+    curation: curated
+    origin: original
+    collections:
+      - mabl-metaphors
+    parents: []
+    effort: mabl-native-writing
+    sources:
+      - url: https://arxiv.org/pdf/2305.16171
+        shows: 'crowdsourced: "sample collection to two or more native speakers in the seven languages";
+          "The workers were asked to generate paired metaphors"; "After collection, each sample was validated
+          by a separate set of workers who were fluent in that language."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 2fea7493e63b0ce4635f5f3460da5ae18655fbc6a09c8c16b211fcfcdb413932
+      - url: https://huggingface.co/datasets/aisingapore/NLU-Metaphor
+        shows: '"It is sampled from Multilingual-Fig-QA for Indonesian, Javanese, and Sundanese."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 483eb8b8f2dd43c640c2efcf76959b85bc7706c650c20030e0235e950eadceda
+  - id: m3exam
+    curation: curated
+    origin: original
+    collections:
+      - m3exam-questions
+    parents: []
+    effort: m3exam-official-exams
+    notes: The effort is the national examinations whose papers M3Exam collected, as ThaiExam's is. SeaExam carries
+      M3Exam's English and Chinese questions in its m3exam-english and m3exam-chinese configs, trimmed to four options
+      and shuffled. M3Exam's Thai questions come from Thai graduation exams; no source read says whether any of them
+      are among ThaiExam's.
+    sources:
+      - url: https://arxiv.org/pdf/2306.05179
+        shows: '"we select 9 languages including English (from the US), Chinese (from China)"; "We then engage native
+          speakers from each of the selected countries to collect official exam papers along with their answers"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d77cd914b94ced54959d84a4844fd6d59a26d58659038ea1607364822fabff26
+      - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+        shows: '"M3Exam (with adjustments)"; "We further process the original dataset with the following operations";
+          "We standardized the total number of answer options to four"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+  - id: mmlu
+    curation: curated
+    origin: original
+    collections:
+      - mmlu
+    parents: []
+    effort: mmlu-question-collection
+    notes: MMLU's own English questions. Translations of them carry their own text, so they name the mmlu collection
+      rather than this component as a parent.
+    sources:
+      - url: https://arxiv.org/pdf/2009.03300
+        shows: '"The questions in the dataset were manually collected by graduate and undergraduate students from
+          freely available sources online"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d3a7b0f8589f5365ebfd34a3876a9a8b3fde83e0adb9ed19ccf8f0034bb48fc1
+  - id: mmlu-sea
+    curation: curated
+    origin: derived
+    collections:
+      - mmlu
+    parents: []
+    effort: mmlu-sea-google-translate
+    notes: 'SeaExam''s translation of 2,850 MMLU questions, 50 per subject, into Chinese, Indonesian, Thai and Vietnamese
+      with Google Translate. The SeaExam paper calls it MMLU-SEA. The effort is that machine translation run.'
+    sources:
+      - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+        shows: '"We randomly selected 50 questions from each subject, totaling 2850 questions"; "These questions have
+          been translated from English into Chinese, Indonesian, Thai, and Vietnamese using Google Translate"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+      - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+        shows: '"Then we translate the questions and the choices from English into Indonesian, Thai, and Vietnamese
+          using Google Translate API"; "We call the curated benchmark MMLU-SEA"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+  - id: seaexam
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: 'SeaExam''s own exam questions, in Indonesian, Thai and Vietnamese. Its sources disagree on where they come
+      from. The paper says the authors collected official exam papers with native linguists, following M3Exam''s
+      procedure; the card and the GitHub README call the same configs M3Exam with adjustments. M3Exam carries Thai
+      and Vietnamese, so for those two the sources do not settle whether the items are M3Exam''s, and the canonical
+      record stays unknown. M3Exam has no Indonesian, so the Indonesian questions can only be the collection the
+      paper describes (the override).'
+    overrides:
+      - languages:
+          - ind
+        origin: original
+        collections:
+          - seaexam-indonesian-exams
+        effort: seaexam-exam-collection
+        sources:
+          - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+            shows: '"we decide to manually collect exam questions from the SEA region (Indonesian (id), Thai (th),
+              and Vietnamese (vi))"; "we collaborate with native linguists from the SEA region to systematically
+              collect official region-specific exam questions"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+          - url: https://arxiv.org/pdf/2306.05179
+            shows: 'M3Exam''s nine languages: "we select 9 languages including English (from the US), Chinese (from
+              China)", ending "and Javanese (from Indonesia)"; Indonesian is not among them'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: d77cd914b94ced54959d84a4844fd6d59a26d58659038ea1607364822fabff26
+    sources:
+      - url: https://aclanthology.org/2025.findings-naacl.341.pdf
+        shows: '"we decide to manually collect exam questions from the SEA region (Indonesian (id), Thai (th), and
+          Vietnamese (vi))"; "Following the construction of M3Exam dataset (Zhang et al., 2023), we engage native
+          speakers from the SEA region to collect official exam papers"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 645381d7c0e619bfa9728681ec816f3c549223dc0b94c96109af065c466970ae
+      - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+        shows: '"M3Exam (with adjustments)"; "We further process the original dataset with the following operations";
+          configs "m3exam-indonesian", "m3exam-thai", "m3exam-vietnamese"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+      - url: https://raw.githubusercontent.com/DAMO-NLP-SG/SeaExam/main/README.md
+        shows: '"The evaluation dataset consists of [M3Exam](https://github.com/DAMO-NLP-SG/M3Exam) and translated
+          [MMLU](https://github.com/hendrycks/test) datsets"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 3ae9329ba76379b14f3299ccf8cfc1e67ef3b6786256806132b9c26939062e31
+  - id: laobench
+    curation: curated
+    origin: original
+    collections:
+      - laobench-items
+    parents: []
+    effort: laobench-expert-writing
+    sources:
+      - url: https://arxiv.org/pdf/2511.11334
+        shows: '"expert linguists and domain specialists create" the multiple-choice questions, "writing question
+          stems in Lao"; "Lao-7k contains 7,000 expert-written multiple-choice questions released publicly to enable
+          reproducible benchmarking"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 41a83590461f750dafa70e2e07a43039244639b1c977e388837deaee3d010f99
+  - id: emot
+    curation: curated
+    origin: original
+    collections:
+      - emot-tweets
+    parents: []
+    effort: emot-annotation
+    domains:
+      - twitter
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"An emotion classification dataset collected from the social media platform Twitter (Saputri et al.,
+          2018)"; "consists of around 4000 Indonesian colloquial language tweets"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: smsa
+    curation: curated
+    origin: original
+    collections:
+      - smsa
+    parents: []
+    effort: smsa-annotation
+    notes: NusaX translated this text, and NusaX's Indonesian is SmSA's own text, recorded there with this effort.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This sentence-level sentiment analysis dataset (Purwarianti and Crisdayanti, 2019) is a collection of
+          comments and reviews in Indonesian obtained from multiple online platforms"; "The text was crawled and then
+          annotated by several Indonesian linguists to construct this dataset"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: casa
+    curation: curated
+    origin: original
+    collections:
+      - casa-reviews
+    parents: []
+    effort: casa-annotation
+    domains:
+      - car reviews
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"around a thousand car reviews collected from multiple Indonesian online automobile platforms"; "(Ilmania
+          et al., 2018)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: hoasa
+    curation: curated
+    origin: original
+    collections:
+      - hoasa-reviews
+    parents: []
+    effort: hoasa-annotation
+    domains:
+      - airyrooms hotel reviews
+    notes: TermA also draws hotel reviews from AiryRooms, cited to different papers; no source read says whether the
+      two sets of reviews overlap.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"hotel reviews collected from the hotel aggregator platform, AiryRooms", cited to Azhar et al. (2019)'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: wrete
+    curation: curated
+    origin: original
+    collections:
+      - wrete-pairs
+    parents: []
+    effort: wrete-annotation
+    domains:
+      - wikipedia
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"consists of 450 sentence pairs constructed from Wikipedia revision history"; "(Setya and Mahendra,
+          2018)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: posp
+    curation: curated
+    origin: original
+    collections:
+      - hoesen-purwarianti-news
+    parents: []
+    effort: posp-annotation
+    domains:
+      - news
+    notes: IndoNLU cites POSP and NERP to the same source, Hoesen and Purwarianti (2018), describes both as collected
+      from Indonesian news websites, and gives both 6,720, 840 and 840 items, so the two share a collection.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This Indonesian part-of-speech tagging (POS) dataset (Hoesen and Purwarianti, 2018)"; "is collected
+          from Indonesian news websites"; Table 1: POSP 6,720 train, 840 valid, 840 test'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: bapos
+    curation: curated
+    origin: derived
+    collections:
+      - panl10n-sentences
+    parents: []
+    effort: bapos-annotation
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This POS tagging dataset (Dinakaramani et al., 2014)"; "contains about 1000 sentences, collected from
+          the PAN Localization Project"; "each word is tagged by one of 23 POS tag classes"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: terma
+    curation: curated
+    origin: original
+    collections:
+      - terma-reviews
+    parents: []
+    effort: terma-annotation
+    domains:
+      - airyrooms hotel reviews
+    notes: HoASA also draws hotel reviews from AiryRooms, cited to a different paper; no source read says whether the
+      two sets of reviews overlap.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This span-extraction dataset is collected from the hotel aggregator platform, AiryRooms"; "(Septiandri
+          and Sutiono, 2019; Fernando et al., 2019)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: keps
+    curation: curated
+    origin: original
+    collections:
+      - keps-tweets
+    parents: []
+    effort: keps-annotation
+    domains:
+      - twitter
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This keyphrase extraction dataset (Mahfuzh et al., 2019)"; "consists of text from Twitter discussing
+          banking products and services and is written in the Indonesian language"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: nergrit
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: IndoNLU says only that the data is taken from the Grit-ID repository. No source read says where its text
+      came from or who labeled it.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This NER dataset is taken from the Grit-ID repository"; "the labels are spans in IOB chunking representation"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: nerp
+    curation: curated
+    origin: original
+    collections:
+      - hoesen-purwarianti-news
+    parents: []
+    effort: nerp-annotation
+    domains:
+      - news
+    notes: Shares its collection with POSP; see that record.
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"This NER dataset (Hoesen and Purwarianti, 2018)"; "contains texts collected from several Indonesian
+          news websites"; Table 1: NERP 6,720 train, 840 valid, 840 test'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: facqa
+    curation: curated
+    origin: original
+    collections:
+      - facqa-passages
+    parents: []
+    effort: facqa-annotation
+    domains:
+      - news
+    sources:
+      - url: https://aclanthology.org/2020.aacl-main.85.pdf
+        shows: '"from a news article (Purwarianti et al., 2007)"; "Each row in the FacQA dataset consists of a question,
+          a short passage, and a label phrase"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - id: arabicmmlu
+    curation: curated
+    origin: original
+    collections:
+      - arabicmmlu-questions
+    parents: []
+    effort: arabicmmlu-school-exams
+    notes: The effort is the school-exam authors in the eight source countries, whose questions ten native
+      speakers collected. No translation is described.
+    sources:
+      - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+        shows: '"sourced from school exams across diverse educational levels in different countries spanning North
+          Africa, the Levant, and the Gulf regions"; "These questions are written in Arabic."'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
+      - url: https://arxiv.org/html/2402.12840
+        shows: '"sourced from school exams across Arabic-speaking countries"; "the internal workers were tasked
+          with collecting relevant sources for data collection"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 921c68cb01cb88e4ada1e82094882023a69b16f2806960968bdb15f22843eecd
+  - id: darijammlu
+    curation: curated
+    origin: derived
+    collections:
+      - arabicmmlu-questions
+      - mmlu
+    parents: []
+    effort: darijammlu-translation
+    notes: Selected MMLU subjects translated from English and selected ArabicMMLU subjects translated from Modern
+      Standard Arabic, both into Darija with Claude 3.5 Sonnet and then reviewed by people. It carries neither
+      source's own text, so it names their collections rather than parents. Its items share ArabicMMLU's questions
+      with `arabicmmlu` and MMLU's with `afrimmlu` and `openai-mmmlu`.
+    sources:
+      - url: https://huggingface.co/datasets/MBZUAI-Paris/DarijaMMLU/raw/main/README.md
+        shows: '"translated from selected subsets of the Massive Multitask Language Understanding (MMLU) and ArabicMMLU
+          benchmarks"; "The selected subsets were translated into Darija using Claude 3.5 Sonnet."; "The translations
+          were produced using machine translation with manual curation for quality control."'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: a8fc1cad343e5f3bc627875aaa17b4e6df608af5c873ba1a07f9d6bb053e8fd3
+      - url: https://arxiv.org/html/2409.17912
+        shows: '"It is constructed by translating two major benchmarks into Darija from English and MSA"; subsets
+          "either too technical (beyond typical user needs) or culturally inappropriate for the Moroccan context
+          were excluded"; "The remaining samples were translated into Darija using Claude 3.5 Sonnet."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eb1879217fcf050587034ac290e0248996f990f2ed480962eb5cb3088978dedb
+  - id: include-benchmark
+    curation: curated
+    origin: original
+    collections:
+      - include-local-exams
+    parents: []
+    effort: include-local-exams
+    notes: INCLUDE-base samples INCLUDE's pool, which joins exams INCLUDE collected itself with six published
+      benchmarks (existing data is 39.8% of INCLUDE and 31.7% of INCLUDE-base, with no per-language share
+      published). The overrides name the published benchmark a language's pool contains, so a pair is dependent
+      wherever overlap cannot be ruled out. Arabic and Turkish carry the parent benchmark's own text, so there
+      INCLUDE is derived from the parent, with the parent's effort and none of its own exams. Persian joins the Khayyam Challenge's questions with exams INCLUDE collected (Table 14), so
+      it takes both collections, as Chinese does with CMMLU. Albanian, French, German, Italian, Lithuanian, Polish and Portuguese are the languages
+      the paper says hold both existing and newly collected data that no single-language benchmark covers, so
+      their existing data is EXAMS. Whether EXAMS also feeds INCLUDE's other EXAMS languages is not stated.
+    overrides:
+      - languages:
+          - ara
+        origin: derived
+        collections: []
+        parents:
+          - arabicmmlu
+        effort: arabicmmlu-school-exams
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates ArabicMMLU ("we also consolidate existing datasets with extensive
+              domain coverage in single non-English languages"); Table 15 gives its language as Arabic'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - fas
+        collections:
+          - include-local-exams
+          - khayyam-questions
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates PersianMMLU, the Khayyam Challenge''s other name ("we also consolidate
+              existing datasets with extensive domain coverage in single non-English languages"); Table 15 gives
+              its language as Persian; Figure 9 and Table 14 list Persian among "languages where both existing
+              benchmark data and newly collected data are available"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+          - url: https://arxiv.org/abs/2404.06644
+            shows: '"Khayyam Challenge (also known as PersianMMLU)"'
+            accessed: '2026-09-24'
+            http_status: 200
+            content_sha256: f045cb12c69ed9c98ea845cbc7ac0224211ca799b11ef12761e21ae6d176a32b
+      - languages:
+          - tur
+        origin: derived
+        collections: []
+        parents:
+          - turkishmmlu
+        effort: eba-curriculum-experts
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates TurkishMMLU ("we also consolidate existing datasets with extensive
+              domain coverage in single non-English languages"); Table 15 gives its language as Turkish'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - zho
+        collections:
+          - cmmlu-questions
+          - include-local-exams
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates ChineseMMLU; Table 15 gives CMMLU''s language as Chinese; Figure 9 and
+              Table 14 list Chinese among "languages where both existing benchmark data and newly collected data
+              are available"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - vie
+        collections:
+          - include-local-exams
+          - vnhsge-questions
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Section 3.1 consolidates VNHSGE; Table 15 gives its language as Vietnamese'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+      - languages:
+          - deu
+          - fra
+          - ita
+          - lit
+          - pol
+          - por
+          - sqi
+        collections:
+          - exams-questions
+          - include-local-exams
+        sources:
+          - url: https://arxiv.org/html/2411.19799
+            shows: 'Table 14 and Figure 9 cover the "languages where both existing benchmark data and newly collected
+              data are available": Albanian, Chinese, French, German, Italian, Lithuanian, Persian, Polish and Portuguese;
+              of the consolidated benchmarks only EXAMS, "a multilingual benchmark with limited domain coverage across
+              multiple European languages", can supply the existing data for the seven that are not Chinese or Persian'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: '"All questions in the dataset are presented in their native languages and scripts."; "we also consolidate
+          existing datasets with extensive domain coverage in single non-English languages"; "We repurpose 78,637
+          samples from these published benchmarks"; existing datasets "account for 39.8% of the total collected
+          data and 31.7% of the" INCLUDE-base benchmark; INCLUDE-base "uniformly samples 22,635 QA pairs"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: include-lite
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - include-benchmark
+    effort: include-local-exams
+    notes: A uniform sample of INCLUDE-base carrying its text, so it inherits INCLUDE-base's per-language parents
+      and collections.
+    sources:
+      - url: https://arxiv.org/html/2411.19799
+        shows: INCLUDE-lite is "uniformly drawn from" INCLUDE-base "with a total of 10,770 samples"
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a989901132930408191518528f260a2d5c3d899ca7c6f4daf6831a86a3a4336f
+  - id: khayyam-challenge
+    curation: curated
+    origin: original
+    collections:
+      - khayyam-questions
+    parents: []
+    effort: khayyam-source-exams
+    notes: The effort is the exam writers of Iran's national university entrance exam and Kanoon Farhangi Amoozesh,
+      whose questions the dataset collects. No translation is described.
+    sources:
+      - url: https://arxiv.org/abs/2404.06644
+        shows: '"20,192 four-choice questions sourced from 38 diverse tasks extracted from Persian examinations";
+          "its use of original, non-translated data tailored for Persian speakers"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: f045cb12c69ed9c98ea845cbc7ac0224211ca799b11ef12761e21ae6d176a32b
+      - url: https://arxiv.org/html/2404.06644
+        shows: '"originally constructed in Persian"; questions from "Iran’s national university entrance" and "Kanoon
+          Farhangi Amoozesh (Cultural Educational Center), wherein questions are not only verified and validated
+          by experts in each subject"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c785d9dfad69ef6f8408e514fd681e5ae2f40b72c79350130c85dc64b17e8bbd
+  - id: turkishmmlu
+    curation: curated
+    origin: original
+    collections:
+      - turkishmmlu-questions
+    parents: []
+    effort: eba-curriculum-experts
+    notes: The effort is the curriculum experts who wrote the questions on the Ministry of Education's EBA platform,
+      not the TurkishMMLU team that collected them.
+    sources:
+      - url: https://arxiv.org/abs/2407.12402
+        shows: '"These questions are written by curriculum experts"'
+        accessed: '2026-09-24'
+        http_status: 200
+        content_sha256: 5e66fa69b91a4d9e16dd67166a15b4a099cbaba81d10359f496f8e7adff4fe1a
+      - url: https://arxiv.org/html/2407.12402
+        shows: '"These questions are sourced from a high-quality online learning platform created by the Turkish
+          Ministry of Education"; "each question is crafted and verified by domain experts"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - id: turkishmmlu-sub
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - turkishmmlu
+    effort: eba-curriculum-experts
+    notes: A random sample of TurkishMMLU's test set carrying its text.
+    sources:
+      - url: https://arxiv.org/html/2407.12402
+        shows: '"The large scale of our test dataset, including 9,807 questions" led to "TurkishMMLU sub with 100
+          randomly selected questions per subject, totaling 900"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: eabfdfb9f43aeb3692a9771689530c6fb416841e592759e5669827533fd56326
+  - id: fleurs
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - flores-plus
+    effort: fleurs-recording
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    notes: FLEURS is speech recorded from FLORES-101's dev and devtest sentences, so its transcripts are the
+      FLORES text in each language and it names flores-plus as its parent, as SIB-200 and Belebele do. The
+      effort recorded here is the recording; the text's translation effort comes from the parent.
+    sources:
+      - url: https://arxiv.org/pdf/2205.12446
+        shows: '"FLoRes-101 contains 3001 sentences extracted from English Wikipedia"; "we only use the dev
+          and devtest sets, which contain 2009 sentences in total"; "we collected three recordings by three
+          different native speakers"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 670824d0dfaa98f56b7f774116d5d70bdeb7990ce031ebe690e9c86c6053283f
+  - id: americasnli
+    curation: curated
+    origin: derived
+    collections:
+      - xnli-english
+    parents: []
+    effort: americasnli-translation
+    notes: AmericasNLI translates the Spanish version of XNLI into ten Indigenous languages of the Americas,
+      and the AmericasNLP shared tasks of 2021 and 2023 use its sentences as their dev and test sets for those
+      languages. It made its own text from XNLI's examples, so it names XNLI's collection rather than a parent,
+      as AfriXNLI and IndicXNLI do. One translation effort is recorded for all ten languages; the sources
+      describe one dataset and no separate efforts.
+    sources:
+      - url: https://aclanthology.org/2021.americasnlp-1.23.pdf
+        shows: '"we leveraged individual pairs of parallel sentences from AmericasNLI"; "a manual translation
+          of the Spanish version of the multilingual XNLI dataset"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: ae950b2ea49b13e4f72912264e75a5e171976e5c333c0ce3db3ce96273f97b57
+      - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+        shows: '"the AmericasNLP 2021 shared task used multi-way parallel translations of the Spanish XNLI test
+          set across 10 languages"; "For this edition of the shared task, we use the same evaluation set"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+  - id: americasnlp-shared-task-data
+    curation: curated
+    origin: unknown
+    collections: []
+    parents: []
+    effort: null
+    notes: The shared task's own items. Its training sets gather existing corpora that differ by language and
+      are not named collections here, and none of its training entries counts, so the canonical record stays
+      unknown. Its dev and test sets in the ten 2021 languages are AmericasNLI's, a component of their own.
+      The 2023 Chatino dev and test sets are the override.
+    overrides:
+      - languages:
+          - ctp
+        splits:
+          - dev
+          - test
+        origin: original
+        collections:
+          - scjn-press-releases
+        effort: americasnlp-chatino-translation
+        domains:
+          - legal
+        sources:
+          - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+            shows: '"To create the dataset, we crawl 10,000 instances from the Supreme Court press releases,
+              and randomly select a subset for translation."; "Translations are jointly done by two professional
+              translators, who are native San Juan Quiahije Chatino speakers"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+    sources:
+      - url: https://aclanthology.org/2021.americasnlp-1.23.pdf
+        shows: '"We provided training sets consisting of data collected from various sources, as well as manually
+          translated sentences for the development and test sets."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: ae950b2ea49b13e4f72912264e75a5e171976e5c333c0ce3db3ce96273f97b57
+  - id: lahaja
+    curation: curated
+    origin: original
+    collections:
+      - lahaja-recordings
+      - indicvoices-read-sentences
+    parents: []
+    effort: lahaja-recording
+    notes: Lahaja recorded its own speakers. Its read-speech portion is those speakers reading IndicVoices'
+      released Wikipedia sentences, so it also names that collection.
+    sources:
+      - url: https://arxiv.org/pdf/2408.11440
+        shows: '"a total of 12.5 hours of Hindi audio, sourced from 132 speakers"; "Read speech: To ensure good
+          vocabulary coverage we use 1K sentences from Wikipedia articles covering 13 domains, as released by
+          [1]."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 62bf18b08a94bbc94644812f4d2848fb8b50f9f8f567ccfa01a60832d1fe5a19
+  - id: kazmmlu
+    curation: curated
+    origin: original
+    collections:
+      - kazmmlu-questions
+    parents: []
+    effort: kazmmlu-source-exams
+    notes: The effort is the authors of the exams, textbooks and certification tests whose questions
+      KazMMLU collected, not the MBZUAI team that collected and validated them.
+    sources:
+      - url: https://arxiv.org/pdf/2502.12829
+        shows: '"KazMMLU is sourced from authentic educational materials, including national exams,
+          textbooks, and professional certification repositories"; "the question and answer choices
+          remain in their original language (Kazakh or Russian)"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 1724454232a76f3d821777308bd8c94d380442e4165d9f552410c478e32928bd
+  - id: milu
+    curation: curated
+    origin: original
+    collections:
+      - milu-exam-questions
+    parents: []
+    effort: milu-exam-sources
+    notes: The effort is the Indian examination bodies whose question papers MILU scraped. 19,915 of
+      its questions, none of them in English, are MILU's GPT-4o translations of its own English questions,
+      which come from the same collection; no source separates them item by item, so no override is
+      recorded.
+    sources:
+      - url: https://arxiv.org/pdf/2411.02538
+        shows: '"We gathered exam-specific questions by scraping various online exam portals"; "only
+          25% of questions are translated from English, with the remainder"; "we sampled questions from
+          the English set from that subject and translated them into the required language using GPT-4"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: a862d7eb687765fd056e0d312fdc0820e821fa924af286384da253bebd10aae6
+  - id: crosssum-in
+    curation: curated
+    origin: derived
+    collections:
+      - xl-sum-bbc
+    parents: []
+    effort: indicgenbench-translation
+    domains:
+      - news
+    notes: 'CrossSum pairs BBC articles with summaries across XL-Sum''s language services. IndicGenBench
+      had the English summaries of 700 English pairs translated into its languages and, for 9 languages
+      it does not name, took 100/100/500 pairs from CrossSum itself. CrossSum carries 10 of IndicGenBench''s
+      29 languages, so for those 10 the effort behind the summaries is not stated (the override). IndicGenBench''s
+      CrossSum-IN, FLORES-IN, XQuAD-IN and XorQA-IN translations share one effort: its card describes
+      one annotator pool per language across the datasets.'
+    overrides:
+      - languages:
+          - ben
+          - guj
+          - hin
+          - mar
+          - nep
+          - pan
+          - pus
+          - tam
+          - tel
+          - urd
+        effort: null
+        sources:
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"CrossSum already contains data for 9 of our 29 target languages; for these languages
+              we sample 100/100/500 examples from the original dataset"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+          - url: https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+            shows: 'the language table''s header row lists bn, gu, hi, mr, np, ps, pa, ta, te and ur
+              among CrossSum''s languages: "Language (ISO 639-1-Code) | am | ar | az | bn | my | zh-CN
+              | zh-TW | en | fr | gu | ha | hi | ig | id | ja | rn | ko | ky | mr | np | om | ps | fa
+              | pcm | pt | pa | ru | gd | sr | sr | si | so | es | sw | ta | te | th | ti | tr | uk
+              | ur | uz | vi | cy | yo"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: bd911faf378b29dbfb1faa5abf8464b01c39802db884d0fb00a2aa7070b70e72
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"a dataset for crosslingual summarization, which in turn is derived from XL-Sum"; "We
+          sample 700 English article-summary pairs (100 each from train/dev and 500 from test) and ask
+          human translators to translate the English summary into the target Indic languages"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://huggingface.co/datasets/google/IndicGenBench_crosssum_in/raw/main/README.md
+        shows: '"We used professional annotators to collect translations in 29 Indic languages for our
+          benchmark."; "All examples across datasets were equally divided based on the number of available
+          annotators and we collected one translation per example in this manner."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: cdb4d05e96ff89702988b754782caba56f27c08e5adebac424bf1c952e51d556
+  - id: flores-in
+    curation: curated
+    origin: derived
+    collections: []
+    parents:
+      - flores-plus
+    effort: flores-200-translation
+    domains:
+      - wikinews
+      - wikijunior
+      - wikivoyage
+    notes: FLORES-IN reuses FLORES-200's own translations of the dev and devtest sentences for the 22
+      of its languages FLORES-200 carries, and IndicGenBench translated those sentences into the other
+      7 (the first override). FLORES-200 carries Manipuri in Bengali script and IndicGenBench in Meitei
+      script, and no source says how the Meitei text was made, so Manipuri carries no effort (the second
+      override).
+    overrides:
+      - languages:
+          - bgc
+          - brx
+          - gbm
+          - gom
+          - hoj
+          - mup
+          - mwr
+        parents: []
+        collections:
+          - flores-200
+        effort: indicgenbench-translation
+        sources:
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"It contains data in 22 of our 29 target languages; we extend this by collecting
+              human translations for the remaining 7 new languages"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+          - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
+            shows: the FLORES-200 language list carries "asm_Beng", "awa_Deva", "ben_Beng", "bho_Deva",
+              "bod_Tibt", "guj_Gujr", "hin_Deva", "hne_Deva", "kan_Knda", "mai_Deva", "mal_Mlym", "mar_Deva",
+              "mni_Beng", "npi_Deva", "ory_Orya", "pan_Guru", "pbt_Arab", "san_Deva", "sat_Olck", "tam_Taml",
+              "tel_Telu" and "urd_Arab", and none of bgc, brx, gbm, gom, hoj, mup or mwr
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
+      - languages:
+          - mni
+        parents: []
+        collections:
+          - flores-200
+        effort: null
+        sources:
+          - url: https://raw.githubusercontent.com/facebookresearch/flores/main/flores200/README.md
+            shows: '"Meitei (Bengali script) | mni_Beng"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: 74ccbbe29feba9d92cb3ee472387579ab2aa5c0299d47dcec7614b2c06cd49fc
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"extremely low-resource languages such as Manipuri in Meitei script"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"It contains data in 22 of our 29 target languages"; "We collect translations for all
+          997 dev and 1012 devtest sentences, yielding 2009 sentences per language"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+        shows: '"the ''dev'' and ''test'' split of flores_in corresponds to the ''dev'' and ''devtest''
+          split of the original flores dataset"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 2b36a3735001317d99551905243bf8b6b1165876f0511c52e34880a7a892bea1
+  - id: xquad-in
+    curation: curated
+    origin: derived
+    collections:
+      - squad-v1-1
+    parents: []
+    effort: indicgenbench-translation
+    domains:
+      - wikipedia
+    notes: The test set is XQuAD's 240 passages and 1,190 questions and the train and dev sets 100 SQuAD
+      v1.1 questions each. IndicGenBench says it collected translations of all of them in its 12 languages,
+      Hindi included, though XQuAD already had Hindi; either way the items come from SQuAD v1.1, so
+      XQuAD-IN and XQuAD are dependent.
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"we use the 240 passages and 1190 QA pairs from XQuAD as our test set"; "For all the
+          280 passages and 1390 QA pairs we collect professional human translations in 12 Indic languages"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://huggingface.co/datasets/google/IndicGenBench_crosssum_in/raw/main/README.md
+        shows: '"All examples across datasets were equally divided based on the number of available
+          annotators and we collected one translation per example in this manner."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: cdb4d05e96ff89702988b754782caba56f27c08e5adebac424bf1c952e51d556
+  - id: xorqa-in
+    curation: curated
+    origin: derived
+    collections:
+      - tydi-qa
+    parents: []
+    effort: indicgenbench-translation
+    domains:
+      - wikipedia
+    notes: XOR-TyDi QA's questions are TyDi QA questions with no same-language answer, paired with English
+      passages. IndicGenBench took 302 Bengali and 237 Telugu ones, had them translated into English
+      and then into each target language. Whether the Bengali and Telugu items keep XOR-TyDi's original
+      questions is not stated, so those two languages carry no effort (the override).
+    overrides:
+      - languages:
+          - ben
+          - tel
+        effort: null
+        sources:
+          - url: https://arxiv.org/pdf/2404.16816
+            shows: '"Some target languages are already covered by the source datasets in which case
+              we re-purpose this existing data and only collect translations for the remaining languages";
+              "we first ask the human translators to translate the Bengali or Telugu question"'
+            accessed: '2026-11-03'
+            http_status: 200
+            content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+    sources:
+      - url: https://arxiv.org/pdf/2404.16816
+        shows: '"we select the 302 Bengali and 237 Telugu examples"; "we first ask the human translators
+          to translate the Bengali or Telugu question"; "In the second stage, we collect translations
+          for these English questions"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+      - url: https://arxiv.org/abs/2010.11856
+        shows: '"We construct a large-scale dataset built on questions from TyDi QA lacking same-language
+          answers."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 2e2322a1dcab76fe1731541ea40d62893e04719011db85237a8a9217633bd0ea
+  - id: indiccopa
+    curation: curated
+    origin: derived
+    collections:
+      - copa
+    parents: []
+    effort: indiccopa-translation
+    sources:
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"We manually translate the COPA (Roemmele et al., 2011) test set into 18 Indic languages
+          to create IndicCOPA."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: indicxparaphrase
+    curation: curated
+    origin: derived
+    collections:
+      - indicxparaphrase-sentences
+    parents: []
+    effort: indicxparaphrase-annotation
+    notes: Each language's sentences are IndicTrans machine translations that annotators verified and
+      corrected where needed; the same annotators wrote a paraphrase and a non-paraphrase for each sentence.
+    sources:
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"We randomly choose 1001 English sentences from the dataset introduced in Kumar et al.
+          (2022)"; "we machine-translate these sentences into the required languages using the IndicTrans
+          model"; "verify and correct the translations, if required, and (ii) create one paraphrase
+          and a non-paraphrase for each sentence"'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: massive
+    curation: curated
+    origin: derived
+    collections:
+      - slurp
+    parents: []
+    effort: massive-localization
+    sources:
+      - url: https://arxiv.org/abs/2204.08582
+        shows: '"MASSIVE was created by tasking professional translators to localize the English-only
+          SLURP dataset into 50 typologically diverse languages"'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 3a6ed49012479370c08ac14d9f2cd182440a4b79074646f92fe105fb828dc241
+      - url: https://arxiv.org/pdf/2212.05409
+        shows: '"is created using user queries collected by Amazon Alexa"; "We take a subset of it consisting
+          of seven Indic languages to be part of IndicXTREME."'
+        accessed: '2026-11-02'
+        http_status: 200
+        content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - id: naamapadam
+    curation: curated
+    origin: derived
+    collections:
+      - samanantar
+    parents: []
+    effort: naamapadam-annotation
+    notes: The sentences are the Indic side of Samanantar's English-Indic parallel corpus, and no source
+      read here says how that text was produced. The effort recorded is Naamapadam's annotation of its
+      test sets.
+    sources:
+      - url: https://huggingface.co/datasets/ai4bharat/naamapadam/raw/main/README.md
+        shows: '"We use the parallel corpus from the Samanantar Dataset between English and the 11 major
+          Indian languages to create the NER dataset."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: 2f6a5559ac0c9035f5b8b9c06e67a43f66c4f7b57d048a6ff36aac09b90221f3
+      - url: https://arxiv.org/pdf/2212.10168
+        shows: '"The annotators had to verify if the projected NER annotations were correct and rectify
+          the annotations if incorrect."'
+        accessed: '2026-11-03'
+        http_status: 200
+        content_sha256: ccd4fdc95ba32546f941b403aa494a074411e79b190d5c15fd548535627ed7fb
+relationships: []

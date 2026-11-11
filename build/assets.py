@@ -58,6 +58,7 @@ AUDIT_ROOTS = (
     "build/identity_digest.py",  # renders the weekly review digest from identity.digest
     "build/check_channel_authority.py",  # the release-line leg reads the version columns
     "build/snapshot_counters.py",  # records the lifetime counters adoption increments come from
+    "build/language_representation.py",  # checks the language classification contract
 )
 
 # Explicitly declared publication workflows that read tables directly (none today). The root

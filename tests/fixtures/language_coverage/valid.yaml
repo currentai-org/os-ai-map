@@ -1,0 +1,153 @@
+# A synthetic multi-task evaluation suite carrying `capability.language_coverage` and
+# `capability.pivot_languages` (R-2026-10-30-h, R-2026-11-01-b to -h), used by
+# tests/test_language_coverage.py. Not a real product: the slug, org, components and figures are
+# invented so the fixture cannot be read as a claim about any dataset on the map. Each invalid
+# case in the test is this record with one thing broken.
+#
+# What it shows: two components, the suite's own exam (`example-eval`, named after the product)
+# and an imported translation set (`example-mt`); a dev and a devtest split of the latter, only
+# one of them the official evaluation split; a pivot declared on the axis; a `mixed` entry with
+# its documented qualifying portion; an excluded `machine_translated` entry; a training split
+# recorded and not counted; a generated entry the source says people reviewed, which stays
+# `generated`; a fractional `hours` count; a documented zero, where the paper states there is no
+# Yoruba speech, so the entry has no provenance; and a mapped entry, whose card labels the Swahili
+# questions with the macrolanguage code `swa` while the product lists `swh`.
+product:
+  name: example-eval
+  display_name: Example Eval
+  type: dataset
+  languages: [eng, hau, swh, yor]
+  comments: ''
+score:
+  product: example-eval
+  openness:
+    score: 5
+    class: open
+    sources:
+      - url: https://huggingface.co/datasets/example-org/example-eval
+        shows: 'card license `cc-by-4.0`'
+        accessed: '2026-10-30'
+  adoption:
+    level: 2
+    signal_type: usage_volume
+    sources:
+      - url: https://huggingface.co/datasets/example-org/example-eval
+        shows: '1,200 downloads last month'
+        accessed: '2026-10-30'
+  capability:
+    score: 3
+    basis: feature_matrix
+    sources:
+      - url: https://huggingface.co/datasets/example-org/example-eval
+        shows: "the card's per-language table: 1,000 test questions in each language, the Swahili
+          ones under `swa`, 4,000 reviewed model-written Swahili training questions"
+        accessed: '2026-10-30'
+      - url: https://arxiv.org/pdf/2601.00001
+        shows: 'Table 2: 997 dev and 1,012 devtest sentences per language, 600 of the 1,000 Hausa
+          questions written in Hausa, 12.5 hours of Hausa speech and none of Yoruba'
+        accessed: '2026-10-30'
+    pivot_languages: [eng]
+    language_coverage:
+      - language: eng
+        task: knowledge_exam
+        component: example-eval
+        split: test
+        official_eval: true
+        count: 1000
+        unit: questions
+        provenance: native
+        cites: [https://huggingface.co/datasets/example-org/example-eval]
+      - language: eng
+        task: machine_translation
+        component: example-mt
+        split: dev
+        official_eval: false
+        count: 997
+        unit: sentences
+        provenance: native
+        cites: [https://arxiv.org/pdf/2601.00001]
+      - language: eng
+        task: machine_translation
+        component: example-mt
+        split: devtest
+        official_eval: true
+        count: 1012
+        unit: sentences
+        provenance: native
+        cites: [https://arxiv.org/pdf/2601.00001]
+      - language: hau
+        task: knowledge_exam
+        component: example-eval
+        split: test
+        official_eval: true
+        count: 1000
+        unit: questions
+        provenance: mixed
+        qualifying_count: 600
+        cites:
+          - https://huggingface.co/datasets/example-org/example-eval
+          - https://arxiv.org/pdf/2601.00001
+      - language: hau
+        task: machine_translation
+        component: example-mt
+        split: dev
+        official_eval: false
+        count: 997
+        unit: sentences
+        provenance: human_translated
+        cites: [https://arxiv.org/pdf/2601.00001]
+      - language: hau
+        task: machine_translation
+        component: example-mt
+        split: devtest
+        official_eval: true
+        count: 1012
+        unit: sentences
+        provenance: human_translated
+        cites: [https://arxiv.org/pdf/2601.00001]
+      - language: hau
+        task: speech_recognition
+        component: example-eval
+        split: test
+        official_eval: true
+        count: 12.5
+        unit: hours
+        provenance: native
+        cites: [https://arxiv.org/pdf/2601.00001]
+      - language: swh
+        source_language: swa
+        task: knowledge_exam
+        component: example-eval
+        split: test
+        official_eval: true
+        count: 1000
+        unit: questions
+        provenance: human_translated
+        cites: [https://huggingface.co/datasets/example-org/example-eval]
+      - language: swh
+        task: knowledge_exam
+        component: example-eval
+        split: train
+        official_eval: false
+        count: 4000
+        unit: questions
+        provenance: generated
+        human_validated: true
+        cites: [https://huggingface.co/datasets/example-org/example-eval]
+      - language: yor
+        task: knowledge_exam
+        component: example-eval
+        split: test
+        official_eval: true
+        count: 1000
+        unit: questions
+        provenance: machine_translated
+        cites: [https://huggingface.co/datasets/example-org/example-eval]
+      - language: yor
+        task: speech_recognition
+        component: example-eval
+        split: test
+        official_eval: true
+        count: 0
+        unit: hours
+        cites: [https://arxiv.org/pdf/2601.00001]

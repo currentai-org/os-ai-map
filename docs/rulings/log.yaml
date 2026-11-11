@@ -3,6 +3,80 @@
 version: 1
 
 rulings:
+  - id: R-2026-09-23-a
+    date: 2026-09-23
+    by: ccerv1
+    venue: issue
+    refs: ["#384", "#412", "#671"]
+    question: >-
+      Historical decision, back-filled on 2026-11-08 from the issue thread, with its original
+      conditions. Phase 7 retires the duplicate warehouse openness computation once the repo-owned
+      trace agrees "across multiple releases", but evaluation.axis_results holds one generation,
+      replaced in place on each publish. Is the condition kept and made observable through #412's
+      release-scoped tables, restated as "agrees whenever checked", or met through an interim
+      per-publish record?
+    ruling: >-
+      Phase 7 waits for release-scoped tables. The condition stays as written, agreement across
+      multiple releases, and becomes observable when #412 binds release_id into the evaluation
+      tables. It is not restated as "agrees whenever checked", and no interim per-publish record is
+      added. #384 (Phase 7) is blocked on #412 (Phase 8). The weekly scoring-trace cadence stays,
+      to keep the trace current and re-check the agreement every week.
+    status: replaced
+    executor: none
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/671']
+    replaced_by: R-2026-11-08-t
+
+  - id: R-2026-09-25-a
+    date: 2026-09-25
+    by: ccerv1
+    venue: issue
+    refs: ["#410", "#355", "#637", "#706", "#584"]
+    question: >-
+      Historical decision, back-filled on 2026-11-08 from the issue thread, with its original
+      conditions. The read-time run binding from #637 lives repo-side, so the warehouse table still
+      reports source_unavailable for 309 rows. Does the blocking adoption gate carry the binding into
+      the warehouse (route 1, a platform change) or move repo-side to where the binding already
+      exists (route 2)?
+    ruling: >-
+      Route 2. The gate moves repo-side, next to the read-time binding from #637; #355 closes as not
+      planned and the platform ask is dropped. The blocking gate reads a repo-side reconciliation,
+      not evaluation.adoption_reconciliation. An observation counts as current only when the read is
+      bound to a scheduled, successful materialization of product_adoption_current within the 14-day
+      binding bound; the latest scheduled fetch of its source dataset that finished before that
+      materialization's run started succeeded, within the same bound, and an older success behind a
+      newer failure does not count; and source_runs was captured after the bound read completed.
+      Otherwise it stays source_unavailable. The evidence is per dataset, not per row, and the blind
+      spot of an artifact dropped by a partial run that still reported success is accepted. The
+      warehouse table keeps its source_unavailable rows as its settled state. This no longer depends
+      on #584's adoption-pair publish. The gate reports first and blocks second.
+    status: in-force
+    executor: agent
+    lands_in: [docs/architecture/data-architecture.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/706']
+
+  - id: R-2026-09-25-b
+    date: 2026-09-25
+    by: ccerv1
+    venue: issue
+    refs: ["#411", "#412", "#384"]
+    question: >-
+      Historical decision, back-filled on 2026-11-08 from the issue thread, with its original
+      conditions. The evaluator_version cutover from the v0 sentinel re-keys the whole corpus. Does
+      it run now or stay parked?
+    ruling: >-
+      It stays parked: nothing depends on the cutover, and it re-keys the whole corpus, so it runs
+      only once something needs it. When it is unparked, it runs before release manifests (#412),
+      because release_id is built from declaration_version_id, which the cutover re-keys; if #412
+      landed first, release history would start on the v0 sentinel and cross-release agreement for
+      #384 would span the version change. The weekly scoring-trace publish stays without
+      --deploy-artifact for now, and moves to the release-backed path at the same time the cutover is
+      unparked. Back-filling this decision on 2026-11-08 does not authorize the evaluator cutover.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
   - id: R-2026-09-30-a
     date: 2026-09-30
     by: ccerv1
@@ -1471,4 +1545,2106 @@ rulings:
     status: in-force
     executor: agent
     lands_in: []
+    applied_in: []
+
+  - id: R-2026-10-30-l
+    date: 2026-10-30
+    by: ccerv1
+    venue: pr-review
+    refs: ["#950", "#952", "#948", language_specific_eval_sets, R-2026-10-30-g, R-2026-10-30-i]
+    question: >-
+      The dry run of the interim evaluation-set ladder in #950 puts 12 of 22 sets at capability 5.
+      Should those bands be adopted, or a temporary numerical depth floor added, so the sets can move
+      before the depth ladder exists? And may a set-wide total be divided across languages where no
+      per-language count is published?
+    ruling: >-
+      Neither. Twelve of 22 at 5 is not a useful distribution: the interim ladder mostly rewards being
+      the best available option for a language rather than demonstrating sufficient depth or quality.
+      No temporary numerical minimum that would immediately be replaced. The empty preliminary category
+      stays, and the product migration is deferred until the depth ladder of R-2026-10-30-i is ready;
+      if migration must precede it, a defensible provisional floor is preferred over the current
+      distribution. The final scoring uses the evidence rule of #952: source-reported per-language
+      counts only, never a dataset total divided by its number of languages.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_eval_sets.yaml]
+    applied_in: []
+
+  - id: R-2026-10-30-m
+    date: 2026-10-30
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", "#948", language_specific_datasets, wangchan-thai-instruct, R-2026-10-30-c, R-2026-10-30-k]
+    question: >-
+      Applied as written in #951, the instruction-data cap of R-2026-10-30-c drops WangchanThaiInstruct,
+      a curated human-written Thai set of 40,000 examples, from 4 to 2 against English post-training
+      corpora of tens of millions. Is #951 merged as written?
+    ruling: >-
+      No. Hold #951. A size dimension is supported, but not one that mechanically forces a dataset down
+      two levels solely because it has 40,000 examples. R-2026-10-30-k establishes the
+      language-resource-adjusted yardsticks before the cap is applied, and the new approach must at
+      minimum preserve a meaningful distinction between curated human data and large-scale generated
+      data.
+    reasoning: >-
+      Comparing a curated human-written Thai dataset with massive English-oriented post-training corpora,
+      using raw example count as an upper bound, confounds language-resource availability, dataset scale
+      and training value, and risks rewarding huge synthetic collections over smaller, carefully curated
+      datasets.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-01-a
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-i, R-2026-10-30-l]
+    question: >-
+      Under the per-language depth ladder, how is a language with no source-stated count treated, and
+      when is a set best in class?
+    ruling: >-
+      A missing count is unknown: never zero, and never evidence that a set is the strongest available.
+      Two sets are comparable only where both have documented counts for the same language and task;
+      where no comparable peer has documented evidence, the record says "no comparable evidence", not
+      "best in class". A band stands only when the lowest and highest possible median bands, filling the
+      unknowns either way, agree; where they span different bands the result is unresolved until more
+      evidence is collected. No arbitrary completeness threshold.
+    reasoning: >-
+      Observed bands of 4, 4 and unknown give a median of 4 whatever the missing value is, but 5, unknown
+      and unknown cannot establish a 5. A robustness test is preferable to an arbitrary completeness
+      threshold.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-b
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-i]
+    question: >-
+      What is the population for the per-language median, and how are languages without a recorded
+      count handled in it and in the breadth bonus?
+    ruling: >-
+      The population is every declared target language, less documented pivot languages; unknowns enter
+      through the robustness test of R-2026-11-01-a. A record publishes its evidence completeness (for
+      example, 18 of 20 target languages have usable depth measurements). The breadth bonus of
+      R-2026-10-30-i counts only languages with substantiated evaluation evidence. Pivot languages stay
+      identifiable even with no reported counts, through a separate declaration.
+    reasoning: >-
+      A missing language means no measured depth, not no evaluation data. Counting unsubstantiated
+      languages in the bonus would let missing records inflate the result indirectly.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-c
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, sea-helm, afrobench, indicxtreme]
+    question: >-
+      How is depth recorded and aggregated for a multi-task suite whose tasks use different units,
+      sample sizes and sources?
+    ruling: >-
+      The unit of evidence is one language x task x dataset component x split. Depth is banded per task
+      in comparable units against calibrated standards, then aggregated to a language-level band, and
+      the median of R-2026-10-30-i stays the final aggregation across languages. Translation sentences,
+      speech hours and exam questions are never added into one total, and a suite gets no extra credit
+      for importing several datasets that measure the same task. Breadth of evaluated tasks is tracked
+      separately and is at most a limited tiebreaker.
+    reasoning: >-
+      Breadth of evaluation is valuable, but it is not the same thing as depth.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-d
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, flores-plus]
+    question: >-
+      Which split of a dataset counts toward evaluation depth?
+    ruling: >-
+      Each entry records its split: train, dev, validation, test, devtest or official_eval. Only the
+      portion actually used for benchmark evaluation counts; a dev or validation split counts when it is
+      the benchmark's official evaluation split, and training examples never count. Whether samples are
+      distinct is documented, and subsets are not double-counted. FLORES+ translation depth uses its
+      evaluation split, not dev and devtest added together.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/validate.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-e
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", "#952", docs/reference/capability.md]
+    question: >-
+      Do the provenance and task vocabularies of capability.language_coverage stand?
+    ruling: >-
+      Keep the seven provenance values. native means human-authored in the target language, and
+      generated means model-generated directly in that language, so the two cannot overlap. Keep
+      post_edited and unknown; do not guess provenance. Keep the 18 task classes and add
+      transliteration. No narrow task labels before the candidate datasets have been examined.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-f
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-10-30-j]
+    question: >-
+      Is the per-language evidence published, and where?
+    ruling: >-
+      Yes, with the per-language view, as a separate structured data asset the visualization loads, not
+      inside the notebook's main payload. It exposes language, task, evaluation split, count and unit,
+      provenance, source references, the observed-coverage fraction, and unknowns marked explicitly.
+    reasoning: >-
+      The per-language evidence is what makes the final scores explainable and auditable; a separate asset
+      is cleaner as more suites and languages are added.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, build/serialize.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+
+  - id: R-2026-11-01-g
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", flores-plus, thai-exam, sea-helm, afrobench]
+    question: >-
+      Is the per-language evidence filled for every evaluation set before the depth ladder is built?
+    ruling: >-
+      No. First populate a calibration sample: FLORES+ (translation), ThaiExam (single-language exams),
+      SEA-HELM (mixed-task suite) and AfroBench (large multilingual suite). Use them to settle the
+      task-specific depth bands and verify that the aggregation produces sensible, explainable outcomes
+      before populating the other datasets.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/workflows/refresh-category.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956', 'https://github.com/currentai-org/os-ai-map/pull/958']
+
+  - id: R-2026-11-01-h
+    date: 2026-11-01
+    by: ccerv1
+    venue: session
+    refs: ["#953", R-2026-10-30-g, R-2026-10-30-m]
+    question: >-
+      How does provenance enter evaluation depth? Do machine-translated and generated items count, at
+      full or reduced weight?
+    ruling: >-
+      native, human_translated and post_edited items count toward depth. machine_translated and generated
+      items do not, and no reduced weights are introduced: they establish a measured zero qualifying depth.
+      For mixed, only the separately documented qualifying portion counts; a mixed entry with no documented
+      qualifying portion leaves depth unknown. unknown provenance leaves depth unknown; it does not
+      establish a measured zero. Only machine_translated and generated establish zero qualifying depth. All
+      evidence is preserved, including excluded items: zero qualifying depth does not mean a dataset has no
+      evaluation value, only that its items do not satisfy this measure of credible evaluation depth. Human-reviewed
+      model-generated items are not reclassified as native or post_edited: provenance describes how items
+      were produced, and human validation is a separate quality attribute. If the calibration sets reveal
+      well-validated synthetic evaluations that deserve credit, an explicit exception backed by evidence
+      can be introduced, not an arbitrary multiplier.
+    reasoning: >-
+      A conservative, reproducible initial rule that leaves room to improve it.
+    status: replaced
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/956']
+    replaced_by: R-2026-11-03-b
+
+  - id: R-2026-11-01-i
+    date: 2026-11-01
+    by: ccerv1
+    venue: pr-review
+    refs: ["#958", "#953", sea-helm, thai-exam, R-2026-11-01-e, R-2026-11-01-h]
+    question: >-
+      Does a benchmark's own classification of its datasets as created in the target language, as
+      SEA-HELM's "Native" column does, establish native provenance for capability.language_coverage, or
+      must a source state that people rather than models wrote each item?
+    ruling: >-
+      Accept it as sufficient evidence for native, unless more specific evidence contradicts it. A source
+      merely describing the type of content (Thai news articles) does not establish provenance, but a
+      benchmark that explicitly distinguishes datasets originally created in the target language from
+      datasets translated into it makes an affirmative provenance classification. ThaiExam and SEA-HELM's
+      own qualifying datasets keep native. The NusaX Javanese and Sundanese entries stay unknown, because
+      their more specific source contradicts SEA-HELM's classification.
+    reasoning: >-
+      Requiring every paper to state that humans rather than models authored each example, when it already
+      draws a meaningful distinction between original and translated evaluation datasets, would be an
+      unnecessarily restrictive evidence standard.
+    status: in-force
+    executor: none
+    lands_in: [sources/scores/sea-helm.yaml, sources/scores/thai-exam.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/958']
+
+  - id: R-2026-11-02-a
+    date: 2026-11-02
+    by: ccerv1
+    venue: pr-review
+    refs: ["#965", "#953", flores-plus, sea-helm, afrobench, R-2026-11-01-b]
+    question: >-
+      How should the four language codes the 2026-11-02 reconciliation left open be declared:
+      SEA-HELM's Tagalog or Filipino split, AfroBench's North Ndebele and Venda (in its per-dataset
+      coverage but not its language list), AfroBench's N'Ko (listed but evaluated by no dataset), and
+      AfroBench's Portuguese (listed as African, described as a high-resource comparison language)?
+      And which of SEA-HELM's two Burmese translation counts, 1,012 in the card's README or 600 in its
+      data files, does the coverage record use?
+    ruling: >-
+      A set's declared target languages are what it actually evaluates as targets; comparison languages
+      are declared separately as pivots. SEA-HELM uses fil, keeping tgl as source_language where the
+      cited source codes or names the split Tagalog. AfroBench adds nde and ven, since its component
+      coverage and NTREX's configurations evaluate them, removes nqo, which no component evaluates (the
+      discrepancy stays in the reconciliation record), and treats por as a pivot alongside eng, fra and
+      arb. SEA-HELM's Burmese translation entry records 600, citing the dataset's own configuration, on
+      the assumption that those files are the official evaluation split; the discrepancy is documented.
+      No capability score changes in this PR, and any sensitivity difference is documented for the
+      depth-ladder PR rather than resolved here. FLORES+'s newly declared languages are unknown depth,
+      not documented zeros.
+    reasoning: >-
+      Actual evaluation coverage and a dataset's own contents are stronger evidence than a summary list
+      or a README, and the paper's own description of a comparison language is more informative for
+      scoring than its row in a regional table.
+    status: in-force
+    executor: agent
+    lands_in: [sources/products/sea-helm.yaml, sources/products/afrobench.yaml, sources/scores/sea-helm.yaml,
+      sources/scores/afrobench.yaml, docs/sweeps/2026-11-02-language-code-reconciliation.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/965']
+
+  - id: R-2026-11-02-b
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1]
+    question: >-
+      What does a depth band mean across evaluation tasks: one count ladder for every bounded
+      metric, per-task ladders anchored on reference benchmarks, or one shared meaning with a
+      measurement model per task family?
+    ruling: >-
+      Adopt the shared meaning. A depth band is the statistical precision with which an evaluation
+      measures model performance for a particular language and task, and each task family has an
+      explicit measurement model appropriate to its metric and evaluation design. The count ladder
+      (100 / 400 / 1,600 / 6,400) is provisional, used only where item counts are a defensible
+      approximation of measurement precision, with clustering and dependence accounted for where
+      the evidence supports it. Unknown precision is not zero depth: a task without a defensible
+      measurement model stays unresolved, with no arbitrary band substituted and its evidence not
+      silently excluded. Precision is not validity: a large benchmark can precisely measure a
+      narrow or flawed construct, so depth bands measure statistical resolution, not benchmark
+      quality, representativeness or usefulness, and the methodology keeps that visible. The
+      provisional treatment of reading comprehension, judge-scored evaluations and speech is
+      accepted, with their assumptions and limitations documented. No score changes until the
+      task-family models and the aggregation decisions are settled.
+    reasoning: >-
+      It is the only option whose results do not flip with the choice of a reference benchmark.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-c
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1]
+    question: >-
+      Which precision targets define the depth bands?
+    ruling: >-
+      Adopt the targets provisionally, as the 95% margin of error on a 0 to 100 score: band 1 wider
+      than ±10 points, band 2 about ±10, band 3 about ±5, band 4 about ±2.5, band 5 about ±1.25.
+      Bands are set on effective sample size, not necessarily raw item count; the raw-count ladder
+      gives a provisional upper bound on the band when dependence is unaccounted for. The number
+      of clusters is not a guaranteed floor, because unequal cluster sizes and within-cluster
+      correlation can make the effective sample size smaller than the cluster count; where
+      defensible, estimate a cluster-adjusted effective sample size, and otherwise report the
+      band's uncertainty rather than assert precision. Calibrate before implementation: once the
+      large native exams have coverage records, inspect the complete band distribution; more than
+      one-third at band 5 triggers a methodology review, not an automatic adjustment of the
+      thresholds. A ±5-point interval on a model's score does not by itself mean two models five
+      points apart can be distinguished; comparisons need uncertainty for the difference,
+      preferably from paired evaluations. Band 5 does not establish adequate precision for
+      individual subject areas.
+    reasoning: >-
+      The fourfold increase in effective sample size per band is mathematically coherent and gives
+      the ladder a consistent interpretation.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-d
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1, flores-plus]
+    question: >-
+      Is translation placed on the shared precision scale, so that FLORES+'s 1,012 devtest
+      sentences give at most band 3 per language rather than the 4 its own anchored ladder gave?
+    ruling: >-
+      Yes. Translation uses the same precision targets as other task families. The official
+      evaluation split is measured in sentences per target language, and dev and devtest are never
+      combined. Raw sentence counts set provisional ceilings, not guaranteed precision. Corpus-level
+      chrF, like BLEU, is computed from aggregated statistics and is not a simple average of
+      independent sentence scores, so a count-based formula is a conservative screening proxy, not
+      a demonstrated confidence interval. Corpus metrics need metric-appropriate uncertainty
+      estimation; document- or article-level bootstrap resampling that recomputes corpus chrF or
+      BLEU for each replicate is the preferred method, and a validated alternative or a qualifying
+      source-provided interval can also satisfy R-2026-11-02-f. Until a qualifying precision
+      estimate exists, the count-derived depth band is published with provisional status, stating
+      that its statistical confidence interval has not been independently estimated. FLORES+'s
+      current evidence supports a provisional ceiling of 3, not a confirmed band of 3, and its
+      multilingual breadth
+      stays visible through completeness and breadth measures rather than inflating depth. Under
+      the count proxy: FLORES+ 1,012 sentences, ceiling 3; NTREX-128 1,997, ceiling 4; SEA-HELM
+      Burmese and Filipino 600, ceiling 3; SEA-HELM Lao 1,012, ceiling 3. No published scores
+      change yet.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-e
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D1]
+    question: >-
+      How do count-based ceilings enter the aggregation: as the band, as a range from 1 to the
+      ceiling, or not at all until estimates exist? And how are the remaining task families
+      (exams, reading comprehension, prompt-level instruction following, judged generation,
+      summarization, sequence labeling, speech) treated?
+    ruling: >-
+      Compute using provisional count-based bands; the task, language and dataset aggregation rules
+      operate on these values, and every derived result inherits the provisional label unless its
+      contributing evidence supports an established precision estimate. Publish the distinction
+      explicitly, so a reader can tell provisional (derived from item counts and assumptions),
+      estimated (derived from a task-appropriate statistical procedure such as a cluster-aware
+      bootstrap) and unresolved (insufficient information to assign even a provisional band); the
+      label stays visible at the aggregate dataset level and does not disappear when task bands
+      are combined. Keep the robustness rule for missing evidence: unknown counts and tasks without
+      a measurement model stay unknown, not zero, and take part in the low/high sensitivity test
+      where relevant rather than being silently excluded. Uncertainty about clustering alone does
+      not make an otherwise countable task unresolved. The count ceiling is not a mathematical
+      bound on actual precision, since correlation can reduce effective sample size and low
+      observed variance can tighten intervals; the provisional band is a conservative operational
+      cap under the count-based methodology. Adopt the proposed task-family treatments; prompt-level
+      scoring still needs a dependence check, and judge-scored evaluations keep judge validity
+      separate from sampling precision. Publish a result in the form "3, provisional count-based
+      depth, based on 1,012 evaluation sentences; statistical precision not independently
+      estimated; document-level dependence may affect the result". No published capability-score
+      changes until D2, D12, D7 and D5 are resolved and the implementation is validated.
+    reasoning: >-
+      Treating every ceiling as a range would make the methodology practically unusable before
+      per-item evaluation results exist; this keeps useful information about evaluation size while
+      being explicit about what has and has not been measured.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-f
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D2]
+    question: >-
+      What evidence moves a dataset's depth from provisional to estimated?
+    ruling: >-
+      A dataset earns estimated status when its statistical precision has been evaluated with a
+      validated, task-appropriate method. Minimum evidence: at least two published model runs from
+      different model families, with per-item results or enough information to reproduce their
+      confidence intervals; checkpoints of one model family do not satisfy this. Calculate a 95%
+      confidence interval for each model with the task family's approved method, use the widest to
+      set the estimated band, and record the individual intervals, not just the band. Choose models
+      by a documented rule before examining their interval widths, ideally at meaningfully
+      different performance levels; two families are a minimum, not proof that the widest observed
+      interval represents every possible model. Accept source-provided intervals without
+      recomputation when their methods, clustering assumptions, model identities and evaluation
+      splits are documented and meet the same standard; a published interval for one model is
+      useful evidence but does not by itself establish estimated status. Each task family's
+      procedure needs one ruling, supported by a calibration example comparing provisional and
+      estimated bands; once approved, applying it to further datasets is routine curation. Record
+      the benchmark version, official split, evaluated models, metric, resampling unit,
+      confidence-interval method and evidence date; later model runs do not change a published band
+      without review. The widest interval across two model families is the worst observed precision
+      among the selected models, not a guarantee of worst-case precision across all models, and the
+      documentation says so. For example, margins of ±2.1 and ±3.4 points give an estimated band of
+      3, not 4. No scores move now; all four calibration datasets stay provisional until qualifying
+      model-run evidence and approved procedures exist.
+    reasoning: >-
+      Otherwise one unsupported precision claim is replaced with another.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-g
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D12, R-2026-11-01-c]
+    question: >-
+      Within one task, how do several evaluation components for a language become one task band?
+    ruling: >-
+      One component determines each task band: for each language and task, take the highest band
+      achieved by a single qualifying component, and never sum item counts across components. The
+      same rule applies to original and imported components, with no special treatment for either,
+      which avoids double-counting overlapping evaluations. When two components reach the same
+      numerical band, prefer estimated over provisional. The winning component's status is
+      preserved: an estimated 3 does not outrank a provisional 4; the 4 wins numerically and the
+      task result stays explicitly provisional, with the estimated 3 visible as separately
+      established evidence. Keep all component-level evidence, including the best original and
+      imported components separately and the complete component lineage of nonwinning components,
+      so D7 can identify independent corroboration. A suite that publishes a genuine pooled metric
+      can have it assessed as a distinct measurement instrument once its pooling, overlap handling
+      and uncertainty estimation are documented and approved; it cannot simply add component counts.
+      No proposed band changes; SEA-HELM's Thai and Vietnamese classification components cannot be
+      summed to reach band 4.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-h
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D7, afrobench]
+    question: >-
+      When do two evaluation components count as independent corroboration, and does shared
+      underlying source text make them dependent even when the tasks built on it differ?
+    ruling: >-
+      Adopt the three-part independence definition (distinct items, distinct creation efforts,
+      neither derived from the other) with strict source-level independence: new questions, labels,
+      translations or tasks derived from the same underlying source examples do not qualify as
+      independent corroboration, though they still count as distinct task evidence. Shared source
+      text is defined at the example or dataset-family level: FLORES, SIB-200 and Belebele share an
+      underlying collection of source passages and are dependent, while two datasets that sample
+      different articles from Wikipedia are not dependent merely because both use Wikipedia;
+      sharing a broad domain or corpus provider is not enough. Distinct creation efforts matter
+      more than distinct organizations: two independently collected datasets from one research
+      group can corroborate each other, and two datasets made by different groups from the same
+      original questions cannot; different translators working from the same MMLU questions do not
+      establish independence. Independence needs evidence; where lineage is unknown or partial
+      overlap cannot be ruled out, corroboration is unverified rather than assumed, and the
+      components and their individual depth bands are kept. AfroBench's provisional corroborated
+      band of 1 is accepted, subject to D5; it does not mean its 1,997-sentence NTREX evaluation
+      gives band-1 precision, but that the aggregation rule cannot establish deeper independently
+      corroborated coverage for the median language. Its face-value band (3), corroborated band (1),
+      task breadth and completeness are published together, so statistical precision is not
+      conflated with diversity of underlying evidence.
+    reasoning: >-
+      The aim is independent corroboration, not task diversity. Reusing the same underlying text
+      can reproduce its sampling biases, linguistic choices and domain limitations.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-i
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D7, batayan]
+    question: >-
+      How is a pair of components treated when the sources do not state their lineage?
+    ruling: >-
+      Three pairwise lineage statuses. Independent: both components have documented,
+      non-overlapping source origins and separate collection or creation efforts; counts as
+      independent backing. Dependent: they share underlying examples, derive from a common source
+      set, or reuse the same underlying creation effort; does not count. Unverified: the evidence
+      establishes neither; does not count. Shared creators alone do not establish dependence, and
+      different groups can produce dependent datasets: the criterion is the evidence-generating
+      effort, not author identity. Distinct dataset names alone are not enough, since two named
+      datasets may derive from a common parent collection; the evidence must support
+      non-overlapping origins, though no item-by-item comparison is needed when credible provenance
+      documentation establishes independent collection. Unverified pairings do not contribute to
+      D5's independent backing. The implementation PR audits pairwise lineage, keeps the evidence
+      and status for each pairing, reports score movements, and runs a sensitivity analysis with
+      unverified pairings excluded and, hypothetically, treated as independent, before any
+      published score changes. Batayan is unverified: sharing broad content domains with FLORES
+      does not establish dependence.
+    reasoning: >-
+      The sensitivity analysis separates a low corroborated band caused by known dependence from one
+      caused by incomplete provenance documentation.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-j
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D7]
+    question: >-
+      Where is component lineage recorded: on each coverage entry, in a component-level registry, or
+      in code?
+    ruling: >-
+      A cited, component-level lineage registry, introduced in its own schema PR before the
+      depth-ladder implementation. Lineage describes the underlying evidence, not the suite that
+      imports it, so FLORES+ does not acquire different lineage facts because it appears in SEA-HELM
+      or AfroBench. Support language- and split-specific lineage: one canonical component record,
+      with overrides where translation or annotation efforts differ by language. Represent
+      derivation as a graph of parent datasets and source collections, so transitive dependence
+      (FLORES to SIB-200 to a suite importing SIB-200) is detected. Distinguish overlapping source
+      collections from broad provenance with enough specificity to tell them apart. Separate
+      structural validation from evidence verification: build.validate checks schema integrity,
+      references, identifiers and citation presence; whether a citation supports a lineage claim
+      remains evidence review. The build derives independent, dependent or unverified from the
+      registry, including transitive ancestry and language-specific overrides. An explicitly
+      documented pairwise relationship can resolve cases the automatic rules cannot, with a citation
+      and rationale. A missing registry entry produces an unverified pairing and a validation
+      warning, not a build failure or an assumption of independence, and the record distinguishes a
+      genuinely unverified origin from an entry not yet curated; both score as unverified. The
+      sensitivity analysis of R-2026-11-02-i is retained.
+    reasoning: >-
+      Lineage is a property of the evidence; centralizing it keeps one set of facts per component.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/lineage.schema.json, sources/lineage.yaml]
+    applied_in: []
+
+  - id: R-2026-11-02-k
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D5]
+    question: >-
+      How do task bands become a language band, and how far does independent corroboration let
+      imported depth carry?
+    ruling: >-
+      The corroborated maximum with a cap of one band. For each language, D = max(O, max over
+      imports i of min(b_i, C_i + 1)), where O is the highest band from the suite's own components,
+      b_i an imported component's band, and C_i the strongest independently verified corroborating
+      band for that import, 0 if none is verified. An imported component at band 4 with no
+      independent backing contributes at most 1; with independent backing at band 2, at most 3.
+      D12 and D7 hold: components within a task are never pooled, multiple imports of the same task
+      cannot corroborate one another, and an independently collected original component may support
+      an import, including on the same task, once its independence is established. Statistical
+      precision and corroboration stay distinct: the face-value band is the component's provisional
+      or estimated precision, the corroborated band is an evidence-aggregation policy measuring
+      independently supported depth, not a statistical precision estimate or a new confidence
+      interval, and a corroborated 1 is never described as measuring performance to ±10 points.
+      Where an estimated import is capped by provisional backing, the aggregate discloses that
+      provisional dependency; the winning component's status alone is not enough when the cap
+      binds. Publish the corroborated band, face-value band, best original band, task breadth,
+      completeness and whether the cap binds, and keep the sensitivity analysis treating unverified
+      pairings as independent. Calibration accepted, all provisional and subject to the lineage
+      audit and implementation validation: face-value and corroborated bands FLORES+ 3 and 3,
+      ThaiExam 3 and 3, SEA-HELM 3 and 2, AfroBench 3 and 1. No published score changes until the
+      lineage registry, task-family rules, full-roster calibration and sensitivity tests have been
+      validated.
+    reasoning: >-
+      It rewards independently supported depth, prevents a single imported benchmark from
+      determining a suite's depth, and never penalizes a language for gaining qualifying evidence.
+      The AfroBench result is consequential but defensible: it shows limited independent
+      corroboration for the median language, not poor statistical precision in its evaluations.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-l
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D3]
+    question: >-
+      Are speech ladders (hours, utterances, word error rate) deferred until a speech set is in the
+      calibration?
+    ruling: >-
+      Adopt the deferral. Speech remains unresolved until an appropriate measurement model is
+      validated. Missing methodology is never treated as zero depth.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-m
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D4]
+    question: >-
+      Does the depth band measure the evaluation resource, imports included?
+    ruling: >-
+      Adopt. Depth measures the evaluation resources available, including imports. D5
+      (R-2026-11-02-k) governs how much imported evidence contributes to corroborated depth.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-n
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D6, R-2026-10-30-e, R-2026-10-30-f]
+    question: >-
+      Is a dataset's own row on the map used only for linking and stage counting, never to change a
+      suite's band?
+    ruling: >-
+      Adopt. A dataset's own product row supports linking and the existing stage-counting logic, but
+      must not create additional evaluation evidence or count itself twice.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-o
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D8, R-2026-11-01-f]
+    question: >-
+      Which companion figures are published beside the depth band?
+    ruling: >-
+      Adopt the extended publication requirements: corroborated band, face-value band, best
+      original band, task count, completeness, cap status, evidence status and sensitivity to
+      unverified lineage. Absent original evidence is shown as unavailable, not zero. Why a cap
+      binds is inspectable: which component supplied the face-value band, which independent
+      component supported it, and which relationships were dependent or unverified.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-p
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D9]
+    question: >-
+      Does assembly value (harness, prompts, leaderboard) stay out of the depth band?
+    ruling: >-
+      Adopt. Assembling, maintaining, documenting or integrating a suite does not increase its
+      statistical depth band. It can be recognized separately.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-q
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D10, flores-plus]
+    question: >-
+      Is it accepted that large single-language native exams rank above FLORES+ on depth?
+    ruling: >-
+      Adopt. A sufficiently large, well-supported native exam may outrank FLORES+ on depth, and it is
+      not artificially capped to preserve benchmark rankings. This does not imply greater breadth or
+      overall quality.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-r
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", D11, R-2026-10-30-l, R-2026-11-01-d]
+    question: >-
+      Is a set whose official evaluation split is not stated unresolved until a source states it?
+    ruling: >-
+      Adopt. Without a documented official evaluation split or an explicitly supported official
+      evaluation convention, depth is unresolved. Eligible counts are never inferred from a
+      dataset's total size.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-s
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#962", "#953", R-2026-11-02-c]
+    question: >-
+      Does the depth brief's claim that a cluster count bounds a band from below still stand?
+    ruling: >-
+      No. The claim in docs/briefs/2026-11-02-language-depth-methodology.md that the band of the
+      cluster count bounds the band from below, whatever the within-cluster correlation, is
+      withdrawn. Unequal cluster sizes and within-cluster correlation can make the effective sample
+      size smaller than the cluster count, so the floors the brief derived from it (FLORES+ from its
+      281 articles, Belebele from its 488 passages) are not established; those count bands are
+      provisional, with their uncertainty reported, as R-2026-11-02-c sets out. The brief stays as
+      published, as a dated record, and this entry carries the correction.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-02-t
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", R-2026-11-02-e, R-2026-11-02-f]
+    question: >-
+      What must the schema carry so a published depth band shows its evidence status?
+    ruling: >-
+      A schema change in its own PR, not implemented here: every task, language and dataset depth
+      band carries its evidence status, provisional, estimated or unresolved, and the status is
+      published with the band at every level of aggregation, including the dataset level. An
+      estimated band records the evidence R-2026-11-02-f requires (benchmark version, official
+      split, evaluated models, metric, resampling unit, interval method, evidence date and each
+      model's interval).
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/evidence_status.py]
+    applied_in: []
+
+  - id: R-2026-11-02-u
+    date: 2026-11-02
+    by: ccerv1
+    venue: walk-and-talk
+    refs: ["#953", "#962", R-2026-11-02-j]
+    question: >-
+      What schema does the component lineage registry need?
+    ruling: >-
+      A schema change in its own PR, before the depth-ladder PR and not implemented here: the
+      component-level lineage registry of R-2026-11-02-j, with one canonical cited record per
+      component (its origin, the source collections its items come from, its parent datasets and
+      the creation effort that produced its text in each language), language- and split-specific
+      overrides, explicit cited pairwise relationships with a rationale, and a curation state that
+      tells a genuinely unverified origin from an entry not yet curated. build.validate checks the
+      registry's structure, references, identifiers and citations, and warns on a qualifying
+      component with no entry.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/lineage.schema.json, sources/lineage.yaml]
+    applied_in: []
+
+  - id: R-2026-11-03-a
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#953", turkishmmlu, R-2026-11-01-d]
+    question: >-
+      Does evaluation depth count an official test split that the public cannot download, such as
+      TurkishMMLU's 9,807 test questions, obtainable by request while the Hub holds 900?
+    ruling: >-
+      Yes. Depth counts the test questions of the official evaluation split. Whether they are
+      public is an openness attribute, not a capability one, and is recorded on the openness axis.
+      TurkishMMLU's coverage stays at 9,807.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: []
+
+  - id: R-2026-11-03-b
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#953", darijammlu, indicxtreme, R-2026-11-01-h]
+    question: >-
+      Do machine-translated items that a cited source says people reviewed count toward depth, as
+      DarijaMMLU's "machine translation and manual review" and IndicXNLI's verified test items are
+      described?
+    ruling: >-
+      Yes. This replaces R-2026-11-01-h and restates it with that one change. native,
+      human_translated and post_edited items count toward depth, and so do machine_translated items
+      whose cited source states that people reviewed them (human_validated true).
+      machine_translated items with no such statement, and generated items whether reviewed or not,
+      do not count and establish a measured zero qualifying depth, with no reduced weights. For
+      mixed, only the separately documented qualifying portion counts, now including reviewed
+      machine-translated items; a mixed entry with no documented qualifying portion leaves depth
+      unknown. unknown provenance leaves depth unknown and does not establish a measured zero. All
+      evidence is preserved, including excluded items. Provenance still describes how items were
+      produced: reviewed machine translation stays machine_translated with human_validated true,
+      and is not reclassified as post_edited.
+    reasoning: >-
+      Answer to the calibration's second decision, read back and confirmed on 2026-11-03.
+      DarijaMMLU's 21,792 questions then give Darija band 5, and IndicXNLI's qualifying counts
+      become its paper's verified column.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/evidence_status.py]
+    applied_in: []
+
+  - id: R-2026-11-03-c
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#953", sea-helm, indicxtreme, indicgenbench, R-2026-11-02-k]
+    question: >-
+      How does the record say that a suite's own items sit under a second slug, so they count in
+      full rather than as imports, and how far does that ownership reach?
+    ruling: >-
+      A schema change in its own PR, before the depth-ladder PR: capability.own_components, a list
+      of cited claims, each naming a component and optionally the languages, tasks or splits it
+      covers, with omitted selectors covering every matching coverage entry. Each claim cites a
+      capability.sources entry whose shows text establishes authorship or commissioned
+      translation, not hosting. Validation rejects claims that overlap, selectors that match no
+      coverage entry, empty selectors and citations that resolve to no source. The product's own
+      slug stays its own by default. Ownership applies only after an entry's evidence is
+      established, so it cannot rescue unknown provenance, an uncountable unit or a split that is
+      not the official evaluation, and it never changes lineage: an owned component can still share
+      ancestry with an import. The claims are scoped to what each suite made: SEA-HELM's two
+      judged sets, IndicXTREME's IndicCOPA, IndicQA, IndicXParaphrase and IndicSentiment, and
+      IndicGenBench's XQuAD-In in full, FLORES-In for its seven new languages only, CrossSum-In
+      except the ten languages that may reuse CrossSum, and XorQA-In except Bengali and Telugu.
+    reasoning: >-
+      The maintainer asked for a Codex review of the representation and adopted its design.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json, build/own_components.py]
+    applied_in: []
+
+  - id: R-2026-11-03-d
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", indicxtreme, R-2026-11-03-b]
+    question: >-
+      Which IndicXNLI test items qualify: those its paper's Table 9 counts as corrected, or every
+      item it counts as verified?
+    ruling: >-
+      Every verified item, by R-2026-11-03-b. The qualifying count of each IndicXNLI test entry is
+      the paper's Ver. column (Assamese 3,000, Bengali 1,510, Hindi 4,000, Kannada 1,370,
+      Malayalam 3,200, Marathi 1,648, Odia 2,107, Telugu 872); Gujarati, Punjabi and Tamil have
+      none verified and stay machine-translated.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/indicxtreme.yaml]
+    applied_in: []
+
+  - id: R-2026-11-03-e
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", kazmmlu, R-2026-11-02-a]
+    question: >-
+      Is KazMMLU's Russian a target language or a pivot, given an abstract that calls the set
+      designed for Kazakh?
+    ruling: >-
+      A target. Its Russian questions are original Kazakhstani exam and educational material, not
+      translations, the set's title names both languages, and its university section is
+      Russian-only. Emphasis on Kazakh in the abstract does not make Russian a comparison-only
+      language.
+    reasoning: >-
+      Delegated by the maintainer to a Codex review, whose recommendation was adopted. Kazakh
+      alone gives the same band.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-03-f
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", seaexam, R-2026-11-02-a]
+    question: >-
+      Is SeaExam's Chinese a target language or a pivot, when its card lists Chinese among the
+      evaluated languages but its paper covers Indonesian, Thai and Vietnamese only?
+    ruling: >-
+      A target. SeaExam carries Chinese evaluation configurations, and neither imported items nor
+      absence from the narrower paper makes a language comparison-only. English stays the
+      documented pivot. Chinese's low depth is a matter of qualifying evidence, which the
+      corroboration rule already handles, not of its role.
+    reasoning: >-
+      Delegated by the maintainer to a Codex review, whose recommendation was adopted. SeaExam
+      stays at band 3; as a pivot it would have been 4.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-03-g
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#965", fleurs, sib-200]
+    question: >-
+      Which codes do FLEURS's Tagalog (recorded tgl, Hub config fil_ph) and SIB-200's Arabic
+      (recorded ara, FLORES-200 config arb_Arab) carry?
+    ruling: >-
+      FLEURS keeps tgl, its paper's own code for "Filipino (Tagalog)", with fil recorded as the
+      source's code where the Hub is cited; the Hub's fil_ph is a source inconsistency, not a
+      change of language. SIB-200's Arabic becomes arb, the most specific code its arb_Arab
+      configuration supports, matching the reconciliation's reading of the same FLORES-200
+      configuration.
+    reasoning: >-
+      Delegated by the maintainer to a Codex review, whose recommendation was adopted. Neither
+      change moves a band.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/sib-200.yaml, sources/products/sib-200.yaml]
+    applied_in: []
+
+  - id: R-2026-11-03-h
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", darijammlu, R-2026-11-03-b]
+    question: >-
+      Does reviewed machine translation count toward depth when the cited source says people
+      reviewed it but not how many items the review covered? DarijaMMLU's card describes "a
+      combination of machine translation and manual review" and "manual curation for quality
+      control"; the Atlas-Chat paper's account of how it was built names only translation.
+    ruling: >-
+      Only when the source says the review covered the entry's items. A review of unstated scope
+      leaves depth unknown, not zero: the entry records `review_scope: unstated` and is
+      unresolved. DarijaMMLU becomes unresolved.
+    reasoning: >-
+      A quality-control pass over a sample and a review of every item read the same on a card.
+      Counting the first as the second would move a set to band 5 on an assumption, and calling
+      it zero would ignore a review the source does describe.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md, docs/schemas/score.schema.json,
+      build/evidence_status.py, sources/scores/darijammlu.yaml]
+    applied_in: []
+  - id: R-2026-11-03-i
+    date: 2026-11-03
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", include-benchmark, belebele, sib-200, R-2026-11-03-c]
+    question: >-
+      R-2026-11-03-c lets a set claim components beyond its own slug as its own items. Can a cited
+      source also withdraw a set's own slug in some languages? INCLUDE's Arabic and Turkish pools
+      are ArabicMMLU's and TurkishMMLU's questions, while Belebele and SIB-200, whose lineage also
+      names FLORES+ as a parent, add new questions and labels over its text.
+    ruling: >-
+      Cited reuse of complete evaluation items overrides own-slug ownership within the documented
+      scope; newly authored questions, labels or commissioned translations remain owned despite
+      shared ancestry. A parent edge alone does not decide ownership. INCLUDE's Arabic and Turkish
+      count as imported; Belebele and SIB-200 stay their own.
+    reasoning: >-
+      Ownership follows who made the items being scored. A set that republishes another
+      benchmark's questions adds no evidence of its own in that language, whatever its slug; a set
+      that writes new questions over shared text does, and lineage records the ancestry either way.
+    status: in-force
+    executor: agent
+    lands_in: [build/depth_calibration.py, docs/sweeps/2026-11-03-depth-calibration-full-roster.md,
+      docs/reference/capability.md, sources/scores/include-benchmark.yaml]
+    applied_in: []
+
+  - id: R-2026-11-07-a
+    date: 2026-11-07
+    by: ccerv1
+    venue: pr-review
+    refs: ["#975", "#978", "#953", R-2026-11-02-c, R-2026-11-02-k]
+    question: >-
+      Are the full-roster calibration bands of #975 accepted as the baseline the depth-ladder
+      implementation builds on, or does anything in them call for revisiting the method first?
+    ruling: >-
+      Accepted, as the provisional, count-based implementation baseline for the 22 evaluation sets.
+      17 of 22 sets resolve, with five appropriately unresolved. Four reach band 5, below the
+      one-third methodology-review trigger. All 22 set-level bands are stable under the documented
+      unverified-lineage sensitivity test. The substantial downward adjustments for FLORES+,
+      AfroBench and SEA-HELM are consistent with the corroboration policy deliberately adopted. The
+      bands remain provisional depth measures, not demonstrated statistical confidence intervals.
+      There is no reason to revisit the methodology or change these results before implementation.
+      The capability.own_components schema PR is authorized next, moving the ownership declarations
+      into cited, schema-validated records with language, task and split scoping, INCLUDE's Arabic
+      and Turkish exception and its mixed-pool treatment, and showing that the calibration
+      reproduces identical results; no published score changes in it. The ladder implementation and
+      publication PR follows, reviewed with its score movements, companion figures, evidence-status
+      labels and declaration-version behavior together.
+    reasoning: >-
+      The two issues from the final review of #975 were corrected before merge: INCLUDE's Arabic and
+      Turkish lineage overrides identify imported evidence, and the completeness rule handles machine
+      translation with an unstated review scope.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-03-depth-calibration-full-roster.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/978']
+
+  - id: R-2026-11-07-b
+    date: 2026-11-07
+    by: ccerv1
+    venue: pr-review
+    refs: ["#978", "#953", "#948", language_specific_eval_sets, language_specific_datasets,
+      R-2026-11-07-a]
+    question: >-
+      The depth ladder can publish now with the 22 calibrated evaluation sets as the new category's
+      membership, or wait until the boundary between language-specific evaluation sets and general
+      benchmarks is settled. Which, and on what conditions?
+    ruling: >-
+      Publish with the interim membership, under three safeguards. Freeze the initial membership to
+      the 22 reviewed evaluation sets, and document that the category boundary remains provisional.
+      Publish the complete score-change diff, with face-value bands, corroborated bands, evidence
+      statuses and the companion figures D8 requires. Make sure the migration preserves the
+      suite/member deduplication rule and does not double-count products in stage calculations.
+    reasoning: >-
+      The calibration settled the bands for these 22; the open boundary question concerns which
+      other sets join them, and it need not hold back the ones already measured.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_eval_sets.yaml, build/depth_ladder.py,
+      docs/reference/capability.md, docs/sweeps/2026-11-08-depth-ladder-publication.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-a
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, fleurs, lahaja, vmlu, indonlu, darijammlu,
+      R-2026-11-07-b]
+    question: >-
+      Five of the 22 sets have no band that stands: FLEURS and Lahaja (speech, no measurement
+      model), VMLU (official split size unstated), IndoNLU (provenance unknown) and DarijaMMLU
+      (review scope unstated). Should they (a) publish a null capability with an unresolved status
+      and reason, or (b) keep their interim scores until the evidence is filled? And how are the
+      five comparisons from language_specific_datasets to sets leaving the category, and the
+      migrated category's stage counting, to be handled?
+    ruling: >-
+      Adopt (a). The five publish capability.score null with an unresolved status and reason, and
+      do not retain their interim capability scores. They stay visible in the category, and their
+      adoption-only overall scores are labeled explicitly. An unresolved capability must not be read
+      as zero or as evidence of capability maturity, and the PR shows exactly how the five affect
+      rankings and stage calculations. Re-point the five cross-category comparisons only where a
+      defensible, cited comparison exists against a product remaining in language_specific_datasets;
+      do not invent a relative ranking to satisfy validation, and where no suitable peer can be
+      established, handle that explicitly. Test the actual stage-counting behavior in the migrated
+      category, not only the absence of part_of links.
+    reasoning: >-
+      An interim score would publish a band the method says it cannot establish. Labeling the
+      adoption-only overall keeps the products visible without passing adoption off as capability.
+    status: in-force
+    executor: agent
+    lands_in: [build/depth_ladder.py, build/serialize.py, docs/reference/capability.md,
+      docs/reference/gap-analysis.md, tests/test_depth_ladder.py,
+      docs/sweeps/2026-11-08-depth-ladder-publication.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-b
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets, R-2026-11-02-b, R-2026-11-02-k]
+    question: >-
+      A depth-ladder band is computed from recorded evidence, not read from a benchmark or judged
+      from features. Does it get its own capability.basis value?
+    ruling: >-
+      Yes: evaluation_depth becomes the fifth basis value. Document the distinction between
+      provisional statistical precision, corroborated depth and the published capability band.
+    status: in-force
+    executor: agent
+    lands_in: [docs/schemas/score.schema.json, docs/reference/capability.md, build/depth_ladder.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-c
+    date: 2026-11-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#979", afrihate, sold]
+    question: >-
+      AfriHate became an explicit root at 3 when its peer left the category. Does it stay at 3, or
+      does the "largest for its languages with only community fine-tunes listed on the Hub" rung
+      support 4? SOLD sits level with it.
+    ruling: >-
+      AfriHate stays at 3. Its documentation and native-speaker annotations support that band;
+      three small community fine-tunes do not establish the stronger downstream use needed for 4.
+      SOLD remains at 3.
+    status: in-force
+    executor: none
+    lands_in: [sources/scores/afrihate.yaml, sources/scores/sold.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-d
+    date: 2026-11-08
+    by: ccerv1
+    venue: pr-review
+    refs: ["#979", chren, jojajovai, oldi-seed, smol, afridocmt, iitb-english-hindi,
+      R-2026-10-30-k]
+    question: >-
+      Five products in language_specific_datasets sit one below IITB English-Hindi on the
+      parallel-text size cap: ChrEn and Jojajovai (re-pointed in #979), and OLDI-Seed, SMOL and
+      AfriDocMT. R-2026-10-30-k will give each class of language its own size yardstick. What
+      happens to the five comparisons until then?
+    ruling: >-
+      Retain all five IIT Bombay comparisons provisionally, pending the language-class yardsticks.
+      ChrEn, Jojajovai, OLDI-Seed, SMOL and AfriDocMT remain at band 1, one below IIT Bombay at
+      band 2. Reassess all five together when R-2026-10-30-k's language-class-specific size
+      thresholds are implemented.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/979']
+
+  - id: R-2026-11-08-e
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#948", "#951", R-2026-10-30-d, R-2026-10-30-k]
+    question: >-
+      Three held items wait on the per-language resource classification R-2026-10-30-d places on
+      Artio: the per-class size yardsticks, the membership re-routing and #951. Should an agent
+      draft its inputs and a proposed table for the maintainer to build from?
+    ruling: >-
+      Yes. Draft the Artio language classification for review. Keep the class definitions and
+      thresholds separate from the initial data table.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-f
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-02-l, fleurs, lahaja, language_specific_eval_sets]
+    question: >-
+      FLEURS and Lahaja publish no capability band because speech has no measurement model. Their
+      sources state per-language test utterances, which a count model could read; hours cannot
+      be. Should an agent draft a speech measurement model?
+    ruling: >-
+      Yes. Draft and calibrate an utterance-based speech model. It is a proposal only; no bands
+      change until it is approved.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-g
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-07-b, language_specific_eval_sets, sold, "#948"]
+    question: >-
+      language_specific_eval_sets is frozen at the 22 calibrated sets with its boundary
+      provisional, and the membership re-routing waits on the classification. Should membership
+      stay frozen until then, SOLD's corpus-or-evaluation placement included?
+    ruling: >-
+      Yes. Freeze evaluation-set membership until the classification lands, including SOLD.
+    status: in-force
+    executor: none
+    lands_in: [sources/categories/language_specific_eval_sets.yaml]
+    applied_in: []
+
+  - id: R-2026-11-08-h
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-02-f, language_specific_eval_sets]
+    question: >-
+      Every published depth band is provisional because no task family has an approved estimation
+      method. Should the first method be commissioned now, or wait until the classification and
+      the speech model land?
+    ruling: >-
+      Wait. Prioritize the classification and the speech model before statistical estimation.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-i
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#953", language_specific_eval_sets]
+    question: >-
+      The coverage record cannot yet express few-shot splits, script, variety or translation
+      direction, diacritic restoration, or partial overlap. None blocked the 22 published bands.
+      Are these added ahead of need or when a set needs them?
+    ruling: >-
+      Extend the coverage schema when concrete cases require it.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-j
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#932", language_specific_datasets, R-2026-10-30-f]
+    question: >-
+      Mozilla Data Collective holds about 485 underrepresented-language datasets, many uploaded as
+      one file per language from a single publisher program. Is one publisher program one product,
+      or does any per-language dataset above a size threshold get its own row?
+    ruling: >-
+      One publisher program per product. Independently published members may have their own rows.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-k
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#645", "#652", "#757", blip, climax, content-seal, daytona-sandbox, habitat, klavis,
+      openpai, text-generation-inference]
+    question: >-
+      Nine products have an archived repository and no end_of_life. The #645 rule, applied in #652
+      and #757, says an archive never sets end_of_life on its own, but it is not in the log. Is it
+      recorded, and the nine resolved under it?
+    ruling: >-
+      Yes. Record the archival ruling and resolve all nine products. Archival alone never
+      establishes an end date.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/evidence-and-freshness.md, docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-11-08-l
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [daytona-sandbox, composio, R-2026-10-09-n, R-2026-10-08-m, R-2026-10-08-z]
+    question: >-
+      Daytona moved its server to a private codebase in June 2026; its SDKs stay open and the
+      archived AGPL v0.190.0 can still be forked. It and Composio, the same shape, are recorded
+      4/open_core. Do they score 4, 2 (source available, partial) or 1 (closed)?
+    ruling: >-
+      Closed (1) for both Daytona and Composio. The current product's essential engine is private.
+      Open SDKs and an archived server release do not make the current service source-available.
+      Daytona explicitly confirms that its production codebase is closed. Preserve the archived
+      release's provenance separately.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-m
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [qwen-coder, R-2026-10-17-b]
+    question: >-
+      qwen-coder is scored on the July 2025 Qwen3-Coder-480B. Qwen3-Coder-Next (80B total, 3B
+      active, Apache-2.0) shipped on 2026-01-30 from the same QwenLM/Qwen3-Coder repository. Is it
+      a release inside the qwen-coder slug or a separate product?
+    ruling: >-
+      Treat Qwen3-Coder-Next as another release of qwen-coder, retaining the earlier checkpoints.
+      The official Qwen repository lists both generations in the same model family.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-n
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: [qualcomm-ai-engine-direct]
+    question: >-
+      The Qualcomm AI Runtime SDK's own license was read as a file inside the public 2.6 GB SDK
+      zip, which fetch_source cannot digest whole. Is a file inside a downloadable archive an
+      acceptable citation?
+    ruling: >-
+      Yes. Accept the archive citation with the ZIP URL, the exact member path, the member's
+      SHA-256 digest and the extraction procedure.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-o
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#724", R-2026-10-08-i]
+    question: >-
+      methodology.md says relative usage is estimated from OpenRouter's token-share leaderboard, but
+      no such route exists and score files cite openrouter.ai by hand. Is the sentence corrected, or
+      is a rankings collector requested?
+    ruling: >-
+      Correct the OpenRouter methodology. No collector is needed now.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-p
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#99", world_models]
+    question: >-
+      world_models was created as a preliminary category on 2026-09-27 with promotion gated for
+      late October. The gate has passed; it has 21 registry rows from 20 organizations and no head
+      products. Does promotion start?
+    ruling: >-
+      Yes. Run the world-models promotion research. Publish only if all existing promotion gates
+      pass.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-q
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#920", inference_code, deployment, ml_orchestration, ray]
+    question: >-
+      KServe, BentoML, Seldon Core and Triton are on no roster. inference_code already holds
+      TensorFlow Serving, llm-d and Dynamo, and deployment's isolation ladder cannot order serving
+      platforms. Where do they go?
+    ruling: >-
+      Put the four serving platforms in inference_code, retain Ray Serve under Ray, and correct the
+      taxonomy wording.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-r
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#918", "#352", "#664", "#446"]
+    question: >-
+      Incremental models run only in a versioned org, and turning versioning on for currentai is a
+      one-way admin action. Should the maintainer ask the OSO admins to enable it?
+    ruling: >-
+      Yes. Prepare the release tooling, the runbooks and a no-op verification before requesting the
+      one-way Artio versioning switch.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-s
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#918", "#352", R-2026-11-08-r]
+    question: >-
+      A release that requires a recompute rebuilds a history table from its start, which loses for
+      good the history of a source that reports only its current state. Must every history-table
+      release be forwardsOnly, and enforced how?
+    ruling: >-
+      Yes. Enforce forwardsOnly for history tables in code, with tests.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-t
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#384", "#412", "#411", R-2026-09-23-a]
+    question: >-
+      R-2026-09-23-a blocked Phase 7 on #412's release-scoped tables and ruled out an interim
+      per-publish record. Static models now accept APPEND without versioning. May appended weekly
+      trace generations supply the cross-release agreement Phase 7 needs?
+    ruling: >-
+      Yes, conditionally. Start appending weekly, release-keyed trace generations. Four genuinely
+      agreeing generations can satisfy the evidence requirement, but 1,117 of 1,118 is not complete
+      agreement: reconcile or formally adjudicate the remaining difference, and verify release
+      identity. Retiring the duplicate computation keeps its own separate authorization.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-u
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#584", evaluation.adoption_reconciliation, evaluation.product_adoption_measurements]
+    question: >-
+      The two adoption tables were published once, by hand, in August. They are two months stale,
+      no workflow publishes them and nothing reads them. Do they keep being published, or stop?
+    ruling: >-
+      Freeze the two stale adoption tables with explicit staleness notices. Do not drop them.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-v
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#410", R-2026-10-16-a, R-2026-10-16-b, R-2026-09-25-a]
+    question: >-
+      The adoption release gate can block only after runs with zero would-block rows, while
+      R-2026-10-16-a and -b keep some recorded bands against the measurement on purpose (AG-UI at 5
+      against PyPI's 4). Is sources/reconciliation_overrides.yaml created now?
+    ruling: >-
+      Yes. Create the cited reconciliation overrides now, preserving the distinction between an
+      approved exception and an unexplained mismatch.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-08-w
+    date: 2026-11-08
+    by: ccerv1
+    venue: session
+    refs: ["#951", R-2026-10-30-k, R-2026-11-08-e]
+    question: >-
+      #951 (capping instruction data by example count in language_specific_datasets) has been held
+      since 2026-10-30. Does it stay held?
+    ruling: >-
+      Keep #951 held until the classification work supplies its missing policy.
+    status: in-force
+    executor: none
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-09-a
+    date: 2026-11-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#988", guardrails-ai, R-2026-10-08-w]
+    question: >-
+      The ungated reading of guardrails-ai's core needs a vendor statement naming the commercial offering
+      as separate. Its pricing and enterprise pages are gone; the evidence is the site's product menu
+      (Snowglobe and Guardrails), the acquisition post, the Snowglobe page, and PyPI's optional `api`
+      extra for guardrails-api. Is that enough?
+    ruling: >-
+      Accept the evidence. The first-party Guardrails site markets Snowglobe and Guardrails as distinct
+      products, the acquisition announcement describes the open framework and Snowglobe separately, and
+      the published Python package makes guardrails-api an optional dependency that ordinary framework use
+      does not require. That combination satisfies the intent of the evidence standard; a literal
+      declaration that the paid offering is separate from the repository is not necessary when the
+      vendor's product distinction and the package dependency establish the separation. guardrails-ai
+      moves to 5/open_source, confidence medium, and its openness hold is released. The server keeps its
+      restrictive license and stays visible under components.context.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/guardrails-ai.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/988']
+
+  - id: R-2026-11-09-b
+    date: 2026-11-09
+    by: ccerv1
+    venue: pr-review
+    refs: ["#988", guardrails-ai]
+    question: >-
+      guardrails-ai's repository tree was read through the GitHub API by an OSO agent, because this
+      environment's requests were refused, and a jsDelivr file listing fetched here corroborates it. Can the
+      openness axis be dated on that read?
+    ruling: >-
+      Accept. The external GitHub API read has a recorded digest and date, and the separately fetched
+      jsDelivr listing corroborates the absence of license-gated paths. The Apache-2.0 license, local
+      execution and the optional server dependency have further primary-source evidence. These are
+      sufficient to date the assessment 2026-11-08.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/guardrails-ai.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/988']
+
+  - id: R-2026-11-10-a
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", "#948", R-2026-10-30-d, R-2026-10-30-k]
+    question: >-
+      The 2026-11-02 classification specification derives two views from separate dimensions, and the
+      2026-11-08 draft sums three axes into one A-D class. Which structure does the classification use?
+    ruling: >-
+      Two views from one evidence base. A digital representation class, read from written material only,
+      decides membership. A resource profile of three yes/no axes (official status, speakers, written
+      material) decides the size yardstick. No weighted index, and no A-D sum in the table.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-b
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-a]
+    question: >-
+      How is written material measured, and which sources may set or move its band?
+    ruling: >-
+      FineWeb-2 words without the Bible share are the primary witness, with band edges calibrated to CLD2
+      page shares of 1%, 0.1% and 0.01% over the languages both measure. CLD2 is the second witness where it
+      measures the language. Wikipedia only widens the interval, on a disagreement of two or more bands and
+      an edition with at least 100 active users. Open Library is context. OpenAlex is context only, in
+      neither view. The calibration procedure is approved; the resulting numerical edges are reserved for a
+      separate decision before the method is published.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-c
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      When does a source's silence about a language count as evidence?
+    ruling: >-
+      Absence is an observation only in a list complete by construction: the Wikipedia editions in the site
+      matrix and CLDR's national official languages. A detector that can label a language but reports
+      nothing for it records not_detected, which is treated as unknown, never as small.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-d
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      How is the speaker figure defined, and where do CLDR and Wikidata disagree?
+    ruling: >-
+      The speaker value is the interval between CLDR and Wikidata, not the larger figure. The many_speakers
+      cut is 1,000,000. A CLDR figure its own notes describe as an estimate without a count is dropped. A
+      missing count is unknown, never few.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-e
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      Does Glottolog's endangerment rating stand in for a missing speaker count?
+    ruling: >-
+      Only moribund, nearly extinct and extinct ratings bound speakers below 1,000,000. Shifting and
+      threatened have no effect on the speaker axis.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-f
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      Which statuses count as official, and how does a primary legal text that CLDR has not yet recorded
+      enter?
+    ruling: >-
+      National and subnational official status count. Recognized status is recorded in its own column and
+      does not count. A primary legal text that CLDR has not caught up with enters only as a cited override
+      approved by a ruling.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-g
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      How are macrolanguages, their members and related standards measured?
+    ruling: >-
+      Each source's labels are mapped, per source, to the population they measure, and a broader label gives
+      a bound. A macrolanguage takes what its sources measure at that level, or else its members' range, and
+      never one member's value. A member that a source reports only through its macrolanguage (arb, swh, zsm,
+      cmn) gets a bound, not a borrowed point value. Filipino and Tagalog stay separate codes with an
+      explicit related_to relation. Historical and constructed languages are flagged.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-h
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-01-a]
+    question: >-
+      When does a classification or profile verdict stand?
+    ruling: >-
+      Every value is an interval. A verdict stands only when it holds at both ends of every interval it
+      reads; otherwise it is published as unresolved with both ends, and no consumer collapses it to either
+      end.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-i
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995"]
+    question: >-
+      Which inputs are excluded from the classification?
+    ruling: >-
+      The map's own counts, any count of AI resources such as Hugging Face language tags, Joshi et al.
+      (2020), which may be used for internal validation and is not redistributed, and Ethnologue.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-j
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-10-30-d]
+    question: >-
+      Where is the membership line, and how does a many-language dataset's membership follow from its
+      languages?
+    ruling: >-
+      As a starting rule, not a decision to move any product: the purpose test comes first, then a dataset
+      is in when any target language is robustly below the line and out when every target language is
+      robustly at or above it, with no majority rule. The line is below high. It is confirmed or changed
+      when the membership review table is read.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-k
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-10-30-k]
+    question: >-
+      How does the resource profile link to the size yardsticks?
+    ruling: >-
+      The reference profile (official, many speakers and large written material all yes) keeps the
+      English-scale yardstick unrelaxed. The multipliers for the other profiles, and the rule for
+      multilingual corpora, are not set here; they are set after a scored dry run of every band movement.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-l
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-10-30-d, warehouse/dependencies.yaml]
+    question: >-
+      What do the Artio tables and their contracts look like, and how are they refreshed and versioned?
+    ruling: >-
+      Two Artio tables, measurements and classification, each read through its own contract. A quarterly
+      refresh with every source pinned. method_version is semver. A refresh produces a review diff and never
+      moves a product on its own. This authorizes the method, not any change to Artio production tables.
+    status: in-force
+    executor: maintainer
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: []
+
+  - id: R-2026-11-10-m
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-b]
+    question: >-
+      R-2026-11-10-b adopted the calibration procedure for the written-material bands and reserved the
+      numerical edges. The calibration fits FineWeb-2 words without the Bible share against CLD2 page share
+      over the 137 languages both measure (R² 0.91; 90.5% band agreement; no two-band disagreement). Are its
+      edges adopted?
+    ruling: >-
+      Adopt the fitted edges as the method version 1 thresholds: high at 60 billion words or more, mid at 4
+      billion, low at 300 million, very low below 300 million. Adopting them does not authorize any category
+      migration; membership remains subject to the review R-2026-11-10-j describes.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-n
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-b]
+    question: >-
+      Bot-written Wikipedia editions such as Cebuano's pass a 100-active-user minimum. Is a further guard
+      needed, and where does it apply?
+    ruling: >-
+      A Wikipedia edition is eligible only with at least 100 active users and at most 1,000 content articles
+      per active user. The guard applies wherever Wikipedia can influence a classification or
+      resource-profile verdict: widening the written-material interval, and the corroboration path of
+      large_written_material. An ineligible edition's counts are recorded as excluded.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-o
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-c, R-2026-11-10-f]
+    question: >-
+      No language can read no on the official axis, because only CLDR's national list is complete by
+      construction. Should CLDR's regional entries and Wikidata's subdivision statements be read together as
+      a complete register, so that a language neither lists is not official?
+    ruling: >-
+      No. Absence from CLDR and Wikidata does not establish that a language lacks subnational official
+      status, and combining two incomplete registers does not make them complete. Record not_listed when
+      neither source identifies national or subnational status, and treat subnational status as unknown, not
+      none, unless a complete authoritative jurisdictional source or a cited, ruled determination establishes
+      otherwise. not_listed stays an evidence state, and an unresolved official axis propagates through the
+      resource profile. Fewer fully resolved profiles is preferable to resolving them from unsupported
+      negative evidence; explicitly labeled policy assumptions, with sensitivity analysis, can be considered
+      later if coverage becomes an operational bottleneck.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-p
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-e]
+    question: >-
+      Glottolog files the N'Ko written standard as an extinct language, which bounds its speakers below one
+      million. Is that handled by a general rule or a named exception?
+    ruling: >-
+      A general rule. The endangerment bound applies only to Glottolog entries of level language outside the
+      Bookkeeping and Artificial Language families. An excluded rating stays in the measurements table with
+      the source's classification and the reason it was excluded. No separate N'Ko exception.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-q
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#995", R-2026-11-10-n]
+    question: >-
+      Under R-2026-11-10-n's cap of 1,000 content articles per active user, the Urdu and Welsh Wikipedia
+      editions, which have substantial editor communities, no longer corroborate large_written_material, and
+      both read no. Is the cap kept, or raised to about 2,100 to restore them?
+    ruling: >-
+      Keep the cap. Urdu and Welsh have measured web-text evidence below the large_written_material
+      threshold, and an editor community alone does not establish that an edition's article count is
+      comparable to a predominantly human-authored collection. Raising the cap to restore these cases would be
+      retrospective threshold tuning; the consistent rule is preferred even where it is counterintuitive. The
+      method version 1 dry-run distribution, with 242 fully resolved resource profiles, is accepted. Changes
+      to product membership and capability bands still need separate review.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-r
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-n, R-2026-11-10-q]
+    question: >-
+      The built measurements model queried Open Library's /search.json once per MARC language code each
+      quarter, at up to three requests per second. Open Library documents that endpoint and that rate for
+      identified clients, but its robots.txt disallows /search. Is the scheduled API integration approved?
+    ruling: >-
+      Keep Open Library in the method; do not approve the scheduled API integration. Open Library's usage
+      policy describes the API as intended for human-facing discovery, not as a bulk data backend, so its
+      rate limit is not permission for quarterly automated harvesting. Read Open Library from a reproducible
+      extract of its monthly data dumps, or obtain explicit permission for scheduled queries. Until then the
+      scheduled computation omits Open Library corroboration, and Latin's Open Library-dependent verdict is
+      flagged as provisional rather than treated as approved. Any future direct use must also identify the
+      project with the contact address Open Library requires for its higher rate limit.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-s
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-l]
+    question: >-
+      The platform classification table covers every ISO 639-3 individual and macrolanguage code while
+      SIL's terms for a table keyed on the full code set are unresolved. What scope may be redistributed?
+    ruling: >-
+      Keep the broader table private on the platform while the terms are unresolved. Any redistribution uses
+      the declared-code fallback, the codes the map's products declare, unless SIL confirms broader rights.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-t
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-d, R-2026-11-10-g, R-2026-11-10-f]
+    question: >-
+      Three implementation readings in the built tables: the speaker interval joins CLDR users (L1 and L2)
+      with Wikidata's preferred-rank figure; N'Ko is related_to Manding; and recognized reads yes, no or
+      unknown. Do they stand?
+    ruling: >-
+      Accept all three. The speaker interval stands, with each source's differing definition and provenance
+      retained. N'Ko and Manding are related as a relationship, not an equivalence. The three-state
+      recognized column stands, documented so that no is not read as a language lacking legal recognition.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-u
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-h, R-2026-11-10-n, R-2026-11-10-r]
+    question: >-
+      With Open Library unmeasured, 15 languages whose eligible Wikipedia edition passes the corroboration
+      route read large_written_material from web text alone, so 13 read no. Is the missing Open Library part
+      a failed route or an unknown one?
+    ruling: >-
+      Unknown. large_written_material is web text at B or above, or an eligible Wikipedia edition with
+      100,000 articles and Open Library with 10,000 works, combined under the interval rule: absence of
+      evidence for a positive route is not evidence that it fails. The 15 affected languages (lat, afr,
+      aze, bel, hye, kat, mar, mkd, mya, sqi, tam, tel, uzb, lav, srp), and every other language whose
+      corroboration route turns only on the missing Open Library part, read unresolved until the dump
+      extract is available, unless another independent source establishes yes. Their representation classes
+      are unchanged. An unresolved profile is never used to assign a relaxed yardstick. The scored yardstick
+      dry run waits until the dump extract and these verdicts are settled.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-11-a
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-r]
+    question: >-
+      The Artio measurements model read the Open Library extract at the commit of #1000's branch while
+      the PR was open. Once #1000 merges, may production scoring keep reading that snapshot?
+    ruling: >-
+      No. After the merge the model is re-pinned to the extract's commit on main, the revision is
+      deployed, its mirror is resynced, and the live contract and drift checks are rerun. Production
+      scoring never depends on a snapshot pinned only to a pull request's commit.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: []
+
+  - id: R-2026-11-11-b
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j, R-2026-11-08-a]
+    question: >-
+      IndoNLU's only target language, Indonesian, is robustly high, so the language half puts it out of
+      language_specific_eval_sets. Does it move to benchmark_eval_data?
+    ruling: >-
+      Yes, in a separate implementation PR. Its scores are recalculated under benchmark_eval_data's recipe.
+      Its adoption, level 1 with reach below 1,000, is preserved through the migration; its capability is
+      the null score. The same PR updates the comments in both language_specific_datasets and
+      language_specific_eval_sets, including removing the obsolete exclusion of Korean. The review record
+      (#1001) changes no file under sources/.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-c
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      Turkish is unresolved (high by CLD2, mid by FineWeb-2), so the language half neither admits nor
+      excludes TurkishMMLU. Does it stay in language_specific_eval_sets?
+    ruling: >-
+      It stays, on the purpose test, and is revisited each quarter when the classification refreshes.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-d
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-08-c]
+    question: >-
+      Does the classification reopen SOLD's placement or its score?
+    ruling: >-
+      No. SOLD stays in language_specific_datasets with capability 3.
+    status: in-force
+    executor: none
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-e
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      Korean is mid, below the membership line, so KMMLU (seeded to benchmark_eval_data) is eligible for
+      language_specific_eval_sets. Is it added?
+    ruling: >-
+      Approved as separate add-product work in language_specific_eval_sets, subject to its evidence and
+      to validation on the depth ladder.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-f
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      CHOCLO, Trueque and the LatamGPT Corpus target Spanish or Portuguese, which are high, and fail the
+      purpose test as built. Do they stay out?
+    ruling: >-
+      Undecided until their Indigenous-language content is investigated. Incidental coverage of an
+      Indigenous language alone does not satisfy the purpose test.
+    status: deferred
+    executor: agent
+    lands_in: []
+    applied_in: []
+    reasoning: >-
+      The maintainer asked for an investigation of each corpus's Indigenous-language content before
+      deciding.
+
+  - id: R-2026-11-11-g
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1003", "#951", R-2026-10-30-k, R-2026-11-10-k, R-2026-11-10-u, R-2026-11-08-d]
+    question: >-
+      The scored yardstick dry run compares schemes S2 to S4 and multilingual rules M1 to M3 over the 52
+      language_specific_datasets products whose size reproduces their cap. Which multipliers and which
+      multilingual rule are adopted?
+    ruling: >-
+      None yet. The dry run is accepted as a sensitivity analysis. S3 with M2 is the leading candidate,
+      not binding scoring policy: S3 is the moderate relaxation, and M2 keeps multilingual corpora on
+      today's yardstick until per-language sizes justify something else. Unresolved profiles take the
+      least-relaxed defensible cap, with the full sensitivity range kept. The IIT Bombay comparisons for
+      SMOL and AfriDocMT stay provisional, since only three of the five can be checked. Projected
+      peer-relation breaks are not demonstrated. Before adoption, each capped product's pre-cap rung band
+      is scored, so a real increase can be told from one the rubric would prevent, and the eight products
+      set aside are implementation blockers. #951 stays held.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-dry-run.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1003']
+
+  - id: R-2026-11-11-h
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", R-2026-10-30-k, R-2026-11-10-k, R-2026-11-10-u, R-2026-11-11-g]
+    question: >-
+      The scored implementation proposal finds that under S3 with M2 nine language_specific_datasets
+      products rise and no rung band holds any of them below its new cap. Is S3 with M2 adopted as
+      scoring policy?
+    ruling: >-
+      Yes. The size caps relax by the number of confirmed yes axes in the resource profile (three, two,
+      one, none): text and parallel text by 1x, 10x, 100x and 1,000x; speech by 1x, 10x, 30x and 100x.
+      Unresolved axes earn no relaxation, and multilingual products keep today's caps (M2). The nine
+      bands are approved: Icelandic Gigaword Corpus 4, Korpus Malti 3, CorpusNos 3, Latxa Corpus 3,
+      Nepali Text Corpus 3, Khmer ASR Cultural Dataset 3, Kazakh Speech Corpus 2 4, Northern Sami web
+      corpus 2, ViXSD 2. Latxa publishes 3, the least-relaxed score, and keeps its range to 4 in the
+      evidence. The changes are made in a separate implementation PR with the revised recipe, every
+      affected peer relation and a complete score-change diff.
+    reasoning: >-
+      S3 is a moderate, defensible relaxation, and M2 avoids assigning a per-language benefit to an
+      undifferentiated multilingual corpus.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md, sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004', 'https://github.com/currentai-org/os-ai-map/pull/1005']
+
+  - id: R-2026-11-11-i
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", language_specific_datasets]
+    question: >-
+      Three rung readings turn on whether a detailed card without a paper counts as documentation and
+      whether community fine-tunes count as downstream use: Icelandic Gigaword Corpus, Kazakh Speech
+      Corpus 2 and the Khmer ASR Cultural Dataset. Which readings hold?
+    ruling: >-
+      All three read rung 4. A paper is not mandatory for a documented resource, and a community
+      fine-tune is legitimate downstream use when its attribution to the dataset is explicit and
+      verifiable. Neither is accepted merely because a generic Hugging Face tag exists.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004', 'https://github.com/currentai-org/os-ai-map/pull/1005']
+
+  - id: R-2026-11-11-j
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", language_specific_datasets]
+    question: >-
+      Nine peer relations break once the nine bands move, because the two sides now sit on different
+      yardsticks. How are they repaired?
+    ruling: >-
+      Re-point each to a same-modality, same-yardstick peer wherever a defensible comparison exists.
+      Where none exists, remove relative_to and justify the band directly from the rubric; do not invent
+      a weak comparison to preserve a link. Check both outgoing relations and references from other
+      products, including SMUGRI data and L3Cube-MahaCorpus.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004', 'https://github.com/currentai-org/os-ai-map/pull/1005']
+
+  - id: R-2026-11-11-k
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", R-2026-11-11-g, smol, bloom-library-datasets, glot500-c, bibletts, kencorpus,
+      afridocmt, smugri-data, afrivoice]
+    question: >-
+      Do the eight products set aside from the dry run block S3 with M2?
+    ruling: >-
+      No. All eight are multilingual, so M2 keeps their current yardsticks. Their five source-accuracy
+      questions (Glot500-c's size basis, Kencorpus's untranscribed audio, BibleTTS's missing total,
+      Bloom Library's conflicting speech figures, Afrivoice's unsourced 15,000 hours) go to a separate
+      re-verification pass. This does not approve their current recorded sizes or bands.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-l
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", glot500-c]
+    question: >-
+      Glot500-c's paper describes a 600 GB assembled corpus; its public release is 308 GB. Which does the
+      open product's size cap read?
+    ruling: >-
+      The 308 GB public release. The full corpus remains context.
+    reasoning: >-
+      Including inaccessible or nonredistributable material in an open-release size measurement would
+      misrepresent the resource available to users.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-m
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", "#1004", R-2026-10-30-c, R-2026-11-08-w, R-2026-11-11-h]
+    question: >-
+      #951 was held until the language-adjusted yardsticks were adopted. Now that S3 with M2 is adopted,
+      does the hold lift?
+    ruling: >-
+      Yes, for revision. The instruction-data cap is redesigned against the adopted yardstick policy,
+      keeping human-curated data distinct from generated and translated data. #951's existing draft is
+      not merged unchanged.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
     applied_in: []

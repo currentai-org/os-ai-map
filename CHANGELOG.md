@@ -16,8 +16,71 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Changed
+
+- Language-specific evaluation sets are published as their own category, scored by the depth ladder:
+  22 sets moved from Language-specific datasets with computed, provisional bands, five of them
+  unresolved with a null band and an adoption-only overall score, and `overall_basis` now marks
+  every overall score (R-2026-11-07-b, R-2026-11-08-a, -b)
+  ([#979](https://github.com/currentai-org/os-ai-map/pull/979)).
+- Machine-translated evaluation items that a cited source says people reviewed, every item, now
+  count toward evaluation depth; their provenance stays `machine_translated`, a review of unstated
+  scope (`review_scope: unstated`) leaves depth unknown, and generated items still do not count
+  (R-2026-11-03-b, replacing R-2026-11-01-h, and -h). No published score changes until the ladder
+  PR ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
+
 ### Added
 
+- `capability.own_components`: cited, schema-validated claims that a suite's second-slug components
+  are its own items, scoped by language, task or split, with INCLUDE's Arabic and Turkish withdrawn
+  and its mixed pools marked (R-2026-11-03-c, -i). The depth calibration reads them from the records
+  and reproduces its earlier results exactly; no score changes
+  ([#978](https://github.com/currentai-org/os-ai-map/pull/978)).
+- Per-language coverage and lineage records for the 18 remaining evaluation sets, and the full-roster
+  depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 17 of 22 sets
+  resolve, 4 compute to band 5 (under the one-third review trigger), and the lineage sensitivity runs
+  agree for every set. `build/depth_calibration.py` reproduces it from `sources/`, and
+  `tests/test_depth_calibration.py` pins its figures. No score changes; the ladder PR applies the
+  bands once they are accepted ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
+- Cited lineage records in `sources/lineage.yaml` for the 39 coverage components of the four
+  calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench), from the lineage audit of
+  R-2026-11-02-i, -j and -u. Batayan's translation task is recorded as derived from FLORES-200,
+  which its paper states. No score changes; the sensitivity check is in
+  `docs/sweeps/2026-11-02-lineage-audit.md`
+  ([#972](https://github.com/currentai-org/os-ai-map/pull/972)).
+- Evidence status for per-language coverage: `build/evidence_status.py` labels each entry
+  provisional, estimated or unresolved, and a `precision` block on a coverage entry records a
+  statistical estimate under an approved method. No method is approved yet, so no entry is
+  estimated and no score changes (R-2026-11-02-e, -f, -t;
+  [#971](https://github.com/currentai-org/os-ai-map/pull/971)).
+- A component lineage registry (`sources/lineage.yaml`, schema `docs/schemas/lineage.schema.json`)
+  and `build/lineage.py`, which derives whether two evaluation components are independent,
+  dependent or unverified for a language; `build.validate` checks its structure and warns on
+  coverage components with no entry. The registry starts empty and no score changes
+  (R-2026-11-02-j, -u; [#970](https://github.com/currentai-org/os-ai-map/pull/970)).
+- A preliminary language_specific_eval_sets category (Language-specific evaluation sets), with an
+  empty roster and an interim capability ladder that compares each set with sets for the same
+  languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets
+  would get. The ladder is not calibrated and the dry-run bands are not adopted
+  ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
+- An optional per-language coverage record on a dataset's capability axis
+  (`capability.language_coverage`), one entry per language, task, dataset component and split:
+  count and unit, provenance, whether the split is the benchmark's official evaluation split, an
+  optional qualifying portion for `mixed` items, optional human validation, `subset_of` so a
+  subset is not counted twice, `source_language` for a code the source states differently, and a
+  documented zero (`count: 0`, no provenance) for a language the source says has no items, cited
+  through `capability.sources`. Pivot languages are declared in
+  `capability.pivot_languages`. Codes must be ones the product's `languages` lists. The four
+  calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench) carry it; nothing scores on it, and
+  the notebook payload leaves it out (R-2026-10-30-h, R-2026-11-01-a to -h,
+  [#952](https://github.com/currentai-org/os-ai-map/pull/952),
+  [#956](https://github.com/currentai-org/os-ai-map/pull/956),
+  [#958](https://github.com/currentai-org/os-ai-map/pull/958)).
+- `lineage.part_of`, a many-to-many link from a dataset to the suites it belongs to, and the
+  stage rule it feeds: a suite and its members count once toward a category's stage, through the
+  group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No
+  product sets it yet, so no stage moved
+  ([#949](https://github.com/currentai-org/os-ai-map/pull/949)).
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
   declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
@@ -39,6 +102,27 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- AfroBench's NollySenti coverage entries for Hausa, Igbo and Yoruba record `human_translated`
+  provenance, from the NollySenti paper's statement that professional translators produced them;
+  they were `unknown`. No band moves ([#974](https://github.com/currentai-org/os-ai-map/pull/974)).
+- The `add-data-source` skill follows ADR-003: an OSO-owned input is a dependency contract in
+  `warehouse/dependencies.yaml` with its reader landing in the same PR, a repo-owned file is a
+  governed asset with a `role`, and both routes run the scope gates. It no longer points at the
+  retired `warehouse/models/catalog/` fetchers
+  ([#973](https://github.com/currentai-org/os-ai-map/pull/973)).
+- SEA-HELM's coverage record adds its Lao (FLORES, 1,012 sentences) and Filipino (Batayan, 600)
+  translation splits from the dataset's own configuration; every SEA-HELM target language now has
+  evidence, and no score moved ([#966](https://github.com/currentai-org/os-ai-map/pull/966)).
+- FLORES+, SEA-HELM and AfroBench declare the language codes their current sources use: FLORES+ moves
+  to its card's codes (`arb`, `ekk`, `gug`, `cmn`, `fil`, `ktu`) and adds 14 languages; SEA-HELM lists
+  Malay as `zsm` and Filipino as `fil`, and records Burmese translation at 600 sentences, its data files'
+  count; AfroBench adds `nde` and `ven`, drops `nqo`, and declares English, French, Arabic and
+  Portuguese as pivots (R-2026-11-02-a). No score moved
+  (`docs/sweeps/2026-11-02-language-code-reconciliation.md`;
+  [#965](https://github.com/currentai-org/os-ai-map/pull/965)).
+- The software ladder recognizes `MAX-License`, Modular's renamed Community License, in
+  `competition_restricted`, and max records it from the 2026-10-21 text; max stays 2/source_available
+  ([#964](https://github.com/currentai-org/os-ai-map/pull/964)).
 - muse-spark re-scored on Muse Spark Open's weights: openness 1/closed to 3/open_weights with Muse Spark
   Open as the governing release and Muse-Model-License as use_bounded; adoption stays 4, now recorded as
   reported traction with no numeric reach ([#930](https://github.com/currentai-org/os-ai-map/pull/930)).

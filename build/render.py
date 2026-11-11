@@ -582,6 +582,16 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             return na_html()
         return f'<div style="white-space:nowrap;">{_bars(v, color)}</div>'
 
+    def capability_cell(cap):
+        # An evaluation set whose depth band does not stand reads "unresolved", with the reason on
+        # hover, never the generic n/a: it is unknown, not inapplicable and not zero (R-2026-11-08-a).
+        depth = cap.get("depth") or {}
+        if cap.get("score") is None and depth.get("status") == "unresolved":
+            why = _html.escape(depth.get("unresolved_reason_text") or "", quote=True)
+            return (f'<span title="{why}" style="color:{C["ink_3"]}; font-style:italic;">'
+                    f'unresolved</span>')
+        return axis_bars(cap, "score", C["capab"])
+
     def product_row(p):
         pid = p.get("product", "")
         op, ad, cap = p.get("openness", {}), p.get("adoption", {}), p.get("capability", {})
@@ -602,7 +612,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.78rem; color:{C["ink_3"]};">{p.get("org","") or ""}</td>'
             f'<td style="padding:8px 10px;">{openness_cell(op)}</td>'
             f'<td style="padding:8px 10px;">{axis_bars(ad, "level", C["adopt"])}</td>'
-            f'<td style="padding:8px 10px;">{axis_bars(cap, "score", C["capab"])}</td>'
+            f'<td style="padding:8px 10px;">{capability_cell(cap)}</td>'
             f'<td style="padding:8px 10px;"><button class="v3-details" data-pid="{pid}">Details</button></td>'
             f'</tr>'
         )
@@ -623,6 +633,12 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         }.get(_dominant_type(cid), "OSI-class license tests")
 
     def _cap_summary(cid):
+        if any((p.get("capability") or {}).get("basis") == "evaluation_depth"
+               for p in DATA["categories"][cid]["products"]):
+            return ("evaluation depth: how many qualifying test items each target language has, "
+                    "with items taken from another dataset counted only as far as independent "
+                    "evidence backs them. Every band is provisional, and a set whose depth cannot "
+                    "be counted shows as unresolved, with no capability score")
         seen = {}
         fm = 0
         for p in DATA["categories"][cid]["products"]:
@@ -849,7 +865,8 @@ def details_payload(DATA, ORDER, mo):
           (p.lineage?('<div class="v3-sect">Lineage</div>'+
             (p.lineage.derived_from&&p.lineage.derived_from.length?row('Derived from',p.lineage.derived_from.join(', ')):'')+
             (p.lineage.curated_with&&p.lineage.curated_with.length?row('Built with',p.lineage.curated_with.join(', ')):'')+
-            (p.lineage.trains&&p.lineage.trains.length?row('Trains',p.lineage.trains.join(', ')):'')):'')+
+            (p.lineage.trains&&p.lineage.trains.length?row('Trains',p.lineage.trains.join(', ')):'')+
+            (p.lineage.part_of&&p.lineage.part_of.length?row('Part of',p.lineage.part_of.join(', ')):'')):'')+
           '</div></div>';
         return h;
       }

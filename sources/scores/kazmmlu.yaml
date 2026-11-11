@@ -59,28 +59,91 @@ adoption:
     http_status: 200
     content_sha256: 2d2521878f0b609b1a7fcdb82705412c3ab1025c46fad21716703efb5d6a66bf
 capability:
-  score: 3
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for a Kazakh knowledge benchmark
-  value: KazMMLU holds 23,000 multiple-choice questions in Kazakh and Russian from native educational material,
-    validated by native speakers and documented in a paper, with no named downstream use.
+  score: 5
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 5 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 2 of 2 measured, across 1 task. Face value 5; best original band 5.'
   confidence: medium
-  note: KazMMLU is the first MMLU-style benchmark for Kazakh, built from native educational material and documented
-    in a paper. No leaderboard or model report outside that paper was found to use it, and its card is a placeholder,
-    which places it a step below ArabicMMLU, from the same lab.
-  relative_to: arabicmmlu
-  relation: two_below
-  last_verified: '2026-09-24'
+  note: In the typical language KazMMLU targets, its deepest test has more than sixty-four hundred items that
+    count toward depth. An item count says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://arxiv.org/abs/2502.12829
     shows: 'Abstract: "KazMMLU, the first MMLU-style dataset specifically designed for Kazakh language. KazMMLU
       comprises 23,000 questions ... sourced from authentic educational materials and manually validated by
       native speakers and educators".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: f2e56a5bc15b81d4182bd76094888f83d9c27c82b0c670f987019075218a3d5b
+    content_sha256: cf4ac811106a4d9e17277ccb7d26170c1498ae1aba2e3df29f58521205fe5c63
   - url: https://huggingface.co/datasets/MBZUAI/KazMMLU
     shows: 'Hub page: "Number of rows: 23,000"; no models or Spaces listed as using it.'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 94e96b0a9f18fd0256514b8fff38648f7390e99d90e8ba6e1f86fb0b330fe87e
+    content_sha256: 0512de05c62492f8db3c40f61a183feb185f76b780cfd376523e8d86a9495169
+  - url: https://arxiv.org/pdf/2502.12829
+    shows: '"The dataset includes 10,969 Kazakh questions and 12,031 Russian questions"; "KazMMLU is sourced
+      from authentic educational materials, including national exams, textbooks, and professional certification
+      repositories"; "the question and answer choices remain in their original language (Kazakh or Russian)";
+      "every question included in KazMMLU undergoes manual validation"'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 1724454232a76f3d821777308bd8c94d380442e4165d9f552410c478e32928bd
+  - url: https://datasets-server.huggingface.co/size?dataset=MBZUAI/KazMMLU
+    shows: 'the Hub''s row counts per subject configuration, each named for its language, such as "Biology (High
+      School in kaz)" and "Biology (High School in rus)": test 9,870 rows across the 12 Kazakh configurations
+      and 13,019 across the 25 Russian ones; dev 3 rows in each configuration (36 Kazakh, 75 Russian); 23,000
+      rows in all'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 94550acd7dae730269eec953d4a8abc4afec40605d75681d0f6a8ee6394a6937
+  pivot_languages: []
+  language_coverage:
+  - language: kaz
+    task: knowledge_exam
+    component: kazmmlu
+    split: dev
+    official_eval: false
+    count: 36
+    unit: questions
+    provenance: native
+    human_validated: true
+    cites:
+    - https://arxiv.org/pdf/2502.12829
+    - https://datasets-server.huggingface.co/size?dataset=MBZUAI/KazMMLU
+  - language: kaz
+    task: knowledge_exam
+    component: kazmmlu
+    split: test
+    official_eval: true
+    count: 9870
+    unit: questions
+    provenance: native
+    human_validated: true
+    cites:
+    - https://arxiv.org/pdf/2502.12829
+    - https://datasets-server.huggingface.co/size?dataset=MBZUAI/KazMMLU
+  - language: rus
+    task: knowledge_exam
+    component: kazmmlu
+    split: dev
+    official_eval: false
+    count: 75
+    unit: questions
+    provenance: native
+    human_validated: true
+    cites:
+    - https://arxiv.org/pdf/2502.12829
+    - https://datasets-server.huggingface.co/size?dataset=MBZUAI/KazMMLU
+  - language: rus
+    task: knowledge_exam
+    component: kazmmlu
+    split: test
+    official_eval: true
+    count: 13019
+    unit: questions
+    provenance: native
+    human_validated: true
+    cites:
+    - https://arxiv.org/pdf/2502.12829
+    - https://datasets-server.huggingface.co/size?dataset=MBZUAI/KazMMLU

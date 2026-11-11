@@ -110,21 +110,2865 @@ adoption:
     content_sha256: 8e1b517052ea22e257a34350884a5d88db217793946415b35bcfbb39c37fa476
 capability:
   score: 3
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for an Indic generation benchmark
-  value: IndicGenBench holds four generation tasks human-translated from English benchmarks into 29 Indic languages,
-    documented in a paper and README, with no use found beyond that paper's model evaluations.
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 29 of 29 measured, across 3 tasks. Face value 3; best original band 3.'
   confidence: medium
-  note: IndicGenBench is documented and reaches 29 Indic languages with human translations. No leaderboard
-    or model report built on it outside its own paper was found, whereas IndicXTREME was released with the
-    IndicBERT v2 models it evaluates.
-  relative_to: indicxtreme
-  relation: one_below
-  last_verified: '2026-09-24'
+  note: In the typical language IndicGenBench targets, its deepest test has four hundred to sixteen hundred
+    items that count toward depth. In one of its 29 languages a test taken from another dataset counts for
+    less, because nothing independent backs it there. An item count says how much a set can test, not how
+    precisely it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://arxiv.org/abs/2404.16816
     shows: 'Abstract: "the largest benchmark for evaluating LLMs on user-facing generation tasks across a diverse
       set 29 of Indic languages covering 13 scripts".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 979f9f83362039e3e0f3ee506579aee534e54722c086553ccf66d257055a37b4
+    content_sha256: f8d8bfba0eff6563694539aece4c1f51d654aca1d5218f7c18c118fe576d2f4d
+  - url: https://arxiv.org/pdf/2404.16816
+    shows: 'CrossSum-IN: "We sample 700 English article-summary pairs (100 each from train/dev and 500 from test)
+      and ask human translators to translate the English summary into the target Indic languages"; "CrossSum
+      already contains data for 9 of our 29 target languages; for these languages we sample 100/100/500 examples
+      from the original dataset". FLORES-IN: "where the same source English sentences are translated by humans
+      into the target 200 languages"; "It contains data in 22 of our 29 target languages; we extend this by
+      collecting human translations for the remaining 7 new languages"; "We collect translations for all 997
+      dev and 1012 devtest sentences, yielding 2009 sentences per language". XQuAD-IN: "we use the 240 passages
+      and 1190 QA pairs from XQuAD as our test set"; "We additionally selected 20 passages and 100 QA pairs from
+      the original SQuAD v1.1 training and development sets each to create our training and development set";
+      "For all the 280 passages and 1390 QA pairs we collect professional human translations in 12 Indic languages".
+      XorQA-IN: "we select the 302 Bengali and 237 Telugu examples"; "dev set as our test data"; "to create our
+      training (100) and development (500) set"; "We collect data for 28 Indic languages"; "We do not collect
+      translations for Nepali." Table 1 gives 14.5k, 29.3k, 14.3k and 15.1k test instances; Table 9 gives each
+      task''s languages'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: dd07c6ffc29ed98d61640395601a2931edb43f051f782549274cbb5a9e41d8d3
+  - url: https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+    shows: '"the ''dev'' and ''test'' split of flores_in corresponds to the ''dev'' and ''devtest'' split of the
+      original flores dataset"; "`split`: one of `{train, dev, test}`"'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 2b36a3735001317d99551905243bf8b6b1165876f0511c52e34880a7a892bea1
+  - url: https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+    shows: 'the language table''s header row, "Language (ISO 639-1-Code) | am | ar | az | bn | my | zh-CN | zh-TW
+      | en | fr | gu | ha | hi | ig | id | ja | rn | ko | ky | mr | np | om | ps | fa | pcm | pt | pa | ru | gd
+      | sr | sr | si | so | es | sw | ta | te | th | ti | tr | uk | ur | uz | vi | cy | yo": of IndicGenBench''s
+      29 languages, CrossSum has bn, gu, hi, mr, np, ps, pa, ta, te and ur'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: bd911faf378b29dbfb1faa5abf8464b01c39802db884d0fb00a2aa7070b70e72
+  pivot_languages: []
+  language_coverage:
+  - language: asm
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: asm
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: asm
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: asm
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: asm
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: asm
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: asm
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: asm
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: asm
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: asm
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: asm
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: awa
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: awa
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: awa
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: awa
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: awa
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: awa
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: awa
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: awa
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: ben
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: ben
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: ben
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ben
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ben
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ben
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ben
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ben
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ben
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: ben
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: ben
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bgc
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: bgc
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: bgc
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bgc
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bgc
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bgc
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bgc
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bgc
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bho
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: bho
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: bho
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bho
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bho
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bho
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bho
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bho
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bod
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: bod
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: bod
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bod
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bod
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: bod
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bod
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: bod
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: brx
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: brx
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: brx
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: brx
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: brx
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: brx
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: brx
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: brx
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: gbm
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: gbm
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: gbm
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: gbm
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: gbm
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: gbm
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: gbm
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: gbm
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: gom
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: gom
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: gom
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: gom
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: gom
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: gom
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: gom
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: gom
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: guj
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: guj
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: guj
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: guj
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: guj
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: guj
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: guj
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: guj
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: guj
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: guj
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: guj
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hin
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: hin
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: hin
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hin
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hin
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hin
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hin
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hin
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hin
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hin
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hin
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hne
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: hne
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: hne
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hne
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hne
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hne
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hne
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hne
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hoj
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: hoj
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: hoj
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hoj
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hoj
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: hoj
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hoj
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: hoj
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: kan
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: kan
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: kan
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: kan
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: kan
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: kan
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: kan
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: kan
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: kan
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: kan
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: kan
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mai
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mai
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mai
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mai
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mai
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mai
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mai
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mai
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mal
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mal
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mal
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mal
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mal
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mal
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mal
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mal
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mal
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mal
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mal
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mar
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mar
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mar
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mar
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mar
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mar
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mar
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mar
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mar
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mar
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mar
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mni
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mni
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mni
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mni
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mni
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mni
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mni
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mni
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mup
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mup
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mup
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mup
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mup
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mup
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mup
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mup
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mwr
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mwr
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: mwr
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mwr
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mwr
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: mwr
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mwr
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: mwr
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: nep
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: nep
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: nep
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: nep
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: nep
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: ori
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: ori
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: ori
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ori
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ori
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ori
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ori
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ori
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: ori
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: ori
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: ori
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: pan
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: pan
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: pan
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pan
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pan
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pan
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pan
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pan
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pan
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: pan
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: pan
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: pus
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: pus
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: pus
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pus
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pus
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: pus
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: pus
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: pus
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: san
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: san
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: san
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: san
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: san
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: san
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: san
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: san
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: sat
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: sat
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: sat
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: sat
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: sat
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: sat
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: sat
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: sat
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: tam
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: tam
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: tam
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tam
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tam
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tam
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tam
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tam
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tam
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: tam
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: tam
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: tel
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: tel
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: tel
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tel
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tel
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tel
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tel
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tel
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: tel
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: tel
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: tel
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: urd
+    task: machine_translation
+    component: flores-in
+    split: dev
+    official_eval: false
+    count: 997
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: urd
+    task: machine_translation
+    component: flores-in
+    split: test
+    official_eval: true
+    count: 1012
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+  - language: urd
+    task: reading_comprehension
+    component: xorqa-in
+    split: dev
+    official_eval: false
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: urd
+    task: reading_comprehension
+    component: xorqa-in
+    split: test
+    official_eval: true
+    count: 539
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: urd
+    task: reading_comprehension
+    component: xorqa-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: urd
+    task: reading_comprehension
+    component: xquad-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: urd
+    task: reading_comprehension
+    component: xquad-in
+    split: test
+    official_eval: true
+    count: 1190
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: urd
+    task: reading_comprehension
+    component: xquad-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - language: urd
+    task: summarization
+    component: crosssum-in
+    split: dev
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: urd
+    task: summarization
+    component: crosssum-in
+    split: test
+    official_eval: true
+    count: 500
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  - language: urd
+    task: summarization
+    component: crosssum-in
+    split: train
+    official_eval: false
+    count: 100
+    unit: documents
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+    - https://raw.githubusercontent.com/csebuetnlp/CrossSum/main/README.md
+  own_components:
+  - component: flores-in
+    languages: [bgc, brx, gbm, gom, hoj, mup, mwr]
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - component: crosssum-in
+    except_languages: [ben, guj, hin, mar, nep, pan, pus, tam, tel, urd]
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - component: xquad-in
+    cites:
+    - https://arxiv.org/pdf/2404.16816
+  - component: xorqa-in
+    except_languages: [ben, tel]
+    cites:
+    - https://arxiv.org/pdf/2404.16816

@@ -77,6 +77,7 @@ both read as authoritative. This applies within a file as much as across them.
 | [`reference/where-scores-live.md`](reference/where-scores-live.md) | Which axis is in the repo, which is in the warehouse, and which tables only look like scores |
 | [`reference/product-copy.md`](reference/product-copy.md) | The prose guide: `description`, `comments`, the score notes, `shows`, and editor-facing prose |
 | [`reference/gap-analysis.md`](reference/gap-analysis.md) | How the map derives gaps from scores |
+| [`reference/language-classification.md`](reference/language-classification.md) | How a language is classified, and how the classification feeds category membership and the size yardsticks |
 | [`reference/queries.md`](reference/queries.md) | Query conventions for the warehouse |
 | [`reference/sibling-invariants.md`](reference/sibling-invariants.md) | What must hold between a product and its siblings |
 | [`reference/notebook-design.md`](reference/notebook-design.md) | The published map's visual style |
@@ -111,9 +112,10 @@ doors above:
   for the score auditor rather than the visitor, one category per pass, never a score or a
   date), `refresh-all-categories` (drive the whole-corpus sweep), and `ruling-session` (clear
   the maintainer's open decisions in one walk-and-talk pass and record them in the rulings log).
-- **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (register a
-  fetcher), `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a
-  versioned release and update the changelog; maintainer only), and `audit-repo-accuracy`
+- **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (record a new
+  data input: an OSO-owned dependency contract or a repo-owned asset, under ADR-003),
+  `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a versioned release and
+  update the changelog; maintainer only), and `audit-repo-accuracy`
   (check that the skills, docs, tests and fixtures still describe the system; read-only).
 
 For the repo map, build pipeline, and data model, see `AGENTS.md`.

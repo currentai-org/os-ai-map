@@ -75,23 +75,170 @@ adoption:
     http_status: 200
     content_sha256: fd6790ea9a89ff31af1996b8e638fff6e1f8d321b4ecb41d5704b9ab6c1837ce
 capability:
-  score: 3
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for an Indic knowledge benchmark
-  value: MILU holds about 80,000 multiple-choice questions from regional and state exams in 10 Indic languages
-    and English, about a quarter translated, documented in a NAACL paper, with no use found beyond that paper's
-    evaluation of 42 models.
+  score: 4
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 4 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 10 of 10 measured, across 1 task. Face value 4; best original band 4.'
   confidence: medium
-  note: MILU is a documented knowledge benchmark built from Indian exam questions in 11 languages, and its
-    paper evaluates more than 40 models on it. No leaderboard or model report outside that paper was found,
-    whereas IndicXTREME was released with the IndicBERT v2 models it tests.
-  relative_to: indicxtreme
-  relation: one_below
-  last_verified: '2026-09-24'
+  note: In the typical language MILU targets, its deepest test has sixteen hundred to sixty-four hundred items
+    that count toward depth. An item count says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://arxiv.org/abs/2411.02538
     shows: 'Abstract: "MILU spans 8 domains and 41 subjects across 11 Indic languages ... We evaluate over
       42 LLMs".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 3abed011ccc039955c04d92dbd23cc154fdfc857e9013df1709eb9784b5b8839
+    content_sha256: 30966614b3b88f1cf60b6db2adc3ebf8b3571890560ee497724bfd9db85d9354
+  - url: https://arxiv.org/pdf/2411.02538
+    shows: 'Table 2, total and translated questions per language: bn 6638 and 1601, gu 4827 and 2755, hi 14837
+      and 115, kn 6234 and 1522, ml 4321 and 3354, mr 6924 and 1235, or 4525 and 3100, pa 4099 and 3411, ta
+      6372 and 1524, te 7304 and 1298, en 13536 and none; "we sampled questions from the English set from that
+      subject and translated them into the required language using GPT-4"; "only 25% of questions are translated
+      from English, with the remainder"; "preserved in their original source languages"; "MILU is a large,
+      multi-domain test set"'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: a862d7eb687765fd056e0d312fdc0820e821fa924af286384da253bebd10aae6
+  - url: https://huggingface.co/datasets/ai4bharat/MILU
+    shows: 'the card''s Dataset Statistics table gives the same per-language Total Questions and Translated
+      Questions; "Use ''test'' split for evaluation & ''validation'' split for few-shot"; "a separate validation
+      set of 8,933 samples that can be used for few-shot examples during evaluation", with no per-language
+      count for it'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: bd634ce9d624805dcc5977ff668e2e0d2e00a1c3831d01906953f476e531e0ba
+  pivot_languages: [eng]
+  language_coverage:
+  - language: ben
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 6638
+    unit: questions
+    provenance: mixed
+    qualifying_count: 5037
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: eng
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 13536
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: guj
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 4827
+    unit: questions
+    provenance: mixed
+    qualifying_count: 2072
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: hin
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 14837
+    unit: questions
+    provenance: mixed
+    qualifying_count: 14722
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: kan
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 6234
+    unit: questions
+    provenance: mixed
+    qualifying_count: 4712
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: mal
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 4321
+    unit: questions
+    provenance: mixed
+    qualifying_count: 967
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: mar
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 6924
+    unit: questions
+    provenance: mixed
+    qualifying_count: 5689
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: ori
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 4525
+    unit: questions
+    provenance: mixed
+    qualifying_count: 1425
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: pan
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 4099
+    unit: questions
+    provenance: mixed
+    qualifying_count: 688
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: tam
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 6372
+    unit: questions
+    provenance: mixed
+    qualifying_count: 4848
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU
+  - language: tel
+    task: knowledge_exam
+    component: milu
+    split: test
+    official_eval: true
+    count: 7304
+    unit: questions
+    provenance: mixed
+    qualifying_count: 6006
+    cites:
+    - https://arxiv.org/pdf/2411.02538
+    - https://huggingface.co/datasets/ai4bharat/MILU

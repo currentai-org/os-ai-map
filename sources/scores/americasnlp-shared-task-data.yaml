@@ -68,30 +68,367 @@ adoption:
     http_status: 200
     content_sha256: 48852026146cdde5dd20bb698555839db795eb38bbb4dd124520de72310073a5
 capability:
-  score: 3
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for Indigenous-language translation data
-  value: Spanish paired with ten Indigenous languages of the Americas, with training data gathered from existing
-    corpora and hand-translated dev and test sets, documented in shared-task papers, with no use found outside
-    the shared tasks.
+  score: 1
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 1 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 10 of 10 measured, across 1 task. Face value 3; best original band unresolved (0-5).'
   confidence: medium
-  note: The AmericasNLP data gives ten Indigenous languages of the Americas hand-translated test sets, documented
-    in the shared-task papers, and the task's systems are scored on it. No use outside the shared tasks turned
-    up and most training text is borrowed from other corpora, where FLORES+ underpins benchmarks and models
-    well beyond one task.
-  relative_to: flores-plus
-  relation: two_below
-  last_verified: '2026-09-24'
+  note: In the typical language AmericasNLP shared-task data targets, its deepest test has four hundred to
+    sixteen hundred items, but in 9 of its 10 languages that test comes from another dataset with nothing
+    independent in the language to back it. Counting only what can be corroborated, the typical language has
+    fewer than a hundred. An item count says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://aclanthology.org/2021.americasnlp-1.23/
     shows: '"participants submitted machine translation systems for up to 10 indigenous languages. Overall,
       8 teams participated with a total of 214 submissions."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: bcb69bab05be7a8b39524165657d6571b669958fd9674a5c8e9e7fe16f8c08c3
+    content_sha256: 246c94635ac380549e89cdd01f559632b673db5d7d7c34d4373f05190219815b
   - url: https://raw.githubusercontent.com/AmericasNLP/americasnlp2023/main/README.md
     shows: Baseline chrF table for aym, bzd, cni, gn, hch, nah, oto, quy, shp, tar; baseline is the Helsinki-NLP
       2021 system.
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: f7885a1a7f5b87fe62ea1b0167a0e941938192f303e4fa0ad6f9a45b6124ad41
+  - url: https://aclanthology.org/2021.americasnlp-1.23.pdf
+    shows: Table 1 gives Train, Dev and Test sizes per language (Asháninka cni 3883 883 1002; Aymara aym 6531 996
+      1003; Bribri bzd 7508 996 1003; Guarani gn 26032 995 1003; Nahuatl nah 16145 672 996; Otomí oto 4889 599 1001;
+      Quechua quy 125008 996 1003; Rarámuri tar 14721 995 1002; Shipibo-Konibo shp 14592 996 1002; Wixarika hch 8966
+      994 1003); dev and test are "a manual translation of the Spanish version of the multilingual XNLI dataset";
+      "we leveraged individual pairs of parallel sentences from AmericasNLI"; "Systems in Track 1 were allowed to
+      use the development set as part of the training data"; for Otomí "the development and test sets are from the
+      Ñûhmû de Ixtenco, Tlaxcala, variant (otz)" while "most texts belong to the Valle del Mezquital dialect (ote)"
+      in training; Nahuatl's dev and test translations "belong to Nahuatl Central/Nahuatl de la Huasteca (Hidalgo
+      y San Luis Potosí) dialects"
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: ae950b2ea49b13e4f72912264e75a5e171976e5c333c0ce3db3ce96273f97b57
+  - url: https://aclanthology.org/2023.americasnlp-1.23.pdf
+    shows: Table 1 repeats the 2021 sizes and adds "Chatino ctp Oto-Manguean 357 499 1000"; "For this edition of the
+      shared task, we use the same evaluation set and additionally introduce a new evaluation dataset, created from
+      Mexican court proceedings, for Spanish–Chatino"; "Translations are jointly done by two professional translators,
+      who are native San Juan Quiahije Chatino speakers"; "outside of the development set and any prohibited datasets,
+      teams are allowed to collect and train on an unlimited amount of external data"
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: c287a379eb59f31bd6fde71ec4b13ad9bdb12de4b33bb35676d28d71e7bf6053
+  pivot_languages: [eng, spa]
+  language_coverage:
+  - language: aym
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 996
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: aym
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1003
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: aym
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 6531
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: bzd
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 996
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: bzd
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1003
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: bzd
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 7508
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: cni
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 883
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: cni
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1002
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: cni
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 3883
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: ctp
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: dev
+    official_eval: false
+    count: 499
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: ctp
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: test
+    official_eval: true
+    count: 1000
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: ctp
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 357
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: grn
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 995
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: grn
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1003
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: grn
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 26032
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: hch
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 994
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: hch
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1003
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: hch
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 8966
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: otz
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 599
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: otz
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1001
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: quy
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 996
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: quy
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1003
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: quy
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 125008
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: shp
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 996
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: shp
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1002
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: shp
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 14592
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: tar
+    task: machine_translation
+    component: americasnli
+    split: dev
+    official_eval: false
+    count: 995
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: tar
+    task: machine_translation
+    component: americasnli
+    split: test
+    official_eval: true
+    count: 1002
+    unit: sentences
+    provenance: human_translated
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf
+  - language: tar
+    task: machine_translation
+    component: americasnlp-shared-task-data
+    split: train
+    official_eval: false
+    count: 14721
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2021.americasnlp-1.23.pdf
+    - https://aclanthology.org/2023.americasnlp-1.23.pdf

@@ -136,6 +136,15 @@ Worth stating plainly, because the code makes them look alike and they behave op
   `benchmark_eval_data` is the category that reaches it whenever its capability recipe is live
   rather than abstaining. The shape is general, which is why it is documented rather than left to
   be rediscovered.
+- **An unresolved depth band abstains from the stage.** In `language_specific_eval_sets` the
+  capability band is computed by the depth ladder, and a set whose band does not stand publishes a
+  null with `capability.depth.status: unresolved` (R-2026-11-08-a). That null is not an editorial
+  judgment that the category lacks a capability signal; it says the evidence is not yet enough to
+  read one. So `_stage_score` drops the row from the stage the way a null adoption is dropped, and
+  the row takes no tier and is never `mature`. Its overall score is still published, on adoption
+  alone and labeled so. Without the exclusion FLEURS, fully open at adoption 4, would lift the
+  category from stage 2 to 3 on adoption alone. A null capability with no `depth` block keeps the
+  behavior above.
 
 That fallback is right for the case it was written for. Most null-capability products
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
@@ -162,15 +171,14 @@ adoption alone is the honest reading rather than a fallback that happens to be r
 tested, and rejected, and the category returned to abstaining.
 
 Grading on adoption alone is therefore a **convention of this methodology**, not a per-category
-declaration and not a flag a reader sees. It follows from the axis being null, which is itself a
+declaration. It follows from the axis being null, which is itself a
 recorded editorial judgment carrying its own reasoning in the score file. Two consequences a
 reader of the map should know:
 
 - an overall score built from adoption alone is on the same 1-5 scale as one built from both
-  axes, and `overall_score` itself carries no marker of which. The payload does not hide the
-  difference — the product's `capability` block is emitted with `score: null` beside a non-null
-  `adoption.level`, so a consumer can tell — but nothing in the blended number says so, and
-  nothing in the category's stage or gaps does either;
+  axes. Each row says which in `overall_basis`, `adoption_only` or `adoption_and_capability`
+  (null when there is no overall score), and the payload's `descriptions` define both
+  (R-2026-11-08-a). Nothing in the category's stage or gaps says so;
 - a category can sit at Stages 1-3 with no gaps named. That is not by itself evidence of an
   ungraded shortfall: the paragraph below on the two gapless states describes a second route to
   it, where both axes have been topped but never in the same product. Which one a category is in
@@ -219,6 +227,32 @@ categories, all in the model layer (measured 2026-09-20: `base_pretrained` 3→5
 `finetuned_chat` 3→4, `edge_hardware` 3→4, `scientific_ai_models` 1→3), and would leave every
 infrastructure and tooling verdict unchanged.
 
+## Counting rule: a suite and its members count once
+
+A suite and the datasets bundled in it are one body of work. Where both have rows, the count of
+category-leading fully-open products (`L` below) would otherwise credit that work once per row:
+a benchmark suite with ten member rows could count eleven times and carry a category to Stage 5
+on its own. So:
+
+- **A lineage group** is a suite plus every product in the same category that declares
+  membership in it through `lineage.part_of`, directly or through a member suite. A nested suite
+  folds into the suite above it. The field and its validation rules are in
+  [`identity.md`](identity.md#suites-and-their-members).
+- **A group counts at most once toward `L`, through its highest-scoring fully-open row.** It
+  counts when that row is category-leading, however many of its other rows are too.
+- **A product in no group counts as itself**, exactly as before.
+- **A product in two groups can carry only one of them.** `L` is the largest number of distinct
+  groups and ungrouped products that distinct category-leading rows can each stand for, so one
+  shared member that leads cannot raise `L` by two.
+- **Groups form within a category.** A member whose suite sits in another category is in no
+  group here and counts as itself; each category's stage counts its own rows.
+
+Only `L` reads the groups. `B` is a maximum and `M` an existence test, and overlap inflates
+neither. **Each row keeps its own scores and stays on the map**: its overall score, tier and
+`mature` flag are computed from its own axes, so a member can be category-leading and `mature`
+without adding to its category's count. The rule changes how many products the stage counts,
+never what any one product scores.
+
 ## Stages
 
 | Stage | Name | Definition | Triggers when |
@@ -233,7 +267,8 @@ infrastructure and tooling verdict unchanged.
 The **Definition** column is quoted verbatim from `_STAGE_DESC` in `build/serialize.py` and is
 what ships in the payload. **Triggers when** is the mechanism, which the payload never carries:
 
-- **`L`** — how many fully-open products score at or above the category-leading bar (4.5).
+- **`L`** — how many fully-open products score at or above the category-leading bar (4.5),
+  counting a suite and its members once (see the counting rule above).
 - **`B`** — the best overall score among fully-open products, or `0` where the category has
   no scored fully-open product at all.
 - **`M`** — whether *any* product, in any openness bucket, reaches the category-leading bar. Only
@@ -381,7 +416,8 @@ rubric or the curation density changes materially.
 ## Where it lives
 
 - **Computed** in `build/serialize.py` (`_stage_and_gaps`), from the per-product scores in
-  `sources/scores/` and the per-category `weights` in `sources/categories/`.
+  `sources/scores/`, the per-category `weights` in `sources/categories/`, and the lineage
+  groups `lineage_groups` reads from `lineage.part_of` in `sources/products/`.
 - **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`). The
   plain-language definitions of every stage, gap and score tier ship in the payload's top-level
   `descriptions` block (`descriptions.stages`, `descriptions.gaps`, `descriptions.tiers`, plus

@@ -129,7 +129,10 @@ is intended:
    capped tier — `use_bounded` or `commercial_forbidden` — so its `data` and `code`
    values never affect the outcome, but
    they are still published claims, so they still have to be confirmed. A fresh
-   license cannot carry a stale corpus claim.
+   license cannot carry a stale corpus claim. One record is dated separately: a dataset's
+   per-language coverage record is dated by the `accessed` date of each source it cites, and
+   capability's `last_verified` dates the band, not that record
+   ([`capability.md`](capability.md#per-language-coverage) is normative).
 2. **Confirmation means the axis was re-checked against its sources**, whether or not
    the value moved. A re-check that changes nothing is still a confirmation and still
    earns the date. This is what makes the field fill in as automation lands. It is the
@@ -790,6 +793,24 @@ A digest over a PDF is a digest over a binary, so reading one back means `pdftot
 is the smaller cost: an abstract page cited for a table or a figure it does not carry is a claim
 that is unfalsifiable as recorded. `build/check_citations.py` gates it, on the record's own words
 rather than on a fetch, so it is free and runs per pull request.
+
+### Citing a file inside an archive
+
+Some terms are published only as a file inside a downloadable archive: the Qualcomm AI Runtime
+SDK states its license in a `LICENSE.pdf` inside a 2.6 GB zip. That citation is accepted
+(R-2026-11-08-n) in one form. `url` is the archive's download URL, and `shows` carries the exact
+member path, the member's SHA-256, the quoted text, and a one-line extraction procedure (for a
+zip, the byte ranges of the central directory and of the member, read with HTTP range requests,
+then inflated). `http_status` is what the range read returned, normally 206.
+
+Such a source carries no `content_sha256`, because that field is the digest of the whole response
+body: `build/fetch_source.py` cannot take it without downloading the archive, and `check_refetch`
+would then download it again on every sampled run. The member digest in `shows` stands in for it,
+and a re-check repeats the extraction and compares that digest. Lacking a digest, the source is
+listed by name in `sources/allowlists/undigested_sources.txt`, `check_refetch` never samples it,
+and `build/reverify.py` cannot confirm it. The digest gate in `check_verification` has no
+exemption for it either, so an axis cannot be dated on an archive source read on or after the
+claimed date without a `DIGEST_EXEMPT` entry.
 
 ## The gates, and why they ratchet
 

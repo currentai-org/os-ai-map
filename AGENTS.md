@@ -29,6 +29,9 @@ sources/verification_queue.yaml  Axes deliberately held: a value whose evidence 
 sources/signal_routing.yaml  Which machine signal is authoritative per dimension, and
                        which values mean "this source has no answer" (abstain_values)
 sources/evidence_policy.yaml  When an observation is admissible as evidence
+sources/lineage.yaml  Component lineage registry: where each evaluation component's items come
+                       from, so the depth ladder can tell independent corroboration from dependent
+                       evidence (build/lineage.py derives pair statuses; R-2026-11-02-j)
 sources/rubrics/       Shared scoring ladders. A category inherits one with
                        `scoring_recipe: {extends: <name>}` rather than copying it;
                        or, for a category whose products don't all climb the same
@@ -46,8 +49,10 @@ warehouse/assets.yaml  The GOVERNED asset inventory: governed outputs (Gap Map p
                        grain, provenance and derived reads/read_by. The only registry.
 warehouse/dependencies.yaml  External OSO inputs a governed asset reads — dependency contracts
                        (purpose, grain, freshness, verified_revision or content hash, owner: oso).
-                       Not owned; no migration/retirement/mirror obligations. (Introduced by the
-                       ADR-003 execution PRs; specified in adr-003-repository-scope-boundary.md.)
+                       Not owned; no migration or retirement obligation. A currentai.* contract
+                       claims a read-only mirror file under warehouse/models/ and its reader lands
+                       in the same PR (skills/add-data-source/SKILL.md). Specified in
+                       adr-003-repository-scope-boundary.md.
 warehouse/models/      SQL and Python model files, models/<dataset>/<table> mapping to
                        currentai.<dataset>.<table>. NOT an organization-wide platform mirror. Almost
                        all of them are READ-ONLY mirrors of platform-owned models, claimed by
@@ -355,7 +360,7 @@ Claude Code session discovers them by name; if yours does not list them, read
 
 **Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
 openness ladder), `clean-corpus-prose` (rewrite published prose to the reader's vocabulary, one
-category per pass, prose only), `add-data-source` (register a fetcher), `refresh-all-categories`
+category per pass, prose only), `add-data-source` (record a data input under ADR-003), `refresh-all-categories`
 (drive the whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis),
 `publish-release` (cut a versioned release + changelog; maintainer).
 

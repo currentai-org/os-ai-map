@@ -14,6 +14,12 @@
 # `tests/test_digest_ratchet.py` fails if a line here no longer describes an undigested source,
 # so the list cannot rot into a permanent exemption.
 #
+# One line is not grandfathered and is not owed a digest: the qualcomm-ai-engine-direct
+# openness citation of the Qualcomm AI Runtime SDK zip. It cites a file inside a 2.6 GB archive,
+# which build.fetch_source cannot digest whole and check_refetch must not re-download, so it
+# records the member's path, SHA-256 and extraction procedure in `shows` instead
+# (R-2026-11-08-n; docs/reference/evidence-and-freshness.md, "Citing a file inside an archive").
+#
 # `slug|axis|url`, sorted.
 agent-infra-sandbox|capability|https://github.com/agent-infra/sandbox
 agent-infra-sandbox|openness|https://github.com/agent-infra/sandbox
@@ -88,7 +94,6 @@ firecracker|adoption|https://github.com/firecracker-microvm/firecracker
 firecracker|capability|https://github.com/firecracker-microvm/firecracker
 firecracker|openness|https://github.com/firecracker-microvm/firecracker
 glm|adoption|https://huggingface.co/zai-org/GLM-4-9B-Chat
-guardrails-ai|openness|https://github.com/guardrails-ai/guardrails
 gvisor|adoption|https://github.com/google/gvisor
 gvisor|adoption|https://gvisor.dev/docs/
 gvisor|capability|https://github.com/google/gvisor
@@ -195,6 +200,7 @@ pysyft|openness|https://github.com/OpenMined/PySyft
 pysyft|openness|https://pypi.org/project/syft/
 qdrant|openness|https://github.com/qdrant/qdrant
 qdrant|openness|https://github.com/qdrant/qdrant/blob/master/LICENSE
+qualcomm-ai-engine-direct|openness|https://softwarecenter.qualcomm.com/api/download/software/sdks/Qualcomm_AI_Runtime_Community/All/2.50.0.260828/v2.50.0.260828.zip
 qualcomm-dragonwing-rb3-gen-2|capability|https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit
 qualcomm-dragonwing-rb3-gen-2|openness|https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit
 ragas|adoption|https://github.com/explodinggradients/ragas

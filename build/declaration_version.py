@@ -100,7 +100,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Bumped when the classified inventory, the serialization, or the id composition changes, so a
 # value computed under an older rule cannot silently pass for a current one.
-CANONICALIZATION_VERSION = 1
+CANONICALIZATION_VERSION = 2
 
 # The repository-owned evaluator cutover (#411) has not happened; it does
 # not exist yet. Until it lands, the evaluator component is a declared sentinel rather than a
@@ -121,6 +121,7 @@ DECLARATION_INPUTS: tuple[str, ...] = (
     "allowlists",
     "categories",
     "evidence_policy.yaml",
+    "lineage.yaml",
     "organizations",
     "products",
     "registry",

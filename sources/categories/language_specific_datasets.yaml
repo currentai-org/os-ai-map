@@ -2,13 +2,14 @@ name: language_specific_datasets
 display_name: Language-specific datasets
 description: "Datasets assembled to make an underrepresented language, or a set of related
   underrepresented languages, usable for AI: pretraining text, speech, instruction and
-  dialogue data, and evaluation sets. General multilingual corpora that happen to include
-  a language live in Training & Synthetic Datasets."
+  dialogue data. Evaluation sets built for the same languages live in Language-specific
+  evaluation sets, and general multilingual corpora that happen to include a language live in
+  Training & Synthetic Datasets."
 strapline: >-
   No open corpus for an underrepresented language comes near English scale. The largest here,
   Sangraha, holds about a quarter of a trillion tokens in 22 Indian languages and English, against
   FineWeb's 18.5 trillion in English alone. Coverage is regional as well: Indic and Southeast Asian languages
-  have open text, speech, instruction and evaluation data, the Indigenous Americas small parallel
+  have open text, speech and instruction data, the Indigenous Americas small parallel
   corpora, and the Pacific nothing of its own. The largest labeled low-resource speech collection,
   Meta's MMS recordings, is withheld.
 weights:
@@ -52,6 +53,23 @@ scoring_recipe:
     penalty: no open corpus here reaches the scale a frontier English or Chinese model is
     trained on, and the only one that does, Sarvam-2T, is withheld.
 
+    Since 2026-11-11 the caps measure each language against its own resources rather than
+    against English alone (R-2026-10-30-k, R-2026-11-11-h). The resource profile is read from
+    the per-language classification, currentai.language_representation.classification
+    (docs/reference/language-classification.md): official status, at least a million speakers,
+    and a large body of written material, each yes, no or unresolved. A single-language
+    product's thresholds are divided by a multiplier set by how many of the three are confirmed
+    yes. Text and parallel text: 1, 10, 100 and 1,000 for three, two, one and none. Speech: 1,
+    10, 30 and 100. Three confirmed is the reference profile and keeps the English-scale
+    yardstick. An unresolved axis earns no relaxation: the cap uses the least relaxed profile
+    the evidence allows, and the more generous reading is recorded in the product's evidence. A
+    product declaring more than one language keeps the unrelaxed caps, because a total over
+    several languages says nothing about any one of them (M2). A relaxed cap still never raises
+    a band above what the rungs give, and a peer comparison names a product judged on the same
+    yardstick, or the band carries no relative_to and is justified from the rungs. The scored
+    proposal and the rung reading of each product that moved are in
+    docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md.
+
     Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
     at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
     over the one-third review trigger; it is where the caps put most national corpora and speech
@@ -59,6 +77,17 @@ scoring_recipe:
     wording, and two review passes and the caps moved bands in both directions before this
     count. Top rows per modality: Sangraha (pretraining text), Common Voice (speech), BPCC
     (parallel text), FLORES+ (evaluation), WangchanThaiInstruct (instruction data).
+
+    On 2026-11-08 the 22 evaluation sets moved to language_specific_eval_sets with depth-ladder
+    bands (R-2026-11-07-b), so the distribution above, taken at promotion, is history. The 75
+    that remain: 10 at 4, 27 at 3, 24 at 2, 14 at 1, none at 5. The six at 5 were all evaluation
+    sets, and no corpus here reaches 5 under the size caps.
+    The language-adjusted caps of 2026-11-11 moved nine single-language corpora up (Icelandic
+    Gigaword, Korpus Malti, CorpusNós, Latxa, Nepali Text Corpus, the Khmer ASR Cultural
+    Dataset, Kazakh Speech Corpus 2, the Northern Sámi web corpus and ViXSD): 12 at 4, 31 at 3,
+    21 at 2, 11 at 1. Rung 3 now holds 31 of 75, over the one-third review trigger, because the
+    caps that held national corpora at 1 and 2 against English now let most of them reach the
+    rungs' 3; the rungs, not size, are what separate them there.
 
     The category carries three corpora held back from open release - Meta's unreleased MMS
     recordings, Sarvam-2T, and Te Hiku Media's te reo Māori corpus, which is granted on request
@@ -81,13 +110,8 @@ scoring_recipe:
   extends: dataset
 products:
 - common-voice
-- flores-plus
 - oldi-seed
 - smol
-- fleurs
-- belebele
-- sib-200
-- include-benchmark
 - bloom-library-datasets
 - glot500-c
 - waxal
@@ -99,7 +123,6 @@ products:
 - wura
 - inkuba-mono
 - vukuzenzele
-- afrobench
 - afrihate
 - kencorpus
 - african-ultrachat
@@ -111,9 +134,7 @@ products:
 - indicvoices
 - bpcc
 - indicalign
-- milu
 - vaani
-- indicgenbench
 - updesh
 - titulm-bangla-corpus
 - nepali-text-corpus
@@ -125,8 +146,6 @@ products:
 - rasa
 - aksharantar
 - pralekha
-- indicxtreme
-- lahaja
 - samvaad-hi
 - iitb-english-hindi
 - sold
@@ -135,22 +154,14 @@ products:
 - seacrowd
 - sea-pile
 - sea-instruct
-- sea-helm
-- seaexam
 - cendol-collection
 - wangchan-thai-instruct
-- thai-exam
 - khmer-speech-dataset
-- vmlu
-- laobench
-- indonlu
 - vietnamese-curated-dataset
 - wangchanx-flan
 - typhoon-s-sovereign-capability
 - 101-billion-arabic-words
-- arabicmmlu
 - cidar
-- darijammlu
 - naab
 - kazakh-speech-corpus-2
 - latxa-corpus
@@ -162,15 +173,11 @@ products:
 - icelandic-gigaword-corpus
 - saami-web
 - ubertext
-- turkishmmlu
 - arabicweb24
 - hedc4
-- kazmmlu
-- khayyam-challenge
 - atlaset
 - smugri-data
 - icelandic-dynaword
-- americasnlp-shared-task-data
 - chren
 - jojajovai
 - llamacha-quechua
@@ -182,15 +189,17 @@ comments: >-
   rather than by its task or scale? A general multilingual crawl that happens to include a
   language (FineWeb-2, CulturaX, MADLAD-400, OSCAR, Common Corpus) stays in
   training_synthetic_datasets, and Aya Collection stays there too. A dataset assembled for a
-  language or a region belongs here, whichever modality it is: pretraining text, speech,
-  instruction data or an evaluation set. The language has to be underrepresented in AI data:
+  language or a region belongs here, whichever modality it is: pretraining text, speech or
+  instruction data; an evaluation set built the same way belongs in language_specific_eval_sets,
+  under the same language test. The language has to be underrepresented in AI data:
   a corpus or benchmark built for Chinese, Japanese, Korean, Spanish or Portuguese passes the
   first half of the test and fails this one, and goes to training_synthetic_datasets or
   benchmark_eval_data (KMMLU, TMMLU+, CMMLU, ChineseWebText, Carolina and the LatamGPT
   Corpus were routed there from the seed sweep). The smaller European languages - Basque,
   Catalan, Galician, Maltese, the Nordic languages, Sámi, Ukrainian - are in.
-  Language-targeted evaluation sets live here rather than in benchmark_eval_data, so the
-  question "what does this language have" is answered in one place. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200
+  Language-targeted evaluation sets lived here until 2026-11-08 and now live in
+  language_specific_eval_sets, scored by the depth ladder (R-2026-11-07-b); the purpose test that
+  follows still decides which many-language sets are language-targeted at all. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200
   and FLEURS were built to give underrepresented languages a test set and belong here, while
   a general benchmark machine- or human-translated into the major languages (Global-MMLU)
   is defined by its task and stays in benchmark_eval_data. The same purpose test separates

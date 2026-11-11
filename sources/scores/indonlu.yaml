@@ -79,33 +79,185 @@ adoption:
     http_status: 200
     content_sha256: fb625286261d1e116ce5b9e7a0a489a925c4c88a955f3f2fd5552eabb677c246
 capability:
-  score: 4
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for an Indonesian understanding benchmark
-  value: IndoNLU has twelve Indonesian understanding tasks from crawled text labeled partly by linguists, documented
-    in an AACL-IJCNLP paper, released with the IndoBERT models, and used for published Indonesian classifier
-    fine-tunes.
-  confidence: medium
-  note: IndoNLU is documented in a paper, shipped with the IndoBERT models, and many Indonesian classifiers
-    are fine-tuned on its tasks. It covers only Indonesian and only understanding tasks, while SEA-HELM tests
-    Indonesian alongside other Southeast Asian languages and adds generative, cultural and safety tasks.
-  relative_to: sea-helm
-  relation: one_below
-  last_verified: '2026-09-24'
+  score: null
+  basis: evaluation_depth
+  basis_detail: depth ladder; the band does not stand
+  value: 'Unresolved: qualifying provenance not established.'
+  confidence: low
+  note: IndoNLU's sources say where its text was collected but not who wrote it, so it is not known how much
+    of it is original to the language, and the map shows no capability score for now. Its overall score
+    reflects adoption alone.
+  last_verified: '2026-11-08'
   sources:
   - url: https://arxiv.org/abs/2009.05387
     shows: '"we introduce the first-ever vast resource for the training, evaluating, and benchmarking on Indonesian
       natural language understanding (IndoNLU) tasks. IndoNLU includes twelve tasks"'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: b378035932ea5136de29bb72619ce99fbda935bb9b56f4de7a7a111f2a003244
+    content_sha256: d5a936aaf48f35bf29fcd7f8f4758700e1cfeec5c63d8404bd8a94e99e572dbd
   - url: https://huggingface.co/datasets/indonlp/indonlu
     shows: 'Models trained or fine-tuned on indonlp/indonlu: w11wo/indonesian-roberta-base-posp-tagger, w11wo/indonesian-roberta-base-sentiment-classifier'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: a3c55a6518962adee613587830851a5e0a0e5df725a413442739b3bdbcaed0b8
+    content_sha256: ffcb9b36c8390cb9aa197a38d762f852df6debce529fb0b3af95aeef01f5f609
   - url: https://huggingface.co/datasets/indonlp/indonlu/raw/main/README.md
     shows: '"SmSA ... The text was crawled and then annotated by several Indonesian linguists"'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 8a65fff733365b2fd1d5a026e89dd35a027abab79a13b9ec43e49420e8b8a4e2
+  - url: https://aclanthology.org/2020.aacl-main.85.pdf
+    shows: '"Table 1: Task statistics and descriptions", |Test| column: EmoT 442, SmSA 500, CASA 180, HoASA 286,
+      WReTE 100, POSP 840, BaPOS 1,029, TermA 1,000, KEPS 247, NERGrit 209, NERP 840, FacQA 311 ("We create new splits
+      for the dataset" for EmoT, HoASA, WReTE, POSP, NERGrit and NERP); EmoT "consists of around 4000 Indonesian
+      colloquial language tweets"; SmSA: "The text was crawled and then annotated by several Indonesian linguists
+      to construct this dataset"; CASA "around a thousand car reviews collected from multiple Indonesian online automobile
+      platforms"; HoASA "hotel reviews collected from the hotel aggregator platform, AiryRooms"; WReTE "consists
+      of 450 sentence pairs constructed from Wikipedia revision history"; POSP "is collected from Indonesian news
+      websites"; BaPOS "contains about 1000 sentences, collected from the PAN Localization Project"; "This span-extraction
+      dataset is collected from the hotel aggregator platform, AiryRooms" (TermA); KEPS "consists of text from
+      Twitter discussing banking products and services and is written in the Indonesian language"; "This NER dataset
+      is taken from the Grit-ID repository"; NERP "contains texts collected from several Indonesian news websites";
+      "Each row in the FacQA dataset consists of a question, a short passage, and a label phrase"'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6
+  - url: https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+    shows: '"We provide train, valid, and test sets. The labels of the test set are masked (no true labels) in order
+      to preserve the integrity of the evaluation. Please submit your predictions to the submission portal at [CodaLab]"'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 4761f00d5fed354b5ded15aeb3fa969d7c27ba5a206a41f42627bbc91b608f54
+  pivot_languages: []
+  language_coverage:
+  - language: ind
+    task: natural_language_inference
+    component: wrete
+    split: test
+    official_eval: true
+    count: 100
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: reading_comprehension
+    component: facqa
+    split: test
+    official_eval: true
+    count: 311
+    unit: questions
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: sequence_labeling
+    component: bapos
+    split: test
+    official_eval: true
+    count: 1029
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: sequence_labeling
+    component: keps
+    split: test
+    official_eval: true
+    count: 247
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: sequence_labeling
+    component: nergrit
+    split: test
+    official_eval: true
+    count: 209
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: sequence_labeling
+    component: nerp
+    split: test
+    official_eval: true
+    count: 840
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: sequence_labeling
+    component: posp
+    split: test
+    official_eval: true
+    count: 840
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: sequence_labeling
+    component: terma
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: text_classification
+    component: casa
+    split: test
+    official_eval: true
+    count: 180
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: text_classification
+    component: emot
+    split: test
+    official_eval: true
+    count: 442
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: text_classification
+    component: hoasa
+    split: test
+    official_eval: true
+    count: 286
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+  - language: ind
+    task: text_classification
+    component: smsa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: unknown
+    cites:
+    - https://aclanthology.org/2020.aacl-main.85.pdf
+    - https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md

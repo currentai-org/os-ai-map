@@ -1,0 +1,124 @@
+name: language_specific_eval_sets
+display_name: Language-specific evaluation sets
+description: "Evaluation sets built to test AI in an underrepresented language, or a set of related
+  underrepresented languages: benchmarks and shared-task test sets for text and speech, published
+  to measure models rather than to train them. Training data for the same languages lives in
+  Language-specific datasets, and general benchmarks, including ones translated into many
+  languages, live in Benchmark / eval datasets."
+weights:
+  adopt: 0.3
+  cap: 0.7
+strapline: >-
+  The deepest evaluation sets here test one language at a time. Four large native exams, for Arabic,
+  Turkish, Kazakh and Persian, reach the top band, while the broadest multilingual sets, FLORES+ and
+  Belebele, sit at 3, and suites assembled from other sets' data fall further once only independent
+  evidence is allowed to back them: SEA-HELM to 2, AfroBench and AmericasNLP to 1. Five sets have no
+  band yet, two of them for speech, which has no measurement model.
+scoring_recipe:
+  version: 2
+  extends: dataset
+  note: |-
+    Inherits the shared dataset ladder for openness, as language_specific_datasets does. An
+    evaluation set is a dataset, and the ladder already asks the questions it raises: whether it
+    can be downloaded and on what terms, under which license, whether its answers are released,
+    and whether a card describes it. benchmark_eval_data reads held-out and answer states through
+    the same ladder.
+
+    Capability is the depth ladder, computed by build/depth_ladder.py and recorded as
+    `basis: evaluation_depth` (R-2026-11-08-b). It is the one capability band on the map that the
+    build computes; build/validate.py fails a record whose band differs from what the ladder
+    computes from its evidence. docs/reference/capability.md, "The depth ladder", is normative, and
+    the rulings it applies are R-2026-11-02-b to -u and R-2026-11-03-a to -i. In short:
+
+    - Each target language's qualifying items on the official evaluation split give a band per
+      task on the count ladder: 100, 400, 1,600 and 6,400 items start bands 2 to 5. One component
+      sets each task band; components are never summed.
+    - A suite's own items count in full (capability.own_components). An imported component counts
+      at most one band above the best independent evidence beside it, under the lineage registry's
+      independence test, so a suite cannot inherit another set's depth without corroboration.
+    - The set's band is the median over its target languages, with unmeasured languages filled at
+      0 and at 5; it stands only where both agree. Where it does not stand, the score is null and
+      the record says why.
+
+    Every band is provisional: a ceiling read from item counts, not an estimated confidence
+    interval, until a task family's estimation method is approved (R-2026-11-02-f). Beside the band
+    the payload publishes the face-value band, the best original band, task count, completeness,
+    whether the corroboration cap binds and why, the evidence status, and the band with unverified
+    lineage treated as independent (R-2026-11-02-o).
+
+    An unresolved set keeps no interim score. Its overall score is adoption alone, labeled
+    `overall_basis: adoption_only`; it takes no tier, is never mature, and stays out of the stage,
+    so an unresolved capability reads neither as zero nor as maturity (R-2026-11-08-a).
+
+    No relative_to: a computed band is not placed against a peer.
+
+    The calibration that set this baseline, and the bands it computed for all 22 sets, is
+    docs/sweeps/2026-11-03-depth-calibration-full-roster.md, accepted as R-2026-11-07-a. The
+    interim same-language peer ladder (R-2026-10-30-g) that version 1 of this recipe described was
+    never adopted and is retired. The score-change diff at publication, with the stage impact on
+    both categories, is docs/sweeps/2026-11-08-depth-ladder-publication.md.
+products:
+- afrobench
+- americasnlp-shared-task-data
+- arabicmmlu
+- belebele
+- darijammlu
+- fleurs
+- flores-plus
+- include-benchmark
+- indicgenbench
+- indicxtreme
+- indonlu
+- kazmmlu
+- khayyam-challenge
+- lahaja
+- laobench
+- milu
+- sea-helm
+- seaexam
+- sib-200
+- thai-exam
+- turkishmmlu
+- vmlu
+comments: >-
+  Created 2026-10-30 as a preliminary category with an empty roster, under maintainer rulings
+  R-2026-10-30-a (language-targeted evaluation sets get a category of their own, not
+  benchmark_eval_data) and R-2026-10-30-b (the kind test below), and published 2026-11-08 with the
+  depth ladder, when the 22 sets the 2026-10-30 dry run placed here moved from
+  language_specific_datasets with their computed bands (R-2026-11-07-b).
+  Interim membership. The roster is frozen at those 22 sets and the boundary is provisional: the
+  language test below still uses language_specific_datasets' interim line, and the per-language
+  classification of R-2026-10-30-d, when it is adopted, refines membership for both categories at
+  once. A change of membership does not change how a set is banded, since the depth ladder reads
+  only a set's own evidence (R-2026-11-07-b).
+  Slug. The language_specific_ prefix pairs this category with its corpus sibling and the
+  membership line the two share. eval_sets is the rulings' own term; it covers shared-task test
+  sets and speech test sets as well as benchmarks, and does not read as a sub-category of
+  benchmark_eval_data.
+  Membership is two tests. Language: the set was built for an underrepresented language or a set
+  of related ones, by language_specific_datasets' purpose test and its current line (Chinese,
+  Japanese, Korean, Spanish and Portuguese are out). The per-language classification in
+  R-2026-10-30-d replaces that line for both categories at once. Kind (R-2026-10-30-b): by what
+  the set's paper or card says it is for. A set published as a benchmark or as a shared-task test
+  belongs here even when it ships training splits; a labeled set published for training is a
+  corpus and stays in language_specific_datasets, and so does SEACrowd, a loader hub, as ruled.
+  On that test the AmericasNLP shared-task data belongs here, and AfriHate, SOLD, NCHLT,
+  AfriDocMT and the Typhoon-S sovereign-capability release are corpora. SOLD (card titled a
+  benchmark, paper motivated by training data) and AfriDocMT (paper titled a corpus, with
+  benchmark experiments) were the close calls; the sweep record quotes both sides.
+  Neighbors. A general benchmark translated into many languages, the major ones included
+  (Global-MMLU), is defined by its task and stays in benchmark_eval_data, as the corpus
+  category's comments already rule. The bundling rule carries over unchanged until R-2026-10-30-e
+  and -f land: a regional suite is one product and its members are not separate rows, while a
+  global set a suite borrows a slice of keeps its own row.
+  Weights 0.3 adoption to 0.7 capability, the corpus category's split and for its reason:
+  downloads of a low-resource evaluation set are small by construction, so adoption measures the
+  language before it measures the set. benchmark_eval_data's 0.6/0.4 would rank a Lao benchmark
+  on downloads against MMLU, which is the case R-2026-10-30-a ruled against. R-2026-10-30-j
+  declined to divide downloads by languages served, so this weight is the only discount on
+  pooled demand, and a 200-language set's downloads come from every language it serves. A lower
+  adoption weight was considered and not taken: keeping the parent's split means the move
+  changes only the capability rule, and the per-language adoption view R-2026-10-30-j defers to
+  is where the question returns.
+  The slug is in LANGUAGES_REQUIRED_CATEGORIES in build/validate.py, so every row carries the
+  `languages` the depth ladder takes its target languages from.

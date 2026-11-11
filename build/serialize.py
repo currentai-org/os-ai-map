@@ -12,14 +12,17 @@ import re
 import tomllib
 import yaml
 
+from build.depth_ladder import CATEGORY as DEPTH_CATEGORY, UNRESOLVED_REASONS
+from build.depth_ladder import compute as depth_compute
 from build.check_rubric import components_string
 from build.taxonomy import arc_grouped_categories
+from build.vocabulary import lineage_relations
 
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "steward", "languages",
                      "description",
-                     "openness", "adoption", "capability", "overall_score", "tier",
+                     "openness", "adoption", "capability", "overall_score", "overall_basis", "tier",
                      "maturity", "mature", "end_of_life",
                      "freshness", "version_note", "lineage"]
 
@@ -103,6 +106,16 @@ _TIER_DESC = {
 }
 
 
+# What a row's overall score rests on (`overall_basis`), so a reader can tell a score blended from
+# both axes from one read off adoption alone (R-2026-11-08-a).
+_OVERALL_BASIS_DESC = {
+    "adoption_and_capability": "the overall score blends adoption and capability.",
+    "adoption_only": "the overall score is adoption alone, because capability has no band; it is "
+                     "not comparable to a blended score, and an unresolved capability is not a "
+                     "low one.",
+}
+
+
 def _gap_bucket(cls: str) -> str:
     if cls in _GAP_OPEN:
         return "open"
@@ -128,6 +141,52 @@ def _maturity_score(row: dict, w: dict) -> float | None:
         return round(float(adoption), 2)
     wa, wc = w.get("adopt", 0.5), w.get("cap", 0.5)
     return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
+
+
+def _unresolved_depth(row: dict) -> bool:
+    """True for a depth-ladder row whose band does not stand (R-2026-11-08-a).
+
+    Its capability is unknown, not zero and not a pass: the row keeps an overall score, labeled
+    adoption-only, but carries no tier, is never `mature`, and stays out of the stage arithmetic,
+    so an unresolved capability cannot read as capability maturity.
+    """
+    depth = (row.get("capability") or {}).get("depth") or {}
+    return depth.get("status") == "unresolved"
+
+
+def _stage_score(row: dict, w: dict) -> float | None:
+    """The score the stage engine reads: the overall score, except None for an unresolved
+    depth-ladder row, which is excluded from the stage as a row with no adoption is."""
+    return None if _unresolved_depth(row) else _maturity_score(row, w)
+
+
+def _overall_basis(row: dict) -> str | None:
+    """What the overall score rests on: both axes, adoption alone, or nothing (no adoption)."""
+    if (row.get("adoption") or {}).get("level") is None:
+        return None
+    if (row.get("capability") or {}).get("score") is None:
+        return "adoption_only"
+    return "adoption_and_capability"
+
+
+def _depth_block(result: dict) -> dict:
+    """The depth ladder's companion figures as the payload carries them (R-2026-11-02-o).
+
+    The per-language bands stay out: they ship with the per-language data asset
+    (R-2026-11-01-f), not in this payload.
+    """
+    reason = result.get("unresolved_reason")
+    return {
+        "status": result["status"],
+        "unresolved_reason": reason,
+        "unresolved_reason_text": UNRESOLVED_REASONS.get(reason) if reason else None,
+        "face_value": result["face_value"],
+        "best_original": result["best_original"],
+        "task_count": result["task_count"],
+        "completeness": result["completeness"],
+        "cap": result["cap"],
+        "sensitivity": result["sensitivity"],
+    }
 
 
 def _unreached_axes(fully_open: list[dict]) -> list[str]:
@@ -172,21 +231,87 @@ def _unreached_axes(fully_open: list[dict]) -> list[str]:
     return gaps
 
 
-def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -> dict:
+def lineage_groups(roster: list[str], prods: dict) -> dict[str, tuple[str, ...]]:
+    """Which lineage group(s) each product in one category's roster counts with.
+
+    A group is a suite plus every product that declares membership in it through
+    `lineage.part_of`, directly or through a member suite, among the rows of THIS roster. It
+    is named by its top suite: the row that has members here and is itself a member of
+    nothing here. A nested suite therefore folds into the suite above it, and a dataset in two
+    suites belongs to both groups. A product with no edge to another row of the roster is in
+    no group and is absent from the result, so a category nobody has linked returns {}. An
+    edge to a suite in another category groups nothing here. The rule is in
+    docs/reference/gap-analysis.md; build/validate.py guarantees the edges are acyclic, and the
+    walk below guards against a cycle anyway so an unvalidated tree cannot hang serialize.
+    """
+    on_roster = set(roster)
+    up: dict[str, list[str]] = {}
+    for slug in roster:
+        lineage = (prods.get(slug) or {}).get("lineage")
+        suites = lineage.get("part_of") if isinstance(lineage, dict) else None
+        up[slug] = [s for s in (suites or []) if s in on_roster and s != slug]
+    has_members = {suite for suites in up.values() for suite in suites}
+
+    def tops(slug: str, trail: frozenset[str]) -> set[str]:
+        parents = [s for s in up[slug] if s not in trail]
+        if not parents:
+            return {slug}
+        return set().union(*(tops(s, trail | {slug}) for s in parents))
+
+    return {slug: tuple(sorted(tops(slug, frozenset())))
+            for slug in roster if up[slug] or slug in has_members}
+
+
+def _leading_count(leading: list[dict], groups: dict[str, tuple[str, ...]]) -> int:
+    """How many of these category-leading fully-open rows count toward the stage (`L`).
+
+    A row in no lineage group counts as itself. A group counts at most once, through its
+    highest-scoring fully-open row, so the group counts exactly when that row is category-
+    leading, however many of its other rows are too. Where a row sits in two groups it can
+    carry only one of them, so `L` is the largest number of distinct groups and ungrouped rows
+    that distinct leading rows can each stand for: a maximum bipartite matching, by augmenting
+    paths. With no groups that is simply len(leading), which is what keeps every category
+    nobody has linked exactly where it was. See docs/reference/gap-analysis.md.
+    """
+    units = [tuple(("group", g) for g in groups[slug]) if (slug := r.get("slug")) in groups
+             else (("row", i),)
+             for i, r in enumerate(leading)]
+    held_by: dict[tuple, int] = {}
+
+    def place(i: int, tried: set) -> bool:
+        for unit in units[i]:
+            if unit in tried:
+                continue
+            tried.add(unit)
+            if unit not in held_by or place(held_by[unit], tried):
+                held_by[unit] = i
+                return True
+        return False
+
+    return sum(place(i, set()) for i in range(len(units)))
+
+
+def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False,
+                    groups: dict[str, tuple[str, ...]] | None = None) -> dict:
     """Assign a maturity stage (0-5) and the set of gaps for one category.
 
     Strict open-only: only fully-open products count toward maturity/stage;
     open-ish only serves to detect the openness gap. See docs/reference/gap-analysis.md.
     `disclosure` is a declared per-category attribute (not inferred): set it where the
     closed frontier's equivalent to these open products is structurally undisclosed.
+    `groups` is `lineage_groups` for this category's roster, keyed by each row's `slug`: a
+    suite and its members count once toward the Stage 4/5 count. Omitted, every row counts
+    as itself.
     """
     w = weights or {"adopt": 0.5, "cap": 0.5}
     # Products with no maturity score (missing adoption) are excluded from the stage
     # computation — we can't judge what we can't measure, so they neither advance nor
     # depress the category's stage.
-    enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
+    enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _stage_score(r, w)) for r in rows]
     open_rows = [(r, s) for r, b, s in enr if b == "open" and s is not None]
-    mature_open = sum(1 for _, s in open_rows if s >= _MATURE_MIN)
+    # Only the count reads lineage groups. `best_open` is a maximum and `mature_anywhere` an
+    # existence test, and neither can be inflated by overlap, so both stay per row.
+    mature_open = _leading_count([r for r, s in open_rows if s >= _MATURE_MIN], groups or {})
     best_open = max((s for _, s in open_rows), default=0.0)
     mature_anywhere = any(s >= _MATURE_MIN for _, _, s in enr if s is not None)
 
@@ -336,9 +461,27 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     return lt
 
 
+# The per-language evidence on the capability axis: the coverage entries and the pivot
+# declaration they are read against. It ships as its own data asset with the per-language view
+# (R-2026-11-01-f), never inside the notebook payload.
+PER_LANGUAGE_KEYS = ("language_coverage", "pivot_languages")
+
+
+def _without_language_coverage(capability):
+    """The capability block as the payload carries it: everything but the per-language evidence.
+
+    Drops `language_coverage` and `pivot_languages`. Returned unchanged, the same object, when
+    neither key is present, so a record without them serializes byte-for-byte as it did before
+    the fields existed.
+    """
+    if isinstance(capability, dict) and any(k in capability for k in PER_LANGUAGE_KEYS):
+        return {k: v for k, v in capability.items() if k not in PER_LANGUAGE_KEYS}
+    return capability
+
+
 def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
          weights: dict | None, name_map: dict | None = None,
-         freshness: dict | None = None) -> dict:
+         freshness: dict | None = None, depth: dict | None = None) -> dict:
     # Pre-compute the open / open-ish / closed bucket alongside the raw class, so
     # consumers get a stable 3-way verdict that survives changes to the openness.class
     # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
@@ -369,8 +512,18 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
         # route id in front of every reader of the map to answer a question only the audit
         # asks, and would grow a payload whose transport is already its tightest constraint.
         "adoption": {k: v for k, v in (score["adoption"] or {}).items() if k != "derived_from"},
-        "capability": score["capability"],
+        # `language_coverage` and `pivot_languages` never enter this payload: they ship as a
+        # separate structured data asset with the per-language view (R-2026-11-01-f). A
+        # many-language suite carries one entry per language, task, component and split, and
+        # the payload's transport is already its tightest constraint. Every other capability
+        # key ships as recorded. See docs/reference/capability.md.
+        "capability": _without_language_coverage(score["capability"]),
     }
+    # A depth-ladder row (`basis: evaluation_depth`) carries the ladder's companion figures beside
+    # its band: evidence status, face value, best original band, task count, completeness, whether
+    # the corroboration cap binds and why, and the unverified-lineage sensitivity (R-2026-11-02-o).
+    if depth is not None:
+        row["capability"] = {**row["capability"], "depth": _depth_block(depth)}
     # The weighted product maturity score (per-category blend of adoption/capability),
     # already rounded to 2dp by _maturity_score, or null when adoption is missing. The
     # category stage thresholds in _stage_and_gaps compare this same 2dp value.
@@ -382,9 +535,13 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # age for, and it is not the category-level Maturity Stage that shares the old word.
     row["overall_score"] = m
     row["maturity"] = m
+    # What the overall score rests on, so an adoption-only score is never read as comparable to
+    # one that blends both axes (R-2026-11-08-a): adoption_and_capability, adoption_only, or null
+    # where there is no adoption and so no overall score.
+    row["overall_basis"] = _overall_basis(row)
     # Leading / Strong / null, derived from the score alone (see _LEADING_MIN). Emitted rather
     # than left to each consumer so the two tier boundaries stay methodology constants.
-    row["tier"] = (None if m is None else
+    row["tier"] = (None if m is None or _unresolved_depth(row) else
                    "leading" if m >= _LEADING_MIN else
                    "strong" if m >= _STRONG_MIN else None)
     # Canonical `mature` flag: the SAME rule the category stage engine uses
@@ -393,6 +550,7 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # looser threshold. Uses the unrounded score `m` to match the stage logic.
     row["mature"] = (
         m is not None and m >= _MATURE_MIN and openness["bucket"] == "open"
+        and not _unresolved_depth(row)
     )
     # A declared end-of-life date: the product still works and stops on that day. Emitted as
     # the date and the announcement link, so a consumer can say the product is ending and point
@@ -422,16 +580,17 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):
         row["version_note"] = prod["comments"]
-    # Lineage is a display-only provenance block (derived_from / curated_with /
-    # trains). It feeds no score. On-map references are resolved to display names
-    # via name_map; anything not on the map (curation tools, external corpora like
-    # Common Crawl) passes through verbatim. Empty edges are dropped; the whole key
-    # is omitted when a product has no lineage.
+    # Lineage is a provenance block (derived_from / curated_with / trains / part_of). It
+    # feeds no score; `part_of` alone is also read by the stage count, through
+    # lineage_groups in build_payload, and not from this row. On-map references are
+    # resolved to display names via name_map; anything not on the map (curation tools,
+    # external corpora like Common Crawl) passes through verbatim. Empty edges are dropped;
+    # the whole key is omitted when a product has no lineage.
     lineage = prod.get("lineage")
     if lineage:
         nm = name_map or {}
         resolved = {}
-        for edge in ("derived_from", "curated_with", "trains"):
+        for edge in lineage_relations():
             refs = lineage.get(edge) or []
             if refs:
                 resolved[edge] = [nm.get(r, r) for r in refs]
@@ -649,6 +808,13 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             cid_layer[cid] = lyr
             cid_group[cid] = gname
             cid_group_slug[cid] = gslug
+    # The depth ladder's results for its category's roster, computed from the records (the band
+    # itself is recorded, and build/validate.py holds the record to it). Needs the lineage
+    # registry, which a test's hand-built sources may not carry.
+    depth: dict[str, dict] = {}
+    if "lineage" in sources and DEPTH_CATEGORY in order:
+        depth = {slug: depth_compute(sources["lineage"], slug)
+                 for slug in cats[DEPTH_CATEGORY]["products"]}
     out_cats = {}
     n = 0
     published_slugs: set[str] = set()
@@ -666,9 +832,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(slug, p, org_slug, org_name, scores[slug],
                              cat.get("weights"), name_map,
-                             (freshness or {}).get(slug)))
+                             (freshness or {}).get(slug), depth.get(slug)))
             n += 1
-        sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False))
+        sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False),
+                             groups=lineage_groups(cat["products"], prods))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
                          "layer": cid_layer[cid], "group": cid_group[cid],
                          "group_slug": cid_group_slug[cid],
@@ -685,6 +852,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         "stages": {str(k): v for k, v in _STAGE_DESC.items()},
         "gaps": dict(_GAP_DESC),
         "tiers": dict(_TIER_DESC),
+        "overall_basis": dict(_OVERALL_BASIS_DESC),
         "categories": {cid: cats[cid].get("description", "") for cid in order},
     }
     return {"descriptions": descriptions, "layer_order": layer_order,

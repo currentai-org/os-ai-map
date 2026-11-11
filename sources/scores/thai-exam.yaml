@@ -56,38 +56,67 @@ adoption:
     http_status: 200
     content_sha256: 693ccbf42f30eb90700717774fbfa3509619653c8ab906b92efa6ef3707b8bc2
 capability:
-  score: 4
-  basis: feature_matrix
-  basis_detail: coverage and downstream use for Thai exam evaluation
-  value: 590 multiple-choice questions from five real Thai national and professional exams, documented in the
-    Typhoon report, and built into Stanford's HELM Thai leaderboard, SEA-HELM and the Thai LLM leaderboard.
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target
+    languages, 1 of 1 measured, across 1 task. Face value 3; best original band 3.'
   confidence: medium
-  note: ThaiExam uses real Thai exam questions and is built into Stanford's HELM Thai leaderboard, the Thai
-    LLM leaderboard and SEA-HELM. It is a single-language set of 590 questions, and SEA-HELM, which includes
-    it, covers many more tasks and languages.
-  relative_to: sea-helm
-  relation: one_below
-  last_verified: '2026-09-24'
+  note: In its one target language, ThaiExam's deepest test has four hundred to sixteen hundred items that
+    count toward depth. An item count says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-08'
   sources:
   - url: https://huggingface.co/datasets/typhoon-ai/thai_exam/raw/main/README.md
     shows: '"This dataset has been integrated into the HELM leaderboard by Stanford CRFM"; ONET 167, IC 100,
       TGAT 70, TPAT-1 121, A-Level 132 questions'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 860459e28fcaf606f68f1fb40bbdb9bd6b47e74c62fb390e37ac133c0b53b3ff
   - url: https://huggingface.co/datasets/typhoon-ai/thai_exam
     shows: 'Number of rows: 590; Space using typhoon-ai/thai_exam: ThaiLLM-Leaderboard/leaderboard'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: 89a1a1cf2099db39c5555f26623add1be1e89d9f42e80467fc2b710b383a8951
+    content_sha256: 4e75daffdd9247c489398780c50840ebd3aefd462d192def0b97e75ee3a9da43
   - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
     shows: 'Knowledge table: "Thai | Thai Exam | Native | General | Apache 2.0"'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
     content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
   - url: https://arxiv.org/abs/2312.13951
     shows: '"we develop ThaiExam, a benchmark based on examinations for high-school students and investment
       professionals in Thailand"'
-    accessed: '2026-09-24'
+    accessed: '2026-11-08'
     http_status: 200
-    content_sha256: d5f35c1696e017decedd1d1305669e3b2302cb7d2e8dd3e2301a5e1ac4a09a47
+    content_sha256: c68254a369ca65b2980596deec80896f7134135b6afcacade7421c029ed2c74f
+  - url: https://datasets-server.huggingface.co/size?dataset=typhoon-ai/thai_exam
+    shows: 'the Hub''s split sizes per exam, test: "a_level" 127, "ic" 95, "onet" 162, "tgat" 65, "tpat1" 116 (565
+      in all); train: 5 in each exam (25 in all)'
+    accessed: '2026-11-08'
+    http_status: 200
+    content_sha256: 769cf1f2a3e8a3288a82adc0130010005fb109603a581999e73daf110156e5a9
+  pivot_languages: []
+  language_coverage:
+  - language: tha
+    task: knowledge_exam
+    component: thai-exam
+    split: test
+    official_eval: true
+    count: 565
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=typhoon-ai/thai_exam
+    - https://huggingface.co/datasets/typhoon-ai/thai_exam/raw/main/README.md
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tha
+    task: knowledge_exam
+    component: thai-exam
+    split: train
+    official_eval: false
+    count: 25
+    unit: questions
+    provenance: native
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=typhoon-ai/thai_exam
+    - https://huggingface.co/datasets/typhoon-ai/thai_exam/raw/main/README.md
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
