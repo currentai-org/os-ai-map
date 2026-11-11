@@ -192,6 +192,8 @@ def test_otherwise_the_purpose_test_decides_alone():
     assert product_verdict(["tur"], CLASSES)[0] == "purpose_test"
     assert product_verdict(["eng", "tur"], CLASSES)[0] == "purpose_test"
     assert product_verdict([], CLASSES)[0] == "purpose_test"
+
+
 def test_large_written_material_no_needs_the_web_route_to_fail():
     errors = row_errors(good_row(large_written_material="no", written_best="B", written_worst="C",
                                  representation_class="unresolved",
