@@ -153,6 +153,47 @@ def test_reader_is_an_audit_root_reading_the_table():
     assert internal == {"language_representation.classification"}
 
 
+# ── The membership review's language half (R-2026-10-30-d, R-2026-11-10-j) ────────────────
+
+from build.language_representation import language_verdict, product_verdict  # noqa: E402
+
+CLASSES = {
+    "eng": {"representation_class": "high", "representation_class_best": "high",
+            "representation_class_worst": "high"},
+    "kor": {"representation_class": "mid", "representation_class_best": "mid",
+            "representation_class_worst": "mid"},
+    "tur": {"representation_class": "unresolved", "representation_class_best": "high",
+            "representation_class_worst": "mid"},
+    "afr": {"representation_class": "unresolved", "representation_class_best": "low",
+            "representation_class_worst": "very_low"},
+    "xyz": {"representation_class": "unknown", "representation_class_best": "unknown",
+            "representation_class_worst": "unknown"},
+}
+
+
+def test_a_language_is_below_the_line_only_at_both_ends():
+    assert language_verdict("kor", CLASSES) == "below"
+    assert language_verdict("afr", CLASSES) == "below"
+    assert language_verdict("eng", CLASSES) == "at_or_above"
+    assert language_verdict("tur", CLASSES) == "undecided"
+    assert language_verdict("xyz", CLASSES) == "undecided"
+    assert language_verdict("zzz", CLASSES) == "undecided"
+
+
+def test_any_target_below_the_line_is_in():
+    assert product_verdict(["eng", "kor"], CLASSES)[0] == "in"
+
+
+def test_every_target_at_or_above_is_out():
+    assert product_verdict(["eng"], CLASSES)[0] == "out"
+
+
+def test_otherwise_the_purpose_test_decides_alone():
+    assert product_verdict(["tur"], CLASSES)[0] == "purpose_test"
+    assert product_verdict(["eng", "tur"], CLASSES)[0] == "purpose_test"
+    assert product_verdict([], CLASSES)[0] == "purpose_test"
+
+
 def test_large_written_material_no_needs_the_web_route_to_fail():
     errors = row_errors(good_row(large_written_material="no", written_best="B", written_worst="C",
                                  representation_class="unresolved",
