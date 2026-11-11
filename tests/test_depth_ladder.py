@@ -29,11 +29,13 @@ UNRESOLVED = {
     "darijammlu": "review_scope_unstated",
 }
 
-# Calibrated sets that a ruling has since moved out of the category, with their destination. The
-# calibration roster stays the historical 22 (build/depth_calibration.py); membership moves only
-# by a recorded ruling (R-2026-11-11-b: IndoNLU targets only Indonesian, which is high).
+# Calibrated sets that a ruling has since moved out of the category, with their destination, and
+# sets a ruling has since added, with the ruling. The calibration roster stays the historical 22
+# (build/depth_calibration.py); membership moves only by a recorded ruling (R-2026-11-11-b: IndoNLU
+# targets only Indonesian, which is high; R-2026-11-11-e: KMMLU targets Korean, which is mid).
 MOVED_OUT = {"indonlu": "benchmark_eval_data"}
-CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT)
+ADDED = {"kmmlu": "R-2026-11-11-e"}
+CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 
 @pytest.fixture(scope="module")
@@ -55,10 +57,14 @@ def payload(sources):
 # --- the ladder ---------------------------------------------------------------------------------
 
 
-def test_the_category_roster_is_the_calibrated_22_less_ruled_moves():
+def test_the_category_roster_is_the_calibrated_22_with_ruled_moves():
     """R-2026-11-07-b: the initial membership is the 22 calibrated sets, no more and no fewer.
-    A set leaves only by a recorded membership ruling, which MOVED_OUT names."""
+    A set leaves or joins only by a recorded membership ruling, which MOVED_OUT and ADDED name."""
     assert set(MOVED_OUT) <= set(ROSTER)
+    assert not set(ADDED) & set(ROSTER)
+    log = (ROOT / "docs/rulings/log.yaml").read_text()
+    for ruling in ADDED.values():
+        assert f"id: {ruling}\n" in log, ruling
     assert sorted(dl.category_roster()) == sorted(CURRENT)
 
 
