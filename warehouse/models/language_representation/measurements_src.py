@@ -67,7 +67,7 @@ OPENALEX_URL = "https://api.openalex.org/works?group_by=language&per_page=200"
 # Open Library is read from a reproducible extract of its monthly data dumps, never from its search API
 # (maintainer rulings 2026-11-10 and R-2026-11-10-r): a CSV of works per MARC language code, pinned at a commit
 # of the public repo. The run refuses to proceed if the CSV's sha256 differs from the pinned one.
-OPEN_LIBRARY_URL = ("https://raw.githubusercontent.com/currentai-org/os-ai-map/08db01760a6bf9a10b87f102cf22a91ac8c3520f/"
+OPEN_LIBRARY_URL = ("https://raw.githubusercontent.com/currentai-org/os-ai-map/c6637096fc1ebb2d3f3c4320c8789c37324f27b4/"
                     "sources/snapshots/openlibrary-works-by-language-2026-10-31.csv")
 OPEN_LIBRARY_SHA256 = "3ab3e79b89f530d651690d6ff93db020430296905c5647894efcb6e4770a39a5"
 OPEN_LIBRARY_VERSION = "ol_dump_editions_2026-10-31"
