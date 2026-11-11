@@ -3707,3 +3707,27 @@ rulings:
     executor: agent
     lands_in: [docs/sweeps/2026-11-11-instruction-cap-dry-run.md, sources/categories/language_specific_datasets.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/951']
+
+  - id: R-2026-11-11-p
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: [R-2026-11-10-s, sources/snapshots/language-codes.tsv, build/language_codes.py]
+    question: >-
+      The public repository has carried SIL's full iso-639-3.tab code table, with reference names and Part 1
+      and Part 2 equivalents, as the vocabulary build.validate checks language codes against. SIL's terms
+      bar a product from providing a means to redistribute the code set. Where does the full table live?
+    ruling: >-
+      On Artio only, inside currentai.language_representation.classification, which already holds one row per
+      code of scope individual or macrolanguage in the pinned release. The committed code table is removed.
+      The repository keeps sources/snapshots/language-codes.tsv, the codes its records use and no others,
+      each confirmed against the classification table, with ISO 639-3 credited as their source and no
+      reference names, Part 1 or Part 2 equivalents, scopes or types. A code new to the map enters through
+      build/language_codes.py --sync, which needs an OSO API key. The file's git history is not rewritten.
+    reasoning: >-
+      SIL's registrar confirmed that a table limited to the map's codes is permitted with attribution and
+      asked whether anything offers the full code set for download. The committed table did.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md, docs/reference/language-classification.md]
+    applied_in: []

@@ -446,12 +446,12 @@
               "language": {
                 "type": "string",
                 "pattern": "^[a-z]{3}$",
-                "description": "The ISO 639-3 code, under the same rule as the product's `languages`: scope individual or macrolanguage in sources/snapshots/iso-639-3.tab, so two-letter codes and the special codes `mul`, `und` and `zxx` are refused. It must also be one of the codes the product's `languages` lists, because coverage says how much a listed language holds and never adds a language the identity record does not name. The schema checks the shape; build/validate.py checks both lists."
+                "description": "The ISO 639-3 code, under the same rule as the product's `languages`: scope individual or macrolanguage in sources/snapshots/language-codes.tsv, so two-letter codes and the special codes `mul`, `und` and `zxx` are refused. It must also be one of the codes the product's `languages` lists, because coverage says how much a listed language holds and never adds a language the identity record does not name. The schema checks the shape; build/validate.py checks both lists."
               },
               "source_language": {
                 "type": "string",
                 "pattern": "^[a-z]{3}$",
-                "description": "The ISO 639-3 code exactly as the cited source states it, when that differs from `language`: an individual language the source names inside the macrolanguage the product lists (FLORES+'s `cmn` recorded under `zho`), or the reverse. Required whenever the source's code differs, and refused when equal to `language`. A two-letter code the source uses is read as its ISO 639-3 equivalent and is not a difference. An entry carrying it records an inferred mapping, not a directly observed identity, and flags the product's `languages` for reconciliation. Held to the code-list rule `language` is held to (scope individual or macrolanguage in sources/snapshots/iso-639-3.tab), but not to the product's `languages`, which by definition does not list it (build/validate.py)."
+                "description": "The ISO 639-3 code exactly as the cited source states it, when that differs from `language`: an individual language the source names inside the macrolanguage the product lists (FLORES+'s `cmn` recorded under `zho`), or the reverse. Required whenever the source's code differs, and refused when equal to `language`. A two-letter code the source uses is read as its ISO 639-3 equivalent and is not a difference. An entry carrying it records an inferred mapping, not a directly observed identity, and flags the product's `languages` for reconciliation. Held to the code-list rule `language` is held to (scope individual or macrolanguage in sources/snapshots/language-codes.tsv), but not to the product's `languages`, which by definition does not list it (build/validate.py)."
               },
               "task": {
                 "enum": [
