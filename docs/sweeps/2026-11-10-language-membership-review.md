@@ -162,6 +162,7 @@ file under `sources/`.
 3. **SOLD** stays in `language_specific_datasets` with capability 3 (R-2026-11-11-d).
 4. **KMMLU** is approved for separate `add-product` work in `language_specific_eval_sets`, subject to
    its evidence and depth-ladder validation (R-2026-11-11-e).
-5. **CHOCLO, Trueque and the LatamGPT Corpus** wait on an investigation of their Indigenous-language
-   content. Incidental coverage alone does not satisfy the purpose test (R-2026-11-11-f, deferred).
-   The check is in [`2026-11-11-latin-american-seeds-investigation.md`](2026-11-11-latin-american-seeds-investigation.md).
+5. **CHOCLO, Trueque and the LatamGPT Corpus** stay out, after a check of their Indigenous-language
+   content found only incidental coverage; the corpus stays out provisionally, since its gated data
+   was not inspected (R-2026-11-11-f). The check is in
+   [`2026-11-11-latin-american-seeds-investigation.md`](2026-11-11-latin-american-seeds-investigation.md).
