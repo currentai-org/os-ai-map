@@ -3648,3 +3648,28 @@ rulings:
     executor: agent
     lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
     applied_in: []
+
+  - id: R-2026-11-11-n
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", R-2026-10-30-c, R-2026-11-11-m, inkuba-instruct, cendol-collection, indicalign, cidar]
+    question: >-
+      Redesigning the instruction-data cap must keep human-curated data distinct from generated and
+      translated data. Which examples count as human-authored?
+    ruling: >-
+      Authorship of the instruction and the response decides, not whether a human contributed somewhere.
+      Human-annotated task data, dictionaries or other human-made resources recast into instructions by
+      templates (Inkuba-Instruct, Cendol's templated data, IndicAlign's IndoWordNet entries) are
+      human-derived, not human-authored, and stay identifiable so they are never counted as original human
+      writing. Machine-translated examples stay translated even when people reviewed them (CIDAR's
+      roughly 9,100 pairs); its roughly 900 native Arabic grammar examples qualify only if their human
+      authorship is established. A substantially rewritten example may count as human-authored where the
+      rewriting is documented; approval, selection, minor editing or quality checking alone does not
+      convert a generated or translated example. For the dry run, split anchors is the leading candidate,
+      compared against the held draft, human-only and no cap. No instruction-data scoring policy is
+      approved by this ruling.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-instruction-cap-dry-run.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/951']
