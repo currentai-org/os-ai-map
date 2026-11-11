@@ -13,6 +13,9 @@ The comparison covers:
 - the five IIT Bombay comparisons (R-2026-11-08-d);
 - every band change any scheme produces.
 
+It is a sensitivity analysis. Every band it reports is an upper bound, not a new capability band
+(see [What this does not establish](#what-this-does-not-establish)).
+
 ## Inputs
 
 - **Products.** The 75 products in `language_specific_datasets` on `main` after #1000
@@ -82,7 +85,7 @@ is identical to S2.
 Rises are counted against today's band, over the 52 products. "Sensitive" counts the products
 whose two ends differ.
 
-| Scheme | Rule | Rise 0 / 1 / 2 / 3+ | Bands 1–5 after | Sensitive | Retained despite an unresolved axis | Peer relations broken |
+| Scheme | Rule | Rise 0 / 1 / 2 / 3+ | Bands 1–5 after | Sensitive | Retained despite an unresolved axis | Peer relations projected to break |
 |---|---|---|---|---|---|---|
 | S2 | M1 | 41 / 4 / 5 / 2 | 6 / 12 / 19 / 14 / 1 | 4 | 1 | 11 |
 | S2 | M2 | 42 / 3 / 5 / 2 | 6 / 12 / 20 / 13 / 1 | 1 | 0 | 10 |
@@ -134,37 +137,44 @@ rule.
 
 | Product | Today | M1, any scheme | M2, any scheme | M3 |
 |---|---|---|---|---|
-| ChrEn (14,000 pairs; Cherokee U/N/N) | 1 | 1, retained | 1, retained | S2: 3 (to 4). S3: 2 (to 3). S4: 1. **Breaks under S2 and S3.** |
-| Jojajovai (30,855 pairs; Guarani Y/Y/N) | 1 | 1, retained | 1, retained | S2: 2. S3 and S4: 1. **Breaks under S2.** |
+| ChrEn (14,000 pairs; Cherokee U/N/N) | 1 | 1, retained | 1, retained | S2: 3 (to 4). S3: 2 (to 3). S4: 1. **Would break under S2 and S3, at the upper bound.** |
+| Jojajovai (30,855 pairs; Guarani Y/Y/N) | 1 | 1, retained | 1, retained | S2: 2. S3 and S4: 1. **Would break under S2, at the upper bound.** |
 | OLDI Seed (6,193 pairs per language; 40 languages) | 1 | 1, retained | 1, retained | 1 in every scheme, retained |
 | SMOL | 1 | not computed | not computed | not computed |
 | AfriDocMT | 1 | not computed | not computed | not computed |
 
 SMOL states translated tokens and AfriDocMT documents, and neither states a pair count, so neither
-can be placed against a pair threshold. Under M1 and M2 the English side governs, so all five
-comparisons hold. They break only under M3, where a corpus is judged by its non-English side.
-ChrEn's range there comes from Cherokee's unresolved official status.
+can be placed against a pair threshold, and their comparisons cannot be checked here. **Three of
+the five can be checked.** Under M1 and M2 the English side governs, and ChrEn, Jojajovai and OLDI
+Seed stay one below IIT Bombay. Under M3, where a corpus is judged by its non-English side, ChrEn's
+and Jojajovai's upper bounds reach or pass IIT Bombay's band. ChrEn's range there comes from
+Cherokee's unresolved official status. SMOL's and AfriDocMT's comparisons stay provisional under
+R-2026-11-08-d.
 
 ### Peer relations
 
 Many capability notes place a product relative to a peer in the same category. Such a relation is
 recorded as `at`, `one_below` or `two_below`, and every one was measured on the English-scale
-yardstick. Today every relation holds. A relaxed cap moves a product while its peer stays on the
-reference yardstick, so the relation no longer describes the two bands.
+yardstick. Today every relation holds. A relaxed cap can move a product while its peer stays on
+the reference yardstick. Then the relation no longer describes the two bands.
 
-- **S4 breaks 5:**
+These breaks are **projected, not demonstrated.** They compare upper bounds. A product whose rungs
+hold it at today's band does not move, and its relation still holds. Whether a relation actually
+breaks is known only once the pre-cap rung bands are scored.
+
+- **S4 could break 5:**
   - Icelandic Gigaword `at` Danish Dynaword;
   - Korpus Malti `one_below` Danish Dynaword;
   - Nepali Text Corpus `two_below` Sangraha;
   - Khmer ASR Cultural Dataset `two_below` IndicVoices;
   - L3Cube-MahaCorpus `one_below` Latxa.
-- **S3 under M2 breaks 9:** the five above, plus Northern Sámi web corpus `one_below` Danish
+- **S3 under M2 could break 9:** the five above, plus Northern Sámi web corpus `one_below` Danish
   Dynaword, SMUGRI `at` Northern Sámi web corpus, Kazakh Speech Corpus 2 `one_below` IndicVoices,
   and ViXSD `one_below` BibleTTS.
-- **S2 under M3 breaks 17.**
+- **S2 under M3 could break 17.**
 
-Any scheme that is adopted needs each broken relation re-pointed to a peer with the same profile,
-or re-attested in the implementation PR.
+In an implementation, each relation that actually breaks needs re-pointing to a peer with the same
+profile, or re-attesting.
 
 ### Unresolved profiles
 
@@ -195,35 +205,44 @@ Four products have a range under S2 or S3 with M1. Under M2, only Latxa Corpus h
    - M1 and M2 differ only for ZA African Next Voices, which M1 lifts from 3 to 4 under S2 and S3,
      and for the ranges of the three speech corpora above.
    - M3 is the only rule that moves parallel text. It lifts BPCC to 5, Pralekha to 3 or 4 and,
-     under S2, the Vuk'uzenzele corpus to 2. It also breaks two of the five IIT Bombay comparisons.
+     under S2, the Vuk'uzenzele corpus to 2. At their upper bounds, two of the three checkable IIT
+     Bombay comparisons would break.
 4. **Unresolved axes rarely matter.** Under M2, one product is sensitive under S2 and S3, and none
    under S4.
-5. **Every adopted scheme breaks peer relations.** These need re-pointing in the same PR that
-   applies the multipliers.
+5. **Every scheme could break peer relations.** The breaks are projected from upper bounds. Any
+   that the scored rungs confirm need re-pointing in the same PR that applies the multipliers.
 
 ## What this does not establish
 
 - **Real bands.** Every rise is an upper bound. A product whose rungs sit at today's band would not
-  move.
-- **The 8 products set aside**, which need a size in the cap's unit, or a rule for mixed text and
-  speech, before any yardstick applies to them.
+  move. No record states its pre-cap rung band, so this run cannot tell a real increase from one
+  that the substantive rubric would prevent.
+- **The 8 products set aside.** Each needs a size in the cap's unit, or a rule for mixed text and
+  speech, before any yardstick applies to it. These are implementation blockers.
 - **Instruction data.** It carries no cap today. Its cap is #951's question, which stays held.
 - **Keying on the count of `yes` axes.** The three profiles with two `yes` axes share one
   multiplier here, as in the draft. Keying on large written material alone, or on another
   combination, is a different proposal and is not tested.
 
-## Decisions for the maintainer
+## Decision (2026-11-11)
 
-None is approved by this record. If one is approved, it is implemented in its own PR.
+The maintainer accepted this record as a sensitivity analysis (R-2026-11-11-g). No multiplier is
+adopted, and #951 stays held.
 
-1. **Scheme.** S2, S3 or S4, or another set of multipliers. **Recommendation: S3.** S2 lifts a
-   1.46-billion-word Icelandic corpus to the band of trillion-token English corpora. S4 moves
-   Northern Sámi and Maltese corpora by at most one band. S3's steps of a factor of 10 match the
-   spacing of the written-material bands.
-2. **Multilingual rule.** M1, M2 or M3. **Recommendation: M2.** A total over several languages says
-   nothing about any one of them. M2 leaves only one product sensitive, and it keeps all five IIT
-   Bombay comparisons.
-3. **The IIT Bombay comparisons.** Under M1 and M2 all five hold. Retire the "provisional" status of
-   R-2026-11-08-d then, or keep it until SMOL and AfriDocMT state a pair count?
-4. **Peer relations.** Re-point each broken relation to a peer with the same profile in the
-   implementation PR?
+- **S3 with M2 is the leading candidate, not scoring policy.**
+  - S3 is the moderate relaxation: under M2, 9 of the 52 products could rise, none by more than two
+    bands.
+  - M2 keeps multilingual corpora on today's yardstick until per-language sizes justify something
+    else.
+- **Unresolved profiles:** the least-relaxed defensible cap applies, and the full sensitivity range
+  is kept.
+- **IIT Bombay:** the comparisons for SMOL and AfriDocMT stay provisional (R-2026-11-08-d). Three of
+  the five can be checked.
+- **Blockers to adoption:**
+  - **Pre-cap rung scores.** Each capped product's band before the cap must be scored, so a real
+    increase can be told from one the substantive rubric would prevent.
+  - **The 8 products set aside.** Each needs a size in the cap's unit, or a rule for mixed text and
+    speech.
+
+The next step is a scored implementation proposal built on the actual rubric rungs. It goes to the
+maintainer before any capability band changes.
