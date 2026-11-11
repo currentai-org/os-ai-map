@@ -210,12 +210,19 @@ comments: >-
   training_synthetic_datasets, and Aya Collection stays there too. A dataset assembled for a
   language or a region belongs here, whichever modality it is: pretraining text, speech or
   instruction data; an evaluation set built the same way belongs in language_specific_eval_sets,
-  under the same language test. The language has to be underrepresented in AI data:
-  a corpus or benchmark built for Chinese, Japanese, Korean, Spanish or Portuguese passes the
-  first half of the test and fails this one, and goes to training_synthetic_datasets or
-  benchmark_eval_data (KMMLU, TMMLU+, CMMLU, ChineseWebText, Carolina and the LatamGPT
-  Corpus were routed there from the seed sweep). The smaller European languages - Basque,
-  Catalan, Galician, Maltese, the Nordic languages, Sámi, Ukrainian - are in.
+  under the same language test. The language has to be underrepresented in AI data, and that
+  is read from the per-language classification (docs/reference/language-classification.md,
+  currentai.language_representation.classification; R-2026-10-30-d, R-2026-11-10-j), not from a
+  list: a product is in when any language it targets is below the high written-material class
+  at both ends of its interval, out when every target language is high at both ends, and
+  otherwise the purpose test decides alone. A dataset that fails this half goes to
+  training_synthetic_datasets or benchmark_eval_data, as IndoNLU did for Indonesian
+  (R-2026-11-11-b). The 2026-11-11 membership review
+  (docs/sweeps/2026-11-10-language-membership-review.md) applied it to every product and seed:
+  Korean, which the earlier list of excluded languages named, is below the line, so KMMLU is
+  eligible for language_specific_eval_sets (R-2026-11-11-e); TMMLU+, CMMLU, ChineseWebText and
+  Carolina target high languages and stay out; and the LatamGPT Corpus waits on a check of its
+  Indigenous-language content (R-2026-11-11-f).
   Language-targeted evaluation sets lived here until 2026-11-08 and now live in
   language_specific_eval_sets, scored by the depth ladder (R-2026-11-07-b); the purpose test that
   follows still decides which many-language sets are language-targeted at all. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200

@@ -26,9 +26,14 @@ UNRESOLVED = {
     "fleurs": "no_measurement_model",
     "lahaja": "no_measurement_model",
     "vmlu": "no_official_split",
-    "indonlu": "provenance_unknown",
     "darijammlu": "review_scope_unstated",
 }
+
+# Calibrated sets that a ruling has since moved out of the category, with their destination. The
+# calibration roster stays the historical 22 (build/depth_calibration.py); membership moves only
+# by a recorded ruling (R-2026-11-11-b: IndoNLU targets only Indonesian, which is high).
+MOVED_OUT = {"indonlu": "benchmark_eval_data"}
+CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT)
 
 
 @pytest.fixture(scope="module")
@@ -50,9 +55,11 @@ def payload(sources):
 # --- the ladder ---------------------------------------------------------------------------------
 
 
-def test_the_category_roster_is_the_frozen_22():
-    """R-2026-11-07-b: the initial membership is the 22 calibrated sets, no more and no fewer."""
-    assert sorted(dl.category_roster()) == sorted(ROSTER)
+def test_the_category_roster_is_the_calibrated_22_less_ruled_moves():
+    """R-2026-11-07-b: the initial membership is the 22 calibrated sets, no more and no fewer.
+    A set leaves only by a recorded membership ruling, which MOVED_OUT names."""
+    assert set(MOVED_OUT) <= set(ROSTER)
+    assert sorted(dl.category_roster()) == sorted(CURRENT)
 
 
 @pytest.mark.parametrize("slug, reason", sorted(UNRESOLVED.items()))
@@ -63,7 +70,7 @@ def test_unresolved_sets_publish_null_with_their_reason(doc, slug, reason):
 
 
 def test_resolved_sets_are_provisional_with_no_reason(doc):
-    for slug in ROSTER:
+    for slug in CURRENT:
         if slug in UNRESOLVED:
             continue
         r = dl.compute(doc, slug)
@@ -133,10 +140,22 @@ def rows(payload, cid="language_specific_eval_sets"):
 
 def test_the_move_keeps_every_product_published_once(payload, sources):
     eval_rows, lsd_rows = rows(payload), rows(payload, "language_specific_datasets")
-    assert set(eval_rows) == set(ROSTER)
+    assert set(eval_rows) == set(CURRENT)
+    for slug, destination in MOVED_OUT.items():
+        assert slug in rows(payload, destination), slug
     assert not set(eval_rows) & set(lsd_rows)
     everywhere = [r["slug"] for c in payload["categories"].values() for r in c["products"]]
     assert len(everywhere) == len(set(everywhere)) == payload["n_total"]
+
+
+def test_a_set_moved_out_keeps_its_adoption_and_drops_the_depth_figures(payload, sources):
+    """R-2026-11-11-b: IndoNLU publishes in benchmark_eval_data with its adoption (level 1) kept,
+    capability not scored under that recipe, and no depth-ladder companion figures."""
+    r = rows(payload, "benchmark_eval_data")["indonlu"]
+    assert r["adoption"]["level"] == 1
+    assert r["capability"]["score"] is None and r["capability"]["basis"] == "n/a"
+    assert "depth" not in r["capability"]
+    assert r["overall_basis"] == "adoption_only" and r["tier"] is None
 
 
 def test_every_depth_row_carries_its_companion_figures(payload):
