@@ -1398,10 +1398,11 @@ rulings:
       Yes. Cap it by example count against the largest open English instruction sets, one band per order
       of magnitude. Generated and translated examples count at face value, and how they were made is judged
       on the capability rungs, not by the cap.
-    status: in-force
+    status: replaced
     executor: agent
     lands_in: []
     applied_in: []
+    replaced_by: R-2026-11-11-o
 
   - id: R-2026-10-30-d
     date: 2026-10-30
@@ -3648,3 +3649,59 @@ rulings:
     executor: agent
     lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
     applied_in: []
+
+  - id: R-2026-11-11-n
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", R-2026-10-30-c, R-2026-11-11-m, inkuba-instruct, cendol-collection, indicalign, cidar]
+    question: >-
+      Redesigning the instruction-data cap must keep human-curated data distinct from generated and
+      translated data. Which examples count as human-authored?
+    ruling: >-
+      Authorship of the instruction and the response decides, not whether a human contributed somewhere.
+      Human-annotated task data, dictionaries or other human-made resources recast into instructions by
+      templates (Inkuba-Instruct, Cendol's templated data, IndicAlign's IndoWordNet entries) are
+      human-derived, not human-authored, and stay identifiable so they are never counted as original human
+      writing. Machine-translated examples stay translated even when people reviewed them (CIDAR's
+      roughly 9,100 pairs); its roughly 900 native Arabic grammar examples qualify only if their human
+      authorship is established. A substantially rewritten example may count as human-authored where the
+      rewriting is documented; approval, selection, minor editing or quality checking alone does not
+      convert a generated or translated example. For the dry run, split anchors is the leading candidate,
+      compared against the held draft, human-only and no cap. No instruction-data scoring policy is
+      approved by this ruling.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-instruction-cap-dry-run.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/951']
+
+  - id: R-2026-11-11-o
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", R-2026-10-30-c, R-2026-11-11-m, R-2026-11-11-n, wangchan-thai-instruct, cendol-collection,
+      cidar, typhoon-s-sovereign-capability, wangchanx-flan]
+    question: >-
+      The four-option dry run compares the held draft (face value against generated data), split anchors,
+      human-only and no cap for the instruction-data cap. Which is adopted?
+    ruling: >-
+      Split anchors (option B). A set's cap is the higher of two: the general-scale track counts every eligible
+      example against NVIDIA's Nemotron-Post-Training-Dataset-v1 (25,659,642 examples; 5 needs 10M, 4 1M, 3
+      100k, 2 10k), and the human-authored track counts only verified human-authored pairs against
+      databricks-dolly-15k (15,011 examples written by people on both sides, a directly comparable reference
+      rather than the largest human-written set; 5 needs 10,000, 4 1,000, 3 100, 2 10). Cendol's 187 safety and
+      125 identity prompts are not counted as human-authored pairs; CIDAR's roughly 891 teacher answers stay
+      outside the verified count; Typhoon-S keeps its boundary exemption; WangchanThaiInstruct counts its 35,014
+      paper-verified pairs and its remaining card rows are unknown; WangchanX-FLAN's 12.2k pairs stay
+      human-authored but are marked as imported from WangchanThaiInstruct. The tracks are named for what they
+      count, and a set's human-authored content is distinguished from content original to it. Provenance counts
+      must reconcile with each total. Every existing score and peer relation is kept. No cap (option D) remains
+      a baseline, not policy; R-2026-10-30-c's face-value counting is replaced for instruction data.
+    reasoning: >-
+      B preserves the distinction between originally human-authored instruction data and generated,
+      translated or recast data without penalizing the one verified human-authored collection, and it sets
+      reproducible size ceilings for future datasets while keeping the substantive rubric.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-instruction-cap-dry-run.md, sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/951']

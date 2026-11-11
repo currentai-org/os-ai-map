@@ -46,10 +46,10 @@ scoring_recipe:
     million, 2 one million. A product's band is the lower of what the rungs above give it and
     what its size allows; a cap never raises a band. Words are counted as tokens, which
     understates token counts, and a size known only in bytes is estimated at four bytes a token;
-    each estimate says so in the product's capability value. Evaluation sets, instruction data,
-    the SEACrowd hub and task annotations such as NCHLT carry no cap, because their size is a
-    count of items rather than a measure of how much of a language they hold, and ArabicMMLU
-    already outnumbers English MMLU. The caps are the category's central finding rather than a
+    each estimate says so in the product's capability value. Evaluation sets, the SEACrowd hub
+    and task annotations such as NCHLT carry no cap, because their size is a count of items
+    rather than a measure of how much of a language they hold, and ArabicMMLU already
+    outnumbers English MMLU. Instruction data carries its own cap, set out below. The caps are the category's central finding rather than a
     penalty: no open corpus here reaches the scale a frontier English or Chinese model is
     trained on, and the only one that does, Sarvam-2T, is withheld.
 
@@ -69,6 +69,25 @@ scoring_recipe:
     yardstick, or the band carries no relative_to and is justified from the rungs. The scored
     proposal and the rung reading of each product that moved are in
     docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md.
+
+    Instruction data has been capped since 2026-11-11 by example count on two tracks, and a
+    set's cap is the higher of the two (R-2026-11-11-o). The general-scale track counts every
+    example, of any provenance, against NVIDIA's Nemotron-Post-Training-Dataset-v1 (25,659,642
+    examples): 5 needs ten million, 4 a million, 3 a hundred thousand, 2 ten thousand. The
+    human-authored track counts only pairs whose instruction and response people verifiably
+    wrote, against databricks-dolly-15k (15,011 pairs written by people on both sides, a
+    directly comparable reference rather than the largest human-written set): 5 needs ten
+    thousand, 4 a thousand, 3 a hundred, 2 ten. Authorship decides the track, not human
+    contact (R-2026-11-11-n): recast task data, dictionaries and templated text, translations
+    reviewed by people, and model output count only on the general-scale track, and a set's
+    human-authored pairs that it imported from another set are marked as imported. Each
+    instruction set's capability value states its count by provenance. The language
+    yardsticks above relax none of them: WangchanThaiInstruct and CIDAR name Thai and Arabic,
+    which have the reference profile, and the rest are multilingual. Typhoon-S stays a
+    boundary case outside the cap. At adoption no instruction set's score moved: the cap binds
+    none, and WangchanThaiInstruct's 35,014 paper-verified pairs reach the human-authored
+    track's top step, so its rungs, not its size, set its 4. The counts and the four options
+    compared are in docs/sweeps/2026-11-11-instruction-cap-dry-run.md.
 
     Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
     at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
