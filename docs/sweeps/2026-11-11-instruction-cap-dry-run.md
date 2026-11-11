@@ -46,13 +46,13 @@ datasets server. A row marked "sum" adds parts its source states; nothing is mul
 
 | Product | Total | Human-authored | Recast | Translated | Generated | Unknown | Score today |
 |---|---|---|---|---|---|---|---|
-| WangchanThaiInstruct | 40,000 (card) | **35,014** (paper: "All samples are human-authored") | | | | | 4 |
+| WangchanThaiInstruct | 40,000 (card) | **35,014** (paper: "All samples are human-authored") | | | | 4,986 (card rows beyond the paper's count) | 4 |
 | Inkuba-Instruct | 211.58M (card, sum) | 0 | all | | | | 4 |
-| Cendol Collection | 42,989,754 (sum of v1 and v2) | 0 verified; 187 safety prompts on the paper's word | 42,758,699 | 75,055 | | 125 identity prompts | 4 |
-| IndicAlign | 74.7M (paper) | 0 | 74.27M (IndoWordNet) | 55.2k | 526.8k (Anudesh: people wrote the prompts, a model the responses) | | 2 |
+| Cendol Collection | 42,989,754 (sum of v1 and v2) | 0 verified | 42,758,699 | 75,055 | | 156,000 rows: 93,500 from 187 safety prompts and 62,500 from 125 identity prompts | 4 |
+| IndicAlign | 74,854.2k (sum of the card's parts) | 0 | 74,272.2k (IndoWordNet) | 55.2k | 526.8k (Anudesh: people wrote the prompts, a model the responses) | | 2 |
 | Updesh | 9.5M (paper) | 0 | | 7.32M | 2.15M | | 2 |
 | SEA-Instruct | 7,196,718 (sum) | 0 | | | all | | 2 |
-| WangchanX-FLAN | 3,619,450 | 12.2k (the WangchanThaiInstruct rows it includes) | about 2.67M | | 564k | about 381k | 3 |
+| WangchanX-FLAN | 3,619,450 | 12.2k, imported from WangchanThaiInstruct, not original to this set | about 2.67M | | 564k | about 381k | 3 |
 | Samvaad-Hi | 101,476 | | | | | all | 2 |
 | CIDAR | 10,000 | 0 verified; about 891 crawled teacher answers | | about 9,109 (reviewed by people) | | about 891 | 2 |
 | African UltraChat | 55,000 | | | | | all | 2 |
@@ -60,13 +60,26 @@ datasets server. A row marked "sum" adds parts its source states; nothing is mul
 Typhoon-S stays a boundary case (R-2026-10-30-b) and is not read against any cap, as in the held
 draft.
 
+How the totals reconcile with their parts:
+- **Cendol Collection.** Recast 42,758,699, translated 75,055, and 93,500 safety plus 62,500
+  identity rows sum exactly to the 42,989,754 total. The safety and identity rows are 187 and 125
+  prompts, repeated 500 times. Their authorship is not established, so they are unknown.
+- **IndicAlign.** The card's component table sums to 74,854.2k: 74,272.2k recast, 55.2k
+  translated and 526.8k generated. The paper's "74.7 million" is that total rounded. The card
+  gives Anudesh as 36.8k and the paper's Table 7 as 43.3k; the card's figure is used.
+- **WangchanX-FLAN.** Its card states 3,619,450 rows. Its source table, rounded to thousands, sums
+  to about 3,631.9k, and that rounding is the whole difference.
+- **WangchanThaiInstruct.** The paper verifies 35,014 pairs, and the card's release has 40,000. The
+  4,986 rows beyond the paper are unknown until reconciled.
+
 ## The anchors
 
 Each cap compares a product against the largest open English set of its kind, one order of
 magnitude per step, as R-2026-10-30-c set.
 
-- **Generated or templated track.** The anchor is NVIDIA's Nemotron-Post-Training-Dataset-v1, which
-  states a total of 25,659,642 examples. Steps:
+- **General-scale track.** It counts every eligible example, of any provenance, human-authored
+  ones included. The anchor is NVIDIA's Nemotron-Post-Training-Dataset-v1, which states a total of
+  25,659,642 examples. Steps:
   - 5 needs 10M;
   - 4 needs 1M;
   - 3 needs 100k;
@@ -74,9 +87,11 @@ magnitude per step, as R-2026-10-30-c set.
 
   The held draft cited Llama-Nemotron v1.1 at "about 33.0M". Its card states no total, so that
   figure is a sum. The steps are the same either way.
-- **Human-authored track.** The anchor is databricks-dolly-15k: 15,011 examples, people wrote both
-  sides, and it is openly licensed. It is the largest English set written by people for instruction
-  tuning. OASST2's 70,642 conversation trees gives the same steps:
+- **Human-authored track.** It counts only pairs whose instruction and response people verifiably
+  wrote. The anchor is databricks-dolly-15k: 15,011 examples, people wrote both sides, and it is
+  openly licensed. It is a deliberately built, directly comparable reference, not the largest
+  human-written set. OASST2 is not interchangeable with it: its 70,642 trees include unfinished and
+  rejected ones, and its 13,854 ready trees hold 135,174 messages, not independent pairs. Steps:
   - 5 needs 10k;
   - 4 needs 1k;
   - 3 needs 100;
@@ -92,8 +107,8 @@ today, so today's score is their rubric score.
 
 | Option | Cap |
 |---|---|
-| **A**, the held draft | Every example counts at face value against the generated anchor |
-| **B**, split anchors (the leading candidate) | The higher of two caps: human-authored examples against the human anchor, and all examples against the generated anchor |
+| **A**, the held draft | Every example counts at face value against the general-scale anchor |
+| **B**, split anchors (the leading candidate) | The higher of two caps: human-authored examples against the human anchor, and all examples against the general-scale anchor |
 | **C**, human-only | Only human-authored examples count, against the human anchor; a set with none caps at 1 |
 | **D**, no cap | Today's rule. Provenance is judged by the rubric alone |
 
@@ -113,7 +128,7 @@ today, so today's score is their rubric score.
 | African UltraChat | 2 | 2 | 2 | **1** | 2 |
 | **Peer relations broken** | | 8 | 0 | 8 | 0 |
 
-| Product | Cap under B: human track | Cap under B: generated track | Score that binds |
+| Product | Cap under B: human-authored track | Cap under B: general-scale track | Score that binds |
 |---|---|---|---|
 | WangchanThaiInstruct | 5 (35,014) | 2 (40,000) | the rubric's 4 |
 | Inkuba-Instruct | none | 5 | the rubric's 4 |
@@ -131,8 +146,8 @@ today, so today's score is their rubric score.
 1. **Under split anchors, WangchanThaiInstruct keeps its 4.** Its 35,014 human-authored pairs reach
    the human anchor's top step, so the rubric, not size, sets its score.
 2. **Split anchors give templated and generated collections no size advantage.**
-   - Their caps come only from the generated track, measured against English generated data at
-     25.7M examples.
+   - Their caps come only from the general-scale track, measured against Nemotron's 25.7M
+     examples.
    - Recast rows never enter the human track.
    - Today no cap binds any of them, because the rubric already places them lower than their size
      would allow.
@@ -150,7 +165,7 @@ today, so today's score is their rubric score.
 ### Sensitivities
 
 - **Mined Q&A as the human anchor.** With Stack Exchange's 10.7M answers as the anchor, the human
-  track's steps equal the generated track's. B then gives the same result as A: WangchanThaiInstruct
+  track's steps equal the general-scale track's. B then gives the same result as A: WangchanThaiInstruct
   falls to 2 and eight relations break. Mined answers were not written as instruction data, which is
   why Dolly is the proposed anchor.
 - **Contested provenance items.** Counting Cendol's 187 safety prompts and CIDAR's roughly 891
@@ -164,20 +179,38 @@ today, so today's score is their rubric score.
 - **Recipe note** in `sources/categories/language_specific_datasets.yaml`. It would state:
   - the two anchors;
   - the provenance classes;
-  - that recast, translated and generated rows count only on the generated track;
+  - that recast, translated and generated rows count only on the general-scale track;
   - that Typhoon-S stays outside the cap.
 - **Ten capability records.** Each value would state its count by provenance. No score moves and no
   relation changes.
 - **A ruling** recording the choice.
 
-## Decisions for the maintainer
+## Decision (2026-11-11)
 
-1. **Which option:** A, B, C or D? **Recommendation: B.** It keeps WangchanThaiInstruct's 4, gives no
-   size advantage to templated or generated data, keeps recast rows apart, and moves no current
-   score.
-2. **The human anchor:** databricks-dolly-15k (recommended), OASST2, or mined Q&A?
-3. **The contested provenance items.** They matter only under C:
-   - Cendol's 187 safety prompts and 125 identity prompts;
-   - CIDAR's roughly 891 crawled teacher answers;
-   - Typhoon-S's NitiBench answers;
-   - WangchanThaiInstruct's card rows beyond its paper's count.
+The maintainer adopted option B, split anchors (R-2026-11-11-o).
+
+- **Anchors.**
+  - Human-authored track: databricks-dolly-15k. 5 needs 10,000 human-authored pairs, 4 needs 1,000,
+    3 needs 100, and 2 needs 10.
+  - General-scale track: Nemotron-Post-Training-Dataset-v1 at 25,659,642 examples.
+- **Track names.** The tracks are named for what they count. The general-scale track counts every
+  eligible example; the human-authored track counts only verified human-authored pairs. A set's
+  human-authored content is kept distinct from content original to that set.
+- **The contested items.**
+  - Cendol's 187 safety and 125 identity prompts do not count as human-authored pairs. A paper
+    saying prompts were written by hand does not establish who wrote both the prompt and the
+    response.
+  - CIDAR's roughly 891 teacher answers stay outside the verified count. Existing human-written
+    source material is not a newly authored instruction-response pair.
+  - Typhoon-S keeps its boundary exemption.
+  - WangchanThaiInstruct counts its 35,014 paper-verified pairs. Its other card rows stay unknown.
+  - WangchanX-FLAN's 12.2k pairs stay human-authored but are marked as imported from
+    WangchanThaiInstruct.
+- **Option D** stays a baseline, not policy. B is preferred because it sets reproducible ceilings
+  for future sets while keeping the rubric.
+
+The implementation is in this PR:
+- the recipe note;
+- the ten instruction records, whose values state their counts by provenance and whose sources
+  were re-read on 2026-11-11;
+- no score or peer relation changes.
