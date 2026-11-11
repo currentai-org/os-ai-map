@@ -164,3 +164,4 @@ file under `sources/`.
    its evidence and depth-ladder validation (R-2026-11-11-e).
 5. **CHOCLO, Trueque and the LatamGPT Corpus** wait on an investigation of their Indigenous-language
    content. Incidental coverage alone does not satisfy the purpose test (R-2026-11-11-f, deferred).
+   The check is in [`2026-11-11-latin-american-seeds-investigation.md`](2026-11-11-latin-american-seeds-investigation.md).
