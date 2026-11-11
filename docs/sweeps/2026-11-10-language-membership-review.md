@@ -58,7 +58,9 @@ was already outside the language categories for its purpose, not its language.
     recomputes the ladder only inside `language_specific_eval_sets`.
   - **Openness.** It is 2, `gated`. It is re-derived under `benchmark_eval_data`'s recipe with
     `build.check_rubric`, which reads the same shared dataset ladder.
-  - **Adoption.** It is null today and stays null.
+  - **Adoption.** It is level 1, with reach below 1,000 (571 Hugging Face downloads in the
+    trailing 30 days). The move preserves that value. Capability is the null score, and IndoNLU's
+    overall score reflects adoption alone, before and after the move.
   - **Peers.** No product names IndoNLU as `relative_to`, so nothing is re-pointed.
 - **Effect on the category.** `language_specific_eval_sets` falls from 22 sets to 21. Its stage
   count is recomputed.
@@ -140,14 +142,25 @@ reopen the boundary call, so its score stays as it is (capability 3, R-2026-11-0
 
 `language_specific_datasets.yaml`'s comment names "Chinese, Japanese, Korean, Spanish or
 Portuguese" as languages that fail the language test. Under the classification, Korean is below the
-line. The membership PR replaces the list with a pointer to the reference and the classification
-table, so the comment does not restate a rule that now lives elsewhere.
+line. `language_specific_eval_sets.yaml`'s comment repeats the same list ("Chinese, Japanese,
+Korean, Spanish and Portuguese are out"). This review changes no file under `sources/`. The
+implementation PR that moves IndoNLU updates the comments in both categories: it removes the obsolete
+exclusion of Korean and replaces each list with a pointer to the reference and the classification
+table, so neither comment restates a rule that now lives elsewhere.
 
-## Decisions for the maintainer
+## Decisions
 
-1. **IndoNLU:** move to `benchmark_eval_data`, with the score changes above?
-2. **TurkishMMLU:** stay on the purpose test, re-read quarterly?
-3. **SOLD:** stay in `language_specific_datasets`?
-4. **KMMLU:** add it to `language_specific_eval_sets` through `add-product`, as separate work?
-5. **The three Latin American seeds:** check them for Indigenous-language content before confirming
-   that they stay out?
+The maintainer ruled on 2026-11-11 (R-2026-11-11-b to -f). This review is the record; it changes no
+file under `sources/`.
+
+1. **IndoNLU** moves to `benchmark_eval_data` in a separate implementation PR, with its scores
+   recalculated under that category's recipe. Its adoption (level 1, reach below 1,000) is preserved
+   and its capability is the null score. The same PR updates the comments in both language
+   categories, including the obsolete exclusion of Korean (R-2026-11-11-b).
+2. **TurkishMMLU** stays in `language_specific_eval_sets` on the purpose test, revisited quarterly
+   (R-2026-11-11-c).
+3. **SOLD** stays in `language_specific_datasets` with capability 3 (R-2026-11-11-d).
+4. **KMMLU** is approved for separate `add-product` work in `language_specific_eval_sets`, subject to
+   its evidence and depth-ladder validation (R-2026-11-11-e).
+5. **CHOCLO, Trueque and the LatamGPT Corpus** wait on an investigation of their Indigenous-language
+   content. Incidental coverage alone does not satisfy the purpose test (R-2026-11-11-f, deferred).
