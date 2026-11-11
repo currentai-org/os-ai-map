@@ -3410,3 +3410,103 @@ rulings:
     executor: agent
     lands_in: [docs/reference/language-classification.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-11-a
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-r]
+    question: >-
+      The Artio measurements model read the Open Library extract at the commit of #1000's branch while
+      the PR was open. Once #1000 merges, may production scoring keep reading that snapshot?
+    ruling: >-
+      No. After the merge the model is re-pinned to the extract's commit on main, the revision is
+      deployed, its mirror is resynced, and the live contract and drift checks are rerun. Production
+      scoring never depends on a snapshot pinned only to a pull request's commit.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: []
+
+  - id: R-2026-11-11-b
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j, R-2026-11-08-a]
+    question: >-
+      IndoNLU's only target language, Indonesian, is robustly high, so the language half puts it out of
+      language_specific_eval_sets. Does it move to benchmark_eval_data?
+    ruling: >-
+      Yes, in a separate implementation PR. Its scores are recalculated under benchmark_eval_data's recipe.
+      Its adoption, level 1 with reach below 1,000, is preserved through the migration; its capability is
+      the null score. The same PR updates the comments in both language_specific_datasets and
+      language_specific_eval_sets, including removing the obsolete exclusion of Korean. The review record
+      (#1001) changes no file under sources/.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-c
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      Turkish is unresolved (high by CLD2, mid by FineWeb-2), so the language half neither admits nor
+      excludes TurkishMMLU. Does it stay in language_specific_eval_sets?
+    ruling: >-
+      It stays, on the purpose test, and is revisited each quarter when the classification refreshes.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-d
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-08-c]
+    question: >-
+      Does the classification reopen SOLD's placement or its score?
+    ruling: >-
+      No. SOLD stays in language_specific_datasets with capability 3.
+    status: in-force
+    executor: none
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-e
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      Korean is mid, below the membership line, so KMMLU (seeded to benchmark_eval_data) is eligible for
+      language_specific_eval_sets. Is it added?
+    ruling: >-
+      Approved as separate add-product work in language_specific_eval_sets, subject to its evidence and
+      to validation on the depth ladder.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-f
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      CHOCLO, Trueque and the LatamGPT Corpus target Spanish or Portuguese, which are high, and fail the
+      purpose test as built. Do they stay out?
+    ruling: >-
+      Undecided until their Indigenous-language content is investigated. Incidental coverage of an
+      Indigenous language alone does not satisfy the purpose test.
+    status: deferred
+    executor: agent
+    lands_in: []
+    applied_in: []
+    reasoning: >-
+      The maintainer asked for an investigation of each corpus's Indigenous-language content before
+      deciding.

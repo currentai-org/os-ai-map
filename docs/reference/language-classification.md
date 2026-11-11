@@ -119,8 +119,8 @@ language, such as grammars and descriptive literature, is context and not an inp
   Library's monthly data dumps, never from its search API, which Open Library intends for
   human-facing discovery rather than as a data backend. `build/openlibrary_extract.py` builds the
   extract from one editions dump, counting distinct works per MARC language code, and the result is
-  pinned in `sources/snapshots/` with the dump's URL and SHA-256. The model refuses an extract whose
-  digest differs. A language the extract does not count is `unmeasured`, never zero.
+  pinned in `sources/snapshots/` with the dump's URL and SHA-256. The model reads the extract at a
+  commit on `main`, never at a pull request's commit, and refuses an extract whose digest differs. A language the extract does not count is `unmeasured`, never zero.
 
 Written material is banded **A** (high) to **D** (very low).
 
