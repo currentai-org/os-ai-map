@@ -3533,3 +3533,118 @@ rulings:
     executor: agent
     lands_in: [docs/sweeps/2026-11-11-language-yardstick-dry-run.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1003']
+
+  - id: R-2026-11-11-h
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", R-2026-10-30-k, R-2026-11-10-k, R-2026-11-10-u, R-2026-11-11-g]
+    question: >-
+      The scored implementation proposal finds that under S3 with M2 nine language_specific_datasets
+      products rise and no rung band holds any of them below its new cap. Is S3 with M2 adopted as
+      scoring policy?
+    ruling: >-
+      Yes. The size caps relax by the number of confirmed yes axes in the resource profile (three, two,
+      one, none): text and parallel text by 1x, 10x, 100x and 1,000x; speech by 1x, 10x, 30x and 100x.
+      Unresolved axes earn no relaxation, and multilingual products keep today's caps (M2). The nine
+      bands are approved: Icelandic Gigaword Corpus 4, Korpus Malti 3, CorpusNos 3, Latxa Corpus 3,
+      Nepali Text Corpus 3, Khmer ASR Cultural Dataset 3, Kazakh Speech Corpus 2 4, Northern Sami web
+      corpus 2, ViXSD 2. Latxa publishes 3, the least-relaxed score, and keeps its range to 4 in the
+      evidence. The changes are made in a separate implementation PR with the revised recipe, every
+      affected peer relation and a complete score-change diff.
+    reasoning: >-
+      S3 is a moderate, defensible relaxation, and M2 avoids assigning a per-language benefit to an
+      undifferentiated multilingual corpus.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-i
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", language_specific_datasets]
+    question: >-
+      Three rung readings turn on whether a detailed card without a paper counts as documentation and
+      whether community fine-tunes count as downstream use: Icelandic Gigaword Corpus, Kazakh Speech
+      Corpus 2 and the Khmer ASR Cultural Dataset. Which readings hold?
+    ruling: >-
+      All three read rung 4. A paper is not mandatory for a documented resource, and a community
+      fine-tune is legitimate downstream use when its attribution to the dataset is explicit and
+      verifiable. Neither is accepted merely because a generic Hugging Face tag exists.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-j
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", language_specific_datasets]
+    question: >-
+      Nine peer relations break once the nine bands move, because the two sides now sit on different
+      yardsticks. How are they repaired?
+    ruling: >-
+      Re-point each to a same-modality, same-yardstick peer wherever a defensible comparison exists.
+      Where none exists, remove relative_to and justify the band directly from the rubric; do not invent
+      a weak comparison to preserve a link. Check both outgoing relations and references from other
+      products, including SMUGRI data and L3Cube-MahaCorpus.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-k
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", R-2026-11-11-g, smol, bloom-library-datasets, glot500-c, bibletts, kencorpus,
+      afridocmt, smugri-data, afrivoice]
+    question: >-
+      Do the eight products set aside from the dry run block S3 with M2?
+    ruling: >-
+      No. All eight are multilingual, so M2 keeps their current yardsticks. Their five source-accuracy
+      questions (Glot500-c's size basis, Kencorpus's untranscribed audio, BibleTTS's missing total,
+      Bloom Library's conflicting speech figures, Afrivoice's unsourced 15,000 hours) go to a separate
+      re-verification pass. This does not approve their current recorded sizes or bands.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-l
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", glot500-c]
+    question: >-
+      Glot500-c's paper describes a 600 GB assembled corpus; its public release is 308 GB. Which does the
+      open product's size cap read?
+    ruling: >-
+      The 308 GB public release. The full corpus remains context.
+    reasoning: >-
+      Including inaccessible or nonredistributable material in an open-release size measurement would
+      misrepresent the resource available to users.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-m
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", "#1004", R-2026-10-30-c, R-2026-11-08-w, R-2026-11-11-h]
+    question: >-
+      #951 was held until the language-adjusted yardsticks were adopted. Now that S3 with M2 is adopted,
+      does the hold lift?
+    ruling: >-
+      Yes, for revision. The instruction-data cap is redesigned against the adopted yardstick policy,
+      keeping human-curated data distinct from generated and translated data. #951's existing draft is
+      not merged unchanged.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: []

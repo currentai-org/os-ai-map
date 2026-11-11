@@ -116,17 +116,18 @@ written material, with U for unresolved. The 32 products not listed keep their b
 | Khmer ASR Cultural Dataset | 728 h | `khm` Y/Y/N | 2 | **4** | **4** | **4** | **3** | **3** | **3** | **3** | **3** | **3** |
 | Korpus Malti | 467M tokens | `mlt` Y/N/N | 1 | **4** | **4** | **4** | **3** | **3** | **3** | **2** | **2** | **2** |
 | Latxa Corpus | 4.20B tokens | `eus` Y/U/N | 2 | **4 (to 5)** | **4 (to 5)** | **4 (to 5)** | **3 (to 4)** | **3 (to 4)** | **3 (to 4)** | **3** | **3** | **3** |
-| Llamacha monolingual Quechua corpus | 93M bytes | `que` Y/Y/N | 1 | **2** | **2** | **2** | 1 | 1 | 1 | 1 | 1 | 1 |
+| Llamacha monolingual Quechua corpus | 373 MB (about 93M tokens, estimated) | `que` Y/Y/N | 1 | **2** | **2** | **2** | 1 | 1 | 1 | 1 | 1 | 1 |
 | NaijaVoices | 1,800 h | `hau` U/Y/U, `ibo` Y/Y/N, `yor` Y/Y/N | 3 | 3 (to 4) | 3 | 3 (to 4) | 3 (to 4) | 3 | 3 (to 4) | 3 | 3 | 3 |
-| Nepali Text Corpus | 6,875M bytes | `nep` Y/Y/N | 2 | **4** | **4** | **4** | **3** | **3** | **3** | **3** | **3** | **3** |
+| Nepali Text Corpus | 27.5 GB (about 6.9B tokens, estimated) | `nep` Y/Y/N | 2 | **4** | **4** | **4** | **3** | **3** | **3** | **3** | **3** | **3** |
 | Pralekha | 3,000,000 pairs | 12 languages: Y/Y/Y×6, Y/Y/N×6 | 2 | 2 | 2 | **4** | 2 | 2 | **3** | 2 | 2 | 2 |
-| Northern Sámi web corpus | 28M bytes | `sme` Y/N/N | 1 | **3** | **3** | **3** | **2** | **2** | **2** | 1 | 1 | 1 |
+| Northern Sámi web corpus | 113 MB (about 28M tokens, estimated) | `sme` Y/N/N | 1 | **3** | **3** | **3** | **2** | **2** | **2** | 1 | 1 | 1 |
 | ViXSD | 10 h | `xho` Y/Y/N | 1 | **2** | **2** | **2** | **2** | **2** | **2** | 1 | 1 | 1 |
 | Vuk'uzenzele corpus | 60,000 pairs | 11 languages: Y/Y/N×8, Y/Y/Y×2, Y/N/N×1 | 1 | 1 | 1 | **2** | 1 | 1 | 1 | 1 | 1 | 1 |
 | WAXAL | 1,250 h | 29 languages: U/Y/N×13, Y/Y/N×11, U/N/U×2, Y/Y/U×1, … | 3 | 3 (to 4) | 3 | 3 (to 4) | 3 (to 4) | 3 | 3 (to 4) | 3 | 3 | 3 |
 | ZA African Next Voices | 3,000 h | 7 languages: Y/Y/N×6, Y/N/N×1 | 3 | **4** | 3 | **4** | **4** | 3 | **4** | 3 | 3 | 3 |
 
-Sizes in bytes are divided by 4 for the text thresholds, as on 2026-11-08.
+A size known only in bytes is shown with its token estimate at four bytes a token, the estimate the
+text thresholds read, as on 2026-11-08.
 
 ### The five IIT Bombay comparisons
 
