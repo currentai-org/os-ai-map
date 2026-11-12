@@ -1,0 +1,114 @@
+product: stable-audio-tools
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the stable-audio-tools code. The third-party code it vendors, under LICENSES/, is MIT as well where read
+    source:
+      value: public
+      detail: Stability-AI/stable-audio-tools
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary path; Stability sells its largest audio model through a separate
+        API and enterprise offering, not as an edition of this library
+  confidence: high
+  note: The library is MIT-licensed and fully public, training code included. Stability AI's paid audio offering is a hosted
+    model, not a closed edition of this code.
+  raw: license:MIT(OSI; the stable-audio-tools code. The third-party code it vendors, under LICENSES/, is MIT as well where
+    read);source:public(Stability-AI/stable-audio-tools);core-gated:ungated(no ee, enterprise, commercial or proprietary path;
+    Stability sells its largest audio model through a separate API and enterprise offering, not as an edition of this library)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Stability-AI/stable-audio-tools/main/LICENSE
+    shows: 'LICENSE body: "MIT License / Copyright (c) 2023 Stability AI".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a1fac33b7bcd791b74fb33aeb439f825e7277e239fc119fb7d2ab6f084a0c101
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Stability-AI/stable-audio-tools/main/LICENSES/LICENSE_META.txt
+    shows: 'Vendored-code license LICENSES/LICENSE_META.txt: "MIT License / Copyright (c) Meta Platforms, Inc. and affiliates."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Stability-AI/stable-audio-tools/main/LICENSES/LICENSE_NVIDIA.txt
+    shows: 'Vendored-code license LICENSES/LICENSE_NVIDIA.txt: "MIT License / Copyright (c) 2022 NVIDIA CORPORATION."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: da9858d516047d82096d01c112a61bd67f26d289039464d668a1d45f91738ecc
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/Stability-AI/stable-audio-tools/files/main
+    shows: 'Full file list of the main branch: stable_audio_tools/ (models, training, inference, interface), train.py, docs/
+      and LICENSES/; no ee/, enterprise/, commercial/ or proprietary/ path.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b046fcd41252a67a04154eba46b3cbe542c01c03a6bbb2e48777e93773bf7bf8
+    establishes:
+    - source
+    - core-gated
+  - url: https://stability.ai/news-updates/meet-stable-audio-3-the-model-family-built-for-artistic-experimentation-with-open-weight-models
+    shows: 'Stability AI announcement: "Stable Audio 3.0 Large is available via the Stability AI API and self-hosting for
+      enterprise deployments", a hosted offering separate from the open code.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: adeda8d0dcb7799b413fc2add29bcce7d46109023a4e8f19ec515465d756a026
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as PyPI downloads of the stable-audio-tools package, published by Stability AI. The README's
+    main install path clones the repository, which is not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/stable-audio-tools/recent
+    shows: 'pypistats for stable-audio-tools: last_month 2244.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54a44fdf5c3f9ebb3a9c7cbfd5c49fd82ca28ae68c5d863f017facdc846c19e4
+  - url: https://pypi.org/pypi/stable-audio-tools/json
+    shows: 'PyPI stable-audio-tools 0.0.20, uploaded 2026-05-20: author "Stability AI", summary "Training and inference tools
+      for generative audio models from Stability AI".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 169b8996a5decdec181ba95e001fef4afac17e096af24517301e828242e6bea6
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 'audio only, across several model families: Stable Audio 1.0 and 2.0 text-to-audio diffusion, Dance Diffusion waveform
+    models and their autoencoders, with training, LoRA fine-tuning and inference for each'
+  confidence: high
+  relative_to: audiocraft
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/facebookresearch/audiocraft/main/README.md
+      shows: 'Re-read of the peer: the AudioCraft README still lists MusicGen, AudioGen, MAGNeT and JASCO with inference and
+        training code, and no image, video or 3D model. Both libraries run several audio model families and nothing outside
+        audio, which keeps them level.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0240bd901c60c42508680e6beb580574836fd44b8476e721f811831fd2780638
+  note: stable-audio-tools trains and runs more than one family of audio generation models, as AudioCraft does, and like it
+    covers audio alone.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://ungh.cc/repos/Stability-AI/stable-audio-tools/files/main
+    shows: 'Model configs: txt2audio/stable_audio_1_0.json and stable_audio_2_0.json, four dance_diffusion configs, and autoencoder
+      configs for Stable Audio 1.0 and 2.0; a models/lora package.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b046fcd41252a67a04154eba46b3cbe542c01c03a6bbb2e48777e93773bf7bf8
+  - url: https://raw.githubusercontent.com/Stability-AI/stable-audio-tools/main/README.md
+    shows: 'README: "Training and inference code for audio generation models"; a Gradio interface for stabilityai/stable-audio-open-1.0;
+      train.py for training and fine-tuning.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 55d170f97663ca9ce361e73ca680c7e1399cfc9ee1604e59a226dacffdad3a46
