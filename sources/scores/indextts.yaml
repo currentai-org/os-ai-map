@@ -1,0 +1,137 @@
+product: indextts
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: IndexTTS-2.5 checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: no training-data statement on the card or the README
+    code:
+      value: partial
+      detail: inference code and a web UI; no training pipeline
+    license:
+    - name: bilibili-Model-Use-License
+      detail: IndexTTS-2.5 weights and the repository code; a separate license is required above 100 million
+        monthly active users or RMB 1 billion annual revenue
+    context:
+      superseded-release:
+        value: IndexTTS-2
+        detail: 2025, the model the bilibili license was written for; IndexTTS-1.5 before it is tagged Apache-2.0
+          on the Hub
+  governing_release: IndexTTS-2.5 (2026-08)
+  confidence: high
+  note: IndexTTS-2.5 downloads freely, and the bilibili Model Use License allows commercial use for everyone except the very
+    largest companies, which must ask for a separate license. Bilibili publishes inference code only and says nothing about
+    the training data.
+  raw: weights:open(IndexTTS-2.5 checkpoints on the Hub, ungated);data:closed(no training-data statement on the card or the
+    README);code:partial(inference code and a web UI; no training pipeline);license:bilibili-Model-Use-License(IndexTTS-2.5
+    weights and the repository code; a separate license is required above 100 million monthly active users or RMB 1 billion
+    annual revenue);superseded-release:IndexTTS-2(2025, the model the bilibili license was written for; IndexTTS-1.5 before
+    it is tagged Apache-2.0 on the Hub)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/IndexTeam/IndexTTS-2.5/raw/main/LICENSE
+    shows: 'License file in the IndexTTS-2.5 repository: "bilibili Model Use License Agreement"; 2.2: if your products "had
+      more than 100 million monthly active users" or your annual revenue "exceeded RMB 1 billion, You must request a separated
+      license from us"; 2.1 grants a "royalty-free limited license to Use the Model".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cc7da9ea0f8a97ef15ab3bf0389e636ce79ffca1aef5489520796ac87d87a87b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/index-tts/index-tts/HEAD/LICENSE
+    shows: 'Repository LICENSE: the same "bilibili Model Use License Agreement", whose "Model" includes "model weights and
+      final code ... published by us at https://github.com/index-tts/index-tts".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 53875532237e0a97b17a41721556ff57e93193fc566e48c3a0febe6e35bb5343
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/IndexTeam/IndexTTS-2.5
+    shows: 'Hub record: "gated":false, "license_name":"bilibili-model-license", with gpt.pth, s2mel.pth and codec.pth in the
+      file list.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6dfd98f4bfdf5bb1f912f7e82fc12bfde30d881c734a341660d3917c88640fce
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/IndexTeam/IndexTTS-2.5/raw/main/README.md
+    shows: 'Card: "**License:** [bilibili Model Use License Agreement](LICENSE)"; "Parameters: ~0.8B (GPT backbone)"; "Languages:
+      Chinese, English, Japanese, Spanish, Arabic"; Getting Started covers download and inference only.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d21e2ed55013ce0c456b9aa6d4fab7222365bfad10dd839155da0ce36fa93001
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/index-tts/index-tts/HEAD/README.md
+    shows: 'README: "`2026/08/10` We release **IndexTTS-2.5**"; installation, inference, web UI and evaluation sections and
+      "This project is released under the [bilibili Model Use License Agreement](LICENSE)"; no training instructions.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 70a238e697b1c59fa98b56c2275d70c5dd8aa7dc9bcf7c9cea649206ab7843ce
+    establishes:
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=IndexTeam&limit=100
+    shows: 'Hub listing: IndexTTS-2.5 created 2026-08-10 tagged "license:other"; IndexTTS-2 created 2025-06-18 with no license
+      tag; IndexTTS-1.5 created 2025-05-13 tagged "license:apache-2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e68e962109f41e122066b7b6948f802a71364832aad98ed65ebd6128f18be6ca
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month, summed across the IndexTTS-2.5, IndexTTS-2 and IndexTTS-1.5 checkpoints.
+    The ModelScope copies are not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=IndexTeam&limit=100
+    shows: '"downloads":29259 for IndexTeam/IndexTTS-2.5, 22823 for IndexTeam/IndexTTS-2 and 2541 for IndexTeam/IndexTTS-1.5.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e68e962109f41e122066b7b6948f802a71364832aad98ed65ebd6128f18be6ca
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: self-reported CV3-Eval zero-shot WER and speaker similarity
+  value: IndexTTS is not on the Artificial Analysis TTS leaderboard. The README reports zero-shot cloning on CV3-Eval in Chinese,
+    English, Spanish and Japanese (Arabic on an in-house set), where IndexTTS2.5-RL averages 6.00 WER and 73.63 speaker similarity
+    beside CosyVoice 3, OmniVoice, VoxCPM2 and Fish Audio S2 Pro.
+  confidence: low
+  note: IndexTTS has no listener rating yet, so it is placed on its own results on the public CV3-Eval test set, where its
+    figures sit close to CosyVoice 3, OmniVoice and VoxCPM2.
+  relative_to: cosyvoice
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/FunAudioLLM/Fun-CosyVoice3-0.5B-2512/raw/main/README.md
+      shows: 'Fun-CosyVoice3 card: a zero-shot results table with columns "test-zh<br>CER (%)", "test-en<br>WER (%)" and speaker
+        similarity on the Seed-TTS evaluation sets; CosyVoice has no entry on the 104-row Artificial Analysis TTS leaderboard
+        read the same day, so it is still an unrated synthesizer placed on its own shared-test-set results.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: d4ec0fe1342b60a424ce1cd8971c670d26be38068a96148bcb6a1b8a334c3088
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/index-tts/index-tts/HEAD/README.md
+    shows: 'README "Table 1: Zero-shot TTS on CV3-Eval (Arabic uses an in-house test set)": rows for VoxCPM2, OmniVoice, Moss-TTS
+      1.5, CosyVoice3-0.5B, CosyVoice3-1.5B, FireRedTTS-2, Fish Audio S2 Pro, Qwen3-TTS, IndexTTS2.5 (Avg 6.75 / 73.18) and
+      IndexTTS2.5-RL (Avg 6.00 / 73.63).'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 70a238e697b1c59fa98b56c2275d70c5dd8aa7dc9bcf7c9cea649206ab7843ce
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: The 104-row leaderboard has no IndexTTS entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6850775d138e7333206ce45f87e6e3b69db171d663fb2f97d9241e6a44e754a
