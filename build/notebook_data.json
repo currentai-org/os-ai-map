@@ -51128,24 +51128,31 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for low-resource translation data",
-            "value": "SMOL holds 6.1 million professionally translated tokens across 124 languages at its paper's release (221 languages on the card now), documented in two papers, with no named model or benchmark found beyond its own paper's experiments.",
+            "value": "SMOL's paper counts 6.1 million translated tokens in 124 languages at release: about 76,000 sentence pairs in SmolSent and about 27,000 translated documents in SmolDoc, with no total in sentence pairs. The card now lists 221 languages and an April 2026 expansion without new totals. It is documented in two papers, with no named model or benchmark found beyond its own paper's experiments.",
             "confidence": "medium",
-            "note": "SMOL gives more than two hundred low-resource languages professionally translated text, documented in two papers, though no model or benchmark beyond its own experiments is known to be built on it. At a few million translated tokens it is minute beside the billions of pairs in the largest parallel collections, and smaller even than the IIT Bombay English-Hindi corpus for one language pair.",
+            "note": "SMOL gives a long list of low-resource languages professionally translated sentences and documents, documented in two papers, though no model or benchmark beyond its own experiments is known to be built on it. Its papers and card count tokens, sentences and documents but never sentence pairs, and what they do count is minute beside the billions of pairs in the largest parallel collections and smaller than the IIT Bombay English-Hindi corpus for a single language pair.",
             "relative_to": "iitb-english-hindi",
             "relation": "one_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2502.12301",
-                "shows": "\"SMOL has been translated into 124 (and growing) under-resourced languages ... for a total of 6.1M translated tokens.\"",
-                "accessed": "2026-09-24",
+                "shows": "\"SMOL has been translated into 124 (and growing) under-resourced languages (125 language pairs), including many for which there exist no previous public resources, for a total of 6.1M translated tokens.\"",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "6d4618cc8c5bbbc878476d4868fab42f9437e0154bed2d15fede224ec8063988"
+                "content_sha256": "19d4d3448752bd0a04ec610ba6257bb1cb1b824d9521d5067f47e5b5f74ff3de"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2502.12301",
+                "shows": "Table 2, whole dataset: SmolSent 88 languages and 76k examples, SmolDoc 106 languages and 27k examples; Table H.1 notes that a SmolSent example is a sentence pair and a SmolDoc example a document or paragraph.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "34025af60951c59eaaa80477108ed151a9b5605534baecba6d78604f95a1cca6"
               },
               {
                 "url": "https://huggingface.co/datasets/google/smol/raw/main/README.md",
-                "shows": "\"a collection professional translations into 221 Low-Resource Languages\"; \"the first 113 SMOL languages were commissioned by professional translation vendors\".",
-                "accessed": "2026-09-24",
+                "shows": "\"a collection professional translations into 221 Low-Resource Languages\"; \"sentence-level translations into 114 language pairs\"; \"for a 5x increase in dataset size\", with no new total.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "ed1996cb6e9b01b5f4588bd7d9ae5ed642d278d26d5795e20d176540b6a88b85"
               }
@@ -51624,26 +51631,40 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for multilingual storybook data",
-            "value": "The Bloom Library datasets hold community-written storybooks in 363 languages, with a median of two stories per language, in text, captioning, storytelling and speech sets documented in an EMNLP paper, and their text was a small part of the BLOOM model's training data.",
+            "value": "The Bloom Library datasets hold community-written storybooks in 363 languages, with a median of two stories per language, in text, captioning, storytelling and speech sets documented in an EMNLP paper, and their text was a small part of the BLOOM model's training data. The language-modeling set's three text files total about 43 MB (about 11 million tokens, estimated; no token count is stated). The paper gives two speech figures that disagree: 428 hours of audio in its prose and 2,873 minutes (about 48 hours) in Table 1. This record uses Table 1's figure, which matches the paper's per-family and per-language counts.",
             "confidence": "medium",
             "note": "The datasets gather community-written storybooks in hundreds of languages into text, captioning, storytelling and speech sets documented in an EMNLP paper, and their text went into the BLOOM model's training data as a small part of its corpus. With a couple of stories for most languages they are tiny beside English pretraining corpora of trillions of tokens, and a pooled corpus such as the one behind the Glot language model gathers far more text per language.",
             "relative_to": "glot500-c",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/sil-ai/bloom-lm",
-                "shows": "\"It includes data from 364 languages across 31 language families. There is a mean of 32 stories and median of 2 stories per language.\" \"this data was used in the training of the BLOOM model\".",
-                "accessed": "2026-09-24",
+                "shows": "\"It includes data from 364 languages across 31 language families. There is a mean of 32 stories and median of 2 stories per language.\" \"Although this data was used in the training of the\"; \"this dataset only represents a small portion of the data used to train that model\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "623301c9e5dcac698800db4725ec1e521d0569ff6d0c129ad0a39b56f865126a"
+                "content_sha256": "be4ca24aaecdfbb702b4dabf45492db880deb514466d58077ff50b647ea66095"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/sil-ai/bloom-lm/tree/main",
+                "shows": "File sizes in bytes: bloom_lm_train.json 35046861, bloom_lm_val.json 4276285, bloom_lm_test.json 4039385.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "04e1fa5ad4913a3ae24a8de9fea19996a5c11da02a06bb97e6f60fa54049b968"
               },
               {
                 "url": "https://arxiv.org/abs/2210.14712",
-                "shows": "\"covers 363 languages across 32 language families\" for language modeling, image captioning, visual storytelling, and speech.",
-                "accessed": "2026-09-24",
+                "shows": "\"the initial release of the Bloom Library datasets covers 363 languages across 32 language families\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "3878addb5c6410ccfad537c4cba14ecc2afa20803a8f2af85445fa58dc2b8908"
+                "content_sha256": "f56d9fdd4f7916c33b057a99ac752d5f97aafd536beeec248e3203ea92b5f9b1"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2210.14712",
+                "shows": "\"Our bloom-speech dataset comprises 428 hours of total audio in 56 languages\"; \"a mean of 159 minutes and median of 31 minutes of audio per language family\"; Table 1 total row: 25680 audio files, 2873 audio minutes.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "dd08535c4d1715682030721855a019cfdd911364597d168452a68e936df15805"
               }
             ]
           },
@@ -51655,7 +51676,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           }
         },
         {
@@ -52231,22 +52252,36 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for massively multilingual pretraining text",
-            "value": "Aggregated pretraining text in 511 mostly low-resource languages, drawn from more than 150 existing datasets and website crawls, documented source by source in an ACL paper, and used to train the Glot500-m model.",
+            "value": "Aggregated pretraining text in 511 mostly low-resource languages, drawn from more than 150 existing datasets and website crawls, documented source by source in an ACL paper, and used to train the Glot500-m model. The public Hugging Face release holds 308 GB in 1,225,300,317 rows (about 77 billion tokens, estimated). The paper trained Glot500-m on a 600 GB corpus of 1.5 billion sentences, which includes sources that cannot be redistributed and are offered only on request.",
             "confidence": "medium",
-            "note": "The Glot corpus reaches more than five hundred mostly low-resource languages, more than any other open pretraining corpus here, records the source, collection method and license of each part, and trained its builders' Glot encoder, though the public release leaves out sources that cannot be redistributed. It holds a few tens of billions of tokens spread over all those languages, a sliver beside English pretraining sets such as FineWeb that run to trillions.",
-            "last_verified": "2026-09-24",
+            "note": "The Glot corpus reaches hundreds of mostly low-resource languages, more than any other open pretraining corpus here, records the source, collection method and license of each part, and trained its builders' Glot encoder. Its size is taken from the public release, because parts of the full corpus cannot be redistributed, and even the full corpus is a sliver beside English pretraining sets such as FineWeb that run to trillions of tokens.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2305.12182",
                 "shows": "\"collect and clean Glot500-c, a corpus that covers these 511 languages and allows us to train Glot500-m\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "80c067fb1bd37cf23d4bcc6ee396ccfdd2a7243dfb85a7ee28ae6672cc94a952"
               },
               {
+                "url": "https://arxiv.org/pdf/2305.12182",
+                "shows": "\"We train the multilingual model Glot500-m on a 600GB corpus\"; Table 1: Glot500-c, 511 languages, 1.5B sentences; \"certain sources prohibit the redistribution of data. As such, data from these sources is omitted from the published version of Glot2000-c.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a859535cfda27cd6bc7868f37a2c69e6f143af93ec96863fccd721c9bd0e6584"
+              },
+              {
+                "url": "https://huggingface.co/datasets/cis-lmu/Glot500",
+                "shows": "Dataset panel: Number of rows 1,225,300,317; Total file size 308 GB. Card: \"Parts of the original Glot500 dataset cannot be published publicly.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "8a372046cd7d7891ab5c4bebcd4a93b3950067d8d4e7d91a068444bc4f96bbcf"
+              },
+              {
                 "url": "https://raw.githubusercontent.com/cisnlp/Glot500/main/README.md",
                 "shows": "\"Glot500-c is a subset of Glot2000-c for over 500 languages, including languages with more than 30,000 sentences.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "d8a434b3a33059b79e50676da4623f8fb0c4bb114c7fb26b6816b2ce4f6f6bbc"
               }
@@ -52260,7 +52295,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           }
         },
         {
@@ -52369,7 +52404,7 @@
             "confidence": "medium",
             "note": "WAXAL pairs transcribed natural speech in nineteen languages with studio text-to-speech recordings in seventeen, all recorded and transcribed by people and documented in a paper, and recognizers such as Ethio-ASR are trained on it, with part of its audio drawn from Afrivoice. Its roughly twelve hundred transcribed hours trail Afrivoice's thousands for many of the same languages and are a sliver of the hundreds of thousands in the largest English speech corpora.",
             "relative_to": "afrivoice",
-            "relation": "at",
+            "relation": "one_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
@@ -52476,7 +52511,7 @@
             "confidence": "medium",
             "note": "NaijaVoices gives Igbo, Hausa and Yoruba about six hundred hours each from thousands of speakers with expert-curated text and a paper on its collection, and recognizers such as a Hausa model from asr-africa are trained on it. At under two thousand hours across three languages it holds less than Afrivoice, which has thousands of hours across eighteen, and far less than the hundreds of thousands in the largest English speech corpora.",
             "relative_to": "afrivoice",
-            "relation": "at",
+            "relation": "one_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
@@ -52669,60 +52704,81 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for African-language speech",
-            "value": "Speech recorded by people describing images, plus scripted readings, about 15,000 hours in 18 languages across five releases, documented in per-release cards, with Digital Umuganda's Mbaza ASR model trained on it and WAXAL listing it as a source.",
+            "value": "Speech recorded by people describing images, plus scripted readings, in 18 languages across five current releases, documented in per-release cards, with Digital Umuganda's Mbaza ASR model trained on it and WAXAL listing it as a source. No card states a product total; summed, the five hold 15,032.46 recorded hours, 10,391.40 of them transcribed. The Kinyarwanda, Swahili and second multilingual releases state 3,155.64, 3,096.87 and 2,421.29 transcribed hours; the first multilingual and Ethiopian releases give per-language rows only, summing to 612.90 and 1,104.70, the Ethiopian figure counting scripted readings as transcribed, as its card does. Older versions kept in other repositories are not added.",
             "confidence": "medium",
-            "note": "Afrivoice gives eighteen African languages image-described and scripted speech across five releases, more than any other open collection for most of them, and Digital Umuganda's Mbaza recognizer is trained on it while Google's WAXAL corpus draws on it, though it has release cards but no paper. Some releases transcribe only part of the audio, leaving a few thousand transcribed hours, far from the hundreds of thousands in the largest English speech corpora.",
-            "last_verified": "2026-09-24",
+            "note": "Afrivoice gives African languages from Kinyarwanda and Swahili to Amharic and Wolof image-described and scripted speech across five releases, more than any other open collection for most of them, and Digital Umuganda's Mbaza recognizer is trained on it while Google's WAXAL corpus draws on it, though it has release cards but no paper. Two releases transcribe only a fraction of their audio, and all five together hold a small fraction of the hundreds of thousands of transcribed hours in the largest English speech corpora.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice",
-                "shows": "Six-language table: Shona 574.16, Lingala 517.13, Fulani 527.45, Malagasy 516.21, Wolof 530.74, Somali 535.51 total hours, about 100 transcribed each.",
-                "accessed": "2026-09-24",
+                "shows": "\"when available, the transcription of the audio file\"; total and transcribed hours: Shona 574.16 and 100.00, Lingala 517.13 and 100.98, Fulani 527.45 and 102.00, Malagasy 516.21 and 102.42, Wolof 530.74 and 102.96, Somali 535.51 and 104.54.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "bedbddecd4f861ff73d585aa7af600855ad448c6a85da2db2ab1135a0013bca4"
+                "content_sha256": "faa2e83874d9387bfb1800cbb307cd0b54c9427f601466c51068fce17764af45"
               },
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Kinyarwanda",
                 "shows": "Total 3162.88 hours, 3155.64 transcribed; models trained on it include DigitalUmuganda/Mbaza-ASR-Afrivoice-660h.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "9e9b6a46b9aa991741240560e94dc86545feabf208f254dd5f5734b5d8725c69"
+                "content_sha256": "a8fd9565eda2f30adcfd727a3692339ca781580d269f94bd03932a99674f8a9e"
+              },
+              {
+                "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili",
+                "shows": "\"This is an image prompt ASR dataset for Swahili.\"; total 3,217.56 hours, 3,096.87 transcribed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "f89fe6aca68957a72ae324b677a3ceb0cb3d2a6ee20c604de7471988dd28822e"
               },
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_V2",
-                "shows": "Kirundi, Ndau, Ndebele, Oshiwambo and Gamo table, \"Total 2,421.29\" hours.",
-                "accessed": "2026-09-24",
+                "shows": "Kirundi, Ndau, Ndebele, Oshiwambo and Gamo table, total 2,421.29 hours, all transcribed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "2f50d32e2679aca9aa84d71ea7e43e142a4acf19f4fb0f29fe96f13ac2ea96ac"
+                "content_sha256": "76abf2d118fbd0bf76fb9b070fea5620f762e4539b666d84d1d989677154601a"
               },
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Ethiopia",
-                "shows": "Amharic, Afaan Oromo, Sidama, Wolaytta and Tigrinya in unscripted, scripted and expert categories, each language about 600 hours.",
-                "accessed": "2026-09-24",
+                "shows": "Amharic, Afaan Oromo, Sidama, Wolaytta and Tigrinya, each in unscripted, scripted and expert rows; scripted rows fully transcribed, the others partly; no total row.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "8c85d18fbc64eb741ebb986567faee316702675c42d816e50ca305eb0dd59053"
+                "content_sha256": "e2e143187af8f1cff4be9248d68e11b75a6ecd8abf397f06ee5b8d85f46dc026"
+              },
+              {
+                "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili_0.0",
+                "shows": "An earlier Swahili version: total 414.42 hours, all transcribed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "296dbdc04aecb33184ad3d7768e6e2bb6e240f85a505bc1305c5e2c3826e68a9"
+              },
+              {
+                "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_legacy",
+                "shows": "The same six-language table as the first multilingual release, Shona 574.16 total and 100.00 transcribed hours first.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c3f21637c70d2d1e28f5c2d6e3bdcdb7cb1b6216de2f050279d103f2a92c0ef5"
               },
               {
                 "url": "https://huggingface.co/datasets/google/WaxalNLP",
                 "shows": "source_datasets in the card include DigitalUmuganda/AfriVoice.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d3aaf7e5c72d0a8a939a4c7e7458f3dd49c49d6c3faf6699358535ce33c07c11"
+                "content_sha256": "bbbdc2a7d99f849c298275b3a7ff370761800d206c124548d27a3d833261483c"
               }
             ]
           },
-          "overall_score": 2.7,
+          "overall_score": 3.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           },
           "version_note": "The artifact list includes superseded and legacy repositories, which are counted with the current releases."
         },
@@ -53061,19 +53117,33 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for African text-to-speech data",
-            "value": "BibleTTS offers up to 86 hours per language of studio-quality single-speaker Bible readings, aligned for six African languages, documented in an Interspeech paper, with no use found beyond the VITS models in that paper.",
+            "value": "BibleTTS offers studio-quality single-speaker Bible readings aligned verse by verse in six African languages, from 33.3 to 86.8 hours per language and 420.3 hours in all by the sum of the paper's Table 2, which states no total. It is documented in an Interspeech paper and released on OpenSLR, with no use found beyond the VITS models in that paper.",
             "confidence": "medium",
             "note": "BibleTTS provides studio-quality single-speaker Bible readings for six African languages, with a paper on alignment and speech synthesis baselines, though no model beyond that paper uses it. At a few hundred hours of Bible text it is small beside English speech corpora of hundreds of thousands of hours, and Afrivoice records more varied speech across eighteen languages, Lingala among them.",
             "relative_to": "afrivoice",
-            "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "relation": "two_below",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2207.03546",
                 "shows": "Abstract: \"up to 86 hours of aligned, studio quality 48kHz single speaker recordings per language\"; results for TTS models with Coqui TTS.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "5ad8abc792d8d0e09a591a6b1bf871924b6006a58e4b85cf715c22571e5c48b6"
+                "content_sha256": "e4c0c17721d87a5a96a7647a9ade12f824da9fad3544b4a86757bfe49cecdcfe"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2207.03546",
+                "shows": "Table 2 aligned hours: Ewe 86.8, Hausa 86.6, Lingala 71.6, Akuapem Twi 67.1, Asante Twi 74.9, Yoruba 33.3; \"The corpus consists of data for ten languages, of which six have been aligned and formatted for immediate use to train TTS models.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "de545ffe3462f2f18e4e58591f82befc754eb1bb5dd2f52008776a334dce08de"
+              },
+              {
+                "url": "https://www.openslr.org/129/",
+                "shows": "\"This repository contains the data for the six aligned languages of the BibleTTS corpus (Asante Twi, Akuapem Twi, Ewe, Hausa, Lingala, Yoruba).\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "5aa83fa974cc6414fdf47e4738b019539cc149bb4acdea998e2df9197090c687"
               }
             ]
           },
@@ -53085,7 +53155,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           },
           "version_note": "There is no Hugging Face copy; the data is distributed through OpenSLR resource 129."
         },
@@ -53680,36 +53750,78 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Kenyan language text and speech",
-            "value": "Kencorpus holds 4,442 texts (5.6 million words) and 177 hours of speech in Swahili, Dholuo and Luhya, with companion tagging, QA and translation sets, documented in a paper, with one community translation model listed as trained on it.",
+            "value": "Kencorpus holds 4,442 texts (5,601,915 words) and 1,152 speech recordings totaling 176.5 hours in Swahili, Dholuo and Luhya, with companion tagging, QA and translation sets, documented in a paper. The recordings' card lists no transcript field, and the transcribed speech is KenSpeech's 27.5 hours of Swahili. The Hugging Face copies hold 3,787 of the texts and 915 of the recordings, and one community translation model declares the text set as training data.",
             "confidence": "medium",
-            "note": "Kencorpus gives Swahili, Dholuo and Luhya a community-sourced text and speech corpus with tagging, question answering and translation sets, documented in a paper, with one community translation model trained on it. At under two hundred hours of speech and a few million words of text it is small beside English corpora of hundreds of thousands of hours and trillions of tokens, and WURA's African web corpus trained the AfriTeVa models.",
+            "note": "Kencorpus gives Swahili, Dholuo and Luhya a community-sourced text and speech corpus with tagging, question answering and translation sets, documented in a paper, with one community translation model trained on it. Most of its audio is untranscribed, and both its speech and its few million words of text are small beside English corpora of hundreds of thousands of transcribed hours and trillions of tokens, while WURA's African web corpus trained the AfriTeVa models.",
             "relative_to": "wura",
-            "relation": "one_below",
+            "relation": "two_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2208.12081",
                 "shows": "Abstract: \"5,594 items - 4,442 texts (5.6M words) and 1,152 speech files (177hrs)\"; POS sets, 7,537 QA pairs and 13,400 translation sentences.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d892e36f29acb31b611ae9460d3bc7f524d882331ca24890b2ff876ce584d8df"
+                "content_sha256": "8330e2630d6ed55d5328fc7a51537c1a913532514dc220d4c9a93a614d73a18e"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2208.12081",
+                "shows": "Table 4.1 total row: 4,442 texts, 5,601,915 words, 1,152 speech files, 176:29:46; the STT proof of concept used \"a collection of the speech corpus that is 27hrs 31min 50 sec\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "aa2c1229e138efaa452a14ef7534936c7b21b1581e5ce33ceadd5383a9d93a71"
+              },
+              {
+                "url": "https://huggingface.co/datasets/Kencorpus/KenCorpus_audio/raw/main/README.md",
+                "shows": "\"| **Total** | **1,152** | **176h 29m 46s** |\"; the data fields are audio, language, genre, source, title, story_id and duration_seconds, with no transcript field.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "5422b55163029e87233308a04ae25cfae7d4d25e100bf696bd38f78c94934b46"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=Kencorpus/KenCorpus_audio",
+                "shows": "num_rows 915 in the default config.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b779ffd4cb3596f01c7a3afe483e8b21ef962879fbf0242dc959fef574dbd1a7"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=Kencorpus/KenCorpus_text",
+                "shows": "num_rows 3787 in the default config.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "3e5069104837f0d4e3848d8fb801072d46c01da48d54f8902815533d4773c056"
+              },
+              {
+                "url": "https://huggingface.co/datasets/Kencorpus/KenSpeech/raw/main/README.md",
+                "shows": "\"| Total Duration | 27 hours 31 minutes 50 seconds |\"; \"| transcript | string | Transcription text |\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "3f5a64e94210807ad7a4fdbc4279781a7d3ba6e39e55ac8655cf895a3e568bd0"
+              },
+              {
+                "url": "https://huggingface.co/api/models?filter=dataset:Kencorpus/KenCorpus_text",
+                "shows": "One model, Omballa/nllb-200-swa-dholuo, tagged with dataset:Kencorpus/KenCorpus_text.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b613e2810406b4dbbe00a73c9ce087b34af6a94e6152f49b5d96c102e8452e80"
               },
               {
                 "url": "https://huggingface.co/datasets/Kencorpus/KenSwQuAD/raw/main/README.md",
-                "shows": "\"7,506 question-answer pairs derived from 1,441 unique Swahili contexts\".",
-                "accessed": "2026-09-24",
+                "shows": "\"The dataset contains **7,506 question-answer pairs** derived from **1,441 unique Swahili contexts**\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "6eaabd46f8abe95eae6bd1aa78f60ffad39db05ac78efdeed1097419401631d2"
               }
             ]
           },
-          "overall_score": 1.7,
+          "overall_score": 1.0,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.7,
+          "maturity": 1.0,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
@@ -53886,9 +53998,9 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for African document translation data",
-            "value": "AfriDocMT holds 605 health and IT news documents translated by people from English into five African languages, documented in a paper, with no use found beyond that paper's experiments.",
+            "value": "AfriDocMT holds 605 health and IT news documents translated by people from English into five African languages, split into 10,000 English sentences per domain, each translated into all five; no total in sentence pairs is stated. It is documented in a paper, with no use found beyond that paper's experiments.",
             "confidence": "medium",
-            "note": "AfriDocMT gives five African languages whole health and IT news documents translated by people from English, documented in a paper, though no model or benchmark beyond its own experiments is built on it. At a few hundred documents it is minute beside the billions of pairs in the largest parallel collections, and far smaller than the IIT Bombay English-Hindi corpus for one pair.",
+            "note": "AfriDocMT gives five African languages whole health and IT news documents translated by people from English, documented in a paper, though no model or benchmark beyond its own experiments is built on it. Counted as sentence pairs it is minute beside the billions in the largest parallel collections, and far smaller than the IIT Bombay English-Hindi corpus for one pair.",
             "relative_to": "iitb-english-hindi",
             "relation": "one_below",
             "last_verified": "2026-09-24",
@@ -53896,9 +54008,23 @@
               {
                 "url": "https://arxiv.org/abs/2501.06374",
                 "shows": "Abstract: \"334 health and 271 information technology news documents, all human-translated from English\"; NMT and LLM benchmark experiments.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "6c6f9a7b44adda2f4985172daab125391db48416e27960cdbe743d5a4483e347"
+                "content_sha256": "5bfed992fa77e76ac03cd485bbe8485a18cf71d49da797c0590c990070b5fc19"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2501.06374",
+                "shows": "\"We translated the extracted 10k English sentences to the 5 African languages\"; the sentences were extracted per domain, 10k each.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "bfd75cc05c67dd509e1e05d6bbe0d5fd1d950a0173bfe854e9e2376f8ecd1ea2"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=masakhane/AfriDocMT",
+                "shows": "Sentence-level configs health and tech, num_rows 10000 each; doc_health 334 and doc_tech 271.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c7fbc9a736b0d95943a0b1577b9cadba379262dee74ba9b9725cbfd550424b4b"
               }
             ]
           },
@@ -60792,22 +60918,36 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Finno-Ugric pretraining text",
-            "value": "SMUGRI data holds about 130,000 rows of news text in seven Finno-Ugric languages with a thin card and a cited paper, and no model on Hugging Face declares it as training data.",
+            "value": "SMUGRI data holds 129,863 short news rows in seven Finno-Ugric languages, about 19 MB in memory (about 5 million tokens, estimated; no word or token count is stated), behind a short card that cites a machine translation paper, and no model on Hugging Face declares it as training data.",
             "confidence": "medium",
-            "note": "SMUGRI data gives seven Finno-Ugric languages a news collection with a one-line card, documented only through the machine translation paper it supports, and no model on Hugging Face declares it as training data. As a collection spread over several languages it is judged against English-scale corpora, and its few tens of thousands of news texts sit at the bottom of that scale.",
-            "last_verified": "2026-11-11",
+            "note": "SMUGRI data gives Finno-Ugric languages such as Komi, Udmurt and Erzya a news collection with a short card, documented only through the machine translation paper it supports, and no model on Hugging Face declares it as training data. As a collection spread over several languages it is judged against English-scale corpora, and its few million tokens of news sit at the bottom of that scale.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://datasets-server.huggingface.co/size?dataset=tartuNLP/smugri-data",
-                "shows": "num_rows 129863 over configs kca, kv, mdf, mns, myv, olo, udm.",
-                "accessed": "2026-11-11",
+                "shows": "num_rows 129863 and num_bytes_memory 18775508 over configs kca, kv, mdf, mns, myv, olo, udm.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "695166a9aa5353557fc04f0fbf86345c09118d67a19c4e3f5d19d117f692d876"
               },
               {
+                "url": "https://datasets-server.huggingface.co/statistics?dataset=tartuNLP/smugri-data&config=kv&split=train",
+                "shows": "text column in the kv train split: 38300 rows, mean length 75.69 characters, median 65.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "0876cf13e967a72327daea0660f50596e0c96d2df75a1f0076796b259c346e26"
+              },
+              {
+                "url": "https://huggingface.co/datasets/tartuNLP/smugri-data/raw/main/README.md",
+                "shows": "\"News-based datasets for Komi, Udmurt, Moksha, Erzya, Mansi, Khanty, and Livvi Karelian.\"; cites \"Machine Translation for Low-resource Finno-Ugric Languages\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a80e9f4675652f412f0fcb14b2d17dc59a7412ce2fb469b434edfb03d8c919ab"
+              },
+              {
                 "url": "https://huggingface.co/api/models?filter=dataset:tartuNLP/smugri-data",
                 "shows": "Empty list: no models tagged with the dataset.",
-                "accessed": "2026-11-11",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
               }
@@ -60821,7 +60961,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-12"
           },
           "version_note": "The card names the languages and the news origin only; the outlets and collection method were not found on any page read."
         },
