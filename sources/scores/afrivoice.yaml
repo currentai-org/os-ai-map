@@ -124,41 +124,62 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: coverage and downstream use for African-language speech
-  value: Speech recorded by people describing images, plus scripted readings, about 15,000 hours in 18 languages
-    across five releases, documented in per-release cards, with Digital Umuganda's Mbaza ASR model trained
-    on it and WAXAL listing it as a source.
+  value: Speech recorded by people describing images, plus scripted readings, in 18 languages across five current
+    releases, documented in per-release cards, with Digital Umuganda's Mbaza ASR model trained on it and WAXAL
+    listing it as a source. No card states a product total; summed, the five hold 15,032.46 recorded hours,
+    10,391.40 of them transcribed. The Kinyarwanda, Swahili and second multilingual releases state 3,155.64,
+    3,096.87 and 2,421.29 transcribed hours; the first multilingual and Ethiopian releases give per-language
+    rows only, summing to 612.90 and 1,104.70, the Ethiopian figure counting scripted readings as transcribed,
+    as its card does. Older versions kept in other repositories are not added.
   confidence: medium
-  note: Afrivoice gives eighteen African languages image-described and scripted speech across five releases,
-    more than any other open collection for most of them, and Digital Umuganda's Mbaza recognizer is trained
-    on it while Google's WAXAL corpus draws on it, though it has release cards but no paper. Some releases
-    transcribe only part of the audio, leaving a few thousand transcribed hours, far from the hundreds of thousands
-    in the largest English speech corpora.
+  note: Afrivoice gives African languages from Kinyarwanda and Swahili to Amharic and Wolof image-described
+    and scripted speech across five releases, more than any other open collection for most of them, and Digital
+    Umuganda's Mbaza recognizer is trained on it while Google's WAXAL corpus draws on it, though it has release
+    cards but no paper. Two releases transcribe only a fraction of their audio, and all five together hold
+    a small fraction of the hundreds of thousands of transcribed hours in the largest English speech corpora.
   last_verified: '2026-09-24'
   sources:
   - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice
-    shows: 'Six-language table: Shona 574.16, Lingala 517.13, Fulani 527.45, Malagasy 516.21, Wolof 530.74,
-      Somali 535.51 total hours, about 100 transcribed each.'
-    accessed: '2026-09-24'
+    shows: '"when available, the transcription of the audio file"; total and transcribed hours: Shona 574.16
+      and 100.00, Lingala 517.13 and 100.98, Fulani 527.45 and 102.00, Malagasy 516.21 and 102.42, Wolof 530.74
+      and 102.96, Somali 535.51 and 104.54.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: bedbddecd4f861ff73d585aa7af600855ad448c6a85da2db2ab1135a0013bca4
+    content_sha256: faa2e83874d9387bfb1800cbb307cd0b54c9427f601466c51068fce17764af45
   - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Kinyarwanda
     shows: Total 3162.88 hours, 3155.64 transcribed; models trained on it include DigitalUmuganda/Mbaza-ASR-Afrivoice-660h.
-    accessed: '2026-09-24'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 9e9b6a46b9aa991741240560e94dc86545feabf208f254dd5f5734b5d8725c69
+    content_sha256: a8fd9565eda2f30adcfd727a3692339ca781580d269f94bd03932a99674f8a9e
+  - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili
+    shows: '"This is an image prompt ASR dataset for Swahili."; total 3,217.56 hours, 3,096.87 transcribed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f89fe6aca68957a72ae324b677a3ceb0cb3d2a6ee20c604de7471988dd28822e
   - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_V2
-    shows: Kirundi, Ndau, Ndebele, Oshiwambo and Gamo table, "Total 2,421.29" hours.
-    accessed: '2026-09-24'
+    shows: Kirundi, Ndau, Ndebele, Oshiwambo and Gamo table, total 2,421.29 hours, all transcribed.
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 2f50d32e2679aca9aa84d71ea7e43e142a4acf19f4fb0f29fe96f13ac2ea96ac
+    content_sha256: 76abf2d118fbd0bf76fb9b070fea5620f762e4539b666d84d1d989677154601a
   - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Ethiopia
-    shows: Amharic, Afaan Oromo, Sidama, Wolaytta and Tigrinya in unscripted, scripted and expert categories,
-      each language about 600 hours.
-    accessed: '2026-09-24'
+    shows: Amharic, Afaan Oromo, Sidama, Wolaytta and Tigrinya, each in unscripted, scripted and expert rows;
+      scripted rows fully transcribed, the others partly; no total row.
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 8c85d18fbc64eb741ebb986567faee316702675c42d816e50ca305eb0dd59053
+    content_sha256: e2e143187af8f1cff4be9248d68e11b75a6ecd8abf397f06ee5b8d85f46dc026
+  - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili_0.0
+    shows: 'An earlier Swahili version: total 414.42 hours, all transcribed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 296dbdc04aecb33184ad3d7768e6e2bb6e240f85a505bc1305c5e2c3826e68a9
+  - url: https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_legacy
+    shows: The same six-language table as the first multilingual release, Shona 574.16 total and 100.00 transcribed
+      hours first.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c3f21637c70d2d1e28f5c2d6e3bdcdb7cb1b6216de2f050279d103f2a92c0ef5
   - url: https://huggingface.co/datasets/google/WaxalNLP
     shows: source_datasets in the card include DigitalUmuganda/AfriVoice.
-    accessed: '2026-09-24'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: d3aaf7e5c72d0a8a939a4c7e7458f3dd49c49d6c3faf6699358535ce33c07c11
+    content_sha256: bbbdc2a7d99f849c298275b3a7ff370761800d206c124548d27a3d833261483c

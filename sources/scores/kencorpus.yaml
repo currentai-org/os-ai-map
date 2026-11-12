@@ -92,15 +92,17 @@ capability:
   score: 2
   basis: feature_matrix
   basis_detail: coverage and downstream use for Kenyan language text and speech
-  value: Kencorpus holds 4,442 texts (5.6 million words) and 177 hours of speech in Swahili, Dholuo and Luhya,
-    with companion tagging, QA and translation sets, documented in a paper, with one community translation
-    model listed as trained on it.
+  value: Kencorpus holds 4,442 texts (5,601,915 words) and 1,152 speech recordings totaling 176.5 hours in
+    Swahili, Dholuo and Luhya, with companion tagging, QA and translation sets, documented in a paper. The
+    recordings' card lists no transcript field, and the transcribed speech is KenSpeech's 27.5 hours of Swahili.
+    The Hugging Face copies hold 3,787 of the texts and 915 of the recordings, and one community translation
+    model declares the text set as training data.
   confidence: medium
   note: Kencorpus gives Swahili, Dholuo and Luhya a community-sourced text and speech corpus with tagging,
     question answering and translation sets, documented in a paper, with one community translation model trained
-    on it. At under two hundred hours of speech and a few million words of text it is small beside English
-    corpora of hundreds of thousands of hours and trillions of tokens, and WURA's African web corpus trained
-    the AfriTeVa models.
+    on it. Most of its audio is untranscribed, and both its speech and its few million words of text are small
+    beside English corpora of hundreds of thousands of transcribed hours and trillions of tokens, while WURA's
+    African web corpus trained the AfriTeVa models.
   relative_to: wura
   relation: one_below
   last_verified: '2026-09-24'
@@ -108,11 +110,44 @@ capability:
   - url: https://arxiv.org/abs/2208.12081
     shows: 'Abstract: "5,594 items - 4,442 texts (5.6M words) and 1,152 speech files (177hrs)"; POS sets, 7,537
       QA pairs and 13,400 translation sentences.'
-    accessed: '2026-09-24'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: d892e36f29acb31b611ae9460d3bc7f524d882331ca24890b2ff876ce584d8df
+    content_sha256: 8330e2630d6ed55d5328fc7a51537c1a913532514dc220d4c9a93a614d73a18e
+  - url: https://arxiv.org/pdf/2208.12081
+    shows: 'Table 4.1 total row: 4,442 texts, 5,601,915 words, 1,152 speech files, 176:29:46; the STT proof
+      of concept used "a collection of the speech corpus that is 27hrs 31min 50 sec".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: aa2c1229e138efaa452a14ef7534936c7b21b1581e5ce33ceadd5383a9d93a71
+  - url: https://huggingface.co/datasets/Kencorpus/KenCorpus_audio/raw/main/README.md
+    shows: '"| **Total** | **1,152** | **176h 29m 46s** |"; the data fields are audio, language, genre, source,
+      title, story_id and duration_seconds, with no transcript field.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5422b55163029e87233308a04ae25cfae7d4d25e100bf696bd38f78c94934b46
+  - url: https://datasets-server.huggingface.co/size?dataset=Kencorpus/KenCorpus_audio
+    shows: num_rows 915 in the default config.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b779ffd4cb3596f01c7a3afe483e8b21ef962879fbf0242dc959fef574dbd1a7
+  - url: https://datasets-server.huggingface.co/size?dataset=Kencorpus/KenCorpus_text
+    shows: num_rows 3787 in the default config.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3e5069104837f0d4e3848d8fb801072d46c01da48d54f8902815533d4773c056
+  - url: https://huggingface.co/datasets/Kencorpus/KenSpeech/raw/main/README.md
+    shows: '"| Total Duration | 27 hours 31 minutes 50 seconds |"; "| transcript | string | Transcription text
+      |".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3f5a64e94210807ad7a4fdbc4279781a7d3ba6e39e55ac8655cf895a3e568bd0
+  - url: https://huggingface.co/api/models?filter=dataset:Kencorpus/KenCorpus_text
+    shows: One model, Omballa/nllb-200-swa-dholuo, tagged with dataset:Kencorpus/KenCorpus_text.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b613e2810406b4dbbe00a73c9ce087b34af6a94e6152f49b5d96c102e8452e80
   - url: https://huggingface.co/datasets/Kencorpus/KenSwQuAD/raw/main/README.md
-    shows: '"7,506 question-answer pairs derived from 1,441 unique Swahili contexts".'
-    accessed: '2026-09-24'
+    shows: '"The dataset contains **7,506 question-answer pairs** derived from **1,441 unique Swahili contexts**".'
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: 6eaabd46f8abe95eae6bd1aa78f60ffad39db05ac78efdeed1097419401631d2
