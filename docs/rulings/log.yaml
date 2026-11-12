@@ -3935,3 +3935,29 @@ rulings:
     lands_in: [sources/scores/isaac-sim.yaml, sources/products/bert.yaml, sources/products/roberta.yaml,
       sources/products/t5.yaml, sources/products/deberta.yaml, sources/products/modernbert.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1018']
+
+  - id: R-2026-11-12-k
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1021", "#1022", "#1017", R-2026-10-09-p, artificial-analysis, base_pretrained]
+    question: >-
+      Artificial Analysis replaced its Intelligence Index with version 5 in October 2026: nine evaluations,
+      two new benchmarks, three replacements or upgrades, new weights, and AA-LCR dropped from the composite.
+      Do base_pretrained's capability bands move to the v5.0.1 readings?
+    ruling: >-
+      Reassess the whole category on v5.0.1, but convert nothing mechanically. Existing capability scores stay
+      provisionally held: no product moves because its number fell, and a missing v5 score does not imply weak
+      capability. This extends R-2026-10-09-p. v5.0.1 is the primary current benchmark where available, and
+      every comparison names the exact evaluated model, reasoning effort, index version and date, with peers
+      read on the same version. Models without a v5 result use the pretraining-suite fallback, which needs
+      genuinely comparable evaluations with explicit sources; scores from different suites or incomparable
+      variants are not equated, and insufficient evidence keeps the hold. All 32 members are reassessed
+      together, including the held comparisons involving Apertus, EuroLLM, Luciole and Alia-40B, and every
+      resulting score and tier change lands in a separate re-band PR (#1022). AA-LCR stays optional secondary
+      long-context evidence and never sets the composite band. In the interim, notes that quote a v4.3.2 score
+      say so and that the current assessment is pending.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/base_pretrained.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1021']

@@ -60,18 +60,25 @@ scoring_recipe:
     # 46 of 47 are already benchmark-based, so this axis has a real anchor.
     basis: benchmark
     anchor:
-      primary: Artificial Analysis Intelligence Index
+      primary: Artificial Analysis Intelligence Index v5.0.1
       machine_signal: signal_artificialanalysis.model_evaluations
+      version_rule: >
+        Every comparison names the exact evaluated model, its reasoning effort, the
+        index version and the date read, and reads its peers on the same version.
+        Scores from different major versions are never compared or converted, and
+        a model's v4 score falling or going missing on v5 does not move its band
+        on its own (R-2026-10-09-p, R-2026-11-12-k).
       fallback: >
         Published pretraining-suite average (ARC/HellaSwag/WinoGrande/PIQA and
-        similar) where the model is absent from Artificial Analysis.
+        similar) where the model is absent from Artificial Analysis. A fallback
+        comparison needs genuinely comparable evaluations with explicit sources;
+        scores from different suites or incomparable model variants are not
+        equated, and where the evidence is insufficient the band stays held.
       secondary: >
-        AA-LCR (Artificial Analysis Long Context Reasoning) is secondary evidence
-        within the Artificial Analysis anchor, not a separate anchor and not a
-        tie-break. When long-context capability is material to a comparison, cite
-        AA-LCR alongside the overall Artificial Analysis index. It never overrides
-        or moves the composite band on its own, because it is already a component
-        of the index and counting it again would double-count one submetric.
+        AA-LCR (Artificial Analysis Long Context Reasoning) is optional secondary
+        evidence of long-context capability. Version 5 of the index no longer
+        includes it in the composite, so it is cited beside the index rather than
+        as part of it, and it never sets or moves the composite band on its own.
     bands: null
     bands_status: >
       NOT YET CALIBRATED. The 1-5 thresholds must be fitted against the Artificial
