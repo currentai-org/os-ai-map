@@ -1,0 +1,108 @@
+product: modelscan
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the full scanner and CLI
+    core-gated:
+      value: gated
+      detail: Protect AI's Guardian is sold as its enterprise model scanner with newer scanners and broader model support
+        than the open tool
+  confidence: medium
+  note: ModelScan's code is Apache-2.0 and the published scanner is complete for the formats it supports. Protect AI sells
+    Guardian beside it as its enterprise model scanner, and the README says Guardian adds the company's latest scanners and
+    broader model support, so part of the scanning is kept for the paid product.
+  raw: license:Apache-2.0(OSI);source:public(the full scanner and CLI);core-gated:gated(Protect AI's Guardian is sold as its
+    enterprise model scanner with newer scanners and broader model support than the open tool)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/protectai/modelscan/HEAD/LICENSE
+    shows: The LICENSE body is the Apache License 2.0 text with the notice "Copyright 2023 Protect AI".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bc192103a215fbcbd041214e62a08658a2785b31ad545ca84171652f5850517d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/protectai/modelscan/HEAD/README.md
+    shows: The README says "ModelScan offers robust open-source scanning. If you need comprehensive AI security, consider
+      Guardian. It is our enterprise-grade model scanning product", and lists among Guardian's features "Access our latest
+      scanners, broader model support, and automatic model format detection".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ccfe8397feb5f9fdc7abcdf0d5d8e6dafba019fc811b6c3a75822686d091e2ee
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/protectai/modelscan/files/main
+    shows: The repository file listing shows the modelscan package with its scanners and tests, and no ee, enterprise, commercial
+      or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 55be807a618d893136616249334baff95329089b23595fc434dcf22c67fe57aa
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/modelscan/json
+    shows: 'The PyPI record for modelscan 0.8.8, uploaded 2026-02-18, gives license "Apache-2.0" and the classifier "License
+      :: OSI Approved :: Apache Software License", authored by ProtectAI.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e1a727812c0d49d7111b007178873d42c64dea987d1a5004e004cd07ac0f91ae
+    establishes:
+    - license
+    - source
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the modelscan package, the tool's only distribution. Scans in automated pipelines can install it
+    again on every run, so a download is not one user.
+  sources:
+  - url: https://pypistats.org/api/packages/modelscan/recent
+    shows: '"last_month":45087 for modelscan'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4a7e7e3f7318e98c8b0ca67c9f0611b317271a0a588e75664a99773118632d2f
+  - url: https://raw.githubusercontent.com/protectai/modelscan/HEAD/README.md
+    shows: The README installs the tool with "pip install modelscan" and links the PyPI project page.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ccfe8397feb5f9fdc7abcdf0d5d8e6dafba019fc811b6c3a75822686d091e2ee
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: model-file scanning coverage
+  value: Static scanning of serialized model files for unsafe code across Pickle (including cloudpickle, dill and joblib),
+    H5, Keras V3 and TensorFlow SavedModel formats, covering PyTorch, TensorFlow, Keras, scikit-learn and XGBoost models,
+    with findings ranked CRITICAL, HIGH, MEDIUM or LOW, from a command-line tool.
+  relative_to: garak
+  relation: one_below
+  confidence: medium
+  note: ModelScan catches one class of attack, malicious code hidden in a model file, before the model is loaded, across the
+    main serialization formats. It does not probe a running model for jailbreaks, leakage or toxic output, which garak does
+    across many model providers, so it sits a step below garak.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/NVIDIA/garak/main/README.md
+      shows: The peer's README still describes garak as an "LLM vulnerability scanner" that "probes for hallucination, data
+        leakage, prompt injection, misinformation, toxicity generation, jailbreaks, and many other weaknesses", combining
+        static, dynamic and adaptive probes, and lists Hugging Face, Replicate, OpenAI and AWS Bedrock among the model providers
+        it supports.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 640626790dc73543d58857ea0ebc7e47ccdb38cd9dd8fc56467147f7f3a5798e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/protectai/modelscan/HEAD/README.md
+    shows: The README's support table marks Pickle, Protocol Buffer (SavedModel), HD5 and Keras V3 formats as supported for
+      PyTorch, TensorFlow, Keras and classic ML libraries "pickle.dump(), dill.dump(), joblib.dump(), cloudpickle.dump()",
+      and ranks unsafe code as CRITICAL, HIGH, MEDIUM and LOW.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ccfe8397feb5f9fdc7abcdf0d5d8e6dafba019fc811b6c3a75822686d091e2ee
