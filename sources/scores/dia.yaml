@@ -1,0 +1,129 @@
+product: dia
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Dia2 1B and 2B checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: no training-data statement in the README or on the cards
+    code:
+      value: partial
+      detail: inference code only
+    license:
+    - name: Apache-2.0
+      detail: Dia2 weights and code
+    - name: CC-BY-4.0
+      detail: the Kyutai Mimi codec, which Dia2 downloads on first run
+    context:
+      superseded-release:
+        value: Dia-1.6B
+        detail: 2025, Apache-2.0, still published
+  governing_release: Dia2 (2025-11)
+  confidence: high
+  note: Dia2 downloads freely under Apache-2.0, and the Kyutai audio codec it needs is CC-BY-4.0, which asks only for attribution.
+    Nari Labs publishes inference code only and does not describe its training data.
+  raw: weights:open(Dia2 1B and 2B checkpoints on the Hub, ungated);data:closed(no training-data statement in the README or
+    on the cards);code:partial(inference code only);license:Apache-2.0(Dia2 weights and code)+CC-BY-4.0(the Kyutai Mimi codec,
+    which Dia2 downloads on first run);superseded-release:Dia-1.6B(2025, Apache-2.0, still published)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/nari-labs/dia2/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" / "Version 2.0, January 2004".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 70d5573c740b5a44108a0a44165564e5becc6f6741fcf6407d826da6c5680615
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/nari-labs/dia2/HEAD/README.md
+    shows: 'README: "We provide model checkpoints (1B, 2B) and inference code to accelerate research."; "The first run downloads
+      weights/tokenizer/Mimi."; "Licensed under [Apache 2.0](LICENSE). All third-party assets (Kyutai Mimi codec, etc.) retain
+      their original licenses."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1630fbfdc9eda5bee32cc03ad528e4a7a15baa2a7030d49d87c8b2cedd3df706
+    establishes:
+    - weights
+    - code
+    - license
+    - data
+  - url: https://huggingface.co/api/models/nari-labs/Dia2-2B
+    shows: 'Hub record: "gated":false, cardData "license":"apache-2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 58231d53a85dd4344ac45b7ac97d9b44c645657492e4cf5b2e17e8dd426bd5ee
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/kyutai/mimi
+    shows: 'Hub record for kyutai/mimi: "gated":false, cardData "license":"cc-by-4.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 161bbc90b27b481e52b2d9f538b5865815db2f4146387071507c6ffb8a1b22e0
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=nari-labs&limit=100
+    shows: 'Hub listing: Dia2-1B and Dia2-2B created 2025-11-15, Dia-1.6B 2025-04-20 and Dia-1.6B-0626 2025-06-26, all tagged
+      "license:apache-2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f6b85cc8590eb2b32afd2db2e33bbe92dd62d613dae6a26d256501907742d82a
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/nari-labs/dia/HEAD/LICENSE
+    shows: 'Dia LICENSE body: "Apache License" / "Version 2.0, January 2004".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 34c1659a3495220f85dffebd4d3a930bcbfd9f216f8a3c5f880a1d4a59a5358d
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month, summed across the two Dia2 and two Dia 1.6B checkpoints, most of them
+    for the June 2025 Dia 1.6B update.
+  sources:
+  - url: https://huggingface.co/api/models?author=nari-labs&limit=100
+    shows: '"downloads": Dia-1.6B 5557, Dia-1.6B-0626 21286, Dia2-1B 1799, Dia2-2B 7430.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f6b85cc8590eb2b32afd2db2e33bbe92dd62d613dae6a26d256501907742d82a
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: no board presence; the READMEs report no evaluation on a shared test set
+  value: Dia is not on the Artificial Analysis TTS leaderboard, and neither README reports results on a shared test set; Dia2
+    generates up to two minutes of English two-speaker dialogue and streams.
+  confidence: medium
+  note: Dia has no listener rating and publishes no results on a public test set, so nothing places it beside the rated synthesizers.
+    It sits with MeloTTS, another open voice with no published evaluation.
+  relative_to: melotts
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/myshell-ai/MeloTTS/HEAD/README.md
+      shows: 'MeloTTS README (same digest as when MeloTTS was scored): "MeloTTS is a **high-quality multi-lingual** text-to-speech
+        library"; "Fast enough for `CPU real-time inference`"; it reports no evaluation, and MeloTTS has no entry on the 104-row
+        Artificial Analysis TTS leaderboard read the same day.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ee0722f303183c227dc2008069d2fe6cd2c72867d4062c61598a5435b1b55205
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/nari-labs/dia2/HEAD/README.md
+    shows: 'README: "**Dia2** is a **streaming dialogue TTS model**"; "The model only supports up to 2 minutes of generation
+      in English."; no evaluation section.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1630fbfdc9eda5bee32cc03ad528e4a7a15baa2a7030d49d87c8b2cedd3df706
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: The 104-row leaderboard has no Dia entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6850775d138e7333206ce45f87e6e3b69db171d663fb2f97d9241e6a44e754a
