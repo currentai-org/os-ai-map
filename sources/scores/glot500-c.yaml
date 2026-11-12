@@ -81,23 +81,38 @@ capability:
   basis_detail: coverage and downstream use for massively multilingual pretraining text
   value: Aggregated pretraining text in 511 mostly low-resource languages, drawn from more than 150 existing
     datasets and website crawls, documented source by source in an ACL paper, and used to train the Glot500-m
-    model.
+    model. The public Hugging Face release holds 308 GB in 1,225,300,317 rows (about 77 billion tokens, estimated).
+    The paper trained Glot500-m on a 600 GB corpus of 1.5 billion sentences, which includes sources that cannot
+    be redistributed and are offered only on request.
   confidence: medium
-  note: The Glot corpus reaches more than five hundred mostly low-resource languages, more than any other open
-    pretraining corpus here, records the source, collection method and license of each part, and trained its
-    builders' Glot encoder, though the public release leaves out sources that cannot be redistributed. It holds
-    a few tens of billions of tokens spread over all those languages, a sliver beside English pretraining sets
-    such as FineWeb that run to trillions.
-  last_verified: '2026-09-24'
+  note: The Glot corpus reaches hundreds of mostly low-resource languages, more than any other open pretraining
+    corpus here, records the source, collection method and license of each part, and trained its builders'
+    Glot encoder. Its size is taken from the public release, because parts of the full corpus cannot be redistributed,
+    and even the full corpus is a sliver beside English pretraining sets such as FineWeb that run to trillions
+    of tokens.
+  last_verified: '2026-11-12'
   sources:
   - url: https://arxiv.org/abs/2305.12182
     shows: '"collect and clean Glot500-c, a corpus that covers these 511 languages and allows us to train Glot500-m".'
-    accessed: '2026-09-24'
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: 80c067fb1bd37cf23d4bcc6ee396ccfdd2a7243dfb85a7ee28ae6672cc94a952
+  - url: https://arxiv.org/pdf/2305.12182
+    shows: '"We train the multilingual model Glot500-m on a 600GB corpus"; Table 1: Glot500-c, 511 languages,
+      1.5B sentences; "certain sources prohibit the redistribution of data. As such, data from these sources
+      is omitted from the published version of Glot2000-c."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a859535cfda27cd6bc7868f37a2c69e6f143af93ec96863fccd721c9bd0e6584
+  - url: https://huggingface.co/datasets/cis-lmu/Glot500
+    shows: 'Dataset panel: Number of rows 1,225,300,317; Total file size 308 GB. Card: "Parts of the original
+      Glot500 dataset cannot be published publicly."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8a372046cd7d7891ab5c4bebcd4a93b3950067d8d4e7d91a068444bc4f96bbcf
   - url: https://raw.githubusercontent.com/cisnlp/Glot500/main/README.md
     shows: '"Glot500-c is a subset of Glot2000-c for over 500 languages, including languages with more than
       30,000 sentences."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: d8a434b3a33059b79e50676da4623f8fb0c4bb114c7fb26b6816b2ce4f6f6bbc

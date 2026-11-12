@@ -59,22 +59,34 @@ capability:
   score: 1
   basis: feature_matrix
   basis_detail: coverage and downstream use for Finno-Ugric pretraining text
-  value: SMUGRI data holds about 130,000 rows of news text in seven Finno-Ugric languages with a thin card
-    and a cited paper, and no model on Hugging Face declares it as training data.
+  value: SMUGRI data holds 129,863 short news rows in seven Finno-Ugric languages, about 19 MB in memory (about
+    5 million tokens, estimated; no word or token count is stated), behind a short card that cites a machine
+    translation paper, and no model on Hugging Face declares it as training data.
   confidence: medium
-  note: SMUGRI data gives seven Finno-Ugric languages a news collection with a one-line card, documented only
-    through the machine translation paper it supports, and no model on Hugging Face declares it as training
-    data. As a collection spread over several languages it is judged against English-scale corpora, and its
-    few tens of thousands of news texts sit at the bottom of that scale.
-  last_verified: '2026-11-11'
+  note: SMUGRI data gives Finno-Ugric languages such as Komi, Udmurt and Erzya a news collection with a short
+    card, documented only through the machine translation paper it supports, and no model on Hugging Face declares
+    it as training data. As a collection spread over several languages it is judged against English-scale corpora,
+    and its few million tokens of news sit at the bottom of that scale.
+  last_verified: '2026-11-12'
   sources:
   - url: https://datasets-server.huggingface.co/size?dataset=tartuNLP/smugri-data
-    shows: num_rows 129863 over configs kca, kv, mdf, mns, myv, olo, udm.
-    accessed: '2026-11-11'
+    shows: num_rows 129863 and num_bytes_memory 18775508 over configs kca, kv, mdf, mns, myv, olo, udm.
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: 695166a9aa5353557fc04f0fbf86345c09118d67a19c4e3f5d19d117f692d876
+  - url: https://datasets-server.huggingface.co/statistics?dataset=tartuNLP/smugri-data&config=kv&split=train
+    shows: 'text column in the kv train split: 38300 rows, mean length 75.69 characters, median 65.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0876cf13e967a72327daea0660f50596e0c96d2df75a1f0076796b259c346e26
+  - url: https://huggingface.co/datasets/tartuNLP/smugri-data/raw/main/README.md
+    shows: '"News-based datasets for Komi, Udmurt, Moksha, Erzya, Mansi, Khanty, and Livvi Karelian."; cites
+      "Machine Translation for Low-resource Finno-Ugric Languages".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a80e9f4675652f412f0fcb14b2d17dc59a7412ce2fb469b434edfb03d8c919ab
   - url: https://huggingface.co/api/models?filter=dataset:tartuNLP/smugri-data
     shows: 'Empty list: no models tagged with the dataset.'
-    accessed: '2026-11-11'
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
