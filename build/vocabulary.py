@@ -243,6 +243,16 @@ def language_codes() -> frozenset[str]:
     corpus that mixed `en` and `eng` would count one language twice. A code no record uses yet is
     not in the file; `build/language_codes.py --sync` confirms it on Artio and adds it.
     """
-    from build.language_codes import read_snapshot
+    return frozenset(read_language_snapshot(_LANGUAGE_SNAPSHOT))
 
-    return frozenset(read_snapshot(_LANGUAGE_SNAPSHOT))
+
+def read_language_snapshot(path: Path = _LANGUAGE_SNAPSHOT) -> list[str]:
+    """The language list's codes, in file order. Comment lines and the column header are skipped.
+
+    It lives here, not in build/language_codes.py, so the gate and the serializers that reach
+    `language_codes()` never import the module that reads the warehouse.
+    """
+    rows = [line for line in _snapshot_lines(path) if line.strip() and not line.startswith("#")]
+    if not rows or rows[0] != "iso639_3":
+        raise ValueError(f"{path}: expected an 'iso639_3' header after the comment lines")
+    return rows[1:]

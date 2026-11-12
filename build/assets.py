@@ -59,6 +59,7 @@ AUDIT_ROOTS = (
     "build/check_channel_authority.py",  # the release-line leg reads the version columns
     "build/snapshot_counters.py",  # records the lifetime counters adoption increments come from
     "build/language_representation.py",  # checks the language classification contract
+    "build/language_codes.py",  # confirms the map's language codes against the classification
 )
 
 # Explicitly declared publication workflows that read tables directly (none today). The root

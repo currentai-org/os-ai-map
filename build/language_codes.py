@@ -31,8 +31,9 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import _LANGUAGE_SNAPSHOT as SNAPSHOT, read_language_snapshot as read_snapshot
+
 ROOT = Path(__file__).resolve().parents[1]
-SNAPSHOT = ROOT / "sources" / "snapshots" / "language-codes.tsv"
 TABLE = "currentai.language_representation.classification"
 COLUMN = "iso639_3"
 
@@ -75,15 +76,6 @@ def used_codes(root: Path = ROOT) -> dict[str, set[str]]:
                 for code in ov.get("languages") or []:
                     add(code, "sources/lineage.yaml")
     return out
-
-
-def read_snapshot(path: Path = SNAPSHOT) -> list[str]:
-    """The snapshot's codes, in file order. Comment lines and the column header are skipped."""
-    lines = [line.rstrip("\r") for line in path.read_text(encoding="utf-8").split("\n")]
-    rows = [line for line in lines if line.strip() and not line.startswith("#")]
-    if not rows or rows[0] != COLUMN:
-        raise ValueError(f"{path}: expected a {COLUMN!r} header after the comment lines")
-    return rows[1:]
 
 
 def write_snapshot(codes: set[str], path: Path = SNAPSHOT) -> None:
