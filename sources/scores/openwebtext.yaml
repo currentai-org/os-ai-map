@@ -1,0 +1,100 @@
+product: openwebtext
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc0-1.0
+      detail: covers the packaging, while the creators claim no rights in the extracted text
+    ungated:
+      value: 'yes'
+    dataset_card:
+      value: present
+  confidence: high
+  note: OpenWebText downloads without a sign-in, with a card describing how it was collected, and its
+    creators release it under CC0. The text itself comes from third-party web pages, which the creators
+    do not claim to own and will remove on request.
+  raw: license:cc0-1.0(covers the packaging, while the creators claim no rights in the extracted text);ungated:yes;dataset_card:present
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/datasets/Skylion007/openwebtext
+    shows: 'Dataset API for Skylion007/openwebtext: `gated: false`, the tag `license:cc0-1.0`, and 80
+      parquet shards of plain_text/train.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cb1aabb3daf63570eaa428f70e24e0ccd7a188fb304941c92e3cca2bd0b3782c
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/Skylion007/openwebtext/raw/main/README.md
+    shows: 'Dataset card with front matter `license: cc0-1.0`, a Source Data section on how the Reddit-linked
+      pages were collected and filtered, and the licensing note "We do not own any of the text from which
+      these data has been extracted. We license the actual packaging of these parallel data under the
+      Creative Commons CC0 license".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f474535918192336b269db8941c299c608c53a32b74316a55a0c2502acf34daa
+    establishes:
+    - documentation
+    - license
+  - url: https://skylion007.github.io/OpenWebTextCorpus/
+    shows: 'Project page: "This distribution was created by Aaron Gokaslan and Vanya Cohen of Brown University",
+      with the same CC0 packaging license and a notice-and-take-down policy.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 697f396e71f13a466959b5f8f4a4d3c2415a0b0216d1efe63e7382b7ce3ec0b5
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the dataset over the trailing month, the only usage channel on record
+    for OpenWebText.
+  sources:
+  - url: https://huggingface.co/api/datasets/Skylion007/openwebtext
+    shows: '"downloads":41908 for Skylion007/openwebtext, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cb1aabb3daf63570eaa428f70e24e0ccd7a188fb304941c92e3cca2bd0b3782c
+capability:
+  score: 3
+  basis: training_value
+  basis_detail: superseded
+  value: null
+  relative_to: c4
+  relation: at
+  confidence: medium
+  note: OpenWebText helped train RoBERTa and DeBERTa and remains the usual corpus for reproducing GPT-2
+    at small scale. Like C4, it is a 2019-era English web corpus that has proven its worth but is no longer
+    a first choice for pretraining.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://arxiv.org/html/2406.17557
+      shows: FineWeb paper still lists "C4 (172B tokens)" among the open web datasets compared and says
+        "FineWeb-Edu (detailed below) outperforms all other open datasets we compared", the superseded
+        placement C4 holds.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 059d9418f0a111cdc55c9057dc1595a03ba392abc5e2140832635a520192dc99
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/FacebookAI/roberta-base/raw/main/README.md
+    shows: RoBERTa model card lists OpenWebText, "an opensource recreation of the WebText dataset used
+      to train GPT-2", among the five datasets RoBERTa was pretrained on.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 139c5c5c8d734a8841928308cf7f083018aa5cc49f903c5199e3f1563b3ded51
+  - url: https://arxiv.org/html/2006.03654
+    shows: DeBERTa paper names "OPENWEBTEXT (public Reddit content (Gokaslan & Cohen, 2019); 38GB)" in
+      its pretraining data.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e407b96434a706d1fbd0332d31bbabbcb720daf287b10852b58e7be687c4986e
+  - url: https://raw.githubusercontent.com/karpathy/nanoGPT/master/README.md
+    shows: 'nanoGPT README: "the file `train.py` reproduces GPT-2 (124M) on OpenWebText".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8d969370683849a2cc4e46c81bf2449717f2daff657586888151933c3590f85f

@@ -1,0 +1,184 @@
+product: t5
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: Small, Base, Large, 3B and 11B checkpoints and the T5 1.1 set, ungated on Hugging Face
+    data:
+      value: open
+      detail: C4 is public and its TensorFlow Datasets builder recreates it from Common Crawl, and the
+        supervised tasks mixed into the original checkpoints are public benchmarks defined in the t5 library
+    code:
+      value: open
+      detail: the t5 library pretrains, fine-tunes and evaluates from the command line
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: t5-base
+  confidence: high
+  note: T5's checkpoints and training code are published under Apache-2.0, and its C4 pretraining corpus
+    is public, with a TensorFlow Datasets build that recreates it from Common Crawl. The supervised tasks
+    mixed into the original checkpoints are public benchmarks, so the whole training run can be reproduced.
+  raw: weights:open(Small, Base, Large, 3B and 11B checkpoints and the T5 1.1 set, ungated on Hugging
+    Face);data:open(C4 is public and its TensorFlow Datasets builder recreates it from Common Crawl, and
+    the supervised tasks mixed into the original checkpoints are public benchmarks defined in the t5 library);code:open(the
+    t5 library pretrains, fine-tunes and evaluates from the command line);license:Apache-2.0(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/google-t5/t5-base
+    shows: 'Model API for google-t5/t5-base: `gated: false`, cardData.license `apache-2.0`, cardData.datasets
+      `c4`, with model.safetensors among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ead3cb54b41f72bf35ab68f864cc5993fc3c4582fb032e98a64ec07087faee39
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/google-t5/t5-11b
+    shows: 'Model API for google-t5/t5-11b: `gated: false`, cardData.license `apache-2.0`, with pytorch_model.bin
+      among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 27e570cf8d1b136b926c4914d82ce78b541443bcd2ae69edc46cc35a10d98c28
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/google-t5/t5-base/raw/main/README.md
+    shows: 'Model card: pretrained on C4 "on a multi-task mixture of unsupervised (1.) and supervised
+      tasks (2.)", listing the GLUE and SuperGLUE tasks used, and "License: Apache 2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c43c23f205b6839a6adb10f0757265f76c1c6f96b7793a4e53582d3a61cbfb23
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/google-research/text-to-text-transfer-transformer/main/README.md
+    shows: 'README: "The C4 dataset we created for unsupervised pre-training is available in TensorFlow
+      Datasets", with the Beam command that builds it from Common Crawl; command-line instructions to
+      "pre-train a model from scratch"; and the released T5-Small to T5-11B checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ff7e0c3f7dff5f72368641aa615bb245e444692b1061fb2b32c5d26d44939df2
+    establishes:
+    - weights
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/google-research/text-to-text-transfer-transformer/main/released_checkpoints.md
+    shows: Experimental t5.1.1 checkpoints, small to xxl, "Pre-trained on C4 only without mixing in the
+      downstream tasks".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 396e0976d73b90f824ff9f95695df8c1c6cea98dcd3282dd39ce8357380048db
+    establishes:
+    - weights
+    - data
+  - url: https://raw.githubusercontent.com/google-research/text-to-text-transfer-transformer/main/LICENSE
+    shows: LICENSE body is the Apache License, Version 2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/allenai/c4
+    shows: 'Dataset API for allenai/c4: `gated: false` and the tag `license:odc-by`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b218f2c660267f586d0c5cbd89ff0656d33bdd87d98cb9736f449e741d1ef736
+    establishes:
+    - data
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the five original checkpoints and the five T5 1.1 checkpoints,
+    most of them for T5-Small.
+  sources:
+  - url: https://huggingface.co/api/models/google-t5/t5-small
+    shows: '"downloads":21023788 for google-t5/t5-small, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 56ba7d074f401c424848a69dcbe4794d7a28a2bf11749fd6ce99bfd44e4f1501
+  - url: https://huggingface.co/api/models/google-t5/t5-base
+    shows: '"downloads":2816995 for google-t5/t5-base, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ead3cb54b41f72bf35ab68f864cc5993fc3c4582fb032e98a64ec07087faee39
+  - url: https://huggingface.co/api/models/google-t5/t5-large
+    shows: '"downloads":231768 for google-t5/t5-large, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 76440daa1e6cdf5b4b9df2a5bc5fbb3a64c8ff24f36bb163c23eda83fc8089ae
+  - url: https://huggingface.co/api/models/google-t5/t5-3b
+    shows: '"downloads":227153 for google-t5/t5-3b, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6e7233d2832dd3df714bec085b62992312987d134b3472265d83f4dd41f35eaf
+  - url: https://huggingface.co/api/models/google-t5/t5-11b
+    shows: '"downloads":9141 for google-t5/t5-11b, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 27e570cf8d1b136b926c4914d82ce78b541443bcd2ae69edc46cc35a10d98c28
+  - url: https://huggingface.co/api/models/google/t5-v1_1-small
+    shows: '"downloads":13154 for google/t5-v1_1-small, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c5382572aef5606b2939da3bc018c9954519f15e0483645dc34f980c2067ab3f
+  - url: https://huggingface.co/api/models/google/t5-v1_1-base
+    shows: '"downloads":22242 for google/t5-v1_1-base, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6f86dddca415afef659548f3c1d50c1dc30e26bda68a30b9279c51d15b6f9b4d
+  - url: https://huggingface.co/api/models/google/t5-v1_1-large
+    shows: '"downloads":13111 for google/t5-v1_1-large, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 41c969d383031a9599528b0e6e3e5bded026c662e4e0e0cac8624e7e5686bb67
+  - url: https://huggingface.co/api/models/google/t5-v1_1-xl
+    shows: '"downloads":9329 for google/t5-v1_1-xl, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 63673cbbc177d0d441d6823c197ffa5db7f7ea353d8e357e313360408d02c8fc
+  - url: https://huggingface.co/api/models/google/t5-v1_1-xxl
+    shows: '"downloads":86666 for google/t5-v1_1-xxl, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fe463fa633fcbac697b301f8b30aa38e8dd969a63ac8fbc00b6bd58ffb878334
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: summarization, question-answering and classification results in the 2019 paper
+  value: State of the art on many benchmarks covering summarization, question answering and text classification
+    at release in 2019 (arXiv:1910.10683); the largest checkpoint has 11B parameters.
+  relative_to: comma
+  relation: one_below
+  confidence: medium
+  note: T5 set the state of the art on many language benchmarks in 2019 and, unlike an encoder, it generates
+    text, but it has no results on the benchmarks used for today's language models and is mostly run in
+    its smaller sizes. It sits a step below Comma, a 7B model that only matches 2023-era peers.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+      shows: Comma v0.1-2T card still reports an 11-task average of 57.4 and says "It performs comparably
+        to budget-matched models (7 billion parameters, 2 trillion tokens) trained on unlicensed data",
+        the placement the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/abs/1910.10683
+    shows: 'Abstract: "we achieve state-of-the-art results on many benchmarks covering summarization,
+      question answering, text classification, and more".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c9405a49d1c0b264a94701143fe4f293934a1727fea6332ebd6b35280e10b12e
+  - url: https://raw.githubusercontent.com/google-research/text-to-text-transfer-transformer/main/README.md
+    shows: 'README lists the released checkpoints: T5-Small (60 million parameters), T5-Base (220 million),
+      T5-Large (770 million), T5-3B and T5-11B.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ff7e0c3f7dff5f72368641aa615bb245e444692b1061fb2b32c5d26d44939df2

@@ -1,0 +1,136 @@
+product: roberta
+openness:
+  score: 4
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Base and Large checkpoints, ungated on Hugging Face and on fairseq's download server
+    data:
+      value: documented-not-released
+      detail: BookCorpus, English Wikipedia, CC-News, OpenWebText and Stories, about 160GB, are named,
+        but the assembled corpus was never released
+    code:
+      value: open
+      detail: fairseq ships the model and a recipe for pretraining RoBERTa from scratch
+    license:
+    - name: MIT
+      detail: OSI
+  governing_release: roberta-base
+  confidence: high
+  note: RoBERTa's checkpoints and the fairseq code that trained them are published under the MIT license,
+    with a written recipe for pretraining from scratch. The five corpora it trained on are named, but
+    the 160GB mix was never released, so the original run cannot be rebuilt exactly.
+  raw: weights:open(Base and Large checkpoints, ungated on Hugging Face and on fairseq's download server);data:documented-not-released(BookCorpus,
+    English Wikipedia, CC-News, OpenWebText and Stories, about 160GB, are named, but the assembled corpus
+    was never released);code:open(fairseq ships the model and a recipe for pretraining RoBERTa from scratch);license:MIT(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/FacebookAI/roberta-base
+    shows: 'Model API for FacebookAI/roberta-base: `gated: false`, cardData.license `mit`, with model.safetensors
+      among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af0e577f95d9d3c01eb78183f99d5d952819f71229005b6a2b4f701e3c1d978d
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/FacebookAI/roberta-large
+    shows: 'Model API for FacebookAI/roberta-large: `gated: false`, cardData.license `mit`, with model.safetensors
+      among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 002c0347376c8a4141b7b7df94002340a9d112d889742a65c00392c41f46054c
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/FacebookAI/roberta-base/raw/main/README.md
+    shows: 'Model card: RoBERTa "was pretrained on the reunion of five datasets" (BookCorpus, English
+      Wikipedia, CC-News, OpenWebText and Stories) that "together ... weigh 160GB of text"; no download
+      of the assembled corpus is offered.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 139c5c5c8d734a8841928308cf7f083018aa5cc49f903c5199e3f1563b3ded51
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/roberta/README.md
+    shows: fairseq's RoBERTa README lists roberta.base (125M) and roberta.large (355M) as tar.gz downloads
+      and links a "tutorial for pretraining RoBERTa using your own data".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ff7e37a0b149d54a52124248e0f821053c7b1d7822a9df82e560ff029b961d5c
+    establishes:
+    - weights
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/roberta/README.pretraining.md
+    shows: '"Pretraining RoBERTa using your own data": preprocessing with the GPT-2 BPE, binarizing with
+      fairseq-preprocess and training RoBERTa base with fairseq-train.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 96a70fcc54260706a1595cce566d7e1cf171f28a26b94b81c2c2b2f7d48d910e
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/LICENSE
+    shows: LICENSE body is the MIT License, Copyright (c) Facebook, Inc. and its affiliates.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85
+    establishes:
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the Base and Large checkpoints, split fairly evenly between
+    them.
+  sources:
+  - url: https://huggingface.co/api/models/FacebookAI/roberta-base
+    shows: '"downloads":5879284 for FacebookAI/roberta-base, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af0e577f95d9d3c01eb78183f99d5d952819f71229005b6a2b4f701e3c1d978d
+  - url: https://huggingface.co/api/models/FacebookAI/roberta-large
+    shows: '"downloads":6402732 for FacebookAI/roberta-large, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 002c0347376c8a4141b7b7df94002340a9d112d889742a65c00392c41f46054c
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: GLUE, SuperGLUE, SQuAD and RACE results in the 2019 paper and fairseq README
+  value: 'roberta.large: GLUE dev MNLI 90.2, SST-2 96.4 and CoLA 68.0, SQuAD 2.0 dev F1 89.4 and RACE
+    test accuracy 83.2, state of the art on GLUE, RACE and SQuAD at release in 2019 (arXiv:1907.11692).
+    A 355M-parameter encoder that does not generate text.'
+  relative_to: comma
+  relation: one_below
+  confidence: high
+  note: RoBERTa showed that BERT had been undertrained and, retrained carefully, matched or beat every
+    model published after it in 2019, but it is an encoder of at most 355M parameters that cannot generate
+    text. It sits a step below Comma, a 7B model that only matches 2023-era peers.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+      shows: Comma v0.1-2T card still reports an 11-task average of 57.4 and says "It performs comparably
+        to budget-matched models (7 billion parameters, 2 trillion tokens) trained on unlicensed data",
+        the placement the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/abs/1907.11692
+    shows: 'Abstract: "We find that BERT was significantly undertrained, and can match or exceed the performance
+      of every model published after it. Our best model achieves state-of-the-art results on GLUE, RACE
+      and SQuAD."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a3dfb0c2a8a3a7b2edd1237857ce0fb27b9211ff93d07e61e5951ddfaec7c270
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/roberta/README.md
+    shows: 'README results for roberta.large: GLUE dev MNLI 90.2, SST-2 96.4, CoLA 68.0; SQuAD 2.0 EM/F1
+      86.5/89.4; RACE accuracy 83.2; parameter counts 125M and 355M.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ff7e37a0b149d54a52124248e0f821053c7b1d7822a9df82e560ff029b961d5c

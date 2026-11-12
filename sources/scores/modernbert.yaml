@@ -1,0 +1,165 @@
+product: modernbert
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Base and Large checkpoints, ungated on Hugging Face
+    data:
+      value: closed
+      detail: 2 trillion tokens of web documents, code and scientific literature, described only in those
+        terms, with no sources or mixture named
+    code:
+      value: open
+      detail: pretraining and evaluation code in AnswerDotAI/ModernBERT
+    checkpoints:
+      value: open
+      detail: intermediate training checkpoints for both sizes on Hugging Face
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: modernbert-base
+  confidence: high
+  note: ModernBERT's weights, its training code and its intermediate checkpoints are all published under
+    Apache-2.0. The training data is described only as web documents, code and scientific literature,
+    without the sources or the mixture, so the corpus cannot be rebuilt.
+  raw: weights:open(Base and Large checkpoints, ungated on Hugging Face);data:closed(2 trillion tokens
+    of web documents, code and scientific literature, described only in those terms, with no sources or
+    mixture named);code:open(pretraining and evaluation code in AnswerDotAI/ModernBERT);checkpoints:open(intermediate
+    training checkpoints for both sizes on Hugging Face);license:Apache-2.0(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/answerdotai/ModernBERT-base
+    shows: 'Model API for answerdotai/ModernBERT-base: `gated: false`, cardData.license `apache-2.0`,
+      with model.safetensors among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 370efb5c8f12e8b311a2159ab6ac3bae92f881966f3f649d23878668adfd1ae7
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/answerdotai/ModernBERT-large
+    shows: 'Model API for answerdotai/ModernBERT-large: `gated: false`, cardData.license `apache-2.0`,
+      with model.safetensors among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1e10eb8778607699b3dc983500780a9e5f99d69d482f220603ed0e089f85cbf5
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/answerdotai/ModernBERT-base/raw/main/README.md
+    shows: 'Model card: "We release the ModernBERT model architectures, model weights, training codebase
+      under the Apache 2.0 license"; training data given only as "2 trillion tokens of English text and
+      code".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 40539466fa1117be4693b8f1fdfdac81fac3c5db472ff57bc05d013d48eafa82
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://arxiv.org/html/2412.13663v2
+    shows: 'Paper section 2.2.1: "trained on 2 trillion tokens of primarily English data from a variety
+      of data sources, including web documents, code, and scientific literature", with no source list
+      or proportions; it says the release includes "all intermediate training checkpoints".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 97201894613e9a0261738c1a9aacfaac6b218487a1b349f08867613d263324bf
+    establishes:
+    - data
+    - checkpoints
+  - url: https://raw.githubusercontent.com/AnswerDotAI/ModernBERT/main/README.md
+    shows: 'Repository README: "All code used in this repository is the code used as part of our experiments
+      for both pre-training and GLUE evaluations", with training launched by `composer main.py yamls/main/modernbert-base.yaml`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3a746a15ac3931d3dc713e82e83e7ae6bee796fc83691cedffb708dd91a1b1c6
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/AnswerDotAI/ModernBERT/main/LICENSE
+    shows: LICENSE body is the Apache License, Version 2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6000cff1fc348ff57108619330c26d67d596bf44c68661c749a6c561cdc3fb4f
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/answerdotai/ModernBERT-base-training-checkpoints
+    shows: 'Model API for answerdotai/ModernBERT-base-training-checkpoints: ungated, 120 files of intermediate
+      .pt checkpoints such as context-extension/ep0-ba12000-rank0.pt.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6b1d31d60a09c77c80fb25d0b6749aca0d1881d484e56ba0ca27f4d8878348d8
+    establishes:
+    - checkpoints
+  - url: https://huggingface.co/api/models/answerdotai/ModernBERT-large-training-checkpoints
+    shows: 'Model API for answerdotai/ModernBERT-large-training-checkpoints: ungated, 99 files of intermediate
+      .pt checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b3d62acbc52678cbecc3fdc34ddf4d45d39ba11e94770828d01df0addfffe937
+    establishes:
+    - checkpoints
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the Base and Large checkpoints, most of them for Base.
+  sources:
+  - url: https://huggingface.co/api/models/answerdotai/ModernBERT-base
+    shows: '"downloads":3011393 for answerdotai/ModernBERT-base, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 370efb5c8f12e8b311a2159ab6ac3bae92f881966f3f649d23878668adfd1ae7
+  - url: https://huggingface.co/api/models/answerdotai/ModernBERT-large
+    shows: '"downloads":583958 for answerdotai/ModernBERT-large, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1e10eb8778607699b3dc983500780a9e5f99d69d482f220603ed0e089f85cbf5
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: GLUE, BEIR, MLDR and code-retrieval results in the ModernBERT paper and model card
+  value: GLUE 88.4 (Base) and 90.4 (Large); BEIR 41.6 and 44.0 single-vector and 51.3 and 52.4 multi-vector;
+    CodeSearchNet 56.4 and 59.5 (arXiv:2412.13663). A 395M-parameter encoder at most, which does not generate
+    text.
+  relative_to: comma
+  relation: one_below
+  confidence: high
+  note: ModernBERT leads the older encoders it was tested against on most retrieval and code tasks, and
+    its Base model is the first to pass DeBERTaV3 Base on GLUE, but it is an encoder of at most 395M parameters
+    that cannot generate text. It sits a step below Comma, a 7B model that only matches 2023-era peers.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+      shows: Comma v0.1-2T card still reports an 11-task average of 57.4 and says "It performs comparably
+        to budget-matched models (7 billion parameters, 2 trillion tokens) trained on unlicensed data",
+        the placement the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/answerdotai/ModernBERT-base/raw/main/README.md
+    shows: 'Model card Table 1: ModernBERT Base GLUE 88.4, BEIR 41.6 (DPR) and 51.3 (ColBERT), CSN 56.4;
+      Large GLUE 90.4, BEIR 44.0 and 52.4, CSN 59.5; sizes listed as 149 million and 395 million parameters.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 40539466fa1117be4693b8f1fdfdac81fac3c5db472ff57bc05d013d48eafa82
+  - url: https://arxiv.org/abs/2412.13663
+    shows: 'Abstract: ModernBERT models "exhibit state-of-the-art results on a large pool of evaluations
+      encompassing diverse classification tasks and both single and multi-vector retrieval".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d4ca4fdc6da9eb3f41f2a13ba8082b4033363fe7f858065c080ab9b7b14bab3a
+  - url: https://arxiv.org/html/2412.13663v2
+    shows: 'Paper: "On GLUE, ModernBERT-base is the first encoder to beat DeBERTaV3-base since its release
+      in 2021".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 97201894613e9a0261738c1a9aacfaac6b218487a1b349f08867613d263324bf
