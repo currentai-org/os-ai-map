@@ -16,25 +16,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
-### Changed
-
-- Language-specific evaluation sets are published as their own category, scored by the depth ladder:
-  22 sets moved from Language-specific datasets with computed, provisional bands, five of them
-  unresolved with a null band and an adoption-only overall score, and `overall_basis` now marks
-  every overall score (R-2026-11-07-b, R-2026-11-08-a, -b)
-  ([#979](https://github.com/currentai-org/os-ai-map/pull/979)).
-- Machine-translated evaluation items that a cited source says people reviewed, every item, now
-  count toward evaluation depth; their provenance stays `machine_translated`, a review of unstated
-  scope (`review_scope: unstated`) leaves depth unknown, and generated items still do not count
-  (R-2026-11-03-b, replacing R-2026-11-01-h, and -h). No published score changes until the ladder
-  PR ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
+## [0.6.0] - 2026-11-12
 
 ### Added
 
-- Each tagged release is published as a Hugging Face dataset: products, organizations, categories,
-  every citation behind a score, and per-release product and category history, as Parquet with a
-  dataset card (`build/export_hf.py`, `.github/workflows/huggingface.yml`;
-  [#1027](https://github.com/currentai-org/os-ai-map/pull/1027)).
 - A preliminary `open_accelerator_designs` category, proposed for review, with an 11-row seed of
   open NPU, systolic-array and GPGPU designs and the generators that emit them (Vortex, Gemmini,
   NVDLA, Coral NPU, hls4ml, FINN and others). Nothing in it is scored yet
@@ -42,17 +27,28 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - Five products from the AIFoundry topic list: tinygrad (ml_frameworks), Shelley
   (orchestration_agents), and Docker Model Runner, RamaLama and LiteRT (inference_code)
   ([#1034](https://github.com/currentai-org/os-ai-map/pull/1034)).
+- ERNIE 5.5 Flash Base (`ernie-flash`), Baidu's open-weights base model, in base_pretrained, kept
+  apart from the closed ERNIE flagship
+  ([#1028](https://github.com/currentai-org/os-ai-map/pull/1028)).
+- Each tagged release is published as a Hugging Face dataset: products, organizations, categories,
+  every citation behind a score, and per-release product and category history, as Parquet with a
+  dataset card (`build/export_hf.py`, `.github/workflows/huggingface.yml`;
+  [#1027](https://github.com/currentai-org/os-ai-map/pull/1027)).
+- 110 products promoted from candidate rows to fully scored head products across 23 published
+  categories ([#1018](https://github.com/currentai-org/os-ai-map/pull/1018)).
+- KMMLU in language_specific_eval_sets
+  ([#1008](https://github.com/currentai-org/os-ai-map/pull/1008)).
 - `capability.own_components`: cited, schema-validated claims that a suite's second-slug components
   are its own items, scoped by language, task or split, with INCLUDE's Arabic and Turkish withdrawn
   and its mixed pools marked (R-2026-11-03-c, -i). The depth calibration reads them from the records
   and reproduces its earlier results exactly; no score changes
   ([#978](https://github.com/currentai-org/os-ai-map/pull/978)).
-- Per-language coverage and lineage records for the 18 remaining evaluation sets, and the full-roster
-  depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 17 of 22 sets
-  resolve, 4 compute to band 5 (under the one-third review trigger), and the lineage sensitivity runs
-  agree for every set. `build/depth_calibration.py` reproduces it from `sources/`, and
-  `tests/test_depth_calibration.py` pins its figures. No score changes; the ladder PR applies the
-  bands once they are accepted ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
+- Per-language coverage and lineage records for the 18 remaining evaluation sets, and the
+  full-roster depth calibration in `docs/sweeps/2026-11-03-depth-calibration-full-roster.md`: 17 of
+  22 sets resolve, 4 compute to band 5 (under the one-third review trigger), and the lineage
+  sensitivity runs agree for every set. `build/depth_calibration.py` reproduces it from `sources/`,
+  and `tests/test_depth_calibration.py` pins its figures. No score changes
+  ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
 - Cited lineage records in `sources/lineage.yaml` for the 39 coverage components of the four
   calibration sets (FLORES+, ThaiExam, SEA-HELM, AfroBench), from the lineage audit of
   R-2026-11-02-i, -j and -u. Batayan's translation task is recorded as derived from FLORES-200,
@@ -69,11 +65,6 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   dependent or unverified for a language; `build.validate` checks its structure and warns on
   coverage components with no entry. The registry starts empty and no score changes
   (R-2026-11-02-j, -u; [#970](https://github.com/currentai-org/os-ai-map/pull/970)).
-- A preliminary language_specific_eval_sets category (Language-specific evaluation sets), with an
-  empty roster and an interim capability ladder that compares each set with sets for the same
-  languages, plus a dry run of the bands the 22 sets moving out of language_specific_datasets
-  would get. The ladder is not calibrated and the dry-run bands are not adopted
-  ([#950](https://github.com/currentai-org/os-ai-map/pull/950)).
 - An optional per-language coverage record on a dataset's capability axis
   (`capability.language_coverage`), one entry per language, task, dataset component and split:
   count and unit, provenance, whether the split is the benchmark's official evaluation split, an
@@ -92,27 +83,84 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   group's highest-scoring fully open row, and every row keeps its own scores (R-2026-10-30-e). No
   product sets it yet, so no stage moved
   ([#949](https://github.com/currentai-org/os-ai-map/pull/949)).
+- Nemotron ASR (speech_audio) and GLM-OCR (document_conversion) as products of their own
+  ([#944](https://github.com/currentai-org/os-ai-map/pull/944)).
+- Syft Space, the data owner's node of OpenMined's federated retrieval, in federated_learning;
+  SyftHub now describes the OpenMined/syfthub platform, and its capability moved from 2 to 3
+  ([#940](https://github.com/currentai-org/os-ai-map/pull/940)).
+- Sixteen products from the follow-ups to Mozilla's State of Open Source AI: five coding agents
+  (orchestration_agents), OpenTinker, SkyRL and prime-rl (finetuning_code), A2UI and the Universal
+  Commerce Protocol (agent_protocols), Muse Glimmer (finetuned_chat) and five safeguards
+  ([#921](https://github.com/currentai-org/os-ai-map/pull/921),
+  [#924](https://github.com/currentai-org/os-ai-map/pull/924),
+  [#925](https://github.com/currentai-org/os-ai-map/pull/925),
+  [#927](https://github.com/currentai-org/os-ai-map/pull/927),
+  [#928](https://github.com/currentai-org/os-ai-map/pull/928)).
 - A report that judges cited GitHub and Hugging Face license sources from the weekly
   `artifact_state` rows instead of a page fetch (`build.license_rows`), with the URL rewrites
-  declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the
-  18 Oct rows, 40 products' licenses confirm from rows alone, 26 of them unreadable by
-  `reverify` today. On a route where a product declares several artifacts only the governing
-  release is judged, and license documents stay on the direct path. It writes no dates yet
-  ([#691](https://github.com/currentai-org/os-ai-map/issues/691)).
-- Increments for the weekly asset-counter history (`build.snapshot_counters --increments`). A lifetime
-  counter that falls between readings, because a release asset was deleted or replaced, gives a zero
-  increment flagged `reset`, and the next window is measured from the lower reading
-  ([#850](https://github.com/currentai-org/os-ai-map/issues/850)).
-- A preliminary data_hubs category (Data hubs & catalogs) with nine researched head products and
-  fourteen registry rows, ATLAS and Roboflow Universe among the rows, held preliminary until the
-  maintainer rules on its open questions; openml moves to it from the benchmark_eval_data
-  registry ([#826](https://github.com/currentai-org/os-ai-map/pull/826)).
+  declared in `signal_routing.yaml` and each row bound to the artifact the citation names. On the 18
+  Oct rows, 40 products' licenses confirm from rows alone, 26 of them unreadable by `reverify`
+  today. On a route where a product declares several artifacts only the governing release is judged,
+  and license documents stay on the direct path. It writes no dates yet
+  ([#917](https://github.com/currentai-org/os-ai-map/pull/917)).
+- Thirteen products from the stack Alpha runs on, across finetuned_chat, inference_code, safeguards,
+  search_retrieval and deployment ([#909](https://github.com/currentai-org/os-ai-map/pull/909)).
+- Pi (`pi-coding-agent`) in orchestration_agents
+  ([#889](https://github.com/currentai-org/os-ai-map/pull/889)).
+- GPT-6 in finetuned_chat, at adoption 5 on ChatGPT's reported weekly reach. GPT-4o and o-series
+  stay as their own products while their APIs are live, and their adoption now abstains
+  ([#875](https://github.com/currentai-org/os-ai-map/pull/875),
+  [#888](https://github.com/currentai-org/os-ai-map/pull/888)).
+- Three preliminary categories, seeded with candidate rows and not yet scored: agent_memory,
+  structured_generation and agent_authorization
+  ([#861](https://github.com/currentai-org/os-ai-map/pull/861),
+  [#864](https://github.com/currentai-org/os-ai-map/pull/864),
+  [#881](https://github.com/currentai-org/os-ai-map/pull/881)).
+- The data_hubs category (Data hubs & catalogs), published with fifteen head products, ATLAS,
+  Figshare and The Cancer Imaging Archive among them; openml moved to it from the
+  benchmark_eval_data registry ([#826](https://github.com/currentai-org/os-ai-map/pull/826),
+  [#854](https://github.com/currentai-org/os-ai-map/pull/854),
+  [#862](https://github.com/currentai-org/os-ai-map/pull/862)).
+- Increments for the weekly asset-counter history (`build.snapshot_counters --increments`). A
+  lifetime counter that falls between readings, because a release asset was deleted or replaced,
+  gives a zero increment flagged `reset`, and the next window is measured from the lower reading
+  ([#860](https://github.com/currentai-org/os-ai-map/pull/860)).
+- The OpenAI Agents SDK, the Claude Agent SDK and Letta in orchestration_agents
+  ([#855](https://github.com/currentai-org/os-ai-map/pull/855)).
 - The maintainer's rulings log (`docs/rulings/`), the `build.review_queue` report of every open
   question and what it waits on, and the `ruling-session` and `audit-repo-accuracy` skills
   ([#812](https://github.com/currentai-org/os-ai-map/pull/812)).
 
 ### Changed
 
+- base_pretrained capability re-read on the Artificial Analysis Intelligence Index v5.0.1:
+  mistral-large moved from 3 to 4, and every other band held, with holds restated where v5.0.1 has
+  no comparable reading ([#1024](https://github.com/currentai-org/os-ai-map/pull/1024),
+  [#1030](https://github.com/currentai-org/os-ai-map/pull/1030),
+  [#1032](https://github.com/currentai-org/os-ai-map/pull/1032),
+  [#1033](https://github.com/currentai-org/os-ai-map/pull/1033)).
+- Language-adjusted size caps in language_specific_datasets moved nine capability scores, and the
+  size rulings for the eight multilingual products set aside moved Kencorpus from 2 to 1
+  (R-2026-11-11-h to -j, R-2026-11-12-a to -d;
+  [#1005](https://github.com/currentai-org/os-ai-map/pull/1005),
+  [#1015](https://github.com/currentai-org/os-ai-map/pull/1015)).
+- IndoNLU moved from language_specific_eval_sets to benchmark_eval_data, which does not score
+  capability ([#1007](https://github.com/currentai-org/os-ai-map/pull/1007)).
+- guardrails-ai's openness moved from 4/open_core to 5/open_source: its optional server does not
+  gate the framework ([#988](https://github.com/currentai-org/os-ai-map/pull/988)).
+- Daytona and Composio re-scored from 4/open_core to 1/closed: the engine of each current service is
+  private ([#987](https://github.com/currentai-org/os-ai-map/pull/987)).
+- Language-specific evaluation sets are published as their own category, scored by the depth ladder:
+  22 sets moved from Language-specific datasets with computed, provisional bands, five of them
+  unresolved with a null band and an adoption-only overall score, and `overall_basis` now marks
+  every overall score. Language-specific datasets moved from stage 4 to 3 with the sets' departure
+  (R-2026-11-07-b, R-2026-11-08-a, -b; [#950](https://github.com/currentai-org/os-ai-map/pull/950),
+  [#979](https://github.com/currentai-org/os-ai-map/pull/979)).
+- Machine-translated evaluation items that a cited source says people reviewed, every item, now
+  count toward evaluation depth; their provenance stays `machine_translated`, a review of unstated
+  scope (`review_scope: unstated`) leaves depth unknown, and generated items still do not count
+  (R-2026-11-03-b, replacing R-2026-11-01-h, and -h)
+  ([#975](https://github.com/currentai-org/os-ai-map/pull/975)).
 - AfroBench's NollySenti coverage entries for Hausa, Igbo and Yoruba record `human_translated`
   provenance, from the NollySenti paper's statement that professional translators produced them;
   they were `unknown`. No band moves ([#974](https://github.com/currentai-org/os-ai-map/pull/974)).
@@ -145,6 +193,33 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   its whole checkpoint family, modernvbert 3 to 1 and tensorlake-sandbox 1 to 2; ag-ui keeps 5 on
   its PyPI and npm packages
   ([#904](https://github.com/currentai-org/os-ai-map/pull/904)).
+- qwen now covers Qwen's base checkpoints, governing on Qwen3.5 Base, and qwen-instruct the
+  post-trained line: qwen moved from adoption 5 and capability 5 to 4 and 4, and qwen-instruct from
+  adoption 4 and capability 3 to 5 and 4
+  ([#890](https://github.com/currentai-org/os-ai-map/pull/890),
+  [#892](https://github.com/currentai-org/os-ai-map/pull/892),
+  [#901](https://github.com/currentai-org/os-ai-map/pull/901)).
+- Every new institution records its country, or the reason none is recorded, and the countries of
+  nineteen institutions created since the first batch were filled in
+  ([#899](https://github.com/currentai-org/os-ai-map/pull/899),
+  [#900](https://github.com/currentai-org/os-ai-map/pull/900)).
+- llama-cpp's adoption is recorded as reported traction rather than a usage volume no count
+  supported, held at 4 pending a measurement
+  ([#876](https://github.com/currentai-org/os-ai-map/pull/876)).
+- The 8 Oct adoption rulings applied: among them, 34 products whose GitHub repository is not their
+  primary channel band on reported traction rather than stars
+  ([#870](https://github.com/currentai-org/os-ai-map/pull/870)).
+- Storage capability re-banded on first-party documentation of distributed and hosted-model
+  features: vearch and openlake 3 to 4, pinecone 4 to 5, deep-lake 4 to 3
+  ([#869](https://github.com/currentai-org/os-ai-map/pull/869)).
+- Openness re-read for seventeen held axes under the 8 Oct rulings: flashinfer, sglang and
+  tensorrt-llm moved from 5/open_source to 4/open_core on NVIDIA's proprietary build dependencies;
+  paradedb, quilt and opik to 4/open_core; openpcc to 2/source_available; vibethinker to
+  2/restricted; amazon-q-developer from 1/closed to 2/source_available
+  ([#866](https://github.com/currentai-org/os-ai-map/pull/866)).
+- Chat-model capability read on each tier's current flagship: grok, gemini-flash, gemini-pro and
+  doubao-seed moved from 5 to 4, leaving the Leading tier, and rwkv from 4 to 2
+  ([#865](https://github.com/currentai-org/os-ai-map/pull/865)).
 - Weaviate's openness re-scored from 5/open_source to 4/open_core after its LICENSE split the
   repository, putting an Enterprise Edition in the `wl` directory under a separate commercial
   license enabled by a license key ([#841](https://github.com/currentai-org/os-ai-map/pull/841)).
@@ -153,13 +228,17 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   24 Aug counting change), moving finetuning_code and storage from stage 4 to 3
   ([#834](https://github.com/currentai-org/os-ai-map/pull/834)).
 
+### Removed
+
+- `azure-ai-model-inference`, retired as an alias of `azure-ai-foundry-models`
+  ([#866](https://github.com/currentai-org/os-ai-map/pull/866)).
+
 ### Fixed
 
 - The asset-counter history's QwenLM/Qwen3.8 reading moved from qwen to qwen-instruct, where #890
   re-scoped the repository, and `build.snapshot_counters --check` now fails a counter row left
   under a product that no longer declares its artifact while another product does
   ([#893](https://github.com/currentai-org/os-ai-map/pull/893)).
-
 ## [0.5.0] - 2026-10-03
 
 ### Added
@@ -856,7 +935,8 @@ Initial release: the first full snapshot of the AI Stack Map corpus, at the star
 **458 products across 15 categories**, from **249 organizations**, each scored on openness,
 adoption, and capability. Tagged at commit `2e9d6eb`.
 
-[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/currentai-org/os-ai-map/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/currentai-org/os-ai-map/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...v0.3.0
