@@ -108,6 +108,7 @@ graph LR
   currentai__identity__membership_edges[currentai.identity.membership_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
   currentai__identity__org_edges[currentai.identity.org_edges]:::dep --> build/identity_eval__py[build/identity_eval.py]:::audit
   currentai__identity__org_edges[currentai.identity.org_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
+  currentai__language_representation__classification[currentai.language_representation.classification]:::dep --> build/language_codes__py[build/language_codes.py]:::audit
   currentai__language_representation__classification[currentai.language_representation.classification]:::dep --> build/language_representation__py[build/language_representation.py]:::audit
   currentai__language_representation__classification_src[currentai.language_representation.classification_src]:::dep --> currentai__language_representation__classification[currentai.language_representation.classification]:::dep
   currentai__language_representation__measurements[currentai.language_representation.measurements]:::dep --> currentai__language_representation__classification_src[currentai.language_representation.classification_src]:::dep
