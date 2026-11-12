@@ -32,7 +32,7 @@ configs:
 
 The data behind the [Open Source AI Gap Map](https://map.currentai.org/): $n_products products
 from $n_organizations organizations across $n_categories categories of the AI stack, each graded
-on openness, adoption and capability, with every score traced to a cited primary source.
+on openness, adoption and capability, with every score backed by cited evidence.
 
 - **Version:** $version_line
 - **Source:** [currentai-org/os-ai-map](https://github.com/currentai-org/os-ai-map) at commit `$commit`
@@ -56,8 +56,8 @@ products_v = load_dataset("$repo_id", "products", revision="v$version", split="t
 | `organizations` | one organization that owns or stewards a published product | $n_organizations |
 | `categories` | one published category | $n_categories |
 | `citations` | one cited source behind one product's axis score | $n_citations |
-| `product_history` | one product in one tagged release | $n_product_history |
-| `category_history` | one category in one tagged release | $n_category_history |
+| `product_history` | one product in one release | $n_product_history |
+| `category_history` | one category in one release | $n_category_history |
 
 Join keys: `products.slug` = `citations.product_slug` = `product_history.current_slug`;
 `products.organization_slug` = `organizations.slug`; `products.category_slug` = `categories.slug`.
@@ -73,9 +73,12 @@ Each product sits in exactly one category and one organization. Columns are grou
   (`open_source`, `open_weights`, `restricted`, ...) and `openness_bucket` collapses it to
   `open`, `open-ish` or `closed`. `openness_components` lists the license, access and
   documentation findings behind the grade.
-- **Adoption** (`adoption_*`): a 0–5 level from real usage (downloads, active users,
-  deployments), not stars. `adoption_reach` is the band the level rests on, such as `1M-10M`.
-  Raw measurements are not published here.
+- **Adoption** (`adoption_*`): a 0–5 level from observed usage where it can be measured
+  (downloads, active users, deployments). Where no usage instrument exists the level rests on a
+  proxy, and `adoption_signal_type` says which: `stars_fallback` (GitHub stars, capped at level 3
+  because stars measure attention rather than use), `reported_traction` (figures the vendor
+  reports), or `unknown`. `adoption_reach` is the band the level rests on, such as `1M-10M`. Raw
+  measurements are not published here.
 - **Capability** (`capability_*`): a 0–5 grade from community benchmarks where they exist and
   feature coverage where they don't. `capability_relative_to` and `capability_relation` name the
   peer product the grade was set against.
@@ -85,7 +88,10 @@ Each product sits in exactly one category and one organization. Columns are grou
   the two kinds directly.
 
 Every axis carries a `*_confidence`, a `*_note` explaining the grade in prose, and a
-`*_last_verified` date. Artifact columns (`github`, `pypi`, `huggingface_model`, ...) list the
+`*_last_verified` date: the last day the whole axis was confirmed against its sources. It is not
+derived from the citations' `accessed` dates. A recently fetched page does not mean the score was
+reassessed that day, and a score can be reconfirmed without a page being refetched. Null means
+the axis has not yet been confirmed under that rule. Artifact columns (`github`, `pypi`, `huggingface_model`, ...) list the
 URLs the product is identified and measured by. `lineage_*` columns name the products (by slug)
 or external works a product derives from, trains, or belongs to.
 
@@ -99,14 +105,29 @@ or external works a product derives from, trains, or belongs to.
 
 The audit trail. Each row is one source cited for one axis of one product: the `url`, what the
 page `shows` (a short quotation or paraphrase), when it was `accessed`, the `http_status` seen,
-and a `content_sha256` of the fetched bytes so a reader can tell whether the page has changed
-since. `establishes` names the facts the source was cited for, where recorded.
+and a `content_sha256` of the fetched page so a reader can tell whether it has changed since.
+`establishes` names the facts the source was cited for, where recorded.
+
+Citations are the evidence a score was checked against. They include primary sources (license
+files, package registries, model cards, papers) and supporting third-party evidence, so a
+citation is not a guarantee that the source is primary. `accessed` dates the fetch, not the
+score; see `*_last_verified` above.
 
 ### `product_history` and `category_history`
 
-What each tagged release published, read from that release's build output in git, from
-v$first_release onward ($n_releases releases in this export). Rows carry the release `version`,
-its `released` date, the `payload_generated` date of the build output, and the `source_commit`.
+The map as built at each release, from v$first_release onward ($n_releases snapshots in this
+export). Each snapshot is the build output committed at the release tag, and the export checks it
+against a fresh rebuild of that tag's own sources with that tag's own code. A snapshot that
+differs from its rebuild fails the export.
+
+Rows carry the release `version` and `released` date, the `source_commit` the release tag points
+at, and the `payload_commit` that wrote the build output, which can be earlier than the tag. The
+`history` block of `manifest.json` records how each snapshot was verified. Some releases' build
+output still carries the previous version number, because the release commit itself does not
+trigger a rebuild. The manifest records that, and the content is verified the same way.
+
+These are snapshots of what each release contained, not of when the live site showed it. The
+site is published in a separate step that leaves no record in the repository.
 
 **Read changes between releases with care.** A value can move because the product changed, because
 new evidence arrived, or because the method changed: categories were added and split, adoption

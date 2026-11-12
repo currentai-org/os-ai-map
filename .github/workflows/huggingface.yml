@@ -3,16 +3,30 @@ name: huggingface
 # Publish the map as a Hugging Face dataset when a release is tagged. The tag is cut by the
 # publish-release skill on a reviewed, merged commit; this exports that commit and tags the
 # dataset with the same vX.Y.Z, so a dataset revision and a repo release always name the same
-# data. build/export_hf.py refuses to push from anything but the release tag.
+# data.
 #
-# Needs the HF_TOKEN repository secret: a write token for the dataset's Hugging Face org.
+# build/export_hf.py carries the safeguards, so this file stays thin:
+#   - it publishes only to RELEASE_REPO_ID, only from the vX.Y.Z tag, and only to a public dataset
+#     that already exists (create it once by hand under the organization);
+#   - it rebuilds every earlier release tag and refuses history it cannot verify;
+#   - a re-run is safe: a tag already holding this release is a no-op, and a tag holding anything
+#     else is refused, never moved.
+#
+# Secrets: HF_TOKEN, a fine-grained Hugging Face token with write access to the release dataset
+# only (and to the rehearsal dataset, if one is used).
 
 on:
   push:
     tags: ["v*.*.*"]
-  # Re-publish a release, e.g. after the token was missing when the tag landed. Run it from
-  # the tag (the "Use workflow from" picker), not from a branch: the export checks HEAD.
   workflow_dispatch:
+    inputs:
+      rehearse_repo:
+        description: >-
+          Rehearse against this PRIVATE dataset (ORG/NAME) instead of publishing: publish as
+          rehearsal-<sha>, publish again, and require the second run to change nothing. Leave
+          empty to re-publish a release, running the workflow from its tag.
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -27,8 +41,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Full history and tags: the history tables read build/notebook_data.json at every
-          # release tag, and build.freshness_payload dates score files from their commits.
+          # Full history and tags: every release tag is rebuilt in its own worktree, and
+          # build.freshness_payload dates score files from their commits.
           fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
@@ -37,12 +51,20 @@ jobs:
         run: uv sync --locked
       - name: Validate sources
         run: uv run python -m build.validate
-      - name: Export and push to Hugging Face
+      - name: Export and publish to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: uv run python -m build.export_hf --push
-      - name: Summary
+          REHEARSE_REPO: ${{ inputs.rehearse_repo }}
         run: |
+          if [ -n "$REHEARSE_REPO" ]; then
+            uv run python -m build.export_hf --rehearse --repo-id "$REHEARSE_REPO"
+          else
+            uv run python -m build.export_hf --push
+          fi
+      - name: Summary
+        if: always()
+        run: |
+          [ -f dist/hf/manifest.json ] || exit 0
           echo '```json' >> "$GITHUB_STEP_SUMMARY"
           cat dist/hf/manifest.json >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"

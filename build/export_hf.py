@@ -1,8 +1,9 @@
 """Export the published map as a Hugging Face dataset: Parquet tables, a manifest, and a card.
 
-    uv run python -m build.export_hf                       # → dist/hf/
-    uv run python -m build.export_hf --out /tmp/hf         # elsewhere
-    uv run python -m build.export_hf --push                # build, upload, tag (maintainer, at a tag)
+    uv run python -m build.export_hf                          # → dist/hf/, history verified
+    uv run python -m build.export_hf --no-verify-history      # fast preview, history unverified
+    uv run python -m build.export_hf --rehearse --repo-id ORG/PRIVATE-TEST   # dry run of a publish
+    uv run python -m build.export_hf --push                   # publish (maintainer, at a release tag)
 
 Six tables, one Hugging Face config each:
 
@@ -14,13 +15,15 @@ Six tables, one Hugging Face config each:
 * ``citations``         one row per cited source behind a published product's axis score, read
                         from ``sources/scores/`` directly: the full audit trail, not the payload's
                         trimmed copy.
-* ``product_history``   one row per (release, product): the axes and overall score as each tagged
-                        release published them.
-* ``category_history``  one row per (release, category): stage and gaps per tagged release.
+* ``product_history``   one row per (release, product): the axes and overall score as each
+                        release tag's build output records them.
+* ``category_history``  one row per (release, category): stage and gaps per release tag.
 
-The history tables read ``build/notebook_data.json`` at each ``v*`` tag from git. They record
-what was published, not a recomputation under today's rules, so a value can move between
-releases because the method changed as well as because the product did. The card says so.
+The history tables read ``build/notebook_data.json`` at each ``v*`` tag, and verify it against a
+rebuild of that tag's own sources with that tag's own code (see "history tables" below). They
+record each release as it was built, not a recomputation under today's rules, so a value can move
+between releases because the method changed as well as because the product did. They do not
+record when the live site showed a release; the card says both.
 
 Scope: published categories only (preliminary categories and the long tail are left out, as on
 the map). The long-tail snapshot is excluded on purpose: it carries third-party catalog content.
@@ -33,9 +36,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
-from datetime import date, datetime, timezone
+import tempfile
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from pathlib import Path
 from string import Template
 
@@ -48,7 +54,8 @@ from build.vocabulary import axes, lineage_relations, parse_date
 
 ARTIFACT_KINDS = ("github", "pypi", "npm", "crates", "go", "huggingface_model",
                   "huggingface_dataset", "arxiv")
-DEFAULT_REPO_ID = "current-ai-official/os-ai-map"
+# The one dataset a release may publish to. Moving it is a reviewed change, not a flag.
+RELEASE_REPO_ID = "current-ai-official/os-ai-map"
 CARD_TEMPLATE = ROOT / "build" / "hf_dataset_card.md"
 TAG_RE = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
 
@@ -206,9 +213,29 @@ def current_tables(sources: dict, payload: dict) -> dict[str, pa.Table]:
 
 
 # --- history tables ----------------------------------------------------------------------------
+#
+# A history snapshot is the build output committed at a release tag. Two facts about that file
+# matter, and the export checks both instead of assuming them:
+#
+# * The regeneration bot rewrites it after a merge that changes the map's inputs, but not after
+#   a release commit, which only touches CHANGELOG.md and pyproject.toml. So the payload at a tag
+#   can carry the PREVIOUS release's version label. That is tolerated only for the one release
+#   immediately before, and only once the content is proven current (below). Any other label is
+#   an error.
+# * Being committed at the tag does not by itself prove the content is the tag's. A merge whose
+#   regeneration had not landed when the tag was cut would leave a payload one step behind. So
+#   every tag is rebuilt with its OWN serializer from its OWN sources, in a throwaway worktree,
+#   and the committed payload must equal the rebuild in everything but build metadata.
+#
+# Neither check says when the live site showed a release: the site is published by a separate
+# maintainer step (docs/operations/publish-map.md) that leaves no record in git. The card says
+# so.
+
+SNAPSHOT_META = [("version", STR), ("released", DATE), ("source_commit", STR),
+                 ("payload_commit", STR), ("payload_generated", DATE)]
 
 PRODUCT_HISTORY_SCHEMA = pa.schema([
-    ("version", STR), ("released", DATE), ("payload_generated", DATE), ("source_commit", STR),
+    *SNAPSHOT_META,
     ("product_slug", STR), ("current_slug", STR), ("name", STR), ("category_slug", STR),
     ("openness_score", INT), ("openness_class", STR),
     ("adoption_level", INT), ("adoption_reach", STR), ("capability_score", INT),
@@ -216,10 +243,20 @@ PRODUCT_HISTORY_SCHEMA = pa.schema([
 ])
 
 CATEGORY_HISTORY_SCHEMA = pa.schema([
-    ("version", STR), ("released", DATE), ("payload_generated", DATE), ("source_commit", STR),
+    *SNAPSHOT_META,
     ("category_slug", STR), ("name", STR), ("stage_num", INT), ("stage_name", STR),
     ("gaps", STRS), ("product_count", INT), ("leading_count", INT), ("mature_count", INT),
 ])
+
+# Build metadata, not map content: when and as which version a payload was written. The
+# per-product `freshness` block is dated from git history and is excluded for the same reason.
+# `long_tail` is not exported.
+_BUILD_METADATA = ("generated", "version", "released", "contract", "long_tail")
+_REBUILD_DATE = "2000-01-01"
+
+
+class HistoryError(RuntimeError):
+    """A release snapshot whose provenance cannot be established."""
 
 
 def release_tags() -> list[tuple[str, str]]:
@@ -254,10 +291,60 @@ def _slugs_by_name(commit: str) -> dict[str, str]:
     return out
 
 
-def _snapshot_rows(payload: dict, version: str, released: date | None, commit: str,
-                   name_to_slug: dict[str, str] | None, current_slug: dict[str, str]):
-    meta = {"version": version, "released": released,
-            "payload_generated": parse_date(payload.get("generated")), "source_commit": commit}
+def payload_content(payload: dict) -> dict:
+    """The map content of a payload: everything but build metadata and freshness."""
+    out = {k: v for k, v in payload.items() if k not in _BUILD_METADATA}
+    out["categories"] = {
+        cid: {**cat, "products": [{k: v for k, v in r.items() if k != "freshness"}
+                                  for r in cat["products"]]}
+        for cid, cat in payload["categories"].items()}
+    return out
+
+
+def rebuild_payload(commit: str, workdir: Path) -> dict:
+    """Serialize ``commit``'s sources with ``commit``'s own build code, in a throwaway worktree."""
+    wt = workdir / commit[:12]
+    _git("worktree", "add", "--detach", "--force", str(wt), commit)
+    # The rebuild must use the worktree's own locked environment, not this one's.
+    env = {k: v for k, v in os.environ.items()
+           if k not in ("VIRTUAL_ENV", "UV_PROJECT_ENVIRONMENT")}
+    try:
+        for cmd in (["uv", "sync", "--locked", "--quiet"],
+                    ["uv", "run", "--locked", "python", "-m", "build.serialize",
+                     "--date", _REBUILD_DATE]):
+            subprocess.run(cmd, cwd=wt, env=env, check=True, capture_output=True, text=True)
+        return json.loads((wt / "build" / "notebook_data.json").read_text())
+    except subprocess.CalledProcessError as e:
+        raise HistoryError(f"could not rebuild {commit[:8]}: {' '.join(e.cmd)}\n{e.stderr}") from e
+    finally:
+        _git("worktree", "remove", "--force", str(wt))
+
+
+def verify_snapshot(version: str, previous: str | None, committed: dict,
+                    rebuilt: dict | None) -> str:
+    """Return how ``committed`` (the payload at tag ``v<version>``) was verified, or raise.
+
+    ``previous`` is the release before this one. ``rebuilt`` is the tag rebuilt from its own
+    sources; None means verification was skipped, which only a preview may do.
+    """
+    label = committed.get("version")
+    # Payloads before the 0.3.0 contract carry no version label at all.
+    if label not in (None, version, previous):
+        raise HistoryError(f"the payload at v{version} labels itself {label!r}, which is neither "
+                           f"this release nor the one before it")
+    if rebuilt is None:
+        return "unverified"
+    if payload_content(committed) != payload_content(rebuilt):
+        raise HistoryError(f"the payload committed at v{version} differs from a rebuild of that "
+                           f"tag's sources; it does not describe the release it is tagged with")
+    if label not in (None, version):
+        return "rebuilt-identical; version label lags the tag"
+    return "rebuilt-identical"
+
+
+def _snapshot_rows(payload: dict, meta: dict, name_to_slug: dict[str, str] | None,
+                   current_slug: dict[str, str]):
+    meta = {**meta, "payload_generated": parse_date(payload.get("generated"))}
     prows, crows = [], []
     for cid in payload["order"]:
         cat = payload["categories"][cid]
@@ -282,63 +369,104 @@ def _snapshot_rows(payload: dict, version: str, released: date | None, commit: s
     return prows, crows
 
 
-def history_tables(current: dict, current_version: str, head: str) -> dict[str, pa.Table]:
+def history_tables(current: dict, current_version: str, head: str,
+                   verify: bool = True) -> tuple[dict[str, pa.Table], list[dict]]:
+    """The two history tables, and one provenance record per snapshot for the manifest."""
     # A slug retired since a release still joins to today's products through the alias index
     # (identity.md). A product merged without a recorded alias gets a null current_slug.
     live = {r["slug"] for c in current["categories"].values() for r in c["products"]}
     current_slug = {s: s for s in live} | {
         old: new for old, new in current["aliases"]["products"].items() if new in live}
-    prows, crows = [], []
-    tags = release_tags()
-    for version, commit in tags:
+
+    tags = []
+    for version, commit in release_tags():
         try:
             payload = json.loads(_git("show", f"{commit}:build/notebook_data.json"))
         except subprocess.CalledProcessError:
-            continue
+            continue  # a tag from before the payload existed
+        tags.append((version, commit, payload))
+
+    rebuilt: dict[str, dict] = {}
+    if verify and tags:
+        with tempfile.TemporaryDirectory(prefix="export-hf-") as tmp, \
+                ThreadPoolExecutor(max_workers=4) as pool:
+            futures = {c: pool.submit(rebuild_payload, c, Path(tmp)) for _, c, _ in tags}
+            rebuilt = {c: f.result() for c, f in futures.items()}
+
+    prows, crows, provenance = [], [], []
+    previous = None
+    for version, commit, payload in tags:
+        how = verify_snapshot(version, previous, payload, rebuilt.get(commit))
+        payload_commit = _git("log", "-1", "--format=%H", commit, "--",
+                              "build/notebook_data.json").strip()
+        meta = {"version": version, "released": parse_date(release_date(version)),
+                "source_commit": commit, "payload_commit": payload_commit}
         needs_names = any("slug" not in r for c in payload["categories"].values()
                           for r in c["products"])
-        p, c = _snapshot_rows(payload, version, parse_date(release_date(version)), commit,
-                              _slugs_by_name(commit) if needs_names else None, current_slug)
-        prows += p
-        crows += c
-    # Between releases, the working tree is newer than any tag. Include it labelled as a
-    # pre-release of the next version so a preview shows the full series; --push refuses it.
-    if not any(sha == head for _, sha in tags):
-        p, c = _snapshot_rows(current, f"{current_version}+{head[:8]}", None, head, None,
+        p, c = _snapshot_rows(payload, meta, _slugs_by_name(commit) if needs_names else None,
                               current_slug)
         prows += p
         crows += c
-    return {"product_history": _table(prows, PRODUCT_HISTORY_SCHEMA),
-            "category_history": _table(crows, CATEGORY_HISTORY_SCHEMA)}
+        provenance.append({"version": version, "tag_commit": commit,
+                           "payload_commit": payload_commit,
+                           "payload_version_label": payload.get("version"),
+                           "verification": how})
+        previous = version
+    # Between releases, the working tree is newer than any tag. Include it labelled as a
+    # pre-release of the next version so a preview shows the full series; a push refuses it.
+    if not any(c == head for _, c, _ in tags):
+        meta = {"version": f"{current_version}+{head[:8]}", "released": None,
+                "source_commit": head, "payload_commit": None}
+        p, c = _snapshot_rows(current, meta, None, current_slug)
+        prows += p
+        crows += c
+        provenance.append({"version": meta["version"], "tag_commit": None,
+                           "payload_commit": None, "payload_version_label": None,
+                           "verification": "built in this run (unreleased)"})
+    return ({"product_history": _table(prows, PRODUCT_HISTORY_SCHEMA),
+             "category_history": _table(crows, CATEGORY_HISTORY_SCHEMA)}, provenance)
 
 
-# --- card, manifest, push ----------------------------------------------------------------------
+# --- card and manifest -------------------------------------------------------------------------
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def content_sha256(table: pa.Table) -> str:
+    """A digest of a table's rows that does not depend on the Parquet writer's version.
+
+    File bytes change with the writer (its version string is in the footer), so they cannot
+    decide whether a re-run produced the same release. This can.
+    """
+    rows = json.dumps(table.to_pylist(), sort_keys=True, default=str, separators=(",", ":"))
+    return hashlib.sha256(f"{table.schema}\n{rows}".encode()).hexdigest()
+
+
 def write(out: Path, tables: dict[str, pa.Table], payload: dict, head: str,
-          released_tag: bool, repo_id: str) -> dict:
+          release_tag: str | None, repo_id: str, provenance: list[dict]) -> dict:
     data = out / "data"
     data.mkdir(parents=True, exist_ok=True)
     files = {}
     for name, table in tables.items():
         path = data / f"{name}.parquet"
         pq.write_table(table, path, compression="zstd")
-        files[f"data/{name}.parquet"] = {"rows": table.num_rows, "sha256": _sha256(path)}
+        files[f"data/{name}.parquet"] = {"rows": table.num_rows, "sha256": _sha256(path),
+                                         "content_sha256": content_sha256(table)}
 
-    versions = list(dict.fromkeys(tables["product_history"].column("version").to_pylist()))
+    released = release_tag is not None and TAG_RE.match(release_tag) is not None
+    versions = [p["version"] for p in provenance]
     manifest = {
         "dataset": "os-ai-map",
         "version": payload["version"],
-        "released": payload["released"] if released_tag else None,
+        "released": payload["released"] if released else None,
         "generated": payload["generated"],
         "source_repository": "https://github.com/currentai-org/os-ai-map",
         "source_commit": head,
-        "release_tag": f"v{payload['version']}" if released_tag else None,
+        "release_tag": release_tag,
         "payload_contract": PAYLOAD_CONTRACT,
-        "history_versions": versions,
+        "history_verified": all(p["verification"] != "unverified" for p in provenance),
+        "history": provenance,
         "files": files,
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
@@ -346,9 +474,9 @@ def write(out: Path, tables: dict[str, pa.Table], payload: dict, head: str,
     t = tables
     card = Template(CARD_TEMPLATE.read_text()).substitute(
         repo_id=repo_id,
-        year=(payload["released"] if released_tag else payload["generated"])[:4],
+        year=(payload["released"] if released else payload["generated"])[:4],
         version=payload["version"],
-        version_line=(f"{payload['version']}, released {payload['released']}" if released_tag
+        version_line=(f"{payload['version']}, released {payload['released']}" if released
                       else f"{payload['version']}+{head[:8]} (unreleased preview; do not publish)"),
         commit=head,
         n_products=f"{t['products'].num_rows:,}",
@@ -373,26 +501,94 @@ def _size_category(n: int) -> str:
     return "n>1M"
 
 
-def push(out: Path, repo_id: str, version: str) -> None:
-    from huggingface_hub import HfApi  # token from HF_TOKEN or the cached login
-    api = HfApi()
-    api.create_repo(repo_id, repo_type="dataset", exist_ok=True)
-    commit = api.upload_folder(repo_id=repo_id, repo_type="dataset", folder_path=str(out),
-                               commit_message=f"Release v{version}",
-                               delete_patterns=["data/*.parquet"])
-    api.create_tag(repo_id, repo_type="dataset", tag=f"v{version}",
-                   revision=commit.oid, tag_message=f"os-ai-map v{version}")
-    print(f"pushed {repo_id} @ v{version} ({commit.commit_url})")
+# --- push --------------------------------------------------------------------------------------
+#
+# A dataset tag, like a git release tag, is immutable once pushed. So a push is a function of
+# what the tag already holds:
+#
+#   tag absent                      → upload, confirm the uploaded manifest, then create the tag
+#   tag present, same release       → nothing to do (a re-run after a later step failed)
+#   tag present, different release  → refuse; never move a released tag
+#
+# "Same release" compares the source commit, the version and every table's content digest, not
+# file bytes or the build date, so a re-run with a newer Parquet writer or on a later day is
+# still recognized as the release it is.
+
+def same_release(a: dict, b: dict) -> bool:
+    def key(m: dict):
+        return (m.get("source_commit"), m.get("version"), m.get("release_tag"),
+                {p: f.get("content_sha256") for p, f in (m.get("files") or {}).items()})
+    return key(a) == key(b)
+
+
+def _remote_manifest(api, repo_id: str, revision: str) -> dict | None:
+    try:
+        path = api.hf_hub_download(repo_id, "manifest.json", repo_type="dataset",
+                                   revision=revision)
+    except Exception:  # noqa: BLE001 - a missing file and a missing revision both mean "none"
+        return None
+    return json.loads(Path(path).read_text())
+
+
+def push(out: Path, repo_id: str, tag: str, *, private: bool, api=None) -> str:
+    """Publish ``out`` to ``repo_id`` as ``tag``. Returns "published" or "unchanged"."""
+    if api is None:
+        from huggingface_hub import HfApi  # token from HF_TOKEN or `hf auth login`
+        api = HfApi()
+    local = json.loads((out / "manifest.json").read_text())
+    if local.get("release_tag") != tag:
+        raise SystemExit(f"the export in {out} was built for {local.get('release_tag')!r}, not {tag}")
+
+    try:
+        info = api.repo_info(repo_id, repo_type="dataset")
+    except Exception as e:  # noqa: BLE001
+        raise SystemExit(f"refusing to push: dataset {repo_id} is not reachable ({e}). Create it "
+                         f"once by hand, under the right organization, before the first push.")
+    if bool(info.private) != private:
+        want = "private (a rehearsal target)" if private else "public (the release target)"
+        raise SystemExit(f"refusing to push: {repo_id} must be {want}")
+
+    existing = {r.name for r in api.list_repo_refs(repo_id, repo_type="dataset").tags}
+    if tag in existing:
+        remote = _remote_manifest(api, repo_id, tag)
+        if remote is not None and same_release(remote, local):
+            print(f"{repo_id} @ {tag} already holds this release; nothing to do")
+            return "unchanged"
+        raise SystemExit(f"refusing to push: {repo_id} already has tag {tag} with different "
+                         f"content. Tags are immutable; fix forward with a new release.")
+
+    api.upload_folder(repo_id=repo_id, repo_type="dataset", folder_path=str(out),
+                      commit_message=f"Release {tag}", delete_patterns=["data/*.parquet"])
+    head = api.repo_info(repo_id, repo_type="dataset").sha
+    remote = _remote_manifest(api, repo_id, head)
+    if remote is None or not same_release(remote, local):
+        raise SystemExit(f"refusing to tag: {repo_id}@{head[:8]} does not carry this export's "
+                         f"manifest (a concurrent upload?). Nothing was tagged.")
+    api.create_tag(repo_id, repo_type="dataset", tag=tag, revision=head,
+                   tag_message=f"os-ai-map {tag}")
+    tagged = _remote_manifest(api, repo_id, tag)
+    if tagged is None or not same_release(tagged, local):
+        raise SystemExit(f"{repo_id} @ {tag} was created but does not read back as this release")
+    print(f"published {repo_id} @ {tag} (revision {head[:8]}, source {local['source_commit'][:8]})")
+    return "published"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--out", type=Path, default=ROOT / "dist" / "hf")
-    parser.add_argument("--repo-id", default=DEFAULT_REPO_ID,
-                        help=f"Hugging Face dataset repo the card names (default: {DEFAULT_REPO_ID})")
-    parser.add_argument("--push", action="store_true",
-                        help="upload to --repo-id and tag it vX.Y.Z; refused unless HEAD is the "
-                             "vX.Y.Z release tag. Token from HF_TOKEN or `hf auth login`.")
+    parser.add_argument("--repo-id", default=RELEASE_REPO_ID,
+                        help=f"dataset repo the card names and a rehearsal pushes to "
+                             f"(default: {RELEASE_REPO_ID})")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--push", action="store_true",
+                      help=f"publish to {RELEASE_REPO_ID} as vX.Y.Z. Refused unless HEAD is that "
+                           f"release tag, the history verifies, and the dataset is public.")
+    mode.add_argument("--rehearse", action="store_true",
+                      help="exercise the whole publish path against a PRIVATE --repo-id, from any "
+                           "commit: publish as rehearsal-<sha>, then publish again and require "
+                           "the second run to change nothing.")
+    parser.add_argument("--no-verify-history", action="store_true",
+                        help="skip rebuilding each release tag (fast preview); a push refuses it")
     args = parser.parse_args()
 
     from build.validate import load_sources
@@ -401,23 +597,45 @@ def main() -> None:
     version = repo_version()
     head = _git("rev-parse", "HEAD").strip()
     tagged = dict(release_tags()).get(version) == head
-    if args.push and not tagged:
-        raise SystemExit(f"refusing to push: HEAD {head[:8]} is not the v{version} release tag. "
-                         "Cut the release first (skills/publish-release), then export from the tag.")
+    if args.push:
+        if args.repo_id != RELEASE_REPO_ID:
+            raise SystemExit(f"refusing to push: releases go to {RELEASE_REPO_ID} only "
+                             f"(change RELEASE_REPO_ID in a reviewed PR to move it)")
+        if not tagged:
+            raise SystemExit(f"refusing to push: HEAD {head[:8]} is not the v{version} release "
+                             "tag. Cut the release first (skills/publish-release), then export "
+                             "from the tag.")
+    if args.rehearse and args.repo_id == RELEASE_REPO_ID:
+        raise SystemExit("refusing to rehearse against the release dataset; pass a private "
+                         "--repo-id")
+    if (args.push or args.rehearse) and args.no_verify_history:
+        raise SystemExit("refusing to publish an export whose history was not verified")
 
     sources = load_sources(ROOT)
     frozen = json.load(open(ROOT / "sources" / "snapshots" / "long_tail.json"))
     payload = build_payload(sources, frozen, freshness=resolve_freshness(ROOT),
                             generated=datetime.now(timezone.utc).date().isoformat())
-    tables = current_tables(sources, payload) | history_tables(payload, version, head)
+    history, provenance = history_tables(payload, version, head,
+                                         verify=not args.no_verify_history)
+    tables = current_tables(sources, payload) | history
 
-    manifest = write(args.out, tables, payload, head, tagged, args.repo_id)
+    tag = (f"v{version}" if tagged and not args.rehearse
+           else f"rehearsal-{head[:8]}" if args.rehearse else None)
+    manifest = write(args.out, tables, payload, head, tag, args.repo_id, provenance)
     for name, f in manifest["files"].items():
         print(f"  {name:32} {f['rows']:>7,} rows")
+    for p in provenance:
+        print(f"  history {p['version']:20} {p['verification']}")
     print(f"wrote {args.out} (v{version}{'' if tagged else ' +unreleased'}, commit {head[:8]})")
 
     if args.push:
-        push(args.out, args.repo_id, version)
+        push(args.out, RELEASE_REPO_ID, tag, private=False)
+    elif args.rehearse:
+        push(args.out, args.repo_id, tag, private=True)
+        if push(args.out, args.repo_id, tag, private=True) != "unchanged":
+            raise SystemExit("rehearsal failed: the second publish of the same release was not "
+                             "a no-op")
+        print("rehearsal passed: published, then re-published as a no-op")
 
 
 if __name__ == "__main__":

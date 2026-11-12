@@ -108,10 +108,13 @@ So the file changes go through a PR first, and only then does the tag get cut.
    RELEASE_TAG="v$VERSION" uv run pytest tests/test_release_metadata.py -q
    ```
 11. **Check the Hugging Face publish.** Pushing the tag runs `.github/workflows/huggingface.yml`,
-    which exports the tagged commit with `build/export_hf.py` and pushes it to the dataset repo,
-    tagged `vX.Y.Z`. Confirm the run is green and its summary shows the manifest for this
-    version. If it failed for a missing `HF_TOKEN`, add the secret and re-run the workflow from
-    the tag. A repo release and a dataset release name the same data, so do not skip this.
+    which exports the tagged commit with `build/export_hf.py` and publishes it to the release
+    dataset, tagged `vX.Y.Z`. Confirm the run is green and its summary shows the manifest for this
+    version, with `history_verified: true`. A failed run can be re-run from the tag: a dataset tag
+    that already holds this release is left alone, and one holding anything else is refused, never
+    moved. Before the first release to a dataset, run the workflow by hand with `rehearse_repo` set
+    to a private test dataset, so the first real publish is not the first time the upload path
+    runs. A repo release and a dataset release name the same data, so do not skip this step.
 12. **(Optional) GitHub Release.** Create a release from tag `vX.Y.Z`, pasting that version's
     changelog section (the same text the tag carries) as the body. Do not invent release notes.
 
