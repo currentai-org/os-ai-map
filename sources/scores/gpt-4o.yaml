@@ -76,45 +76,60 @@ adoption:
 capability:
   score: 3
   basis: benchmark
-  basis_detail: Artificial Analysis Intelligence Index
-  value: 'GPT-4o (Nov ''24) scores 8 on the Artificial Analysis Intelligence Index, at the lower end among
-    non-reasoning models in its price tier (median 15), ranked #46 of 61; Llama 4 Maverick scores 10.'
-  relative_to: llama
+  basis_detail: Same-harness benchmark comparison (OpenAI simple-evals, Phi-4 technical report)
+  value: 'Same-harness comparison in the Phi-4 technical report (OpenAI simple-evals, December 2024): GPT-4o
+    MMLU 88.1, GPQA 50.6, MATH 74.6, HumanEval 90.6, MMLU-Pro 73.0, against Phi-4 (phi, 3) at 84.8, 56.1,
+    80.4, 82.6 and 70.4. Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: GPT-4o (Nov ''24)
+    has no score.'
+  relative_to: phi
   relation: at
   confidence: medium
-  note: GPT-4o was OpenAI's multimodal flagship in 2024 and is still served through the API, but it now
-    sits far below the current frontier, including OpenAI's own GPT-5 and GPT-6 lines. On version 4.3.2
-    of the Artificial Analysis index it scored close to Llama 4 Maverick and below the median for comparable
-    models, which placed it alongside Llama rather than among the leading models. Version 5 of the index,
-    introduced in October 2026, scores neither model, so the current capability assessment is pending.
+  note: 'GPT-4o was OpenAI''s multimodal flagship in 2024 and is still served through the API, but it sits
+    far below the current frontier, and version 5 of Artificial Analysis''s Intelligence Index does not
+    score it. Microsoft''s Phi-4 technical report ran both models through one evaluation harness: GPT-4o
+    leads the 14-billion-parameter Phi-4 on general knowledge, coding and instruction following, while Phi-4
+    leads on graduate-level science and competition math, which places the two level.'
   comparison:
-    last_attested: '2026-10-09'
+    last_attested: '2026-11-12'
     sources:
-    - url: https://artificialanalysis.ai/models/llama-4-maverick
-      shows: '"Llama 4 Maverick scores 10 on the Artificial Analysis Intelligence Index, placing it below
-        average among comparable models (median: 12)"; Intelligence rank "# 26 / 46".'
-      accessed: '2026-10-09'
+    - url: https://huggingface.co/microsoft/phi-4/raw/main/README.md
+      shows: 'Peer read on the same date: the Phi-4 card compares "phi-4 with a set of models over OpenAI’s
+        SimpleEval benchmark", listing phi-4 against GPT-4o at MMLU 84.8 vs 88.1, GPQA 56.1 vs 50.6, MATH
+        80.4 vs 74.6, HumanEval 82.6 vs 90.6, MGSM 80.6 vs 90.4, SimpleQA 3.0 vs 39.4 and DROP 75.5 vs 80.9.
+        These are the results phi''s own reading cites; Phi-4 leads on the two reasoning rows and trails on
+        the rest, so GPT-4o is level with it rather than a step above.'
+      accessed: '2026-11-12'
       http_status: 200
-      content_sha256: 0b66f5ad66a5852c9964f06fc9bc251496f8843b9c79c4a041673e38022625e8
+      content_sha256: 4cc56faa6a5bcbde6227789b2ef9aedfde481ca660c8a4b686703aae19b00011
+  last_verified: '2026-11-12'
   sources:
   - url: https://artificialanalysis.ai/models/gpt-4o
-    shows: '"GPT-4o (Nov ''24) scores 8 on the Artificial Analysis Intelligence Index, placing it at the
-      lower end among comparable models (median: 15)"; Intelligence rank "# 46 / 61"; the page marks the
-      November 2024 snapshot as superseded by a later GPT-4o release.'
-    accessed: '2026-10-09'
+    shows: 'Page for GPT-4o (Nov ''24) on Intelligence Index v5.0.1: the model summary reads "Artificial
+      Analysis Intelligence Index Unknown", and the page notes "This model is deprecated. We still benchmark
+      its performance, but less often", so the current index has no score for GPT-4o.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: d62d2d01a2180b69beb5949a1dfdba2e41a49fef4cd68a4adb3439d09bf296f4
+    content_sha256: a03695907e0dad6b6d675b0591b872e4d6a3cd27217c460fb0dfaf51b9741a7d
   - url: https://artificialanalysis.ai/leaderboards/models
-    shows: The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max)
-      first at 57.62, GPT-6 Astra (Max) at 52.67, Gemini 3.1 Pro Preview at 29.72, o3 at 20.20, o4-mini
-      (High) at 16.65, Llama 4 Maverick at 9.99 and GPT-4o (Nov '24) at 8.44. The digest drifts between
-      fetches because the page carries live pricing and throughput figures.
-    accessed: '2026-10-09'
+    shows: The leaderboard's embedded model records on Intelligence Index v5.0.1 list "GPT-4o (Nov '24)"
+      as deprecated and without an intelligenceIndex, while 111 other records carry one; Llama 4 Maverick
+      and Phi-4 read intelligenceIndex null. The digest drifts between fetches because the page carries
+      live pricing and throughput figures.
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: b32380b54bad1092bd9247bfcea5d4eba61af6ee0ce8e5f00d8bfba2337988b4
+    content_sha256: 43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: 'OpenAI API model page for GPT-4o: "128,000 context window", "Oct 01, 2023 knowledge cutoff",
-      text and image input with text output; the page carries no benchmark figures.'
-    accessed: '2026-10-09'
+    shows: 'OpenAI API model page for GPT-4o: "128,000 context window", "16,384 max output tokens", "Oct
+      01, 2023 knowledge cutoff", text and image input with text output; the page carries no benchmark figures.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 9af7c20c8e5e9048721082db637cbb3042b1e5c86486a871a29c5cc1e94e9438
+    content_sha256: 62954874bdd444cd366fc6b3b4741d6635aeb9d0f61eef274ccc926c36466c6d
+  - url: https://arxiv.org/pdf/2412.08905
+    shows: 'Phi-4 technical report, Table 1, whose first benchmarks use "OpenAI’s simple-evals framework":
+      GPT-4o MMLU 88.1, GPQA 50.6, MATH 74.6, HumanEval 90.6, MGSM 90.4, SimpleQA 39.4, DROP 80.9, MMLUPro
+      73.0, ArenaHard 75.6, IFEval 84.8, against phi-4 at 84.8, 56.1, 80.4, 82.6, 80.6, 3.0, 75.5, 70.4,
+      75.4, 63.0; the text says "phi-4 significantly exceeds its teacher GPT-4o on the GPQA (graduate-level
+      STEM Q&A) and MATH (math competition) benchmarks".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: be5577cfb815a8617231c36602cdba38d0aaf2a94cf09502485c8a85de022f80

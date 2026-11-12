@@ -153,8 +153,13 @@ capability:
   basis: benchmark
   basis_detail: Artificial Analysis Intelligence Index
   value: 'Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average
-    among open weight non-reasoning models of similar size (median 12). The strongest released member of
-    the family - Llama 4 Scout scores 8 on the same index, and Behemoth is unreleased.'
+    among open weight non-reasoning models of similar size (median 12); Llama 4 Scout 8 on the same index;
+    Behemoth is unreleased. Index v5.0.1 scores no Llama model. Pretraining-suite readings: on the Apertus-70B
+    card''s six-task average (ARC, HellaSwag, WinoGrande, XNLI, XCOPA, PIQA), Llama 4 Scout base 67.9 against
+    Apertus-70B 67.5, OLMo 2 32B 67.7, Qwen3-32B 67.8, Qwen2.5-72B 69.8 and SmolLM3-3B 61.6; on the Olmo
+    3 32B base card, Llama 3.1 70B base against Olmo 3 32B base reads math 62.0 vs 61.6, code 36.3 vs 40.0
+    and MC STEM 80.1 vs 74.5 (Marin 32B 49.3, 30.8, 75.9). Maverick is on neither table; Meta''s card puts
+    its base ahead of Scout''s on MMLU (85.5 vs 79.6), MMLU-Pro (62.9 vs 58.2) and MATH (61.2 vs 50.3).'
   confidence: medium
   note: Llama 4 Maverick, the strongest released member of the family, scored 10 on version 4.3.2 of Artificial
     Analysis's Intelligence Index, below the median of 12 for open-weight non-reasoning models of similar
@@ -176,3 +181,28 @@ capability:
     accessed: '2026-09-29'
     http_status: 200
     content_sha256: 1d32dc830fd24a903212e7ebbd4e09824ae24200ab8704f38c6baf7b35e544e2
+  - url: https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/README.md
+    shows: 'Pretraining evaluation table, "Performance (%) of Apertus models on *general language understanding*
+      tasks (higher is better) compared to other pretrained models", one six-task average (ARC, HellaSwag,
+      WinoGrande, XNLI, XCOPA, PIQA): "| Llama4-Scout-16x17B | 67.9 |", "| Llama3.1-70B | 67.3 |", "| **Apertus-70B**
+      | 67.5 |", "| OLMo2-32B | 67.7 |", "| Qwen3-32B | 67.8 |", "| Qwen2.5-72B | 69.8 |", "| SmolLM3-3B
+      | 61.6 |", "| EuroLLM-9B | 62.8 |". Llama 4 Maverick is not in the table.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a4fd59afccb1aa534dbc01145314085926ac8c1e5d102d8564cbd4933d7de2ee
+  - url: https://huggingface.co/allenai/Olmo-3-1125-32B/raw/main/README.md
+    shows: 'Olmo 3 32B base card evaluation table, one pipeline across base models, aggregate columns Olmo
+      3-Eval Math, Code, MC_STEM, MC_Non-STEM and GenQA: Llama-3.1-70B 62.0, 36.3, 80.1, 86.1, 81.6; Olmo
+      3-32B 61.6, 40.0, 74.5, 85.6, 79.8; Marin-32B 49.3, 30.8, 75.9, 84.5, 80.3; Apertus-70B 39.7, 23.3,
+      70.0, 78.5, 75.0. No Llama 4 model is in the table.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8f227fd377065f4f93b50f9e14606224a021517f2315bcd537a22bb56ba8680f
+  - url: https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E
+    shows: 'Rendered model card, "Pre-trained models" table (Meta''s own evaluation, base models only):
+      MMLU 5-shot Llama 3.1 70B 79.3, Llama 3.1 405B 85.2, Llama 4 Scout 79.6, Llama 4 Maverick 85.5; MMLU-Pro
+      53.8, 61.6, 58.2, 62.9; MATH 41.6, 53.5, 50.3, 61.2; MBPP 66.4, 74.4, 67.8, 77.6. No other vendor''s
+      model is in the table.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3eb85dab4aeb392c25469f5153d301f676d32d7c8b6f44073a0a97d6ac817ef2
