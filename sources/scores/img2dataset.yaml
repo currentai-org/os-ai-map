@@ -1,0 +1,89 @@
+product: img2dataset
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: rom1504/img2dataset
+    core-gated:
+      value: ungated
+      detail: an individual's project with no company, paid tier or hosted edition beside it
+  confidence: high
+  note: img2dataset is MIT-licensed and the whole tool is in its public repository. It is one developer's project, with nothing
+    sold beside it.
+  raw: license:MIT(OSI);source:public(rom1504/img2dataset);core-gated:ungated(an individual's project with no company, paid
+    tier or hosted edition beside it)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/rom1504/img2dataset/main/LICENSE
+    shows: The LICENSE is the standard MIT License text, "Copyright (c) 2021 Romain Beaumont".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 910ed2834edcb6c119790c40806193f2db1b8f3f06e68fe463c4e8124c567e31
+  - url: https://pypi.org/pypi/img2dataset/json
+    shows: PyPI lists img2dataset 1.47.0, uploaded 2025-08-09, with the license field "MIT".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 582d1560ae5d3cc9075fb820f1377eb33eee2085a25ebbadeed5b30391c04b57
+  - url: https://raw.githubusercontent.com/rom1504/img2dataset/main/README.md
+    shows: 'The README installs with "pip install img2dataset" and documents the CLI, output formats and distributed modes
+      from the repository. Searched the body for enterprise, pricing, paid and license key: none.'
+    accessed: '2026-11-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: ead0a7b15e9761af003a8b6b6ffdad266d7d9817eba238bef6cd6fe83acecd51
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of img2dataset. A dataset build runs the tool on a few machines for
+    days, so downloads count installs, not the size of the datasets built with it.
+  sources:
+  - url: https://pypistats.org/api/packages/img2dataset/recent
+    shows: last_month 22,357, last_week 9,050, last_day 991 for the img2dataset package.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5cd805de330b6c83d26658b87f9bf12f2cc009f24d8f52bb70b02e569a516bc0
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Download, resize and package image URL lists (with captions) into webdataset, parquet, TFRecord or files; multiprocessing,
+    PySpark and Ray distribution; X-Robots-Tag opt-out filtering by default; recipes for LAION-400M (400M pairs in 3.5 days)
+    and LAION-5B (5B pairs in 7 days on 10 nodes). A single-purpose acquisition tool with no quality filtering or deduplication
+    of its own.
+  confidence: medium
+  note: 'img2dataset does one job at very large scale: fetching and packaging billions of web images, as it did for the LAION
+    datasets. Like CCNet, it is a single-approach pipeline, and quality filtering and deduplication are left to other tools.'
+  relative_to: ccnet
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/facebookresearch/cc_net/main/README.md
+      shows: The cc_net README still describes "mine" as the step that "removes duplicates, detects language, run the LM and
+        split by lang/perplexity buckets" over Common Crawl snapshots. The body is byte-identical to the one ccnet's own capability
+        record cites.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3b9abc643e55ae84fa42a6731dc34eecd9f1badcca15ed77a2f93e6ccc64498e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/rom1504/img2dataset/main/README.md
+    shows: The README says it "Can download, resize and package 100M urls in 20h on one machine", lists "laion400m 400M image/text
+      pairs that can be downloaded in 3.5 days" and "laion5B 5B image/text pairs that can be downloaded in 7 days using 10
+      nodes", output formats webdataset, parquet and tfrecord, pyspark and ray distributors, and the default disallowed_header_directives
+      "noai", "noimageai", "noindex" and "noimageindex".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ead0a7b15e9761af003a8b6b6ffdad266d7d9817eba238bef6cd6fe83acecd51

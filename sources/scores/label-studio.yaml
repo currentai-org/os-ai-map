@@ -1,0 +1,110 @@
+product: label-studio
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: HumanSignal/label-studio
+    core-gated:
+      value: gated
+      detail: HumanSignal's edition comparison lists role-based access control, task assignment, reviewer workflows, annotator
+        agreement and performance dashboards, SSO and on-premise deployment as Enterprise features the Community Edition lacks
+  confidence: high
+  note: 'Label Studio''s Community Edition is Apache-2.0 and runs from the public repository. HumanSignal sells an Enterprise
+    edition, deployable on premises, that adds what a labeling team needs beyond one annotator: reviewer workflows, role-based
+    access, task assignment, agreement metrics and SSO. Those features are not in the open build, which makes Label Studio
+    open core.'
+  raw: license:Apache-2.0(OSI);source:public(HumanSignal/label-studio);core-gated:gated(HumanSignal's edition comparison lists
+    role-based access control, task assignment, reviewer workflows, annotator agreement and performance dashboards, SSO and
+    on-premise deployment as Enterprise features the Community Edition lacks)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/HumanSignal/label-studio/develop/LICENSE
+    shows: The root LICENSE is the Apache License, Version 2.0 text, "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION",
+      with no added term.
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: ca656b15c1e22468c7798df4356660755fb1ccd12d7ee0bade82bd65e3038e1b
+  - url: https://raw.githubusercontent.com/HumanSignal/label-studio/develop/pyproject.toml
+    shows: The manifest declares name "label-studio", description "Label Studio annotation tool" and license "Apache-2.0".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 482c57c09fa257d78f1e0e5f7f9aab5aef83204ac4ae137a9e014ca6018d63f9
+  - url: https://raw.githubusercontent.com/HumanSignal/label-studio/develop/README.md
+    shows: The README says "Label Studio is an open source data labeling tool", gives local, Docker and cloud install paths
+      from the repository, and points to a comparison of what "each edition offers" alongside a free trial of the paid "Starter
+      Cloud edition".
+    accessed: '2026-11-12'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 40700321776602f0ee8e84bb1bc54eaa3a526dba95aa44658e2a1ee48bbcbd16
+  - url: https://labelstud.io/guide/label_studio_compare.html
+    shows: 'The comparison says "Label Studio is available to everyone as open source software (Label Studio Community Edition).
+      There are also two paid editions: Starter Cloud and Enterprise." Its table marks Community without role-based access
+      control, task assignment, reviewer assignment, agreement metrics, annotator performance dashboards, activity logs, SSO
+      and "on-premise availability", all present in Enterprise.'
+    accessed: '2026-11-12'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 32bf1ff259a5df7f47485d107c59f8cf1d1ab06378fd481e7cc6ccc0cafe17ce
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of label-studio. Docker images, which the README offers as an install
+    path, and the paid cloud editions are not counted, so the figure understates use.
+  sources:
+  - url: https://pypistats.org/api/packages/label-studio/recent
+    shows: last_month 27,780, last_week 9,283, last_day 1,687 for the label-studio package.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b75d663ee73f4357c4ffa41f3cf2d1fd22902b6c81fb72efa73e6abfa58864c7
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Manual labeling of text, images, audio, video, HTML and time series in one instance; configurable labeling interfaces
+    from a tag library; import from files or S3 and GCS; ML backends for pre-labeling; exports to common model formats. Reviewer
+    workflows, task assignment and agreement metrics are Enterprise-only, and there is no programmatic labeling.
+  confidence: medium
+  note: Label Studio labels almost any data type, with configurable interfaces, model-assisted pre-labeling and broad export
+    formats. Its free edition sits a step below Snorkel Flow, which adds programmatic labeling and weak supervision, and leaves
+    review and quality workflows to the paid edition.
+  relative_to: snorkel-flow
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://docs.snorkel.ai/
+      shows: The Snorkel documentation home, now at version 26.7, still describes "programmatic data labeling and weak supervision",
+        an evaluation workflow, an annotation studio for subject matter experts, and administration of "users, roles, and
+        permissions", with a separate "Predictive ML 25.4" line.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 35be1ef71161a146c8162e8082ff15369ffa4a36bb27fa8e822e44d8ef88b297
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/HumanSignal/label-studio/develop/README.md
+    shows: The README lists "Multi-user labeling", "Multiple projects", "Configurable label formats", "Support for multiple
+      data types including images, audio, text, HTML, time-series, and video", import "from files or from cloud storage in
+      Amazon AWS S3, Google Cloud Storage", and export "to various model formats".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 40700321776602f0ee8e84bb1bc54eaa3a526dba95aa44658e2a1ee48bbcbd16
+  - url: https://labelstud.io/guide/label_studio_compare.html
+    shows: The feature table marks "Custom ML backends", "Predictions from connected models", "Import pre-annotated data"
+      and "Export data" as available in Community, and "Assign reviewers", "Agreement metrics" and "Active learning loops"
+      as unavailable in it.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 32bf1ff259a5df7f47485d107c59f8cf1d1ab06378fd481e7cc6ccc0cafe17ce
