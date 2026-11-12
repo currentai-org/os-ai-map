@@ -294,6 +294,9 @@ collections:
     description: KazMMLU's multiple-choice questions, collected from Kazakhstani national exams, school
       textbooks and professional certification tests (iTest.kz, ymnik.kz, oltest.kz and Shyn Kitap's
       books), in Kazakh and Russian.
+  - id: kmmlu-questions
+    description: KMMLU's multiple-choice questions, crawled from original Korean exams, predominantly
+      Korean professional license tests, and filtered and standardized to four options, in Korean.
   - id: milu-exam-questions
     description: MILU's multiple-choice questions, scraped from published question papers of more than
       40 Indian national and state examinations, together with MILU's own GPT-4o translations of some
@@ -1933,6 +1936,22 @@ components:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: 1724454232a76f3d821777308bd8c94d380442e4165d9f552410c478e32928bd
+  - id: kmmlu
+    curation: curated
+    origin: original
+    collections:
+      - kmmlu-questions
+    parents: []
+    effort: kmmlu-source-exams
+    notes: The effort is the authors of the Korean exams whose questions KMMLU collected, not the team
+      that crawled and filtered them.
+    sources:
+      - url: https://arxiv.org/pdf/2402.11548
+        shows: '"all sourced from original Korean exams without any translated content"; "We predominantly
+          source the questions from Korean License Tests"'
+        accessed: '2026-11-11'
+        http_status: 200
+        content_sha256: f46cf09b50dd6a7f7b15825e3192e9541dddfd02816c1e6e50167a76286b79fa
   - id: milu
     curation: curated
     origin: original

@@ -50,7 +50,10 @@ between the two, so the two are measured independently. See [Excluded inputs](#e
   language (P37) of a first-level subdivision.
 - **`recognized`**: a state-level P37 statement without CLDR support. It is recorded in its own
   column and does not count as official. Recognition, such as minority-language protection, does
-  not always confer official administrative status.
+  not always confer official administrative status. The column reads `yes` for such a statement,
+  `no` when CLDR lists the language as official at some level, and `unknown` otherwise. `no`
+  therefore means the question is settled by CLDR's listing; it does not mean the language lacks
+  legal recognition.
 - A macrolanguage's status gives each member the interval from `none` to that status, unless a
   source names the member.
 
@@ -66,9 +69,11 @@ the `official` axis unresolved, and that carries through the resource profile.
 ### Speakers
 
 The speaker figure is the **interval** between the CLDR estimate and the Wikidata figure, not the
-larger or smaller of the two. Both sources mix first- and second-language use, and they disagree
-most for languages with large second-language populations. The interval carries that disagreement
-instead of choosing a definition.
+larger or smaller of the two. The sources count differently: CLDR's figure is users, first and
+second language together, and Wikidata's is the statement of preferred rank, which is usually
+first-language speakers. They disagree most for languages with large second-language populations.
+The interval carries that disagreement instead of choosing a definition, and each source's figure,
+definition and provenance stay in the measurements table.
 
 - **A placeholder is not a measurement.** A CLDR figure whose own notes say it is an estimate made
   without a count (for example, a fixed share of a territory's population) is dropped. The
@@ -110,7 +115,12 @@ language, such as grammars and descriptive literature, is context and not an inp
   edition's counts are recorded with state `excluded`. Counts are read from Wikimedia's own
   statistics, per edition.
 - **Open Library** works are published as context, and count only through the corroboration path
-  of the `large_written_material` axis below.
+  of the `large_written_material` axis below. They are read from a reproducible extract of Open
+  Library's monthly data dumps, never from its search API, which Open Library intends for
+  human-facing discovery rather than as a data backend. `build/openlibrary_extract.py` builds the
+  extract from one editions dump, counting distinct works per MARC language code, and the result is
+  pinned in `sources/snapshots/` with the dump's URL and SHA-256. The model reads the extract at a
+  commit on `main`, never at a pull request's commit, and refuses an extract whose digest differs. A language the extract does not count is `unmeasured`, never zero.
 
 Written material is banded **A** (high) to **D** (very low).
 
@@ -173,8 +183,10 @@ Defaults follow from each source's construction. Any of them can be overridden w
   source reports only through its macrolanguage label (`arb` through `ara`, `cmn` through `zho`,
   `zsm` through `msa`) gets a bound.
 - **Related standards stay separate.** Two codes that name overlapping varieties, such as Filipino
-  (`fil`) and Tagalog (`tgl`), are separate rows with an explicit `related_to` relation. A source
-  that files one under the other is `broader` for it, and no count is shared between them.
+  (`fil`) and Tagalog (`tgl`), or a written standard and its spoken language, such as N'Ko (`nqo`)
+  and Manding (`man`), are separate rows with an explicit `related_to` relation. The relation
+  records a relationship, never an equivalence: a source that files one under the other is
+  `broader` for it, and no count is shared between them.
 - **Historical and constructed languages** carry a flag. The flag does not change any band.
 
 Curators should declare the individual code in a product's `languages` when the dataset was built
@@ -224,9 +236,19 @@ profile is published as the three values, not as a sum.
 | `many_speakers` | At least 1,000,000 speakers at both ends of the speaker interval |
 | `large_written_material` | Written material at B or above at both ends; or, as corroboration, an eligible Wikipedia edition ([Written material](#written-material)) with 100,000 or more content articles **and** Open Library at 10,000 or more works |
 
+`large_written_material` has two routes, and they combine under the interval rule. The web-text
+route reads `yes`, `no` or `unresolved` from the written-material interval. The corroboration route
+needs both of its parts: it is `no` when either part is `no`, `yes` when both are `yes`, and
+`unresolved` otherwise. A part with no measurement, such as Open Library before its dump extract,
+is `unresolved`, never `no`. The axis is `yes` when either route is `yes`, `no` when both are `no`,
+and `unresolved` otherwise. Missing evidence for a positive route is not evidence that the route
+fails.
+
 **The reference profile** is all three axes `yes`. A language with the reference profile keeps the
 English-scale yardstick, unrelaxed. The size yardsticks for the other seven profiles, and for
-unresolved profiles, are set in the category's `scoring_recipe` (R-2026-10-30-k), not here. A product
+unresolved profiles, are set in the category's `scoring_recipe` (R-2026-10-30-k), not here. An
+unresolved axis never relaxes a yardstick: a relaxed yardstick needs the profile that earns it to
+hold at both ends. A product
 that spans several languages takes its profile under the recipe's multilingual rule, which this
 classification does not set.
 
@@ -324,15 +346,21 @@ Neither table carries a count of datasets, benchmarks or models per language.
 ### Redistribution
 
 The tables carry ISO 639-3 codes and derived values only, never the code tables' reference names.
-The scope of the classification table is every code of scope individual or macrolanguage in the
-pinned code-table release, provided SIL's terms permit a table keyed on the full code set. If they
-do not, the scope is the codes declared in the map's products. Per-language data is published only
-from sources whose terms permit it.
+On the platform, the classification table covers every code of scope individual or macrolanguage in
+the pinned code-table release, and it stays private there while SIL's terms for a table keyed on
+the full code set are unresolved. Anything redistributed, whether a public table, an export or a
+file in this repository, carries only the codes declared in the map's products, unless SIL confirms
+broader rights. Per-language data is published only from sources whose terms permit it.
+
+The repository's own list of valid codes follows the same rule (R-2026-11-11-p).
+`sources/snapshots/language-codes.tsv` holds only the codes the map's records use, each confirmed
+against the classification table by `build/language_codes.py`, and credits ISO 639-3
+(iso639-3.sil.org) as their source. No copy of SIL's code tables is committed.
 
 ### Refresh
 
 Quarterly, with every source pinned: the crawl id, the FineWeb-2 release, the CLDR release, the
-Glottolog release, the ISO 639-3 table date, and a retrieval time and content digest for each live
+Glottolog release, the ISO 639-3 table date, the Open Library dump date, and a retrieval time and content digest for each live
 API. A refresh never moves a product. It produces a diff of changed classes and profiles and the
 roster changes they imply, which is reviewed as a proposal (ADR-004).
 

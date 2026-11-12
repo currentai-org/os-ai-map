@@ -17,7 +17,7 @@ findings every time somebody greps for them.
 | product artifact kinds | `sources/signal_routing.yaml` `artifact_key` | `build/vocabulary.artifact_kinds` | `test_proposer_support_is_defined_by_handlers_not_by_routing` |
 | method words a provenance line may not name | nothing: the `comments` verification line that owned it is retired, and no module may redefine it | none | `test_the_method_vocabulary_is_not_redefined_now_that_its_owner_is_gone` |
 | date handling | `build/vocabulary.py` — `is_iso_date`, `parse_date` | imported | `test_date_validation_rejects_impossible_dates`, `test_date_handling_has_exactly_one_owner` |
-| allowed `country` and `languages` codes | `sources/snapshots/iso-3166-1.tsv`, `sources/snapshots/iso-639-3.tab` | `build/vocabulary.country_codes`, `language_codes` | `test_the_gate_and_the_writer_read_the_same_code_lists`, `test_only_scopes_i_and_m_are_loaded` |
+| allowed `country` and `languages` codes | `sources/snapshots/iso-3166-1.tsv`, `sources/snapshots/language-codes.tsv` (written by `build/language_codes.py` from Artio) | `build/vocabulary.country_codes`, `language_codes` | `test_the_gate_and_the_writer_read_the_same_code_lists`, `test_the_language_list_is_exactly_the_codes_the_corpus_uses` |
 | the `lineage` edges | `docs/schemas/product.schema.json` `lineage.properties` | `build/vocabulary.lineage_relations` | `test_no_module_holds_a_private_copy_of_the_lineage_relations` |
 | which products are publicly visible | `build/validate.published_products` | imported by `serialize` | `test_preliminary_products_reach_no_public_index`, `test_long_tail_scored_is_derived_not_gated` |
 

@@ -46124,6 +46124,114 @@
             ]
           },
           "version_note": "The LICENSE is MIT over the code with an explicit carve-out excluding the external datasets, and the corpus is downloaded from Kaggle with credentials under each competition's own rules. GitHub-only channels; no first-party HF dataset or PyPI package."
+        },
+        {
+          "slug": "indonlu",
+          "product": "IndoNLU",
+          "org_slug": "indonlp",
+          "org": "IndoNLP",
+          "type": "dataset",
+          "languages": [
+            "ind"
+          ],
+          "description": "IndoNLU is a benchmark for Indonesian natural language understanding with twelve tasks, from emotion and sentiment classification to part-of-speech tagging, named-entity recognition, keyphrase extraction, textual entailment and extractive QA. The task data comes from social media, reviews, news and Wikipedia, some of it labeled by Indonesian linguists. It shipped with the Indo4B pretraining corpus and the IndoBERT models, from a collaboration including Institut Teknologi Bandung, Universitas Indonesia, Gojek and Prosa.AI.",
+          "openness": {
+            "score": 2,
+            "class": "gated",
+            "components": "license:mit(HF card: 'The licensing status of the IndoNLU benchmark datasets is under MIT License'; repo LICENSE file is Apache-2.0);access:public(ungated);dataset_card:present(per-task descriptions; creation and annotation sections are marked 'Needs More Information');answers:held-out(GitHub test-set labels are masked; predictions are scored on CodaLab)",
+            "confidence": "medium",
+            "note": "The task data downloads freely under a permissive license, but the official test labels are masked and scored through a CodaLab competition. The Hugging Face card leaves its collection and annotation sections unfilled, so provenance comes from the paper.",
+            "last_verified": "2026-11-11",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/indonlp/indonlu/raw/main/README.md",
+                "shows": "\"The licensing status of the IndoNLU benchmark datasets is under MIT License.\"; Source Data: \"[Needs More Information]\"",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "8a65fff733365b2fd1d5a026e89dd35a027abab79a13b9ec43e49420e8b8a4e2",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/IndoNLP/indonlu/master/LICENSE",
+                "shows": "Apache License, Version 2.0 (repository LICENSE)",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "bd9d250c0f04338b3d3570e3ccbfba8d821d1d767f929e2f5884a250fe51dff0",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md",
+                "shows": "\"The labels of the test set are masked (no true labels) in order to preserve the integrity of the evaluation. Please submit your predictions to the submission portal at CodaLab\"",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "4761f00d5fed354b5ded15aeb3fa969d7c27ba5a206a41f42627bbc91b608f54",
+                "establishes": [
+                  "answers",
+                  "availability"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/indonlp/indonlu",
+                "shows": "gated: false; license:mit",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "29458b17a2a713aee57ff51c6d4f292a2f4fcb68233228ea3c06c082c060c1e5",
+                "establishes": [
+                  "availability"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Adoption is Hugging Face downloads of the repository. Users of the GitHub copies and of the CodaLab test sets are not counted.",
+            "last_verified": "2026-09-27",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/indonlp/indonlu",
+                "shows": "571 downloads in the trailing 30 days for indonlp/indonlu",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "fb625286261d1e116ce5b9e7a0a489a925c4c88a955f3f2fd5552eabb677c246"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "A benchmark is not scored for capability, so that score is left blank. IndoNLU tests Indonesian, a language with a large written web, so it sits with general evaluation sets rather than with sets built for an underrepresented language.",
+            "last_verified": "2026-11-11",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2009.05387",
+                "shows": "\"we introduce the first-ever vast resource for the training, evaluating, and benchmarking on Indonesian natural language understanding (IndoNLU) tasks. IndoNLU includes twelve tasks\"",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "d5a936aaf48f35bf29fcd7f8f4758700e1cfeec5c63d8404bd8a94e99e572dbd"
+              }
+            ]
+          },
+          "overall_score": 1.0,
+          "overall_basis": "adoption_only",
+          "tier": null,
+          "maturity": 1.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-27",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-11"
+          }
         }
       ]
     },
@@ -51020,24 +51128,31 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for low-resource translation data",
-            "value": "SMOL holds 6.1 million professionally translated tokens across 124 languages at its paper's release (221 languages on the card now), documented in two papers, with no named model or benchmark found beyond its own paper's experiments.",
+            "value": "SMOL's paper counts 6.1 million translated tokens in 124 languages at release: about 76,000 sentence pairs in SmolSent and about 27,000 translated documents in SmolDoc, with no total in sentence pairs. The card now lists 221 languages and an April 2026 expansion without new totals. It is documented in two papers, with no named model or benchmark found beyond its own paper's experiments.",
             "confidence": "medium",
-            "note": "SMOL gives more than two hundred low-resource languages professionally translated text, documented in two papers, though no model or benchmark beyond its own experiments is known to be built on it. At a few million translated tokens it is minute beside the billions of pairs in the largest parallel collections, and smaller even than the IIT Bombay English-Hindi corpus for one language pair.",
+            "note": "SMOL gives a long list of low-resource languages professionally translated sentences and documents, documented in two papers, though no model or benchmark beyond its own experiments is known to be built on it. Its papers and card count tokens, sentences and documents but never sentence pairs, and what they do count is minute beside the billions of pairs in the largest parallel collections and smaller than the IIT Bombay English-Hindi corpus for a single language pair.",
             "relative_to": "iitb-english-hindi",
             "relation": "one_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2502.12301",
-                "shows": "\"SMOL has been translated into 124 (and growing) under-resourced languages ... for a total of 6.1M translated tokens.\"",
-                "accessed": "2026-09-24",
+                "shows": "\"SMOL has been translated into 124 (and growing) under-resourced languages (125 language pairs), including many for which there exist no previous public resources, for a total of 6.1M translated tokens.\"",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "6d4618cc8c5bbbc878476d4868fab42f9437e0154bed2d15fede224ec8063988"
+                "content_sha256": "19d4d3448752bd0a04ec610ba6257bb1cb1b824d9521d5067f47e5b5f74ff3de"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2502.12301",
+                "shows": "Table 2, whole dataset: SmolSent 88 languages and 76k examples, SmolDoc 106 languages and 27k examples; Table H.1 notes that a SmolSent example is a sentence pair and a SmolDoc example a document or paragraph.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "34025af60951c59eaaa80477108ed151a9b5605534baecba6d78604f95a1cca6"
               },
               {
                 "url": "https://huggingface.co/datasets/google/smol/raw/main/README.md",
-                "shows": "\"a collection professional translations into 221 Low-Resource Languages\"; \"the first 113 SMOL languages were commissioned by professional translation vendors\".",
-                "accessed": "2026-09-24",
+                "shows": "\"a collection professional translations into 221 Low-Resource Languages\"; \"sentence-level translations into 114 language pairs\"; \"for a 5x increase in dataset size\", with no new total.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "ed1996cb6e9b01b5f4588bd7d9ae5ed642d278d26d5795e20d176540b6a88b85"
               }
@@ -51516,26 +51631,40 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for multilingual storybook data",
-            "value": "The Bloom Library datasets hold community-written storybooks in 363 languages, with a median of two stories per language, in text, captioning, storytelling and speech sets documented in an EMNLP paper, and their text was a small part of the BLOOM model's training data.",
+            "value": "The Bloom Library datasets hold community-written storybooks in 363 languages, with a median of two stories per language, in text, captioning, storytelling and speech sets documented in an EMNLP paper, and their text was a small part of the BLOOM model's training data. The language-modeling set's three text files total about 43 MB (about 11 million tokens, estimated; no token count is stated). The paper gives two speech figures that disagree: 428 hours of audio in its prose and 2,873 minutes (about 48 hours) in Table 1. This record uses Table 1's figure, which matches the paper's per-family and per-language counts.",
             "confidence": "medium",
             "note": "The datasets gather community-written storybooks in hundreds of languages into text, captioning, storytelling and speech sets documented in an EMNLP paper, and their text went into the BLOOM model's training data as a small part of its corpus. With a couple of stories for most languages they are tiny beside English pretraining corpora of trillions of tokens, and a pooled corpus such as the one behind the Glot language model gathers far more text per language.",
             "relative_to": "glot500-c",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/sil-ai/bloom-lm",
-                "shows": "\"It includes data from 364 languages across 31 language families. There is a mean of 32 stories and median of 2 stories per language.\" \"this data was used in the training of the BLOOM model\".",
-                "accessed": "2026-09-24",
+                "shows": "\"It includes data from 364 languages across 31 language families. There is a mean of 32 stories and median of 2 stories per language.\" \"Although this data was used in the training of the\"; \"this dataset only represents a small portion of the data used to train that model\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "623301c9e5dcac698800db4725ec1e521d0569ff6d0c129ad0a39b56f865126a"
+                "content_sha256": "be4ca24aaecdfbb702b4dabf45492db880deb514466d58077ff50b647ea66095"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/sil-ai/bloom-lm/tree/main",
+                "shows": "File sizes in bytes: bloom_lm_train.json 35046861, bloom_lm_val.json 4276285, bloom_lm_test.json 4039385.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "04e1fa5ad4913a3ae24a8de9fea19996a5c11da02a06bb97e6f60fa54049b968"
               },
               {
                 "url": "https://arxiv.org/abs/2210.14712",
-                "shows": "\"covers 363 languages across 32 language families\" for language modeling, image captioning, visual storytelling, and speech.",
-                "accessed": "2026-09-24",
+                "shows": "\"the initial release of the Bloom Library datasets covers 363 languages across 32 language families\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "3878addb5c6410ccfad537c4cba14ecc2afa20803a8f2af85445fa58dc2b8908"
+                "content_sha256": "f56d9fdd4f7916c33b057a99ac752d5f97aafd536beeec248e3203ea92b5f9b1"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2210.14712",
+                "shows": "\"Our bloom-speech dataset comprises 428 hours of total audio in 56 languages\"; \"a mean of 159 minutes and median of 31 minutes of audio per language family\"; Table 1 total row: 25680 audio files, 2873 audio minutes.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "dd08535c4d1715682030721855a019cfdd911364597d168452a68e936df15805"
               }
             ]
           },
@@ -51547,7 +51676,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           }
         },
         {
@@ -52123,22 +52252,36 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for massively multilingual pretraining text",
-            "value": "Aggregated pretraining text in 511 mostly low-resource languages, drawn from more than 150 existing datasets and website crawls, documented source by source in an ACL paper, and used to train the Glot500-m model.",
+            "value": "Aggregated pretraining text in 511 mostly low-resource languages, drawn from more than 150 existing datasets and website crawls, documented source by source in an ACL paper, and used to train the Glot500-m model. The public Hugging Face release holds 308 GB in 1,225,300,317 rows (about 77 billion tokens, estimated). The paper trained Glot500-m on a 600 GB corpus of 1.5 billion sentences, which includes sources that cannot be redistributed and are offered only on request.",
             "confidence": "medium",
-            "note": "The Glot corpus reaches more than five hundred mostly low-resource languages, more than any other open pretraining corpus here, records the source, collection method and license of each part, and trained its builders' Glot encoder, though the public release leaves out sources that cannot be redistributed. It holds a few tens of billions of tokens spread over all those languages, a sliver beside English pretraining sets such as FineWeb that run to trillions.",
-            "last_verified": "2026-09-24",
+            "note": "The Glot corpus reaches hundreds of mostly low-resource languages, more than any other open pretraining corpus here, records the source, collection method and license of each part, and trained its builders' Glot encoder. Its size is taken from the public release, because parts of the full corpus cannot be redistributed, and even the full corpus is a sliver beside English pretraining sets such as FineWeb that run to trillions of tokens.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2305.12182",
                 "shows": "\"collect and clean Glot500-c, a corpus that covers these 511 languages and allows us to train Glot500-m\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "80c067fb1bd37cf23d4bcc6ee396ccfdd2a7243dfb85a7ee28ae6672cc94a952"
               },
               {
+                "url": "https://arxiv.org/pdf/2305.12182",
+                "shows": "\"We train the multilingual model Glot500-m on a 600GB corpus\"; Table 1: Glot500-c, 511 languages, 1.5B sentences; \"certain sources prohibit the redistribution of data. As such, data from these sources is omitted from the published version of Glot2000-c.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a859535cfda27cd6bc7868f37a2c69e6f143af93ec96863fccd721c9bd0e6584"
+              },
+              {
+                "url": "https://huggingface.co/datasets/cis-lmu/Glot500",
+                "shows": "Dataset panel: Number of rows 1,225,300,317; Total file size 308 GB. Card: \"Parts of the original Glot500 dataset cannot be published publicly.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "8a372046cd7d7891ab5c4bebcd4a93b3950067d8d4e7d91a068444bc4f96bbcf"
+              },
+              {
                 "url": "https://raw.githubusercontent.com/cisnlp/Glot500/main/README.md",
                 "shows": "\"Glot500-c is a subset of Glot2000-c for over 500 languages, including languages with more than 30,000 sentences.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "d8a434b3a33059b79e50676da4623f8fb0c4bb114c7fb26b6816b2ce4f6f6bbc"
               }
@@ -52152,7 +52295,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           }
         },
         {
@@ -52261,7 +52404,7 @@
             "confidence": "medium",
             "note": "WAXAL pairs transcribed natural speech in nineteen languages with studio text-to-speech recordings in seventeen, all recorded and transcribed by people and documented in a paper, and recognizers such as Ethio-ASR are trained on it, with part of its audio drawn from Afrivoice. Its roughly twelve hundred transcribed hours trail Afrivoice's thousands for many of the same languages and are a sliver of the hundreds of thousands in the largest English speech corpora.",
             "relative_to": "afrivoice",
-            "relation": "at",
+            "relation": "one_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
@@ -52368,7 +52511,7 @@
             "confidence": "medium",
             "note": "NaijaVoices gives Igbo, Hausa and Yoruba about six hundred hours each from thousands of speakers with expert-curated text and a paper on its collection, and recognizers such as a Hausa model from asr-africa are trained on it. At under two thousand hours across three languages it holds less than Afrivoice, which has thousands of hours across eighteen, and far less than the hundreds of thousands in the largest English speech corpora.",
             "relative_to": "afrivoice",
-            "relation": "at",
+            "relation": "one_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
@@ -52561,60 +52704,81 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for African-language speech",
-            "value": "Speech recorded by people describing images, plus scripted readings, about 15,000 hours in 18 languages across five releases, documented in per-release cards, with Digital Umuganda's Mbaza ASR model trained on it and WAXAL listing it as a source.",
+            "value": "Speech recorded by people describing images, plus scripted readings, in 18 languages across five current releases, documented in per-release cards, with Digital Umuganda's Mbaza ASR model trained on it and WAXAL listing it as a source. No card states a product total; summed, the five hold 15,032.46 recorded hours, 10,391.40 of them transcribed. The Kinyarwanda, Swahili and second multilingual releases state 3,155.64, 3,096.87 and 2,421.29 transcribed hours; the first multilingual and Ethiopian releases give per-language rows only, summing to 612.90 and 1,104.70, the Ethiopian figure counting scripted readings as transcribed, as its card does. Older versions kept in other repositories are not added.",
             "confidence": "medium",
-            "note": "Afrivoice gives eighteen African languages image-described and scripted speech across five releases, more than any other open collection for most of them, and Digital Umuganda's Mbaza recognizer is trained on it while Google's WAXAL corpus draws on it, though it has release cards but no paper. Some releases transcribe only part of the audio, leaving a few thousand transcribed hours, far from the hundreds of thousands in the largest English speech corpora.",
-            "last_verified": "2026-09-24",
+            "note": "Afrivoice gives African languages from Kinyarwanda and Swahili to Amharic and Wolof image-described and scripted speech across five releases, more than any other open collection for most of them, and Digital Umuganda's Mbaza recognizer is trained on it while Google's WAXAL corpus draws on it, though it has release cards but no paper. Two releases transcribe only a fraction of their audio, and all five together hold a small fraction of the hundreds of thousands of transcribed hours in the largest English speech corpora.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice",
-                "shows": "Six-language table: Shona 574.16, Lingala 517.13, Fulani 527.45, Malagasy 516.21, Wolof 530.74, Somali 535.51 total hours, about 100 transcribed each.",
-                "accessed": "2026-09-24",
+                "shows": "\"when available, the transcription of the audio file\"; total and transcribed hours: Shona 574.16 and 100.00, Lingala 517.13 and 100.98, Fulani 527.45 and 102.00, Malagasy 516.21 and 102.42, Wolof 530.74 and 102.96, Somali 535.51 and 104.54.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "bedbddecd4f861ff73d585aa7af600855ad448c6a85da2db2ab1135a0013bca4"
+                "content_sha256": "faa2e83874d9387bfb1800cbb307cd0b54c9427f601466c51068fce17764af45"
               },
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Kinyarwanda",
                 "shows": "Total 3162.88 hours, 3155.64 transcribed; models trained on it include DigitalUmuganda/Mbaza-ASR-Afrivoice-660h.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "9e9b6a46b9aa991741240560e94dc86545feabf208f254dd5f5734b5d8725c69"
+                "content_sha256": "a8fd9565eda2f30adcfd727a3692339ca781580d269f94bd03932a99674f8a9e"
+              },
+              {
+                "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili",
+                "shows": "\"This is an image prompt ASR dataset for Swahili.\"; total 3,217.56 hours, 3,096.87 transcribed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "f89fe6aca68957a72ae324b677a3ceb0cb3d2a6ee20c604de7471988dd28822e"
               },
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_V2",
-                "shows": "Kirundi, Ndau, Ndebele, Oshiwambo and Gamo table, \"Total 2,421.29\" hours.",
-                "accessed": "2026-09-24",
+                "shows": "Kirundi, Ndau, Ndebele, Oshiwambo and Gamo table, total 2,421.29 hours, all transcribed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "2f50d32e2679aca9aa84d71ea7e43e142a4acf19f4fb0f29fe96f13ac2ea96ac"
+                "content_sha256": "76abf2d118fbd0bf76fb9b070fea5620f762e4539b666d84d1d989677154601a"
               },
               {
                 "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Ethiopia",
-                "shows": "Amharic, Afaan Oromo, Sidama, Wolaytta and Tigrinya in unscripted, scripted and expert categories, each language about 600 hours.",
-                "accessed": "2026-09-24",
+                "shows": "Amharic, Afaan Oromo, Sidama, Wolaytta and Tigrinya, each in unscripted, scripted and expert rows; scripted rows fully transcribed, the others partly; no total row.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "8c85d18fbc64eb741ebb986567faee316702675c42d816e50ca305eb0dd59053"
+                "content_sha256": "e2e143187af8f1cff4be9248d68e11b75a6ecd8abf397f06ee5b8d85f46dc026"
+              },
+              {
+                "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili_0.0",
+                "shows": "An earlier Swahili version: total 414.42 hours, all transcribed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "296dbdc04aecb33184ad3d7768e6e2bb6e240f85a505bc1305c5e2c3826e68a9"
+              },
+              {
+                "url": "https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_legacy",
+                "shows": "The same six-language table as the first multilingual release, Shona 574.16 total and 100.00 transcribed hours first.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c3f21637c70d2d1e28f5c2d6e3bdcdb7cb1b6216de2f050279d103f2a92c0ef5"
               },
               {
                 "url": "https://huggingface.co/datasets/google/WaxalNLP",
                 "shows": "source_datasets in the card include DigitalUmuganda/AfriVoice.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d3aaf7e5c72d0a8a939a4c7e7458f3dd49c49d6c3faf6699358535ce33c07c11"
+                "content_sha256": "bbbdc2a7d99f849c298275b3a7ff370761800d206c124548d27a3d833261483c"
               }
             ]
           },
-          "overall_score": 2.7,
+          "overall_score": 3.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           },
           "version_note": "The artifact list includes superseded and legacy repositories, which are counted with the current releases."
         },
@@ -52953,19 +53117,33 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for African text-to-speech data",
-            "value": "BibleTTS offers up to 86 hours per language of studio-quality single-speaker Bible readings, aligned for six African languages, documented in an Interspeech paper, with no use found beyond the VITS models in that paper.",
+            "value": "BibleTTS offers studio-quality single-speaker Bible readings aligned verse by verse in six African languages, from 33.3 to 86.8 hours per language and 420.3 hours in all by the sum of the paper's Table 2, which states no total. It is documented in an Interspeech paper and released on OpenSLR, with no use found beyond the VITS models in that paper.",
             "confidence": "medium",
             "note": "BibleTTS provides studio-quality single-speaker Bible readings for six African languages, with a paper on alignment and speech synthesis baselines, though no model beyond that paper uses it. At a few hundred hours of Bible text it is small beside English speech corpora of hundreds of thousands of hours, and Afrivoice records more varied speech across eighteen languages, Lingala among them.",
             "relative_to": "afrivoice",
-            "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "relation": "two_below",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2207.03546",
                 "shows": "Abstract: \"up to 86 hours of aligned, studio quality 48kHz single speaker recordings per language\"; results for TTS models with Coqui TTS.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "5ad8abc792d8d0e09a591a6b1bf871924b6006a58e4b85cf715c22571e5c48b6"
+                "content_sha256": "e4c0c17721d87a5a96a7647a9ade12f824da9fad3544b4a86757bfe49cecdcfe"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2207.03546",
+                "shows": "Table 2 aligned hours: Ewe 86.8, Hausa 86.6, Lingala 71.6, Akuapem Twi 67.1, Asante Twi 74.9, Yoruba 33.3; \"The corpus consists of data for ten languages, of which six have been aligned and formatted for immediate use to train TTS models.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "de545ffe3462f2f18e4e58591f82befc754eb1bb5dd2f52008776a334dce08de"
+              },
+              {
+                "url": "https://www.openslr.org/129/",
+                "shows": "\"This repository contains the data for the six aligned languages of the BibleTTS corpus (Asante Twi, Akuapem Twi, Ewe, Hausa, Lingala, Yoruba).\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "5aa83fa974cc6414fdf47e4738b019539cc149bb4acdea998e2df9197090c687"
               }
             ]
           },
@@ -52977,7 +53155,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           },
           "version_note": "There is no Hugging Face copy; the data is distributed through OpenSLR resource 129."
         },
@@ -53572,36 +53750,78 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Kenyan language text and speech",
-            "value": "Kencorpus holds 4,442 texts (5.6 million words) and 177 hours of speech in Swahili, Dholuo and Luhya, with companion tagging, QA and translation sets, documented in a paper, with one community translation model listed as trained on it.",
+            "value": "Kencorpus holds 4,442 texts (5,601,915 words) and 1,152 speech recordings totaling 176.5 hours in Swahili, Dholuo and Luhya, with companion tagging, QA and translation sets, documented in a paper. The recordings' card lists no transcript field, and the transcribed speech is KenSpeech's 27.5 hours of Swahili. The Hugging Face copies hold 3,787 of the texts and 915 of the recordings, and one community translation model declares the text set as training data.",
             "confidence": "medium",
-            "note": "Kencorpus gives Swahili, Dholuo and Luhya a community-sourced text and speech corpus with tagging, question answering and translation sets, documented in a paper, with one community translation model trained on it. At under two hundred hours of speech and a few million words of text it is small beside English corpora of hundreds of thousands of hours and trillions of tokens, and WURA's African web corpus trained the AfriTeVa models.",
+            "note": "Kencorpus gives Swahili, Dholuo and Luhya a community-sourced text and speech corpus with tagging, question answering and translation sets, documented in a paper, with one community translation model trained on it. Most of its audio is untranscribed, and both its speech and its few million words of text are small beside English corpora of hundreds of thousands of transcribed hours and trillions of tokens, while WURA's African web corpus trained the AfriTeVa models.",
             "relative_to": "wura",
-            "relation": "one_below",
+            "relation": "two_below",
             "last_verified": "2026-09-24",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2208.12081",
                 "shows": "Abstract: \"5,594 items - 4,442 texts (5.6M words) and 1,152 speech files (177hrs)\"; POS sets, 7,537 QA pairs and 13,400 translation sentences.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d892e36f29acb31b611ae9460d3bc7f524d882331ca24890b2ff876ce584d8df"
+                "content_sha256": "8330e2630d6ed55d5328fc7a51537c1a913532514dc220d4c9a93a614d73a18e"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2208.12081",
+                "shows": "Table 4.1 total row: 4,442 texts, 5,601,915 words, 1,152 speech files, 176:29:46; the STT proof of concept used \"a collection of the speech corpus that is 27hrs 31min 50 sec\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "aa2c1229e138efaa452a14ef7534936c7b21b1581e5ce33ceadd5383a9d93a71"
+              },
+              {
+                "url": "https://huggingface.co/datasets/Kencorpus/KenCorpus_audio/raw/main/README.md",
+                "shows": "\"| **Total** | **1,152** | **176h 29m 46s** |\"; the data fields are audio, language, genre, source, title, story_id and duration_seconds, with no transcript field.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "5422b55163029e87233308a04ae25cfae7d4d25e100bf696bd38f78c94934b46"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=Kencorpus/KenCorpus_audio",
+                "shows": "num_rows 915 in the default config.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b779ffd4cb3596f01c7a3afe483e8b21ef962879fbf0242dc959fef574dbd1a7"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=Kencorpus/KenCorpus_text",
+                "shows": "num_rows 3787 in the default config.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "3e5069104837f0d4e3848d8fb801072d46c01da48d54f8902815533d4773c056"
+              },
+              {
+                "url": "https://huggingface.co/datasets/Kencorpus/KenSpeech/raw/main/README.md",
+                "shows": "\"| Total Duration | 27 hours 31 minutes 50 seconds |\"; \"| transcript | string | Transcription text |\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "3f5a64e94210807ad7a4fdbc4279781a7d3ba6e39e55ac8655cf895a3e568bd0"
+              },
+              {
+                "url": "https://huggingface.co/api/models?filter=dataset:Kencorpus/KenCorpus_text",
+                "shows": "One model, Omballa/nllb-200-swa-dholuo, tagged with dataset:Kencorpus/KenCorpus_text.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b613e2810406b4dbbe00a73c9ce087b34af6a94e6152f49b5d96c102e8452e80"
               },
               {
                 "url": "https://huggingface.co/datasets/Kencorpus/KenSwQuAD/raw/main/README.md",
-                "shows": "\"7,506 question-answer pairs derived from 1,441 unique Swahili contexts\".",
-                "accessed": "2026-09-24",
+                "shows": "\"The dataset contains **7,506 question-answer pairs** derived from **1,441 unique Swahili contexts**\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "6eaabd46f8abe95eae6bd1aa78f60ffad39db05ac78efdeed1097419401631d2"
               }
             ]
           },
-          "overall_score": 1.7,
+          "overall_score": 1.0,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.7,
+          "maturity": 1.0,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
@@ -53687,14 +53907,14 @@
             "note": "African UltraChat offers chat-format conversations in 11 African languages, but its card documents neither sources nor method, so it is unclear whether the text was translated, generated or written. It sits well below Inkuba-Instruct, which names every dataset it was built from and has a named model tuned on it.",
             "relative_to": "inkuba-instruct",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/masakhane/african-ultrachat",
                 "shows": "Viewer: \"default · 55k rows\", train 53.9k, test 1.1k; fields prompt, prompt_id, messages, language (11 values).",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "c2fcfd1cf5a9883c5ae7cc0815f91d486bb7c4867010976a870726d7b152f017"
+                "content_sha256": "327c342a4b26e3f6c27acffdcb4fd5feacd5b46cfb70e7d82802eb53df6e0cdc"
               }
             ]
           },
@@ -53706,7 +53926,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           },
           "version_note": "The card carries only a license and a language list, so how the conversations were produced is not documented."
         },
@@ -53778,9 +53998,9 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for African document translation data",
-            "value": "AfriDocMT holds 605 health and IT news documents translated by people from English into five African languages, documented in a paper, with no use found beyond that paper's experiments.",
+            "value": "AfriDocMT holds 605 health and IT news documents translated by people from English into five African languages, split into 10,000 English sentences per domain, each translated into all five; no total in sentence pairs is stated. It is documented in a paper, with no use found beyond that paper's experiments.",
             "confidence": "medium",
-            "note": "AfriDocMT gives five African languages whole health and IT news documents translated by people from English, documented in a paper, though no model or benchmark beyond its own experiments is built on it. At a few hundred documents it is minute beside the billions of pairs in the largest parallel collections, and far smaller than the IIT Bombay English-Hindi corpus for one pair.",
+            "note": "AfriDocMT gives five African languages whole health and IT news documents translated by people from English, documented in a paper, though no model or benchmark beyond its own experiments is built on it. Counted as sentence pairs it is minute beside the billions in the largest parallel collections, and far smaller than the IIT Bombay English-Hindi corpus for one pair.",
             "relative_to": "iitb-english-hindi",
             "relation": "one_below",
             "last_verified": "2026-09-24",
@@ -53788,9 +54008,23 @@
               {
                 "url": "https://arxiv.org/abs/2501.06374",
                 "shows": "Abstract: \"334 health and 271 information technology news documents, all human-translated from English\"; NMT and LLM benchmark experiments.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "6c6f9a7b44adda2f4985172daab125391db48416e27960cdbe743d5a4483e347"
+                "content_sha256": "5bfed992fa77e76ac03cd485bbe8485a18cf71d49da797c0590c990070b5fc19"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2501.06374",
+                "shows": "\"We translated the extracted 10k English sentences to the 5 African languages\"; the sentences were extracted per domain, 10k each.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "bfd75cc05c67dd509e1e05d6bbe0d5fd1d950a0173bfe854e9e2376f8ecd1ea2"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=masakhane/AfriDocMT",
+                "shows": "Sentence-level configs health and tech, num_rows 10000 each; doc_health 334 and doc_tech 271.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c7fbc9a736b0d95943a0b1577b9cadba379262dee74ba9b9725cbfd550424b4b"
               }
             ]
           },
@@ -53999,19 +54233,19 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "provenance and downstream use for African-language instruction data",
-            "value": "Instruction data for Hausa, Yoruba, Swahili, isiZulu and isiXhosa, recast from existing human-annotated task datasets such as MAFAND-MT, MasakhaNER and AfriSenti, documented in the InkubaLM paper and a card listing every source, with Pula-8B tuned on it.",
+            "value": "Instruction data for Hausa, Yoruba, Swahili, isiZulu and isiXhosa, recast by templates from existing task and translation datasets such as MAFAND-MT, MasakhaNER and AfriSenti, about 211.6 million samples by its card's per-language table and none newly written for it, documented in the InkubaLM paper and a card listing every source, with Pula-8B tuned on it.",
             "confidence": "medium",
             "note": "Inkuba-Instruct turns well-known African task datasets into instruction data for five languages, lists every source on its card, and the Pula-8B model is tuned on it. Like WangchanThaiInstruct it is documented and has a named model tuned on it, but its content recasts existing human-annotated sets rather than new writing by people.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "at",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/lelapa/Inkuba-instruct",
-                "shows": "Task table naming source datasets (Mafand-MT, MasakhaNER2, MasakhaPOS, afriqa, SIB-200, MasakhaNEWS, AfriSenti); models trained on it include OxxoCodes/Pula-8B-v0.1.",
-                "accessed": "2026-09-24",
+                "shows": "Task table naming source datasets (Mafand-MT, MasakhaNER2, MasakhaPOS, afriqa, SIB-200, MasakhaNEWS, AfriSenti); per-language table: Hausa \"5.8 M\", Yoruba \"6.4 M\", Swahili \"62.41 M\", isiZulu \"16.20 M\", isiXhosa \"25.35 M\", English \"95.42 M\"; models trained on it include OxxoCodes/Pula-8B-v0.1.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "a2e9d2fac9d4850829828258782f99bb168896840bb17280b2e76dbc7fbbf522"
+                "content_sha256": "fe2b6fe0a4ca67ad5e45fbee68c4d347ef5a4e47c66c82781338d77e5ea880cd"
               }
             ]
           },
@@ -54023,7 +54257,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           },
           "version_note": "Only the train and dev splits are public; the card says the test split will follow later."
         },
@@ -54099,34 +54333,34 @@
             ]
           },
           "capability": {
-            "score": 1,
+            "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for isiXhosa speech data",
             "value": "ViXSD holds about 10 hours of read isiXhosa speech from eight native speakers, documented in a paper and a detailed card, with no use found beyond that paper's recognition experiments.",
             "confidence": "medium",
-            "note": "ViXSD gives isiXhosa read speech from eight native speakers, documented with a paper, speaker metadata and a datasheet, though nothing beyond its own paper's recognition experiments uses it. At about ten hours it is a minute sample beside English speech corpora of hundreds of thousands of hours, alongside BibleTTS as a documented speech set with no outside use.",
-            "relative_to": "bibletts",
+            "note": "ViXSD gives isiXhosa read speech from eight native speakers, documented with a paper, speaker metadata and a datasheet, though nothing beyond its own paper's recognition experiments uses it. Judged against what isiXhosa has, an official language with over a million speakers and a small written web, its ten hours sit one step below the Khmer ASR Cultural Dataset.",
+            "relative_to": "khmer-speech-dataset",
             "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/lelapa/Vukuzenzele_isiXhosa_Speech_Dataset_ViXSD",
                 "shows": "\"It contains a total of 10 hours of narrated speech isiXhosa narrated by 8 speakers (4 male, 4 female) with approximately 39,000 words.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "318e3a454a4a7218a0749e2229623a9f481a35cc6ac6934c733d00f71538b397"
+                "content_sha256": "e654f38362a160f9e67c15041a13623759d1cd3902bfd9bc9babc8022048597b"
               }
             ]
           },
-          "overall_score": 1.0,
+          "overall_score": 1.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.0,
+          "maturity": 1.7,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -54609,24 +54843,24 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Indic instruction data",
-            "value": "IndicAlign holds about 74.7 million prompt-response pairs in 14 Indic languages, about 74.3 million of them IndoWordNet entries recast as instructions and most of the rest translated or model-generated, documented in a paper, with only small community fine-tunes listed as trained on it.",
+            "value": "IndicAlign holds about 74.9 million prompt-response pairs in 14 Indic languages by its card's component table: 74.27 million IndoWordNet dictionary entries recast as instructions, about 55,000 translated pairs and about 527,000 model-generated ones, none written by people on both sides. Documented in a paper, with only small community fine-tunes listed as trained on it.",
             "confidence": "medium",
             "note": "IndicAlign is well documented in the IndicLLMSuite paper, but nearly all of its pairs are short IndoWordNet dictionary entries recast as instructions, and most of the rest are translated or model-generated. Only small community fine-tunes list it as training data, whereas WangchanThaiInstruct is written and checked by people.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/ai4bharat/indic-align",
-                "shows": "Statistics table: IndoWordNet 74,272.2k examples, Wiki-Chat 202k, Wiki-Conv 144k, Toxic Matrix 90.3k, other components 15k to 37k each.",
-                "accessed": "2026-09-24",
+                "shows": "Component table: IndoWordNet \"74,272.2k\"; translated Dolly-T \"15.0k\", OpenAssistant-T \"19.9k\", WikiHow \"20.3k\"; generated Indic ShareLlama \"21.1k\", Anudesh \"36.8k\", Wiki-Conv \"144k\", Wiki-Chat \"202k\", HH-RLHF-T \"32.6k\", Toxic Matrix \"90.3k\"; \"Novel dataset created by converting the entried of\".",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "1cf0219b96d95c2ed9269e388083ff2be737a1f6296ae187aaa6f7c6cca5eef1"
+                "content_sha256": "00b6db67e4f21de678a677ea7d1711a44e032577c2233bc60fe34df0abdc5d90"
               },
               {
                 "url": "https://raw.githubusercontent.com/AI4Bharat/IndicLLMSuite/master/README.md",
                 "shows": "\"IndicAlign is the largest multilingual Instruction Fine-tuning dataset for Indic Languages, comprising ... around 74.7 million prompt-response pairs.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "adc0e59730913833de75c9577c3ff01f763574ce9f4adaffb48fcf056611a93c"
               }
@@ -54640,7 +54874,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -54887,26 +55121,33 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Indic instruction data",
-            "value": "Updesh holds about 9.5 million instruction examples in 13 Indian languages and English, all machine-translated or generated by large models, documented in a paper, with no use found beyond that paper's fine-tuning experiments.",
+            "value": "Updesh holds about 9.5 million instruction examples in 13 Indian languages and English: 7.32 million translated from synthetic English reasoning data and 2.15 million generated by large models, none written by people. Documented in a paper, with no use found beyond that paper's fine-tuning experiments.",
             "confidence": "medium",
             "note": "Updesh is carefully documented and checked with human quality ratings, but every example is machine-translated or generated by large models, and the only models trained on it are the ones in its own paper. WangchanThaiInstruct, by contrast, is written by annotators and domain experts.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2509.21294",
                 "shows": "Abstract: \"a high-quality large-scale synthetic instruction-following dataset comprising 9.5M data points across 13 Indian languages and English ... 10K human assessments\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "390ee528d42322b4454e150e63eb69410f66f16d860cfc7006ce3d5272654114"
               },
               {
                 "url": "https://huggingface.co/datasets/microsoft/Updesh_beta",
-                "shows": "\"Reasoning Data: ~6.8M translated tuples; Generative Data: ~2.1M synthesized tuples\"; translation model Llama-3.1-405B-Instruct; generation model Qwen3-235B-A22B.",
-                "accessed": "2026-09-24",
+                "shows": "\"Reasoning Data: ~6.8M translated tuples\"; \"Generative Data: ~2.1M synthesized tuples\"; translation model Llama-3.1-405B-Instruct.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "ca015faefcf09b57867ab4f82016398a16b041a0d1dc20b3a8d8e27c331d7b89"
+                "content_sha256": "2095b7078c1cc3e5fdf9390cc91603b76c19bcf4de37571090e7d591be01845e"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2509.21294",
+                "shows": "Table 1 final counts: \"Total 7.35M – 7.32M\" for the reasoning subset and \"Total 2.21M – 2.15M\" for the generative subset.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "704fe13c3f31f72ee7b9ad0035fb067279b0660bc55cc4768289b3af848cbf17"
               }
             ]
           },
@@ -54918,7 +55159,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -55078,41 +55319,41 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Nepali pretraining text",
             "value": "The corpus holds about 6.4 million crawled Nepali articles (27.5 GB), documented in a paper and a short card, and its publisher's own BERT, RoBERTa and GPT-2 models are the only ones known to be trained on it.",
             "confidence": "medium",
-            "note": "The corpus gives Nepali a crawled article collection larger than earlier Nepali corpora, described in a paper, and IRIIS Research trained its Nepali BERT, RoBERTa and GPT models on it, though no outside model is known to use it. At several billion tokens, estimated from its size on disk, it is far below the trillions of tokens in English pretraining corpora, and Sangraha, a documented corpus across twenty-two Indic languages, is far larger.",
-            "relative_to": "sangraha",
-            "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "note": "The corpus gives Nepali a crawled article collection larger than earlier Nepali corpora, described in a paper, and IRIIS Research trained its own Nepali BERT, RoBERTa and GPT models on it, though no outside model is known to use it. Its several billion tokens, estimated from size on disk, are judged against what Nepali has, an official language with over a million speakers and a modest written web, which places it with the Basque Latxa Corpus; Sangraha holds more text overall.",
+            "relative_to": "latxa-corpus",
+            "relation": "at",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2411.15734",
                 "shows": "Abstract: \"we have collected 27.5 GB of Nepali text data, approximately 2.4x larger than any previously available Nepali language corpus\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "13c55975729d5c8ef98c0fea5c9b9dee8c7cfbd4b05bfb22c8d4da873860d6c2"
               },
               {
                 "url": "https://huggingface.co/datasets/IRIIS-RESEARCH/Nepali-Text-Corpus",
                 "shows": "\"Models trained or fine-tuned on\" lists IRIIS-RESEARCH/RoBERTa_Nepali_125M and dinesh-bk/NepGPT2.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "cf1423cb1bdd074e1c13c36f4a80af4ab2596442f5aae32ecdda0f2b26ffc4e7"
+                "content_sha256": "b38c60e12f035a7da47fd597976af885a882dfcd65cce8f812d2c2589d24d5b9"
               }
             ]
           },
-          "overall_score": 1.7,
+          "overall_score": 2.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.7,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -55180,17 +55421,29 @@
             "basis_detail": "coverage and downstream use for Marathi pretraining text",
             "value": "289 million tokens in 24.8 million Marathi sentences crawled from news and other sites, documented in a workshop paper, and used with existing sources to train the MahaBERT, MahaAlBERT and MahaRoBERTa models.",
             "confidence": "medium",
-            "note": "MahaCorpus gives Marathi news and web sentences documented in a workshop paper, and the MahaBERT family of Marathi models was trained on it together with existing sources. At under three hundred million tokens it is far smaller than single-language sets such as the Basque Latxa Corpus and a tiny fraction of the trillions in English pretraining corpora.",
-            "relative_to": "latxa-corpus",
-            "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "note": "MahaCorpus gives Marathi news and web sentences documented in a workshop paper, and the MahaBERT family of Marathi models was trained on it together with existing sources. Its three hundred million tokens are far fewer than other single-language Indian corpora such as the TituLM Bangla corpus, judged the same way, and a tiny fraction of the trillions in English corpora.",
+            "relative_to": "titulm-bangla-corpus",
+            "relation": "two_below",
+            "comparison": {
+              "last_attested": "2026-11-11",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/datasets/hishab/titulm-bangla-corpus",
+                  "shows": "Token table, total row: 31.21 million documents, 12.91 billion words, 20.14 billion tokens, about seventy times MahaCorpus's 289 million tokens.",
+                  "accessed": "2026-11-11",
+                  "http_status": 200,
+                  "content_sha256": "b982144f2f985a2e2a0d1cf274de45b19579c0f5bb911c213cbbf436aaada4a5"
+                }
+              ]
+            },
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2202.01159",
                 "shows": "Abstract: \"We expand the existing Marathi monolingual corpus with 24.8M sentences and 289M tokens. We further present, MahaBERT, MahaAlBERT, and MahaRoBerta\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "8f7f82393ef5fe615cc4092ad84e08bcdfc20e655f14842f70d99bda970327c1"
+                "content_sha256": "5e0f832e79c75fca8a9da4ca777605dfb91864cf4939dd00c9227db4b1482208"
               }
             ]
           },
@@ -55202,7 +55455,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -56103,14 +56356,21 @@
             "note": "Samvaad-Hi supplies about a hundred thousand Hindi and Hinglish chat conversations, but its card says nothing about how they were made and there is no paper. WangchanThaiInstruct, by comparison, documents that annotators and domain experts wrote and checked every example.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/sarvamai/samvaad-hi-v1",
                 "shows": "\"Models trained or fine-tuned on sarvamai/samvaad-hi-v1\": mradermacher/Gaja-v2.00-i1-GGUF, mradermacher/Gaja-v1.00-GGUF and others",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "6ce3e3e0249c577bd9f21496f44ebc55ac4aa880df73333cc016a5447ff91c9f"
+                "content_sha256": "f9bdfd5541814b5ad1681468cf1123d26ff8472fa11fcf89c57b973065967e54"
+              },
+              {
+                "url": "https://huggingface.co/datasets/sarvamai/samvaad-hi-v1/raw/main/README.md",
+                "shows": "num_examples: 101476; card text: \"100k high-quality conversations in English, Hindi, and Hinglish curated exclusively with an Indic context.\"",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "17f21bb4e75dc12f0953de46a9575a29dbb4d30b579a35b76e51795da637018c"
               }
             ]
           },
@@ -56122,7 +56382,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           },
           "version_note": "The card is one sentence, so how the conversations were written or generated is not documented."
         },
@@ -58034,26 +58294,26 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "how the content was made, for Southeast Asian instruction data",
-            "value": "Instruction data in English, Chinese and ten Southeast Asian languages, with prompts filtered from open data or synthesized and responses written and revised by models, documented in a card without a paper, and used to train the Nemotron-SEA-LION v4.8 models.",
+            "value": "SEA-Instruct holds 7,196,718 conversations across seven Southeast Asian language configurations, with prompts filtered from open data, synthesized or translated, and every response written and revised by models. Documented in a card without a paper, and used to train the Nemotron-SEA-LION v4.8 models.",
             "confidence": "medium",
             "note": "SEA-Instruct covers twelve languages with rows tagged for domain, task and cultural knowledge, and AI Singapore's Nemotron-SEA-LION v4.8 models are trained on it. Every response is written and revised by models, and some prompts are synthetic or translated from English, where WangchanThaiInstruct is written entirely by people.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/aisingapore/SEA-Instruct-2602",
-                "shows": "\"Models trained or fine-tuned on aisingapore/SEA-Instruct-2602: aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B ...\"; Total file size: 16.3 GB",
-                "accessed": "2026-09-24",
+                "shows": "\"Models trained or fine-tuned on aisingapore/SEA-Instruct-2602\" lists aisingapore/Nemotron-SEA-LION-v4.8-120B-A12B; \"Total file size: 16.3 GB\".",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "b0d089ed1c1521f243cefd01f7e5da58276f70bed08e27ef07be2e430f98e7f4"
+                "content_sha256": "bf16bec383493a27cf89bdc54f8eb192ad8e6b59235e8312c544123c858db14f"
               },
               {
                 "url": "https://huggingface.co/api/datasets/aisingapore/SEA-Instruct-2602",
-                "shows": "size_categories:1M<n<10M; languages en, id, vi, th, ta, tl, ms, my, km, lo, zh",
-                "accessed": "2026-09-24",
+                "shows": "Per-configuration counts \"num_examples\":635735, \"num_examples\":908333, \"num_examples\":1321434, \"num_examples\":672674, \"num_examples\":938251, \"num_examples\":1567241, \"num_examples\":1153050; size_categories:1M<n<10M.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "619324b498b5ad76cd14b1a119227d2c59536f8f83a643733d0f8989679819d3"
+                "content_sha256": "716080a76b940c0fa06fc9b7522f87bb69f86d6d7c89a2e90a7e04103a32c717"
               }
             ]
           },
@@ -58065,7 +58325,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -58166,33 +58426,61 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Indonesian instruction data",
-            "value": "Instruction data for Indonesian and local languages, templated over existing NLP datasets (v1) and extended with general and human-centric prompts (v2), documented in the Cendol paper, and used to train the Cendol Instruct and Chat models.",
+            "value": "Instruction data for Indonesian and local languages, 42,989,754 rows across its two releases: nearly all templated from existing NLP datasets, Wikipedia, WikiHow and poems, plus 75,055 machine-translated Dolly rows and 156,000 rows of repeated safety and identity prompts whose authorship is not documented. Documented in the Cendol paper, and used to train the Cendol Instruct and Chat models.",
             "confidence": "medium",
             "note": "The collection trained IndoNLP's Cendol Instruct and Chat models, from 300 million to 13 billion parameters, and the Cendol paper documents it. Like WangchanThaiInstruct it has a paper and named models trained on it, but its task prompts are rebuilt from existing labeled datasets and its cards do not describe the contents.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "at",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/IndoNLP/cendol/main/README.md",
-                "shows": "Model table: \"Cendol mT5-small Instruct | Cendol Collection v1\" ... \"Cendol mT5-small Chat | Cendol Collection v2\"",
-                "accessed": "2026-09-24",
+                "shows": "Model table: \"Cendol mT5-small Instruct](https://huggingface.co/indonlp/cendol-mt5-small-inst)|[Cendol Collection v1]\"; \"[Cendol mT5-small Chat](https://huggingface.co/indonlp/cendol-mt5-small-chat)|[Cendol Collection v2]\".",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "59b1f368ebd94da867a970715633e8e55f5e9ac9e6b14fdd461d68d4acc89911"
               },
               {
                 "url": "https://arxiv.org/abs/2404.06138",
                 "shows": "\"we introduce Cendol, a collection of Indonesian LLMs encompassing both decoder-only and encoder-decoder architectures\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "c0a2e84c19ef38a6be7ea4552e49e26d55e8228c622f996b9e7169376df96487"
+                "content_sha256": "ea0f193164efee142eb81d49821abbfa61deeaca4fe0dbb5f88282802f4105c1"
               },
               {
                 "url": "https://huggingface.co/api/datasets/indonlp/cendol_collection_v1",
                 "shows": "size_categories:10M<n<100M",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "7a33f245d24ffee6ef8ecb5eb2cf6b09db42bd39e5d6aa3a26646cd62fed9e8a"
+                "content_sha256": "ba5fc8a685806f6711fb3f8c8706883376f7902b88c5d4e88c79d0c01ad1522b"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=indonlp/cendol_collection_v1",
+                "shows": "Release v1: \"num_rows\":30179364.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "37c404835577a2321a69381f2e07c9623c2b981765f0c8ea1e3da09c301358be"
+              },
+              {
+                "url": "https://huggingface.co/datasets/indonlp/cendol_collection_v2/raw/main/README.md",
+                "shows": "Release v2: \"num_examples: 12810390\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "281dab5ce551c7cef1df5ec95652295b15a2ff964870cac4e376f7fb93045f57"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/statistics?dataset=indonlp/cendol_collection_v2&config=default&split=train",
+                "shows": "Release v2 statistics, complete (\"partial\":false): \"safety_prompt\":93500, \"identity_prompt\":62500 and \"dolly\":75055 among the subsets.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "8890293eaf3c64306fe31902b68fea605aa9d7ed1729d49c4ce448c31da3cc01"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2404.06138",
+                "shows": "Paper: \"In total, we cover 187 safety prompts\"; \"In total, we cover 125 identity prompts\"; \"we add an Indonesian machine-translated dataset from Databricks-Dolly15k\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "f327a2617ddfc6029b570759f2896a758cf76f1b488af7ede14ba642a444a044"
               }
             ]
           },
@@ -58204,7 +58492,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           },
           "version_note": "Both dataset cards are copies of the Cendol model card and say little about how the prompts were assembled; the description relies on the model card's account of the two training stages."
         },
@@ -58272,38 +58560,45 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "how the content was made and downstream use, for Thai instruction data",
-            "value": "About 40,000 human-authored Thai instruction rows across four professional domains and seven task types, documented in an EMNLP paper, with models such as WangchanLION v2 trained on it.",
+            "value": "About 40,000 Thai instruction rows across four professional domains and seven task types. Its paper counts 35,014 pairs written by annotators and domain experts with no model-written content; the card's further rows are not described in the paper. Documented in an EMNLP paper, with models such as WangchanLION v2 trained on it.",
             "confidence": "medium",
             "note": "WangchanThaiInstruct is written entirely by Thai annotators and domain experts rather than translated or generated, it is documented in an EMNLP paper, and models such as WangchanLION v2 are trained on it. It covers four professional domains in one language, and the models the Hub lists as trained on it include quantized copies of WangchanLION v2 and a Llama 3.1 Thai fine-tune.",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2508.15239",
                 "shows": "\"a human-authored Thai dataset for evaluation and instruction tuning, covering four professional domains and seven task types\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "fde9e1eabd801cc5c6de56c0a34279cb1b6e668154b13ba74f854d1ade029782"
+                "content_sha256": "612a1c36bd41799203f348fddb8d0255fbda9cdf8b58e99b1fd3db70a8816539"
               },
               {
                 "url": "https://huggingface.co/datasets/airesearch/WangchanThaiInstruct",
-                "shows": "\"Browse 11 models trained on this dataset\"; mradermacher/Gemma2-9b-WangchanLIONv2-instruct-i1-GGUF",
-                "accessed": "2026-09-24",
+                "shows": "\"Browse 12 models trained on this dataset\"; the list includes mradermacher/Gemma2-9b-WangchanLIONv2-instruct-GGUF.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "a1af7b9707e4ebc42c7f30645722985c242f67838fc8055c0ee467aa026270ba"
+                "content_sha256": "2bd3e0f9879a3c70ec042eee878366c288e746db0b3ae7b80cc4b31a575be1f4"
               },
               {
                 "url": "https://huggingface.co/datasets/airesearch/WangchanThaiInstruct/raw/main/README.md",
                 "shows": "train num_examples: 32207; test num_examples: 7793",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "edbcf7b4ab413b28fc5ff4a29c0be4dd27b827998423f8e6646a408639b6040a"
               },
               {
                 "url": "https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1/raw/main/README.md",
                 "shows": "source table row: WangchanThaiInstruct, airesearch/WangchanThaiInstruct_7.24, 12.2k",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "806bcc03796ace9447564e2a3a59d608f97db74446eefefe412b6d33d1b95809"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2508.15239",
+                "shows": "Paper: \"it comprises 35,014 human-authored instruction-response pairs, split into 28,098 for training and 6,916 for testing\"; \"All samples are human-authored\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "aaf9f34928deb979363a3f5565fa43d668719a585496b46b2e326eb55b4af520"
               }
             ]
           },
@@ -58315,7 +58610,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -58329,37 +58624,58 @@
           ],
           "description": "Khmer ASR Cultural Dataset is a speech corpus of about 728 hours of Khmer read by native speakers, paired with transcripts, for training speech recognition and related models. Twelve speakers from Cambodia (five women, seven men) recorded sentences written around 61 cultural topics and 1,749 subtopics, averaging eight seconds per clip, with speaker gender, age group and origin city attached. Digital Divide Data built and published it.",
           "openness": {
-            "score": 5,
-            "class": "open",
-            "components": "license:cc-by-sa-4.0;access:public(ungated on Hugging Face; also listed on Mozilla Data Collective);dataset_card:present(speakers, topics, format and sample rows)",
+            "score": 3,
+            "class": "gated",
+            "components": "license:cc-by-sa-4.0;access:manual(Hugging Face gate with manual approval that shares the requester's username and email; the smaller V2 release on Mozilla Data Collective needs an account and accepted terms);dataset_card:present(speakers, topics, format and sample rows on the Hub page; the raw README returns 401 behind the gate)",
             "confidence": "high",
-            "note": "The audio and transcripts download without a gate under a share-alike license that asks users to credit Digital Divide Data. The card describes speakers, topics and file layout, though no paper accompanies it.",
-            "last_verified": "2026-09-24",
+            "note": "The audio and transcripts carry a share-alike license that asks users to credit Digital Divide Data, and the card describes speakers, topics and file layout. The Hugging Face copy now opens only after the publisher approves a request that shares the user's username and email, and a smaller, earlier release on Mozilla Data Collective needs an account and accepted terms.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset/raw/main/README.md",
-                "shows": "\"license is Creative Commons Attribution Share Alike 4.0 International (CC-BY-SA-4.0). Please attribute Digital Divide Data\"",
-                "accessed": "2026-09-24",
+                "url": "https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset",
+                "shows": "Gate box: \"You need to agree to share your Hugging Face information to access this dataset\"; \"you have to accept the conditions to access its files and content\"; page data \"gated\":\"manual\" with \"gatedProfileSharing\":{\"username\":true,\"email\":true}. Card: \"license is Creative Commons Attribution Share Alike 4.0 International (CC-BY-SA-4.0). Please attribute\"; \"Speaker metadata (gender, age group, and origin city) is provided.\"; \"with a total of 61 topics and 1,749 subtopics\".",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "4b7c87b25ae2921e3b1dc088be9bf858ac596c3066fb63e26933c83f9c25e2d4",
+                "content_sha256": "28fb52b77c07adec1ff7bc06d2d3d8b8c482b9bff651ec7c43fe922b3d0104ad",
                 "establishes": [
+                  "availability",
                   "documentation",
                   "license"
                 ]
               },
               {
                 "url": "https://huggingface.co/api/datasets/Digital-Divide-Data/khmer-speech-dataset",
-                "shows": "gated: false; license:cc-by-sa-4.0",
-                "accessed": "2026-09-24",
+                "shows": "API JSON: \"gated\":\"manual\"; tag license:cc-by-sa-4.0.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "bf3d36a375881972a1c9a6dbf137a67c567f65d9ba4eec6de47efee5733159ff",
+                "content_sha256": "f5087c455290e587313f487a9c341195bb28bd01f9684c70679e11fd1f56b60c",
                 "establishes": [
                   "availability",
                   "license"
                 ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset/raw/main/README.md",
+                "shows": "HTTP 401, \"Access to dataset Digital-Divide-Data/khmer-speech-dataset is restricted. You must have access to it and be authenticated to access it.\" The card file sits behind the gate.",
+                "accessed": "2026-11-12",
+                "http_status": 401,
+                "content_sha256": "b2ccfaf15df657f079a882e23f0e8e2b89c0bfc14146b9962ef0d7fb356ee909",
+                "establishes": [
+                  "availability"
+                ]
+              },
+              {
+                "url": "https://mozilladatacollective.com/datasets/cml9h5vgc01bxmn075sjeftek",
+                "shows": "\"Khmer ASR Cultural Dataset (V2)\"; \"106.53 hours manually curated speech-text pairs\"; \"4 females, 4 males\"; \"Creative Commons Attribution Share Alike 4.0 International (CC-BY-SA-4.0)\"; \"You agree not to attempt to determine the identity of speakers in this dataset.\"; \"You will only be able to download datasets after accepting terms\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "261f42745017069f018f41e6edf3901454b5dffbe31aa4dde4d13af82ba883a6",
+                "establishes": [
+                  "availability"
+                ]
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 2,
@@ -58379,41 +58695,41 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Khmer speech",
-            "value": "About 728 hours of Khmer read from written prompts by 12 native speakers with curated transcripts, documented in a detailed card without a paper, with community Qwen3-ASR and Whisper Khmer models trained on it.",
+            "value": "About 728 hours of Khmer read from written prompts by 12 native speakers with curated transcripts, documented in a detailed card without a paper, with a community Qwen3-ASR Khmer recognizer whose card names it as training data.",
             "confidence": "medium",
-            "note": "The corpus dwarfs OpenSLR's earlier Khmer speech-text set of under four hours, pairing prompted readings with curated transcripts, and community Khmer recognizers built on Whisper and Qwen are trained on it. At about seven hundred hours from twelve speakers reading prepared sentences it is small beside English speech corpora of hundreds of thousands of hours, and IndicVoices draws spontaneous speech from tens of thousands of speakers.",
-            "relative_to": "indicvoices",
-            "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "note": "The corpus dwarfs OpenSLR's earlier Khmer set of under four hours, pairing prompted readings with curated transcripts, and a community Qwen recognizer names it as its training data. Its seven hundred hours from twelve speakers are judged against what Khmer has, an official language with over a million speakers and a small written web, and on that scale it sits one step below the larger Kazakh Speech Corpus 2.",
+            "relative_to": "kazakh-speech-corpus-2",
+            "relation": "one_below",
+            "last_verified": "2026-11-11",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset/raw/main/README.md",
-                "shows": "\"727.94 hours of manually curated speech-text pairs by native speakers\"; \"there was only one Khmer speech-text dataset: OpenSLR 42 with 3.97 hours\"",
-                "accessed": "2026-09-24",
+                "url": "https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset",
+                "shows": "\"727.94 hours of manually curated speech-text pairs by native speakers\"; \"there was only one Khmer speech-text dataset:\"; \"with 3.97 hours of speech-text pairs (male only)\"; the \"Models trained or fine-tuned on\" panel lists \"seanghay/Qwen3-ASR-0.6B-Khmer\".",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "4b7c87b25ae2921e3b1dc088be9bf858ac596c3066fb63e26933c83f9c25e2d4"
+                "content_sha256": "2e84a35d141214bac177b634c4de55c93cc3f38c8bbad2f7fb6942371595eeca"
               },
               {
-                "url": "https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset",
-                "shows": "Number of rows: 450,396; Models trained or fine-tuned: seanghay/Qwen3-ASR-0.6B-Khmer, sengtha/whisper-base-khmer",
-                "accessed": "2026-09-24",
+                "url": "https://huggingface.co/seanghay/Qwen3-ASR-0.6B-Khmer/raw/main/README.md",
+                "shows": "\"A Khmer (ខ្មែរ) automatic speech recognition model, fine-tuned from\"; \"~700 hours of Khmer speech from the\"; trained on DDD-Cambodia/khmer-speech-dataset.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "2521039619c634cd06f01a9c88b5b0340437edab9dd8c5481eb2b485c03d1479"
+                "content_sha256": "10741fd3ccc26de1438e0d23edc3991cbf141b85eb960cb5053a82fc13165f08"
               }
             ]
           },
-          "overall_score": 2.0,
+          "overall_score": 2.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.0,
+          "maturity": 2.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-24",
+            "date": "2026-10-25",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           }
         },
         {
@@ -58588,26 +58904,26 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Thai instruction data",
-            "value": "WangchanX-FLAN holds about 3.6 million Thai-centered instruction examples reformatted from more than two dozen existing datasets, documented by a detailed card and build script, and the WangchanLION v2 instruct model is trained on it.",
+            "value": "WangchanX-FLAN holds 3,619,450 Thai-centered instruction examples reformatted from more than two dozen existing datasets. About 12,200 are WangchanThaiInstruct's pairs written by people, imported from that set rather than written for this one; the rest are templated from existing data, generated, or of mixed origin. A detailed card and build script document it, and the WangchanLION v2 instruct model is trained on it.",
             "confidence": "medium",
             "note": "WangchanX-FLAN lists every source and license, and the WangchanLION v2 instruct model is trained on it. All of it is reformatted from existing datasets, some of them machine-generated, which places it below WangchanThaiInstruct, whose Thai examples annotators and domain experts wrote from scratch.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1/raw/main/README.md",
-                "shows": "num_examples: 3619450; source table rows ThaiSum 359k, scb-mt-en-th-2020 801k, xP3x 299k ...",
-                "accessed": "2026-09-24",
+                "shows": "num_examples: 3619450; source table rows \"WangchanThaiInstruct\", airesearch/WangchanThaiInstruct_7.24, 12.2k; ultrachat_200k 200k; tiny-code 364k; ThaiSum 359k; scb-mt-en-th-2020 801k; xP3x 299k.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "806bcc03796ace9447564e2a3a59d608f97db74446eefefe412b6d33d1b95809"
               },
               {
                 "url": "https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1",
                 "shows": "Models trained or fine-tuned on airesearch/WangchanX-FLAN-v6.1: aisingapore/Gemma2-9b-WangchanLIONv2-instruct",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "7c73e274707b802588862ab5f66ce3e7f9f2ff2c55c552c3d50d98ec0c975e72"
+                "content_sha256": "381c638d86936e1eb425448a154f7dfd9384ced015e02dd4f1f5df7d6d09316a"
               }
             ]
           },
@@ -58619,7 +58935,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -58930,33 +59246,33 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Arabic instruction data",
-            "value": "CIDAR holds 10,000 Arabic instruction pairs, about 9,100 of them machine-translated with ChatGPT from Alpagasus and the rest native grammar questions, all reviewed by people, documented in an ACL Findings paper, with small community fine-tunes listed as trained on it.",
+            "value": "CIDAR holds 10,000 Arabic instruction pairs: about 9,100 machine-translated with ChatGPT from Alpagasus and about 900 grammar questions and answers crawled from a teacher's question-and-answer site, whose authors are not named. People reviewed all of them for cultural fit. Documented in an ACL Findings paper, with small community fine-tunes listed as trained on it.",
             "confidence": "medium",
             "note": "CIDAR is documented and every pair was reviewed by people for cultural fit, but most of it began as machine translation from English. Only small community fine-tunes use it, whereas WangchanThaiInstruct was written in Thai by people from the start.",
             "relative_to": "wangchan-thai-instruct",
             "relation": "two_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2402.03177",
                 "shows": "Abstract: \"the first open Arabic instruction-tuning dataset culturally-aligned by human reviewers. CIDAR contains 10,000 instruction and output pairs\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "a7009bbc131d4a80bc811cc9b60056da3de7456a1f759ee677222b3ccf5bccc8"
+                "content_sha256": "4ef19cf071124575eaa95bf7aeb374de45ca198da44d234695a4dc4227b6f46a"
               },
               {
                 "url": "https://huggingface.co/datasets/arbml/CIDAR/raw/main/README.md",
-                "shows": "\"selecting around 9,109 samples from Alpagasus dataset then translating it to Arabic using ChatGPT ... around 891 Arabic grammar instructions ... reviewed by around 12 reviewers.\"",
-                "accessed": "2026-09-24",
+                "shows": "\"The dataset was created by selecting around **9,109** samples from\"; \"dataset then translating it to `Arabic` using ChatGPT\"; around 891 Arabic grammar instructions from the website Ask the teacher, reviewed by about 12 reviewers.",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "c7ed614f1286b5db3326cb190dbf3891ad24a07e14281c5c2e52849b70d0d12e"
               },
               {
                 "url": "https://huggingface.co/datasets/arbml/CIDAR",
                 "shows": "Hub page \"Models trained or fine-tuned on arbml/CIDAR\" lists VohoAI/voho-saudi-chat-4b and Ruqiya/Fine-Tuning-Gemma-2b-it-for-Arabic.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "be5a35bbb0572acedb630e97c5a8726ff69a6c95d73d9b9eacb5ee9d3cc19f55"
+                "content_sha256": "a97ed909b2d835ac50955c03776f3428c4063f68dba172b034199cbac6e25ed0"
               }
             ]
           },
@@ -58968,7 +59284,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           },
           "version_note": "The two companion evaluation sets, CIDAR-EVAL-100 and CIDAR-MCQ-100, are part of the same release and are counted with the main set."
         },
@@ -59156,48 +59472,53 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Kazakh speech recognition data",
-            "value": "KSC2 holds about 1,200 hours of transcribed Kazakh speech in over 600,000 utterances from earlier corpora plus broadcast, Senate and podcast audio, documented in an Interspeech paper, with community Whisper fine-tunes listed as trained on it.",
+            "value": "KSC2 holds about 1,200 hours of transcribed Kazakh speech in over 600,000 utterances from earlier corpora plus broadcast, Senate and podcast audio, documented in an Interspeech paper, with community Whisper fine-tunes whose cards name it as training data.",
             "confidence": "medium",
-            "note": "KSC gathers earlier Kazakh corpora with broadcast, Senate and podcast audio into what its publisher calls the first large open Kazakh speech corpus, documented in an Interspeech paper, and several community Whisper fine-tunes for Kazakh are trained on it. At about twelve hundred hours it is small beside English speech corpora of hundreds of thousands of hours, and it serves only recognition in one language, where IndicVoices spans twenty-two.",
-            "relative_to": "indicvoices",
-            "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "note": "KSC gathers earlier Kazakh corpora with broadcast, Senate and podcast audio into what its publisher calls the first large open Kazakh speech corpus, documented in an Interspeech paper, and community Whisper recognizers name it as their training data. Its twelve hundred hours are small beside English speech corpora, but judged against what Kazakh has, an official language with over a million speakers and a small written web, it is the largest open Kazakh speech set.",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://issai.nu.edu.kz/kz-speech-corpus/",
                 "shows": "\"Kazakh Speech Corpus 2 (KSC2) is the first industrial-scale open-source Kazakh speech corpus ... contains utterances with the Kazakh-Russian code-switching\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "b5fb7cc0fd96c7a63f6ba39b3da82a989606b959bdd3f27f774797ab20e5eeef"
+                "content_sha256": "f02f26b0a2f2e91ef9b0224fb4978bc5d8a158d3c319a8285f8cfd799eacafd3"
               },
               {
                 "url": "https://huggingface.co/datasets/issai/Kazakh_Speech_Corpus_2",
                 "shows": "Hub page \"Models trained or fine-tuned on\" lists shyngys879/kazakh-whisper-large-v3-turbo and abilmansplus/whisper-turbo-ksc2.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "61eea1f8c36344a81893b18129b4934425670d497bc15d5938b491b0de562b6e"
+                "content_sha256": "c157a331b8f7a5e3b59cf6911ad351a7f95bb22bb64f9804f02df2e9dfc1112f"
               },
               {
                 "url": "https://raw.githubusercontent.com/IS2AI/Kazakh_ASR/main/README.md",
                 "shows": "\"This repository provides the recipe for the paper KSC2\"; \"Our code builds upon ESPnet\".",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "4a236c3c644a1291ffc25c4a886dc464de7cf6dc5621932963d7060d7b0e41a1"
+              },
+              {
+                "url": "https://huggingface.co/abilmansplus/whisper-turbo-ksc2/raw/main/README.md",
+                "shows": "Fine-tuned on Kazakh Speech Corpus 2: \"(about 1000 hours of transcribed audio from diverse sources)\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "65faddb766c502331fd17326a24aed1ceb95725942488a0c1b44cb6842585ed8"
               }
             ]
           },
-          "overall_score": 2.7,
+          "overall_score": 3.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -59301,60 +59622,60 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Basque pretraining text",
             "value": "About 4.2 billion tokens in 4.3 million documents of Basque web and institutional text in its first version, documented in an ACL paper and cards for both versions, and used to train every Latxa model from the Llama 2 to the Qwen3.5 releases.",
             "confidence": "medium",
-            "note": "Latxa Corpus is the pretraining set behind the whole Latxa family of Basque models, from the first Llama-based releases to the Qwen versions, joining a new Basque web crawl and institutional text with the Basque parts of large multilingual web corpora, and an ACL paper and both dataset cards document its sources and sizes. Its roughly four billion tokens are ample for Basque but a tiny share of the trillions in English pretraining corpora.",
-            "last_verified": "2026-09-24",
+            "note": "Latxa Corpus is the pretraining set behind every Latxa model for Basque, joining a new Basque web crawl and institutional text with the Basque parts of large web corpora, documented in an ACL paper and two cards. Its four billion tokens are judged against what Basque has, an official language with a modest written web whose speaker count is uncertain around a million; the stricter reading of that uncertainty is used, and the more generous one would place it one step higher.",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2403.20266",
                 "shows": "\"we continue pretraining on a new Basque corpus comprising 4.3M documents and 4.2B tokens\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "e92471bd1181f7694999c900960e3409702882df50b66bf3db29d3bb237f05b2"
+                "content_sha256": "b2e15070d574622afc134eb7e5a0f5bcede8f5fa9ffcd4bc55926a4a98f5963d"
               },
               {
                 "url": "https://huggingface.co/datasets/HiTZ/latxa-corpus-v1.1/raw/main/README.md",
                 "shows": "\"This is the training corpus of Latxa v1.1, a family of large language models for Basque based on Llama 2.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "724f04bf5c98620f1aaf895a50b08ff07f68d5f37de91edda9782fb957a6c322"
               },
               {
                 "url": "https://huggingface.co/api/models?filter=dataset:HiTZ/latxa-corpus-v1.1",
                 "shows": "Models tagged with the dataset include HiTZ/latxa-7b-v1.1, latxa-13b-v1.1, latxa-70b-v1.1 and the v1.2 releases.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "df56d31d7f7667a6a602dc6203baa0416bf2c607dac8615a0043f23670c41ece"
+                "content_sha256": "08aa82abe4b3255456e52db4c2c03f65e60c320c61361d76376e9dffd6280b62"
               },
               {
                 "url": "https://huggingface.co/api/models?filter=dataset:HiTZ/latxa-corpus-v2",
                 "shows": "Models tagged with the dataset include HiTZ/Latxa-Llama-3.1-70B-Instruct-v2, HiTZ/Latxa-Qwen3.5-4B and HiTZ/Latxa-Qwen3.5-2B.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "15f515c013e5d655970ff388c9192a592426e675f9e03b159960817776c6a3f3"
+                "content_sha256": "69ddd4d54001b0461ee10efddd8eeba8a822e1d65d712a89157011792f1bd878"
               },
               {
                 "url": "https://huggingface.co/datasets/HiTZ/latxa-corpus-v2/raw/main/README.md",
                 "shows": "Data Statistics table: per-source train/valid/test document counts for 14 sources, EusCrawl v2 largest at 1,636,010 train documents.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "aa92506bbc4a1a76868795f99eb710ad3be7850f2d401f79a4aea8b130f70583"
               }
             ]
           },
-          "overall_score": 1.7,
+          "overall_score": 2.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.7,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           },
           "version_note": "The entry covers both published versions, v1.1 and v2, as one product line."
         },
@@ -59515,46 +59836,48 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Galician pretraining text",
             "value": "About 1.9 billion tokens in 7.9 million Galician documents from web crawls, books, press, government and research text, documented in a PROPOR paper and card, and used to train the Carballo and Carvalho models.",
             "confidence": "medium",
-            "note": "CorpusNós is the Galician pretraining corpus behind the Carballo and Carvalho models from Proxecto Nós, documented in a PROPOR paper and a card with per-genre counts, and it adds books, press and research writing from rights holders under transfer agreements to its web crawls. Its roughly two billion tokens are a small fraction of the trillions in English pretraining corpora.",
-            "last_verified": "2026-09-24",
+            "note": "CorpusNós is the Galician pretraining corpus behind the Carballo and Carvalho models from Proxecto Nós, documented in a PROPOR paper and a card, adding books, press and research writing from rights holders to its web crawls. Its two billion tokens are a sliver of English corpora of trillions, but judged against what Galician has, an official language with over a million speakers and a modest written web, it stands with the Basque Latxa Corpus.",
+            "relative_to": "latxa-corpus",
+            "relation": "at",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/proxectonos/corpusnos/raw/main/README.md",
                 "shows": "Total: 1,917,196,788 tokens, 7,922,447 documents; \"a massive Galician corpus primarily devised for training large language models\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "8f75b1970f77b00e74339276197e32ea39c6908d73530adf1a6c0ba656765b6e"
               },
               {
                 "url": "https://huggingface.co/api/models?filter=dataset:proxectonos/corpusnos",
                 "shows": "Models tagged with the dataset include proxectonos/Carballo-bloom-1.3B, proxectonos/Llama-3.1-Carballo and Nos-PT/Llama-Carvalho-GL.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "e3c101f81aad4ffe0bc40e0f0bf552a7acfaa9507d5f2618da3e5a7833244a28"
+                "content_sha256": "f74df65fbd95d46bc794e24fb32ed5a6101ad8516eed9cda53116fe3b9a245fd"
               },
               {
                 "url": "https://aclanthology.org/2024.propor-1.66/",
                 "shows": "ACL Anthology entry: \"CorpusNÓS: A massive Galician corpus for training large language models\" (PROPOR 2024).",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "8014a25639626f37cd72cb0c63601aa3969733bb7ae10742b0c6c8709e99001c"
+                "content_sha256": "b539f0ae0c766c2264c8735c8b86f72e5129f15d8a01b4832a651392b60f7d39"
               }
             ]
           },
-          "overall_score": 1.7,
+          "overall_score": 2.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.7,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -59619,48 +59942,48 @@
             ]
           },
           "capability": {
-            "score": 1,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Maltese pretraining text",
             "value": "About 466 million tokens of written Maltese across 19 genres, collected from pre-identified sources, documented in a paper with per-subset sizes, and used to train BERTu and mBERTu.",
             "confidence": "medium",
-            "note": "Korpus Malti is the general corpus of written Maltese, drawn from nineteen genres including parliament, courts, the press and literature, and the paper that introduced it trained the BERTu and mBERTu models on it. At under half a billion tokens it is smaller than national collections such as Danish Dynaword and very far from the trillions of tokens in English pretraining corpora.",
-            "relative_to": "danish-dynaword",
+            "note": "Korpus Malti is the general corpus of written Maltese, drawn from nineteen genres including parliament, courts, the press and literature, and the paper that introduced it trained BERTu and mBERTu on it. Judged against what Maltese has, an official language with under a million speakers and a small written web, its half a billion tokens are about a third of the Icelandic Gigaword Corpus, judged the same way, and far from the trillions in English corpora.",
+            "relative_to": "icelandic-gigaword-corpus",
             "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2205.10517",
                 "shows": "\"We pre-train and compare two models on the new corpus: a monolingual BERT model trained from scratch (BERTu), and a further pre-trained multilingual BERT (mBERTu).\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "4e9c158deedad9f1ece5ced9685a566952973331c5bb896b5419f21b18d266f7"
+                "content_sha256": "33d0fe1d52ea2fc9d6d26498f8ce614c1c8df1a052e9cfcf21250e1ce332ed3b"
               },
               {
                 "url": "https://arxiv.org/pdf/2205.10517",
                 "shows": "Table 1, Korpus Malti v4.0 corpus distribution: all subsets 131,429 documents, 20,758,071 sentences, 466,601,373 tokens, 2.52 GB.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "b6dd6945f153f7e553397967ed0be44fb36fe335053b2122dac3b5bc934ad54f"
               },
               {
                 "url": "https://huggingface.co/api/models?filter=dataset:MLRS/korpus_malti",
                 "shows": "Models tagged with the dataset: MLRS/BERTu, MLRS/mBERTu, Cabbache/Fredu-1.7B-Instruct.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "e1752591b8e7d62eaa73f5eb4f2c5a4288e7ba75210f49146fff71d32d056079"
+                "content_sha256": "c4bdf5fd36a851bf177d2fda94b899f25d04125a2f8744e835bd0d2176ef426e"
               }
             ]
           },
-          "overall_score": 1.0,
+          "overall_score": 2.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.0,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -59975,48 +60298,60 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Icelandic pretraining text",
-            "value": "The Icelandic Gigaword Corpus holds about 2.4 billion running words of tagged and lemmatized Icelandic text written by people, about 1.46 billion of it in the open release, documented on a detailed homepage and card, with one community model listed as trained on it.",
+            "value": "The Icelandic Gigaword Corpus holds about 2.4 billion running words of tagged and lemmatized Icelandic text written by people, about 1.46 billion of it in the open release, documented on a detailed homepage and card, with the IceBERT-IGC model trained on it in a published paper.",
             "confidence": "medium",
-            "note": "The IGC is the largest documented corpus of Icelandic, built from news, parliament, law, books and more and released in yearly versions, and Icelandic Dynaword repackages its open parts, though only a community model lists it as training data. With about a billion and a half words in its open release it is far below the trillions of tokens in English pretraining corpora, much like Danish Dynaword for Danish.",
-            "relative_to": "danish-dynaword",
-            "relation": "at",
-            "last_verified": "2026-09-24",
+            "note": "The IGC is the largest documented corpus of Icelandic, built from news, parliament, law, books and more, and the IceBERT paper trains a model on it alone, while Icelandic Dynaword repackages its open parts. Its billion and a half words are far below English corpora of trillions of tokens, but it is judged against what Icelandic has, an official language with under a million speakers and a small written web, and on that scale it is large.",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://igc.arnastofnun.is/",
                 "shows": "\"IGC 2022 contains texts from until the end of the year 2021, in total 2429 million running words.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "e2c9346c21651a790f0b98afa57700d24aea7a90696f388cba224cace74fae5f"
               },
               {
                 "url": "https://huggingface.co/datasets/arnastofnun/IGC-2024/raw/main/README.md",
                 "shows": "\"It contains around 1,457 million running words.\"",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "1e3cf47ed3a824e4a67b59f39592a34a402e14595aa99a9b89d595997a91a848"
               },
               {
                 "url": "https://huggingface.co/api/models?filter=dataset:arnastofnun/IGC-2024",
                 "shows": "One model tagged with the dataset: Magnuss85/Norn-v3-Icelandic-9B.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "588a210925d3224eab91033135dbf138037a7933dd3dc1543233d194044d2c49"
+                "content_sha256": "4871dd955bdc42a1bf1e19202f52b236f8dbd9984f537fd910825ed47a06f681"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2201.05601",
+                "shows": "\"We train separate models on each of these two sources\"; the models are trained on \"the IGC dataset (IceBERT-IGC)\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "f51bda45ba7b47254ede397eef30566e2d71a1c349475d3e5884b87ac71fab6c"
+              },
+              {
+                "url": "https://huggingface.co/Magnuss85/Norn-v3-Icelandic-9B/raw/main/README.md",
+                "shows": "IGC-2024: \"Icelandic Gigaword Corpus, 974K documents across parliamentary, news, wiki, law, social, and journal subcorpora. Used as seed text for Gemini synthetic generation.\"",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "dba9fb5c8ecd3cb7c53ce00f88e4b9729f2d27735de8a78e10dca3b959b9f316"
               }
             ]
           },
-          "overall_score": 1.7,
+          "overall_score": 3.1,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.7,
+          "maturity": 3.1,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -60080,41 +60415,41 @@
             ]
           },
           "capability": {
-            "score": 1,
+            "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Northern Sámi pretraining text",
             "value": "The corpus holds 33,064 crawled Northern Sámi web documents (about 113 MB), documented by a short card and no paper, and TurkuNLP's Finnish ModernBERT models list it as training data.",
             "confidence": "medium",
-            "note": "The corpus gives Northern Sámi a crawled web collection whose short card explains how the crawl was seeded, filtered and deduplicated, and TurkuNLP lists it among the training data of its Finnish ModernBERT models. At a few tens of millions of tokens at most it is tiny beside English pretraining corpora of trillions of tokens, and far from a documented multi-source corpus such as Danish Dynaword.",
-            "relative_to": "danish-dynaword",
+            "note": "The corpus gives Northern Sámi a crawled web collection whose short card explains how the crawl was seeded, filtered and deduplicated, and TurkuNLP lists it among the training data of its Finnish ModernBERT models. Judged against what Northern Sámi has, an official language with under a million speakers and a small written web, its few tens of millions of tokens and missing paper put it one step below Korpus Malti.",
+            "relative_to": "korpus-malti",
             "relation": "one_below",
-            "last_verified": "2026-09-24",
+            "last_verified": "2026-11-11",
             "sources": [
               {
                 "url": "https://datasets-server.huggingface.co/size?dataset=ltg/saami-web",
                 "shows": "num_rows: 33064; num_bytes_original_files: 113497001",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
                 "content_sha256": "c656ce72a8e6ae48081e87f6d74d20bfef2163f96c0ac5857a2151292c04510f"
               },
               {
                 "url": "https://huggingface.co/api/models?filter=dataset:ltg/saami-web",
                 "shows": "Models tagged with the dataset include TurkuNLP/finnish-modernbert-large, -base and -tiny.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-11",
                 "http_status": 200,
-                "content_sha256": "965b04b393b9e90ba4b226a9d869d366b61ad54edd41608f200409a18f3d7919"
+                "content_sha256": "ead0af556e69a9256abc080964d9bfafbccd49b1c2377666648f40490542a0dc"
               }
             ]
           },
-          "overall_score": 1.0,
+          "overall_score": 1.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 1.0,
+          "maturity": 1.7,
           "mature": false,
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-11"
           }
         },
         {
@@ -60583,24 +60918,36 @@
             "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "coverage and downstream use for Finno-Ugric pretraining text",
-            "value": "SMUGRI data holds about 130,000 rows of news text in seven Finno-Ugric languages with a thin card and a cited paper, and no model on Hugging Face declares it as training data.",
+            "value": "SMUGRI data holds 129,863 short news rows in seven Finno-Ugric languages, about 19 MB in memory (about 5 million tokens, estimated; no word or token count is stated), behind a short card that cites a machine translation paper, and no model on Hugging Face declares it as training data.",
             "confidence": "medium",
-            "note": "SMUGRI data gives seven Finno-Ugric languages a news collection with a one-line card, documented only through the machine translation paper it supports, and no model on Hugging Face declares it as training data. At a few tens of thousands of news texts it is tiny beside English pretraining corpora of trillions of tokens, and the Northern Sámi web corpus, a comparable small Uralic crawl, at least explains its collection method.",
-            "relative_to": "saami-web",
-            "relation": "at",
-            "last_verified": "2026-09-24",
+            "note": "SMUGRI data gives Finno-Ugric languages such as Komi, Udmurt and Erzya a news collection with a short card, documented only through the machine translation paper it supports, and no model on Hugging Face declares it as training data. As a collection spread over several languages it is judged against English-scale corpora, and its few million tokens of news sit at the bottom of that scale.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://datasets-server.huggingface.co/size?dataset=tartuNLP/smugri-data",
-                "shows": "num_rows 129863 over configs kca, kv, mdf, mns, myv, olo, udm.",
-                "accessed": "2026-09-24",
+                "shows": "num_rows 129863 and num_bytes_memory 18775508 over configs kca, kv, mdf, mns, myv, olo, udm.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "695166a9aa5353557fc04f0fbf86345c09118d67a19c4e3f5d19d117f692d876"
               },
               {
+                "url": "https://datasets-server.huggingface.co/statistics?dataset=tartuNLP/smugri-data&config=kv&split=train",
+                "shows": "text column in the kv train split: 38300 rows, mean length 75.69 characters, median 65.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "0876cf13e967a72327daea0660f50596e0c96d2df75a1f0076796b259c346e26"
+              },
+              {
+                "url": "https://huggingface.co/datasets/tartuNLP/smugri-data/raw/main/README.md",
+                "shows": "\"News-based datasets for Komi, Udmurt, Moksha, Erzya, Mansi, Khanty, and Livvi Karelian.\"; cites \"Machine Translation for Low-resource Finno-Ugric Languages\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a80e9f4675652f412f0fcb14b2d17dc59a7412ce2fb469b434edfb03d8c919ab"
+              },
+              {
                 "url": "https://huggingface.co/api/models?filter=dataset:tartuNLP/smugri-data",
                 "shows": "Empty list: no models tagged with the dataset.",
-                "accessed": "2026-09-24",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
               }
@@ -60614,7 +60961,7 @@
           "freshness": {
             "date": "2026-09-24",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "latest_axis_confirmation": "2026-11-12"
           },
           "version_note": "The card names the languages and the news origin only; the outlets and collection method were not found on any page read."
         },
@@ -63408,7 +63755,7 @@
             "reach": "1K-10K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face downloads of the Hub copy. Evaluation harnesses often fetch a benchmark on every run, so the figure counts evaluation runs as much as users, and it misses copies taken from the GitHub data folder.",
+            "note": "Hugging Face downloads of the Hub copy. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations. It misses copies taken from the GitHub data folder.",
             "last_verified": "2026-10-25",
             "sources": [
               {
@@ -63801,7 +64148,7 @@
             "reach": "1K-10K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face downloads of the Hub repository. Evaluation harnesses fetch a benchmark on each run, so the figure counts runs, not the groups using it.",
+            "note": "Hugging Face downloads of the Hub repository. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -65285,163 +65632,6 @@
           "version_note": "Listed are the AI4Bharat-hosted task repositories; the IndicXNLI, MASSIVE and FLORES tasks belong to other publishers and are not counted here."
         },
         {
-          "slug": "indonlu",
-          "product": "IndoNLU",
-          "org_slug": "indonlp",
-          "org": "IndoNLP",
-          "type": "dataset",
-          "languages": [
-            "ind"
-          ],
-          "description": "IndoNLU is a benchmark for Indonesian natural language understanding with twelve tasks, from emotion and sentiment classification to part-of-speech tagging, named-entity recognition, keyphrase extraction, textual entailment and extractive QA. The task data comes from social media, reviews, news and Wikipedia, some of it labeled by Indonesian linguists. It shipped with the Indo4B pretraining corpus and the IndoBERT models, from a collaboration including Institut Teknologi Bandung, Universitas Indonesia, Gojek and Prosa.AI.",
-          "openness": {
-            "score": 2,
-            "class": "gated",
-            "components": "license:mit(HF card: 'The licensing status of the IndoNLU benchmark datasets is under MIT License'; repo LICENSE file is Apache-2.0);access:public(ungated);dataset_card:present(per-task descriptions; creation and annotation sections are marked 'Needs More Information');answers:held-out(GitHub test-set labels are masked; predictions are scored on CodaLab)",
-            "confidence": "medium",
-            "note": "The task data downloads freely under a permissive license, but the official test labels are masked and scored through a CodaLab competition. The Hugging Face card leaves its collection and annotation sections unfilled, so provenance comes from the paper.",
-            "last_verified": "2026-09-24",
-            "sources": [
-              {
-                "url": "https://huggingface.co/datasets/indonlp/indonlu/raw/main/README.md",
-                "shows": "\"The licensing status of the IndoNLU benchmark datasets is under MIT License.\"; Source Data: \"[Needs More Information]\"",
-                "accessed": "2026-09-24",
-                "http_status": 200,
-                "content_sha256": "8a65fff733365b2fd1d5a026e89dd35a027abab79a13b9ec43e49420e8b8a4e2",
-                "establishes": [
-                  "documentation",
-                  "license"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/IndoNLP/indonlu/master/LICENSE",
-                "shows": "Apache License, Version 2.0 (repository LICENSE)",
-                "accessed": "2026-09-24",
-                "http_status": 200,
-                "content_sha256": "bd9d250c0f04338b3d3570e3ccbfba8d821d1d767f929e2f5884a250fe51dff0",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md",
-                "shows": "\"The labels of the test set are masked (no true labels) in order to preserve the integrity of the evaluation. Please submit your predictions to the submission portal at CodaLab\"",
-                "accessed": "2026-09-24",
-                "http_status": 200,
-                "content_sha256": "4761f00d5fed354b5ded15aeb3fa969d7c27ba5a206a41f42627bbc91b608f54",
-                "establishes": [
-                  "answers",
-                  "availability"
-                ]
-              },
-              {
-                "url": "https://huggingface.co/api/datasets/indonlp/indonlu",
-                "shows": "gated: false; license:mit",
-                "accessed": "2026-09-24",
-                "http_status": 200,
-                "content_sha256": "fb625286261d1e116ce5b9e7a0a489a925c4c88a955f3f2fd5552eabb677c246",
-                "establishes": [
-                  "availability"
-                ]
-              }
-            ],
-            "bucket": "open-ish"
-          },
-          "adoption": {
-            "level": 1,
-            "reach": "<1K",
-            "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "Adoption is Hugging Face downloads of the repository. Users of the GitHub copies and of the CodaLab test sets are not counted.",
-            "last_verified": "2026-09-27",
-            "sources": [
-              {
-                "url": "https://huggingface.co/api/datasets/indonlp/indonlu",
-                "shows": "571 downloads in the trailing 30 days for indonlp/indonlu",
-                "accessed": "2026-09-24",
-                "http_status": 200,
-                "content_sha256": "fb625286261d1e116ce5b9e7a0a489a925c4c88a955f3f2fd5552eabb677c246"
-              }
-            ]
-          },
-          "capability": {
-            "score": null,
-            "basis": "evaluation_depth",
-            "basis_detail": "depth ladder; the band does not stand",
-            "value": "Unresolved: qualifying provenance not established.",
-            "confidence": "low",
-            "note": "IndoNLU's sources say where its text was collected but not who wrote it, so it is not known how much of it is original to the language, and the map shows no capability score for now. Its overall score reflects adoption alone.",
-            "last_verified": "2026-11-08",
-            "sources": [
-              {
-                "url": "https://arxiv.org/abs/2009.05387",
-                "shows": "\"we introduce the first-ever vast resource for the training, evaluating, and benchmarking on Indonesian natural language understanding (IndoNLU) tasks. IndoNLU includes twelve tasks\"",
-                "accessed": "2026-11-08",
-                "http_status": 200,
-                "content_sha256": "d5a936aaf48f35bf29fcd7f8f4758700e1cfeec5c63d8404bd8a94e99e572dbd"
-              },
-              {
-                "url": "https://huggingface.co/datasets/indonlp/indonlu",
-                "shows": "Models trained or fine-tuned on indonlp/indonlu: w11wo/indonesian-roberta-base-posp-tagger, w11wo/indonesian-roberta-base-sentiment-classifier",
-                "accessed": "2026-11-08",
-                "http_status": 200,
-                "content_sha256": "ffcb9b36c8390cb9aa197a38d762f852df6debce529fb0b3af95aeef01f5f609"
-              },
-              {
-                "url": "https://huggingface.co/datasets/indonlp/indonlu/raw/main/README.md",
-                "shows": "\"SmSA ... The text was crawled and then annotated by several Indonesian linguists\"",
-                "accessed": "2026-11-08",
-                "http_status": 200,
-                "content_sha256": "8a65fff733365b2fd1d5a026e89dd35a027abab79a13b9ec43e49420e8b8a4e2"
-              },
-              {
-                "url": "https://aclanthology.org/2020.aacl-main.85.pdf",
-                "shows": "\"Table 1: Task statistics and descriptions\", |Test| column: EmoT 442, SmSA 500, CASA 180, HoASA 286, WReTE 100, POSP 840, BaPOS 1,029, TermA 1,000, KEPS 247, NERGrit 209, NERP 840, FacQA 311 (\"We create new splits for the dataset\" for EmoT, HoASA, WReTE, POSP, NERGrit and NERP); EmoT \"consists of around 4000 Indonesian colloquial language tweets\"; SmSA: \"The text was crawled and then annotated by several Indonesian linguists to construct this dataset\"; CASA \"around a thousand car reviews collected from multiple Indonesian online automobile platforms\"; HoASA \"hotel reviews collected from the hotel aggregator platform, AiryRooms\"; WReTE \"consists of 450 sentence pairs constructed from Wikipedia revision history\"; POSP \"is collected from Indonesian news websites\"; BaPOS \"contains about 1000 sentences, collected from the PAN Localization Project\"; \"This span-extraction dataset is collected from the hotel aggregator platform, AiryRooms\" (TermA); KEPS \"consists of text from Twitter discussing banking products and services and is written in the Indonesian language\"; \"This NER dataset is taken from the Grit-ID repository\"; NERP \"contains texts collected from several Indonesian news websites\"; \"Each row in the FacQA dataset consists of a question, a short passage, and a label phrase\"",
-                "accessed": "2026-11-08",
-                "http_status": 200,
-                "content_sha256": "d5f06fb1b542d067267098a54265f2c1ee78b203a0f1375cf66add95832676b6"
-              },
-              {
-                "url": "https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md",
-                "shows": "\"We provide train, valid, and test sets. The labels of the test set are masked (no true labels) in order to preserve the integrity of the evaluation. Please submit your predictions to the submission portal at [CodaLab]\"",
-                "accessed": "2026-11-08",
-                "http_status": 200,
-                "content_sha256": "4761f00d5fed354b5ded15aeb3fa969d7c27ba5a206a41f42627bbc91b608f54"
-              }
-            ],
-            "depth": {
-              "status": "unresolved",
-              "unresolved_reason": "provenance_unknown",
-              "unresolved_reason_text": "qualifying provenance not established",
-              "face_value": "unresolved (0-5)",
-              "best_original": "unavailable",
-              "task_count": 0,
-              "completeness": {
-                "measured": 0,
-                "targets": 1
-              },
-              "cap": {
-                "binds": false,
-                "languages": 0,
-                "detail": {}
-              },
-              "sensitivity": {
-                "unverified_as_independent": "unresolved (0-5)"
-              }
-            }
-          },
-          "overall_score": 1.0,
-          "overall_basis": "adoption_only",
-          "tier": null,
-          "maturity": 1.0,
-          "mature": false,
-          "freshness": {
-            "date": "2026-09-24",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-08"
-          }
-        },
-        {
           "slug": "kazmmlu",
           "product": "KazMMLU",
           "org_slug": "mbzuai",
@@ -65490,7 +65680,7 @@
             "reach": "<1K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face downloads of the Hub repository. Evaluation harnesses fetch a benchmark on each run, so the figure counts runs rather than groups.",
+            "note": "Hugging Face downloads of the Hub repository. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations.",
             "last_verified": "2026-10-25",
             "sources": [
               {
@@ -65622,7 +65812,7 @@
             "reach": "<1K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face downloads of the gated repository. Each approved user fetches it directly, so the figure is closer to a count of users than for ungated sets, but copies inside leaderboards are not counted.",
+            "note": "Hugging Face downloads of the gated repository over the trailing month. Access requires approval, but the download count does not identify unique users or organizations, and repeated downloads are possible. Copies used by leaderboards are not counted.",
             "last_verified": "2026-10-25",
             "sources": [
               {
@@ -65697,6 +65887,137 @@
             "latest_axis_confirmation": "2026-11-08"
           },
           "version_note": "The Hub README is empty; the description follows the paper and the gating terms."
+        },
+        {
+          "slug": "kmmlu",
+          "product": "KMMLU",
+          "org_slug": "hae-rae",
+          "org": "HAE-RAE",
+          "type": "dataset",
+          "languages": [
+            "kor"
+          ],
+          "description": "KMMLU tests language models on 35,030 expert-level multiple-choice questions in Korean across 45 subjects, from the humanities to STEM. The questions come from original Korean exams, mostly professional license tests, rather than translations of English benchmarks. The release adds a 208,522-question training split and 225 few-shot examples. Researchers from Yonsei University, EleutherAI, NAVER Cloud and other labs built it, and the HAE-RAE team publishes it on the Hub.",
+          "openness": {
+            "score": 2,
+            "class": "restricted",
+            "components": "license:cc-by-nd-4.0(card metadata and API tag);access:public(ungated on the Hub);dataset_card:present(card describes the benchmark, its splits and statistics, and links the paper)",
+            "confidence": "high",
+            "note": "The questions download freely, but the license forbids distributing changed versions, so a translation or a derived benchmark cannot be shared. The card and paper describe how the questions were collected.",
+            "last_verified": "2026-11-11",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HAERAE-HUB/KMMLU/raw/main/README.md",
+                "shows": "Card metadata \"license: cc-by-nd-4.0\"; body: \"KMMLU is collected from original Korean exams\"; statistics table \"Train 208,522\", \"Validation 225\", \"Test 35,030\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "b561eccc2880a3704c16d0069746c14cb786f0eca19178afb5df1989e0a126ec",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/HAERAE-HUB/KMMLU",
+                "shows": "API JSON: \"gated\":false; tag license:cc-by-nd-4.0.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "198163031eed54f09e965bde719c33e1795f948c867afd73a8917dfd6668f507",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads of the Hub repository over the trailing month. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/HAERAE-HUB/KMMLU",
+                "shows": "\"downloads\":11793 for HAERAE-HUB/KMMLU.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "198163031eed54f09e965bde719c33e1795f948c867afd73a8917dfd6668f507"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "evaluation_depth",
+            "basis_detail": "depth ladder: corroborated median of per-language task bands, count-based and provisional",
+            "value": "Depth band 5 of 5, provisional and count-based: the median corroborated band over its target languages, 1 of 1 measured, across 1 task. Face value 5; best original band 5.",
+            "confidence": "medium",
+            "note": "In its one target language, KMMLU's test has more than sixty-four hundred items that count toward depth. An item count says how much a set can test, not how precisely it ranks models.",
+            "last_verified": "2026-11-11",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2402.11548",
+                "shows": "Abstract: \"We propose KMMLU, a new Korean benchmark with 35,030 expert-level multiple-choice questions across 45 subjects ranging from humanities to STEM\"; \"KMMLU is collected from original Korean exams\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "75af60019be893b76708702650bf51a25601a48bbd50c4e2fc5509cee5bc5104"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2402.11548",
+                "shows": "\"all sourced from original Korean exams without any translated content\"; \"We predominantly source the questions from Korean License Tests\"; \"This filtering reduces the dataset by 34% to 243,777 questions\".",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "f46cf09b50dd6a7f7b15825e3192e9541dddfd02816c1e6e50167a76286b79fa"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=HAERAE-HUB/KMMLU",
+                "shows": "The Hub's row counts over 45 subject configurations, complete (\"partial\":false): test 35,030, dev 225 and train 208,522 rows, 243,777 in all.",
+                "accessed": "2026-11-11",
+                "http_status": 200,
+                "content_sha256": "b599d7eb54445ca22dc0e814d582952aa1b457831cc69904cd63cd1fa3210a85"
+              }
+            ],
+            "depth": {
+              "status": "provisional",
+              "unresolved_reason": null,
+              "unresolved_reason_text": null,
+              "face_value": "5",
+              "best_original": "5",
+              "task_count": 1,
+              "completeness": {
+                "measured": 1,
+                "targets": 1
+              },
+              "cap": {
+                "binds": false,
+                "languages": 0,
+                "detail": {}
+              },
+              "sensitivity": {
+                "unverified_as_independent": "5"
+              }
+            }
+          },
+          "overall_score": 4.4,
+          "overall_basis": "adoption_and_capability",
+          "tier": "strong",
+          "maturity": 4.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-11",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-11",
+                "reason": "The initial level was set on 2026-11-11 from a hand-read count of Hugging Face downloads of HAERAE-HUB/KMMLU, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
         },
         {
           "slug": "lahaja",
@@ -66218,7 +66539,7 @@
             "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is Hugging Face downloads summed over the sixteen task repositories. The total counts pulls of the task repositories, so repeated evaluation runs weigh as much as new users, and runs from local copies are not counted.",
+            "note": "Adoption is Hugging Face downloads summed over the sixteen task repositories. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations. Runs from local copies are not counted.",
             "last_verified": "2026-10-25",
             "sources": [
               {
@@ -67295,7 +67616,7 @@
             "reach": "<1K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face downloads of the public subset. Copies of the full set obtained by email are not counted, and evaluation harnesses fetch the benchmark on each run.",
+            "note": "Hugging Face downloads of the public subset. Copies of the full set obtained by email are not counted. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations.",
             "last_verified": "2026-10-25",
             "sources": [
               {
@@ -149756,6 +150077,17 @@
         "h2o-3"
       ]
     },
+    "hae-rae": {
+      "slug": "hae-rae",
+      "display_name": "HAE-RAE",
+      "type": "lab",
+      "homepage": "",
+      "github": [],
+      "country": "",
+      "products": [
+        "kmmlu"
+      ]
+    },
     "hailo": {
       "slug": "hailo",
       "display_name": "Hailo Technologies",
@@ -155365,8 +155697,8 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1152,
-  "generated": "2026-11-09",
+  "n_total": 1153,
+  "generated": "2026-11-12",
   "version": "0.5.0",
   "released": "2026-10-03",
   "contract": 2,
@@ -155378,8 +155710,8 @@
       "total": 60613,
       "matched": 1366,
       "overlap": 673,
-      "scored": 1152,
-      "scored_outside": 479,
+      "scored": 1153,
+      "scored_outside": 480,
       "uncategorized": 59247
     },
     "top": [

@@ -1398,10 +1398,11 @@ rulings:
       Yes. Cap it by example count against the largest open English instruction sets, one band per order
       of magnitude. Generated and translated examples count at face value, and how they were made is judged
       on the capability rungs, not by the cap.
-    status: in-force
+    status: replaced
     executor: agent
     lands_in: []
     applied_in: []
+    replaced_by: R-2026-11-11-o
 
   - id: R-2026-10-30-d
     date: 2026-10-30
@@ -3331,3 +3332,484 @@ rulings:
     executor: agent
     lands_in: [docs/reference/language-classification.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/995']
+
+  - id: R-2026-11-10-r
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-n, R-2026-11-10-q]
+    question: >-
+      The built measurements model queried Open Library's /search.json once per MARC language code each
+      quarter, at up to three requests per second. Open Library documents that endpoint and that rate for
+      identified clients, but its robots.txt disallows /search. Is the scheduled API integration approved?
+    ruling: >-
+      Keep Open Library in the method; do not approve the scheduled API integration. Open Library's usage
+      policy describes the API as intended for human-facing discovery, not as a bulk data backend, so its
+      rate limit is not permission for quarterly automated harvesting. Read Open Library from a reproducible
+      extract of its monthly data dumps, or obtain explicit permission for scheduled queries. Until then the
+      scheduled computation omits Open Library corroboration, and Latin's Open Library-dependent verdict is
+      flagged as provisional rather than treated as approved. Any future direct use must also identify the
+      project with the contact address Open Library requires for its higher rate limit.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-s
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-l]
+    question: >-
+      The platform classification table covers every ISO 639-3 individual and macrolanguage code while
+      SIL's terms for a table keyed on the full code set are unresolved. What scope may be redistributed?
+    ruling: >-
+      Keep the broader table private on the platform while the terms are unresolved. Any redistribution uses
+      the declared-code fallback, the codes the map's products declare, unless SIL confirms broader rights.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-t
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-d, R-2026-11-10-g, R-2026-11-10-f]
+    question: >-
+      Three implementation readings in the built tables: the speaker interval joins CLDR users (L1 and L2)
+      with Wikidata's preferred-rank figure; N'Ko is related_to Manding; and recognized reads yes, no or
+      unknown. Do they stand?
+    ruling: >-
+      Accept all three. The speaker interval stands, with each source's differing definition and provenance
+      retained. N'Ko and Manding are related as a relationship, not an equivalence. The three-state
+      recognized column stands, documented so that no is not read as a language lacking legal recognition.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-10-u
+    date: 2026-11-10
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-h, R-2026-11-10-n, R-2026-11-10-r]
+    question: >-
+      With Open Library unmeasured, 15 languages whose eligible Wikipedia edition passes the corroboration
+      route read large_written_material from web text alone, so 13 read no. Is the missing Open Library part
+      a failed route or an unknown one?
+    ruling: >-
+      Unknown. large_written_material is web text at B or above, or an eligible Wikipedia edition with
+      100,000 articles and Open Library with 10,000 works, combined under the interval rule: absence of
+      evidence for a positive route is not evidence that it fails. The 15 affected languages (lat, afr,
+      aze, bel, hye, kat, mar, mkd, mya, sqi, tam, tel, uzb, lav, srp), and every other language whose
+      corroboration route turns only on the missing Open Library part, read unresolved until the dump
+      extract is available, unless another independent source establishes yes. Their representation classes
+      are unchanged. An unresolved profile is never used to assign a relaxed yardstick. The scored yardstick
+      dry run waits until the dump extract and these verdicts are settled.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1000']
+
+  - id: R-2026-11-11-a
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1000", R-2026-11-10-r]
+    question: >-
+      The Artio measurements model read the Open Library extract at the commit of #1000's branch while
+      the PR was open. Once #1000 merges, may production scoring keep reading that snapshot?
+    ruling: >-
+      No. After the merge the model is re-pinned to the extract's commit on main, the revision is
+      deployed, its mirror is resynced, and the live contract and drift checks are rerun. Production
+      scoring never depends on a snapshot pinned only to a pull request's commit.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/language-classification.md]
+    applied_in: []
+
+  - id: R-2026-11-11-b
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j, R-2026-11-08-a]
+    question: >-
+      IndoNLU's only target language, Indonesian, is robustly high, so the language half puts it out of
+      language_specific_eval_sets. Does it move to benchmark_eval_data?
+    ruling: >-
+      Yes, in a separate implementation PR. Its scores are recalculated under benchmark_eval_data's recipe.
+      Its adoption, level 1 with reach below 1,000, is preserved through the migration; its capability is
+      the null score. The same PR updates the comments in both language_specific_datasets and
+      language_specific_eval_sets, including removing the obsolete exclusion of Korean. The review record
+      (#1001) changes no file under sources/.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md, sources/categories/language_specific_eval_sets.yaml,
+      sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1007']
+
+  - id: R-2026-11-11-c
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      Turkish is unresolved (high by CLD2, mid by FineWeb-2), so the language half neither admits nor
+      excludes TurkishMMLU. Does it stay in language_specific_eval_sets?
+    ruling: >-
+      It stays, on the purpose test, and is revisited each quarter when the classification refreshes.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-d
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-08-c]
+    question: >-
+      Does the classification reopen SOLD's placement or its score?
+    ruling: >-
+      No. SOLD stays in language_specific_datasets with capability 3.
+    status: in-force
+    executor: none
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md]
+    applied_in: []
+
+  - id: R-2026-11-11-e
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", R-2026-11-10-j]
+    question: >-
+      Korean is mid, below the membership line, so KMMLU (seeded to benchmark_eval_data) is eligible for
+      language_specific_eval_sets. Is it added?
+    ruling: >-
+      Approved as separate add-product work in language_specific_eval_sets, subject to its evidence and
+      to validation on the depth ladder.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-10-language-membership-review.md, sources/categories/language_specific_eval_sets.yaml,
+      sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1008']
+
+  - id: R-2026-11-11-f
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1001", "#1009", R-2026-11-10-j]
+    question: >-
+      CHOCLO, Trueque and the LatamGPT Corpus target Spanish or Portuguese, which are high, and fail the
+      purpose test as built. Do they stay out?
+    ruling: >-
+      Yes, all three stay outside the language-specific categories, in their existing registries, with no
+      product or score changes. CHOCLO is a Spanish cultural-knowledge benchmark and Trueque a Spanish and
+      Portuguese one about regional culture, including Indigenous peoples; neither is an Indigenous-language
+      evaluation set. The LatamGPT Corpus stays out provisionally: its published release declares Spanish,
+      Portuguese and English and no Indigenous-language target, though its gated data was not inspected.
+      Incidental coverage of an Indigenous language does not satisfy the purpose test. A seed is reconsidered
+      when a release adds items written in an Indigenous language, when the corpus documents
+      Indigenous-language text as a target or reports a language breakdown including one, or when a scan of
+      its gated data finds such text present by design.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-latin-american-seeds-investigation.md, docs/sweeps/2026-11-10-language-membership-review.md,
+      sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1009']
+    reasoning: >-
+      Deferred on 2026-11-11 pending a check of each seed's Indigenous-language content, then decided on the
+      same day from that check (docs/sweeps/2026-11-11-latin-american-seeds-investigation.md). For Trueque,
+      automated screens and manual review of 17 ambiguous rows found no evidence of questions or answers in
+      another language, which is consistent with Spanish and Portuguese items but does not establish the
+      language of every one. CHOCLO's card declares Spanish only, and two screens found no
+      question that is not Spanish, which is consistent with all-Spanish questions but does not prove the
+      language of each one. The corpus documents no qualifying coverage, which establishes the absence of a
+      documented target, not the absence of any Indigenous-language text.
+
+  - id: R-2026-11-11-g
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1003", "#951", R-2026-10-30-k, R-2026-11-10-k, R-2026-11-10-u, R-2026-11-08-d]
+    question: >-
+      The scored yardstick dry run compares schemes S2 to S4 and multilingual rules M1 to M3 over the 52
+      language_specific_datasets products whose size reproduces their cap. Which multipliers and which
+      multilingual rule are adopted?
+    ruling: >-
+      None yet. The dry run is accepted as a sensitivity analysis. S3 with M2 is the leading candidate,
+      not binding scoring policy: S3 is the moderate relaxation, and M2 keeps multilingual corpora on
+      today's yardstick until per-language sizes justify something else. Unresolved profiles take the
+      least-relaxed defensible cap, with the full sensitivity range kept. The IIT Bombay comparisons for
+      SMOL and AfriDocMT stay provisional, since only three of the five can be checked. Projected
+      peer-relation breaks are not demonstrated. Before adoption, each capped product's pre-cap rung band
+      is scored, so a real increase can be told from one the rubric would prevent, and the eight products
+      set aside are implementation blockers. #951 stays held.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-dry-run.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1003']
+
+  - id: R-2026-11-11-h
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", R-2026-10-30-k, R-2026-11-10-k, R-2026-11-10-u, R-2026-11-11-g]
+    question: >-
+      The scored implementation proposal finds that under S3 with M2 nine language_specific_datasets
+      products rise and no rung band holds any of them below its new cap. Is S3 with M2 adopted as
+      scoring policy?
+    ruling: >-
+      Yes. The size caps relax by the number of confirmed yes axes in the resource profile (three, two,
+      one, none): text and parallel text by 1x, 10x, 100x and 1,000x; speech by 1x, 10x, 30x and 100x.
+      Unresolved axes earn no relaxation, and multilingual products keep today's caps (M2). The nine
+      bands are approved: Icelandic Gigaword Corpus 4, Korpus Malti 3, CorpusNos 3, Latxa Corpus 3,
+      Nepali Text Corpus 3, Khmer ASR Cultural Dataset 3, Kazakh Speech Corpus 2 4, Northern Sami web
+      corpus 2, ViXSD 2. Latxa publishes 3, the least-relaxed score, and keeps its range to 4 in the
+      evidence. The changes are made in a separate implementation PR with the revised recipe, every
+      affected peer relation and a complete score-change diff.
+    reasoning: >-
+      S3 is a moderate, defensible relaxation, and M2 avoids assigning a per-language benefit to an
+      undifferentiated multilingual corpus.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md, sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004', 'https://github.com/currentai-org/os-ai-map/pull/1005']
+
+  - id: R-2026-11-11-i
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", language_specific_datasets]
+    question: >-
+      Three rung readings turn on whether a detailed card without a paper counts as documentation and
+      whether community fine-tunes count as downstream use: Icelandic Gigaword Corpus, Kazakh Speech
+      Corpus 2 and the Khmer ASR Cultural Dataset. Which readings hold?
+    ruling: >-
+      All three read rung 4. A paper is not mandatory for a documented resource, and a community
+      fine-tune is legitimate downstream use when its attribution to the dataset is explicit and
+      verifiable. Neither is accepted merely because a generic Hugging Face tag exists.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004', 'https://github.com/currentai-org/os-ai-map/pull/1005']
+
+  - id: R-2026-11-11-j
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", language_specific_datasets]
+    question: >-
+      Nine peer relations break once the nine bands move, because the two sides now sit on different
+      yardsticks. How are they repaired?
+    ruling: >-
+      Re-point each to a same-modality, same-yardstick peer wherever a defensible comparison exists.
+      Where none exists, remove relative_to and justify the band directly from the rubric; do not invent
+      a weak comparison to preserve a link. Check both outgoing relations and references from other
+      products, including SMUGRI data and L3Cube-MahaCorpus.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004', 'https://github.com/currentai-org/os-ai-map/pull/1005']
+
+  - id: R-2026-11-11-k
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", R-2026-11-11-g, smol, bloom-library-datasets, glot500-c, bibletts, kencorpus,
+      afridocmt, smugri-data, afrivoice]
+    question: >-
+      Do the eight products set aside from the dry run block S3 with M2?
+    ruling: >-
+      No. All eight are multilingual, so M2 keeps their current yardsticks. Their five source-accuracy
+      questions (Glot500-c's size basis, Kencorpus's untranscribed audio, BibleTTS's missing total,
+      Bloom Library's conflicting speech figures, Afrivoice's unsourced 15,000 hours) go to a separate
+      re-verification pass. This does not approve their current recorded sizes or bands.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-l
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1004", glot500-c]
+    question: >-
+      Glot500-c's paper describes a 600 GB assembled corpus; its public release is 308 GB. Which does the
+      open product's size cap read?
+    ruling: >-
+      The 308 GB public release. The full corpus remains context.
+    reasoning: >-
+      Including inaccessible or nonredistributable material in an open-release size measurement would
+      misrepresent the resource available to users.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1004']
+
+  - id: R-2026-11-11-m
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", "#1004", R-2026-10-30-c, R-2026-11-08-w, R-2026-11-11-h]
+    question: >-
+      #951 was held until the language-adjusted yardsticks were adopted. Now that S3 with M2 is adopted,
+      does the hold lift?
+    ruling: >-
+      Yes, for revision. The instruction-data cap is redesigned against the adopted yardstick policy,
+      keeping human-curated data distinct from generated and translated data. #951's existing draft is
+      not merged unchanged.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-language-yardstick-implementation-proposal.md]
+    applied_in: []
+
+  - id: R-2026-11-11-n
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", R-2026-10-30-c, R-2026-11-11-m, inkuba-instruct, cendol-collection, indicalign, cidar]
+    question: >-
+      Redesigning the instruction-data cap must keep human-curated data distinct from generated and
+      translated data. Which examples count as human-authored?
+    ruling: >-
+      Authorship of the instruction and the response decides, not whether a human contributed somewhere.
+      Human-annotated task data, dictionaries or other human-made resources recast into instructions by
+      templates (Inkuba-Instruct, Cendol's templated data, IndicAlign's IndoWordNet entries) are
+      human-derived, not human-authored, and stay identifiable so they are never counted as original human
+      writing. Machine-translated examples stay translated even when people reviewed them (CIDAR's
+      roughly 9,100 pairs); its roughly 900 native Arabic grammar examples qualify only if their human
+      authorship is established. A substantially rewritten example may count as human-authored where the
+      rewriting is documented; approval, selection, minor editing or quality checking alone does not
+      convert a generated or translated example. For the dry run, split anchors is the leading candidate,
+      compared against the held draft, human-only and no cap. No instruction-data scoring policy is
+      approved by this ruling.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-instruction-cap-dry-run.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/951']
+
+  - id: R-2026-11-11-o
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: ["#951", R-2026-10-30-c, R-2026-11-11-m, R-2026-11-11-n, wangchan-thai-instruct, cendol-collection,
+      cidar, typhoon-s-sovereign-capability, wangchanx-flan]
+    question: >-
+      The four-option dry run compares the held draft (face value against generated data), split anchors,
+      human-only and no cap for the instruction-data cap. Which is adopted?
+    ruling: >-
+      Split anchors (option B). A set's cap is the higher of two: the general-scale track counts every eligible
+      example against NVIDIA's Nemotron-Post-Training-Dataset-v1 (25,659,642 examples; 5 needs 10M, 4 1M, 3
+      100k, 2 10k), and the human-authored track counts only verified human-authored pairs against
+      databricks-dolly-15k (15,011 examples written by people on both sides, a directly comparable reference
+      rather than the largest human-written set; 5 needs 10,000, 4 1,000, 3 100, 2 10). Cendol's 187 safety and
+      125 identity prompts are not counted as human-authored pairs; CIDAR's roughly 891 teacher answers stay
+      outside the verified count; Typhoon-S keeps its boundary exemption; WangchanThaiInstruct counts its 35,014
+      paper-verified pairs and its remaining card rows are unknown; WangchanX-FLAN's 12.2k pairs stay
+      human-authored but are marked as imported from WangchanThaiInstruct. The tracks are named for what they
+      count, and a set's human-authored content is distinguished from content original to it. Provenance counts
+      must reconcile with each total. Every existing score and peer relation is kept. No cap (option D) remains
+      a baseline, not policy; R-2026-10-30-c's face-value counting is replaced for instruction data.
+    reasoning: >-
+      B preserves the distinction between originally human-authored instruction data and generated,
+      translated or recast data without penalizing the one verified human-authored collection, and it sets
+      reproducible size ceilings for future datasets while keeping the substantive rubric.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-11-instruction-cap-dry-run.md, sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/951']
+
+  - id: R-2026-11-11-p
+    date: 2026-11-11
+    by: ccerv1
+    venue: pr-review
+    refs: [R-2026-11-10-s, sources/snapshots/language-codes.tsv, build/language_codes.py]
+    question: >-
+      The public repository has carried SIL's full iso-639-3.tab code table, with reference names and Part 1
+      and Part 2 equivalents, as the vocabulary build.validate checks language codes against. SIL's terms
+      bar a product from providing a means to redistribute the code set. Where does the full table live?
+    ruling: >-
+      On Artio only, inside currentai.language_representation.classification, which already holds one row per
+      code of scope individual or macrolanguage in the pinned release. The committed code table is removed.
+      The repository keeps sources/snapshots/language-codes.tsv, the codes its records use and no others,
+      each confirmed against the classification table, with ISO 639-3 credited as their source and no
+      reference names, Part 1 or Part 2 equivalents, scopes or types. A code new to the map enters through
+      build/language_codes.py --sync, which needs an OSO API key. The file's git history is not rewritten.
+    reasoning: >-
+      SIL's registrar confirmed that a table limited to the map's codes is permitted with attribution and
+      asked whether anything offers the full code set for download. The committed table did.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md, docs/reference/language-classification.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1011']
+
+  - id: R-2026-11-12-a
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, kencorpus]
+    question: >-
+      Kencorpus holds 5,601,915 words of text, 176.5 hours of audio with no transcript stated, and 27.5
+      transcribed hours in KenSpeech. Does untranscribed audio count toward the speech cap, and which modality
+      governs a corpus that holds more than one?
+    ruling: >-
+      Only transcribed hours count toward the speech cap, as the recipe states. A corpus with several modalities
+      takes the cap of whichever modality reaches the highest step. Kencorpus's text and its transcribed speech
+      each reach only the lowest step, so its capability is 1, two below WURA.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-b
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, bloom-library-datasets]
+    question: >-
+      The Bloom Library paper states 428 hours of audio in its prose and 2,873 minutes in Table 1. Which figure
+      does the record use?
+    ruling: >-
+      Table 1's 2,873 minutes (about 48 hours), which the paper's per-family mean and per-language record counts
+      corroborate. The capability stays 1.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-c
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, afrivoice, waxal, naijavoices, bibletts]
+    question: >-
+      No Afrivoice card states a product total. Does the speech cap read the sum across its separately published
+      releases, and do scripted readings count as transcribed?
+    ruling: >-
+      Yes to both. The cap reads the sum of the current, non-overlapping releases, leaving out superseded copies,
+      and scripted readings aligned to their prompts count as transcribed. The five releases hold 10,391.40
+      transcribed hours, which clears ten thousand, so Afrivoice's capability is 4. WAXAL and NaijaVoices move
+      from at to one below Afrivoice, and BibleTTS from one below to two below.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-d
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, bibletts]
+    question: >-
+      BibleTTS's paper gives aligned hours per language in Table 2 and no total. Does the sum of that table count
+      as a stated total?
+    ruling: >-
+      Yes. A total summed from one source's own per-part table counts as stated. BibleTTS's 420.3 hours keep its
+      capability at 2.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
