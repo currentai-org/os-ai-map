@@ -1,0 +1,132 @@
+product: sapiens
+openness:
+  score: 3
+  class: open_weights
+  governing_release: Sapiens2
+  components:
+    weights:
+      value: open
+      detail: 0.1B to 5B pretrained backbones and pose, segmentation, normal, pointmap and matting checkpoints on the
+        Hub, ungated
+    data:
+      value: closed
+      detail: a curated set of one billion human images, not released
+    code:
+      value: partial
+      detail: inference and per-task fine-tuning code; no pretraining code
+    license:
+    - name: Sapiens2-License
+      detail: code and weights; bars surveillance, biometric processing and re-identification, with no commercial or
+        user cap
+    context:
+      sapiens-v1:
+        value: caveat
+        detail: the superseded first-generation Sapiens checkpoints stay on the Hub under CC-BY-NC-4.0
+  confidence: medium
+  note: Sapiens2's code and weights are under Meta's Sapiens2 License, which allows commercial use but forbids surveillance,
+    biometric processing, re-identifying people and deepfakes. The billion-image pretraining set is not released, and
+    the repository carries fine-tuning code for each task but no pretraining code.
+  raw: weights:open(0.1B to 5B pretrained backbones and pose, segmentation, normal, pointmap and matting checkpoints
+    on the Hub, ungated);data:closed(a curated set of one billion human images, not released);code:partial(inference
+    and per-task fine-tuning code; no pretraining code);license:Sapiens2-License(code and weights; bars surveillance,
+    biometric processing and re-identification, with no commercial or user cap);sapiens-v1:caveat(the superseded first-generation
+    Sapiens checkpoints stay on the Hub under CC-BY-NC-4.0)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/sapiens2/main/LICENSE.md
+    shows: 'Sapiens2 License: a "non-exclusive, worldwide, non-transferable and royalty-free limited license" to use,
+      distribute and modify the Sapiens Materials, including "trained model weights"; use may not be "for purposes of
+      surveillance", "for biometric processing" or "for attempting to identify or re-identify any individual".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1c77a629ee16972ddb9844378038b20321143a6faf0cac26c2c04dc9b61c5288
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/sapiens2/main/README.md
+    shows: 'README: "A family of high-resolution transformers pretrained on 1 billion human images"; Sapiens2-0.1B to
+      5B model card; inference and training docs for pose, segmentation, normal, pointmap and matting; "This project
+      is licensed under the Sapiens2 License."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6b50f59a9f9ef2020f23f595246d42d2996feab90ac3b26be9a6b1a8edc25f4
+    establishes:
+    - weights
+    - license
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/sapiens2/main/docs/MODEL_ZOO.md
+    shows: 'Model zoo: pretrained, pose, segmentation, surface normal, pointmap and matting checkpoints, each linked
+      to a facebook/sapiens2-* repository on the Hub.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2e5ed8429d62580cc5c618963ea216e27031d89fb24ed83642757bcd1a17c9c4
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models?author=facebook&search=sapiens&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: Every facebook/sapiens2-* repository gated false with license_name sapiens2-license; the first-generation
+      facebook/sapiens-* repositories gated false and tagged cc-by-nc-4.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9cd606383259337a0dd2219f5a6bcd610306a8d1ebb63efa94155bfc0a9b14ab
+    establishes:
+    - weights
+    - license
+  - url: https://arxiv.org/abs/2604.21681
+    shows: 'Sapiens2 abstract: "we pretrain on a curated dataset of 1 billion high-quality human images"; no dataset
+      release is described.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 057d0bb6cd7c563832a1e6685804ec8aed5d06bd70ecc90f816813f5be2410a1
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/facebookresearch/sapiens2/files/main
+    shows: 'Repository tree of 331 paths: train.py and per-size train scripts for the pose and dense tasks under sapiens/pose
+      and sapiens/dense; no pretraining script.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9fb6e64e056722d58b2336a7b8d76b38c3a66bfb4c6825074af55e82ba698895
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for the ten most-downloaded Sapiens2 checkpoints, led by the
+    1B pose model. The first-generation Sapiens checkpoints are not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=sapiens&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: sapiens2-pose-1b 40,678, seg-0.4b 14,268, pose-5b 13,777, seg-1b 12,754, matting-1b 10,172, pose-0.4b 9,291,
+      pointmap-5b 5,532, seg-5b 5,128, normal-1b 4,460 and pretrain-0.4b 3,582 downloads in the trailing 30 days (119,642
+      together); the 24 sapiens2 repositories sum to 135,120.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9cd606383259337a0dd2219f5a6bcd610306a8d1ebb63efa94155bfc0a9b14ab
+capability:
+  score: 4
+  basis: feature_matrix
+  value: whole-body pose with 308 keypoints, 29-part body segmentation, surface normals, pointmaps and human matting
+    on any image of people with no training, at 1K resolution, from 0.4B to 5B parameters
+  relative_to: depth-anything
+  relation: at
+  confidence: medium
+  note: Sapiens2 returns per-pixel geometry and a foreground matte for any photo of a person without training, as Depth
+    Anything does for whole scenes. It covers human subjects only, and its pose and segmentation heads use fixed keypoint
+    and body-part sets.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/ByteDance-Seed/Depth-Anything-3/main/README.md
+      shows: 'Depth Anything 3 README: "Monocular Depth Estimation: Predicts a depth map from a single RGB image"; "Camera
+        Pose Estimation" - the no-training geometry output compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 91679cf6df290b6af439c85f29a2440ce10353a1063ae4f599e9c734ec3096a8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/sapiens2/main/README.md
+    shows: 'README vision tasks: Pose Estimation "308 whole-body keypoints", Body-Part Segmentation "29 body parts",
+      Surface Normal Estimation "per-pixel normals", Pointmap Estimation "per-pixel 3D points", Human Matting "alpha
+      matte + foreground"; all models trained at 1024x768.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6b50f59a9f9ef2020f23f595246d42d2996feab90ac3b26be9a6b1a8edc25f4

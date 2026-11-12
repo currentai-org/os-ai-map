@@ -1,0 +1,134 @@
+product: radio
+openness:
+  score: 3
+  class: open_weights
+  governing_release: C-RADIOv4
+  components:
+    weights:
+      value: open
+      detail: C-RADIOv4 SO400M and H and earlier C-RADIO checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: NV-CC-Img-Text-Dataset, about 700 million images, not released
+    code:
+      value: partial
+      detail: inference, adaptor and evaluation code; no distillation training code
+    license:
+    - name: NVIDIA-Open-Model-License
+      detail: C-RADIO weights; commercial use allowed
+    context:
+      loader-code:
+        value: caveat
+        detail: the repository and the model code on the Hub are under the NVIDIA Source Code License for RADIO, research
+          or evaluation use only
+  confidence: medium
+  note: The C-RADIO weights are under the NVIDIA Open Model License, which allows commercial use. The code that loads
+    them, in the repository and on the Hub, is under NVIDIA's Source Code License for RADIO, which allows research or
+    evaluation only. NVIDIA has released neither the 700-million-image training set nor the distillation training code.
+  raw: weights:open(C-RADIOv4 SO400M and H and earlier C-RADIO checkpoints on the Hub, ungated);data:closed(NV-CC-Img-Text-Dataset,
+    about 700 million images, not released);code:partial(inference, adaptor and evaluation code; no distillation training
+    code);license:NVIDIA-Open-Model-License(C-RADIO weights; commercial use allowed);loader-code:caveat(the repository
+    and the model code on the Hub are under the NVIDIA Source Code License for RADIO, research or evaluation use only)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/NVlabs/RADIO/main/README.md
+    shows: 'README Licensing: "Models prefixed with C-RADIO are governed by the NVIDIA Open Model License, which enables
+      commercial use cases. Models prefixed with E-RADIO and RADIO are governed by the NSCL LICENSE file, which is non-commercial.";
+      C-RADIOv4-SO400M and C-RADIOv4-H "Commercially Permissive".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6efc6fab3c8148d64a056107c3fb7d439b258040a684f8ba77c6f44a18d7e236
+    establishes:
+    - license
+    - weights
+  - url: https://raw.githubusercontent.com/NVlabs/RADIO/main/LICENSE
+    shows: 'LICENSE: "NVIDIA Source Code License for RADIO"; 3.3 Use Limitation: "The Work and any derivative works thereof
+      only may be used or intended for use non-commercially", meaning "for research or evaluation purposes only".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b3db9dbff447fb349db6612474db9e0992333d09a685697381221812c0c1965c
+    establishes:
+    - license
+  - url: https://huggingface.co/nvidia/C-RADIOv4-H/raw/main/README.md
+    shows: 'C-RADIOv4-H card: license_name nvidia-open-model-license; "This model is ready for commercial/non-commercial
+      use"; Training Dataset "NV-CC-Img-Text-Dataset", "700 Million Images".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: be08bbaf49b38c62eb8496ebfd9b92292b4258838ade3d0e13e18d86978192d7
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models?author=nvidia&search=RADIO&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: nvidia C-RADIO, C-RADIOv2, v3 and v4 repositories gated false with license_name nvidia-open-model-license;
+      RADIO-B, L, H and g tagged nvidia-source-code-license.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7fe32e582fdf4febab09e529c0cbb040246cf2a54f725b4d252c35935bdd3e75
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/nvidia/C-RADIOv4-H/raw/main/radio_model.py
+    shows: radio_model.py in the C-RADIOv4-H repository opens with "Copyright (c) 2023-2024, NVIDIA CORPORATION. All
+      rights reserved." and reserves all rights absent "an express license agreement from NVIDIA".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2be659f5cd5b9db9c49db70387b65253c74bc16b3eb86e976f0f693271d4b183
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/NVlabs/RADIO/files/main
+    shows: 'Repository tree: radio/ model and adaptor code, examples for kNN and zero-shot ImageNet evaluation, and an
+      mmseg probe; no distillation training script.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 485652a09f0a9c2ee0eee91a69e7cbb3b8908cb5ba76d435ac62fbfc46e133bc
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for the two C-RADIOv4 checkpoints and the three most-used C-RADIOv3
+    ones. Loads through PyTorch Hub fetch the same files and are counted; the non-commercial RADIO and E-RADIO models
+    are not.
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=RADIO&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: C-RADIOv4-SO400M 15,208, C-RADIOv4-H 7,991, C-RADIOv3-L 4,012, C-RADIOv3-B 3,978 and C-RADIOv3-H 3,318 downloads
+      in the trailing 30 days (34,507 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7fe32e582fdf4febab09e529c0cbb040246cf2a54f725b4d252c35935bdd3e75
+capability:
+  score: 4
+  basis: feature_matrix
+  value: image-level and dense features distilled from SigLIP2, DINOv3 and SAM3, with adaptors that reproduce each teacher,
+    including SigLIP2 text encoding for zero-shot classification on labels the user writes (83.09% ImageNet zero-shot
+    top-1 for C-RADIOv4-H)
+  relative_to: dino
+  relation: at
+  confidence: medium
+  note: Like DINOv3, C-RADIO is mainly a backbone that other models build on, and its SigLIP2 adaptor classifies images
+    against whatever labels the user types with no training. Dense tasks such as segmentation still need a trained head.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/README.md
+      shows: 'DINOv3 README: "Pretrained heads - Zero-shot tasks with dino.txt" - the open-vocabulary classification
+        and segmentation compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: da4e6e2fa1f2580be9a782338dc108ae68f98b6c9d10636583f97d8a340e664d
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/NVlabs/RADIO/main/README.md
+    shows: 'README: C-RADIOv4 adaptors "siglip2-g, dino_v3, sam3"; "The clip and siglip adaptors have the additional
+      functionality of supporting tokenization and language encoding. Refer to examples/zero_shot_imagenet.py".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6efc6fab3c8148d64a056107c3fb7d439b258040a684f8ba77c6f44a18d7e236
+  - url: https://huggingface.co/nvidia/C-RADIOv4-H/raw/main/README.md
+    shows: 'C-RADIOv4-H card benchmark table: ImageNet zero-shot 83.09, kNN 86.68, ADE20k semantic segmentation 55.20
+      mIoU; teachers SigLIP2-g, DINOv3-7B and SAM3.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: be08bbaf49b38c62eb8496ebfd9b92292b4258838ade3d0e13e18d86978192d7
