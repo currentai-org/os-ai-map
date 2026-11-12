@@ -45,42 +45,53 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: Adoption is measured as Hugging Face downloads for the single declared checkpoint, MiniMax-M3, the
-    release the product records as currently governing. MiniMax is also served through OpenRouter and offered
+  note: Adoption is measured as trailing-30-day Hugging Face downloads summed across the two declared checkpoints,
+    MiniMax-M3 and its successor MiniMax-M3.1-Flash. MiniMax is also served through OpenRouter and offered
     free inside coding tools such as Kilo Code, channels a download count does not capture.
-  last_verified: '2026-11-08'
-  derived_from:
-    observation_snapshot_id: d16c5435f7d3e101bf6430dcfe978d1bf623c8d0a130082636c90f19d5c74f06
-    source_run_id: 0fe7a437-266f-46f5-8950-81c9d83aef8f
-    route_id: huggingface_model.downloads_30d
-    measured_level: 3
-    measurement_as_of: '2026-11-08'
   sources:
   - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3
-    shows: 169,325 downloads in the trailing 30 days for MiniMaxAI/MiniMax-M3, the single declared
-      artifact
-    accessed: '2026-08-13'
+    shows: The model API reports downloads of 139,308 in the trailing 30 days for MiniMaxAI/MiniMax-M3.
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: c5804063a0f65eed5245aebcab37289d78eb2c6e861e9918754e2129a34e4642
-  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
-    shows: ~693,331 downloads last month on the official HF model page
-    accessed: '2026-06-04'
+    content_sha256: 85fef37644b28615f64d8f6b09b5d8f3e8c3f456a803776ae544c885103be4a7
+  - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3.1-Flash
+    shows: The model API reports downloads of 59,746 in the trailing 30 days for MiniMaxAI/MiniMax-M3.1-Flash;
+      with M3, 199,054 across the two declared checkpoints.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5585c5829c5518a2dfff3e436b5fcce1593c604fe51046b816dc56a1b7431b93
 capability:
   score: 5
   basis: benchmark
-  basis_detail: SWE-bench Verified
-  value: SWE-bench Verified 80.5%, SWE-bench Pro 59.0%, MMMU-Pro 78.1%, Video-MME (w/ sub) 85.4%, Claw-Eval
-    74.5%
-  confidence: medium
-  note: MiniMax-M3 reports 80.5% on SWE-bench Verified and 59.0% on SWE-bench Pro, alongside multimodal
-    and agentic results, which puts it among the leading open-weight agentic models. The figures are self-reported,
-    run on MiniMax's own infrastructure, and not independently audited.
+  basis_detail: Artificial Analysis Intelligence Index v5.0.1
+  value: 'Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: MiniMax-M3.1-Flash 29, sixth of
+    27 large open-weight models (class median 23), evaluated as a reasoning model with no effort variant
+    listed; MiniMax-M3 19, 17th of 27. Read on the same version and date: GLM-5.3 (Max) 32, MiMo-V2.6-Pro
+    30, Mistral Large 4 (High) 26.'
+  confidence: high
+  note: MiniMax-M3.1-Flash, the October 2026 successor built on MiniMax-M3 at the same 428-billion-parameter
+    scale, scores 29 on version 5.0.1 of Artificial Analysis's Intelligence Index, sixth among large open-weight
+    models and level with MiMo-V2.6-Pro. M3 itself scores 19, below the median for its class, so it is the
+    newer release that keeps the family among the leading open-weight models.
   last_verified: '2026-11-12'
   sources:
-  - url: https://huggingface.co/MiniMaxAI/MiniMax-M3/raw/main/.eval_results/minimax-m3.yaml
-    shows: MiniMax's evaluation file in the M3 repo, "Extracted from the model card benchmark graph", records
-      "SWE-Bench Verified - 80.5", "SWE-Bench Pro - 59.0", "MMMU-Pro - 78.1" and "Claw-Eval - 74.5", run
-      "using Claude Code as the scaffolding".
+  - url: https://artificialanalysis.ai/models/minimax-m3-1-flash
+    shows: 'Index v5.0.1 page: "MiniMax-M3.1-Flash scores 29 on the Artificial Analysis Intelligence Index,
+      placing it well above average among comparable models (median: 23)", ranked "# 6 / 27" among open
+      weights models of the same size class (Large, over 150B parameters).'
     accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 538614aa4a8511b61624f107aed90c28cb88f1f1ca7841279c7b49a06aef011a
+    content_sha256: 02334cec281a27f4db2c0999453d03a248646d218dbb05fdc1f2710331d6fe41
+  - url: https://artificialanalysis.ai/models/minimax-m3
+    shows: 'Index v5.0.1 page for the predecessor: "MiniMax-M3 scores 19 on the Artificial Analysis Intelligence
+      Index, placing it below average among comparable models (median: 23)", ranked "# 17 / 27" among open
+      weights models of the same size class (Large, over 150B parameters).'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4d571d95094833aa058500216af9205d2ac7990c52582d49b107f2b4967cfc44
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash/raw/main/README.md
+    shows: 'Model card: "Building on MiniMax-M3, M3.1-Flash improves task performance and inference efficiency",
+      with "Parameters: Approximately 428B total; 23B activated per token", the same scale as M3.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c49a7cca92321066bc20e25ce720260242dcb112baf1d09c7c213899e39d2151
