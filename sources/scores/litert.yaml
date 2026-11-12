@@ -48,14 +48,27 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: PyPI downloads of ai-edge-litert, the Python package. Android apps take LiteRT from Google's Maven repository,
-    which publishes no count, so this is a floor on use.
+  note: PyPI downloads of the two Python packages, ai-edge-litert and tflite-runtime, the TensorFlow Lite runtime
+    package it replaced, which still sees heavy use. Android apps, LiteRT's main audience, take it from Google's
+    Maven repository, and Maven publishes no download count, so the Android channel is left out and this is a floor
+    on use.
   sources:
   - url: https://pypistats.org/api/packages/ai-edge-litert/recent
     shows: '"last_month":467037 downloads for ai-edge-litert.'
     accessed: '2026-11-12'
     http_status: 200
     content_sha256: 008c00bdc56d08c7d496e09ae1f930a0bfd226149b8a98766427c9a3c90cbf26
+  - url: https://pypistats.org/api/packages/tflite-runtime/recent
+    shows: '"last_month":330766 downloads for tflite-runtime.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6b57eb74d04d64d4227b4cc4453247d44f399d5ed640145af40975a1549ab568
+  - url: https://pypi.org/pypi/tflite-runtime/json
+    shows: 'PyPI metadata for tflite-runtime 2.14.0: summary "TensorFlow Lite is for mobile and embedded devices.",
+      homepage tensorflow.org/lite, the same summary and homepage ai-edge-litert carries; last upload 2023-10-03.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 34a9ff9ccf8a2bb2e375c7ca56a5095ba99ff3e42bfc3567f3f5a5f201163556
 capability:
   score: 4
   basis: feature_matrix

@@ -34,11 +34,10 @@ missing even though LiteRT-LM, the layer built on it, was already on the map.
 
 ## Open accelerator designs
 
-The RISC-V accelerator topic had no home: neither hardware category admits a design that nobody
-sells. It is proposed as the preliminary category `open_accelerator_designs`, with an 11-row seed
-in `sources/registry/open_accelerator_designs.yaml`. The category's `comments` record the
-membership test, the neighbors, the boundary and excluded candidates, and the license strings
-that need a tier ruling before promotion.
+The RISC-V accelerator topic has no home on the map: neither hardware category admits a design
+that nobody sells. It is proposed as a preliminary category in a separate PR, because it raises
+policy questions (an openness ladder for designs, license tiers, inclusion and staleness) that
+should not hold up these five products.
 
 ## How the sources were read
 
@@ -48,7 +47,28 @@ URLs here, so their `http_status` and `content_sha256` come from a plain `curl` 
 raw files are static, so the digest should reproduce under `check_refetch`. Every other source
 (PyPI, pypistats, Docker Hub, vendor documentation) was fetched with `build.fetch_source`.
 Adoption levels were set from hand-read counts and are held in `sources/verification_queue.yaml`
-for the scheduled reconciliation to date. Shelley's adoption is left null: it has no package
-registry channel, and no star count could be fetched here.
+for the scheduled reconciliation to date.
+
+- **tinygrad, RamaLama**: PyPI downloads a month, floors because both also install from source
+  or from distribution packages.
+- **LiteRT**: PyPI downloads of `ai-edge-litert` plus `tflite-runtime`, the TensorFlow Lite
+  runtime package it replaced (no release since 2023-10, still about 330,000 downloads a month).
+  Android apps take LiteRT from Google's Maven repository, which publishes no count, so the band is
+  a floor.
+- **Shelley**: GitHub stars (718), the `stars_fallback` route. Its tap is outside Homebrew's
+  official index, the only one with install analytics, and release-download counts were not
+  readable from here. The weekly release-counter refresh will start reading its releases once it
+  is on the map, which gives a monthly increment to prefer over stars.
+- **Docker Model Runner**: GitHub stars (662), the `stars_fallback` route. The Docker Hub image's
+  2.46 million pulls are a lifetime total for the Linux Docker Engine channel only. Most use comes
+  through Docker Desktop, which publishes nothing, and Docker has published no user figure. So the
+  pull count is a minority channel, and banding on it would be the substitution
+  `docs/reference/adoption.md` ("The mirror trap") rules out. It is kept as context.
+
+The two star counts were read from the github.com repository pages through a separate web
+reader, because github.com is refused to this environment's fetcher. That reading produces no
+digest, so neither score file cites it (`tests/test_digest_ratchet.py`); the level rests on the
+stars route the warehouse recomputes from the declared GitHub artifact, and the hold stays until
+that measurement confirms it.
 
 Country ledger: `countries/batch-01.jsonl`.
