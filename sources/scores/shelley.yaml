@@ -1,0 +1,93 @@
+product: shelley
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+    free_text:
+    - no-feature-gated-core
+  confidence: high
+  note: Shelley is Apache-2.0 licensed, and the repository publishes the whole agent, Go server and web interface
+    alike. Contributors sign a CLA, but nothing in the agent is held back for a paid tier; exe.dev's hosting is
+    a separate service.
+  raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/boldsoftware/shelley/main/LICENSE
+    shows: The LICENSE file reads "Copyright 2026 Bold Software, Inc." and "Licensed under the Apache License, Version
+      2.0".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a260403cc440e7650f29216546ff1b203035becfa6ecce6cec95be8fd35a54ec
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md
+    shows: The README says "Shelley is Apache licensed. We require a CLA for contributions." and documents building
+      the whole agent from source with make; no paid tier or gated feature is mentioned.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal used, and a star is not a use. Shelley ships as release binaries, a cask
+    in Bold Software's own Homebrew tap and a preinstall on exe.dev machines, and none of those publishes an install
+    count.
+  sources:
+  - url: https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md
+    shows: The README offers pre-built binaries from the GitHub releases page, "brew install --cask boldsoftware/tap/shelley",
+      and a build from source; no package registry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a
+capability:
+  score: 4
+  basis: feature_matrix
+  value: web and mobile coding agent with multiple simultaneous conversations; image, audio and screen-cast input;
+    Chrome DevTools browser tools; subagents and asynchronous tool calls; skills and MCP; profiles that preset tools
+    and system prompt; hosted or local models; CLI client for scripting; no built-in plan mode, permission system
+    or sandbox; no published benchmark result
+  relative_to: openhands
+  relation: one_below
+  confidence: medium
+  note: Shelley covers what a coding agent needs and goes past a terminal agent with its web interface, multimodal
+    input and browser tools. Like Pi, it runs with the user's own permissions and leaves sandboxing to the user,
+    and it publishes no benchmark, so it sits a step below OpenHands, which runs agents in sandboxed backends.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md
+      shows: The OpenHands README still leads with "Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or
+        any ACP-compatible agent across local, remote, and cloud backends" and offers running agents "in Docker
+        containers, on VMs, or within your company infrastructure". Shelley has no sandboxed backend of its own,
+        so it stays one step behind.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: eca2b7026190577215e9967cc6ba69ff6ed3219d05f2a48a01d4ab590fa6a38a
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://shelley.dev/
+    shows: The documentation site lists "Multiple Simultaneous Conversations", "Audio and Screen Cast Input", "Shelley
+      has a subagent tool", and browser tools that "browse web pages, take screenshots, execute JavaScript"; the
+      FAQ answers "Does Shelley support skills and MCP? Yes.", "Is there a plan mode? Not built-in", and says Shelley
+      "is analogous to Claude Code's --dangerously-skip-permissions".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 96bcc4f900974d793f759bf82b292200e66229e64de58b66de656b464727b96f
+  - url: https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md
+    shows: The README describes "a mobile-friendly, web-based, multi-conversation, multi-modal, multi-model, single-user
+      coding agent" that "does not come with authorization or sandboxing".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a
