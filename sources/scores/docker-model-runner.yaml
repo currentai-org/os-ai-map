@@ -1,0 +1,87 @@
+product: docker-model-runner
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+    free_text:
+    - no-feature-gated-core
+  confidence: high
+  note: Docker Model Runner is Apache-2.0 licensed, and the repository holds the inference daemon, the model CLI
+    and the standalone dmr binary, which runs without Docker installed. Docker Desktop, one of the ways it ships,
+    is proprietary, but no Model Runner feature is held back for it.
+  raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/docker/model-runner/main/LICENSE
+    shows: The LICENSE file is the Apache License text, "Version 2.0, January 2004".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 82475da7d431fdba7b42eccc27aec30c58d8272406071572a05090bfebee81bd
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/docker/model-runner/main/README.md
+    shows: The README says the package "supports the Docker Model Runner in Docker Desktop, Docker Engine, and as
+      the standalone `dmr` binary (no Docker installation required)", and that `dmr` "bundles both the inference
+      daemon and the full model management CLI".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 04f109743ba2b00f41062b41e85ec8176db5a91ac85c50f372cd48b2a4cced0d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal used, and a star is not a use. Most people get Model Runner inside Docker
+    Desktop, which publishes no count, and Docker has published no user figure. The docker/model-runner image is
+    only the Linux Docker Engine channel, and its pull count is a lifetime total that also counts updates, so it
+    is kept as context rather than banded.
+  sources:
+  - url: https://hub.docker.com/v2/repositories/docker/model-runner/
+    shows: 'Context, not the basis. Docker Hub API record for docker/model-runner: "pull_count": 2460668 since
+      "date_registered": "2025-05-12", a lifetime total.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2a7240f9983aceb4f9bba18f54eacb29e8c36929b45f065655af3e0499c0494a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Local model serving over OpenAI- and Ollama-compatible APIs; llama.cpp (GGUF) as the default engine on
+    CPU, CUDA, ROCm, Vulkan, Apple Silicon and Adreno, with vLLM and Diffusers engines on Linux NVIDIA; pull and
+    push models through Docker Hub, OCI registries and Hugging Face; GGUF and Safetensors packaged as OCI artifacts;
+    Compose and Testcontainers integration; single-node rather than distributed serving.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Docker Model Runner sits two tiers below vLLM, level with Lemonade and llamafile among the local runners.
+    It can hand a model to vLLM, but it adds no parallelism or multi-node serving of its own; what it adds is distributing
+    models as OCI artifacts through the Docker toolchain.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'vLLM README: datacenter serving with "Tensor, pipeline, data, expert, and context parallelism for
+        distributed inference". Docker Model Runner serves one machine and uses vLLM only as an optional engine
+        on Linux NVIDIA, so it stays two steps behind.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://docs.docker.com/ai/model-runner/
+    shows: The docs list "Serve models on OpenAI and Ollama-compatible APIs", "Support for llama.cpp, vLLM, and
+      Diffusers inference engines (vLLM and Diffusers on Linux with NVIDIA GPUs)", "Package GGUF and Safetensors
+      files as OCI Artifacts", and say Docker Engine "Supports CPU, NVIDIA (CUDA), AMD (ROCm), and Vulkan backends".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2c944f1a16101f21e3c49b33f1a9eaf4f03c8891379687e1cfe9484d459bf84e

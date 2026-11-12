@@ -1,0 +1,70 @@
+name: huggingface
+
+# Publish the map as a Hugging Face dataset when a release is tagged. The tag is cut by the
+# publish-release skill on a reviewed, merged commit; this exports that commit and tags the
+# dataset with the same vX.Y.Z, so a dataset revision and a repo release always name the same
+# data.
+#
+# build/export_hf.py carries the safeguards, so this file stays thin:
+#   - it publishes only to RELEASE_REPO_ID, only from the vX.Y.Z tag, and only to a public dataset
+#     that already exists (create it once by hand under the organization);
+#   - it rebuilds every earlier release tag and refuses history it cannot verify;
+#   - a re-run is safe: a tag already holding this release is a no-op, and a tag holding anything
+#     else is refused, never moved.
+#
+# Secrets: HF_TOKEN, a fine-grained Hugging Face token with write access to the release dataset
+# only (and to the rehearsal dataset, if one is used).
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      rehearse_repo:
+        description: >-
+          Rehearse against this PRIVATE dataset (ORG/NAME) instead of publishing: publish under
+          a fresh rehearsal tag, publish again, and require the second run to change nothing.
+          Leave empty to re-publish a release, running the workflow from its tag.
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: huggingface
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history and tags: every release tag is rebuilt in its own worktree, and
+          # build.freshness_payload dates score files from their commits.
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Validate sources
+        run: uv run python -m build.validate
+      - name: Export and publish to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          REHEARSE_REPO: ${{ inputs.rehearse_repo }}
+        run: |
+          if [ -n "$REHEARSE_REPO" ]; then
+            uv run python -m build.export_hf --rehearse --repo-id "$REHEARSE_REPO"
+          else
+            uv run python -m build.export_hf --push
+          fi
+      - name: Summary
+        if: always()
+        run: |
+          [ -f dist/hf/manifest.json ] || exit 0
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat dist/hf/manifest.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

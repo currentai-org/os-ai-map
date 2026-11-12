@@ -88611,6 +88611,138 @@
           }
         },
         {
+          "slug": "litert",
+          "product": "LiteRT",
+          "org_slug": "google",
+          "org": "Google",
+          "type": "software",
+          "description": "LiteRT is Google's on-device runtime for machine learning and generative AI, and the successor to TensorFlow Lite. It runs converted PyTorch, TensorFlow and JAX models on Android, iOS, the web, desktop and IoT devices, choosing a CPU, GPU or NPU accelerator automatically, with NPUs from Google Tensor, Qualcomm, MediaTek, Intel and others behind one API. LiteRT-LM, which runs language models on device, is built on it.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "LiteRT is Apache-2.0 licensed, and the repository holds the runtime, its accelerator layers and the guide for building an NPU backend outside it. A chipmaker's own NPU SDK, such as Qualcomm's, carries that vendor's terms, but nothing in LiteRT itself is gated.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT/main/LICENSE",
+                "shows": "The LICENSE file is the Apache License text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT/main/README.md",
+                "shows": "The README states \"LiteRT is licensed under the Apache-2.0 License\" and links a \"Build Your Own NPU Backend\" guide; no paid tier or gated feature is described.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "0f0c478392a4334fbf0d69949f6137c011f1d8f0a9f0d3cd63e4c334325a507a",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/ai-edge-litert/json",
+                "shows": "PyPI metadata for ai-edge-litert 2.3.0 carries the classifier \"License :: OSI Approved :: Apache Software License\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "96042a5ae85635056530231af561ac350fa919fbefdfd3b9f05f102e9607bcdd",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "PyPI downloads of the two Python packages, ai-edge-litert and tflite-runtime, the TensorFlow Lite runtime package it replaced, which still sees heavy use. Android apps, LiteRT's main audience, take it from Google's Maven repository, and Maven publishes no download count, so the Android channel is left out and this is a floor on use.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/ai-edge-litert/recent",
+                "shows": "\"last_month\":467037 downloads for ai-edge-litert.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "008c00bdc56d08c7d496e09ae1f930a0bfd226149b8a98766427c9a3c90cbf26"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/tflite-runtime/recent",
+                "shows": "\"last_month\":330766 downloads for tflite-runtime.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "6b57eb74d04d64d4227b4cc4453247d44f399d5ed640145af40975a1549ab568"
+              },
+              {
+                "url": "https://pypi.org/pypi/tflite-runtime/json",
+                "shows": "PyPI metadata for tflite-runtime 2.14.0: summary \"TensorFlow Lite is for mobile and embedded devices.\", homepage tensorflow.org/lite, the same summary and homepage ai-edge-litert carries; last upload 2023-10-03.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "34a9ff9ccf8a2bb2e375c7ca56a5095ba99ff3e42bfc3567f3f5a5f201163556"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "On-device execution with automatic accelerator selection and asynchronous execution (Compiled Model API); CPU through XNNPack, GPU through ML Drift over OpenCL, OpenGL, Metal and WebGPU; NPUs from Google Tensor, Qualcomm, MediaTek, Intel, Broadcom and Samsung S.LSI behind one API; Android, iOS, Linux, macOS, Windows, web and IoT targets; converter and quantizer toolchain.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "LiteRT sits a tier below vLLM, level with ExecuTorch, its closest peer: both run converted models on phone, desktop and embedded silicon, and LiteRT's single NPU API covers a comparable spread of chip vendors. It runs models on a device rather than serving them with batching, parallelism and a multi-tenant API.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "vLLM README: datacenter serving with \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\". LiteRT executes models on one device and has no serving layer, so it stays one step behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT/main/README.md",
+                "shows": "The README lists the \"Compiled Model API\" with \"automated accelerator selection\" and \"true asynchronous execution\", \"Unified NPU Acceleration\", \"GPU Acceleration via ML Drift\", CPU via XNNPack, and a platform table covering Android (Broadcom, Google Tensor, Intel, MediaTek, Qualcomm, S.LSI NPUs), iOS, Linux, macOS, Windows, Web and IoT.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "0f0c478392a4334fbf0d69949f6137c011f1d8f0a9f0d3cd63e4c334325a507a"
+              }
+            ]
+          },
+          "overall_score": 3.5,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 3.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from hand-read PyPI downloads of ai-edge-litert and tflite-runtime, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "TensorFlow Lite was renamed LiteRT, and the .tflite model format carries over. LiteRT-LM, the language-model layer built on this runtime, is its own product on the map."
+        },
+        {
           "slug": "rtp-llm",
           "product": "RTP-LLM",
           "org_slug": "alibaba-cloud",
@@ -91081,6 +91213,232 @@
               }
             ]
           }
+        },
+        {
+          "slug": "docker-model-runner",
+          "product": "Docker Model Runner",
+          "org_slug": "docker",
+          "org": "Docker",
+          "type": "software",
+          "description": "Docker Model Runner pulls, runs and serves AI models with Docker's tooling, from Docker Hub, any OCI registry or Hugging Face. It serves models over OpenAI- and Ollama-compatible APIs, uses llama.cpp by default with vLLM and Diffusers as alternative engines, and packages GGUF and Safetensors files as OCI artifacts. It ships inside Docker Desktop and Docker Engine, and as a standalone dmr binary.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "Docker Model Runner is Apache-2.0 licensed, and the repository holds the inference daemon, the model CLI and the standalone dmr binary, which runs without Docker installed. Docker Desktop, one of the ways it ships, is proprietary, but no Model Runner feature is held back for it.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/docker/model-runner/main/LICENSE",
+                "shows": "The LICENSE file is the Apache License text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "82475da7d431fdba7b42eccc27aec30c58d8272406071572a05090bfebee81bd",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/docker/model-runner/main/README.md",
+                "shows": "The README says the package \"supports the Docker Model Runner in Docker Desktop, Docker Engine, and as the standalone `dmr` binary (no Docker installation required)\", and that `dmr` \"bundles both the inference daemon and the full model management CLI\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "04f109743ba2b00f41062b41e85ec8176db5a91ac85c50f372cd48b2a4cced0d",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "GitHub stars are the only signal used, and a star is not a use. Most people get Model Runner inside Docker Desktop, which publishes no count, and Docker has published no user figure. The docker/model-runner image is only the Linux Docker Engine channel, and its pull count is a lifetime total that also counts updates, so it is kept as context rather than banded.",
+            "sources": [
+              {
+                "url": "https://hub.docker.com/v2/repositories/docker/model-runner/",
+                "shows": "Context, not the basis. Docker Hub API record for docker/model-runner: \"pull_count\": 2460668 since \"date_registered\": \"2025-05-12\", a lifetime total.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2a7240f9983aceb4f9bba18f54eacb29e8c36929b45f065655af3e0499c0494a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Local model serving over OpenAI- and Ollama-compatible APIs; llama.cpp (GGUF) as the default engine on CPU, CUDA, ROCm, Vulkan, Apple Silicon and Adreno, with vLLM and Diffusers engines on Linux NVIDIA; pull and push models through Docker Hub, OCI registries and Hugging Face; GGUF and Safetensors packaged as OCI artifacts; Compose and Testcontainers integration; single-node rather than distributed serving.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Docker Model Runner sits two tiers below vLLM, level with Lemonade and llamafile among the local runners. It can hand a model to vLLM, but it adds no parallelism or multi-node serving of its own; what it adds is distributing models as OCI artifacts through the Docker toolchain.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "vLLM README: datacenter serving with \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\". Docker Model Runner serves one machine and uses vLLM only as an optional engine on Linux NVIDIA, so it stays two steps behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://docs.docker.com/ai/model-runner/",
+                "shows": "The docs list \"Serve models on OpenAI and Ollama-compatible APIs\", \"Support for llama.cpp, vLLM, and Diffusers inference engines (vLLM and Diffusers on Linux with NVIDIA GPUs)\", \"Package GGUF and Safetensors files as OCI Artifacts\", and say Docker Engine \"Supports CPU, NVIDIA (CUDA), AMD (ROCm), and Vulkan backends\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2c944f1a16101f21e3c49b33f1a9eaf4f03c8891379687e1cfe9484d459bf84e"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read GitHub star count for docker/model-runner, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Docker Desktop, which bundles Model Runner on macOS and Windows, is proprietary, but the runner, its CLI and the standalone binary are all in the Apache-2.0 repository. The 2026-09-26 model_hubs sweep routed it to a runtime category. It is filed here rather than in deployment, beside Ollama, because deployment bands capability on isolation strength and this is a model server."
+        },
+        {
+          "slug": "ramalama",
+          "product": "RamaLama",
+          "org_slug": "containers",
+          "org": "Containers",
+          "type": "software",
+          "description": "RamaLama runs and serves AI models inside OCI containers, so the host needs no AI-specific setup: it detects the GPU and pulls a matching accelerated image for CUDA, ROCm, Intel, Ascend, Moore Threads, Vulkan or Apple Silicon. Models come from Hugging Face, ModelScope, Ollama or any OCI registry and are handled like container images, and they run in rootless containers with no network access by default. Its commands also serve a REST API, convert models to OCI images, build RAG data and benchmark models.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "RamaLama is MIT licensed, and the repository holds the whole tool and the container images it pulls. Nothing is held back for a paid tier.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/containers/ramalama/main/LICENSE",
+                "shows": "The LICENSE file reads \"MIT License\" and \"Copyright (c) 2024 Eric Curtin\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2ed5bb5fb48a5300978aaa22ff109631d1df9c83dfcef14858b643f8453c2308",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/containers/ramalama/main/README.md",
+                "shows": "The README calls RamaLama \"an open-source tool that simplifies the local use and serving of AI models\" and describes no paid tier or gated feature.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "141bf1fa3b0bd611deaabe5517706cdc4ad4aaa8804b660a7b64188970075f95",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/ramalama/json",
+                "shows": "PyPI metadata for ramalama 0.26.0 declares \"license\": \"MIT\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "15423cd790e3410596cd43fdf32b8af38d38987cc916d788f491ca425ef5ff40",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "PyPI downloads of ramalama. Fedora's package, the macOS installer and the install script are not counted, so this is a floor on use.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/ramalama/recent",
+                "shows": "\"last_month\":2575 downloads for ramalama.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b31a58a6cc3707b2f25492ec4509425421c9b4d4b4a5e6729f0f78805f2faa03"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Container-isolated local serving: GPU detection pulls accelerated images (CUDA, ROCm, Intel GPU, Ascend, MUSA, Vulkan, Asahi); llama.cpp and vLLM in containers, MLX on macOS; Hugging Face, ModelScope, Ollama and OCI transports; REST serving, chat, RAG, conversion to OCI images, benchmarking and perplexity; rootless containers with networking off; single-node.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "RamaLama sits two tiers below vLLM, level with Docker Model Runner and Lemonade. It runs llama.cpp or vLLM inside a container rather than adding serving parallelism of its own; its distinguishing work is hardware detection and isolating the model from the host.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "vLLM README: datacenter serving with \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\". RamaLama runs one model on one machine, with vLLM as one of the engines it can containerize, so it stays two steps behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/containers/ramalama/main/README.md",
+                "shows": "The README lists accelerated images for HIP, CUDA, Asahi, Intel GPU, Ascend and MUSA devices, an \"MLX Runtime (macOS only)\", transports for HuggingFace, ModelScope, Ollama and OCI Container Registries, the commands ramalama-serve, ramalama-rag, ramalama-convert, ramalama-bench and ramalama-perplexity, and says \"the process running the model (llama.cpp or vLLM)\" is isolated from the host with --network=none.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "141bf1fa3b0bd611deaabe5517706cdc4ad4aaa8804b660a7b64188970075f95"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of ramalama, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Maintained in the containers GitHub organization alongside Podman. Fedora packages it, and a macOS installer and an install script are offered as well, so PyPI is only one of several channels."
         }
       ]
     },
@@ -110749,6 +111107,120 @@
               }
             ]
           }
+        },
+        {
+          "slug": "shelley",
+          "product": "Shelley",
+          "org_slug": "bold-software",
+          "org": "Bold Software",
+          "type": "software",
+          "description": "Shelley is a web-based coding agent from Bold Software, the company behind exe.dev, built to be used from a phone as easily as from a desktop. It runs several conversations at once, takes screenshots, audio and screen recordings as input, drives a browser through the Chrome DevTools Protocol, and can hand work to subagents. It ships as a single Go binary that works with hosted or local models, and it has no built-in authorization or sandbox: the user supplies both.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "Shelley is Apache-2.0 licensed, and the repository publishes the whole agent, Go server and web interface alike. Contributors sign a CLA, but nothing in the agent is held back for a paid tier; exe.dev's hosting is a separate service.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/LICENSE",
+                "shows": "The LICENSE file reads \"Copyright 2026 Bold Software, Inc.\" and \"Licensed under the Apache License, Version 2.0\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a260403cc440e7650f29216546ff1b203035becfa6ecce6cec95be8fd35a54ec",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md",
+                "shows": "The README says \"Shelley is Apache licensed. We require a CLA for contributions.\" and documents building the whole agent from source with make; no paid tier or gated feature is mentioned.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "GitHub stars are the only signal used, and a star is not a use. Shelley ships as release binaries, a cask in Bold Software's own Homebrew tap and a preinstall on exe.dev machines, and none of those publishes an install count.",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md",
+                "shows": "The README offers pre-built binaries from the GitHub releases page, \"brew install --cask boldsoftware/tap/shelley\", and a build from source; no package registry.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "web and mobile coding agent with multiple simultaneous conversations; image, audio and screen-cast input; Chrome DevTools browser tools; subagents and asynchronous tool calls; skills and MCP; profiles that preset tools and system prompt; hosted or local models; CLI client for scripting; no built-in plan mode, permission system or sandbox; no published benchmark result",
+            "relative_to": "openhands",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Shelley covers what a coding agent needs and goes past a terminal agent with its web interface, multimodal input and browser tools. Like Pi, it runs with the user's own permissions and leaves sandboxing to the user, and it publishes no benchmark, so it sits a step below OpenHands, which runs agents in sandboxed backends.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md",
+                  "shows": "The OpenHands README still leads with \"Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud backends\" and offers running agents \"in Docker containers, on VMs, or within your company infrastructure\". Shelley has no sandboxed backend of its own, so it stays one step behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "eca2b7026190577215e9967cc6ba69ff6ed3219d05f2a48a01d4ab590fa6a38a"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://shelley.dev/",
+                "shows": "The documentation site lists \"Multiple Simultaneous Conversations\", \"Audio and Screen Cast Input\", \"Shelley has a subagent tool\", and browser tools that \"browse web pages, take screenshots, execute JavaScript\"; the FAQ answers \"Does Shelley support skills and MCP? Yes.\", \"Is there a plan mode? Not built-in\", and says Shelley \"is analogous to Claude Code's --dangerously-skip-permissions\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "96bcc4f900974d793f759bf82b292200e66229e64de58b66de656b464727b96f"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md",
+                "shows": "The README describes \"a mobile-friendly, web-based, multi-conversation, multi-modal, multi-model, single-user coding agent\" that \"does not come with authorization or sandboxing\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a"
+              }
+            ]
+          },
+          "overall_score": 3.1,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 3.1,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read GitHub star count for boldsoftware/shelley, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Built for exe.dev virtual machines but runs anywhere. It grew out of Bold Software's earlier coding agent, Sketch. A release is cut automatically on every commit to main, and contributions require a CLA."
         }
       ]
     },
@@ -132910,6 +133382,123 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-06"
           }
+        },
+        {
+          "slug": "tinygrad",
+          "product": "tinygrad",
+          "org_slug": "tiny-corp",
+          "org": "tiny corp",
+          "type": "software",
+          "description": "tinygrad is a deep learning framework from tiny corp, pitched between PyTorch and micrograd in size. It pairs a tensor library with autograd and nn, optim and dataset modules for training, and its own IR and compiler fuse and lower kernels that a JIT captures and replays. The whole compiler is meant to be read and changed, and it runs on CPU, OpenCL, Metal, CUDA, AMD, NVIDIA, Qualcomm and WebGPU backends.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "tinygrad is MIT licensed, and the repository publishes the whole framework, compiler and device runtimes included. No paid tier or license key gates any of it; tiny corp's business is selling hardware.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/tinygrad/tinygrad/master/LICENSE",
+                "shows": "The LICENSE file is the MIT License text under \"Copyright (c) 2024, the tiny corp\": \"Permission is hereby granted, free of charge, to any person obtaining a copy\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "00146150f1082f320d608ba481acc3fbfacf8a9914354c2c96b6f44719d5e977",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/tinygrad/tinygrad/master/README.md",
+                "shows": "The README calls tinygrad \"an end-to-end deep learning stack\" of tensor library, IR and compiler, JIT and nn/optim/datasets, says \"the entire compiler and IR are visible and hackable\", and describes no paid tier or gated feature.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c20592a2417b38fd9aa521a0daf14a532bcdcadbcdad07f9a486ec3de315acc2",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/tinygrad/json",
+                "shows": "PyPI metadata for tinygrad 0.14.0 declares \"license_expression\": \"MIT\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "79f60721e46a67c6e6ebe7c828dc12540effdfaab26a64f04a642f8c26c80aa4",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "PyPI downloads of tinygrad. The README recommends installing from source or straight from the repository, so the package count is a floor on use rather than a measure of it.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/tinygrad/recent",
+                "shows": "\"last_month\":28545 downloads for tinygrad.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "d6502602668464c0f19d09caf40447e14c386792861500977211a30c558d31b3"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Tensor library with autograd; its own IR and kernel compiler with fusion, scheduling and BEAM search; TinyJit graph capture and replay; nn, optim and datasets for training; backends for CPU, OpenCL, Metal, CUDA, AMD, NV, QCOM and WebGPU, with about 25 low-level ops needed for a new one; fewer functional transforms than JAX (no full vmap or pmap).",
+            "relative_to": "pytorch",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "tinygrad trains and runs models end to end on its own compiler across eight families of hardware, which puts it among the foundational frameworks. It sits a step below PyTorch, whose distributed training and ecosystem it does not match, and its own README says it has fewer functional transforms than JAX.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/README.md",
+                  "shows": "The PyTorch README still describes \"Tensor computation (like NumPy) with strong GPU acceleration\" and \"Deep neural networks built on a tape-based autograd system\", and its build instructions carry a torch.distributed option. tinygrad matches the first two and has no distributed training layer, so it stays one step behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "3ad49faff26017c7f237596385e355b4aa1c3e3b23c4c2ebad01f92def1f35b1"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/tinygrad/tinygrad/master/README.md",
+                "shows": "The README lists \"Tensor library with autograd\", \"IR and compiler that fuse and lower kernels\", \"JIT + graph execution\" and \"nn / optim / datasets for real training\"; \"BEAM search over kernels\"; \"Fewer functional transforms (no full vmap/pmap yet)\"; accelerators OpenCL, CPU, METAL, CUDA, AMD, NV, QCOM and WEBGPU; and \"only needs to support a total of ~25 low level ops\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c20592a2417b38fd9aa521a0daf14a532bcdcadbcdad07f9a486ec3de315acc2"
+              }
+            ]
+          },
+          "overall_score": 2.8,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.8,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of tinygrad, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "The README recommends installing from source, so PyPI downloads undercount use. tiny corp also sells the tinybox, a deep learning computer, which is a separate product and not scored here."
         }
       ]
     },
@@ -164843,6 +165432,19 @@
         "verifywise"
       ]
     },
+    "bold-software": {
+      "slug": "bold-software",
+      "display_name": "Bold Software",
+      "type": "company",
+      "homepage": "https://exe.dev",
+      "github": [
+        "https://github.com/boldsoftware"
+      ],
+      "country": "US",
+      "products": [
+        "shelley"
+      ]
+    },
     "boson-ai": {
       "slug": "boson-ai",
       "display_name": "Boson AI",
@@ -165358,7 +165960,8 @@
       "github": [],
       "country": "",
       "products": [
-        "bubblewrap"
+        "bubblewrap",
+        "ramalama"
       ]
     },
     "content-authenticity-initiative": {
@@ -165765,6 +166368,19 @@
       "country": "",
       "products": [
         "xgboost"
+      ]
+    },
+    "docker": {
+      "slug": "docker",
+      "display_name": "Docker",
+      "type": "company",
+      "homepage": "https://www.docker.com",
+      "github": [
+        "https://github.com/docker"
+      ],
+      "country": "US",
+      "products": [
+        "docker-model-runner"
       ]
     },
     "dolthub": {
@@ -166400,6 +167016,7 @@
         "ifeval",
         "jax",
         "keras",
+        "litert",
         "litert-lm",
         "lyria",
         "mediapipe",
@@ -171563,6 +172180,19 @@
         "tiledb"
       ]
     },
+    "tiny-corp": {
+      "slug": "tiny-corp",
+      "display_name": "tiny corp",
+      "type": "company",
+      "homepage": "https://tinygrad.org",
+      "github": [
+        "https://github.com/tinygrad"
+      ],
+      "country": "",
+      "products": [
+        "tinygrad"
+      ]
+    },
     "tinyllama": {
       "slug": "tinyllama",
       "display_name": "TinyLlama",
@@ -172659,7 +173289,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1264,
+  "n_total": 1269,
   "generated": "2026-11-12",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -172672,8 +173302,8 @@
       "total": 60613,
       "matched": 1366,
       "overlap": 673,
-      "scored": 1264,
-      "scored_outside": 591,
+      "scored": 1269,
+      "scored_outside": 596,
       "uncategorized": 59247
     },
     "top": [
