@@ -240,7 +240,7 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "Artificial Analysis Intelligence Index",
-            "value": "Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average among open weight non-reasoning models of similar size (median 12). The strongest released member of the family - Llama 4 Scout scores 8 on the same index, and Behemoth is unreleased.",
+            "value": "Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average among open weight non-reasoning models of similar size (median 12); Llama 4 Scout 8 on the same index; Behemoth is unreleased. Index v5.0.1 scores no Llama model. Pretraining-suite readings: on the Apertus-70B card's six-task average (ARC, HellaSwag, WinoGrande, XNLI, XCOPA, PIQA), Llama 4 Scout base 67.9 against Apertus-70B 67.5, OLMo 2 32B 67.7, Qwen3-32B 67.8, Qwen2.5-72B 69.8 and SmolLM3-3B 61.6; on the Olmo 3 32B base card, Llama 3.1 70B base against Olmo 3 32B base reads math 62.0 vs 61.6, code 36.3 vs 40.0 and MC STEM 80.1 vs 74.5 (Marin 32B 49.3, 30.8, 75.9). Maverick is on neither table; Meta's card puts its base ahead of Scout's on MMLU (85.5 vs 79.6), MMLU-Pro (62.9 vs 58.2) and MATH (61.2 vs 50.3).",
             "confidence": "medium",
             "note": "Llama 4 Maverick, the strongest released member of the family, scored 10 on version 4.3.2 of Artificial Analysis's Intelligence Index, below the median of 12 for open-weight non-reasoning models of similar size. Llama 4 Scout scored lower, and the larger Behemoth model was never released. Version 5 of the index, introduced in October 2026, does not score either Llama 4 model, so the current capability assessment is pending.",
             "sources": [
@@ -257,6 +257,27 @@
                 "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "1d32dc830fd24a903212e7ebbd4e09824ae24200ab8704f38c6baf7b35e544e2"
+              },
+              {
+                "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/README.md",
+                "shows": "Pretraining evaluation table, \"Performance (%) of Apertus models on *general language understanding* tasks (higher is better) compared to other pretrained models\", one six-task average (ARC, HellaSwag, WinoGrande, XNLI, XCOPA, PIQA): \"| Llama4-Scout-16x17B | 67.9 |\", \"| Llama3.1-70B | 67.3 |\", \"| **Apertus-70B** | 67.5 |\", \"| OLMo2-32B | 67.7 |\", \"| Qwen3-32B | 67.8 |\", \"| Qwen2.5-72B | 69.8 |\", \"| SmolLM3-3B | 61.6 |\", \"| EuroLLM-9B | 62.8 |\". Llama 4 Maverick is not in the table.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a4fd59afccb1aa534dbc01145314085926ac8c1e5d102d8564cbd4933d7de2ee"
+              },
+              {
+                "url": "https://huggingface.co/allenai/Olmo-3-1125-32B/raw/main/README.md",
+                "shows": "Olmo 3 32B base card evaluation table, one pipeline across base models, aggregate columns Olmo 3-Eval Math, Code, MC_STEM, MC_Non-STEM and GenQA: Llama-3.1-70B 62.0, 36.3, 80.1, 86.1, 81.6; Olmo 3-32B 61.6, 40.0, 74.5, 85.6, 79.8; Marin-32B 49.3, 30.8, 75.9, 84.5, 80.3; Apertus-70B 39.7, 23.3, 70.0, 78.5, 75.0. No Llama 4 model is in the table.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "8f227fd377065f4f93b50f9e14606224a021517f2315bcd537a22bb56ba8680f"
+              },
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E",
+                "shows": "Rendered model card, \"Pre-trained models\" table (Meta's own evaluation, base models only): MMLU 5-shot Llama 3.1 70B 79.3, Llama 3.1 405B 85.2, Llama 4 Scout 79.6, Llama 4 Maverick 85.5; MMLU-Pro 53.8, 61.6, 58.2, 62.9; MATH 41.6, 53.5, 50.3, 61.2; MBPP 66.4, 74.4, 67.8, 77.6. No other vendor's model is in the table.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "3eb85dab4aeb392c25469f5153d301f676d32d7c8b6f44073a0a97d6ac817ef2"
               }
             ]
           },
@@ -276,7 +297,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Artificial Analysis Intelligence Index v5.0.1 scores no Llama model: on 2026-11-12 the Llama 4 Maverick, Llama 4 Scout and Llama 3.1 Instruct 405B pages all read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 estimates of 10 and 8. The recipe's fallback needs a pretraining-suite average for Llama 4 read beside the same suite for its peers, and no cited source carries one. gpt-4o, apertus and granite record their comparisons relative_to llama. Settled by that fallback comparison or by a v5.0.1 reading of a Llama release."
+                "reason": "Artificial Analysis Intelligence Index v5.0.1 scores no Llama model: on 2026-11-12 the Llama 4 Maverick, Llama 4 Scout and Llama 3.1 Instruct 405B pages all read \"Artificial Analysis Intelligence Index Unknown\". The pretraining-suite fallback now has two same-pipeline tables, recorded in the value, and neither reads Maverick, the family's strongest release. On the Apertus-70B card's six-task average Llama 4 Scout base (67.9) is level with Apertus-70B (67.5), OLMo 2 32B and Qwen3-32B and above SmolLM3-3B (61.6); on the Olmo 3 32B base card Llama 3.1 70B base is at or above Olmo 3 32B base on four of five aggregates and above Marin 32B on all five. Both are lower bounds, since Meta's card puts Maverick ahead of Scout on every shared row, and both compare base checkpoints while the peers placed at 4 (olmo, seed-oss) are read on post-trained releases. llama stays 3 (R-2026-11-12-n): there is no sufficiently comparable evaluation of Maverick. Settled by a same-suite reading of Llama 4 Maverick beside a peer the category places at 3 or 4 on its current release, or by a v5.0.1 reading of a Llama release. apertus and granite still record relative_to llama; gpt-4o no longer does."
               }
             ]
           }
@@ -707,7 +728,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "No model inside this record's scope has a v5.0.1 score: on 2026-11-12 the Qwen3.5 35B A3B and Qwen3.5 397B A17B pages read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 readings of 19 and 18. Qwen3.8 models are scored on v5.0.1 (Qwen3.8-Flash-Next 29, Qwen3.8 27B (Xhigh) 20), but Qwen has published no base checkpoints for 3.8, so they sit outside a record of base models. Settled by a v5.0.1 reading of a Qwen3.5 model, or by a pretraining-suite comparison of the Qwen3.5 base checkpoints with peers read on the same suite."
+                "reason": "No model inside this record's scope has a v5.0.1 score: on 2026-11-12 the Qwen3.5 35B A3B and Qwen3.5 397B A17B pages read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 readings of 19 and 18. Qwen3.8 models are scored on v5.0.1 (Qwen3.8-Flash-Next 29, Qwen3.8 27B (Xhigh) 20), but their cards list \"Pre-training & Post-training\" and the Qwen organization on Hugging Face lists no base checkpoint newer than Qwen3.5, so they sit outside a record of base models. The pretraining-suite fallback was checked on 2026-11-12 and does not settle it. The released Qwen3.5 Base cards publish no evaluations. The one base-model table Qwen published, in the Qwen3.5 launch post, scores the base of Qwen3.5-397B-A17B, which was never released, against the GLM-4.5, DeepSeek-V3.2 and Kimi K2 bases, earlier releases than the GLM-5.3, DeepSeek V4.1 Flash and Kimi K3.1 Pro readings that hold those peers' scores. No peer's base-model card compares against a Qwen3.5 base checkpoint; the one peer card that names Qwen3.5, MiniCPM5-1B, compares the post-trained 0.8B model. Settled by a v5.0.1 reading of a Qwen3.5 model, or by a published table that scores Qwen3.5-35B-A3B-Base on the same benchmarks, shots and metrics as the base checkpoint behind a peer's current reading."
               }
             ]
           },
@@ -1064,16 +1085,16 @@
             "score": 4,
             "basis": "benchmark",
             "basis_detail": "Artificial Analysis Intelligence Index; model-card evaluation table",
-            "value": "gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native only on E2B/E4B/12B",
+            "value": "Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Gemma 4 31B (Reasoning) 4, ninth of ten small open-weight models (class median 8). Read on the same version and date: Granite 4.2 8B 5, Inkling (Xhigh) 12, Mistral Large 4 (High) 26. gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native only on E2B/E4B/12B",
             "confidence": "medium",
-            "note": "Gemma 4 31B scored 19 on version 4.3.2 of Artificial Analysis's Intelligence Index, well behind the highest-scoring open-weight releases from DeepSeek and GLM. Version 5 of the index, introduced in October 2026, is not comparable with that score, so the current capability assessment is pending. Its model card reports 85.2% on MMLU Pro, 84.3% on GPQA Diamond and 80.0% on LiveCodeBench v6, and on the Arena text leaderboard it trailed more than a dozen openly licensed models, which placed it near rather than at the frontier of open models.",
+            "note": "Gemma 4 31B, the family's strongest model, scores 4 on version 5.0.1 of Artificial Analysis's Intelligence Index, just below Granite 4.2 8B at 5 and well behind Inkling at 12 and Mistral Large 4 at 26. Gemma leads Granite on five of the index's nine evaluations and trails it only on AA-Omniscience, which penalizes wrong answers, while Inkling leads Gemma on seven. Its model card reports 85.2% on MMLU Pro, 84.3% on GPQA Diamond and 80.0% on LiveCodeBench v6, strengths the index's agentic tasks, where Gemma scores near zero, do not show.",
             "sources": [
               {
                 "url": "https://huggingface.co/google/gemma-4-31B-it",
                 "shows": "Rendered model card: \"Gemma 4 models are multimodal, handling text and image input (with audio supported on E2B, E4B, and 12B) and generating text output\"; the evaluation table, 31B column, lists MMLU Pro 85.2%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3% and MMMU Pro 76.9%.",
-                "accessed": "2026-09-29",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "2f1a8471f508307be32aa25eb86f4f048c3a7d25678fa77d1f5523675b2524e8"
+                "content_sha256": "dc2fe3123f502265a0a318798cd0cbd44412cbc2167856b0a9998d9623fc80e0"
               },
               {
                 "url": "https://arena.ai/leaderboard/text",
@@ -1085,16 +1106,23 @@
               {
                 "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud",
                 "shows": "Google Cloud availability post: \"Built from the same research as Gemini 3 and released under a commercially permissive Apache 2.0 license\". It carries no benchmark figures and no Arena ranking.",
-                "accessed": "2026-09-29",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "def84691d9a3e1c4abce00ff3672b0bf40bbbfeaf1d492ca7f6589deec0df979"
+                "content_sha256": "3ee88b422a5bb234847f3f85e87af23d20f73c525ea2aa1ae9dd0d7c79fd4140"
               },
               {
                 "url": "https://artificialanalysis.ai/models/gemma-4-31b",
-                "shows": "Artificial Analysis page on Intelligence Index v4.3.2: \"Gemma 4 31B (Reasoning) scores 19 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 8)\".",
-                "accessed": "2026-09-29",
+                "shows": "Artificial Analysis page on Intelligence Index v5.0.1: \"Gemma 4 31B (Reasoning) scores 4 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 8)\", ranked \"# 9 / 10\" among open weights models of similar size (Small: 4B-40B parameters).",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "887c8b8f10c32b585be9e17de00b04ad84da8bf50758a94a955f9044dc2f15a3"
+                "content_sha256": "5ab32692f1e99795f7794f8f551f9fc25a316ccf74c641cdeafe70a56d16d5c1"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf, HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Gemma 4 31B (Reasoning) 4.38 (368.6, 4.9%, 0.0%, 0.0%, -48.5, 6.0%, 7.2%, 4.0%, 0.0%); Granite 4.2 8B 5.10 (310.4, 2.1%, 0.0%, 0.0%, -16.7, 0.6%, 4.0%, 0.0%, 0.0%); Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c"
               }
             ]
           },
@@ -1114,7 +1142,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Gemma 4 31B (Reasoning) scores 4 on Artificial Analysis Intelligence Index v5.0.1 (read 2026-11-12), \"at the lower end among comparable models (median: 8)\", ninth of ten small open-weight models. A size-class rank is not a band threshold (R-2026-11-12-l), and the band also rests on the model card's MMLU Pro, GPQA Diamond and LiveCodeBench figures, which still read, so the v5 reading is contrary evidence rather than a reason to move. Settled by a same-version comparison with peers the category places at 3 and 4."
+                "reason": "A same-version comparison on Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) puts Gemma 4 31B (Reasoning) at 4.4, just below Granite 4.2 8B at 5.1 and behind Inkling (Xhigh) at 12.5 and Mistral Large 4 (High) at 26.1. Gemma leads Granite on five of the nine evaluations and trails it on AA-Omniscience, which penalizes wrong answers. A move to 3 was considered and rejected (R-2026-11-12-n): the index orders these models but does not locate the boundary between 3 and 4, and the model card's MMLU Pro, GPQA Diamond and LiveCodeBench figures point the other way. The cited Arena leaderboard returned HTTP 403 on that date. Settled by the focused calibration of the 3/4 boundary on comparable evaluations under #1022."
               }
             ]
           },
@@ -1496,45 +1524,53 @@
           "capability": {
             "score": 3,
             "basis": "benchmark",
-            "basis_detail": "Artificial Analysis Intelligence Index",
-            "value": "GPT-4o (Nov '24) scores 8 on the Artificial Analysis Intelligence Index, at the lower end among non-reasoning models in its price tier (median 15), ranked #46 of 61; Llama 4 Maverick scores 10.",
-            "relative_to": "llama",
+            "basis_detail": "Same-harness benchmark comparison (OpenAI simple-evals, Phi-4 technical report)",
+            "value": "Same-harness comparison in the Phi-4 technical report (OpenAI simple-evals, December 2024): GPT-4o MMLU 88.1, GPQA 50.6, MATH 74.6, HumanEval 90.6, MMLU-Pro 73.0, against Phi-4 (phi, 3) at 84.8, 56.1, 80.4, 82.6 and 70.4. Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: GPT-4o (Nov '24) has no score.",
+            "relative_to": "phi",
             "relation": "at",
             "confidence": "medium",
-            "note": "GPT-4o was OpenAI's multimodal flagship in 2024 and is still served through the API, but it now sits far below the current frontier, including OpenAI's own GPT-5 and GPT-6 lines. On version 4.3.2 of the Artificial Analysis index it scored close to Llama 4 Maverick and below the median for comparable models, which placed it alongside Llama rather than among the leading models. Version 5 of the index, introduced in October 2026, scores neither model, so the current capability assessment is pending.",
+            "note": "GPT-4o was OpenAI's multimodal flagship in 2024 and is still served through the API, but it sits far below the current frontier, and version 5 of Artificial Analysis's Intelligence Index does not score it. Microsoft's Phi-4 technical report ran both models through one evaluation harness: GPT-4o leads the 14-billion-parameter Phi-4 on general knowledge, coding and instruction following, while Phi-4 leads on graduate-level science and competition math, which places the two level.",
             "comparison": {
-              "last_attested": "2026-10-09",
+              "last_attested": "2026-11-12",
               "sources": [
                 {
-                  "url": "https://artificialanalysis.ai/models/llama-4-maverick",
-                  "shows": "\"Llama 4 Maverick scores 10 on the Artificial Analysis Intelligence Index, placing it below average among comparable models (median: 12)\"; Intelligence rank \"# 26 / 46\".",
-                  "accessed": "2026-10-09",
+                  "url": "https://huggingface.co/microsoft/phi-4/raw/main/README.md",
+                  "shows": "Peer read on the same date: the Phi-4 card compares \"phi-4 with a set of models over OpenAI’s SimpleEval benchmark\", listing phi-4 against GPT-4o at MMLU 84.8 vs 88.1, GPQA 56.1 vs 50.6, MATH 80.4 vs 74.6, HumanEval 82.6 vs 90.6, MGSM 80.6 vs 90.4, SimpleQA 3.0 vs 39.4 and DROP 75.5 vs 80.9. These are the results phi's own reading cites; Phi-4 leads on the two reasoning rows and trails on the rest, so GPT-4o is level with it rather than a step above.",
+                  "accessed": "2026-11-12",
                   "http_status": 200,
-                  "content_sha256": "0b66f5ad66a5852c9964f06fc9bc251496f8843b9c79c4a041673e38022625e8"
+                  "content_sha256": "4cc56faa6a5bcbde6227789b2ef9aedfde481ca660c8a4b686703aae19b00011"
                 }
               ]
             },
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/models/gpt-4o",
-                "shows": "\"GPT-4o (Nov '24) scores 8 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 15)\"; Intelligence rank \"# 46 / 61\"; the page marks the November 2024 snapshot as superseded by a later GPT-4o release.",
-                "accessed": "2026-10-09",
+                "shows": "Page for GPT-4o (Nov '24) on Intelligence Index v5.0.1: the model summary reads \"Artificial Analysis Intelligence Index Unknown\", and the page notes \"This model is deprecated. We still benchmark its performance, but less often\", so the current index has no score for GPT-4o.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d62d2d01a2180b69beb5949a1dfdba2e41a49fef4cd68a4adb3439d09bf296f4"
+                "content_sha256": "a03695907e0dad6b6d675b0591b872e4d6a3cd27217c460fb0dfaf51b9741a7d"
               },
               {
                 "url": "https://artificialanalysis.ai/leaderboards/models",
-                "shows": "The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max) first at 57.62, GPT-6 Astra (Max) at 52.67, Gemini 3.1 Pro Preview at 29.72, o3 at 20.20, o4-mini (High) at 16.65, Llama 4 Maverick at 9.99 and GPT-4o (Nov '24) at 8.44. The digest drifts between fetches because the page carries live pricing and throughput figures.",
-                "accessed": "2026-10-09",
+                "shows": "The leaderboard's embedded model records on Intelligence Index v5.0.1 list \"GPT-4o (Nov '24)\" as deprecated and without an intelligenceIndex, while 111 other records carry one; Llama 4 Maverick and Phi-4 read intelligenceIndex null. The digest drifts between fetches because the page carries live pricing and throughput figures.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "b32380b54bad1092bd9247bfcea5d4eba61af6ee0ce8e5f00d8bfba2337988b4"
+                "content_sha256": "43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c"
               },
               {
                 "url": "https://developers.openai.com/api/docs/models/gpt-4o",
-                "shows": "OpenAI API model page for GPT-4o: \"128,000 context window\", \"Oct 01, 2023 knowledge cutoff\", text and image input with text output; the page carries no benchmark figures.",
-                "accessed": "2026-10-09",
+                "shows": "OpenAI API model page for GPT-4o: \"128,000 context window\", \"16,384 max output tokens\", \"Oct 01, 2023 knowledge cutoff\", text and image input with text output; the page carries no benchmark figures.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "9af7c20c8e5e9048721082db637cbb3042b1e5c86486a871a29c5cc1e94e9438"
+                "content_sha256": "62954874bdd444cd366fc6b3b4741d6635aeb9d0f61eef274ccc926c36466c6d"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2412.08905",
+                "shows": "Phi-4 technical report, Table 1, whose first benchmarks use \"OpenAI’s simple-evals framework\": GPT-4o MMLU 88.1, GPQA 50.6, MATH 74.6, HumanEval 90.6, MGSM 90.4, SimpleQA 39.4, DROP 80.9, MMLUPro 73.0, ArenaHard 75.6, IFEval 84.8, against phi-4 at 84.8, 56.1, 80.4, 82.6, 80.6, 3.0, 75.5, 70.4, 75.4, 63.0; the text says \"phi-4 significantly exceeds its teacher GPT-4o on the GPQA (graduate-level STEM Q&A) and MATH (math competition) benchmarks\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "be5577cfb815a8617231c36602cdba38d0aaf2a94cf09502485c8a85de022f80"
               }
             ]
           },
@@ -1549,17 +1585,7 @@
           },
           "freshness": {
             "date": "2026-11-12",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-12",
-                "reason": "Artificial Analysis Intelligence Index v5.0.1 scores neither GPT-4o (Nov '24) nor its peer Llama 4 Maverick: on 2026-11-12 both pages read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 readings of 8 and 10. GPT-4o has no released weights and no cited pretraining-suite result to read beside a peer's, and llama is itself held. Settled by a v5.0.1 reading of GPT-4o, or by placing it against a peer that has a current comparable reading."
-              }
-            ]
+            "basis": "verified"
           }
         },
         {
@@ -2219,9 +2245,9 @@
             "basis_detail": "SWE-bench/GPQA/AIME",
             "relative_to": "kimi",
             "relation": "one_below",
-            "value": "SWE-bench Verified 77.6%; SWE-bench Pro 54.3%; GPQA Diamond 87.2%; AIME 2026 97.1% (effort=0.99). Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Inkling (Xhigh reasoning effort) 12, 24th of 27 large open-weight models (class median 23); Inkling Small 13, 22nd of 27.",
+            "value": "SWE-bench Verified 77.6%; SWE-bench Pro 54.3%; GPQA Diamond 87.2%; AIME 2026 97.1% (effort=0.99). Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Inkling (Xhigh reasoning effort) 12, 24th of 27 large open-weight models (class median 23); Inkling Small 13, 22nd of 27. Read on the same version and date: Mistral Large 4 (High) 26, ahead of Inkling on all nine index evaluations; DeepSeek V4 Pro 0813 (Max) 23, ahead on seven; Kimi K3.1 Pro 46, ahead on all nine.",
             "confidence": "high",
-            "note": "On its own evaluation table Inkling beats Nemotron 3 Ultra on SWE-bench Verified (77.6 vs 70.7) but trails Kimi K2.6 (80.2) and DeepSeek-V4-Pro (80.6), and Thinking Machines' launch post says Inkling is not the strongest overall model available, open or closed. Artificial Analysis's independent index places it lower: on version 5.0.1 Inkling scores 12 and Inkling Small 13, near the bottom of the large open-weight models it compares and well behind DeepSeek V4 Pro at 23.",
+            "note": "On its own evaluation table Inkling beats Nemotron 3 Ultra on SWE-bench Verified (77.6 vs 70.7) but trails Kimi K2.6 (80.2) and DeepSeek-V4-Pro (80.6), and Thinking Machines' launch post says Inkling is not the strongest overall model available, open or closed. Artificial Analysis's independent index places it lower: on version 5.0.1 Inkling scores 12 and Inkling Small 13, against 23 for DeepSeek V4 Pro and 26 for Mistral Large 4, which leads Inkling on every evaluation in the index, most widely on the agentic tasks.",
             "sources": [
               {
                 "url": "https://huggingface.co/thinkingmachines/Inkling",
@@ -2253,17 +2279,24 @@
               },
               {
                 "url": "https://artificialanalysis.ai/models/inkling",
-                "shows": "Artificial Analysis page on Intelligence Index v5.0.1: \"Inkling (Xhigh) scores 12 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)\". Secondary to the vendor evaluation tables the note relies on.",
+                "shows": "Artificial Analysis page on Intelligence Index v5.0.1: \"Inkling (Xhigh) scores 12 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)\", ranked \"# 24 / 27\" among open weights models of similar size (Large: over 150B parameters).",
                 "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "cdba9c261c04915b03316e8c8f2efd137a67709bbaf1122a822f845c2053663c"
+                "content_sha256": "a996db766e10ba559d30b8615a69fa1748888196cc6bd989cf09b4392be3e4e0"
               },
               {
                 "url": "https://artificialanalysis.ai/models/inkling-small",
                 "shows": "Index v5.0.1 page for the Small sibling folded into this record: \"Inkling Small scores 13 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)\", ranked \"# 22 / 27\" among open weights models of the same size class (Large, over 150B parameters).",
                 "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "27a091c968c51efdeb3c803966de412b8c08cc96189c81c8531ef5755bffef46"
+                "content_sha256": "47c57bc8797e5d988b0d9f9ff5fa7858f0c051a1d06be0fadd887a53b0de5f07"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf, HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Inkling Small 12.91 (912.6, 4.8%, 1.0%, 4.8%, -9.5, 11.2%, 12.1%, 18.5%, 0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%); DeepSeek V4 Pro 0813 (Max) 23.06 (1253.2, 56.7%, 14.1%, 17.1%, -6.4, 11.4%, 19.5%, 23.5%, 5.7%); Kimi K3.1 Pro 46.45 (1673.6, 73.3%, 67.2%, 25.5%, 29.9, 31.4%, 37.3%, 49.5%, 34.3%).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c"
               }
             ]
           },
@@ -2288,7 +2321,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Artificial Analysis Intelligence Index v5.0.1 places Inkling far lower than its vendor benchmarks do: on 2026-11-12 Inkling (Xhigh) scores 12 and Inkling Small 13, 24th and 22nd of 27 large open-weight models, against 23 for DeepSeek V4 Pro 0813 and 46 for Kimi K3.1 Pro. The band is kept at 4 by ruling, but the one_below kimi spacing was judged on the vendor tables and has not been reconciled with the v5.0.1 readings. Settled by a same-version comparison that either confirms one_below kimi or re-places Inkling against a nearer peer."
+                "reason": "On Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) Kimi K3.1 Pro (46) and Mistral Large 4 (High, 26) both lead Inkling (Xhigh, 12) and Inkling Small (13) on all nine evaluations, most widely on the agentic tasks, so one_below kimi is not confirmed on this version. A move to 3, one_below mistral-large, was considered and rejected (R-2026-11-12-n): the index orders these models but does not locate the boundary between 3 and 4, and the vendor's SWE-bench Verified result (77.6 against 80.6 for DeepSeek V4 Pro) is unresolved against it. Settled by the focused calibration of the 3/4 boundary under #1022, which also re-places the edge."
               }
             ]
           },
@@ -2669,16 +2702,16 @@
             "score": 2,
             "basis": "benchmark",
             "basis_detail": "multilingual-pretrain-suite",
-            "value": null,
+            "value": "Luciole-23B-Base card charts (base models, one harness): English averaged normalized score about 49 against EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60 and Gaperon-1125-24B about 42; French about 42 against EuroLLM-22B about 34, Mistral-Small about 42 and Gaperon about 32. Values read from the charts; EuroLLM-22B's TriviaQA and Mintaka results on this harness are far below every other model's.",
             "confidence": "low",
-            "note": "Luciole is a multilingual French-English family up to 23B parameters that favors French cultural representation and open data rights over benchmark performance, alongside Lucie-7B and Alia-40b. Its 23B-Base card publishes training-convergence and evaluation curves but no comparison against outside models, so this reading comes from scale and positioning rather than a measured benchmark.",
+            "note": "Luciole is a French-English family up to 23B parameters built around French cultural representation and open data rights. Its 23B base model's card charts it against EuroLLM-22B and Mistral Small 24B on the same evaluations: about even with EuroLLM-22B in English and roughly 8 points ahead of it in French, where it also matches Mistral Small. In English it trails Mistral Small by about 11 points.",
             "sources": [
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base",
-                "shows": "23B multilingual base model, ~30% French pretraining data, French/English focus; the card carries training-convergence and evaluation sections but no comparison table against external models",
-                "accessed": "2026-08-13",
+                "shows": "23B multilingual base model trained on about 5 trillion tokens (English 41.9%, French 30.4%). Evaluation section: \"For comparison, we evaluated the model against the following models, which have between 23B and 2B parameters and were trained on multilingual data, including French\": Gaperon-1125-24B, EuroLLM-22B-2512 and Mistral-Small-24B-Base-2501, with results published as charts of average performance per language group, not as a table.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "1cd38455f6e0695d5059d7cae008bd5e7480893b268879a4363fd2e194949051"
+                "content_sha256": "f385e2a94ca89f299d73b2112a7e0c98c80919ff1354be0a429661f30f68d2b9"
               },
               {
                 "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
@@ -2686,6 +2719,20 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "e64616023bd63fd9a5dde0233482f031919825f46410781ccdad32566f873d02"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/en_details.png",
+                "shows": "Card chart \"Overall Performance (English)\", averaged normalized score: Luciole-23B-Base final checkpoint about 49, EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60, Gaperon-1125-24B about 42. Per-task panels: Luciole ahead of EuroLLM-22B on TriviaQA, MMLU pro, ARC easy, ARC challenge and GSM8K, behind it on OpenBookQA, CommonsenseQA, SIQA, HellaSwag, Winogrande and PIQA; EuroLLM-22B's TriviaQA exact match is about 0.18 against about 0.57 for Luciole. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "8a2b563ee61a2225b945e1dd910beefbacfc0aed247174fc83c329abe24a767c"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/fr_details.png",
+                "shows": "Card chart \"Overall Performance (French)\", averaged normalized score: Luciole-23B-Base about 42, Mistral-Small-24B-Base-2501 about 42, EuroLLM-22B-2512 about 34, Gaperon-1125-24B about 32. Per-task panels: Luciole ahead of EuroLLM-22B on eight of nine French tasks, all but FQuADv2; EuroLLM-22B's Mintaka exact match is about 0.03. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "4919b22a203f77f150cd8c311d9d34b457222fb6acf5ec9ca305a0dd73977629"
               }
             ]
           },
@@ -2705,7 +2752,7 @@
               {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Luciole-23B-Base's card now compares it with EuroLLM-22B and shows it level in English and about 8 points ahead in French, while eurollm is scored 3 and luciole 2. Settled by a joint re-band of luciole, eurollm, apertus and alia-40b."
+                "reason": "Luciole-23B-Base's card charts it against EuroLLM-22B-2512 base on one harness: about even in English (averaged normalized score about 49 against 48, where EuroLLM-22B's TriviaQA result is implausibly low) and about 8 points ahead in French (about 42 against 34). A base-model comparison alone does not establish parity between the two families, so luciole stays 2 (R-2026-11-12-n), and whether the French advantage supports 3 is left to a targeted review. No published table places Luciole beside Apertus or a Llama model. Settled by that review, or by a comparison of the current releases on one suite."
               }
             ]
           }
@@ -3154,7 +3201,7 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "GPQA",
-            "value": null,
+            "value": "Phi-4 (14B) model card: GPQA 56.1 (graduate-level science) and MATH 80.4 (competition math); the technical report says it substantially surpasses its teacher, GPT-4, on STEM-focused question answering. Artificial Analysis Intelligence Index v5.0.1 does not score Phi-4.",
             "confidence": "high",
             "note": "Phi-4 is a 14B model with outsized math and reasoning results, including 56.1% on graduate-level science questions and 80.4% on competition math, and its technical report says it surpasses GPT-4, its teacher, on STEM question answering. It remains a small, older model against the 2026 frontier, and Artificial Analysis's current index no longer scores it, so the published results carry the reading.",
             "last_verified": "2026-11-12",
@@ -3645,15 +3692,15 @@
             "sources": [
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509",
-                "shows": "pretraining benchmark table: Apertus-70B avg 67.5% vs Llama 3.1-70B 67.3%; Apertus-70B-Instruct MMLU 69.6%",
-                "accessed": "2026-08-13",
+                "shows": "Pretraining evaluation table on the card: Apertus-70B average 67.5 (ARC 70.6, HellaSwag 64.0, WinoGrande 73.3, XNLI 45.3, XCOPA 69.8, PIQA 81.9) against Llama3.1-70B 67.3, Llama4-Scout-16x17B 67.9, Qwen2.5-72B 69.8, OLMo2-32B 67.7 and EuroLLM-9B 62.8 on the same suite.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "83519a7a58348a6eee782da98685939d8d3bb93d4396069f819715e7dab0a233"
+                "content_sha256": "a5402f9206c3c5e1b77909498a20038702acc257656d733b7474edf5d1ad5943"
               },
               {
                 "url": "https://arxiv.org/pdf/2509.14233",
-                "shows": "Apertus technical report, benchmark results and methodology",
-                "accessed": "2026-08-13",
+                "shows": "Pretraining evaluation in lm-evaluation-harness. Table 14 (general language understanding) average: Apertus-70B 67.5, Llama3.1-70B 67.3, Llama4-Scout-16x17B 67.9, Llama3.1-8B 65.4, SmolLM3-3B 61.6. Table 15 (factual knowledge) average: Apertus-70B 58.9, Llama3.1-70B 66.7, Llama4-Scout-16x17B 67.0, Llama3.1-8B 53.2, SmolLM3-3B 49.7. Table 17 (post-trained): Apertus-70B-Instruct MMLU 69.6 against Llama-3.3-70B-Instruct 87.5, Qwen2.5-72B-Instruct 86.6 and Llama-3.1-8B-Instruct 72.4.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f"
               },
@@ -3663,6 +3710,13 @@
                 "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "266f936d5683231c5c696696d2c2cb4a224d0c95768ddc4105ab401e383853a2"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2602.05879",
+                "shows": "EuroLLM-22B report, Appendix B, Table 21 (base models, 3-shot likelihood on HellaSwag, MMLU and ARC-C): Apertus-70B-Base 77.4, 49.4, 64.0 against Llama-3.3-70B-Base 83.9, 54.9, 68.4, EuroLLM-22B-Base 73.2, 46.4, 62.3 and Llama-3.1-8B-Base 75.7, 46.3, 58.3.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289"
               }
             ]
           },
@@ -3687,7 +3741,7 @@
               {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Neither Apertus 70B Instruct nor Llama 4 Maverick has an Artificial Analysis Intelligence Index v5.0.1 score: on 2026-11-12 both pages read \"Artificial Analysis Intelligence Index Unknown\". The v4.3.2 readings (5 against 10) that suggested 2 one below llama cannot be re-read on the current index. eurollm records relative_to apertus at, alia-40b one_below it, and luciole's card places it level with EuroLLM-22B. Settled by a joint pretraining-suite comparison of apertus, eurollm, luciole and alia-40b, read on the same suite as llama."
+                "reason": "Read on 2026-11-12, the pretraining-suite fallback finds no table that puts Apertus beside Llama 4 Maverick, which sets llama's score. The tables that pair Apertus-70B with earlier Llama checkpoints put it level on general understanding (67.5 against 67.3 for Llama 3.1 70B and 67.9 for Llama 4 Scout, Apertus report Table 14), about 8 points behind on factual knowledge (58.9 against 66.7 and 67.0, Table 15), and behind Llama 3.3 70B base on the EuroLLM-22B report's 3-shot suite (63.6 against 69.1, Table 21). A move to 2, one below llama, was considered and rejected (R-2026-11-12-n): these are earlier checkpoints rather than the governing releases, they measure English knowledge rather than the product's multilingual, reasoning and long-context capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both."
               }
             ]
           }
@@ -4119,24 +4173,45 @@
           "capability": {
             "score": 5,
             "basis": "benchmark",
-            "basis_detail": "LMArena/AIME",
-            "value": "AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE; LMArena frontier - Baidu states ERNIE 5.1 ranks first among Chinese models on the text leaderboard and fourth globally on the search leaderboard",
+            "basis_detail": "LMArena text and search leaderboards; Baidu-reported AIME 2026",
+            "value": "LMArena text leaderboard, snapshot of 2026-11-09: ERNIE 5.1 1467.7, 35th of 421, against MiMo-V2.6-Pro 1491.7, GLM-5.3 (Max) 1475.9, Kimi K3 (Max) 1474.3, DeepSeek-V4.1-Flash-20260910 (Max) 1463.4, Kimi K3.1 Pro (Max) 1457.3, DeepSeek-V4-Pro 1451.4 and MiniMax-M3 1428.2. LMArena search leaderboard: 1223.4 and 4th on 2026-05-08, 1226.8 and 11th on 2026-11-09, second among Chinese models behind Qwen3.8-Max. Baidu reports AIME 2026 (with tool use) 99.6 and GPQA and MMLU-Pro results approaching leading closed models. Artificial Analysis Intelligence Index v5.0.1 scores no ERNIE 5 model.",
             "confidence": "medium",
-            "note": "ERNIE 5.1 scores 99.6 on AIME 2026 with tool use, posts strong GPQA and MMLU-Pro results, and reaches 1,223 on LMArena's search leaderboard, which Baidu reports as fourth globally and first among Chinese models. Those rankings come from Baidu's own release post and earnings statements rather than an independent leaderboard read, making this a self-reported frontier claim.",
+            "note": "On LMArena's independent text leaderboard ERNIE 5.1 places just behind GLM-5.3 and Kimi K3 and level with DeepSeek's V4.1 Flash, and on the search leaderboard it posted 1,223 at its May 2026 launch, fourth globally, before newer models pushed it to eleventh. Baidu adds a 99.6 on AIME 2026 with tool use, but Artificial Analysis has not scored any ERNIE 5 model on version 5.0.1 of its Intelligence Index.",
             "sources": [
               {
                 "url": "https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html",
-                "shows": "Baidu Q1 2026 results, released 2026-05-18 - \"Baidu launched ERNIE 5.1 in May 2026, featuring stronger text capabilities\" and \"ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese models, ranking fourth globally.\"",
-                "accessed": "2026-09-29",
+                "shows": "Baidu Q1 2026 results, released 2026-05-18 - \"Baidu launched ERNIE 5.1 in May 2026, featuring stronger text capabilities, a more compact model size and enhanced reasoning capabilities. Recently on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese models, ranking fourth globally.\"",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "043d8ec0e569cbbea64a2853d0131355439972e3277b5db3681c9362a944983d"
+                "content_sha256": "02c037284a9bb20c4d0dc57bedc58ffffd8f8bcb47ddadef0d4d44a36a0d7f68"
               },
               {
-                "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
-                "shows": "Official release post - \"using only about 6% of the pre-training cost of comparable models\"; \"On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6\"; \"On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models\"; and ERNIE 5.1 posted 1,223 \"to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard.\"",
-                "accessed": "2026-09-29",
+                "url": "https://ernie.baidu.com/research/posts/ernie-5.1-0508-release/",
+                "shows": "Official ERNIE 5.1 release post, dated May 9, 2026, now at this address (the earlier /blog/posts/ address serves the ERNIE homepage) - \"Today, we officially release ERNIE 5.1\"; \"On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6 — second only to Gemini 3.1 Pro\"; \"On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models\"; and that on May 9 ERNIE 5.1 posted 1,223 \"to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard.\"",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd"
+                "content_sha256": "2b3d4027f60dc69e64f4315674420bcdc3a283ce6735692edb9ccdf4057059c9"
+              },
+              {
+                "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/search/full-00000-of-00001.parquet",
+                "shows": "LMArena leaderboard dataset (CC-BY-4.0), search leaderboard, category \"overall\": \"ernie-5.1\" rated 1223.4 at rank 4 in the 2026-05-08 snapshot; \"ERNIE 5.1\" rated 1226.8 (interval 1217.2-1236.4) at rank 11 of 42 in the 2026-11-09 snapshot, where Qwen3.8-Max (Alibaba) ranks 1 at 1259.8 and is the only other Chinese model listed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "12791a7aa1d7b0ad67da17f93d3b088f62eb0d44ecb13365ebb2583c83b352fd"
+              },
+              {
+                "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/text/latest-00000-of-00001.parquet",
+                "shows": "LMArena leaderboard dataset, text leaderboard, category \"overall\", 2026-11-09 snapshot of 421 models: \"ERNIE 5.1\" 1467.7 (interval 1463.2-1472.2), rank 35; MiMo-V2.6-Pro 1491.7 (11); Qwen3.8-Max 1485.2 (16); GLM-5.3 (Max) 1475.9 (25); Kimi K3 (Max) 1474.3 (27); DeepSeek-V4.1-Flash-20260910 (Max) 1463.4 (39); Kimi K3.1 Pro (Max) 1457.3 (44); DeepSeek-V4-Pro 1451.4 (50); MiniMax-M3 1428.2 (100); Mistral Large 4 1414.3 (136). DeepSeek V4.1 Flash 1017, MiniMax-M3.1-Flash and ERNIE 5.5 Flash Preview are not listed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2c39d71e44cf86c7564afbbf3d7327389a388624d9b228405308eb19bfde3dba"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/ernie-5-0-thinking-preview",
+                "shows": "Artificial Analysis page for ERNIE 5.0 Thinking Preview under Intelligence Index v5.0.1: the model summary reads \"Artificial Analysis Intelligence Index Unknown\". The only Baidu models the page links are ERNIE 5.0 Thinking Preview and ERNIE 4.5 300B A47B; artificialanalysis.ai/models/ernie-5-1 returns 404, so no ERNIE 5.1 or 5.5 model has a v5.0.1 score.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2aadefdccae3ad5a76f71ce190b373e363618687589e239c165d2f1a77c2e97a"
               }
             ]
           },
@@ -4155,7 +4230,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "The cited ERNIE 5.1 release post URL now serves the ERNIE homepage, so the AIME, GPQA and MMLU-Pro figures in the value cannot be re-read there; only the LMArena ranking survives, in Baidu's Q1 2026 results. Baidu has also shipped ERNIE 5.5 Flash Preview and Flash Base. Settled by re-reading the 5.1 figures from a live Baidu page and checking whether a 5.5 release now sets the family's best result."
+                "reason": "ERNIE 5.1 has no reading on Artificial Analysis Intelligence Index v5.0.1, the category's benchmark: on 2026-11-12 Artificial Analysis has no ERNIE 5.1 or 5.5 page and ERNIE 5.0 Thinking Preview reads \"Intelligence Index Unknown\". As a closed model it has no pretraining-suite fallback either. Every cited figure re-reads on that date (the release post moved to /research/posts/), and LMArena's 2026-11-09 text snapshot places ERNIE 5.1 at 1467.7, between GLM-5.3 (Max) at 1475.9 and DeepSeek-V4.1-Flash-20260910 (Max) at 1463.4. An LMArena placement counts as evidence, but a rank on one snapshot alone is not a reproducible comparison (R-2026-11-12-n). ERNIE 5.5 Flash Preview is post-trained from Flash Base and belongs to the separate ernie-flash line (R-2026-11-12-m), so it does not set this record's best result. Settled by a v5.0.1 score for ERNIE 5.1 or a later flagship, or by a reproducible comparison with the category's peers on one suite."
               }
             ]
           },
@@ -4464,25 +4539,23 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "scale + multilingual pretraining (full benchmarks pending technical report)",
-            "relative_to": "apertus",
-            "relation": "one_below",
-            "value": "40.4B params, decoder-only, 9.37T pretraining tokens, 35 European languages + 92 programming languages; mid-tier and below the 2026 frontier. Detailed benchmarks are deferred to a forthcoming technical report; the model card cites the Salamandra technical report (arXiv:2502.08489) for the shared methodology.",
+            "value": "40.4B params, decoder-only, 9.37T pretraining tokens, 35 European languages + 92 programming languages; mid-tier and below the 2026 frontier. The card reports 5-shot results for this model alone on BSC's own harness (English ARC-Challenge 59.4, ARC-Easy 86.5, PIQA 81.7) and defers comparisons with other models to a forthcoming technical report; the Salamandra technical report (arXiv:2502.08489) evaluates only an intermediate 40B checkpoint.",
             "confidence": "low",
             "note": "ALIA-40B is a serious 40B multilingual base model, but it is smaller than Apertus-70B and below the 2026 frontier on reasoning and knowledge. It targets Iberian and European-language coverage rather than state-of-the-art capability.",
             "sources": [
               {
                 "url": "https://huggingface.co/BSC-LT/ALIA-40b",
-                "shows": "40.43B safetensors parameters, 9.37T training tokens, 35 European languages + 92 programming languages; no benchmark table, with results deferred to a forthcoming technical report",
-                "accessed": "2026-08-13",
+                "shows": "40,433,885,184 total parameters, pre-trained on 9.37 trillion tokens covering 35 European languages and 92 programming languages. Evaluation section: results for ALIA-40b alone on BSC's own lm-evaluation-harness tasks, \"All results reported below are on a 5-shot setting\" (English arc_easy 86.5, arc_challenge 59.4, openbookqa 38.4, piqa 81.7, social_iqa 53.8), and \"A full list of results compared to other baselines ... will soon be available in the technical report\"; no other model appears in its tables.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "78dd310624fb04983bbc3a17c74419a94aac3f62027e9677bbf76f2fada7e5dc"
+                "content_sha256": "1b97e740ed093135a3bdce17a4ae76bc6652a10ce194f1d3f7edf36b6b721bc7"
               },
               {
-                "url": "https://arxiv.org/abs/2502.08489",
-                "shows": "Salamandra technical report (BSC-LT) describing the shared training methodology and benchmarks",
-                "accessed": "2026-08-13",
+                "url": "https://arxiv.org/pdf/2502.08489",
+                "shows": "Salamandra technical report, section 5.2.3: \"we report results from an intermediate checkpoint of Salamandra Base 40B, which is still in training and has not undergone an annealing phase\", evaluated beside 7B-class baselines (EuroLLM 9B, Llama-3.1 8B) rather than as the released ALIA-40b.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "7efbbde6fc3fedb4c65cd69dd2e7f4578a7d0536be098d9a4b42787d6bb93684"
+                "content_sha256": "33ced8035ac8c234dc752d32f91916f3a69306770af8adeca4032b93fe45678c"
               }
             ]
           },
@@ -4502,7 +4575,7 @@
               {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Its comparison is relative_to apertus, whose capability is held for a joint re-band in this run, so the peer was not confirmed. Settled with the apertus, eurollm and luciole re-band."
+                "reason": "No published evaluation places the released ALIA-40b beside Apertus, EuroLLM, Luciole or a Llama model on one suite. On 2026-11-12 its card reports 5-shot results for ALIA-40b alone on BSC's own harness and says comparisons with other baselines will come in a forthcoming technical report, which is not yet on arXiv; the Salamandra technical report evaluates only an intermediate, un-annealed 40B checkpoint against 7B-class models. The one_below apertus comparison was removed because no published evaluation supports it (R-2026-11-12-n). Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those peers on the same benchmarks, shots and metric."
               }
             ]
           },
@@ -4852,7 +4925,7 @@
               {
                 "axis": "capability",
                 "since": "2026-10-07",
-                "reason": "The governing release and declared checkpoints were verified on 2026-11-12: Granite 4.2 governs, and the 4.1 and 4.2 checkpoints are declared. On Artificial Analysis Intelligence Index v5.0.1 Granite 4.2 8B and 3B both score 5, and 4.2 30B has no score. The band still rests on an at-llama comparison judged on v4.3.2, and llama has no v5.0.1 reading. Settled by a same-version comparison with peers the category places at 3."
+                "reason": "Granite 4.2 governs (#1026). On Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12, Granite 4.2 8B scores 5.10 and 4.2 3B 4.72; Granite 4.2 30B, 4.1 30B and 4.0 H Small have no score. No member the category places at 3 has a v5.0.1 score (Phi-4, Llama 4 Maverick and Scout, Apertus 70B Instruct and MiniCPM5 read null, and SmolLM3 and Marin are not listed), so the same-version comparison with 3-placed peers cannot yet be made. The nearest in-category v5.0.1 readings are Gemma 4 31B (Reasoning) 4.38 and Inkling (Xhigh) 12.48, both held at 4, and Mistral Large 4 (High) 26.12 at 4. Granite 4.2 8B is 0.7 above Gemma 4 31B and far ahead on Omniscience (-16.7 against -48.5), while Gemma leads on GPQA Diamond, HLE, SciCode and Terminal-Bench 2.1, so that gap does not place either model. IBM's Granite 4.1 base and 4.2 cards compare Granite only with Granite, so no pretraining-suite table reads Granite beside a peer. The relative_to llama comparison was judged on v4.3.2 and llama is held. Settled by a v5.0.1 score for a peer placed at 3 or for Granite 4.2 30B, or by a same-pipeline table that reads a Granite 4.1 or 4.2 checkpoint beside a category peer."
               }
             ]
           },
@@ -5363,12 +5436,12 @@
             "confidence": "high",
             "note": "EuroLLM-22B beats Apertus, the strongest fully open European peer, on eight of ten English benchmarks in the technical report's own comparison, and its multilingual coverage across 35 languages is unusually strong. It still trails frontier open-weights models on reasoning and knowledge overall, so the win over Apertus keeps it even with that peer rather than a step ahead.",
             "comparison": {
-              "last_attested": "2026-09-04",
+              "last_attested": "2026-11-12",
               "sources": [
                 {
                   "url": "https://arxiv.org/pdf/2602.05879",
-                  "shows": "Table 3 (English benchmarks) reports EuroLLM-22B and Apertus-8B/Apertus-70B on one suite: EuroLLM-22B MMLU 69.8 vs Apertus-70B 67.9, MMLU-Pro 50.8 vs 41.9, ARC-C 89.8 vs 84.7; EuroLLM-22B leads on eight of ten benchmarks. Apertus's own placement (score 3) is reaffirmed rather than moved.",
-                  "accessed": "2026-09-04",
+                  "shows": "Both variants of the pair read on one report. Table 3 (English, post-trained): EuroLLM-22B MMLU 69.8 vs Apertus-70B 67.9, MMLU-Pro 50.8 vs 41.9, ARC-C 89.8 vs 84.7, ahead on eight of ten benchmarks. Appendix B, Table 21 (base models, 3-shot likelihood): Apertus-70B-Base ahead on all three, HellaSwag 77.4 vs 73.2, MMLU 49.4 vs 46.4, ARC-C 64.0 vs 62.3. Level overall.",
+                  "accessed": "2026-11-12",
                   "http_status": 200,
                   "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289"
                 }
@@ -5377,8 +5450,8 @@
             "sources": [
               {
                 "url": "https://arxiv.org/pdf/2602.05879",
-                "shows": "Table 3: EuroLLM-22B-Instruct English scores (IFEval 67.2, Hellaswag 69.7, MMLU 69.8, MMLU-Pro 50.8, BBH 55.3, ARC-C 89.8, GPQA 26.8, GSM8K 85.5, MATH-500 54.5, HumanEval 53.9) against Apertus, OLMo-3, Llama-3, Gemma-3 and Qwen-3 baselines; prose \"EuroLLM-22B is the strongest model among the fully open European systems\" and \"still trails the very best open-weights models overall\".",
-                "accessed": "2026-09-04",
+                "shows": "Table 3: EuroLLM-22B-Instruct English scores (IFEval 67.2, Hellaswag 69.7, MMLU 69.8, MMLU-Pro 50.8, BBH 55.3, ARC-C 89.8, GPQA 26.8, GSM8K 85.5, MATH-500 54.5, HumanEval 53.9) against Apertus, OLMo-3, Llama-3, Gemma-3 and Qwen-3 baselines, including Llama-3.1-8B (MMLU 68.3, GSM8K 84.9); prose \"EuroLLM-22B is the strongest model among the fully open European systems\" and \"still trails the very best open-weights models overall\". Appendix B, Table 21 (base, 3-shot): EuroLLM-22B-Base 73.2, 46.4, 62.3 on HellaSwag, MMLU and ARC-C against Llama-3.1-8B-Base 75.7, 46.3, 58.3.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289"
               }
@@ -5405,7 +5478,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Its comparison is relative_to apertus, whose capability is held for the joint re-band of apertus, eurollm, luciole and alia-40b, so the peer cannot be confirmed at least as recently. The report's Table 3 still reads as the value records. Settled with that re-band."
+                "reason": "The comparison relative_to apertus was re-attested on 2026-11-12: in the EuroLLM-22B report EuroLLM-22B leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base leads EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21), which supports the two at the same score. A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed while apertus is held. Settled with apertus."
               }
             ]
           }
