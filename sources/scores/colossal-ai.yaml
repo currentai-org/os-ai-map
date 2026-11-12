@@ -1,0 +1,94 @@
+product: colossal-ai
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, root LICENSE, with the MIT and BSD notices of bundled third-party code
+    source:
+      value: public
+      detail: hpcaitech/ColossalAI
+    core-gated:
+      value: ungated
+      detail: HPC-AI Tech sells GPU rental on HPC-AI Cloud with Colossal-AI preinstalled, a separate service running the open
+        library
+  confidence: high
+  note: Colossal-AI is Apache-2.0 and the full library is public. HPC-AI Tech rents GPUs on its own cloud with Colossal-AI
+    preinstalled, but that is a separate service running the same open code, and the README names no paid edition of the library.
+  raw: license:Apache-2.0(OSI, root LICENSE, with the MIT and BSD notices of bundled third-party code);source:public(hpcaitech/ColossalAI);core-gated:ungated(HPC-AI
+    Tech sells GPU rental on HPC-AI Cloud with Colossal-AI preinstalled, a separate service running the open library)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/hpcaitech/ColossalAI/main/LICENSE
+    shows: The LICENSE opens "Copyright 2021- HPC-AI Technology Inc." followed by the Apache License 2.0 text, then reproduces
+      the licenses of incorporated code, among them "LICENSE FOR Microsoft Deepspeed" (MIT), "LICENSE FOR NVIDIA Megatron-LM",
+      "LICENSE FOR Flash Attention" (BSD 3-Clause) and Apache-2.0 notices for vLLM and LightLLM.
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 7fb73d1070ab4b1270ce48dea353b10f2da0e0ce7555ee5d0d28030ef561dec8
+  - url: https://pypi.org/pypi/colossalai/json
+    shows: PyPI lists colossalai 0.5.0, uploaded 2025-06-04, with the license field "Apache Software License 2.0".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: f82d5d39f15d97892e7fbd8e0c4e8a88c242137f5ec732d070aef6a214760ff6
+  - url: https://raw.githubusercontent.com/hpcaitech/ColossalAI/main/README.md
+    shows: 'The README''s "Instantly Run Colossal-AI on Enterprise-Grade GPUs" section offers "a powerful, pre-configured
+      Colossal-AI environment on HPC-AI Cloud" with B200 and H200 rental priced per hour; the library itself is documented
+      and installed from the repository and PyPI. Searched the body for license key, premium and paid edition: none.'
+    accessed: '2026-11-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 612413d11ddba5d27e628a352c5bcbfbf966027d49ae4346652bf0a8ddd0e18c
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of colossalai. Installs from source and the preinstalled images on
+    HPC-AI Cloud are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/colossalai/recent
+    shows: last_month 12,511, last_week 1,281, last_day 117 for the colossalai package.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9952fe227079d841f84abcc78f4bf6fa24d9a3dbfd68a60df3332cb29530ef40
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Parallelism: data, pipeline, 1D/2D/2.5D/3D tensor, sequence, ZeRO and auto-parallelism; heterogeneous memory management
+    (PatrickStar); MoE parallelism; ColossalChat RLHF pipeline with LoRA; published benchmarks of 7B on 8 and 70B on 16 H200
+    or B200 GPUs, and a DeepSeek 671B fine-tuning guide. No published run at the thousands-of-GPU scale of Megatron-LM.'
+  confidence: medium
+  note: Colossal-AI composes data, pipeline, tensor and sequence parallelism with ZeRO and offloading, and carries RLHF and
+    large-model fine-tuning recipes on top. It sits a step below Megatron-LM, whose published scaling runs reach thousands
+    of GPUs where Colossal-AI's reach tens.
+  relative_to: megatron-lm
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://developer.nvidia.com/megatron-core
+      shows: Redirects to NVIDIA's Megatron Core page, which still says "with GPT models ranging from 2 billion to 462 billion
+        parameters, Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs" and "near linear scaling from 96
+        to 4608 H100 GPUs" for a 177 billion parameter GPT-3 model.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 82683453c64fe6f1e15412ac80d94b3820d1b54c3fd52c0a71edbe841a4be33c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/hpcaitech/ColossalAI/main/README.md
+    shows: 'The Features list gives "Data Parallelism", "Pipeline Parallelism", "1D, 2D, 2.5D, 3D Tensor Parallelism", "Sequence
+      Parallelism", "Zero Redundancy Optimizer (ZeRO)", "Auto-Parallelism" and "PatrickStar" memory management; the benchmark
+      table runs 7B models on 8 and 70B models on 16 H200 or B200 GPUs; the news lists a "DeepSeek 671B Fine-Tuning Guide"
+      (2025/02) and the applications include "ColossalChat: An Open-Source Solution for Cloning ChatGPT With a Complete RLHF
+      Pipeline".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 612413d11ddba5d27e628a352c5bcbfbf966027d49ae4346652bf0a8ddd0e18c
