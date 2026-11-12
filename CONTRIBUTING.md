@@ -2,8 +2,9 @@
 
 Thanks for helping map the open source AI stack. All curation happens through pull requests
 editing the YAML files in `sources/`. CI validates every PR, so you can't break anything a
-maintainer won't catch. This project is [MIT licensed](LICENSE); contributions are accepted
-under the same terms.
+maintainer won't catch. The data in `sources/` is licensed [CC BY 4.0](LICENSE-DATA) and the
+code is [MIT licensed](LICENSE); contributions are accepted under the same terms, so a change to
+`sources/` is contributed under CC BY 4.0 and any other change under MIT.
 
 ## Quick start
 

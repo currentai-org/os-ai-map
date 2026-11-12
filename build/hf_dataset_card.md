@@ -1,5 +1,5 @@
 ---
-license: mit
+license: cc-by-4.0
 language:
 - en
 pretty_name: Open Source AI Gap Map
@@ -159,8 +159,14 @@ pull requests against `sources/` in the source repository.
 
 ## License
 
-MIT, the same as the source repository. Cited pages remain the property of their owners; the
-`shows` field quotes them briefly as evidence.
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You may reuse the data for any
+purpose, including commercially, provided you credit the Open Source AI Gap Map (the citation
+below is enough) and indicate any changes you made. Releases up to v0.6.0 were published under
+MIT and remain available under those terms. The code that builds this dataset is MIT licensed
+in the source repository.
+
+Cited pages remain the property of their owners; the `shows` field quotes them briefly as
+evidence.
 
 ## Citation
 

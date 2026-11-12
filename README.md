@@ -10,7 +10,8 @@
   <img src="https://img.shields.io/badge/organizations-857-F0776A" alt="857 organizations">
   <img src="https://img.shields.io/badge/products-1269-F0776A" alt="1269 products">
   <a href="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml"><img src="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg" alt="Validate"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="LICENSE-DATA"><img src="https://img.shields.io/badge/data-CC%20BY%204.0-blue.svg" alt="Data license: CC BY 4.0"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue.svg" alt="Code license: MIT"></a>
 </p>
 
 </div>
@@ -137,4 +138,7 @@ boundary — is in [`docs/architecture/`](docs/architecture/).
 
 ---
 
-Code and data are [MIT licensed](LICENSE).
+The data in `sources/` and everything generated from it, including the
+[Hugging Face dataset](https://huggingface.co/datasets/current-ai-official/os-ai-map), is licensed
+[CC BY 4.0](LICENSE-DATA): reuse it for any purpose, with credit. The code is
+[MIT licensed](LICENSE). Releases up to v0.6.0 were published under MIT.
