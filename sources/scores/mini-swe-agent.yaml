@@ -1,0 +1,93 @@
+product: mini-swe-agent
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 04d809c holds 221 paths with one MIT LICENSE.md and no ee/, enterprise/, commercial/
+        or proprietary/ path; it is an academic project from the Princeton and Stanford team behind SWE-bench
+        and SWE-agent, and the README describes no hosted service or paid edition
+  confidence: high
+  note: mini-swe-agent is MIT licensed, and the whole agent installs from its public repository or PyPI.
+    It is a research project with no hosted service or paid edition, so nothing is held back.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the tree at 04d809c holds 221 paths with one
+    MIT LICENSE.md and no ee/, enterprise/, commercial/ or proprietary/ path; it is an academic project
+    from the Princeton and Stanford team behind SWE-bench and SWE-agent, and the README describes no hosted
+    service or paid edition)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/SWE-agent/mini-swe-agent/main/LICENSE.md
+    shows: The LICENSE.md is the MIT License, "Copyright (c) 2025 Kilian A. Lieret and Carlos E. Jimenez".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0f796e58f91d1c07bb2c1b1d0f8bf3a83017c3a5dec1bdc6fae733b2cd2e875b
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/mini-swe-agent/json
+    shows: PyPI metadata for mini-swe-agent 2.4.6, uploaded 2026-07-23, carries the MIT License classifier
+      and names https://github.com/SWE-agent/mini-swe-agent as its repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af3e278538351aba91c3e3645d20abb1d4b535b9275ee4660d10075c8fc3297f
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/SWE-agent/mini-swe-agent/main/README.md
+    shows: The README says it is "Built by the Princeton & Stanford team behind SWE-bench, SWE-agent,
+      and more" and wants "to be a hackable tool, not a black box"; it describes no hosted or paid tier.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9982d90b7566f2f3fa5e9811b475d5e8e2a84e2df80cf3f1e4be6e820b129835
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of mini-swe-agent over the trailing month. Automated evaluation
+    and CI runs add to the count, so it measures installs rather than people.
+  sources:
+  - url: https://pypistats.org/api/packages/mini-swe-agent/recent
+    shows: last_month 11,605,679 downloads for mini-swe-agent (last_week 3,349,901, last_day 577,948).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2f719d70650d034078f00d0707408c77b88f427067b3fb9ca8553cbe8edbab20
+capability:
+  score: 3
+  basis: feature_matrix
+  value: bash-only agent of about 100 lines; independent subprocess actions; linear history; local, Docker,
+    Podman, Singularity and Bubblewrap environments; any model through LiteLLM; README reports over 74%
+    on SWE-bench Verified with the model left unnamed in that line
+  confidence: medium
+  note: mini-swe-agent reduces a coding agent to bash and a linear history, and its README reports SWE-bench
+    Verified results that depend on the model it drives. It sits level with SWE-agent, the same team's
+    earlier and more configurable agent, whose own README now recommends mini-swe-agent instead.
+  relative_to: swe-agent
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/SWE-agent/SWE-agent/main/README.md
+      shows: The SWE-agent README says "Most of our current development effort is on mini-swe-agent" and
+        "Our general recommendation is to use mini-SWE-agent instead of SWE-agent going forward", while
+        describing SWE-agent as configurable through a single yaml file.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dcd880557720efbab0f5c0e68f2bc742309efecfce83244c9e670ec1f1adf76f
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/SWE-agent/mini-swe-agent/main/README.md
+    shows: The README says the agent "Does not have any tools other than bash", executes actions with
+      subprocess.run, has "a completely linear history", supports local, docker/podman, singularity/apptainer
+      and bublewrap environments, and "Scores >74% on the SWE-bench verified benchmark".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9982d90b7566f2f3fa5e9811b475d5e8e2a84e2df80cf3f1e4be6e820b129835
