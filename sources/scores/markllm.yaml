@@ -1,0 +1,116 @@
+product: markllm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache 2.0 text
+    source:
+      value: public
+      detail: the toolkit, its algorithm configurations and evaluation pipelines
+    core-gated:
+      value: ungated
+      detail: an academic research toolkit with nothing sold beside it, and the tree has no enterprise path
+  confidence: high
+  note: The whole toolkit is Apache-2.0 in one public repository. It is an academic research project with no paid
+    edition, so nothing is held back from the published code.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache 2.0 text);source:public(the toolkit, its
+    algorithm configurations and evaluation pipelines);core-gated:ungated(an academic research toolkit with nothing
+    sold beside it, and the tree has no enterprise path)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/THU-BPM/MarkLLM/main/LICENSE
+    shows: 'The LICENSE body: the Apache License, Version 2.0 text, with its appendix template left unfilled.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/THU-BPM/MarkLLM/files/main
+    shows: 'The 195-file tree of THU-BPM/MarkLLM at `main`: config, dataset, evaluation, visualize and watermark
+      folders, one root LICENSE, and no ee/, enterprise/, commercial/ or proprietary/ path. Path absence only, paired
+      with the README cited beside it.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f8e3e99cbfce23f35e310b4e4faa7d17740f1780d24e7ab6386a124b3b1cfba0
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/THU-BPM/MarkLLM/main/README.md
+    shows: 'README: "MarkLLM is an open-source toolkit developed to facilitate the research and application of watermarking
+      technologies within large language models"; install from PyPI with "pip install markllm"; no pricing, paid
+      tier or license key.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f9f5219d9e0e4e7e77ca68af6cbbdf91b44f25720bc77396c70bffbefaffb9de
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of the markllm package, the toolkit's published install.
+  sources:
+  - url: https://pypistats.org/api/packages/markllm/recent
+    shows: last_month = 103 downloads for the package markllm.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f709a253c38bc6b56043bb8431cfa0d3ee39b10ed07a63c96b0a5ff0387b42ce
+  - url: https://pypi.org/pypi/markllm/json
+    shows: 'PyPI markllm 0.1.5, uploaded 2024-10-21, summary "MarkLLM: An Open-Source Toolkit for LLM Watermarking",
+      home page https://github.com/THU-BPM/MarkLLM.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 479d655c9fba1c05cb501f25c628ad3a728af1a6f20dac92d9befa3ddbec35c3
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Generation-time watermarking and detection for about two dozen published text-watermark methods behind
+    one interface, with mechanism visualizations and detection, robustness and quality pipelines. Most detectors
+    take the hash key set at generation; UPV detects with a separate detector network instead.
+  relative_to: synthid-text
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/google-deepmind/synthid-text/main/README.md
+      shows: 'SynthID Text''s README: a Frequentist detector "which requires no training" or a Bayesian detector
+        that requires training, and watermarks that depend on "the secret `key: int`" set in the configuration.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 4601bb5c928d211f84e48af0242bf74ad955e4fe1407074915b965b5201e73b0
+  confidence: medium
+  note: A MarkLLM watermark is checked by running the toolkit's detector with the key the generator used, so an
+    outsider who lacks the key takes the operator's word, as with SynthID-Text. UPV, one method among many, lets
+    anyone holding its detector network check a mark; the toolkit's usual output is still a detection score that
+    only the key holder can reproduce.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/THU-BPM/MarkLLM/main/README.md
+    shows: The supported-algorithm table (KGW, Unigram, SWEET, UPV, EWD, SIR, X-SIR, DiPmark, Unbiased, TS, SynthID-Text,
+      PF, MorphMark, SemStamp and others), the visualization tools, and "12 evaluation tools that cover detectability,
+      robustness, and impact on text quality".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f9f5219d9e0e4e7e77ca68af6cbbdf91b44f25720bc77396c70bffbefaffb9de
+  - url: https://raw.githubusercontent.com/THU-BPM/MarkLLM/main/config/KGW.json
+    shows: 'The KGW configuration: "hash_key": 15485863, gamma, delta and "z_threshold": 4.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 55c19e719d62d7cc36402036d98377a0c41a2200eb7b4f36e1fa2af26a6686b6
+  - url: https://raw.githubusercontent.com/THU-BPM/MarkLLM/main/config/UPV.json
+    shows: 'The UPV configuration: "detect_mode": "network" with a separate "detector_model_name" beside the generator
+      model.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5c684806f590b20a1644c25fe327a6f6f24cda674051a91a38d1e057bdb38b65
+  - url: https://arxiv.org/abs/2405.10051
+    shows: 'Abstract: "we introduce MarkLLM, an open-source toolkit for LLM watermarking" with "a comprehensive
+      suite of 12 tools spanning three perspectives, along with two types of automated evaluation pipelines".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 156da6f15b75dc138c1ecafa5ba4bfc8433b161b716e488639ce1a0e39a40ddb
