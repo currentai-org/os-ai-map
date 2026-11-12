@@ -31,6 +31,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Each tagged release is published as a Hugging Face dataset: products, organizations, categories,
+  every citation behind a score, and per-release product and category history, as Parquet with a
+  dataset card (`build/export_hf.py`, `.github/workflows/huggingface.yml`).
 - `capability.own_components`: cited, schema-validated claims that a suite's second-slug components
   are its own items, scoped by language, task or split, with INCLUDE's Arabic and Turkish withdrawn
   and its mixed pools marked (R-2026-11-03-c, -i). The depth calibration reads them from the records
