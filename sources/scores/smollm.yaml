@@ -143,10 +143,16 @@ capability:
   score: 3
   basis: benchmark
   basis_detail: reasoning/multilingual
-  value: Outperforms Llama-3.2-3B and Qwen2.5-3B; competitive with 4B Qwen3/Gemma3
+  value: 'Outperforms Llama-3.2-3B and Qwen2.5-3B; competitive with 4B Qwen3/Gemma3. Apertus report, one
+    harness, post-trained averages (knowledge / coding and math / reasoning / held-out): SmolLM3-3B 54.4
+    / 58.5 / 59.9 / 49.2, Apertus-70B-Instruct 63.4 / 54.4 / 61.8 / 51.4, EuroLLM-22B-Instruct-Preview 58.3
+    / 53.0 / 58.8 / 50.2, Llama-3.1-8B-Instruct 59.2 / 60.0 / 63.9 / 50.3.'
   confidence: high
   note: SmolLM3-3B outperforms Llama-3.2-3B and Qwen2.5-3B and stays competitive with the larger 4B Qwen3
-    and Gemma 3. That comparison is against other small models rather than the broader frontier.
+    and Gemma 3, with a reasoning mode, tool calling and a 128K context. In the Apertus report's shared
+    evaluation of instruction-tuned models it lands close to Apertus-70B, a preview of EuroLLM-22B and Llama
+    3.1 8B, ahead of Apertus on coding and math and behind all three on knowledge recall. As a base model
+    it trails those larger models on knowledge, as a 3B model would.
   last_verified: '2026-11-12'
   sources:
   - url: https://huggingface.co/blog/smollm3
@@ -154,11 +160,29 @@ capability:
       with larger 4B alternatives (Qwen3 & Gemma3)".
     accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 15fb578fa813e8391bacce55d33602a320cafce36e9e1fa80d900715f529e3b1
+    content_sha256: b5cfa086bfd8654d9a78ca37154aa3d011c243b7728242efd5ec1a8b2b717d2d
   - url: https://huggingface.co/api/models?author=HuggingFaceTB&sort=createdAt&direction=-1&limit=30
     shows: The Hub listing of HuggingFaceTB models sorted by creation date shows no newer SmolLM text flagship
       after "HuggingFaceTB/SmolLM3-3B-checkpoints"; later entries are small experiments such as "HuggingFaceTB/nanowhale-100m-base"
       and "HuggingFaceTB/SmolLM3-3B-GSM8K-SFT".
     accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 12695b97163ebc7e7fca1feaf3c0c6e710a342f9ac16bcee77d05dd7b5010029
+    content_sha256: 34d8c8dc0814b25b7a68a0187ecf0541e71035cf5c03e996919b9e828ff1985a
+  - url: https://huggingface.co/HuggingFaceTB/SmolLM3-3B/raw/main/README.md
+    shows: 'Model card, extended-thinking table: "| High school math competition | AIME 2025 | <u>36.7</u>
+      | 30.7 | **58.8** |" and "| Graduate-level reasoning | GPQA Diamond | <u>41.7</u> | 39.9 | **55.3**
+      |" (SmolLM3-3B, Qwen3-1.7B, Qwen3-4B). Every comparison on the card is against 1.7B-4B models (Qwen2.5-3B,
+      Llama 3.2 3B, Qwen3-1.7B, Qwen3-4B), and Qwen3-4B leads SmolLM3 on most rows.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 24f16f90b883af3618425a589783a944356a7fc2e3cfa69b579c9ff06963e178
+  - url: https://arxiv.org/pdf/2509.14233
+    shows: 'Apertus technical report, one lm-evaluation-harness setup for every model. Post-trained averages,
+      tables 17 (knowledge), 18 (coding and math), 19 (reasoning and instruction following) and 21 (held-out
+      tests): SmolLM3-3B 54.4, 58.5, 59.9, 49.2; Apertus-70B-Instruct 63.4, 54.4, 61.8, 51.4; EuroLLM-22B-Instruct-Preview
+      58.3, 53.0, 58.8, 50.2; Llama-3.1-8B-Instruct 59.2, 60.0, 63.9, 50.3. Table 21 GPQA Main: SmolLM3-3B
+      34.2, Apertus-70B-Instruct 30.6, Llama-3.1-8B-Instruct 28.3. Base models, tables 14 and 15: SmolLM3-3B
+      61.6 and 49.7 against Apertus-70B 67.5 and 58.9, Llama3.1-8B 65.4 and 53.2, EuroLLM-9B 62.8 and 47.7.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f
