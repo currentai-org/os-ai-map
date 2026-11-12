@@ -1,0 +1,103 @@
+product: neuralforecast
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/Nixtla/neuralforecast
+    core-gated:
+      value: ungated
+      detail: Nixtla's paid offering is the separate TimeGPT service
+  confidence: high
+  note: Apache-2.0 and built from the public repository. Nixtla sells TimeGPT, a closed forecasting model reached
+    through an API, and an enterprise plan built on it; its pricing lists NeuralForecast among the open libraries
+    that are free, with nothing withheld.
+  raw: license:Apache-2.0(OSI);source:public(github.com/Nixtla/neuralforecast);core-gated:ungated(Nixtla's paid
+    offering is the separate TimeGPT service)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Nixtla/neuralforecast/HEAD/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, January 2004.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d392f3d2969e354d7e6aef8fc6df5590ef5c20eea4b946191bd76a6138b4e81c
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/neuralforecast/json
+    shows: PyPI record for neuralforecast 3.3.1, uploaded 2026-11-10, license "Apache-2.0", Homepage github.com/Nixtla/neuralforecast.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 556f965bd9e91e2f638900137a491a6289818e4ec1016168db29559c70b602f3
+    establishes:
+    - license
+    - source
+  - url: https://www.nixtla.io/pricing
+    shows: 'Nixtla pricing: "Free Forever Build your own pipelines Open Source libraries: StatsForecast MLForecast
+      NeuralForecast HierarchicalForecast UtilsForecast CoreForecast"; "Enterprise ... Everything in Open Source,
+      plus: Premium Models and Updates Fine-tuned on your data".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fe08faeb8dd45c3b6ad3c0af3432c00e0f8a6a4b881817f16f9b8edbd2e45932
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/Nixtla/nixtla/HEAD/README.md
+    shows: 'Nixtla SDK README: "TimeGPT itself is closed source. The SDK is a client".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6357cb08697b4eaaa07da830d36c4a1c22c6ae8929cb50caee42cd529dd901db
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/Nixtla/neuralforecast/files/main
+    shows: Repository tree of 410 paths with no ee, enterprise, commercial or proprietary directory.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d550ec60978fd52f0e9acfa00a629496beb14322627aa207618f99605cd57a08
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the neuralforecast package.
+  sources:
+  - url: https://pypistats.org/api/packages/neuralforecast/recent
+    shows: last_month 124,517 downloads of neuralforecast
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4a03306bdab226572f18efaa54b4bf5b7bab252dd45fe9091d61eb9ff0cca33c
+capability:
+  score: 3
+  basis: feature_matrix
+  value: about 30 neural forecasting models - MLP, RNN, LSTM, GRU, TCN, DeepAR, NBEATS, NBEATSx, NHITS, TiDE, TSMixer,
+    DLinear, TFT, Informer, Autoformer, FEDformer, PatchTST, iTransformer, TimesNet, StemGNN, TimeLLM and others
+    - with exogenous covariates, probabilistic losses and Auto variants that tune hyperparameters on Ray or Optuna
+  relative_to: sktime
+  relation: at
+  confidence: high
+  note: NeuralForecast is a catalog of deep-learning forecasters with the tools to train and compare them, and its
+    Auto variants tune each model's settings. Choosing which architecture to use is left to the user, as in sktime,
+    whose toolkit is broader.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://www.sktime.net/en/stable/
+      shows: 'sktime site: "Unified API 500+ models Open source Permissive license" - the toolkit scope NeuralForecast
+        is compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c66140f5da61c5d11029529fb7affdc09c6f1f03644cf701218fbbc5cc5e7407
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Nixtla/neuralforecast/HEAD/README.md
+    shows: 'README: "The models range from classic networks like RNNs to the latest transformers", listing MLP,
+      LSTM, GRU, RNN, TCN, TimesNet, BiTCN, DeepAR, NBEATS, NBEATSx, NHITS, TiDE, DeepNPTS, TSMixer, DLinear, NLinear,
+      TFT, Informer, AutoFormer, FedFormer, PatchTST, iTransformer, StemGNN and TimeLLM; features "Automatic Model
+      Selection with distributed automatic hyperparameter tuning".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0360a4f3d8ebb24c880e8675a8a57cc325af32210d729b6f492608b102fdfe37
