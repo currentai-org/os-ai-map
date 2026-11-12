@@ -62,9 +62,9 @@ held:
         on one suite. On 2026-11-12 its card reports 5-shot results for ALIA-40b alone on BSC's own harness and says
         comparisons with other baselines will come in a forthcoming technical report, which is not yet on arXiv; the
         Salamandra technical report evaluates only an intermediate, un-annealed 40B checkpoint against 7B-class models.
-        The one_below apertus edge is a judgment from scale, and if apertus moves to 2 it would force 1 with no evidence
-        for it. Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those
-        peers on the same benchmarks, shots and metric.
+        The one_below apertus comparison was removed because no published evaluation supports it (R-2026-11-12-n).
+        Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those peers
+        on the same benchmarks, shots and metric.
       since: '2026-09-29'
   amazon-bedrock-evaluations:
     adoption:
@@ -91,15 +91,15 @@ held:
       since: '2026-10-07'
   apertus:
     capability:
-      because: 'Read on 2026-11-12, the pretraining-suite fallback does not support at llama. Llama''s capability is
-        set by Llama 4 Maverick, and no published table puts Apertus beside it. The tables that pair Apertus with a
-        Llama model put Apertus-70B level with Llama 3.1 70B and Llama 4 Scout on general understanding (67.5 against
-        67.3 and 67.9, Apertus report Table 14) but about 8 points behind both on factual knowledge (58.9 against 66.7
-        and 67.0, Table 15), and behind Llama 3.3 70B base on the EuroLLM-22B report''s 3-shot suite (63.6 against 69.1
-        averaged, Table 21); Meta''s Llama 4 card puts Maverick above Scout and Llama 3.1 70B on every pretrained text
-        benchmark. That points to one below llama, proposed under #1022 for a maintainer ruling, which also has to settle
-        smollm: SmolLM3-3B, scored 3, trails Apertus-70B on the same Apertus tables (61.6 and 49.7). Settled by that
-        ruling, or by an Intelligence Index v5.0.1 reading of an Apertus release beside a Llama one.'
+      because: 'Read on 2026-11-12, the pretraining-suite fallback finds no table that puts Apertus beside Llama 4
+        Maverick, which sets llama''s score. The tables that pair Apertus-70B with earlier Llama checkpoints put it
+        level on general understanding (67.5 against 67.3 for Llama 3.1 70B and 67.9 for Llama 4 Scout, Apertus report
+        Table 14), about 8 points behind on factual knowledge (58.9 against 66.7 and 67.0, Table 15), and behind Llama
+        3.3 70B base on the EuroLLM-22B report''s 3-shot suite (63.6 against 69.1, Table 21). A move to 2, one below
+        llama, was considered and rejected (R-2026-11-12-n): these are earlier checkpoints rather than the governing
+        releases, they measure English knowledge rather than the product''s multilingual, reasoning and long-context
+        capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current
+        Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both.'
       since: '2026-09-29'
     adoption:
       because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the three declared checkpoints sum to
@@ -593,12 +593,11 @@ held:
       settled_by: scheduled_reconciliation
   eurollm:
     capability:
-      because: 'The comparison relative_to apertus was re-attested on 2026-11-12 and holds: in the EuroLLM-22B report
-        EuroLLM-22B leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base
-        leads EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21). The score cannot be confirmed while apertus
-        is held, and the same report puts EuroLLM-22B close to Llama 3.1 8B (level on the base table, 60.6 against 60.1
-        averaged, and ahead on seven of ten post-trained English benchmarks), the class internlm and snowflake-arctic
-        are placed beside at 2. Settled by the maintainer ruling on the apertus and eurollm change proposed under #1022.'
+      because: 'The comparison relative_to apertus was re-attested on 2026-11-12: in the EuroLLM-22B report EuroLLM-22B
+        leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base leads
+        EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21), which supports the two at the same score.
+        A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed
+        while apertus is held. Settled with apertus.'
       since: '2026-11-12'
     adoption:
       because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the ten declared EuroLLM checkpoints
@@ -1183,10 +1182,10 @@ held:
     capability:
       because: 'Luciole-23B-Base''s card charts it against EuroLLM-22B-2512 base on one harness: about even in English
         (averaged normalized score about 49 against 48, where EuroLLM-22B''s TriviaQA result is implausibly low) and
-        about 8 points ahead in French (about 42 against 34). That supports luciole at eurollm, which agrees with luciole
-        2 only if eurollm moves to 2 with apertus; with eurollm at 3 it contradicts luciole 2. No published table places
-        Luciole beside Apertus or a Llama model. Settled by the maintainer ruling on the apertus, eurollm and luciole
-        change proposed under #1022.'
+        about 8 points ahead in French (about 42 against 34). A base-model comparison alone does not establish parity
+        between the two families, so luciole stays 2 (R-2026-11-12-n), and whether the French advantage supports 3
+        is left to a targeted review. No published table places Luciole beside Apertus or a Llama model. Settled by
+        that review, or by a comparison of the current releases on one suite.'
       since: '2026-09-29'
   mace:
     adoption:
