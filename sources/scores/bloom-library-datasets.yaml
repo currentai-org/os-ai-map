@@ -88,9 +88,12 @@ capability:
   score: 1
   basis: feature_matrix
   basis_detail: coverage and downstream use for multilingual storybook data
-  value: The Bloom Library datasets hold community-written storybooks in 363 languages, with a median of two
+  value: 'The Bloom Library datasets hold community-written storybooks in 363 languages, with a median of two
     stories per language, in text, captioning, storytelling and speech sets documented in an EMNLP paper, and
-    their text was a small part of the BLOOM model's training data.
+    their text was a small part of the BLOOM model''s training data. The language-modeling set''s three text
+    files total about 43 MB (about 11 million tokens, estimated; no token count is stated). The paper gives
+    two speech figures that disagree: 428 hours of audio in its prose and 2,873 minutes (about 48 hours) in
+    Table 1. This record uses Table 1''s figure, which matches the paper''s per-family and per-language counts.'
   confidence: medium
   note: The datasets gather community-written storybooks in hundreds of languages into text, captioning, storytelling
     and speech sets documented in an EMNLP paper, and their text went into the BLOOM model's training data
@@ -99,17 +102,30 @@ capability:
     model gathers far more text per language.
   relative_to: glot500-c
   relation: two_below
-  last_verified: '2026-09-24'
+  last_verified: '2026-11-12'
   sources:
   - url: https://huggingface.co/datasets/sil-ai/bloom-lm
     shows: '"It includes data from 364 languages across 31 language families. There is a mean of 32 stories
-      and median of 2 stories per language." "this data was used in the training of the BLOOM model".'
-    accessed: '2026-09-24'
+      and median of 2 stories per language." "Although this data was used in the training of the"; "this dataset
+      only represents a small portion of the data used to train that model".'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 623301c9e5dcac698800db4725ec1e521d0569ff6d0c129ad0a39b56f865126a
+    content_sha256: be4ca24aaecdfbb702b4dabf45492db880deb514466d58077ff50b647ea66095
+  - url: https://huggingface.co/api/datasets/sil-ai/bloom-lm/tree/main
+    shows: 'File sizes in bytes: bloom_lm_train.json 35046861, bloom_lm_val.json 4276285, bloom_lm_test.json
+      4039385.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 04e1fa5ad4913a3ae24a8de9fea19996a5c11da02a06bb97e6f60fa54049b968
   - url: https://arxiv.org/abs/2210.14712
-    shows: '"covers 363 languages across 32 language families" for language modeling, image captioning, visual
-      storytelling, and speech.'
-    accessed: '2026-09-24'
+    shows: '"the initial release of the Bloom Library datasets covers 363 languages across 32 language families".'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 3878addb5c6410ccfad537c4cba14ecc2afa20803a8f2af85445fa58dc2b8908
+    content_sha256: f56d9fdd4f7916c33b057a99ac752d5f97aafd536beeec248e3203ea92b5f9b1
+  - url: https://arxiv.org/pdf/2210.14712
+    shows: '"Our bloom-speech dataset comprises 428 hours of total audio in 56 languages"; "a mean of 159 minutes
+      and median of 31 minutes of audio per language family"; Table 1 total row: 25680 audio files, 2873 audio
+      minutes.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dd08535c4d1715682030721855a019cfdd911364597d168452a68e936df15805

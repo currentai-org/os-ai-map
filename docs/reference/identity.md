@@ -602,11 +602,19 @@ ones `languages` lists. [`capability.md`](capability.md#per-language-coverage) i
 
 ### Code lists, and who writes the fields
 
-The schemas check only the shape of a code. The allowed sets are the frozen snapshots
-`sources/snapshots/iso-3166-1.tsv` and `sources/snapshots/iso-639-3.tab`, read through
+The schemas check only the shape of a code. The allowed sets are two files, read through
 `build/vocabulary.py` (`country_codes`, `language_codes`) by both `build/validate.py` and
-`build/apply_attributes.py`, so the gate and the writer cannot disagree about a code. They are
-snapshots, not live reads: a new code enters by replacing the file in a reviewed change.
+`build/apply_attributes.py`, so the gate and the writer cannot disagree about a code:
+
+- `sources/snapshots/iso-3166-1.tsv`, a frozen snapshot of ISO 3166-1. A new country code enters
+  by replacing the file in a reviewed change.
+- `sources/snapshots/language-codes.tsv`, the ISO 639-3 codes the map's records use and no others.
+  SIL's terms do not let this repository redistribute the code set, so the full code tables live
+  only on Artio, inside `currentai.language_representation.classification` (R-2026-11-11-p). A
+  code new to the map fails validation until `uv run python -m build.language_codes --sync`
+  confirms it has a row in that table and adds it; the sync needs an OSO API key. A code with no
+  row is not an ISO 639-3 code of scope individual or macrolanguage, and the sync refuses it.
+  `--prune` drops a code no record uses any more, and a test fails until it is dropped.
 
 An editor sets one of these by hand in the same PR that adds the org or product. A bulk pass
 records its findings as a JSONL ledger (`docs/sweeps/2026-09-30-identity-attributes/README.md`

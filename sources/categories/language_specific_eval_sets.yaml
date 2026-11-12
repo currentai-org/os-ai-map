@@ -68,9 +68,9 @@ products:
 - include-benchmark
 - indicgenbench
 - indicxtreme
-- indonlu
 - kazmmlu
 - khayyam-challenge
+- kmmlu
 - lahaja
 - laobench
 - milu
@@ -86,19 +86,25 @@ comments: >-
   benchmark_eval_data) and R-2026-10-30-b (the kind test below), and published 2026-11-08 with the
   depth ladder, when the 22 sets the 2026-10-30 dry run placed here moved from
   language_specific_datasets with their computed bands (R-2026-11-07-b).
-  Interim membership. The roster is frozen at those 22 sets and the boundary is provisional: the
-  language test below still uses language_specific_datasets' interim line, and the per-language
-  classification of R-2026-10-30-d, when it is adopted, refines membership for both categories at
-  once. A change of membership does not change how a set is banded, since the depth ladder reads
-  only a set's own evidence (R-2026-11-07-b).
+  Membership since 2026-11-11. The per-language classification of R-2026-10-30-d is adopted, and
+  the 2026-11-11 membership review applied it to all 22 sets
+  (docs/sweeps/2026-11-10-language-membership-review.md). IndoNLU targets only Indonesian, which is
+  high at both ends, so it moved to benchmark_eval_data (R-2026-11-11-b). TurkishMMLU stays on
+  the purpose test, because Turkish is unresolved between high and mid, and is re-read each
+  quarter (R-2026-11-11-c). KMMLU, for Korean, which is mid, joined through add-product with its
+  band computed by the depth ladder (R-2026-11-11-e). The roster holds 22 sets. A change of
+  membership does not change how a set is banded, since the depth ladder reads only a set's own
+  evidence (R-2026-11-07-b).
   Slug. The language_specific_ prefix pairs this category with its corpus sibling and the
   membership line the two share. eval_sets is the rulings' own term; it covers shared-task test
   sets and speech test sets as well as benchmarks, and does not read as a sub-category of
   benchmark_eval_data.
   Membership is two tests. Language: the set was built for an underrepresented language or a set
-  of related ones, by language_specific_datasets' purpose test and its current line (Chinese,
-  Japanese, Korean, Spanish and Portuguese are out). The per-language classification in
-  R-2026-10-30-d replaces that line for both categories at once. Kind (R-2026-10-30-b): by what
+  of related ones, by language_specific_datasets' purpose test and the line both categories read
+  from the per-language classification (docs/reference/language-classification.md; R-2026-10-30-d,
+  R-2026-11-10-j): in when any target language is below the high written-material class at both
+  ends, out when every target language is high at both ends, and otherwise the purpose test
+  decides alone. Kind (R-2026-10-30-b): by what
   the set's paper or card says it is for. A set published as a benchmark or as a shared-task test
   belongs here even when it ships training splits; a labeled set published for training is a
   corpus and stays in language_specific_datasets, and so does SEACrowd, a loader hub, as ruled.

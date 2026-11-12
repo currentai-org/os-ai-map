@@ -49,8 +49,10 @@ warehouse/assets.yaml  The GOVERNED asset inventory: governed outputs (Gap Map p
                        grain, provenance and derived reads/read_by. The only registry.
 warehouse/dependencies.yaml  External OSO inputs a governed asset reads — dependency contracts
                        (purpose, grain, freshness, verified_revision or content hash, owner: oso).
-                       Not owned; no migration/retirement/mirror obligations. (Introduced by the
-                       ADR-003 execution PRs; specified in adr-003-repository-scope-boundary.md.)
+                       Not owned; no migration or retirement obligation. A currentai.* contract
+                       claims a read-only mirror file under warehouse/models/ and its reader lands
+                       in the same PR (skills/add-data-source/SKILL.md). Specified in
+                       adr-003-repository-scope-boundary.md.
 warehouse/models/      SQL and Python model files, models/<dataset>/<table> mapping to
                        currentai.<dataset>.<table>. NOT an organization-wide platform mirror. Almost
                        all of them are READ-ONLY mirrors of platform-owned models, claimed by

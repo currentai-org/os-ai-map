@@ -75,33 +75,44 @@ adoption:
     http_status: 200
     content_sha256: c4d57a238968ec3f4526ec1e377220e55474cda6ed4bc1cd07538c3af2e90936
 capability:
-  score: 2
+  score: 4
   basis: feature_matrix
   basis_detail: coverage and downstream use for Icelandic pretraining text
   value: The Icelandic Gigaword Corpus holds about 2.4 billion running words of tagged and lemmatized Icelandic
     text written by people, about 1.46 billion of it in the open release, documented on a detailed homepage
-    and card, with one community model listed as trained on it.
+    and card, with the IceBERT-IGC model trained on it in a published paper.
   confidence: medium
   note: The IGC is the largest documented corpus of Icelandic, built from news, parliament, law, books and
-    more and released in yearly versions, and Icelandic Dynaword repackages its open parts, though only a community
-    model lists it as training data. With about a billion and a half words in its open release it is far below
-    the trillions of tokens in English pretraining corpora, much like Danish Dynaword for Danish.
-  relative_to: danish-dynaword
-  relation: at
-  last_verified: '2026-09-24'
+    more, and the IceBERT paper trains a model on it alone, while Icelandic Dynaword repackages its open parts.
+    Its billion and a half words are far below English corpora of trillions of tokens, but it is judged against
+    what Icelandic has, an official language with under a million speakers and a small written web, and on
+    that scale it is large.
+  last_verified: '2026-11-11'
   sources:
   - url: https://igc.arnastofnun.is/
     shows: '"IGC 2022 contains texts from until the end of the year 2021, in total 2429 million running words."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-11'
     http_status: 200
     content_sha256: e2c9346c21651a790f0b98afa57700d24aea7a90696f388cba224cace74fae5f
   - url: https://huggingface.co/datasets/arnastofnun/IGC-2024/raw/main/README.md
     shows: '"It contains around 1,457 million running words."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-11'
     http_status: 200
     content_sha256: 1e3cf47ed3a824e4a67b59f39592a34a402e14595aa99a9b89d595997a91a848
   - url: https://huggingface.co/api/models?filter=dataset:arnastofnun/IGC-2024
     shows: 'One model tagged with the dataset: Magnuss85/Norn-v3-Icelandic-9B.'
-    accessed: '2026-09-24'
+    accessed: '2026-11-11'
     http_status: 200
-    content_sha256: 588a210925d3224eab91033135dbf138037a7933dd3dc1543233d194044d2c49
+    content_sha256: 4871dd955bdc42a1bf1e19202f52b236f8dbd9984f537fd910825ed47a06f681
+  - url: https://arxiv.org/pdf/2201.05601
+    shows: '"We train separate models on each of these two sources"; the models are trained on "the IGC dataset
+      (IceBERT-IGC)".'
+    accessed: '2026-11-11'
+    http_status: 200
+    content_sha256: f51bda45ba7b47254ede397eef30566e2d71a1c349475d3e5884b87ac71fab6c
+  - url: https://huggingface.co/Magnuss85/Norn-v3-Icelandic-9B/raw/main/README.md
+    shows: 'IGC-2024: "Icelandic Gigaword Corpus, 974K documents across parliamentary, news, wiki, law, social,
+      and journal subcorpora. Used as seed text for Gemini synthetic generation."'
+    accessed: '2026-11-11'
+    http_status: 200
+    content_sha256: dba9fb5c8ecd3cb7c53ce00f88e4b9729f2d27735de8a78e10dca3b959b9f316
