@@ -56,14 +56,15 @@ The language of each item was checked in two passes:
    - Trueque: the question and answer were read by hand.
 
 The patterns are a screen for this decision. They are not a language-identification method for the
-map.
+map. For CHOCLO both passes are screens, so they can show that no question looks like another
+language; they do not establish the language of each question.
 
 ## Findings
 
 | Seed | Registry | Declared languages | Language of the items | Indigenous content | Finding |
 |---|---|---|---|---|---|
-| CHOCLO | `benchmark_eval_data` | `es` | Spanish: all 104,847 questions | 1,596 items mention an Indigenous people, language or term; 139 questions ask about a word in an Indigenous language, in Spanish | Incidental |
-| Trueque Benchmark (beta 0.1) | `benchmark_eval_data` | `es`, `pt` | Spanish and Portuguese: all 500 questions and answers | 228 questions tagged `Pueblos-Originarios` (128) or `Dialectos-y-Lenguas` (118), all in Spanish or Portuguese | Incidental |
+| CHOCLO | `benchmark_eval_data` | `es` | Consistent with Spanish: the screens found none of the 104,847 questions in another language | 1,596 items mention an Indigenous people, language or term; 139 questions ask about a word in an Indigenous language, in Spanish | Incidental |
+| Trueque Benchmark (beta 0.1) | `benchmark_eval_data` | `es`, `pt` | Consistent with Spanish and Portuguese: automated screens and manual review of 17 ambiguous rows found no evidence of questions or answers in another language | 228 questions tagged `Pueblos-Originarios` (128) or `Dialectos-y-Lenguas` (118), none found in another language | Incidental |
 | LatamGPT Corpus 1.0 | `training_synthetic_datasets` | `es`, `pt`, `en` | Spanish, Portuguese and English, per the card | No Indigenous-language target is documented. "Indigenous Peoples" is a topic label. | No documented qualifying coverage |
 
 ### CHOCLO
@@ -76,8 +77,9 @@ map.
 - **Language.** The metadata declares `es` only.
   - The first pass classed 104,497 of the 104,847 questions as Spanish and 7 as Portuguese. The
     rest were undecided.
-  - All 350 questions not classed Spanish contain a Spanish interrogative. No question is in
-    another language.
+  - All 350 questions not classed Spanish contain a Spanish interrogative. The two screens found no
+    question that is not Spanish. That is consistent with every question being in Spanish, but it
+    does not prove the language of each one.
   - 104,837 open with `¿`; the other 10 open with `Según`.
 - **Indigenous content.**
   - 1,596 items mention an Indigenous people, language or term.
@@ -96,6 +98,9 @@ map.
     and 36 as Portuguese.
   - The 17 rows it left undecided in either field were read by hand. All are Spanish or
     Portuguese.
+  - The other 483 rows rest on the function-word screen alone. Together, the screen and the manual
+    review found no evidence of questions or answers in another language. That supports the
+    conclusion but does not establish the language of every item.
   - Two of those have one-word answers that are words of Indigenous origin, "Xocomil" and
     "Serra", to Spanish questions.
 - **Indigenous content.**
