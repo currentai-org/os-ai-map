@@ -186,23 +186,46 @@ capability:
   score: 2
   basis: benchmark
   basis_detail: multilingual-pretrain-suite
-  value: null
+  value: 'Luciole-23B-Base card charts (base models, one harness): English averaged normalized score about
+    49 against EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60 and Gaperon-1125-24B about
+    42; French about 42 against EuroLLM-22B about 34, Mistral-Small about 42 and Gaperon about 32. Values
+    read from the charts; EuroLLM-22B''s TriviaQA and Mintaka results on this harness are far below every
+    other model''s.'
   confidence: low
-  note: Luciole is a multilingual French-English family up to 23B parameters that favors French cultural
-    representation and open data rights over benchmark performance, alongside Lucie-7B and Alia-40b. Its
-    23B-Base card publishes training-convergence and evaluation curves but no comparison against outside
-    models, so this reading comes from scale and positioning rather than a measured benchmark.
+  note: 'Luciole is a French-English family up to 23B parameters built around French cultural representation
+    and open data rights. Its 23B base model''s card charts it against EuroLLM-22B and Mistral Small 24B
+    on the same evaluations: about even with EuroLLM-22B in English and roughly 8 points ahead of it in
+    French, where it also matches Mistral Small. In English it trails Mistral Small by about 11 points.'
   sources:
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base
-    shows: 23B multilingual base model, ~30% French pretraining data, French/English focus; the card
-      carries training-convergence and evaluation sections but no comparison table against external
-      models
-    accessed: '2026-08-13'
+    shows: '23B multilingual base model trained on about 5 trillion tokens (English 41.9%, French 30.4%).
+      Evaluation section: "For comparison, we evaluated the model against the following models, which have
+      between 23B and 2B parameters and were trained on multilingual data, including French": Gaperon-1125-24B,
+      EuroLLM-22B-2512 and Mistral-Small-24B-Base-2501, with results published as charts of average performance
+      per language group, not as a table.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 1cd38455f6e0695d5059d7cae008bd5e7480893b268879a4363fd2e194949051
+    content_sha256: f385e2a94ca89f299d73b2112a7e0c98c80919ff1354be0a429661f30f68d2b9
   - url: https://huggingface.co/collections/OpenLLM-France/luciole-llm
-    shows: 1B / 8B / 23B base + Instruct-1.1 lineup; Instruct trained via SFT + DPO on math, science,
-      coding, chat, RAG, and translation
+    shows: 1B / 8B / 23B base + Instruct-1.1 lineup; Instruct trained via SFT + DPO on math, science, coding,
+      chat, RAG, and translation
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: e64616023bd63fd9a5dde0233482f031919825f46410781ccdad32566f873d02
+  - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/en_details.png
+    shows: 'Card chart "Overall Performance (English)", averaged normalized score: Luciole-23B-Base final
+      checkpoint about 49, EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60, Gaperon-1125-24B
+      about 42. Per-task panels: Luciole ahead of EuroLLM-22B on TriviaQA, MMLU pro, ARC easy, ARC challenge
+      and GSM8K, behind it on OpenBookQA, CommonsenseQA, SIQA, HellaSwag, Winogrande and PIQA; EuroLLM-22B''s
+      TriviaQA exact match is about 0.18 against about 0.57 for Luciole. Values read from the chart.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8a2b563ee61a2225b945e1dd910beefbacfc0aed247174fc83c329abe24a767c
+  - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/fr_details.png
+    shows: 'Card chart "Overall Performance (French)", averaged normalized score: Luciole-23B-Base about
+      42, Mistral-Small-24B-Base-2501 about 42, EuroLLM-22B-2512 about 34, Gaperon-1125-24B about 32. Per-task
+      panels: Luciole ahead of EuroLLM-22B on eight of nine French tasks, all but FQuADv2; EuroLLM-22B''s
+      Mintaka exact match is about 0.03. Values read from the chart.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4919b22a203f77f150cd8c311d9d34b457222fb6acf5ec9ca305a0dd73977629

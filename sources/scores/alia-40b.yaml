@@ -156,24 +156,29 @@ capability:
   score: 2
   basis: feature_matrix
   basis_detail: scale + multilingual pretraining (full benchmarks pending technical report)
-  relative_to: apertus
-  relation: one_below
   value: 40.4B params, decoder-only, 9.37T pretraining tokens, 35 European languages + 92 programming languages;
-    mid-tier and below the 2026 frontier. Detailed benchmarks are deferred to a forthcoming technical report;
-    the model card cites the Salamandra technical report (arXiv:2502.08489) for the shared methodology.
+    mid-tier and below the 2026 frontier. The card reports 5-shot results for this model alone on BSC's
+    own harness (English ARC-Challenge 59.4, ARC-Easy 86.5, PIQA 81.7) and defers comparisons with other
+    models to a forthcoming technical report; the Salamandra technical report (arXiv:2502.08489) evaluates
+    only an intermediate 40B checkpoint.
   confidence: low
   note: ALIA-40B is a serious 40B multilingual base model, but it is smaller than Apertus-70B and below
     the 2026 frontier on reasoning and knowledge. It targets Iberian and European-language coverage rather
     than state-of-the-art capability.
   sources:
   - url: https://huggingface.co/BSC-LT/ALIA-40b
-    shows: 40.43B safetensors parameters, 9.37T training tokens, 35 European languages + 92 programming
-      languages; no benchmark table, with results deferred to a forthcoming technical report
-    accessed: '2026-08-13'
+    shows: '40,433,885,184 total parameters, pre-trained on 9.37 trillion tokens covering 35 European languages
+      and 92 programming languages. Evaluation section: results for ALIA-40b alone on BSC''s own lm-evaluation-harness
+      tasks, "All results reported below are on a 5-shot setting" (English arc_easy 86.5, arc_challenge
+      59.4, openbookqa 38.4, piqa 81.7, social_iqa 53.8), and "A full list of results compared to other
+      baselines ... will soon be available in the technical report"; no other model appears in its tables.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 78dd310624fb04983bbc3a17c74419a94aac3f62027e9677bbf76f2fada7e5dc
-  - url: https://arxiv.org/abs/2502.08489
-    shows: Salamandra technical report (BSC-LT) describing the shared training methodology and benchmarks
-    accessed: '2026-08-13'
+    content_sha256: 1b97e740ed093135a3bdce17a4ae76bc6652a10ce194f1d3f7edf36b6b721bc7
+  - url: https://arxiv.org/pdf/2502.08489
+    shows: 'Salamandra technical report, section 5.2.3: "we report results from an intermediate checkpoint
+      of Salamandra Base 40B, which is still in training and has not undergone an annealing phase", evaluated
+      beside 7B-class baselines (EuroLLM 9B, Llama-3.1 8B) rather than as the released ALIA-40b.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 7efbbde6fc3fedb4c65cd69dd2e7f4578a7d0536be098d9a4b42787d6bb93684
+    content_sha256: 33ced8035ac8c234dc752d32f91916f3a69306770af8adeca4032b93fe45678c

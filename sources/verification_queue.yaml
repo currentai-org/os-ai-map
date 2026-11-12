@@ -58,9 +58,13 @@ held:
       since: '2026-09-28'
   alia-40b:
     capability:
-      because: >-
-        Its comparison is relative_to apertus, whose capability is held for a joint re-band in this
-        run, so the peer was not confirmed. Settled with the apertus, eurollm and luciole re-band.
+      because: No published evaluation places the released ALIA-40b beside Apertus, EuroLLM, Luciole or a Llama model
+        on one suite. On 2026-11-12 its card reports 5-shot results for ALIA-40b alone on BSC's own harness and says
+        comparisons with other baselines will come in a forthcoming technical report, which is not yet on arXiv; the
+        Salamandra technical report evaluates only an intermediate, un-annealed 40B checkpoint against 7B-class models.
+        The one_below apertus comparison was removed because no published evaluation supports it (R-2026-11-12-n).
+        Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those peers
+        on the same benchmarks, shots and metric.
       since: '2026-09-29'
   amazon-bedrock-evaluations:
     adoption:
@@ -87,11 +91,15 @@ held:
       since: '2026-10-07'
   apertus:
     capability:
-      because: 'Neither Apertus 70B Instruct nor Llama 4 Maverick has an Artificial Analysis Intelligence Index v5.0.1
-        score: on 2026-11-12 both pages read "Artificial Analysis Intelligence Index Unknown". The v4.3.2 readings
-        (5 against 10) that suggested 2 one below llama cannot be re-read on the current index. eurollm records relative_to
-        apertus at, alia-40b one_below it, and luciole''s card places it level with EuroLLM-22B. Settled by a joint
-        pretraining-suite comparison of apertus, eurollm, luciole and alia-40b, read on the same suite as llama.'
+      because: 'Read on 2026-11-12, the pretraining-suite fallback finds no table that puts Apertus beside Llama 4
+        Maverick, which sets llama''s score. The tables that pair Apertus-70B with earlier Llama checkpoints put it
+        level on general understanding (67.5 against 67.3 for Llama 3.1 70B and 67.9 for Llama 4 Scout, Apertus report
+        Table 14), about 8 points behind on factual knowledge (58.9 against 66.7 and 67.0, Table 15), and behind Llama
+        3.3 70B base on the EuroLLM-22B report''s 3-shot suite (63.6 against 69.1, Table 21). A move to 2, one below
+        llama, was considered and rejected (R-2026-11-12-n): these are earlier checkpoints rather than the governing
+        releases, they measure English knowledge rather than the product''s multilingual, reasoning and long-context
+        capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current
+        Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both.'
       since: '2026-09-29'
     adoption:
       because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the three declared checkpoints sum to
@@ -590,9 +598,11 @@ held:
       settled_by: scheduled_reconciliation
   eurollm:
     capability:
-      because: Its comparison is relative_to apertus, whose capability is held for the joint re-band of apertus,
-        eurollm, luciole and alia-40b, so the peer cannot be confirmed at least as recently. The report's Table
-        3 still reads as the value records. Settled with that re-band.
+      because: 'The comparison relative_to apertus was re-attested on 2026-11-12: in the EuroLLM-22B report EuroLLM-22B
+        leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base leads
+        EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21), which supports the two at the same score.
+        A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed
+        while apertus is held. Settled with apertus.'
       since: '2026-11-12'
     adoption:
       because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the ten declared EuroLLM checkpoints
@@ -1178,10 +1188,12 @@ held:
       since: '2026-10-07'
   luciole:
     capability:
-      because: >-
-        Luciole-23B-Base's card now compares it with EuroLLM-22B and shows it level in English and
-        about 8 points ahead in French, while eurollm is scored 3 and luciole 2. Settled by a joint
-        re-band of luciole, eurollm, apertus and alia-40b.
+      because: 'Luciole-23B-Base''s card charts it against EuroLLM-22B-2512 base on one harness: about even in English
+        (averaged normalized score about 49 against 48, where EuroLLM-22B''s TriviaQA result is implausibly low) and
+        about 8 points ahead in French (about 42 against 34). A base-model comparison alone does not establish parity
+        between the two families, so luciole stays 2 (R-2026-11-12-n), and whether the French advantage supports 3
+        is left to a targeted review. No published table places Luciole beside Apertus or a Llama model. Settled by
+        that review, or by a comparison of the current releases on one suite.'
       since: '2026-09-29'
   mace:
     adoption:
