@@ -1,0 +1,117 @@
+product: zarr
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: community project under a steering council, fiscally sponsored by NumFOCUS, with nothing sold
+  confidence: high
+  note: Zarr is MIT-licensed and the repository builds the whole library. It is a community project governed by its own steering
+    council under NumFOCUS sponsorship, so no company sits behind it with a paid edition to hold features back for.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(community project under a steering council, fiscally sponsored by
+    NumFOCUS, with nothing sold)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/zarr-developers/zarr-python/main/LICENSE.txt
+    shows: 'LICENSE.txt is the MIT License text: "The MIT License (MIT)", "Copyright (c) 2015-2025 Zarr Developers", "Permission
+      is hereby granted, free of charge".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1d7756f33d3da20d53b162c2eb9beba91ee0dc1aeb4659728b6dc8f2f75941cb
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zarr-developers/zarr-python/main/README.md
+    shows: 'README: "The zarr library is a Python implementation of the Zarr storage format"; installs with "pip install zarr"
+      or from conda-forge; lists sub-packages zarr-metadata, zarr-indexing and zarr-http-server from the same repository.
+      No paid tier or enterprise edition is mentioned.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e798ed3586ee320ff6e43e57484f48525e4823f22aed4a3f7757d546a76f72f1
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/zarr-developers/governance/main/GOVERNANCE.md
+    shows: 'Governance document: "The Zarr Project — The umbrella entity fiscally sponsored by NumFOCUS"; "The Zarr Project
+      as a whole is governed by the Zarr Steering Council (ZSC)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f38dc537db52ffe6e0c171cbea06e5cc9df6ff3ae4269617c630a62320ed68b4
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/zarr-developers/zarr-python/files/main
+    shows: Full listing of the main branch, 927 paths; no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 11cd7a12fed3fc76efaa3ae0bef4042baebff700c9264afa109e5476a7b260c6
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/zarr-developers/zarr-python/releases/latest
+    shows: Latest release v3.4.2, published 2026-10-27.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 184c3bfaee5ae64bcbd426261b1b6db90628a6458cd0a5842acf7bb8031cb0b5
+    establishes:
+    - source
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the zarr package, which is the library itself rather than a client for something else. Installs
+    from conda-forge are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/zarr/recent
+    shows: 'pypistats: last_month 4,916,803 downloads for zarr.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6a4359d710d4b33c8cbc3e7557ad30cd3faf91b4cf5c16d29d5d82980d8f8d34
+  - url: https://pypi.org/pypi/zarr/json
+    shows: 'PyPI metadata for zarr 3.4.2: license_expression MIT, homepage https://github.com/zarr-developers/zarr-python.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 98e40bed22992d806ec54d06cc4ccdbfb86a7717423450c969ce5a7736fad9c9
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Chunked, compressed N-dimensional array storage in memory, on disk, in zip files or on object storage such as S3,
+    with concurrent reads and writes from many threads or processes and hierarchical groups. No query, vector or full-text
+    index and no server or cluster mode of its own.
+  relative_to: deep-lake
+  relation: at
+  confidence: medium
+  note: Zarr stores large arrays in chunks on local disk or object storage and lets many processes read and write them at
+    once, so it works as a store on its own, alongside Deep Lake. It has no query or search layer and no clustered serving,
+    which the distributed systems above it provide.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/README.md
+      shows: 'Re-read of the peer. Deep Lake''s README still describes "storage for all data types" with "querying and vector
+        search, data streaming while training models at scale, data versioning and lineage" and says "it is serverless", with
+        no cluster or distributed serving mode: a single store, the same kind of system Zarr is.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 632ba1d7b06322cc3e74038a249ce1c5d1dcd86173dde465ece2b24a3f43d467
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/zarr-developers/zarr-python/main/README.md
+    shows: 'README features: "Chunk arrays along any dimension", "Encode chunks using a variety of useful encodings", "Store
+      arrays in memory, on disk, inside a zip file, on S3, etc...", "Read an array concurrently from multiple threads or processes",
+      "Organize arrays into hierarchies via groups".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e798ed3586ee320ff6e43e57484f48525e4823f22aed4a3f7757d546a76f72f1
+  - url: https://zarr.dev/
+    shows: 'zarr.dev: "A specification, implementations in 10 languages, and an ecosystem of datasets and tools"; "An open,
+      versioned format definition with a community-driven enhancement (ZEP) process".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 34bec9a64d3dec02e9af7f814f083cc3d10dd8f6a48230ce1e0bc3061008113d

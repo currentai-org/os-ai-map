@@ -1,0 +1,109 @@
+product: vercel-ai-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 2ebc78b holds 10,076 paths under a root Apache-2.0 LICENSE with no ee/, enterprise/,
+        commercial/ or proprietary/ path, and the client for the AI Gateway is itself an Apache-2.0 package
+        in it; the AI Gateway that plain model strings route to is a separately sold Vercel service, and
+        the provider packages call model APIs directly
+    context:
+      commercial:
+        value: Vercel-AI-Gateway
+  confidence: high
+  note: The AI SDK is Apache-2.0 licensed, and every package in it, including the client for Vercel's
+    AI Gateway, builds from the public repository. Plain model strings route through the paid AI Gateway
+    by default, but that is a hosted service sold beside the SDK, and the provider packages reach each
+    model API directly without it.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the tree at 2ebc78b holds 10,076 paths
+    under a root Apache-2.0 LICENSE with no ee/, enterprise/, commercial/ or proprietary/ path, and the
+    client for the AI Gateway is itself an Apache-2.0 package in it; the AI Gateway that plain model strings
+    route to is a separately sold Vercel service, and the provider packages call model APIs directly);commercial:Vercel-AI-Gateway
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/vercel/ai/main/LICENSE
+    shows: The root LICENSE reads "Copyright 2023 Vercel, Inc." and "Licensed under the Apache License,
+      Version 2.0".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/ai/latest
+    shows: 'The npm record for ai 7.0.170 declares "license": "Apache-2.0", the repository https://github.com/vercel/ai
+      with directory packages/ai, and depends on @ai-sdk/gateway, @ai-sdk/provider and @ai-sdk/provider-utils.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: adde075d51bbf587325ecf110e6fc8fcd55cfa624aeeff22c4bcde84f4acfe03
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/vercel/ai/main/packages/gateway/package.json
+    shows: 'The manifest for @ai-sdk/gateway, the AI Gateway client the ai package depends on, declares
+      "license": "Apache-2.0" and is built from the same repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4f76e93bc9823399b23b92e316700ca33a638d004140afc415dabfedf288e6e7
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/vercel/ai/main/packages/ai/README.md
+    shows: The README calls the AI SDK "a provider-agnostic TypeScript toolkit" and says "By default,
+      the AI SDK uses the Vercel AI Gateway" and "You can also connect to providers directly using their
+      SDK packages". It describes no paid edition of the SDK itself.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 77da003de6d04c7ab5d6745b8aafd985c12e36655bcbb386cb8918a6158143e9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of the ai package over the trailing month. CI runs and installs
+    pulled in by other packages add to the count, so it measures install volume rather than developers,
+    and the separate provider packages are not added to it.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/ai
+    shows: 'npm downloads point API: 155,765,041 downloads for ai over 2026-10-12 to 2026-11-10.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9c68ee502438623b0047819fbc01343be32faa39994325c54e574aa8e7fd7c37
+capability:
+  score: 4
+  basis: feature_matrix
+  value: one API across model providers; text and structured-output generation; tool calling; ToolLoopAgent
+    agents; UI hooks that stream chat and tool results; no first-party benchmark
+  confidence: medium
+  note: The AI SDK gives agents a tool-calling loop, structured output and streaming interfaces behind
+    one provider-neutral API. It sits a step below LangGraph, whose graph-structured runs checkpoint their
+    state and resume where they stopped.
+  relative_to: langgraph
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+      shows: The LangGraph README still describes durable execution, "automatically resuming from exactly
+        where they left off", and "inspecting and modifying agent state at any point during execution".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/vercel/ai/main/packages/ai/README.md
+    shows: The README documents generateText with structured output, an Agents section built on ToolLoopAgent
+      with tools, and the AI SDK UI hooks for Next.js, React, Svelte and Vue; it publishes no benchmark
+      figure.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 77da003de6d04c7ab5d6745b8aafd985c12e36655bcbb386cb8918a6158143e9

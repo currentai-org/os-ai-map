@@ -1,0 +1,129 @@
+product: microsoft-agent-framework
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 22b5e75 carries 46 LICENSE files, every one the MIT license with Microsoft's
+        copyright, and no ee/, enterprise/, commercial/ or proprietary/ path; Foundry hosting, the paid
+        deployment target the README names, is a separate Azure service
+    context:
+      commercial:
+        value: Microsoft-Foundry
+  confidence: high
+  note: Agent Framework is MIT licensed in every package, and the Python and .NET code builds from the
+    public repository with no enterprise directory. Microsoft sells Foundry as a place to host agents,
+    but that is an optional Azure service beside the framework rather than a part kept out of it.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the tree at 22b5e75 carries 46 LICENSE files,
+    every one the MIT license with Microsoft's copyright, and no ee/, enterprise/, commercial/ or proprietary/
+    path; Foundry hosting, the paid deployment target the README names, is a separate Azure service);commercial:Microsoft-Foundry
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/agent-framework/main/LICENSE
+    shows: The root LICENSE is the MIT License, "Copyright (c) Microsoft Corporation."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/agent-framework/main/python/packages/ag-ui/LICENSE
+    shows: One of the per-package LICENSE files whose text differs from the root's; it is also the MIT
+      License, "Copyright (c) Microsoft Corporation."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7df20dcdf9197e9945c14858d41c60f11b52b93e5b69e2b63416b874d598d322
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/agent-framework/main/python/packages/duckdb/LICENSE
+    shows: Another variant per-package LICENSE, indented differently, reading "MIT License" and "Copyright
+      (c) Microsoft Corporation."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8f85fcf6bd5690052661d5f7f7425d830089e39e77b88b7108b85cff1ab0eaf2
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/agent-framework/main/python/packages/core/pyproject.toml
+    shows: 'The manifest builds agent-framework-core from the repository with license-files = ["LICENSE"]
+      and the classifier "License :: OSI Approved :: MIT License".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7e73493f70d7dca761b46cc46e987150b08537fa32f52c6c34ec9e76583548db
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/agent-framework/json
+    shows: PyPI metadata for agent-framework 1.25.0 carries the MIT License classifier, and its only requirement
+      is agent-framework-core[all]==1.25.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a4a4870c2ff110801c116c33e9b959cee76deafc9b59ff054f64486ee99c90ef
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/microsoft/agent-framework/main/README.md
+    shows: The README calls Agent Framework "an open, multi-language framework" that keeps "architecture
+      choices open", and lists "Foundry Hosted Agents" as a way to "Deploy and host your agents to Foundry-hosted
+      infrastructure".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7ee5d282e0758150152e1f45f66c6648059686fe3121e2908fc7ca556e4474df
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: 'Adoption is read from PyPI downloads of agent-framework-core over the trailing month, the package
+    every Python install of the framework pulls in. It covers the Python side only: the .NET packages
+    on NuGet are not counted, and CI runs add to the Python figure.'
+  sources:
+  - url: https://pypistats.org/api/packages/agent-framework-core/recent
+    shows: last_month 1,005,851 downloads for agent-framework-core (last_week 358,428, last_day 63,567).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 404a8c9d825a899aa1e2238b96f658291fffd1ed910312c86cb5df00022a8e43
+  - url: https://pypistats.org/api/packages/agent-framework/recent
+    shows: last_month 189,927 downloads for agent-framework, the bundle that depends on agent-framework-core
+      and is already inside the core package's figure.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f67bc3dadb0ae7dae7dd09ce16a4b8bb143a80f4b844346dac4374cd59b4cc6a
+capability:
+  score: 5
+  basis: feature_matrix
+  value: graph workflows with sequential, concurrent, handoff and group patterns; checkpointing and time-travel;
+    streaming; human-in-the-loop; middleware; OpenTelemetry tracing; declarative YAML agents; Python and
+    .NET; no first-party benchmark
+  confidence: medium
+  note: Agent Framework's graph workflows checkpoint their state, pause for human input and can be rewound
+    to an earlier step, the durable control that also sets LangGraph apart. It sits level with LangGraph
+    on that basis, with first-party Python and .NET support.
+  relative_to: langgraph
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+      shows: The LangGraph README still describes durable execution, "automatically resuming from exactly
+        where they left off", and "inspecting and modifying agent state at any point during execution".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/agent-framework/main/README.md
+    shows: The README lists "graph-based workflows supporting sequential, concurrent, handoff, and group
+      collaboration patterns; includes checkpointing, streaming, human-in-the-loop, and time-travel",
+      plus middleware, OpenTelemetry observability, declarative agents and a DevUI; it publishes no benchmark
+      figure.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7ee5d282e0758150152e1f45f66c6648059686fe3121e2908fc7ca556e4474df

@@ -1,0 +1,103 @@
+product: triton-inference-server
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: the server and its build scripts; backends live in separate repositories
+    core-gated:
+      value: ungated
+      detail: NVIDIA sells enterprise support through the separate NVIDIA AI Enterprise suite; no enterprise path in the repository
+        tree
+  confidence: medium
+  note: Triton's server code is BSD-3-Clause and builds from the public repository, with backends for open frameworks such
+    as PyTorch, ONNX and OpenVINO alongside NVIDIA's own TensorRT. NVIDIA sells enterprise support for it through NVIDIA AI
+    Enterprise, a separate subscription, rather than a fuller edition of the server.
+  raw: license:BSD-3-Clause(OSI);source:public(the server and its build scripts; backends live in separate repositories);core-gated:ungated(NVIDIA
+    sells enterprise support through the separate NVIDIA AI Enterprise suite; no enterprise path in the repository tree)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/triton-inference-server/server/HEAD/LICENSE
+    shows: The LICENSE body is the BSD 3-Clause text, "Copyright (c) 2018-2026, NVIDIA CORPORATION. All rights reserved."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 179f37347fde9030609578b02539af12bc66b39c291de1c30d8525c6cd390036
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/triton-inference-server/server/HEAD/README.md
+    shows: The README carries a BSD3 license badge, calls Triton "open source inference serving software", says the current
+      release is 2.74.0, and states "Need enterprise support? NVIDIA global support is available for Triton Inference Server
+      with the NVIDIA AI Enterprise software suite."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 90251fb00c1b06fbb425e00a115913e53a23d46ee840606093bcd5fccee71356
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/triton-inference-server/server/files/main
+    shows: The repository file listing shows build.py, docs/customization_guide/build.md and the server sources, and no ee,
+      enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d9543c374b1009cd260069e34dd36bb56e15dfbfbb331b1f41bb00e531d46bb7
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: Triton is deployed mostly from NVIDIA's NGC containers, which publish no pull count, and the tritonclient package
+    on PyPI is a client for talking to a server rather than the server itself. GitHub stars are the only signal left, and
+    a star is not a use.
+  sources:
+  - url: https://ungh.cc/repos/triton-inference-server/server
+    shows: '"stars":11136,"forks":1868, pushed 2026-11-10, for triton-inference-server/server'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 153db3e54e4384776d69a44b424776006d3f6070e97a69e5f5ff7d984586f979
+  - url: https://pypi.org/pypi/tritonclient/json
+    shows: The PyPI package tritonclient 2.74.0 is summarized as "Python client library and utilities for communicating with
+      Triton Inference Server".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 87e47fb3f0d16e7708cd5c3ee1c39c9f4aef87e2a2b8c9a614f692728b3a4d4c
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, placed against vllm
+  value: Multi-framework model server (TensorRT, PyTorch, ONNX, OpenVINO, Python, RAPIDS FIL and custom backends) on NVIDIA
+    GPUs, x86 and ARM CPUs and AWS Inferentia; concurrent model execution, dynamic and sequence batching with implicit state
+    management, ensembles and business-logic scripting; HTTP/REST and gRPC on the KServe protocol, in-process C and Java APIs,
+    and GPU utilization, throughput and latency metrics.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: Triton serves models from almost any framework on GPUs, CPUs and Inferentia, with dynamic batching, model pipelines
+    and in-process APIs for edge use. Its README documents none of the language-model techniques vLLM is built on, such as
+    paged attention and continuous batching, which it reaches only through separate backends, so it sits a step below vLLM.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: The peer's README still lists PagedAttention, "Continuous batching of incoming requests, chunked prefill, prefix
+        caching", speculative decoding, "Tensor, pipeline, data, expert, and context parallelism for distributed inference",
+        hardware plugins across GPU and accelerator vendors, and "200+ model architectures".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/triton-inference-server/server/HEAD/README.md
+    shows: The README lists support for "TensorRT, PyTorch, ONNX, OpenVINO, Python, RAPIDS FIL", "NVIDIA GPUs, x86 and ARM
+      CPU, or AWS Inferentia", "Concurrent model execution", "Dynamic batching", "Sequence batching", ensembles and Business
+      Logic Scripting, "HTTP/REST and GRPC inference protocols", C and Java APIs, and metrics.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 90251fb00c1b06fbb425e00a115913e53a23d46ee840606093bcd5fccee71356

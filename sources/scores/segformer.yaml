@@ -1,0 +1,104 @@
+product: segformer
+openness:
+  score: 2
+  class: restricted
+  governing_release: SegFormer
+  components:
+    weights:
+      value: open
+      detail: B0 to B5 ADE20K and Cityscapes checkpoints on the Hub, ungated
+    data:
+      value: open
+      detail: ImageNet-1K for the encoders, then ADE20K or Cityscapes, all public benchmarks
+    code:
+      value: open
+      detail: training and evaluation code and configs, built on MMSegmentation
+    license:
+    - name: NVIDIA-Source-Code-License
+      detail: code and checkpoints; research or evaluation use only, commercial use reserved to NVIDIA
+  confidence: high
+  note: SegFormer's code and checkpoints are under the NVIDIA Source Code License, which allows use only for research
+    or evaluation and reserves commercial use to NVIDIA. The public training data and the published training code
+    do not lift that restriction.
+  raw: weights:open(B0 to B5 ADE20K and Cityscapes checkpoints on the Hub, ungated);data:open(ImageNet-1K for the
+    encoders, then ADE20K or Cityscapes, all public benchmarks);code:open(training and evaluation code and configs,
+    built on MMSegmentation);license:NVIDIA-Source-Code-License(code and checkpoints; research or evaluation use
+    only, commercial use reserved to NVIDIA)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/NVlabs/SegFormer/master/LICENSE
+    shows: 'NVIDIA Source Code License for SegFormer, 3.3 Use Limitation: "The Work and any derivative works thereof
+      only may be used or intended for use non-commercially"; "non-commercially" means "for research or evaluation
+      purposes only".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f549820c06519e3105e5174a2fd7285224ffd2268a7f879a843b1a255fd04a61
+    establishes:
+    - license
+  - url: https://huggingface.co/nvidia/segformer-b0-finetuned-ade-512-512/raw/main/README.md
+    shows: 'segformer-b0-finetuned-ade-512-512 card: license other, "The license for this model can be found here"
+      linking the repository LICENSE; the encoder "is first pre-trained on ImageNet-1k" and then fine-tuned on a
+      downstream dataset.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a738172c9395b26f14e1981f6a95885085cc1239210446d752bf30ad6a9b8538
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models?author=nvidia&search=segformer&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: Fifteen nvidia SegFormer repositories, all gated false and tagged license other.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af192531f5f00f6d8b7caedabd46b6e3f42f3c61e466ea0095dda6a8df876634
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/NVlabs/SegFormer/master/README.md
+    shows: 'README: "This repository contains the official Pytorch implementation of training & evaluation code
+      and the pretrained models"; training with tools/train.py on ADE20K configs from encoders "pretrained on ImageNet-1K".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cb3845da24a1c919edef5806ccfae251fa0a16ebd773bb036d2a3d287f9ae3a7
+    establishes:
+    - code
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the five declared checkpoints, most of them for the
+    smallest ADE20K model. The other NVIDIA SegFormer checkpoints add comparatively little.
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=segformer&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: segformer-b0-finetuned-ade-512-512 276,662, b2-ade 157,213, b3-ade 136,827, b5-ade-640 57,233 and b5-cityscapes-1024
+      51,561 downloads in the trailing 30 days (679,496 together); the fifteen repositories sum to 802,986.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af192531f5f00f6d8b7caedabd46b6e3f42f3c61e466ea0095dda6a8df876634
+capability:
+  score: 3
+  basis: feature_matrix
+  value: semantic segmentation checkpoints B0 to B5 fine-tuned on ADE20K and Cityscapes, with training code and
+    configs for other datasets
+  relative_to: rt-detr
+  relation: at
+  confidence: high
+  note: Each SegFormer checkpoint labels pixels with the classes of the benchmark it was fine-tuned on, so a new
+    set of classes needs a training run, as with RT-DETR's COCO detectors.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/README.md
+      shows: 'RT-DETRv4 README: "RT-DETRv4 achieves new state-of-the-art results on the COCO dataset"; "To train
+        on your custom dataset, you need to organize it in the COCO format" - the fixed label space compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 45a9811942cd4021030a419a5a172557a59968e5802cd96961330e8d68127742
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/NVlabs/SegFormer/master/README.md
+    shows: 'README: SegFormer-B0 to B5 results and trained weights for ADE20K and Cityscapes; single- and multi-GPU
+      training commands with the local_configs/segformer configs.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cb3845da24a1c919edef5806ccfae251fa0a16ebd773bb036d2a3d287f9ae3a7

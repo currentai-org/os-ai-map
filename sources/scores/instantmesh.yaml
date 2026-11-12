@@ -1,0 +1,133 @@
+product: instantmesh
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: the four reconstruction checkpoints and the fine-tuned Zero123++ UNet download from TencentARC/InstantMesh
+        without a gate
+    data:
+      value: described
+      detail: trained on Objaverse renders; the README says the training set is not provided because of its size
+    code:
+      value: open
+      detail: training code for the reconstruction models and for the Zero123++ fine-tuning is published
+    license:
+    - name: Apache-2.0
+      detail: the InstantMesh code and weights, per the LICENSE and the model card
+    - name: CC-BY-NC-4.0
+      detail: Zero123++ v1.2, which run.py downloads by default for the multi-view stage and which the InstantMesh UNet
+        fine-tunes
+  governing_release: InstantMesh (April 2024)
+  confidence: medium
+  note: InstantMesh's own code and weights are Apache 2.0, but its first stage runs Zero123++ v1.2, whose weights are
+    licensed for non-commercial use only, and the inference script downloads them by default. Training code is published;
+    the Objaverse renders it trained on are not.
+  raw: weights:open(the four reconstruction checkpoints and the fine-tuned Zero123++ UNet download from TencentARC/InstantMesh
+    without a gate);data:described(trained on Objaverse renders; the README says the training set is not provided because
+    of its size);code:open(training code for the reconstruction models and for the Zero123++ fine-tuning is published);license:Apache-2.0(the
+    InstantMesh code and weights, per the LICENSE and the model card)+CC-BY-NC-4.0(Zero123++ v1.2, which run.py downloads
+    by default for the multi-view stage and which the InstantMesh UNet fine-tunes)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://ungh.cc/repos/TencentARC/InstantMesh/files/main/LICENSE
+    shows: 'LICENSE body: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://huggingface.co/TencentARC/InstantMesh/raw/main/README.md
+    shows: 'Card front matter "license: apache-2.0"; "We release all the code, weights, and demo of InstantMesh".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6126e8d1695a7efbe86d71a4105455bb0cd38cdfee87ae5d730d87925ef1fd00
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/TencentARC/InstantMesh?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for TencentARC/InstantMesh: gated false, files diffusion_pytorch_model.bin and four
+      instant_mesh/instant_nerf checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 42e046e692f6e8a76fd4676cdeac2b19f922f54fa18222a83f8b5288fe6f866e
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/TencentARC/InstantMesh/files/main/run.py
+    shows: run.py loads DiffusionPipeline.from_pretrained("sudo-ai/zero123plus-v1.2", custom_pipeline="zero123plus")
+      and then swaps in the UNet from TencentARC/InstantMesh.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 11411e0d9163605531bb428a6edd2700ce22c6ef10568233fb0cf1abd6f50195
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/SUDO-AI-3D/zero123plus/files/main/README.md
+    shows: 'Zero123++ README: "The code is released under Apache 2.0 and the model weights are released under CC-BY-NC
+      4.0"; "you cannot use the model (or its derivatives) in a commercial product pipeline".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 92d336fe0a24bf33d27bdf86c52e9bbfb2e477233aebb526e76c24bb50c3076d
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/TencentARC/InstantMesh/files/main/README.md
+    shows: 'README: "Release inference and training code"; "We provide our training code to facilitate future research.
+      But we cannot provide the training dataset due to its size"; a Zero123++ fine-tuning command is given.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8d1a43457079e847ff9f1df0880eda4cace5ccb8bc540497684c251814004380
+    establishes:
+    - code
+    - data
+  - url: https://ungh.cc/repos/TencentARC/InstantMesh/files/main
+    shows: 'Repository file list: train.py, training configs for the NeRF and mesh variants and configs/zero123plus-finetune.yaml,
+      and src/data/objaverse.py.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7304966b175c05f3a6b34791570f2433d1ca6c1b9df400eb5c262304dbffe336
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of TencentARC/InstantMesh, the only first-party copy of the weights.
+  sources:
+  - url: https://huggingface.co/api/models/TencentARC/InstantMesh?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for TencentARC/InstantMesh: downloads 24072.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 42e046e692f6e8a76fd4676cdeac2b19f922f54fa18222a83f8b5288fe6f866e
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena render board, read 2026-11-12: InstantMesh 10th of 24 (score 1269); 16th of 22 on the topology board
+    (score 1100)'
+  confidence: medium
+  relative_to: hunyuan-3d
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+      shows: 'Re-read of the peer: "Hunyuan3D-2" 8th and "Hunyuan3D-2.1" 9th of 24 on the render board, still in its
+        upper half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd518f12af8433c53835e8bf850dcd26ea93005c26d6d68771dfd99acc07ce33
+  note: InstantMesh places in the upper half of the image-to-3D arena for rendered quality, just behind Hunyuan3D-2 and
+    2.1, and in the lower half of the board that rates mesh topology.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: 'Render board of 24 entries: "InstantMesh" rank 10, score 1269, 11616 votes; "Hunyuan3D-2" rank 8, "Hunyuan3D-2.1"
+      rank 9.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dd518f12af8433c53835e8bf850dcd26ea93005c26d6d68771dfd99acc07ce33
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=topology
+    shows: 'Topology board of 22 entries: "InstantMesh" rank 16, score 1100.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5722c5d5a3f976234d6b4b699ada81f125f23fc29837a0c431bd73ad354d0da9

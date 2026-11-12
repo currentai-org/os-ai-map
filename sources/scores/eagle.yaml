@@ -1,0 +1,129 @@
+product: eagle
+openness:
+  score: 2
+  class: restricted
+  governing_release: Eagle 2.5
+  components:
+    weights:
+      value: open
+      detail: Eagle2.5-8B safetensors on the Hub behind an automatically approved access agreement
+    data:
+      value: described
+      detail: open-source video and document sets plus the self-curated Eagle-Video-110K, which is not released
+    code:
+      value: partial
+      detail: stage-2 training scripts and documentation; the data recipe ships only as a debug example
+    license:
+    - name: NVIDIA-License
+      detail: Eagle 2.5 weights; non-commercial academic or non-profit research only
+    context:
+      eagle-2-weights:
+        value: CC-BY-NC-4.0
+        detail: Eagle2-1B, 2B and 9B, the earlier release
+      repository-code:
+        value: Apache-2.0
+        detail: repository code
+  confidence: high
+  note: Eagle 2.5's weights carry an NVIDIA license that allows only non-commercial academic or non-profit research
+    use. The training code is Apache-2.0, and the earlier Eagle 2 models are CC BY-NC 4.0, so no model in the line
+    is cleared for commercial use.
+  raw: weights:open(Eagle2.5-8B safetensors on the Hub behind an automatically approved access agreement);data:described(open-source
+    video and document sets plus the self-curated Eagle-Video-110K, which is not released);code:partial(stage-2
+    training scripts and documentation; the data recipe ships only as a debug example);license:NVIDIA-License(Eagle
+    2.5 weights; non-commercial academic or non-profit research only);eagle-2-weights:CC-BY-NC-4.0(Eagle2-1B, 2B
+    and 9B, the earlier release);repository-code:Apache-2.0(repository code)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/NVlabs/Eagle/main/Eagle2_5/LICENSE_MODEL
+    shows: 'NVIDIA License, 3.3 Use Limitation: "The Work and any derivative works thereof only may be used or intended
+      for use non-commercially"; "non-commercially" means "for academic or non-profit research purposes only".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8edcbc987f09e1256923b72eaaa1bbfff21da3dfa146d6d4c48f0616d92c1300
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NVlabs/Eagle/main/README.md
+    shows: 'README: "The code is released under the Apache 2.0 license"; "The pretrained model weights are released
+      under either the CC BY-NC 4.0 License or the NVIDIA License. The models are research preview intended for
+      non-commercial use only."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 22ca427d29d86db52b7e9d05bc7c20317c06f4ccd5437bfc8beb9d5e61d829a1
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/nvidia/Eagle2.5-8B
+    shows: 'Hub record for nvidia/Eagle2.5-8B: gated "auto", license other with license_name nsclv1, four safetensors
+      shards.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3b43ef6c6cd1a34c4e993dd41df3822ba17998e7cdfcc2d7492cee472f5c2fba
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=nvidia&search=eagle&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Eagle2-1B, 2B and 9B tagged cc-by-nc-4.0 and gated false; Eagle2.5-8B tagged other (nsclv1).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ca031f3c97968c1708d5fce7eeb165fea51c660c15b437c5d1ca0b41e03b8fa6
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/NVlabs/Eagle/main/Eagle2_5/README.md
+    shows: 'Eagle 2.5 README: "Combines open-source data (human-annotated and synthetic) with the self-curated Eagle-Video-110K
+      dataset"; training via shell/train_stage2.sh; the data guide uses playground/sft_recipe with a debug recipe.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c94f8c01d115fd9c88b31e9efff408df55913272fd0c79f7c8233969248d7f04
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/datasets?author=nvidia&search=eagle&limit=50
+    shows: No nvidia dataset on the Hub matches eagle.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Eagle2.5-8B and the three Eagle 2 sizes,
+    most of them for Eagle2-2B and Eagle2.5-8B.
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=eagle&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Eagle2-2B 13,815, Eagle2.5-8B 10,648, Eagle2-1B 786 and Eagle2-9B 275 downloads in the trailing 30 days
+      (25,524 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ca031f3c97968c1708d5fce7eeb165fea51c660c15b437c5d1ca0b41e03b8fa6
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: image, document and video benchmarks from the Eagle 2.5 README
+  value: 'image, multi-page document, multi-image and long-video understanding up to 512 frames (Eagle2.5-8B: Video-MME
+    72.4 without subtitles, DocVQA 94.1, ChartQA 87.5)'
+  relative_to: minicpm-v
+  relation: at
+  confidence: high
+  note: Eagle 2.5 reads documents, charts and long videos, level with MiniCPM-V. It does not act in a live interface
+    or take audio input.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+      shows: 'MiniCPM-V 4.6 card: "It inherits the strong single-image, multi-image, and video understanding capabilities
+        of MiniCPM-V family"; max_num_frames default 128.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd1e58bd92c42d5f34797e5930889bcfd17c1ef4d5bb5e8e6f5e572eddbc34f8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/NVlabs/Eagle/main/Eagle2_5/README.md
+    shows: 'Eagle 2.5 README: "Eagle 2.5 supports up to 512 video frames and is trained jointly on image + video
+      data"; supported inputs include multi-page documents; Video-MME 72.4 without subtitles, DocVQA 94.1 and ChartQA
+      87.5 for Eagle2.5-8B.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c94f8c01d115fd9c88b31e9efff408df55913272fd0c79f7c8233969248d7f04

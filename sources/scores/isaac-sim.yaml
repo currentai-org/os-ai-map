@@ -1,0 +1,133 @@
+product: isaac-sim
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, the code in the repository
+    source:
+      value: public
+      detail: builds from the repo, but the build downloads the proprietary Omniverse Kit SDK and NVIDIA 3D assets it needs
+        to run
+    core-gated:
+      value: ungated
+      detail: the proprietary components are free to use, not a paid tier
+  confidence: medium
+  note: NVIDIA publishes Isaac Sim's own code under Apache-2.0 and it builds from the repository. Building or running it still
+    needs the Omniverse Kit SDK, 3D models and textures, which NVIDIA licenses separately for use on NVIDIA GPUs only and
+    forbids modifying or redistributing; they cost nothing, so nothing is held back for a paid tier.
+  raw: license:Apache-2.0(OSI, the code in the repository);source:public(builds from the repo, but the build downloads the
+    proprietary Omniverse Kit SDK and NVIDIA 3D assets it needs to run);core-gated:ungated(the proprietary components are
+    free to use, not a paid tier)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacSim/release/6.3/LICENSE
+    shows: 'LICENSE: "The Isaac Sim software in this repository is covered under the Apache 2.0 License terms below. Building
+      or using the software requires additional components licenced under other terms. These additional components include
+      dependencies such as the Omniverse Kit SDK, as well as 3D models and textures", followed by the Apache License 2.0 text.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 99a1d647e8751407fd965af6733624d96abfc1f2a7e767d09ed528ef414c603e
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacSim/release/6.3/README.md
+    shows: 'README Quick Start builds Isaac Sim from source with ./build.sh; "Internet Access: Required for downloading the
+      Omniverse Kit SDK, extensions, and tools".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8e11a5837dfe481c084a197fbbf4ab0242bfb7edb91bfe06585ac40b2e0090d0
+    establishes:
+    - source
+  - url: https://www.nvidia.com/en-us/agreements/enterprise-software/isaac-sim-additional-software-and-materials-license/
+    shows: 'NVIDIA Isaac Sim Additional Software and Materials License, last modified June 9, 2025: governs "the NVIDIA Omniverse
+      Kit and other software and materials"; grants a "limited, non-exclusive, revocable, non-transferable" license "to install
+      and use copies of the Software in systems with NVIDIA GPUs"; you may not "Modify or create derivative works of the Software"
+      or distribute it. No fee is named.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 65238ede267ac2afb9f9765b1852cee97ecff96b52a62869c2d95d8a58776ede
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/isaac-sim/IsaacSim/files/release%2F6.3
+    shows: Full listing of the release/6.3 branch, 9,575 paths; no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9edac97251f1791fa5092af51321652084009ed66231b07afae5c9908ca07b94
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/isaac-sim/IsaacSim/releases/latest
+    shows: Latest release v6.2.0, published 2026-10-14.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cf0c79d0d1cb1d15b34285a3cf1ca3627ffb89148d1e5f80770c44a83145f8a7
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: PyPI downloads of the isaacsim metapackage, which a pip install of Isaac Sim pulls before fetching
+    the rest from NVIDIA's own package index. Workstation downloads, containers and source builds do not
+    pass through it and are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/isaacsim/recent
+    shows: 'pypistats: last_month 6,684 downloads for isaacsim.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9467da012078d6bbf85820ed207c8e57ddfa3d9411de2dc7942aa97001eb2d56
+  - url: https://pypi.org/pypi/isaacsim/json
+    shows: 'PyPI metadata for isaacsim 6.2.0.0: summary "A metapackage to manage the Isaac Sim installation", author "Isaac
+      Sim team", license "NVIDIA Proprietary Software", Documentation https://docs.isaacsim.omniverse.nvidia.com; no repository
+      URL.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8943dec74cc9cdd39b2ae2bd31e858debd6ea43ced3dd03d731eba664b254a97
+  - url: https://docs.isaacsim.omniverse.nvidia.com/latest/installation/install_python.html
+    shows: 'Install page: "Full Isaac Sim pip install isaacsim[all,extscache]==6.2.0.0 --extra-index-url https://pypi.nvidia.com".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3b6ed229c3625ee9b9cb695bd13f23ab379c265e3c1db535bd0ad6c231f5f4a5
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: GPU-accelerated PhysX simulation with a Newton physics backend, RTX-rendered camera, depth, lidar, radar and acoustic
+    sensors at scale, physics-based contact, IMU and joint sensors, URDF, MJCF and CAD import, synthetic data generation and
+    a ROS bridge. Ready-to-train RL tasks come from Isaac Lab, a separate product.
+  relative_to: isaac-lab
+  relation: one_below
+  confidence: medium
+  note: Isaac Sim provides the GPU physics and RTX-rendered sensors that the strongest simulators here are built from, and
+    it can run its scenes on the Newton engine as well as PhysX. The library of ready-to-train robot tasks lives in Isaac
+    Lab, which is built on it, so Isaac Sim sits a step below.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/README.md
+      shows: 'Re-read of the peer. Isaac Lab''s README still lists "Ready-to-train implementations of more than 30 environments,
+        which can be trained with popular reinforcement learning frameworks" and runs physics and rendering through NVIDIA
+        Isaac Sim among other backends: the task library is Isaac Lab''s, not Isaac Sim''s.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c5b92a73ef6a10e8c7f12786be84205d5e495b1ad05516e2d8d799e75f130eb4
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacSim/release/6.3/README.md
+    shows: 'README: "The simulator leverages high-fidelity, GPU-accelerated physics engines to simulate accurate dynamics
+      and support multi-sensor RTX rendering at scale. It comes equipped with end-to-end workflows including synthetic data
+      generation, reinforcement learning, ROS integration"; Isaac Lab listed under "Key Applications".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8e11a5837dfe481c084a197fbbf4ab0242bfb7edb91bfe06585ac40b2e0090d0
+  - url: https://docs.isaacsim.omniverse.nvidia.com/latest/sensors/index.html
+    shows: Documentation navigation lists "Newton Physics Backend" under physics simulation, "RTX Lidar Sensor", "RTX Radar
+      Sensor", "RTX Acoustic Sensor", "Camera Sensors", "Depth Sensors", and physics-based "Contact Sensor", "IMU Sensor",
+      "Joint State Sensor".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bdd5679878f273476e2c79f74da9a08bd253f93fdff21fe13a5edaef873c62ce

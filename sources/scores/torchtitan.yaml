@@ -1,0 +1,100 @@
+product: torchtitan
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: pytorch/torchtitan
+    core-gated:
+      value: ungated
+      detail: developed in the PyTorch project's own repository, with no company edition or hosted tier
+  confidence: high
+  note: TorchTitan is BSD-3-Clause and developed in the public pytorch repository, alongside PyTorch itself. There is no paid
+    edition or hosted tier.
+  raw: license:BSD-3-Clause(OSI);source:public(pytorch/torchtitan);core-gated:ungated(developed in the PyTorch project's own
+    repository, with no company edition or hosted tier)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/torchtitan/main/LICENSE
+    shows: The LICENSE is the standard "BSD 3-Clause License" text, "(c) Meta Platforms, Inc. and affiliates.", with no added
+      field-of-use or commercial restriction.
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 6eea30995941126beeb99ef775f0968ed8320beb4834ad28d6ae6704a1a92930
+  - url: https://raw.githubusercontent.com/pytorch/torchtitan/main/pyproject.toml
+    shows: The manifest builds the "torchtitan" package with license = {file = "LICENSE"} and the author "PyTorch Team", packages@pytorch.org.
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: 4c8bd1c4a4c82eaea345ccb97abf671a1e59faf92df2d9fa147ce21c5e7fe780
+  - url: https://raw.githubusercontent.com/pytorch/torchtitan/main/README.md
+    shows: 'The README describes "a clean-room, PyTorch-native implementation of large-scale training" installed by cloning
+      the repository, with a BSD 3-Clause license badge. Searched the body for enterprise, pricing, paid, hosted and license
+      key: none.'
+    accessed: '2026-11-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: ae9e9d9afa2b5efbc645bd97ce7259388ea48d335c4b2d83e24674b1d03217fb
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of torchtitan. The quick start installs from a
+    git checkout against PyTorch nightly builds, which PyPI does not see, so those installs are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/torchtitan/recent
+    shows: last_month 73,750, last_week 24,589, last_day 2,526 for the torchtitan package.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0528d1f5d8d96e1352a53d936900359dc9c7345fbcb6acb83ade52d27705adcc
+capability:
+  score: 4
+  basis: feature_matrix
+  value: Composable FSDP2/HSDP/DDP, tensor (incl. async TP), pipeline (1F1B, interleaved, GPipe), context and expert parallelism;
+    MXFP8 and NVFP4 training, regional torch.compile, CUDA graphs and activation checkpointing; TitanRL reinforcement learning
+    with vLLM generation; recipes for Llama 3 up to 405B, Qwen3, DeepSeek V3 671B, gpt-oss and FLUX. The paper reports gains
+    at 128 to 512 H100 GPUs, short of Megatron-LM's published multi-thousand-GPU runs.
+  confidence: medium
+  note: TorchTitan composes five kinds of parallelism with low-precision training and carries a model from pretraining through
+    fine-tuning to RL, with recipes up to 671B parameters. It sits a step below Megatron-LM, whose published scaling runs
+    reach thousands of GPUs while TorchTitan's paper reports 512.
+  relative_to: megatron-lm
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://developer.nvidia.com/megatron-core
+      shows: Redirects to NVIDIA's Megatron Core page, which still says "with GPT models ranging from 2 billion to 462 billion
+        parameters, Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs" and "near linear scaling from 96
+        to 4608 H100 GPUs" for a 177 billion parameter GPT-3 model.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 82683453c64fe6f1e15412ac80d94b3820d1b54c3fd52c0a71edbe841a4be33c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/torchtitan/main/README.md
+    shows: 'The README lists "FSDP2, HSDP, and DDP", "Tensor parallel, including async TP", "Pipeline parallel: 1F1B, Interleaved
+      1F1B, GPipe", "Context parallel", "Expert parallel", MXFP8 and NVFP4 training, TitanRL running "the same model definitions
+      and kernels in the trainer and in vLLM generation", and supported models including Llama 3 "1B – 405B" and DeepSeek
+      V3 "16B, 236B, 671B".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ae9e9d9afa2b5efbc645bd97ce7259388ea48d335c4b2d83e24674b1d03217fb
+  - url: https://arxiv.org/abs/2410.06511
+    shows: The ICLR 2025 paper abstract reports "accelerations of 65.08% with 1D parallelism at the 128-GPU scale (Llama 3.1
+      8B), an additional 12.59% with 2D parallelism at the 256-GPU scale (Llama 3.1 70B), and an additional 30% with 3D parallelism
+      at the 512-GPU scale (Llama 3.1 405B) on NVIDIA H100 GPUs".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: de97106c6565514a2c9a88f15c9fba5867ef1d7cfe7a5942c34f1f7c12f7df9d

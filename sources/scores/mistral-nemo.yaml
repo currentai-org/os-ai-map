@@ -1,0 +1,116 @@
+product: mistral-nemo
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: base and instruct checkpoints, ungated on Hugging Face
+    data:
+      value: closed
+    code:
+      value: closed
+      detail: no training or post-training pipeline published
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: mistral-nemo-instruct-2407
+  confidence: high
+  note: Mistral NeMo's base and instruct weights are published under Apache-2.0 without a gate. The training
+    data and the instruction-tuning recipe are not disclosed, so it is open weights rather than open source.
+  raw: weights:open(base and instruct checkpoints, ungated on Hugging Face);data:closed;code:closed(no
+    training or post-training pipeline published);license:Apache-2.0(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Nemo-Instruct-2407
+    shows: 'Model API for mistralai/Mistral-Nemo-Instruct-2407: `gated: false`, cardData.license `apache-2.0`,
+      safetensors weights listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5c50a4a725fd8048d4de8b611f5e22d71bde8176f19b6096cec300e35d556efa
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Nemo-Base-2407
+    shows: 'Model API for mistralai/Mistral-Nemo-Base-2407: `gated: false`, cardData.license `apache-2.0`,
+      safetensors weights listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 13034c48cd152892a8f004052a967dcc3eefaf10801cb0269d56edbf43fb9bcd
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407/raw/main/README.md
+    shows: 'Card: "Released under the **Apache 2 License**", "Pre-trained and instructed versions", "Trained
+      jointly by Mistral AI and NVIDIA"; it names no training data and links no training code.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 445377992e7404021555e689a5df79b90a3293c38829ec1dcaa9dfed5b7526b0
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the base and instruct checkpoints.
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Nemo-Instruct-2407
+    shows: '"downloads":96009 for mistralai/Mistral-Nemo-Instruct-2407, the trailing 30-day count the
+      Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5c50a4a725fd8048d4de8b611f5e22d71bde8176f19b6096cec300e35d556efa
+  - url: https://huggingface.co/api/models/mistralai/Mistral-Nemo-Base-2407
+    shows: '"downloads":62614 for mistralai/Mistral-Nemo-Base-2407, the trailing 30-day count the Hub
+      API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 13034c48cd152892a8f004052a967dcc3eefaf10801cb0269d56edbf43fb9bcd
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: MMLU and commonsense suites on the model card, with the release post's comparison
+  value: 'Mistral-Nemo base: MMLU 68.0% (5-shot), HellaSwag 83.5%, Winogrande 76.8%, TriviaQA 73.8%; Mistral''s
+    release post compares it favorably with Gemma 2 9B and Llama 3 8B and calls it much better than Mistral
+    7B at following instructions, reasoning and code.'
+  relative_to: mistral-7b-instruct
+  relation: one_above
+  confidence: medium
+  note: Mistral NeMo scores 68 on MMLU and was released as a stronger drop-in replacement for Mistral
+    7B, measured by Mistral against Gemma 2 9B and Llama 3 8B rather than against 7B models, which puts
+    it a step above Mistral 7B Instruct. As a 2024 12B model it is well short of current mid-size releases.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://arxiv.org/abs/2310.06825
+      shows: Mistral 7B abstract still describes "a 7-billion-parameter language model" that "outperforms
+        Llama 2 13B across all evaluated benchmarks", the 2023-era 7B class the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0149ce291b37bc49e1fa0e338f8d5dc94780dcadf1a3a8ec9e09ea894e5d6279
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407/raw/main/README.md
+    shows: 'Card "Main Benchmarks" table: "MMLU (5-shot) | 68.0%", "HellaSwag (0-shot) | 83.5%", "Winogrande
+      (0-shot) | 76.8%", "TriviaQA (5-shot) | 73.8%"; and "Drop-in replacement of Mistral 7B".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 445377992e7404021555e689a5df79b90a3293c38829ec1dcaa9dfed5b7526b0
+  - url: https://mistral.ai/news/mistral-nemo
+    shows: 'Release post dated July 18, 2024: "a 12B model built in collaboration with NVIDIA"; a table
+      "compares the accuracy of the Mistral NeMo base model with two recent open-source pre-trained models,
+      Gemma 2 9B, and Llama 3 8B"; and "Compared to Mistral 7B, it is much better at following precise
+      instructions, reasoning, handling multi-turn conversations, and generating code."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 399b778b2772940970f7bc044aebbfca9f9fc04a8e1c9e98d0b8218b887e08d0
+  - url: https://docs.mistral.ai/getting-started/models/models_overview/
+    shows: Mistral's models page lists "Mistral Nemo 12B" (open-mistral-nemo-2407) with deprecation 5/22/2026,
+      retirement 7/31/2026 and Ministral 3 8B as the replacement.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 92552b185a014498b864b2311bd3b0720eaf2bcaaf5f2b6ad5fc2b74e4df2097

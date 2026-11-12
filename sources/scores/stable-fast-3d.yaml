@@ -1,0 +1,107 @@
+product: stable-fast-3d
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: model.safetensors on the Hub behind an automatically approved click-through
+    data:
+      value: described
+      detail: the Hub record names Objaverse as the training dataset; the curated renders are not released
+    code:
+      value: partial
+      detail: inference script, Gradio demo and ComfyUI node; no training code
+    license:
+    - name: Stability-AI-Community-License
+      detail: 'the LICENSE.md covering the code and the weights: free below USD 1M annual revenue, after which an enterprise
+        license is required'
+  governing_release: Stable Fast 3D (July 2024)
+  confidence: high
+  note: Stable Fast 3D is free to use, commercially included, for organizations under USD 1M in annual revenue, with
+    a paid license above that, and the same terms cover the code. Only inference code is published, and the Objaverse-based
+    training set is not released.
+  raw: 'weights:open(model.safetensors on the Hub behind an automatically approved click-through);data:described(the
+    Hub record names Objaverse as the training dataset; the curated renders are not released);code:partial(inference
+    script, Gradio demo and ComfyUI node; no training code);license:Stability-AI-Community-License(the LICENSE.md covering
+    the code and the weights: free below USD 1M annual revenue, after which an enterprise license is required)'
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://ungh.cc/repos/Stability-AI/stable-fast-3d/files/main/LICENSE.md
+    shows: 'LICENSE.md: "STABILITY AI COMMUNITY LICENSE AGREEMENT / Last Updated: July 5, 2024"; "preserves free access
+      to the Models for people or organizations generating annual revenue of less than US $1,000,000".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a0f992849ce25def8e531884edd7adf3c00cb8d2d4c59e49f0cb02597c29066e
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/stabilityai/stable-fast-3d?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for stabilityai/stable-fast-3d: license_name stabilityai-ai-community, gated "auto",
+      datasets allenai/objaverse, files model.safetensors and config.yaml.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 61339c00f5127fb0022f28da04c72eb3851316f2b3e9cb659a5eb58ce8688998
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://ungh.cc/repos/Stability-AI/stable-fast-3d/files/main
+    shows: 'Repository file list: run.py, gradio_app.py, a comfyui/ node and the sf3d/ model package; no training script
+      or training config.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c8d475423941f847529006c78ca843805a77d7e817601cee1f5444d66c815fad
+    establishes:
+    - code
+  - url: https://ungh.cc/repos/Stability-AI/stable-fast-3d/files/main/README.md
+    shows: 'README: "Stable Fast 3D is based on TripoSR but introduces several new key techniques"; UV unwrapping, delighting
+      and material parameters "while still maintaining the fast inference speeds of TripoSR".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 830acf3c0c9776f2ccf8d3edc41c1e85972e993b38b65eee06e6663a91ebaa7b
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of stabilityai/stable-fast-3d, the only first-party copy of the
+    weights.
+  sources:
+  - url: https://huggingface.co/api/models/stabilityai/stable-fast-3d?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for stabilityai/stable-fast-3d: downloads 33799.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 61339c00f5127fb0022f28da04c72eb3851316f2b3e9cb659a5eb58ce8688998
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena render board, read 2026-11-12: SF3D 15th of 24 (score 1175); 17th of 22 on the topology board (score
+    1061)'
+  confidence: medium
+  relative_to: triposr
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+      shows: 'Re-read of the peer: "TripoSR" 20th of 24 on the render board (score 1081), still in its lower half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd518f12af8433c53835e8bf850dcd26ea93005c26d6d68771dfd99acc07ce33
+  note: Stable Fast 3D places in the lower half of the image-to-3D arena, above TripoSR, the model it builds on, and
+    below InstantMesh and SAM 3D Objects.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: 'Render board of 24 entries: "SF3D" rank 15, score 1175, 8037 votes; "TripoSR" rank 20.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dd518f12af8433c53835e8bf850dcd26ea93005c26d6d68771dfd99acc07ce33
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=topology
+    shows: 'Topology board of 22 entries: "SF3D" rank 17, score 1061.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5722c5d5a3f976234d6b4b699ada81f125f23fc29837a0c431bd73ad354d0da9

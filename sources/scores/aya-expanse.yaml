@@ -1,0 +1,117 @@
+product: aya-expanse
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: 8B and 32B on Hugging Face behind an automatically approved access form
+    data:
+      value: closed
+    code:
+      value: closed
+      detail: no training or post-training pipeline published
+    license:
+    - name: CC-BY-NC-4.0
+      detail: non-commercial, with Cohere Labs' acceptable-use addendum
+  governing_release: aya-expanse-32b
+  confidence: high
+  note: Aya Expanse's weights can be downloaded after an automatically approved form, but Cohere licenses
+    them under CC-BY-NC 4.0 with an acceptable-use addendum, which rules out commercial use. The training
+    data and recipe are not released.
+  raw: weights:open(8B and 32B on Hugging Face behind an automatically approved access form);data:closed;code:closed(no
+    training or post-training pipeline published);license:CC-BY-NC-4.0(non-commercial, with Cohere Labs'
+    acceptable-use addendum)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/CohereLabs/aya-expanse-32b
+    shows: 'Model API for CohereLabs/aya-expanse-32b: `gated: "auto"`, cardData.license `cc-by-nc-4.0`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4597948d8f38f7ec7d83c14da2f284d73ca9693d596b26af2fe3099bf354e59a
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/CohereLabs/aya-expanse-8b
+    shows: 'Model API for CohereLabs/aya-expanse-8b: `gated: "auto"`, cardData.license `cc-by-nc-4.0`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f107a609e53ce8f081c243f6f5ef3032aa2391c134417721165a01614ca50502
+    establishes:
+    - weights
+    - license
+  - url: https://cohere.com/c4ai-cc-by-nc-license
+    shows: 'Cohere''s "CC-BY-NC 4.0 License with Acceptable Use Addendum": "Creative Commons Attribution-NonCommercial
+      4.0 International Public License with Acceptable Use Addendum", which the Aya Expanse access form
+      asks users to accept.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 80231285f9843d94c1f96ccecf4c338e9652ea5a86d2a0bf971d37fd37bd38bc
+    establishes:
+    - license
+  - url: https://arxiv.org/abs/2412.04261
+    shows: 'Abstract: "we present extended evaluation results for the Aya Expanse model family and release
+      their open-weights", and names the training advances ("data arbitrage, multilingual preference training,
+      and model merging") without releasing training data or code.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2bfe73e8d393bfa69d2e3ceff2c61a93e646147c4c6104f36cdee919da98bed9
+    establishes:
+    - data
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the 8B and 32B checkpoints, most of them for the 8B model.
+  sources:
+  - url: https://huggingface.co/api/models/CohereLabs/aya-expanse-8b
+    shows: '"downloads":23586 for CohereLabs/aya-expanse-8b, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f107a609e53ce8f081c243f6f5ef3032aa2391c134417721165a01614ca50502
+  - url: https://huggingface.co/api/models/CohereLabs/aya-expanse-32b
+    shows: '"downloads":3266 for CohereLabs/aya-expanse-32b, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4597948d8f38f7ec7d83c14da2f284d73ca9693d596b26af2fe3099bf354e59a
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: multilingual Arena-Hard-Auto win rates in the technical report and release post
+  value: On Arena-Hard-Auto translated into 23 languages, Aya Expanse 32B wins 54.0% of pairwise comparisons
+    against Llama 3.1 70B, and Aya Expanse 8B wins 60.4% to 70.6% against Gemma 2 9B, Llama 3.1 8B and
+    Ministral 8B.
+  relative_to: llama-instruct
+  relation: at
+  confidence: medium
+  note: Cohere reports Aya Expanse 32B beating Llama 3.1 70B, and the 8B model beating Llama 3.1 8B and
+    Gemma 2 9B, on multilingual Arena-Hard comparisons, which puts the family level with Llama's instruct
+    models of the same generation. Those are pairwise win rates judged by another model, and no general
+    benchmark places it near current releases.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct
+      shows: Llama 3.1 8B Instruct model page still carries the benchmark table with MMLU (5-shot) 66.7
+        for Llama 3.1 8B and 79.3 for Llama 3.1 70B base, the generation the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 5cb9c9f807c2868bcb00c24cfbb9e998dba842119953b1f46af3735260ef4093
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/abs/2412.04261
+    shows: 'Abstract: "Aya Expanse 8B and 32B outperform leading open-weight models in their respective
+      parameter classes, including Gemma 2, Qwen 2.5, and Llama 3.1, achieving up to a 76.6% win-rate.
+      Notably, Aya Expanse 32B outperforms Llama 3.1 70B ... achieving a 54.0% win-rate."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2bfe73e8d393bfa69d2e3ceff2c61a93e646147c4c6104f36cdee919da98bed9
+  - url: https://huggingface.co/blog/aya-expanse
+    shows: 'Release post: "Aya Expanse 32B outperforms Gemma 2 27B, Mistral 8x22B, and Llama 3.1 70B"
+      and Aya Expanse 8B "outperforms ... Gemma 2 9B, Llama 3.1 8B, and the recently released Ministral
+      8B with win rates ranging from 60.4% to 70.6%", on Arena-Hard-Auto translated into 23 languages.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6497aaae6a677ac8904953d172de1321135c075ace157febf7e896fd356593aa

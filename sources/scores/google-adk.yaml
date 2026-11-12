@@ -1,0 +1,110 @@
+product: google-adk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 9620b42 holds 3,084 paths under one root Apache-2.0 LICENSE with no ee/, enterprise/,
+        commercial/ or proprietary/ path; the README calls the framework open source and deployment-agnostic,
+        and names Cloud Run and Google's hosted Agent Runtime as places to deploy to rather than parts
+        of it
+    context:
+      commercial:
+        value: Gemini-Enterprise-Agent-Platform
+  confidence: high
+  note: ADK is Apache-2.0 licensed, and the whole framework builds from its public repository with no
+    enterprise directory or paid edition. Google sells hosted places to run agents, but deploying there
+    is optional, and the README names Cloud Run and other targets as alternatives.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the tree at 9620b42 holds 3,084 paths
+    under one root Apache-2.0 LICENSE with no ee/, enterprise/, commercial/ or proprietary/ path; the
+    README calls the framework open source and deployment-agnostic, and names Cloud Run and Google's hosted
+    Agent Runtime as places to deploy to rather than parts of it);commercial:Gemini-Enterprise-Agent-Platform
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/google/adk-python/main/LICENSE
+    shows: The root LICENSE is the unmodified Apache License text, headed "Apache License" and "Version
+      2.0, January 2004".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/google/adk-python/main/pyproject.toml
+    shows: 'The package manifest reads license = { file = "LICENSE" } with the classifier "License ::
+      OSI Approved :: Apache Software License", and builds the sdist from src/ in the repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cb4203023d01bf4302f030aef710964c16bce33c56cab9bb74445f8fbd49a8a3
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/google-adk/json
+    shows: PyPI metadata for google-adk 2.14.0, uploaded 2026-11-07, carries the Apache Software License
+      classifier and names https://github.com/google/adk-python as its repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 066504282893dca0f93b5cc8e25cde917fb76477a533aa1692fce2bac835a567
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/google/adk-python/main/README.md
+    shows: The README calls ADK "An open-source, code-first Python framework" that is "model-agnostic,
+      deployment-agnostic", and says agents can be deployed "on Cloud Run or scale seamlessly with Agent
+      Runtime on Gemini Enterprise Agent Platform".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8b0cd55238141600f57ebfd1ac128136369ed8131fc9e752425c72ce95a51a59
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of google-adk over the trailing month. CI pipelines and dependent
+    packages add to the count, so it measures installs rather than developers, and the Java, Kotlin, Go
+    and TypeScript versions are not included.
+  sources:
+  - url: https://pypistats.org/api/packages/google-adk/recent
+    shows: last_month 10,109,331 downloads for google-adk (last_week 2,554,191, last_day 420,622).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c97db89485eb4fc57df4bbc0f85c071604613ecfa7e43dcd8b7d320b9c503de8
+capability:
+  score: 4
+  basis: feature_matrix
+  value: agents with instructions and tools; multi-agent hierarchies; graph workflow runtime with routing,
+    fan-out and fan-in, loops, retry, state and nested workflows; structured task delegation between agents;
+    tool confirmation for human approval; function, OpenAPI and MCP tools; model-agnostic; no first-party
+    benchmark
+  confidence: medium
+  note: ADK pairs multi-agent hierarchies with a graph workflow runtime that handles routing, loops, retries
+    and human approval. It sits a step below LangGraph, which documents durable runs that resume exactly
+    where they stopped; the ADK README makes no such claim.
+  relative_to: langgraph
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+      shows: The LangGraph README still describes durable execution, "automatically resuming from exactly
+        where they left off", and "inspecting and modifying agent state at any point during execution".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/google/adk-python/main/README.md
+    shows: The README lists a "Workflow Runtime" with "routing, fan-out/fan-in, loops, retry, state management,
+      dynamic nodes, human-in-the-loop, and nested workflows", a Task API for agent-to-agent delegation,
+      multi-agent hierarchies, MCP and OpenAPI tools and a tool confirmation flow; it publishes no benchmark
+      figure.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8b0cd55238141600f57ebfd1ac128136369ed8131fc9e752425c72ce95a51a59

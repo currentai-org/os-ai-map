@@ -1,0 +1,102 @@
+product: dask-ml
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/dask/dask-ml
+    core-gated:
+      value: ungated
+      detail: no paid edition; the repository has no enterprise directory
+  confidence: high
+  note: BSD-3-Clause and built from the public repository. Dask-ML is a community project of the Dask ecosystem with
+    no paid edition, so nothing in it is held back.
+  raw: license:BSD-3-Clause(OSI);source:public(github.com/dask/dask-ml);core-gated:ungated(no paid edition; the repository
+    has no enterprise directory)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/dask/dask-ml/main/LICENSE.txt
+    shows: 'LICENSE.txt: "Copyright (c) 2017, Anaconda, Inc. and contributors", the three-clause BSD terms.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6f7a7e44492156d6a92b9ba7f76cad682ee3f27cbd297fba4937b08b0e7b877d
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/dask-ml/json
+    shows: PyPI record for dask-ml 2025.1.0, uploaded 2025-02-08, license field carrying the BSD-3-Clause text, Homepage
+      github.com/dask/dask-ml.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c9cea604420284d2acf6f30d503aaaa307f696cc3ce5315bf769c1ac0f8c62ba
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/dask/dask-ml/main/README.rst
+    shows: 'README: "Dask-ML provides scalable machine learning in Python using Dask"; "LICENSE New BSD"; NumFOCUS badge.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 326d18bf9456ad8a5cafb93942a60145e6a09194c95bbf46cef9d393e04e72da
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/dask/dask-ml/files/main
+    shows: Repository tree with dask_ml/, docs/ and tests/; no ee, enterprise, commercial or proprietary directory.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: eefcceed1748698f7ab2ccc69649ccf13a1c4f2e17520a36668908952bcfd679
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the dask-ml package.
+  sources:
+  - url: https://pypistats.org/api/packages/dask-ml/recent
+    shows: last_month 48,431 downloads of dask-ml
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 768cf5aa6ef649c08317a68ac05442b9a4b4b9dd37a5381ef9da09cf16da7137
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Dask-parallel linear, logistic and Poisson regression, naive Bayes, k-means and spectral clustering, PCA and
+    SVD, preprocessing and imputation, grid, randomized, incremental and Hyperband search, blockwise voting ensembles,
+    and wrappers that scale scikit-learn and XGBoost estimators
+  relative_to: scikit-learn
+  relation: at
+  confidence: medium
+  note: Dask-ML spreads scikit-learn-style training, preprocessing and hyperparameter search across a cluster or data
+    larger than memory. It leaves the choice of model to the user, as scikit-learn does, and implements fewer learners
+    of its own.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://scikit-learn.org/stable/user_guide.html
+      shows: scikit-learn user guide still lists supervised learners (linear models, SVMs, nearest neighbors, Gaussian
+        processes, decision trees, ensembles, neural networks) and unsupervised ones (mixtures, manifold learning, clustering)
+        - the toolkit scope compared at.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 6c6c264ef869e05cbd5a682bdcdbdfa7302478eb897be90112fa3d2655766875
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://ml.dask.org/modules/api.html
+    shows: 'API reference: dask_ml.model_selection (GridSearchCV, RandomizedSearchCV, IncrementalSearchCV, HyperbandSearchCV),
+      ensemble, linear_model (LinearRegression, LogisticRegression, PoissonRegression), naive_bayes, wrappers (ParallelPostFit,
+      Incremental), cluster (KMeans, SpectralClustering), decomposition, preprocessing, impute, metrics and xgboost.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af5cbeb9b1988cda27556bf93cbcc34e2625bad8e1bb4d1909dbbce6a6141242
+  - url: https://ml.dask.org/
+    shows: 'Docs landing: "Dask-ML provides scalable machine learning in Python using Dask alongside popular machine
+      learning libraries like Scikit-Learn, XGBoost, and others"; integrations for Scikit-Learn & Joblib, XGBoost & LightGBM,
+      PyTorch, Keras and TensorFlow.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fb3f55142a5c31f83eaa81c5ca3cdc526472bded5ba2e4c2f14998b36dd03bbd

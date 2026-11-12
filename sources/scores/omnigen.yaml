@@ -1,0 +1,137 @@
+product: omnigen
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: the OmniGen2 checkpoint, including its bundled Qwen2.5-VL-3B component, downloads from the Hub without a gate
+    data:
+      value: partial
+      detail: the X2I2 training datasets are released under Apache 2.0; the data construction pipeline is not yet
+    code:
+      value: partial
+      detail: inference code plus full-parameter and LoRA fine-tuning scripts; the pretraining pipeline is not published
+    license:
+    - name: Apache-2.0
+      detail: the OmniGen2 transformer weights and the repository code
+    - name: Qwen-Research-License
+      detail: 'the Qwen2.5-VL-3B-Instruct model shipped in the checkpoint''s mllm/ folder, which every OmniGen2 run loads:
+        non-commercial use only'
+  governing_release: OmniGen2 (June 2025)
+  confidence: medium
+  note: OmniGen2's own weights and code are Apache 2.0 and its training datasets are published, but the checkpoint ships Alibaba's
+    Qwen2.5-VL-3B as its understanding model, and that component is licensed for research and evaluation only. Since every
+    OmniGen2 run needs it, the model as distributed cannot be used commercially.
+  raw: 'weights:open(the OmniGen2 checkpoint, including its bundled Qwen2.5-VL-3B component, downloads from the Hub without
+    a gate);data:partial(the X2I2 training datasets are released under Apache 2.0; the data construction pipeline is not yet);code:partial(inference
+    code plus full-parameter and LoRA fine-tuning scripts; the pretraining pipeline is not published);license:Apache-2.0(the
+    OmniGen2 transformer weights and the repository code)+Qwen-Research-License(the Qwen2.5-VL-3B-Instruct model shipped in
+    the checkpoint''s mllm/ folder, which every OmniGen2 run loads: non-commercial use only)'
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/OmniGen2/OmniGen2?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for OmniGen2/OmniGen2: license apache-2.0, gated false; files include mllm/model-0000N-of-00004.safetensors
+      beside transformer/ and vae/.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4ecb3244a3a64baf2c57ae165dc0139dcd87ab1443d4e625a77a82d6bd6346ad
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/OmniGen2/OmniGen2/raw/main/mllm/config.json
+    shows: 'OmniGen2 mllm/config.json: "Qwen2_5_VLForConditionalGeneration", hidden_size 2048, 36 layers, the Qwen2.5-VL-3B
+      shape.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 04875e977ecc48474285860d4cd35c80597e5bee0d669aac335c01d192c74d08
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Qwen/Qwen2.5-VL-3B-Instruct?expand[]=cardData&expand[]=gated
+    shows: 'Hugging Face API record for Qwen/Qwen2.5-VL-3B-Instruct: license_name qwen-research.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 90a3f6a9ce23077d8d776d059bd48fca6b3b8cbe55f64e587be2770a72f6f44d
+    establishes:
+    - license
+  - url: https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct/raw/main/LICENSE
+    shows: 'License body: "Qwen RESEARCH LICENSE AGREEMENT"; "''Non-Commercial'' shall mean for research or evaluation purposes
+      only"; rights granted "FOR NON-COMMERCIAL PURPOSES ONLY".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b5c0e5cf74cf51af1ecbc4af597cfcd13fd9925611838884a681070838a14a50
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/VectorSpaceLab/OmniGen2/main/LICENSE
+    shows: 'Repository LICENSE body: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/VectorSpaceLab/OmniGen2/main/README.md
+    shows: 'README news: "2025-06-16: We release OmniGen2"; "2025-06-30: Training code is available, see fine-tuning"; "2025-07-05:
+      Training datasets X2I2 are available"; TODO "[ ] Training data construction pipeline"; "Inherits ... from its Qwen-VL-2.5
+      foundation".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f205b4b13a92f580ccfe8aaf0dec1e7e9c93fc81a177450a5eb8a07f926f09bc
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/VectorSpaceLab/OmniGen2/main/docs/FINETUNE.md
+    shows: 'Fine-tuning guide: "a training script that supports multi-GPU and multi-node distributed training"; "Both full-parameter
+      fine-tuning and LoRA" from the released checkpoint.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 17a54913ce7967dd8f7dc3af89915ed3015c13d1e60a8ce538b31589bb9dfa84
+    establishes:
+    - code
+  - url: https://huggingface.co/api/datasets?author=OmniGen2&limit=100
+    shows: 'Dataset listing for the OmniGen2 account: X2I2 (license apache-2.0, gated false) and the OmniContext benchmark.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d17e900ae06b8a6d13dac061b62375962d152f26520ca45338f71a49c7433b11
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the OmniGen2 and OmniGen2-RL checkpoints on the project's Hub account;
+    the EditScore reward models there, and OmniGen v1 on a personal account, are left out.
+  sources:
+  - url: https://huggingface.co/api/models?author=OmniGen2&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: OmniGen2 2402, OmniGen2-EditScore7B 61, OmniGen2-EditScore7B-v1.1 58, OmniGen2-RL
+      47; 2,449 for the two generation checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 079e4cf202952957e5317e4424514cd5b13dd8f1f820738005300b3b13a205b4
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Image Arena, overall board
+  value: 'Artificial Analysis Text to Image Arena, overall board as served 2026-11-12: OmniGen V2 111th of 112 at an Elo of
+    703'
+  confidence: medium
+  relative_to: flux
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+      shows: 'Re-read of the peer: the overall board as served lists 112 models; "FLUX.2 [dev]", the best-placed downloadable
+        FLUX model, is 52nd at an Elo of 1000, in its upper half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0690d423feb34fc7989a06e4d3319d8e1637309b93cc61f1a0e7a99b92723456
+  note: OmniGen2 is near the bottom of the public image arena, which scores text-to-image only and not the editing and subject-driven
+    generation the model was built for. FLUX.2 [dev] places well above it.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+    shows: 'Overall board (112 models): "OmniGen V2" 111th, Elo 703, from VectorSpaceLab, with an open-weights link to OmniGen2/OmniGen2.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0690d423feb34fc7989a06e4d3319d8e1637309b93cc61f1a0e7a99b92723456
