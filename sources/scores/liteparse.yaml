@@ -1,0 +1,105 @@
+product: liteparse
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI. the LICENSE body is the Apache License 2.0
+    source:
+      value: public
+      detail: run-llama/liteparse
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary path. the README names LlamaParse as LlamaIndex's separate
+        cloud parser
+  confidence: high
+  note: LiteParse is released under the Apache License 2.0 with its full source public, and everything it does runs locally.
+    LlamaIndex sells LlamaParse, its hosted parser, as a separate product rather than as a paid edition of this one.
+  raw: license:Apache-2.0(OSI. the LICENSE body is the Apache License 2.0);source:public(run-llama/liteparse);core-gated:ungated(no
+    ee, enterprise, commercial or proprietary path. the README names LlamaParse as LlamaIndex's separate cloud parser)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/run-llama/liteparse/main/LICENSE
+    shows: 'LICENSE body: "Apache License / Version 2.0, January 2004", the stock text.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/run-llama/liteparse/files/main
+    shows: 'Full file list of the main branch (crates/, packages/, ocr/, docs/): no ee/, enterprise/, commercial/ or
+      proprietary/ path.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0ca2f9139b5bbf316f26983e3ca4b9a9132c6e7ac204213fe1746b19120a0433
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/run-llama/liteparse/main/README.md
+    shows: 'README: "LiteParse is a standalone OSS PDF parsing tool ... without proprietary LLM features or cloud dependencies.
+      Everything runs locally"; for complex documents it points to "LlamaParse, our cloud-based document parser built
+      for production document pipelines".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3b2218d61d94c4d05059a22e26f95a41218e2d5583cb69c3846ef07ffae871ad
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as PyPI downloads of liteparse, the Python binding published from the repository. The npm
+    package, which draws more downloads, is declared but not added to the measured figure, so the reading understates
+    use across the two registries.
+  sources:
+  - url: https://pypistats.org/api/packages/liteparse/recent
+    shows: 'pypistats for liteparse: last_month 360368.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 04cc08a59cd05f972954e03eca434fa0fdc274f65d1a3b55a9c08942d53db266
+  - url: https://pypi.org/pypi/liteparse/json
+    shows: 'PyPI liteparse 2.18.0, uploaded 2026-11-04: summary "Python bindings for LiteParse - fast, lightweight PDF
+      and document parsing", license expression Apache-2.0, Homepage https://github.com/run-llama/liteparse.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 37ba786eb3ef326ad46b753ed74281489481c25a376dffe81c78c9082ca1eac6
+  - url: https://api.npmjs.org/downloads/point/last-month/@llamaindex/liteparse
+    shows: 'npm @llamaindex/liteparse: downloads 1034634 from 2026-10-12 to 2026-11-10.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7836d961b9429acba2c8561689f677ac4ff25e156875cfc6c05c7733aa7f2823
+capability:
+  score: 4
+  basis: feature_matrix
+  value: PDF, DOCX, XLSX, PPTX and images to Markdown with headings, tables, lists, images and links, to JSON with text
+    and bounding boxes, or to layout-preserved text; selective OCR through bundled Tesseract or an HTTP OCR server; complexity
+    detection; page screenshots; no VLM or user-defined field extraction
+  confidence: medium
+  relative_to: docling
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/docling-project/docling/main/README.md
+      shows: The Docling README still lists page layout, reading order and table structure recovery, formulas, chart
+        understanding and VLM support, exports to Markdown, HTML and lossless JSON, and links an information-extraction
+        example for user-defined fields. LiteParse recovers layout into Markdown and JSON but extracts no user-defined
+        fields, which keeps it a step below.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 2ad389cb514915804303a6ac60302f06225ecb0a83b723914c03af1747a85a01
+  note: LiteParse rebuilds a page's layout into Markdown with headings, tables and lists, and returns each piece of text
+    with its position. It sits a step below Docling because it uses no vision-language model and returns no fields a
+    user defines.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/run-llama/liteparse/main/README.md
+    shows: 'README Overview: "Fast Text Parsing: Spatial text parsing using PDFium"; "Markdown Output: Structured Markdown
+      with headings, tables, lists, images, and links"; "Bounding Boxes"; OCR via bundled Tesseract or HTTP servers;
+      input formats PDF, DOCX, XLSX, PPTX and images.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3b2218d61d94c4d05059a22e26f95a41218e2d5583cb69c3846ef07ffae871ad

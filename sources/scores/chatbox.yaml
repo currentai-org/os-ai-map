@@ -1,0 +1,101 @@
+product: chatbox
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: GPL-3.0
+      detail: OSI. the LICENSE body is the GNU General Public License version 3
+    source:
+      value: public
+      detail: chatboxai/chatbox, the Community Edition
+    core-gated:
+      value: gated
+      detail: the README calls the repository the Community Edition and says code is synced with a private pro repo.
+        the official downloads and paid plans are built from that codebase
+  confidence: medium
+  note: The Community Edition is released under the GPL version 3 with its source public. The builds the vendor distributes
+    and sells plans for come from a private Pro codebase that the README says is synced with this one, so the published
+    source is not the whole product.
+  raw: license:GPL-3.0(OSI. the LICENSE body is the GNU General Public License version 3);source:public(chatboxai/chatbox,
+    the Community Edition);core-gated:gated(the README calls the repository the Community Edition and says code is synced
+    with a private pro repo. the official downloads and paid plans are built from that codebase)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/chatboxai/chatbox/main/LICENSE
+    shows: 'LICENSE body: "GNU GENERAL PUBLIC LICENSE / Version 3, 29 June 2007", the stock text.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/chatboxai/chatbox/main/README.md
+    shows: 'README: "This is the repository for the Chatbox Community Edition, open-sourced under the GPLv3 license."
+      and "We regularly sync code from the pro repo to this repo, and vice versa."; the Download table links to chatboxai.app
+      rather than to this repository''s releases.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0e246b5ff1728a72f13640035396befe03665fe5b4c4c7a193d66fce1ea2fc2f
+    establishes:
+    - source
+    - core-gated
+  - url: https://chatboxai.app/en/pricing
+    shows: 'Pricing page: Free, Lite, Pro and Pro+ plans priced per month, listing compute points for model chats, web
+      search and document analysis, a personal knowledge base, MCP services and multi-device use.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4a883cc427d2d0d523befee1f6bb1ea0dc882bfb7452eda7aacdaadd783996a9
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  banded_quantity: 42,304 GitHub stargazers on chatboxai/chatbox, the product's only declared artifact
+  note: Chatbox is distributed as application builds from the vendor's site rather than through a package registry, so
+    GitHub stars are the only signal. A star is not a use, and the stars belong to the Community Edition repository rather
+    than to the official builds.
+  sources:
+  - url: https://ungh.cc/repos/chatboxai/chatbox
+    shows: 'Repository record for chatboxai/chatbox: stars 42304, pushedAt 2026-11-10.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9fb823f4349e06cd839af35166c8280b15f743c09f1db5f4910dc43af1138138
+capability:
+  score: 3
+  basis: feature_matrix
+  value: multi-provider chat client (OpenAI, Azure OpenAI, Claude, Gemini, Ollama and others) on desktop, web and mobile;
+    local storage; prompt library; image generation; document and image analysis; personal knowledge base and MCP services
+    listed on the paid plans; team sharing of API resources
+  confidence: medium
+  relative_to: nextchat
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://cdn.jsdelivr.net/gh/ChatGPTNextWeb/NextChat@main/README.md
+      shows: The NextChat README still describes a "Light and Fast AI Assistant" for Claude, DeepSeek, GPT and Gemini
+        with plugins, MCP support and an MCP market, and reserves knowledge-base integration and permission control for
+        its Enterprise Edition. Chatbox is the same shape of multi-provider client, which keeps the two level.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 99b65bd305d6ad2e41befc5f4441b218e5a064b5673a5f3a1f2f8d5c86f7a450
+  note: Chatbox is a cross-platform client for many model providers and local Ollama models, with a prompt library, image
+    generation and document analysis, on par with NextChat. It has no multi-user accounts or agent builder of the kind
+    that puts AnythingLLM and Open WebUI higher.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/chatboxai/chatbox/main/README.md
+    shows: 'README Features: "Support for Multiple LLM Providers" (OpenAI, Azure OpenAI, Claude, Google Gemini Pro, Ollama,
+      ChatGLM-6B), "Image Generation with Dall-E-3", "Local Data Storage", "Prompt Library & Message Quoting", "Team
+      Collaboration", desktop, web and mobile apps.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0e246b5ff1728a72f13640035396befe03665fe5b4c4c7a193d66fce1ea2fc2f
+  - url: https://chatboxai.app/en/pricing
+    shows: 'Plan features: "Analyze Documents and Images", "Personal Knowledge Base", "MCP Services", AI-powered web
+      search.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4a883cc427d2d0d523befee1f6bb1ea0dc882bfb7452eda7aacdaadd783996a9

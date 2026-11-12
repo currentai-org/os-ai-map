@@ -1,0 +1,106 @@
+product: opendataloader-pdf
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI. the LICENSE body is the Apache License 2.0, and NOTICE names Hancom, Inc. as copyright holder
+    source:
+      value: public
+      detail: opendataloader-project/opendataloader-pdf
+    core-gated:
+      value: gated
+      detail: the README's capability matrix marks PDF/UA-1 and PDF/UA-2 export and an accessibility studio as Enterprise,
+        outside the Apache-2.0 source
+  confidence: high
+  note: The parser is released under the Apache License 2.0 with its source public, and every extraction feature is in
+    the open code. PDF/UA export and the visual accessibility editor are sold as an enterprise add-on, so part of the
+    product sits outside the published source.
+  raw: license:Apache-2.0(OSI. the LICENSE body is the Apache License 2.0, and NOTICE names Hancom, Inc. as copyright
+    holder);source:public(opendataloader-project/opendataloader-pdf);core-gated:gated(the README's capability matrix
+    marks PDF/UA-1 and PDF/UA-2 export and an accessibility studio as Enterprise, outside the Apache-2.0 source)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/opendataloader-project/opendataloader-pdf/main/LICENSE
+    shows: 'LICENSE body: "Apache License / Version 2.0, January 2004", the stock text.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c95bae1d1ce0235ecccd3560b772ec1efb97f348a79f0fbe0a634f0c2ccefe2c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/opendataloader-project/opendataloader-pdf/main/NOTICE
+    shows: 'NOTICE: "OpenDataLoader PDF / Copyright 2025-2026 Hancom, Inc. / Licensed under the Apache License, Version
+      2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5d9c19bfdbbf656c87869f597b8629517d27c4affdf3e71b14e19a14c2e2ef8b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/opendataloader-project/opendataloader-pdf/main/README.md
+    shows: 'README summary "pricing: open-source core (data extraction, layout analysis, auto-tagging to Tagged PDF),
+      enterprise add-on (PDF/UA export, accessibility studio)"; capability matrix rows "PDF/UA-1, PDF/UA-2 export | Available
+      | Enterprise" and "Accessibility studio (visual editor) | Available | Enterprise".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 663471b45863e35ea03cc9476411aa2ec9dd4439bf45bc30e1f9dd5219d4dd1c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as PyPI downloads of opendataloader-pdf, the Python wrapper that bundles the Java engine
+    and links back to the repository. The npm package is declared too, but the PyPI count alone is what is measured,
+    so the figure understates use across both registries.
+  sources:
+  - url: https://pypistats.org/api/packages/opendataloader-pdf/recent
+    shows: 'pypistats for opendataloader-pdf: last_month 144214.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 054d412e98a92397a24b94b970f7cef82fa5d152847172dc80129ef6d2b6b145
+  - url: https://pypi.org/pypi/opendataloader-pdf/json
+    shows: 'PyPI opendataloader-pdf 2.5.21, uploaded 2026-11-10: summary "A Python wrapper for the opendataloader-pdf
+      Java CLI.", license expression Apache-2.0, Homepage https://github.com/opendataloader-project/opendataloader-pdf.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 13b90d061052bdc71edd028fe3f33e647ce1997211e6a14efdcf73bfbc75d026
+  - url: https://api.npmjs.org/downloads/point/last-month/@opendataloader/pdf
+    shows: 'npm @opendataloader/pdf: downloads 76782 from 2026-10-12 to 2026-11-10.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ab1294f46b1414805c7d7e7d7f450e71a867262e6cbc9d82b4fc81d07baf4ec8
+capability:
+  score: 4
+  basis: feature_matrix
+  value: PDF to Markdown, HTML and JSON with bounding boxes and element types; XY-Cut++ reading order; heading hierarchy,
+    lists and simple tables locally; borderless tables, OCR in 80+ languages, LaTeX formulas and chart descriptions in
+    hybrid mode; auto-tagging to Tagged PDF; PDF input only
+  confidence: high
+  relative_to: docling
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/docling-project/docling/main/README.md
+      shows: The Docling README still lists "Advanced PDF understanding incl. page layout, reading order, table structure,
+        code, formulas, image classification", export to Markdown, HTML and lossless JSON, chart understanding, and links
+        an information-extraction example for user-defined fields. OpenDataLoader PDF recovers the same structure but
+        returns no fields a user defines, which keeps it a step below.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 2ad389cb514915804303a6ac60302f06225ecb0a83b723914c03af1747a85a01
+  note: OpenDataLoader PDF keeps reading order, headings, lists and tables, and returns each element with its position
+    and type. It sits a step below Docling because it returns no fields a user defines, such as an invoice total, and
+    it reads PDFs only.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/opendataloader-project/opendataloader-pdf/main/README.md
+    shows: 'README capability matrix: "Extract text with correct reading order", "Bounding boxes for every element",
+      "Table extraction (complex/borderless) | Yes | Free (Hybrid)", "Heading hierarchy detection", "OCR for scanned
+      PDFs", LaTeX extraction for math; "Process Word/Excel/PPT | No".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 663471b45863e35ea03cc9476411aa2ec9dd4439bf45bc30e1f9dd5219d4dd1c
