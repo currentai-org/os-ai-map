@@ -1,0 +1,101 @@
+product: mcp-toolbox-for-databases
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the server, its prebuilt configurations and the custom-tools framework are all in the Apache-2.0 repository;
+        Google's managed MCP servers for its databases are a separate product, which the README points to as the
+        managed alternative
+  confidence: high
+  note: MCP Toolbox is released under Apache-2.0, and the whole server, prebuilt database tools and custom-tools
+    framework included, builds and runs from the public repository. Google sells managed MCP servers for its own
+    databases, but as a separate product, not as a paid edition of this one.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the server, its prebuilt configurations and the
+    custom-tools framework are all in the Apache-2.0 repository; Google's managed MCP servers for its databases
+    are a separate product, which the README points to as the managed alternative)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/googleapis/mcp-toolbox/main/LICENSE
+    shows: The LICENSE is the full "Apache License, Version 2.0, January 2004" text.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@toolbox-sdk/server/latest
+    shows: The npm record for @toolbox-sdk/server 1.16.0 declares "license":"Apache-2.0", author "Google LLC", description
+      "A CLI tool for running a toolbox server." and repository git+https://github.com/googleapis/mcp-toolbox.git.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7fc8bdec5c3daf4c5e912060d34b17c824251c65f2a17856a4385caae2bb0995
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/googleapis/mcp-toolbox/main/README.md
+    shows: The README calls it "an open source Model Context Protocol (MCP) server" with a "Ready-to-use MCP Server"
+      and a "Custom Tools Framework", installs it as a release binary, container image or "npx @toolbox-sdk/server",
+      and says "For users looking for a managed solution, Google Cloud MCP Servers provide a managed MCP experience
+      with prebuilt tools".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 085469cbe0da2a0eb2ebf18a1aceaf9d136c2798971ba53a23e32f6533d3f3ec
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of npm downloads of @toolbox-sdk/server, the launcher the README's MCP configuration
+    runs through npx. The README recommends the release binary or container image for production, and neither is
+    counted, so the figure understates use; the client SDKs are left out because they only call a running server.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@toolbox-sdk/server
+    shows: 194,294 downloads of @toolbox-sdk/server between 2026-10-12 and 2026-11-10
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e259398d955785d1ca5ae7ec9afcb0cb5f06379dc3f46dc3366633740f3b3c1b
+  - url: https://raw.githubusercontent.com/googleapis/mcp-toolbox/main/README.md
+    shows: The README notes the npx route "is optimized for convenience rather than performance" and points "For
+      a more standard and reliable installation" to "the binary or container image".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 085469cbe0da2a0eb2ebf18a1aceaf9d136c2798971ba53a23e32f6533d3f3ec
+capability:
+  score: 3
+  basis: feature_matrix
+  value: a curated tool surface over databases - prebuilt schema-exploration and SQL tools for Google Cloud and
+    other engines, plus custom tools defined as fixed queries, semantic search or NL2SQL in tools.yaml - against
+    connection settings and credentials the caller supplies, on a server the caller runs
+  confidence: medium
+  note: MCP Toolbox exposes one kind of system, a database, through prebuilt or custom tools, and the connection
+    details and credentials are the caller's to set in environment variables or tools.yaml. It hosts nothing and
+    holds no logins on anyone's behalf, which keeps it level with Postgres MCP Pro however many engines it can reach.
+  relative_to: postgres-mcp
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/crystaldba/postgres-mcp/main/README.md
+      shows: The Postgres MCP Pro README still passes DATABASE_URI to the server as an environment variable the
+        caller sets, with "--access-mode=unrestricted" or restricted governing what it may execute.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 6f78d8e5094298aa109de5ed269e6db4f0eb5c11ab0f20ef21d11d9dcc08a026
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/googleapis/mcp-toolbox/main/README.md
+    shows: The README's prebuilt tools give "list_tables" and "execute_sql" against AlloyDB, BigQuery, Cloud SQL,
+      Spanner, PostgreSQL, MySQL, MongoDB, Snowflake and others, after the user sets "the appropriate environment
+      variables to connect"; a custom source in tools.yaml carries host, database, user and password.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 085469cbe0da2a0eb2ebf18a1aceaf9d136c2798971ba53a23e32f6533d3f3ec
