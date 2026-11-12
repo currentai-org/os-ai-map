@@ -417,7 +417,7 @@ def test_local_scores_matches_check_rubrics_split():
     # held in sources/verification_queue.yaml. It comes off when code is published or the score
     # falls to what the ladder computes.
     # 6 -> 16 -> 6 on 2026-11-12: the long-tail promotion pass (#1018) added ten products whose weights
-    # license no tier named, and R-2026-11-12-e tiered all nine licenses in the same PR, so every one of
+    # license no tier named, and R-2026-11-12-f tiered all nine licenses in the same PR, so every one of
     # them computes and the count returns to atlas-data plus the five datacenter_accelerators rows.
     assert len(deferred) == 6
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
