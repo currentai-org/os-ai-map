@@ -1,0 +1,142 @@
+product: cogvideo
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: CogVideoX1.5-5B and the earlier CogVideoX checkpoints download from the Hub without a gate
+    data:
+      value: described
+      detail: the CogVideoX paper describes its text-video data processing and captioning pipeline; no training set is
+        released
+    code:
+      value: partial
+      detail: inference code plus LoRA and full fine-tuning scripts for users; the pretraining code is not published
+    license:
+    - name: CogVideoX-License
+      detail: 'the CogVideoX1.5 and 5B weights: free for academic research; commercial use is free after registration,
+        up to one million visits a month, with a separate license above that'
+    - name: Apache-2.0
+      detail: the repository code and the CogVideoX-2B weights
+  governing_release: CogVideoX1.5 (November 2024)
+  confidence: medium
+  note: CogVideoX1.5's weights are free for research, and free for commercial use once a company registers with Z.ai,
+    up to a million visits a month. The code is Apache 2.0. Fine-tuning scripts are published but the pretraining code
+    is not, and the training videos are described but not released.
+  raw: 'weights:open(CogVideoX1.5-5B and the earlier CogVideoX checkpoints download from the Hub without a gate);data:described(the
+    CogVideoX paper describes its text-video data processing and captioning pipeline; no training set is released);code:partial(inference
+    code plus LoRA and full fine-tuning scripts for users; the pretraining code is not published);license:CogVideoX-License(the
+    CogVideoX1.5 and 5B weights: free for academic research; commercial use is free after registration, up to one million
+    visits a month, with a separate license above that)+Apache-2.0(the repository code and the CogVideoX-2B weights)'
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/zai-org/CogVideoX1.5-5B/raw/main/LICENSE
+    shows: 'License body: "The CogVideoX License"; "Users who wish to use the models for commercial purposes must register
+      and obtain a basic commercial license"; "the number of service users (visits) for your commercial activities must
+      not exceed 1 million visits per month."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f1702a540abe80caa3458a4eb539d8a138ffeab99d971d14a99083726814037e
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/zai-org/CogVideo/files/main/README.md
+    shows: 'README Model-License: "The code in this repository is released under the Apache 2.0 License"; the CogVideoX-2B
+      model is Apache 2.0 and the 5B models use the CogVideoX LICENSE; news: "2024/11/08: We have released the CogVideoX1.5
+      model."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0aaad019b64e906c54fff8359d655da4b3f6d67a0262d2d82fe34dcbe419e6f8
+    establishes:
+    - license
+  - url: https://huggingface.co/zai-org/CogVideoX-2b/raw/main/LICENSE
+    shows: 'CogVideoX-2B LICENSE body: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4c3f6aeb71e12415a59117dfd35cfc177514424f0356c81798fde1a239d0b6a8
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/zai-org/CogVideoX1.5-5B?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for zai-org/CogVideoX1.5-5B: license other, gated false, transformer, VAE and text-encoder
+      safetensors.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 59798b789d790309ceb65de8a2a6fbc3f760d7ccd29c4528ac680514aa53354a
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models?author=zai-org&search=CogVideo&sort=downloads&direction=-1&limit=100
+    shows: 'Listing of the zai-org CogVideo repositories: CogVideoX-2b, CogVideoX-5b, CogVideoX-5b-I2V, CogVideoX1.5-5B
+      and CogVideoX1.5-5B-I2V are public; none is newer than November 2024.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 24ff3bf3dbf4b00be98eaea102fa4487bd2c699bcf33ae19e491454f71d0bdc6
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/zai-org/CogVideo/files/main
+    shows: 'Repository file list: inference scripts and a finetune/ directory with LoRA and SFT trainers for CogVideoX
+      and CogVideoX1.5; no pretraining pipeline.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 43bbd3ee66f31978c9a55ed2551d9cbb0b03f6b50624c0d29b268fc6d373a80a
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2408.06072
+    shows: 'Paper abstract: "we develop an effective text-video data processing pipeline that includes various data preprocessing
+      strategies and a video captioning method"; the weights of the VAE, caption model and CogVideoX are public, the
+      training data is not.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 19cfc2dfe74e6d14d9c1c0a9316d8d31aec6931779068e9770b4fc9127681283
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across the five zai-org CogVideoX checkpoints; the older CogVideoX-2B and 5B account for almost all of them.
+  sources:
+  - url: https://huggingface.co/api/models?author=zai-org&search=CogVideo&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: CogVideoX-2b 14559, CogVideoX-5b 8554, CogVideoX-5b-I2V 6699, CogVideoX1.5-5B-I2V
+      620, CogVideoX1.5-5B 599; 31,031 in total.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 24ff3bf3dbf4b00be98eaea102fa4487bd2c699bcf33ae19e491454f71d0bdc6
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released text-to-video and image-to-video weights (CogVideoX1.5, 5B, up to 1360x768 and 10 seconds); no CogVideoX
+    entry on the Artificial Analysis Text to Video or Image to Video arenas, read 2026-11-12
+  confidence: medium
+  relative_to: open-sora
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+      shows: 'Re-read of the peer: neither the with-audio list (34 models) nor the without-audio list (39 models) served
+        on this page has an Open-Sora entry, so the peer still has no placement.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ef368bb4b8db80e1e6ae7b7c0848f034c6355713c07775de24160c9f72282a48
+  note: CogVideoX does not appear on the public video arenas, which now list only current models, and sits level with
+    Open-Sora, another open video line with no placement there.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: The text-to-video page serves a with-audio list of 34 models and a without-audio list of 39; neither has a
+      CogVideoX entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ef368bb4b8db80e1e6ae7b7c0848f034c6355713c07775de24160c9f72282a48
+  - url: https://artificialanalysis.ai/video/leaderboard/image-to-video
+    shows: The image-to-video page serves a with-audio list of 35 models and a without-audio list of 40; neither has
+      a CogVideoX entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4390e1eb559e74cb0e0c45ff649ce347717005d26399416c7b3d50381d0132a1
+  - url: https://huggingface.co/zai-org/CogVideoX1.5-5B/raw/main/README.md
+    shows: 'CogVideoX1.5-5B card: video resolution 1360 * 768, 5 or 10 seconds at 16 frames per second.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 46a3174c0d1ad976d71eff1eb4c0724c2c1dc008c7b0b7fcf355ed39fd1878b1
