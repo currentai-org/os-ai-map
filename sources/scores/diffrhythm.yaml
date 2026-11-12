@@ -1,0 +1,138 @@
+product: diffrhythm
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: the DiffRhythm 2 checkpoint and decoder download from the Hub without a gate
+    data:
+      value: closed
+      detail: no training songs are released
+    code:
+      value: partial
+      detail: DiffRhythm 2 publishes inference code only; training code was published for the first DiffRhythm
+    license:
+    - name: Apache-2.0
+      detail: the DiffRhythm 2 code and weights
+    - name: CC-BY-NC-4.0
+      detail: the MuQ-MuLan-large style encoder the inference script downloads and loads on every run
+  governing_release: DiffRhythm 2 (October 2025)
+  confidence: medium
+  note: DiffRhythm 2's own code and weights are Apache 2.0, but generating a song requires the MuQ-MuLan style encoder, which
+    its authors license for non-commercial use only, so the model as run cannot be used commercially. Only inference code
+    is published for this release, and the training data is not released.
+  raw: weights:open(the DiffRhythm 2 checkpoint and decoder download from the Hub without a gate);data:closed(no training
+    songs are released);code:partial(DiffRhythm 2 publishes inference code only; training code was published for the first
+    DiffRhythm);license:Apache-2.0(the DiffRhythm 2 code and weights)+CC-BY-NC-4.0(the MuQ-MuLan-large style encoder the inference
+    script downloads and loads on every run)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/ASLP-lab/DiffRhythm2/main/README.md
+    shows: 'README: "2025.10.30 We released the DiffRhythm2 paper, demo code, and model weights"; "DiffRhythm 2 (code and
+      weights) is released under the Apache License 2.0"; inference instructions only.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 90875639b9d6054afde143b0e0abdc666234ef092edda7a846f4fe04d6d20905
+    establishes:
+    - license
+    - code
+  - url: https://raw.githubusercontent.com/ASLP-lab/DiffRhythm2/main/LICENSE
+    shows: 'LICENSE body: "Copyright 2025 ASLP Lab and Xiaomi Inc."; Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4b387d2253f724f850e54e70c5e8852c3231950686bebbce370daee896ed0b7b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ASLP-lab/DiffRhythm2/main/inference.py
+    shows: 'inference.py loads the style encoder on every run: "mulan = MuQMuLan.from_pretrained("OpenMuQ/MuQ-MuLan-large",
+      ...)", then downloads decoder.bin from the DiffRhythm 2 repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 25f4072c01d25fe82dd324cb6c3e4d7456b37c770f85619b9f2771e2fe7ed43f
+    establishes:
+    - license
+  - url: https://huggingface.co/OpenMuQ/MuQ-MuLan-large/raw/main/README.md
+    shows: 'MuQ-MuLan card: "license: cc-by-nc-4.0"; "The model weights (MuQ-large-msd-iter, MuQ-MuLan-large) are released
+      under the CC-BY-NC 4.0 license."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2a23fa7c94ed047a57240293dd5d6267ae385d1605f2f9756c188b5e9ba5b0c7
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/ASLP-lab/DiffRhythm2?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=siblings&expand[]=createdAt
+    shows: 'Hugging Face API record for ASLP-lab/DiffRhythm2: license apache-2.0, gated false; model.safetensors and decoder.bin.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f558a6aabb63d9ef9aa6ca1c676e6e71e1ea4e91cc2b59f3e6f9bf58d778ae96
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/ASLP-lab/DiffRhythm2/files/main
+    shows: 'DiffRhythm2 file list: inference.py, inference.sh, the diffrhythm2/ model code, a bigvgan/ decoder and g2p/; no
+      training script.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2da4d639c8f3ffaf9b7308b102b9dc698f7526b3e9c954f322f3f09574882c96
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2510.22950
+    shows: 'DiffRhythm 2 paper abstract: a semi-autoregressive architecture based on block flow matching, a 5 Hz music VAE
+      and cross-pair preference optimization; no training dataset is released.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0289c41d86cfb3478fd8e2149dc6fcb9dd94122d5a7a3a703906d16bf9e62551
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across ASLP Lab's DiffRhythm checkpoints, most of them DiffRhythm
+    2.
+  sources:
+  - url: https://huggingface.co/api/models?author=ASLP-lab&search=DiffRhythm&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: DiffRhythm2 1294, DiffRhythm-1_2 318, DiffRhythm-base 156, DiffRhythm-1_2-full 131,
+      DiffRhythm-full 129, DiffRhythm-vae 0; 2,028 in total.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 65173ecc1fcf7fc9fd130aa7c3818af447e0e5f44e58f037008be8d0b462763f
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released song-generation weights with vocals, conditioned on lyrics and a style prompt or reference audio; no DiffRhythm
+    entry on the Artificial Analysis music boards (instrumental, 19 models; vocals, 14 models) read 2026-11-12
+  confidence: medium
+  relative_to: musicgen
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+      shows: 'Re-read of the peer: "MusicGen" is still on the AA-Music-Instrumental v1.1 board, 19th of 19 at an Elo of 868,
+        in its lower half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c675cfb45e25c7b4ffcb8da0bc8b922729abcc98419ee057e4b6557d7b111196
+  note: DiffRhythm 2 generates full songs with vocals but has no placement on the public music arenas, where MusicGen at least
+    appears.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+    shows: The "AA-Music-Instrumental v1.1" board lists 19 models, from "Suno v6" first to "MusicGen" 19th, and no DiffRhythm
+      entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c675cfb45e25c7b4ffcb8da0bc8b922729abcc98419ee057e4b6557d7b111196
+  - url: https://artificialanalysis.ai/music/leaderboard/vocals
+    shows: The "AA-Music-Vocal v1.1" board lists 14 models, from "ACE Music v1" first to "Melodia v3" 14th, and no DiffRhythm
+      entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6d08b91c8840e901c5235953fa6838fd3ac5b433eda13079662cbd08f8777afb
+  - url: https://raw.githubusercontent.com/ASLP-lab/DiffRhythm2/main/README.md
+    shows: 'README: DiffRhythm 2 "is capable of generating full-length songs with precise lyric alignment and coherent musical
+      structures".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 90875639b9d6054afde143b0e0abdc666234ef092edda7a846f4fe04d6d20905

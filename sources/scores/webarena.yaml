@@ -1,0 +1,102 @@
+product: webarena
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the Apache 2.0 text
+    source:
+      value: public
+      detail: the browser environment, agents, evaluation harness and Docker setup for the websites
+    core-gated:
+      value: ungated
+      detail: a university research benchmark with nothing sold beside it, and the tree has no enterprise path
+  confidence: high
+  note: The environment, the evaluation harness and the setup for hosting the websites are Apache-2.0 in one public
+    repository. It is an academic benchmark with no paid edition.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the Apache 2.0 text);source:public(the browser environment, agents,
+    evaluation harness and Docker setup for the websites);core-gated:ungated(a university research benchmark with
+    nothing sold beside it, and the tree has no enterprise path)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/web-arena-x/webarena/main/LICENSE
+    shows: 'The LICENSE body: the Apache License, Version 2.0 text.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/web-arena-x/webarena/files/main
+    shows: 'The 88-file tree of web-arena-x/webarena at `main`: agent, browser_env, evaluation_harness, environment_docker
+      and config_files, one root LICENSE, and no ee/, enterprise/, commercial/ or proprietary/ path. Path absence
+      only, paired with the README and paper cited beside it.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 459a75cdcc60b4dbc7c1f47872a82b3a15f4474e62e5b9489f5b0ee3ddff75db
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/web-arena-x/webarena/main/README.md
+    shows: 'README: "WebArena is a standalone, self-hostable web environment for building autonomous agents"; "This
+      repository hosts the *canonical* implementation of WebArena"; Docker resources "to host your own WebArena
+      Environment"; no pricing or paid tier.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 081c826497f9b7da4952771ee128c2215ec3532379db0fe9f7fcbd899d9c9287
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: WebArena ships no package or dataset with a download count of its own, so GitHub stars on its repository
+    are the only signal. A star is not a use, and the agent frameworks that run WebArena tasks through their own
+    tooling are not counted.
+  sources:
+  - url: https://ungh.cc/repos/web-arena-x/webarena
+    shows: 'Repository record for web-arena-x/webarena: 1,642 stars, 250 forks, pushed 2025-11-26.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 46a0cffdcab450d3bb289e2ea4ed5607589f2fcb33660a56dfb5ca9e69c43809
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'evaluation_code feature matrix: what the harness grades and how'
+  value: 812 long-horizon web tasks across self-hosted e-commerce, forum, GitLab and content-management sites with
+    a map and manuals; execution-based checks of functional correctness; Docker images and an Amazon machine image
+    for the sites; any LLM agent through a browser environment.
+  relative_to: osworld
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://os-world.github.io/
+      shows: 'OSWorld''s site: "a first-of-its-kind scalable, real computer environment for multimodal agents, supporting
+        task setup, execution-based evaluation, and interactive learning across operating systems", with "369 real-world
+        computer tasks".'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516
+  confidence: medium
+  note: WebArena grades agents by what they actually change on working, self-hosted websites rather than by multiple
+    choice. It sits a step below OSWorld, which runs the same kind of execution-based test across whole desktops
+    and several operating systems, because WebArena stays inside the browser.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/pdf/2307.13854
+    shows: 'Paper (ICLR 2024), Carnegie Mellon University: "fully functional websites from four common domains:
+      e-commerce, social forum discussions, collaborative software development, and content management"; "we release
+      a ready-to-use benchmark with 812 long-horizon web-based tasks"; evaluation of "the functional correctness
+      of task completions".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f9731b92bc3d29a2ea7b5f9cb46b48540c76bc3f84a57e0c48fc37ea73107f95
+  - url: https://raw.githubusercontent.com/web-arena-x/webarena/main/README.md
+    shows: 'README: Docker resources and "Amazon Machine Image that pre-installed all websites"; "After evaluating
+      the 812 examples, reset the environment"; site variables for SHOPPING, REDDIT and GITLAB.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 081c826497f9b7da4952771ee128c2215ec3532379db0fe9f7fcbd899d9c9287

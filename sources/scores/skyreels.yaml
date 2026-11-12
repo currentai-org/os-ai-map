@@ -1,0 +1,150 @@
+product: skyreels
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: no SkyReels V4 weights on Skywork's Hugging Face account, where a search for V4 returns nothing, or in
+        its GitHub organization, which has no V4 repository
+    data:
+      value: closed
+      detail: nothing is published for SkyReels V4 beyond its technical report
+    code:
+      value: closed
+      detail: no code is published for SkyReels V4
+    license:
+    - name: Proprietary
+      detail: no license is published for SkyReels V4, which is available only as a hosted model
+    context:
+      prior-release:
+        value: distributed
+        detail: 'SkyReels V3 and V2: checkpoints download from the Hub without a gate under the Skywork Community License,
+          which permits commercial use; inference code only'
+  governing_release: SkyReels V4
+  confidence: medium
+  note: SkyReels V4, Skywork's current release, has no published weights; Skywork describes it in a technical report
+    and it is ranked on public arenas as a hosted model. SkyReels V3 and V2 remain downloadable under the Skywork Community
+    License, which allows commercial use, so the open line trails the vendor's newest release.
+  raw: 'weights:closed(no SkyReels V4 weights on Skywork''s Hugging Face account, where a search for V4 returns nothing,
+    or in its GitHub organization, which has no V4 repository);data:closed(nothing is published for SkyReels V4 beyond
+    its technical report);code:closed(no code is published for SkyReels V4);license:Proprietary(no license is published
+    for SkyReels V4, which is available only as a hosted model);prior-release:distributed(SkyReels V3 and V2: checkpoints
+    download from the Hub without a gate under the Skywork Community License, which permits commercial use; inference
+    code only)'
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/abs/2602.21818
+    shows: 'Skywork''s SkyReels-V4 technical report, "[Submitted on 25 Feb 2026 (v1), last revised 18 Mar 2026]": a unified
+      model for joint video-audio generation, inpainting and editing, "up to 1080p resolution, 32 FPS, and 15 second
+      duration"; no code, weights or training-data link.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4fabf3d91f8620566f12fe72ef7f30aa2c84214424437bfeceec7a1071e816a9
+    establishes:
+    - weights
+    - data
+  - url: https://huggingface.co/api/models?author=Skywork&search=V4
+    shows: Hub search of the Skywork account for "V4" returns an empty list.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models?author=Skywork&search=SkyReels&sort=downloads&direction=-1&limit=100
+    shows: 'Listing of the Skywork SkyReels repositories: V1, V2, V3, A1 and A2 checkpoints, the newest the SkyReels-V3
+      models of 2026-01-19; no V4 repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed79519df956da2cb0170cabf0c5bf695849b568ab381e0815db10c827f9548c
+    establishes:
+    - weights
+  - url: https://ungh.cc/orgs/SkyworkAI/repos
+    shows: 'SkyworkAI GitHub organization repositories: SkyReels-V1, SkyReels-V2, SkyReels-V3, SkyReels-A1, SkyReels-A2;
+      no SkyReels-V4 repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e98a5b633d12a7b1f878938bd59edc473ae51081de7c839213fb5cfe86d5017d
+    establishes:
+    - weights
+    - code
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: '"SkyReels V4" by Skywork AI is listed with "openWeightsUrl":null, a release date of 2026-03-18 and a per-minute
+      API price.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ef368bb4b8db80e1e6ae7b7c0848f034c6355713c07775de24160c9f72282a48
+    establishes:
+    - weights
+  - url: https://huggingface.co/Skywork/SkyReels-V3-A2V-19B/raw/main/LICENSE
+    shows: 'SkyReels V3 LICENSE: "The community usage of Skywork model requires Skywork Community License. The Skywork
+      model supports commercial use."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 89479612798f44f483721f83eba366aec5ab4d10137811de79df37766a6fc26d
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Skywork/SkyReels-V3-A2V-19B?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for Skywork/SkyReels-V3-A2V-19B: license_name skywork-license, gated false, safetensors
+      shards.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1f56fa1928114c420bb82e78d4fd5cf5b49a3b26f110f7cb3ffab0470030a2b6
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/SkyworkAI/SkyReels-V3/files/main/README.md
+    shows: 'SkyReels-V3 README: "Jan 29, 2026: We release the inference code and model weights of SkyReels-V3"; the same
+      day an API was launched.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a8d7c0e5923a497253275639e93060436ea8b37ee3d4bd2942d219d4634758d6
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across the Skywork SkyReels V1 to V3 checkpoints, most of them V2. The current V4 has no downloadable weights to count.
+  sources:
+  - url: https://huggingface.co/api/models?author=Skywork&search=SkyReels&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: SkyReels-V2-DF-14B-720P 7836, SkyReels-V2-T2V-14B-720P 7769, SkyReels-V1-Hunyuan-T2V
+      4961, SkyReels-V3-A2V-19B 2558, the rest under 500 each; 26,164 in total, of which the A1 and A2 repositories account
+      for 80.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed79519df956da2cb0170cabf0c5bf695849b568ab381e0815db10c827f9548c
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Video Arena, without-audio board
+  value: 'Artificial Analysis Text to Video Arena, without-audio list as served 2026-11-12: SkyReels V4 11th of 39 at
+    an Elo of 1104, below MiniMax H3 (768p), an open-weights entry, at 6th; on the image-to-video without-audio list
+    it is 6th of 40'
+  confidence: medium
+  relative_to: minimax-hailuo
+  relation: two_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+      shows: 'Re-read of the peer: on the without-audio list as served (39 models) "MiniMax H3 Max" is 2nd at an Elo
+        of 1139, inside the top three.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ef368bb4b8db80e1e6ae7b7c0848f034c6355713c07775de24160c9f72282a48
+  note: SkyReels V4 places in the upper half of the public text-to-video arena, behind MiniMax H3, Wan 3.0 and Seedance,
+    and higher on the image-to-video board. The open V3 and V2 models are not ranked there.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: 'Without-audio list (39 models): "SkyReels V4" 11th, Elo 1104; "MiniMax H3 (768p)" 6th with an open-weights
+      link; "MiniMax H3 Max" 2nd; "Wan 3.0" 4th.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ef368bb4b8db80e1e6ae7b7c0848f034c6355713c07775de24160c9f72282a48
+  - url: https://artificialanalysis.ai/video/leaderboard/image-to-video
+    shows: 'Without-audio image-to-video list (40 models): "SkyReels V4" 6th, Elo 1120.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4390e1eb559e74cb0e0c45ff649ce347717005d26399416c7b3d50381d0132a1

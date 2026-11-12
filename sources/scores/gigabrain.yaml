@@ -1,0 +1,116 @@
+product: gigabrain
+openness:
+  score: 3
+  class: open_weights
+  governing_release: GigaBrain-0.7
+  components:
+    weights:
+      value: open
+      detail: GigaBrain-0.7-3.5B-Base and fine-tunes on the Hub, ungated
+    data:
+      value: described
+      detail: the 37.3k-hour pretraining mix is described, with only sample data published
+    code:
+      value: open
+      detail: pretraining and post-training implementations with per-robot training configs
+    license:
+    - name: Apache-2.0
+      detail: code and weights
+  confidence: high
+  note: GigaBrain-0.7's weights and its training code are Apache-2.0. The robot data it learned from is described by source
+    and hours, and only a small sample of it is published.
+  raw: weights:open(GigaBrain-0.7-3.5B-Base and fine-tunes on the Hub, ungated);data:described(the 37.3k-hour pretraining
+    mix is described, with only sample data published);code:open(pretraining and post-training implementations with per-robot
+    training configs);license:Apache-2.0(code and weights)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/open-gigaai/giga-brain-0/main/LICENSE
+    shows: 'LICENSE: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://huggingface.co/open-gigaai/GigaBrain-0.7-3.5B-Base/raw/main/README.md
+    shows: 'GigaBrain-0.7-3.5B-Base card: license apache-2.0; pretraining on "over 37,000 hours of heterogeneous embodied
+      data".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f3c7c795521cdc6222acaa0fe26be32426e9b28ed62c082c6c997e917546eb7b
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models?author=open-gigaai&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: GigaBrain-0.7-3.5B-Base (2026-08-24) and its RoboTwin 2.0 and EBench fine-tunes, the newest GigaBrain checkpoints,
+      gated false and tagged apache-2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 08f0445283c086192f909569642710d97e696490c9862c3b0ec14acd1ff0327d
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/open-gigaai/giga-brain-0/main/README.md
+    shows: 'README: "Released the GigaBrain-0.7 Code, Model and Sample Data" (2026/08/25) and "the pre-training and post-training
+      implementations"; the 37.3k hours of pretraining data are summarized by source; GigaBrain-0.7-SampleData is "Sample
+      data for running the GigaBrain-0.7 training workflow".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 39d99b7bf6ced1f934104c96fa24a79d7e564ff26170cf51f9e3c8e738fae07e
+    establishes:
+    - data
+    - code
+  - url: https://ungh.cc/repos/open-gigaai/giga-brain-0/files/main
+    shows: 'Repository tree: configs/giga_brain_0_from_scratch.py, gb07_pg2_pick_and_place_piper_30k.py, gb07_pg2_push_buttons_h01_30k.py
+      and post-training release configs.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a885507a827d201ee7ce625ba2fed891d2b5d4d550b8918b7da4f19f95eb5999
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for the five declared GigaBrain checkpoints, most of them for the
+    0.7 RoboTwin 2.0 fine-tune and base model.
+  sources:
+  - url: https://huggingface.co/api/models?author=open-gigaai&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: GigaBrain-0.7-3.5B-RoboTwin2.0-Clean 6,885, GigaBrain-0.7-3.5B-Base 3,971, GigaBrain-0-3.5B-Base 79, GigaBrain-0.1-3.5B-Base
+      62 and GigaBrain-0.7-3.5B-EBench 22 downloads in the trailing 30 days (11,019 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 08f0445283c086192f909569642710d97e696490c9862c3b0ec14acd1ff0327d
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: Pretrained across eight embodiment types, from single and dual 6- and 7-DoF arms to dexterous hands and the Maker
+    H01; a released fine-tune for the 50 bimanual RoboTwin 2.0 tasks (GigaBrain-0.7).
+  relative_to: gr00t
+  relation: at
+  confidence: medium
+  note: GigaBrain-0.7 learns from many robot bodies and ships a two-armed policy, level with GR00T. It has no separate reasoning
+    model or whole-body humanoid control of the kind Gemini Robotics pairs with its action model.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim/raw/main/README.md
+      shows: 'GR00T post-training data card: cross-embodied bimanual manipulation, humanoid (GR1) tabletop manipulation, robot-arm
+        kitchen manipulation and Unitree G1 loco-manipulation subsets.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/open-gigaai/giga-brain-0/main/README.md
+    shows: 'README: embodiment IDs 0 to 7 covering AgileX (aloha, mobile_aloha, arx5, ur5), AgiBot G1 and Franka, AgiBot dexterous
+      hands, UMI, EgoDex and the Maker H01; RoboTwin 2.0 "Post-training and simulation evaluation across 50 bimanual tasks".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 39d99b7bf6ced1f934104c96fa24a79d7e564ff26170cf51f9e3c8e738fae07e
+  - url: https://huggingface.co/api/models?author=open-gigaai&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Hub listing includes GigaBrain-0.7-3.5B-RoboTwin2.0-Clean, the published RoboTwin 2.0 fine-tune.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 08f0445283c086192f909569642710d97e696490c9862c3b0ec14acd1ff0327d

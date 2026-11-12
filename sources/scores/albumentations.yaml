@@ -1,0 +1,107 @@
+product: albumentations
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI; AGPL-3.0-only
+    source:
+      value: public
+      detail: github.com/albumentations-team/AlbumentationsX
+    core-gated:
+      value: ungated
+      detail: the commercial license grants other terms for the same library; nothing is withheld
+  confidence: high
+  note: AlbumentationsX is AGPL-3.0 and builds from the public repository. Albumentations LLC also sells a commercial
+    license, but it only lifts the AGPL's source-sharing terms for the same library; no feature is kept back for
+    paying customers.
+  raw: license:AGPL-3.0(OSI; AGPL-3.0-only);source:public(github.com/albumentations-team/AlbumentationsX);core-gated:ungated(the
+    commercial license grants other terms for the same library; nothing is withheld)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/albumentations-team/AlbumentationsX/HEAD/LICENSE
+    shows: LICENSE is the GNU Affero General Public License, Version 3, 19 November 2007.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/albumentations-team/AlbumentationsX/HEAD/LICENSING.md
+    shows: 'LICENSING.md: "The public repository remains available under AGPL-3.0-only when commercial licenses
+      are also offered"; a commercial agreement "can grant rights to use, modify, integrate, host, or distribute
+      AlbumentationsX without AGPL source-sharing requirements"; "The product being licensed is the AlbumentationsX
+      Python library."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3d0611cdd08065e1eccd49e9f902b7f6bdec03cdbc67b131cda9f93982b73eab
+    establishes:
+    - license
+    - core-gated
+  - url: https://albumentations.ai/pricing
+    shows: 'Pricing page: "Use AlbumentationsX in proprietary software without AGPL source-sharing requirements
+      for the use covered by your commercial agreement"; "Also available at no charge under AGPL-3.0-only".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 838fe62d216b6dbca5f8836644f7355f7e968d07d35d5e74aa33669cf0ccaa3c
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/albumentationsx/json
+    shows: PyPI record for albumentationsx 2.6.1, uploaded 2026-11-09, License-Expression "AGPL-3.0-only", Repository
+      github.com/albumentations-team/AlbumentationsX.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c863214b173635cbfad03ac73a692504f660d5f780067ab56484f890c882c633
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/albumentations-team/AlbumentationsX/files/main
+    shows: Repository tree of 484 paths with no ee, enterprise, commercial or proprietary directory.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d374ea919da52ef6c052bd0ac169c07ebf6fac75a6d5eda3008f3a0eb45212e5
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the albumentationsx package. The unmaintained MIT-licensed albumentations
+    package still draws its own downloads, which are not counted here.
+  sources:
+  - url: https://pypistats.org/api/packages/albumentationsx/recent
+    shows: last_month 44,878 downloads of albumentationsx
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 23d13656948838941a80cb376423a11749175d37127bc29024c35354fc1d87b1
+capability:
+  score: 1
+  basis: feature_matrix
+  value: more than 70 pixel-level and spatial augmentations applied jointly to images, masks, bounding boxes and
+    keypoints and composed into pipelines; fits no model
+  relative_to: opencv
+  relation: at
+  confidence: high
+  note: Albumentations supplies the augmentation step of a vision training pipeline and fits no model of its own,
+    as OpenCV supplies image operations and leaves its learners to a separate contrib repository. Training is left
+    to the framework that consumes its output.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://cdn.jsdelivr.net/gh/opencv/opencv_contrib@5.x/modules/ml/include/opencv2/ml.hpp
+      shows: opencv_contrib 5.x ml.hpp declares the learners NormalBayesClassifier, KNearest, SVM, EM, DTrees, RTrees,
+        Boost, ANN_MLP, LogisticRegression and SVMSGD, outside the main OpenCV repository - the primitives-only
+        scope Albumentations is compared at.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c41f7f03931dbbd80ee8668ea782fa4d401effd3bc582d582b648221f85069dd
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/albumentations-team/AlbumentationsX/HEAD/README.md
+    shows: 'README: "AlbumentationsX is a Python library for image augmentation"; "70+ high-quality augmentations";
+      "One consistent interface for all data types - RGB/grayscale/multispectral images, masks, bounding boxes,
+      and keypoints"; usage "A.Compose([A.RandomCrop(...), A.HorizontalFlip(p=0.5), ...])".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 250f21d4efb36e3a65cd1efb354ed45d3279a72ff4a6f328ba61539299ff3e2d

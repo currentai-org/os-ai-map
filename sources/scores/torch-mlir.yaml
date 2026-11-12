@@ -1,0 +1,108 @@
+product: torch-mlir
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0-WITH-LLVM-exception
+      detail: OSI, offered alongside a BSD-style PyTorch license at the user's choice
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Torch-MLIR is licensed under Apache-2.0 with LLVM exceptions, with a BSD-style license offered
+    as an alternative, and the whole project builds from its public repository. It is run as an LLVM incubator
+    project, with no company selling an edition beside it, so nothing is held back from the published
+    source.
+  raw: license:Apache-2.0-WITH-LLVM-exception(OSI, offered alongside a BSD-style PyTorch license at the
+    user's choice);source:public;core-gated:ungated
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/llvm/torch-mlir/main/LICENSE
+    shows: 'LICENSE body headed "Dual License": "The torch-mlir project is dual licensed under both the
+      standard LLVM Project license of Apache License v2.0 with LLVM Exceptions and a BSD-style license
+      from PyTorch. As a user of this code you may choose to use it under either license."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0d54ab46994e1cd0a8ab7d0d454ed2068392163b00706b1a125e909dbca672b4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/llvm/torch-mlir/main/README.md
+    shows: 'README: "This project is participating in the LLVM Incubator process: as such, it is not part
+      of any official LLVM release"; it documents installing pre-built snapshots and building from source,
+      and names no paid tier, commercial edition or license-gated build.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 638dc21dab8961ebc7e507bf682f7fdbe0e72d58c1ed472ecdeabf9002c0b7f7
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/torch-mlir/json
+    shows: 'PyPI metadata for torch-mlir: summary "First-class interop between PyTorch and MLIR", with
+      monthly releases 20261001 and 20261101 uploaded on 2026-10-01 and 2026-11-01.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 82720ea5ebb6752af7878cba754cd8d1e4bd08f2bf802067ce76bb676671a1af
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the torch-mlir package, which the project publishes from its own release workflow.
+    Nightly wheels installed from the project's GitHub release page, and copies built into downstream
+    compilers such as IREE, do not appear in the count.
+  sources:
+  - url: https://pypistats.org/api/packages/torch-mlir/recent
+    shows: '"last_month":1477 downloads for torch-mlir.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dff218ff171da6282feedb20612c3256f60c42cf22b4d3d5b5cf250e2c63be28
+  - url: https://pypi.org/project/torch-mlir/
+    shows: The PyPI project page shows the files were uploaded using Trusted Publishing from llvm/torch-mlir's
+      .github/workflows/release.yml, so the package is the project's own.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 06bcef5af1139b852d84265050cb4b7889d23eccb43d8d19cfb643625626d73f
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: Imports PyTorch programs through torch.fx, TorchScript and ONNX into the MLIR torch dialect,
+    normalizes them to a backend contract, and lowers them to Linalg-on-Tensors, TOSA and StableHLO. No
+    code generator or hardware target of its own; downstream compilers such as IREE take it from there.
+  relative_to: tensorrt
+  relation: one_below
+  confidence: medium
+  note: 'Torch-MLIR takes models from PyTorch and ONNX into MLIR and lowers them to three of the ecosystem''s
+    standard dialects, which gives other compilers a shared PyTorch front end. It stops there: the final
+    compilation for a device is left to tools such as IREE, so it sits a step below TensorRT, which compiles
+    and runs the model on NVIDIA hardware.'
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/NVIDIA/TensorRT/main/README.md
+      shows: README still describes TensorRT as NVIDIA's SDK for high-performance deep learning inference
+        on NVIDIA GPUs, with the ONNX parser and plugins in the open-source repository, which is the whole-path,
+        single-vendor compiler the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0d416f7aaa429e3638a6a3f25b0a5ed944e028a815dcaa271451bcc184b20236
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/llvm/torch-mlir/main/docs/architecture.md
+    shows: 'Architecture doc: Torch-MLIR "does not attempt to provide a production end-to-end flow for
+      PyTorch programs by itself"; its backend lowers the backend contract to "Linalg-on-Tensors", "TOSA"
+      and "StableHLO".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 85834327b531f9688eaa1c521b09b09c6c2f067c87d758044d0802fe13033809
+  - url: https://raw.githubusercontent.com/llvm/torch-mlir/main/README.md
+    shows: 'README: "Torch-MLIR is primarily a project that is integrated into compilers to bridge them
+      to PyTorch and ONNX", naming IREE and Blade as existing downstreams, with ONNX and FX listed as
+      entry points.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 638dc21dab8961ebc7e507bf682f7fdbe0e72d58c1ed472ecdeabf9002c0b7f7

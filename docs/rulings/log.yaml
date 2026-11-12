@@ -3833,3 +3833,105 @@ rulings:
     executor: agent
     lands_in: [sources/scores/atropos.yaml, sources/scores/llama-factory.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1020']
+  - id: R-2026-11-12-f
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1018", segformer, eagle, depth-pro, fastvlm, tabfm, limix, sapiens, cogvideo, indextts, fish-speech]
+    question: >-
+      Ten products promoted in the long-tail pass carry weights licenses no shared tier names. Where does each
+      license sit?
+    ruling: >-
+      Apply the existing scale: commercial use prohibited is commercial_forbidden (2), commercial use permitted
+      under a size or revenue threshold is use_bounded (3), and conduct restrictions alone are permissive_non_osi.
+      commercial_forbidden: NVIDIA-Source-Code-License (segformer, research or evaluation only), NVIDIA-License
+      (eagle, non-commercial research previews), Apple-AMLR (depth-pro, fastvlm), TabFM-Non-Commercial-License-v1.0
+      and StableAI-LimiX-Non-Commercial-License-1.0. use_bounded: CogVideoX-License (one million visits a month),
+      bilibili-Model-Use-License (100M MAU or RMB 1B revenue) and Fish-Audio-Community-License-1.0. Fish Audio stays
+      at 3, not 2: it permits other commercial use below USD 500K revenue, including speech built into other
+      products, so it passes the commercial-use test; its exclusion of hosted voice services is recorded
+      prominently on the product rather than in the tier. permissive_non_osi: Sapiens2-License, whose surveillance,
+      biometric and re-identification bans are conduct restrictions; sapiens stays at 3 on its other components.
+      Stable-AI-License-1.0 (limix's code, Apache-2.0 plus attribution and naming terms) is placed in
+      permissive_non_osi by the same principle, as limix could not compute without it. The deferrals come off once
+      the computed scores reproduce.
+    reasoning: >-
+      One rubric applied consistently; each placement follows the license's own terms on commercial use.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/model.yaml, sources/rubrics/pretrained.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1018']
+  - id: R-2026-11-12-g
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1018", "#720", skyreels, hunyuan-image, hidream]
+    question: >-
+      SkyReels, HunyuanImage and HiDream each have a newer release with no published weights. Does that release
+      govern openness under the closed-frontier rule?
+    ruling: >-
+      SkyReels V4 does: Skywork markets it as its next-generation engine and distributes it hosted only, so skyreels
+      is 1/closed with the older open releases kept in context. HunyuanImage 3.5 Preview and HiDream-O1-Image-1.5
+      do not yet: a preview, a point release or a third-party leaderboard listing does not by itself establish that
+      a release supersedes the open line. Both keep the openness reading of their last established open release,
+      with the hosted release recorded as a follow-up. Succession needs first-party evidence, and the absence of a
+      Hub repository is not conclusive evidence that weights are proprietary.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/hunyuan-image.yaml, sources/scores/hidream.yaml, sources/scores/skyreels.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1018']
+  - id: R-2026-11-12-h
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1018", lightly, chatbox, big-agi, modelscan]
+    question: >-
+      Four products were scored open core on a README sentence or a tier table. Is the core gated?
+    ruling: >-
+      Selling a separate product does not gate the open product. lightly is 5/open_source: LightlySSL is distinct
+      from the commercial LightlyTrain and LightlyStudio. modelscan is 5/open_source: it is a complete local scanner
+      and Guardian is a separate enterprise product. chatbox stays 4/open_core: its repository is the Community
+      Edition of an application with a separate Pro codebase. big-agi stays 4/open_core: cloud sync is a Pro-only
+      feature of the same application.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/lightly.yaml, sources/scores/modelscan.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1018']
+  - id: R-2026-11-12-i
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1018", arcade, composio]
+    question: >-
+      Arcade was scored 2/source_available and Composio 1/closed, though each publishes only its SDK or framework.
+      Which is right?
+    ruling: >-
+      Both are scored as their hosted platforms, which are closed: arcade moves to 1/closed, matching composio. A
+      published SDK or framework is not the source of a managed authentication and execution service. Arcade's
+      arcade-mcp is a real MIT framework that runs MCP servers on its own and would be assessed as its own product;
+      it does not raise the platform's score.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/arcade.yaml, sources/products/arcade.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1018']
+  - id: R-2026-11-12-j
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1018", isaac-sim, isaac-lab, instantmesh, omnigen, diffrhythm, sana, bert, roberta, t5, deberta, modernbert, llama-parse]
+    question: >-
+      Four judgment calls in the long-tail promotions: Isaac Sim at 5 despite its proprietary Omniverse Kit
+      dependency; the bundled-part reductions; folding checkpoint rows into family products; and including
+      LlamaParse as a closed product.
+    ruling: >-
+      Isaac Sim keeps 5 under the category's code-focused recipe, with the Omniverse Kit dependency documented; the
+      shared interpretation is revisited with Isaac Lab, not separately. The bundled-part reductions stand for
+      instantmesh, omnigen, diffrhythm and sana, where the restrictive component is required or loaded by default;
+      optional downloads do not govern. The bert, roberta, t5, deberta and modernbert consolidations stand,
+      provided each original checkpoint stays discoverable; each is a declared Hugging Face artifact of its family.
+      LlamaParse is included at 1/closed with adoption unknown, not zero, under ADR-005.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/isaac-sim.yaml, sources/products/bert.yaml, sources/products/roberta.yaml,
+      sources/products/t5.yaml, sources/products/deberta.yaml, sources/products/modernbert.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1018']

@@ -1,0 +1,112 @@
+product: strands-agents
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 4330e22 carries the same Apache-2.0 license text at the root and in each of
+        its six package directories, and no ee/, enterprise/, commercial/ or proprietary/ path; the README
+        says the SDK runs in your process with no hosted control plane
+    context:
+      commercial:
+        value: Amazon-Bedrock-default-model
+  confidence: high
+  note: Strands Agents is Apache-2.0 licensed throughout, and the SDK builds and runs from its public
+    repository with no hosted service required. It defaults to Amazon Bedrock models, but other providers
+    work too, so the paid model service is separate from the code rather than a part withheld from it.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the tree at 4330e22 carries the same Apache-2.0
+    license text at the root and in each of its six package directories, and no ee/, enterprise/, commercial/
+    or proprietary/ path; the README says the SDK runs in your process with no hosted control plane);commercial:Amazon-Bedrock-default-model
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/strands-agents/harness-sdk/main/LICENSE.APACHE
+    shows: The root LICENSE.APACHE is the Apache License text, "Version 2.0, January 2004".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/strands-agents/harness-sdk/main/NOTICE
+    shows: The NOTICE reads "Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 120d77a203a6708ec9a4c8f19e2167286f35bf05375fc5fb3ff225a6f560e515
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/strands-agents/harness-sdk/main/strands-py/pyproject.toml
+    shows: The Python SDK manifest names the strands-agents package with license = {text = "Apache-2.0"}
+      and license-files = ["LICENSE", "NOTICE"].
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f0098bf03ea2dfe44090d9284cced9bcded7b30cc54876c1bdbaf6d6fb4f69bc
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/strands-agents/json
+    shows: PyPI metadata for strands-agents 1.64.0, uploaded 2026-11-04, declares license Apache-2.0 and
+      points at https://github.com/strands-agents/harness-sdk.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8f03b2f3db911b247c7fe6c2b5895bace3f433375f9fe34903e5c8704f0e8a03
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/strands-agents/harness-sdk/main/README.md
+    shows: The README says "Strands Agents is an open-source SDK for building and running AI agents in
+      Python and TypeScript" that "runs in your process with no hosted control plane", and that the TypeScript
+      agent "uses Amazon Bedrock by default, so configure AWS credentials or pass another model".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 26d6aa71d642c2bd30505007796b1bcbdbf40b4558c7abc3710492a104470bdd
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of strands-agents over the trailing month. CI runs and dependent
+    packages add to the count, so it measures installs rather than developers, and the TypeScript SDK
+    on npm is not included.
+  sources:
+  - url: https://pypistats.org/api/packages/strands-agents/recent
+    shows: last_month 37,112,498 downloads for strands-agents (last_week 8,841,519, last_day 1,420,892).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8399f2580d1b784b260dc751ab7fc22ff23ca01411484ec51d03e1ad80fc296e
+capability:
+  score: 4
+  basis: feature_matrix
+  value: agent loop with turn limits, token budgets and cancellation; tools and structured output; MCP;
+    multi-agent patterns; memory and sessions; streaming; guardrails and steering hooks; tracing and evals;
+    model-agnostic; no first-party benchmark
+  confidence: medium
+  note: Strands covers the agent loop with lifecycle limits, tools, MCP, multi-agent patterns, sessions,
+    guardrails and tracing in one SDK. It sits a step below LangGraph, whose graph-structured runs give
+    finer control over flow and resume where they stopped.
+  relative_to: langgraph
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+      shows: The LangGraph README still describes durable execution, "automatically resuming from exactly
+        where they left off", and "inspecting and modifying agent state at any point during execution".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/strands-agents/harness-sdk/main/README.md
+    shows: The README lists lifecycle controls (turn limits, token budgets, cancellation, stop reasons),
+      tools and structured output, MCP, multi-agent patterns, memory and sessions, model portability,
+      streaming, guardrails, tracing and evals; it publishes no benchmark figure.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 26d6aa71d642c2bd30505007796b1bcbdbf40b4558c7abc3710492a104470bdd

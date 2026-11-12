@@ -1,0 +1,88 @@
+product: espnet
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: a community research toolkit with no paid tier, enterprise edition or license key
+  confidence: high
+  note: ESPnet is Apache-2.0 and the public repository is the whole toolkit, recipes included. Nothing is sold beside it,
+    and its pretrained models are published openly on Hugging Face.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(a community research toolkit with no paid tier, enterprise
+    edition or license key)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/espnet/espnet/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" / "Version 2.0, January 2004".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4696c3c9551da6fef1368be1e4ed2c80cf13e55448c6dcf2aba9462f5ff29ef5
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/espnet/espnet/HEAD/README.md
+    shows: 'README: "ESPnet is an end-to-end speech processing toolkit built on [PyTorch]"; "**Open** - hundreds of pretrained
+      models and demos on [Hugging Face]"; contributions are open to all, and no paid edition or license key is mentioned.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a0d7c4ffcbc6d73656a04146a5ac3697fd13673991324fa5d6bd317d9956a0b2
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/espnet/json
+    shows: 'PyPI: espnet 202611 uploaded 2026-10-23, classifier "License :: OSI Approved :: Apache Software License".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7d341395ba049b9f2ebe874395887138f69262217714cd04239afed12b6f4bea
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the espnet package over the trailing month. ESPnet's pretrained models are also pulled directly
+    from the Hub, which this figure does not count.
+  sources:
+  - url: https://pypistats.org/api/packages/espnet/recent
+    shows: '"last_month":22999 for espnet.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 61b6a4489ddaaf2e2f18343992116781bd98987f01f8728e9fd8930a80be69a8
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: Trains and runs speech recognition (hybrid CTC/attention, transducer and streaming), text-to-speech, speech and speech-to-speech
+    translation, enhancement and separation, speaker and language identification, diarization, spoken language understanding,
+    singing synthesis and codecs from Kaldi-style recipes, and serves published models from one command line.
+  confidence: medium
+  note: ESPnet trains and runs models for nearly every speech task, level with SpeechBrain. Whether one of its own recognizers
+    ranks near the top of the Open ASR Leaderboard could not be checked, because the board's results file no longer opens
+    without a Hugging Face account.
+  relative_to: speechbrain
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/speechbrain/speechbrain/develop/README.md
+      shows: 'SpeechBrain README (same digest as when SpeechBrain was scored): "We share over 200 competitive training [recipes](recipes)
+        on more than 40 datasets supporting 20 speech and text processing tasks" - a toolkit that trains and runs recognition
+        and synthesis alike.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 2a14565733f68dd73f8d64006cb2b9ff0d8c3027ef26c80b5a3d34cce75bb92b
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/espnet/espnet/HEAD/README.md
+    shows: 'README "Supported tasks": ASR "Hybrid CTC/attention, Transducer, streaming"; TTS "Tacotron 2, FastSpeech 2, VITS,
+      JETS"; SE/SS, ST/MT/S2ST, SLU, SPK/LID/DIAR, SSL, SVS and Codec recipes; "one `run.sh` per corpus, from download to
+      scoring"; the command line runs `espnet transcribe`, `espnet translate`, `espnet synthesize` and `espnet enhance`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a0d7c4ffcbc6d73656a04146a5ac3697fd13673991324fa5d6bd317d9956a0b2

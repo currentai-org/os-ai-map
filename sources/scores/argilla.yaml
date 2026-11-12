@@ -1,0 +1,104 @@
+product: argilla
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: argilla-io/argilla
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Argilla's server, web interface and SDK are Apache-2.0 and live in one public repository, and the recommended deployment
+    is a free Hugging Face Space. No paid edition or license key sits beside it.
+  raw: license:Apache-2.0(OSI);source:public(argilla-io/argilla);core-gated:ungated
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/argilla-io/argilla/main/LICENSE
+    shows: The root LICENSE is the stock Apache License 2.0 text, ending with the unfilled appendix line "Copyright [yyyy]
+      [name of copyright owner]".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/argilla-io/argilla/main/argilla/pyproject.toml
+    shows: The SDK manifest declares license = { text = "Apache 2.0" }.
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 6bd391de66109329a70575968bf979e2ed5262ab294752c5fcb31669e0d24e6d
+  - url: https://raw.githubusercontent.com/argilla-io/argilla/main/argilla-server/pyproject.toml
+    shows: The server manifest declares license = { text = "Apache-2.0" }.
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: 4a590089787d79d3b2306ea4e9a96717ba2b537069203733d60436e2503eef82
+  - url: https://raw.githubusercontent.com/argilla-io/argilla/main/README.md
+    shows: 'The README installs the SDK with "pip install argilla" and says the Argilla Server is deployed most easily "through
+      our free Hugging Face Spaces deployment integration". Searched the body for enterprise, pricing, paid and license key:
+      none.'
+    accessed: '2026-11-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 1c26a4698be439cb55c953a6066ad4ffe07f1694671cd1a6967fbd21be7e7377
+  - url: https://raw.githubusercontent.com/argilla-io/argilla/develop/README.md
+    shows: The development branch README says "The original authors have moved on to exciting new projects" and "While we
+      won't be adding new features going forward, we're committed to solve bug fixes and publish patches as needed."
+    accessed: '2026-11-12'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 98e8326c9261d7b491670bb69c093bb78d41265fa94fdbd359dc3a46b2d98e34
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of argilla, the Python SDK. The server usually runs as a Docker image
+    or a Hugging Face Space, neither of which is counted.
+  sources:
+  - url: https://pypistats.org/api/packages/argilla/recent
+    shows: last_month 66,706, last_week 18,109, last_day 2,654 for the argilla package.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: eeaf626a9141b82e81704ce7092f55187681dc3a11eba4f9c08e70d571c337f2
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Human feedback collection for text classification, NER, RAG, preference tuning and text-to-image data; labeling with
+    filters, AI feedback suggestions and semantic search; Python SDK with Hugging Face Hub import and export; used to curate
+    the cleaned UltraFeedback preference set behind Notus. No programmatic labeling.
+  confidence: medium
+  note: Argilla covers human feedback for classification, extraction, retrieval and preference data, with model suggestions
+    and semantic search to speed review. It sits a step below Snorkel Flow, which adds programmatic labeling and weak supervision.
+  relative_to: snorkel-flow
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://docs.snorkel.ai/
+      shows: The Snorkel documentation home, now at version 26.7, still describes "programmatic data labeling and weak supervision",
+        an evaluation workflow, an annotation studio for subject matter experts, and administration of "users, roles, and
+        permissions", with a separate "Predictive ML 25.4" line.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 35be1ef71161a146c8162e8082ff15369ffa4a36bb27fa8e822e44d8ef88b297
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/argilla-io/argilla/main/README.md
+    shows: The README says Argilla "can be used for collecting human feedback for a wide variety of AI projects like traditional
+      NLP (text classification, NER, etc.), LLMs (RAG, preference tuning, etc.), or multimodal models", lets users "label
+      your data with filters, AI feedback suggestions and semantic search", and lists the "Cleaned UltraFeedback dataset"
+      used to fine-tune Notus.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1c26a4698be439cb55c953a6066ad4ffe07f1694671cd1a6967fbd21be7e7377

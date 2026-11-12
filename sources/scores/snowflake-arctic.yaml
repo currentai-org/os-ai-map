@@ -1,0 +1,120 @@
+product: snowflake-arctic
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: base and instruct checkpoints, ungated on Hugging Face
+    data:
+      value: closed
+      detail: the corpus is not released; the README points to a blog series on data rather than a dataset
+    code:
+      value: partial
+      detail: inference and vLLM tutorials; the repository's training code targets Llama 3.1 fine-tuning,
+        not Arctic pretraining
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: snowflake-arctic-instruct
+  confidence: high
+  note: Arctic's base and instruct weights are published under Apache-2.0 without a gate. Snowflake describes
+    its data approach in blog posts but releases neither the training corpus nor the pretraining code,
+    so it stays at open weights.
+  raw: weights:open(base and instruct checkpoints, ungated on Hugging Face);data:closed(the corpus is
+    not released; the README points to a blog series on data rather than a dataset);code:partial(inference
+    and vLLM tutorials; the repository's training code targets Llama 3.1 fine-tuning, not Arctic pretraining);license:Apache-2.0(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-instruct
+    shows: 'Model API for Snowflake/snowflake-arctic-instruct: `gated: false`, cardData.license `apache-2.0`,
+      194 safetensors files listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 554ec4a407e60cbf586d92fc810fdadf661d68aa0e2bef28318e626f22158eaa
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-base
+    shows: 'Model API for Snowflake/snowflake-arctic-base: `gated: false`, cardData.license `apache-2.0`,
+      195 safetensors files listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d8a7bc9a9049bb1b621f3c759108562523d85c0c59427aa4013124a0c6584fb7
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/Snowflake/snowflake-arctic-instruct/raw/main/README.md
+    shows: 'Card: Arctic is "pre-trained from scratch by the Snowflake AI Research Team. We are releasing
+      model checkpoints for both the base and instruct-tuned versions of Arctic under an Apache-2.0 license";
+      "Model Release Date April, 24th 2024".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 252e857e1c769974afc938dbef169d7c157227ff0c1bb4edb132b94843eaf618
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/Snowflake-Labs/snowflake-arctic/main/README.md
+    shows: 'README: "Apache 2.0 license provides ungated access to weights and code. In addition, we are
+      also open sourcing all of our data recipes and research insights", with links to inference tutorials
+      and cookbook blog posts; its training section covers Llama 3.1 405B fine-tuning, and no Arctic corpus
+      or pretraining pipeline is linked.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d8b0f0494901c032d37258fba0f27abae4ff84146e21af4abd0a77891a9bd3a8
+    establishes:
+    - data
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the base and instruct checkpoints.
+  sources:
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-instruct
+    shows: '"downloads":2150 for Snowflake/snowflake-arctic-instruct, the trailing 30-day count the Hub
+      API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 554ec4a407e60cbf586d92fc810fdadf661d68aa0e2bef28318e626f22158eaa
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-base
+    shows: '"downloads":818 for Snowflake/snowflake-arctic-base, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d8a7bc9a9049bb1b621f3c759108562523d85c0c59427aa4013124a0c6584fb7
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Snowflake's enterprise-metric comparison (HumanEval+, MBPP+, Spider, IFEval) in the release
+    README
+  value: Arctic is on par with or better than Llama 3 8B and Llama 2 70B on Snowflake's enterprise metrics
+    (HumanEval+, MBPP+, Spider, IFEval), on par with Llama 3 70B on those metrics, and competitive on
+    language understanding and reasoning, per the release README.
+  relative_to: internlm
+  relation: at
+  confidence: medium
+  note: Snowflake reports Arctic matching Llama 3 70B on coding, SQL and instruction following, but on
+    general understanding it claims only to stay competitive, which places it with the 2024 open models
+    of the Llama 3 8B class where InternLM 2.5 also sits. It is well below current releases.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/internlm/internlm2_5-7b/raw/main/README.md
+      shows: InternLM2.5-7B raw model card table still reads "| MMLU      | 71.6           | 65.8         |
+        66.4      | 71.6      |" under "| Benchmark | InternLM2.5-7B | InternLM2-7B | LLaMA3-8B | Yi-1.5-9B
+        |", the Llama 3 8B-class placement the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 563681ef1d4f2197049289c43791182223bce07c560ebacd9244a32d39d3fdb9
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Snowflake-Labs/snowflake-arctic/main/README.md
+    shows: 'README: "Arctic is on par or better than both LLAMA 3 8B and LLAMA 2 70B on enterprise metrics,
+      while using less than ½ of the training compute budget" and "despite using 17x less compute budget,
+      Arctic is on par with Llama3 70B in enterprise metrics like Coding (HumanEval+ & MBPP+), SQL (Spider)
+      and Instruction Following (IFEval)", "while remaining competitive on overall performance".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d8b0f0494901c032d37258fba0f27abae4ff84146e21af4abd0a77891a9bd3a8

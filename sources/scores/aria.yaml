@@ -1,0 +1,107 @@
+product: aria
+openness:
+  score: 3
+  class: open_weights
+  governing_release: Aria
+  components:
+    weights:
+      value: open
+      detail: Aria, Aria-Chat and the Aria-Base-8K and 64K checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: no pretraining or post-training data released
+    code:
+      value: partial
+      detail: inference and fine-tuning code with LoRA and full-parameter recipes; no pretraining pipeline
+    license:
+    - name: Apache-2.0
+      detail: code and weights
+  confidence: high
+  note: Aria's code and weights are Apache-2.0. Rhymes AI has released fine-tuning code but neither its training
+    data nor the pipeline it trained the model with.
+  raw: weights:open(Aria, Aria-Chat and the Aria-Base-8K and 64K checkpoints on the Hub, ungated);data:closed(no
+    pretraining or post-training data released);code:partial(inference and fine-tuning code with LoRA and full-parameter
+    recipes; no pretraining pipeline);license:Apache-2.0(code and weights)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/rhymes-ai/Aria/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=rhymes-ai&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified
+    shows: rhymes-ai/Aria, Aria-Chat, Aria-Base-8K and Aria-Base-64K all gated false and tagged apache-2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cc50def8617ccc1714cc513b9181bb84b1239e29b0f6ca20b2b8983ab06b2dc8
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/rhymes-ai/Aria/main/README.md
+    shows: 'README Fine-tuning section: "We offer both LoRA fine-tuning and full parameter tuning, using various
+      dataset types"; the base models "are fully compatible with this inference & fine-tuning codebase"; no pretraining
+      instructions.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c26cd7e59c1828351a0375295733d5f0f075c6d4389ca1b1bb03bb598e465ae5
+    establishes:
+    - code
+  - url: https://ungh.cc/repos/rhymes-ai/Aria/files/main
+    shows: 'Repository tree: aria/train.py, recipes/config_full.yaml and config_lora.yaml, and per-dataset example
+      configs; no pretraining code or data.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e315d1de60e422ec792affdf6a4afd1516a3aaf4a03e740527d136b0653b927e
+    establishes:
+    - code
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the four declared checkpoints, almost all of them for
+    Aria itself.
+  sources:
+  - url: https://huggingface.co/api/models?author=rhymes-ai&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified
+    shows: rhymes-ai/Aria 17,956, Aria-Base-8K 113, Aria-Base-64K 112 and Aria-Chat 104 downloads in the trailing
+      30 days (18,285 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cc50def8617ccc1714cc513b9181bb84b1239e29b0f6ca20b2b8983ab06b2dc8
+capability:
+  score: 3
+  basis: feature_matrix
+  value: image, document, chart, multi-image and long-video understanding in a 64K-token multimodal context (MMMU
+    54.9, ChartQA 86.4, LongVideoBench 65.3)
+  relative_to: minicpm-v
+  relation: at
+  confidence: high
+  note: Aria reads documents, charts, several images and long videos, level with MiniCPM-V. It does not act in a
+    live interface or take audio input.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+      shows: 'MiniCPM-V 4.6 card: "It inherits the strong single-image, multi-image, and video understanding capabilities
+        of MiniCPM-V family"; max_num_frames default 128.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd1e58bd92c42d5f34797e5930889bcfd17c1ef4d5bb5e8e6f5e572eddbc34f8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/rhymes-ai/Aria/raw/main/README.md
+    shows: 'Aria card: "superior in video and document understanding"; "Aria supports multimodal input of up to
+      64K tokens. It can caption a 256-frame video in 10 seconds."; MMMU 54.9, ChartQA 86.4 and LongVideoBench 65.3
+      for Aria.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3846630419369e50a4dc5e57ac310b83ceb74ac5ac28105a2bf799221802f065
+  - url: https://raw.githubusercontent.com/rhymes-ai/Aria/main/README.md
+    shows: README Fine-tuning section lists multi-image datasets and video datasets among the supported dataset
+      types.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c26cd7e59c1828351a0375295733d5f0f075c6d4389ca1b1bb03bb598e465ae5

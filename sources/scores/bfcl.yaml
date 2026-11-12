@@ -1,0 +1,114 @@
+product: bfcl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the repository LICENSE body is the Apache 2.0 text
+    source:
+      value: public
+      detail: the berkeley-function-call-leaderboard package in the Gorilla repository
+    core-gated:
+      value: ungated
+      detail: a university research project with nothing sold beside it, and the tree has no enterprise path
+  confidence: high
+  note: The evaluation code is Apache-2.0 and published in full, and the leaderboard's own results are produced
+    from a named commit of it. A university team runs it with no paid tier.
+  raw: license:Apache-2.0(OSI; the repository LICENSE body is the Apache 2.0 text);source:public(the berkeley-function-call-leaderboard
+    package in the Gorilla repository);core-gated:ungated(a university research project with nothing sold beside
+    it, and the tree has no enterprise path)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/ShishirPatil/gorilla/main/LICENSE
+    shows: 'The repository LICENSE body: the Apache License, Version 2.0 text.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/bfcl-eval/json
+    shows: PyPI bfcl-eval 2026.3.23, uploaded 2026-03-23, license "Apache 2.0", summary "Berkeley Function Calling
+      Leaderboard (BFCL)", repository github.com/ShishirPatil/gorilla/tree/main/berkeley-function-call-leaderboard.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c1dd4b7a27511c2c994eabe311db4e0a78b14dfe8524aedb0e280e8e5c2e3b83
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/ShishirPatil/gorilla/files/main
+    shows: 'The 534-file tree of ShishirPatil/gorilla at `main`: berkeley-function-call-leaderboard beside gorilla,
+      openfunctions, goex, raft and agent-arena, and no ee/, enterprise/, commercial/ or proprietary/ path. Path
+      absence only, paired with the leaderboard page cited beside it.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5a6e75230e93921e27b032a31ff25250d5e462065c79d0fcf5af163f76a7ea7f
+    establishes:
+    - source
+    - core-gated
+  - url: https://gorilla.cs.berkeley.edu/leaderboard.html
+    shows: 'The leaderboard on Berkeley''s cs.berkeley.edu site: "Checkout code and data", "Models are evaluated
+      using commit f7cf735", and contributions by contacting the team; no pricing or paid tier.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ef72a8621b6ea1b8aa1d1b7691f73cc3079fd38e86f599c9a38cb626c911fc29
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of bfcl-eval, the evaluation package the README installs. Automated evaluation pipelines
+    can reinstall a package often, so the figure counts installs rather than users.
+  sources:
+  - url: https://pypistats.org/api/packages/bfcl-eval/recent
+    shows: last_month = 120,911 downloads for the package bfcl-eval.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 329b93e96ced75c5a4232af51a6de7e7f82f3efcd6348309aff42ecfe0c9270a
+  - url: https://raw.githubusercontent.com/ShishirPatil/gorilla/main/berkeley-function-call-leaderboard/README.md
+    shows: 'README: "pip install bfcl-eval  # Be careful not to confuse with the unrelated `bfcl` project on PyPI!",
+      beside an editable install from a clone.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c6c95683cce9653788c8b3f3f5002d2f5c27b95a1288544fe82c2a2faf5e12d0
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'evaluation_code feature matrix: what the harness grades and how'
+  value: 'Function-calling evaluation in one domain: single, parallel and multiple calls graded against expected
+    calls by abstract-syntax-tree matching, live user-contributed functions, multi-turn and multi-step tasks, agentic
+    web search, memory and format sensitivity; hosted models through their APIs and local models on vLLM or SGLang;
+    a public leaderboard pinned to a code commit.'
+  relative_to: swe-bench
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/docs/guides/evaluation.md
+      shows: 'SWE-bench''s evaluation guide: it "evaluates models by applying their generated patches to real-world
+        repositories and running the repository''s tests", in "a containerized Docker environment".'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 770c8d6c45d507cd40a74297c2c7d779a5ab1f4f82da8a1a9dfae4d6bb03ff6e
+  confidence: medium
+  note: BFCL covers tool calling in depth, from single calls to multi-turn and agentic tasks. It sits a step below
+    SWE-bench, which runs each answer against a real repository's own tests, because most BFCL categories compare
+    a model's calls with expected calls rather than running the resulting program.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/ShishirPatil/gorilla/main/berkeley-function-call-leaderboard/README.md
+    shows: 'README: "the first comprehensive and executable function call evaluation"; blog series "BFCL v1: Simple,
+      Parallel, and Multiple Function Call eval with AST", "BFCL v3: Multi-Turn & Multi-Step", "BFCL V4 Part 1:
+      Agentic Web Search", "Part 2: Agentic Memory Management", "Part 3: Agentic Format Sensitivity"; vLLM and SGLang
+      backends for locally hosted models.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c6c95683cce9653788c8b3f3f5002d2f5c27b95a1288544fe82c2a2faf5e12d0
+  - url: https://gorilla.cs.berkeley.edu/leaderboard.html
+    shows: '"The Berkeley Function Calling Leaderboard (BFCL) V4 evaluates the LLM''s ability to call functions
+      (aka tools) accurately"; "BFCL-v1 introducing AST as an evaluation metric"; "Last Updated: 2026-04-12".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ef72a8621b6ea1b8aa1d1b7691f73cc3079fd38e86f599c9a38cb626c911fc29

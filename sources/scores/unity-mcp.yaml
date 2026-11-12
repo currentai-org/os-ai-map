@@ -1,0 +1,98 @@
+product: unity-mcp
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the Unity package and the Python server are both in the MIT repository; Aura's paid assistant, Aura
+        for Unity, is a separate product
+  confidence: high
+  note: MCP for Unity is MIT-licensed, and both the editor package and the Python server it talks to are in the
+    public repository. Aura, which maintains it, sells a separate premium assistant rather than a paid edition of
+    this one.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the Unity package and the Python server are both in the
+    MIT repository; Aura's paid assistant, Aura for Unity, is a separate product)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/CoplayDev/unity-mcp/main/LICENSE
+    shows: The LICENSE is the MIT License text, headed "Copyright (c) 2025 CoplayDev".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6efe650c965012ac418238dcd6b9116e4130a5220717ef0dfb539dd159c4245c
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/mcpforunityserver/json
+    shows: The PyPI record for mcpforunityserver 10.3.0, "MCP for Unity Server", carries license expression MIT
+      and names https://github.com/CoplayDev/unity-mcp.git as its repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 208c3866b20400617ad44a578505e5c73361a7d65bd225f1e767ec5906bcf752
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/CoplayDev/unity-mcp/main/README.md
+    shows: 'The README installs the editor package from "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main"
+      or OpenUPM and says "Aura offers 2 AI tools for Unity: MCP for Unity is available freely under the MIT license.
+      Aura for Unity is a premium Unity/Unreal AI assistant built for game devs."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 648caa9a0aa0b3b92dd918f3284d2d135e58fc2cd8e63b6e7fdf527bcb7fb4db
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of mcpforunityserver, the Python server every installation
+    runs. The Unity package itself installs from a Git URL or OpenUPM, and neither is counted.
+  sources:
+  - url: https://pypistats.org/api/packages/mcpforunityserver/recent
+    shows: 156,347 downloads of mcpforunityserver in the trailing 30 days (pypistats last_month)
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1f6cb74d81912e729ef3c21e1387b1617f5b8d5152435bab504d56e72c35edd7
+  - url: https://raw.githubusercontent.com/CoplayDev/unity-mcp/main/Server/pyproject.toml
+    shows: The repository's Server/pyproject.toml publishes the package as name = "mcpforunityserver", described
+      as "MCP for Unity Server".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 82c77092090d2208da31a989943b8003be57f24d7b8203fcee7cd498d611baa2
+capability:
+  score: 3
+  basis: feature_matrix
+  value: a curated tool surface over the Unity Editor - scenes and GameObjects, C# scripts, assets, tests, profiling
+    and builds, with optional tool groups for VFX, animation, UI and testing - run on the developer's machine against
+    the editor they have open
+  confidence: medium
+  note: MCP for Unity adapts one system, the Unity Editor, and needs no credentials, since the editor package and
+    its server run on the developer's own machine. That puts it level with Playwright MCP; a remote deployment with
+    authentication is possible, but the developer hosts it.
+  relative_to: playwright-mcp
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/microsoft/playwright-mcp/main/README.md
+      shows: The Playwright MCP README still lists "--storage-state <path> | path to the storage state file for
+        isolated sessions" and says initial storage state is provided "via the config's `contextOptions` or via
+        the `--storage-state` argument", with the server started by "npx @playwright/mcp@latest".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: db4a7eee3e3bd4be105f8f9a10945cda390fe3bd955d05183e961f4e91f0b7ef
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/CoplayDev/unity-mcp/main/README.md
+    shows: 'The README: "Control the Unity Editor in natural language from any MCP client — create scenes & GameObjects,
+      edit C# scripts, manage assets, run tests, profile, and build", with "Tool groups (vfx / animation / ui /
+      testing / etc.)" and a guide for a "Remote-hosted server with auth".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 648caa9a0aa0b3b92dd918f3284d2d135e58fc2cd8e63b6e7fdf527bcb7fb4db

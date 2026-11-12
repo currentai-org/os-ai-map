@@ -1,0 +1,104 @@
+product: ai-infra-guard
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the README separately asks integrators to credit Tencent Zhuque Lab
+    source:
+      value: public
+      detail: the web platform and every standalone scanner build from the repository
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository tree and no paid edition named in the README
+  confidence: medium
+  note: AI-Infra-Guard's code is Apache-2.0, and the web platform and every scanner build from the public repository. The
+    README also asks anyone building it into another product to credit Tencent Zhuque Lab, which the license itself does not
+    require, and names no paid edition.
+  raw: license:Apache-2.0(OSI; the README separately asks integrators to credit Tencent Zhuque Lab);source:public(the web
+    platform and every standalone scanner build from the repository);core-gated:ungated(no enterprise path in the repository
+    tree and no paid edition named in the README)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Tencent/AI-Infra-Guard/HEAD/LICENSE
+    shows: The LICENSE body is the Apache License 2.0 text with no added condition.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e77b34bf79aede74ad23d3fe9b54bfd24e428fdf70e1359d2e846966cc08f138
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Tencent/AI-Infra-Guard/HEAD/README.md
+    shows: 'The README says "This project is open-sourced under the Apache License 2.0", builds the service from source with
+      "docker-compose up -d", installs standalone scanners with pip, and asks integrators to state "This project integrates
+      AI-Infra-Guard, open-sourced by Tencent Zhuque Lab." Searched for pricing, paid, license key and enterprise edition:
+      none.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54f23cd70392b5d5b1328a261e72dae451f177a0de556c646bfecc9062061e8f
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/Tencent/AI-Infra-Guard/files/main
+    shows: The repository file listing shows the server, web UI, scanner and rule-data trees, and no ee, enterprise, commercial
+      or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2ecb9d94fe58f6b59507c262b80cedf47493fa4e85c5488e965c5b3db02ba069
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal used, and a star is not a use. The platform ships mainly as a Docker image whose
+    pull count is a lifetime total, and each scanner package on PyPI covers only one part of it, so neither is counted.
+  sources:
+  - url: https://ungh.cc/repos/Tencent/AI-Infra-Guard
+    shows: '"stars":7460,"forks":750, pushed 2026-11-11, for Tencent/AI-Infra-Guard'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0a4a3d183cc165aed60f71912ce347e1a7317574fba81778b54c3190ddd087a0
+  - url: https://hub.docker.com/v2/repositories/zhuquelab/aig-server
+    shows: '"pull_count":63641 since "date_registered":"2025-07-17" for zhuquelab/aig-server, a lifetime total.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ff45d020833a56142d00c91d9c075a9dc40365b73281e6d9f73bfdf5f874b139
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: red-teaming scope across infrastructure, tools, agents and models
+  value: Red-teaming platform combining AI infrastructure scanning by fingerprint against vulnerability rules, MCP server
+    scanning, agent skill auditing, agent scanning with test prompts, OpenClaw security checks, and LLM jailbreak and safety-compliance
+    evaluation against OpenAI-compatible endpoints, with a web interface, contributed rule sets and standalone command-line
+    scanners.
+  relative_to: garak
+  relation: at
+  confidence: medium
+  note: AI-Infra-Guard covers ground garak does not, scanning the servers, MCP tools and agents around a model as well as
+    the model itself, and its jailbreak evaluation works against any OpenAI-compatible endpoint. garak's library of probes
+    is the deeper of the two on the model alone, so the two sit level.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/NVIDIA/garak/main/README.md
+      shows: The peer's README still describes garak as an "LLM vulnerability scanner" that "probes for hallucination, data
+        leakage, prompt injection, misinformation, toxicity generation, jailbreaks, and many other weaknesses", combining
+        static, dynamic and adaptive probes, and lists Hugging Face, Replicate, OpenAI and AWS Bedrock among the model providers
+        it supports.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 640626790dc73543d58857ea0ebc7e47ccdb38cd9dd8fc56467147f7f3a5798e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Tencent/AI-Infra-Guard/HEAD/README.md
+    shows: The README says A.I.G "brings together OpenClaw security checks, Agent security scanning, AI tool and skill scanning,
+      AI infrastructure vulnerability scanning, and LLM security assessment (jailbreak evaluation)", and documents standalone
+      aig-infra-scan, aig-compliance, aig-model-scan, aig-mcp-scan, aig-skill-scan and aig-agent-scan tools, with fingerprint,
+      vulnerability, MCP and evaluation-set rules under data/.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54f23cd70392b5d5b1328a261e72dae451f177a0de556c646bfecc9062061e8f

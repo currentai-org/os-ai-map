@@ -1,0 +1,133 @@
+product: arcade
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: the Arcade platform's code is not published
+    source:
+      value: closed
+      detail: the Engine, which runs the OAuth flows, holds the token vault and serves MCP gateways, ships
+        with the rest of the platform only as Arcade Cloud or as Arcade's container images and Helm chart;
+        no repository publishes it
+    context:
+      framework:
+        value: MIT
+        detail: ArcadeAI/arcade-mcp, a separate open framework for building and running MCP servers; it
+          is not the platform's source
+      backend:
+        value: commercial
+        detail: Arcade Cloud, with deployment in a customer's VPC or air-gapped listed under the Enterprise
+          plan
+  confidence: medium
+  note: 'Arcade''s platform, the Engine that runs the OAuth flows, stores each user''s tokens and serves
+    the MCP gateways, is not published: it runs as Arcade Cloud or is installed from Arcade''s own images
+    under an Enterprise plan. Arcade does publish arcade-mcp, an MIT-licensed framework for building MCP
+    servers that also run on their own, but that framework is a separate open project and not the source
+    of the platform scored here.'
+  raw: license:Proprietary(the Arcade platform's code is not published);source:closed(the Engine, which
+    runs the OAuth flows, holds the token vault and serves MCP gateways, ships with the rest of the platform
+    only as Arcade Cloud or as Arcade's container images and Helm chart; no repository publishes it);framework:MIT(ArcadeAI/arcade-mcp,
+    a separate open framework for building and running MCP servers; it is not the platform's source);backend:commercial(Arcade
+    Cloud, with deployment in a customer's VPC or air-gapped listed under the Enterprise plan)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/ArcadeAI/arcade-mcp/main/LICENSE
+    shows: The LICENSE is the MIT License text, headed "Copyright (c) 2025, Arcade AI".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7f84345d4649d8ca9904ed57b2aa8786e65f4acd9aaf5719109e39d79d33111a
+  - url: https://raw.githubusercontent.com/ArcadeAI/arcade-mcp/main/README.md
+    shows: The README calls arcade-mcp the "Open-source Python framework for building MCP servers and tools"
+      that "powers the 7,500+ prebuilt tools across 81 MCP servers at Arcade.dev". Through Arcade Cloud
+      "the Arcade Engine fulfills authorized tool calling flows"; run standalone, you "Supply your own access
+      tokens for tools with requires_auth".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ebc9d7584538ed6c8877a86fc476229ebce73eb396de76d8bd45df179b6bfa01
+  - url: https://docs.arcade.dev/en/operate/deploy/helm
+    shows: The self-hosting page says "The Arcade Helm chart deploys the full Arcade platform onto a Kubernetes
+      cluster you manage" and installs it with "helm install arcade oci://public.ecr.aws/s5i6x9d1/charts/arcade";
+      no source repository for the platform is named.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 96af2b4cf8a6f34b1527c12b765a1bd445d7670bd35953930ceffdc0092835f3
+    establishes:
+    - source
+  - url: https://docs.arcade.dev/en/operate/deploy/architecture
+    shows: The platform architecture page lists the Engine ("Tool execution and routing, the token vault,
+      and MCP gateways"), Coordinator, Experience API, Dashboard, OpenFGA and Usage services as what a self-hosted
+      deployment runs.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a158299252f4d5939268ade055e657cd1a6ce2fc251a9db3ebb1753f3c2fb23
+    establishes:
+    - source
+  - url: https://www.arcade.dev/pricing
+    shows: The pricing page offers Free, Team and Enterprise plans; Enterprise lists "Flexible deployment
+      options on Arcade Cloud, in your VPC, or fully air-gapped".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 62e242362c0a3b2fdf529bef0d485dc32df6a9170808122cd77e3a4257f6ff34
+    establishes:
+    - license
+    - source
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of arcade-mcp, the CLI and framework developers install
+    to build servers and deploy them to Arcade. Agents that only call Arcade's hosted tools through its API clients
+    never install it, so the figure counts tool builders rather than the platform's users.
+  sources:
+  - url: https://pypistats.org/api/packages/arcade-mcp/recent
+    shows: 67,446 downloads of arcade-mcp in the trailing 30 days (pypistats last_month)
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dc52d006336b2567ff2069c40e8d0596ec8b03f94dda10ef9a0023e7ba76cc9f
+  - url: https://pypi.org/pypi/arcade-mcp/json
+    shows: The PyPI record for arcade-mcp 1.17.7 is summarized "Arcade.dev - Tool Calling platform for Agents" and
+      depends on arcade-core, arcade-mcp-server and the arcadepy API client.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4bff524075d7a133d7bd829ba2df8ddb1c1bd570c02eb252393eb6b1d57052aa
+capability:
+  score: 5
+  basis: feature_matrix
+  value: a catalogue of prebuilt MCP servers spanning business systems, with per-end-user OAuth run by the platform,
+    tokens and API keys stored, renewed and injected at call time, and execution hosted on Arcade Cloud or the customer's
+    own cluster behind scoped MCP gateways
+  confidence: medium
+  note: Arcade reaches many systems, runs the OAuth flow and keeps each user's tokens itself, and hosts the tools
+    it calls, which puts it level with Composio. What distinguishes it from a plain MCP server is that the caller
+    never handles a token.
+  relative_to: composio
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://docs.composio.dev/getting-started/welcome
+      shows: The Composio docs home (served at docs.composio.dev/docs) still offers "Smart tool search over 1,700+
+        apps" and says "Composio stores and refreshes each user's credentials. Your application and model receive
+        tool results, not raw OAuth tokens."
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: a5d4f10440dc209ca31e1e8fcad7f551d9fa4a3a43eb71a11e9d5b2750c1cdf7
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://docs.arcade.dev/en/get-started/about-arcade
+    shows: 'The About page: "Arcade handles OAuth and manages user tokens, API keys, and secrets", with "7,500+
+      agent-optimized tools across 81 MCP servers", and a central control plane with a shared registry and audit
+      logs.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 856ec6f0155b78aadfbb1e8231bf40d0fc50fe4362c0e904b9749bf6b13dcdb4
+  - url: https://docs.arcade.dev/en/operate/deploy/architecture
+    shows: 'The Engine "Runs the token vault: it takes each end user through the OAuth flow for a provider such
+      as Google or Slack, stores the resulting token encrypted, renews it when a tool call finds it expired, and
+      supplies it to the tool at execution time", and "Serves MCP gateways".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a158299252f4d5939268ade055e657cd1a6ce2fc251a9db3ebb1753f3c2fb23

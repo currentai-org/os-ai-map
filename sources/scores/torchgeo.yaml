@@ -1,0 +1,114 @@
+product: torchgeo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/torchgeo/torchgeo
+    core-gated:
+      value: ungated
+      detail: maintainer-governed community project; nothing sold
+    context:
+      pretrained-weights-terms:
+        value: per-weight licenses, among them CC-BY-4.0, Apache-2.0, MIT, ODC-BY and OpenRAIL
+        detail: optional pretrained weights the user selects; they do not govern the MIT library
+  confidence: high
+  note: The library is MIT-licensed, builds from the public repository and is run by its maintainers by consensus,
+    with nothing sold. Its pretrained weights come from many research groups under their own licenses, but a user
+    picks them one by one, and none is needed to use the library.
+  raw: license:MIT(OSI);source:public(github.com/torchgeo/torchgeo);core-gated:ungated(maintainer-governed community
+    project; nothing sold);pretrained-weights-terms:per-weight licenses, among them CC-BY-4.0, Apache-2.0, MIT,
+    ODC-BY and OpenRAIL(optional pretrained weights the user selects; they do not govern the MIT library)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/torchgeo/torchgeo/HEAD/LICENSE
+    shows: LICENSE is the MIT License, "Copyright (c) TorchGeo Contributors."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4d5a8ea5a4f49662b5a025ab34fd501a1c1e3028f4af3952a9a8e0aa1ba6d232
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/torchgeo/json
+    shows: PyPI record for torchgeo 0.10.1, uploaded 2026-09-29, License-Expression "MIT", Homepage github.com/torchgeo/torchgeo.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c6f159f7e4275402c516abbf8d332e32fbd30c365bef411326c1dc7ded87a5c6
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/torchgeo/torchgeo/HEAD/.github/GOVERNANCE.md
+    shows: 'Governance policy: "Projects make decisions through consensus of the Maintainers"; "There shall be no
+      undue financial barriers to participation."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c53ccc4acf9cbc138a4d7db0af538682cf764be86daf3a740286fb78593f1024
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/torchgeo/torchgeo/files/main
+    shows: Repository tree of 4,245 paths with no ee, enterprise, commercial or proprietary directory.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bdb0ffaf0dcd6bc0287fa5f963b84e80b0f8c108fa869aa1d4408b13b67f9383
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/torchgeo/torchgeo/HEAD/docs/api/weights/sentinel2.csv
+    shows: Sentinel-2 weights table with a License column per weight, including "CC-BY-4.0", "Apache-2.0", "MIT",
+      ODC-BY and OpenRAIL.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 30b066fc60632dcda80b6aea4091a98176350e224354ea2baae58d9139b63c44
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the torchgeo package.
+  sources:
+  - url: https://pypistats.org/api/packages/torchgeo/recent
+    shows: last_month 39,822 downloads of torchgeo
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 23518069531f82416ee3d38f32c14a3b8c99e2bf698d084c469824d102b1286e
+capability:
+  score: 3
+  basis: feature_matrix
+  value: geospatial datasets and samplers, transforms, model weights pretrained on Sentinel-1, Sentinel-2, Landsat
+    and other sensors, and Lightning data modules and tasks for classification, regression and semantic segmentation
+  relative_to: torchvision
+  relation: at
+  confidence: high
+  note: TorchGeo bundles the datasets, pretrained backbones and training tasks to fit and compare models on satellite
+    imagery, as torchvision does for ordinary photographs. Its pretrained weights are starting points for fine-tuning,
+    so a prediction on a new labeling task still needs a training run.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://docs.pytorch.org/vision/stable/models.html
+      shows: 'torchvision models page: "TorchVision offers pre-trained weights for every provided architecture",
+        across classification, semantic segmentation, object detection, instance segmentation, keypoint detection,
+        video classification and optical flow - the model-zoo scope TorchGeo is compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 9a26988da2191c88d283668e5bd3fb3f363ba8e5bbe8550f100aa789f31e3bab
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/torchgeo/torchgeo/HEAD/README.md
+    shows: 'README: "TorchGeo is a PyTorch domain library, similar to torchvision, providing datasets, samplers,
+      transforms, and pre-trained models specific to geospatial data"; Lightning datamodules "and tasks for various
+      tasks like classification, regression, and semantic segmentation".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54fd9e82e44a9f7cad2d15410567581f35c9a3f96ac0cc4facfd4451a5771bb2
+  - url: https://docs.torchgeo.org/en/stable/api/models.html
+    shows: 'Models API page: pretrained weights grouped under "Sensor-Agnostic Landsat NAIP Sentinel-1 Sentinel-2
+      Aerial Atmospheric"; "These weights can be used with imagery from any satellite/sensor" for the sensor-agnostic
+      group.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1f4521309b9f5ebe7749f516fbde44e5a043a35e0830b699cf6080e8ef8941a5

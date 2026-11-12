@@ -1,0 +1,116 @@
+product: ctranslate2
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the engine, Python bindings and model converters
+    core-gated:
+      value: ungated
+      detail: part of the open-source OpenNMT project with no paid edition and no enterprise path in the repository tree
+  confidence: high
+  note: CTranslate2 is MIT-licensed, and the engine and its model converters build from the public repository. It belongs
+    to the open-source OpenNMT project and has no paid edition, so nothing is held back.
+  raw: license:MIT(OSI);source:public(the engine, Python bindings and model converters);core-gated:ungated(part of the open-source
+    OpenNMT project with no paid edition and no enterprise path in the repository tree)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenNMT/CTranslate2/HEAD/LICENSE
+    shows: The LICENSE body is the MIT License text, "Copyright (c) 2018- SYSTRAN" and "Copyright (c) 2019- The OpenNMT Authors".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54aa79d9fe3c09e67a16dcd95b9e88676405a6ec174efda31036983cf7672ecb
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/OpenNMT/CTranslate2/HEAD/README.md
+    shows: 'The README installs with "pip install ctranslate2", lists converters for OpenNMT-py, OpenNMT-tf, Fairseq, Marian,
+      OPUS-MT and Transformers, and offers ROCm wheels on the releases page. Searched for enterprise, pricing, paid and license
+      key: none.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4bcbf9ba92196edd907c118b626f9106a7d311dc054cab06ec9134925917b78b
+    establishes:
+    - source
+    - core-gated
+  - url: https://opennmt.net/
+    shows: The OpenNMT site calls it "an open source ecosystem for neural machine translation", "currently maintained by SYSTRAN
+      and Ubiqus", lists CTranslate2 in that ecosystem, and says it "is licensed under the MIT license".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1d4fd5766b7f83c5c178c161087a403cc1f268b787bd126d717417e38d064a4c
+    establishes:
+    - license
+    - core-gated
+  - url: https://ungh.cc/repos/OpenNMT/CTranslate2/files/master
+    shows: The repository file listing shows the C++ sources, Python bindings and converters, and no ee, enterprise, commercial
+      or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9a0d8234e7a6f07ba58a5b670b92fe59543b5ff4c0e6592c919fafc47c85f4f9
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/ctranslate2/json
+    shows: The PyPI record for ctranslate2 4.9.0, uploaded 2026-11-10, gives license "MIT", author OpenNMT and the source
+      URL https://github.com/OpenNMT/CTranslate2.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2f9289fda6406668a386e19d3d65f8bcd9839910d6543fb4fe53c984394a69c8
+    establishes:
+    - license
+    - source
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the ctranslate2 package, which carries the compiled engine. Part of the count comes in as a dependency
+    of libraries built on it, such as faster-whisper, and each of those still installs the engine.
+  sources:
+  - url: https://pypistats.org/api/packages/ctranslate2/recent
+    shows: '"last_month":13013330 for ctranslate2'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a9f0ed9ccef3a94bc28c7845aed9096c03d8f672220adca0324a594231054d58
+  - url: https://pypi.org/pypi/ctranslate2/json
+    shows: The package's source URL is https://github.com/OpenNMT/CTranslate2, the product's repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2f9289fda6406668a386e19d3d65f8bcd9839910d6543fb4fe53c984394a69c8
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, placed against vllm
+  value: Optimized runtime for converted Transformer models with FP16, BF16, INT16, INT8 and AWQ INT4 weights, layer fusion,
+    padding removal and batch reordering; x86-64 and ARM64 CPU backends (Intel MKL, oneDNN, OpenBLAS, Ruy, Apple Accelerate)
+    chosen at runtime, GPU support including ROCm wheels and an experimental Apple Metal backend; tensor parallelism across
+    GPUs; encoder-decoder, decoder-only and encoder-only architectures.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: CTranslate2 is a fast, light engine for running Transformer models on CPUs and GPUs, used above all for translation
+    and speech models. It is a library rather than a serving system and documents none of the request-level techniques vLLM
+    is built on, such as paged attention and continuous batching, so it sits two steps below vLLM.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: The peer's README still lists PagedAttention, "Continuous batching of incoming requests, chunked prefill, prefix
+        caching", speculative decoding, "Tensor, pipeline, data, expert, and context parallelism for distributed inference",
+        hardware plugins across GPU and accelerator vendors, and "200+ model architectures".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenNMT/CTranslate2/HEAD/README.md
+    shows: The README lists "weights quantization, layers fusion, batch reordering", FP16, BF16, INT16, INT8 and AWQ (INT4)
+      weights, Intel MKL, oneDNN, OpenBLAS, Ruy and Apple Accelerate CPU backends with automatic dispatch, "Support tensor
+      parallelism for distributed inference", and supported encoder-decoder, decoder-only and encoder-only model types.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4bcbf9ba92196edd907c118b626f9106a7d311dc054cab06ec9134925917b78b

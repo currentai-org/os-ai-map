@@ -1,0 +1,202 @@
+product: deberta
+openness:
+  score: 4
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: DeBERTaV3 XSmall, Small, Base and Large and mDeBERTaV3 Base, ungated on Hugging Face
+    data:
+      value: documented-not-released
+      detail: the English models use the 160GB mix of Wikipedia, BookCorpus, OpenWebText, Stories and
+        CC-News shared with DeBERTa and RoBERTa, named but never released, while mDeBERTaV3 uses the public
+        CC100
+    code:
+      value: open
+      detail: rtd.sh in microsoft/DeBERTa pretrains DeBERTaV3 models with replaced-token detection
+    license:
+    - name: MIT
+      detail: OSI
+  governing_release: deberta-v3-base
+  confidence: high
+  note: DeBERTaV3's checkpoints and its pretraining scripts are published under the MIT license. The English
+    models were trained on the same 160GB mix of encyclopedia, book, news and web text as RoBERTa, which
+    is described in the papers but was never released as a corpus.
+  raw: weights:open(DeBERTaV3 XSmall, Small, Base and Large and mDeBERTaV3 Base, ungated on Hugging Face);data:documented-not-released(the
+    English models use the 160GB mix of Wikipedia, BookCorpus, OpenWebText, Stories and CC-News shared
+    with DeBERTa and RoBERTa, named but never released, while mDeBERTaV3 uses the public CC100);code:open(rtd.sh
+    in microsoft/DeBERTa pretrains DeBERTaV3 models with replaced-token detection);license:MIT(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/microsoft/deberta-v3-base
+    shows: 'Model API for microsoft/deberta-v3-base: `gated: false`, cardData.license `mit`, with pytorch_model.bin
+      among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e5c25ec21fd26ddea74bfb5c54305ed4871bdbf3dc427b1ae496a294ca2f94ca
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/microsoft/deberta-v3-large
+    shows: 'Model API for microsoft/deberta-v3-large: `gated: false`, cardData.license `mit`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b0f555cc8376bbea16e22adf4b4a6e8ebe53eda35729adcdd90b127bf2fc0ca9
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/microsoft/mdeberta-v3-base
+    shows: 'Model API for microsoft/mdeberta-v3-base: `gated: false`, cardData.license `mit`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ba1df63d491ffed3c5b29458017dbc68fbcbb134a9e7d2c392ed52c1b1a69c0e
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/microsoft/deberta-v3-base/raw/main/README.md
+    shows: 'Model card: "This model was trained using the 160GB data as DeBERTa V2", license `mit`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7e9ea69ca00d0609cc0e0b9cec76f9ba6ae71601244c4136a3f25bd02dce4c4d
+    establishes:
+    - data
+    - license
+  - url: https://arxiv.org/html/2111.09543
+    shows: 'DeBERTaV3 paper: "We train those models with 160GB data, which is the same as DeBERTaV2 and
+      RoBERTa"; mDeBERTaV3 Base is trained "with the 2.5T CC100 multi-lingual dataset which is the same
+      as XLM-R".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0c2835ad0bf6055109f1c908ec3f97c73a2f4800f6325e94a2d614a7e4509971
+    establishes:
+    - data
+  - url: https://arxiv.org/html/2006.03654
+    shows: 'DeBERTa paper, Table 7 and Appendix A.2: pretraining data named as Wikipedia and BookCorpus
+      (16GB), OpenWebText (38GB), Stories (31GB) and CC-News (76GB), with no corpus download.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e407b96434a706d1fbd0332d31bbabbcb720daf287b10852b58e7be687c4986e
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/microsoft/DeBERTa/master/README.md
+    shows: 'Repository README: "The code for DeBERTaV3 pre-training and continous training is added",
+      and a model table listing DeBERTa-V3 XSmall to Large and mDeBERTa-V3-Base (102 languages).'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b6ecfe8197a4423087e0b1f2fe059dbc428e02c284075f7504a061aaad6d0f04
+    establishes:
+    - weights
+    - code
+  - url: https://raw.githubusercontent.com/microsoft/DeBERTa/master/experiments/language_model/README.md
+    shows: '"Run `rtd.sh` to train a ELECTRA like model using RTD as the pre-training task", with `rtd.sh
+      deberta-v3-base` and `rtd.sh deberta-v3-large` among the documented targets.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3bc94805d77e48beb0d7d554aa4e50af86063c2dca832d1ff9e1978d9455302f
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/microsoft/DeBERTa/master/LICENSE
+    shows: LICENSE body is the MIT License, Copyright (c) Microsoft Corporation.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across Microsoft's DeBERTa checkpoints, most of them for mDeBERTaV3
+    Base and the English DeBERTaV3 Base.
+  sources:
+  - url: https://huggingface.co/api/models/microsoft/deberta-v3-base
+    shows: '"downloads":2440007 for microsoft/deberta-v3-base, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e5c25ec21fd26ddea74bfb5c54305ed4871bdbf3dc427b1ae496a294ca2f94ca
+  - url: https://huggingface.co/api/models/microsoft/deberta-v3-large
+    shows: '"downloads":1092468 for microsoft/deberta-v3-large, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b0f555cc8376bbea16e22adf4b4a6e8ebe53eda35729adcdd90b127bf2fc0ca9
+  - url: https://huggingface.co/api/models/microsoft/deberta-v3-small
+    shows: '"downloads":617911 for microsoft/deberta-v3-small, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c8a328e65e8f8d48067956a8411acc772b78bf8c82a36465c00866594fe0f9ea
+  - url: https://huggingface.co/api/models/microsoft/deberta-v3-xsmall
+    shows: '"downloads":39058 for microsoft/deberta-v3-xsmall, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 30d0dff3cf1284b9435ef1ce88b9d244aa4b7f974eea8aa738cbed82dbf3bd0a
+  - url: https://huggingface.co/api/models/microsoft/mdeberta-v3-base
+    shows: '"downloads":5327502 for microsoft/mdeberta-v3-base, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ba1df63d491ffed3c5b29458017dbc68fbcbb134a9e7d2c392ed52c1b1a69c0e
+  - url: https://huggingface.co/api/models/microsoft/deberta-base
+    shows: '"downloads":37791 for microsoft/deberta-base, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ba9cf68082ec3af2a4850f3e5048108b1147976fc19375affecdd320c2a10d91
+  - url: https://huggingface.co/api/models/microsoft/deberta-large
+    shows: '"downloads":16134 for microsoft/deberta-large, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d86d46db3502275c9b30f0eb39bf0b6197ffb67f0371db93f5b958b74cf3a53b
+  - url: https://huggingface.co/api/models/microsoft/deberta-xlarge
+    shows: '"downloads":359 for microsoft/deberta-xlarge, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8e91b86b087f100d23bc2783bcce93d4e7b082e7ca1b5634fba9b053cef2221c
+  - url: https://huggingface.co/api/models/microsoft/deberta-v2-xlarge
+    shows: '"downloads":25345 for microsoft/deberta-v2-xlarge, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8557718b7c29609bd21f6b11e711a651de56c9d0848f65bf0ace12e441b80196
+  - url: https://huggingface.co/api/models/microsoft/deberta-v2-xxlarge
+    shows: '"downloads":4824 for microsoft/deberta-v2-xxlarge, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b974358677ff6dc9e9d4ca3af5dd47ecbcfb70adf067ce3ba61fd8047b409c43
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: GLUE and XNLI results in the DeBERTaV3 paper
+  value: GLUE average 91.37 for DeBERTaV3 Large and 79.8 zero-shot cross-lingual XNLI accuracy for mDeBERTaV3
+    Base, the state of the art among models of similar structure at release (arXiv:2111.09543). A 304M-backbone
+    encoder at most, which does not generate text.
+  relative_to: comma
+  relation: one_below
+  confidence: high
+  note: DeBERTaV3 Large posted the best GLUE result of any encoder its size when it was released, and
+    the multilingual Base model led XNLI, but these are encoders that cannot generate text. It sits a
+    step below Comma, a 7B model that only matches 2023-era peers.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+      shows: Comma v0.1-2T card still reports an 11-task average of 57.4 and says "It performs comparably
+        to budget-matched models (7 billion parameters, 2 trillion tokens) trained on unlicensed data",
+        the placement the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/abs/2111.09543
+    shows: 'Abstract: "the DeBERTaV3 Large model achieves a 91.37% average score" on GLUE, "setting a
+      new state-of-the-art (SOTA) among the models with a similar structure", and "the mDeBERTa Base achieves
+      a 79.8% zero-shot cross-lingual accuracy on XNLI".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 87bd1ba4dcf0869ee82c75bbc51b3a217093ebf91343ab08a5453bdfc864aad6
+  - url: https://raw.githubusercontent.com/microsoft/DeBERTa/master/README.md
+    shows: README model table gives DeBERTa-V3-Large 304M backbone parameters, Base 86M, Small 44M and
+      XSmall 22M.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b6ecfe8197a4423087e0b1f2fe059dbc428e02c284075f7504a061aaad6d0f04

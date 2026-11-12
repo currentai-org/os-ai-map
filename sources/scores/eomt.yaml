@@ -1,0 +1,136 @@
+product: eomt
+openness:
+  score: 4
+  class: open_weights
+  governing_release: EoMT
+  components:
+    weights:
+      value: open
+      detail: DINOv2- and DINOv3-based COCO, ADE20K and Cityscapes checkpoints on the Hub, ungated; the DINOv3 ones are
+        deltas over Meta's DINOv3 weights
+    data:
+      value: documented-not-released
+      detail: fine-tuned on COCO, ADE20K and Cityscapes from DINOv2 and DINOv3 backbones pretrained on Meta's unreleased
+        LVD-142M and LVD-1689M corpora
+    code:
+      value: open
+      detail: training and evaluation code and configs
+    license:
+    - name: MIT
+      detail: code and checkpoints
+    - name: DINOv3-License
+      detail: the DINOv3 backbone weights the DINOv3-based checkpoints are applied to
+  confidence: medium
+  note: EoMT's code and checkpoints are MIT, and the training code and configs for COCO, ADE20K and Cityscapes are public.
+    The segmenters are fine-tuned from Meta's DINOv2 and DINOv3 backbones, whose pretraining images Meta has not released,
+    and the DINOv3-based checkpoints are published as differences that need Meta's DINOv3 weights, which come under Meta's
+    own license.
+  raw: weights:open(DINOv2- and DINOv3-based COCO, ADE20K and Cityscapes checkpoints on the Hub, ungated; the DINOv3
+    ones are deltas over Meta's DINOv3 weights);data:documented-not-released(fine-tuned on COCO, ADE20K and Cityscapes
+    from DINOv2 and DINOv3 backbones pretrained on Meta's unreleased LVD-142M and LVD-1689M corpora);code:open(training
+    and evaluation code and configs);license:MIT(code and checkpoints)+DINOv3-License(the DINOv3 backbone weights the
+    DINOv3-based checkpoints are applied to)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/tue-mps/eomt/master/LICENSE
+    shows: LICENSE is the MIT License, "Copyright (c) 2025 Mobile Perception Systems Lab at TU/e".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0299d15a2f1a7f03c2577fecb7bac793ac558a29e89bec9f6bddf29c850a2812
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/tue-mps/eomt/master/README.md
+    shows: 'README: COCO, ADE20K and Cityscapes download steps; "To train EoMT from scratch, run: python3 main.py fit";
+      "When using DINOv3-based configurations, the code expects delta weights relative to DINOv3 weights by default";
+      pre-trained weights for DINOv2- and DINOv3-based models.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 55a083d34ded30d0f0f0ad0e27d6bc52e2228aa8daa935edf7e6a7050771a765
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=tue-mps&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: tue-mps EoMT checkpoints for COCO, ADE20K and Cityscapes, DINOv2- and DINOv3-based, all gated false and tagged
+      mit.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 332ecb6300e136c7194fa7a8cac61792b38dc5be5c2d02adb27b6c2bd54bc3e5
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/tue-mps/eomt/master/model_zoo/dinov3.md
+    shows: 'DINOv3 model zoo: EoMT-S, B and L COCO panoptic, COCO instance and ADE20K semantic configs with pytorch_model.bin
+      downloads from tue-mps/*_dinov3 repositories.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c757a84bff94b31ef109ad6ab605d454e7c038d74f784206eff51ed2e38238bc
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/tue-mps/eomt/files/master
+    shows: 'Repository tree of 75 paths: configs for dinov2 and dinov3 on COCO, ADE20K and Cityscapes, and a training/
+      package with the Lightning module and mask-classification losses.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5849f11c346e5851d31665da5496fbf824e59c689a34cdc777afb16d3b1992b1
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov2/main/MODEL_CARD.md
+    shows: 'DINOv2 model card: "Training data: LVD-142M (see paper)"; no release of the dataset.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 70ca59606bee0a5fbb1baec80e7e29a93cd7cfbe26ca1910c52a852c4aab09d0
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/MODEL_CARD.md
+    shows: 'DINOv3 model card: "Web dataset (LVD-1689M): a curated dataset of 1,689 millions of images extracted from
+      a large data pool of 17 billions web images"; no release of the dataset.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5df24b62906d899688882146c5ff4ca066391205c5350a9b85dbcb485b2d07c8
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for the four most-used EoMT checkpoints, led by the COCO panoptic
+    large model. Weights fetched through the repository's own download links count the same way, since they are served
+    from the Hub.
+  sources:
+  - url: https://huggingface.co/api/models?author=tue-mps&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: coco_panoptic_eomt_large_640 42,322, eomt-dinov3-ade-semantic-large-512 21,494, ade20k_semantic_eomt_large_512
+      5,231 and coco_instance_eomt_large_1280 4,762 downloads in the trailing 30 days (73,809 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 332ecb6300e136c7194fa7a8cac61792b38dc5be5c2d02adb27b6c2bd54bc3e5
+capability:
+  score: 3
+  basis: feature_matrix
+  value: semantic, instance and panoptic segmentation checkpoints for COCO, ADE20K and Cityscapes on DINOv2 and DINOv3
+    backbones (up to 58.9 PQ on COCO panoptic), with training and fine-tuning code for other datasets
+  relative_to: rt-detr
+  relation: at
+  confidence: high
+  note: Each EoMT checkpoint labels pixels with the classes of the benchmark it was trained on, so a new set of classes
+    needs a training run, as with RT-DETR's COCO detectors.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/README.md
+      shows: 'RT-DETRv4 README: "RT-DETRv4 achieves new state-of-the-art results on the COCO dataset"; "To train on your
+        custom dataset, you need to organize it in the COCO format" - the fixed label space compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 45a9811942cd4021030a419a5a172557a59968e5802cd96961330e8d68127742
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/tue-mps/eomt/master/README.md
+    shows: 'README: DINOv3-based EoMT "Panoptic Segmentation: Up to 58.9 PQ on COCO", "Instance Segmentation: Up to 49.9
+      mAP on COCO", "Semantic Segmentation: Up to 59.5 mIoU on ADE20K"; fine-tuning with --model.load_ckpt_class_head
+      False on a dataset with different classes.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 55a083d34ded30d0f0f0ad0e27d6bc52e2228aa8daa935edf7e6a7050771a765

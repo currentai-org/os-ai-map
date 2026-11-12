@@ -1,0 +1,127 @@
+product: presidio
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the analyzer, anonymizer, image redactor and structured-data packages all build from the repository
+    core-gated:
+      value: ungated
+      detail: a community-governed project with no commercial owner and no enterprise path in the repository tree
+  confidence: high
+  note: Presidio's code is MIT-licensed, and every package from the text analyzer to the image redactor builds from the public
+    repository. Since leaving Microsoft it has had no commercial owner, so there is no paid edition for features to be held
+    back for.
+  raw: license:MIT(OSI);source:public(the analyzer, anonymizer, image redactor and structured-data packages all build from
+    the repository);core-gated:ungated(a community-governed project with no commercial owner and no enterprise path in the
+    repository tree)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/data-privacy-stack/presidio/HEAD/LICENSE
+    shows: The LICENSE body is the MIT License text, "Copyright (c) Presidio Contributors", with no added condition.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f3e86ee59a49bcfb0d9a9547484d55224ea7b2d04f95b1947b4d18d17f6de535
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/data-privacy-stack/presidio/main/README.MD
+    shows: 'The README links "Using pip", "Using Docker" and "From source" installs, lists the Analyzer, Anonymizer, Image-Redactor
+      and Structured packages, and carries an MIT license badge. Searched for enterprise, pricing, paid and license key: none.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b553970feb389eaa4cb4a09362ee1a5825e4844a63ea2a2d729c6fca18a140e0
+    establishes:
+    - source
+    - core-gated
+  - url: https://presidio.dataprivacystack.org/project_transition/
+    shows: The transition page says Presidio "has completed its transition from a Microsoft-owned project to an independent,
+      community-governed open source project", "continues to be open source under the MIT license" and "is not owned or operated
+      by a commercial entity".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 47f6b8908b6bc21741193e133cb4339e06e5acac6d75bd70f953e555bf146fd4
+    establishes:
+    - license
+    - core-gated
+  - url: https://ungh.cc/repos/data-privacy-stack/presidio/files/main
+    shows: The repository file listing shows presidio-analyzer, presidio-anonymizer, presidio-image-redactor and presidio-structured
+      source trees, and no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b71cfd7b06b35ea899d148f09ff445b65f0bd4e2d6503a43f9fe1cc9c90863e3
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/presidio-analyzer/json
+    shows: 'The PyPI record for presidio-analyzer 2.2.366 gives license_expression "MIT", the classifier "License :: OSI Approved
+      :: MIT License" and the homepage https://github.com/data-privacy-stack/presidio.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 64bd628f2d6ce1cc2dd210616cd29d955d114a974687dff63a30654289606cd2
+    establishes:
+    - license
+    - source
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of presidio-analyzer, the package that finds personal information and the one every Presidio setup
+    installs. The anonymizer and image packages are published separately and are not added, since they are mostly installed
+    alongside the analyzer.
+  sources:
+  - url: https://pypistats.org/api/packages/presidio-analyzer/recent
+    shows: '"last_month":5248154 for presidio-analyzer'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 33c823ce84ceb8c9eb098964a72a1828f28349cd2f22860a6459ff3687476246
+  - url: https://pypi.org/pypi/presidio-analyzer/json
+    shows: The package's only project URL is https://github.com/data-privacy-stack/presidio, the product's repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 64bd628f2d6ce1cc2dd210616cd29d955d114a974687dff63a30654289606cd2
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: personal-data detection and de-identification coverage
+  value: Predefined and custom recognizers for personal data built on named-entity recognition, regular expressions, rule-based
+    logic and checksums with context, in multiple languages; connectors for outside PII models including transformers, GLiNER,
+    Azure AI Language and LLM-based extraction; de-identification by redaction, masking, replacement, encryption and synthetic
+    surrogates; modules for text, images including DICOM, and structured data.
+  relative_to: llama-guard
+  relation: one_below
+  confidence: medium
+  note: Presidio finds and strips personal information across text, images and tables, with far more control over what counts
+    as personal data than a general safety classifier gives. Privacy is the only risk it handles, while Llama Guard screens
+    prompts and replies across fourteen hazard categories, so it sits a step below it.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+      shows: 'The peer''s model page still lists hazard categories from "S1: Violent Crimes" to "S14: Code Interpreter Abuse",
+        says Llama Guard 3 classifies "both LLM inputs (prompt classification) and in LLM responses (response classification)",
+        "was aligned to safeguard against the MLCommons standardized hazards taxonomy" and "provides content moderation in
+        8 languages".'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 88c4e99105de675650b8a49071b3a13ccdfaa63d9b89b5578a422e02eb2eb7cc
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/data-privacy-stack/presidio/main/README.MD
+    shows: The README lists "Predefined or custom PII recognizers leveraging Named Entity Recognition, regular expressions,
+      rule based logic and checksum with relevant context in multiple languages", "Options for connecting to external PII
+      detection models" and a "Module for redacting PII text in images (standard image types and DICOM medical images)".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b553970feb389eaa4cb4a09362ee1a5825e4844a63ea2a2d729c6fca18a140e0
+  - url: https://presidio.dataprivacystack.org/
+    shows: The documentation home describes identification and anonymization of private entities in text and images, and links
+      guides for transformers, GLiNER, Flair and Azure AI Language recognizers, encryption, pseudonymization, structured data
+      and DICOM redaction.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9f7396b4ef36fa45c1848ecc5a8749192c97190f571f9829b2687b429e826f23

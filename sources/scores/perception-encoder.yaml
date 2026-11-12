@@ -1,0 +1,115 @@
+product: perception-encoder
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: five PE Core checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: the image-text pretraining corpus is not named or released; the PE Video Dataset used for video fine-tuning
+        is released
+    code:
+      value: partial
+      detail: model code with zero-shot classification and retrieval evaluation; no pretraining pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: Perception Encoder Core (2025-04, smaller sizes 2025-07)
+  confidence: high
+  note: The PE Core weights download freely under Apache-2.0. Meta releases the video dataset used to fine-tune them, but
+    not the image-text corpus they were pretrained on or the pipeline that trained them.
+  raw: weights:open(five PE Core checkpoints on the Hub, ungated);data:closed(the image-text pretraining corpus is not named
+    or released; the PE Video Dataset used for video fine-tuning is released);code:partial(model code with zero-shot classification
+    and retrieval evaluation; no pretraining pipeline);license:Apache-2.0(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/pe/README.md
+    shows: 'PE README: "All checkpoints released on this page, unless otherwise specified, are released with the [Apache 2.0
+      license]"; "PE core is our base model trained with our robust image pretraining schedule and finetuned on the data generated
+      by our synthetic video data engine"; the PE Video Dataset is released; usage covers feature extraction and zero-shot
+      evaluation.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 61ff35d490199b1328fca9eaac3461a873f9d7dd03c7e72a6814cff2cc5d6bfb
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://huggingface.co/api/models/facebook/PE-Core-L14-336
+    shows: 'Hub record: "gated":false, cardData "license":"apache-2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 329466e82587883cd7b983fe7bbc6e0557a907a23863b3644237c101c269f4c4
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/facebook/PE-Core-G14-448
+    shows: 'Hub record: "gated":false, cardData "license":"apache-2.0", PE-Core-G14-448.pt in the file list.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a6a13ad9fc23e72a5c8cc8da8c093b27b322ac129c2ed80104fb61a3453de586
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/README.md
+    shows: 'Repository README: badges "Code License: Apache 2.0" and "Model License: Apache 2.0"; "[Jul-11-25]: We have release
+      8 new checkpoints for Perception Encoder: 2x small core models (T and S)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 71b27adcbe99739cfaadc2db86f3c35c3e02f55f543518ffac466da13448529b
+    establishes:
+    - license
+    - weights
+  - url: https://arxiv.org/abs/2504.13181
+    shows: 'Abstract: "To foster further research, we release our models, code, and novel dataset of synthetically and human-annotated
+      videos"; the image pretraining corpus is not named.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9acba7721b8b07f2371d584d9e72f1eaf31d7763eea819e6d8859255412e4b3d
+    establishes:
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month, summed across the five PE Core checkpoints and led by the L/14 model.
+    The timm conversions are excluded as format copies.
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=PE-&limit=100
+    shows: '"downloads": PE-Core-L14-336 259027, PE-Core-B16-224 26391, PE-Core-G14-448 21253, PE-Core-S16-384 1326, PE-Core-T16-384
+      876; the *_timm repos draw 0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: be6b58eb7186207e486c9b6de81399841ec02294b6fa1e8006283c23afc09fcb
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: zero-shot ImageNet-1k top-1 and COCO text-to-image retrieval recall, from the PE Core checkpoint table
+  value: PE Core G/14 at 448px reaches 85.4 zero-shot ImageNet-1k and 58.1 COCO text-to-image; L/14 at 336px reaches 83.5
+    and 57.1, and B/16 78.4 and 50.9.
+  confidence: medium
+  note: Meta's figures put PE Core slightly ahead of SigLIP 2 on the same zero-shot ImageNet and COCO retrieval tests. The
+    margin is narrow and comes from Meta's own table, so it sits level with Google's encoder rather than above it.
+  relative_to: siglip
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/google-research/big_vision/main/big_vision/configs/proj/image_text/README_siglip2.md
+      shows: 'big_vision SigLIP 2 checkpoint table (same digest as when SigLIP was scored): "SigLIP 2 | g-opt/16 | 384" ->
+        INet 0-shot 85.0, COCO T-I 56.1, COCO I-T 72.8.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3c1862c16c6c75a97278fe9556482618db1d0419997eaefd4006ec9149994eef
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/pe/README.md
+    shows: 'PE core table, IN-1k / COCO-T2I: "**G/14** 448px | PE-Core-G14-448 | 85.4 | ... | 58.1"; "**L/14** 336px | PE-Core-L14-336
+      | 83.5 | ... | 57.1"; "**B/16** 224px | ... | 78.4 | ... | 50.9"; "PE core can outperform SigLIP2 on Image CLIP and
+      InternVideo2 on Video CLIP".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 61ff35d490199b1328fca9eaac3461a873f9d7dd03c7e72a6814cff2cc5d6bfb

@@ -1,0 +1,133 @@
+product: hunyuan-image
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: HunyuanImage 3.0 and its Instruct and distilled Instruct checkpoints download from Hugging
+        Face without a gate
+    data:
+      value: described
+      detail: the technical report describes the data curation; no training data is released
+    code:
+      value: partial
+      detail: the repository publishes inference code, including vLLM support; no training code
+    license:
+    - name: Tencent-Hunyuan-Community-License
+      detail: 'every checkpoint: licensed for a territory that excludes the European Union, the United Kingdom
+        and South Korea; licensees above 100 million monthly active users must ask Tencent; outputs may
+        not be used to improve other models'
+    context:
+      hosted-candidate:
+        value: hosted
+        detail: HunyuanImage 3.5 Preview (September 2026) runs on Tencent's servers through hosted APIs;
+          no weights or license terms for it were found among Tencent's published releases, and whether
+          it supersedes HunyuanImage 3.0 is not yet established
+  governing_release: HunyuanImage 3.0 (September 2025; Instruct January 2026)
+  confidence: high
+  note: HunyuanImage 3.0 and its Instruct versions download without a gate, but Tencent's community license
+    does not apply in the European Union, the United Kingdom or South Korea and needs a separate license
+    for the very largest services. Tencent publishes inference code only, and the training data is described
+    rather than released. The newer 3.5 Preview is hosted, and its relation to 3.0 is not yet settled.
+  raw: 'weights:open(HunyuanImage 3.0 and its Instruct and distilled Instruct checkpoints download from
+    Hugging Face without a gate);data:described(the technical report describes the data curation; no training
+    data is released);code:partial(the repository publishes inference code, including vLLM support; no training
+    code);license:Tencent-Hunyuan-Community-License(every checkpoint: licensed for a territory that excludes
+    the European Union, the United Kingdom and South Korea; licensees above 100 million monthly active users
+    must ask Tencent; outputs may not be used to improve other models);hosted-candidate:hosted(HunyuanImage
+    3.5 Preview (September 2026) runs on Tencent''s servers through hosted APIs; no weights or license terms
+    for it were found among Tencent''s published releases, and whether it supersedes HunyuanImage 3.0 is
+    not yet established)'
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/tencent/HunyuanImage-3.0
+    shows: 'Model API for tencent/HunyuanImage-3.0: "gated": false; cardData license "other", license_name
+      "tencent-hunyuan-community", license_link "LICENSE"; 32 safetensors shards ("model-0001-of-0032.safetensors"
+      onward).'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: aacce36eafecb9614091d2c15f3893f64ccd27df245afad08aacbf5698dddd16
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanImage-3.0/main/LICENSE
+    shows: 'HunyuanImage 3.0 LICENSE body: "TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT"; "THIS LICENSE
+      AGREEMENT DOES NOT APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA"; a separate license
+      above "100 million monthly active users"; outputs may not be used "to improve any other AI model".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 38ee960faee3ab4ca226b0b50d661a4460e4d8c1e8fbc8431d5cd69bc2c363cc
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanImage-3.0/main/README.md
+    shows: 'HunyuanImage 3.0 README news: "September 28, 2025: HunyuanImage-3.0 Open Source - Inference
+      code and model weights publicly available"; "January 26, 2026": the Instruct and Instruct-Distil checkpoints;
+      the open-source plan checks off inference, the checkpoints and vLLM support, and lists no training
+      code.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1d4eb6835efa3b29f01289c88404a61aef2a0d75df6a6341643a7bba71fcb42f
+    establishes:
+    - weights
+    - code
+  - url: https://arxiv.org/abs/2509.23951
+    shows: 'HunyuanImage 3.0 technical report abstract: its key components include "meticulous data curation";
+      "By releasing the code and weights of HunyuanImage 3.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 36c578ae8bdb0a5e0a6e3f65f9c6c4a9d42f7e2730dad59cb3316a0876731519
+    establishes:
+    - data
+  - url: https://docs.comfy.org/tutorials/partner-nodes/tencent/hy-image-3-5.md
+    shows: 'Comfy''s partner-node guide: "Tencent Hunyuan Image 3.5 Preview is Tencent''s preview image
+      model, available in ComfyUI through Partner Nodes"; "Both run on Tencent''s servers through Comfy
+      API, so no model downloads or local GPU are required."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4d42d95d6d3b7043f8f42b0cafd0e075da22b88f0417754a7ce699f692c9148b
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across Tencent's four HunyuanImage checkpoints, most of them
+    HunyuanImage 3.0 Instruct. The current 3.5 Preview has no downloadable weights to count.
+  sources:
+  - url: https://huggingface.co/api/models?author=tencent&search=HunyuanImage&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: HunyuanImage-3.0-Instruct 26044, HunyuanImage-3.0 1681, HunyuanImage-3.0-Instruct-Distil
+      532, HunyuanImage-2.1 213; 28,470 in total.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3104e6bf661682c305de3c205c235af059929eaed809e8016e2cd7567421854f
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Image Arena, overall board; best-placed HunyuanImage 3.0 entry,
+    Tencent's hosted HunyuanImage 3.0
+  value: 'Artificial Analysis Text to Image Arena, overall board as served 2026-11-12: HunyuanImage 3.0
+    (Tencent Cloud) 58th of 112 at an Elo of 994, the best-placed HunyuanImage 3.0 entry; HunyuanImage 3.0
+    Instruct 64th and the downloadable HunyuanImage 3.0 78th'
+  confidence: medium
+  relative_to: flux
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+      shows: 'Re-read of the peer: the overall board as served lists 112 models; "FLUX.2 [dev]", the best-placed
+        downloadable FLUX model, is 52nd at an Elo of 1000, in its upper half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 96acf724465d0dbb6c88c74e77368d7bb9256cd604ecb617c7ec1ba8b6c55fd7
+  note: Every HunyuanImage 3.0 model on the public image arena sits in the lower half of the board, the
+    hosted 3.0 highest. FLUX.2 [dev] places above all of them, in the upper half.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+    shows: 'Overall board as served (112 models): "HunyuanImage 3.0 (Tencent Cloud)" 58th, Elo 994; "HunyuanImage
+      3.0 Instruct" 64th, Elo 987; "HunyuanImage 3.0" 78th, Elo 935. The hosted "HunyuanImage 3.5 (Preview)"
+      is 71st, Elo 973.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 96acf724465d0dbb6c88c74e77368d7bb9256cd604ecb617c7ec1ba8b6c55fd7
