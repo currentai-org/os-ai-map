@@ -3991,3 +3991,28 @@ rulings:
     executor: agent
     lands_in: [sources/categories/base_pretrained.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1024']
+
+  - id: R-2026-11-12-m
+    date: 2026-11-12
+    by: ccerv1
+    venue: session
+    refs: ["#1022", "#1026", ernie, ernie-flash, base_pretrained]
+    question: >-
+      Baidu published ERNIE 5.5 Flash Base, an open-weight base model under a revenue- and territory-bounded
+      license, while the ernie record tracks the API-only ERNIE 5.1 flagship. Which release governs ernie's
+      openness, and where does Flash Base go?
+    ruling: >-
+      The ernie record tracks Baidu's flagship line and stays 1/closed; ERNIE 5.5 Flash Base is a separately
+      distributed, smaller base-model line and does not make the flagship open. ernie's note names the flagship
+      as API-only and Flash Base as a separate open-weight release, and its openness hold is released only on
+      fresh evidence that the flagship remains API-only. Flash Base gets its own record, ernie-flash, scored on
+      the base checkpoint, with the API-only Flash Preview kept out of its openness. The ERNIE 5.5 Flash Base
+      Model License v1.0 permits commercial use up to US$50 million in related annual revenue, with notice and
+      attribution, outside the EU, the UK and South Korea, so it sits in use_bounded.
+    reasoning: >-
+      Product identity follows what the vendor markets as a distinct line, not release chronology. Open weights
+      for a smaller sibling do not establish that the flagship has become open.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/ernie.yaml, sources/rubrics/pretrained.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1026', 'https://github.com/currentai-org/os-ai-map/pull/1028']
