@@ -3813,3 +3813,23 @@ rulings:
     executor: agent
     lands_in: [sources/categories/language_specific_datasets.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-e
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#977", "#1006", "#1020", atropos, llama-factory]
+    question: >-
+      github.com and api.github.com return 403 through the verification environment, so the atropos and
+      llama-factory repository pages cannot be fetched. Can a raw.githubusercontent.com copy of a file in the
+      declared repository establish openness dimensions such as source, core-gated and license?
+    ruling: >-
+      Yes. A successfully fetched raw.githubusercontent.com file is direct evidence of publicly accessible
+      repository content, even when github.com or its API temporarily returns 403. Record the exact URL, digest
+      and access date, and corroborate the repository's identity (the raw path names the declared repository)
+      and the relevant code or license evidence. A transient GitHub failure does not invalidate a successful
+      direct read.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/atropos.yaml, sources/scores/llama-factory.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1020']
