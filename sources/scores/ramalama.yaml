@@ -1,0 +1,90 @@
+product: ramalama
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+    free_text:
+    - no-feature-gated-core
+  confidence: high
+  note: RamaLama is MIT licensed, and the repository holds the whole tool and the container images it pulls. Nothing
+    is held back for a paid tier.
+  raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/containers/ramalama/main/LICENSE
+    shows: The LICENSE file reads "MIT License" and "Copyright (c) 2024 Eric Curtin".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2ed5bb5fb48a5300978aaa22ff109631d1df9c83dfcef14858b643f8453c2308
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/containers/ramalama/main/README.md
+    shows: The README calls RamaLama "an open-source tool that simplifies the local use and serving of AI models"
+      and describes no paid tier or gated feature.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 141bf1fa3b0bd611deaabe5517706cdc4ad4aaa8804b660a7b64188970075f95
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/ramalama/json
+    shows: 'PyPI metadata for ramalama 0.26.0 declares "license": "MIT".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 15423cd790e3410596cd43fdf32b8af38d38987cc916d788f491ca425ef5ff40
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: PyPI downloads of ramalama. Fedora's package, the macOS installer and the install script are not counted,
+    so this is a floor on use.
+  sources:
+  - url: https://pypistats.org/api/packages/ramalama/recent
+    shows: '"last_month":2575 downloads for ramalama.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b31a58a6cc3707b2f25492ec4509425421c9b4d4b4a5e6729f0f78805f2faa03
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'Container-isolated local serving: GPU detection pulls accelerated images (CUDA, ROCm, Intel GPU, Ascend,
+    MUSA, Vulkan, Asahi); llama.cpp and vLLM in containers, MLX on macOS; Hugging Face, ModelScope, Ollama and OCI
+    transports; REST serving, chat, RAG, conversion to OCI images, benchmarking and perplexity; rootless containers
+    with networking off; single-node.'
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: RamaLama sits two tiers below vLLM, level with Docker Model Runner and Lemonade. It runs llama.cpp or vLLM
+    inside a container rather than adding serving parallelism of its own; its distinguishing work is hardware detection
+    and isolating the model from the host.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'vLLM README: datacenter serving with "Tensor, pipeline, data, expert, and context parallelism for
+        distributed inference". RamaLama runs one model on one machine, with vLLM as one of the engines it can containerize,
+        so it stays two steps behind.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/containers/ramalama/main/README.md
+    shows: The README lists accelerated images for HIP, CUDA, Asahi, Intel GPU, Ascend and MUSA devices, an "MLX
+      Runtime (macOS only)", transports for HuggingFace, ModelScope, Ollama and OCI Container Registries, the commands
+      ramalama-serve, ramalama-rag, ramalama-convert, ramalama-bench and ramalama-perplexity, and says "the process
+      running the model (llama.cpp or vLLM)" is isolated from the host with --network=none.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 141bf1fa3b0bd611deaabe5517706cdc4ad4aaa8804b660a7b64188970075f95

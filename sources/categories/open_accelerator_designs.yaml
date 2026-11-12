@@ -1,0 +1,50 @@
+name: open_accelerator_designs
+display_name: Open accelerator designs
+description: Hardware designs for AI accelerators published as source - RTL, HDL or HLS for NPUs, systolic
+  arrays and ML-oriented GPGPU and vector cores, and the generators that emit them - that anyone can read,
+  simulate and put on an FPGA or into an ASIC.
+weights:
+  adopt: 0.3
+  cap: 0.7
+scoring_recipe:
+  version: 1
+  extends: software
+  note: >-
+    Proposed on the shared software ladder rather than the hardware one. The hardware ladder asks
+    what you can buy - a board's schematics, a chipset's datasheet and availability - and has no
+    license gate, so it cannot answer the question that decides openness here: under what terms
+    may you read, change and fabricate the design. That is a license question, which is what the
+    software ladder's `license_tier` reads, and the adoption signals these rows carry (a repository,
+    a PyPI package, a paper) are software-shaped too. The cost is the class name: a fully open
+    design reads `open_source` rather than `open_hardware`. Whether to keep that or give the
+    category its own ladder is for build-rubric at promotion. Three license strings in the seed
+    have no tier yet and go to the maintainer before anything is scored: SHL-0.51 (the PULP
+    designs; its preamble lets a licensee treat the work as Apache-2.0, which argues for `osi`),
+    the NVIDIA Open NVDLA License and Agreement v1.0 (not OSI-approved), and the split
+    hardware/software spellings such as SHL-0.51 plus Apache-2.0. Weighted 0.3 adoption to 0.7
+    capability because these designs are adopted by being synthesized into chips and FPGA
+    bitstreams, which no download counter sees.
+products: []
+comments: >-
+  Proposed on 2026-11-12, prompted by the RISC-V accelerator topic on the AIFoundry list, as a
+  preliminary category in the Hardware group beside edge_hardware and datacenter_accelerators.
+  The 2026-09-26 datacenter-accelerators sweep parked NVDLA, Gemmini and Vortex as "boundary:
+  open accelerator RTL" because neither hardware category had a place for a design nobody sells;
+  this is that place. Membership test: is the product a hardware design for accelerating ML, or a
+  generator that emits one, published as source someone could simulate, synthesize or fabricate?
+  Neighbors. Silicon you buy or rent belongs to edge_hardware or datacenter_accelerators, even when
+  it is built on an open ISA (Tenstorrent Blackhole, Sipeed MaixCAM); a vendor's open software
+  stack for closed silicon (tt-metal, the AINekko ET platform, which ships runtime, drivers and a
+  simulator but no RTL) is software and goes to compilers or inference_code. A compiler that
+  lowers models onto existing hardware is compilers; hls4ml and FINN are here because what they
+  emit is the accelerator itself. General-purpose RISC-V vector and compute cores with no ML
+  claim (Ara, Spatz, Saturn, Snitch, Occamy, Tenstorrent's riscv-ocelot, Ventus) and SoC
+  frameworks (Chipyard, ESP) are left out of the seed; whether a general vector unit counts is the
+  first boundary the promotion PR should rule on. Excluded on recency or fit: VTA (removed from
+  Apache TVM after v0.18.0), NE16 (no commit since 2022-10), Tensil (no commit since 2022-08),
+  OpenTPU (2017), Coyote (an FPGA shell, not an accelerator). Held back from the seed: tiny-tpu
+  (no license declared anywhere in the repository) and VeriGPU (one maintainer, last commit
+  2024-11). NVDLA is seeded although its last commit is from 2019, because it is the reference
+  open NPU the others are measured against; the promotion PR should decide whether staleness
+  bars it. Rows are `type: software` to match the ladder above. Sweep record:
+  docs/sweeps/2026-11-12-aifoundry-gaps/README.md.
