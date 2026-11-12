@@ -34,6 +34,8 @@ Three different things, kept apart (R-2026-11-02-b, -k):
 """
 from __future__ import annotations
 
+import copy
+import functools
 from collections import Counter
 from pathlib import Path
 
@@ -83,6 +85,23 @@ def set_band(values: list[int], unknown: int) -> str | None:
     return str(lo) if lo == hi else f"unresolved ({lo}-{hi})"
 
 
+@functools.lru_cache(maxsize=4096)
+def _parse(path: str, mtime_ns: int, size: int):
+    return yaml.safe_load(Path(path).read_text())
+
+
+def _read_yaml(path: Path):
+    """Parse a source file once per on-disk version.
+
+    `compute` runs once per set inside every `build_payload`, and the closed-product census
+    rebuilds the payload once per withheld product, so the same two files were re-parsed
+    thousands of times per run. The cache key carries the file's mtime and size, so an edit on
+    disk is re-read, and a deep copy is returned so no caller can mutate a shared parse.
+    """
+    st = path.stat()
+    return copy.deepcopy(_parse(str(path), st.st_mtime_ns, st.st_size))
+
+
 def _qualifying(entry: dict) -> int:
     status = entry_status(entry)
     if status.reason == "measured_zero":
@@ -94,14 +113,14 @@ def _qualifying(entry: dict) -> int:
 
 def record_claims(slug: str, root: Path = ROOT) -> list[dict]:
     """The set's `capability.own_components` claims, as its score record states them."""
-    rec = yaml.safe_load((root / "sources/scores" / f"{slug}.yaml").read_text())
+    rec = _read_yaml(root / "sources/scores" / f"{slug}.yaml")
     return list((rec.get("capability") or {}).get("own_components") or [])
 
 
 def load_set(slug: str, root: Path = ROOT) -> dict:
     """A set's targets, countable components per language, entry-status tally and raw entries."""
-    rec = yaml.safe_load((root / "sources/scores" / f"{slug}.yaml").read_text())
-    prod = yaml.safe_load((root / "sources/products" / f"{slug}.yaml").read_text())
+    rec = _read_yaml(root / "sources/scores" / f"{slug}.yaml")
+    prod = _read_yaml(root / "sources/products" / f"{slug}.yaml")
     cap = rec["capability"]
     pivots = set(cap.get("pivot_languages") or [])
     targets = [lang for lang in prod.get("languages") or [] if lang not in pivots]
