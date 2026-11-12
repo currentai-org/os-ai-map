@@ -1,0 +1,103 @@
+product: llama-parse
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    source:
+      value: closed
+      detail: a hosted service. the open repositories are clients that call it with an API key
+    context:
+      service:
+        value: proprietary
+        detail: LlamaParse on LlamaIndex's cloud, credit-priced
+      client:
+        value: MIT
+        detail: run-llama/llama_cloud_services, an API client and not the parser
+  confidence: high
+  note: LlamaParse runs only on LlamaIndex's cloud, or in a customer's private cloud under an enterprise contract, and
+    its parser is not published. The MIT-licensed clients only send documents to the service with an API key.
+  raw: license:Proprietary;source:closed(a hosted service. the open repositories are clients that call it with an API
+    key);service:proprietary(LlamaParse on LlamaIndex's cloud, credit-priced);client:MIT(run-llama/llama_cloud_services,
+    an API client and not the parser)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://www.llamaindex.ai/pricing
+    shows: 'Pricing page: "Pay-as-you-go $0 /month ... Includes 10K free credits $1.5 per 1k credits", "Pro $500 /month",
+      "Enterprise Custom ... SaaS or Hybrid cloud deployment", and "For enterprises, we also offer deployment in private
+      VPCs across all cloud providers".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7c657bb8221e2206d036a68cd89a976b033a0ad4d681e072d957e2554ea39132
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/run-llama/llama_cloud_services/main/py/README.md
+    shows: 'Client README: "hand-written SDKs and clients for interacting with LlamaCloud", including "LlamaParse"; usage
+      is LlamaParse(api_key="YOUR_API_KEY") after getting a key from LlamaCloud; a deprecation notice points to the llama-cloud
+      packages.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 34973b8380f6e866583ace13b4a9aa769194a6564469c237a1ac489431651136
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/run-llama/llama_cloud_services/main/LICENSE
+    shows: 'LICENSE body of the client repository: "MIT License / Copyright (c) 2024 LlamaIndex".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: aee447b9e648c98196c5f5c73e880a0cbfc0bc5a2e50a86bea868f2f59ccea7a
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: LlamaIndex publishes no usage figure for the service, and the parser itself has no package or repository to count.
+    The client packages' downloads count developers installing an SDK for the whole LlamaCloud platform, not use of this
+    service, so no level is assigned.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://www.llamaindex.ai/pricing
+    shows: 'Pricing page: plans, credits, concurrency limits and deployment options; no user, customer or page-volume
+      figure.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7c657bb8221e2206d036a68cd89a976b033a0ad4d681e072d957e2554ea39132
+  - url: https://pypistats.org/api/packages/llama-parse/recent
+    shows: 'pypistats for the llama-parse client: last_month 2650172.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 22b8f9fe3225f64ce8f7263f8a1e9f3019c5578c1bc89a1fe69aaabf96189bc6
+capability:
+  score: 4
+  basis: feature_matrix
+  value: layout-aware OCR over PDFs, scans, spreadsheets, tables, charts and forms into Markdown, text or JSON; bounding
+    boxes; several cost and accuracy tiers with per-page routing; custom parsing instructions; field extraction is a
+    separate LlamaExtract product
+  confidence: medium
+  relative_to: docling
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/docling-project/docling/main/README.md
+      shows: The Docling README still lists layout, reading order and table structure recovery, chart understanding and
+        exports to Markdown, HTML and lossless JSON, and links an information-extraction example that returns user-defined
+        fields. LlamaParse returns structure and leaves field extraction to LlamaExtract, a separate product, which keeps
+        it a step below.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 2ad389cb514915804303a6ac60302f06225ecb0a83b723914c03af1747a85a01
+  note: LlamaParse turns tables, charts, forms and scanned pages into Markdown or JSON with positions preserved. It sits
+    a step below Docling because pulling out user-defined fields is sold separately as LlamaExtract rather than done
+    by the parser.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://developers.llamaindex.ai/python/cloud/llamaparse/
+    shows: 'Parse overview: "Parse is the document parsing product on the LlamaParse platform from LlamaIndex, built
+      for LLM pipelines—layout-aware OCR that turns PDFs, scans, tables, and charts into clean markdown, text, or JSON";
+      feature pages for tables, charts and figures, forms and checkboxes, layout and bounding boxes, spreadsheets and
+      custom instructions; LlamaExtract listed separately.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5cc61bf69a791f77337a1e58a0c828a8cbfb53d8918bfb10f9e63594d8be3904
