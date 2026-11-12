@@ -1,0 +1,122 @@
+product: numina-math
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata and licensing section of all three releases
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+      detail: cards give the sources, per-source counts, processing steps and splits
+  confidence: high
+  note: All three releases are Apache-2.0, download without a gate, and come with cards that list where the problems
+    came from and how they were processed.
+  raw: license:apache-2.0(card metadata and licensing section of all three releases);access:public(ungated on the
+    Hub);dataset_card:present(cards give the sources, per-source counts, processing steps and splits)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/datasets/project-numina/NuminaMath-CoT/raw/main/README.md
+    shows: 'Card metadata "license: apache-2.0"; "Approximately 860k math problems, where each solution is formatted
+      in a Chain of Thought (CoT) manner"; a source breakdown from aops_forum to synthetic_math totalling 859,608;
+      processing from OCR to translation and answer formatting.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2e6fead04b0c3a7eb3d219267ca84d81f91d9b90830cfbb1fde73ddd7118a149
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/project-numina/NuminaMath-CoT
+    shows: 'API JSON: "gated":false; card license apache-2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d5c508fde6afc95f1819d9ab33e07b57e72a27c4aa67d0cae92cd9992d8f2fa3
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/project-numina/NuminaMath-TIR/raw/main/README.md
+    shows: 'Card metadata "license: apache-2.0"; "we selected approximately 70k problems from the NuminaMath-CoT
+      dataset" and generated tool-integrated reasoning paths; train split 72,441.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d46193ce5bb8f9515d120519ea27265f87222e9115e02283eb555fdcd85772a1
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/project-numina/NuminaMath-TIR
+    shows: 'API JSON: "gated":false; card license apache-2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e6ce3fdefd98624b52197ef0bab94a79ea5904cf33fc2bfd585aeafd33cddc37
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/project-numina/NuminaMath-1.5/raw/main/README.md
+    shows: '"This is the second iteration of the popular NuminaMath dataset", "approximately 900k competition-level
+      math problems" with answer, problem_type and question_type metadata; "The dataset is available under the Apache
+      License, Version 2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fb1d9e6e0d8ad71e47fd1ef5671ee4ca522536aa0a5b8c907c0fbc7e3cd7e6b2
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/project-numina/NuminaMath-1.5
+    shows: 'API JSON: "gated":false; card license apache-2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 716f961618c83f6ee6fde4a6774ae54bf33c908a235d742f4e04f78d17864e6d
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 4
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the three releases over the trailing month, most of them for NuminaMath-CoT. A
+    download count does not say who downloaded, and training pipelines can fetch a dataset repeatedly.
+  sources:
+  - url: https://huggingface.co/api/datasets/project-numina/NuminaMath-CoT
+    shows: '"downloads":138257 for project-numina/NuminaMath-CoT.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d5c508fde6afc95f1819d9ab33e07b57e72a27c4aa67d0cae92cd9992d8f2fa3
+  - url: https://huggingface.co/api/datasets/project-numina/NuminaMath-TIR
+    shows: '"downloads":3733 for project-numina/NuminaMath-TIR.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e6ce3fdefd98624b52197ef0bab94a79ea5904cf33fc2bfd585aeafd33cddc37
+  - url: https://huggingface.co/api/datasets/project-numina/NuminaMath-1.5
+    shows: '"downloads":28585 for project-numina/NuminaMath-1.5.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 716f961618c83f6ee6fde4a6774ae54bf33c908a235d742f4e04f78d17864e6d
+capability:
+  score: 4
+  basis: training_value
+  basis_detail: downstream
+  value: null
+  confidence: medium
+  note: Fine-tuned on the CoT and then the TIR set, NuminaMath 7B TIR won the first AI Mathematical Olympiad Progress
+    Prize. No controlled comparison against other math instruction sets has been published, so the evidence for its
+    value is that one result rather than matched ablations.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/blog/winning-aimo-progress-prize
+    shows: '"our model — NuminaMath 7B TIR — was the winner and managed to solve 29 out of 50 problems on the private
+      test set"; the training recipe section "Good data is all you need" with Chain of Thought and Tool-integrated
+      reasoning stages.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 83877faff78cb76c2f6f344af5ac33587690951f641b8cdebcaf919235d85a4e
+  - url: https://raw.githubusercontent.com/project-numina/aimo-progress-prize/main/README.md
+    shows: '"our winning solution to the AI Mathematical Olympiad - Progress Prize 1", consisting of a fine-tuning
+      recipe, "Two high-quality training datasets of ~1M math problems and solutions", SC-TIR decoding and validation
+      sets.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b3f9fd064aaad0dc4985ec7ae4fb17ecf24044e1db568d950a37438aea12aa9c
