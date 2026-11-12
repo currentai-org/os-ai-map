@@ -23,7 +23,7 @@ openness:
     that reconstruct the exact token order, training and analysis code, and 154 intermediate checkpoints
     per model size. Every part of the release is downloadable and the training run itself is reproducible,
     not just the model, which is what separates full openness from open weights.
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-12'
   raw: weights:open(Apache-2.0);data:open(the Pile, with dataloader reconstruction tools);code:open(training+analysis
     code, GitHub);checkpoints:open(154 per model);license:Apache-2.0(OSI)
   sources:
@@ -31,18 +31,18 @@ openness:
     shows: Hub API record for the Pile - "The Pile is a 825 GiB diverse, open source language modelling
       data set" - with gated and private both false; the repo itself holds only a loading script (pile.py)
       and a card, tagged "license:other".
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: c9a679bec505c0f189dc1c5e77c5caa16bcc6019c43812aeea5fba176eac9399
+    content_sha256: 1f4eb3f71a37ffc9bd01b16d903cd54e170b6a8d90ac298ac11b4217a7c38e58
     establishes:
     - data
   - url: https://arxiv.org/abs/2304.01373
     shows: 'Abstract: "We provide public access to 154 checkpoints for each one of the 16 models, alongside
       tools to download and reconstruct their exact training dataloaders" and "Trained models, analysis
       code, training code, and training data can be found at".'
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: a4ed5e7d70ff9ae90237a5421aabea072396346e2f70406e23257078d28eddf1
+    content_sha256: d15932e6af3611f8c30500e4e2e6b6298f555545af1b3fdab2a68a7790e5bfbb
     establishes:
     - checkpoints
     - data
@@ -59,9 +59,9 @@ openness:
     shows: 'Rendered Pythia-12B model card lists "License: Apache 2.0" and "We also provide 154 intermediate
       checkpoints per model, hosted on Hugging Face as branches"; the embedded repo data records gated as
       false.'
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 9290ed352f4fd1dc13aa918c3b48cbe38af737c5958121d68f7c869833b2e7de
+    content_sha256: 84e3374cf4aa6387eb88ec4f1f2f60616c429a31bb5bb96ab27975126834b347
     establishes:
     - weights
     - license
@@ -70,7 +70,7 @@ openness:
     shows: 'Raw model card front matter declares "license: apache-2.0" with dataset EleutherAI/pile, and
       the card says "All 8 model sizes are trained on the exact same data, in the exact same order" and
       points to the GitHub repository "for training procedure, config files, and details on how to use".'
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: 4f126014a10e08fea03a8137cf96e16199b5a7d8b256ed5c297ab76b2403bdcd
     establishes:
@@ -80,9 +80,9 @@ openness:
   - url: https://huggingface.co/api/models/EleutherAI/pythia-12b
     shows: Hub API record tagged "license:apache-2.0" with card data license apache-2.0 and "text-generation-inference";
       gated, private and disabled are all false, and the tags include safetensors weights.
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 3214fa0e790d2e6b9555acfd5fbecc0624e40742dcf5cb74ba58b1a7e503e2d5
+    content_sha256: 157a8975d3346fe975119e1645f7af208d2adbfa63a2fea75b13ecf1d3d94be6
     establishes:
     - weights
     - license
@@ -90,38 +90,31 @@ openness:
     shows: Hub API record for "EleutherAI/pile-standard-pythia-preshuffled", the tokenized Pile in Pythia
       training order, with gated and private both false and 21 shards plus "document.idx" (about 600 GB
       stored).
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 2084811283e20e3c7c70f32cfdaf31f921e7f011a78d04f989038de05f9116b4
+    content_sha256: 2802efe45c976a12286c95c02d1010911bef2df8de02818c49d4f4e5f2ab8dfd
     establishes:
     - data
   - url: https://huggingface.co/api/datasets/EleutherAI/pile-deduped-pythia-preshuffled
     shows: Hub API record for "EleutherAI/pile-deduped-pythia-preshuffled", the deduplicated Pile in Pythia
       training order, with gated and private both false and 21 shards plus "document.idx".
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 3b4fe6ecdb0e2960afbbd4f416ec0348c3c55901fb0c9e2d19c1e153db6cc8b0
+    content_sha256: 2ac9a9b0d798cf2ac9734325de63b2e787f3a7b16a607a052b8014de471ce9ec
     establishes:
     - data
 adoption:
-  level: 2
-  reach: 10K-100K
+  level: 1
+  reach: <10K
   signal_type: usage_volume
   confidence: high
   note: Adoption is measured as Hugging Face downloads for the single declared artifact, EleutherAI/pythia-12b.
-  last_verified: '2026-10-25'
-  derived_from:
-    observation_snapshot_id: 23ea574dc103b8180b77fdd1df7fe0bf8e11aa854b2aebb84925a6ead2148a0d
-    source_run_id: 2e6d66cd-2f46-4950-8f46-04339f192bfb
-    route_id: huggingface_model.downloads_30d
-    measured_level: 2
-    measurement_as_of: '2026-10-25'
   sources:
   - url: https://huggingface.co/api/models/EleutherAI/pythia-12b
-    shows: 30,007 downloads in the trailing 30 days for EleutherAI/pythia-12b
-    accessed: '2026-08-13'
+    shows: 7,136 downloads in the trailing 30 days for EleutherAI/pythia-12b
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 877612ac2b240f01cb265af7d577b7a461e434fa9ab8fe42b61b6fa68bbd9ee5
+    content_sha256: 157a8975d3346fe975119e1645f7af208d2adbfa63a2fea75b13ecf1d3d94be6
 capability:
   score: 1
   basis: benchmark
@@ -131,19 +124,19 @@ capability:
     on the 2020 Pile corpus, and are research tools for studying how language models learn rather than production
     systems. No benchmark measures it against the 2026 frontier, and it trails every model built for competitive
     performance.
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-12'
   sources:
   - url: https://arxiv.org/abs/2304.01373
     shows: 'Abstract: "a suite of 16 LLMs all trained on public data seen in the exact same order and ranging
       in size from 70M to 12B parameters"; the case studies it presents are "memorization, term frequency
       effects on few-shot performance, and reducing gender bias", not capability benchmarks.'
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: a4ed5e7d70ff9ae90237a5421aabea072396346e2f70406e23257078d28eddf1
+    content_sha256: d15932e6af3611f8c30500e4e2e6b6298f555545af1b3fdab2a68a7790e5bfbb
   - url: https://huggingface.co/EleutherAI/pythia-12b/raw/main/README.md
     shows: 'Model card: "The Pythia model suite was deliberately designed to promote scientific research
       on large language models, especially interpretability research" and "Despite not centering downstream
       performance as a design goal"; its evaluations compare against OPT and GPT-Neo.'
-    accessed: '2026-09-29'
+    accessed: '2026-11-12'
     http_status: 200
     content_sha256: 4f126014a10e08fea03a8137cf96e16199b5a7d8b256ed5c297ab76b2403bdcd
