@@ -97,29 +97,60 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: LMArena/AIME
-  value: 'AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE; LMArena frontier - Baidu states ERNIE
-    5.1 ranks first among Chinese models on the text leaderboard and fourth globally on the search
-    leaderboard'
+  basis_detail: LMArena text and search leaderboards; Baidu-reported AIME 2026
+  value: 'LMArena text leaderboard, snapshot of 2026-11-09: ERNIE 5.1 1467.7, 35th of 421, against MiMo-V2.6-Pro
+    1491.7, GLM-5.3 (Max) 1475.9, Kimi K3 (Max) 1474.3, DeepSeek-V4.1-Flash-20260910 (Max) 1463.4, Kimi
+    K3.1 Pro (Max) 1457.3, DeepSeek-V4-Pro 1451.4 and MiniMax-M3 1428.2. LMArena search leaderboard: 1223.4
+    and 4th on 2026-05-08, 1226.8 and 11th on 2026-11-09, second among Chinese models behind Qwen3.8-Max.
+    Baidu reports AIME 2026 (with tool use) 99.6 and GPQA and MMLU-Pro results approaching leading closed
+    models. Artificial Analysis Intelligence Index v5.0.1 scores no ERNIE 5 model.'
   confidence: medium
-  note: ERNIE 5.1 scores 99.6 on AIME 2026 with tool use, posts strong GPQA and MMLU-Pro results, and reaches
-    1,223 on LMArena's search leaderboard, which Baidu reports as fourth globally and first among Chinese
-    models. Those rankings come from Baidu's own release post and earnings statements rather than an independent
-    leaderboard read, making this a self-reported frontier claim.
+  note: On LMArena's independent text leaderboard ERNIE 5.1 places just behind GLM-5.3 and Kimi K3 and level
+    with DeepSeek's V4.1 Flash, and on the search leaderboard it posted 1,223 at its May 2026 launch, fourth
+    globally, before newer models pushed it to eleventh. Baidu adds a 99.6 on AIME 2026 with tool use, but
+    Artificial Analysis has not scored any ERNIE 5 model on version 5.0.1 of its Intelligence Index.
   sources:
   - url: https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html
     shows: Baidu Q1 2026 results, released 2026-05-18 - "Baidu launched ERNIE 5.1 in May 2026, featuring
-      stronger text capabilities" and "ERNIE 5.1 ranked first among Chinese models on the text leaderboard
-      and topped the LMArena search leaderboard among Chinese models, ranking fourth globally."
-    accessed: '2026-09-29'
+      stronger text capabilities, a more compact model size and enhanced reasoning capabilities. Recently
+      on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena
+      search leaderboard among Chinese models, ranking fourth globally."
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 043d8ec0e569cbbea64a2853d0131355439972e3277b5db3681c9362a944983d
-  - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: Official release post - "using only about 6% of the pre-training cost of comparable models";
-      "On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6";
-      "On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models";
-      and ERNIE 5.1 posted 1,223 "to claim 4th place globally and 1st among Chinese models on the Arena
-      Search leaderboard."
-    accessed: '2026-09-29'
+    content_sha256: 02c037284a9bb20c4d0dc57bedc58ffffd8f8bcb47ddadef0d4d44a36a0d7f68
+  - url: https://ernie.baidu.com/research/posts/ernie-5.1-0508-release/
+    shows: Official ERNIE 5.1 release post, dated May 9, 2026, now at this address (the earlier /blog/posts/
+      address serves the ERNIE homepage) - "Today, we officially release ERNIE 5.1"; "On AIME26 (with tool
+      use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6 — second only to Gemini
+      3.1 Pro"; "On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source
+      models"; and that on May 9 ERNIE 5.1 posted 1,223 "to claim 4th place globally and 1st among Chinese
+      models on the Arena Search leaderboard."
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd
+    content_sha256: 2b3d4027f60dc69e64f4315674420bcdc3a283ce6735692edb9ccdf4057059c9
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/search/full-00000-of-00001.parquet
+    shows: 'LMArena leaderboard dataset (CC-BY-4.0), search leaderboard, category "overall": "ernie-5.1"
+      rated 1223.4 at rank 4 in the 2026-05-08 snapshot; "ERNIE 5.1" rated 1226.8 (interval 1217.2-1236.4)
+      at rank 11 of 42 in the 2026-11-09 snapshot, where Qwen3.8-Max (Alibaba) ranks 1 at 1259.8 and is
+      the only other Chinese model listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 12791a7aa1d7b0ad67da17f93d3b088f62eb0d44ecb13365ebb2583c83b352fd
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/text/latest-00000-of-00001.parquet
+    shows: 'LMArena leaderboard dataset, text leaderboard, category "overall", 2026-11-09 snapshot of 421
+      models: "ERNIE 5.1" 1467.7 (interval 1463.2-1472.2), rank 35; MiMo-V2.6-Pro 1491.7 (11); Qwen3.8-Max
+      1485.2 (16); GLM-5.3 (Max) 1475.9 (25); Kimi K3 (Max) 1474.3 (27); DeepSeek-V4.1-Flash-20260910 (Max)
+      1463.4 (39); Kimi K3.1 Pro (Max) 1457.3 (44); DeepSeek-V4-Pro 1451.4 (50); MiniMax-M3 1428.2 (100);
+      Mistral Large 4 1414.3 (136). DeepSeek V4.1 Flash 1017, MiniMax-M3.1-Flash and ERNIE 5.5 Flash Preview
+      are not listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2c39d71e44cf86c7564afbbf3d7327389a388624d9b228405308eb19bfde3dba
+  - url: https://artificialanalysis.ai/models/ernie-5-0-thinking-preview
+    shows: 'Artificial Analysis page for ERNIE 5.0 Thinking Preview under Intelligence Index v5.0.1: the
+      model summary reads "Artificial Analysis Intelligence Index Unknown". The only Baidu models the page
+      links are ERNIE 5.0 Thinking Preview and ERNIE 4.5 300B A47B; artificialanalysis.ai/models/ernie-5-1
+      returns 404, so no ERNIE 5.1 or 5.5 model has a v5.0.1 score.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2aadefdccae3ad5a76f71ce190b373e363618687589e239c165d2f1a77c2e97a
