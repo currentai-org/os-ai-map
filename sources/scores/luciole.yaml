@@ -141,47 +141,18 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: medium
-  note: Adoption is measured as Hugging Face downloads summed across six checkpoints spanning the 1B, 8B
-    and 23B sizes in base and instruct form. That total reflects a niche audience for a sovereign French-language
+  note: Adoption is measured as Hugging Face downloads summed across the declared base, instruct, reasoning
+    and math checkpoints at 1B, 8B and 23B. That total reflects a niche audience for a sovereign French-language
     model rather than broad usage.
-  last_verified: '2026-11-08'
-  derived_from:
-    observation_snapshot_id: d16c5435f7d3e101bf6430dcfe978d1bf623c8d0a130082636c90f19d5c74f06
-    source_run_id: 0fe7a437-266f-46f5-8950-81c9d83aef8f
-    route_id: huggingface_model.downloads_30d
-    measured_level: 1
-    measurement_as_of: '2026-11-08'
   sources:
-  - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Base
-    shows: 746 downloads in the trailing 30 days for OpenLLM-France/Luciole-23B-Base
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models?author=OpenLLM-France&search=Luciole&limit=100
+    shows: 'Trailing-30-day downloads per declared checkpoint on the OpenLLM-France listing: Luciole-23B-Base
+      520, Luciole-23B-Instruct-1.1 1,010, Luciole-23B-Thinking-1.1 267, Luciole-8B-Base 490, Luciole-8B-Instruct-1.1
+      3,767, Luciole-8B-KD-Math-Base 772, Luciole-8B-KD-Math-Thinking-1.1 177, Luciole-1B-Base 1,127, Luciole-1B-Instruct-1.1
+      1,164; 9,294 in all.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: b1747ebae2f6a4ec4e48873597c09a5a3c62e47169fd7cf849ea5175090ea24a
-  - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Instruct-1.1
-    shows: 1,266 downloads in the trailing 30 days for OpenLLM-France/Luciole-23B-Instruct-1.1
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 05f5a0a2b17904d760cfdc635447ee2b52c3146b7f11ca1d287d578cce023a23
-  - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-8B-Base
-    shows: 965 downloads in the trailing 30 days for OpenLLM-France/Luciole-8B-Base
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 3191bcd4eaf895ae72c6523518e851bd627e5a102d850589c91f56dd06028699
-  - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-8B-Instruct-1.1
-    shows: 1,821 downloads in the trailing 30 days for OpenLLM-France/Luciole-8B-Instruct-1.1
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 571feb79e2bdae6eea0dfb2c8907406b03178642f03801f0f6036a7017719171
-  - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-1B-Base
-    shows: 693 downloads in the trailing 30 days for OpenLLM-France/Luciole-1B-Base
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: f5ca5f689f2abc30b4355b113384a83517c97f159fca31233731fe7b9e07fc6a
-  - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-1B-Instruct-1.1
-    shows: 2,140 downloads in the trailing 30 days for OpenLLM-France/Luciole-1B-Instruct-1.1
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: dad0af6e21b77deb7f5056ea9b9dd03e03fb45755ac30490f78b56e4e7c04855
+    content_sha256: ecd9b0d39a894f201c34c72a3c732506b952b947b8dc0ccbc448540d850342d9
 capability:
   score: 2
   basis: benchmark
@@ -196,13 +167,16 @@ capability:
     against EuroLLM-22B-Instruct-2512 2.06, Apertus-v1.5-70B 1.93, Llama-3.1-8B-Instruct 2.29 and Lucie-7B-Instruct-v1.1
     2.60; English 1.95 against EuroLLM-22B-Instruct 1.80 and Apertus-v1.5-70B 1.61; behind EuroLLM-22B-Instruct
     in 23 of 24 shared European languages. Chart values are read by eye; EuroLLM-22B''s TriviaQA and Mintaka
-    results on the base harness are far below every other model''s.'
+    results on the base harness are far below every other model''s. Luciole-23B-Thinking-1.1 card charts:
+    the strongest of the models charted in French, behind Qwen3-8B in English (about 65 against 71); no
+    independent evaluation covers it.'
   confidence: low
-  note: Luciole is a French-English family up to 23B parameters, released as base, instruct and reasoning
-    models. Its own cards put the 23B models ahead of EuroLLM-22B in French and about even in English. The
-    independent EuroEval leaderboards place Luciole-23B-Instruct slightly behind EuroLLM-22B-Instruct in
-    French, English and nearly every other European language, well behind Apertus and Mistral Small, and
-    ahead of Lucie-7B. Its reasoning model trails Qwen3-8B in English, and code was not a training focus.
+  note: Luciole is a French-English family up to 23B parameters, with base, instruct and reasoning models.
+    Its own cards put the 23B models ahead of EuroLLM-22B in French. The independent EuroEval leaderboards,
+    whose Luciole results are validation-split only and share one method, place the 23B instruct model slightly
+    behind EuroLLM-22B-Instruct in French and English and in most other European languages, and ahead of
+    Lucie-7B. No independent evaluation covers the reasoning model.
+  last_verified: '2026-11-12'
   sources:
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base
     shows: '23B multilingual base model trained on about 5 trillion tokens (English 41.9%, French 30.4%).
@@ -214,11 +188,11 @@ capability:
     http_status: 200
     content_sha256: f385e2a94ca89f299d73b2112a7e0c98c80919ff1354be0a429661f30f68d2b9
   - url: https://huggingface.co/collections/OpenLLM-France/luciole-llm
-    shows: 1B / 8B / 23B base + Instruct-1.1 lineup; Instruct trained via SFT + DPO on math, science, coding,
-      chat, RAG, and translation
-    accessed: '2026-08-13'
+    shows: 'Luciole LLM collection: 1B, 8B and 23B base and Instruct-1.1 models, with Luciole-23B-Thinking-1.1
+      and their FP8 and GGUF variants.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: e64616023bd63fd9a5dde0233482f031919825f46410781ccdad32566f873d02
+    content_sha256: 444944b975a08f1c3746c496ca2a24350d19443091e706aea0fc0a0c5eb02e87
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/en_details.png
     shows: 'Card chart "Overall Performance (English)", averaged normalized score: Luciole-23B-Base final
       checkpoint about 49, EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60, Gaperon-1125-24B
