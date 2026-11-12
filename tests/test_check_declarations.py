@@ -116,9 +116,13 @@ def test_the_real_corpus_divergences_are_renames():
 
     `librechat` joined the same day for the same reason: danny-avila/LibreChat moved to
     LibreChat-AI/LibreChat, the declaration followed, and its citations name the old path.
+
+    `llama-factory` left the set on 2026-11-12. Its last citation of the old
+    hiyouga/LLaMA-Factory page was replaced by raw files of the declared hiyouga/LlamaFactory
+    repository, so the divergence was resolved by refreshing the citation, as above.
     """
     assert {f[0] for f in divergent_citations(ROOT)} == {
-        "e2b-sandbox", "fastmcp", "giskard", "librechat", "llama-factory", "nemo-guardrails",
+        "e2b-sandbox", "fastmcp", "giskard", "librechat", "nemo-guardrails",
         "opencode", "sandbox-runtime", "torchtune", "verl",
     }
 
