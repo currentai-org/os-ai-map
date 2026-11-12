@@ -378,3 +378,35 @@ def test_publishing_is_refused_before_anything_is_built(monkeypatch, tmp_path, a
     monkeypatch.setattr("sys.argv", ["export_hf", "--out", str(tmp_path), *argv])
     with pytest.raises(SystemExit, match=match):
         export_hf.main()
+
+
+class _WhoamiHub(FakeHub):
+    def __init__(self, me, **kw):
+        super().__init__(exists=False, **kw)
+        self.me = me
+
+    def whoami(self):
+        if self.me is None:
+            raise RuntimeError("no token")
+        return self.me
+
+
+@pytest.mark.parametrize("me, expect", [
+    (None, "none accepted"),
+    ({"name": "someone", "orgs": [], "auth": {"accessToken": {"role": "write"}}},
+     "NOT a member of org"),
+    ({"name": "someone", "orgs": [{"name": "org"}],
+      "auth": {"accessToken": {"role": "fineGrained", "fineGrained": {"scoped": [
+          {"entity": {"type": "dataset", "name": "org/name"}, "permissions": ["repo.write"]},
+          {"entity": {"type": "user", "name": "someone"}, "permissions": ["repo.content.read"]},
+      ]}}}},
+     "scoped to dataset org/name (repo.write) (+1 other grants)"),
+])
+def test_an_unreachable_target_explains_the_token_without_naming_anyone(export_dir, tmp_path,
+                                                                        me, expect):
+    hub = _WhoamiHub(me)
+    hub.tmp = tmp_path
+    with pytest.raises(SystemExit) as e:
+        export_hf.push(export_dir, "org/name", "v9.9.9", private=False, api=hub)
+    assert expect in str(e.value)
+    assert "someone" not in str(e.value)

@@ -532,6 +532,34 @@ def _remote_manifest(api, repo_id: str, revision: str) -> dict | None:
     return json.loads(Path(path).read_text())
 
 
+def token_diagnosis(api, repo_id: str) -> str:
+    """Why a token might not see ``repo_id``, without printing anything secret or personal.
+
+    Hugging Face answers 404 alike for a private repo that does not exist and one the token
+    cannot see, and an unset HF_TOKEN makes every request anonymous. This separates the cases.
+    The Actions log is public, so it names no account: only the token's kind, whether its
+    account belongs to the repo's organization, and which of that organization's resources a
+    fine-grained token is scoped to.
+    """
+    org = repo_id.split("/")[0]
+    try:
+        me = api.whoami()
+    except Exception as e:  # noqa: BLE001
+        return f"none accepted ({type(e).__name__}); is the HF_TOKEN secret set?"
+    member = org in {o.get("name") for o in me.get("orgs") or []}
+    access = (me.get("auth") or {}).get("accessToken") or {}
+    role = access.get("role")
+    out = [f"accepted, kind {role!r}", f"its account is {'' if member else 'NOT '}a member of {org}"]
+    if role == "fineGrained":
+        scoped = (access.get("fineGrained") or {}).get("scoped") or []
+        mine = [s for s in scoped if (s.get("entity") or {}).get("name", "").split("/")[0] == org]
+        listed = [f"{s['entity'].get('type')} {s['entity'].get('name')} "
+                  f"({', '.join(sorted(s.get('permissions') or []))})" for s in mine]
+        out.append(f"scoped to {'; '.join(listed) if listed else f'nothing under {org}'}"
+                   f" (+{len(scoped) - len(mine)} other grants)")
+    return ", ".join(out)
+
+
 def push(out: Path, repo_id: str, tag: str, *, private: bool, require_new: bool = False,
          api=None) -> str:
     """Publish ``out`` to ``repo_id`` as ``tag``. Returns "published" or "unchanged".
@@ -549,8 +577,10 @@ def push(out: Path, repo_id: str, tag: str, *, private: bool, require_new: bool 
     try:
         info = api.repo_info(repo_id, repo_type="dataset")
     except Exception as e:  # noqa: BLE001
-        raise SystemExit(f"refusing to push: dataset {repo_id} is not reachable ({e}). Create it "
-                         f"once by hand, under the right organization, before the first push.")
+        raise SystemExit(f"refusing to push: dataset {repo_id} is not reachable ({e}).\n"
+                         f"Token: {token_diagnosis(api, repo_id)}.\n"
+                         f"The dataset must exist under the right organization, and the token must "
+                         f"be able to see it, before the first push.")
     if bool(info.private) != private:
         want = "private (a rehearsal target)" if private else "public (the release target)"
         raise SystemExit(f"refusing to push: {repo_id} must be {want}")
