@@ -61,12 +61,13 @@ capability:
   basis: feature_matrix
   basis_detail: coverage and downstream use for African document translation data
   value: AfriDocMT holds 605 health and IT news documents translated by people from English into five African
-    languages, documented in a paper, with no use found beyond that paper's experiments.
+    languages, split into 10,000 English sentences per domain, each translated into all five; no total in sentence
+    pairs is stated. It is documented in a paper, with no use found beyond that paper's experiments.
   confidence: medium
   note: AfriDocMT gives five African languages whole health and IT news documents translated by people from
     English, documented in a paper, though no model or benchmark beyond its own experiments is built on it.
-    At a few hundred documents it is minute beside the billions of pairs in the largest parallel collections,
-    and far smaller than the IIT Bombay English-Hindi corpus for one pair.
+    Counted as sentence pairs it is minute beside the billions in the largest parallel collections, and far
+    smaller than the IIT Bombay English-Hindi corpus for one pair.
   relative_to: iitb-english-hindi
   relation: one_below
   last_verified: '2026-09-24'
@@ -74,6 +75,17 @@ capability:
   - url: https://arxiv.org/abs/2501.06374
     shows: 'Abstract: "334 health and 271 information technology news documents, all human-translated from
       English"; NMT and LLM benchmark experiments.'
-    accessed: '2026-09-24'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 6c6f9a7b44adda2f4985172daab125391db48416e27960cdbe743d5a4483e347
+    content_sha256: 5bfed992fa77e76ac03cd485bbe8485a18cf71d49da797c0590c990070b5fc19
+  - url: https://arxiv.org/pdf/2501.06374
+    shows: '"We translated the extracted 10k English sentences to the 5 African languages"; the sentences were
+      extracted per domain, 10k each.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bfd75cc05c67dd509e1e05d6bbe0d5fd1d950a0173bfe854e9e2376f8ecd1ea2
+  - url: https://datasets-server.huggingface.co/size?dataset=masakhane/AfriDocMT
+    shows: Sentence-level configs health and tech, num_rows 10000 each; doc_health 334 and doc_tech 271.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c7fbc9a736b0d95943a0b1577b9cadba379262dee74ba9b9725cbfd550424b4b

@@ -352,6 +352,11 @@ the full code set are unresolved. Anything redistributed, whether a public table
 file in this repository, carries only the codes declared in the map's products, unless SIL confirms
 broader rights. Per-language data is published only from sources whose terms permit it.
 
+The repository's own list of valid codes follows the same rule (R-2026-11-11-p).
+`sources/snapshots/language-codes.tsv` holds only the codes the map's records use, each confirmed
+against the classification table by `build/language_codes.py`, and credits ISO 639-3
+(iso639-3.sil.org) as their source. No copy of SIL's code tables is committed.
+
 ### Refresh
 
 Quarterly, with every source pinned: the crawl id, the FineWeb-2 release, the CLDR release, the

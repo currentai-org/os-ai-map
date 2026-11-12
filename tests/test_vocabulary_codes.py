@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from build.vocabulary import country_codes, language_codes
@@ -35,19 +37,37 @@ def test_special_two_letter_and_unknown_language_codes_are_refused(code):
     assert code not in language_codes()
 
 
-def test_only_scopes_i_and_m_are_loaded():
-    from build.vocabulary import _LANGUAGE_SNAPSHOT
+def test_the_language_list_is_exactly_the_codes_the_corpus_uses():
+    """R-2026-11-11-p: the repository keeps only the codes its records use. `build.validate`
+    refuses a used code the list lacks; this refuses a listed code no record uses, so the list
+    never grows into a copy of the ISO 639-3 code set."""
+    from build.language_codes import used_codes
 
-    header, *rows = _LANGUAGE_SNAPSHOT.read_text(encoding="utf-8").split("\n")
-    columns = header.split("\t")
-    by_scope: dict[str, set[str]] = {}
-    for row in rows:
-        if not row.strip():
-            continue
-        cells = row.rstrip("\r").split("\t")
-        by_scope.setdefault(cells[columns.index("Scope")], set()).add(cells[columns.index("Id")])
-    assert language_codes() == by_scope["I"] | by_scope["M"]
-    assert not language_codes() & by_scope["S"]
+    assert language_codes() == frozenset(used_codes())
+
+
+def test_the_language_list_is_sorted_unique_codes_with_its_attribution():
+    from build.language_codes import SNAPSHOT, read_snapshot
+
+    codes = read_snapshot(SNAPSHOT)
+    assert codes == sorted(set(codes))
+    assert all(len(c) == 3 and c.isascii() and c.isalpha() and c.islower() for c in codes)
+    text = SNAPSHOT.read_text(encoding="utf-8")
+    assert "https://iso639-3.sil.org" in text
+    assert "not part of the standard" in text
+
+
+def test_no_iso_639_3_code_table_is_committed():
+    """SIL's code tables stay on Artio (R-2026-11-11-p). A file carrying their columns, reference
+    names above all, is a copy of the code set however it got here."""
+    root = Path(__file__).resolve().parents[1]
+    assert not (root / "sources" / "snapshots" / "iso-639-3.tab").exists()
+    markers = ("Ref_Name", "Part2b", "Print_Name")
+    for folder in ("sources", "tests/fixtures", "warehouse", "docs"):
+        for path in (root / folder).rglob("*"):
+            if path.is_file() and path.suffix in {".tab", ".tsv", ".csv", ".txt"}:
+                head = path.read_text(encoding="utf-8", errors="ignore")[:2000]
+                assert not any(m in head for m in markers), path
 
 
 def test_both_loaders_are_cached():
