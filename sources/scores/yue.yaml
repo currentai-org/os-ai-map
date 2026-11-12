@@ -1,0 +1,135 @@
+product: yue
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: YuE2-3B and the YuE2 VAEs download from the Hub without a gate
+    data:
+      value: described
+      detail: the YuE2 report describes learning from recordings with semantic and symbolic labels from MERT2 and SheetSage2;
+        no training set is released
+    code:
+      value: partial
+      detail: the yue2 package is an inference pipeline, command-line tool and agent skill; no training code is published
+    license:
+    - name: CC-BY-NC-4.0
+      detail: the YuE2 checkpoint weights, with an added permission for individual creators to monetize outputs; commercial
+        use of the weights by companies needs a separate license
+    - name: Apache-2.0
+      detail: the code, agent skill and documentation
+  governing_release: YuE2 (September 2026)
+  confidence: high
+  note: YuE2's weights are free for research and for individual creators, who may sell the songs they make, but a company
+    needs a separate license to use them commercially. The Apache 2.0 code covers inference only, and the training recordings
+    are described in the technical report but not released.
+  raw: weights:open(YuE2-3B and the YuE2 VAEs download from the Hub without a gate);data:described(the YuE2 report describes
+    learning from recordings with semantic and symbolic labels from MERT2 and SheetSage2; no training set is released);code:partial(the
+    yue2 package is an inference pipeline, command-line tool and agent skill; no training code is published);license:CC-BY-NC-4.0(the
+    YuE2 checkpoint weights, with an added permission for individual creators to monetize outputs; commercial use of
+    the weights by companies needs a separate license)+Apache-2.0(the code, agent skill and documentation)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://ungh.cc/repos/multimodal-art-projection/YuE/files/main/MODEL_LICENSE
+    shows: 'MODEL_LICENSE: the YuE2-3B, YuE2-Vae and YuE2-Vae-legacy weights "are licensed under Creative Commons Attribution-NonCommercial
+      4.0"; an added permission lets "personal users, content creators and musicians acting in an individual capacity"
+      monetize outputs and "does not authorize commercial use of the model weights by companies".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c7a0e99360555513ff56815b5dbbc8f0b27a3ad762ceaeeab6838baea9743b3a
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/multimodal-art-projection/YuE/files/main/README.md
+    shows: 'README License section: "Commercial use by companies: Contact us to discuss a commercial license for the
+      model weights"; "Code, agent skill, and documentation: Apache 2.0. Model weights: CC BY-NC 4.0 with additional
+      creator permission."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 73481ddf41229acc1b58f5a8b07de8fe548ba135aa7fdb323e85ba0574e8f3cb
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/multimodal-art-projection/YuE/files/main/LICENSE
+    shows: 'LICENSE body: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/m-a-p/YuE2-3B?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for m-a-p/YuE2-3B: cardData license cc-by-nc-4.0, gated false, files model.safetensors,
+      modeling_yue2.py and the license texts.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1946c785b0fc40efdce3484a8096577dc86b06946315c146d246570d240d22c0
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/multimodal-art-projection/YuE/files/main
+    shows: 'Repository file list: src/yue2 holds the pipeline, CLI, sampling and VAE modules, plus tests, examples and
+      the yue2-music agent skill; no training script or training config.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 59dd5fcb0c9bb06536059fe862e697c179a068acb6ca709f5358d92aa2fd6730
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2609.33757
+    shows: 'YuE2 paper abstract: "To learn this generation process from recordings without aligned scores, we introduce
+      MERT2 and SheetSage2 to supply semantic and symbolic supervision"; no training dataset is named as released.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 612746bae34a7d51f32dd3df0239d947871a42fa7a823eef44be217115f822ac
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across the m-a-p YuE repositories, most of them YuE2-3B and the YuE2 VAE it decodes with.
+  sources:
+  - url: https://huggingface.co/api/models?author=m-a-p&search=YuE&sort=downloads&direction=-1&limit=100
+    shows: 'Listing of the 12 m-a-p YuE repositories sorted by downloads: YuE2-3B 22505, YuE2-Vae 21261, YuE-s1-7B-anneal-en-cot
+      2833, YuE-s2-1B-general 2744, the rest under 1,100 each; 52,496 in total.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f8b52ce4724774be7588add96c8f296d4df5a136381749f1e93ba9e5e353afc2
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released song-generation weights with vocals, lyrics and score conditioning; no YuE entry on the Artificial
+    Analysis music boards (instrumental, 19 models; vocals, 14 models) read 2026-11-12
+  confidence: medium
+  relative_to: musicgen
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+      shows: 'Re-read of the peer: "MusicGen" still on the AA-Music-Instrumental v1.1 board, 19th of 19 at an Elo of
+        868, in its lower half; YuE has no entry on it, so it sits one level below.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 8310a4a08fea24fcedcd76f904ba3697404c0f94de96fe6eca0df81f4a5f91de
+  note: YuE2 writes complete songs with vocals, and its authors report results level with Suno on their own benchmark,
+    but it has no placement on the public music arenas, where MusicGen at least appears.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+    shows: The "AA-Music-Instrumental v1.1" board lists 19 models, from "Suno v6" first to "MusicGen" 19th, and no YuE
+      entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8310a4a08fea24fcedcd76f904ba3697404c0f94de96fe6eca0df81f4a5f91de
+  - url: https://artificialanalysis.ai/music/leaderboard/vocals
+    shows: The "AA-Music-Vocal v1.1" board lists 14 models, from "ACE Music v1" first to "Melodia v3" 14th, and no YuE
+      entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f733bf0b98e3f3dfd79b766f654fa027167859e44be45f71313bee57f68656bf
+  - url: https://huggingface.co/m-a-p/YuE2-3B/raw/main/README.md
+    shows: 'Card: "Turn lyrics and a style prompt into a complete song with vocals and accompaniment"; "48 kHz stereo
+      songs on a 24GB GPU"; on the authors'' WildSongBench, best-of-8 YuE2 scores 6.9632 against 6.8721 for Suno v5.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 469ac88a01ef1be99a60ece8fdf1f3b81221e7c6943048782ed7487e06d159f0

@@ -1,0 +1,109 @@
+product: sam-3d
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: checkpoints on the Hub behind a manual access request
+    data:
+      value: described
+      detail: the README describes progressive training with a human-feedback data engine; no training set is released
+    code:
+      value: partial
+      detail: inference code and a demo only; no training code
+    license:
+    - name: SAM-License
+      detail: the checkpoints and code, per the README and the LICENSE dated November 19, 2025
+  governing_release: SAM 3D Objects (November 2025)
+  confidence: high
+  note: SAM 3D Objects' code and weights are under Meta's SAM License, which allows commercial use and limits conduct
+    and trade-controlled uses rather than the number of users or revenue. The weights need an approved access request
+    on Hugging Face. Only inference code is published, and the training data is described but not released.
+  raw: weights:open(checkpoints on the Hub behind a manual access request);data:described(the README describes progressive
+    training with a human-feedback data engine; no training set is released);code:partial(inference code and a demo only;
+    no training code);license:SAM-License(the checkpoints and code, per the README and the LICENSE dated November 19,
+    2025)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://ungh.cc/repos/facebookresearch/sam-3d-objects/files/main/LICENSE
+    shows: 'LICENSE body: "SAM License / Last Updated: November 19, 2025"; a "non-exclusive, worldwide, non-transferable
+      and royalty-free limited license" to use, reproduce, distribute and modify the SAM Materials, including trained
+      model weights.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b3a5a0e2d973ab80e6610ccf1cffc40756050d0ace3cd4fec879b3ec290b2e9b
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/facebookresearch/sam-3d-objects/files/main/README.md
+    shows: 'README: "The SAM 3D Objects model checkpoints and code are licensed under SAM License"; "using progressive
+      training and a data engine with human feedback"; "11/19/2025 - Checkpoints Launched"; "06/01/2026 - Encoder weights
+      are out."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f41a81a034139b1b0da318a32da1758710d83f70976b43c16e262b8c5b04cca1
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models/facebook/sam-3d-objects?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for facebook/sam-3d-objects: license other, gated "manual", checkpoint files under
+      checkpoints/.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 148c0ba949694b2638a9e62e7bbf7f4fef3c863e7ff2ff0a429a872479b49c20
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/facebookresearch/sam-3d-objects/files/main
+    shows: 'Repository file list of 416 files: demo.py, inference requirements and the sam3d_objects package; no training
+      script or training config.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 541e67778bbe6794c5dbc43b90597d403f3d8cea11cc7560e67da21ac4443d40
+    establishes:
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of facebook/sam-3d-objects, the only first-party copy; the separate
+    SAM 3D Body checkpoints are left out.
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=sam-3d&sort=downloads&direction=-1&limit=100
+    shows: 'Listing of the facebook sam-3d repositories: sam-3d-objects 9243 downloads; sam-3d-body-dinov3 14359 and
+      sam-3d-body-vith 1905 are the separate SAM 3D Body model.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 19a20bcec2007bfefdaaa9f00e7bd9cde4af07e6471496d7ccc0fc8c08a7cfbe
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena render board, read 2026-11-12: SAM-3D-Objects-3DGS 11th of 24 (score 1268); no entry on the topology
+    board'
+  confidence: medium
+  relative_to: hunyuan-3d
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+      shows: 'Re-read of the peer: "Hunyuan3D-2" 8th and "Hunyuan3D-2.1" 9th of 24 on the render board, still in its
+        upper half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd518f12af8433c53835e8bf850dcd26ea93005c26d6d68771dfd99acc07ce33
+  note: SAM 3D Objects places in the upper half of the image-to-3D arena, level with InstantMesh and just behind Hunyuan3D-2
+    and 2.1. It is ranked only as a Gaussian-splat output, so the topology board does not list it.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: 'Render board of 24 entries: "SAM-3D-Objects-3DGS" rank 11, score 1268, 1423 votes; "Hunyuan3D-2" rank 8.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dd518f12af8433c53835e8bf850dcd26ea93005c26d6d68771dfd99acc07ce33
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=topology
+    shows: Topology board of 22 entries; no SAM 3D entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5722c5d5a3f976234d6b4b699ada81f125f23fc29837a0c431bd73ad354d0da9

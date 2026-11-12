@@ -3,11 +3,12 @@ display_name: Image, video, 3D & music generation
 description: Models that synthesize images, video, 3D assets, or music and sound effects from a prompt
   or condition, and the apps, engines and libraries built specifically to run, compose or serve them.
 strapline: 'Open weights reach the frontier in some media and not in others. On the public arenas an open model
-  sits among the three best for video (MiniMax H3) and for 3D (TRELLIS), while closed services hold the top places
-  for images and music. The licenses are the sharp edge: twelve of the twenty-nine models ship under community,
-  research or non-commercial terms the shared license scale does not yet name, or bundle components that do, three
-  of them excluded from the EU entirely, and three open lines - Wan, Qwen-Image and Hunyuan3D - now keep their strongest
-  release hosted-only. The software that runs these models is open source throughout.'
+  sits among the three best for video (MiniMax H3) and for 3D (TRELLIS), while closed services hold the top
+  places for images and music. The licenses are the sharp edge: nineteen of the thirty-seven models ship under
+  community, research or non-commercial terms the shared license scale does not yet name, or bundle components
+  that do, three of them excluded from the EU entirely, and four open lines - Wan, Qwen-Image, Hunyuan3D and
+  SkyReels - now keep their strongest release hosted-only. The software that runs these models is open source
+  throughout.'
 weights:
   adopt: 0.4
   cap: 0.6
@@ -21,7 +22,7 @@ scoring_recipe:
     \ ladder. The closed comparators are typed `model` and settle at 1/closed on `weights: closed`. Many weights\
     \ here ship under custom community licenses. None is added to a shared tier from this category: each goes to\
     \ the one maintainer license-rulings issue, and the product carrying it sits in `deferred:` with a hand-assigned\
-    \ score until that ruling lands. None does now.\n\nCLOSED FRONTIER ON AN OPEN LINE (the #720 ruling, 2026-09-27). The current\
+    \ score until that ruling lands. One does now: cogvideo, on the CogVideoX License.\n\nCLOSED FRONTIER ON AN OPEN LINE (the #720 ruling, 2026-09-27). The current\
     \ release governs openness, as identity.md says; the API-only exclusion works across SKUs within a release,\
     \ never across releases. wan (Wan 3.0 current and API-only; Wan 2.2 distributed, Apache-2.0), qwen-image (Qwen-Image\
     \ 3.0 current and API-only; Qwen-Image-2.1 distributed, Qwen Research License) and hunyuan-3d (Hunyuan3D 3.0\
@@ -66,6 +67,15 @@ scoring_recipe:
     \ locally, and the capability that separates them from stable-diffusion-cpp - running a second modality - is\
     \ checkable against their own supported-model lists (invokeai lists Wan only as a hosted API call, recorded\
     \ as not running it). Splitting the rung by family count would record a distinction the evidence does not order."
+  deferred:
+    cogvideo:
+      because: >-
+        CogVideoX1.5's weights ship under the CogVideoX License, which no shared tier names yet:
+        commercial use is free after registering with Z.ai, up to one million visits a month, with
+        a separate license above that. The recorded 3/open_weights is the hand-assigned score the
+        use_bounded tier would give, whose definition (a usage ceiling, or a requirement to ask
+        before commercial use) the license text matches; it waits on the maintainer's
+        license-rulings issue. When the license joins a tier, drop this deferral.
 products:
 - gpt-image
 - nano-banana
@@ -74,27 +84,35 @@ products:
 - z-image
 - stable-diffusion
 - midjourney
+- sana
+- pixart
 - minimax-hailuo
 - seedance
 - veo
+- skyreels
 - ltx
 - wan
 - hunyuan-video
 - mochi
 - open-sora
 - stable-video-diffusion
+- cogvideo
 - liveportrait
 - latentsync
 - trellis
 - meshy
 - hunyuan-3d
+- instantmesh
+- sam-3d
 - triposg
 - triposr
+- stable-fast-3d
 - suno
 - lyria
 - stable-audio
 - musicgen
 - ace-step
+- yue
 - mmaudio
 - comfyui
 - diffsynth-studio
