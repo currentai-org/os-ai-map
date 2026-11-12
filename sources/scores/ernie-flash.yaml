@@ -1,0 +1,133 @@
+product: ernie-flash
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: FP8 and BF16 safetensors, ungated on Hugging Face
+    data:
+      value: closed
+      detail: the pretraining data is described by category (web, code, long context), with no corpus, listing
+        or mixture released
+    code:
+      value: partial
+      detail: inference through SGLang and the vLLM-ERNIE plugin; no pretraining pipeline
+    license:
+    - name: ERNIE-5.5-Flash-Base-Model-License-1.0
+      detail: commercial use free up to US$50 million in related annual revenue after a one-time notice, written
+        authorization above it; the EU, the UK and South Korea are excluded
+    context:
+      api-only-tier:
+        value: ERNIE 5.5 Flash Preview
+        detail: the post-trained model, offered only as a hosted model with no Hub checkpoint, so excluded
+  governing_release: ernie-5-5-flash-base
+  confidence: high
+  note: Baidu publishes the ERNIE 5.5 Flash Base weights on Hugging Face, ungated, under its own license,
+    which allows commercial use without a fee up to US$50 million in related annual revenue and requires
+    written permission above that. The license does not cover the EU, the UK or South Korea. Baidu describes
+    its pretraining data only by category and publishes inference support rather than a training pipeline,
+    which keeps it at open weights.
+  raw: weights:open(FP8 and BF16 safetensors, ungated on Hugging Face);data:closed(the pretraining data is
+    described by category (web, code, long context), with no corpus, listing or mixture released);code:partial(inference
+    through SGLang and the vLLM-ERNIE plugin; no pretraining pipeline);license:ERNIE-5.5-Flash-Base-Model-License-1.0(commercial
+    use free up to US$50 million in related annual revenue after a one-time notice, written authorization above
+    it; the EU, the UK and South Korea are excluded);api-only-tier:ERNIE 5.5 Flash Preview(the post-trained
+    model, offered only as a hosted model with no Hub checkpoint, so excluded)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base
+    shows: 'Model API for baidu/ERNIE-5.5-Flash-Base: "gated": false, cardData license_name "ernie-5.5-flash-base-model-license-v1.0",
+      128 safetensors files, created 2026-10-21.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e017f8fd66a07cab6fc924b6679f39ebfcc6207baf5f404bd0b89674c8cf118e
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base-BF16
+    shows: 'Model API for the BF16 copy: "gated": false, the same license_name, 128 safetensors files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dc97bdd5ca79b76d89134ee23f02c5c063196b965136df50c29b803660ab5afb
+    establishes:
+    - weights
+  - url: https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/LICENSE
+    shows: 'License: Section 4.2 permits commercial use "with Annual Revenue of Related Products or Services
+      at or below US$50 million" after a one-time notice and attribution, Section 4.3 requires "separate prior
+      written authorization" above it, and Section 1.11 defines the Territory as "all geographical areas worldwide
+      other than the European Union, the United Kingdom and South Korea".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f896ab9f174d0d55943d6c90ec26ba919ec59e03620982370d27181d4497b254
+    establishes:
+    - license
+  - url: https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/README.md
+    shows: 'Card: "ERNIE-5.5-Flash-Base is the checkpoint at the end of pre-training, before any mid- or post-training";
+      its Pre-training Data section describes web, code and long-context sources by category without releasing
+      or listing them, and deployment runs through SGLang and "vLLM-ERNIE"; no pretraining code is linked.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 429b0bbdc841c15d81dc9e99c7e2afd5ec551ad7df9421dd7697405240a26a6f
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=baidu&search=ERNIE&limit=100
+    shows: 'Hugging Face listing of Baidu repositories matching ERNIE: the only ERNIE-5 entries are ERNIE-5.5-Flash-Base
+      and ERNIE-5.5-Flash-Base-BF16, so the post-trained Flash Preview has no Hub checkpoint.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 51ae9aea6b0682f275e8c0110ee441db8a93eb47e3f4acbf604ab0b65d9e7da1
+    establishes:
+    - weights
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the FP8 and BF16 copies of ERNIE 5.5 Flash Base, released in late
+    October 2026.
+  sources:
+  - url: https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base
+    shows: '"downloads": 2963 for baidu/ERNIE-5.5-Flash-Base, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e017f8fd66a07cab6fc924b6679f39ebfcc6207baf5f404bd0b89674c8cf118e
+  - url: https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base-BF16
+    shows: '"downloads": 1021 for baidu/ERNIE-5.5-Flash-Base-BF16, the trailing 30-day count the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dc97bdd5ca79b76d89134ee23f02c5c063196b965136df50c29b803660ab5afb
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Baidu's same-pipeline pretraining-suite table on the ERNIE 5.5 Flash Base card
+  value: On Baidu's own evaluation of base checkpoints under one pipeline, ERNIE 5.5 Flash Base (280B total,
+    14B active) leads Hy3-preview-Base (295B, 21B active) on 27 of 30 benchmarks, including MMLU-Pro 78.4 vs
+    66.9, GPQA 60.2 vs 50.2 and LiveCodeBench 40.1 vs 33.5, and leads DeepSeek-V4-Flash-Base and MiMo-V2.5-Base
+    on most rows of the same table.
+  relative_to: hunyuan
+  relation: at
+  confidence: low
+  note: Baidu's own comparison of base checkpoints, run under a single evaluation pipeline, puts ERNIE 5.5
+    Flash Base ahead of the base model behind Tencent's Hy3 on almost every row, and ahead of DeepSeek's and
+    Xiaomi's similar-size bases on most. The results are vendor-run and cover base models only, with no independent
+    leaderboard reading, so it is placed level with Hunyuan rather than above it.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/tencent/Hy3/raw/main/README.md
+      shows: 'Peer check - the Hy3 card: Hy3 is "a 295B-parameter Mixture-of-Experts (MoE) model with 21B active
+        parameters", the same scale as the Hy3-preview-Base column in the ERNIE card''s comparison.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dbdfc5920bf548fb484b5ec1837032f6c85e1886f2930aa5bee629c1f9620e8b
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/README.md
+    shows: 'Card evaluation table, "all evaluated with the same pipeline, prompts and few-shot settings": ERNIE-5.5-Flash-Base
+      against DeepSeek-V4-Flash-Base, Hy3-preview-Base and MiMo-V2.5-Base, with rows such as "MMLU-Pro (EM)
+      | 5-shot | 78.4 | 69.2 | 66.9 | 65.7" and "GPQA (EM) | 5-shot | 60.2 | 55.9 | 50.2 | 51.4".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 429b0bbdc841c15d81dc9e99c7e2afd5ec551ad7df9421dd7697405240a26a6f

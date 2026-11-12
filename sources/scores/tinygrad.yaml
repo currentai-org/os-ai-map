@@ -1,0 +1,91 @@
+product: tinygrad
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+    free_text:
+    - no-feature-gated-core
+  confidence: high
+  note: tinygrad is MIT licensed, and the repository publishes the whole framework, compiler and device runtimes
+    included. No paid tier or license key gates any of it; tiny corp's business is selling hardware.
+  raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/tinygrad/tinygrad/master/LICENSE
+    shows: 'The LICENSE file is the MIT License text under "Copyright (c) 2024, the tiny corp": "Permission is hereby
+      granted, free of charge, to any person obtaining a copy".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 00146150f1082f320d608ba481acc3fbfacf8a9914354c2c96b6f44719d5e977
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/tinygrad/tinygrad/master/README.md
+    shows: The README calls tinygrad "an end-to-end deep learning stack" of tensor library, IR and compiler, JIT
+      and nn/optim/datasets, says "the entire compiler and IR are visible and hackable", and describes no paid tier
+      or gated feature.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c20592a2417b38fd9aa521a0daf14a532bcdcadbcdad07f9a486ec3de315acc2
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/tinygrad/json
+    shows: 'PyPI metadata for tinygrad 0.14.0 declares "license_expression": "MIT".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 79f60721e46a67c6e6ebe7c828dc12540effdfaab26a64f04a642f8c26c80aa4
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: low
+  note: PyPI downloads of tinygrad. The README recommends installing from source or straight from the repository,
+    so the package count is a floor on use rather than a measure of it.
+  sources:
+  - url: https://pypistats.org/api/packages/tinygrad/recent
+    shows: '"last_month":28545 downloads for tinygrad.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6502602668464c0f19d09caf40447e14c386792861500977211a30c558d31b3
+capability:
+  score: 4
+  basis: feature_matrix
+  value: Tensor library with autograd; its own IR and kernel compiler with fusion, scheduling and BEAM search; TinyJit
+    graph capture and replay; nn, optim and datasets for training; backends for CPU, OpenCL, Metal, CUDA, AMD, NV,
+    QCOM and WebGPU, with about 25 low-level ops needed for a new one; fewer functional transforms than JAX (no
+    full vmap or pmap).
+  relative_to: pytorch
+  relation: one_below
+  confidence: medium
+  note: tinygrad trains and runs models end to end on its own compiler across eight families of hardware, which
+    puts it among the foundational frameworks. It sits a step below PyTorch, whose distributed training and ecosystem
+    it does not match, and its own README says it has fewer functional transforms than JAX.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/pytorch/pytorch/main/README.md
+      shows: The PyTorch README still describes "Tensor computation (like NumPy) with strong GPU acceleration" and
+        "Deep neural networks built on a tape-based autograd system", and its build instructions carry a torch.distributed
+        option. tinygrad matches the first two and has no distributed training layer, so it stays one step behind.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3ad49faff26017c7f237596385e355b4aa1c3e3b23c4c2ebad01f92def1f35b1
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/tinygrad/tinygrad/master/README.md
+    shows: The README lists "Tensor library with autograd", "IR and compiler that fuse and lower kernels", "JIT
+      + graph execution" and "nn / optim / datasets for real training"; "BEAM search over kernels"; "Fewer functional
+      transforms (no full vmap/pmap yet)"; accelerators OpenCL, CPU, METAL, CUDA, AMD, NV, QCOM and WEBGPU; and
+      "only needs to support a total of ~25 low level ops".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c20592a2417b38fd9aa521a0daf14a532bcdcadbcdad07f9a486ec3de315acc2

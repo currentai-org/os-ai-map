@@ -58,9 +58,13 @@ held:
       since: '2026-09-28'
   alia-40b:
     capability:
-      because: >-
-        Its comparison is relative_to apertus, whose capability is held for a joint re-band in this
-        run, so the peer was not confirmed. Settled with the apertus, eurollm and luciole re-band.
+      because: No published evaluation places the released ALIA-40b beside Apertus, EuroLLM, Luciole or a Llama model
+        on one suite. On 2026-11-12 its card reports 5-shot results for ALIA-40b alone on BSC's own harness and says
+        comparisons with other baselines will come in a forthcoming technical report, which is not yet on arXiv; the
+        Salamandra technical report evaluates only an intermediate, un-annealed 40B checkpoint against 7B-class models.
+        The one_below apertus comparison was removed because no published evaluation supports it (R-2026-11-12-n).
+        Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those peers
+        on the same benchmarks, shots and metric.
       since: '2026-09-29'
   amazon-bedrock-evaluations:
     adoption:
@@ -87,11 +91,15 @@ held:
       since: '2026-10-07'
   apertus:
     capability:
-      because: 'Neither Apertus 70B Instruct nor Llama 4 Maverick has an Artificial Analysis Intelligence Index v5.0.1
-        score: on 2026-11-12 both pages read "Artificial Analysis Intelligence Index Unknown". The v4.3.2 readings
-        (5 against 10) that suggested 2 one below llama cannot be re-read on the current index. eurollm records relative_to
-        apertus at, alia-40b one_below it, and luciole''s card places it level with EuroLLM-22B. Settled by a joint
-        pretraining-suite comparison of apertus, eurollm, luciole and alia-40b, read on the same suite as llama.'
+      because: 'Read on 2026-11-12, the pretraining-suite fallback finds no table that puts Apertus beside Llama 4
+        Maverick, which sets llama''s score. The tables that pair Apertus-70B with earlier Llama checkpoints put it
+        level on general understanding (67.5 against 67.3 for Llama 3.1 70B and 67.9 for Llama 4 Scout, Apertus report
+        Table 14), about 8 points behind on factual knowledge (58.9 against 66.7 and 67.0, Table 15), and behind Llama
+        3.3 70B base on the EuroLLM-22B report''s 3-shot suite (63.6 against 69.1, Table 21). A move to 2, one below
+        llama, was considered and rejected (R-2026-11-12-n): these are earlier checkpoints rather than the governing
+        releases, they measure English knowledge rather than the product''s multilingual, reasoning and long-context
+        capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current
+        Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both.'
       since: '2026-09-29'
     adoption:
       because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the three declared checkpoints sum to
@@ -505,6 +513,13 @@ held:
         this hold.
       since: '2026-11-12'
       settled_by: scheduled_reconciliation
+  docker-model-runner:
+    adoption:
+      because: The initial level was set on 2026-11-12 from a hand-read GitHub star count for docker/model-runner, which sets a level
+        but earns no date. The axis waits for the first scheduled reconciliation that measures the same level.
+        That run's re-dating PR dates the axis and releases this hold.
+      since: '2026-11-12'
+      settled_by: scheduled_reconciliation
   dolt:
     capability:
       because: "The recorded capability text asserts that Dolt has no vector retrieval, but no source states a search method for that negative: the SQL-support and README pages were not searched and cited for vector. Settling it needs a fetched docs page that states the search, or wording limited to what a source shows."
@@ -562,20 +577,25 @@ held:
         benchmark data, or warehouse metrics, then confirm or re-band level 3.
       since: '2026-09-29'
   ernie:
-    openness:
-      because: Baidu now publishes ERNIE-5.5-Flash-Base on Hugging Face (created 2026-10-21, "gated":false, 128
-        safetensors shards) under the ERNIE 5.5 Flash Base Model License Agreement v1.0, which allows commercial
-        use up to US$50 million in related annual revenue and excludes the EU, the UK and South Korea. That contradicts
-        the recorded closed weights for the 5.x line, and the license is not in the ladder. Settled by a governing-release
-        ruling for this entry (ERNIE 5.1 flagship or the 5.5 line) and, if 5.5 governs, a ladder entry for the
-        license (build-rubric).
-      since: '2026-11-12'
     capability:
-      because: The cited ERNIE 5.1 release post URL now serves the ERNIE homepage, so the AIME, GPQA and MMLU-Pro
-        figures in the value cannot be re-read there; only the LMArena ranking survives, in Baidu's Q1 2026 results.
-        Baidu has also shipped ERNIE 5.5 Flash Preview and Flash Base. Settled by re-reading the 5.1 figures from
-        a live Baidu page and checking whether a 5.5 release now sets the family's best result.
+      because: 'ERNIE 5.1 has no reading on Artificial Analysis Intelligence Index v5.0.1, the category''s benchmark:
+        on 2026-11-12 Artificial Analysis has no ERNIE 5.1 or 5.5 page and ERNIE 5.0 Thinking Preview reads "Intelligence
+        Index Unknown". As a closed model it has no pretraining-suite fallback either. Every cited figure re-reads
+        on that date (the release post moved to /research/posts/), and LMArena''s 2026-11-09 text snapshot places
+        ERNIE 5.1 at 1467.7, between GLM-5.3 (Max) at 1475.9 and DeepSeek-V4.1-Flash-20260910 (Max) at 1463.4. An
+        LMArena placement counts as evidence, but a rank on one snapshot alone is not a reproducible comparison (R-2026-11-12-n).
+        ERNIE 5.5 Flash Preview is post-trained from Flash Base and belongs to the separate ernie-flash line (R-2026-11-12-m),
+        so it does not set this record''s best result. Settled by a v5.0.1 score for ERNIE 5.1 or a later flagship,
+        or by a reproducible comparison with the category''s peers on one suite.'
       since: '2026-11-12'
+  ernie-flash:
+    adoption:
+      because: The initial level was set on 2026-11-12 from a hand-read count of Hugging Face downloads summed across
+        the FP8 and BF16 copies of ERNIE 5.5 Flash Base (2,963 and 1,021), which sets a level but earns no date. The
+        axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates
+        the axis and releases this hold.
+      since: '2026-11-12'
+      settled_by: scheduled_reconciliation
   espnet:
     adoption:
       because: The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of espnet, which sets a level but earns
@@ -585,9 +605,11 @@ held:
       settled_by: scheduled_reconciliation
   eurollm:
     capability:
-      because: Its comparison is relative_to apertus, whose capability is held for the joint re-band of apertus,
-        eurollm, luciole and alia-40b, so the peer cannot be confirmed at least as recently. The report's Table
-        3 still reads as the value records. Settled with that re-band.
+      because: 'The comparison relative_to apertus was re-attested on 2026-11-12: in the EuroLLM-22B report EuroLLM-22B
+        leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base leads
+        EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21), which supports the two at the same score.
+        A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed
+        while apertus is held. Settled with apertus.'
       since: '2026-11-12'
     adoption:
       because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the ten declared EuroLLM checkpoints
@@ -661,11 +683,13 @@ held:
       since: '2026-09-29'
   gemma:
     capability:
-      because: 'Gemma 4 31B (Reasoning) scores 4 on Artificial Analysis Intelligence Index v5.0.1 (read 2026-11-12),
-        "at the lower end among comparable models (median: 8)", ninth of ten small open-weight models. A size-class
-        rank is not a band threshold (R-2026-11-12-l), and the band also rests on the model card''s MMLU Pro, GPQA
-        Diamond and LiveCodeBench figures, which still read, so the v5 reading is contrary evidence rather than a
-        reason to move. Settled by a same-version comparison with peers the category places at 3 and 4.'
+      because: 'A same-version comparison on Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) puts Gemma
+        4 31B (Reasoning) at 4.4, just below Granite 4.2 8B at 5.1 and behind Inkling (Xhigh) at 12.5 and Mistral
+        Large 4 (High) at 26.1. Gemma leads Granite on five of the nine evaluations and trails it on AA-Omniscience,
+        which penalizes wrong answers. A move to 3 was considered and rejected (R-2026-11-12-n): the index orders
+        these models but does not locate the boundary between 3 and 4, and the model card''s MMLU Pro, GPQA Diamond
+        and LiveCodeBench figures point the other way. The cited Arena leaderboard returned HTTP 403 on that date.
+        Settled by the focused calibration of the 3/4 boundary on comparable evaluations under #1022.'
       since: '2026-11-12'
   gigabrain:
     adoption:
@@ -751,14 +775,6 @@ held:
         replacement for retired gpt-4 snapshots, consistent with wide API distribution, but that does
         not derive a level.
       since: '2026-09-29'
-  gpt-4o:
-    capability:
-      because: 'Artificial Analysis Intelligence Index v5.0.1 scores neither GPT-4o (Nov ''24) nor its peer Llama
-        4 Maverick: on 2026-11-12 both pages read "Artificial Analysis Intelligence Index Unknown", where the value
-        quotes v4.3.2 readings of 8 and 10. GPT-4o has no released weights and no cited pretraining-suite result to
-        read beside a peer''s, and llama is itself held. Settled by a v5.0.1 reading of GPT-4o, or by placing it against
-        a peer that has a current comparable reading.'
-      since: '2026-11-12'
   gpt-5:
     capability:
       because: >-
@@ -783,25 +799,26 @@ held:
       since: '2026-10-07'
   granite:
     capability:
-      because: Granite 4.2 8B scores 5 on Artificial Analysis Intelligence Index v5.0.1 (read 2026-11-12, eighth of
-        ten small open-weight models, class median 8), but this record declares Granite 4.0, and neither 4.1 nor 4.2
-        is yet among its artifacts, so that reading cannot govern it. Its peer llama has no v5.0.1 reading. Settled
-        once the governing Granite release and declared artifacts are verified and the band is compared on the same
-        version with peers the category places at 3.
+      because: Granite 4.2 governs (#1026). On Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12, Granite
+        4.2 8B scores 5.10 and 4.2 3B 4.72; Granite 4.2 30B, 4.1 30B and 4.0 H Small have no score. No member the category
+        places at 3 has a v5.0.1 score (Phi-4, Llama 4 Maverick and Scout, Apertus 70B Instruct and MiniCPM5 read null,
+        and SmolLM3 and Marin are not listed), so the same-version comparison with 3-placed peers cannot yet be made. The
+        nearest in-category v5.0.1 readings are Gemma 4 31B (Reasoning) 4.38 and Inkling (Xhigh) 12.48, both held at 4,
+        and Mistral Large 4 (High) 26.12 at 4. Granite 4.2 8B is 0.7 above Gemma 4 31B and far ahead on Omniscience (-16.7
+        against -48.5), while Gemma leads on GPQA Diamond, HLE, SciCode and Terminal-Bench 2.1, so that gap does not place
+        either model. IBM's Granite 4.1 base and 4.2 cards compare Granite only with Granite, so no pretraining-suite table
+        reads Granite beside a peer. The relative_to llama comparison was judged on v4.3.2 and llama is held. Settled by
+        a v5.0.1 score for a peer placed at 3 or for Granite 4.2 30B, or by a same-pipeline table that reads a Granite
+        4.1 or 4.2 checkpoint beside a category peer.
       since: '2026-10-07'
-    openness:
-      because: 'Granite 4.1 is now the current release: dense 3B, 8B and 30B models with base variants, "Release
-        Date: April 29th, 2026" on the 30B card, Apache-2.0 and ungated, with SFT data described by source type
-        but not released. governing_release still names granite-4-0 and the declared artifacts are the 4.0 SKUs
-        only. The 4.1 evidence reads the same score, but moving the governing release, the declared SKUs and the
-        display name is identity work (update-product), not a re-read.'
-      since: '2026-11-12'
     adoption:
-      because: The four declared Granite 4.0 SKUs now sum to 81,224 trailing-30-day downloads (h-tiny 25,844, micro
-        25,003, h-small 24,187, h-micro 6,190), the 10K-100K band, against a recorded 100K-1M. The undeclared Granite
-        4.1 SKUs carry far more (granite-4.1-3b alone reads 473,563), so re-banding on the 4.0 declarations would
-        understate the family. Settled by the 4.1 re-scope of the declared artifacts, then a scheduled reconciliation.
+      because: The declared checkpoints were re-scoped on 2026-11-12 to the Granite 4.0, 4.1 and 4.2 language models,
+        base and instruct, which sum to 799,355 trailing-30-day Hugging Face downloads (granite-4.1-3b alone 454,809),
+        the same 100K-1M level as recorded. A hand-read sets a level but earns no date. The axis waits for the first
+        scheduled reconciliation that measures the same level on the declared set. That run's re-dating PR dates the
+        axis and releases this hold.
       since: '2026-11-12'
+      settled_by: scheduled_reconciliation
   granite-code-instruct:
     openness:
       because: >-
@@ -964,11 +981,12 @@ held:
       since: '2026-11-12'
       settled_by: scheduled_reconciliation
     capability:
-      because: 'Artificial Analysis Intelligence Index v5.0.1 places Inkling far lower than its vendor benchmarks
-        do: on 2026-11-12 Inkling (Xhigh) scores 12 and Inkling Small 13, 24th and 22nd of 27 large open-weight models,
-        against 23 for DeepSeek V4 Pro 0813 and 46 for Kimi K3.1 Pro. The band is kept at 4 by ruling, but the one_below
-        kimi spacing was judged on the vendor tables and has not been reconciled with the v5.0.1 readings. Settled
-        by a same-version comparison that either confirms one_below kimi or re-places Inkling against a nearer peer.'
+      because: 'On Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) Kimi K3.1 Pro (46) and Mistral Large
+        4 (High, 26) both lead Inkling (Xhigh, 12) and Inkling Small (13) on all nine evaluations, most widely on
+        the agentic tasks, so one_below kimi is not confirmed on this version. A move to 3, one_below mistral-large,
+        was considered and rejected (R-2026-11-12-n): the index orders these models but does not locate the boundary
+        between 3 and 4, and the vendor''s SWE-bench Verified result (77.6 against 80.6 for DeepSeek V4 Pro) is unresolved
+        against it. Settled by the focused calibration of the 3/4 boundary under #1022, which also re-places the edge.'
       since: '2026-11-12'
   instantmesh:
     adoption:
@@ -1116,14 +1134,26 @@ held:
         that measures the same level. That run's re-dating PR dates the axis and releases this hold.
       since: '2026-11-12'
       settled_by: scheduled_reconciliation
+  litert:
+    adoption:
+      because: The initial level was set on 2026-11-12 from hand-read PyPI downloads of ai-edge-litert and tflite-runtime, which sets a level
+        but earns no date. The axis waits for the first scheduled reconciliation that measures the same level.
+        That run's re-dating PR dates the axis and releases this hold.
+      since: '2026-11-12'
+      settled_by: scheduled_reconciliation
   llama:
     capability:
       because: 'Artificial Analysis Intelligence Index v5.0.1 scores no Llama model: on 2026-11-12 the Llama 4 Maverick,
-        Llama 4 Scout and Llama 3.1 Instruct 405B pages all read "Artificial Analysis Intelligence Index Unknown",
-        where the value quotes v4.3.2 estimates of 10 and 8. The recipe''s fallback needs a pretraining-suite average
-        for Llama 4 read beside the same suite for its peers, and no cited source carries one. gpt-4o, apertus and
-        granite record their comparisons relative_to llama. Settled by that fallback comparison or by a v5.0.1 reading
-        of a Llama release.'
+        Llama 4 Scout and Llama 3.1 Instruct 405B pages all read "Artificial Analysis Intelligence Index Unknown".
+        The pretraining-suite fallback now has two same-pipeline tables, recorded in the value, and neither reads
+        Maverick, the family''s strongest release. On the Apertus-70B card''s six-task average Llama 4 Scout base
+        (67.9) is level with Apertus-70B (67.5), OLMo 2 32B and Qwen3-32B and above SmolLM3-3B (61.6); on the Olmo
+        3 32B base card Llama 3.1 70B base is at or above Olmo 3 32B base on four of five aggregates and above Marin
+        32B on all five. Both are lower bounds, since Meta''s card puts Maverick ahead of Scout on every shared row,
+        and both compare base checkpoints while the peers placed at 4 (olmo, seed-oss) are read on post-trained releases.
+        llama stays 3 (R-2026-11-12-n): there is no sufficiently comparable evaluation of Maverick. Settled by a same-suite
+        reading of Llama 4 Maverick beside a peer the category places at 3 or 4 on its current release, or by a v5.0.1
+        reading of a Llama release. apertus and granite still record relative_to llama; gpt-4o no longer does.'
       since: '2026-11-12'
   llama-cpp:
     adoption:
@@ -1176,10 +1206,12 @@ held:
       since: '2026-10-07'
   luciole:
     capability:
-      because: >-
-        Luciole-23B-Base's card now compares it with EuroLLM-22B and shows it level in English and
-        about 8 points ahead in French, while eurollm is scored 3 and luciole 2. Settled by a joint
-        re-band of luciole, eurollm, apertus and alia-40b.
+      because: 'Luciole-23B-Base''s card charts it against EuroLLM-22B-2512 base on one harness: about even in English
+        (averaged normalized score about 49 against 48, where EuroLLM-22B''s TriviaQA result is implausibly low) and
+        about 8 points ahead in French (about 42 against 34). A base-model comparison alone does not establish parity
+        between the two families, so luciole stays 2 (R-2026-11-12-n), and whether the French advantage supports 3
+        is left to a targeted review. No published table places Luciole beside Apertus or a Llama model. Settled by
+        that review, or by a comparison of the current releases on one suite.'
       since: '2026-09-29'
   mace:
     adoption:
@@ -1833,12 +1865,18 @@ held:
       since: '2026-09-29'
   qwen:
     capability:
-      because: 'No model inside this record''s scope has a v5.0.1 score: on 2026-11-12 the Qwen3.5 35B A3B and Qwen3.5
-        397B A17B pages read "Artificial Analysis Intelligence Index Unknown", where the value quotes v4.3.2 readings
-        of 19 and 18. Qwen3.8 models are scored on v5.0.1 (Qwen3.8-Flash-Next 29, Qwen3.8 27B (Xhigh) 20), but Qwen
-        has published no base checkpoints for 3.8, so they sit outside a record of base models. Settled by a v5.0.1
-        reading of a Qwen3.5 model, or by a pretraining-suite comparison of the Qwen3.5 base checkpoints with peers
-        read on the same suite.'
+      because: 'No model inside this record''s scope has a v5.0.1 score: on 2026-11-12 the Qwen3.5 35B A3B and Qwen3.5 397B
+        A17B pages read "Artificial Analysis Intelligence Index Unknown", where the value quotes v4.3.2 readings of 19 and
+        18. Qwen3.8 models are scored on v5.0.1 (Qwen3.8-Flash-Next 29, Qwen3.8 27B (Xhigh) 20), but their cards list "Pre-training
+        & Post-training" and the Qwen organization on Hugging Face lists no base checkpoint newer than Qwen3.5, so they sit
+        outside a record of base models. The pretraining-suite fallback was checked on 2026-11-12 and does not settle it.
+        The released Qwen3.5 Base cards publish no evaluations. The one base-model table Qwen published, in the Qwen3.5 launch
+        post, scores the base of Qwen3.5-397B-A17B, which was never released, against the GLM-4.5, DeepSeek-V3.2 and Kimi
+        K2 bases, earlier releases than the GLM-5.3, DeepSeek V4.1 Flash and Kimi K3.1 Pro readings that hold those peers''
+        scores. No peer''s base-model card compares against a Qwen3.5 base checkpoint; the one peer card that names Qwen3.5,
+        MiniCPM5-1B, compares the post-trained 0.8B model. Settled by a v5.0.1 reading of a Qwen3.5 model, or by a published
+        table that scores Qwen3.5-35B-A3B-Base on the same benchmarks, shots and metrics as the base checkpoint behind a
+        peer''s current reading.'
       since: '2026-11-12'
   qwen-code:
     adoption:
@@ -1902,6 +1940,13 @@ held:
         Settling it needs self-host re-recorded against those pages as a vendor-provisioned enterprise deployment,
         and source established from a first-party platform page.
       since: '2026-10-08'
+  ramalama:
+    adoption:
+      because: The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of ramalama, which sets a level
+        but earns no date. The axis waits for the first scheduled reconciliation that measures the same level.
+        That run's re-dating PR dates the axis and releases this hold.
+      since: '2026-11-12'
+      settled_by: scheduled_reconciliation
   raspberry-pi-5:
     adoption:
       because: 'The recorded band (level 5, mass-market, reported_traction) rests on the product brief PDF
@@ -2061,6 +2106,13 @@ held:
         two. Settling it needs the cited download source re-read for a date, or the counted artifact declared
         where a route can read it (update-product).
       since: '2026-10-07'
+  shelley:
+    adoption:
+      because: The initial level was set on 2026-11-12 from a hand-read GitHub star count for boldsoftware/shelley,
+        which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the
+        same level. That run's re-dating PR dates the axis and releases this hold.
+      since: '2026-11-12'
+      settled_by: scheduled_reconciliation
   shieldgemma:
     adoption:
       because: 'Re-banded on 2026-10-07 from level 1 to 2: the 28 Sep and 5 Oct reconciliations both measured
@@ -2210,6 +2262,13 @@ held:
         product was added. A hand read sets a level but earns no date. The axis waits for the first
         scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and
         releases this hold.
+      since: '2026-11-12'
+      settled_by: scheduled_reconciliation
+  tinygrad:
+    adoption:
+      because: The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of tinygrad, which sets a level
+        but earns no date. The axis waits for the first scheduled reconciliation that measures the same level.
+        That run's re-dating PR dates the axis and releases this hold.
       since: '2026-11-12'
       settled_by: scheduled_reconciliation
   tinyllama-chat:

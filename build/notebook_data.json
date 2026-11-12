@@ -240,7 +240,7 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "Artificial Analysis Intelligence Index",
-            "value": "Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average among open weight non-reasoning models of similar size (median 12). The strongest released member of the family - Llama 4 Scout scores 8 on the same index, and Behemoth is unreleased.",
+            "value": "Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average among open weight non-reasoning models of similar size (median 12); Llama 4 Scout 8 on the same index; Behemoth is unreleased. Index v5.0.1 scores no Llama model. Pretraining-suite readings: on the Apertus-70B card's six-task average (ARC, HellaSwag, WinoGrande, XNLI, XCOPA, PIQA), Llama 4 Scout base 67.9 against Apertus-70B 67.5, OLMo 2 32B 67.7, Qwen3-32B 67.8, Qwen2.5-72B 69.8 and SmolLM3-3B 61.6; on the Olmo 3 32B base card, Llama 3.1 70B base against Olmo 3 32B base reads math 62.0 vs 61.6, code 36.3 vs 40.0 and MC STEM 80.1 vs 74.5 (Marin 32B 49.3, 30.8, 75.9). Maverick is on neither table; Meta's card puts its base ahead of Scout's on MMLU (85.5 vs 79.6), MMLU-Pro (62.9 vs 58.2) and MATH (61.2 vs 50.3).",
             "confidence": "medium",
             "note": "Llama 4 Maverick, the strongest released member of the family, scored 10 on version 4.3.2 of Artificial Analysis's Intelligence Index, below the median of 12 for open-weight non-reasoning models of similar size. Llama 4 Scout scored lower, and the larger Behemoth model was never released. Version 5 of the index, introduced in October 2026, does not score either Llama 4 model, so the current capability assessment is pending.",
             "sources": [
@@ -257,6 +257,27 @@
                 "accessed": "2026-09-29",
                 "http_status": 200,
                 "content_sha256": "1d32dc830fd24a903212e7ebbd4e09824ae24200ab8704f38c6baf7b35e544e2"
+              },
+              {
+                "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/README.md",
+                "shows": "Pretraining evaluation table, \"Performance (%) of Apertus models on *general language understanding* tasks (higher is better) compared to other pretrained models\", one six-task average (ARC, HellaSwag, WinoGrande, XNLI, XCOPA, PIQA): \"| Llama4-Scout-16x17B | 67.9 |\", \"| Llama3.1-70B | 67.3 |\", \"| **Apertus-70B** | 67.5 |\", \"| OLMo2-32B | 67.7 |\", \"| Qwen3-32B | 67.8 |\", \"| Qwen2.5-72B | 69.8 |\", \"| SmolLM3-3B | 61.6 |\", \"| EuroLLM-9B | 62.8 |\". Llama 4 Maverick is not in the table.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a4fd59afccb1aa534dbc01145314085926ac8c1e5d102d8564cbd4933d7de2ee"
+              },
+              {
+                "url": "https://huggingface.co/allenai/Olmo-3-1125-32B/raw/main/README.md",
+                "shows": "Olmo 3 32B base card evaluation table, one pipeline across base models, aggregate columns Olmo 3-Eval Math, Code, MC_STEM, MC_Non-STEM and GenQA: Llama-3.1-70B 62.0, 36.3, 80.1, 86.1, 81.6; Olmo 3-32B 61.6, 40.0, 74.5, 85.6, 79.8; Marin-32B 49.3, 30.8, 75.9, 84.5, 80.3; Apertus-70B 39.7, 23.3, 70.0, 78.5, 75.0. No Llama 4 model is in the table.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "8f227fd377065f4f93b50f9e14606224a021517f2315bcd537a22bb56ba8680f"
+              },
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E",
+                "shows": "Rendered model card, \"Pre-trained models\" table (Meta's own evaluation, base models only): MMLU 5-shot Llama 3.1 70B 79.3, Llama 3.1 405B 85.2, Llama 4 Scout 79.6, Llama 4 Maverick 85.5; MMLU-Pro 53.8, 61.6, 58.2, 62.9; MATH 41.6, 53.5, 50.3, 61.2; MBPP 66.4, 74.4, 67.8, 77.6. No other vendor's model is in the table.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "3eb85dab4aeb392c25469f5153d301f676d32d7c8b6f44073a0a97d6ac817ef2"
               }
             ]
           },
@@ -276,7 +297,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Artificial Analysis Intelligence Index v5.0.1 scores no Llama model: on 2026-11-12 the Llama 4 Maverick, Llama 4 Scout and Llama 3.1 Instruct 405B pages all read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 estimates of 10 and 8. The recipe's fallback needs a pretraining-suite average for Llama 4 read beside the same suite for its peers, and no cited source carries one. gpt-4o, apertus and granite record their comparisons relative_to llama. Settled by that fallback comparison or by a v5.0.1 reading of a Llama release."
+                "reason": "Artificial Analysis Intelligence Index v5.0.1 scores no Llama model: on 2026-11-12 the Llama 4 Maverick, Llama 4 Scout and Llama 3.1 Instruct 405B pages all read \"Artificial Analysis Intelligence Index Unknown\". The pretraining-suite fallback now has two same-pipeline tables, recorded in the value, and neither reads Maverick, the family's strongest release. On the Apertus-70B card's six-task average Llama 4 Scout base (67.9) is level with Apertus-70B (67.5), OLMo 2 32B and Qwen3-32B and above SmolLM3-3B (61.6); on the Olmo 3 32B base card Llama 3.1 70B base is at or above Olmo 3 32B base on four of five aggregates and above Marin 32B on all five. Both are lower bounds, since Meta's card puts Maverick ahead of Scout on every shared row, and both compare base checkpoints while the peers placed at 4 (olmo, seed-oss) are read on post-trained releases. llama stays 3 (R-2026-11-12-n): there is no sufficiently comparable evaluation of Maverick. Settled by a same-suite reading of Llama 4 Maverick beside a peer the category places at 3 or 4 on its current release, or by a v5.0.1 reading of a Llama release. apertus and granite still record relative_to llama; gpt-4o no longer does."
               }
             ]
           }
@@ -707,7 +728,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "No model inside this record's scope has a v5.0.1 score: on 2026-11-12 the Qwen3.5 35B A3B and Qwen3.5 397B A17B pages read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 readings of 19 and 18. Qwen3.8 models are scored on v5.0.1 (Qwen3.8-Flash-Next 29, Qwen3.8 27B (Xhigh) 20), but Qwen has published no base checkpoints for 3.8, so they sit outside a record of base models. Settled by a v5.0.1 reading of a Qwen3.5 model, or by a pretraining-suite comparison of the Qwen3.5 base checkpoints with peers read on the same suite."
+                "reason": "No model inside this record's scope has a v5.0.1 score: on 2026-11-12 the Qwen3.5 35B A3B and Qwen3.5 397B A17B pages read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 readings of 19 and 18. Qwen3.8 models are scored on v5.0.1 (Qwen3.8-Flash-Next 29, Qwen3.8 27B (Xhigh) 20), but their cards list \"Pre-training & Post-training\" and the Qwen organization on Hugging Face lists no base checkpoint newer than Qwen3.5, so they sit outside a record of base models. The pretraining-suite fallback was checked on 2026-11-12 and does not settle it. The released Qwen3.5 Base cards publish no evaluations. The one base-model table Qwen published, in the Qwen3.5 launch post, scores the base of Qwen3.5-397B-A17B, which was never released, against the GLM-4.5, DeepSeek-V3.2 and Kimi K2 bases, earlier releases than the GLM-5.3, DeepSeek V4.1 Flash and Kimi K3.1 Pro readings that hold those peers' scores. No peer's base-model card compares against a Qwen3.5 base checkpoint; the one peer card that names Qwen3.5, MiniCPM5-1B, compares the post-trained 0.8B model. Settled by a v5.0.1 reading of a Qwen3.5 model, or by a published table that scores Qwen3.5-35B-A3B-Base on the same benchmarks, shots and metrics as the base checkpoint behind a peer's current reading."
               }
             ]
           },
@@ -1064,16 +1085,16 @@
             "score": 4,
             "basis": "benchmark",
             "basis_detail": "Artificial Analysis Intelligence Index; model-card evaluation table",
-            "value": "gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native only on E2B/E4B/12B",
+            "value": "Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Gemma 4 31B (Reasoning) 4, ninth of ten small open-weight models (class median 8). Read on the same version and date: Granite 4.2 8B 5, Inkling (Xhigh) 12, Mistral Large 4 (High) 26. gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native only on E2B/E4B/12B",
             "confidence": "medium",
-            "note": "Gemma 4 31B scored 19 on version 4.3.2 of Artificial Analysis's Intelligence Index, well behind the highest-scoring open-weight releases from DeepSeek and GLM. Version 5 of the index, introduced in October 2026, is not comparable with that score, so the current capability assessment is pending. Its model card reports 85.2% on MMLU Pro, 84.3% on GPQA Diamond and 80.0% on LiveCodeBench v6, and on the Arena text leaderboard it trailed more than a dozen openly licensed models, which placed it near rather than at the frontier of open models.",
+            "note": "Gemma 4 31B, the family's strongest model, scores 4 on version 5.0.1 of Artificial Analysis's Intelligence Index, just below Granite 4.2 8B at 5 and well behind Inkling at 12 and Mistral Large 4 at 26. Gemma leads Granite on five of the index's nine evaluations and trails it only on AA-Omniscience, which penalizes wrong answers, while Inkling leads Gemma on seven. Its model card reports 85.2% on MMLU Pro, 84.3% on GPQA Diamond and 80.0% on LiveCodeBench v6, strengths the index's agentic tasks, where Gemma scores near zero, do not show.",
             "sources": [
               {
                 "url": "https://huggingface.co/google/gemma-4-31B-it",
                 "shows": "Rendered model card: \"Gemma 4 models are multimodal, handling text and image input (with audio supported on E2B, E4B, and 12B) and generating text output\"; the evaluation table, 31B column, lists MMLU Pro 85.2%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3% and MMMU Pro 76.9%.",
-                "accessed": "2026-09-29",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "2f1a8471f508307be32aa25eb86f4f048c3a7d25678fa77d1f5523675b2524e8"
+                "content_sha256": "dc2fe3123f502265a0a318798cd0cbd44412cbc2167856b0a9998d9623fc80e0"
               },
               {
                 "url": "https://arena.ai/leaderboard/text",
@@ -1085,16 +1106,23 @@
               {
                 "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud",
                 "shows": "Google Cloud availability post: \"Built from the same research as Gemini 3 and released under a commercially permissive Apache 2.0 license\". It carries no benchmark figures and no Arena ranking.",
-                "accessed": "2026-09-29",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "def84691d9a3e1c4abce00ff3672b0bf40bbbfeaf1d492ca7f6589deec0df979"
+                "content_sha256": "3ee88b422a5bb234847f3f85e87af23d20f73c525ea2aa1ae9dd0d7c79fd4140"
               },
               {
                 "url": "https://artificialanalysis.ai/models/gemma-4-31b",
-                "shows": "Artificial Analysis page on Intelligence Index v4.3.2: \"Gemma 4 31B (Reasoning) scores 19 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 8)\".",
-                "accessed": "2026-09-29",
+                "shows": "Artificial Analysis page on Intelligence Index v5.0.1: \"Gemma 4 31B (Reasoning) scores 4 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 8)\", ranked \"# 9 / 10\" among open weights models of similar size (Small: 4B-40B parameters).",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "887c8b8f10c32b585be9e17de00b04ad84da8bf50758a94a955f9044dc2f15a3"
+                "content_sha256": "5ab32692f1e99795f7794f8f551f9fc25a316ccf74c641cdeafe70a56d16d5c1"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf, HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Gemma 4 31B (Reasoning) 4.38 (368.6, 4.9%, 0.0%, 0.0%, -48.5, 6.0%, 7.2%, 4.0%, 0.0%); Granite 4.2 8B 5.10 (310.4, 2.1%, 0.0%, 0.0%, -16.7, 0.6%, 4.0%, 0.0%, 0.0%); Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c"
               }
             ]
           },
@@ -1114,7 +1142,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Gemma 4 31B (Reasoning) scores 4 on Artificial Analysis Intelligence Index v5.0.1 (read 2026-11-12), \"at the lower end among comparable models (median: 8)\", ninth of ten small open-weight models. A size-class rank is not a band threshold (R-2026-11-12-l), and the band also rests on the model card's MMLU Pro, GPQA Diamond and LiveCodeBench figures, which still read, so the v5 reading is contrary evidence rather than a reason to move. Settled by a same-version comparison with peers the category places at 3 and 4."
+                "reason": "A same-version comparison on Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) puts Gemma 4 31B (Reasoning) at 4.4, just below Granite 4.2 8B at 5.1 and behind Inkling (Xhigh) at 12.5 and Mistral Large 4 (High) at 26.1. Gemma leads Granite on five of the nine evaluations and trails it on AA-Omniscience, which penalizes wrong answers. A move to 3 was considered and rejected (R-2026-11-12-n): the index orders these models but does not locate the boundary between 3 and 4, and the model card's MMLU Pro, GPQA Diamond and LiveCodeBench figures point the other way. The cited Arena leaderboard returned HTTP 403 on that date. Settled by the focused calibration of the 3/4 boundary on comparable evaluations under #1022."
               }
             ]
           },
@@ -1496,45 +1524,53 @@
           "capability": {
             "score": 3,
             "basis": "benchmark",
-            "basis_detail": "Artificial Analysis Intelligence Index",
-            "value": "GPT-4o (Nov '24) scores 8 on the Artificial Analysis Intelligence Index, at the lower end among non-reasoning models in its price tier (median 15), ranked #46 of 61; Llama 4 Maverick scores 10.",
-            "relative_to": "llama",
+            "basis_detail": "Same-harness benchmark comparison (OpenAI simple-evals, Phi-4 technical report)",
+            "value": "Same-harness comparison in the Phi-4 technical report (OpenAI simple-evals, December 2024): GPT-4o MMLU 88.1, GPQA 50.6, MATH 74.6, HumanEval 90.6, MMLU-Pro 73.0, against Phi-4 (phi, 3) at 84.8, 56.1, 80.4, 82.6 and 70.4. Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: GPT-4o (Nov '24) has no score.",
+            "relative_to": "phi",
             "relation": "at",
             "confidence": "medium",
-            "note": "GPT-4o was OpenAI's multimodal flagship in 2024 and is still served through the API, but it now sits far below the current frontier, including OpenAI's own GPT-5 and GPT-6 lines. On version 4.3.2 of the Artificial Analysis index it scored close to Llama 4 Maverick and below the median for comparable models, which placed it alongside Llama rather than among the leading models. Version 5 of the index, introduced in October 2026, scores neither model, so the current capability assessment is pending.",
+            "note": "GPT-4o was OpenAI's multimodal flagship in 2024 and is still served through the API, but it sits far below the current frontier, and version 5 of Artificial Analysis's Intelligence Index does not score it. Microsoft's Phi-4 technical report ran both models through one evaluation harness: GPT-4o leads the 14-billion-parameter Phi-4 on general knowledge, coding and instruction following, while Phi-4 leads on graduate-level science and competition math, which places the two level.",
             "comparison": {
-              "last_attested": "2026-10-09",
+              "last_attested": "2026-11-12",
               "sources": [
                 {
-                  "url": "https://artificialanalysis.ai/models/llama-4-maverick",
-                  "shows": "\"Llama 4 Maverick scores 10 on the Artificial Analysis Intelligence Index, placing it below average among comparable models (median: 12)\"; Intelligence rank \"# 26 / 46\".",
-                  "accessed": "2026-10-09",
+                  "url": "https://huggingface.co/microsoft/phi-4/raw/main/README.md",
+                  "shows": "Peer read on the same date: the Phi-4 card compares \"phi-4 with a set of models over OpenAI’s SimpleEval benchmark\", listing phi-4 against GPT-4o at MMLU 84.8 vs 88.1, GPQA 56.1 vs 50.6, MATH 80.4 vs 74.6, HumanEval 82.6 vs 90.6, MGSM 80.6 vs 90.4, SimpleQA 3.0 vs 39.4 and DROP 75.5 vs 80.9. These are the results phi's own reading cites; Phi-4 leads on the two reasoning rows and trails on the rest, so GPT-4o is level with it rather than a step above.",
+                  "accessed": "2026-11-12",
                   "http_status": 200,
-                  "content_sha256": "0b66f5ad66a5852c9964f06fc9bc251496f8843b9c79c4a041673e38022625e8"
+                  "content_sha256": "4cc56faa6a5bcbde6227789b2ef9aedfde481ca660c8a4b686703aae19b00011"
                 }
               ]
             },
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/models/gpt-4o",
-                "shows": "\"GPT-4o (Nov '24) scores 8 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 15)\"; Intelligence rank \"# 46 / 61\"; the page marks the November 2024 snapshot as superseded by a later GPT-4o release.",
-                "accessed": "2026-10-09",
+                "shows": "Page for GPT-4o (Nov '24) on Intelligence Index v5.0.1: the model summary reads \"Artificial Analysis Intelligence Index Unknown\", and the page notes \"This model is deprecated. We still benchmark its performance, but less often\", so the current index has no score for GPT-4o.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d62d2d01a2180b69beb5949a1dfdba2e41a49fef4cd68a4adb3439d09bf296f4"
+                "content_sha256": "a03695907e0dad6b6d675b0591b872e4d6a3cd27217c460fb0dfaf51b9741a7d"
               },
               {
                 "url": "https://artificialanalysis.ai/leaderboards/models",
-                "shows": "The leaderboard's embedded model records, ranked by intelligenceIndex, put Claude Opus 5.5 (Max) first at 57.62, GPT-6 Astra (Max) at 52.67, Gemini 3.1 Pro Preview at 29.72, o3 at 20.20, o4-mini (High) at 16.65, Llama 4 Maverick at 9.99 and GPT-4o (Nov '24) at 8.44. The digest drifts between fetches because the page carries live pricing and throughput figures.",
-                "accessed": "2026-10-09",
+                "shows": "The leaderboard's embedded model records on Intelligence Index v5.0.1 list \"GPT-4o (Nov '24)\" as deprecated and without an intelligenceIndex, while 111 other records carry one; Llama 4 Maverick and Phi-4 read intelligenceIndex null. The digest drifts between fetches because the page carries live pricing and throughput figures.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "b32380b54bad1092bd9247bfcea5d4eba61af6ee0ce8e5f00d8bfba2337988b4"
+                "content_sha256": "43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c"
               },
               {
                 "url": "https://developers.openai.com/api/docs/models/gpt-4o",
-                "shows": "OpenAI API model page for GPT-4o: \"128,000 context window\", \"Oct 01, 2023 knowledge cutoff\", text and image input with text output; the page carries no benchmark figures.",
-                "accessed": "2026-10-09",
+                "shows": "OpenAI API model page for GPT-4o: \"128,000 context window\", \"16,384 max output tokens\", \"Oct 01, 2023 knowledge cutoff\", text and image input with text output; the page carries no benchmark figures.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "9af7c20c8e5e9048721082db637cbb3042b1e5c86486a871a29c5cc1e94e9438"
+                "content_sha256": "62954874bdd444cd366fc6b3b4741d6635aeb9d0f61eef274ccc926c36466c6d"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2412.08905",
+                "shows": "Phi-4 technical report, Table 1, whose first benchmarks use \"OpenAI’s simple-evals framework\": GPT-4o MMLU 88.1, GPQA 50.6, MATH 74.6, HumanEval 90.6, MGSM 90.4, SimpleQA 39.4, DROP 80.9, MMLUPro 73.0, ArenaHard 75.6, IFEval 84.8, against phi-4 at 84.8, 56.1, 80.4, 82.6, 80.6, 3.0, 75.5, 70.4, 75.4, 63.0; the text says \"phi-4 significantly exceeds its teacher GPT-4o on the GPQA (graduate-level STEM Q&A) and MATH (math competition) benchmarks\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "be5577cfb815a8617231c36602cdba38d0aaf2a94cf09502485c8a85de022f80"
               }
             ]
           },
@@ -1549,17 +1585,7 @@
           },
           "freshness": {
             "date": "2026-11-12",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-12",
-                "reason": "Artificial Analysis Intelligence Index v5.0.1 scores neither GPT-4o (Nov '24) nor its peer Llama 4 Maverick: on 2026-11-12 both pages read \"Artificial Analysis Intelligence Index Unknown\", where the value quotes v4.3.2 readings of 8 and 10. GPT-4o has no released weights and no cited pretraining-suite result to read beside a peer's, and llama is itself held. Settled by a v5.0.1 reading of GPT-4o, or by placing it against a peer that has a current comparable reading."
-              }
-            ]
+            "basis": "verified"
           }
         },
         {
@@ -2219,9 +2245,9 @@
             "basis_detail": "SWE-bench/GPQA/AIME",
             "relative_to": "kimi",
             "relation": "one_below",
-            "value": "SWE-bench Verified 77.6%; SWE-bench Pro 54.3%; GPQA Diamond 87.2%; AIME 2026 97.1% (effort=0.99). Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Inkling (Xhigh reasoning effort) 12, 24th of 27 large open-weight models (class median 23); Inkling Small 13, 22nd of 27.",
+            "value": "SWE-bench Verified 77.6%; SWE-bench Pro 54.3%; GPQA Diamond 87.2%; AIME 2026 97.1% (effort=0.99). Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Inkling (Xhigh reasoning effort) 12, 24th of 27 large open-weight models (class median 23); Inkling Small 13, 22nd of 27. Read on the same version and date: Mistral Large 4 (High) 26, ahead of Inkling on all nine index evaluations; DeepSeek V4 Pro 0813 (Max) 23, ahead on seven; Kimi K3.1 Pro 46, ahead on all nine.",
             "confidence": "high",
-            "note": "On its own evaluation table Inkling beats Nemotron 3 Ultra on SWE-bench Verified (77.6 vs 70.7) but trails Kimi K2.6 (80.2) and DeepSeek-V4-Pro (80.6), and Thinking Machines' launch post says Inkling is not the strongest overall model available, open or closed. Artificial Analysis's independent index places it lower: on version 5.0.1 Inkling scores 12 and Inkling Small 13, near the bottom of the large open-weight models it compares and well behind DeepSeek V4 Pro at 23.",
+            "note": "On its own evaluation table Inkling beats Nemotron 3 Ultra on SWE-bench Verified (77.6 vs 70.7) but trails Kimi K2.6 (80.2) and DeepSeek-V4-Pro (80.6), and Thinking Machines' launch post says Inkling is not the strongest overall model available, open or closed. Artificial Analysis's independent index places it lower: on version 5.0.1 Inkling scores 12 and Inkling Small 13, against 23 for DeepSeek V4 Pro and 26 for Mistral Large 4, which leads Inkling on every evaluation in the index, most widely on the agentic tasks.",
             "sources": [
               {
                 "url": "https://huggingface.co/thinkingmachines/Inkling",
@@ -2253,17 +2279,24 @@
               },
               {
                 "url": "https://artificialanalysis.ai/models/inkling",
-                "shows": "Artificial Analysis page on Intelligence Index v5.0.1: \"Inkling (Xhigh) scores 12 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)\". Secondary to the vendor evaluation tables the note relies on.",
+                "shows": "Artificial Analysis page on Intelligence Index v5.0.1: \"Inkling (Xhigh) scores 12 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)\", ranked \"# 24 / 27\" among open weights models of similar size (Large: over 150B parameters).",
                 "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "cdba9c261c04915b03316e8c8f2efd137a67709bbaf1122a822f845c2053663c"
+                "content_sha256": "a996db766e10ba559d30b8615a69fa1748888196cc6bd989cf09b4392be3e4e0"
               },
               {
                 "url": "https://artificialanalysis.ai/models/inkling-small",
                 "shows": "Index v5.0.1 page for the Small sibling folded into this record: \"Inkling Small scores 13 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)\", ranked \"# 22 / 27\" among open weights models of the same size class (Large, over 150B parameters).",
                 "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "27a091c968c51efdeb3c803966de412b8c08cc96189c81c8531ef5755bffef46"
+                "content_sha256": "47c57bc8797e5d988b0d9f9ff5fa7858f0c051a1d06be0fadd887a53b0de5f07"
+              },
+              {
+                "url": "https://artificialanalysis.ai/leaderboards/models",
+                "shows": "Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf, HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Inkling Small 12.91 (912.6, 4.8%, 1.0%, 4.8%, -9.5, 11.2%, 12.1%, 18.5%, 0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%); DeepSeek V4 Pro 0813 (Max) 23.06 (1253.2, 56.7%, 14.1%, 17.1%, -6.4, 11.4%, 19.5%, 23.5%, 5.7%); Kimi K3.1 Pro 46.45 (1673.6, 73.3%, 67.2%, 25.5%, 29.9, 31.4%, 37.3%, 49.5%, 34.3%).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c"
               }
             ]
           },
@@ -2288,7 +2321,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Artificial Analysis Intelligence Index v5.0.1 places Inkling far lower than its vendor benchmarks do: on 2026-11-12 Inkling (Xhigh) scores 12 and Inkling Small 13, 24th and 22nd of 27 large open-weight models, against 23 for DeepSeek V4 Pro 0813 and 46 for Kimi K3.1 Pro. The band is kept at 4 by ruling, but the one_below kimi spacing was judged on the vendor tables and has not been reconciled with the v5.0.1 readings. Settled by a same-version comparison that either confirms one_below kimi or re-places Inkling against a nearer peer."
+                "reason": "On Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) Kimi K3.1 Pro (46) and Mistral Large 4 (High, 26) both lead Inkling (Xhigh, 12) and Inkling Small (13) on all nine evaluations, most widely on the agentic tasks, so one_below kimi is not confirmed on this version. A move to 3, one_below mistral-large, was considered and rejected (R-2026-11-12-n): the index orders these models but does not locate the boundary between 3 and 4, and the vendor's SWE-bench Verified result (77.6 against 80.6 for DeepSeek V4 Pro) is unresolved against it. Settled by the focused calibration of the 3/4 boundary under #1022, which also re-places the edge."
               }
             ]
           },
@@ -2669,16 +2702,16 @@
             "score": 2,
             "basis": "benchmark",
             "basis_detail": "multilingual-pretrain-suite",
-            "value": null,
+            "value": "Luciole-23B-Base card charts (base models, one harness): English averaged normalized score about 49 against EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60 and Gaperon-1125-24B about 42; French about 42 against EuroLLM-22B about 34, Mistral-Small about 42 and Gaperon about 32. Values read from the charts; EuroLLM-22B's TriviaQA and Mintaka results on this harness are far below every other model's.",
             "confidence": "low",
-            "note": "Luciole is a multilingual French-English family up to 23B parameters that favors French cultural representation and open data rights over benchmark performance, alongside Lucie-7B and Alia-40b. Its 23B-Base card publishes training-convergence and evaluation curves but no comparison against outside models, so this reading comes from scale and positioning rather than a measured benchmark.",
+            "note": "Luciole is a French-English family up to 23B parameters built around French cultural representation and open data rights. Its 23B base model's card charts it against EuroLLM-22B and Mistral Small 24B on the same evaluations: about even with EuroLLM-22B in English and roughly 8 points ahead of it in French, where it also matches Mistral Small. In English it trails Mistral Small by about 11 points.",
             "sources": [
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base",
-                "shows": "23B multilingual base model, ~30% French pretraining data, French/English focus; the card carries training-convergence and evaluation sections but no comparison table against external models",
-                "accessed": "2026-08-13",
+                "shows": "23B multilingual base model trained on about 5 trillion tokens (English 41.9%, French 30.4%). Evaluation section: \"For comparison, we evaluated the model against the following models, which have between 23B and 2B parameters and were trained on multilingual data, including French\": Gaperon-1125-24B, EuroLLM-22B-2512 and Mistral-Small-24B-Base-2501, with results published as charts of average performance per language group, not as a table.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "1cd38455f6e0695d5059d7cae008bd5e7480893b268879a4363fd2e194949051"
+                "content_sha256": "f385e2a94ca89f299d73b2112a7e0c98c80919ff1354be0a429661f30f68d2b9"
               },
               {
                 "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
@@ -2686,6 +2719,20 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "e64616023bd63fd9a5dde0233482f031919825f46410781ccdad32566f873d02"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/en_details.png",
+                "shows": "Card chart \"Overall Performance (English)\", averaged normalized score: Luciole-23B-Base final checkpoint about 49, EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60, Gaperon-1125-24B about 42. Per-task panels: Luciole ahead of EuroLLM-22B on TriviaQA, MMLU pro, ARC easy, ARC challenge and GSM8K, behind it on OpenBookQA, CommonsenseQA, SIQA, HellaSwag, Winogrande and PIQA; EuroLLM-22B's TriviaQA exact match is about 0.18 against about 0.57 for Luciole. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "8a2b563ee61a2225b945e1dd910beefbacfc0aed247174fc83c329abe24a767c"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/fr_details.png",
+                "shows": "Card chart \"Overall Performance (French)\", averaged normalized score: Luciole-23B-Base about 42, Mistral-Small-24B-Base-2501 about 42, EuroLLM-22B-2512 about 34, Gaperon-1125-24B about 32. Per-task panels: Luciole ahead of EuroLLM-22B on eight of nine French tasks, all but FQuADv2; EuroLLM-22B's Mintaka exact match is about 0.03. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "4919b22a203f77f150cd8c311d9d34b457222fb6acf5ec9ca305a0dd73977629"
               }
             ]
           },
@@ -2705,7 +2752,7 @@
               {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Luciole-23B-Base's card now compares it with EuroLLM-22B and shows it level in English and about 8 points ahead in French, while eurollm is scored 3 and luciole 2. Settled by a joint re-band of luciole, eurollm, apertus and alia-40b."
+                "reason": "Luciole-23B-Base's card charts it against EuroLLM-22B-2512 base on one harness: about even in English (averaged normalized score about 49 against 48, where EuroLLM-22B's TriviaQA result is implausibly low) and about 8 points ahead in French (about 42 against 34). A base-model comparison alone does not establish parity between the two families, so luciole stays 2 (R-2026-11-12-n), and whether the French advantage supports 3 is left to a targeted review. No published table places Luciole beside Apertus or a Llama model. Settled by that review, or by a comparison of the current releases on one suite."
               }
             ]
           }
@@ -3154,7 +3201,7 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "GPQA",
-            "value": null,
+            "value": "Phi-4 (14B) model card: GPQA 56.1 (graduate-level science) and MATH 80.4 (competition math); the technical report says it substantially surpasses its teacher, GPT-4, on STEM-focused question answering. Artificial Analysis Intelligence Index v5.0.1 does not score Phi-4.",
             "confidence": "high",
             "note": "Phi-4 is a 14B model with outsized math and reasoning results, including 56.1% on graduate-level science questions and 80.4% on competition math, and its technical report says it surpasses GPT-4, its teacher, on STEM question answering. It remains a small, older model against the 2026 frontier, and Artificial Analysis's current index no longer scores it, so the published results carry the reading.",
             "last_verified": "2026-11-12",
@@ -3645,15 +3692,15 @@
             "sources": [
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509",
-                "shows": "pretraining benchmark table: Apertus-70B avg 67.5% vs Llama 3.1-70B 67.3%; Apertus-70B-Instruct MMLU 69.6%",
-                "accessed": "2026-08-13",
+                "shows": "Pretraining evaluation table on the card: Apertus-70B average 67.5 (ARC 70.6, HellaSwag 64.0, WinoGrande 73.3, XNLI 45.3, XCOPA 69.8, PIQA 81.9) against Llama3.1-70B 67.3, Llama4-Scout-16x17B 67.9, Qwen2.5-72B 69.8, OLMo2-32B 67.7 and EuroLLM-9B 62.8 on the same suite.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "83519a7a58348a6eee782da98685939d8d3bb93d4396069f819715e7dab0a233"
+                "content_sha256": "a5402f9206c3c5e1b77909498a20038702acc257656d733b7474edf5d1ad5943"
               },
               {
                 "url": "https://arxiv.org/pdf/2509.14233",
-                "shows": "Apertus technical report, benchmark results and methodology",
-                "accessed": "2026-08-13",
+                "shows": "Pretraining evaluation in lm-evaluation-harness. Table 14 (general language understanding) average: Apertus-70B 67.5, Llama3.1-70B 67.3, Llama4-Scout-16x17B 67.9, Llama3.1-8B 65.4, SmolLM3-3B 61.6. Table 15 (factual knowledge) average: Apertus-70B 58.9, Llama3.1-70B 66.7, Llama4-Scout-16x17B 67.0, Llama3.1-8B 53.2, SmolLM3-3B 49.7. Table 17 (post-trained): Apertus-70B-Instruct MMLU 69.6 against Llama-3.3-70B-Instruct 87.5, Qwen2.5-72B-Instruct 86.6 and Llama-3.1-8B-Instruct 72.4.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f"
               },
@@ -3663,6 +3710,13 @@
                 "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "266f936d5683231c5c696696d2c2cb4a224d0c95768ddc4105ab401e383853a2"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2602.05879",
+                "shows": "EuroLLM-22B report, Appendix B, Table 21 (base models, 3-shot likelihood on HellaSwag, MMLU and ARC-C): Apertus-70B-Base 77.4, 49.4, 64.0 against Llama-3.3-70B-Base 83.9, 54.9, 68.4, EuroLLM-22B-Base 73.2, 46.4, 62.3 and Llama-3.1-8B-Base 75.7, 46.3, 58.3.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289"
               }
             ]
           },
@@ -3687,7 +3741,7 @@
               {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Neither Apertus 70B Instruct nor Llama 4 Maverick has an Artificial Analysis Intelligence Index v5.0.1 score: on 2026-11-12 both pages read \"Artificial Analysis Intelligence Index Unknown\". The v4.3.2 readings (5 against 10) that suggested 2 one below llama cannot be re-read on the current index. eurollm records relative_to apertus at, alia-40b one_below it, and luciole's card places it level with EuroLLM-22B. Settled by a joint pretraining-suite comparison of apertus, eurollm, luciole and alia-40b, read on the same suite as llama."
+                "reason": "Read on 2026-11-12, the pretraining-suite fallback finds no table that puts Apertus beside Llama 4 Maverick, which sets llama's score. The tables that pair Apertus-70B with earlier Llama checkpoints put it level on general understanding (67.5 against 67.3 for Llama 3.1 70B and 67.9 for Llama 4 Scout, Apertus report Table 14), about 8 points behind on factual knowledge (58.9 against 66.7 and 67.0, Table 15), and behind Llama 3.3 70B base on the EuroLLM-22B report's 3-shot suite (63.6 against 69.1, Table 21). A move to 2, one below llama, was considered and rejected (R-2026-11-12-n): these are earlier checkpoints rather than the governing releases, they measure English knowledge rather than the product's multilingual, reasoning and long-context capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both."
               }
             ]
           }
@@ -4042,33 +4096,21 @@
           "org_slug": "baidu",
           "org": "Baidu",
           "type": "model",
-          "description": "ERNIE 5.1 is Baidu's fifth-generation flagship language model, launched in May 2026 with stronger text capabilities than its predecessor. It is offered as a hosted model through Baidu's ERNIE site, the Baidu Qianfan platform and OpenRouter.",
+          "description": "ERNIE 5.1 is Baidu's fifth-generation flagship language model, launched in May 2026 with stronger text capabilities than its predecessor. It is offered only as a hosted model, through Baidu's ERNIE site and the Baidu Qianfan platform.",
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "weights:closed;data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5 was open, 5.x flagship closed)",
+            "components": "weights:closed(no ERNIE 5.1 weights are distributed; the flagship is served only as a hosted model);data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5 was released openly, the 5.1 flagship is closed);separate-line:ERNIE 5.5 Flash Base, ERNIE 5.5 Flash Base Model License v1.0(a smaller 280B-total base model published on Hugging Face in October 2026 with its own card and license, which permits commercial use up to US$50 million in related annual revenue outside the EU, the UK and South Korea; a separately released line, not a SKU of the flagship, so it does not govern)",
             "confidence": "high",
-            "note": "Baidu distributes no weights for the ERNIE 5.x models, which are available only through its own services and API. Training data and code are not published either.",
+            "note": "Baidu distributes no weights for its flagship ERNIE 5.1, which is available only through its own services and API, and publishes neither its training data nor its code. ERNIE 5.5 Flash Base, which Baidu released separately on Hugging Face in October 2026, is a smaller open-weight base model under its own license; it is a different line and does not make the flagship open.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
-                "url": "https://huggingface.co/baidu",
-                "shows": "Baidu Hugging Face organization page lists ERNIE-4.5 and ERNIE-Image repositories such as \"baidu/ERNIE-4.5-21B-A3B-Thinking\" and \"baidu/ERNIE-Image-Turbo\"; searched the page for ERNIE-5 and ERNIE 5.1: none, so no 5.x weights, training code, corpus or open license is distributed there.",
-                "accessed": "2026-09-29",
-                "http_status": 200,
-                "content_sha256": "a79e9e9a57819e8bd9917491468ded63af751f23e4ab2c8b9a28bf31d9b0af5a",
-                "establishes": [
-                  "weights",
-                  "data",
-                  "code",
-                  "license"
-                ]
-              },
-              {
                 "url": "https://huggingface.co/api/models?author=baidu&search=ERNIE&limit=100",
-                "shows": "Hugging Face models API listing of every Baidu repository matching ERNIE returns 30 repositories, all ERNIE-4.5 or ERNIE-Image, e.g. \"baidu/ERNIE-4.5-300B-A47B-Base-PT\" and \"baidu/ERNIE-4.5-VL-424B-A47B-Paddle\"; searched the listing for ERNIE-5: none.",
-                "accessed": "2026-09-29",
+                "shows": "Hugging Face models API listing of Baidu repositories matching ERNIE returns 32, all ERNIE-4.5, ERNIE-Image or the separately released ERNIE-5.5-Flash-Base and ERNIE-5.5-Flash-Base-BF16; searched the listing for ERNIE-5.1: none, so no flagship weights, training code, corpus or open license is distributed there.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "34c1019db4f4269c5a8c74b67002a8708504f2161301a1dc9e25564208c6a1cc",
+                "content_sha256": "51ae9aea6b0682f275e8c0110ee441db8a93eb47e3f4acbf604ab0b65d9e7da1",
                 "establishes": [
                   "weights",
                   "data",
@@ -4077,15 +4119,22 @@
                 ]
               },
               {
-                "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
-                "shows": "Official ERNIE 5.1 release post directs users to \"Visit the official website at https://ernie.baidu.com to chat with the latest ERNIE 5.1 model\"; searched the post for Hugging Face, download, open-source and license: none, so the model is offered only as a hosted service.",
-                "accessed": "2026-09-29",
+                "url": "https://ernie.baidu.com/",
+                "shows": "The ERNIE site lists ERNIE 5.1 among its models, reachable through chat and the site's API links, with a product update reading \"ERNIE 5.1 Officially Released!\"; it offers no download of the 5.1 weights.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd",
+                "content_sha256": "c6a6373d55dc2708200ade98ac2616946018d5985f51af649183967b5731a55e",
                 "establishes": [
                   "weights",
                   "license"
                 ]
+              },
+              {
+                "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/LICENSE",
+                "shows": "The separate line's license: Section 4.2 permits commercial use \"with Annual Revenue of Related Products or Services at or below US$50 million\" after a one-time notice, Section 4.3 requires written authorization above it, and Section 1.11 defines the Territory as \"all geographical areas worldwide other than the European Union, the United Kingdom and South Korea\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "f896ab9f174d0d55943d6c90ec26ba919ec59e03620982370d27181d4497b254"
               }
             ],
             "bucket": "closed"
@@ -4124,24 +4173,45 @@
           "capability": {
             "score": 5,
             "basis": "benchmark",
-            "basis_detail": "LMArena/AIME",
-            "value": "AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE; LMArena frontier - Baidu states ERNIE 5.1 ranks first among Chinese models on the text leaderboard and fourth globally on the search leaderboard",
+            "basis_detail": "LMArena text and search leaderboards; Baidu-reported AIME 2026",
+            "value": "LMArena text leaderboard, snapshot of 2026-11-09: ERNIE 5.1 1467.7, 35th of 421, against MiMo-V2.6-Pro 1491.7, GLM-5.3 (Max) 1475.9, Kimi K3 (Max) 1474.3, DeepSeek-V4.1-Flash-20260910 (Max) 1463.4, Kimi K3.1 Pro (Max) 1457.3, DeepSeek-V4-Pro 1451.4 and MiniMax-M3 1428.2. LMArena search leaderboard: 1223.4 and 4th on 2026-05-08, 1226.8 and 11th on 2026-11-09, second among Chinese models behind Qwen3.8-Max. Baidu reports AIME 2026 (with tool use) 99.6 and GPQA and MMLU-Pro results approaching leading closed models. Artificial Analysis Intelligence Index v5.0.1 scores no ERNIE 5 model.",
             "confidence": "medium",
-            "note": "ERNIE 5.1 scores 99.6 on AIME 2026 with tool use, posts strong GPQA and MMLU-Pro results, and reaches 1,223 on LMArena's search leaderboard, which Baidu reports as fourth globally and first among Chinese models. Those rankings come from Baidu's own release post and earnings statements rather than an independent leaderboard read, making this a self-reported frontier claim.",
+            "note": "On LMArena's independent text leaderboard ERNIE 5.1 places just behind GLM-5.3 and Kimi K3 and level with DeepSeek's V4.1 Flash, and on the search leaderboard it posted 1,223 at its May 2026 launch, fourth globally, before newer models pushed it to eleventh. Baidu adds a 99.6 on AIME 2026 with tool use, but Artificial Analysis has not scored any ERNIE 5 model on version 5.0.1 of its Intelligence Index.",
             "sources": [
               {
                 "url": "https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html",
-                "shows": "Baidu Q1 2026 results, released 2026-05-18 - \"Baidu launched ERNIE 5.1 in May 2026, featuring stronger text capabilities\" and \"ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese models, ranking fourth globally.\"",
-                "accessed": "2026-09-29",
+                "shows": "Baidu Q1 2026 results, released 2026-05-18 - \"Baidu launched ERNIE 5.1 in May 2026, featuring stronger text capabilities, a more compact model size and enhanced reasoning capabilities. Recently on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese models, ranking fourth globally.\"",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "043d8ec0e569cbbea64a2853d0131355439972e3277b5db3681c9362a944983d"
+                "content_sha256": "02c037284a9bb20c4d0dc57bedc58ffffd8f8bcb47ddadef0d4d44a36a0d7f68"
               },
               {
-                "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
-                "shows": "Official release post - \"using only about 6% of the pre-training cost of comparable models\"; \"On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6\"; \"On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models\"; and ERNIE 5.1 posted 1,223 \"to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard.\"",
-                "accessed": "2026-09-29",
+                "url": "https://ernie.baidu.com/research/posts/ernie-5.1-0508-release/",
+                "shows": "Official ERNIE 5.1 release post, dated May 9, 2026, now at this address (the earlier /blog/posts/ address serves the ERNIE homepage) - \"Today, we officially release ERNIE 5.1\"; \"On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6 — second only to Gemini 3.1 Pro\"; \"On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models\"; and that on May 9 ERNIE 5.1 posted 1,223 \"to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard.\"",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd"
+                "content_sha256": "2b3d4027f60dc69e64f4315674420bcdc3a283ce6735692edb9ccdf4057059c9"
+              },
+              {
+                "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/search/full-00000-of-00001.parquet",
+                "shows": "LMArena leaderboard dataset (CC-BY-4.0), search leaderboard, category \"overall\": \"ernie-5.1\" rated 1223.4 at rank 4 in the 2026-05-08 snapshot; \"ERNIE 5.1\" rated 1226.8 (interval 1217.2-1236.4) at rank 11 of 42 in the 2026-11-09 snapshot, where Qwen3.8-Max (Alibaba) ranks 1 at 1259.8 and is the only other Chinese model listed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "12791a7aa1d7b0ad67da17f93d3b088f62eb0d44ecb13365ebb2583c83b352fd"
+              },
+              {
+                "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/text/latest-00000-of-00001.parquet",
+                "shows": "LMArena leaderboard dataset, text leaderboard, category \"overall\", 2026-11-09 snapshot of 421 models: \"ERNIE 5.1\" 1467.7 (interval 1463.2-1472.2), rank 35; MiMo-V2.6-Pro 1491.7 (11); Qwen3.8-Max 1485.2 (16); GLM-5.3 (Max) 1475.9 (25); Kimi K3 (Max) 1474.3 (27); DeepSeek-V4.1-Flash-20260910 (Max) 1463.4 (39); Kimi K3.1 Pro (Max) 1457.3 (44); DeepSeek-V4-Pro 1451.4 (50); MiniMax-M3 1428.2 (100); Mistral Large 4 1414.3 (136). DeepSeek V4.1 Flash 1017, MiniMax-M3.1-Flash and ERNIE 5.5 Flash Preview are not listed.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2c39d71e44cf86c7564afbbf3d7327389a388624d9b228405308eb19bfde3dba"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/ernie-5-0-thinking-preview",
+                "shows": "Artificial Analysis page for ERNIE 5.0 Thinking Preview under Intelligence Index v5.0.1: the model summary reads \"Artificial Analysis Intelligence Index Unknown\". The only Baidu models the page links are ERNIE 5.0 Thinking Preview and ERNIE 4.5 300B A47B; artificialanalysis.ai/models/ernie-5-1 returns 404, so no ERNIE 5.1 or 5.5 model has a v5.0.1 score.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2aadefdccae3ad5a76f71ce190b373e363618687589e239c165d2f1a77c2e97a"
               }
             ]
           },
@@ -4154,23 +4224,17 @@
             "date": "2026-11-12",
             "basis": "partial",
             "unconfirmed_axes": [
-              "capability",
-              "openness"
+              "capability"
             ],
             "verification_holds": [
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "The cited ERNIE 5.1 release post URL now serves the ERNIE homepage, so the AIME, GPQA and MMLU-Pro figures in the value cannot be re-read there; only the LMArena ranking survives, in Baidu's Q1 2026 results. Baidu has also shipped ERNIE 5.5 Flash Preview and Flash Base. Settled by re-reading the 5.1 figures from a live Baidu page and checking whether a 5.5 release now sets the family's best result."
-              },
-              {
-                "axis": "openness",
-                "since": "2026-11-12",
-                "reason": "Baidu now publishes ERNIE-5.5-Flash-Base on Hugging Face (created 2026-10-21, \"gated\":false, 128 safetensors shards) under the ERNIE 5.5 Flash Base Model License Agreement v1.0, which allows commercial use up to US$50 million in related annual revenue and excludes the EU, the UK and South Korea. That contradicts the recorded closed weights for the 5.x line, and the license is not in the ladder. Settled by a governing-release ruling for this entry (ERNIE 5.1 flagship or the 5.5 line) and, if 5.5 governs, a ladder entry for the license (build-rubric)."
+                "reason": "ERNIE 5.1 has no reading on Artificial Analysis Intelligence Index v5.0.1, the category's benchmark: on 2026-11-12 Artificial Analysis has no ERNIE 5.1 or 5.5 page and ERNIE 5.0 Thinking Preview reads \"Intelligence Index Unknown\". As a closed model it has no pretraining-suite fallback either. Every cited figure re-reads on that date (the release post moved to /research/posts/), and LMArena's 2026-11-09 text snapshot places ERNIE 5.1 at 1467.7, between GLM-5.3 (Max) at 1475.9 and DeepSeek-V4.1-Flash-20260910 (Max) at 1463.4. An LMArena placement counts as evidence, but a rank on one snapshot alone is not a reproducible comparison (R-2026-11-12-n). ERNIE 5.5 Flash Preview is post-trained from Flash Base and belongs to the separate ernie-flash line (R-2026-11-12-m), so it does not set this record's best result. Settled by a v5.0.1 score for ERNIE 5.1 or a later flagship, or by a reproducible comparison with the category's peers on one suite."
               }
             ]
           },
-          "version_note": "ERNIE 4.5 was released openly. ERNIE 5.5 Flash Base, a pretraining checkpoint published on Hugging Face under its own license, is newer than the 5.1 flagship this entry is scored on."
+          "version_note": "Scored on Baidu's flagship line, currently the API-only ERNIE 5.1. ERNIE 5.5 Flash Base, an open-weight base model Baidu published separately on Hugging Face in October 2026, is a different line and is not scored here. ERNIE 4.5 was released openly."
         },
         {
           "slug": "mimo-pro",
@@ -4475,25 +4539,23 @@
             "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "scale + multilingual pretraining (full benchmarks pending technical report)",
-            "relative_to": "apertus",
-            "relation": "one_below",
-            "value": "40.4B params, decoder-only, 9.37T pretraining tokens, 35 European languages + 92 programming languages; mid-tier and below the 2026 frontier. Detailed benchmarks are deferred to a forthcoming technical report; the model card cites the Salamandra technical report (arXiv:2502.08489) for the shared methodology.",
+            "value": "40.4B params, decoder-only, 9.37T pretraining tokens, 35 European languages + 92 programming languages; mid-tier and below the 2026 frontier. The card reports 5-shot results for this model alone on BSC's own harness (English ARC-Challenge 59.4, ARC-Easy 86.5, PIQA 81.7) and defers comparisons with other models to a forthcoming technical report; the Salamandra technical report (arXiv:2502.08489) evaluates only an intermediate 40B checkpoint.",
             "confidence": "low",
             "note": "ALIA-40B is a serious 40B multilingual base model, but it is smaller than Apertus-70B and below the 2026 frontier on reasoning and knowledge. It targets Iberian and European-language coverage rather than state-of-the-art capability.",
             "sources": [
               {
                 "url": "https://huggingface.co/BSC-LT/ALIA-40b",
-                "shows": "40.43B safetensors parameters, 9.37T training tokens, 35 European languages + 92 programming languages; no benchmark table, with results deferred to a forthcoming technical report",
-                "accessed": "2026-08-13",
+                "shows": "40,433,885,184 total parameters, pre-trained on 9.37 trillion tokens covering 35 European languages and 92 programming languages. Evaluation section: results for ALIA-40b alone on BSC's own lm-evaluation-harness tasks, \"All results reported below are on a 5-shot setting\" (English arc_easy 86.5, arc_challenge 59.4, openbookqa 38.4, piqa 81.7, social_iqa 53.8), and \"A full list of results compared to other baselines ... will soon be available in the technical report\"; no other model appears in its tables.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "78dd310624fb04983bbc3a17c74419a94aac3f62027e9677bbf76f2fada7e5dc"
+                "content_sha256": "1b97e740ed093135a3bdce17a4ae76bc6652a10ce194f1d3f7edf36b6b721bc7"
               },
               {
-                "url": "https://arxiv.org/abs/2502.08489",
-                "shows": "Salamandra technical report (BSC-LT) describing the shared training methodology and benchmarks",
-                "accessed": "2026-08-13",
+                "url": "https://arxiv.org/pdf/2502.08489",
+                "shows": "Salamandra technical report, section 5.2.3: \"we report results from an intermediate checkpoint of Salamandra Base 40B, which is still in training and has not undergone an annealing phase\", evaluated beside 7B-class baselines (EuroLLM 9B, Llama-3.1 8B) rather than as the released ALIA-40b.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "7efbbde6fc3fedb4c65cd69dd2e7f4578a7d0536be098d9a4b42787d6bb93684"
+                "content_sha256": "33ced8035ac8c234dc752d32f91916f3a69306770af8adeca4032b93fe45678c"
               }
             ]
           },
@@ -4513,7 +4575,7 @@
               {
                 "axis": "capability",
                 "since": "2026-09-29",
-                "reason": "Its comparison is relative_to apertus, whose capability is held for a joint re-band in this run, so the peer was not confirmed. Settled with the apertus, eurollm and luciole re-band."
+                "reason": "No published evaluation places the released ALIA-40b beside Apertus, EuroLLM, Luciole or a Llama model on one suite. On 2026-11-12 its card reports 5-shot results for ALIA-40b alone on BSC's own harness and says comparisons with other baselines will come in a forthcoming technical report, which is not yet on arXiv; the Salamandra technical report evaluates only an intermediate, un-annealed 40B checkpoint against 7B-class models. The one_below apertus comparison was removed because no published evaluation supports it (R-2026-11-12-n). Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those peers on the same benchmarks, shots and metric."
               }
             ]
           },
@@ -4700,47 +4762,79 @@
         },
         {
           "slug": "granite",
-          "product": "Granite 4.0",
+          "product": "Granite",
           "org_slug": "ibm",
           "org": "IBM",
           "type": "model",
-          "description": "IBM's enterprise foundation-model family, released October 2025 as hybrid Mamba-2/transformer models from micro (3B) through h-small (32B total, 9B active MoE). The line targets efficient long-context inference on constrained hardware and enterprise agent workloads, and ships under Apache-2.0 with ISO 42001 certification and cryptographically signed checkpoints.",
+          "description": "IBM's Granite family of enterprise language models, published under Apache-2.0. Granite 4.1, released in April 2026, added dense 3B, 8B and 30B models trained from scratch, with base and instruct checkpoints, and Granite 4.2 followed in August 2026, post-training those bases for reasoning, tool use and instruction following. The October 2025 Granite 4.0 line of hybrid Mamba-2/transformer models, from 3B up to a 32B mixture of experts, remains available.",
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(Apache-2.0, ungated on HF across the 4.0 line);data:closed(SFT data characterized in the card (permissive public + internal synthetic + human-curated) but neither the pretraining corpus nor the mixtures are released);code:partial(ibm-granite/granite-4.0-language-models is docs/usage, no pretraining pipeline);license:Apache-2.0(OSI)",
-            "governing_release": "granite-4-0",
+            "components": "weights:open(Apache-2.0, ungated on HF across the 4.2 line);data:closed(the 4.1 pretraining mixture is described by category and phase and the 4.2 SFT sources by type, but no corpus is released);code:partial(the 4.2 and 4.1 language-model repositories carry documentation and usage examples, no pretraining pipeline);license:Apache-2.0(OSI)",
+            "governing_release": "granite-4-2",
             "confidence": "high",
-            "note": "Granite 4.0 ships Apache-2.0 weights, ungated across every SKU, but IBM only describes its training data in broad categories -- public data, internal synthetic data, human-curated data -- without releasing it or specifying the mix, and no pretraining pipeline is published. That combination of open weights with closed data and code keeps Granite at open weights rather than a fuller open release.",
+            "note": "Granite 4.2, the current release, ships Apache-2.0 weights, ungated at every size, post-trained from the Granite 4.1 base models. IBM describes the 4.1 pretraining mixture by category and phase, and the 4.2 fine-tuning data by source type, but releases neither corpus, and its repositories carry documentation and usage examples rather than a training pipeline. That keeps Granite an open-weights release rather than a fuller open one.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small",
-                "shows": "Model API for ibm-granite/granite-4.0-h-small: `gated: false`, `private: false`, cardData.license `apache-2.0`, safetensors weights listed.",
-                "accessed": "2026-10-07",
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.2-3b",
+                "shows": "Model API for ibm-granite/granite-4.2-3b: \"gated\": false, cardData license \"apache-2.0\", safetensors weight files listed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "0bf8df822861042b8ecdb7c63007b825b9a0ca32ebf9e757f0c1b0773e811663",
+                "content_sha256": "6c5b9a9530107a1f7a1bced08c24fd3953ea011a9ce5680bda225294aa22f21d",
                 "establishes": [
                   "weights",
                   "license"
                 ]
               },
               {
-                "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md",
-                "shows": "Card Training Data section: \"our SFT data is largely comprised of three key sources: (1) publicly available datasets with permissive license, (2) internal synthetic data targeting specific capabilities, and (3) a select set of human-curated data\" — described in categories, not released. Infrastructure section names the GB200 cluster; no training pipeline links.",
-                "accessed": "2026-10-07",
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.2-8b",
+                "shows": "Model API for ibm-granite/granite-4.2-8b: \"gated\": false, cardData license \"apache-2.0\", safetensors weight files listed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea",
+                "content_sha256": "1441d87ca57c48cd056aef4751cafdc0c5d39f0613703a79995d9cefb196fd3a",
                 "establishes": [
-                  "data",
-                  "code"
+                  "weights",
+                  "license"
                 ]
               },
               {
-                "url": "https://api.github.com/repos/ibm-granite/granite-4.0-language-models",
-                "shows": "`license: Apache-2.0`, 210 stars; the 4.0 release repository, which carries no pretraining pipeline — what holds `code` at partial.",
-                "accessed": "2026-09-01",
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.2-30b",
+                "shows": "Model API for ibm-granite/granite-4.2-30b: \"gated\": false, cardData license \"apache-2.0\", safetensors weight files listed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "a6077f345228b14f2cc1d24dd618982e4ef2a7229b783a76d8edc7fabf917b70",
+                "content_sha256": "33040221be270c3e84f4ccdcee4e429979a8262501823474aa8fdc3524e99d10",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-4.2-8b/raw/main/README.md",
+                "shows": "Card: \"Granite-4.2-8B is post-trained from Granite-4.1-8B-Base\"; the SFT \"training corpus comprises four sources: (1) publicly available datasets under permissive licenses, (2) internally generated synthetic data ..., (3) agentic traces ..., and (4) a curated selection of human-authored data\", described by type and not released; \"Release Date | August 25, 2026\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "01396b1a8596586986fea22cfaa86d0255d19113d71fe09e0b69cc2bfa4307da",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/blog/ibm-granite/granite-4-1",
+                "shows": "Granite 4.1 technical blog: five pretraining phases with category mixtures such as \"CommonCrawl-HQ ~40% Code ~20% Math ~20%\", the corpus described by category and phase, with no dataset or reconstruction scripts released.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "cb729a98bf8d489e83632291a447aa2a035a53c2689d124110819315cb980382",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ibm-granite/granite-4.2-language-models/main/README.md",
+                "shows": "Repository README: \"All Granite 4.2 Language Models are distributed under Apache 2.0 license\", with model downloads and usage examples; it links no pretraining pipeline, data preparation or training configs.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "5f9c23d7aac6635b7174c3f6fdd8335d3251ec5d8aad6e7b298f3b41935fe1a5",
                 "establishes": [
                   "code",
                   "license"
@@ -4754,47 +4848,26 @@
             "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is measured as Hugging Face downloads summed across the four declared Granite 4.0 artifacts: h-tiny, micro, h-small and h-micro. The smaller, on-device-sized SKUs account for most of that reach.",
+            "note": "Adoption is measured as Hugging Face downloads summed across the declared Granite 4.0, 4.1 and 4.2 checkpoints, base and instruct. The small Granite 4.1 3B accounts for more than half of that reach.",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-tiny",
-                "shows": "88,627 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-tiny",
-                "accessed": "2026-09-01",
+                "url": "https://huggingface.co/api/models?author=ibm-granite&search=granite-4&limit=200",
+                "shows": "Trailing-30-day downloads per declared checkpoint on the ibm-granite listing: 4.0-h-small 24,055, 4.0-h-tiny 26,238, 4.0-h-micro 5,857, 4.0-micro 24,730, 4.1-3b 454,809, 4.1-3b-base 11,285, 4.1-8b 85,804, 4.1-8b-base 14,214, 4.1-30b 11,921, 4.1-30b-base 1,243, 4.2-3b 41,238, 4.2-8b 61,674, 4.2-30b 36,287; 799,355 in all.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "51c663db4788981e51cb9b768df73cdb0453bdd0d0256af8957bb418174d75be"
-              },
-              {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-micro",
-                "shows": "60,053 downloads in the trailing 30 days for ibm-granite/granite-4.0-micro",
-                "accessed": "2026-09-01",
-                "http_status": 200,
-                "content_sha256": "aa91b492e08d04f751f4481b1f412ad70b4d4c7a4f4cdcf559b93404533236f9"
-              },
-              {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small",
-                "shows": "25,719 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-small",
-                "accessed": "2026-09-01",
-                "http_status": 200,
-                "content_sha256": "3345c248cf0a3424642dcbe05c379b4dc8d4b2db3e030990206c4c2ef990ee71"
-              },
-              {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-micro",
-                "shows": "20,110 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-micro",
-                "accessed": "2026-09-01",
-                "http_status": 200,
-                "content_sha256": "b9057408d8946fb2e893c7e47112fceee053ea72808c2cf5a3bceaea665144e7"
+                "content_sha256": "bbcdc5dbc12dd24b53e5cf99aa1cd25110375590c1f4fc3c4a0123940936b2b5"
               }
             ]
           },
           "capability": {
             "score": 3,
             "basis": "benchmark",
-            "basis_detail": "instruction-following / enterprise task suites (card model-index)",
-            "value": "The 4.0 flagship h-small is a 32B-total/9B-active hybrid positioned on efficiency and enterprise agent tasks rather than frontier reasoning; IBM's card benchmarks it against similar-size open-weight peers, the class whose AA reading (Llama 4 Maverick, index 14.5) defines the category's mid-tier.",
+            "basis_detail": "Artificial Analysis Intelligence Index v5.0.1",
+            "value": "Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Granite 4.2 8B 5, eighth of ten small open-weight models (class median 8); Granite 4.2 3B 5, first of two tiny open-weight models (median 3). Granite 4.2 30B has no v5.0.1 score. Granite was last placed on Granite 4.0 h-small, level with Llama 4 Maverick on version 4.3.2.",
             "relative_to": "llama",
             "relation": "at",
             "confidence": "medium",
-            "note": "Mid-tier: a capable efficiency-focused line, competitive within the small-to-mid open-weight class and well short of the open-weight frontier the category's 4s and 5s hold (olmo, deepseek, qwen, kimi). Sits level with llama, whose own reading is taken on Llama 4 Maverick — the same non-reasoning open-weight mid-field.",
+            "note": "Granite 4.2, the current release, scores 5 at both 3B and 8B on version 5.0.1 of Artificial Analysis's Intelligence Index, the 3B leading the two tiny open-weight models it is compared with and the 8B near the bottom of its small-model class. Granite was last placed on Granite 4.0, level with Llama 4 Maverick on the earlier index version, which no longer scores Maverick, so the current assessment is pending.",
             "comparison": {
               "last_attested": "2026-09-01",
               "sources": [
@@ -4809,11 +4882,25 @@
             },
             "sources": [
               {
-                "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md",
-                "shows": "The h-small card's evaluation tables benchmark the 4.0 line against similar-size open-weight peers on instruction-following and enterprise task suites, positioning it as competitive in its size class rather than frontier.",
-                "accessed": "2026-09-01",
+                "url": "https://artificialanalysis.ai/models/granite-4-2-8b",
+                "shows": "Index v5.0.1 page: \"Granite 4.2 8B scores 5 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 8)\", ranked \"# 8 / 10\" among open weights models of the same size class (Small, 4B to 40B parameters).",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea"
+                "content_sha256": "e9767ab93120ddd0c8656d534ab5674c261c45734147b1b6360a08497440f609"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/granite-4-2-3b",
+                "shows": "Index v5.0.1 page: \"Granite 4.2 3B scores 5 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 3)\", ranked \"# 1 / 2\" among open weights models of the same size class (Tiny, up to 4B parameters).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "294a22ffb8233f1df3bf589a6383eb34b440b71553eb91ccc15452769873f728"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/granite-4-2-30b",
+                "shows": "Page for Granite 4.2 30B: the model summary reads \"Artificial Analysis Intelligence Index Unknown\", so the largest 4.2 model has no v5.0.1 score.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b8937b0b0c136e54d136927363c5915599bd65b5584b4d6fa0c074bd3ed92180"
               }
             ]
           },
@@ -4824,31 +4911,25 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-12",
-            "basis": "commit",
+            "basis": "partial",
             "unconfirmed_axes": [
               "adoption",
-              "capability",
-              "openness"
+              "capability"
             ],
             "verification_holds": [
               {
                 "axis": "adoption",
                 "since": "2026-11-12",
-                "reason": "The four declared Granite 4.0 SKUs now sum to 81,224 trailing-30-day downloads (h-tiny 25,844, micro 25,003, h-small 24,187, h-micro 6,190), the 10K-100K band, against a recorded 100K-1M. The undeclared Granite 4.1 SKUs carry far more (granite-4.1-3b alone reads 473,563), so re-banding on the 4.0 declarations would understate the family. Settled by the 4.1 re-scope of the declared artifacts, then a scheduled reconciliation."
+                "reason": "The declared checkpoints were re-scoped on 2026-11-12 to the Granite 4.0, 4.1 and 4.2 language models, base and instruct, which sum to 799,355 trailing-30-day Hugging Face downloads (granite-4.1-3b alone 454,809), the same 100K-1M level as recorded. A hand-read sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level on the declared set. That run's re-dating PR dates the axis and releases this hold."
               },
               {
                 "axis": "capability",
                 "since": "2026-10-07",
-                "reason": "Granite 4.2 8B scores 5 on Artificial Analysis Intelligence Index v5.0.1 (read 2026-11-12, eighth of ten small open-weight models, class median 8), but this record declares Granite 4.0, and neither 4.1 nor 4.2 is yet among its artifacts, so that reading cannot govern it. Its peer llama has no v5.0.1 reading. Settled once the governing Granite release and declared artifacts are verified and the band is compared on the same version with peers the category places at 3."
-              },
-              {
-                "axis": "openness",
-                "since": "2026-11-12",
-                "reason": "Granite 4.1 is now the current release: dense 3B, 8B and 30B models with base variants, \"Release Date: April 29th, 2026\" on the 30B card, Apache-2.0 and ungated, with SFT data described by source type but not released. governing_release still names granite-4-0 and the declared artifacts are the 4.0 SKUs only. The 4.1 evidence reads the same score, but moving the governing release, the declared SKUs and the display name is identity work (update-product), not a re-read."
+                "reason": "Granite 4.2 governs (#1026). On Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12, Granite 4.2 8B scores 5.10 and 4.2 3B 4.72; Granite 4.2 30B, 4.1 30B and 4.0 H Small have no score. No member the category places at 3 has a v5.0.1 score (Phi-4, Llama 4 Maverick and Scout, Apertus 70B Instruct and MiniCPM5 read null, and SmolLM3 and Marin are not listed), so the same-version comparison with 3-placed peers cannot yet be made. The nearest in-category v5.0.1 readings are Gemma 4 31B (Reasoning) 4.38 and Inkling (Xhigh) 12.48, both held at 4, and Mistral Large 4 (High) 26.12 at 4. Granite 4.2 8B is 0.7 above Gemma 4 31B and far ahead on Omniscience (-16.7 against -48.5), while Gemma leads on GPQA Diamond, HLE, SciCode and Terminal-Bench 2.1, so that gap does not place either model. IBM's Granite 4.1 base and 4.2 cards compare Granite only with Granite, so no pretraining-suite table reads Granite beside a peer. The relative_to llama comparison was judged on v4.3.2 and llama is held. Settled by a v5.0.1 score for a peer placed at 3 or for Granite 4.2 30B, or by a same-pipeline table that reads a Granite 4.1 or 4.2 checkpoint beside a category peer."
               }
             ]
           },
-          "version_note": "Scored on Granite 4.0, the mainline that granite-code-instruct's deprecation banner points to. The newer Granite 4.1 release is not yet among the declared artifacts."
+          "version_note": "Openness follows Granite 4.2, the current release, which is post-trained from the Granite 4.1 base checkpoints. Adoption is read across the declared 4.0, 4.1 and 4.2 checkpoints. The speech, vision, guardian and switch models are separate lines and are not declared here."
         },
         {
           "slug": "minicpm",
@@ -5355,12 +5436,12 @@
             "confidence": "high",
             "note": "EuroLLM-22B beats Apertus, the strongest fully open European peer, on eight of ten English benchmarks in the technical report's own comparison, and its multilingual coverage across 35 languages is unusually strong. It still trails frontier open-weights models on reasoning and knowledge overall, so the win over Apertus keeps it even with that peer rather than a step ahead.",
             "comparison": {
-              "last_attested": "2026-09-04",
+              "last_attested": "2026-11-12",
               "sources": [
                 {
                   "url": "https://arxiv.org/pdf/2602.05879",
-                  "shows": "Table 3 (English benchmarks) reports EuroLLM-22B and Apertus-8B/Apertus-70B on one suite: EuroLLM-22B MMLU 69.8 vs Apertus-70B 67.9, MMLU-Pro 50.8 vs 41.9, ARC-C 89.8 vs 84.7; EuroLLM-22B leads on eight of ten benchmarks. Apertus's own placement (score 3) is reaffirmed rather than moved.",
-                  "accessed": "2026-09-04",
+                  "shows": "Both variants of the pair read on one report. Table 3 (English, post-trained): EuroLLM-22B MMLU 69.8 vs Apertus-70B 67.9, MMLU-Pro 50.8 vs 41.9, ARC-C 89.8 vs 84.7, ahead on eight of ten benchmarks. Appendix B, Table 21 (base models, 3-shot likelihood): Apertus-70B-Base ahead on all three, HellaSwag 77.4 vs 73.2, MMLU 49.4 vs 46.4, ARC-C 64.0 vs 62.3. Level overall.",
+                  "accessed": "2026-11-12",
                   "http_status": 200,
                   "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289"
                 }
@@ -5369,8 +5450,8 @@
             "sources": [
               {
                 "url": "https://arxiv.org/pdf/2602.05879",
-                "shows": "Table 3: EuroLLM-22B-Instruct English scores (IFEval 67.2, Hellaswag 69.7, MMLU 69.8, MMLU-Pro 50.8, BBH 55.3, ARC-C 89.8, GPQA 26.8, GSM8K 85.5, MATH-500 54.5, HumanEval 53.9) against Apertus, OLMo-3, Llama-3, Gemma-3 and Qwen-3 baselines; prose \"EuroLLM-22B is the strongest model among the fully open European systems\" and \"still trails the very best open-weights models overall\".",
-                "accessed": "2026-09-04",
+                "shows": "Table 3: EuroLLM-22B-Instruct English scores (IFEval 67.2, Hellaswag 69.7, MMLU 69.8, MMLU-Pro 50.8, BBH 55.3, ARC-C 89.8, GPQA 26.8, GSM8K 85.5, MATH-500 54.5, HumanEval 53.9) against Apertus, OLMo-3, Llama-3, Gemma-3 and Qwen-3 baselines, including Llama-3.1-8B (MMLU 68.3, GSM8K 84.9); prose \"EuroLLM-22B is the strongest model among the fully open European systems\" and \"still trails the very best open-weights models overall\". Appendix B, Table 21 (base, 3-shot): EuroLLM-22B-Base 73.2, 46.4, 62.3 on HellaSwag, MMLU and ARC-C against Llama-3.1-8B-Base 75.7, 46.3, 58.3.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289"
               }
@@ -5397,7 +5478,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Its comparison is relative_to apertus, whose capability is held for the joint re-band of apertus, eurollm, luciole and alia-40b, so the peer cannot be confirmed at least as recently. The report's Table 3 still reads as the value records. Settled with that re-band."
+                "reason": "The comparison relative_to apertus was re-attested on 2026-11-12: in the EuroLLM-22B report EuroLLM-22B leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base leads EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21), which supports the two at the same score. A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed while apertus is held. Settled with apertus."
               }
             ]
           }
@@ -6747,6 +6828,153 @@
               }
             ]
           }
+        },
+        {
+          "slug": "ernie-flash",
+          "product": "ERNIE Flash",
+          "org_slug": "baidu",
+          "org": "Baidu",
+          "type": "model",
+          "description": "ERNIE Flash is Baidu's line of smaller, efficient ERNIE models. Its open release, ERNIE 5.5 Flash Base, published on Hugging Face in October 2026, is a mixture-of-experts base model with 280B total and 14B active parameters, pretrained from scratch and released at the end of pretraining so developers can continue training it. The post-trained ERNIE 5.5 Flash Preview is offered only as a hosted model.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(FP8 and BF16 safetensors, ungated on Hugging Face);data:closed(the pretraining data is described by category (web, code, long context), with no corpus, listing or mixture released);code:partial(inference through SGLang and the vLLM-ERNIE plugin; no pretraining pipeline);license:ERNIE-5.5-Flash-Base-Model-License-1.0(commercial use free up to US$50 million in related annual revenue after a one-time notice, written authorization above it; the EU, the UK and South Korea are excluded);api-only-tier:ERNIE 5.5 Flash Preview(the post-trained model, offered only as a hosted model with no Hub checkpoint, so excluded)",
+            "governing_release": "ernie-5-5-flash-base",
+            "confidence": "high",
+            "note": "Baidu publishes the ERNIE 5.5 Flash Base weights on Hugging Face, ungated, under its own license, which allows commercial use without a fee up to US$50 million in related annual revenue and requires written permission above that. The license does not cover the EU, the UK or South Korea. Baidu describes its pretraining data only by category and publishes inference support rather than a training pipeline, which keeps it at open weights.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base",
+                "shows": "Model API for baidu/ERNIE-5.5-Flash-Base: \"gated\": false, cardData license_name \"ernie-5.5-flash-base-model-license-v1.0\", 128 safetensors files, created 2026-10-21.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "e017f8fd66a07cab6fc924b6679f39ebfcc6207baf5f404bd0b89674c8cf118e",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base-BF16",
+                "shows": "Model API for the BF16 copy: \"gated\": false, the same license_name, 128 safetensors files.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "dc97bdd5ca79b76d89134ee23f02c5c063196b965136df50c29b803660ab5afb",
+                "establishes": [
+                  "weights"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/LICENSE",
+                "shows": "License: Section 4.2 permits commercial use \"with Annual Revenue of Related Products or Services at or below US$50 million\" after a one-time notice and attribution, Section 4.3 requires \"separate prior written authorization\" above it, and Section 1.11 defines the Territory as \"all geographical areas worldwide other than the European Union, the United Kingdom and South Korea\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "f896ab9f174d0d55943d6c90ec26ba919ec59e03620982370d27181d4497b254",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/README.md",
+                "shows": "Card: \"ERNIE-5.5-Flash-Base is the checkpoint at the end of pre-training, before any mid- or post-training\"; its Pre-training Data section describes web, code and long-context sources by category without releasing or listing them, and deployment runs through SGLang and \"vLLM-ERNIE\"; no pretraining code is linked.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "429b0bbdc841c15d81dc9e99c7e2afd5ec551ad7df9421dd7697405240a26a6f",
+                "establishes": [
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=baidu&search=ERNIE&limit=100",
+                "shows": "Hugging Face listing of Baidu repositories matching ERNIE: the only ERNIE-5 entries are ERNIE-5.5-Flash-Base and ERNIE-5.5-Flash-Base-BF16, so the post-trained Flash Preview has no Hub checkpoint.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "51ae9aea6b0682f275e8c0110ee441db8a93eb47e3f4acbf604ab0b65d9e7da1",
+                "establishes": [
+                  "weights"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads summed across the FP8 and BF16 copies of ERNIE 5.5 Flash Base, released in late October 2026.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base",
+                "shows": "\"downloads\": 2963 for baidu/ERNIE-5.5-Flash-Base, the trailing 30-day count the Hub API reports.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "e017f8fd66a07cab6fc924b6679f39ebfcc6207baf5f404bd0b89674c8cf118e"
+              },
+              {
+                "url": "https://huggingface.co/api/models/baidu/ERNIE-5.5-Flash-Base-BF16",
+                "shows": "\"downloads\": 1021 for baidu/ERNIE-5.5-Flash-Base-BF16, the trailing 30-day count the Hub API reports.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "dc97bdd5ca79b76d89134ee23f02c5c063196b965136df50c29b803660ab5afb"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark",
+            "basis_detail": "Baidu's same-pipeline pretraining-suite table on the ERNIE 5.5 Flash Base card",
+            "value": "On Baidu's own evaluation of base checkpoints under one pipeline, ERNIE 5.5 Flash Base (280B total, 14B active) leads Hy3-preview-Base (295B, 21B active) on 27 of 30 benchmarks, including MMLU-Pro 78.4 vs 66.9, GPQA 60.2 vs 50.2 and LiveCodeBench 40.1 vs 33.5, and leads DeepSeek-V4-Flash-Base and MiMo-V2.5-Base on most rows of the same table.",
+            "relative_to": "hunyuan",
+            "relation": "at",
+            "confidence": "low",
+            "note": "Baidu's own comparison of base checkpoints, run under a single evaluation pipeline, puts ERNIE 5.5 Flash Base ahead of the base model behind Tencent's Hy3 on almost every row, and ahead of DeepSeek's and Xiaomi's similar-size bases on most. The results are vendor-run and cover base models only, with no independent leaderboard reading, so it is placed level with Hunyuan rather than above it.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/tencent/Hy3/raw/main/README.md",
+                  "shows": "Peer check - the Hy3 card: Hy3 is \"a 295B-parameter Mixture-of-Experts (MoE) model with 21B active parameters\", the same scale as the Hy3-preview-Base column in the ERNIE card's comparison.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "dbdfc5920bf548fb484b5ec1837032f6c85e1886f2930aa5bee629c1f9620e8b"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/README.md",
+                "shows": "Card evaluation table, \"all evaluated with the same pipeline, prompts and few-shot settings\": ERNIE-5.5-Flash-Base against DeepSeek-V4-Flash-Base, Hy3-preview-Base and MiMo-V2.5-Base, with rows such as \"MMLU-Pro (EM) | 5-shot | 78.4 | 69.2 | 66.9 | 65.7\" and \"GPQA (EM) | 5-shot | 60.2 | 55.9 | 50.2 | 51.4\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "429b0bbdc841c15d81dc9e99c7e2afd5ec551ad7df9421dd7697405240a26a6f"
+              }
+            ]
+          },
+          "overall_score": 3.1,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 3.1,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read count of Hugging Face downloads summed across the FP8 and BF16 copies of ERNIE 5.5 Flash Base (2,963 and 1,021), which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Scored on ERNIE 5.5 Flash Base, the open pretraining checkpoint. The API-only ERNIE 5.5 Flash Preview is left out of the openness reading, and Baidu's flagship line is the separate ernie entry."
         }
       ]
     },
@@ -88383,6 +88611,138 @@
           }
         },
         {
+          "slug": "litert",
+          "product": "LiteRT",
+          "org_slug": "google",
+          "org": "Google",
+          "type": "software",
+          "description": "LiteRT is Google's on-device runtime for machine learning and generative AI, and the successor to TensorFlow Lite. It runs converted PyTorch, TensorFlow and JAX models on Android, iOS, the web, desktop and IoT devices, choosing a CPU, GPU or NPU accelerator automatically, with NPUs from Google Tensor, Qualcomm, MediaTek, Intel and others behind one API. LiteRT-LM, which runs language models on device, is built on it.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "LiteRT is Apache-2.0 licensed, and the repository holds the runtime, its accelerator layers and the guide for building an NPU backend outside it. A chipmaker's own NPU SDK, such as Qualcomm's, carries that vendor's terms, but nothing in LiteRT itself is gated.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT/main/LICENSE",
+                "shows": "The LICENSE file is the Apache License text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT/main/README.md",
+                "shows": "The README states \"LiteRT is licensed under the Apache-2.0 License\" and links a \"Build Your Own NPU Backend\" guide; no paid tier or gated feature is described.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "0f0c478392a4334fbf0d69949f6137c011f1d8f0a9f0d3cd63e4c334325a507a",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/ai-edge-litert/json",
+                "shows": "PyPI metadata for ai-edge-litert 2.3.0 carries the classifier \"License :: OSI Approved :: Apache Software License\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "96042a5ae85635056530231af561ac350fa919fbefdfd3b9f05f102e9607bcdd",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "PyPI downloads of the two Python packages, ai-edge-litert and tflite-runtime, the TensorFlow Lite runtime package it replaced, which still sees heavy use. Android apps, LiteRT's main audience, take it from Google's Maven repository, and Maven publishes no download count, so the Android channel is left out and this is a floor on use.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/ai-edge-litert/recent",
+                "shows": "\"last_month\":467037 downloads for ai-edge-litert.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "008c00bdc56d08c7d496e09ae1f930a0bfd226149b8a98766427c9a3c90cbf26"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/tflite-runtime/recent",
+                "shows": "\"last_month\":330766 downloads for tflite-runtime.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "6b57eb74d04d64d4227b4cc4453247d44f399d5ed640145af40975a1549ab568"
+              },
+              {
+                "url": "https://pypi.org/pypi/tflite-runtime/json",
+                "shows": "PyPI metadata for tflite-runtime 2.14.0: summary \"TensorFlow Lite is for mobile and embedded devices.\", homepage tensorflow.org/lite, the same summary and homepage ai-edge-litert carries; last upload 2023-10-03.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "34a9ff9ccf8a2bb2e375c7ca56a5095ba99ff3e42bfc3567f3f5a5f201163556"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "On-device execution with automatic accelerator selection and asynchronous execution (Compiled Model API); CPU through XNNPack, GPU through ML Drift over OpenCL, OpenGL, Metal and WebGPU; NPUs from Google Tensor, Qualcomm, MediaTek, Intel, Broadcom and Samsung S.LSI behind one API; Android, iOS, Linux, macOS, Windows, web and IoT targets; converter and quantizer toolchain.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "LiteRT sits a tier below vLLM, level with ExecuTorch, its closest peer: both run converted models on phone, desktop and embedded silicon, and LiteRT's single NPU API covers a comparable spread of chip vendors. It runs models on a device rather than serving them with batching, parallelism and a multi-tenant API.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "vLLM README: datacenter serving with \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\". LiteRT executes models on one device and has no serving layer, so it stays one step behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT/main/README.md",
+                "shows": "The README lists the \"Compiled Model API\" with \"automated accelerator selection\" and \"true asynchronous execution\", \"Unified NPU Acceleration\", \"GPU Acceleration via ML Drift\", CPU via XNNPack, and a platform table covering Android (Broadcom, Google Tensor, Intel, MediaTek, Qualcomm, S.LSI NPUs), iOS, Linux, macOS, Windows, Web and IoT.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "0f0c478392a4334fbf0d69949f6137c011f1d8f0a9f0d3cd63e4c334325a507a"
+              }
+            ]
+          },
+          "overall_score": 3.5,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 3.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from hand-read PyPI downloads of ai-edge-litert and tflite-runtime, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "TensorFlow Lite was renamed LiteRT, and the .tflite model format carries over. LiteRT-LM, the language-model layer built on this runtime, is its own product on the map."
+        },
+        {
           "slug": "rtp-llm",
           "product": "RTP-LLM",
           "org_slug": "alibaba-cloud",
@@ -90853,6 +91213,232 @@
               }
             ]
           }
+        },
+        {
+          "slug": "docker-model-runner",
+          "product": "Docker Model Runner",
+          "org_slug": "docker",
+          "org": "Docker",
+          "type": "software",
+          "description": "Docker Model Runner pulls, runs and serves AI models with Docker's tooling, from Docker Hub, any OCI registry or Hugging Face. It serves models over OpenAI- and Ollama-compatible APIs, uses llama.cpp by default with vLLM and Diffusers as alternative engines, and packages GGUF and Safetensors files as OCI artifacts. It ships inside Docker Desktop and Docker Engine, and as a standalone dmr binary.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "Docker Model Runner is Apache-2.0 licensed, and the repository holds the inference daemon, the model CLI and the standalone dmr binary, which runs without Docker installed. Docker Desktop, one of the ways it ships, is proprietary, but no Model Runner feature is held back for it.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/docker/model-runner/main/LICENSE",
+                "shows": "The LICENSE file is the Apache License text, \"Version 2.0, January 2004\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "82475da7d431fdba7b42eccc27aec30c58d8272406071572a05090bfebee81bd",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/docker/model-runner/main/README.md",
+                "shows": "The README says the package \"supports the Docker Model Runner in Docker Desktop, Docker Engine, and as the standalone `dmr` binary (no Docker installation required)\", and that `dmr` \"bundles both the inference daemon and the full model management CLI\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "04f109743ba2b00f41062b41e85ec8176db5a91ac85c50f372cd48b2a4cced0d",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "GitHub stars are the only signal used, and a star is not a use. Most people get Model Runner inside Docker Desktop, which publishes no count, and Docker has published no user figure. The docker/model-runner image is only the Linux Docker Engine channel, and its pull count is a lifetime total that also counts updates, so it is kept as context rather than banded.",
+            "sources": [
+              {
+                "url": "https://hub.docker.com/v2/repositories/docker/model-runner/",
+                "shows": "Context, not the basis. Docker Hub API record for docker/model-runner: \"pull_count\": 2460668 since \"date_registered\": \"2025-05-12\", a lifetime total.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2a7240f9983aceb4f9bba18f54eacb29e8c36929b45f065655af3e0499c0494a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Local model serving over OpenAI- and Ollama-compatible APIs; llama.cpp (GGUF) as the default engine on CPU, CUDA, ROCm, Vulkan, Apple Silicon and Adreno, with vLLM and Diffusers engines on Linux NVIDIA; pull and push models through Docker Hub, OCI registries and Hugging Face; GGUF and Safetensors packaged as OCI artifacts; Compose and Testcontainers integration; single-node rather than distributed serving.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Docker Model Runner sits two tiers below vLLM, level with Lemonade and llamafile among the local runners. It can hand a model to vLLM, but it adds no parallelism or multi-node serving of its own; what it adds is distributing models as OCI artifacts through the Docker toolchain.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "vLLM README: datacenter serving with \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\". Docker Model Runner serves one machine and uses vLLM only as an optional engine on Linux NVIDIA, so it stays two steps behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://docs.docker.com/ai/model-runner/",
+                "shows": "The docs list \"Serve models on OpenAI and Ollama-compatible APIs\", \"Support for llama.cpp, vLLM, and Diffusers inference engines (vLLM and Diffusers on Linux with NVIDIA GPUs)\", \"Package GGUF and Safetensors files as OCI Artifacts\", and say Docker Engine \"Supports CPU, NVIDIA (CUDA), AMD (ROCm), and Vulkan backends\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2c944f1a16101f21e3c49b33f1a9eaf4f03c8891379687e1cfe9484d459bf84e"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read GitHub star count for docker/model-runner, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Docker Desktop, which bundles Model Runner on macOS and Windows, is proprietary, but the runner, its CLI and the standalone binary are all in the Apache-2.0 repository. The 2026-09-26 model_hubs sweep routed it to a runtime category. It is filed here rather than in deployment, beside Ollama, because deployment bands capability on isolation strength and this is a model server."
+        },
+        {
+          "slug": "ramalama",
+          "product": "RamaLama",
+          "org_slug": "containers",
+          "org": "Containers",
+          "type": "software",
+          "description": "RamaLama runs and serves AI models inside OCI containers, so the host needs no AI-specific setup: it detects the GPU and pulls a matching accelerated image for CUDA, ROCm, Intel, Ascend, Moore Threads, Vulkan or Apple Silicon. Models come from Hugging Face, ModelScope, Ollama or any OCI registry and are handled like container images, and they run in rootless containers with no network access by default. Its commands also serve a REST API, convert models to OCI images, build RAG data and benchmark models.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "RamaLama is MIT licensed, and the repository holds the whole tool and the container images it pulls. Nothing is held back for a paid tier.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/containers/ramalama/main/LICENSE",
+                "shows": "The LICENSE file reads \"MIT License\" and \"Copyright (c) 2024 Eric Curtin\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2ed5bb5fb48a5300978aaa22ff109631d1df9c83dfcef14858b643f8453c2308",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/containers/ramalama/main/README.md",
+                "shows": "The README calls RamaLama \"an open-source tool that simplifies the local use and serving of AI models\" and describes no paid tier or gated feature.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "141bf1fa3b0bd611deaabe5517706cdc4ad4aaa8804b660a7b64188970075f95",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/ramalama/json",
+                "shows": "PyPI metadata for ramalama 0.26.0 declares \"license\": \"MIT\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "15423cd790e3410596cd43fdf32b8af38d38987cc916d788f491ca425ef5ff40",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "PyPI downloads of ramalama. Fedora's package, the macOS installer and the install script are not counted, so this is a floor on use.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/ramalama/recent",
+                "shows": "\"last_month\":2575 downloads for ramalama.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b31a58a6cc3707b2f25492ec4509425421c9b4d4b4a5e6729f0f78805f2faa03"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Container-isolated local serving: GPU detection pulls accelerated images (CUDA, ROCm, Intel GPU, Ascend, MUSA, Vulkan, Asahi); llama.cpp and vLLM in containers, MLX on macOS; Hugging Face, ModelScope, Ollama and OCI transports; REST serving, chat, RAG, conversion to OCI images, benchmarking and perplexity; rootless containers with networking off; single-node.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "RamaLama sits two tiers below vLLM, level with Docker Model Runner and Lemonade. It runs llama.cpp or vLLM inside a container rather than adding serving parallelism of its own; its distinguishing work is hardware detection and isolating the model from the host.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "vLLM README: datacenter serving with \"Tensor, pipeline, data, expert, and context parallelism for distributed inference\". RamaLama runs one model on one machine, with vLLM as one of the engines it can containerize, so it stays two steps behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/containers/ramalama/main/README.md",
+                "shows": "The README lists accelerated images for HIP, CUDA, Asahi, Intel GPU, Ascend and MUSA devices, an \"MLX Runtime (macOS only)\", transports for HuggingFace, ModelScope, Ollama and OCI Container Registries, the commands ramalama-serve, ramalama-rag, ramalama-convert, ramalama-bench and ramalama-perplexity, and says \"the process running the model (llama.cpp or vLLM)\" is isolated from the host with --network=none.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "141bf1fa3b0bd611deaabe5517706cdc4ad4aaa8804b660a7b64188970075f95"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of ramalama, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Maintained in the containers GitHub organization alongside Podman. Fedora packages it, and a macOS installer and an install script are offered as well, so PyPI is only one of several channels."
         }
       ]
     },
@@ -110521,6 +111107,120 @@
               }
             ]
           }
+        },
+        {
+          "slug": "shelley",
+          "product": "Shelley",
+          "org_slug": "bold-software",
+          "org": "Bold Software",
+          "type": "software",
+          "description": "Shelley is a web-based coding agent from Bold Software, the company behind exe.dev, built to be used from a phone as easily as from a desktop. It runs several conversations at once, takes screenshots, audio and screen recordings as input, drives a browser through the Chrome DevTools Protocol, and can hand work to subagents. It ships as a single Go binary that works with hosted or local models, and it has no built-in authorization or sandbox: the user supplies both.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "Shelley is Apache-2.0 licensed, and the repository publishes the whole agent, Go server and web interface alike. Contributors sign a CLA, but nothing in the agent is held back for a paid tier; exe.dev's hosting is a separate service.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/LICENSE",
+                "shows": "The LICENSE file reads \"Copyright 2026 Bold Software, Inc.\" and \"Licensed under the Apache License, Version 2.0\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a260403cc440e7650f29216546ff1b203035becfa6ecce6cec95be8fd35a54ec",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md",
+                "shows": "The README says \"Shelley is Apache licensed. We require a CLA for contributions.\" and documents building the whole agent from source with make; no paid tier or gated feature is mentioned.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "GitHub stars are the only signal used, and a star is not a use. Shelley ships as release binaries, a cask in Bold Software's own Homebrew tap and a preinstall on exe.dev machines, and none of those publishes an install count.",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md",
+                "shows": "The README offers pre-built binaries from the GitHub releases page, \"brew install --cask boldsoftware/tap/shelley\", and a build from source; no package registry.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "web and mobile coding agent with multiple simultaneous conversations; image, audio and screen-cast input; Chrome DevTools browser tools; subagents and asynchronous tool calls; skills and MCP; profiles that preset tools and system prompt; hosted or local models; CLI client for scripting; no built-in plan mode, permission system or sandbox; no published benchmark result",
+            "relative_to": "openhands",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Shelley covers what a coding agent needs and goes past a terminal agent with its web interface, multimodal input and browser tools. Like Pi, it runs with the user's own permissions and leaves sandboxing to the user, and it publishes no benchmark, so it sits a step below OpenHands, which runs agents in sandboxed backends.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/OpenHands/OpenHands/main/README.md",
+                  "shows": "The OpenHands README still leads with \"Run OpenHands, Claude Code, Codex, Gemini, Pi, OpenCode, or any ACP-compatible agent across local, remote, and cloud backends\" and offers running agents \"in Docker containers, on VMs, or within your company infrastructure\". Shelley has no sandboxed backend of its own, so it stays one step behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "eca2b7026190577215e9967cc6ba69ff6ed3219d05f2a48a01d4ab590fa6a38a"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://shelley.dev/",
+                "shows": "The documentation site lists \"Multiple Simultaneous Conversations\", \"Audio and Screen Cast Input\", \"Shelley has a subagent tool\", and browser tools that \"browse web pages, take screenshots, execute JavaScript\"; the FAQ answers \"Does Shelley support skills and MCP? Yes.\", \"Is there a plan mode? Not built-in\", and says Shelley \"is analogous to Claude Code's --dangerously-skip-permissions\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "96bcc4f900974d793f759bf82b292200e66229e64de58b66de656b464727b96f"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/boldsoftware/shelley/main/README.md",
+                "shows": "The README describes \"a mobile-friendly, web-based, multi-conversation, multi-modal, multi-model, single-user coding agent\" that \"does not come with authorization or sandboxing\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99b0ac6092bce045459617080360b6fcf52160992b379819bc2a5b23cb72ce2a"
+              }
+            ]
+          },
+          "overall_score": 3.1,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 3.1,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read GitHub star count for boldsoftware/shelley, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "Built for exe.dev virtual machines but runs anywhere. It grew out of Bold Software's earlier coding agent, Sketch. A release is cut automatically on every commit to main, and contributions require a CLA."
         }
       ]
     },
@@ -132682,6 +133382,123 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-06"
           }
+        },
+        {
+          "slug": "tinygrad",
+          "product": "tinygrad",
+          "org_slug": "tiny-corp",
+          "org": "tiny corp",
+          "type": "software",
+          "description": "tinygrad is a deep learning framework from tiny corp, pitched between PyTorch and micrograd in size. It pairs a tensor library with autograd and nn, optim and dataset modules for training, and its own IR and compiler fuse and lower kernels that a JIT captures and replays. The whole compiler is meant to be read and changed, and it runs on CPU, OpenCL, Metal, CUDA, AMD, NVIDIA, Qualcomm and WebGPU backends.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "tinygrad is MIT licensed, and the repository publishes the whole framework, compiler and device runtimes included. No paid tier or license key gates any of it; tiny corp's business is selling hardware.",
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/tinygrad/tinygrad/master/LICENSE",
+                "shows": "The LICENSE file is the MIT License text under \"Copyright (c) 2024, the tiny corp\": \"Permission is hereby granted, free of charge, to any person obtaining a copy\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "00146150f1082f320d608ba481acc3fbfacf8a9914354c2c96b6f44719d5e977",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/tinygrad/tinygrad/master/README.md",
+                "shows": "The README calls tinygrad \"an end-to-end deep learning stack\" of tensor library, IR and compiler, JIT and nn/optim/datasets, says \"the entire compiler and IR are visible and hackable\", and describes no paid tier or gated feature.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c20592a2417b38fd9aa521a0daf14a532bcdcadbcdad07f9a486ec3de315acc2",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/tinygrad/json",
+                "shows": "PyPI metadata for tinygrad 0.14.0 declares \"license_expression\": \"MIT\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "79f60721e46a67c6e6ebe7c828dc12540effdfaab26a64f04a642f8c26c80aa4",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "PyPI downloads of tinygrad. The README recommends installing from source or straight from the repository, so the package count is a floor on use rather than a measure of it.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/tinygrad/recent",
+                "shows": "\"last_month\":28545 downloads for tinygrad.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "d6502602668464c0f19d09caf40447e14c386792861500977211a30c558d31b3"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Tensor library with autograd; its own IR and kernel compiler with fusion, scheduling and BEAM search; TinyJit graph capture and replay; nn, optim and datasets for training; backends for CPU, OpenCL, Metal, CUDA, AMD, NV, QCOM and WebGPU, with about 25 low-level ops needed for a new one; fewer functional transforms than JAX (no full vmap or pmap).",
+            "relative_to": "pytorch",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "tinygrad trains and runs models end to end on its own compiler across eight families of hardware, which puts it among the foundational frameworks. It sits a step below PyTorch, whose distributed training and ecosystem it does not match, and its own README says it has fewer functional transforms than JAX.",
+            "comparison": {
+              "last_attested": "2026-11-12",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/pytorch/pytorch/main/README.md",
+                  "shows": "The PyTorch README still describes \"Tensor computation (like NumPy) with strong GPU acceleration\" and \"Deep neural networks built on a tape-based autograd system\", and its build instructions carry a torch.distributed option. tinygrad matches the first two and has no distributed training layer, so it stays one step behind.",
+                  "accessed": "2026-11-12",
+                  "http_status": 200,
+                  "content_sha256": "3ad49faff26017c7f237596385e355b4aa1c3e3b23c4c2ebad01f92def1f35b1"
+                }
+              ]
+            },
+            "last_verified": "2026-11-12",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/tinygrad/tinygrad/master/README.md",
+                "shows": "The README lists \"Tensor library with autograd\", \"IR and compiler that fuse and lower kernels\", \"JIT + graph execution\" and \"nn / optim / datasets for real training\"; \"BEAM search over kernels\"; \"Fewer functional transforms (no full vmap/pmap yet)\"; accelerators OpenCL, CPU, METAL, CUDA, AMD, NV, QCOM and WEBGPU; and \"only needs to support a total of ~25 low level ops\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "c20592a2417b38fd9aa521a0daf14a532bcdcadbcdad07f9a486ec3de315acc2"
+              }
+            ]
+          },
+          "overall_score": 2.8,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.8,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-12",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of tinygrad, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "The README recommends installing from source, so PyPI downloads undercount use. tiny corp also sells the tinybox, a deep learning computer, which is a separate product and not scored here."
         }
       ]
     },
@@ -164437,7 +165254,8 @@
       ],
       "country": "CN",
       "products": [
-        "ernie"
+        "ernie",
+        "ernie-flash"
       ]
     },
     "barcelona-supercomputing-center": {
@@ -164612,6 +165430,19 @@
       "country": "CA",
       "products": [
         "verifywise"
+      ]
+    },
+    "bold-software": {
+      "slug": "bold-software",
+      "display_name": "Bold Software",
+      "type": "company",
+      "homepage": "https://exe.dev",
+      "github": [
+        "https://github.com/boldsoftware"
+      ],
+      "country": "US",
+      "products": [
+        "shelley"
       ]
     },
     "boson-ai": {
@@ -165129,7 +165960,8 @@
       "github": [],
       "country": "",
       "products": [
-        "bubblewrap"
+        "bubblewrap",
+        "ramalama"
       ]
     },
     "content-authenticity-initiative": {
@@ -165536,6 +166368,19 @@
       "country": "",
       "products": [
         "xgboost"
+      ]
+    },
+    "docker": {
+      "slug": "docker",
+      "display_name": "Docker",
+      "type": "company",
+      "homepage": "https://www.docker.com",
+      "github": [
+        "https://github.com/docker"
+      ],
+      "country": "US",
+      "products": [
+        "docker-model-runner"
       ]
     },
     "dolthub": {
@@ -166171,6 +167016,7 @@
         "ifeval",
         "jax",
         "keras",
+        "litert",
         "litert-lm",
         "lyria",
         "mediapipe",
@@ -171334,6 +172180,19 @@
         "tiledb"
       ]
     },
+    "tiny-corp": {
+      "slug": "tiny-corp",
+      "display_name": "tiny corp",
+      "type": "company",
+      "homepage": "https://tinygrad.org",
+      "github": [
+        "https://github.com/tinygrad"
+      ],
+      "country": "",
+      "products": [
+        "tinygrad"
+      ]
+    },
     "tinyllama": {
       "slug": "tinyllama",
       "display_name": "TinyLlama",
@@ -172430,7 +173289,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1263,
+  "n_total": 1269,
   "generated": "2026-11-12",
   "version": "0.5.0",
   "released": "2026-10-03",
@@ -172443,8 +173302,8 @@
       "total": 60613,
       "matched": 1366,
       "overlap": 673,
-      "scored": 1263,
-      "scored_outside": 590,
+      "scored": 1269,
+      "scored_outside": 596,
       "uncategorized": 59247
     },
     "top": [

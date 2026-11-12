@@ -3991,3 +3991,64 @@ rulings:
     executor: agent
     lands_in: [sources/categories/base_pretrained.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1024']
+
+  - id: R-2026-11-12-m
+    date: 2026-11-12
+    by: ccerv1
+    venue: session
+    refs: ["#1022", "#1026", ernie, ernie-flash, base_pretrained]
+    question: >-
+      Baidu published ERNIE 5.5 Flash Base, an open-weight base model under a revenue- and territory-bounded
+      license, while the ernie record tracks the API-only ERNIE 5.1 flagship. Which release governs ernie's
+      openness, and where does Flash Base go?
+    ruling: >-
+      The ernie record tracks Baidu's flagship line and stays 1/closed; ERNIE 5.5 Flash Base is a separately
+      distributed, smaller base-model line and does not make the flagship open. ernie's note names the flagship
+      as API-only and Flash Base as a separate open-weight release, and its openness hold is released only on
+      fresh evidence that the flagship remains API-only. Flash Base gets its own record, ernie-flash, scored on
+      the base checkpoint, with the API-only Flash Preview kept out of its openness. The ERNIE 5.5 Flash Base
+      Model License v1.0 permits commercial use up to US$50 million in related annual revenue, with notice and
+      attribution, outside the EU, the UK and South Korea, so it sits in use_bounded.
+    reasoning: >-
+      Product identity follows what the vendor markets as a distinct line, not release chronology. Open weights
+      for a smaller sibling do not establish that the flagship has become open.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/ernie.yaml, sources/rubrics/pretrained.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1026', 'https://github.com/currentai-org/os-ai-map/pull/1028']
+
+  - id: R-2026-11-12-n
+    date: 2026-11-12
+    by: ccerv1
+    venue: session
+    refs: ["#1022", "#1029", "#1030", "#1031", "#1032", "#1033", inkling, gemma, granite, llama, apertus, eurollm,
+      luciole, alia-40b, ernie, gpt-4o, base_pretrained]
+    question: >-
+      The parallel #1022 passes proposed tier changes from pairwise benchmark comparisons: inkling and gemma from 4 to
+      3, apertus and eurollm from 3 to 2, luciole re-placed at eurollm, alia-40b's edge, and ernie released at 5 on an
+      LMArena placement. Which of them land?
+    ruling: >-
+      None of the proposed tier changes lands; every affected capability axis keeps its score and stays held. inkling
+      and gemma stay 4: the v5.0.1 evidence orders inkling, gemma, granite and mistral-large but does not locate the
+      boundary between 3 and 4, inkling's vendor SWE-bench evidence is unresolved, and gemma's narrow index gap to
+      Granite comes from wrong-answer penalties while it leads on five evaluations. granite and llama stay 3, with no
+      sufficiently comparable Maverick evaluation. apertus stays 3: the cited comparisons use earlier Apertus checkpoints
+      against Llama 4 Scout and Llama 3.x rather than the governing releases, they measure English knowledge rather than
+      the product's multilingual, multimodal, reasoning and long-context capability, and smollm at 3 trails Apertus on
+      the same tables. eurollm stays 3 at apertus. luciole stays 2: base-model parity with EuroLLM-22B alone does not
+      establish family-level parity, and whether its French advantage supports 3 is for a targeted review. alia-40b
+      stays 2 and loses its one_below apertus edge, which no published comparison supports. ernie stays 5: an LMArena
+      placement is admissible evidence, but a rank on one snapshot alone is not a reproducible comparison. gpt-4o stays
+      3, placed at phi, once phi's own capability evidence is filled in. A chain of relationships is not proof that its
+      members need the same recalibration, index comparisons establish ordering rather than band boundaries
+      (R-2026-11-12-l), and different benchmark families answer different questions, so a tier change needs an
+      assessment of the governing product's overall capability. The next scoring step is a focused calibration of the
+      3/4 boundary on genuinely comparable evaluations spanning general capability and language coverage.
+    reasoning: >-
+      The important outcome is a stronger evidence base, not a higher number of released holds.
+    status: in-force
+    executor: agent
+    lands_in: [sources/verification_queue.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1029', 'https://github.com/currentai-org/os-ai-map/pull/1030',
+      'https://github.com/currentai-org/os-ai-map/pull/1031', 'https://github.com/currentai-org/os-ai-map/pull/1032',
+      'https://github.com/currentai-org/os-ai-map/pull/1033']

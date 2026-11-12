@@ -5,6 +5,7 @@ openness:
   components:
     weights:
       value: closed
+      detail: no ERNIE 5.1 weights are distributed; the flagship is served only as a hosted model
     data:
       value: closed
     code:
@@ -13,47 +14,57 @@ openness:
     - name: proprietary
       detail: Baidu Qianfan API
     free_text:
-    - API-only(ERNIE 4.5 was open, 5.x flagship closed)
+    - API-only(ERNIE 4.5 was released openly, the 5.1 flagship is closed)
+    context:
+      separate-line:
+        value: ERNIE 5.5 Flash Base, ERNIE 5.5 Flash Base Model License v1.0
+        detail: a smaller 280B-total base model published on Hugging Face in October 2026 with its own card
+          and license, which permits commercial use up to US$50 million in related annual revenue outside
+          the EU, the UK and South Korea; a separately released line, not a SKU of the flagship, so it does
+          not govern
   confidence: high
-  note: Baidu distributes no weights for the ERNIE 5.x models, which are available only through its own
-    services and API. Training data and code are not published either.
-  raw: weights:closed;data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5
-    was open, 5.x flagship closed)
+  note: Baidu distributes no weights for its flagship ERNIE 5.1, which is available only through its own
+    services and API, and publishes neither its training data nor its code. ERNIE 5.5 Flash Base, which
+    Baidu released separately on Hugging Face in October 2026, is a smaller open-weight base model under
+    its own license; it is a different line and does not make the flagship open.
+  raw: weights:closed(no ERNIE 5.1 weights are distributed; the flagship is served only as a hosted model);data:closed;code:closed;license:proprietary(Baidu
+    Qianfan API);API-only(ERNIE 4.5 was released openly, the 5.1 flagship is closed);separate-line:ERNIE
+    5.5 Flash Base, ERNIE 5.5 Flash Base Model License v1.0(a smaller 280B-total base model published on
+    Hugging Face in October 2026 with its own card and license, which permits commercial use up to US$50
+    million in related annual revenue outside the EU, the UK and South Korea; a separately released line,
+    not a SKU of the flagship, so it does not govern)
+  last_verified: '2026-11-12'
   sources:
-  - url: https://huggingface.co/baidu
-    shows: 'Baidu Hugging Face organization page lists ERNIE-4.5 and ERNIE-Image repositories such as "baidu/ERNIE-4.5-21B-A3B-Thinking"
-      and "baidu/ERNIE-Image-Turbo"; searched the page for ERNIE-5 and ERNIE 5.1: none, so no 5.x weights,
-      training code, corpus or open license is distributed there.'
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: a79e9e9a57819e8bd9917491468ded63af751f23e4ab2c8b9a28bf31d9b0af5a
-    establishes:
-    - weights
-    - data
-    - code
-    - license
   - url: https://huggingface.co/api/models?author=baidu&search=ERNIE&limit=100
-    shows: 'Hugging Face models API listing of every Baidu repository matching ERNIE returns 30 repositories,
-      all ERNIE-4.5 or ERNIE-Image, e.g. "baidu/ERNIE-4.5-300B-A47B-Base-PT" and "baidu/ERNIE-4.5-VL-424B-A47B-Paddle";
-      searched the listing for ERNIE-5: none.'
-    accessed: '2026-09-29'
+    shows: 'Hugging Face models API listing of Baidu repositories matching ERNIE returns 32, all ERNIE-4.5,
+      ERNIE-Image or the separately released ERNIE-5.5-Flash-Base and ERNIE-5.5-Flash-Base-BF16; searched
+      the listing for ERNIE-5.1: none, so no flagship weights, training code, corpus or open license is
+      distributed there.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 34c1019db4f4269c5a8c74b67002a8708504f2161301a1dc9e25564208c6a1cc
+    content_sha256: 51ae9aea6b0682f275e8c0110ee441db8a93eb47e3f4acbf604ab0b65d9e7da1
     establishes:
     - weights
     - data
     - code
     - license
-  - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: 'Official ERNIE 5.1 release post directs users to "Visit the official website at https://ernie.baidu.com
-      to chat with the latest ERNIE 5.1 model"; searched the post for Hugging Face, download, open-source
-      and license: none, so the model is offered only as a hosted service.'
-    accessed: '2026-09-29'
+  - url: https://ernie.baidu.com/
+    shows: The ERNIE site lists ERNIE 5.1 among its models, reachable through chat and the site's API links,
+      with a product update reading "ERNIE 5.1 Officially Released!"; it offers no download of the 5.1 weights.
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd
+    content_sha256: c6a6373d55dc2708200ade98ac2616946018d5985f51af649183967b5731a55e
     establishes:
     - weights
     - license
+  - url: https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/LICENSE
+    shows: 'The separate line''s license: Section 4.2 permits commercial use "with Annual Revenue of Related
+      Products or Services at or below US$50 million" after a one-time notice, Section 4.3 requires written
+      authorization above it, and Section 1.11 defines the Territory as "all geographical areas worldwide
+      other than the European Union, the United Kingdom and South Korea".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f896ab9f174d0d55943d6c90ec26ba919ec59e03620982370d27181d4497b254
 adoption:
   level: 4
   signal_type: reported_traction
@@ -86,29 +97,60 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: LMArena/AIME
-  value: 'AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE; LMArena frontier - Baidu states ERNIE
-    5.1 ranks first among Chinese models on the text leaderboard and fourth globally on the search
-    leaderboard'
+  basis_detail: LMArena text and search leaderboards; Baidu-reported AIME 2026
+  value: 'LMArena text leaderboard, snapshot of 2026-11-09: ERNIE 5.1 1467.7, 35th of 421, against MiMo-V2.6-Pro
+    1491.7, GLM-5.3 (Max) 1475.9, Kimi K3 (Max) 1474.3, DeepSeek-V4.1-Flash-20260910 (Max) 1463.4, Kimi
+    K3.1 Pro (Max) 1457.3, DeepSeek-V4-Pro 1451.4 and MiniMax-M3 1428.2. LMArena search leaderboard: 1223.4
+    and 4th on 2026-05-08, 1226.8 and 11th on 2026-11-09, second among Chinese models behind Qwen3.8-Max.
+    Baidu reports AIME 2026 (with tool use) 99.6 and GPQA and MMLU-Pro results approaching leading closed
+    models. Artificial Analysis Intelligence Index v5.0.1 scores no ERNIE 5 model.'
   confidence: medium
-  note: ERNIE 5.1 scores 99.6 on AIME 2026 with tool use, posts strong GPQA and MMLU-Pro results, and reaches
-    1,223 on LMArena's search leaderboard, which Baidu reports as fourth globally and first among Chinese
-    models. Those rankings come from Baidu's own release post and earnings statements rather than an independent
-    leaderboard read, making this a self-reported frontier claim.
+  note: On LMArena's independent text leaderboard ERNIE 5.1 places just behind GLM-5.3 and Kimi K3 and level
+    with DeepSeek's V4.1 Flash, and on the search leaderboard it posted 1,223 at its May 2026 launch, fourth
+    globally, before newer models pushed it to eleventh. Baidu adds a 99.6 on AIME 2026 with tool use, but
+    Artificial Analysis has not scored any ERNIE 5 model on version 5.0.1 of its Intelligence Index.
   sources:
   - url: https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html
     shows: Baidu Q1 2026 results, released 2026-05-18 - "Baidu launched ERNIE 5.1 in May 2026, featuring
-      stronger text capabilities" and "ERNIE 5.1 ranked first among Chinese models on the text leaderboard
-      and topped the LMArena search leaderboard among Chinese models, ranking fourth globally."
-    accessed: '2026-09-29'
+      stronger text capabilities, a more compact model size and enhanced reasoning capabilities. Recently
+      on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena
+      search leaderboard among Chinese models, ranking fourth globally."
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 043d8ec0e569cbbea64a2853d0131355439972e3277b5db3681c9362a944983d
-  - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: Official release post - "using only about 6% of the pre-training cost of comparable models";
-      "On AIME26 (with tool use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6";
-      "On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source models";
-      and ERNIE 5.1 posted 1,223 "to claim 4th place globally and 1st among Chinese models on the Arena
-      Search leaderboard."
-    accessed: '2026-09-29'
+    content_sha256: 02c037284a9bb20c4d0dc57bedc58ffffd8f8bcb47ddadef0d4d44a36a0d7f68
+  - url: https://ernie.baidu.com/research/posts/ernie-5.1-0508-release/
+    shows: Official ERNIE 5.1 release post, dated May 9, 2026, now at this address (the earlier /blog/posts/
+      address serves the ERNIE homepage) - "Today, we officially release ERNIE 5.1"; "On AIME26 (with tool
+      use), a challenging mathematical competition benchmark, ERNIE 5.1 scores 99.6 — second only to Gemini
+      3.1 Pro"; "On GPQA and MMLU-Pro evaluations, ERNIE 5.1 approaches the performance of leading closed-source
+      models"; and that on May 9 ERNIE 5.1 posted 1,223 "to claim 4th place globally and 1st among Chinese
+      models on the Arena Search leaderboard."
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd
+    content_sha256: 2b3d4027f60dc69e64f4315674420bcdc3a283ce6735692edb9ccdf4057059c9
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/search/full-00000-of-00001.parquet
+    shows: 'LMArena leaderboard dataset (CC-BY-4.0), search leaderboard, category "overall": "ernie-5.1"
+      rated 1223.4 at rank 4 in the 2026-05-08 snapshot; "ERNIE 5.1" rated 1226.8 (interval 1217.2-1236.4)
+      at rank 11 of 42 in the 2026-11-09 snapshot, where Qwen3.8-Max (Alibaba) ranks 1 at 1259.8 and is
+      the only other Chinese model listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 12791a7aa1d7b0ad67da17f93d3b088f62eb0d44ecb13365ebb2583c83b352fd
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/e69cdc26eb7af798d9628215ce45ce353e66d26a/text/latest-00000-of-00001.parquet
+    shows: 'LMArena leaderboard dataset, text leaderboard, category "overall", 2026-11-09 snapshot of 421
+      models: "ERNIE 5.1" 1467.7 (interval 1463.2-1472.2), rank 35; MiMo-V2.6-Pro 1491.7 (11); Qwen3.8-Max
+      1485.2 (16); GLM-5.3 (Max) 1475.9 (25); Kimi K3 (Max) 1474.3 (27); DeepSeek-V4.1-Flash-20260910 (Max)
+      1463.4 (39); Kimi K3.1 Pro (Max) 1457.3 (44); DeepSeek-V4-Pro 1451.4 (50); MiniMax-M3 1428.2 (100);
+      Mistral Large 4 1414.3 (136). DeepSeek V4.1 Flash 1017, MiniMax-M3.1-Flash and ERNIE 5.5 Flash Preview
+      are not listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2c39d71e44cf86c7564afbbf3d7327389a388624d9b228405308eb19bfde3dba
+  - url: https://artificialanalysis.ai/models/ernie-5-0-thinking-preview
+    shows: 'Artificial Analysis page for ERNIE 5.0 Thinking Preview under Intelligence Index v5.0.1: the
+      model summary reads "Artificial Analysis Intelligence Index Unknown". The only Baidu models the page
+      links are ERNIE 5.0 Thinking Preview and ERNIE 4.5 300B A47B; artificialanalysis.ai/models/ernie-5-1
+      returns 404, so no ERNIE 5.1 or 5.5 model has a v5.0.1 score.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2aadefdccae3ad5a76f71ce190b373e363618687589e239c165d2f1a77c2e97a
