@@ -416,7 +416,12 @@ def test_local_scores_matches_check_rubrics_split():
     # repository published the ladder cannot compute it, so data_hubs defers it and the axis is
     # held in sources/verification_queue.yaml. It comes off when code is published or the score
     # falls to what the ladder computes.
-    assert len(deferred) == 6
+    # 6 -> 16 on 2026-11-12, when the long-tail promotion pass (#1018) added ten products whose
+    # weights license no tier names yet, each hand-scored on the rung the closest tier would give and
+    # listed for the license-rulings issue: segformer, depth-pro, tabfm, sapiens and limix
+    # (classic_ml_cv), eagle and fastvlm (multimodal_models), fish-speech and indextts
+    # (speech_audio), and cogvideo (media_generation). Each comes off when its license is tiered.
+    assert len(deferred) == 16
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
