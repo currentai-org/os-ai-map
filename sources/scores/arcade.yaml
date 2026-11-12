@@ -1,30 +1,36 @@
 product: arcade
 openness:
-  score: 2
-  class: source_available
+  score: 1
+  class: closed
   components:
     license:
-    - name: MIT
-      detail: covers the arcade-mcp framework, CLI and SDK in this repository only
+    - name: Proprietary
+      detail: the Arcade platform's code is not published
     source:
-      value: partial
-      detail: the framework for building and running MCP servers is published; the Arcade Engine, which runs the
-        OAuth flows, holds the token vault and serves MCP gateways, installs only from Arcade's Helm chart and container
-        images or runs as Arcade Cloud
+      value: closed
+      detail: the Engine, which runs the OAuth flows, holds the token vault and serves MCP gateways, ships
+        with the rest of the platform only as Arcade Cloud or as Arcade's container images and Helm chart;
+        no repository publishes it
     context:
+      framework:
+        value: MIT
+        detail: ArcadeAI/arcade-mcp, a separate open framework for building and running MCP servers; it
+          is not the platform's source
       backend:
         value: commercial
-        detail: Arcade Cloud, with deployment in a customer's VPC or air-gapped listed under the Enterprise plan
+        detail: Arcade Cloud, with deployment in a customer's VPC or air-gapped listed under the Enterprise
+          plan
   confidence: medium
-  note: Arcade publishes arcade-mcp, its framework for building and running MCP servers, under MIT, and a server
-    built with it runs on its own with tokens the developer supplies. The Engine that performs the OAuth flows,
-    stores the tokens and serves the gateways is what Arcade sells, and it is installed from Arcade's own images
-    rather than from published source.
-  raw: license:MIT(covers the arcade-mcp framework, CLI and SDK in this repository only);source:partial(the framework
-    for building and running MCP servers is published; the Arcade Engine, which runs the OAuth flows, holds the
-    token vault and serves MCP gateways, installs only from Arcade's Helm chart and container images or runs as
-    Arcade Cloud);backend:commercial(Arcade Cloud, with deployment in a customer's VPC or air-gapped listed under
-    the Enterprise plan)
+  note: 'Arcade''s platform, the Engine that runs the OAuth flows, stores each user''s tokens and serves
+    the MCP gateways, is not published: it runs as Arcade Cloud or is installed from Arcade''s own images
+    under an Enterprise plan. Arcade does publish arcade-mcp, an MIT-licensed framework for building MCP
+    servers that also run on their own, but that framework is a separate open project and not the source
+    of the platform scored here.'
+  raw: license:Proprietary(the Arcade platform's code is not published);source:closed(the Engine, which
+    runs the OAuth flows, holds the token vault and serves MCP gateways, ships with the rest of the platform
+    only as Arcade Cloud or as Arcade's container images and Helm chart; no repository publishes it);framework:MIT(ArcadeAI/arcade-mcp,
+    a separate open framework for building and running MCP servers; it is not the platform's source);backend:commercial(Arcade
+    Cloud, with deployment in a customer's VPC or air-gapped listed under the Enterprise plan)
   last_verified: '2026-11-12'
   sources:
   - url: https://raw.githubusercontent.com/ArcadeAI/arcade-mcp/main/LICENSE
@@ -32,18 +38,14 @@ openness:
     accessed: '2026-11-12'
     http_status: 200
     content_sha256: 7f84345d4649d8ca9904ed57b2aa8786e65f4acd9aaf5719109e39d79d33111a
-    establishes:
-    - license
   - url: https://raw.githubusercontent.com/ArcadeAI/arcade-mcp/main/README.md
-    shows: The README calls arcade-mcp the "Open-source Python framework for building MCP servers and tools" that
-      "powers the 7,500+ prebuilt tools across 81 MCP servers at Arcade.dev". Through Arcade Cloud "the Arcade Engine
-      fulfills authorized tool calling flows"; run standalone, you "Supply your own access tokens for tools with
-      requires_auth".
+    shows: The README calls arcade-mcp the "Open-source Python framework for building MCP servers and tools"
+      that "powers the 7,500+ prebuilt tools across 81 MCP servers at Arcade.dev". Through Arcade Cloud
+      "the Arcade Engine fulfills authorized tool calling flows"; run standalone, you "Supply your own access
+      tokens for tools with requires_auth".
     accessed: '2026-11-12'
     http_status: 200
     content_sha256: ebc9d7584538ed6c8877a86fc476229ebce73eb396de76d8bd45df179b6bfa01
-    establishes:
-    - source
   - url: https://docs.arcade.dev/en/operate/deploy/helm
     shows: The self-hosting page says "The Arcade Helm chart deploys the full Arcade platform onto a Kubernetes
       cluster you manage" and installs it with "helm install arcade oci://public.ecr.aws/s5i6x9d1/charts/arcade";
@@ -54,20 +56,23 @@ openness:
     establishes:
     - source
   - url: https://docs.arcade.dev/en/operate/deploy/architecture
-    shows: The platform architecture page lists the Engine ("Tool execution and routing, the token vault, and MCP
-      gateways"), Coordinator, Experience API, Dashboard, OpenFGA and Usage services as what a self-hosted deployment
-      runs.
+    shows: The platform architecture page lists the Engine ("Tool execution and routing, the token vault,
+      and MCP gateways"), Coordinator, Experience API, Dashboard, OpenFGA and Usage services as what a self-hosted
+      deployment runs.
     accessed: '2026-11-12'
     http_status: 200
     content_sha256: 7a158299252f4d5939268ade055e657cd1a6ce2fc251a9db3ebb1753f3c2fb23
     establishes:
     - source
   - url: https://www.arcade.dev/pricing
-    shows: The pricing page offers Free, Team and Enterprise plans; Enterprise lists "Flexible deployment options
-      on Arcade Cloud, in your VPC, or fully air-gapped".
+    shows: The pricing page offers Free, Team and Enterprise plans; Enterprise lists "Flexible deployment
+      options on Arcade Cloud, in your VPC, or fully air-gapped".
     accessed: '2026-11-12'
     http_status: 200
     content_sha256: 62e242362c0a3b2fdf529bef0d485dc32df6a9170808122cd77e3a4257f6ff34
+    establishes:
+    - license
+    - source
 adoption:
   level: 2
   reach: 10K-100K
