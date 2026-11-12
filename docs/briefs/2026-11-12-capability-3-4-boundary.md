@@ -20,11 +20,14 @@ compare base checkpoints while several settled 4s are read on post-trained relea
 calibration needs two things the rules do not yet say: which models serve as the reference
 points on each side, and which release and training stage a comparison must use.
 
-The recommendation is a **reference-pair rule**: name the settled products that stand for the
-bottom of 4 and the top of 3, require a candidate to be read beside one of them on the same
-evaluations, and require agreement between at least two evaluation families before a band moves.
-It is set out under [Proposed method](#proposed-method), with the decisions it needs under
-[Decisions requested](#decisions-requested).
+The recommended method, revised after review of this brief, scores each family on its strongest
+eligible release and prefers comparisons between releases at the same training stage. It asks for
+adequate independent corroboration rather than a fixed count of evaluation families, counts
+language capability only where it is measured, and treats reference models as provisional examples
+rather than thresholds. It is set out under [Recommended method](#recommended-method), with what
+remains to rule under [Decisions requested](#decisions-requested). Adopting the method does not
+calibrate the boundary: the recipe keeps its "NOT YET CALIBRATED" status until the method has been
+applied successfully to several boundary cases.
 
 ## What the settled bands rest on
 
@@ -87,63 +90,68 @@ for.
 | llama | 3 | Olmo 3 32B base table, level with Olmo 3 base | Whether base-to-base parity with a 4 family moves a family whose best release is not reasoning-tuned |
 | apertus, eurollm | 3 | Apertus and EuroLLM reports, against Llama 3.x and Scout | Same as llama, plus how multilingual coverage counts |
 
-## Proposed method
+## Recommended method
 
-**1. Name the reference products, per instrument.** For each instrument the category uses, the
-maintainer names which settled products stand for the bottom of 4 and the top of 3. Candidates
-on today's corpus:
+This section was revised after a first review of the brief. The original proposal offered "like
+for like" and "best release" as alternatives, required two evaluation families to agree before a
+band moved, and named olmo's base and marin as the 3/4 reference pair. The review kept the
+direction and changed all three.
 
-- AA v5.0.1: bottom of 4, mistral-large (26). Top of 3: none exists, so the index can confirm a
-  4 or a 5 but cannot by itself place a product at 3.
-- Base-model suites: bottom of 4, olmo's base (Olmo 3 32B). Top of 3, marin (Marin 32B). This
-  pair is only usable if the rule in step 2 allows a base table to place a family.
-- Post-trained suites: top of 3, phi (Phi-4), already the root of the gpt-4o comparison. Bottom of
-  4, olmo (OLMo 3.1 Think 32B), if a table that reads it beside a candidate can be found.
+**1. Score the family on its strongest eligible release.** A band describes what the family can
+do, which is set by its strongest eligible release, not necessarily its newest (`identity.md`:
+capability is the max across a tier's releases). Which releases are eligible is an identity
+question settled on the product record before any comparison is read.
 
-Low-confidence vendor-placed 4s (hunyuan, ernie-flash) are left out of the reference set until
-an independent reading exists.
+**2. Prefer comparisons at the same training stage.** Base against base, instruct against
+instruct, reasoning against reasoning. A cross-stage comparison can contribute to a judgment but
+cannot by itself establish parity. A family is not penalized for shipping no reasoning release,
+and it is not assumed to perform as well as one either. For example, Llama 3.1 70B base matching
+Olmo 3 32B base does not establish parity between the two families' strongest releases, because
+olmo's 4 is read on its reasoning release.
 
-**2. Fix the release and training stage a comparison uses.** A band describes the family's best
-release (`identity.md`: capability is the max across a tier's releases). Two readings of that are
-possible, and the maintainer needs to choose:
+**3. Require adequate independent corroboration, not a fixed count.** Two weak or correlated
+benchmarks are not better than one strong independent evaluation, and one decisive, well-designed
+evaluation can justify a move. A band moves when the evidence is sufficient and reproducible
+across the capabilities that matter for the category, judged on independence, comparability,
+breadth and uncertainty. Results that share one evaluation method count as one line of evidence,
+however many languages or tasks they cover.
 
-- *Like for like:* a base table can place a family only against references read on their bases,
-  and a post-trained table only against post-trained references. A family with no reasoning-tuned
-  release is compared on what it has, and a missing release type is not a penalty.
-- *Best release:* every comparison uses each family's best release, base or post-trained. Base
-  tables then serve only as supporting evidence, never to place a family.
+**4. Count language capability only where it is measured.** Multilingual performance counts
+through multilingual evaluations (for example MMMLU, INCLUDE, Global-MMLU or EuroEval), read on the
+same table as the comparison. The number of languages a card lists is descriptive metadata, not
+evidence of quality in those languages.
 
-The first unblocks llama, apertus and eurollm on the tables that already exist. The second keeps
-them held until a post-trained comparison appears.
+**5. Treat reference models as provisional examples, not thresholds.**
 
-**3. Require two evaluation families to agree before a band moves.** Following R-2026-11-12-n
-("different benchmark families answer different questions"), a candidate moves across the
-boundary only when at least two of these agree: an independent index (AA v5.0.1), a same-pipeline
-general suite (knowledge, reasoning, math, code), and a same-pipeline language-coverage suite.
-One family alone records an ordering in the value and note, and the band stays where it is.
+- AA v5.0.1: mistral-large (26) is accepted as a provisional reference for 4. No settled 3 has a
+  v5.0.1 score, so the index can support a 4 or a 5 but cannot by itself place a product at 3.
+- Base-model suites: the olmo base / marin pair is useful for comparative analysis, but it does not
+  inherit olmo's 4, which is read on its reasoning release. Formalizing it would create a separate,
+  uncalibrated ladder for base models.
+- Post-trained suites: phi (Phi-4) remains a usable top-of-3 example, already the root of the gpt-4o
+  comparison.
+- Vendor-placed 4s read at low confidence (hunyuan, ernie-flash) are not references until an
+  independent reading exists.
 
-**4. Count language coverage only as measured coverage.** Multilingual capability counts through
-multilingual evaluations read on the same table (for example MMMLU, INCLUDE or Global-MMLU,
-which some of the cited cards already carry), not through the number of languages a card lists.
-This keeps the European models' main strength in the comparison without turning a coverage claim
-into a band.
+**6. Keep evidence confidence apart from scoring confidence.** A source can document a benchmark
+result exactly while the reading of that result as a band stays uncertain. A capability record's
+`confidence` should describe the band, so precise evidence on an uncalibrated boundary does not by
+itself justify `high`.
 
-**5. Record the result as a ruling and in the recipe.** The reference products and the two rules
-above go in `base_pretrained.yaml` beside the existing `version_rule`, so a later pass reads them
-from the recipe rather than from this brief.
+**7. Keep the bands uncalibrated until the method has been applied.** The recipe's `bands_status`
+stays "NOT YET CALIBRATED". The method is recorded as a ruling and in the recipe beside
+`version_rule` once it is adopted, and the calibration is declared only after the method has
+settled several boundary cases.
 
 ## Decisions requested
 
-1. **Reference products.** Accept, amend or replace the candidates in step 1. In particular: is
-   mistral-large the right bottom-of-4 reference on AA, and is the olmo/marin pair usable at all
-   given that olmo's 4 is read on its Think release?
-2. **Like for like or best release** (step 2).
-3. **Two-family agreement** (step 3), and which families count.
-4. **Measured language coverage** (step 4).
-5. **Order of work once ruled.** Suggested: re-read gemma and inkling first, since both have AA
-   readings beside mistral-large; then llama, apertus and eurollm if like for like is chosen;
-   granite last, since it needs a settled 3 on the same instrument.
+1. **Adopt the method above** as a ruling, or amend it.
+2. **Order of work once adopted:** gemma and inkling first, since both have AA readings beside
+   mistral-large; then llama, apertus, eurollm and granite.
+3. **Confidence wording** (step 6): whether the separation of evidence confidence from scoring
+   confidence should become a field change in the score schema, or stay a rule for how
+   `confidence` is set.
 
-Nothing in this brief moves a score. Each held product is re-read against the ruled method in its
-own PR, and any tier change still comes to the maintainer with its evidence first
+Nothing in this brief moves a score. Each held product is re-read against the adopted method in
+its own PR, and any tier change still comes to the maintainer with its evidence first
 (R-2026-11-12-l).
