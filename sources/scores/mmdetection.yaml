@@ -1,0 +1,100 @@
+product: mmdetection
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; code
+    source:
+      value: public
+      detail: github.com/open-mmlab/mmdetection
+    core-gated:
+      value: ungated
+      detail: OpenMMLab research toolbox; nothing sold
+  confidence: high
+  note: The code is Apache-2.0 and builds from the public repository, and OpenMMLab sells nothing around it. The
+    last tagged release was v3.3.0 in January 2024, and the repository has not been pushed to since August 2024.
+  raw: license:Apache-2.0(OSI; code);source:public(github.com/open-mmlab/mmdetection);core-gated:ungated(OpenMMLab
+    research toolbox; nothing sold)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/open-mmlab/mmdetection/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, under "Copyright 2018-2023 OpenMMLab. All rights reserved."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 874b8b2e6f12306a1ff7812c068a0dbf880418b8ac1f7190382bd6c6da9f23a1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/open-mmlab/mmdetection/main/README.md
+    shows: 'README: "MMDetection is an open source object detection toolbox based on PyTorch. It is a part of the
+      OpenMMLab project."; "This project is released under the Apache 2.0 license."; no paid tier mentioned.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a3b450a75ea3c21791acdc474f305710b27a38f858d409f0dba801b19885e63e
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/open-mmlab/mmdetection/releases
+    shows: Latest release v3.3.0, published 2024-01-05.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0f2101d122cf8c07e322ccbd2325d6e2ec7f208399550eef33470eaa353575b0
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/open-mmlab/mmdetection
+    shows: 'Repository record for open-mmlab/mmdetection: not archived, last pushed 2024-08-21.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 09c483d186bd5ea884c6515878fb243abb21ffeda3f52f3218e8649e34e45dbc
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the mmdet package over the trailing 30 days. A download count includes CI jobs and mirrors
+    as well as people, so it measures installs rather than users.
+  sources:
+  - url: https://pypistats.org/api/packages/mmdet/recent
+    shows: last_month 122,001 downloads for mmdet (last_week 30,460, last_day 4,760).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2a5420ef3c8583ca3cbe809765203c56f700aed50ba3a5bf61060945d5ed4b54
+capability:
+  score: 4
+  basis: feature_matrix
+  value: detection, instance and panoptic segmentation model zoo with training configs, plus open-vocabulary and
+    grounding detectors (GLIP, Detic, Grounding DINO, MM-Grounding-DINO) that detect objects named in a text prompt
+    without training; MM-Grounding-DINO Swin-T reaches 50.6 zero-shot COCO mAP
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: MMDetection runs detectors that take the object names as text at inference, so a new label set needs no
+    training run, as Ultralytics does with YOLO-World and YOLOE. Most of its model zoo is still trained on fixed
+    benchmark classes.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main includes ultralytics/models/yolo/world/ and ultralytics/models/yolo/yoloe/
+        beside the sam modules - the no-training, user-prompted models compared at.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 6012d78d682f9828402719e70808fdd6db76bd76e9e091b19d4c0b789831114a
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/open-mmlab/mmdetection/main/README.md
+    shows: 'README What''s New: v3.3.0 brings MM-Grounding-DINO, "an open source replication version of Grounding
+      DINO" for open vocabulary object detection and phrase grounding; the model list includes GLIP and Detic.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a3b450a75ea3c21791acdc474f305710b27a38f858d409f0dba801b19885e63e
+  - url: https://raw.githubusercontent.com/open-mmlab/mmdetection/main/configs/mm_grounding_dino/README.md
+    shows: 'MM-Grounding-DINO README: zero-shot COCO, LVIS, ODinW and referring-expression results with downloadable
+      models; MM-GDINO-T 50.6 zero-shot COCO mAP with O365, GoldG and V3Det pretraining.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b5e9099bd44edabe85d59c19ae15450b45622125f0eb51ab4b18099338039072

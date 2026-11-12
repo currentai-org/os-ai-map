@@ -74,6 +74,22 @@ scoring_recipe:
     the maintainer''s license-rulings issue; none is deferred now. Apart from FAIR-Noncommercial-Research,
     added for perception-lm, no edit to sources/rubrics/ is made or implied here.'
   extends: model
+  deferred:
+    eagle:
+      because: >-
+        The NVIDIA License on the Eagle 2.5 weights (Hub license_name nsclv1) is in no license tier, so
+        the `commercial_forbidden` rung cannot fire. Its use limitation allows only non-commercial
+        academic or non-profit research use and reserves commercial use to NVIDIA, the shape of
+        NVIDIA-OneWay-Noncommercial; the recorded 2/restricted is that rung's outcome. Listed for the
+        maintainer license-rulings issue (promoted 2026-11-12); drop this deferral when the string is
+        tiered.
+    fastvlm:
+      because: >-
+        Apple's Machine Learning Research Model license (Hub tag apple-amlr) on the FastVLM checkpoints
+        is in no license tier, so the `commercial_forbidden` rung cannot fire. It grants use exclusively
+        for non-commercial scientific research and excludes any commercial product or service; the
+        recorded 2/restricted is that rung's outcome. Listed for the maintainer license-rulings issue
+        (promoted 2026-11-12); drop this deferral when the string is tiered.
 products:
 - minicpm-o
 - nemotron-omni
@@ -103,6 +119,10 @@ products:
 - florence-2
 - janus
 - bagel
+- eagle
+- fastvlm
+- aria
+- ovis
 comments: 'Proposed in issue #9; seeded from the 2026-09-26 sweep (docs/sweeps/2026-09-26-multimodal_models.md).
   Membership test: is this a separately named vision or omni model line whose reason for fame is visual or
   audio-visual understanding, so that listing it as a text LLM would mischaracterize it? A natively multimodal

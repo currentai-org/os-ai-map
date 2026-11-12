@@ -1,0 +1,120 @@
+product: depth-pro
+openness:
+  score: 2
+  class: restricted
+  governing_release: Depth Pro
+  components:
+    weights:
+      value: open
+      detail: depth_pro.pt and the Transformers checkpoint on the Hub, ungated
+    data:
+      value: documented-not-released
+      detail: the card lists the real and synthetic training datasets in a table; no mixture is released
+    code:
+      value: partial
+      detail: inference, command-line and boundary-metric evaluation code; no training code
+    license:
+    - name: Apple-AMLR
+      detail: Apple Machine Learning Research Model license on the checkpoints; non-commercial research only. The
+        repository code is under Apple's separate sample-code license
+  confidence: high
+  note: The Depth Pro checkpoints carry Apple's research-model license, which limits use to non-commercial scientific
+    research and excludes any commercial product or service. The repository code is under a separate permissive
+    Apple license, but it covers inference and evaluation, not training.
+  raw: weights:open(depth_pro.pt and the Transformers checkpoint on the Hub, ungated);data:documented-not-released(the
+    card lists the real and synthetic training datasets in a table; no mixture is released);code:partial(inference,
+    command-line and boundary-metric evaluation code; no training code);license:Apple-AMLR(Apple Machine Learning
+    Research Model license on the checkpoints; non-commercial research only. The repository code is under Apple's
+    separate sample-code license)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/apple/DepthPro/raw/main/LICENSE
+    shows: 'Apple Machine Learning Research Model license: use is granted "exclusively for Research Purposes", which
+      "does not include any commercial exploitation, product development or use in any commercial product or service".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d8f5d9dfbdb60dc81b8f1720421699e7811070f0b46f6668f90253d5ac8c0b20
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/apple-aiml-research/ml-depth-pro/main/LICENSE
+    shows: 'Repository LICENSE: Apple''s sample-code license, granting use, reproduction, modification and redistribution
+      of the Apple Software with or without modifications.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 21a6551d1f8f851d2d10b5c6cc56535956b983c3cb997d25f3db4dd6f59ef99f
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/apple/DepthPro-hf
+    shows: 'Hub record for apple/DepthPro-hf: gated false, license apple-amlr, model.safetensors.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ace9224b774f4c71baf3df4e7cb973b37d00a6300daa1efde1d022c72421eeab
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/apple/DepthPro
+    shows: 'Hub record for apple/DepthPro: gated false, license apple-amlr, depth_pro.pt and LICENSE.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 65032e88013b706200b99ca0447a33a7b42b2c7474a78deb753b374d92ebe204
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/apple/DepthPro-hf/raw/main/README.md
+    shows: 'DepthPro-hf card: "The DepthPro model was trained on the following datasets", given as a table image;
+      no dataset release.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9137c19eca509c4e6145ce6d2be0140e059e6221dd88d5937d13ef1c2bce9ee2
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/apple-aiml-research/ml-depth-pro/main/README.md
+    shows: 'README: install, checkpoint download, command-line and Python inference, and boundary-metric evaluation;
+      "The model in this repository is a reference implementation, which has been re-trained"; no training instructions.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5a10be5d4c040e382a82ffc356ce06f1f73a8f7ff4250e53efea98680b4ea1e0
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the two declared checkpoints, almost all of them for
+    the Transformers version.
+  sources:
+  - url: https://huggingface.co/api/models?author=apple&search=depth&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: apple/DepthPro-hf 54,290 and apple/DepthPro 5,726 downloads in the trailing 30 days (60,016 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6fbc17c0c52eb513b0788cb75e2d29f8de7079c47a7862c5cd695c7e89839c1
+capability:
+  score: 4
+  basis: feature_matrix
+  value: metric depth with absolute scale and a focal-length estimate from a single image of any scene, with no
+    training and no camera intrinsics; a 2.25-megapixel depth map in 0.3 seconds on a standard GPU
+  relative_to: depth-anything
+  relation: at
+  confidence: high
+  note: Depth Pro returns a metric depth map for any image the user supplies, without training, as Depth Anything
+    does. It works from one image at a time, where Depth Anything 3 also takes several views and estimates camera
+    pose.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/ByteDance-Seed/Depth-Anything-3/main/README.md
+      shows: 'Depth Anything 3 README: "Monocular Depth Estimation: Predicts a depth map from a single RGB image"
+        and "Camera Pose Estimation: Estimates camera extrinsics and intrinsics from one or more images" - the no-training
+        depth model compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 91679cf6df290b6af439c85f29a2440ce10353a1063ae4f599e9c734ec3096a8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/apple-aiml-research/ml-depth-pro/main/README.md
+    shows: 'README: "We present a foundation model for zero-shot metric monocular depth estimation"; "producing
+      a 2.25-megapixel depth map in 0.3 seconds on a standard GPU"; prediction returns depth in meters and focallength_px.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5a10be5d4c040e382a82ffc356ce06f1f73a8f7ff4250e53efea98680b4ea1e0
