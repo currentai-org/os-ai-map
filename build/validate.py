@@ -586,8 +586,9 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
                     if not (isinstance(code, str) and code in allowed_languages):
                         errors.append(
                             f"product {slug!r}: language {code!r} is not an ISO 639-3 code of "
-                            f"scope individual or macrolanguage in sources/snapshots/iso-639-3.tab "
-                            f"(two-letter codes and the special codes mul, und, zxx are refused)"
+                            f"scope individual or macrolanguage in sources/snapshots/language-codes.tsv "
+                            f"(two-letter codes and the special codes mul, und, zxx are refused; a valid "
+                            f"code new to the map is added by `build.language_codes --sync`)"
                         )
                 if all(isinstance(code, str) for code in languages) and languages != sorted(languages):
                     errors.append(
@@ -1044,8 +1045,9 @@ def language_coverage_errors(slug: str, product: dict, capability: dict) -> list
         if code not in allowed:
             return (
                 f"{where}: {field} {code!r} is not an ISO 639-3 code of scope individual or "
-                f"macrolanguage in sources/snapshots/iso-639-3.tab (two-letter codes and the "
-                f"special codes mul, und, zxx are refused)"
+                f"macrolanguage in sources/snapshots/language-codes.tsv (two-letter codes and the "
+                f"special codes mul, und, zxx are refused; a valid code new to the map is added "
+                f"by `build.language_codes --sync`)"
             )
         if must_be_listed and code not in listed:
             return (

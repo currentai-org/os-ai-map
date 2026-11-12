@@ -290,7 +290,7 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
                 for lang in ov.get("languages") or []:
                     if lang not in allowed_languages:
                         errors.append(f"{where}: overrides[{i}]: language {lang!r} is not an "
-                                      f"ISO 639-3 code in sources/snapshots/iso-639-3.tab")
+                                      f"ISO 639-3 code in sources/snapshots/language-codes.tsv")
 
     # A parent cycle would make "derives from" meaningless; report each cycle once. Overrides
     # can replace `parents`, so the graph checked is the union of every parent edge any record or
@@ -341,7 +341,7 @@ def lineage_errors(doc: dict, *, allowed_languages: set[str] | None = None,
             for lang in rel.get("languages") or []:
                 if lang not in allowed_languages:
                     errors.append(f"{where}: language {lang!r} is not an ISO 639-3 code in "
-                                  f"sources/snapshots/iso-639-3.tab")
+                                  f"sources/snapshots/language-codes.tsv")
 
     # Citation dates, held to the rule score citations follow in build/validate.py: a real ISO
     # date, and not later than today, since `accessed` records when somebody read the source.
