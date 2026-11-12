@@ -18,12 +18,18 @@ scoring_recipe:
     fully open design should read `open_hardware`, not `open_source`. Neither shared ladder fits.
     The hardware ladder asks what you can buy - a board's schematics, a chipset's datasheet and
     availability - and has no license gate, while the software ladder asks the license question
-    but labels the result as software. Dimensions the design ladder should ask: the design
-    license and whether it permits modification and fabrication (Apache-2.0, SHL-0.51, CERN-OHL,
-    BSD, or a custom grant like NVDLA's); completeness (RTL alone, or RTL with testbenches,
-    verification and integration scripts); whether the flow from source to FPGA or GDS runs on
-    open tools (Verilator, Yosys, OpenROAD) or needs a proprietary one (Vivado, Quartus, a
-    commercial synthesis tool); and whether the design is silicon- or FPGA-proven. Until then,
+    but labels the result as software. The design ladder should keep three questions apart
+    rather than fold them into one number. Openness is about the design itself: whether its
+    license permits modification and fabrication (Apache-2.0, SHL-0.51, CERN-OHL, BSD, or a
+    custom grant like NVDLA's), and whether what is released is complete enough to build from
+    (RTL alone, or RTL with testbenches, verification and integration scripts). Toolchain
+    reproducibility (whether the flow from source to FPGA or GDS runs on open tools such as
+    Verilator, Yosys and OpenROAD, or needs Vivado, Quartus or a commercial synthesis tool),
+    hardware validation (FPGA- or silicon-proven) and maintenance (active or dormant) are recorded
+    as explicit evidence beside the score, and none of them lowers it: a design that needs a
+    proprietary synthesis tool can still be fully open, and an abandoned reference design such as
+    NVDLA stays as open as it was, however unsuitable it is for new work. Capability is scored on
+    its own quantity. Until then,
     RTL designs are typed `hardware` and the generators that emit an accelerator from a model
     (CFU Playground, FINN, hls4ml) are typed `software`. License strings with no tier yet, for
     the maintainer before anything is scored: SHL-0.51 (the PULP designs; its preamble lets a

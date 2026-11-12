@@ -44,7 +44,7 @@ had no record. arXiv IDs were matched to their papers by title. No candidate alr
 
 ## Open questions for review
 
-1. The openness ladder for designs, proposed in the category's `scoring_recipe.note`.
+1. The openness ladder for designs, proposed in the category's `scoring_recipe.note`: openness reads the design license and completeness; toolchain reproducibility, hardware validation and maintenance are recorded as evidence and do not lower it.
 2. Tiers for SHL-0.51, the NVDLA license, and split hardware/software licensing.
 3. How a dormant reference design's maintenance status reaches the published map.
 4. Whether RedMulE, NEureka and ztachip need a confirmed recency reading before promotion.
