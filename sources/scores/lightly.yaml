@@ -1,0 +1,104 @@
+product: lightly
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/lightly-ai/lightly
+    core-gated:
+      value: gated
+      detail: a commercial version with more features, Docker support among them, is sold through sales
+  confidence: medium
+  note: The library is MIT-licensed and builds from the public repository. Lightly's own README offers a commercial
+    version with more features, including Docker support and one-command pretraining of models for embedding, classification,
+    detection and segmentation, so part of what Lightly sells is kept out of the open release.
+  raw: license:MIT(OSI);source:public(github.com/lightly-ai/lightly);core-gated:gated(a commercial version with
+    more features, Docker support among them, is sold through sales)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/lightly-ai/lightly/HEAD/LICENSE.txt
+    shows: LICENSE.txt is the MIT License text, with the copyright line "Copyright (c) 2018 The Python Packaging
+      Authority".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d9b9bdb8569b419dd891bfd269253fb946c08f6fa1b5ce96250992ffae6a0f4d
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/lightly/json
+    shows: 'PyPI record for lightly 1.6.1, uploaded 2026-11-10, classifier "License :: OSI Approved :: MIT License",
+      Github github.com/lightly-ai/lightly.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f67d9a85b62f4c59fcda65d02a6d716ffe4ee28b42ea03898b4ef824ebe1786e
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/lightly-ai/lightly/HEAD/README.md
+    shows: 'README: "For a commercial version with more features, including Docker support and pretraining models
+      for embedding, classification, detection, and segmentation tasks with a single command, please contact sales@lightly.ai."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ea88cc9df413127c3d84fcf566e9ac4d4e47142ee592f0b7ca79a0d32e9d1c43
+    establishes:
+    - core-gated
+  - url: https://docs.lightly.ai/self-supervised-learning/examples/models.html
+    shows: LightlySSL 1.6.1 documentation navigation lists "On-Premise Lightly One Worker" beside the open library's
+      API reference.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 22c4ad07b9907c8f8044279a8e9f9650afa64ff64151cb4e4dba66076776438b
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the lightly package. The package also carries the client for Lightly's
+    hosted platform, so part of the figure may come from platform users rather than from self-supervised training.
+  sources:
+  - url: https://pypistats.org/api/packages/lightly/recent
+    shows: last_month 94,597 downloads of lightly
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d0f8053e9dbf641d7d5e15b69af0bffb0cd33be41a8f9d777a05b1dc09eadb75
+capability:
+  score: 3
+  basis: feature_matrix
+  value: about 25 self-supervised pretraining methods - MoCo, SimCLR, BYOL, SwaV, SimSiam, Barlow Twins, DINO, DINOv2,
+    VICReg, MAE, iBOT, SimMIM, MSN, AIM, LeJEPA and others - plus the LeWM world model, with PyTorch, PyTorch Lightning
+    and distributed examples for each
+  relative_to: timm
+  relation: at
+  confidence: medium
+  note: LightlySSL is a toolkit of self-supervised training methods with recipes to pretrain and compare backbones,
+    as timm is a zoo of architectures with training scripts. It ships no model that predicts on a user's own task
+    without training; choosing and running a method is left to the user.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/docs/timm/index
+      shows: 'timm docs: "timm is a library containing SOTA computer vision models, layers, utilities, optimizers,
+        schedulers, data-loaders, augmentations, and training/evaluation scripts. It comes packaged with >700 pretrained
+        models" - the model-zoo scope LightlySSL is compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 886dc04de4b6d954b9113f5ab658400ba00be5bb93b57d6f59d548a46b4c7eca
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/lightly-ai/lightly/HEAD/README.md
+    shows: 'README: "LightlySSL is a computer vision framework for self-supervised learning and latent world models";
+      models table from MoCo (2019) to Pixio (2025), and LeWM (2026) under world models.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ea88cc9df413127c3d84fcf566e9ac4d4e47142ee592f0b7ca79a0d32e9d1c43
+  - url: https://docs.lightly.ai/self-supervised-learning/examples/models.html
+    shows: 'Models page: "Self-supervised methods with runnable examples in PyTorch, PyTorch Lightning and distributed
+      PyTorch Lightning. Each one is built from the same losses, heads and transforms".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 22c4ad07b9907c8f8044279a8e9f9650afa64ff64151cb4e4dba66076776438b

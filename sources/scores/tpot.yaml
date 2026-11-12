@@ -1,0 +1,96 @@
+product: tpot
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: LGPL-3.0
+      detail: OSI; version 3 or any later version
+    source:
+      value: public
+      detail: github.com/EpistasisLab/tpot
+    core-gated:
+      value: ungated
+      detail: academic project from Cedars-Sinai; nothing sold
+  confidence: high
+  note: TPOT is under the GNU Lesser General Public License and builds from the public repository. It is an academic
+    project from Cedars-Sinai and the University of Pennsylvania, and nothing is sold beside it.
+  raw: license:LGPL-3.0(OSI; version 3 or any later version);source:public(github.com/EpistasisLab/tpot);core-gated:ungated(academic
+    project from Cedars-Sinai; nothing sold)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/EpistasisLab/tpot/HEAD/LICENSE
+    shows: LICENSE is the GNU Lesser General Public License, Version 3, 29 June 2007.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/EpistasisLab/tpot/HEAD/README.md
+    shows: 'README: "TPOT is free software: you can redistribute it and/or modify it under the terms of the GNU
+      Lesser General Public License ... either version 3 of the License, or (at your option) any later version."
+      "The current version of TPOT was developed at Cedars-Sinai"; the original "at the University of Pennsylvania".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4666ea186fa8ab806ac19363cb9e93a6308efe1dbbede91d3b463f82a7e6a32a
+    establishes:
+    - license
+    - core-gated
+  - url: https://pypi.org/pypi/tpot/json
+    shows: PyPI record for TPOT 1.1.0, uploaded 2025-07-03, license "GNU/LGPLv3", Homepage github.com/EpistasisLab/tpot.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7dfa57d9d4f0053e72cb1f4732d860d93c20d5abf5b055a3294bc03e09435c10
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/EpistasisLab/tpot/files/main
+    shows: Repository tree of 146 paths with no ee, enterprise, commercial or proprietary directory.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bd1123d830509862daf73f74c7d4f643b2508f30a801bdb6159a3bd8714fb26b
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the tpot package.
+  sources:
+  - url: https://pypistats.org/api/packages/tpot/recent
+    shows: last_month 14,314 downloads of tpot
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e9d8d577aed726cff537663c35cd12feb5a50e75b91155d66ba66cad5c1bcf11
+capability:
+  score: 5
+  basis: feature_matrix
+  value: genetic-programming search over scikit-learn pipelines of preprocessors, feature selectors and estimators,
+    with multi-objective optimization and configurable search spaces, run in parallel on Dask through TPOTClassifier
+    and TPOTRegressor
+  relative_to: autogluon
+  relation: at
+  confidence: medium
+  note: Given training data and a target, TPOT searches for a whole pipeline and fits the best one itself, which
+    is the automation AutoGluon provides. Unlike AutoGluon it bundles no pretrained model.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+      shows: 'AutoGluon tabular tutorial: "Rather than just a single model, AutoGluon trains multiple models and
+        ensembles them together to obtain superior predictive performance." - the automated search and fit TPOT
+        is compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 6360828afb852783113a12b9eee6585374c18bbb197d489ca176b4492519ade3
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/EpistasisLab/tpot/HEAD/README.md
+    shows: 'README: "TPOT is a Python Automated Machine Learning tool that optimizes machine learning pipelines
+      using genetic programming"; the rewrite adds "genetic feature selection, a significantly expanded and more
+      flexible method of defining search spaces, multi-objective optimization"; usage "est = tpot.TPOTClassifier()
+      est.fit(X,y)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4666ea186fa8ab806ac19363cb9e93a6308efe1dbbede91d3b463f82a7e6a32a
