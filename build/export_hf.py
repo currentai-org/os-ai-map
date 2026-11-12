@@ -506,7 +506,9 @@ def _size_category(n: int) -> str:
 # A dataset tag, like a git release tag, is immutable once pushed. So a push is a function of
 # what the tag already holds:
 #
-#   tag absent                      → upload, confirm the uploaded manifest, then create the tag
+#   tag absent                      → upload on top of the head just read (parent_commit), read
+#                                     the manifest back at the commit the upload returned, and
+#                                     tag exactly that commit
 #   tag present, same release       → nothing to do (a re-run after a later step failed)
 #   tag present, different release  → refuse; never move a released tag
 #
@@ -530,8 +532,13 @@ def _remote_manifest(api, repo_id: str, revision: str) -> dict | None:
     return json.loads(Path(path).read_text())
 
 
-def push(out: Path, repo_id: str, tag: str, *, private: bool, api=None) -> str:
-    """Publish ``out`` to ``repo_id`` as ``tag``. Returns "published" or "unchanged"."""
+def push(out: Path, repo_id: str, tag: str, *, private: bool, require_new: bool = False,
+         api=None) -> str:
+    """Publish ``out`` to ``repo_id`` as ``tag``. Returns "published" or "unchanged".
+
+    ``require_new`` refuses a tag that already exists, so a caller that must prove a fresh
+    upload happened (a rehearsal) cannot pass on an earlier run's tag.
+    """
     if api is None:
         from huggingface_hub import HfApi  # token from HF_TOKEN or `hf auth login`
         api = HfApi()
@@ -549,6 +556,9 @@ def push(out: Path, repo_id: str, tag: str, *, private: bool, api=None) -> str:
         raise SystemExit(f"refusing to push: {repo_id} must be {want}")
 
     existing = {r.name for r in api.list_repo_refs(repo_id, repo_type="dataset").tags}
+    if tag in existing and require_new:
+        raise SystemExit(f"refusing to push: {repo_id} already has tag {tag}, and this run must "
+                         f"make a fresh upload")
     if tag in existing:
         remote = _remote_manifest(api, repo_id, tag)
         if remote is not None and same_release(remote, local):
@@ -557,20 +567,47 @@ def push(out: Path, repo_id: str, tag: str, *, private: bool, api=None) -> str:
         raise SystemExit(f"refusing to push: {repo_id} already has tag {tag} with different "
                          f"content. Tags are immutable; fix forward with a new release.")
 
-    api.upload_folder(repo_id=repo_id, repo_type="dataset", folder_path=str(out),
-                      commit_message=f"Release {tag}", delete_patterns=["data/*.parquet"])
-    head = api.repo_info(repo_id, repo_type="dataset").sha
-    remote = _remote_manifest(api, repo_id, head)
+    # Tag the commit this upload returns, never the branch head read afterwards: another writer
+    # can move the head between the two calls. `parent_commit` makes the upload itself fail if
+    # the branch moved after `info` was read. One case still returns a commit this upload did not
+    # make: when nothing changed (a retry after the tag step failed), the library skips the empty
+    # commit and returns the head as it stands. So the manifest is read back at the returned
+    # commit before anything is tagged.
+    uploaded = api.upload_folder(repo_id=repo_id, repo_type="dataset", folder_path=str(out),
+                                 commit_message=f"Release {tag}",
+                                 delete_patterns=["data/*.parquet"], parent_commit=info.sha)
+    revision = uploaded.oid
+    remote = _remote_manifest(api, repo_id, revision)
     if remote is None or not same_release(remote, local):
-        raise SystemExit(f"refusing to tag: {repo_id}@{head[:8]} does not carry this export's "
-                         f"manifest (a concurrent upload?). Nothing was tagged.")
-    api.create_tag(repo_id, repo_type="dataset", tag=tag, revision=head,
+        raise SystemExit(f"refusing to tag: {repo_id}@{revision[:8]} does not carry this "
+                         f"export's manifest. Nothing was tagged.")
+    api.create_tag(repo_id, repo_type="dataset", tag=tag, revision=revision,
                    tag_message=f"os-ai-map {tag}")
     tagged = _remote_manifest(api, repo_id, tag)
     if tagged is None or not same_release(tagged, local):
         raise SystemExit(f"{repo_id} @ {tag} was created but does not read back as this release")
-    print(f"published {repo_id} @ {tag} (revision {head[:8]}, source {local['source_commit'][:8]})")
+    print(f"published {repo_id} @ {tag} (revision {revision[:8]}, "
+          f"source {local['source_commit'][:8]})")
     return "published"
+
+
+def rehearsal_tag(head: str, now: datetime) -> str:
+    """A tag no earlier rehearsal can have used, so every rehearsal makes a fresh upload."""
+    return f"rehearsal-{head[:8]}-{now.strftime('%Y%m%dT%H%M%SZ')}"
+
+
+def rehearse(out: Path, repo_id: str, tag: str, api=None) -> None:
+    """Both publish paths against a private dataset: a first publication, then a retry.
+
+    The first call must upload and tag (the tag may not exist beforehand); the second must find
+    the release already there and change nothing.
+    """
+    if push(out, repo_id, tag, private=True, require_new=True, api=api) != "published":
+        raise SystemExit("rehearsal failed: the first publish did not upload")
+    if push(out, repo_id, tag, private=True, api=api) != "unchanged":
+        raise SystemExit("rehearsal failed: the second publish of the same release was not "
+                         "a no-op")
+    print(f"rehearsal passed: {repo_id} @ {tag} published, then re-published as a no-op")
 
 
 def main() -> None:
@@ -585,8 +622,8 @@ def main() -> None:
                            f"release tag, the history verifies, and the dataset is public.")
     mode.add_argument("--rehearse", action="store_true",
                       help="exercise the whole publish path against a PRIVATE --repo-id, from any "
-                           "commit: publish as rehearsal-<sha>, then publish again and require "
-                           "the second run to change nothing.")
+                           "commit: publish under a fresh rehearsal tag, then publish again and "
+                           "require the second run to change nothing.")
     parser.add_argument("--no-verify-history", action="store_true",
                         help="skip rebuilding each release tag (fast preview); a push refuses it")
     args = parser.parse_args()
@@ -619,8 +656,8 @@ def main() -> None:
                                          verify=not args.no_verify_history)
     tables = current_tables(sources, payload) | history
 
-    tag = (f"v{version}" if tagged and not args.rehearse
-           else f"rehearsal-{head[:8]}" if args.rehearse else None)
+    tag = (rehearsal_tag(head, datetime.now(timezone.utc)) if args.rehearse
+           else f"v{version}" if tagged else None)
     manifest = write(args.out, tables, payload, head, tag, args.repo_id, provenance)
     for name, f in manifest["files"].items():
         print(f"  {name:32} {f['rows']:>7,} rows")
@@ -631,11 +668,7 @@ def main() -> None:
     if args.push:
         push(args.out, RELEASE_REPO_ID, tag, private=False)
     elif args.rehearse:
-        push(args.out, args.repo_id, tag, private=True)
-        if push(args.out, args.repo_id, tag, private=True) != "unchanged":
-            raise SystemExit("rehearsal failed: the second publish of the same release was not "
-                             "a no-op")
-        print("rehearsal passed: published, then re-published as a no-op")
+        rehearse(args.out, args.repo_id, tag)
 
 
 if __name__ == "__main__":

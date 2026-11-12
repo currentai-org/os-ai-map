@@ -188,11 +188,19 @@ class FakeHub:
         self.tags: dict[str, int] = {}         # tag -> commit index
         self.uploads = 0
         self.fail_create_tag = False
+        self.writer_before_upload = False      # another writer commits after repo_info, before us
+        self.writer_after_upload = False       # another writer commits right after our upload
+
+    def _head(self):
+        return f"c{len(self.commits) - 1}" if self.commits else None
+
+    def _other_writer(self):
+        self.commits.append({"source_commit": "someone-else"})
 
     def repo_info(self, repo_id, repo_type):
         if not self.exists:
             raise RuntimeError("404")
-        return SimpleNamespace(private=self.private, sha=f"c{len(self.commits) - 1}")
+        return SimpleNamespace(private=self.private, sha=self._head())
 
     def list_repo_refs(self, repo_id, repo_type):
         return SimpleNamespace(tags=[SimpleNamespace(name=t) for t in self.tags])
@@ -203,9 +211,23 @@ class FakeHub:
         path.write_text(json.dumps(self.commits[idx]))
         return str(path)
 
-    def upload_folder(self, repo_id, repo_type, folder_path, commit_message, delete_patterns):
+    def upload_folder(self, repo_id, repo_type, folder_path, commit_message, delete_patterns,
+                      parent_commit):
         self.uploads += 1
-        self.commits.append(json.loads((export_hf.Path(folder_path) / "manifest.json").read_text()))
+        if self.writer_before_upload:
+            self._other_writer()
+        # As the Hub does: a commit whose parent is no longer the head is rejected.
+        if parent_commit != self._head():
+            raise RuntimeError("412: parent commit is not the head")
+        manifest = json.loads((export_hf.Path(folder_path) / "manifest.json").read_text())
+        # As huggingface_hub does: an upload that changes nothing makes no commit and returns
+        # the head as it stands.
+        if not (self.commits and self.commits[-1] == manifest):
+            self.commits.append(manifest)
+        oid = self._head()
+        if self.writer_after_upload:
+            self._other_writer()
+        return SimpleNamespace(oid=oid)
 
     def create_tag(self, repo_id, repo_type, tag, revision, tag_message):
         if self.fail_create_tag:
@@ -249,6 +271,68 @@ def test_a_retry_after_the_tag_step_failed_completes_the_release(export_dir, tmp
     hub.fail_create_tag = False
     assert export_hf.push(export_dir, "org/name", "v9.9.9", private=False, api=hub) == "published"
     assert hub.tags["v9.9.9"] == len(hub.commits) - 1
+
+
+def test_the_tag_points_at_the_uploaded_commit_even_when_the_branch_moves_on(export_dir,
+                                                                             tmp_path):
+    hub = _hub(tmp_path)
+    hub.writer_after_upload = True
+    assert export_hf.push(export_dir, "org/name", "v9.9.9", private=False, api=hub) == "published"
+    ours = next(i for i, m in enumerate(hub.commits) if m.get("release_tag") == "v9.9.9")
+    assert hub.tags["v9.9.9"] == ours
+    assert len(hub.commits) - 1 != ours  # the head moved past the release, the tag did not
+
+
+def test_an_upload_racing_another_writer_is_refused_and_nothing_is_tagged(export_dir, tmp_path):
+    hub = _hub(tmp_path)
+    hub.writer_before_upload = True
+    with pytest.raises(RuntimeError, match="parent commit"):
+        export_hf.push(export_dir, "org/name", "v9.9.9", private=False, api=hub)
+    assert hub.tags == {}
+
+
+def test_a_retry_whose_upload_changes_nothing_still_tags_the_release(export_dir, tmp_path):
+    # The upload landed, the tag step failed, and the retry's upload is skipped as empty: the
+    # library hands back the head, which here is still the release commit.
+    hub = _hub(tmp_path)
+    hub.fail_create_tag = True
+    with pytest.raises(RuntimeError):
+        export_hf.push(export_dir, "org/name", "v9.9.9", private=False, api=hub)
+    hub.fail_create_tag = False
+    export_hf.push(export_dir, "org/name", "v9.9.9", private=False, api=hub)
+    assert len(hub.commits) == 1 and hub.tags == {"v9.9.9": 0}
+
+
+@pytest.fixture
+def rehearsal_dir(built, tmp_path):
+    _, payload, tables, head, provenance = built
+    tag = export_hf.rehearsal_tag(head, export_hf.datetime(2026, 1, 2, 3, 4, 5))
+    out = tmp_path / "rehearsal"
+    export_hf.write(out, tables, payload, head, tag, "org/test", provenance)
+    return out, tag
+
+
+def test_a_rehearsal_publishes_fresh_then_retries_as_a_no_op(rehearsal_dir, tmp_path):
+    out, tag = rehearsal_dir
+    hub = _hub(tmp_path, private=True)
+    export_hf.rehearse(out, "org/test", tag, api=hub)
+    assert hub.uploads == 1 and tag in hub.tags
+
+
+def test_a_rehearsal_cannot_pass_on_an_earlier_runs_tag(rehearsal_dir, tmp_path):
+    out, tag = rehearsal_dir
+    hub = _hub(tmp_path, private=True)
+    export_hf.rehearse(out, "org/test", tag, api=hub)
+    with pytest.raises(SystemExit, match="fresh upload"):
+        export_hf.rehearse(out, "org/test", tag, api=hub)
+    assert hub.uploads == 1
+
+
+def test_rehearsal_tags_do_not_repeat():
+    t = export_hf.datetime(2026, 1, 2, 3, 4, 5)
+    a = export_hf.rehearsal_tag("0123456789abcdef", t)
+    b = export_hf.rehearsal_tag("0123456789abcdef", t.replace(second=6))
+    assert a != b and a.startswith("rehearsal-01234567-")
 
 
 def test_a_tag_holding_different_content_is_never_moved(export_dir, tmp_path):
