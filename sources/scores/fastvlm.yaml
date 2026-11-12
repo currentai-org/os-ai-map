@@ -1,0 +1,104 @@
+product: fastvlm
+openness:
+  score: 2
+  class: restricted
+  governing_release: FastVLM
+  components:
+    weights:
+      value: open
+      detail: 0.5B, 1.5B and 7B checkpoints and quantized Apple Silicon exports on the Hub, ungated
+    data:
+      value: closed
+      detail: no training data released
+    code:
+      value: partial
+      detail: inference, Apple Silicon export and the iOS demo app; training uses the LLaVA codebase
+    license:
+    - name: Apple-AMLR
+      detail: Apple Machine Learning Research Model license on the checkpoints; non-commercial research only. The
+        repository code is under Apple's separate sample-code license
+  confidence: high
+  note: The FastVLM checkpoints carry Apple's research-model license, which limits use to non-commercial scientific
+    research and excludes any commercial product or service. Apple has released no training data, and training runs
+    on the separate LLaVA codebase.
+  raw: weights:open(0.5B, 1.5B and 7B checkpoints and quantized Apple Silicon exports on the Hub, ungated);data:closed(no
+    training data released);code:partial(inference, Apple Silicon export and the iOS demo app; training uses the
+    LLaVA codebase);license:Apple-AMLR(Apple Machine Learning Research Model license on the checkpoints; non-commercial
+    research only. The repository code is under Apple's separate sample-code license)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/apple-aiml-research/ml-fastvlm/main/LICENSE_MODEL
+    shows: 'Apple Machine Learning Research Model license: use is granted "exclusively for Research Purposes", which
+      "does not include any commercial exploitation, product development or use in any commercial product or service".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e177a921ef25a523c429c6916e819c769bb4942619aadd16afe0108105a2baaf
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/apple-aiml-research/ml-fastvlm/main/LICENSE
+    shows: 'Repository LICENSE: Apple''s sample-code license for the Apple Software, copyright 2025 Apple Inc.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3d3e2769774fe41e8ef266662a30d4b66286a5b8de194a1f0a1ee26ef4f2964b
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=apple&search=fastvlm&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Six apple FastVLM repositories (0.5B, 1.5B, 7B and fp16, int8 and int4 exports), all gated false and
+      tagged apple-amlr.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f1a1666cb74b4af465a77593e8cb862387f38cdcb101d93796a5536911614cf8
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/apple-aiml-research/ml-fastvlm/main/README.md
+    shows: 'README: "We use LLaVA codebase to train FastVLM variants. In order to train or finetune your own variants,
+      please follow instructions provided in LLaVA codebase. We provide instructions for running inference with
+      our models."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 078bb65aaaef00f352d9f8fe65e6530232932c36b4d21c31eaefac8f440dabab
+    establishes:
+    - code
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the three declared sizes, most of them for the 0.5B
+    model. The quantized exports add comparatively little.
+  sources:
+  - url: https://huggingface.co/api/models?author=apple&search=fastvlm&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: FastVLM-0.5B 16,089, FastVLM-1.5B 1,681 and FastVLM-7B 992 downloads in the trailing 30 days (18,762
+      together); the six repositories sum to 19,157.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f1a1666cb74b4af465a77593e8cb862387f38cdcb101d93796a5536911614cf8
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 'single-image question answering, OCR and document and chart reading (FastVLM-7B: DocVQA 93.2, ChartQA
+    85.0, OCRBench 73.1)'
+  relative_to: moondream
+  relation: at
+  confidence: high
+  note: FastVLM reads documents and charts in a single image, level with Moondream. Neither its card nor its repository
+    documents video or several images at once.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://moondream.ai/blog/moondream-3-1-beyond-benchmarks
+      shows: 'Moondream 3.1 blog: document-understanding results ChartQA 86.01 and DocVQA 88.6 for Moondream 3.1,
+        answered one image at a time through query().'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c9e86d9726b6651a65ca4c677f0c15ceb62170b60d240d8e37c56fd358aa1e37
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/apple/FastVLM-7B/raw/main/README.md
+    shows: 'FastVLM-7B card evaluations: DocVQA 93.2, ChartQA 85.0, InfoVQA 75.8, OCRBench 73.1 for FastVLM-7B;
+      usage runs predict.py with one --image-file and a prompt.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e138265e2bf3ac3d3051b422b617c99b5c37c2cf350cc36e52a5b1085b543bbe

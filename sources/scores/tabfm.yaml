@@ -1,0 +1,139 @@
+product: tabfm
+openness:
+  score: 2
+  class: restricted
+  governing_release: TabFM 1.1.0
+  components:
+    weights:
+      value: open
+      detail: 1.0.0 and 1.1.0 checkpoints in PyTorch and JAX on the Hub, ungated; the package downloads them on first
+        use
+    data:
+      value: closed
+      detail: synthetic tables drawn from a structural causal model prior; the generator is not released
+    code:
+      value: partial
+      detail: inference and estimator code; no pretraining code
+    license:
+    - name: Apache-2.0
+      detail: code
+    - name: TabFM-Non-Commercial-License-v1.0
+      detail: weights; non-commercial, non-production use only
+  confidence: high
+  note: The tabfm code is Apache-2.0, but the pretrained weights the package downloads by default are under Google's
+    TabFM Non-Commercial License, which allows testing, evaluation and research only and bars production use. The synthetic
+    training data cannot be regenerated, since neither the generator nor the pretraining code is released.
+  raw: weights:open(1.0.0 and 1.1.0 checkpoints in PyTorch and JAX on the Hub, ungated; the package downloads them on
+    first use);data:closed(synthetic tables drawn from a structural causal model prior; the generator is not released);code:partial(inference
+    and estimator code; no pretraining code);license:Apache-2.0(code)+TabFM-Non-Commercial-License-v1.0(weights; non-commercial,
+    non-production use only)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/google-research/tabfm/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, January 2004.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/google-research/tabfm/main/README.md
+    shows: 'README: "The TabFM source code in this repository is licensed under Apache-2.0. However, the default Quick
+      Start calls tabfm_v1_0_0.load(), which automatically downloads pretrained weights from Hugging Face. Those pretrained
+      weights are distributed under the separate tabfm-non-commercial-v1.0 license and are restricted to non-commercial,
+      non-production use."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e6a0e0e36ccd18174f5aaa97dd98a4661e25fc3014f4bdb9ffd3d2a4790fe146
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/google/tabfm-1.1.0-pytorch/raw/main/LICENSE
+    shows: 'TabFM Non-Commercial License v1.0: grants use "solely for your Non-Commercial Purposes"; use "for any revenue-generating
+      activity" or "in direct or indirect interactions with end users or production systems" is not a Non-Commercial
+      Purpose.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 26d8c4748b755fd202668ca89471b1847f2e0e0d9a88707642b1a3a1d2edb276
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=google&search=tabfm&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: google/tabfm-1.0.0-pytorch, tabfm-1.1.0-pytorch and tabfm-1.0.0-jax, all gated false, license_name tabfm-non-commercial-v1.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 913b74e77bde58b18e12db6387b8b529e5096083bd570b260fc6bd6b5e7f22eb
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/google/tabfm-1.1.0-pytorch/raw/main/README.md
+    shows: 'tabfm-1.1.0-pytorch card: "TabFM was trained on hundreds of millions of synthetic datasets generated dynamically
+      using structural causal models (SCMs)"; weights under the TabFM Non-Commercial License v1.0, source code Apache
+      2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5dfd261f1a30a5bcc62f857d685c81e6475479dac66f1e6807dd386b541342f1
+    establishes:
+    - data
+    - license
+  - url: https://ungh.cc/repos/google-research/tabfm/files/main
+    shows: 'Repository tree of 49 paths: JAX and PyTorch model, checkpoint loading, estimator, Hub conversion and example
+      code; no training or prior-generation script.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 04a5892eee7f06ea07a42a2ae438ac2dd95cb47feee5c3a56f379c2b7c2c9b6f
+    establishes:
+    - code
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for the three TabFM checkpoint repositories, most of them for
+    the 1.0.0 PyTorch weights. Monthly PyPI downloads of the tabfm package, which fetches those weights, fall in the
+    same range.
+  sources:
+  - url: https://huggingface.co/api/models?author=google&search=tabfm&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: tabfm-1.0.0-pytorch 38,604, tabfm-1.0.0-jax 2,073 and tabfm-1.1.0-pytorch 981 downloads in the trailing 30
+      days (41,658 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 913b74e77bde58b18e12db6387b8b529e5096083bd570b260fc6bd6b5e7f22eb
+  - url: https://pypistats.org/api/packages/tabfm/recent
+    shows: last_month 22,340 downloads of tabfm
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4f68b5c378989b92c4feafdb7409b6adf50d3b43f034c6ed3653fab0501210e5
+capability:
+  score: 4
+  basis: feature_matrix
+  value: classification (up to 10 classes) and regression on a new table in one forward pass with no training or tuning,
+    through scikit-learn-style estimators and an ensemble preset; evaluated on TabArena's 51 datasets
+  relative_to: tabpfn
+  relation: at
+  confidence: medium
+  note: TabFM reads the user's training rows as context and predicts on new rows without fitting or tuning, which is
+    what TabPFN does. It is one model, limited to ten classes, and does not search over or ensemble other learners.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://arxiv.org/abs/2605.13986
+      shows: 'TabPFN-3 abstract: "On the standard tabular benchmark TabArena, a forward pass of TabPFN-3 outperforms
+        all other models, including tuned and ensembled baselines" - the no-training prediction compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 9be586d3eefad0f5172763636cc3de32007e990f2e034316e2e6714d93235db8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/google/tabfm-1.1.0-pytorch/raw/main/README.md
+    shows: 'Card: "requiring no fine-tuning or hyperparameter search - training examples are passed as context and predictions
+      are made in a single forward pass"; "Max 10 classes"; "evaluated on TabArena across 51 datasets (38 classification,
+      13 regression)"; a TabFMClassifier.ensemble() preset.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5dfd261f1a30a5bcc62f857d685c81e6475479dac66f1e6807dd386b541342f1
+  - url: https://raw.githubusercontent.com/google-research/tabfm/main/README.md
+    shows: 'README: "At inference time, TabFM does not require training parameters on your dataset; instead, it leverages
+      in-context learning by reading your training data as "context""; TabFMClassifier and TabFMRegressor examples.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e6a0e0e36ccd18174f5aaa97dd98a4661e25fc3014f4bdb9ffd3d2a4790fe146

@@ -1,0 +1,135 @@
+product: tiledb
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the Tile.ai enterprise platform is a separate product, not part of this repository
+  confidence: high
+  note: The storage engine is MIT-licensed and builds in full from its public repository. TileDB, Inc. sells a separate enterprise
+    data platform, now branded Tile.ai, which it describes as built by the team behind the open-source engine; nothing in
+    the engine is held back for it.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the Tile.ai enterprise platform is a separate product, not part of
+    this repository)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/TileDB-Inc/TileDB/main/LICENSE
+    shows: 'LICENSE is the MIT License text: "The MIT License (MIT)", "Copyright (c) 2017-2021 TileDB, Inc.", "Copyright (c)
+      2016 MIT and Intel Corporation".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4c7ff1be915106b4a986c6a82e201032d97bb23f8eb89b2bfc2bfc364c79f936
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/TileDB-Inc/TileDB/main/README.md
+    shows: 'README: "It is open-sourced under the permissive MIT License, developed and maintained by TileDB, Inc."; "To distinguish
+      this project from other TileDB offerings, we often refer to it as TileDB Embedded"; links "Building from Source".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a609b4d690afa44a0f50a54d5db5e829a681486c4769b2f847bbbe3aff3f7bb
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://tiledb.com/about
+    shows: 'Company page: "Built by the team behind the open-source TileDB universal array storage engine, Tile.ai is in production
+      at leading life sciences and healthcare organizations."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 934116a2d832ee26f0373410c1e81c35a436245cb2184dc6501f1763043b3c00
+    establishes:
+    - core-gated
+  - url: https://tiledb.com/pricing
+    shows: 'The pricing link now leads to "Get Early Access | Tile.ai": "Tile.ai is in private preview, and early access starts
+      with a conversation"; footer "TileDB, Inc., d/b/a Tile.ai". The commercial offering is the Tile.ai platform deployed
+      in the customer''s cloud, not an edition of the engine.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b19bf09b71ecea6dc4020b8f9e5c6c6cbdb6f3492789d2c6c488be6bbee0803f
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/TileDB-Inc/TileDB/files/main
+    shows: Full listing of the main branch, 1,769 paths; no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5ef9b7676afc83cd95baa918d4a536d0eea82ebc6d57123632637f3c990889be
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/TileDB-Inc/TileDB/releases/latest
+    shows: Latest release TileDB 2.30.1, published 2026-02-25.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9d6d0feda6220ee862b6c5573af33877f1681be981affb213f1b381546a9e6de
+    establishes:
+    - source
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of tiledb, the Python API, whose wheels carry the engine itself. Installs of the
+    C++ library from conda-forge and use through the R, Java and other APIs are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/tiledb/recent
+    shows: 'pypistats: last_month 39,879 downloads for tiledb.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 30fb157cce4f0f9fb75467bde91594ab171a273d42007ccc867901d1094c3f48
+  - url: https://pypi.org/pypi/tiledb/json
+    shows: 'PyPI metadata for tiledb 0.36.1: summary "Pythonic interface to the TileDB array storage manager", license MIT,
+      homepage https://github.com/TileDB-Inc/TileDB-Py; manylinux x86_64 wheels of about 18 MB.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 62955819d752bdaad9718b4eba33d6db6c85d85e8e112c725d819834c0700f44
+  - url: https://raw.githubusercontent.com/TileDB-Inc/TileDB-Py/main/docs/building-from-source.md
+    shows: 'TileDB-Py build notes: "TILEDB_PATH: Path to TileDB core library. If this variable is set and the library is found
+      in the specified folder it is not copied inside of the wheel."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 45a3bb1a2270b2ad26110fb119511c4c41dd9c00fab1743f5061c357b74b27b9
+  - url: https://raw.githubusercontent.com/TileDB-Inc/TileDB-Py/main/README.md
+    shows: 'TileDB-Py README: "TileDB-Py is a Python interface to the TileDB Storage Engine", installed with "pip install
+      tiledb".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7dcd9961562439656e04be3e8676e4b3c0a9877b3767a7cb31df1d9ac8421058
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: 'Embeddable storage engine for dense and sparse arrays and dataframes: chunked tiles, compression, encryption and
+    checksum filters, multi-threaded parallel I/O, versioning with time travel, native S3, GCS and Azure storage, and integrations
+    with Spark, Dask, MariaDB and GDAL. Vector search is a separate project; the engine has no server or cluster mode.'
+  relative_to: deep-lake
+  relation: at
+  confidence: medium
+  note: TileDB is a complete embeddable store for arrays and dataframes, with versioning, encryption and direct reads and
+    writes against cloud object storage, the same kind of single store as Deep Lake. It runs inside the application that calls
+    it and has no clustered serving or built-in search; vector search lives in a separate TileDB project.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/activeloopai/deeplake/main/README.md
+      shows: Re-read of the peer. Deep Lake's README still describes "storage for all data types" with "querying and vector
+        search, data streaming while training models at scale, data versioning and lineage" and says "it is serverless", with
+        no cluster or distributed serving mode.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 632ba1d7b06322cc3e74038a249ce1c5d1dcd86173dde465ece2b24a3f43d467
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/TileDB-Inc/TileDB/main/README.md
+    shows: 'README features: "dense and sparse arrays", "dataframes and key-value stores (via sparse arrays)", "Cloud storage
+      (AWS S3, Google Cloud Storage, Azure Blob Storage)", "Multiple compression, encryption and checksum filters", "Parallel
+      IO", "Data versioning (rapid updates, time traveling)", integrations "(Spark, Dask, MariaDB, GDAL, etc.)"; "It is an
+      embeddable C++ library"; TileDB-Vector-Search listed as a separate application-specific package.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a609b4d690afa44a0f50a54d5db5e829a681486c4769b2f847bbbe3aff3f7bb

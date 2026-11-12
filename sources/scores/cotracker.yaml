@@ -1,0 +1,118 @@
+product: cotracker
+openness:
+  score: 2
+  class: restricted
+  governing_release: CoTracker3
+  components:
+    weights:
+      value: open
+      detail: CoTracker3 baseline and scaled, online and offline checkpoints on the Hub, ungated
+    data:
+      value: documented-not-released
+      detail: the synthetic Kubric training set is on the Hub; the real videos used for pseudo-label fine-tuning
+        are not released
+    code:
+      value: open
+      detail: training scripts for Kubric and for pseudo-label fine-tuning
+    license:
+    - name: CC-BY-NC-4.0
+      detail: most of the code and the checkpoints; a few third-party parts are MIT or Apache-2.0
+  confidence: high
+  note: CoTracker's checkpoints and most of its code are under CC BY-NC 4.0, which forbids commercial use. Meta
+    publishes the training scripts and its synthetic Kubric training set, but not the real videos the released models
+    were fine-tuned on.
+  raw: weights:open(CoTracker3 baseline and scaled, online and offline checkpoints on the Hub, ungated);data:documented-not-released(the
+    synthetic Kubric training set is on the Hub; the real videos used for pseudo-label fine-tuning are not released);code:open(training
+    scripts for Kubric and for pseudo-label fine-tuning);license:CC-BY-NC-4.0(most of the code and the checkpoints;
+    a few third-party parts are MIT or Apache-2.0)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/co-tracker/main/LICENSE.md
+    shows: LICENSE.md is Creative Commons Attribution-NonCommercial 4.0 International.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1d8ca66080a2701508a70be4ddad4be28c509bcc3397a682fb8edf767fdd7a00
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/co-tracker/main/README.md
+    shows: 'README: "The majority of CoTracker is licensed under CC-BY-NC, however portions of the project are available
+      under separate license terms"; training commands for train_on_kubric.py; "In order to launch training with
+      pseudo-labelling, you need to collect your own dataset of real videos."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 214ec02decccf2b5d10477398018f7b6b69d20e2b9e16d483f130595424adabf
+    establishes:
+    - license
+    - code
+    - data
+  - url: https://huggingface.co/api/models/facebook/cotracker3
+    shows: 'Hub record for facebook/cotracker3: gated false, license cc-by-nc-4.0, baseline and scaled online and
+      offline .pth checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 771f282417ab5ca2562632d1770d4e9351d7ba8f573446f015a7338080587a5b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/datasets/facebook/CoTracker3_Kubric
+    shows: 'Hub record for facebook/CoTracker3_Kubric: public, not gated, license apache-2.0; "This dataset was
+      specifically created for training CoTracker 3".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3bfcdca419c4b25a2997da269d4dcca2f25b9bcc8c3d5113237e2d44be49fa7f
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/facebookresearch/co-tracker/files/main
+    shows: 'Repository tree: train_on_kubric.py, train_on_real_data.py and the four launch_training_*.sh scripts.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6e1700d02f4ed7c68b9a7470593e5c2346732afb27d9bbc6bddfdc425d94914d
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the CoTracker3 and earlier CoTracker repositories,
+    almost all of them for CoTracker3. Loading through torch.hub fetches the same Hub files.
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=cotracker&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: facebook/cotracker3 44,095 and facebook/cotracker 1,636 downloads in the trailing 30 days (45,731 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1a2d71ec4e37a6503404743429755752b2a5ed6973dd13c5f04ab9407398ac80
+capability:
+  score: 4
+  basis: feature_matrix
+  value: tracks any user-chosen or grid-sampled points through a video, jointly, online or offline, with no training;
+    CoTracker3 offline scores 76.9 on TAP-Vid DAVIS
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: CoTracker follows whichever points the user picks in their own video, with no training step, much as Segment
+    Anything segments whatever the user points at. It does point tracking only, where Ultralytics spans detection,
+    segmentation and depth.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main includes ultralytics/models/yolo/world/ and ultralytics/models/yolo/yoloe/
+        beside the sam modules - the no-training, user-prompted models compared at.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 6012d78d682f9828402719e70808fdd6db76bd76e9e091b19d4c0b789831114a
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/facebook/cotracker3/raw/main/README.md
+    shows: 'cotracker3 card: "CoTracker can track: Any pixel in a video; A quasi-dense set of pixels together; Points
+      can be manually selected or sampled on a grid in any video frame".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 935b96e134cc8f60f9cb4aa8d295a41b2a4aa11ee7c58e6cc81608f0a30391d7
+  - url: https://raw.githubusercontent.com/facebookresearch/co-tracker/main/README.md
+    shows: 'README results table: CoTracker3 offline 76.9 and online 76.7 on DAVIS, 67.8 and 68.3 on Kinetics, with
+      the released checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 214ec02decccf2b5d10477398018f7b6b69d20e2b9e16d483f130595424adabf

@@ -1,0 +1,139 @@
+product: hunyuanvideo-foley
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: the XXL and XL checkpoints, with the audio VAE and Synchformer weights, download from the Hub without a gate
+    data:
+      value: described
+      detail: the paper and README describe the pipeline that curated a 100,000-hour text-video-audio set; the data is not
+        released
+    code:
+      value: partial
+      detail: inference code and a Gradio app; no training code
+    license:
+    - name: Tencent-Hunyuan-Community-License
+      detail: the weights and code; excludes the European Union, the United Kingdom and South Korea, and needs a separate
+        license above 100 million monthly active users
+  governing_release: HunyuanVideo-Foley (August 2025, XL added September 2025)
+  confidence: high
+  note: HunyuanVideo-Foley's weights and inference code are published under Tencent's community license, which allows commercial
+    use but does not apply in the European Union, the United Kingdom or South Korea. No training code is published, and the
+    training data is described but not released.
+  raw: weights:open(the XXL and XL checkpoints, with the audio VAE and Synchformer weights, download from the Hub without
+    a gate);data:described(the paper and README describe the pipeline that curated a 100,000-hour text-video-audio set; the
+    data is not released);code:partial(inference code and a Gradio app; no training code);license:Tencent-Hunyuan-Community-License(the
+    weights and code; excludes the European Union, the United Kingdom and South Korea, and needs a separate license above
+    100 million monthly active users)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanVideo-Foley/main/LICENSE
+    shows: 'LICENSE body: "TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT / Tencent HunyuanVideo-Foley Release Date: August 28,
+      2025"; "DOES NOT APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA"; a separate license above "100 million
+      monthly active users".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7334afd50a0fbca64182b5dadd33db5a09dc6c1756034aefba08a23c703c2a5c
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/tencent/HunyuanVideo-Foley?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=siblings&expand[]=createdAt
+    shows: 'Hugging Face API record for tencent/HunyuanVideo-Foley: license_name tencent-hunyuan-community, gated false; hunyuanvideo_foley.pth,
+      hunyuanvideo_foley_xl.pth, vae_128d_48k.pth and synchformer_state_dict.pth.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4746d4c8eb167b11676d577e80b6d990997cbf160d29f2227c4453afe667f858
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanVideo-Foley/main/hunyuanvideo_foley/utils/model_utils.py
+    shows: 'Model loader: weights from the repository plus "google/siglip2-base-patch16-512" and "laion/larger_clap_general"
+      from the Hub.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3aa3fce8b72e0d3b362fa669405ba1c556b928048ae85618fc37bdd3dfc7c7e9
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/google/siglip2-base-patch16-512?expand[]=cardData&expand[]=gated
+    shows: 'Hugging Face API record for google/siglip2-base-patch16-512: license apache-2.0, gated false.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 26d127a49634007442f173ee13a2b099525cdcb448579445c73415b2460788d2
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/laion/larger_clap_general?expand[]=cardData&expand[]=gated
+    shows: 'Hugging Face API record for laion/larger_clap_general: license apache-2.0, gated false.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 85383e98c0e864ada5b98d8022cabf248fca882536a831304e914b358b3565df
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/Tencent-Hunyuan/HunyuanVideo-Foley/files/main
+    shows: 'Repository file list: infer.py, gradio_app.py, the hunyuanvideo_foley/ package and tests; no training script.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed88b8665b83721033923d16949f2d722b761b66822bcd6282f7c47235c8e69e
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanVideo-Foley/main/README.md
+    shows: 'README news: "[2025.9.29] HunyuanVideo-Foley-XL Model Release"; "[2025.8.28] HunyuanVideo-Foley Open Source Release
+      - Inference code and model weights publicly available"; a "data processing pipeline for high-quality text-video-audio
+      datasets".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bb9fb0a62f458607e11caa773b2df1a1ee9269a5abd071547d9c24af48396cb7
+    establishes:
+    - code
+    - data
+  - url: https://arxiv.org/abs/2508.16930
+    shows: 'Paper abstract: "a scalable data pipeline curating 100k-hour multimodal datasets through automated annotation".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 01dba873b2dfcef41eb81aa2de925ee5db0038e7be4255b1132fa02ae533f966
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the single HunyuanVideo-Foley repository, which holds .pth checkpoints
+    the Hub's counter may undercount.
+  sources:
+  - url: https://huggingface.co/api/models?author=tencent&search=Foley&sort=downloads&direction=-1&limit=100
+    shows: 'Listing: tencent/HunyuanVideo-Foley, 1121 downloads, the only Foley repository on the account.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c325153916435d8b2065a8a1f0b5df57416648a66bf5996e7bffd4d63c36ee6f
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released video-to-audio and text-video-to-audio weights (48 kHz sound effects synchronized to video); no entry on
+    the Artificial Analysis music boards read 2026-11-12, which rank music generation, and no public arena ranks video-to-audio
+  confidence: medium
+  relative_to: mmaudio
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+      shows: 'Re-read of the peer: the AA-Music-Instrumental v1.1 board as served lists 19 music models and still has no MMAudio
+        entry, so the peer remains unranked, level with HunyuanVideo-Foley.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c675cfb45e25c7b4ffcb8da0bc8b922729abcc98419ee057e4b6557d7b111196
+  note: HunyuanVideo-Foley does the same job as MMAudio, sound for silent video, and like it has no public arena to rank on.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+    shows: The "AA-Music-Instrumental v1.1" board lists 19 music models and no HunyuanVideo-Foley entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c675cfb45e25c7b4ffcb8da0bc8b922729abcc98419ee057e4b6557d7b111196
+  - url: https://arxiv.org/abs/2508.16930
+    shows: 'Paper abstract: "an end-to-end text-video-to-audio framework that synthesizes high-fidelity audio precisely aligned
+      with visual dynamics and semantic context".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 01dba873b2dfcef41eb81aa2de925ee5db0038e7be4255b1132fa02ae533f966

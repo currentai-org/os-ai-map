@@ -1,0 +1,101 @@
+product: text-generation-webui
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI. the LICENSE body is the GNU Affero General Public License version 3
+    source:
+      value: public
+      detail: oobabooga/textgen
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary path. a project by an individual developer, with no company,
+        paid edition or hosted service named
+  confidence: high
+  note: TextGen is released under the GNU AGPL version 3 with its full source public, and its desktop builds are made
+    from the same repository. It is one developer's project, with no company, paid edition or hosted service beside it.
+  raw: license:AGPL-3.0(OSI. the LICENSE body is the GNU Affero General Public License version 3);source:public(oobabooga/textgen);core-gated:ungated(no
+    ee, enterprise, commercial or proprietary path. a project by an individual developer, with no company, paid edition
+    or hosted service named)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/oobabooga/textgen/main/LICENSE
+    shows: 'LICENSE body: "GNU AFFERO GENERAL PUBLIC LICENSE / Version 3, 19 November 2007", the stock text with no added
+      terms.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/oobabooga/textgen/files/main
+    shows: 'Full file list of the main branch (modules/, extensions/, desktop/, docker/, requirements/): no ee/, enterprise/,
+      commercial/ or proprietary/ path.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 75de73028dba5730076e6794d442c3df33c632477f2958da7d7e1079b83d1965
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/oobabooga/textgen/main/README.md
+    shows: 'README: "A desktop app for local LLMs. Open source, no telemetry."; portable builds come from the repository''s
+      releases page, and the manual install clones this repository and runs server.py. No paid tier or hosted service
+      is described.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af5861e3628130552b39519a92a735f8149cc5d577ad2549bf7a65c858a1d910
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  banded_quantity: 47,737 GitHub stargazers on oobabooga/textgen, the product's only declared artifact
+  note: TextGen ships as portable builds and a cloned repository rather than through a package registry, so GitHub stars
+    are the only signal. A star is not a use, so the reading says little about how many people run it.
+  sources:
+  - url: https://ungh.cc/repos/oobabooga/textgen
+    shows: 'Repository record for oobabooga/textgen (name "textgen"): stars 47737, pushedAt 2026-08-17.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 75d2cde452a01385907c438d26911fdc6291f48177700cf1c3785052b8566d2c
+capability:
+  score: 4
+  basis: feature_matrix
+  value: local chat, instruct and notebook modes; llama.cpp, ik_llama.cpp, Transformers, ExLlamaV3 and TensorRT-LLM backends;
+    OpenAI- and Anthropic-compatible API with tool calling; MCP servers; vision and file attachments; LoRA training;
+    diffusers image generation; extensions
+  confidence: medium
+  relative_to: lm-studio
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://lmstudio.ai/docs/developer
+      shows: The LM Studio developer docs still describe TypeScript and Python SDKs, a REST API with stateful chats and
+        "MCPs via HTTP", OpenAI- and Anthropic-compatible endpoints, and running headless as the llmster service. TextGen
+        matches the local runtimes, compatible endpoints and MCP support and adds training and image generation, but
+        has no SDKs, which keeps the two level.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: a3ac2322528b98bf2290acfaa02580a126211a99da2fee1b9c07becadc86a1a2
+    - url: https://lmstudio.ai/docs/app
+      shows: The LM Studio app docs still cover the desktop chat interface, model downloads and running models locally.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 83b7d72dffd31d74f5c05129928c6f5c888061f2adbe08c319b12307029452bd
+  note: TextGen runs local models on five inference backends and serves them through OpenAI- and Anthropic-compatible
+    endpoints with tool calling and MCP, on par with LM Studio. It is a single-user application without the multi-user
+    accounts and agent tooling that put LibreChat higher.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/oobabooga/textgen/main/README.md
+    shows: 'README Features: "Multiple backends: llama.cpp, ik_llama.cpp, Transformers, ExLlamaV3, and TensorRT-LLM";
+      "OpenAI/Anthropic-compatible API: Chat, Completions, and Messages endpoints with tool-calling support"; "MCP servers
+      are also supported"; "Training: Fine-tune LoRAs"; "Image generation: A dedicated tab for diffusers models".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: af5861e3628130552b39519a92a735f8149cc5d577ad2549bf7a65c858a1d910

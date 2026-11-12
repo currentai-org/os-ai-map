@@ -1,0 +1,101 @@
+product: ovis
+openness:
+  score: 3
+  class: open_weights
+  governing_release: Ovis2.6
+  components:
+    weights:
+      value: open
+      detail: Ovis2.6-30B-A3B and 80B-A3B on the Hub, ungated
+    data:
+      value: closed
+      detail: no training data released for Ovis2.6
+    code:
+      value: partial
+      detail: fine-tuning code and an SFT script for Ovis2.5; nothing specific to Ovis2.6
+    license:
+    - name: Apache-2.0
+      detail: code and weights
+  confidence: high
+  note: Ovis2.6's weights and the repository code are Apache-2.0. The training data is not released, and the repository's
+    fine-tuning scripts target the earlier Ovis2.5 rather than the current release.
+  raw: weights:open(Ovis2.6-30B-A3B and 80B-A3B on the Hub, ungated);data:closed(no training data released for Ovis2.6);code:partial(fine-tuning
+    code and an SFT script for Ovis2.5; nothing specific to Ovis2.6);license:Apache-2.0(code and weights)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/ATH-MaaS/Ovis/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, copyright 2024 AIDC-AI.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 01bf9abbb1a19c4c7841bfdd80f0e5953c59a1a4a40fb2d43f2ea2c9101f520c
+    establishes:
+    - license
+  - url: https://huggingface.co/ATH-MaaS/Ovis2.6-30B-A3B/raw/main/README.md
+    shows: 'Ovis2.6-30B-A3B card: license apache-2.0; "the latest advancement in the Ovis series"; "This project
+      is licensed under the Apache License, Version 2.0"; no training data release.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6c193db21495aab88a5ca5347c88f18697ea7c37b0cc3422dd1afc88670d178c
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models?author=ATH-MaaS&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Ovis2.6-30B-A3B (2026-02-12) and Ovis2.6-80B-A3B (2026-05-11), the newest Ovis chat models, both gated
+      false and tagged apache-2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 012849ce00e1f6c00e7182ecfe625d21dfd2121f0af3c9169f5cb243b6d930ae
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/ATH-MaaS/Ovis/files/main
+    shows: 'Repository tree: ovis/train/train.py, ovis/train/dataset/ovis2_5_sft_datainfo.json and scripts/run_ovis2_5_sft.sh;
+      no Ovis2.6 training files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8540d25e5be0f16ed30973d479103aec2169028844272887847f98a7226aa9d0
+    establishes:
+    - code
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the six declared checkpoints across Ovis2.6, Ovis2.5
+    and Ovis2. OvisOCR, a separate document model, is downloaded more than all of them and is not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=ATH-MaaS&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Ovis2.5-2B 6,842, Ovis2-1B 6,577, Ovis2.6-30B-A3B 5,805, Ovis2.5-9B 4,384, Ovis2-8B 3,034 and Ovis2.6-80B-A3B
+      169 downloads in the trailing 30 days (26,811 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 012849ce00e1f6c00e7182ecfe625d21dfd2121f0af3c9169f5cb243b6d930ae
+capability:
+  score: 3
+  basis: feature_matrix
+  value: image, long-document, chart, multi-image and video question answering in a 64K-token context, with cropping
+    and rotation tools inside its reasoning (Ovis2.6-30B-A3B)
+  relative_to: minicpm-v
+  relation: at
+  confidence: high
+  note: Ovis2.6 reads documents, charts, several images and video, level with MiniCPM-V. Its image tools crop and
+    rotate within its own reasoning and do not act in a live interface.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+      shows: 'MiniCPM-V 4.6 card: "It inherits the strong single-image, multi-image, and video understanding capabilities
+        of MiniCPM-V family"; max_num_frames default 128.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd1e58bd92c42d5f34797e5930889bcfd17c1ef4d5bb5e8e6f5e572eddbc34f8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/ATH-MaaS/Ovis2.6-30B-A3B/raw/main/README.md
+    shows: 'Ovis2.6-30B-A3B card: "Enhanced Long-Sequence and High-Resolution Processing" with a 64K context and
+      images up to 2880x2880; "Think with Image" invokes cropping and rotation; multi-image and video inference
+      examples.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6c193db21495aab88a5ca5347c88f18697ea7c37b0cc3422dd1afc88670d178c

@@ -1,0 +1,127 @@
+product: hidream
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: HiDream-O1-Image and its Dev and Dev-2604 variants download from Hugging Face without a gate
+    data:
+      value: closed
+      detail: neither the README nor the model card releases or describes the training data
+    code:
+      value: partial
+      detail: the repository publishes inference, the prompt agent and a web demo; no training code
+    license:
+    - name: MIT
+      detail: OSI; the code and the HiDream-O1-Image models
+    context:
+      prior-release:
+        value: distributed
+        detail: HiDream-I1 (April 2025) and the E1 editing models remain on the Hub under the MIT license
+      hosted-candidate:
+        value: hosted
+        detail: HiDream-O1-Image-1.5 (June 2026) is announced on HiDream.ai's site and ranked on a public
+          image arena as a hosted model; no weights or license terms for it were found among HiDream.ai's
+          published releases, and whether it supersedes the open O1-Image release is not yet established
+  governing_release: HiDream-O1-Image (May 2026)
+  confidence: high
+  note: HiDream-O1-Image and its Dev variants download without a gate under the MIT license, which places
+    no limit on commercial use. HiDream.ai publishes inference code only and neither releases nor describes
+    the training data. The newer O1-Image-1.5 is hosted, and its relation to the open release is not yet
+    settled.
+  raw: weights:open(HiDream-O1-Image and its Dev and Dev-2604 variants download from Hugging Face without
+    a gate);data:closed(neither the README nor the model card releases or describes the training data);code:partial(the
+    repository publishes inference, the prompt agent and a web demo; no training code);license:MIT(OSI;
+    the code and the HiDream-O1-Image models);prior-release:distributed(HiDream-I1 (April 2025) and the
+    E1 editing models remain on the Hub under the MIT license);hosted-candidate:hosted(HiDream-O1-Image-1.5
+    (June 2026) is announced on HiDream.ai's site and ranked on a public image arena as a hosted model;
+    no weights or license terms for it were found among HiDream.ai's published releases, and whether it
+    supersedes the open O1-Image release is not yet established)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/HiDream-ai/HiDream-O1-Image
+    shows: 'Model API for HiDream-ai/HiDream-O1-Image: "gated": false; cardData license "mit"; eight safetensors
+      shards ("model-00001-of-00008.safetensors" onward); created 2026-05-08.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5481044d205464825b2e633ab88879a6b8adad791c65bf90e133b5adf445572c
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/HiDream-ai/HiDream-O1-Image/main/README.md
+    shows: 'HiDream-O1-Image README: "May 8, 2026: We''ve open-sourced HiDream-O1-Image (8B), including
+      both the undistilled and distilled Dev variants"; "May 14, 2026: We open-sourced HiDream-O1-Image-Dev-2604";
+      the Models table lists inference.py, prompt_agent.py and app.py; "The code in this repository and
+      the HiDream-O1-Image models are licensed under MIT License"; no 1.5 model is listed.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dc18fc19366d00993c174345263f19803c71edadeb9c62b1f6110e57abbf0d96
+    establishes:
+    - weights
+    - code
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/HiDream-ai/HiDream-O1-Image/main/LICENSE
+    shows: 'LICENSE body: "MIT License / Copyright (c) 2026 HiDream.ai".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 05660a759293f0f326fbab96268c61919ded9460bb0d127fbb67b82dfd69c02b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/HiDream-ai/HiDream-I1/main/README.md
+    shows: 'HiDream-I1 README: "April 7, 2025: We''ve open-sourced the text-to-image model HiDream-I1";
+      its latest update is "July 16, 2025": the E1-1 editing model.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e3f492c9a88b1317d28a80dd3cc3a410989b40d861c30618d61633f96326b276
+  - url: https://hidream.ai/
+    shows: 'HiDream.ai home page, Latest News: "No.1 in China! No.2 Globally! HiDream-O1-Image-1.5 Large
+      Model Sets New Records".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f3a1092a1513bf71fdcec8246b61111074f0af6077f1835dda8afd4c5a98d4bd
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across the HiDream I1, E1 and O1-Image checkpoints, most of
+    them HiDream-I1-Fast and HiDream-O1-Image. The prompt refiner is left out, and the current O1-Image-1.5 has no downloadable
+    weights to count.
+  sources:
+  - url: https://huggingface.co/api/models?author=HiDream-ai&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: HiDream-I1-Fast 44624, HiDream-O1-Image 15193, HiDream-I1-Full 758, HiDream-O1-Image-Dev
+      471, HiDream-O1-Image-Dev-2604 398, the I1-Dev, E1-Full and E1-1 repositories under 210 each; 61,971 across the eight
+      generation checkpoints.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7c4ad1a1c24d4518a0012180a5ce83d1d3413d0d8346416432ae3ea4dc93a64e
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Image Arena, overall board; best-placed HiDream-O1-Image entry
+  value: 'Artificial Analysis Text to Image Arena, overall board as served 2026-11-12: HiDream-O1-Image
+    68th of 112 at an Elo of 979 and HiDream-O1-Image-Dev 108th; no HiDream-I1 entry'
+  confidence: medium
+  relative_to: flux
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+      shows: 'Re-read of the peer: the overall board as served lists 112 models; "FLUX.2 [dev]", the best-placed
+        downloadable FLUX model, is 52nd at an Elo of 1000, in its upper half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 96acf724465d0dbb6c88c74e77368d7bb9256cd604ecb617c7ec1ba8b6c55fd7
+  note: HiDream-O1-Image places in the lower half of the public image arena, below FLUX.2 [dev], which places
+    in the upper half. HiDream's earlier I1 models are not on the board.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+    shows: 'Overall board as served (112 models): "HiDream-O1-Image" 68th, Elo 979; "HiDream-O1-Image-Dev"
+      108th, Elo 812; no HiDream-I1 entry. The hosted "HiDream-O1-Image-1.5" is 44th, Elo 1020.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 96acf724465d0dbb6c88c74e77368d7bb9256cd604ecb617c7ec1ba8b6c55fd7

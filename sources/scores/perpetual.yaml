@@ -1,0 +1,100 @@
+product: perpetual
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/perpetual-ml/perpetual
+    core-gated:
+      value: ungated
+      detail: no paid edition; the Rust core and both language packages are in the repository
+  confidence: high
+  note: Apache-2.0 and built from the public repository, which holds the Rust core and the Python and R packages. The
+    documentation describes no paid edition, and nothing in the repository is held back.
+  raw: license:Apache-2.0(OSI);source:public(github.com/perpetual-ml/perpetual);core-gated:ungated(no paid edition; the
+    Rust core and both language packages are in the repository)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/perpetual-ml/perpetual/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, January 2004.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ba8f45699bcb1c20c3a885f592c230302c5a460f455390295286ea91dfba038e
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/perpetual/json
+    shows: PyPI record for perpetual 2.5.0, uploaded 2026-11-11, license_expression "Apache-2.0", Repository github.com/perpetual-ml/perpetual.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 16a1780289712d030c7f808561ae2e15b0eadfba89fc26200ace7f5d2ef1f689
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/perpetual-ml/perpetual/files/main
+    shows: 'Repository tree of 308 paths: src/ (Rust core), package-python/, package-r/, benches/ and examples/; no ee,
+      enterprise, commercial or proprietary directory.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7de758f2bfe807f5436decd5c9641bf96c2e23e73d710681f0a80c31dcea1ed6
+    establishes:
+    - source
+    - core-gated
+  - url: https://perpetual-ml.github.io/perpetual/
+    shows: 'Documentation home: Python, R and Rust packages, API reference, causal ML, calibration, drift detection and
+      continual learning guides; no pricing, enterprise or hosted offering.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 81f954fff65f6f7cef5681e8e958461af4ccb16bc5f9d22f97f7bd06b28f2ab0
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the perpetual package. The R and Rust packages are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/perpetual/recent
+    shows: last_month 12,537 downloads of perpetual
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a41f474a48797c68aa394c6aa1c75dfb5715a4eebb7f2faa96de8dbed6c12b26
+capability:
+  score: 2
+  basis: feature_matrix
+  value: one gradient-boosted tree learner controlled by a budget parameter instead of tuned hyperparameters, for classification,
+    regression and ranking, with causal ML, continual learning, calibration, drift monitoring and SHAP explanations built
+    in
+  relative_to: xgboost
+  relation: at
+  confidence: high
+  note: Perpetual is one learner family, gradient-boosted trees, as XGBoost is. Its budget setting removes the tuning
+    loop for that learner rather than searching or ensembling across different models.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://xgboost.readthedocs.io/en/stable/
+      shows: 'XGBoost docs: "XGBoost is an optimized distributed gradient boosting library"; "It implements machine learning
+        algorithms under the Gradient Boosting framework" - the single learner family compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c1308fbe0445610770b654de0c59cc56f57a82130f420c23251e274b92e0eea4
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/perpetual-ml/perpetual/main/README.md
+    shows: 'README: "PerpetualBooster is a gradient boosting machine (GBM) that doesn''t need hyperparameter optimization
+      unlike other GBMs"; features list classification, regression and ranking, causal ML, drift monitoring, continual
+      learning, native calibration, and export to XGBoost or ONNX.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f5c2719aa32b1a87eb278beea5459d00d12e727f640df50cac4d986739cd2cc4
+  - url: https://perpetual-ml.github.io/perpetual/
+    shows: 'Documentation: "PerpetualBooster automatically controls step size and node-split generalization via a single
+      intuitive budget parameter"; objectives for classification, regression and learning-to-rank.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 81f954fff65f6f7cef5681e8e958461af4ccb16bc5f9d22f97f7bd06b28f2ab0

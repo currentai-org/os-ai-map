@@ -1,0 +1,118 @@
+product: x-vla
+openness:
+  score: 3
+  class: open_weights
+  governing_release: X-VLA-0.9B
+  components:
+    weights:
+      value: open
+      detail: X-VLA-Pt and its fine-tunes on the Hub, ungated
+    data:
+      value: described
+      detail: the cross-embodiment pretraining mixture is not published, though the repository ships readers for DROID, RoboMind
+        and AgiBot World
+    code:
+      value: open
+      detail: training script, dataset handlers and LoRA fine-tuning code
+    license:
+    - name: Apache-2.0
+      detail: code and weights
+  confidence: high
+  note: X-VLA's weights and training code are Apache-2.0. The repository can read the public robot datasets it trained on,
+    but the assembled pretraining mixture is not published.
+  raw: weights:open(X-VLA-Pt and its fine-tunes on the Hub, ungated);data:described(the cross-embodiment pretraining mixture
+    is not published, though the repository ships readers for DROID, RoboMind and AgiBot World);code:open(training script,
+    dataset handlers and LoRA fine-tuning code);license:Apache-2.0(code and weights)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/2toinf/X-VLA/main/LICENSE
+    shows: 'LICENSE: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://huggingface.co/2toINF/X-VLA-Pt/raw/main/README.md
+    shows: 'X-VLA-Pt card: license apache-2.0, base_model microsoft/Florence-2-large, "X-VLA 0.9B (Foundation Edition)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: de7da7f9898d4c0fa210e79bbc60ea181b668e367a17888c6dd88f725415b542
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models?author=2toINF&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: X-VLA-Pt and nine full fine-tunes (2025-11), gated false and tagged apache-2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f884026993f4ca4ec7b5e21a425416d023c8ecd79b416fe423caf72559cb3418
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/2toinf/X-VLA/main/README.md
+    shows: 'README: "This repository is licensed under the Apache License 2.0"; training with accelerate through train.py
+      on custom data; LoRA fine-tuning code released.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 078daefe8d097bfff3b6934c317a9ca90511d57691636d793dafa4f52eb2b943
+    establishes:
+    - license
+    - code
+  - url: https://ungh.cc/repos/2toinf/X-VLA/files/main
+    shows: 'Repository tree: datasets/domain_handler/droid.py, robomind.py, agiworld.py, lerobot_agibot.py and x2robot.py;
+      no dataset files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a9c0d9180ae54cf4a2ae11fbffa5b4bf25226138a7559e555424ef5b7584a0c0
+    establishes:
+    - code
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for the foundation checkpoint and five full fine-tunes,
+    most of them for the foundation model. LeRobot's converted copies are downloaded separately and are
+    not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=2toINF&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: X-VLA-Pt 7,803, X-VLA-Libero 840, X-VLA-RoboTwin2 478, X-VLA-SoftFold 389, X-VLA-WidowX 205 and X-VLA-Google-Robot
+      43 downloads in the trailing 30 days (9,758 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f884026993f4ca4ec7b5e21a425416d023c8ecd79b416fe423caf72559cb3418
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: Cross-embodiment pretraining with per-source soft prompts; evaluated on six simulation platforms and three real robots;
+    released fine-tunes for dual-arm AgileX manipulation (RoboTwin 2.0) and cloth folding (X-VLA-0.9B).
+  relative_to: gr00t
+  relation: at
+  confidence: medium
+  note: X-VLA is pretrained across robot bodies and ships two-armed policies, including one for folding cloth, level with
+    GR00T. It has no separate reasoning model and no humanoid control.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim/raw/main/README.md
+      shows: 'GR00T post-training data card: cross-embodied bimanual manipulation, humanoid (GR1) tabletop manipulation, robot-arm
+        kitchen manipulation and Unitree G1 loco-manipulation subsets.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/2toinf/X-VLA/main/README.md
+    shows: 'README: X-VLA-0.9B "achieves state-of-the-art generalization across six simulation platforms and three real-world
+      robots"; X-VLA-RoboTwin2 "for dual-arm coordinated manipulation"; X-VLA-SoftFold "Specialized in deformable object manipulation
+      (e.g., folding and cloth control)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 078daefe8d097bfff3b6934c317a9ca90511d57691636d793dafa4f52eb2b943
+  - url: https://arxiv.org/abs/2510.10274
+    shows: 'Abstract: soft prompts as "embodiment-specific prompts" for cross-embodiment training; evaluated across 6 simulations
+      and 3 real-world robots.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 433a575720f818c911bc6ae3e56e89c7555d6e07ec10b8764b1570921028c7b4

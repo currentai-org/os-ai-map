@@ -1,0 +1,110 @@
+product: d-fine
+openness:
+  score: 5
+  class: open_source
+  governing_release: D-FINE
+  components:
+    weights:
+      value: open
+      detail: Nano to X checkpoints from GitHub release assets and Transformers conversions on the Hub, ungated
+    data:
+      value: open
+      detail: COCO 2017 and Objects365, both public, with preparation steps in the README
+    code:
+      value: open
+      detail: training code and configs for COCO, Objects365 and custom datasets
+    license:
+    - name: Apache-2.0
+      detail: code and checkpoints
+    context:
+      objects365-terms:
+        value: caveat
+        detail: the README warns that checkpoints trained on Objects365 may be subject to that dataset's terms
+  confidence: medium
+  note: D-FINE's code and checkpoints are Apache-2.0, the training code and configs are public, and the detectors
+    are trained on COCO and Objects365, both public datasets. The README cautions that checkpoints trained on Objects365
+    may carry that dataset's terms and should not be assumed cleared for commercial use.
+  raw: weights:open(Nano to X checkpoints from GitHub release assets and Transformers conversions on the Hub, ungated);data:open(COCO
+    2017 and Objects365, both public, with preparation steps in the README);code:open(training code and configs
+    for COCO, Objects365 and custom datasets);license:Apache-2.0(code and checkpoints);objects365-terms:caveat(the
+    README warns that checkpoints trained on Objects365 may be subject to that dataset's terms)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Peterande/D-FINE/master/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Peterande/D-FINE/master/README.md
+    shows: 'README: COCO and Objects365 model tables with yml configs and checkpoint links; COCO2017 and Objects365
+      preparation steps; "License note: Checkpoints trained or pretrained on Objects365 (*_obj365, *_obj2coco) may
+      be subject to the Objects365 dataset terms and should not be assumed to be commercially cleared under the
+      D-FINE license."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d723d80814f51790fde117a021de6a04e5ab2884d5992a46b8605a6578fbb218
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=ustc-community&search=dfine&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: Thirteen ustc-community D-FINE checkpoints, all gated false and tagged apache-2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 885d4ca135fc5f6dd791768d3a83f847c97dba275a5aaf7768669aa81b1dd392
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/ustc-community/dfine-xlarge-coco/raw/main/README.md
+    shows: 'dfine-xlarge-coco card: license apache-2.0; "This is the HF transformers implementation for D-FINE";
+      _coco trained on COCO, _obj365 on Objects365, _obj2coco on Objects365 then COCO.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0e9658ade83f0ea73b5190652ba65546fd3e8dad697a235b121c0e5a7d1938b0
+    establishes:
+    - weights
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the four most-used Transformers checkpoints. Checkpoints
+    fetched from the repository's GitHub release assets are not counted here.
+  sources:
+  - url: https://huggingface.co/api/models?author=ustc-community&search=dfine&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: dfine-xlarge-obj365 16,734, dfine-xlarge-coco 12,570, dfine-large-coco 11,102 and dfine-xlarge-obj2coco
+      8,408 downloads in the trailing 30 days (48,814 together); the thirteen checkpoints sum to 73,796.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 885d4ca135fc5f6dd791768d3a83f847c97dba275a5aaf7768669aa81b1dd392
+capability:
+  score: 3
+  basis: feature_matrix
+  value: real-time COCO and Objects365 detectors, Nano to X (D-FINE-X 59.3 COCO AP with Objects365 pretraining),
+    with training code and custom-dataset fine-tuning configs
+  relative_to: rt-detr
+  relation: at
+  confidence: high
+  note: D-FINE and RT-DETR are the same kind of product, real-time transformer detectors trained on fixed benchmark
+    classes, so detecting anything else needs a training run on the user's own labels.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/README.md
+      shows: 'RT-DETRv4 README: "RT-DETRv4 achieves new state-of-the-art results on the COCO dataset"; "To train
+        on your custom dataset, you need to organize it in the COCO format" - the fixed label space compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 45a9811942cd4021030a419a5a172557a59968e5802cd96961330e8d68127742
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/Peterande/D-FINE/master/README.md
+    shows: 'README model zoo: D-FINE-N 42.8 COCO AP; D-FINE-S to X 50.7 to 59.3 COCO AP with Objects365 "Objects365+COCO"
+      pretraining; "Add custom dataset finetuning configs".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d723d80814f51790fde117a021de6a04e5ab2884d5992a46b8605a6578fbb218

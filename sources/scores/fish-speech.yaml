@@ -1,0 +1,143 @@
+product: fish-speech
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Drama 3 safetensors and codec on the Hub, ungated
+    data:
+      value: closed
+      detail: no training-data statement for Drama 3 on its card, README or report abstract
+    code:
+      value: partial
+      detail: inference code in the Fish Speech repository, served through SGLang-Omni and vLLM-Omni; no
+        training pipeline for Drama 3
+    license:
+    - name: Fish-Audio-Community-License-1.0
+      detail: Drama 3 weights and the Fish Speech code; commercial use only below USD 500,000 annual revenue,
+        and no hosted text-to-speech service without a separate license
+    context:
+      superseded-release:
+        value: S2-Pro
+        detail: 2026-03, 4B; weights under the non-commercial Fish Audio Research License, still published
+  governing_release: Fish Audio Drama 3 (2026-10)
+  confidence: medium
+  note: Anyone can download Drama 3, but its Fish Audio Community License allows commercial use only for businesses below
+    a set annual revenue and never as a hosted voice service. Nothing is published about its training data, and only inference
+    code is released.
+  raw: weights:open(Drama 3 safetensors and codec on the Hub, ungated);data:closed(no training-data statement for Drama 3
+    on its card, README or report abstract);code:partial(inference code in the Fish Speech repository, served through SGLang-Omni
+    and vLLM-Omni; no training pipeline for Drama 3);license:Fish-Audio-Community-License-1.0(Drama 3 weights and the Fish
+    Speech code; commercial use only below USD 500,000 annual revenue, and no hosted text-to-speech service without a separate
+    license);superseded-release:S2-Pro(2026-03, 4B; weights under the non-commercial Fish Audio Research License, still published)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/fishaudio/drama-3/raw/main/LICENSE
+    shows: 'License file in the Drama 3 repository, titled "# FISH AUDIO COMMUNITY LICENSE AGREEMENT" / "**Version 1.0 - Last
+      Updated: October 13, 2026**": a commercial license "but only while Your Annual Revenue is less than USD 500,000 (the
+      "Revenue Threshold")"; "no license is granted under this Agreement to offer a Hosted Service"; "Model(s)" means the
+      models "including Fish Audio Drama 3".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 733a32442087acbda12ecafe8e71eb8ee5890c89b50ce7ac4ea3777faa3c823e
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/fishaudio/fish-speech/HEAD/LICENSE
+    shows: 'Code LICENSE, byte-identical to the Drama 3 license file: "Software" means Fish Audio''s software "including the
+      Fish Speech source code"; "Model weights that Fish Audio makes available under a different license (for example, the
+      Fish Audio S2-Pro weights under the Fish Audio Research License) are not Fish Audio Materials".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 733a32442087acbda12ecafe8e71eb8ee5890c89b50ce7ac4ea3777faa3c823e
+    establishes:
+    - license
+  - url: https://huggingface.co/fishaudio/drama-3/raw/main/README.md
+    shows: 'Drama 3 card: front matter "license_name: fish-audio-research-license" and "license_link: LICENSE.md" (that file
+      returns 404), while the body reads "This model is licensed under the [Fish Audio Community License](https://huggingface.co/fishaudio/drama-3/blob/main/LICENSE)";
+      serving is through SGLang-Omni and vLLM-Omni.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6d147e079b87e0b9bb4e1c899f75da3e658754933457a3ca753ca9912d1f5e10
+    establishes:
+    - license
+    - code
+  - url: https://huggingface.co/api/models/fishaudio/drama-3
+    shows: 'Hub record: "gated":false, codec.pth and model-00001-of-00015.safetensors through model-00015-of-00015.safetensors
+      in the file list.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 04aae05b148719f2c83657c57c92fb33fcd15b8dd998aced0a8923a41ae99918
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/fishaudio/fish-speech/HEAD/README.md
+    shows: 'README: "This codebase and its associated model weights are released under **[FISH AUDIO COMMUNITY LICENSE](LICENSE)**.
+      The S2-Pro weights remain under the Fish Audio Research License."; model table "Drama 3 | 35B-A3B (3B active per token)"
+      and "S2-Pro | 4B parameters | ... | Previous-generation flagship with faster inference"; installation and inference
+      only.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: baa129fac0b9d32c55b3972bf8ccabeab3ebba1ca435e313e20c0adea5a7088d
+    establishes:
+    - license
+    - code
+  - url: https://huggingface.co/fishaudio/s2-pro/raw/main/LICENSE.md
+    shows: 'S2-Pro license file: "# FISH AUDIO RESEARCH LICENSE AGREEMENT" / "**Last Updated: March 7, 2026**"; "Any use of
+      the Fish Audio Materials or Derivative Works for a Commercial Purpose requires a separate written license agreement
+      from Fish Audio."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: aa7d9206e9d710590987a3636934f643529c00cd490323594e6206aaa0c32d80
+    establishes:
+    - license
+  - url: https://arxiv.org/abs/2610.18010
+    shows: 'Fish Audio Drama 3 Technical Report, submitted 13 Oct 2026: "built on a 35B-parameter mixture-of-experts backbone
+      that activates 3B parameters per token"; "trained with a three-stage pre-training recipe, instruction fine-tuning, and
+      large-batch reinforcement learning"; the abstract names no training corpus.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0bf64e1f349a19d95be630e3954d3097204ac5ae62b88243827e530e052c81c9
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the Drama 3 and S2-Pro checkpoints over the trailing month. The unofficial int4 quantization
+    and the older Fish Speech checkpoints are not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=fishaudio&limit=100
+    shows: '"downloads":47450 for fishaudio/drama-3 and "downloads":46890 for fishaudio/s2-pro.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 4b0434a2280c3d31436460096cf0bf8d8493154509b5a023505e6c945e35def5
+capability:
+  score: 5
+  basis: benchmark
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: Fish Audio Drama 3 ranks 7th of 104 models on the Artificial Analysis TTS leaderboard at an Elo of about 1274, the
+    highest-placed entry flagged as open weights; S2-Pro ranks 45th.
+  confidence: medium
+  note: Drama 3 sits in the arena's top ten in blind listening tests, among the leading commercial voices, and is the best-rated
+    model there whose weights can be downloaded.
+  relative_to: moshi
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/kyutai-labs/moshi/HEAD/README.md
+      shows: 'Moshi README: "[Moshi][moshi] is a speech-text foundation model and **full-duplex** spoken dialogue framework",
+        the real-time two-way conversation that places Moshi at the top of this category, beside a synthesizer in the arena''s
+        top ten.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: e429032aab30c9db9fd0c59426727df5e0bd1be2e5bc8c93e6911e30a06415f9
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry rank 7, "name":"Fish Audio Drama 3", "elo":1273.64, creator Fish Audio, "openWeightsUrl":"https://huggingface.co/fishaudio/drama-3/",
+      "openWeights":true, "openWeightsCommercial":false; "Fish Audio S2 Pro" at rank 45; 104 models are ranked.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6850775d138e7333206ce45f87e6e3b69db171d663fb2f97d9241e6a44e754a

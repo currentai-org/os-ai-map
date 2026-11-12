@@ -1,0 +1,106 @@
+product: paddledetection
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; code
+    source:
+      value: public
+      detail: github.com/PaddlePaddle/PaddleDetection
+    core-gated:
+      value: ungated
+      detail: PaddlePaddle development kit; nothing sold
+  confidence: high
+  note: The code is Apache-2.0 and the whole kit, model zoo and pipelines included, is in the public repository;
+    nothing is sold beside it.
+  raw: license:Apache-2.0(OSI; code);source:public(github.com/PaddlePaddle/PaddleDetection);core-gated:ungated(PaddlePaddle
+    development kit; nothing sold)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/PaddlePaddle/PaddleDetection/release/2.9/LICENSE
+    shows: LICENSE on the default release/2.9 branch is the Apache License, Version 2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/PaddlePaddle/PaddleDetection/release/2.9/README_en.md
+    shows: 'README: "PaddleDetection is an end-to-end object detection development kit based on PaddlePaddle. Providing
+      over 30 model algorithm and over 300 pre-trained models"; "PaddlePaddle is provided under the Apache 2.0 license";
+      no paid tier mentioned.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 938020128412436ba0f1fa2481670924b73a17ef60d258642792e2dbad166261
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/PaddlePaddle/PaddleDetection/releases
+    shows: Latest release v2.9.0, published 2026-03-19, adding RT-DETRv3, the DEIM models and PP-DocLayoutV3.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 350b24c2e627e82ebf7e08e3c38e13ddf1207dadfeb789f1e2ef186403ae0cc0
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only usable signal. The paddledet package on PyPI is several releases behind the repository,
+    and the checkpoints download from Baidu's own storage, which publishes no counts. A star is not a use, and the
+    stars scale stops at 3.
+  sources:
+  - url: https://ungh.cc/repos/PaddlePaddle/PaddleDetection
+    shows: 'Repository record for PaddlePaddle/PaddleDetection: 14,470 stars, last pushed 2026-05-28.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5d3d79ed143d68d7135ba66de06b18a0bd4c8c257ba5ebc8dcbba522e3d0f256
+  - url: https://pypi.org/pypi/paddledet/json
+    shows: 'PyPI record for paddledet: latest version 2.6.0, uploaded 2023-02-24.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c38c2111fe2cf4ce063430bce953ef69f28743df5a1a649a8000f2eed94e2384
+  - url: https://pypistats.org/api/packages/paddledet/recent
+    shows: last_month 301 downloads for paddledet.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f6ec1e100dda40a15f0d9181d12b2d8efa9121e40aa1d4dbdd430b55f72728a5
+capability:
+  score: 3
+  basis: feature_matrix
+  value: detection, instance segmentation, keypoint detection and multi-object tracking model zoo (PP-YOLOE, PicoDet,
+    RT-DETR, DEIM and others, over 300 pretrained models) with training configs, plus the PP-Human and PP-Vehicle
+    pipelines
+  relative_to: detectron2
+  relation: at
+  confidence: high
+  note: PaddleDetection, like Detectron2, is a model zoo with the training tools around it, and its detectors predict
+    the classes they were trained on, so a new label set needs a training run. The PP-Human and PP-Vehicle pipelines
+    run without training, but only on the people and vehicles they were built for.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/facebookresearch/detectron2/main/MODEL_ZOO.md
+      shows: 'MODEL_ZOO: "This file documents a large collection of baselines trained with detectron2"; COCO, LVIS,
+        Cityscapes and Pascal VOC baseline sections - the benchmark-trained model zoo compared at.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: be14e51d7309c862c0a66fd73be8de1121050009aba8d4ed08886c981491d1f1
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/PaddlePaddle/PaddleDetection/release/2.9/README_en.md
+    shows: 'README: object detection, instance segmentation, keypoint detection and multi-object tracking; model
+      tables with config and download links; PP-Human pedestrian analysis and PP-Vehicle license plate, attribute,
+      traffic flow and violation detection pipelines.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 938020128412436ba0f1fa2481670924b73a17ef60d258642792e2dbad166261
+  - url: https://ungh.cc/repos/PaddlePaddle/PaddleDetection/releases
+    shows: 'v2.9.0 release notes: RT-DETRv3 added; DEIM models with D-FINE-HGNetv2 N to X and RT-DETRv2 backbones,
+      eleven sizes in all.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 350b24c2e627e82ebf7e08e3c38e13ddf1207dadfeb789f1e2ef186403ae0cc0

@@ -1,0 +1,100 @@
+product: xdit
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI. LICENSE.txt is the Apache License 2.0 text
+    source:
+      value: public
+      detail: xdit-project/xDiT
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary path in the file list. The README names TACO-DiT, a closed
+        ComfyUI variant built on xDiT, as a separate commercial project
+  confidence: high
+  note: xDiT is released under the Apache License 2.0 with its full source public. The project's commercial work, a closed
+    ComfyUI variant called TACO-DiT, is a separate product built on top of the engine rather than a paid edition of it.
+  raw: license:Apache-2.0(OSI. LICENSE.txt is the Apache License 2.0 text);source:public(xdit-project/xDiT);core-gated:ungated(no
+    ee, enterprise, commercial or proprietary path in the file list. The README names TACO-DiT, a closed ComfyUI variant
+    built on xDiT, as a separate commercial project)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/xdit-project/xDiT/main/LICENSE.txt
+    shows: 'LICENSE.txt body: "Apache License / Version 2.0, January 2004", the stock text through "limitations under
+      the License."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d9e99776038a0f89ba8f14a07f4e75c6aeac38b2926a5043aeca95c7132d7223
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/xdit-project/xDiT/files/main
+    shows: 'Full file list of the main branch, 652 files under xfuser/, examples/, entrypoints/, docs/ and tests/: no
+      ee/, enterprise/, commercial/ or proprietary/ path.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 46b13d0468b20e4456cc2fe66012b419967e4e97481c201ece104495a4cd5885
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/xdit-project/xDiT/main/README.md
+    shows: 'README: "Using our commercial project **TACO-DiT**, a close-sourced ComfyUI variant built with xDiT"; install
+      with "pip install xfuser" or "pip install -e ." from the repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a8709a0d4f001408ea256dcd8e8523983b8d72dc5f0a09ca7994ced33e97381
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as PyPI downloads of xfuser, the package the README installs and whose project page links
+    back to the repository. A download count includes automated installs, so it measures use only roughly.
+  sources:
+  - url: https://pypistats.org/api/packages/xfuser/recent
+    shows: 'pypistats for xfuser: last_month 22682.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a3c2681e5d1f185fd594cff204bea12b625dfa8025dea679bd68e47e245dc3a
+  - url: https://pypi.org/pypi/xfuser/json
+    shows: 'PyPI xfuser 0.7.0, uploaded 2026-09-25: summary "A Scalable Inference Engine for Diffusion Transformers (DiTs)
+      on Multiple Computing Devices", Homepage https://github.com/xdit-project/xDiT.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9818e4a9b22cdcc901d0e30a25d511c950fc33217c75792bd79c6daadd32ac1b
+capability:
+  score: 3
+  basis: feature_matrix
+  value: parallel and accelerated inference for image diffusion transformers (FLUX.1, FLUX.2, FLUX.3 Image klein, Qwen-Image,
+    Z-Image, SD3, PixArt, SANA, HunyuanDiT and others) and video ones (Wan 2.1 and 2.2, HunyuanVideo and 1.5, LTX-2 and
+    2.5, CogVideoX, StepVideo, MiniMax-H3, Mochi); no audio or 3D models and no workflow graph
+  confidence: high
+  relative_to: stable-diffusion-cpp
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/leejet/stable-diffusion.cpp/master/README.md
+      shows: The stable-diffusion.cpp README still lists image families (SD1.x to SD3.5, FLUX.1 to FLUX.3 Image Klein,
+        Qwen Image, Z-Image and many more) and Video Models "Wan2.1/Wan2.2", "MiniMax-H3", "LTX-2.3/LTX-2.5" and "HunyuanVideo
+        1.5", with no audio or 3D model. Both engines run image and video models and neither runs audio or 3D, which
+        keeps them level.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: b6a3a4e81384d9332167819dba49f23e47c2df43e1a8dee2b14c05f46afc7680
+  note: xDiT runs both image and video diffusion models across many families, as stable-diffusion.cpp does. It runs no
+    audio or 3D models and composes no workflows, which keeps it below ComfyUI.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/xdit-project/xDiT/main/README.md
+    shows: 'README Supported DiTs table: video models including StepVideo, HunyuanVideo, HunyuanVideo-1.5, CogVideoX,
+      Wan2.1, Wan2.2, LTX-2, LTX-2.5 and MiniMax-H3, and image models including Flux, Flux 2, Flux 3 Image klein, Qwen
+      Image, Z-Image Turbo, Stable Diffusion 3, PixArt-Sigma, SANA and HunyuanDiT; parallel methods USP, PipeFusion,
+      CFG parallel and parallel VAE.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a8709a0d4f001408ea256dcd8e8523983b8d72dc5f0a09ca7994ced33e97381

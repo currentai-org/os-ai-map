@@ -1,0 +1,144 @@
+product: bert
+openness:
+  score: 4
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Base, Large, multilingual and Chinese checkpoints, ungated on Hugging Face
+    data:
+      value: documented-not-released
+      detail: English Wikipedia and BookCorpus are named, but the preprocessed corpus was never released
+        and BookCorpus is no longer distributed
+    code:
+      value: open
+      detail: create_pretraining_data.py and run_pretraining.py in google-research/bert
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: bert-base-uncased
+  confidence: high
+  note: BERT's checkpoints and its pretraining code, from data generation to the training loop, are published
+    under Apache-2.0. The pretraining corpus is described but was never released, and BookCorpus is no
+    longer offered by its collectors, so the original training run cannot be rebuilt exactly.
+  raw: weights:open(Base, Large, multilingual and Chinese checkpoints, ungated on Hugging Face);data:documented-not-released(English
+    Wikipedia and BookCorpus are named, but the preprocessed corpus was never released and BookCorpus
+    is no longer distributed);code:open(create_pretraining_data.py and run_pretraining.py in google-research/bert);license:Apache-2.0(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/google-bert/bert-base-uncased
+    shows: 'Model API for google-bert/bert-base-uncased: `gated: false`, cardData.license `apache-2.0`,
+      cardData.datasets `bookcorpus` and `wikipedia`, with model.safetensors among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ebf91fe3c34f79da4f3258c3af78a8dfc659f2162d14f0ef503cdcbb64af1625
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/google-research/bert/master/LICENSE
+    shows: LICENSE body is the Apache License, Version 2.0.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/google-research/bert/master/README.md
+    shows: 'README: "All code *and* models are released under the Apache 2.0 license"; it documents pre-training
+      with create_pretraining_data.py and run_pretraining.py, and states "We will **not** be able to release
+      the pre-processed datasets used in the paper" and that the BookCorpus collectors "no longer have
+      it available for public download".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 43b560935cfaef7427ae15d5c2c089b46d857e9e51fce5f20c93a9a74f99b756
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across Google's original BERT checkpoints, most of them for bert-base-uncased.
+  sources:
+  - url: https://huggingface.co/api/models/google-bert/bert-base-uncased
+    shows: '"downloads":31365205 for google-bert/bert-base-uncased, the trailing 30-day count the Hub
+      API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ebf91fe3c34f79da4f3258c3af78a8dfc659f2162d14f0ef503cdcbb64af1625
+  - url: https://huggingface.co/api/models/google-bert/bert-base-cased
+    shows: '"downloads":3293999 for google-bert/bert-base-cased, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b7f1007f523754ab516b3af67895293daff28c3f5495871b03dc9b74ab8a7232
+  - url: https://huggingface.co/api/models/google-bert/bert-large-uncased
+    shows: '"downloads":278884 for google-bert/bert-large-uncased, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5ef993d3801d757a5440593763d0c24168917946f7da1bda011cba13563de40d
+  - url: https://huggingface.co/api/models/google-bert/bert-large-cased
+    shows: '"downloads":343944 for google-bert/bert-large-cased, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d9cce9dcd9f35c372b9bc2291cc0c1a402400dc9795020a8ce6aec4b36e44b65
+  - url: https://huggingface.co/api/models/google-bert/bert-base-multilingual-cased
+    shows: '"downloads":1526145 for google-bert/bert-base-multilingual-cased, the trailing 30-day count
+      the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b17d631c5442d2220cdef8b2dc10592af2f4d5e05d4ce21212f11159ac7ac638
+  - url: https://huggingface.co/api/models/google-bert/bert-base-multilingual-uncased
+    shows: '"downloads":1957689 for google-bert/bert-base-multilingual-uncased, the trailing 30-day count
+      the Hub API reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 95dcffdf7e9d8a06fbb3e640c691546165a77852b7d72690626b3d650756b553
+  - url: https://huggingface.co/api/models/google-bert/bert-base-chinese
+    shows: '"downloads":345615 for google-bert/bert-base-chinese, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3e1da8d7f8494c5b56d434e97361195923415a403ac764313af3cfe48fa11fa5
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: GLUE and SQuAD results in the 2018 paper
+  value: GLUE score 80.5, MultiNLI accuracy 86.7, SQuAD v1.1 test F1 93.2 and SQuAD v2.0 test F1 83.1
+    at release (arXiv:1810.04805), the state of the art on eleven tasks in 2018. A 340M-parameter encoder
+    that does not generate text.
+  relative_to: comma
+  relation: one_below
+  confidence: high
+  note: BERT set the state of the art on eleven language-understanding tasks in 2018, but it is an encoder
+    of at most 340M parameters that cannot generate text, and the benchmarks used for today's language
+    models do not apply to it. It sits a step below Comma, a 7B model that only matches 2023-era peers.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+      shows: Comma v0.1-2T card still reports an 11-task average of 57.4 and says "It performs comparably
+        to budget-matched models (7 billion parameters, 2 trillion tokens) trained on unlicensed data",
+        the placement the comparison relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/abs/1810.04805
+    shows: 'Abstract: BERT "obtains new state-of-the-art results on eleven natural language processing
+      tasks, including pushing the GLUE score to 80.5% ..., MultiNLI accuracy to 86.7% ..., SQuAD v1.1
+      question answering Test F1 to 93.2 ... and SQuAD v2.0 Test F1 to 83.1".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dab568b0a86ade336c02d873fa9156dc8da5d7326b1ba04cedf21f96f0f46aac
+  - url: https://raw.githubusercontent.com/google-research/bert/master/README.md
+    shows: README lists BERT-Large as "24-layer, 1024-hidden, 16-heads, 340M parameters" and BERT-Base
+      as "12-layer, 768-hidden, 12-heads, 110M parameters".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 43b560935cfaef7427ae15d5c2c089b46d857e9e51fce5f20c93a9a74f99b756

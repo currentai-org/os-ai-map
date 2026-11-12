@@ -1,0 +1,121 @@
+product: cleanlab
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: cleanlab/cleanlab
+    core-gated:
+      value: ungated
+      detail: the library is the whole product; Cleanlab's commercial offering is a separate platform for checking AI agent
+        responses, and the acquisition letter commits the package to stay open source
+  confidence: high
+  note: cleanlab is Apache-2.0 and the whole library is in the public repository. The company's paid product is a separate
+    platform for catching mistakes in AI agent responses, not an edition of this package, so nothing in the library is held
+    back.
+  raw: license:Apache-2.0(OSI);source:public(cleanlab/cleanlab);core-gated:ungated(the library is the whole product; Cleanlab's
+    commercial offering is a separate platform for checking AI agent responses, and the acquisition letter commits the package
+    to stay open source)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/cleanlab/cleanlab/master/LICENSE
+    shows: The root LICENSE is the stock Apache License 2.0 text, ending with the unfilled appendix line "Copyright [yyyy]
+      [name of copyright owner]".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://pypi.org/pypi/cleanlab/json
+    shows: PyPI lists cleanlab 2.9.0, uploaded 2026-01-13, with the license field "Apache License Version 2.0, January 2004".
+    accessed: '2026-11-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: bee0c1a71e2a9cc7350959e24e431429b455614ccfb7a544687250c46f0ef940
+  - url: https://raw.githubusercontent.com/cleanlab/cleanlab/master/README.md
+    shows: 'The README presents "Cleanlab''s open-source library" and a "Run cleanlab open-source" section installing from
+      PyPI or source, and says "All features of cleanlab work with any dataset and any model". Searched the body for enterprise,
+      studio, paid and license key: none.'
+    accessed: '2026-11-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 0f36173459bc0f106ef939203827925fd59a01650534caa0cc8477042982e8ee
+  - url: https://cleanlab.ai/blog/handshake-acquires-cleanlab/
+    shows: A letter dated January 28, 2026 announces that Handshake acquired Cleanlab and tells users "Cleanlab's data-centric
+      AI package will remain open-source under a more permissive Apache-2.0 license."
+    accessed: '2026-11-12'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 82ba9ac1445f3b19fdfc46b7a30f365f6cebb29353f5172dc90b982d8487dde5
+  - url: https://cleanlab.ai/
+    shows: The company site sells a platform to "Detect and remediate incorrect responses from any AI Agent", deployed by
+      VPC or SaaS, and carries the banner "Cleanlab has been acquired by Handshake AI."
+    accessed: '2026-11-12'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 7ea5bda701219249ed319231d5c62f3c12067094ead8b6ba95b6ed455b6952bd
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of PyPI downloads of cleanlab. Conda installs, which the documentation also offers,
+    are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/cleanlab/recent
+    shows: last_month 51,918, last_week 10,911, last_day 3,061 for the cleanlab package.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 74eb147342ba44a996312cc73707c8236bcc9c5a7a9de91980d09c070559403f
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Datalab detection of label errors, outliers, near duplicates, non-IID data and underperforming groups for any model;
+    noise-robust training; multi-annotator consensus and annotator quality; dedicated support for classification, multi-label,
+    token classification, regression, segmentation and object detection. Confident learning is peer-reviewed (JAIR 2021).
+    No labeling interface or programmatic labeling.
+  confidence: medium
+  note: cleanlab finds mislabeled examples, outliers and duplicates across most supervised tasks using confident learning,
+    a peer-reviewed method. It audits labels rather than producing them, a step below Snorkel Flow, which also builds labels
+    programmatically and runs annotation and evaluation workflows.
+  relative_to: snorkel-flow
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://docs.snorkel.ai/
+      shows: The Snorkel documentation home, now at version 26.7, still describes "programmatic data labeling and weak supervision",
+        an evaluation workflow, an annotation studio for subject matter experts, and administration of "users, roles, and
+        permissions", with a separate "Predictive ML 25.4" line.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 35be1ef71161a146c8162e8082ff15369ffa4a36bb27fa8e822e44d8ef88b297
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://docs.cleanlab.ai/stable/index.html
+    shows: The documentation says the package checks a dataset for "label errors, outliers, near duplicates, IID violations,
+      underperforming groups" with Datalab, working "with any ML model by operating on model outputs".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 305de9581efe7695b0fd3c4aac3d6c6501187801b10771f75422c2219d1bdd29
+  - url: https://raw.githubusercontent.com/cleanlab/cleanlab/master/README.md
+    shows: The README lists dedicated support for binary and multi-class, multi-label and token classification, regression,
+      image segmentation, object detection, multi-annotator data, active learning and outlier detection.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0f36173459bc0f106ef939203827925fd59a01650534caa0cc8477042982e8ee
+  - url: https://arxiv.org/abs/1911.00068
+    shows: The confident learning paper (JAIR) reports "CL performance exceeding seven recent competitive approaches for learning
+      with noisy labels on the CIFAR dataset" and says "These results are replicable using the open-source cleanlab release."
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 60dde1457cf70b74e0758e9f1cbec1bd2f2ad96b4b7a768ce0704003452d6cc4

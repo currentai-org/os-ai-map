@@ -1,0 +1,103 @@
+product: mujoco-playground
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, covers all repository content
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: Google sells no edition of it
+  confidence: high
+  note: Everything in the repository is Apache-2.0 and the suite builds from it in full. Google publishes it as a research
+    project rather than a supported product and sells nothing alongside it.
+  raw: license:Apache-2.0(OSI, covers all repository content);source:public;core-gated:ungated(Google sells no edition of
+    it)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco_playground/main/LICENSE
+    shows: 'LICENSE is the Apache License, Version 2.0 text: "Apache License", "Version 2.0, January 2004".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco_playground/main/README.md
+    shows: 'README: "All content in this repository is licensed under the Apache License, Version 2.0"; "This is not an officially
+      supported Google product."; local install by cloning the repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 76563cee69d1b6c8ec402c4a5229328e2a5777a6ffce34eddd343cd5b07e5daf
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/google-deepmind/mujoco_playground/files/main
+    shows: Full listing of the main branch, 648 paths; no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ba9f694973e6a88ed9ee7f6bcdba0caa8bcb2128fdd7d845be704f298e7731e3
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/google-deepmind/mujoco_playground/releases/latest
+    shows: Latest release v1.0.1, published 2026-11-09.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0caf6b77a75ac61df2906431609744f0ff19eff7242f2ea5d3446704a4412784
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of playground, the package the README installs. Runs through uvx and installs from a source checkout
+    fetch the same package or skip it, so the count does not separate one-off trials from regular use.
+  sources:
+  - url: https://pypistats.org/api/packages/playground/recent
+    shows: 'pypistats: last_month 9,187 downloads for playground.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bea4dab52ba0f85046f5810fbb8fe8287a4b59103bf50cdce9c10d394fa18eff
+  - url: https://pypi.org/pypi/playground/json
+    shows: 'PyPI metadata for playground 1.0.1: summary "Playground of robotics real and sim tasks.", license_expression Apache-2.0,
+      Repository https://github.com/google-deepmind/mujoco_playground.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5b44cd049f90e0c11c96e17b8f536558f2708040976709b18893bbe04c5403cc
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: Large-batch GPU RL training on MuJoCo Warp (8,192 parallel environments in the README example) with state and vision
+    observations, tasks across control, manipulation and humanoid whole-body tracking, teleoperation, system identification
+    and zero-shot sim-to-real deployment on SO-101 and YAM arms. MuJoCo is its only physics engine.
+  relative_to: isaac-lab
+  relation: one_below
+  confidence: medium
+  note: MuJoCo Playground trains thousands of environments in parallel on the GPU from state or camera observations and carries
+    the same policy onto real hardware. Its physics all comes from MuJoCo, where Isaac Lab lets a task switch between several
+    physics backends, so it sits a step below Isaac Lab.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/README.md
+      shows: Re-read of the peer. Isaac Lab's README still calls it "a multi-backend framework supporting physics and rendering
+        through Newton, OVRTX, OVPhysX, and NVIDIA Isaac Sim" and lists "Ready-to-train implementations of more than 30 environments"
+        and "RGB/depth/segmentation cameras".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c5b92a73ef6a10e8c7f12786be84205d5e495b1ad05516e2d8d799e75f130eb4
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco_playground/main/README.md
+    shows: 'README: "built on reaf-sim, MuJoCo, and MuJoCo Warp"; "Large-batch RL training on GPU: with state and vision observations
+      across control, manipulation, and humanoid whole-body tracking"; "System identification"; "Zero-shot sim-to-real policy
+      deployment"; "Train SO101PickCube (8,192 parallel envs on GPU)"; "train the wrist-camera policy (SO101PickCubeVision)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 76563cee69d1b6c8ec402c4a5229328e2a5777a6ffce34eddd343cd5b07e5daf

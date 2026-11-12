@@ -1,0 +1,135 @@
+product: orpheus-tts
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: finetuned and pretrained 3B checkpoints on the Hub, behind an automatically approved form
+    data:
+      value: described
+      detail: more than 100k hours of English speech for the pretrained model; not released
+    code:
+      value: open
+      detail: pretraining and fine-tuning scripts with configs in the repository
+    license:
+    - name: Apache-2.0
+      detail: declared on both model cards
+    - name: Llama-3.2-Community-License
+      detail: both cards name Llama 3.2 3B Instruct as the base model, and its license travels with derivative
+        weights
+    context:
+      research-release:
+        value: multilingual-family
+        detail: 2025 research-preview pairs for other languages; the pretrained models are tagged llama3.2
+          and the finetuned ones apache-2.0
+  governing_release: Orpheus TTS 0.1 (2025-03)
+  confidence: medium
+  note: The weights download after an automatic form and are labeled Apache-2.0, but they are built on Meta's Llama 3.2, whose
+    community license, with its cap on the very largest services, carries over to the model. The training and fine-tuning
+    scripts are published, while the English speech it was trained on is only described.
+  raw: weights:open(finetuned and pretrained 3B checkpoints on the Hub, behind an automatically approved form);data:described(more
+    than 100k hours of English speech for the pretrained model; not released);code:open(pretraining and fine-tuning scripts
+    with configs in the repository);license:Apache-2.0(declared on both model cards)+Llama-3.2-Community-License(both cards
+    name Llama 3.2 3B Instruct as the base model, and its license travels with derivative weights);research-release:multilingual-family(2025
+    research-preview pairs for other languages; the pretrained models are tagged llama3.2 and the finetuned ones apache-2.0)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/canopylabs/orpheus-3b-0.1-ft
+    shows: 'Hub record: "gated":"auto", cardData "license":"apache-2.0", "base_model": ["meta-llama/Llama-3.2-3B-Instruct",
+      "canopylabs/orpheus-3b-0.1-pretrained"], with model-00001-of-00004.safetensors in the file list.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fe7116437d1f88807cddff450d0bd36f95669a352540032e48f1ed260c5ef75c
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/canopylabs/orpheus-3b-0.1-pretrained
+    shows: 'Hub record: "gated":"auto", cardData "license":"apache-2.0", "base_model": ["meta-llama/Llama-3.2-3B-Instruct"].'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a816d59bc8967599675dd4d8fb64cd80c21a3eb03fbd95b44e30b196b54e966f
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/meta-llama/llama-models/main/models/llama3_2/LICENSE
+    shows: '"LLAMA 3.2 COMMUNITY LICENSE AGREEMENT": "If you distribute or make available the Llama Materials (or any derivative
+      works thereof) ... you shall (A) provide a copy of this Agreement"; section 2 requires a license from Meta above "700
+      million monthly active users".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8cc15535a8a34b41888f644b339a1a9eb428af793a4f5e24df58a3e5b1487d74
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/canopyai/Orpheus-TTS/HEAD/LICENSE
+    shows: 'Code LICENSE body: "Apache License" / "Version 2.0, January 2004".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/canopyai/Orpheus-TTS/HEAD/README.md
+    shows: 'README: "Orpheus TTS is a SOTA open-source text-to-speech system built on the Llama-3b backbone"; "Pretrained
+      - Our base model trained on 100k+ hours of English speech data"; "Finetune Model" runs "the training script in finetune/train.py";
+      a "Pretrain Model" section; "[4/2025] We release a family of multilingual models ... in a research preview".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e0c2b5c7fc73938d731b074c5fe197b58dc716a6a87d0aaff682d5ba0bd37b06
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=canopylabs&limit=100
+    shows: 'Hub listing: the *-pretrain-research_release models are tagged "license:llama3.2" and the *-ft-research_release
+      models "license:apache-2.0".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 69eb6259211581ca2f8bf0533f093556f69c84e7c69e8b598540347648519bb3
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the finetuned and pretrained English checkpoints over the trailing month; the multilingual
+    research models are not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=canopylabs&limit=100
+    shows: '"downloads":44920 for canopylabs/orpheus-3b-0.1-ft and 752 for canopylabs/orpheus-3b-0.1-pretrained.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 69eb6259211581ca2f8bf0533f093556f69c84e7c69e8b598540347648519bb3
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: no board presence; the README reports no evaluation on a shared test set
+  value: Orpheus is not on the Artificial Analysis TTS leaderboard, and its README reports no results on a shared test set;
+    it claims about 200 ms streaming latency, zero-shot voice cloning and emotion tags.
+  confidence: medium
+  note: Orpheus has no listener rating and publishes no results on a public test set, so nothing places it beside the rated
+    synthesizers. It sits with MeloTTS, another popular open voice with no published evaluation.
+  relative_to: melotts
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/myshell-ai/MeloTTS/HEAD/README.md
+      shows: 'MeloTTS README (same digest as when MeloTTS was scored): "MeloTTS is a **high-quality multi-lingual** text-to-speech
+        library"; "Fast enough for `CPU real-time inference`"; it reports no evaluation, and MeloTTS has no entry on the 104-row
+        Artificial Analysis TTS leaderboard read the same day.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ee0722f303183c227dc2008069d2fe6cd2c72867d4062c61598a5435b1b55205
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/canopyai/Orpheus-TTS/HEAD/README.md
+    shows: 'README "Abilities": "**Zero-Shot Voice Cloning**"; "**Low Latency**: ~200ms streaming latency for realtime applications";
+      no evaluation section.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e0c2b5c7fc73938d731b074c5fe197b58dc716a6a87d0aaff682d5ba0bd37b06
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: The 104-row leaderboard has no Orpheus entry.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d6850775d138e7333206ce45f87e6e3b69db171d663fb2f97d9241e6a44e754a

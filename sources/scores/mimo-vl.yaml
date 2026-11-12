@@ -1,0 +1,115 @@
+product: mimo-vl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: MiMo-VL 2508
+  components:
+    weights:
+      value: open
+      detail: MiMo-VL-7B-RL-2508 and SFT-2508 on the Hub, ungated
+    data:
+      value: described
+      detail: pretraining and RL data described in the technical report, not released
+    code:
+      value: partial
+      detail: inference demo and notebooks only
+    license:
+    - name: MIT
+      detail: weights
+    - name: Apache-2.0
+      detail: repository code
+  confidence: high
+  note: The 2508 checkpoints are MIT and the repository code is Apache-2.0. Xiaomi describes its training stages and data
+    in the report but publishes neither the data nor the training code, only inference examples.
+  raw: weights:open(MiMo-VL-7B-RL-2508 and SFT-2508 on the Hub, ungated);data:described(pretraining and RL data described
+    in the technical report, not released);code:partial(inference demo and notebooks only);license:MIT(weights)+Apache-2.0(repository
+    code)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/XiaomiMiMo/MiMo-VL-7B-RL-2508/raw/main/README.md
+    shows: 'MiMo-VL-7B-RL-2508 card: license mit; "Both versions of the MiMo-VL-7B-2508 model are now open-sourced on Hugging
+      Face"; a use-restrictions notice that states it "does not amend the applicable model licence".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 83c3052f1ab23548c44c907140d0eb464b864e8845abc9f2a06883a8e51f9b3f
+    establishes:
+    - license
+    - weights
+  - url: https://raw.githubusercontent.com/XiaomiMiMo/MiMo-VL/main/LICENSE
+    shows: 'LICENSE: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 539327f43d0a84438f006fadf77a651daa9ca29429286a46e69cb6b2594d8a4c
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=XiaomiMiMo&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: MiMo-VL-7B-RL-2508 and MiMo-VL-7B-SFT-2508 (2025-08-07), the newest MiMo-VL checkpoints, gated false and tagged
+      mit.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 978fcf1aceb51ebc1ec416a7d14f8852545f5ae2901e29d2b040e887732f83de
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/XiaomiMiMo/MiMo-VL/main/README.md
+    shows: 'README: a four-stage pretraining phase and Mixed On-policy Reinforcement Learning described; "We open-source MiMo-VL-7B
+      series, including checkpoints of the SFT and RL model"; no dataset release.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c23da306c1ab872ed2da762d70b7ccc8eef59611a1dec5f19e4dab8c49fce058
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/XiaomiMiMo/MiMo-VL/files/main
+    shows: 'Repository tree: demo/app.py, demo/infer.py and example notebooks for grounding and OCR; no training code.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 69013aaf5e1e4a06aab68f28668d8c2202bc1736f363f6dbe68ebcc3df5b0e41
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for Xiaomi's six MiMo-VL checkpoints, including its own GGUF builds,
+    most of them for the 2508 RL model.
+  sources:
+  - url: https://huggingface.co/api/models?author=XiaomiMiMo&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: MiMo-VL-7B-RL-2508 4,587, SFT-2508 1,978, RL 1,581, SFT 1,017, RL-GGUF 621 and SFT-GGUF 349 downloads in the trailing
+      30 days (10,133 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 978fcf1aceb51ebc1ec416a7d14f8852545f5ae2901e29d2b040e887732f83de
+capability:
+  score: 3
+  basis: feature_matrix
+  value: image, document (OCR) and video understanding with switchable step-by-step reasoning; 70.6 on MMMU and 70.8 on Video-MME;
+    GUI grounding (MiMo-VL-7B-RL-2508)
+  relative_to: minicpm-v
+  relation: at
+  confidence: medium
+  note: MiMo-VL reads images, documents and video, level with MiniCPM-V. Xiaomi reports it locating elements on a screen but
+    gives no results for completing tasks in a live interface.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+      shows: 'MiniCPM-V 4.6 card: "It inherits the strong single-image, multi-image, and video understanding capabilities
+        of MiniCPM-V family"; max_num_frames default 128.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd1e58bd92c42d5f34797e5930889bcfd17c1ef4d5bb5e8e6f5e572eddbc34f8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/XiaomiMiMo/MiMo-VL-7B-RL-2508/raw/main/README.md
+    shows: 'Card: "consistent improvements across both image and video benchmarks, achieving notable milestones of 70.6 on
+      MMMU and 70.8 on VideoMME"; thinking control through /no_think.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 83c3052f1ab23548c44c907140d0eb464b864e8845abc9f2a06883a8e51f9b3f
+  - url: https://raw.githubusercontent.com/XiaomiMiMo/MiMo-VL/main/README.md
+    shows: 'README: "MiMo-VL-7B-RL possess exceptional GUI understanding and grounding capabilities"; video question-answering
+      example; OCR and grounding notebooks.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c23da306c1ab872ed2da762d70b7ccc8eef59611a1dec5f19e4dab8c49fce058

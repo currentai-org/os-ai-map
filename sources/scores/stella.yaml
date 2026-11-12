@@ -1,0 +1,125 @@
+product: stella
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 1.5B and 400M checkpoints, ungated on Hugging Face
+    data:
+      value: closed
+      detail: the embedding training data is neither released nor named, and the GTE backbones' own pretraining
+        belongs to Alibaba
+    code:
+      value: partial
+      detail: RAG-Retrieval publishes the stage-3 training code shared by Stella and Jasper, not the full
+        recipe
+    license:
+    - name: MIT
+      detail: OSI
+  governing_release: stella_en_1.5B_v5
+  confidence: high
+  note: Stella's weights are published under the MIT license, and part of its training code is public.
+    The data it was trained on has not been released or listed, so the training cannot be repeated.
+  raw: weights:open(1.5B and 400M checkpoints, ungated on Hugging Face);data:closed(the embedding training
+    data is neither released nor named, and the GTE backbones' own pretraining belongs to Alibaba);code:partial(RAG-Retrieval
+    publishes the stage-3 training code shared by Stella and Jasper, not the full recipe);license:MIT(OSI)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/api/models/NovaSearch/stella_en_1.5B_v5
+    shows: 'Model API for NovaSearch/stella_en_1.5B_v5: `gated: false`, cardData.license `mit`, with model.safetensors
+      among the files.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c1facd69f33270ec490c48e03fc6344c40bfb7a2958fc1f9558aba6fea41cd2b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/NovaSearch/stella_en_400M_v5
+    shows: 'Model API for NovaSearch/stella_en_400M_v5: `gated: false`, cardData.license `mit`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 12c3b3522672548f06a2e36cd98e148114b04ff39b499efaa7880c4a4ea041ab
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/NovaSearch/stella_en_1.5B_v5/raw/main/README.md
+    shows: 'Model card: "The models are trained based on `Alibaba-NLP/gte-large-en-v1.5` and `Alibaba-NLP/gte-Qwen2-1.5B-instruct`";
+      FAQ: "The training method and datasets will be released in the future"; front matter `license: mit`.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dbbfdca2ea1c574a208416c141ddc34a9d6fc6495e5c7e78b7413d37b6ebf8f6
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/NovaSearch-Team/RAG-Retrieval/master/README.md
+    shows: 'RAG-Retrieval README: "RAG-Retrieval released the core training code (stage3) of Stella and
+      Jasper embedding model".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8476a7209661228c742037b23ac6aed4000ab81c82eae9090d1a9e1ebd3e4cab
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed across the 1.5B and 400M checkpoints, most of them for the 400M
+    model.
+  sources:
+  - url: https://huggingface.co/api/models/NovaSearch/stella_en_1.5B_v5
+    shows: '"downloads":16961 for NovaSearch/stella_en_1.5B_v5, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c1facd69f33270ec490c48e03fc6344c40bfb7a2958fc1f9558aba6fea41cd2b
+  - url: https://huggingface.co/api/models/NovaSearch/stella_en_400M_v5
+    shows: '"downloads":56702 for NovaSearch/stella_en_400M_v5, the trailing 30-day count the Hub API
+      reports.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 12c3b3522672548f06a2e36cd98e148114b04ff39b499efaa7880c4a4ea041ab
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: MTEB v1 English, average over 56 datasets, from the leaderboard table of 24 December 2024
+    reproduced in the Jasper and Stella report
+  value: 'stella_en_1.5B_v5: 71.19 average over the 56 English MTEB datasets, third in the report''s leaderboard
+    table behind NV-Embed-v2 (72.31) and bge-en-icl (71.67) and ahead of gte-Qwen2-1.5B-instruct (67.16);
+    English only, with a recommended input of 512 tokens.'
+  relative_to: gte
+  relation: at
+  confidence: medium
+  note: Stella's 1.5B model ranked among the strongest English embedders on MTEB at the end of 2024, level
+    with GTE's best instruct model on the same English average. It covers English only and is tuned for
+    short inputs, which keeps it behind the multilingual, long-context leaders.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/Alibaba-NLP/gte-Qwen2-7B-instruct/raw/main/README.md
+      shows: gte-Qwen2-7B-instruct card still reports 70.24 on MTEB(56) English and 67.16 for gte-Qwen2-1.5B-instruct,
+        the GTE results on the English average Stella is compared on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 9978cafee677d4d2aded3228d96e99f2713cdc1b223c6636df8799c7e144f4f1
+    - url: https://huggingface.co/Alibaba-NLP/gte-modernbert-base/raw/main/README.md
+      shows: gte-modernbert-base card still gives MTEB-en 64.38 and BEIR 55.33 at an 8,192-token maximum
+        length, the long-context English result GTE's own placement relies on.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 97d40aa325f0e6eaddf77edc7187b7bba6fd3e31a555be3b5766f015c6c27550
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://arxiv.org/html/2412.19048
+    shows: 'Report Table 1, MTEB results as of December 24, 2024: Stella_en_1.5B_v5 average (56 datasets)
+      71.19, NV-Embed-v2 72.31, bge-en-icl 71.67, SFR-Embedding-2_R 70.31, gte-Qwen2-1.5B-instruct 67.16.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8e9b468678fcc08daa9bc427de016340662fbe354676af20f073cff237b57684
+  - url: https://huggingface.co/NovaSearch/stella_en_1.5B_v5/raw/main/README.md
+    shows: 'Model card FAQ: "512 is recommended" for sequence length, "the model is trained on datasets
+      of 512 length"; the model-index lists 56 MTEB English results.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: dbbfdca2ea1c574a208416c141ddc34a9d6fc6495e5c7e78b7413d37b6ebf8f6

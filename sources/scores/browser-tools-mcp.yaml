@@ -1,0 +1,103 @@
+product: browser-tools-mcp
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the MCP server and the Chrome extension both ship in the MIT repository; AgentDesk's only other product,
+        AgentDesk Studio, is a separate waitlisted app
+  confidence: high
+  note: BrowserTools MCP is MIT-licensed, and both halves of it, the server and the Chrome extension, are in the
+    public repository and run from there. AgentDesk sells no edition of it; the only other product its site names
+    is a separate app still on a waitlist.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the MCP server and the Chrome extension both ship in the
+    MIT repository; AgentDesk's only other product, AgentDesk Studio, is a separate waitlisted app)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/AgentDeskAI/browser-tools-mcp/main/LICENSE
+    shows: The LICENSE is the MIT License text, headed "Copyright (c) 2025 AgentDesk LLC".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 15b272e3e907bab1469eec10fccdd743f4bf74a268d352f719555ac0778b33e2
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@agentdeskai/browser-tools-mcp/latest
+    shows: The npm record for @agentdeskai/browser-tools-mcp 2.0.4 declares "license":"MIT", author "AgentDesk AI",
+      repository git+https://github.com/AgentDeskAI/browser-tools-mcp.git and the bins browser-tools-mcp and browser-tools-connector.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2801d2b50a63d605dc5b82291d5f6b13734929478748b34b1303e38132c7131a
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/AgentDeskAI/browser-tools-mcp/main/README.md
+    shows: The README installs the server with "npx -y @agentdeskai/browser-tools-mcp@latest" and the extension
+      by loading the repository's chrome-extension directory unpacked, says "There is no second server to start",
+      and closes "## License MIT". No paid tier, license key or hosted service is mentioned.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9b2c1c1e2c2f0d663cf18b202e848cd1ac6f963db1c0eb92bb31e77f69de0b43
+    establishes:
+    - source
+    - core-gated
+  - url: https://agentdesk.ai/
+    shows: AgentDesk's homepage shows BrowserTools ("Embed AI code editors + agents directly into web browsers via
+      MCP") beside a waitlist for "early access to AgentDesk Studio".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: b3ecd4cdefbe57f9382ec124a0d904b84470d1135f6ec6a2b7ea954afee8ce86
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the trailing month of npm downloads of @agentdeskai/browser-tools-mcp, the package the README's
+    MCP configuration runs through npx. The Chrome extension is loaded unpacked from the repository, so nothing
+    counts it.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@agentdeskai/browser-tools-mcp
+    shows: 19,574 downloads of @agentdeskai/browser-tools-mcp between 2026-10-12 and 2026-11-10
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 309b07e44b27664e70e9306c8b816233152be6a0b416fb047c4052f0896e9337
+capability:
+  score: 3
+  basis: feature_matrix
+  value: a curated tool surface over the user's own Chrome session - console and network logs, the selected element,
+    tab listing and navigation, soft clicks and typing, screenshots, storage reads, and Lighthouse accessibility,
+    performance, SEO and best-practice audits - read through a DevTools extension from a browser the user is already
+    signed into
+  confidence: medium
+  note: 'BrowserTools MCP works on one system, the user''s browser, and brings no credentials of its own: it reads
+    the session the user is already signed into, and its connector runs on the user''s machine. That puts it level
+    with Playwright MCP, which drives a fresh browser instead; neither manages logins nor hosts anything.'
+  relative_to: playwright-mcp
+  relation: at
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/microsoft/playwright-mcp/main/README.md
+      shows: The Playwright MCP README still lists "--storage-state <path> | path to the storage state file for
+        isolated sessions" and says initial storage state is provided "via the config's `contextOptions` or via
+        the `--storage-state` argument", with the server started by "npx @playwright/mcp@latest".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: db4a7eee3e3bd4be105f8f9a10945cda390fe3bd955d05183e961f4e91f0b7ef
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/AgentDeskAI/browser-tools-mcp/main/README.md
+    shows: The README's tool table lists getConsoleLogs, getNetworkLogs, getSelectedElement, listTabs, navigateTab,
+      softClick / softType, takeScreenshot, getBrowserStorage and four Lighthouse audits. The connector "binds `127.0.0.1`
+      and refuses non-loopback addresses", the HTTP API "requires a per-run bearer token", and "Credentials are
+      scrubbed on the way in".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9b2c1c1e2c2f0d663cf18b202e848cd1ac6f963db1c0eb92bb31e77f69de0b43

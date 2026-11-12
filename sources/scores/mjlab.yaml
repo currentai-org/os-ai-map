@@ -1,0 +1,128 @@
+product: mjlab
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, utilities forked from Isaac Lab keep BSD-3-Clause
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: an academic project with no paid offering
+  confidence: high
+  note: mjlab is Apache-2.0 and builds entirely from its public repository, with a few utilities forked from Isaac Lab keeping
+    their BSD-3-Clause terms. It is a research project from its paper's authors with no company or paid edition behind it.
+  raw: license:Apache-2.0(OSI, utilities forked from Isaac Lab keep BSD-3-Clause);source:public;core-gated:ungated(an academic
+    project with no paid offering)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/mujocolab/mjlab/main/LICENSE
+    shows: 'LICENSE is the Apache License, Version 2.0 text: "Apache License", "Version 2.0, January 2004".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8ca04d9dbbccd20f0f1842fb33e13949f9e57064b150dad36af8e7a751ca3321
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mujocolab/mjlab/main/README.md
+    shows: 'README License section: "mjlab is licensed under the Apache License, Version 2.0"; "src/mjlab/utils/lab_api/ —
+      Utilities forked from NVIDIA Isaac Lab (BSD-3-Clause license, see file headers)"; install from source with git clone
+      and uv run. No paid tier is mentioned.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 77ac2fe462095a7bc8304f32264050432f1a2354848be6b9d157ac665c7a37d6
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://arxiv.org/abs/2601.22074
+    shows: 'arXiv 2601.22074, "mjlab: A Lightweight Framework for GPU-Accelerated Robot Learning", by Kevin Zakka, Qiayuan
+      Liao, Brent Yi, Louis Le Lay, Koushil Sreenath and Pieter Abbeel: "We present mjlab, a lightweight, open-source framework
+      for robot learning".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3a63481c8564a420deb5dd861759ff8b444987f69e74f9eec184c6ba2bbfee78
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/mujocolab/mjlab/files/main
+    shows: Full listing of the main branch, 624 paths; no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8c8c0a86fa4c3d3e506b62581e877bbe2b5df8495f4a9aef258ba3c22f33d670
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/mujocolab/mjlab/releases/latest
+    shows: Latest release mjlab v1.6.0, published 2026-08-09.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 9f46eee005db2849f9fdc47c11415b32d87493dfdb94c25fb37b4572202b712d
+    establishes:
+    - source
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of the mjlab package, which is the framework itself. The README's own quick start clones the repository
+    instead, so source installs go uncounted.
+  sources:
+  - url: https://pypistats.org/api/packages/mjlab/recent
+    shows: 'pypistats: last_month 60,015 downloads for mjlab.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 292f5d36b4b00ad6762a9c19b122ba89e32bceb227242610950f62977716372f
+  - url: https://pypi.org/pypi/mjlab/json
+    shows: 'PyPI metadata for mjlab 1.6.0: license_expression Apache-2.0, Source https://github.com/mujocolab/mjlab.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 13584032705700a9fdd9b5c231fc0a79c0d6b15c08129c072766a042ed6082c6
+  - url: https://mujocolab.github.io/mjlab/main/source/installation.html
+    shows: Installation guide covering installation from PyPI, from source and with Docker.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 03473b18b2d7bebf0ff10e970e619db15aa4b452c43667fd2abe230dcd1ba957
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: GPU-parallel MuJoCo Warp simulation across thousands of environments and multiple GPUs, a CameraSensor that renders
+    batched RGB and depth images on the GPU with MuJoCo Warp's ray tracer, raycast, contact and tactile sensors, and reference
+    tasks for velocity tracking, motion imitation, cube lifting and cartpole. One physics engine.
+  relative_to: isaac-lab
+  relation: one_below
+  confidence: medium
+  note: mjlab runs thousands of MuJoCo Warp environments in parallel on the GPU and renders camera images for all of them
+    in the same batch. It has one physics engine and a handful of reference tasks, where Isaac Lab offers several physics
+    backends and more than thirty ready-to-train environments, so it sits a step below.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/README.md
+      shows: Re-read of the peer. Isaac Lab's README still calls it "a multi-backend framework supporting physics and rendering
+        through Newton, OVRTX, OVPhysX, and NVIDIA Isaac Sim" and lists "Ready-to-train implementations of more than 30 environments"
+        and "RGB/depth/segmentation cameras", the backend choice and task library that separate it from single-engine frameworks.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: c5b92a73ef6a10e8c7f12786be84205d5e495b1ad05516e2d8d799e75f130eb4
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/mujocolab/mjlab/main/README.md
+    shows: 'README: "mjlab combines Isaac Lab''s manager-based API with MuJoCo Warp, a GPU-accelerated version of MuJoCo";
+      training example with "--env.scene.num-envs 4096"; "Multi-GPU Training"; tasks Mjlab-Velocity-Flat-Unitree-G1 and Mjlab-Tracking-Flat-Unitree-G1.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 77ac2fe462095a7bc8304f32264050432f1a2354848be6b9d157ac665c7a37d6
+  - url: https://raw.githubusercontent.com/mujocolab/mjlab/main/docs/source/sensors/rgbd_camera.rst
+    shows: 'Sensor docs: "CameraSensor renders RGB and depth images on the GPU using MuJoCo Warp''s ray-traced rendering pipeline";
+      outputs batched as "[B, 120, 160, 3] uint8".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: d1ae88a93e6e0684014aaab108ae10c8bb38129b012c36a235dddf77e7152f18
+  - url: https://arxiv.org/abs/2601.22074
+    shows: 'Abstract: mjlab "pairs it with MuJoCo Warp for GPU-accelerated physics" and "ships with reference implementations
+      of velocity tracking, motion imitation, and manipulation tasks".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 3a63481c8564a420deb5dd861759ff8b444987f69e74f9eec184c6ba2bbfee78

@@ -1,0 +1,98 @@
+product: camel
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the tree at 0366b64 holds 2,243 paths under one Apache-2.0 LICENSE with no ee/, enterprise/,
+        commercial/ or proprietary/ path; the README presents the project as a community research collective
+        and lists Eigent, the team's commercial multi-agent product, among separate products built with
+        CAMEL
+    context:
+      commercial:
+        value: Eigent
+  confidence: high
+  note: CAMEL's source is Apache-2.0 licensed and builds from its public repository with no enterprise
+    directory. The team also sells Eigent, a separate multi-agent product built on CAMEL, which does not
+    take anything out of the open framework.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(the tree at 0366b64 holds 2,243 paths
+    under one Apache-2.0 LICENSE with no ee/, enterprise/, commercial/ or proprietary/ path; the README
+    presents the project as a community research collective and lists Eigent, the team's commercial multi-agent
+    product, among separate products built with CAMEL);commercial:Eigent
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/camel-ai/camel/master/LICENSE
+    shows: The LICENSE is the Apache License, "Version 2.0, January 2004", with the appendix line "Copyright
+      2023 @ CAMEL-AI.org".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 950deb34b1341a0ac95236fae92fe247c318c3a83a62c9ebacbe1882530ab1f6
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/camel-ai/json
+    shows: PyPI metadata for camel-ai 0.2.90 declares license_expression Apache-2.0 and names https://github.com/camel-ai/camel
+      as its repository; pre-releases of 0.2.91 follow through 2026-09-03.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5329e8ee27dfde2bd48cf41bfc53d315b2a1eacc7eb5eb596afd85a3c12ca18b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/camel-ai/camel/master/README.md
+    shows: The README says "The source code is licensed under Apache 2.0", calls the team "a community-driven
+      research collective", and lists Eigent under products "Built with CAMEL".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a2be9addbef3d31c4e691dcf1ef17aa40754f640a5eb05e1985eca4e12a82d8d
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of camel-ai over the trailing month. Automated installs add
+    to the count, so it measures install volume rather than researchers or developers.
+  sources:
+  - url: https://pypistats.org/api/packages/camel-ai/recent
+    shows: last_month 42,975 downloads for camel-ai (last_week 11,980, last_day 1,591).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 697c04071247ca2b88199d1724d0112fa515a4ffefa20d37cc129ce92ea761bb
+capability:
+  score: 4
+  basis: feature_matrix
+  value: role-playing agent pairs; agent societies and workforces; stateful memory; toolkits; retrieval
+    and graph RAG; storage; synthetic data generation; no first-party benchmark
+  confidence: medium
+  note: CAMEL covers multi-agent societies, workforces, memory, retrieval and a wide set of toolkits,
+    with a research focus on generating data and simulating agent populations. It sits a step below LangGraph,
+    whose runs checkpoint their state and resume where they stopped.
+  relative_to: langgraph
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/langchain-ai/langgraph/main/README.md
+      shows: The LangGraph README still describes durable execution, "automatically resuming from exactly
+        where they left off", and "inspecting and modifying agent state at any point during execution".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 3a13e257af1216962d53d72414a7f44ac1fc5cea34d994bdff60ea2a3b045933
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/camel-ai/camel/master/README.md
+    shows: The README lists Agent Societies, Memory, Storage, Retrievers and toolkits as modules, the
+      Workforce multi-agent system, RAG and graph RAG cookbooks, and data generation, task automation
+      and world simulation as uses; it publishes no benchmark figure.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a2be9addbef3d31c4e691dcf1ef17aa40754f640a5eb05e1985eca4e12a82d8d
