@@ -4042,33 +4042,21 @@
           "org_slug": "baidu",
           "org": "Baidu",
           "type": "model",
-          "description": "ERNIE 5.1 is Baidu's fifth-generation flagship language model, launched in May 2026 with stronger text capabilities than its predecessor. It is offered as a hosted model through Baidu's ERNIE site, the Baidu Qianfan platform and OpenRouter.",
+          "description": "ERNIE 5.1 is Baidu's fifth-generation flagship language model, launched in May 2026 with stronger text capabilities than its predecessor. It is offered only as a hosted model, through Baidu's ERNIE site and the Baidu Qianfan platform.",
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "weights:closed;data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5 was open, 5.x flagship closed)",
+            "components": "weights:closed(no ERNIE 5.1 weights are distributed; the flagship is served only as a hosted model);data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5 was released openly, the 5.1 flagship is closed);separate-line:ERNIE 5.5 Flash Base, ERNIE 5.5 Flash Base Model License v1.0(a smaller 280B-total base model published on Hugging Face in October 2026 with its own card and license, which permits commercial use up to US$50 million in related annual revenue outside the EU, the UK and South Korea; a separately released line, not a SKU of the flagship, so it does not govern)",
             "confidence": "high",
-            "note": "Baidu distributes no weights for the ERNIE 5.x models, which are available only through its own services and API. Training data and code are not published either.",
+            "note": "Baidu distributes no weights for its flagship ERNIE 5.1, which is available only through its own services and API, and publishes neither its training data nor its code. ERNIE 5.5 Flash Base, which Baidu released separately on Hugging Face in October 2026, is a smaller open-weight base model under its own license; it is a different line and does not make the flagship open.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
-                "url": "https://huggingface.co/baidu",
-                "shows": "Baidu Hugging Face organization page lists ERNIE-4.5 and ERNIE-Image repositories such as \"baidu/ERNIE-4.5-21B-A3B-Thinking\" and \"baidu/ERNIE-Image-Turbo\"; searched the page for ERNIE-5 and ERNIE 5.1: none, so no 5.x weights, training code, corpus or open license is distributed there.",
-                "accessed": "2026-09-29",
-                "http_status": 200,
-                "content_sha256": "a79e9e9a57819e8bd9917491468ded63af751f23e4ab2c8b9a28bf31d9b0af5a",
-                "establishes": [
-                  "weights",
-                  "data",
-                  "code",
-                  "license"
-                ]
-              },
-              {
                 "url": "https://huggingface.co/api/models?author=baidu&search=ERNIE&limit=100",
-                "shows": "Hugging Face models API listing of every Baidu repository matching ERNIE returns 30 repositories, all ERNIE-4.5 or ERNIE-Image, e.g. \"baidu/ERNIE-4.5-300B-A47B-Base-PT\" and \"baidu/ERNIE-4.5-VL-424B-A47B-Paddle\"; searched the listing for ERNIE-5: none.",
-                "accessed": "2026-09-29",
+                "shows": "Hugging Face models API listing of Baidu repositories matching ERNIE returns 32, all ERNIE-4.5, ERNIE-Image or the separately released ERNIE-5.5-Flash-Base and ERNIE-5.5-Flash-Base-BF16; searched the listing for ERNIE-5.1: none, so no flagship weights, training code, corpus or open license is distributed there.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "34c1019db4f4269c5a8c74b67002a8708504f2161301a1dc9e25564208c6a1cc",
+                "content_sha256": "51ae9aea6b0682f275e8c0110ee441db8a93eb47e3f4acbf604ab0b65d9e7da1",
                 "establishes": [
                   "weights",
                   "data",
@@ -4077,15 +4065,22 @@
                 ]
               },
               {
-                "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
-                "shows": "Official ERNIE 5.1 release post directs users to \"Visit the official website at https://ernie.baidu.com to chat with the latest ERNIE 5.1 model\"; searched the post for Hugging Face, download, open-source and license: none, so the model is offered only as a hosted service.",
-                "accessed": "2026-09-29",
+                "url": "https://ernie.baidu.com/",
+                "shows": "The ERNIE site lists ERNIE 5.1 among its models, reachable through chat and through API links to Baidu Qianfan and OpenRouter, with a product update reading \"ERNIE 5.1 Officially Released!\"; it offers no download of the 5.1 weights.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd",
+                "content_sha256": "c6a6373d55dc2708200ade98ac2616946018d5985f51af649183967b5731a55e",
                 "establishes": [
                   "weights",
                   "license"
                 ]
+              },
+              {
+                "url": "https://huggingface.co/baidu/ERNIE-5.5-Flash-Base/raw/main/LICENSE",
+                "shows": "The separate line's license: Section 4.2 permits commercial use \"with Annual Revenue of Related Products or Services at or below US$50 million\" after a one-time notice, Section 4.3 requires written authorization above it, and Section 1.11 defines the Territory as \"all geographical areas worldwide other than the European Union, the United Kingdom and South Korea\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "f896ab9f174d0d55943d6c90ec26ba919ec59e03620982370d27181d4497b254"
               }
             ],
             "bucket": "closed"
@@ -4154,23 +4149,17 @@
             "date": "2026-11-12",
             "basis": "partial",
             "unconfirmed_axes": [
-              "capability",
-              "openness"
+              "capability"
             ],
             "verification_holds": [
               {
                 "axis": "capability",
                 "since": "2026-11-12",
                 "reason": "The cited ERNIE 5.1 release post URL now serves the ERNIE homepage, so the AIME, GPQA and MMLU-Pro figures in the value cannot be re-read there; only the LMArena ranking survives, in Baidu's Q1 2026 results. Baidu has also shipped ERNIE 5.5 Flash Preview and Flash Base. Settled by re-reading the 5.1 figures from a live Baidu page and checking whether a 5.5 release now sets the family's best result."
-              },
-              {
-                "axis": "openness",
-                "since": "2026-11-12",
-                "reason": "Baidu now publishes ERNIE-5.5-Flash-Base on Hugging Face (created 2026-10-21, \"gated\":false, 128 safetensors shards) under the ERNIE 5.5 Flash Base Model License Agreement v1.0, which allows commercial use up to US$50 million in related annual revenue and excludes the EU, the UK and South Korea. That contradicts the recorded closed weights for the 5.x line, and the license is not in the ladder. Settled by a governing-release ruling for this entry (ERNIE 5.1 flagship or the 5.5 line) and, if 5.5 governs, a ladder entry for the license (build-rubric)."
               }
             ]
           },
-          "version_note": "ERNIE 4.5 was released openly. ERNIE 5.5 Flash Base, a pretraining checkpoint published on Hugging Face under its own license, is newer than the 5.1 flagship this entry is scored on."
+          "version_note": "Scored on Baidu's flagship line, currently the API-only ERNIE 5.1. ERNIE 5.5 Flash Base, an open-weight base model Baidu published separately on Hugging Face in October 2026, is a different line and is not scored here. ERNIE 4.5 was released openly."
         },
         {
           "slug": "mimo-pro",
@@ -4700,47 +4689,79 @@
         },
         {
           "slug": "granite",
-          "product": "Granite 4.0",
+          "product": "Granite",
           "org_slug": "ibm",
           "org": "IBM",
           "type": "model",
-          "description": "IBM's enterprise foundation-model family, released October 2025 as hybrid Mamba-2/transformer models from micro (3B) through h-small (32B total, 9B active MoE). The line targets efficient long-context inference on constrained hardware and enterprise agent workloads, and ships under Apache-2.0 with ISO 42001 certification and cryptographically signed checkpoints.",
+          "description": "IBM's Granite family of enterprise language models, published under Apache-2.0. Granite 4.1, released in April 2026, added dense 3B, 8B and 30B models trained from scratch, with base and instruct checkpoints, and Granite 4.2 followed in August 2026, post-training those bases for reasoning, tool use and instruction following. The October 2025 Granite 4.0 line of hybrid Mamba-2/transformer models, from 3B up to a 32B mixture of experts, remains available.",
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(Apache-2.0, ungated on HF across the 4.0 line);data:closed(SFT data characterized in the card (permissive public + internal synthetic + human-curated) but neither the pretraining corpus nor the mixtures are released);code:partial(ibm-granite/granite-4.0-language-models is docs/usage, no pretraining pipeline);license:Apache-2.0(OSI)",
-            "governing_release": "granite-4-0",
+            "components": "weights:open(Apache-2.0, ungated on HF across the 4.2 line);data:closed(the 4.1 pretraining mixture is described by category and phase and the 4.2 SFT sources by type, but no corpus is released);code:partial(the 4.2 and 4.1 language-model repositories carry documentation and usage examples, no pretraining pipeline);license:Apache-2.0(OSI)",
+            "governing_release": "granite-4-2",
             "confidence": "high",
-            "note": "Granite 4.0 ships Apache-2.0 weights, ungated across every SKU, but IBM only describes its training data in broad categories -- public data, internal synthetic data, human-curated data -- without releasing it or specifying the mix, and no pretraining pipeline is published. That combination of open weights with closed data and code keeps Granite at open weights rather than a fuller open release.",
+            "note": "Granite 4.2, the current release, ships Apache-2.0 weights, ungated at every size, post-trained from the Granite 4.1 base models. IBM describes the 4.1 pretraining mixture by category and phase, and the 4.2 fine-tuning data by source type, but releases neither corpus, and its repositories carry documentation and usage examples rather than a training pipeline. That keeps Granite an open-weights release rather than a fuller open one.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small",
-                "shows": "Model API for ibm-granite/granite-4.0-h-small: `gated: false`, `private: false`, cardData.license `apache-2.0`, safetensors weights listed.",
-                "accessed": "2026-10-07",
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.2-3b",
+                "shows": "Model API for ibm-granite/granite-4.2-3b: \"gated\": false, cardData license \"apache-2.0\", safetensors weight files listed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "0bf8df822861042b8ecdb7c63007b825b9a0ca32ebf9e757f0c1b0773e811663",
+                "content_sha256": "6c5b9a9530107a1f7a1bced08c24fd3953ea011a9ce5680bda225294aa22f21d",
                 "establishes": [
                   "weights",
                   "license"
                 ]
               },
               {
-                "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md",
-                "shows": "Card Training Data section: \"our SFT data is largely comprised of three key sources: (1) publicly available datasets with permissive license, (2) internal synthetic data targeting specific capabilities, and (3) a select set of human-curated data\" — described in categories, not released. Infrastructure section names the GB200 cluster; no training pipeline links.",
-                "accessed": "2026-10-07",
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.2-8b",
+                "shows": "Model API for ibm-granite/granite-4.2-8b: \"gated\": false, cardData license \"apache-2.0\", safetensors weight files listed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea",
+                "content_sha256": "1441d87ca57c48cd056aef4751cafdc0c5d39f0613703a79995d9cefb196fd3a",
                 "establishes": [
-                  "data",
-                  "code"
+                  "weights",
+                  "license"
                 ]
               },
               {
-                "url": "https://api.github.com/repos/ibm-granite/granite-4.0-language-models",
-                "shows": "`license: Apache-2.0`, 210 stars; the 4.0 release repository, which carries no pretraining pipeline — what holds `code` at partial.",
-                "accessed": "2026-09-01",
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.2-30b",
+                "shows": "Model API for ibm-granite/granite-4.2-30b: \"gated\": false, cardData license \"apache-2.0\", safetensors weight files listed.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "a6077f345228b14f2cc1d24dd618982e4ef2a7229b783a76d8edc7fabf917b70",
+                "content_sha256": "33040221be270c3e84f4ccdcee4e429979a8262501823474aa8fdc3524e99d10",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-4.2-8b/raw/main/README.md",
+                "shows": "Card: \"Granite-4.2-8B is post-trained from Granite-4.1-8B-Base\"; the SFT \"training corpus comprises four sources: (1) publicly available datasets under permissive licenses, (2) internally generated synthetic data ..., (3) agentic traces ..., and (4) a curated selection of human-authored data\", described by type and not released; \"Release Date | August 25, 2026\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "01396b1a8596586986fea22cfaa86d0255d19113d71fe09e0b69cc2bfa4307da",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/blog/ibm-granite/granite-4-1",
+                "shows": "Granite 4.1 technical blog: five pretraining phases with category mixtures such as \"CommonCrawl-HQ ~40% Code ~20% Math ~20%\", the corpus described by category and phase, with no dataset or reconstruction scripts released.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "cb729a98bf8d489e83632291a447aa2a035a53c2689d124110819315cb980382",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ibm-granite/granite-4.2-language-models/main/README.md",
+                "shows": "Repository README: \"All Granite 4.2 Language Models are distributed under Apache 2.0 license\", with model downloads and usage examples; it links no pretraining pipeline, data preparation or training configs.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "5f9c23d7aac6635b7174c3f6fdd8335d3251ec5d8aad6e7b298f3b41935fe1a5",
                 "establishes": [
                   "code",
                   "license"
@@ -4754,47 +4775,26 @@
             "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is measured as Hugging Face downloads summed across the four declared Granite 4.0 artifacts: h-tiny, micro, h-small and h-micro. The smaller, on-device-sized SKUs account for most of that reach.",
+            "note": "Adoption is measured as Hugging Face downloads summed across the declared Granite 4.0, 4.1 and 4.2 checkpoints, base and instruct. The small Granite 4.1 3B accounts for more than half of that reach.",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-tiny",
-                "shows": "88,627 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-tiny",
-                "accessed": "2026-09-01",
+                "url": "https://huggingface.co/api/models?author=ibm-granite&search=granite-4&limit=200",
+                "shows": "Trailing-30-day downloads per declared checkpoint on the ibm-granite listing: 4.0-h-small 24,055, 4.0-h-tiny 26,238, 4.0-h-micro 5,857, 4.0-micro 24,730, 4.1-3b 454,809, 4.1-3b-base 11,285, 4.1-8b 85,804, 4.1-8b-base 14,214, 4.1-30b 11,921, 4.1-30b-base 1,243, 4.2-3b 41,238, 4.2-8b 61,674, 4.2-30b 36,287; 799,355 in all.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "51c663db4788981e51cb9b768df73cdb0453bdd0d0256af8957bb418174d75be"
-              },
-              {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-micro",
-                "shows": "60,053 downloads in the trailing 30 days for ibm-granite/granite-4.0-micro",
-                "accessed": "2026-09-01",
-                "http_status": 200,
-                "content_sha256": "aa91b492e08d04f751f4481b1f412ad70b4d4c7a4f4cdcf559b93404533236f9"
-              },
-              {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small",
-                "shows": "25,719 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-small",
-                "accessed": "2026-09-01",
-                "http_status": 200,
-                "content_sha256": "3345c248cf0a3424642dcbe05c379b4dc8d4b2db3e030990206c4c2ef990ee71"
-              },
-              {
-                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-micro",
-                "shows": "20,110 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-micro",
-                "accessed": "2026-09-01",
-                "http_status": 200,
-                "content_sha256": "b9057408d8946fb2e893c7e47112fceee053ea72808c2cf5a3bceaea665144e7"
+                "content_sha256": "bbcdc5dbc12dd24b53e5cf99aa1cd25110375590c1f4fc3c4a0123940936b2b5"
               }
             ]
           },
           "capability": {
             "score": 3,
             "basis": "benchmark",
-            "basis_detail": "instruction-following / enterprise task suites (card model-index)",
-            "value": "The 4.0 flagship h-small is a 32B-total/9B-active hybrid positioned on efficiency and enterprise agent tasks rather than frontier reasoning; IBM's card benchmarks it against similar-size open-weight peers, the class whose AA reading (Llama 4 Maverick, index 14.5) defines the category's mid-tier.",
+            "basis_detail": "Artificial Analysis Intelligence Index v5.0.1",
+            "value": "Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Granite 4.2 8B 5, eighth of ten small open-weight models (class median 8); Granite 4.2 3B 5, first of two tiny open-weight models (median 3). Granite 4.2 30B has no v5.0.1 score. Granite was last placed on Granite 4.0 h-small, level with Llama 4 Maverick on version 4.3.2.",
             "relative_to": "llama",
             "relation": "at",
             "confidence": "medium",
-            "note": "Mid-tier: a capable efficiency-focused line, competitive within the small-to-mid open-weight class and well short of the open-weight frontier the category's 4s and 5s hold (olmo, deepseek, qwen, kimi). Sits level with llama, whose own reading is taken on Llama 4 Maverick — the same non-reasoning open-weight mid-field.",
+            "note": "Granite 4.2, the current release, scores 5 at both 3B and 8B on version 5.0.1 of Artificial Analysis's Intelligence Index, the 3B leading the two tiny open-weight models it is compared with and the 8B near the bottom of its small-model class. Granite was last placed on Granite 4.0, level with Llama 4 Maverick on the earlier index version, which no longer scores Maverick, so the current assessment is pending.",
             "comparison": {
               "last_attested": "2026-09-01",
               "sources": [
@@ -4809,11 +4809,25 @@
             },
             "sources": [
               {
-                "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md",
-                "shows": "The h-small card's evaluation tables benchmark the 4.0 line against similar-size open-weight peers on instruction-following and enterprise task suites, positioning it as competitive in its size class rather than frontier.",
-                "accessed": "2026-09-01",
+                "url": "https://artificialanalysis.ai/models/granite-4-2-8b",
+                "shows": "Index v5.0.1 page: \"Granite 4.2 8B scores 5 on the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median: 8)\", ranked \"# 8 / 10\" among open weights models of the same size class (Small, 4B to 40B parameters).",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea"
+                "content_sha256": "e9767ab93120ddd0c8656d534ab5674c261c45734147b1b6360a08497440f609"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/granite-4-2-3b",
+                "shows": "Index v5.0.1 page: \"Granite 4.2 3B scores 5 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median: 3)\", ranked \"# 1 / 2\" among open weights models of the same size class (Tiny, up to 4B parameters).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "294a22ffb8233f1df3bf589a6383eb34b440b71553eb91ccc15452769873f728"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/granite-4-2-30b",
+                "shows": "Page for Granite 4.2 30B: the model summary reads \"Artificial Analysis Intelligence Index Unknown\", so the largest 4.2 model has no v5.0.1 score.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "b8937b0b0c136e54d136927363c5915599bd65b5584b4d6fa0c074bd3ed92180"
               }
             ]
           },
@@ -4824,31 +4838,25 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-12",
-            "basis": "commit",
+            "basis": "partial",
             "unconfirmed_axes": [
               "adoption",
-              "capability",
-              "openness"
+              "capability"
             ],
             "verification_holds": [
               {
                 "axis": "adoption",
                 "since": "2026-11-12",
-                "reason": "The four declared Granite 4.0 SKUs now sum to 81,224 trailing-30-day downloads (h-tiny 25,844, micro 25,003, h-small 24,187, h-micro 6,190), the 10K-100K band, against a recorded 100K-1M. The undeclared Granite 4.1 SKUs carry far more (granite-4.1-3b alone reads 473,563), so re-banding on the 4.0 declarations would understate the family. Settled by the 4.1 re-scope of the declared artifacts, then a scheduled reconciliation."
+                "reason": "The declared checkpoints were re-scoped on 2026-11-12 to the Granite 4.0, 4.1 and 4.2 language models, base and instruct, which sum to 799,355 trailing-30-day Hugging Face downloads (granite-4.1-3b alone 454,809), the same 100K-1M level as recorded. A hand-read sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level on the declared set. That run's re-dating PR dates the axis and releases this hold."
               },
               {
                 "axis": "capability",
                 "since": "2026-10-07",
-                "reason": "Granite 4.2 8B scores 5 on Artificial Analysis Intelligence Index v5.0.1 (read 2026-11-12, eighth of ten small open-weight models, class median 8), but this record declares Granite 4.0, and neither 4.1 nor 4.2 is yet among its artifacts, so that reading cannot govern it. Its peer llama has no v5.0.1 reading. Settled once the governing Granite release and declared artifacts are verified and the band is compared on the same version with peers the category places at 3."
-              },
-              {
-                "axis": "openness",
-                "since": "2026-11-12",
-                "reason": "Granite 4.1 is now the current release: dense 3B, 8B and 30B models with base variants, \"Release Date: April 29th, 2026\" on the 30B card, Apache-2.0 and ungated, with SFT data described by source type but not released. governing_release still names granite-4-0 and the declared artifacts are the 4.0 SKUs only. The 4.1 evidence reads the same score, but moving the governing release, the declared SKUs and the display name is identity work (update-product), not a re-read."
+                "reason": "The governing release and declared checkpoints were verified on 2026-11-12: Granite 4.2 governs, and the 4.1 and 4.2 checkpoints are declared. On Artificial Analysis Intelligence Index v5.0.1 Granite 4.2 8B and 3B both score 5, and 4.2 30B has no score. The band still rests on an at-llama comparison judged on v4.3.2, and llama has no v5.0.1 reading. Settled by a same-version comparison with peers the category places at 3."
               }
             ]
           },
-          "version_note": "Scored on Granite 4.0, the mainline that granite-code-instruct's deprecation banner points to. The newer Granite 4.1 release is not yet among the declared artifacts."
+          "version_note": "Openness follows Granite 4.2, the current release, which is post-trained from the Granite 4.1 base checkpoints. Adoption is read across the declared 4.0, 4.1 and 4.2 checkpoints. The speech, vision, guardian and switch models are separate lines and are not declared here."
         },
         {
           "slug": "minicpm",
