@@ -20,7 +20,7 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 - The map's data, `sources/` and everything built from it including the Hugging Face dataset, is
   licensed CC BY 4.0 from this release on, with the full text in `LICENSE-DATA`; the code stays
-  MIT. Releases up to v0.6.0 remain available under MIT (PR_LINK).
+  MIT. Releases up to v0.6.0 remain available under MIT ([#1041](https://github.com/currentai-org/os-ai-map/pull/1041)).
 
 ## [0.6.0] - 2026-11-12
 
