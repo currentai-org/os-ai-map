@@ -31,6 +31,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Each tagged release is published as a Hugging Face dataset: products, organizations, categories,
+  every citation behind a score, and per-release product and category history, as Parquet with a
+  dataset card (`build/export_hf.py`, `.github/workflows/huggingface.yml`;
+  [#1027](https://github.com/currentai-org/os-ai-map/pull/1027)).
 - A preliminary `open_accelerator_designs` category, proposed for review, with an 11-row seed of
   open NPU, systolic-array and GPGPU designs and the generators that emit them (Vortex, Gemmini,
   NVDLA, Coral NPU, hls4ml, FINN and others). Nothing in it is scored yet
