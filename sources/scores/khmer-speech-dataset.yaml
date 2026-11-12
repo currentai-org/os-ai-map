@@ -1,40 +1,67 @@
 product: khmer-speech-dataset
 openness:
-  score: 5
-  class: open
+  score: 3
+  class: gated
   components:
     license:
     - name: cc-by-sa-4.0
     access:
-      value: public
-      detail: ungated on Hugging Face; also listed on Mozilla Data Collective
+      value: manual
+      detail: Hugging Face gate with manual approval that shares the requester's username and email; the smaller
+        V2 release on Mozilla Data Collective needs an account and accepted terms
     dataset_card:
       value: present
-      detail: speakers, topics, format and sample rows
+      detail: speakers, topics, format and sample rows on the Hub page; the raw README returns 401 behind the
+        gate
   confidence: high
-  note: The audio and transcripts download without a gate under a share-alike license that asks users to credit
-    Digital Divide Data. The card describes speakers, topics and file layout, though no paper accompanies it.
-  raw: license:cc-by-sa-4.0;access:public(ungated on Hugging Face; also listed on Mozilla Data Collective);dataset_card:present(speakers,
-    topics, format and sample rows)
-  last_verified: '2026-09-24'
+  note: The audio and transcripts carry a share-alike license that asks users to credit Digital Divide Data,
+    and the card describes speakers, topics and file layout. The Hugging Face copy now opens only after the
+    publisher approves a request that shares the user's username and email, and a smaller, earlier release
+    on Mozilla Data Collective needs an account and accepted terms.
+  raw: license:cc-by-sa-4.0;access:manual(Hugging Face gate with manual approval that shares the requester's
+    username and email; the smaller V2 release on Mozilla Data Collective needs an account and accepted terms);dataset_card:present(speakers,
+    topics, format and sample rows on the Hub page; the raw README returns 401 behind the gate)
+  last_verified: '2026-11-12'
   sources:
-  - url: https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset/raw/main/README.md
-    shows: '"license is Creative Commons Attribution Share Alike 4.0 International (CC-BY-SA-4.0). Please attribute
-      Digital Divide Data"'
-    accessed: '2026-09-24'
+  - url: https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset
+    shows: 'Gate box: "You need to agree to share your Hugging Face information to access this dataset"; "you
+      have to accept the conditions to access its files and content"; page data "gated":"manual" with "gatedProfileSharing":{"username":true,"email":true}.
+      Card: "license is Creative Commons Attribution Share Alike 4.0 International (CC-BY-SA-4.0). Please attribute";
+      "Speaker metadata (gender, age group, and origin city) is provided."; "with a total of 61 topics and
+      1,749 subtopics".'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: 4b7c87b25ae2921e3b1dc088be9bf858ac596c3066fb63e26933c83f9c25e2d4
+    content_sha256: 28fb52b77c07adec1ff7bc06d2d3d8b8c482b9bff651ec7c43fe922b3d0104ad
     establishes:
+    - availability
     - documentation
     - license
   - url: https://huggingface.co/api/datasets/Digital-Divide-Data/khmer-speech-dataset
-    shows: 'gated: false; license:cc-by-sa-4.0'
-    accessed: '2026-09-24'
+    shows: 'API JSON: "gated":"manual"; tag license:cc-by-sa-4.0.'
+    accessed: '2026-11-12'
     http_status: 200
-    content_sha256: bf3d36a375881972a1c9a6dbf137a67c567f65d9ba4eec6de47efee5733159ff
+    content_sha256: f5087c455290e587313f487a9c341195bb28bd01f9684c70679e11fd1f56b60c
     establishes:
     - availability
     - license
+  - url: https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset/raw/main/README.md
+    shows: HTTP 401, "Access to dataset Digital-Divide-Data/khmer-speech-dataset is restricted. You must have
+      access to it and be authenticated to access it." The card file sits behind the gate.
+    accessed: '2026-11-12'
+    http_status: 401
+    content_sha256: b2ccfaf15df657f079a882e23f0e8e2b89c0bfc14146b9962ef0d7fb356ee909
+    establishes:
+    - availability
+  - url: https://mozilladatacollective.com/datasets/cml9h5vgc01bxmn075sjeftek
+    shows: '"Khmer ASR Cultural Dataset (V2)"; "106.53 hours manually curated speech-text pairs"; "4 females,
+      4 males"; "Creative Commons Attribution Share Alike 4.0 International (CC-BY-SA-4.0)"; "You agree not
+      to attempt to determine the identity of speakers in this dataset."; "You will only be able to download
+      datasets after accepting terms".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 261f42745017069f018f41e6edf3901454b5dffbe31aa4dde4d13af82ba883a6
+    establishes:
+    - availability
 adoption:
   level: 2
   reach: 1K-10K
