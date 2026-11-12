@@ -32,7 +32,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Added
 
 - Five products from the AIFoundry topic list: tinygrad (ml_frameworks), Shelley
-  (orchestration_agents), and Docker Model Runner, RamaLama and LiteRT (inference_code).
+  (orchestration_agents), and Docker Model Runner, RamaLama and LiteRT (inference_code)
+  ([#1034](https://github.com/currentai-org/os-ai-map/pull/1034)).
 - `capability.own_components`: cited, schema-validated claims that a suite's second-slug components
   are its own items, scoped by language, task or split, with INCLUDE's Arabic and Turkish withdrawn
   and its mixed pools marked (R-2026-11-03-c, -i). The depth calibration reads them from the records
