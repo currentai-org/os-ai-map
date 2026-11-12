@@ -3741,3 +3741,71 @@ rulings:
     executor: agent
     lands_in: [docs/reference/identity.md, docs/reference/language-classification.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1011']
+
+  - id: R-2026-11-12-a
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, kencorpus]
+    question: >-
+      Kencorpus holds 5,601,915 words of text, 176.5 hours of audio with no transcript stated, and 27.5
+      transcribed hours in KenSpeech. Does untranscribed audio count toward the speech cap, and which modality
+      governs a corpus that holds more than one?
+    ruling: >-
+      Only transcribed hours count toward the speech cap, as the recipe states. A corpus with several modalities
+      takes the cap of whichever modality reaches the highest step. Kencorpus's text and its transcribed speech
+      each reach only the lowest step, so its capability is 1, two below WURA.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-b
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, bloom-library-datasets]
+    question: >-
+      The Bloom Library paper states 428 hours of audio in its prose and 2,873 minutes in Table 1. Which figure
+      does the record use?
+    ruling: >-
+      Table 1's 2,873 minutes (about 48 hours), which the paper's per-family mean and per-language record counts
+      corroborate. The capability stays 1.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-c
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, afrivoice, waxal, naijavoices, bibletts]
+    question: >-
+      No Afrivoice card states a product total. Does the speech cap read the sum across its separately published
+      releases, and do scripted readings count as transcribed?
+    ruling: >-
+      Yes to both. The cap reads the sum of the current, non-overlapping releases, leaving out superseded copies,
+      and scripted readings aligned to their prompts count as transcribed. The five releases hold 10,391.40
+      transcribed hours, which clears ten thousand, so Afrivoice's capability is 4. WAXAL and NaijaVoices move
+      from at to one below Afrivoice, and BibleTTS from one below to two below.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
+
+  - id: R-2026-11-12-d
+    date: 2026-11-12
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1015", R-2026-11-11-k, bibletts]
+    question: >-
+      BibleTTS's paper gives aligned hours per language in Table 2 and no total. Does the sum of that table count
+      as a stated total?
+    ruling: >-
+      Yes. A total summed from one source's own per-part table counts as stated. BibleTTS's 420.3 hours keep its
+      capability at 2.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1015']
