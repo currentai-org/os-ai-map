@@ -1,0 +1,109 @@
+product: glm-image
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: the GLM-Image checkpoint downloads from the Hub without a gate
+    data:
+      value: closed
+      detail: the README describes the training stages, but no training data is released or itemized
+    code:
+      value: partial
+      detail: inference code and a LoRA fine-tuning script; the pretraining code is not published
+    license:
+    - name: MIT
+      detail: the GLM-Image weights
+    - name: Apache-2.0
+      detail: the repository code, and the X-Omni vision tokenizer and encoder weights the model incorporates
+  governing_release: GLM-Image (January 2026)
+  confidence: high
+  note: GLM-Image's weights are MIT-licensed and the code is Apache 2.0, so the model can be used and modified freely. Only
+    inference and LoRA fine-tuning code is published, not the pretraining pipeline, and the training data is not released.
+  raw: weights:open(the GLM-Image checkpoint downloads from the Hub without a gate);data:closed(the README describes the training
+    stages, but no training data is released or itemized);code:partial(inference code and a LoRA fine-tuning script; the pretraining
+    code is not published);license:MIT(the GLM-Image weights)+Apache-2.0(the repository code, and the X-Omni vision tokenizer
+    and encoder weights the model incorporates)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/zai-org/GLM-Image/raw/main/README.md
+    shows: 'Model card: "license: mit"; "The overall GLM-Image model is released under the MIT License"; "This project incorporates
+      the VQ tokenizer weights and VIT weights from X-Omni/X-Omni-En, which are licensed under the Apache License, Version
+      2.0."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fc5861c29cda8b542b0f258a55d9bb8b44d56e9592a021c74f4eeebf7a159ce0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zai-org/GLM-Image/main/LICENSE
+    shows: 'Repository LICENSE body: Apache License, Version 2.0.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7cfe2db2477ee1e98b57ea1d8655aa8c39416022bab61aa4303e09af05495797
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/zai-org/GLM-Image?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for zai-org/GLM-Image: license mit, gated false; transformer, VAE, text-encoder and vision-language-encoder
+      safetensors.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 763dfcbdb49f81ff5f71994547c760a3e3e3a2c8e8b6efd5c6ad6375cdb21885
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/zai-org/GLM-Image/files/main
+    shows: 'Repository file list: README, examples and a finetune/ directory with finetune_lora.py; no pretraining pipeline.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: bcbc20025f91357a7035351761ff3a48dc2937cfcabfb8c3a948df445bddd3b4
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/zai-org/GLM-Image/main/README.md
+    shows: 'README: "Autoregressive generator: a 9B-parameter model initialized from GLM-4-9B-0414"; "Diffusion Decoder: a
+      7B-parameter decoder"; post-training "with decoupled reinforcement learning" using GRPO; no training dataset is named
+      or linked.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 28cad43cc766c757628ce97e0b2129de5fc5e2f232779c7acc9261223a9cb064
+    establishes:
+    - data
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the single GLM-Image checkpoint. Use through Z.ai's API is not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=zai-org&search=GLM-Image&sort=downloads&direction=-1&limit=100
+    shows: 'Listing: zai-org/GLM-Image, 12284 downloads, the only GLM-Image repository.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8fa6a0ef2083863b389ff0865e905996234985b191b37298af5b1de95633485b
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Image Arena, overall board
+  value: 'Artificial Analysis Text to Image Arena, overall board as served 2026-11-12: GLM-Image 93rd of 112 at an Elo of
+    893'
+  confidence: medium
+  relative_to: flux
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+      shows: 'Re-read of the peer: the overall board as served lists 112 models; "FLUX.2 [dev]", the best-placed downloadable
+        FLUX model, is 52nd at an Elo of 1000, in its upper half.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0690d423feb34fc7989a06e4d3319d8e1637309b93cc61f1a0e7a99b92723456
+  note: GLM-Image places in the lower half of the public image arena, below FLUX.2 [dev]. Its strengths, text rendering and
+    knowledge-heavy layouts, are a narrower slice than the arena's general prompts.
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+    shows: 'Overall board (112 models): "GLM-Image" 93rd, Elo 893, from Z AI, with an open-weights link to zai-org/GLM-Image.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0690d423feb34fc7989a06e4d3319d8e1637309b93cc61f1a0e7a99b92723456
