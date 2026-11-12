@@ -1,0 +1,98 @@
+product: koboldcpp
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI, KoboldCpp and the bundled KoboldAI Lite UI; bundled GGML, llama.cpp and other components keep their MIT
+        or Apache-2.0 licenses
+    source:
+      value: public
+      detail: the release executables build from the repository
+    core-gated:
+      value: ungated
+      detail: an individual developer's project with no company or paid version behind it
+  confidence: high
+  note: KoboldCpp and its bundled web interface are AGPL-3.0, and the components it builds on, llama.cpp among them, keep
+    their own permissive licenses. It is one developer's project with no company or paid version behind it, and the release
+    executables build from the public repository.
+  raw: license:AGPL-3.0(OSI, KoboldCpp and the bundled KoboldAI Lite UI; bundled GGML, llama.cpp and other components keep
+    their MIT or Apache-2.0 licenses);source:public(the release executables build from the repository);core-gated:ungated(an
+    individual developer's project with no company or paid version behind it)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/LostRuins/koboldcpp/concedo/LICENSE.md
+    shows: The LICENSE.md body is the GNU Affero General Public License version 3 text.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/LostRuins/koboldcpp/HEAD/README.md
+    shows: 'The README says "KoboldCpp and KoboldAI Lite are licensed under the GNU AGPL v3.0, unless a file states otherwise.
+      Bundled components retain their respective licenses, including the MIT license for GGML, llama.cpp", calls the project
+      "free and open-source software", and documents building from source. Searched for pricing, paid and license key: none.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed52ee1fa6ee8d29b364406bc1c11cc09cd6b16bd8ab6a143281aede72b35a30
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/LostRuins/koboldcpp/files/concedo
+    shows: The repository file listing shows koboldcpp.py, the C++ sources, the build scripts and per-component license files,
+      and no ee, enterprise, commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2b949a1b0934d584a3267a2a574d59850e212b1e291bc3f5eba643780336d243
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: KoboldCpp ships as standalone executables on its GitHub releases page rather than as a package, so there is no download
+    count to measure. GitHub stars are the only signal, and a star is not a use.
+  sources:
+  - url: https://ungh.cc/repos/LostRuins/koboldcpp
+    shows: '"stars":12209,"forks":807, pushed 2026-11-09, for LostRuins/koboldcpp'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fa14168123d941277fffb5fe4f8420f3c2d6ed58fbf444466db9d4ebf352de18
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, placed against vllm
+  value: Single-executable local runtime for GGUF models on llama.cpp, CPU or GPU with full or partial offloading, on Windows,
+    Linux and macOS; text, vision, image, video, speech, transcription and music generation with compatible models; an integrated
+    agent with tool calling, MCP, web search and retrieval; KoboldAI-, OpenAI-, Ollama-, A1111- and ComfyUI-compatible endpoints;
+    a bundled web UI.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: KoboldCpp packs local text, image, speech and music generation, an agent and several compatible APIs into one executable
+    for a single machine. It runs llama.cpp underneath and offers none of the multi-GPU or datacenter serving vLLM is built
+    for, so it sits two steps below vLLM.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: The peer's README still lists PagedAttention, "Continuous batching of incoming requests, chunked prefill, prefix
+        caching", speculative decoding, "Tensor, pipeline, data, expert, and context parallelism for distributed inference",
+        hardware plugins across GPU and accelerator vendors, and "200+ model architectures".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/LostRuins/koboldcpp/HEAD/README.md
+    shows: The README's feature list covers "Local text generation" of GGUF models, image and video generation, speech-to-text
+      with Whisper, text to speech, music generation, "MCP server support, tool calling, web search, retrieval-augmented generation",
+      endpoints for "KoboldAI, OpenAI, Ollama, A1111/Forge, ComfyUI", and a "Single standalone executable for Windows, Linux
+      or macOS".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed52ee1fa6ee8d29b364406bc1c11cc09cd6b16bd8ab6a143281aede72b35a30

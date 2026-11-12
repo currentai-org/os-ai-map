@@ -1,0 +1,127 @@
+product: detoxify
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, the code and the default checkpoints published in the repository's releases
+    source:
+      value: public
+      detail: library, training script and configurations; default checkpoints download from the repository's own releases
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository tree; Unitary's commercial product is an unrelated automation service
+  confidence: high
+  note: Detoxify's code is Apache-2.0, and the checkpoints it loads by default are published in the same repository's releases
+    with no separate license. Unitary's commercial business is an unrelated automation service, and nothing in the library
+    is held back for it.
+  raw: license:Apache-2.0(OSI, the code and the default checkpoints published in the repository's releases);source:public(library,
+    training script and configurations; default checkpoints download from the repository's own releases);core-gated:ungated(no
+    enterprise path in the repository tree; Unitary's commercial product is an unrelated automation service)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/unitaryai/detoxify/HEAD/LICENSE
+    shows: The LICENSE body is the stock Apache License 2.0 text with no added condition.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/unitaryai/detoxify/master/detoxify/detoxify.py
+    shows: The library sets DOWNLOAD_URL = "https://github.com/unitaryai/detoxify/releases/download/" and loads its default
+      checkpoints from the repository's own releases.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1bb6f1f94b0f9dd11bcc274957e6e2bb3687ecf6cfc2a0d17816047a6f70c04f
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/unitaryai/detoxify/HEAD/README.md
+    shows: 'The README installs with "pip install detoxify", documents training with "python train.py --config ..." for each
+      challenge, and says checkpoints "can be downloaded from the latest release or via the Pytorch hub API". Searched for
+      enterprise, pricing, paid and license key: none.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 75a608709e2a867eae032095d69f6efa4b253066eb8c24a505b8367827188a6f
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/unitaryai/detoxify/files/master
+    shows: The repository file listing shows the detoxify package, train.py, hubconf.py and configs, and no ee, enterprise,
+      commercial or proprietary path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 13a2c2b56ad9698e21f418883d0ce8f3c3c8a3c24c490b7f1675671debd75867
+    establishes:
+    - source
+    - core-gated
+  - url: https://www.unitary.ai/
+    shows: Unitary's homepage sells "Virtual Agents" that "automate manual work across insurance, financial services, healthcare"
+      and does not mention Detoxify or toxicity classification.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0d9c9e1d46b1ee2569518095a8b037f37641d74194a24295362f1a0a647d3f31
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/detoxify/json
+    shows: 'The PyPI record for detoxify 0.5.4, uploaded 2026-10-14, carries the classifier "License :: OSI Approved :: Apache
+      Software License" and the homepage https://github.com/unitaryai/detoxify.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54df03a571cc459e1e051658c67b4e62295bd09bf0483e1e22182938333ef10c
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the detoxify package, which is how the library and its default models are installed. Loading the
+    checkpoints straight from the releases page or through Torch Hub skips the package and is not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/detoxify/recent
+    shows: '"last_month":62494 for detoxify'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 5d10ea7318a4a40f41abbf1b0f74aa310d588438529b2c98062473c159ba2491
+  - url: https://pypi.org/pypi/detoxify/json
+    shows: The package's only project URL is https://github.com/unitaryai/detoxify, the product's repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 54df03a571cc459e1e051658c67b4e62295bd09bf0483e1e22182938333ef10c
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: toxicity classification coverage
+  value: Multi-label toxicity scoring (toxicity, severe toxicity, obscenity, threat, insult, identity attack, sexually explicit)
+    from three classifiers built on BERT, RoBERTa and XLM-RoBERTa and trained on the 2018-2020 Jigsaw challenges, plus two
+    smaller ALBERT variants. The multilingual model covers seven languages. Reported test-set scores are 98.64 (original),
+    93.74 (unbiased) and 92.11 AUC (multilingual).
+  relative_to: llama-guard
+  relation: two_below
+  confidence: medium
+  note: Detoxify scores one kind of harm, toxic language, under seven labels, and runs on a CPU by default. It does not judge
+    prompts or replies against a policy or cover hazards such as violent crime or self-harm, which Llama Guard screens across
+    fourteen categories, so it sits two steps below it.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+      shows: 'The peer''s model page still lists hazard categories from "S1: Violent Crimes" to "S14: Code Interpreter Abuse",
+        says Llama Guard 3 classifies "both LLM inputs (prompt classification) and in LLM responses (response classification)",
+        "was aligned to safeguard against the MLCommons standardized hazards taxonomy" and "provides content moderation in
+        8 languages".'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 88c4e99105de675650b8a49071b3a13ccdfaa63d9b89b5578a422e02eb2eb7cc
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/unitaryai/detoxify/HEAD/README.md
+    shows: The README's results table gives Detoxify scores of 98.64, 93.74 and 92.11 for the original, unbiased and multilingual
+      models, lists the labels toxicity, severe_toxicity, obscene, threat, insult, identity_attack and sexual_explicit, names
+      bert-base-uncased, roberta-base and xlm-roberta-base as the base models, and says the multilingual model covers seven
+      languages.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 75a608709e2a867eae032095d69f6efa4b253066eb8c24a505b8367827188a6f

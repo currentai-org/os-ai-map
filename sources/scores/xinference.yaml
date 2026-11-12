@@ -1,0 +1,118 @@
+product: xinference
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the community edition builds and runs from the repository
+    core-gated:
+      value: gated
+      detail: Xinference Enterprise is the same engine plus commercial extensions, adding multi-cluster, multi-region and
+        high-availability scaling the community edition lacks
+  confidence: high
+  note: Xinference's code is Apache-2.0, and the community edition builds and runs from the public repository. The vendor
+    also sells an enterprise edition it describes as the same engine plus commercial extensions, with multi-cluster and high-availability
+    scaling the open edition does not have, so part of the product is held back.
+  raw: license:Apache-2.0(OSI);source:public(the community edition builds and runs from the repository);core-gated:gated(Xinference
+    Enterprise is the same engine plus commercial extensions, adding multi-cluster, multi-region and high-availability scaling
+    the community edition lacks)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/xorbitsai/inference/HEAD/LICENSE
+    shows: The LICENSE body is the stock Apache License 2.0 text with no added condition.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/xorbitsai/inference/HEAD/README.md
+    shows: The README calls Xinference "an open-source distributed inference platform", starts it with "pip install xinference",
+      and has a section "Xinference Enterprise" inviting readers to "Deploy Xinference Enterprise in your own cloud or data
+      center", with a link for "Business License Inquiry".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: da11d121bf155eb3fd6d409ea6a1b7b95807f1aaf3bb82f37b55b221111fae0e
+    establishes:
+    - source
+    - core-gated
+  - url: https://xinference.co/pricing.html
+    shows: The pricing page's "Community vs Enterprise" table describes the Community engine as "Apache-2.0 inference engine"
+      and Enterprise as "The same engine, plus commercial extensions", with scaling "Single cluster" against "Multi-cluster,
+      multi-region, HA" and hardware "NVIDIA only (validated)" against "NVIDIA, AMD, Intel, CPU".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 03df235bac42c19ece8f09b9f58c20ea790e4ab42b9e40f2c873d8d2c6df2aa2
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/xorbitsai/inference/files/main
+    shows: The repository file listing shows the xinference package, web UI and deployment files, and no ee, enterprise, commercial
+      or proprietary path; the enterprise extensions are not in this repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c7fe4f562229cbf1f1d5b97492a421afc5025d1eedeb4e8603303968331895c0
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  banded_quantity: Docker Hub pulls of xprobe/xinference averaged over the image's lifetime, plus PyPI downloads of xinference
+    in the trailing 30 days
+  note: Xinference ships mainly as a Docker image, so PyPI downloads alone would measure a minority channel. The reading combines
+    Docker Hub pulls with PyPI downloads, and because the Docker count is cumulative it understates the current pace.
+  sources:
+  - url: https://hub.docker.com/v2/repositories/xprobe/xinference
+    shows: '"pull_count":13054180 since "date_registered":"2023-11-28", about 365,000 a month as a lifetime average'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: f03b41aeee252402fb1b515aa06557c17110ad00d3552850b98fb28b035eb084
+  - url: https://pypistats.org/api/packages/xinference/recent
+    shows: '"last_month":4440 for xinference'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: aea5850c4715a00fab2dbc67ae474053516be3460474d35c8dcacd5724a87502
+  - url: https://raw.githubusercontent.com/xorbitsai/inference/HEAD/README.md
+    shows: The README links the xprobe/xinference image on Docker Hub and the xinference package on PyPI as its distribution
+      channels.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: da11d121bf155eb3fd6d409ea6a1b7b95807f1aaf3bb82f37b55b221111fae0e
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, placed against vllm
+  value: Serving platform over vLLM, SGLang, TensorRT-LLM, Transformers, llama.cpp and MLX engines with 300+ built-in models
+    across language, vision, embeddings, reranking, image, audio and video; distributed workers and replicas, prefill/decode
+    separation including across CUDA and Apple Metal, shared prefix caching and rolling reconfiguration; OpenAI- and Anthropic-compatible
+    APIs, a web UI, CLI and Python SDK.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: 'Xinference adds what a single engine lacks: a model catalog, multi-machine deployment, prefill/decode separation
+    and a management interface, across many model types. It hands the model''s forward pass to vLLM, SGLang or another engine
+    rather than running it itself, so it sits a step below vLLM.'
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: The peer's README still lists PagedAttention, "Continuous batching of incoming requests, chunked prefill, prefix
+        caching", speculative decoding, "Tensor, pipeline, data, expert, and context parallelism for distributed inference",
+        hardware plugins across GPU and accelerator vendors, and "200+ model architectures".
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: ba4998a8520051250ec81c60187203745e6bc0b9c197af6e1b6a73143f5e575e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/xorbitsai/inference/HEAD/README.md
+    shows: The README's feature table lists "300+ built-in models", engines "vLLM, SGLang, TRT-LLM, Transformers, llama.cpp,
+      or MLX", distributed serving with "heterogeneous prefill/decode separation", "OpenAI- and Anthropic-compatible endpoints",
+      shared prefix caches "with Xavier" and replica-by-replica reloads.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: da11d121bf155eb3fd6d409ea6a1b7b95807f1aaf3bb82f37b55b221111fae0e

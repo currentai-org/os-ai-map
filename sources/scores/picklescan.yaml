@@ -1,0 +1,106 @@
+product: picklescan
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the full scanner and CLI
+    core-gated:
+      value: ungated
+      detail: an individual developer's project with no company or paid version behind it
+  confidence: high
+  note: picklescan is MIT-licensed and the whole scanner is in the public repository. It is one developer's project with no
+    company or paid version behind it, so nothing is held back.
+  raw: license:MIT(OSI);source:public(the full scanner and CLI);core-gated:ungated(an individual developer's project with
+    no company or paid version behind it)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/mmaitre314/picklescan/HEAD/LICENSE
+    shows: The LICENSE body is the MIT License text, "Copyright (c) 2022 Matthieu Maitre".
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1418146b5f7b837d0a7c24906a272f2f6adb68ebb258e97560ec91ae663ff38a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mmaitre314/picklescan/HEAD/README.md
+    shows: 'The README installs with "pip install picklescan", documents development from the repository and publishing to
+      PyPI through a GitHub release. Searched for enterprise, pricing, paid and license key: none.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 20c4f2027e1866ecdba6bd1a4e5f4c9db1638639c88bd6048dee7d575dccc537
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/mmaitre314/picklescan/files/main
+    shows: The repository file listing shows the src/picklescan package and tests, and no ee, enterprise, commercial or proprietary
+      path.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 7a75b99ea512f47618f520aac77e367df9d6d2d8490e031a38bc1c69e203cb76
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/pypi/picklescan/json
+    shows: 'The PyPI record for picklescan 1.0.5, uploaded 2026-07-01, names author Matthieu Maitre, carries the classifier
+      "License :: OSI Approved :: MIT License" and the homepage https://github.com/mmaitre314/picklescan.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6e06ffecf2d03842a559b7b4896555b16df5287a1745721d5dd3f7e0625f961e
+    establishes:
+    - license
+    - source
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the picklescan package, the scanner's only distribution. Scans in automated pipelines can install
+    it again on every run, so a download is not one user.
+  sources:
+  - url: https://pypistats.org/api/packages/picklescan/recent
+    shows: '"last_month":76615 for picklescan'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: fd2b2e397b33cca8c2fe7f5986f0e5cab3fa04543554fddf807f2aa92fbe4298
+  - url: https://pypi.org/pypi/picklescan/json
+    shows: The package's homepage is https://github.com/mmaitre314/picklescan, the product's repository.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 6e06ffecf2d03842a559b7b4896555b16df5287a1745721d5dd3f7e0625f961e
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: Pickle file scanning coverage
+  value: Detection of dangerous globals, such as eval, in Pickle files from local paths, directories, URLs, zip archives,
+    PyTorch checkpoints, NumPy .npy files and Hugging Face repositories, with include and exclude filters and ClamAV-style
+    exit codes.
+  relative_to: garak
+  relation: two_below
+  confidence: medium
+  note: 'picklescan does one job: it lists the dangerous imports a Pickle file would run and returns an exit code a script
+    can act on. It reads only Pickle-based files and never tests a running model, which garak probes for many kinds of failure,
+    so it sits two steps below garak.'
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://raw.githubusercontent.com/NVIDIA/garak/main/README.md
+      shows: The peer's README still describes garak as an "LLM vulnerability scanner" that "probes for hallucination, data
+        leakage, prompt injection, misinformation, toxicity generation, jailbreaks, and many other weaknesses", combining
+        static, dynamic and adaptive probes, and lists Hugging Face, Replicate, OpenAI and AWS Bedrock among the model providers
+        it supports.
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 640626790dc73543d58857ea0ebc7e47ccdb38cd9dd8fc56467147f7f3a5798e
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/mmaitre314/picklescan/HEAD/README.md
+    shows: The README describes a "Security scanner detecting Python Pickle files performing suspicious actions", scans "picklescan
+      --huggingface ykilcher/totally-harmless-model", loads Pickles "from local files, directories, URLs, and zip archives",
+      scans NumPy .npy files, and documents exit codes 0, 1 and 2 with include and exclude filters.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 20c4f2027e1866ecdba6bd1a4e5f4c9db1638639c88bd6048dee7d575dccc537
