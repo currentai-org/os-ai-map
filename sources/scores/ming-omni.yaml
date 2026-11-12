@@ -1,0 +1,103 @@
+product: ming-omni
+openness:
+  score: 3
+  class: open_weights
+  governing_release: Ming-flash-omni 2.0
+  components:
+    weights:
+      value: open
+      detail: Ming-flash-omni 2.0 on the Hub and ModelScope, ungated
+    data:
+      value: closed
+      detail: no training data released for Ming-flash-omni 2.0
+    code:
+      value: partial
+      detail: inference, vLLM and demo code, with no training scripts
+    license:
+    - name: MIT
+      detail: code and weights
+  confidence: high
+  note: Ming-flash-omni 2.0's weights and the repository code are MIT. The repository runs the model but does not train it,
+    and the training data is not released.
+  raw: weights:open(Ming-flash-omni 2.0 on the Hub and ModelScope, ungated);data:closed(no training data released for Ming-flash-omni
+    2.0);code:partial(inference, vLLM and demo code, with no training scripts);license:MIT(code and weights)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/inclusionAI/Ming/main/LICENSE
+    shows: 'LICENSE: MIT License, "Copyright (c) 2025 inclusionAI".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2872f1918dfc04fdeb7f5d66d8d1b773594c9375e7c8f7bda39780bb97ad4fba
+    establishes:
+    - license
+  - url: https://huggingface.co/inclusionAI/Ming-flash-omni-2.0/raw/main/README.md
+    shows: 'Ming-flash-omni 2.0 card: license mit; input image, text, video and audio, output image, text and audio; no training
+      data release.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c5d97d9c6fae0b0ee08c7d865ea0117640309041b001ce85d5d248580267cc10
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models?author=inclusionAI&limit=200&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Ming-flash-omni-2.0 (created 2026-02-10), the newest Ming omni checkpoint, gated false and tagged mit.
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a99107158c0543980c2c46a3e03b6688268e103c25bae5a9556f7401f9e7a3fa
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/inclusionAI/Ming/files/main
+    shows: 'Repository tree: modeling, processing, test_infer.py, cookbook.ipynb and a vLLM patch; no training script or config.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 97af022ad8afa592b5c7437b6629c457ef59fa3c918053e7da6e3d2d96c627cc
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the four declared omni checkpoints, most of them for Ming-flash-omni
+    2.0. The separately released Ming speech and audio models are not counted.
+  sources:
+  - url: https://huggingface.co/api/models?author=inclusionAI&limit=200&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: Ming-flash-omni-2.0 8,034, Ming-flash-omni-Preview 3,851, Ming-Lite-Omni-1.5 739 and Ming-Lite-Omni 215 downloads
+      in the trailing 30 days (12,839 together).
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: a99107158c0543980c2c46a3e03b6688268e103c25bae5a9556f7401f9e7a3fa
+capability:
+  score: 5
+  basis: feature_matrix
+  value: image, text, video and audio in; text, speech, sound, music and images out, with streaming video conversation, voice
+    cloning and image editing (Ming-flash-omni 2.0)
+  relative_to: qwen-omni
+  relation: at
+  confidence: high
+  note: Ming-flash-omni 2.0 understands audio and video natively alongside images and text and answers in speech, level with
+    Qwen-Omni. It also generates and edits images, which does not change its place here.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct/raw/main/README.md
+      shows: 'Qwen3-Omni card: "It processes text, images, audio, and video, and delivers real-time streaming responses in
+        both text and natural speech."'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: 0e44065c4c4a27071f7239afd5b5a33af5bc2e437dd7ea9950e51aafabfde3df
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/inclusionAI/Ming-flash-omni-2.0/raw/main/README.md
+    shows: 'Card: model table lists input "Image,text,video,audio" and output "Image,text,audio"; a streaming video conversation
+      demo; unified speech, audio and music generation with zero-shot voice cloning.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: c5d97d9c6fae0b0ee08c7d865ea0117640309041b001ce85d5d248580267cc10
+  - url: https://raw.githubusercontent.com/inclusionAI/Ming/main/README.md
+    shows: 'README: Ming-flash-omni 2.0 released 2026.02.11, a mixture-of-experts model with 100B total and 6B active parameters
+      on the Ling-2.0 architecture.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 0d44a434e0832473ae19c8f55fb5a1c991e4c1b17d2d5786b71a629bb777b80c

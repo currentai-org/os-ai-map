@@ -1,0 +1,119 @@
+product: internvideo
+openness:
+  score: 3
+  class: open_weights
+  governing_release: InternVideo3
+  components:
+    weights:
+      value: open
+      detail: InternVideo3-8B-Instruct safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: the 380K-video long-video SFT set is published, but not the rest of the 7.2M-sample SFT mixture or the continued-pretraining
+        data
+    code:
+      value: open
+      detail: continued-pretraining and SFT configs and training scripts for InternVideo3 in the repository
+    license:
+    - name: Apache-2.0
+      detail: code and weights
+  confidence: high
+  note: InternVideo3's weights and code are Apache-2.0, and the repository carries its training configs. Only the long-video
+    part of the fine-tuning data is published; the rest of the mixture and the continued pretraining data are described in
+    the report but not released.
+  raw: weights:open(InternVideo3-8B-Instruct safetensors on the Hub, ungated);data:partial(the 380K-video long-video SFT set
+    is published, but not the rest of the 7.2M-sample SFT mixture or the continued-pretraining data);code:open(continued-pretraining
+    and SFT configs and training scripts for InternVideo3 in the repository);license:Apache-2.0(code and weights)
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenGVLab/InternVideo/main/LICENSE
+    shows: 'LICENSE: Apache License, Version 2.0, "Copyright (c) OpenGVLab. All rights reserved".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 42182091dd722231018a04a0b950fcd068cbf18a535b64e06eb8b080499cb34c
+    establishes:
+    - license
+  - url: https://huggingface.co/yanziang/InternVideo3-8B-Instruct/raw/main/README.md
+    shows: 'InternVideo3-8B-Instruct card: license apache-2.0; long-video understanding up to 2048 frames at 4fps and a 262,144-token
+      context.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed2fad31b939e5379312aa82ce7a09ff4ab8ab25a18e2911b2f6ed309225d0b1
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models/yanziang/InternVideo3-8B-Instruct?expand[]=downloads&expand[]=gated&expand[]=cardData&expand[]=siblings&expand[]=createdAt
+    shows: 'Hub API for InternVideo3-8B-Instruct: gated false, safetensors shards for the language model, projector and vision
+      encoder.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2fc146b41f83a348582f52b302e9b301c839da43c22f35574f4f779d2e2f5fa3
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/OpenGVLab/InternVideo/main/InternVideo3/README.md
+    shows: 'InternVideo3 README: SFT of about 7.2M samples including a 379K-video long-video component; the long-video SFT
+      data is on the Hub as yanziang/InternVideo3_Dataset (380K rows); "This project is released under the Apache 2.0 License."'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2fa15c8b9821ad808e80b7cfee14befae7233bccc5d83f524513032c0ef12364
+    establishes:
+    - data
+    - license
+  - url: https://ungh.cc/repos/OpenGVLab/InternVideo/files/main
+    shows: 'Repository tree: InternVideo3/InternVideo3_sft with configs/internvideo3_cpt.py, internvideo3_sft_short.py, internvideo3_sft_long.py
+      and scripts/train.sh.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: e50c552de21245af7b76747092c43c744beee4ff5bc1929db0a3c7f29f7f8e1f
+    establishes:
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days for InternVideo3-8B-Instruct and InternVideo2.5-Chat-8B. The InternVideo2
+    encoders and the community quantizations are not counted.
+  sources:
+  - url: https://huggingface.co/api/models/yanziang/InternVideo3-8B-Instruct?expand[]=downloads&expand[]=gated&expand[]=cardData&expand[]=siblings&expand[]=createdAt
+    shows: 'InternVideo3-8B-Instruct: 847 downloads in the trailing 30 days.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2fc146b41f83a348582f52b302e9b301c839da43c22f35574f4f779d2e2f5fa3
+  - url: https://huggingface.co/api/models?author=OpenGVLab&search=InternVideo&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt
+    shows: 'InternVideo2_5_Chat_8B: 1,541 downloads in the trailing 30 days.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 1c13e376d7af29c43a1cc48d97287ac0e6be95f2a0b424d65d349f0866b62fd5
+capability:
+  score: 3
+  basis: feature_matrix
+  value: image and long-video understanding up to 2,048 frames in a 262K-token context, temporal grounding, and tool use (segmentation,
+    speech recognition, search) inside its reasoning (InternVideo3-8B-Instruct)
+  relative_to: minicpm-v
+  relation: at
+  confidence: medium
+  note: InternVideo3 understands images and hour-long video and can call tools while it reasons, level with MiniCPM-V. Its
+    tools inspect the video; they do not operate a live screen or computer.
+  comparison:
+    last_attested: '2026-11-12'
+    sources:
+    - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+      shows: 'MiniCPM-V 4.6 card: "It inherits the strong single-image, multi-image, and video understanding capabilities
+        of MiniCPM-V family"; max_num_frames default 128.'
+      accessed: '2026-11-12'
+      http_status: 200
+      content_sha256: dd1e58bd92c42d5f34797e5930889bcfd17c1ef4d5bb5e8e6f5e572eddbc34f8
+  last_verified: '2026-11-12'
+  sources:
+  - url: https://huggingface.co/yanziang/InternVideo3-8B-Instruct/raw/main/README.md
+    shows: 'Card: "Trained with a short-to-long curriculum (up to 2048 frames at 4fps), supporting hour-long video comprehension";
+      "Built-in support for recursive perception-action loops with tool use (temporal grounding, ASR, web search, video segmentation)".'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: ed2fad31b939e5379312aa82ce7a09ff4ab8ab25a18e2911b2f6ed309225d0b1
+  - url: https://raw.githubusercontent.com/OpenGVLab/InternVideo/main/InternVideo3/README.md
+    shows: 'README: video and image understanding examples; evaluation scripts for Video-MME, MLVU, LVBench, MMMU and VSI-Bench.'
+    accessed: '2026-11-12'
+    http_status: 200
+    content_sha256: 2fa15c8b9821ad808e80b7cfee14befae7233bccc5d83f524513032c0ef12364
