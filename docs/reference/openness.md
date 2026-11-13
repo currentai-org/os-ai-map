@@ -424,10 +424,14 @@ constituent are under open terms.
   materiality assessment, and it is not downgraded automatically.** A corpus released under,
   say, CC-BY-SA-4.0 whose card says each source keeps its own terms stays `open` once the record
   names the restricted or unlicensed constituents and assesses whether they materially affect
-  lawful reuse of the corpus. A small or uncertain constituent, such as a non-commercial
-  dialogue subset at a hundredth of a percent of the bytes or a source whose card states no
-  license, does not by itself move the corpus to `released-restricted`. A restriction that
-  covers a substantial share of the corpus, or that a reuser could not practically avoid, does.
+  lawful reuse of the corpus. Materiality weighs three things together: the legal restriction
+  itself, whether a reuser can identify and exclude the affected data, and how much of the
+  corpus it covers. Share alone does not decide it, because a small restriction that cannot be
+  separated from the rest still prevents lawful reuse of the whole. A small or uncertain
+  constituent that can be identified and excluded, such as a non-commercial dialogue subset at
+  a hundredth of a percent of the bytes or a source whose card states no license, does not by
+  itself move the corpus to `released-restricted`. A restriction that covers a substantial
+  share of the corpus, or that a reuser could not practically avoid, does.
   `luciole` is the worked case, provisionally still `open`.
 
 `released-restricted` describes a corpus that is released. A corpus withheld for licensing
