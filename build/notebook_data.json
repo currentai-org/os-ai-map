@@ -2126,7 +2126,7 @@
           "org_slug": "thinking-machines-lab",
           "org": "Thinking Machines Lab",
           "type": "model",
-          "description": "Inkling, released July 15, 2026, is Thinking Machines Lab's first open-weight foundation model, a natively multimodal mixture of experts with 975 billion total and 41 billion active parameters. Each token is routed to six of 256 experts plus two shared ones, with hybrid local and global attention, a one-million-token context and 45 trillion training tokens. A 276B Small sibling with 12B active parameters is part of the same family.",
+          "description": "Inkling is Thinking Machines Lab's line of open-weight, natively multimodal mixture-of-experts models that take text and image input. The first generation, released July 15, 2026, has 975 billion total and 41 billion active parameters, a one-million-token context and a 276B Small sibling with 12B active. Inkling 2 Small, the second generation, has 594 billion total and 17 billion active parameters and was trained natively in NVFP4.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -2219,34 +2219,61 @@
             "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "Adoption is measured as Hugging Face downloads summed across the shipped checkpoints, the BF16 release and its NVFP4 quantization, so the family total is used rather than the headline repository alone.",
-            "last_verified": "2026-11-08",
+            "note": "Adoption is measured as Hugging Face downloads summed across every first-party checkpoint of both generations: Inkling, Inkling-Small and Inkling 2 Small, with the NVFP4 and MXFP8 builds Thinking Machines publishes beside them, so the family total is used rather than the headline repository alone. Third-party quantizations are not counted.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/thinkingmachines/Inkling",
-                "shows": "1,642,037 downloads in the trailing 30 days for thinkingmachines/Inkling",
-                "accessed": "2026-11-12",
+                "shows": "1,539,868 downloads in the trailing 30 days for thinkingmachines/Inkling",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "83c92d1427bede0b7d2aafbbb0017efa9d744898d51fbd81ef833fcf889b7adf"
+                "content_sha256": "d530610c5b99b27579c498fc11cd1eac98558eefc04f1c260d550a8c0ffb3348"
               },
               {
                 "url": "https://huggingface.co/api/models/thinkingmachines/Inkling-NVFP4",
-                "shows": "34,393 downloads in the trailing 30 days for thinkingmachines/Inkling-NVFP4",
-                "accessed": "2026-11-12",
+                "shows": "30,692 downloads in the trailing 30 days for thinkingmachines/Inkling-NVFP4",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "b59896039892315aefbc3d9952490de5b15a18ad26374c51893142a6660ffe7c"
+                "content_sha256": "0e3d74baf36f33c96419a697cf0cefc8dc155dc8bc2797413408985c447451cc"
+              },
+              {
+                "url": "https://huggingface.co/api/models/thinkingmachines/Inkling-Small",
+                "shows": "1,081,331 downloads in the trailing 30 days for thinkingmachines/Inkling-Small",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "c3093af70b0bada2002479ae49f4dff9fdb45f079ea85210e64526d9860a2908"
+              },
+              {
+                "url": "https://huggingface.co/api/models/thinkingmachines/Inkling-Small-NVFP4",
+                "shows": "319,410 downloads in the trailing 30 days for thinkingmachines/Inkling-Small-NVFP4",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "16afeafc5cc6cc23a0e9cdfc12e01a21d85d47d2048a418c39e8b83b336a2a8a"
+              },
+              {
+                "url": "https://huggingface.co/api/models/thinkingmachines/Inkling-2-Small",
+                "shows": "1,064 downloads in the trailing 30 days for thinkingmachines/Inkling-2-Small",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "dc60f027106409b8828353f3cdc1519b36a9f4d7d1fbaf92bfdef6a1ef1be198"
+              },
+              {
+                "url": "https://huggingface.co/api/models/thinkingmachines/Inkling-2-Small-MXFP8",
+                "shows": "221 downloads in the trailing 30 days for thinkingmachines/Inkling-2-Small-MXFP8",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "44bc37576517104bc0f98a4eec8b35b340a137bed933b056b69fa38a51e0d720"
               }
             ]
           },
           "capability": {
             "score": 4,
             "basis": "benchmark",
-            "basis_detail": "Artificial Analysis Intelligence Index; Epoch AI, LMArena and Vals AI evaluations; vendor evaluation table",
+            "basis_detail": "Artificial Analysis Intelligence Index v5.0.1; Vals Index v2.2; APEX-Agents; Epoch AI and LMArena evaluations; vendor evaluation tables",
             "relative_to": "kimi",
             "relation": "one_below",
-            "value": "Vendor table at effort=0.99: SWE-bench Verified 77.6%; SWE-bench Pro 54.3%; GPQA Diamond 87.2%; AIME 2026 97.1%. Artificial Analysis Intelligence Index v5.0.1, read 2026-11-13: Inkling (Xhigh reasoning effort) 12, 25th of 28 large open-weight models (class median 24); Inkling Small 13, 23rd of 28; Mistral Large 4 (High) 26, ahead of Inkling on all nine index evaluations; DeepSeek V4 Pro 0813 (Max) 23; Kimi K3.1 Pro 46. Artificial Analysis outside the index: GPQA Diamond 87.2% and HLE 31.9% against Olmo 3.1 32B Think 59.1% and 6.3%. Epoch AI runs, Inkling (xhigh) against Mistral Large 4 (high): GPQA Diamond 88.3% vs 88.1%, OTIS Mock AIME 88.9% vs 98.3%, FrontierMath tiers 1-3 33.3% vs 58.6% (Inkling Small 46.3%), SimpleQA Verified 40.3% vs 20.0%; Phi-4 56.1% and 13.8% on the first two. APEX-Agents 33.8% vs 51.6%. LMArena text, style control, 2026-11-11: Kimi K3.1 Pro 1485, Inkling 1442, Mistral Large 4 1420, Inkling Small 1405, Phi-4 1256. Vals AI SWE-bench Verified: Inkling 77.6%, Inkling Small 82.2%, DeepSeek V4 Pro 77.4%, Kimi K3 93.4%, no Mistral Large 4 entry.",
+            "value": "Artificial Analysis Intelligence Index v5.0.1, read 2026-11-13: Inkling 2 Small 30.6, fourth among open-weight models; Inkling (Xhigh) 12.5; Inkling Small 12.9. Same version: Kimi K3.1 Pro 46.5, DeepSeek V4.1 Flash 1017 (Max) 32.6, GLM-5.3 (Max) 31.7, MiMo-V2.6-Pro 29.9, MiniMax-M3.1-Flash 29.1, Mistral Large 4 (High) 26.1; Inkling 2 Small leads Mistral Large 4 on seven of nine index evaluations and trails it on AutomationBench-AA and Terminal-Bench 4.0. Vals Index v2.2: Inkling 2 Small 56.08%, Mistral Large 4 56.53%, MiniMax-M3.1-Flash 53.78%, MiMo V2.6 Pro 57.81%. APEX-Agents pass@1: Inkling 2 Small 46.8%, Inkling 33.8%, Mistral Large 4 51.6%, MiMo V2.6 Pro 54.4%. LMArena, 2026-11-11 snapshot: text 1402.6 against Mistral Large 4 1411.3 and MiMo-V2.6-Pro 1491.6; WebDev 1647.1 against 1564.5 and 1625.0. First generation against Mistral Large 4 (High) in Epoch AI's own runs: GPQA Diamond 88.3% vs 88.1%, FrontierMath tiers 1-3 33.3% vs 58.6% (Inkling Small 46.3%), SimpleQA Verified 40.3% vs 20.0%; Epoch has not yet run Inkling 2 Small. Vendor table for Inkling at effort=0.99: SWE-bench Verified 77.6%, reproduced by Vals AI.",
             "confidence": "medium",
-            "note": "Inkling scores 12 and Inkling Small 13 on version 5.0.1 of Artificial Analysis's Intelligence Index, against 26 for Mistral Large 4, and Epoch AI's own runs and the APEX-Agents benchmark also put Mistral Large 4 ahead on competition math and agentic work. Inkling matches it on graduate-level science, recalls more facts, and rates above it in LMArena's human-preference ratings, while clearly outperforming Phi-4 and OLMo 3.1 32B Think. Vals AI's own SWE-bench Verified run reproduces the vendor's 77.6%.",
+            "note": "Inkling 2 Small, the second generation, is far stronger than the first. Artificial Analysis's independent index scores it 31 against 12 for Inkling and 13 for Inkling Small, fourth among open-weight models and ahead of Mistral Large 4 on seven of nine evaluations, though behind it on the agentic automation and terminal tasks. Other independent tests place it lower: it finishes just behind Mistral Large 4 on the Vals Index and behind it on Mercor's APEX-Agents, and on LMArena it trails the strongest open models in text chat while matching them in web development and agent tasks.",
             "sources": [
               {
                 "url": "https://huggingface.co/thinkingmachines/Inkling",
@@ -2292,17 +2319,17 @@
               },
               {
                 "url": "https://artificialanalysis.ai/leaderboards/models",
-                "shows": "Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf, HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Inkling Small 12.91 (912.6, 4.8%, 1.0%, 4.8%, -9.5, 11.2%, 12.1%, 18.5%, 0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%); DeepSeek V4 Pro 0813 (Max) 23.06; Kimi K3.1 Pro 46.45 (1674.6, 73.3%, 67.2%, 25.5%, 29.9, 31.4%, 37.3%, 49.5%, 34.3%); Inkling 2 Small 30.63. Outside the index, gpqa-diamond and humanitys-last-exam read 0.872 and 0.319 for Inkling (Xhigh) against 0.591 and 0.063 for Olmo 3.1 32B Think; the Mistral Large 4 (High) record carries neither.",
+                "shows": "Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf, HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science), all flagged reasoning and open weights: Inkling 2 Small 30.63 (1526.9, 45.6%, 13.1%, 25.4%, 16.1, 25.2%, 28.7%, 35.0%, 5.7%); Kimi K3.1 Pro 46.45 (1674.6, 73.3%, 67.2%, 25.5%, 29.9, 31.4%, 37.3%, 49.5%, 34.3%); DeepSeek V4.1 Flash 1017 (Max) 32.59 (1570.4, 66.6%, 33.8%, 28.5%, 0.9, 17.2%, 25.3%, 25.0%, 12.9%); GLM-5.3 (Max) 31.65 (1502.8, 62.2%, 41.9%, 21.6%, 6.0, 11.2%, 17.9%, 33.5%, 9.5%); MiMo-V2.6-Pro 29.89 (1511.7, 58.6%, 34.8%, 24.0%, -4.5, 19.2%, 15.2%, 34.0%, 5.7%); MiniMax-M3.1-Flash 29.06 (1474.3, 72.5%, 25.8%, 20.8%, -6.4, 20.8%, 28.1%, 32.5%, 3.3%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%); Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Inkling Small 12.91 (912.6, 4.8%, 1.0%, 4.8%, -9.5, 11.2%, 12.1%, 18.5%, 0.0%). Outside the index, gpqa-diamond and humanitys-last-exam read 0.872 and 0.319 for Inkling (Xhigh) against 0.591 and 0.063 for Olmo 3.1 32B Think; the Mistral Large 4 (High) record carries neither.",
                 "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "650b4e6709a6639f123c130f723d0586978031db980e630659a4d0b2d4098aa1"
+                "content_sha256": "4e02c1ae7663faaf2b4b885a3aa3aec68e7d349b109b11f58b12df47cdf007b1"
               },
               {
                 "url": "https://epoch.ai/data/benchmark_data.zip",
-                "shows": "Epoch AI benchmarking hub archive. Epoch's own runs, Best score across scorers, for Inkling_xhigh, inkling-small_xhigh, mistral-large-4-0_high and kimi-k3.1-pro-together_max: member gpqa_diamond.csv 0.883, 0.885, 0.881, 0.942 (phi-4 0.561); otis_mock_aime_2024_2025.csv 0.889, 0.900, 0.983, 1.000 (phi-4 0.138); frontiermath_tiers_1_3_v2.csv 0.333, 0.463, 0.586, 0.782; simpleqa_verified.csv 0.403, 0.191, 0.200, 0.622. Collected third-party results: apex_agents_external.csv Inkling 0.338 (standard error 4.9 points), mistral-large-4-0_high 0.516, kimi-k3.1-pro 0.655; dtbench_external.csv Inkling_xhigh 0.875, mistral-large-4-0 0.882.",
+                "shows": "Epoch AI benchmarking hub archive (CC-BY-4.0). Epoch's own runs, Best score across scorers, for Inkling_xhigh, inkling-small_xhigh, mistral-large-4-0_high and kimi-k3.1-pro-together_max: member gpqa_diamond.csv 0.883, 0.885, 0.881, 0.942 (phi-4 0.561); otis_mock_aime_2024_2025.csv 0.889, 0.900, 0.983, 1.000 (phi-4 0.138); frontiermath_tiers_1_3_v2.csv 0.333, 0.463, 0.586, 0.782; simpleqa_verified.csv 0.403, 0.191, 0.200, 0.622; none of the four has an Inkling 2 Small row. Collected third-party results: apex_agents_external.csv pass@1 with standard error, Inkling 2 Small 0.468 (5.1), Inkling 0.338 (4.9), mistral-large-4-0_high 0.516 (5.2), MiMo V2.6 Pro 0.544, GLM-5.3 0.566, kimi-k3.1-pro 0.655, DeepSeek-V4.1-Flash-1017 0.698, no MiniMax-M3.1-Flash row; dtbench_external.csv Inkling_xhigh 0.875, mistral-large-4-0 0.882; arc_agi_2_external.csv Inkling 2 Small (XHigh) 0.817, DeepSeek V4.1 Flash 1017 (Max) 0.781, Kimi K3 (Max) 0.604, with no row for Kimi K3.1 Pro, GLM-5.3, MiMo-V2.6-Pro, MiniMax-M3.1-Flash or Mistral Large 4. epoch_capabilities_index/eci_scores.csv has no Inkling 2 Small row; Mistral Large 4 154.62, GLM-5.3 157.1, DeepSeek V4.1 Flash 1017 159.41, Kimi K3.1 Pro 161.37, Inkling-Small 150.75, Inkling 148.39.",
                 "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "eb0b50dc148955936560d39f5844c0262b44c4a41362f1ffc64ff7bea0654657"
+                "content_sha256": "9f91074a0f63cb789c0c1ced73e9497d5d1dcd57da58d53052c2ba4fe6e4f695"
               },
               {
                 "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text_style_control/latest-00000-of-00001.parquet",
@@ -2313,7 +2340,7 @@
               },
               {
                 "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/agent/latest-00000-of-00001.parquet",
-                "shows": "Same dataset and revision, Agent Arena latest split, 2026-11-11, category overall, score with score_ci_lower and score_ci_upper: \"Kimi K3.1 Pro (Max)\" 0.049 (0.038 to 0.060), \"Mistral Large 4\" -0.054 (-0.075 to -0.034), \"Inkling\" -0.173 (-0.189 to -0.158), \"Inkling-Small\" -0.181.",
+                "shows": "Same dataset and revision, Agent Arena latest split, 2026-11-11 snapshot of 59 models, category overall, score with score_ci_lower and score_ci_upper: \"Kimi K3.1 Pro (Max)\" 0.049 (0.038 to 0.060), rank 15; \"Inkling 2 Small\" 0.025 (0.010 to 0.040), rank 18; \"MiMo-V2.6-Pro\" 0.024 (19); \"DeepSeek-V4.1-Flash-20261017 (Max)\" 0.020 (22); \"GLM-5.3 (Max)\" 0.010 (27); \"MiniMax-M3.1-Flash\" -0.027 (38); \"Mistral Large 4\" -0.054 (-0.075 to -0.034), rank 44; \"Inkling\" -0.173 (-0.189 to -0.158); \"Inkling-Small\" -0.181.",
                 "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "e7fc99f6c6bb2f165943e1fda5ecd8ea712e52dad7b853c7be116a307eee0eb3"
@@ -2324,6 +2351,48 @@
                 "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "79d3cc54b600625801c39bb747cf49e4f83e41b1cf4ee35f0022fdf405e7ab0f"
+              },
+              {
+                "url": "https://huggingface.co/thinkingmachines/Inkling-2-Small/raw/main/README.md",
+                "shows": "Vendor card for the second generation, \"594B total, 17B active\", with an evaluation table listing \"AA Index (v5.0)\" 30.6 and \"Vals Index (v2.2)\" 56.1% for Inkling 2 Small beside Mistral Large 4 26.1 and 56.5%, MiMo V2.6 Pro 29.9 and 57.8%, MiniMax-M3.1-Flash 29.1 and 53.8%, GLM 5.3 31.7 and 59.7%, and DeepSeek-V4.1-Flash-1017 32.6 and 61.3%.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "5d798d54520d9d105ed14ac16726a3ed5f14f17dbca71f326c8b0d68df7cae12"
+              },
+              {
+                "url": "https://thinkingmachines.ai/news/inkling-2-small/",
+                "shows": "Launch post: \"Today we are introducing our second model generation with Inkling 2 Small\", first \"available through Tinker, with closed weights\", then a Nov 12 update, \"Inkling 2 Small's weights are now available for download on HuggingFace\". Training ended in \"a joint RL run\", and \"All evals run at effort 0.99 (xhigh)\".",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "51ca50c285a657b65911e80ae3a3aae56f75222b999ec711e7ce6611a9d4c259"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/inkling-2-small",
+                "shows": "Index v5.0.1 page: \"Inkling 2 Small scores 31 on the Artificial Analysis Intelligence Index, placing it well above average among other open weight models of similar size (median: 24).\"",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "e7590371c2aef64b62d2cf2f50e30b6173cd2c41e31313e7ae3cbe85eaa41a67"
+              },
+              {
+                "url": "https://www.vals.ai/benchmarks/vals_index",
+                "shows": "Vals Index, Version 2.2, which \"aggregates six private and two public benchmarks\": \"Inkling 2 Small: 56.08% on Nov '26\" and \"Mistral Large 4: 56.53% on Oct '26\"; Kimi K3.1 Pro 62.52, DeepSeek V4.1 Flash 1017 61.26, GLM 5.3 59.85, MiMo V2.6 Pro 57.81, MiniMax-M3.1-Flash 53.78, Inkling 28.96, Inkling Small 27.59.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "c15e3718bd8d0b824ffa39772d4057dc4b4c520e80c3a232a7f0180d21ee1daa"
+              },
+              {
+                "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text/latest-00000-of-00001.parquet",
+                "shows": "Same dataset and revision, text leaderboard without style control, category \"overall\", 2026-11-11 snapshot of 421 models: \"Inkling 2 Small\" 1402.6 (interval 1390.9-1414.4, 2,669 votes), rank 153; Mistral Large 4 1411.3 (141); MiMo-V2.6-Pro 1491.6 (14); GLM-5.3 (Max) 1474.9 (26); Kimi K3.1 Pro (Max) 1459.1 (43); Inkling 1443.0 (71); Inkling-Small 1414.2 (136). DeepSeek V4.1 Flash 1017 and MiniMax-M3.1-Flash are not listed.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "928462c23d9e51ea1581e3e6063f5e280834782a0cb943f6922bf3322f06ea16"
+              },
+              {
+                "url": "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/webdev/latest-00000-of-00001.parquet",
+                "shows": "Same dataset and revision, WebDev leaderboard, category \"overall\", 2026-11-11 snapshot of 156 models: \"Inkling 2 Small\" 1647.1 (interval 1627.6-1666.5, 990 votes), rank 23; Kimi K3.1 Pro (Max) 1687.2 (12); DeepSeek-V4.1-Flash-20261017 (Max) 1663.7 (18); MiMo-V2.6-Pro 1625.0 (28); GLM-5.3 (Max) 1622.5 (30); MiniMax-M3.1-Flash 1583.9 (42); Mistral Large 4 1564.5 (48); Inkling 1414.2 (99).",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "e1405727c7d1e840a70fb215e09cbff7efef9bc11359c0797e742291a09441f4"
               }
             ]
           },
@@ -2333,21 +2402,26 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-11-08",
+            "date": "2026-11-12",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-11-12",
             "unconfirmed_axes": [
+              "adoption",
               "capability"
             ],
             "verification_holds": [
               {
+                "axis": "adoption",
+                "since": "2026-11-13",
+                "reason": "The declared checkpoints were widened on 2026-11-13 to every first-party checkpoint of both generations, adding Inkling-Small, Inkling-Small-NVFP4, Inkling-2-Small and Inkling-2-Small-MXFP8 beside Inkling and Inkling-NVFP4. The six sum to 2,972,586 trailing-30-day Hugging Face downloads, the same 1M-10M level the 2026-11-08 scheduled reconciliation measured on the first two, but a hand-read sets a level and earns no date. The axis waits for the first scheduled reconciliation that measures the same level on the declared set. That run's re-dating PR dates the axis and releases this hold."
+              },
+              {
                 "axis": "capability",
                 "since": "2026-11-12",
-                "reason": "Re-read on 2026-11-13 under the comparison method proposed in R-2026-11-13-a (#1045). Inkling (Xhigh) and Inkling Small, the eligible releases, are both reasoning releases and neither leads the other across the evidence. At the same stage, Artificial Analysis v5.0.1 (12 and 13 against 26), Epoch AI's own runs (FrontierMath, OTIS Mock AIME) and APEX-Agents put Mistral Large 4 (High) ahead, while Epoch's GPQA Diamond run and DTBench show them level and LMArena's text ratings put Inkling above it; Artificial Analysis and LMArena both put Inkling well above OLMo 3.1 32B Think, the release olmo is read on, and every line that scores Phi-4 places it far above it. Vals AI's own SWE-bench Verified run reproduces the vendor's 77.6%, with no Mistral Large 4 entry. The evidence is consistent with 4, but the hold stays for two decisions that are not an evidence re-read: whether the one_below kimi edge, which measures Inkling against the strongest open model in the category, is re-placed against a nearer settled peer, and whether Inkling 2 Small (open weights since 2026-11-04, 31 on the index) joins the record as an eligible release. Settled by a maintainer ruling on both."
+                "reason": "The strongest eligible release has changed: Inkling 2 Small, the second generation, joined the record once its weights were public on Hugging Face under Apache-2.0, and capability is read on it rather than on Inkling and Inkling Small, whose re-read under R-2026-11-13-a (#1047) was consistent with 4. On Artificial Analysis v5.0.1 it scores 30.6, between MiMo-V2.6-Pro (29.9) and GLM-5.3 (31.7) among the settled 5s and above the provisional 4 reference Mistral Large 4 (High, 26.1), but the independent lines disagree: Vals Index v2.2 (56.08 against 56.53) and APEX-Agents (46.8 against 51.6) put it level with or behind Mistral Large 4, and LMArena splits by arena. A 4/5 ruling is pending; until then the score stays 4. Whether the one_below kimi edge is re-placed against a nearer settled peer remains open with it. Settled by a maintainer ruling on both."
               }
             ]
           },
-          "version_note": "The Inkling-Small sibling is folded into this record."
+          "version_note": "Both Small checkpoints, Inkling-Small and Inkling 2 Small, are folded into this record rather than scored as separate products."
         },
         {
           "slug": "lucie-7b",
@@ -2357,19 +2431,29 @@
           "type": "model",
           "description": "Linagora and OpenLLM-France's fully open multilingual 7B foundation model on the Llama 3.1 architecture, trained on roughly three trillion tokens with about equal French and English shares plus German, Spanish, Italian and code. The weights ship with the Lucie Training Dataset, the Megatron-DeepSpeed training code and intermediate checkpoints as repository branches.",
           "openness": {
-            "score": 5,
-            "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(Lucie-Training-Dataset on HF, redistributed in training form);code:open(Lucie-Training Megatron-DeepSpeed fork);checkpoints:open(intermediate HF revisions);license:Apache-2.0(OSI)",
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0);data:released-restricted(Lucie-Training-Dataset on HF in training form, released as a whole under CC-BY-NC-SA-4.0);code:open(Lucie-Training Megatron-DeepSpeed fork);checkpoints:open(intermediate HF revisions);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Lucie-7B publishes Apache-2.0 weights with its full training stack: the Lucie-Training-Dataset corpus, the Megatron-DeepSpeed training code, and intermediate checkpoints as repository branches, matching OLMo and Apertus's openness tier. The corpus itself is CC-BY-NC-SA-4.0, published and ungated but not commercially reusable, short of the authors' own OSI-compliance claim.",
-            "last_verified": "2026-11-12",
+            "note": "Lucie-7B publishes Apache-2.0 weights with its full training stack: the Lucie-Training-Dataset corpus, the Megatron-DeepSpeed training code, and intermediate checkpoints as repository branches. The corpus is published and ungated but licensed CC-BY-NC-SA-4.0 as a whole, so it cannot be reused commercially even though most of its sources carry permissive terms. That keeps Lucie-7B short of fully open models such as OLMo, and short of the authors' own OSI-compliance claim.",
+            "last_verified": "2026-11-13",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/OpenLLM-France/Lucie-Training-Dataset",
-                "shows": "Hugging Face API record for the pretraining corpus: \"The Lucie Training Dataset is a curated collection of text data\", tagged \"license:cc-by-nc-sa-4.0\" and \"format:parquet\"; gated and private are both false. The corpus is published and ungated, but under a non-commercial license.",
-                "accessed": "2026-11-12",
+                "shows": "Hugging Face API record for the pretraining corpus: \"The Lucie Training Dataset is a curated collection of text data\", tagged \"license:cc-by-nc-sa-4.0\" and \"format:parquet\", with the card license cc-by-nc-sa-4.0; gated and private are both false. The corpus is published and ungated, but under a non-commercial license.",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "1b57fdc12f5805f6c35cb207b5557ee28e15c6bf9939c72e670a84ed5b43e5bc",
+                "content_sha256": "0aaae6bc39d836c283ad7c7995e43b1e8777a8e60fe49c13128cec2132494b5e",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/OpenLLM-France/Lucie-Training-Dataset/raw/main/README.md",
+                "shows": "Raw dataset card: front matter \"license: cc-by-nc-sa-4.0\" for the corpus as released; the Ethics section says other data \"are published with permissive licenses (e.g., CC BY or CC BY-SA) or, in very rare cases, CC BY-NC-SA\", and the Claire French and English dialogue sources are listed as \"License: CC BY-NC-SA 4.0\".",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "815b5ca01d81be29d1d673e0e424b23e97bfe0c409a05cc8c30e36773a11223c",
                 "establishes": [
                   "data"
                 ]
@@ -2377,9 +2461,9 @@
               {
                 "url": "https://huggingface.co/OpenLLM-France/Lucie-7B",
                 "shows": "Model page: \"Checkpoints at several training steps are available under revision tags\", loadable via the revision parameter such as \"step0753851\"; the embedded repo data records gated as false. Searched for agree to share and access request: none.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "8f667c4c31234f4f944d72edf9bb8967af865a83d5423c65778e07de4c8c8e9b",
+                "content_sha256": "7c3246053bba29e07f4939e31ca65d9c2b1571aa6ee04e89ff00e9ecf54a1f27",
                 "establishes": [
                   "weights",
                   "checkpoints"
@@ -2388,19 +2472,19 @@
               {
                 "url": "https://huggingface.co/datasets/OpenLLM-France/Lucie-Training-Dataset",
                 "shows": "Dataset page for the multilingual pretraining corpus: \"The Lucie Training Dataset is a curated collection of text data\"; the embedded repo data records gated as false. The URL needs its /datasets/ path segment - without it the Hub resolves the path as a model repo.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "ad9848d052073e14be4ef89f8828f705c5dffa38f7589ed9f04e3b84c013f599",
+                "content_sha256": "50037beff1d4d383157b6d5916f8505daf3a1e9648dcf59d6ed7f469d88f04ca",
                 "establishes": [
                   "data"
                 ]
               },
               {
-                "url": "https://github.com/OpenLLM-France/Lucie-Training",
-                "shows": "Repository described as \"Code for continual pretraining of LUCIE\" - the Megatron-DeepSpeed fork used for the run.",
-                "accessed": "2026-08-13",
+                "url": "https://raw.githubusercontent.com/OpenLLM-France/Lucie-Training/master/README.md",
+                "shows": "Lucie-Training README: setup with \"our fork of Megatron-Deepspeed\" and a \"Train a model\" section covering \"1. Pretraining (first main phase)\", \"2. Context Extension\", \"3. Annealing\" and \"4. Instruct-Tuning and Finetuning\", the released pretraining pipeline.",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "10879feb43983ff63bdaa722b9a059dd06be5e3909b183840e1f56a3fd3b2e61",
+                "content_sha256": "83321d8879b9a37076aa6593acc939c9f1410416582bfdc3288cc99e79f794a9",
                 "establishes": [
                   "code"
                 ]
@@ -2408,7 +2492,7 @@
               {
                 "url": "https://arxiv.org/abs/2503.12294",
                 "shows": "Abstract: \"model training and data preparation code is available on GitHub\" and \"This makes Lucie-7B one of the first OSI compliant language models according to the new OSI definition\". The compliance claim is the authors' own.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "d326d734c39d215cf29ee0ead3a8bdfad234f335bb93de363f9c15c1a18e3c93",
                 "establishes": [
@@ -2418,7 +2502,7 @@
               {
                 "url": "https://huggingface.co/OpenLLM-France/Lucie-7B/raw/main/README.md",
                 "shows": "Raw model card: front matter \"license: apache-2.0\"; \"The training code is available at\" the Lucie-Training GitHub repository, \"It is based on [this fork of Megatron-DeepSpeed]\"; \"Intermediate checkpoints can be loaded using the\"; \"Optimizer checkpoints are available for download\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "0cdc56c78884c1aa8db4cc5e98ba392dd6c15d27915c88cbb5cccba5dfcf5721",
                 "establishes": [
@@ -2431,9 +2515,9 @@
               {
                 "url": "https://huggingface.co/api/models/OpenLLM-France/Lucie-7B",
                 "shows": "Hugging Face API record tagged \"license:apache-2.0\" and \"dataset:OpenLLM-France/Lucie-Training-Dataset\", with weight shards such as \"model-00001-of-00003.safetensors\"; gated and private are false.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "01804632c655781cb86e774ee42afe4ca76e1653ff609bedaed51a6c329df084",
+                "content_sha256": "01c39ee696ef03ad04f7924b7564d33feeef788161dc9fca8d7220ad4188be8d",
                 "establishes": [
                   "weights",
                   "license"
@@ -2442,7 +2526,7 @@
               {
                 "url": "https://huggingface.co/api/models/OpenLLM-France/Lucie-7B/refs",
                 "shows": "Refs listing for OpenLLM-France/Lucie-7B with intermediate training branches such as \"refs/heads/extension_step0001220\" and \"refs/heads/step0753851\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "32fd2eed675ce76d065710c9e4fce96a40442cc2a2933c2a1bc7d2b4fdef18d8",
                 "establishes": [
@@ -2452,7 +2536,7 @@
               {
                 "url": "https://huggingface.co/OpenLLM-France/Lucie-7B/raw/main/LICENSE.md",
                 "shows": "LICENSE.md in the model repo carries the Apache License 2.0: \"title: Apache License 2.0\", \"spdx-id: Apache-2.0\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "4b07cb7bcf39c9f379866e25b0e3f6738a683511bd639a83b65969cf80b48925",
                 "establishes": [
@@ -2460,7 +2544,7 @@
                 ]
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 1,
@@ -2526,7 +2610,7 @@
           "freshness": {
             "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-12"
+            "latest_axis_confirmation": "2026-11-13"
           },
           "version_note": "Instruct variants are folded into this record; the successor Luciole family is a separate entry."
         },
