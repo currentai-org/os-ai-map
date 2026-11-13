@@ -49,7 +49,7 @@ the corpus, and no reuser can identify and exclude it. The #1049 survey assumed 
 assumes it does, and so did the #1046 audit. The ruling does not say") and listed this as its
 second open question.
 
-The reviewer answered it on #1049 without ruling: "For C4 and FineWeb, I'd retain their existing
+The reviewer of #1049 answered it without ruling, in review notes passed to the session that prepared this brief rather than in a comment on the PR: "For C4 and FineWeb, I'd retain their existing
 treatment provisionally. Open compilation terms should not automatically establish that every
 crawled webpage permits redistribution or commercial reuse, but neither should ordinary unresolved
 web copyright force a blanket downgrade of every web-trained model. The relevant test is whether
