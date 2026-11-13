@@ -50732,6 +50732,126 @@
           }
         },
         {
+          "slug": "wikidata",
+          "product": "Wikidata",
+          "org_slug": "wikimedia-foundation",
+          "org": "Wikimedia Foundation",
+          "type": "dataset",
+          "description": "The structured knowledge base behind Wikipedia, built by volunteers as items, properties and statements with references, and labeled in hundreds of languages. The Wikimedia Foundation publishes full dumps every week as JSON and as RDF in Turtle and N-Triples, along with a smaller truthy dump of best-ranked facts. Language-model work uses it for knowledge grounding, entity linking and verbalized training text.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:cc0-1.0(the dedication Wikidata's licensing policy and download page state for all structured data);access:public(weekly full dumps on dumps.wikimedia.org, no registration);dataset_card:present(the Database download page and the Wikibase data model documentation);format:json+rdf",
+            "confidence": "high",
+            "note": "All of Wikidata's structured data is dedicated to the public domain under CC0, so anyone may copy, change and use it commercially without attribution. The full dumps download freely every week, and the data model and dump formats are documented.",
+            "last_verified": "2026-11-13",
+            "sources": [
+              {
+                "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+                "shows": "\"All structured data (i.e. the main, Property, Lexeme, and EntitySchema namespaces) is released into the public domain under Creative Commons Zero\"",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "ed70958f1b430215e0d17faa77e7b6a290d456123c39dc5650df36ab63953945",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://www.wikidata.org/wiki/Wikidata:Database_download",
+                "shows": "JSON dumps of all entities \"created on a weekly basis\", plus RDF full and truthy dumps; \"These databases can be used for personal or commercial use\" with structured data under CC0",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "9c0969b89620b01cc81bffd0a45b2c55294228b051aa6844e2d7418903cfcfca",
+                "establishes": [
+                  "license",
+                  "availability",
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://dumps.wikimedia.org/wikidatawiki/entities/",
+                "shows": "Public directory of dated dumps with latest-all JSON, Turtle and N-Triples files and latest-truthy N-Triples, downloadable without registration",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "1343e4b691346fbfd26b62d5db26b54eaa28a931d076155505573369e256843a",
+                "establishes": [
+                  "availability"
+                ]
+              },
+              {
+                "url": "https://www.mediawiki.org/wiki/Wikibase/DataModel",
+                "shows": "Specification of the Wikibase data model of items, properties, statements, qualifiers and references that the dumps serialize",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "20a6151a251999607cb27260aef43b8bbe949ccf2ad1d3d0a445663c2dcb1505",
+                "establishes": [
+                  "documentation"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 5,
+            "reach": ">10M users",
+            "signal_type": "active_users",
+            "banded_quantity": "wikidata.org monthly unique devices (16.0M, October 2026), Wikimedia's proxy for users, not a count of dump downloads or query-service clients",
+            "confidence": "medium",
+            "note": "Adoption is read from Wikimedia's count of unique devices visiting wikidata.org each month, which the Foundation uses as its proxy for users. It counts people browsing the knowledge base, not the developers and model builders who take the weekly dumps or query it by machine, since neither the dump server nor the query service publishes a usage count. Even the cookie-only part of the estimate, which leaves out one-time visitors, clears a million devices.",
+            "last_verified": "2026-11-13",
+            "sources": [
+              {
+                "url": "https://wikimedia.org/api/rest_v1/metrics/unique-devices/www.wikidata.org/all-sites/monthly/20260901/20261031",
+                "shows": "Wikimedia Analytics API: 17,205,785 unique devices for wikidata.org in September 2026 and 15,978,531 in October 2026, of which 7,613,207 were counted by cookie alone",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "48a4d68efd2c6c6502098be68fd285b434511fd48ccba79f69688292a0f48a81"
+              },
+              {
+                "url": "https://meta.wikimedia.org/wiki/Research:Unique_devices",
+                "shows": "\"we are using the counting of Unique Devices as a proxy to count users\"; one person on phone and desktop counts as two devices",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "8973fe23f06969fa337e96d96bc5b5edf7718c1870376ce4c20dfe9f8783785f"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "training_value",
+            "basis_detail": "downstream",
+            "value": null,
+            "confidence": "medium",
+            "note": "Google's KELM work turned the whole English Wikidata graph into natural text and showed that adding it to a retrieval model's corpus improved open-domain question answering and the LAMA knowledge probe. KEPLER built its Wikidata5M pretraining set from it. Those gains are for knowledge-intensive tasks rather than general pretraining, and no major open pretraining mix lists Wikidata as a component.",
+            "last_verified": "2026-11-13",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2010.12688",
+                "shows": "KELM abstract: \"we verbalize the entire English Wikidata KG\" and augmenting a retrieval language model's corpus with it gives \"significant improvements\" on open domain QA and the LAMA probe",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "ccc737e1d2c7f36c78249d1f724de4e7fbc24c2d2404159bf3da372b0d87202f"
+              },
+              {
+                "url": "https://arxiv.org/abs/1911.06136",
+                "shows": "KEPLER abstract: \"for pre-training and evaluating KEPLER, we construct Wikidata5M, a large-scale KG dataset with aligned entity descriptions\"",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "71a5b347bb006db703d32fd3201b9533d5934572bb7edcdfd30f39bc70b7debc"
+              }
+            ]
+          },
+          "overall_score": 4.0,
+          "overall_basis": "adoption_and_capability",
+          "tier": "strong",
+          "maturity": 4.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-13",
+            "basis": "verified"
+          }
+        },
+        {
           "slug": "numina-math",
           "product": "NuminaMath",
           "org_slug": "numina",
@@ -172901,6 +173021,7 @@
       "country": "US",
       "products": [
         "mediawiki-search-api",
+        "wikidata",
         "wikipedia"
       ]
     },
@@ -173355,7 +173476,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1269,
+  "n_total": 1270,
   "generated": "2026-11-13",
   "version": "0.6.0",
   "released": "2026-11-12",
@@ -173368,8 +173489,8 @@
       "total": 60613,
       "matched": 1366,
       "overlap": 673,
-      "scored": 1269,
-      "scored_outside": 596,
+      "scored": 1270,
+      "scored_outside": 597,
       "uncategorized": 59247
     },
     "top": [
