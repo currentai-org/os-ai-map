@@ -59,20 +59,31 @@ openness:
     establishes:
     - documentation
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
+  level: 5
+  reach: '>10M users'
+  signal_type: active_users
+  banded_quantity: wikidata.org monthly unique devices (16.0M, October 2026), Wikimedia's proxy for users,
+    not a count of dump downloads or query-service clients
   confidence: medium
-  note: No download figure could be read. Wikidata is distributed as dump files on dumps.wikimedia.org, which
-    shows no download count, and the Wikimedia Foundation publishes no Hugging Face copy or package to count
-    instead.
+  note: Adoption is read from Wikimedia's count of unique devices visiting wikidata.org each month, which
+    the Foundation uses as its proxy for users. It counts people browsing the knowledge base, not the
+    developers and model builders who take the weekly dumps or query it by machine, since neither the dump
+    server nor the query service publishes a usage count. Even the cookie-only part of the estimate, which
+    leaves out one-time visitors, clears a million devices.
   last_verified: '2026-11-13'
   sources:
-  - url: https://dumps.wikimedia.org/wikidatawiki/entities/
-    shows: A plain directory listing of dump files with dates and sizes and no download counter
+  - url: https://wikimedia.org/api/rest_v1/metrics/unique-devices/www.wikidata.org/all-sites/monthly/20260901/20261031
+    shows: 'Wikimedia Analytics API: 17,205,785 unique devices for wikidata.org in September 2026 and
+      15,978,531 in October 2026, of which 7,613,207 were counted by cookie alone'
     accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 1343e4b691346fbfd26b62d5db26b54eaa28a931d076155505573369e256843a
+    content_sha256: 48a4d68efd2c6c6502098be68fd285b434511fd48ccba79f69688292a0f48a81
+  - url: https://meta.wikimedia.org/wiki/Research:Unique_devices
+    shows: '"we are using the counting of Unique Devices as a proxy to count users"; one person on phone and
+      desktop counts as two devices'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 8973fe23f06969fa337e96d96bc5b5edf7718c1870376ce4c20dfe9f8783785f
 capability:
   score: 3
   basis: training_value
