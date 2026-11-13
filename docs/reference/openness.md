@@ -439,6 +439,47 @@ reasons is still `documented-not-released` or `components-listed`, whatever its 
 been. The value applies to the pretrained ladder only. `model.yaml` asks a tune's data question
 about its post-training mixture and is unchanged.
 
+### A web-crawl corpus is open when its release documents a basis for reuse
+
+R-2026-11-13-d, on the brief in `docs/briefs/2026-11-13-web-crawl-corpus-licenses.md`. Web-crawl
+corpora (C4, FineWeb, DCLM, Dolma, RefinedWeb, DataComp and their kin) publish an open license on
+the compilation while the crawled pages keep their authors' rights. An open compilation license
+does not establish that every page may be redistributed or reused commercially, and ordinary
+unresolved web copyright does not force every web-trained model down either. The test is whether
+the release offers a credible, documented basis for lawful reuse and discloses its material
+limits. A corpus that is wholly or mostly web crawl is `open` when the release, or the named crawl
+whose documented terms it binds the reuser to, documents all four of:
+
+1. **Open terms.** The compilation, or the output of its published reconstruction scripts, is
+   licensed for redistribution and commercial use, with no binding commercial or field-of-use bar
+   on the corpus or its crawl source. Conduct terms (comply with the law, respect third-party
+   rights) and advisory intended-use statements outside the license grant do not fail this, but
+   the record quotes them.
+2. **Named provenance.** The crawl it came from and the processing applied, so a rights holder can
+   tell whether a page is in it.
+3. **Disclosed page rights.** A statement that the pages keep their own rights or terms, in the
+   release's own words or through crawl terms it binds the reuser to.
+4. **Opt-out handling.** How publisher opt-outs were honored: robots.txt at crawl time as the named
+   crawler documents it, an opt-out form, or retroactive filtering. This element records
+   documented practice. It is not proof that reuse of any page is lawful, and robots.txt
+   compliance alone is never treated as one.
+
+Documentation inherited from the named crawl counts: a release that binds the reuser to Common
+Crawl's Terms of Use and names CCBot as its crawler meets elements 3 and 4 through those documents.
+A removal route for rights holders or data subjects (a takedown process, an opt-out or PII form) is
+recorded and bears on confidence, not on the value.
+
+The outcomes: all four documented gives `open`. A binding term that fails element 1 gives
+`released-restricted`. Where element 1 holds and any of elements 2 to 4 is undocumented in what was
+read, the dimension is held in `sources/verification_queue.yaml` with the missing element named,
+and moves to `released-restricted` only if research confirms the release supplies no basis. A
+release that publishes URLs rather than content, such as DataComp-1B's URL and caption index, is
+assessed on whether the corpus can be reconstructed from what is published; `openclip` is the case
+under review.
+
+The dataset ladder applies the same four elements to its `open_data` tier, so a web corpus cannot be
+open as a dataset and not open as a model's training data on the same evidence.
+
 ### `self-host` and `core-gated` are one question
 
 The software ladder asks whether functionality is withheld from the published source for a

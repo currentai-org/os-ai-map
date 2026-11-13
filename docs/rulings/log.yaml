@@ -4134,3 +4134,34 @@ rulings:
     executor: agent
     lands_in: [sources/scores/inkling.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1052']
+
+  - id: R-2026-11-13-d
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1053", "#1049", R-2026-11-13-b, olmo, t5, smollm, marin, apertus, luciole, openclip, pretrained, dataset]
+    question: >-
+      Under R-2026-11-13-b, full `data: open` needs a corpus whose own terms permit open reuse. Web-crawl corpora
+      publish an open license on the compilation while the crawled pages keep their authors' rights. When does a
+      web-crawl corpus count as openly reusable, on the pretrained ladder and on the dataset ladder?
+    ruling: >-
+      Adopt option C from docs/briefs/2026-11-13-web-crawl-corpus-licenses.md, refined. A corpus that is wholly or
+      mostly web crawl is `open` when its release, or the named crawl whose documented terms it binds the reuser to,
+      documents four things: terms allowing redistribution and commercial use with no binding commercial or
+      field-of-use bar; the crawl it came from and its processing; that the pages keep their own rights; and how
+      publisher opt-outs were honored. Documented upstream crawl terms are accepted, so Common Crawl's Terms of Use
+      and CCBot documentation can meet the page-rights and opt-out elements. Opt-out and removal mechanisms are
+      assessed, but robots.txt compliance is never treated as proof of lawful reuse. A removal route is recorded and
+      affects confidence only. A binding bar gives `released-restricted`; an undocumented element holds the dimension
+      rather than downgrading it, and it moves only if research confirms no basis exists. Advisory intended-use
+      statements outside the license grant do not fail the terms element. A URL-only release is assessed on whether
+      the corpus can be reconstructed, and DataComp's URL index is investigated as the OpenCLIP case. The dataset
+      ladder's `open_data` tier applies the same principles. The product-level evidence refresh lands separately.
+    reasoning: >-
+      An open compilation license does not establish that every page may be reused, and ordinary unresolved web
+      copyright should not force a blanket downgrade; the test is a credible, documented basis for lawful reuse with
+      material limits disclosed.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, sources/rubrics/dataset.yaml, docs/reference/openness.md]
+    applied_in: []
