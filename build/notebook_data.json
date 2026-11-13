@@ -16682,25 +16682,116 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none);data:open(the DataComp-1B corpus behind the DataComp.XL checkpoints is published ungated under CC-BY-4.0; the older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate);code:open(open_clip ships the full contrastive pretraining pipeline - data loading, training loop, distributed launch scripts and ImageNet zero-shot evaluation);license:MIT(OSI)",
+            "components": "weights:open(56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none);data:open(DataComp-1B, the corpus behind the DataComp.XL checkpoints, is published ungated as a CC-BY-4.0 index of image URLs, captions and metadata with img2dataset download tooling - the images are not redistributed and stay under their own copyrights. The older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate);code:open(open_clip ships the full contrastive pretraining pipeline - data loading, training loop, distributed launch scripts and ImageNet zero-shot evaluation);license:MIT(OSI)",
             "confidence": "high",
-            "note": "OpenCLIP publishes the training corpus, the pipeline that consumed it and an OSI license over the weights, which is the fullest release case in this category. The original LAION-2B corpus these checkpoints were trained on no longer resolves under its own name; it now points to the re-filtered ReLAION release behind a click-through gate, which counts as released rather than merely documented.",
-            "last_verified": "2026-09-11",
+            "note": "OpenCLIP ships its full contrastive training pipeline and MIT-licensed weights, and its DataComp-1B checkpoints come with the corpus as a CC-BY-4.0 index of image links and captions plus the tooling that downloads them, while the images stay under their owners' copyrights. The older LAION-2B corpus now resolves only to the re-filtered ReLAION release behind a click-through gate.",
             "sources": [
               {
-                "url": "https://huggingface.co/api/datasets/mlfoundations/datacomp_1b",
-                "shows": "gated: false; license cc-by-4.0 - DataComp-1B, the corpus behind the DataComp.XL checkpoints, is published and ungated. This is the firmer footing for data:open than the LAION-2B path, whose original name now redirects to a re-filtered successor behind a gate.",
-                "accessed": "2026-09-11",
+                "url": "https://huggingface.co/datasets/mlfoundations/datacomp_1b/raw/main/README.md",
+                "shows": "`license: cc-by-4.0`; 'We distribute the image url-text samples and metadata under a standard Creative Common CC-BY-4.0 license. The individual images are under their own copyrights.' Its Terms and Conditions add that content reached through the index is 'subject to the terms of service or copyright limitations accompanying such content' and call the index 'a research artifact, is provided as is'. It names no Common Crawl terms.",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "cc30a55ea4235761d23e48e7a3bbe3fb38922f9d0ad5ad425f05b4da37645cbd",
+                "content_sha256": "3634b8386979b95b4fd54da43eb3eb0b038d24afc0df07f3c6ba2f8d52830082",
                 "establishes": [
                   "data"
                 ]
               },
               {
+                "url": "https://huggingface.co/api/datasets/mlfoundations/datacomp_1b",
+                "shows": "`gated: false`, `private: false`, `cardData.license: cc-by-4.0`, `lastModified: 2023-08-21T21:43:05.000Z`; 5,330 files, all .parquet or .npz metadata shards plus .gitattributes and the README, with no image files.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "e39e13750a32f99ed16af616f08f598262088d285a2f0c2018192c9a20d74cdb",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mlfoundations/datacomp/main/README.md",
+                "shows": "`python download_upstream.py --scale datacomp_1b --data_dir $data_dir` downloads 'the `DataComp-1B` dataset that we release as our best performing subset of the `xlarge` pool': the parquet metadata with 'the image urls, captions', then the images through img2dataset into webdataset shards. The image-based and CLIP-score intersection baseline is the strategy 'used at the `xlarge` scale to create the `DataComp-1B` dataset'.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "67a127bf3072e9d215cadf1dd9641092ce2d8402cb148ab100a9d94cba4bc336",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mlfoundations/datacomp/main/download_upstream.py",
+                "shows": "pulls `*.parquet` from `mlfoundations/datacomp_1b`, then calls `img2dataset.download` with `url_col=\"url\"`, `caption_col=\"text\"` and `bbox_col=\"face_bboxes\"`, so detected faces are blurred unless `--skip_bbox_blurring` is passed. It leaves img2dataset's opt-out header setting at its default.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "024562b245cd2cbe674e16e742fe128eb6aa366b6e521a98e0ceef2a0cf2e4e5",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mlfoundations/datacomp/main/requirements.txt",
+                "shows": "`img2dataset==1.40.0` - the download tool is pinned.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "188f903af874cd5b7e0db5c61c9dd73a257aecbfa196740548758a6f58a6cdd3",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/rom1504/img2dataset/main/README.md",
+                "shows": "'Websites can pass the http headers `X-Robots-Tag: noai`, `X-Robots-Tag: noindex` , `X-Robots-Tag: noimageai` and `X-Robots-Tag: noimageindex` By default img2dataset will ignore images with such headers.' The opt-out it documents is these response headers; it describes no robots.txt check.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "ead0a7b15e9761af003a8b6b6ffdad266d7d9817eba238bef6cd6fe83acecd51",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/pdf/2304.14108",
+                "shows": "Section 3.2: pairs extracted 'from all Common Crawl snapshots from 2014 to 2022', and the pool 'is distributed as an image url-text pair index under a CC-BY-4.0 license'. The datasheet: 'Following our usage of Common Crawl and https://github.com/rom1504/img2dataset for download images, we respect robots.txt files'; links carry 'no guarantee that the resources will exist in perpetuity' and an archival copy is 'not possible'; takedown requests go to laion.ai/dataset-requests by sample uid; the pool is 'not intended for production ready products'.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "d9f4c71b5ab8b1e8642ed6a0d2d7f7f6d05494c17633e8be60a3c935fface6ae",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://laion.ai/dataset-requests/",
+                "shows": "a 'Dataset Requests' form - Name, Email, Explanation, Dataset, Sample ID, Website / URL - to 'Tell us about a problem with a dataset or a specific sample'.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "a98e3ab17c2b86b42a78f3c7f48cfd9809411a247013c42f51aa7b66808d516a",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/faq",
+                "shows": "'CCBot is an automated crawler, checking first the robots.txt' and stops for `User-agent: CCBot` / `Disallow: /`. CCBot fetched the pages the DataComp image links were taken from, not the images themselves.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/laion/CLIP-ViT-L-14-DataComp.XL-s13B-b90K/raw/main/README.md",
+                "shows": "`license: mit`; 'This model was trained with the 1.4 Billion samples of the DataComp-1B dataset'; 'Our recommendation is therefore to use the dataset for research purposes' - a recommendation in the card, outside any license grant.",
+                "accessed": "2026-11-13",
+                "http_status": 200,
+                "content_sha256": "dae51749e117ec55c9d78b71967be59a2424cfd85f9ceb20bb92bc277900cd40",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
                 "url": "https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/raw/main/README.md",
                 "shows": "`license: mit`; 'A CLIP ViT-H/14 model trained with the LAION-2B English subset of LAION-5B ... using OpenCLIP'; a Training Data section naming the 2-billion-sample English subset.",
-                "accessed": "2026-09-11",
+                "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "14db420f00ddf78a07194dc4cdc57977d979e0f2c34994137679046defdf6577",
                 "establishes": [
@@ -16711,20 +16802,20 @@
               },
               {
                 "url": "https://huggingface.co/api/datasets/laion/relaion2B-en-research-safe",
-                "shows": "`id: laion/relaion2B-en-research-safe`, `gated: auto`, `private: false`, `disabled: false` - and the request for laion/laion2B-en redirects here.",
-                "accessed": "2026-09-11",
+                "shows": "`id: laion/relaion2B-en-research-safe`, `gated: auto`, `private: false`, `disabled: false`, and no license field in the record. The request for laion/laion2B-en returns this same record.",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "40acb3297dfc34f148ed23c4180357388e33a79b66d1fd6fb66a6b0074aafbc9",
+                "content_sha256": "bba034293c4550e57af4e82c950f3c60f43461050402a47dc96da5bc64bb7afc",
                 "establishes": [
                   "data"
                 ]
               },
               {
                 "url": "https://raw.githubusercontent.com/mlfoundations/open_clip/main/README.md",
-                "shows": "'This repository is focused on training CLIP models'; documents `python -m open_clip_train.main` with train-data, epochs and imagenet-val arguments, plus single-node and SLURM multi-node launch recipes.",
-                "accessed": "2026-09-11",
+                "shows": "'This repository is focused on training CLIP models'; documents `python -m open_clip_train.main` with train-data, epochs and imagenet-val arguments, plus single-node, multi-node and SLURM launch recipes.",
+                "accessed": "2026-11-13",
                 "http_status": 200,
-                "content_sha256": "1161fd4bd0a9c5588eab7fd6d62023a1c04a7d175b772fccb30711c422efefaf",
+                "content_sha256": "cff7ef1f46ef59db6a35632915053ace2e8c768b3b201db5ca2af9d8e53e7ca2",
                 "establishes": [
                   "code"
                 ]
@@ -16732,7 +16823,7 @@
               {
                 "url": "https://raw.githubusercontent.com/mlfoundations/open_clip/main/LICENSE",
                 "shows": "the MIT permission grant verbatim - 'to deal in the Software without restriction' - over a 2012-2021 copyright by the open_clip authors.",
-                "accessed": "2026-09-11",
+                "accessed": "2026-11-13",
                 "http_status": 200,
                 "content_sha256": "4a5b4f13ea4792a8211a69f32d2b460b6d520e57cd23c6301e707c76a6e97a55",
                 "establishes": [
@@ -16793,8 +16884,18 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-11",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-10-25"
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-10-25",
+            "unconfirmed_axes": [
+              "openness"
+            ],
+            "verification_holds": [
+              {
+                "axis": "openness",
+                "since": "2026-11-13",
+                "reason": "Under the web-crawl corpus test (R-2026-11-13-d), DataComp-1B documents its terms (CC-BY-4.0 on the URL-caption index; its research-use language is advisory and outside the license), its Common Crawl provenance, and that 'The individual images are under their own copyrights'; LAION's dataset-requests form takes removals by sample uid. The recorded 5/open_source stands provisionally. Two points remain open, both evidence questions rather than restrictions. First, recoverability: a sample-level index with hashes, selection metadata and working reconstruction code can count as a released corpus, but how much of the DataComp-1B images the checkpoints trained on can still be recovered has not been measured, and no fixed minimum applies; the question is whether what remains faithfully reconstructs the governing training corpus. Second, opt-out handling during the original 2022-2023 collection: CCBot's robots.txt check covered the pages the links came from, not the image hosts, and the release does not say which img2dataset version or opt-out settings fetched the training images; the current downloader's default X-Robots-Tag noai handling does not show what the original collection honored. Settled by a measured recoverability audit of a representative sample of DataComp-1B URLs and a record of the original download configuration."
+              }
+            ]
           },
           "version_note": "Two organizations in one product: the open_clip training code is maintained under mlfoundations, the checkpoints and the LAION corpora are published by LAION. The corpus history is not clean - laion/laion2B-en no longer resolves under its own name and now redirects to the re-filtered laion/relaion2B-en-research-safe, which sits behind an auto-accept gate."
         },
