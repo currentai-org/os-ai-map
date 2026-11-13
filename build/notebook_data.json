@@ -2514,7 +2514,7 @@
           "org_slug": "linagora",
           "org": "Linagora",
           "type": "model",
-          "description": "Luciole is Linagora and OpenLLM-France's fully open French-English model family and the successor to Lucie, released at 1B, 8B and 23B in base and instruct forms. The weights ship with a 4.65-trillion-token training dataset drawn from openly licensed corpora, the training pipeline and training checkpoints. Base models are pretrained on about 5 trillion tokens, roughly 42 percent English and 30 percent French alongside six other languages.",
+          "description": "Luciole is Linagora and OpenLLM-France's fully open French-English model family and the successor to Lucie, released at 1B, 8B and 23B in base and instruct forms, with a 23B reasoning model and 8B math models built from the same bases. The weights ship with a 4.65-trillion-token training dataset drawn from openly licensed corpora, the training pipeline and training checkpoints. Base models are pretrained on about 5 trillion tokens, roughly 42 percent English and 30 percent French alongside six other languages.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -2651,50 +2651,14 @@
             "reach": "<10K",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "Adoption is measured as Hugging Face downloads summed across six checkpoints spanning the 1B, 8B and 23B sizes in base and instruct form. That total reflects a niche audience for a sovereign French-language model rather than broad usage.",
-            "last_verified": "2026-11-08",
+            "note": "Adoption is measured as Hugging Face downloads summed across the declared base, instruct, reasoning and math checkpoints at 1B, 8B and 23B. That total reflects a niche audience for a sovereign French-language model rather than broad usage.",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Base",
-                "shows": "746 downloads in the trailing 30 days for OpenLLM-France/Luciole-23B-Base",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models?author=OpenLLM-France&search=Luciole&limit=100",
+                "shows": "Trailing-30-day downloads per declared checkpoint on the OpenLLM-France listing: Luciole-23B-Base 520, Luciole-23B-Instruct-1.1 1,010, Luciole-23B-Thinking-1.1 267, Luciole-8B-Base 490, Luciole-8B-Instruct-1.1 3,767, Luciole-8B-KD-Math-Base 772, Luciole-8B-KD-Math-Thinking-1.1 177, Luciole-1B-Base 1,127, Luciole-1B-Instruct-1.1 1,164; 9,294 in all.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "b1747ebae2f6a4ec4e48873597c09a5a3c62e47169fd7cf849ea5175090ea24a"
-              },
-              {
-                "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Instruct-1.1",
-                "shows": "1,266 downloads in the trailing 30 days for OpenLLM-France/Luciole-23B-Instruct-1.1",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "05f5a0a2b17904d760cfdc635447ee2b52c3146b7f11ca1d287d578cce023a23"
-              },
-              {
-                "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-8B-Base",
-                "shows": "965 downloads in the trailing 30 days for OpenLLM-France/Luciole-8B-Base",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "3191bcd4eaf895ae72c6523518e851bd627e5a102d850589c91f56dd06028699"
-              },
-              {
-                "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-8B-Instruct-1.1",
-                "shows": "1,821 downloads in the trailing 30 days for OpenLLM-France/Luciole-8B-Instruct-1.1",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "571feb79e2bdae6eea0dfb2c8907406b03178642f03801f0f6036a7017719171"
-              },
-              {
-                "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-1B-Base",
-                "shows": "693 downloads in the trailing 30 days for OpenLLM-France/Luciole-1B-Base",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "f5ca5f689f2abc30b4355b113384a83517c97f159fca31233731fe7b9e07fc6a"
-              },
-              {
-                "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-1B-Instruct-1.1",
-                "shows": "2,140 downloads in the trailing 30 days for OpenLLM-France/Luciole-1B-Instruct-1.1",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "dad0af6e21b77deb7f5056ea9b9dd03e03fb45755ac30490f78b56e4e7c04855"
+                "content_sha256": "ecd9b0d39a894f201c34c72a3c732506b952b947b8dc0ccbc448540d850342d9"
               }
             ]
           },
@@ -2702,9 +2666,10 @@
             "score": 2,
             "basis": "benchmark",
             "basis_detail": "multilingual-pretrain-suite",
-            "value": "Luciole-23B-Base card charts (base models, one harness): English averaged normalized score about 49 against EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60 and Gaperon-1125-24B about 42; French about 42 against EuroLLM-22B about 34, Mistral-Small about 42 and Gaperon about 32. Values read from the charts; EuroLLM-22B's TriviaQA and Mintaka results on this harness are far below every other model's.",
+            "value": "Luciole-23B-Base card charts (base models, one harness): English averaged normalized score about 49 against EuroLLM-22B-2512 about 48, Mistral-Small-24B-Base-2501 about 60 and Gaperon-1125-24B about 42; French about 42 against EuroLLM-22B about 34, Mistral-Small about 42 and Gaperon about 32; six other languages about 35 against EuroLLM-22B about 36 and Mistral-Small about 40. Luciole-23B-Instruct-1.1 card chart (math, instruction following and MixEval): about 64 against EuroLLM-22B-Instruct-2512 about 59 and Mistral-Small-3.2-24B-Instruct about 67. EuroEval generative leaderboards (independent, few-shot, rank score where lower is better; Luciole entries marked val): French Luciole-23B-Instruct-1.1 2.17 against EuroLLM-22B-Instruct-2512 2.06, Apertus-v1.5-70B 1.93, Llama-3.1-8B-Instruct 2.29 and Lucie-7B-Instruct-v1.1 2.60; English 1.95 against EuroLLM-22B-Instruct 1.80 and Apertus-v1.5-70B 1.61; behind EuroLLM-22B-Instruct in 23 of 24 shared European languages. Chart values are read by eye; EuroLLM-22B's TriviaQA and Mintaka results on the base harness are far below every other model's. Luciole-23B-Thinking-1.1 card charts: the strongest of the models charted in French, behind Qwen3-8B in English (about 65 against 71); no independent evaluation covers it.",
             "confidence": "low",
-            "note": "Luciole is a French-English family up to 23B parameters built around French cultural representation and open data rights. Its 23B base model's card charts it against EuroLLM-22B and Mistral Small 24B on the same evaluations: about even with EuroLLM-22B in English and roughly 8 points ahead of it in French, where it also matches Mistral Small. In English it trails Mistral Small by about 11 points.",
+            "note": "Luciole is a French-English family up to 23B parameters, with base, instruct and reasoning models. Its own cards put the 23B models ahead of EuroLLM-22B in French. The independent EuroEval leaderboards, whose Luciole results are validation-split only and share one method, place the 23B instruct model slightly behind EuroLLM-22B-Instruct in French and English and in most other European languages, and ahead of Lucie-7B. No independent evaluation covers the reasoning model.",
+            "last_verified": "2026-11-12",
             "sources": [
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base",
@@ -2715,10 +2680,10 @@
               },
               {
                 "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
-                "shows": "1B / 8B / 23B base + Instruct-1.1 lineup; Instruct trained via SFT + DPO on math, science, coding, chat, RAG, and translation",
-                "accessed": "2026-08-13",
+                "shows": "Luciole LLM collection: 1B, 8B and 23B base and Instruct-1.1 models, with Luciole-23B-Thinking-1.1 and their FP8 and GGUF variants.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "e64616023bd63fd9a5dde0233482f031919825f46410781ccdad32566f873d02"
+                "content_sha256": "444944b975a08f1c3746c496ca2a24350d19443091e706aea0fc0a0c5eb02e87"
               },
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/en_details.png",
@@ -2733,6 +2698,104 @@
                 "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "4919b22a203f77f150cd8c311d9d34b457222fb6acf5ec9ca305a0dd73977629"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1/raw/main/README.md",
+                "shows": "Raw instruct card: \"Overall, Luciole-23B-Instruct-1.1 performs comparably with other open source instruct models of the same size. The model performs particularly well on instruction following benchmarks.\" It also says \"additional training would be necessary for tasks specifically focused on code generation or mathematical problem solving\", that the model \"was post-trained almost entirely on English data\" on sequences of 16,384 tokens, and \"Technical report: coming soon.\"",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a60346180ccb6fca4cdcafdcbb4d895b6070f68ccae4119a12a5ecdb987a7bb9"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1/resolve/main/benchmark_eval.png",
+                "shows": "Instruct card chart, averaged normalized score: Luciole-23B-Instruct-1.1 about 64, EuroLLM-22B-Instruct-2512 about 59, Mistral-Small-24B-Instruct-2501 about 62, Mistral-Small-3.2-24B-Instruct-2506 about 67, Gaperon-1125-24B-SFT about 42, over GSM8K, GSM-Plus, IFEval, IFEval-fr, IFBench test and multiturn, and MixEval easy and hard. Luciole leads EuroLLM-22B-Instruct on the two math and four instruction-following tasks (IFEval-fr about 0.74 against 0.67) and trails it on both MixEval tasks. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "986077ec401b6d4fee8c1a140d3e6b89fc811eafbe486504f1bdf58884f4d6ff"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Thinking-1.1/raw/main/README.md",
+                "shows": "Raw reasoning-model card: \"Luciole-23B-Thinking-1.1 is comparable to Olmo-3-32B-Think-DPO on all the English benchmarks tested except GPQA\" and, in French, \"it has the best overall performance on the French benchmarks tested\"; models were run with \"a thinking budget of 5000 tokens\", and the model \"has a tendency to over-refuse tool calling requests\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "d5875b3ee6ced4082e99fe572dc223a86da577aa52e8477c3f328eef41c81b2f"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Thinking-1.1/resolve/main/figure_en.png",
+                "shows": "Reasoning-model card chart (English), averaged normalized score: Luciole-23B-Thinking-1.1 about 65, Olmo-3-32B-Think-DPO about 70, Qwen3-8B about 71, Luciole-8B-KD-Math-Thinking-1.1 about 62 and Ministral-3-8B-Reasoning-2512 about 60. Luciole-23B-Thinking scores about 0.62 on MMLU-Pro and 0.43 on GPQA Diamond against about 0.72 and 0.55 for Qwen3-8B. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "1384306a25ce5c9dbe8a3f14a07e9a089f94f61f5f3e43346e5c6848c1cccb11"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Thinking-1.1/resolve/main/figure_fr.png",
+                "shows": "Reasoning-model card chart (French), averaged normalized score: Luciole-23B-Thinking-1.1 about 67, Qwen3-8B about 64, Olmo-3-32B-Think-DPO about 62, Ministral-3-8B-Reasoning-2512 about 55. Luciole leads on EIFFEL MCQ and CARTE generative, trails Qwen3-8B on BBH-fr, IFEval-fr and INCLUDE-fr, and trails both Olmo models on GPQA-fr Diamond. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2ef7e48867ad6aa6e5258eb3244ee438178846a4dc041274b00d11971de9c7e8"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/multilingual_details.png",
+                "shows": "Base card chart \"Overall Performance (Other Languages)\", Global MMLU and multilingual HellaSwag in German, Spanish, Italian, Portuguese, Dutch and Arabic: Luciole-23B-Base about 35, EuroLLM-22B-2512 about 36, Mistral-Small-24B-Base-2501 about 40, Gaperon-1125-24B about 16. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2036f20265471b9852e1601a1a90a36cf698c07e108fcab0f86db45e09341263"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/resolve/main/metadata/evaluation/ruler_details.png",
+                "shows": "Base card chart \"Overall Performance (RULER)\" for Luciole-23B-Base alone: average match score about 0.95 at 4,096 tokens, 0.72 at 32,768 and 0.55 at 131,072. No other model is charted. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "d3fee2975c05650f3b10874569d0f44cf8098f130c23339c6714d8e53bd704e3"
+              },
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-8B-Base/resolve/main/metadata/evaluation/fr_details.png",
+                "shows": "Luciole-8B-Base card chart \"Overall Performance (French)\": Luciole-8B-Base about 35.5 against Ministral-3-8B-Base-2512 about 39, Apertus-8B-2509 about 36.5, Qwen3-8B-Base about 36, EuroLLM-9B about 32.5, Llama-3.1-8B about 32.5 and salamandra-7b about 29. Values read from the chart.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "337d6490a2eed59b062f76b246a1655d60b4169ee2ae5548b9ab6d4f524d6704"
+              },
+              {
+                "url": "https://euroeval.com/leaderboards-csv/french_generative.csv",
+                "shows": "EuroEval French generative leaderboard, Rank score column: Luciole-23B-Instruct-1.1 (val) rank 14, \"2.17 ± 0.16\"; EuroLLM-22B-Instruct-2512 rank 13, \"2.06 ± 0.20\"; Apertus-v1.5-70B (val) \"1.93 ± 0.13\"; Llama-3.3-70B-Instruct \"1.80 ± 0.17\"; Mistral-Small-3.2-24B-Instruct-2506 \"1.67 ± 0.17\"; Llama-3.1-8B-Instruct \"2.29 ± 0.17\"; Lucie-7B-Instruct-v1.1 (val) \"2.60 ± 0.13\"; Luciole-23B-Base (val) \"2.81 ± 0.15\" against EuroLLM-22B-2512 \"2.56 ± 0.20\". Luciole-23B-Instruct leads EuroLLM-22B-Instruct on allocine and orange_sum and trails it on include_fr (45.29 against 60.77) and hellaswag_fr (44.14 against 51.98).",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "2f12b6f589e2079b6bece0ce309c9a57a0496b4dcfc8f19f6a812e2964e966b8"
+              },
+              {
+                "url": "https://euroeval.com/leaderboards-csv/european_generative.csv",
+                "shows": "EuroEval European generative leaderboard, per-language rank scores: Luciole-23B-Instruct-1.1 (val) is behind EuroLLM-22B-Instruct-2512 in 23 of the 24 languages both carry, ahead only in Catalan (2.31 against 2.40; German 2.68 against 2.29, Spanish 2.81 against 2.56, Italian 2.45 against 2.26), behind Apertus-v1.5-70B (val) in all 26 shared languages, and ahead of Lucie-7B-Instruct-v1.1 (val) in all six it carries. Luciole-23B-Base (val) is behind EuroLLM-22B-2512 in all 28 shared languages.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "a30b5793883298f63d550f1cb705dce37b2cd6156d16545d64518bd4575be622"
+              },
+              {
+                "url": "https://euroeval.com/leaderboards-csv/english_generative.csv",
+                "shows": "EuroEval English generative leaderboard, Rank score column: Luciole-23B-Instruct-1.1 (val) \"1.95 ± 0.05\" against EuroLLM-22B-Instruct-2512 \"1.80 ± 0.06\", Llama-3.1-8B-Instruct \"1.77 ± 0.02\", Apertus-v1.5-70B (val) \"1.61 ± 0.03\" and Mistral-Small-3.2-24B-Instruct-2506 \"1.52 ± 0.02\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "99189cde5c4e81dfdab0b7760ca2990d399374392c937387532695d090f10a8e"
+              },
+              {
+                "url": "https://euroeval.com/assets/methodology-BPLMG-7o.js",
+                "shows": "EuroEval methodology page source: \"The best model on a dataset therefore scores exactly **1**, and every other model scores **1 plus the number of pooled standard deviations it sits behind the leader**\"; the Rank column is \"a *dense* ordinal ranking\" after \"sorting the models by overall mean rank score (lower is better)\".",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "ed7b9c2e9f71693ed0538dc2be4b868b366233e8bd658c42999ffcf096ae9a1a"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models",
+                "shows": "Artificial Analysis models listing, searched for Luciole, OpenLLM-France and Linagora: none. EuroLLM is not listed either; Apertus 70B Instruct and Apertus 8B Instruct are.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "ab9d22621fc39d729612f2dfa9998594728520013f78da8f5868caef74ea7556"
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=OpenLLM-France&search=Luciole&limit=100",
+                "shows": "Hugging Face listing of OpenLLM-France models matching Luciole: besides the 1B, 8B and 23B Base and Instruct-1.1 checkpoints, \"OpenLLM-France/Luciole-23B-Thinking-1.1\", \"OpenLLM-France/Luciole-8B-KD-Math-Thinking-1.1\", \"OpenLLM-France/Luciole-8B-KD-Math-Base\" and Audio-1.0 models at 1B, 8B and 23B.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "ecd9b0d39a894f201c34c72a3c732506b952b947b8dc0ccbc448540d850342d9"
               }
             ]
           },
@@ -2742,20 +2805,20 @@
           "maturity": 1.7,
           "mature": false,
           "freshness": {
-            "date": "2026-11-08",
+            "date": "2026-11-12",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-11-12",
             "unconfirmed_axes": [
-              "capability"
+              "adoption"
             ],
             "verification_holds": [
               {
-                "axis": "capability",
-                "since": "2026-09-29",
-                "reason": "Luciole-23B-Base's card charts it against EuroLLM-22B-2512 base on one harness: about even in English (averaged normalized score about 49 against 48, where EuroLLM-22B's TriviaQA result is implausibly low) and about 8 points ahead in French (about 42 against 34). A base-model comparison alone does not establish parity between the two families, so luciole stays 2 (R-2026-11-12-n), and whether the French advantage supports 3 is left to a targeted review. No published table places Luciole beside Apertus or a Llama model. Settled by that review, or by a comparison of the current releases on one suite."
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "The declared checkpoints were reconciled on 2026-11-12 to add the Luciole-23B-Thinking-1.1 reasoning model and the two 8B KD-Math models. The nine sum to 9,294 trailing-30-day Hugging Face downloads, the same <10K level as recorded, but a hand-read sets a level and earns no date. The axis waits for the first scheduled reconciliation that measures the same level on the declared set. That run's re-dating PR dates the axis and releases this hold."
               }
             ]
-          }
+          },
+          "version_note": "The reasoning and math models are post-trained or distilled from the Luciole bases and are read as part of the family. The Luciole Audio models, speech-input versions of the instruct models built with NVIDIA's Parakeet encoder, are a separate line and are not declared here, and the 1B ablation checkpoints are research artifacts."
         },
         {
           "slug": "olmo",
@@ -3889,9 +3952,9 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "reasoning/multilingual",
-            "value": "Outperforms Llama-3.2-3B and Qwen2.5-3B; competitive with 4B Qwen3/Gemma3",
-            "confidence": "high",
-            "note": "SmolLM3-3B outperforms Llama-3.2-3B and Qwen2.5-3B and stays competitive with the larger 4B Qwen3 and Gemma 3. That comparison is against other small models rather than the broader frontier.",
+            "value": "Outperforms Llama-3.2-3B and Qwen2.5-3B; competitive with 4B Qwen3/Gemma3. Apertus report, one harness, post-trained averages (knowledge / coding and math / reasoning / held-out): SmolLM3-3B 54.4 / 58.5 / 59.9 / 49.2, Apertus-70B-Instruct 63.4 / 54.4 / 61.8 / 51.4, EuroLLM-22B-Instruct-Preview 58.3 / 53.0 / 58.8 / 50.2, Llama-3.1-8B-Instruct 59.2 / 60.0 / 63.9 / 50.3.",
+            "confidence": "medium",
+            "note": "SmolLM3-3B outperforms Llama-3.2-3B and Qwen2.5-3B and stays competitive with the larger 4B Qwen3 and Gemma 3, with a reasoning mode, tool calling and a 128K context. In the Apertus report's shared evaluation of instruction-tuned models it lands close to Apertus-70B, a preview of EuroLLM-22B and Llama 3.1 8B, ahead of Apertus on coding and math and behind all three on knowledge recall. As a base model it trails those larger models on knowledge, as a 3B model would.",
             "last_verified": "2026-11-12",
             "sources": [
               {
@@ -3899,14 +3962,28 @@
                 "shows": "The release post states \"Our 3B model outperforms Llama-3.2-3B and Qwen2.5-3B while staying competitive with larger 4B alternatives (Qwen3 & Gemma3)\".",
                 "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "15fb578fa813e8391bacce55d33602a320cafce36e9e1fa80d900715f529e3b1"
+                "content_sha256": "b5cfa086bfd8654d9a78ca37154aa3d011c243b7728242efd5ec1a8b2b717d2d"
               },
               {
                 "url": "https://huggingface.co/api/models?author=HuggingFaceTB&sort=createdAt&direction=-1&limit=30",
                 "shows": "The Hub listing of HuggingFaceTB models sorted by creation date shows no newer SmolLM text flagship after \"HuggingFaceTB/SmolLM3-3B-checkpoints\"; later entries are small experiments such as \"HuggingFaceTB/nanowhale-100m-base\" and \"HuggingFaceTB/SmolLM3-3B-GSM8K-SFT\".",
                 "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "12695b97163ebc7e7fca1feaf3c0c6e710a342f9ac16bcee77d05dd7b5010029"
+                "content_sha256": "34d8c8dc0814b25b7a68a0187ecf0541e71035cf5c03e996919b9e828ff1985a"
+              },
+              {
+                "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B/raw/main/README.md",
+                "shows": "Model card, extended-thinking table: \"| High school math competition | AIME 2025 | <u>36.7</u> | 30.7 | **58.8** |\" and \"| Graduate-level reasoning | GPQA Diamond | <u>41.7</u> | 39.9 | **55.3** |\" (SmolLM3-3B, Qwen3-1.7B, Qwen3-4B). Every comparison on the card is against 1.7B-4B models (Qwen2.5-3B, Llama 3.2 3B, Qwen3-1.7B, Qwen3-4B), and Qwen3-4B leads SmolLM3 on most rows.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "24f16f90b883af3618425a589783a944356a7fc2e3cfa69b579c9ff06963e178"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2509.14233",
+                "shows": "Apertus technical report, one lm-evaluation-harness setup for every model. Post-trained averages, tables 17 (knowledge), 18 (coding and math), 19 (reasoning and instruction following) and 21 (held-out tests): SmolLM3-3B 54.4, 58.5, 59.9, 49.2; Apertus-70B-Instruct 63.4, 54.4, 61.8, 51.4; EuroLLM-22B-Instruct-Preview 58.3, 53.0, 58.8, 50.2; Llama-3.1-8B-Instruct 59.2, 60.0, 63.9, 50.3. Table 21 GPQA Main: SmolLM3-3B 34.2, Apertus-70B-Instruct 30.6, Llama-3.1-8B-Instruct 28.3. Base models, tables 14 and 15: SmolLM3-3B 61.6 and 49.7 against Apertus-70B 67.5 and 58.9, Llama3.1-8B 65.4 and 53.2, EuroLLM-9B 62.8 and 47.7.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f"
               }
             ]
           },
@@ -4937,7 +5014,7 @@
           "org_slug": "openbmb",
           "org": "OpenBMB",
           "type": "model",
-          "description": "OpenBMB's on-device model family, spanning MiniCPM3-4B through the MiniCPM4/4.1 8B hybrid-reasoning generation to the current MiniCPM5-1B. The line pairs small dense models with efficiency research — trainable sparse attention (InfLLM-V2), quantized end-side inference — to run capable models on phones and edge hardware.",
+          "description": "OpenBMB's on-device model family, spanning MiniCPM3-4B through the MiniCPM4/4.1 8B hybrid-reasoning generation to the current MiniCPM5 models at 1B and 2B. The line pairs small dense models with efficiency research, such as trainable sparse attention (InfLLM-V2) and quantized end-side inference, to run capable models on phones and edge hardware.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -4987,61 +5064,52 @@
             "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is measured as Hugging Face downloads summed across the four declared checkpoints spanning MiniCPM3 through the current MiniCPM5 generation. MiniCPM5-1B, the newest release, accounts for most of that total.",
-            "last_verified": "2026-11-08",
+            "note": "Adoption is measured as Hugging Face downloads summed across the declared checkpoints from MiniCPM3 through the current MiniCPM5 generation. MiniCPM5-2B, the newest release, accounts for most of that total.",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/openbmb/MiniCPM5-1B",
-                "shows": "810,294 downloads in the trailing 30 days for openbmb/MiniCPM5-1B",
-                "accessed": "2026-09-01",
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM5-2B",
+                "shows": "The model API reports downloads of 1,039,518 in the trailing 30 days for openbmb/MiniCPM5-2B.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "ac06ef813bdae2747f76d01489ad1445ecdcf2d02016ff89c62e889701d22cab"
+                "content_sha256": "54206081ba8d4a36ea975c2a4b497efb15a5d3da34e8046e9c9adb57c28b2d2e"
+              },
+              {
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM5-1B",
+                "shows": "The model API reports downloads of 234,080 in the trailing 30 days for openbmb/MiniCPM5-1B.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "34229cd1a663dd55e60f6bd991f87aa7cdf2d16808b2ffaa82ad1712505003cc"
               },
               {
                 "url": "https://huggingface.co/api/models/openbmb/MiniCPM4.1-8B",
-                "shows": "47,819 downloads in the trailing 30 days for openbmb/MiniCPM4.1-8B",
-                "accessed": "2026-09-01",
+                "shows": "The model API reports downloads of 5,954 in the trailing 30 days for openbmb/MiniCPM4.1-8B.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "cef4894b46101893356acfdc749a514c51d2f1a755c73d28b56932001a20189b"
+                "content_sha256": "8a4377949898c30cf7fbc36fc7f5a0270df964e2d347c049197bef90a256a022"
               },
               {
                 "url": "https://huggingface.co/api/models/openbmb/MiniCPM4-8B",
-                "shows": "37,939 downloads in the trailing 30 days for openbmb/MiniCPM4-8B",
-                "accessed": "2026-09-01",
+                "shows": "The model API reports downloads of 7,690 in the trailing 30 days for openbmb/MiniCPM4-8B.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "8581326a75b8090e27493eb57cef366a53a913653d05f5c2ad970ff3883aa75a"
+                "content_sha256": "98e406f006371ec0097f76f2fd2b4cef0c8f064e5266b5a757cd098feaee5dbb"
               },
               {
                 "url": "https://huggingface.co/api/models/openbmb/MiniCPM3-4B",
-                "shows": "26,614 downloads in the trailing 30 days for openbmb/MiniCPM3-4B",
-                "accessed": "2026-09-01",
+                "shows": "The model API reports downloads of 10,405 in the trailing 30 days for openbmb/MiniCPM3-4B.",
+                "accessed": "2026-11-12",
                 "http_status": 200,
-                "content_sha256": "c18404960e900764ba867cc267ba3b7f2cfba3e56da232f93e7275001eb3a945"
+                "content_sha256": "dd3ac4f7812d880631ffd634dbaa1c9f06447acd24d5f5ae58aa69de082620bc"
               }
             ]
           },
           "capability": {
             "score": 3,
             "basis": "benchmark",
-            "basis_detail": "small-model suites (card comparisons vs similar-size Qwen3/Gemma)",
-            "value": "MiniCPM4.1-8B is a hybrid reasoning model the card benchmarks against similar-size peers (Qwen3-8B class); the line's claim is best-in-class capability per parameter on device, not frontier capability.",
-            "relative_to": "smollm",
-            "relation": "at",
+            "basis_detail": "small-model suites on the MiniCPM4.1-8B and MiniCPM5-2B cards",
+            "value": "MiniCPM4.1-8B is a hybrid reasoning model its card benchmarks against Qwen3-8B-class peers. The MiniCPM5-2B card (September 2026) compares it with 2B-class models and lists larger ones beside them: average 53.9 against 42.7 for granite-4.2-3B, GPQA Diamond 70.2 against 55.9. Artificial Analysis Intelligence Index v5.0.1 has no MiniCPM5-2B score, and no published table compares MiniCPM5-2B with MiniCPM4.1-8B.",
             "confidence": "medium",
-            "note": "MiniCPM is competitive with same-size Qwen3 and Gemma checkpoints and is unusually efficient at long context via sparse attention, but the ceiling is the size class itself, well below the category's open-weight frontier. It is level with Smollm, the category's other small-model line, which makes the same claim: outperforming same-size peers while competitive one size up.",
-            "comparison": {
-              "last_attested": "2026-11-12",
-              "sources": [
-                {
-                  "url": "https://huggingface.co/blog/smollm3",
-                  "shows": "The SmolLM3 post still says \"Our 3B model outperforms Llama-3.2-3B and Qwen2.5-3B while staying competitive with larger 4B alternatives\". MiniCPM 4.1 makes the same kind of claim at 8B, as \"a hybrid reasoning model\" benchmarked against same-size peers: small models that lead their size class, which keeps the two level.",
-                  "accessed": "2026-11-12",
-                  "http_status": 200,
-                  "content_sha256": "86d005b9630216a8020593df04dc77f34b81e592a0fd1482787ff69a13c5a7a4"
-                }
-              ]
-            },
-            "last_verified": "2026-11-12",
+            "note": "MiniCPM's 8B hybrid-reasoning model and its newer 2B model each lead same-size open models on their own cards, and the 2B model stays competitive with 4B-class models, with its strongest results in coding, math and tool use. Neither card compares the two releases, and no independent index scores either, so which one sets the family's capability is not yet established. Neither release has demonstrated broad frontier parity on comparable evaluations.",
             "sources": [
               {
                 "url": "https://huggingface.co/openbmb/MiniCPM4.1-8B/raw/main/README.md",
@@ -5049,6 +5117,13 @@
                 "accessed": "2026-11-12",
                 "http_status": 200,
                 "content_sha256": "9be2cdf7cdc40cddd0503972829c51c61c1532960d963e93dbc58aa3467539e5"
+              },
+              {
+                "url": "https://huggingface.co/openbmb/MiniCPM5-2B/raw/main/README.md",
+                "shows": "Card: \"MiniCPM5-2B, the second model in the MiniCPM5 series\", \"reaching 2B-class open-source SOTA\" and \"competitive with 4B-class models overall\"; its comparison table lists granite-4.2-3B among the larger models, with MiniCPM5-2B averaging 53.9 against 42.7 and GPQA Diamond 70.2 against 55.9. It does not compare against MiniCPM4.1-8B.",
+                "accessed": "2026-11-12",
+                "http_status": 200,
+                "content_sha256": "59e93770502358d56b30b8e2ef7e744cf7fc91bfb923c7c787876defac35cdbe"
               }
             ]
           },
@@ -5058,13 +5133,24 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-11-08",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-12",
+            "date": "2026-11-13",
+            "basis": "commit",
             "unconfirmed_axes": [
+              "adoption",
+              "capability",
               "openness"
             ],
             "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-12",
+                "reason": "MiniCPM5-2B joined the declared checkpoints on 2026-11-12. The five now sum to 1,297,647 trailing-30-day Hugging Face downloads (MiniCPM5-2B alone 1,039,518), which is in the 1M-10M range against the recorded 100K-1M. The level is not moved here: a hand-read sets a level but earns no date, and the review that declared the checkpoint was asked to move no scores. The axis waits for the first scheduled reconciliation to measure the declared set."
+              },
+              {
+                "axis": "capability",
+                "since": "2026-11-12",
+                "reason": "The comparison relative_to smollm was removed on 2026-11-12: it set two vendors' size-class claims side by side, and no table compares the two families. MiniCPM5-2B, the current release, is now declared beside MiniCPM4.1-8B, but neither card compares the two and Artificial Analysis Intelligence Index v5.0.1 scores neither, so the strongest eligible release is not yet identified. The score is kept at 3 provisionally. Settled by comparable evidence across the two releases, or a same-suite comparison with a category peer."
+              },
               {
                 "axis": "openness",
                 "since": "2026-10-07",
@@ -173290,9 +173376,9 @@
     }
   },
   "n_total": 1269,
-  "generated": "2026-11-12",
-  "version": "0.5.0",
-  "released": "2026-10-03",
+  "generated": "2026-11-13",
+  "version": "0.6.0",
+  "released": "2026-11-12",
   "contract": 2,
   "long_tail": {
     "counts": {
