@@ -419,7 +419,10 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 16 -> 6 on 2026-11-12: the long-tail promotion pass (#1018) added ten products whose weights
     # license no tier named, and R-2026-11-12-f tiered all nine licenses in the same PR, so every one of
     # them computes and the count returns to atlas-data plus the five datacenter_accelerators rows.
-    assert len(deferred) == 6
+    # 6 -> 7 on 2026-11-13: R-2026-11-13-d removed `CommonCrawl-ToU` from the dataset ladder's
+    # open_data examples, so redpajama-data-v2, whose data carries only Common Crawl's terms, maps to
+    # no tier and training_synthetic_datasets defers it while its openness is held.
+    assert len(deferred) == 7
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
