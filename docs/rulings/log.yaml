@@ -4052,3 +4052,35 @@ rulings:
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1029', 'https://github.com/currentai-org/os-ai-map/pull/1030',
       'https://github.com/currentai-org/os-ai-map/pull/1031', 'https://github.com/currentai-org/os-ai-map/pull/1032',
       'https://github.com/currentai-org/os-ai-map/pull/1033']
+
+  - id: R-2026-11-13-a
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1022", "#1036", R-2026-11-12-l, R-2026-11-12-n, base_pretrained]
+    question: >-
+      The Artificial Analysis index cannot place base_pretrained's boundary between capability 3 and 4: no settled 3
+      has a v5.0.1 score, and the one settled comparison that crosses the boundary reads base checkpoints while one
+      side's band is set by a reasoning release (brief #1036). How should capability bands be placed against peers
+      until the bands are calibrated?
+    ruling: >-
+      Adopt the method in docs/briefs/2026-11-12-capability-3-4-boundary.md as revised in review. A family is scored on
+      its strongest eligible release, not necessarily its newest, with eligibility settled on the product record first.
+      Comparisons prefer releases at the same training stage; cross-stage evidence can support a judgment but cannot by
+      itself establish parity, and a missing release type is neither penalized nor assumed. A band moves on sufficient,
+      reproducible evidence across the capabilities that matter, judged on independence, comparability, breadth and
+      uncertainty, not on a fixed count of benchmark families; results sharing one evaluation method count as one line
+      of evidence. Language capability counts only where measured, and listed language counts are metadata. Reference
+      models are provisional examples rather than thresholds: mistral-large on the index for 4, phi for 3 on
+      post-trained suites; the olmo-base and marin pair is for analysis only, and low-confidence vendor-placed 4s are
+      not references. Capability confidence describes the band, not the precision of the evidence, and this stays a
+      rule for setting the field rather than a schema change. The bands stay NOT YET CALIBRATED until the method has
+      settled several boundary cases, and every tier change still goes to the maintainer with its evidence first. The
+      held products are re-read in this order: gemma and inkling, then llama, apertus, eurollm and granite.
+    reasoning: >-
+      Capability describes what a family can do, while matching release types keeps individual comparisons valid. A
+      methodology ruling must not masquerade as completed calibration.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/base_pretrained.yaml, docs/briefs/2026-11-12-capability-3-4-boundary.md]
+    applied_in: []

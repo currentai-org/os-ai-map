@@ -81,12 +81,35 @@ scoring_recipe:
         evidence of long-context capability. Version 5 of the index no longer
         includes it in the composite, so it is cited beside the index rather than
         as part of it, and it never sets or moves the composite band on its own.
+    comparison_method: >
+      How a capability band is placed against peers (R-2026-11-13-a; method in
+      docs/briefs/2026-11-12-capability-3-4-boundary.md). A family is scored on its
+      strongest eligible release, not necessarily its newest, and which releases are
+      eligible is settled on the product record before any comparison is read.
+      Comparisons prefer releases at the same training stage (base with base,
+      instruct with instruct, reasoning with reasoning); a cross-stage comparison
+      can support a judgment but cannot by itself establish parity, and a family is
+      neither penalized for shipping no reasoning release nor assumed to match one.
+      A band moves on evidence that is sufficient and reproducible across the
+      capabilities that matter for the category, judged on independence,
+      comparability, breadth and uncertainty rather than on a count of benchmark
+      families; results that share one evaluation method count as one line of
+      evidence. Language capability counts only where it is measured on the same
+      table, and the number of languages a card lists is metadata. Reference
+      models are provisional examples, not thresholds: mistral-large on the index
+      for 4, and phi for 3 on post-trained suites; the olmo-base and marin pair is
+      for analysis only, and vendor-placed 4s at low confidence are not references.
+      Capability confidence describes the band, not the precision of the evidence
+      under it. Every tier change still goes to the maintainer with its evidence
+      before it is committed.
     bands: null
     bands_status: >
-      NOT YET CALIBRATED. The 1-5 thresholds must be fitted against the Artificial
-      Analysis index using the 47 existing capability scores, which is a separate
-      step from this rubric. Until fitted, capability stays hand-authored and the
-      layer-2 scorer must not write it.
+      NOT YET CALIBRATED. The Artificial Analysis index cannot yet place the
+      boundary between 3 and 4 on its own: no product settled at 3 has a v5.0.1
+      score. Bands are placed by comparison under comparison_method, and the
+      calibration is declared only once that method has settled several boundary
+      cases. Until then capability stays hand-authored and the layer-2 scorer must
+      not write it.
 
   # Confidence stops being a per-file judgment call and becomes derived.
   confidence_rule:
