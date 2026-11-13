@@ -107,94 +107,142 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: Adoption is measured as Hugging Face downloads summed across the shipped checkpoints, the BF16 release
-    and its NVFP4 quantization, so the family total is used rather than the headline repository alone.
-  last_verified: '2026-11-08'
-  derived_from:
-    observation_snapshot_id: d16c5435f7d3e101bf6430dcfe978d1bf623c8d0a130082636c90f19d5c74f06
-    source_run_id: 0fe7a437-266f-46f5-8950-81c9d83aef8f
-    route_id: huggingface_model.downloads_30d
-    measured_level: 4
-    measurement_as_of: '2026-11-08'
+  note: 'Adoption is measured as Hugging Face downloads summed across every first-party checkpoint of both
+    generations: Inkling, Inkling-Small and Inkling 2 Small, with the NVFP4 and MXFP8 builds Thinking Machines
+    publishes beside them, so the family total is used rather than the headline repository alone. Third-party
+    quantizations are not counted.'
   sources:
   - url: https://huggingface.co/api/models/thinkingmachines/Inkling
-    shows: 1,642,037 downloads in the trailing 30 days for thinkingmachines/Inkling
-    accessed: '2026-11-12'
+    shows: 1,539,868 downloads in the trailing 30 days for thinkingmachines/Inkling
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 83c92d1427bede0b7d2aafbbb0017efa9d744898d51fbd81ef833fcf889b7adf
+    content_sha256: d530610c5b99b27579c498fc11cd1eac98558eefc04f1c260d550a8c0ffb3348
   - url: https://huggingface.co/api/models/thinkingmachines/Inkling-NVFP4
-    shows: 34,393 downloads in the trailing 30 days for thinkingmachines/Inkling-NVFP4
-    accessed: '2026-11-12'
+    shows: 30,692 downloads in the trailing 30 days for thinkingmachines/Inkling-NVFP4
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: b59896039892315aefbc3d9952490de5b15a18ad26374c51893142a6660ffe7c
+    content_sha256: 0e3d74baf36f33c96419a697cf0cefc8dc155dc8bc2797413408985c447451cc
+  - url: https://huggingface.co/api/models/thinkingmachines/Inkling-Small
+    shows: 1,081,331 downloads in the trailing 30 days for thinkingmachines/Inkling-Small
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: c3093af70b0bada2002479ae49f4dff9fdb45f079ea85210e64526d9860a2908
+  - url: https://huggingface.co/api/models/thinkingmachines/Inkling-Small-NVFP4
+    shows: 319,410 downloads in the trailing 30 days for thinkingmachines/Inkling-Small-NVFP4
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 16afeafc5cc6cc23a0e9cdfc12e01a21d85d47d2048a418c39e8b83b336a2a8a
+  - url: https://huggingface.co/api/models/thinkingmachines/Inkling-2-Small
+    shows: 1,064 downloads in the trailing 30 days for thinkingmachines/Inkling-2-Small
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: dc60f027106409b8828353f3cdc1519b36a9f4d7d1fbaf92bfdef6a1ef1be198
+  - url: https://huggingface.co/api/models/thinkingmachines/Inkling-2-Small-MXFP8
+    shows: 221 downloads in the trailing 30 days for thinkingmachines/Inkling-2-Small-MXFP8
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 44bc37576517104bc0f98a4eec8b35b340a137bed933b056b69fa38a51e0d720
 capability:
   score: 4
   basis: benchmark
-  basis_detail: SWE-bench/GPQA/AIME
+  basis_detail: Artificial Analysis Intelligence Index v5.0.1; Vals Index v2.2; APEX-Agents; LMArena
   relative_to: kimi
   relation: one_below
-  value: 'SWE-bench Verified 77.6%; SWE-bench Pro 54.3%; GPQA Diamond 87.2%; AIME 2026 97.1% (effort=0.99).
-    Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Inkling (Xhigh reasoning effort) 12,
-    24th of 27 large open-weight models (class median 23); Inkling Small 13, 22nd of 27. Read on the same
-    version and date: Mistral Large 4 (High) 26, ahead of Inkling on all nine index evaluations; DeepSeek
-    V4 Pro 0813 (Max) 23, ahead on seven; Kimi K3.1 Pro 46, ahead on all nine.'
+  value: 'Artificial Analysis Intelligence Index v5.0.1, read 2026-11-13: Inkling 2 Small 30.6, fourth among
+    open-weight models; Inkling (Xhigh) 12.5; Inkling Small 12.9. Same version: Kimi K3.1 Pro 46.5, DeepSeek
+    V4.1 Flash 1017 (Max) 32.6, GLM-5.3 (Max) 31.7, MiMo-V2.6-Pro 29.9, MiniMax-M3.1-Flash 29.1, Mistral
+    Large 4 (High) 26.1; Inkling 2 Small leads Mistral Large 4 on seven of nine index evaluations and trails
+    it on AutomationBench-AA and Terminal-Bench 4.0. Vals Index v2.2: Inkling 2 Small 56.08%, Mistral Large
+    4 56.53%, MiniMax-M3.1-Flash 53.78%, MiMo V2.6 Pro 57.81%. APEX-Agents pass@1: Inkling 2 Small 46.8%,
+    Mistral Large 4 51.6%, MiMo V2.6 Pro 54.4%. LMArena, 2026-11-11 snapshot: text 1402.6 against Mistral
+    Large 4 1411.3 and MiMo-V2.6-Pro 1491.6; WebDev 1647.1 against 1564.5 and 1625.0.'
   confidence: high
-  note: 'On its own evaluation table Inkling beats Nemotron 3 Ultra on SWE-bench Verified (77.6 vs 70.7)
-    but trails Kimi K2.6 (80.2) and DeepSeek-V4-Pro (80.6), and Thinking Machines'' launch post says Inkling
-    is not the strongest overall model available, open or closed. Artificial Analysis''s independent index
-    places it lower: on version 5.0.1 Inkling scores 12 and Inkling Small 13, against 23 for DeepSeek V4
-    Pro and 26 for Mistral Large 4, which leads Inkling on every evaluation in the index, most widely on
-    the agentic tasks.'
+  note: 'Inkling 2 Small, the second generation, is far stronger than the first. Artificial Analysis''s
+    independent index scores it 31 against 12 for Inkling and 13 for Inkling Small, fourth among open-weight
+    models and ahead of Mistral Large 4 on seven of nine evaluations, though behind it on the agentic automation
+    and terminal tasks. Other independent tests place it lower: it finishes just behind Mistral Large 4
+    on the Vals Index and behind it on Mercor''s APEX-Agents, and on LMArena it trails the strongest open
+    models in text chat while matching them in web development and agent tasks.'
   sources:
-  - url: https://huggingface.co/thinkingmachines/Inkling
-    shows: Hugging Face model page carrying the vendor evaluation table, "Inkling results are reported at
-      effort=0.99", with Inkling at SWE-bench Verified 77.6, SWE-bench Pro 54.3, GPQA Diamond 87.2 and AIME
-      2026 97.1 against Nemotron 3 Ultra, Kimi K2.5, Kimi K2.6, GLM 5.2, DeepSeek V4 Pro and closed peers.
-    accessed: '2026-11-12'
+  - url: https://huggingface.co/thinkingmachines/Inkling-2-Small/raw/main/README.md
+    shows: Vendor card for the second generation, "594B total, 17B active", with an evaluation table listing
+      "AA Index (v5.0)" 30.6 and "Vals Index (v2.2)" 56.1% for Inkling 2 Small beside Mistral Large 4 26.1
+      and 56.5%, MiMo V2.6 Pro 29.9 and 57.8%, MiniMax-M3.1-Flash 29.1 and 53.8%, GLM 5.3 31.7 and 59.7%,
+      and DeepSeek-V4.1-Flash-1017 32.6 and 61.3%.
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: fb0744ec687ea75226bd068c9f46ab0d192f204d796549cf7a1de25c670b145d
-  - url: https://thinkingmachines.ai/model-card/inkling/
-    shows: Vendor model card evaluation table (Inkling at effort=0.99) with a footnoted row, "Read the SWEBench
-      Verified evaluation note", listing SWEBench Verified 77.6% for Inkling beside 70.7% for Nemotron 3
-      Ultra, 80.2% for Kimi K2.6 and 80.6% for DeepSeek V4 Pro.
-    accessed: '2026-11-12'
+    content_sha256: 5d798d54520d9d105ed14ac16726a3ed5f14f17dbca71f326c8b0d68df7cae12
+  - url: https://thinkingmachines.ai/news/inkling-2-small/
+    shows: 'Launch post: "Today we are introducing our second model generation with Inkling 2 Small", first
+      "available through Tinker, with closed weights", then a Nov 12 update, "Inkling 2 Small''s weights
+      are now available for download on HuggingFace". Training ended in "a joint RL run", and "All evals
+      run at effort 0.99 (xhigh)".'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 0004485e28626bb2680eb6cef9f9cf6e095861f1e602d6997cf6e7c2648bdaf4
-  - url: https://thinkingmachines.ai/news/introducing-inkling/
-    shows: Launch post stating "Inkling is not the strongest overall model available today, open or closed"
-      and that it "scores well among open-weights models on most agentic benchmarks".
-    accessed: '2026-11-12'
+    content_sha256: 51ca50c285a657b65911e80ae3a3aae56f75222b999ec711e7ce6611a9d4c259
+  - url: https://artificialanalysis.ai/models/inkling-2-small
+    shows: 'Index v5.0.1 page: "Inkling 2 Small scores 31 on the Artificial Analysis Intelligence Index,
+      placing it well above average among other open weight models of similar size (median: 24)."'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 6f1296e60d07d6e6dd96a74be237f3d1ab4e8057a2adcd00d6f2df4bc0de272b
-  - url: https://huggingface.co/moonshotai/Kimi-K3/raw/main/README.md
-    shows: Peer check - Moonshot Kimi K3 card, "Kimi K3 is an open-weight, native multimodal agentic model",
-      with an evaluation table set against Claude Fable 5 and GPT-5.6 Sol; notes say "Kimi K3 is evaluated
-      with the Kimi Code harness".
-    accessed: '2026-11-12'
-    http_status: 200
-    content_sha256: 57de265b5842dfa465c6e73b368b0e15a89b8793b5450528dad577da202cc6fe
-  - url: https://artificialanalysis.ai/models/inkling
-    shows: 'Artificial Analysis page on Intelligence Index v5.0.1: "Inkling (Xhigh) scores 12 on the Artificial
-      Analysis Intelligence Index, placing it at the lower end among comparable models (median: 23)", ranked
-      "# 24 / 27" among open weights models of similar size (Large: over 150B parameters).'
-    accessed: '2026-11-12'
-    http_status: 200
-    content_sha256: a996db766e10ba559d30b8615a69fa1748888196cc6bd989cf09b4392be3e4e0
-  - url: https://artificialanalysis.ai/models/inkling-small
-    shows: 'Index v5.0.1 page for the Small sibling folded into this record: "Inkling Small scores 13 on
-      the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median:
-      23)", ranked "# 22 / 27" among open weights models of the same size class (Large, over 150B parameters).'
-    accessed: '2026-11-12'
-    http_status: 200
-    content_sha256: 47c57bc8797e5d988b0d9f9ff5fa7858f0c051a1d06be0fadd887a53b0de5f07
+    content_sha256: e7590371c2aef64b62d2cf2f50e30b6173cd2c41e31313e7ae3cbe85eaa41a67
   - url: https://artificialanalysis.ai/leaderboards/models
     shows: 'Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations
       (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf,
-      HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Inkling (Xhigh) 12.48 (833.0, 5.0%,
-      1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Inkling Small 12.91 (912.6, 4.8%, 1.0%, 4.8%, -9.5,
-      11.2%, 12.1%, 18.5%, 0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%,
-      17.3%, 27.0%, 4.3%); DeepSeek V4 Pro 0813 (Max) 23.06 (1253.2, 56.7%, 14.1%, 17.1%, -6.4, 11.4%, 19.5%,
-      23.5%, 5.7%); Kimi K3.1 Pro 46.45 (1673.6, 73.3%, 67.2%, 25.5%, 29.9, 31.4%, 37.3%, 49.5%, 34.3%).'
-    accessed: '2026-11-12'
+      HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science), all flagged reasoning and open weights:
+      Inkling 2 Small 30.63 (1526.9, 45.6%, 13.1%, 25.4%, 16.1, 25.2%, 28.7%, 35.0%, 5.7%); Kimi K3.1 Pro
+      46.45 (1674.6, 73.3%, 67.2%, 25.5%, 29.9, 31.4%, 37.3%, 49.5%, 34.3%); DeepSeek V4.1 Flash 1017 (Max)
+      32.59 (1570.4, 66.6%, 33.8%, 28.5%, 0.9, 17.2%, 25.3%, 25.0%, 12.9%); GLM-5.3 (Max) 31.65 (1502.8,
+      62.2%, 41.9%, 21.6%, 6.0, 11.2%, 17.9%, 33.5%, 9.5%); MiMo-V2.6-Pro 29.89 (1511.7, 58.6%, 34.8%, 24.0%,
+      -4.5, 19.2%, 15.2%, 34.0%, 5.7%); MiniMax-M3.1-Flash 29.06 (1474.3, 72.5%, 25.8%, 20.8%, -6.4, 20.8%,
+      28.1%, 32.5%, 3.3%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%,
+      27.0%, 4.3%); Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%, 0.0%); Inkling
+      Small 12.91 (912.6, 4.8%, 1.0%, 4.8%, -9.5, 11.2%, 12.1%, 18.5%, 0.0%).'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c
+    content_sha256: 4e02c1ae7663faaf2b4b885a3aa3aec68e7d349b109b11f58b12df47cdf007b1
+  - url: https://www.vals.ai/benchmarks/vals_index
+    shows: 'Vals Index, Version 2.2, which "aggregates six private and two public benchmarks": "Inkling
+      2 Small: 56.08% on Nov ''26" and "Mistral Large 4: 56.53% on Oct ''26"; Kimi K3.1 Pro 62.52, DeepSeek
+      V4.1 Flash 1017 61.26, GLM 5.3 59.85, MiMo V2.6 Pro 57.81, MiniMax-M3.1-Flash 53.78, Inkling 28.96,
+      Inkling Small 27.59.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: c15e3718bd8d0b824ffa39772d4057dc4b4c520e80c3a232a7f0180d21ee1daa
+  - url: https://epoch.ai/data/benchmark_data.zip
+    shows: 'Epoch AI benchmarking hub export (CC-BY-4.0). apex_agents_external.csv, APEX-Agents pass@1 with
+      standard error: Inkling 2 Small 0.468 (5.1), Mistral Large 4 0.516 (5.2), MiMo V2.6 Pro 0.544, GLM-5.3
+      0.566, Kimi K3.1 Pro 0.655, DeepSeek-V4.1-Flash-1017 0.698, Inkling 0.338; no MiniMax-M3.1-Flash row.
+      arc_agi_2_external.csv: Inkling 2 Small (XHigh) 0.817, DeepSeek V4.1 Flash 1017 (Max) 0.781, Kimi
+      K3 (Max) 0.604, with no row for Kimi K3.1 Pro, GLM-5.3, MiMo-V2.6-Pro, MiniMax-M3.1-Flash or Mistral
+      Large 4. epoch_capabilities_index/eci_scores.csv has no Inkling 2 Small row; Mistral Large 4 154.62,
+      GLM-5.3 157.1, DeepSeek V4.1 Flash 1017 159.41, Kimi K3.1 Pro 161.37, Inkling-Small 150.75, Inkling
+      148.39.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 9f91074a0f63cb789c0c1ced73e9497d5d1dcd57da58d53052c2ba4fe6e4f695
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text/latest-00000-of-00001.parquet
+    shows: 'LMArena leaderboard dataset (CC-BY-4.0), text leaderboard, category "overall", 2026-11-11 snapshot
+      of 421 models: "Inkling 2 Small" 1402.6 (interval 1390.9-1414.4, 2,669 votes), rank 153; Mistral Large
+      4 1411.3 (141); MiMo-V2.6-Pro 1491.6 (14); GLM-5.3 (Max) 1474.9 (26); Kimi K3.1 Pro (Max) 1459.1 (43);
+      Inkling 1443.0 (71); Inkling-Small 1414.2 (136). DeepSeek V4.1 Flash 1017 and MiniMax-M3.1-Flash are
+      not listed.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 928462c23d9e51ea1581e3e6063f5e280834782a0cb943f6922bf3322f06ea16
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/webdev/latest-00000-of-00001.parquet
+    shows: 'LMArena WebDev leaderboard, category "overall", 2026-11-11 snapshot of 156 models: "Inkling
+      2 Small" 1647.1 (interval 1627.6-1666.5, 990 votes), rank 23; Kimi K3.1 Pro (Max) 1687.2 (12); DeepSeek-V4.1-Flash-20261017
+      (Max) 1663.7 (18); MiMo-V2.6-Pro 1625.0 (28); GLM-5.3 (Max) 1622.5 (30); MiniMax-M3.1-Flash 1583.9
+      (42); Mistral Large 4 1564.5 (48); Inkling 1414.2 (99).'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: e1405727c7d1e840a70fb215e09cbff7efef9bc11359c0797e742291a09441f4
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/agent/latest-00000-of-00001.parquet
+    shows: 'LMArena agent leaderboard, 2026-11-11 snapshot of 59 models: "Inkling 2 Small" score 0.025 (interval
+      0.010-0.040), rank 18; Kimi K3.1 Pro (Max) 0.049 (15); MiMo-V2.6-Pro 0.024 (19); DeepSeek-V4.1-Flash-20261017
+      (Max) 0.020 (22); GLM-5.3 (Max) 0.010 (27); MiniMax-M3.1-Flash -0.027 (38); Mistral Large 4 -0.054
+      (44); Inkling -0.173 (57).'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: e7fc99f6c6bb2f165943e1fda5ecd8ea712e52dad7b853c7be116a307eee0eb3
