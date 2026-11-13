@@ -14,7 +14,7 @@ import yaml
 
 from build.depth_ladder import CATEGORY as DEPTH_CATEGORY, UNRESOLVED_REASONS
 from build.depth_ladder import compute as depth_compute
-from build.check_rubric import components_string
+from build.check_rubric import components_parts, components_string
 from build.taxonomy import arc_grouped_categories
 from build.vocabulary import lineage_relations
 
@@ -498,6 +498,9 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     openness.pop("raw", None)
     if block.get("components"):
         openness["components"] = components_string(block)
+        # The same evidence as a list nobody has to split: the flat string cannot be split
+        # correctly when a detail holds a `;`. An addition, so the contract does not move.
+        openness["components_parts"] = components_parts(block)
     row = {
         "slug": slug,
         "product": prod["display_name"],
