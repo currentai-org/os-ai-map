@@ -4084,3 +4084,31 @@ rulings:
     executor: agent
     lands_in: [sources/categories/base_pretrained.yaml, docs/briefs/2026-11-12-capability-3-4-boundary.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1045']
+
+  - id: R-2026-11-13-b
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1046", luciole, lucie-7b, base_pretrained, pretrained]
+    question: >-
+      The pretrained openness ladder asks only whether a training corpus is released or reconstructible, and its
+      license_tier is the weights license, so no rung reads the corpus's own terms: lucie-7b scores 5/open_source on a
+      corpus released under CC-BY-NC-SA-4.0. Should full data openness require terms that permit open reuse, and how
+      should a mixed or noncommercial corpus be treated?
+    ruling: >-
+      For pretrained models, full `data: open` requires a released or reproducible corpus with terms permitting open
+      reuse, not merely download availability. A wholly noncommercial corpus is `released-restricted` and does not
+      earn full openness. A declared openly licensed compilation with mixed constituent terms requires disclosure and an
+      assessment of whether the restrictions materially affect lawful reuse; do not automatically downgrade for every
+      uncertain or minor constituent. Luciole, a CC-BY-SA-4.0 compilation with a tiny non-commercial Claire subset,
+      provisionally stays 5. Prepare a separate ruling and implementation for Lucie-7B, whose noncommercial corpus moves
+      it from 5 to 4 under this policy, and identify the other pretrained families the change affects before applying
+      it broadly. Keep this policy and the score changes it produces separate from the evidence-only luciole audit
+      (#1046).
+    reasoning: >-
+      A map intended to guide investment in open AI should distinguish published training data from openly reusable
+      training data.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: []
