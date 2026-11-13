@@ -400,6 +400,45 @@ synthetic half is described rather than listed, a two-stage mixture with one sta
 data-preparation documentation in place of a corpus listing. In each the enumeration exists and
 does not cover the corpus.
 
+### A released corpus is open only if its own terms permit open reuse
+
+Ruled in R-2026-11-13-b. For a pretrained model, `data: open` needs a corpus that is
+released or reproducible **and** under terms that permit open reuse, commercial use included.
+Being able to download it is not enough. The pretrained ladder's `license_tier` is the weights
+license, which `multi_sku_rule` resolves over the distributed SKUs, so it never reads the
+corpus's terms. The data dimension has to.
+
+A map meant to guide investment in open AI has to tell published training data apart from
+openly reusable training data. Two cases follow, beside the plain one where the corpus and every
+constituent are under open terms.
+
+- **A corpus that is non-commercial as a whole is `released-restricted`.** The corpus is out and
+  the run can be inspected and rebuilt, but nobody may reuse the data commercially, which the
+  Open Definition requires of open data. `lucie-7b` is the case: the Lucie-Training-Dataset is
+  published and ungated under CC-BY-NC-SA-4.0. Its card says most of its sources carry
+  permissive terms, but the corpus a reuser downloads carries the non-commercial license, and
+  that license is what this case reads. With open code it scores 4/`open_weights`, level
+  with a full release under a non-OSI weights license. Either way the whole pipeline is
+  published, and the terms of one part keep the product out of the `open` bucket.
+- **An openly licensed compilation whose constituents keep mixed terms needs disclosure and a
+  materiality assessment, and it is not downgraded automatically.** A corpus released under,
+  say, CC-BY-SA-4.0 whose card says each source keeps its own terms stays `open` once the record
+  names the restricted or unlicensed constituents and assesses whether they materially affect
+  lawful reuse of the corpus. Materiality weighs three things together: the legal restriction
+  itself, whether a reuser can identify and exclude the affected data, and how much of the
+  corpus it covers. Share alone does not decide it, because a small restriction that cannot be
+  separated from the rest still prevents lawful reuse of the whole. A small or uncertain
+  constituent that can be identified and excluded, such as a non-commercial dialogue subset at
+  a hundredth of a percent of the bytes or a source whose card states no license, does not by
+  itself move the corpus to `released-restricted`. A restriction that covers a substantial
+  share of the corpus, or that a reuser could not practically avoid, does.
+  `luciole` is the worked case, provisionally still `open`.
+
+`released-restricted` describes a corpus that is released. A corpus withheld for licensing
+reasons is still `documented-not-released` or `components-listed`, whatever its terms would have
+been. The value applies to the pretrained ladder only. `model.yaml` asks a tune's data question
+about its post-training mixture and is unchanged.
+
 ### `self-host` and `core-gated` are one question
 
 The software ladder asks whether functionality is withheld from the published source for a

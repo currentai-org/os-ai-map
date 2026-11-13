@@ -16,6 +16,13 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Changed
+
+- The pretrained openness ladder now requires a corpus's own terms to permit open reuse for full
+  data openness, with a new `released-restricted` value for a released corpus that is
+  non-commercial as a whole (R-2026-11-13-b). Lucie-7B moves from 5/open_source to
+  4/open_weights ([#1049](https://github.com/currentai-org/os-ai-map/pull/1049)).
+
 ## [0.6.0] - 2026-11-12
 
 ### Added

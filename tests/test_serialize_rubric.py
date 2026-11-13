@@ -826,11 +826,15 @@ def test_real_sources_serialize_without_errors(real_rubric):
     # row each) and the software ladder gained `noncommercial` and `unstated` rungs that each test
     # `license_tier` and `source` (four rows). safeguards carries both halves: 17 software + 11
     # model. The software categories move 13 -> 17 together, which the goldens census records.
+    #
+    # base_pretrained 15 -> 17 on 2026-11-13 (R-2026-11-13-b), when the `data` dimension gained
+    # `released-restricted` and the formula gained the two-condition rung that reads it (`data` and
+    # `code`). One score moved, by the ruling: lucie-7b 5/open_source -> 4/open_weights.
     csr = per_category("category_scoring_rules")
     assert {k: csr[k] for k in
             ("base_pretrained", "finetuned_chat", "safeguards", "benchmark_eval_data",
              "training_synthetic_datasets", "edge_hardware")} == {
-        "base_pretrained": 15, "finetuned_chat": 11, "safeguards": 28,
+        "base_pretrained": 17, "finetuned_chat": 11, "safeguards": 28,
         "benchmark_eval_data": 28, "training_synthetic_datasets": 28, "edge_hardware": 17,
     }
     # Software categories inherit ONE ladder, so they must all serialize the same rule
