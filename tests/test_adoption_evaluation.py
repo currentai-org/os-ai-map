@@ -166,7 +166,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # Measured rather than asserted - the row sets were dumped against main and diffed: 338 rows on both
 # sides, and the only difference is minimax's row, which goes from level 3 to an abstention because
 # the frozen snapshot never observed the M3.1-Flash checkpoint.
-MEASUREMENTS_DIGEST = "e18015d2507f78782332b86be4b9eece44b7f26ddac374a07bcf90ad3a4cf928"
+# Moved 2026-11-12 when luciole declared its reasoning and math checkpoints (Luciole-23B-Thinking-1.1,
+# Luciole-8B-KD-Math-Base and Luciole-8B-KD-Math-Thinking-1.1) beside the base and instruct ones (#1039).
+# Measured rather than asserted - the row sets were dumped against main and diffed: 338 rows on both
+# sides, and the only difference is luciole's row, which goes from level 1 to an abstention because the
+# frozen snapshot never observed the new checkpoints.
+MEASUREMENTS_DIGEST = "d24a06d3d43e05961631b5eb02cc88bab5d35f20bab2b6f308443b0ae0373759"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -773,9 +778,11 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     # declares ALIA-40b-instruct-2606 beside the base checkpoint (#903), which the snapshot never
     # observed. qwen-coder since 2026-11-08 the same way: it declares the Qwen3-Coder-Next checkpoints
     # (R-2026-11-08-m), which the snapshot never observed. minimax since 2026-11-12 the same way: it
-    # declares MiniMax-M3.1-Flash beside M3 (#1022), which the snapshot never observed.
+    # declares MiniMax-M3.1-Flash beside M3 (#1022), which the snapshot never observed. luciole since
+    # 2026-11-12 the same way: it declares its reasoning and math checkpoints (#1039), which the snapshot
+    # never observed.
     assert abstained == {
-        "alia-40b", "composable-kernel", "deepseek-instruct", "glm", "librechat", "maple-ai",
+        "alia-40b", "composable-kernel", "deepseek-instruct", "glm", "librechat", "luciole", "maple-ai",
         "mimo-pro", "minimax", "olmo-instruct", "qwen", "qwen-coder", "qwen-instruct",
     }
     for row in measurement_rows:

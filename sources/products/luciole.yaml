@@ -2,18 +2,25 @@ name: luciole
 display_name: Luciole
 type: model
 description: Luciole is Linagora and OpenLLM-France's fully open French-English model family and the successor
-  to Lucie, released at 1B, 8B and 23B in base and instruct forms. The weights ship with a 4.65-trillion-token
-  training dataset drawn from openly licensed corpora, the training pipeline and training checkpoints. Base
-  models are pretrained on about 5 trillion tokens, roughly 42 percent English and 30 percent French alongside
-  six other languages.
+  to Lucie, released at 1B, 8B and 23B in base and instruct forms, with a 23B reasoning model and 8B math models
+  built from the same bases. The weights ship with a 4.65-trillion-token training dataset drawn from openly
+  licensed corpora, the training pipeline and training checkpoints. Base models are pretrained on about 5 trillion
+  tokens, roughly 42 percent English and 30 percent French alongside six other languages.
 github:
 - url: https://github.com/OpenLLM-France/Luciole-Training
 huggingface_model:
 - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base
 - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1
+- url: https://huggingface.co/OpenLLM-France/Luciole-23B-Thinking-1.1
 - url: https://huggingface.co/OpenLLM-France/Luciole-8B-Base
 - url: https://huggingface.co/OpenLLM-France/Luciole-8B-Instruct-1.1
+- url: https://huggingface.co/OpenLLM-France/Luciole-8B-KD-Math-Base
+- url: https://huggingface.co/OpenLLM-France/Luciole-8B-KD-Math-Thinking-1.1
 - url: https://huggingface.co/OpenLLM-France/Luciole-1B-Base
 - url: https://huggingface.co/OpenLLM-France/Luciole-1B-Instruct-1.1
 huggingface_dataset:
 - url: https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset
+comments: The reasoning and math models are post-trained or distilled from the Luciole bases and are read as
+  part of the family. The Luciole Audio models, speech-input versions of the instruct models built with NVIDIA's
+  Parakeet encoder, are a separate line and are not declared here, and the 1B ablation checkpoints are research
+  artifacts.
