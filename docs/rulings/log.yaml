@@ -4149,19 +4149,26 @@ rulings:
       mostly web crawl is `open` when its release, or the named crawl whose documented terms it binds the reuser to,
       documents four things: terms allowing redistribution and commercial use with no binding commercial or
       field-of-use bar; the crawl it came from and its processing; that the pages keep their own rights; and how
-      publisher opt-outs were honored. Documented upstream crawl terms are accepted, so Common Crawl's Terms of Use
-      and CCBot documentation can meet the page-rights and opt-out elements. Opt-out and removal mechanisms are
-      assessed, but robots.txt compliance is never treated as proof of lawful reuse. A removal route is recorded and
-      affects confidence only. A binding bar gives `released-restricted`; an undocumented element holds the dimension
-      rather than downgrading it, and it moves only if research confirms no basis exists. Advisory intended-use
-      statements outside the license grant do not fail the terms element. A URL-only release is assessed on whether
-      the corpus can be reconstructed, and DataComp's URL index is investigated as the OpenCLIP case. The dataset
-      ladder's `open_data` tier applies the same principles. The product-level evidence refresh lands separately.
+      publisher opt-outs were honored during the collection that produced the scored corpus. Documented upstream
+      crawl terms are accepted for page rights and crawler opt-out practice, but crawl terms such as Common Crawl's
+      are not by themselves an open license over the crawled documents, so `CommonCrawl-ToU` leaves the dataset
+      ladder's open_data examples and redpajama-data-v2, which relied on it alone, is deferred and held. Opt-out and
+      removal mechanisms are assessed, robots.txt compliance is never proof of lawful reuse, and documentation of a
+      later downloader does not show what an earlier collection honored. A removal route affects confidence only.
+      Only an affirmative legal restriction gives `released-restricted`; missing evidence keeps the dimension held,
+      and a corpus that proves unreconstructible is assessed against `components-listed` or
+      `documented-not-released`. Advisory intended-use statements do not fail the terms element unless incorporated
+      into enforceable license, access or contractual terms. A URL-only release can count as a released corpus when a
+      sample-level index, selection metadata and working reconstruction code make reconstruction materially possible;
+      byte-for-byte preservation is not required, but recoverability must be shown, with no fixed minimum percentage.
+      The dataset ladder's `open_data` tier applies the same principles. The product-level evidence refresh lands
+      separately.
     reasoning: >-
       An open compilation license does not establish that every page may be reused, and ordinary unresolved web
       copyright should not force a blanket downgrade; the test is a credible, documented basis for lawful reuse with
       material limits disclosed.
     status: in-force
     executor: agent
-    lands_in: [sources/rubrics/pretrained.yaml, sources/rubrics/dataset.yaml, docs/reference/openness.md]
+    lands_in: [sources/rubrics/pretrained.yaml, sources/rubrics/dataset.yaml, docs/reference/openness.md,
+      sources/categories/training_synthetic_datasets.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1054']

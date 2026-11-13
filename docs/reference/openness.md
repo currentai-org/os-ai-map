@@ -453,29 +453,38 @@ whose documented terms it binds the reuser to, documents all four of:
 1. **Open terms.** The compilation, or the output of its published reconstruction scripts, is
    licensed for redistribution and commercial use, with no binding commercial or field-of-use bar
    on the corpus or its crawl source. Conduct terms (comply with the law, respect third-party
-   rights) and advisory intended-use statements outside the license grant do not fail this, but
-   the record quotes them.
+   rights) and advisory intended-use statements do not fail this unless they are incorporated into
+   enforceable license, access or contractual terms, but the record quotes them. Crawl terms of use
+   such as Common Crawl's grant limited access to a service and preserve third-party rights; they
+   are not by themselves an open license over the crawled documents, so this element needs a
+   compilation license or another grant.
 2. **Named provenance.** The crawl it came from and the processing applied, so a rights holder can
    tell whether a page is in it.
 3. **Disclosed page rights.** A statement that the pages keep their own rights or terms, in the
    release's own words or through crawl terms it binds the reuser to.
-4. **Opt-out handling.** How publisher opt-outs were honored: robots.txt at crawl time as the named
-   crawler documents it, an opt-out form, or retroactive filtering. This element records
-   documented practice. It is not proof that reuse of any page is lawful, and robots.txt
-   compliance alone is never treated as one.
+4. **Opt-out handling.** How publisher opt-outs were honored during the collection that produced the
+   scored corpus: robots.txt at crawl time as the named crawler documents it, an opt-out form, or
+   retroactive filtering. Documentation of a later tool or a later rebuild is useful context but
+   does not show what happened in the original collection. This element records documented
+   practice. It is not proof that reuse of any page is lawful, and robots.txt compliance alone is
+   never treated as one.
 
 Documentation inherited from the named crawl counts: a release that binds the reuser to Common
 Crawl's Terms of Use and names CCBot as its crawler meets elements 3 and 4 through those documents.
 A removal route for rights holders or data subjects (a takedown process, an opt-out or PII form) is
 recorded and bears on confidence, not on the value.
 
-The outcomes: all four documented gives `open`. A binding term that fails element 1 gives
-`released-restricted`. Where element 1 holds and any of elements 2 to 4 is undocumented in what was
-read, the dimension is held in `sources/verification_queue.yaml` with the missing element named,
-and moves to `released-restricted` only if research confirms the release supplies no basis. A
-release that publishes URLs rather than content, such as DataComp-1B's URL and caption index, is
-assessed on whether the corpus can be reconstructed from what is published; `openclip` is the case
-under review.
+The outcomes: all four documented gives `open`. An affirmative legal restriction that fails
+element 1 gives `released-restricted`, the value R-2026-11-13-b defines. Missing evidence is not a
+restriction: where any element is undocumented in what was read, the dimension is held in
+`sources/verification_queue.yaml` with the missing element named, and it stays held until the
+evidence is found. A release that publishes URLs rather than content, such as DataComp-1B's URL and
+caption index, can count as a released corpus when a sample-level index with hashes, selection
+metadata and working reconstruction code make reconstruction materially possible; byte-for-byte
+archival preservation is not required, but how much of the governing corpus can still be recovered
+has to be shown rather than assumed, without a fixed minimum percentage. A corpus that cannot in
+practice be reconstructed is assessed against `components-listed` or `documented-not-released`, not
+`released-restricted`. `openclip` is the case under review.
 
 The dataset ladder applies the same four elements to its `open_data` tier, so a web corpus cannot be
 open as a dataset and not open as a model's training data on the same evidence.
