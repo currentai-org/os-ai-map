@@ -41,6 +41,10 @@ cannot place anything.
 | 4 | mistral-large: AA v5.0.1, Mistral Large 4 (High) 26, `one_below mimo-pro`. olmo: OLMo 3.1 Think 32B on its card against Qwen3-32B (AIME 2025 78.1 vs 70.9, GPQA 57.5 vs 67.3, MMLU 86.4 vs 88.8). seed-oss: Seed-OSS-36B-Instruct card tables, `at olmo`. hunyuan: vendor blind expert evaluations, `one_below glm`, low confidence. ernie-flash: Baidu's same-pipeline base-model table, `at hunyuan`, low confidence | gemma, inkling, qwen |
 | 3 | phi: Phi-4 card, GPQA 56.1, MATH 80.4. gpt-4o: the Phi-4 report's same-harness table, `at phi`. marin: Marin 32B Base 19-task average 65.2, against OLMo 2 32B Base 63.2 and Qwen 2.5 32B Base 68.1, `one_below olmo`. smollm: card claims against 3B and 4B peers. minicpm: card comparisons at the 8B class, `at smollm` | llama, granite, apertus, eurollm |
 
+The table and the edges below describe `main` at `cf4100f1`. After that snapshot, #1038 removed
+minicpm's `at smollm` comparison, which set two vendors' size-class claims side by side with no
+shared table, and held minicpm's capability until its strongest release is identified.
+
 Three things stand out.
 
 1. **The two sides are read on different instruments.** Every settled 5 and the one AA-read 4 sit
