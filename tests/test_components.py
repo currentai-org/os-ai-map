@@ -735,6 +735,103 @@ def test_components_string_recomposes_a_mapping_with_no_raw_sibling():
     assert components_string(openness) == "weights:open(on HF);license:MIT"
 
 
+def test_components_parts_keeps_a_semicolon_inside_a_detail_within_its_attribute():
+    """The structured list the site reads, built from the mapping rather than re-split.
+
+    The flat string `license:MIT(OSI; PyCaret 3.3.2, ...);source:...` cannot be split
+    correctly by a reader, because the `;` inside the license detail is not escaped. The site
+    showed `MIT(OSI` and lost the rest. This pins the list's shape: every attribute as
+    `{key, context, parts}`, a license with one part per license, the detail whole.
+    """
+    from build.check_rubric import CONTEXT, components_parts
+
+    openness = {
+        "components": {
+            "license": [{"name": "MIT", "detail": "OSI; PyCaret 3.3.2, the current stable release"}],
+            "source": {"value": "public", "detail": "github.com/pycaret/pycaret (tag 3.3.2)"},
+            CONTEXT: {"upcoming-terms": {"value": "FSL-1.1-MIT", "detail": "main; not yet stable"}},
+        }
+    }
+    assert components_parts(openness) == [
+        {
+            "key": "license",
+            "context": False,
+            "parts": [{"value": "MIT", "detail": "OSI; PyCaret 3.3.2, the current stable release"}],
+        },
+        {
+            "key": "source",
+            "context": False,
+            "parts": [{"value": "public", "detail": "github.com/pycaret/pycaret (tag 3.3.2)"}],
+        },
+        {
+            "key": "upcoming-terms",
+            "context": True,
+            "parts": [{"value": "FSL-1.1-MIT", "detail": "main; not yet stable"}],
+        },
+    ]
+
+
+def test_components_parts_carries_raw_and_free_text_so_the_site_loses_no_published_text():
+    """`raw` where `value (detail)` cannot reproduce the record, and keyless free text last.
+
+    Every product with free text also has the verbatim `raw` string, which is what the payload
+    publishes as `components`, so free text is published today. Leaving it out of the list
+    would make the site's structured read show less than the string it replaces.
+    """
+    from build.check_rubric import FREE_TEXT, components_parts
+
+    openness = {
+        "components": {
+            "license": [
+                {"name": "Apache-2.0", "detail": "OSI", "raw": "Apache-2.0(OSI) for the framework"},
+                {"name": "MIT"},
+            ],
+            FREE_TEXT: ["no feature-gated core"],
+        }
+    }
+    assert components_parts(openness) == [
+        {
+            "key": "license",
+            "context": False,
+            "parts": [
+                {"value": "Apache-2.0", "detail": "OSI", "raw": "Apache-2.0(OSI) for the framework"},
+                {"value": "MIT"},
+            ],
+        },
+        {"key": None, "context": False, "parts": [{"value": "no feature-gated core"}]},
+    ]
+
+
+def test_components_parts_is_empty_when_nothing_was_recorded():
+    from build.check_rubric import components_parts
+
+    assert components_parts({}) == []
+    assert components_parts({"components": None}) == []
+
+
+def test_every_recorded_detail_reaches_components_parts_whole():
+    """Corpus-wide: each recorded `detail` appears unaltered in the list, so none is cut."""
+    import yaml
+
+    from build.check_rubric import components_parts, entries
+
+    root = Path(__file__).resolve().parents[1]
+    for path in sorted((root / "sources" / "scores").glob("*.yaml")):
+        openness = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
+        if not isinstance(openness.get("components"), dict):
+            continue
+        published = {
+            part.get("detail")
+            for attr in components_parts(openness)
+            for part in attr["parts"]
+            if part.get("detail")
+        }
+        for key, entry in entries(openness["components"]).items():
+            for part in entry if isinstance(entry, list) else [entry]:
+                if part.get("detail"):
+                    assert part["detail"].strip() in published, f"{path.stem}.{key}"
+
+
 # --- #527: a duplicated URL must not silently address the first entry ------------------
 
 _DUPLICATE_AXIS = """product: p
