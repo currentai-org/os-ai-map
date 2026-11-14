@@ -605,6 +605,12 @@ def _openness(payload: dict) -> list[dict]:
                 "score": axis.get("score"),
                 "class": axis.get("class") or "",
                 "components": axis.get("components") or "",
+                # JSON text into a JSONB column; NULL when nothing was recorded.
+                "components_parts": (
+                    json.dumps(axis["components_parts"], ensure_ascii=False)
+                    if axis.get("components_parts")
+                    else None
+                ),
                 "confidence": axis.get("confidence") or "",
                 "notes": axis.get("note") or "",
                 "bucket": axis.get("bucket") or "",
@@ -1060,6 +1066,7 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("score", "INTEGER"),
             ("class", "VARCHAR"),
             ("components", "TEXT"),
+            ("components_parts", "JSONB"),
             ("confidence", "VARCHAR"),
             ("notes", "TEXT"),
             ("bucket", "VARCHAR"),

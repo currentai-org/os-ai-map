@@ -1425,3 +1425,24 @@ def test_a_group_in_group_order_that_no_category_names_is_named_not_left_to_surf
     payload["group_order"] = ["a_group", "ghost_group"]
     with pytest.raises(UnmappedValue, match="no category names it"):
         build_site_tables(payload)
+
+
+def test_the_structured_components_reach_the_openness_table_as_json_text_and_null_when_absent():
+    """`openness.components_parts` is the list the site renders instead of re-splitting the
+    flat string, which it cannot do correctly when a detail holds a `;`. It is COPYed as JSON
+    text into a JSONB column, and a product with nothing recorded gets NULL, not "[]" or "".
+    """
+    import json
+
+    payload = _fixture_payload()
+    parts = [
+        {"key": "license", "context": False, "parts": [{"value": "MIT", "detail": "OSI; v3.3"}]}
+    ]
+    mid = payload["categories"]["a_category"]["products"][0]
+    mid["openness"]["components"] = "license:MIT(OSI; v3.3)"
+    mid["openness"]["components_parts"] = parts
+
+    rows = {row["product_id"]: row for row in build_site_tables(payload)["openness"]}
+    assert json.loads(rows[stable_id("products", "mid-product")]["components_parts"]) == parts
+    assert rows[stable_id("products", "zeta-product")]["components_parts"] is None
+    assert ("components_parts", "JSONB") in SITE_TABLES["openness"].columns
