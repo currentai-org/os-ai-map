@@ -489,6 +489,35 @@ practice be reconstructed is assessed against `components-listed` or `documented
 The dataset ladder applies the same four elements to its `open_data` tier, so a web corpus cannot be
 open as a dataset and not open as a model's training data on the same evidence.
 
+Five clarifications refine the test:
+
+- **An adopted license is release documentation** (R-2026-11-14-a). The provisions of a license
+  the release expressly adopts count toward the four elements without being repeated on the card.
+  ODC-By §2.4, which says rights in the individual contents may exist separately and are not
+  covered, discloses page rights. It does not show that any page is lawful to reuse, which the
+  test never asks.
+- **Separate terms bind only by incorporation** (R-2026-11-14-b). Guidelines on a separate page
+  that say they govern use bind the corpus only when its license or distribution terms expressly
+  incorporate them or the user affirmatively accepts them. A link for more information is not
+  enough for a downgrade, and the guidelines are not declared advisory either: the record quotes
+  them and their restrictions, and the dimension is held on that narrow question until
+  incorporation is confirmed or ruled out. The terms of an earlier release do not carry over to a
+  new release because one links to the other; each release is read on its own terms.
+- **The governing corpus decides, not the constituent that passes** (R-2026-11-14-c). Where one
+  corpus dominates a training phase, that corpus is assessed for it; a smaller constituent with a
+  documented license cannot establish openness for phases it does not govern. A compilation
+  released with no license of its own is missing evidence, not a restriction, so the dimension is
+  held until a grant is documented or a constituent-level ruling settles it.
+- **A grant by the publisher counts wherever it is made** (R-2026-11-14-d). An explicit license
+  grant in the paper describing a release is affirmative evidence and is not set aside because the
+  card fails to repeat it. What decides is whether its scope clearly covers the scored release; if
+  it does, the record cites it as the licensing source with the constituent-rights caveat, and if
+  it does not, the dimension stays held pending clarification. A license name is not added to a
+  rung's examples just to make a held score reproducible.
+- **Environment-specific scripts are not unreconstructibility** (R-2026-11-14-f). Reconstruction
+  scripts written for one compute environment, with their dependencies and pipeline documented,
+  support a released corpus unless an actual material obstacle to reconstruction is shown.
+
 ### `self-host` and `core-gated` are one question
 
 The software ladder asks whether functionality is withheld from the published source for a
