@@ -637,7 +637,13 @@ def x_robots_opt_out(values: list[str]) -> str | None:
     return None
 
 
-def fetch_sample(fetcher: Fetcher, sample: dict) -> dict:
+def fetch_sample(fetcher: Fetcher, sample: dict, on_image=None) -> dict:
+    """Fetch one sample under the rules above and classify it.
+
+    `on_image`, when given, is called with the body of every 2xx image response (hash match or
+    not) while it is still in memory, and whatever it returns is kept under `rec["on_image"]`.
+    `build.hash_mismatch_embeddings` uses it to embed the image; the body is dropped either way.
+    """
     url = sample["url"]
     expected = (sample.get("sha256") or "").lower()
     rec = {"redirects": 0, "cross_host_redirects": 0}
@@ -694,10 +700,14 @@ def fetch_sample(fetcher: Fetcher, sample: dict) -> dict:
             rec.update(http_status=status, bytes=len(body), format=kind, fetched_sha256=digest)
             rec["final_host"] = (parts.hostname or "").lower()
             if digest == expected:
+                if on_image is not None:
+                    rec["on_image"] = on_image(body)
                 return {**rec, "category": SUCCESS, "code": "hash_match"}
             if kind is None and not (ctype.startswith("image/") and ctype != "image/svg+xml"):
                 return {**rec, "category": FAILURE, "code": "non_image",
                         "content_type": ctype or None}
+            if on_image is not None:
+                rec["on_image"] = on_image(body)
             dims = image_dims(body, kind)
             orig = (sample.get("original_width"), sample.get("original_height"))
             if dims is None:
