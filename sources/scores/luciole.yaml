@@ -8,9 +8,22 @@ openness:
       detail: Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1
     data:
       value: open
-      detail: Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps
-        its own terms, and the card lists the Claire dialogue sets as non-commercial and no license for
-        a few small subsets
+      detail: 'Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source
+        keeps its own terms, and the card lists the Claire dialogue sets as non-commercial and no license
+        for a few small subsets. The web share (FineWeb, FineWeb-2, DCLM, CulturaX, HPLT 2 and math web
+        sets) comes from named Common Crawl and Internet Archive crawls; the card says documents may be
+        copyrighted, applies robots.txt from CC-MAIN-2025-26 retroactively to FineWeb, DCLM and the math
+        sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot''s crawl-time robots.txt
+        check, and HPLT 2''s cleaned release keeps only robots.txt-compliant pages. CulturaX follows the
+        mC4 and OSCAR terms. OSCAR, assessed separately: OSCAR licenses only its packaging, and its suspended
+        gate says "In France, for example, any use of OSCAR that does not fall within the framework of the
+        so-called ''TDM'' or the so-called ''research'' exceptions to copyright has always been prohibited."
+        That asserts a legal constraint, not a contractual field-of-use bar, and CulturaX''s redistribution
+        does not cure any underlying rights limitation. The affected text is identifiable and excludable:
+        CulturaX enters only as the French-only Culturax config, each row tagged source culturax, with CulturaX''s
+        own mc4 or OSCAR-xxxx origin kept in its metadata. The card gives no per-source share; the Hub''s
+        size listing puts that config at about 3.8% of the Hub-hosted bytes, which exclude the English web
+        data, and the OSCAR-derived part of it is not stated'
     code:
       value: open
       detail: Luciole-Training pretraining + data-processing pipeline on GitHub, GPL-3.0
@@ -23,31 +36,44 @@ openness:
   confidence: high
   note: 'Luciole ships Apache-2.0 weights with its full training stack: the Luciole-Training-Dataset, a
     GPL-3.0 training pipeline, and checkpoints from every training phase. Unlike Lucie''s non-commercial
-    corpus, the dataset is published under CC-BY-SA-4.0, which permits commercial reuse, but each source
-    keeps its own terms: the card lists the bundled Claire dialogue sets as non-commercial, and states no
-    license for a few others, such as the INSEE and YouTube subsets.'
-  last_verified: '2026-11-12'
-  raw: weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset
+    corpus, the dataset is published under CC-BY-SA-4.0, which permits commercial reuse, though crawled
+    web pages keep their owners'' rights and each source keeps its own terms: the card lists the bundled
+    Claire dialogue sets as non-commercial, and states no license for a few others, such as the INSEE and
+    YouTube subsets.'
+  last_verified: '2026-11-14'
+  raw: 'weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset
     on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps its own terms, and the card lists
-    the Claire dialogue sets as non-commercial and no license for a few small subsets);code:open(Luciole-Training
-    pretraining + data-processing pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining
-    checkpoints released);license:Apache-2.0(OSI)
+    the Claire dialogue sets as non-commercial and no license for a few small subsets. The web share (FineWeb,
+    FineWeb-2, DCLM, CulturaX, HPLT 2 and math web sets) comes from named Common Crawl and Internet Archive
+    crawls; the card says documents may be copyrighted, applies robots.txt from CC-MAIN-2025-26 retroactively
+    to FineWeb, DCLM and the math sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot''s
+    crawl-time robots.txt check, and HPLT 2''s cleaned release keeps only robots.txt-compliant pages. CulturaX
+    follows the mC4 and OSCAR terms. OSCAR, assessed separately: OSCAR licenses only its packaging, and
+    its suspended gate says "In France, for example, any use of OSCAR that does not fall within the framework
+    of the so-called ''TDM'' or the so-called ''research'' exceptions to copyright has always been prohibited."
+    That asserts a legal constraint, not a contractual field-of-use bar, and CulturaX''s redistribution
+    does not cure any underlying rights limitation. The affected text is identifiable and excludable: CulturaX
+    enters only as the French-only Culturax config, each row tagged source culturax, with CulturaX''s own
+    mc4 or OSCAR-xxxx origin kept in its metadata. The card gives no per-source share; the Hub''s size listing
+    puts that config at about 3.8% of the Hub-hosted bytes, which exclude the English web data, and the
+    OSCAR-derived part of it is not stated);code:open(Luciole-Training pretraining + data-processing pipeline
+    on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints released);license:Apache-2.0(OSI)'
   sources:
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1
     shows: 'Model page: "Luciole-23B-Instruct-1.1 is a fine-tuned and aligned version of" Luciole-23B-Base;
       the card lists the license as "Apache 2.0" and the repo tags include "license:apache-2.0" and safetensors;
       the embedded repo data records gated and private as false. Searched the body for agree to share and
       access request: none.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: b261bc7a2ef5b1c787730a063aab2e5111f30cb2e884dbe23f96d61351571fe7
+    content_sha256: 664a9a9936e7afccdf48f0ef01f19bc63a588d14fc3697bb73080874af42a7ed
     establishes:
     - weights
     - license
   - url: https://huggingface.co/api/datasets/OpenLLM-France/Luciole-Training-Dataset
     shows: Hugging Face API record for the pretraining corpus, "Data card for The Luciole Training Dataset",
       tagged "license:cc-by-sa-4.0"; gated and private are both false.
-    accessed: '2026-11-13'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: ac51af2d99b43c2dbec3d7eca83a99c9f4299b412089b611d6b93cde7fc1addd
     establishes:
@@ -57,50 +83,35 @@ openness:
       full dataset contains around 4.65 trillion tokens of multilingual data"; the embedded repo data records
       gated as false. The same card notes some English web subsets are hosted on an external server and
       that OpenMathInstruct-1 is shared "under an Nvidia license".'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 690803f72a2dea711d8c02f4cf9ec2cd4b8912010c6ddf0e6483cfb00c39cbb8
+    content_sha256: 4ca446ab4f03e356f409ed649ba2eba8c81802f1d8748ae9fa902e2cdf6ab5fc
     establishes:
     - data
-  - url: https://api.github.com/repos/OpenLLM-France/Luciole-Training
-    shows: '`private: false`, `archived: false`, license `GPL-3.0`, last pushed 2026-07-31 - the pretraining
-      and data-processing pipeline for the Luciole series.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 861deb8f269d5027985fba2729e17efce8a8e9efb19437b3f14404dc8a8fd104
-    establishes:
-    - code
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base
     shows: 'Model page: "Intermediate checkpoints are released under dedicated revision tags at regular
       intervals throughout training", with "All checkpoints are available at:" the dl.labs.linagora.com
       mirror; the embedded repo data records gated as false. Searched for agree to share and access request:
       none.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: d20ce97144a4d2c34f073a2e65a36bd29f416805409e1a2ec9376da44d7e861a
+    content_sha256: da54a449dab309fdd699ca8abb38fe5188c50d30bcbe90d960f6be023c0e19cf
     establishes:
     - weights
     - license
-  - url: https://github.com/OpenLLM-France/Luciole-Training
-    shows: training pipeline for the Luciole series — data prep, training recipe, and configs (GPL-3.0)
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: e387cacbb996d711be5e26429d5e96a3539ec0868785bb6b63aff1a1e87451de
-    establishes:
-    - code
   - url: https://huggingface.co/collections/OpenLLM-France/luciole-llm
     shows: Official collection "Luciole LLM - a OpenLLM-France Collection" listing OpenLLM-France/Luciole-1B-Base,
       OpenLLM-France/Luciole-8B-Base, OpenLLM-France/Luciole-23B-Base, their Instruct-1.1 versions with
       FP8 and GGUF variants, and "OpenLLM-France/Luciole-Training-Dataset".
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: f8d6dffc6fe78cab4f51291342e267c1fd119a912360135b9db26a81d214ed5b
+    content_sha256: 2c3fa6b58712e6e42eb0f79a9da0fd1065d4f7cef4221a087d29d5b9a7e9bc61
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base/raw/main/README.md
     shows: 'Raw base model card: front matter "license: apache-2.0"; "The training code is available at"
       the Luciole-Training GitHub repository; "All checkpoints are available at:" the Linagora download
       server, with per-phase links from "phase1-step0001000" through "phase5-context-extension-131k-step0011920".
       The card also says checkpoints sit under revision tags, but the Hub refs listing shows only main.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 3a6a746f6304075ca708b5ca69d809e8a1385c6cb266133282afb1f8b7e9a91f
     establishes:
@@ -111,16 +122,16 @@ openness:
   - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Base
     shows: Hugging Face API record tagged "license:apache-2.0" and "dataset:OpenLLM-France/Luciole-Training-Dataset",
       with weight shards such as "model-00001-of-00010.safetensors"; gated and private are false.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 7d5925df8b66a5949c7f1f2e838ae372324438c739c95a0e9007ea3bddaebd48
+    content_sha256: b972597c7cf146b25a0041fa2cba119c7740a649effaec66941903436c6e4418
     establishes:
     - weights
     - license
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base/raw/main/LICENSE.md
     shows: 'LICENSE.md in the model repo carries the Apache License 2.0: "title: Apache License 2.0", "spdx-id:
       Apache-2.0".'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 4b07cb7bcf39c9f379866e25b0e3f6738a683511bd639a83b65969cf80b48925
     establishes:
@@ -132,22 +143,28 @@ openness:
       with "License: CC BY-NC-SA 4.0", the only source it labels non-commercial; gives the original CroissantLLM
       source of the aligned data "License: not specified" and states no license for the INSEE and YouTube
       subsets; lists OpenMathInstruct-1 under "Licence: NVIDIA"; and says the English web subsets "can instead
-      be downloaded from our external server".'
-    accessed: '2026-11-13'
+      be downloaded from our external server". On the web data: "Robots.txt rules were applied retrospectively
+      to all web-crawled datasets (FineWeb, DCLM, FineMath, InfiWebMath, and MegaMath)", using robots.txt
+      files from the "[CommonCrawl dump CC-MAIN-2025-26]", and "Websites that did not appear in the CC-MAIN-2025-26
+      Common Crawl dump were excluded"; "it is possible that individual documents in those corpora are copyrighted",
+      with an "[opt-out]" form for copyrighted works and personal details. The source list gives HPLT 2
+      "Licence: CC-0 1.0." and describes it as "mostly Internet Archive with some additions from Common
+      Crawl"; CulturaX is listed under the mC4 and OSCAR licenses.'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 10eac1a67b32a8f83a488ca56f71a5e8df8ebd2ceadbf1017205d95a0cd69238
     establishes:
     - data
   - url: https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Base/refs
-    shows: 'Refs listing for OpenLLM-France/Luciole-23B-Base: a single branch, main, at commit "afda379f76a5a50ec726cfb93a3eb52c5fd2c963",
+    shows: 'Refs listing for OpenLLM-France/Luciole-23B-Base: a single branch, main, at commit "258bab249eb0155d4ebc3a97e750a307f1994db3",
       with an empty tags list. Searched for step or phase revision branches: none.'
-    accessed: '2026-09-29'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 46a77b2c2999f3bf5f37a68a321aa4d5765759e450cb10ff32bbd4d36e77d789
+    content_sha256: 023044627ec1091ec54ff6ffc4fb002edc85d39a15f826636be4838a182e3f3c
   - url: https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset/raw/main/LICENSE.md
     shows: LICENSE.md in the dataset repo is the Creative Commons "Attribution-ShareAlike 4.0 International"
       public license text.
-    accessed: '2026-11-13'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2
     establishes:
@@ -155,19 +172,146 @@ openness:
   - url: https://huggingface.co/datasets/OpenLLM-France/Claire-Dialogue-English-0.1/raw/main/README.md
     shows: 'Claire English dialogue card: front matter "license: cc-by-nc-sa-4.0"; "Given that some of the
       corpora used for training are only available under CC-BY-NC-SA licenses, Claire-Dialogue-English-0.1
-      is made available under the CC-BY-NC-SA 4.0 license". Its source table gives each corpus its own terms,
-      among them Apache License 2.0 for AirDialogue, MIT for ABCD and "CC BY-NC-SA 4.0" for DailyDialog.'
-    accessed: '2026-11-13'
+      is made available under the [CC-BY-NC-SA 4.0 license]". Its source table gives each corpus its own
+      terms, among them Apache License 2.0 for AirDialogue and MIT for ABCD.'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 8a02470c5e54656700f312c63ab6e075ec6aea9e5672518166645afb048a8652
     establishes:
     - data
   - url: https://huggingface.co/datasets/nvidia/OpenMathInstruct-1/raw/main/README.md
     shows: 'OpenMathInstruct-1 card, the subset the Luciole card lists under an NVIDIA license: "The use
-      of this dataset is governed by the NVIDIA License which permits commercial usage."'
-    accessed: '2026-11-13'
+      of this dataset is governed by the [NVIDIA License](LICENSE) which permits commercial usage."'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 5839c59deabebeca12291f74706f2cfd67d762948b979177a88700dac5978e75
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/OpenLLM-France/Luciole-Training/main/README.md
+    shows: 'Luciole-Training README: "Training pipeline for the **Luciole** series of multilingual (French-English)
+      large language models"; "This repository covers the full LLM lifecycle: data preparation, tokenizer
+      training, pretraining, fine-tuning, and evaluation."'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 3e223f9bd9cfce2398729d85f26c744f5c013db38abcfc6204dd9d842351336b
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/OpenLLM-France/Luciole-Training/main/LICENSE
+    shows: 'LICENSE in OpenLLM-France/Luciole-Training: "GNU GENERAL PUBLIC LICENSE", "Version 3, 29 June
+      2007".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986
+    establishes:
+    - code
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md
+    shows: 'FineWeb-2 card: "license: odc-by"; "The data was sourced from 96 [CommonCrawl]" snapshots; "The
+      use of this dataset is also subject to [CommonCrawl''s Terms of Use]"; "CommonCrawl respects robots.txt
+      at crawl time, but if you are a webmaster and find your website in 🥂 FineWeb2 and would like to have
+      it removed, you may also use the [PII removal/opt out form]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HPLT/HPLT2.0_cleaned/raw/main/README.md
+    shows: 'HPLT 2.0 cleaned card: "license: cc0-1.0"; "We do not own any of the text from which these text
+      data has been extracted"; "We license the actual packaging of these text data under the [Creative
+      Commons CC0 license"; a notice and take down policy, "We will comply to legitimate requests by removing
+      the affected sources from the next release of the corpora". The card itself says nothing about robots.txt.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8c38b823150d89ca031bee43c835bda1bfff05886a84e00353557555c6336232
+    establishes:
+    - data
+  - url: https://arxiv.org/html/2503.10267
+    shows: 'HPLT v2 paper: documents are annotated against robots.txt, "which can be used to filter out
+      documents explicitly forbidden for crawling by website owners", and the cleaned variant keeps only
+      robots.txt "compliant documents"; the pipeline uses "records to identify patterns disallowing the
+      crawlers we use", naming CCBot and ia-archiver.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: b5cbe29072db669645d53b41f78f362c822f738ccf8e25727900dbf53d014a8f
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/uonlp/CulturaX
+    shows: 'CulturaX page: "As CulturaX is the cleaned version of the mC4 and OSCAR datasets, which were
+      both extracted from CommonCrawl"; "The licence terms for CulturaX strictly follows those of", linking
+      the mC4 license to allenai/c4 and the OSCAR license to OSCAR-2301. Its Dataset Structure gives every
+      document a "source" field valued "mc4" or "OSCAR-xxxx", and its language table lists French at "363,754,348"
+      documents and "319,332,674,695" tokens.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: df2b10a0aa8fbd5c60e1e7dc6f17943b7ef403bb0f481ef14ee6a1dd92eab095
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/uonlp/CulturaX
+    shows: 'Hub API record: "gated":"auto"; the gate asks users to confirm "downloading CulturaX is legal
+      in the country/region where I am located right now" and to agree "to not attempt to determine the
+      identity of individuals in this dataset". No commercial-use term.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: efa8daece1f826dd88f198c62e869f61287cc30f3dde100144ae3674bf329ff7
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/c4/raw/main/README.md
+    shows: 'C4 card, which covers mC4: "The C4 and mC4 datasets are collections text sourced from the public
+      Common Crawl web scrape"; "We are releasing this dataset under the terms of [ODC-BY]"; "By using this,
+      you are also bound by the [Common Crawl terms of use]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: bfa4b9d8af6f9d2955d39b7cb617d580763aad7fb9024e425be60738b69ea140
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/oscar-corpus/OSCAR-2301
+    shows: 'OSCAR 23.01 page, licensing: "We do not own any of the text from which these data has been extracted"
+      and "We license the actual packaging, the metadata and the annotations of these data under the Creative
+      Commons CC0 license". Its gate now reads "We are forced to temporarily suspend access to OSCAR" and
+      "In France, for example, any use of OSCAR that does not fall within the framework of the so-called
+      ''TDM'' or the so-called ''research'' exceptions to copyright has always been prohibited."'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: d616fe9115c77ba13afb8d3b768cd6b7cc24f31b83e86bb317d585ed607d6f5b
+    establishes:
+    - data
+  - url: https://commoncrawl.org/terms-of-use
+    shows: 'Common Crawl Terms of Use, "LAST UPDATED: March 7, 2024". CC grants "a limited, non-assignable,
+      non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service";
+      crawled material "may be subject to separate terms of use or terms of service from the owners of such
+      Crawled Content"; "your use of the Crawled Content signifies your binding acceptance of the ToU";
+      and "BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS
+      OF THIRD PARTIES". It sets no commercial or field-of-use bar and recommends counsel "before making
+      any use, including commercial use".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072
+    establishes:
+    - data
+  - url: https://commoncrawl.org/faq
+    shows: 'Common Crawl FAQ: "CCBot is an automated crawler, checking first the robots.txt, and if crawling
+      a page is allowed, fetches pages using HTTP GET requests", and "You may also wish to be added to our
+      opt-out registry".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
+  - url: https://datasets-server.huggingface.co/size?dataset=OpenLLM-France/Luciole-Training-Dataset
+    shows: 'Hub dataset-viewer size listing: the whole dataset has "num_rows":6470066608 and "num_bytes_parquet_files":13028062365268;
+      the "Culturax" config has "num_bytes_original_files":493127197101 and "num_rows":242612479, about
+      3.8% of the bytes and 3.75% of the rows.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: bd0025e6b847b6059a1df11e530e91a35132c1d65bc48a942e236a10180a177c
+    establishes:
+    - data
+  - url: https://datasets-server.huggingface.co/rows?dataset=OpenLLM-France/Luciole-Training-Dataset&config=Culturax&split=fr&offset=0&length=5
+    shows: 'Hub dataset-viewer rows from the Culturax config, split fr: the first row has source "culturax"
+      and id "fr_part_00000.parquet/69", and the metadata string of each of the five rows returned records
+      CulturaX''s own origin field as "OSCAR-2019".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: a02f37abdf892092762dd607394751cc741cb53956fd491083c65c155630451d
     establishes:
     - data
 adoption:

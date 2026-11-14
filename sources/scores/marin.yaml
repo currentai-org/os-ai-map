@@ -8,7 +8,11 @@ openness:
       detail: Apache-2.0
     data:
       value: open
-      detail: documented mixtures
+      detail: documented mixtures. Most of the pretraining text is web crawl from Common Crawl, whose CCBot
+        documents a robots.txt check. DCLM-Baseline, the main source of Marin 8B's first phases, is CC-BY-4.0
+        with Common Crawl's terms bound on it. Nemotron-CC, the main web source of Marin 8B from 4.78T tokens
+        on and about 97 percent of Marin 32B's main mix, is released under Common Crawl's terms of use,
+        and no compilation license or other grant over it was found
     code:
       value: open
       detail: marin + Levanter, JAX
@@ -20,12 +24,18 @@ openness:
     context:
       reproducibility:
         value: bit-for-bit
-  confidence: high
+  confidence: medium
   note: Marin publishes Apache-2.0 weights together with its training code, data mixtures, experiments,
-    hyperparameters and training logs, and its training runs are reproducible bit for bit. Nothing in the
-    stack is withheld, so Marin is a fully open model.
-  last_verified: '2026-11-12'
-  raw: weights:open(Apache-2.0);data:open(documented mixtures);code:open(marin + Levanter, JAX);checkpoints:open;reproducibility:bit-for-bit;license:Apache-2.0(OSI)
+    hyperparameters and training logs, and its training runs are reproducible bit for bit. Its pretraining
+    data are public third-party corpora, mostly web text from DCLM-Baseline and Nemotron-CC, which Marin
+    names and mixes in published code. Nemotron-CC is distributed under Common Crawl's terms of use rather
+    than an open license.
+  raw: weights:open(Apache-2.0);data:open(documented mixtures. Most of the pretraining text is web crawl
+    from Common Crawl, whose CCBot documents a robots.txt check. DCLM-Baseline, the main source of Marin
+    8B's first phases, is CC-BY-4.0 with Common Crawl's terms bound on it. Nemotron-CC, the main web source
+    of Marin 8B from 4.78T tokens on and about 97 percent of Marin 32B's main mix, is released under Common
+    Crawl's terms of use, and no compilation license or other grant over it was found);code:open(marin +
+    Levanter, JAX);checkpoints:open;reproducibility:bit-for-bit;license:Apache-2.0(OSI)
   sources:
   - url: http://marin.community/blog/2025/05/19/announcement/
     shows: 'Announcement post: Marin is an open lab "in which the research and development of models is
@@ -56,11 +66,12 @@ openness:
     establishes:
     - code
   - url: https://huggingface.co/marin-community/marin-8b-base/raw/main/README.md
-    shows: 'Raw Marin 8B Base card: front matter "license: apache-2.0" with the dataset list (dolmino-mix-1124,
-      olmo-mix-1124, dclm-baseline-1.0, starcoderdata, proof-pile-2 and Marin markdownified sets); "The
-      code and model are released under Apache 2.0." Checkpoint table lists main at 12.7T tokens plus intermediate
-      branches.'
-    accessed: '2026-11-12'
+    shows: 'Raw Marin 8B Base card: front matter ''license: apache-2.0''; ''Marin 8B Base was trained on
+      a variety of datasets'', listed as Nemotron-CC, DCLM Baseline, Starcoder Data, Proofpile 2, FineMath
+      3+, Dolma, Dolmino-Mix-1124 and Marin markdownified sets; ''The code and model are released under
+      Apache 2.0.'' Checkpoint table lists main at 12.7T tokens plus named milestones and retained intermediate
+      checkpoints.'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 6a3a772eb479acf94e481bb560bd2689ef15f76acfc79bafce664a548ef2a4b8
     establishes:
@@ -78,10 +89,11 @@ openness:
     - weights
     - license
   - url: https://huggingface.co/marin-community/marin-32b-base/raw/main/README.md
-    shows: 'Marin 32B Base card: "The code and model are released under Apache 2.0."; repositories "Core
-      repo (data and experiment management): https://github.com/marin-community/marin" and Levanter training
-      code; each training phase links a GitHub issue and experiment script.'
-    accessed: '2026-11-12'
+    shows: 'Marin 32B Base card: trained in phases that ''reused our 8B recipe'', with Nemotron-CC ''(medium,
+      medium_low, medium_high, low_actual, low_synth, hq_actual, hq_synth)'' first among its datasets; ''The
+      code and model are released under Apache 2.0.''; repositories ''Core repo (data and experiment management):
+      https://github.com/marin-community/marin'' and Levanter training code.'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: f2c6479f992b5a9a889a6658341a378932ed027bedc4bc0d6f8c46ac2ff32cb3
     establishes:
@@ -108,6 +120,108 @@ openness:
     establishes:
     - data
     - code
+  - url: https://raw.githubusercontent.com/marin-community/marin/main/docs/reports/marin-8b-retro.md
+    shows: 'Marin 8B retrospective: Kestrel and Ocelot used the DCLM mix, ''DCLM Baseline'' at ''92.6%'',
+      to 3.78T tokens; Phoenix ''transitioned our mixture to Nemotron-CC (plus StarCoder Data). (4.78T→11.1T
+      tokens)''; Starling ''switched to a mix that was 70% Nemotron-CC and 30% high-quality sources''.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 14e916af4af420306bd4ac637e584fe084fc5b45f319ded506ec88b4e871468a
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/marin-community/marin/main/docs/reports/marin-32b-retro.md
+    shows: 'Marin 32B retrospective: ''We deliberately reused the Nemotron-CC-centric pretraining mixture'';
+      the seven nemotron_cc subsets sum to about 97% of the main mix (''nemotron_cc/medium | 30.69%'', ''nemotron_cc/hq_synth
+      | 24.70%'' and five more), and the cooldown ''used the same Nemotron-CC mixture as before''.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 57f8cf9c897d45b81ef59851e97709f8784a54cfa69dfe6ec3bff23e785bc88f
+    establishes:
+    - data
+  - url: https://arxiv.org/pdf/2412.02595
+    shows: 'Nemotron-CC paper: ''a method for transforming English Common Crawl into a 6.3T token long-horizon
+      pretraining dataset''; ''We release the dataset under the Common Crawl Terms of Use and a reference
+      implementation as part of the Apache 2.0 open-source NeMo Curator library.'' No other license over
+      the corpus is stated.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2386e5ae89f708a07c3e02d66c6fa661547d45b1513e32451de9350aa9cbec25
+    establishes:
+    - data
+  - url: https://data.commoncrawl.org/contrib/Nemotron/Nemotron-CC/index.html
+    shows: 'Nemotron-CC distribution page on Common Crawl''s servers: ''Crawls in the dataset CC-MAIN-2013-20
+      through CC-MAIN-2024-30 (99 crawls)''; the jsonl files at 10.4 TiB; the only terms linked are the
+      site''s Terms of Use. The Hugging Face copy nvidia/Nemotron-CC returned 401 to the same fetch.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 5507be6b052a0d4bbf53734bd76bbc0017de4115cb6037fe0c85c9c99c80324b
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0/raw/main/README.md
+    shows: 'DCLM-Baseline card: ''license: cc-by-4.0''; ''DCLM-Baseline is a subset of the DCLM-Pool, which
+      is a corpus of 240 trillion tokens derived from Common Crawl''; in its intended-uses section ''the
+      dataset is intended for research use only'', outside the license grant. The card itself states no
+      page rights or opt-out handling.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 7836ae55a3a8decc25e1d5c15900f3b40e91a4d20f4d2bf4f048d86f1db2c4ff
+    establishes:
+    - data
+  - url: https://arxiv.org/pdf/2406.11794
+    shows: 'DCLM paper, appendix E: DCLM-Pool from ''all 5.1M Common Crawl WARC dumps from 2013 to 2022'',
+      its subsets ''(all with CC-BY-4 license)''; ''The use of this dataset is also subject to CommonCrawl’s
+      Terms of Use''; ''Common Crawl respects robots.txt, and thus our pool does so as well''; ''Common
+      Crawl does honor deletion requests and periodically redacts dumps'', and the pool maps one-to-one
+      to WARC files so it can follow those redactions.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: af8fc884ccd601f8c6fbbba8f8e381de652fce1233949c0c64f64b4ab4b0f5b2
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/olmo-mix-1124/raw/main/README.md
+    shows: 'OLMo 2 mix card: ''The majority of this dataset comes from DCLM-Baseline with no additional
+      filtering'', DCLM-Baseline 3.70T tokens, CC-BY-4.0; ''This collection is released under the Open Data
+      Commons Attribution License (ODC-By) v1.0 license. The use of this dataset is also subject to CommonCrawl''s
+      Terms of Use.'''
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8a0a0c243be08a014bb85062f1117c4fbe97d6caeb22a69545ffdf58c3a49ae5
+    establishes:
+    - data
+  - url: https://commoncrawl.org/terms-of-use
+    shows: 'Common Crawl Terms of Use, ''LAST UPDATED: March 7, 2024''. Crawled Content ''may be subject
+      to separate terms of use or terms of service from the owners of such Crawled Content''; ''BY USING
+      THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS OF THIRD PARTIES
+      IN AND TO THE MATERIAL CONTAINED THEREIN.'' The grant is ''a limited, non-assignable, non-transferable,
+      non-sublicensable, non-exclusive, limited license to access and use the Service'', not a license over
+      the crawled pages; the prohibited uses are conduct terms with no commercial or field-of-use bar, and
+      ''CC strongly recommends that you obtain the advice of legal counsel before making any use, including
+      commercial use''. DCLM''s paper and the OLMo 2 mix card bind the reuser to these terms; Nemotron-CC
+      is released under them alone.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072
+    establishes:
+    - data
+  - url: https://commoncrawl.org/faq
+    shows: '''CCBot is an automated crawler, checking first the robots.txt''; to block it, ''Add these lines
+      to your robots.txt file and our crawler will stop crawling your website: User-agent: CCBot Disallow:
+      /''; ''Our older bot identified itself with the UserAgent string'' CCBot/1.0. The crawler''s own documentation
+      of its robots.txt check, not proof that reuse of any page is lawful.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
+  - url: https://commoncrawl.org/ccbot
+    shows: '''CCBot identifies itself in its UserAgent string as: CCBot/2.0''; ''To prevent Common Crawl
+      from crawling your website, include the following in your robots.txt : User-agent: CCBot Disallow:
+      /''; links an Opt-out Registry.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 4f606df61decb1f876ba66eddc8674c96f0c294c5710d3983ee81e7fa801a2dc
+    establishes:
+    - data
 adoption:
   level: 1
   reach: <10K
