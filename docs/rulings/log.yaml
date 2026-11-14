@@ -4052,3 +4052,123 @@ rulings:
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1029', 'https://github.com/currentai-org/os-ai-map/pull/1030',
       'https://github.com/currentai-org/os-ai-map/pull/1031', 'https://github.com/currentai-org/os-ai-map/pull/1032',
       'https://github.com/currentai-org/os-ai-map/pull/1033']
+
+  - id: R-2026-11-13-a
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1022", "#1036", R-2026-11-12-l, R-2026-11-12-n, base_pretrained]
+    question: >-
+      The Artificial Analysis index cannot place base_pretrained's boundary between capability 3 and 4: no settled 3
+      has a v5.0.1 score, and the one settled comparison that crosses the boundary reads base checkpoints while one
+      side's band is set by a reasoning release (brief #1036). How should capability bands be placed against peers
+      until the bands are calibrated?
+    ruling: >-
+      Adopt the method in docs/briefs/2026-11-12-capability-3-4-boundary.md as revised in review. A family is scored on
+      its strongest eligible release, not necessarily its newest, with eligibility settled on the product record first.
+      Comparisons prefer releases at the same training stage; cross-stage evidence can support a judgment but cannot by
+      itself establish parity, and a missing release type is neither penalized nor assumed. A band moves on sufficient,
+      reproducible evidence across the capabilities that matter, judged on independence, comparability, breadth and
+      uncertainty, not on a fixed count of benchmark families; results sharing one evaluation method are not independent
+      of each other, though different tasks within one suite can still add breadth. Language capability counts only where measured, and listed language counts are metadata. Reference
+      models are provisional examples rather than thresholds: mistral-large on the index for 4, phi for 3 on
+      post-trained suites; the olmo-base and marin pair is for analysis only, and low-confidence vendor-placed 4s are
+      not references. Capability confidence describes the band, not the precision of the evidence, and this stays a
+      rule for setting the field rather than a schema change. The bands stay NOT YET CALIBRATED until the method has
+      settled several boundary cases, and every tier change still goes to the maintainer with its evidence first. The
+      held products are re-read in this order: gemma and inkling, then llama, apertus, eurollm and granite.
+    reasoning: >-
+      Capability describes what a family can do, while matching release types keeps individual comparisons valid. A
+      methodology ruling must not masquerade as completed calibration.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/base_pretrained.yaml, docs/briefs/2026-11-12-capability-3-4-boundary.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1045']
+
+  - id: R-2026-11-13-b
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1046", luciole, lucie-7b, base_pretrained, pretrained]
+    question: >-
+      The pretrained openness ladder asks only whether a training corpus is released or reconstructible, and its
+      license_tier is the weights license, so no rung reads the corpus's own terms: lucie-7b scores 5/open_source on a
+      corpus released under CC-BY-NC-SA-4.0. Should full data openness require terms that permit open reuse, and how
+      should a mixed or noncommercial corpus be treated?
+    ruling: >-
+      For pretrained models, full `data: open` requires a released or reproducible corpus with terms permitting open
+      reuse, not merely download availability. A wholly noncommercial corpus is `released-restricted` and does not
+      earn full openness. A declared openly licensed compilation with mixed constituent terms requires disclosure and an
+      assessment of whether the restrictions materially affect lawful reuse, weighing the legal restriction, whether the
+      affected data can be identified and excluded, and coverage, not the share alone; do not automatically downgrade
+      for every uncertain or minor constituent. Luciole, a CC-BY-SA-4.0 compilation with a tiny non-commercial Claire subset,
+      provisionally stays 5. Prepare a separate ruling and implementation for Lucie-7B, whose noncommercial corpus moves
+      it from 5 to 4 under this policy, and identify the other pretrained families the change affects before applying
+      it broadly. Keep this policy and the score changes it produces separate from the evidence-only luciole audit
+      (#1046).
+    reasoning: >-
+      A map intended to guide investment in open AI should distinguish published training data from openly reusable
+      training data.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1049']
+
+  - id: R-2026-11-13-c
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1022", "#1050", "#1052", inkling, glm, mistral-large, base_pretrained, R-2026-11-13-a]
+    question: >-
+      Inkling 2 Small, now the inkling family's strongest eligible release, scores inside the settled 5s on the
+      Artificial Analysis index but level with or below the provisional 4 reference (Mistral Large 4) on Vals,
+      APEX-Agents and LMArena text, and below every peer on the one reproduced terminal-coding result. Does inkling
+      move to 5, and which comparison should it record?
+    ruling: >-
+      inkling stays at capability 4 with medium confidence, placed one_below glm instead of one_below kimi, and its
+      capability hold is released. The independent lines disagree and the only reproduced result puts it below the 4
+      reference, so the evidence is not sufficient for 5 under R-2026-11-13-a. GLM-5.3 leads it most consistently,
+      on both overall indexes, APEX-Agents and LMArena text, which makes it the informative peer; one_below kimi was
+      true but said little.
+    status: in-force
+    executor: agent
+    lands_in: [sources/scores/inkling.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1052']
+
+  - id: R-2026-11-13-d
+    date: 2026-11-13
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1053", "#1049", R-2026-11-13-b, olmo, t5, smollm, marin, apertus, luciole, openclip, pretrained, dataset]
+    question: >-
+      Under R-2026-11-13-b, full `data: open` needs a corpus whose own terms permit open reuse. Web-crawl corpora
+      publish an open license on the compilation while the crawled pages keep their authors' rights. When does a
+      web-crawl corpus count as openly reusable, on the pretrained ladder and on the dataset ladder?
+    ruling: >-
+      Adopt option C from docs/briefs/2026-11-13-web-crawl-corpus-licenses.md, refined. A corpus that is wholly or
+      mostly web crawl is `open` when its release, or the named crawl whose documented terms it binds the reuser to,
+      documents four things: terms allowing redistribution and commercial use with no binding commercial or
+      field-of-use bar; the crawl it came from and its processing; that the pages keep their own rights; and how
+      publisher opt-outs were honored during the collection that produced the scored corpus. Documented upstream
+      crawl terms are accepted for page rights and crawler opt-out practice, but crawl terms such as Common Crawl's
+      are not by themselves an open license over the crawled documents, so `CommonCrawl-ToU` leaves the dataset
+      ladder's open_data examples and redpajama-data-v2, which relied on it alone, is deferred and held. Opt-out and
+      removal mechanisms are assessed, robots.txt compliance is never proof of lawful reuse, and documentation of a
+      later downloader does not show what an earlier collection honored. A removal route affects confidence only.
+      Only an affirmative legal restriction gives `released-restricted`; missing evidence keeps the dimension held,
+      and a corpus that proves unreconstructible is assessed against `components-listed` or
+      `documented-not-released`. Advisory intended-use statements do not fail the terms element unless incorporated
+      into enforceable license, access or contractual terms. A URL-only release can count as a released corpus when a
+      sample-level index, selection metadata and working reconstruction code make reconstruction materially possible;
+      byte-for-byte preservation is not required, but recoverability must be shown, with no fixed minimum percentage.
+      The dataset ladder's `open_data` tier applies the same principles. The product-level evidence refresh lands
+      separately.
+    reasoning: >-
+      An open compilation license does not establish that every page may be reused, and ordinary unresolved web
+      copyright should not force a blanket downgrade; the test is a credible, documented basis for lawful reuse with
+      material limits disclosed.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, sources/rubrics/dataset.yaml, docs/reference/openness.md,
+      sources/categories/training_synthetic_datasets.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1054']

@@ -101,14 +101,6 @@ held:
         capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current
         Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both.'
       since: '2026-09-29'
-    adoption:
-      because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the three declared checkpoints sum to
-        21,879 trailing-30-day Hugging Face downloads (Apertus-v1.5-8B 12,646, Apertus-v1.5-70B 8,230, Apertus-70B-2509
-        1,003), which sets a level but earns no date. The scheduled reconciliation of 2026-11-08 (PR 989) also
-        measured level 2 on huggingface_model.downloads_30d. The axis waits for the first scheduled reconciliation
-        that measures the same level.'
-      since: '2026-11-12'
-      settled_by: scheduled_reconciliation
   apify:
     adoption:
       because: >-
@@ -611,13 +603,6 @@ held:
         A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed
         while apertus is held. Settled with apertus.'
       since: '2026-11-12'
-    adoption:
-      because: 'Re-banded by hand from 100K-1M to 10K-100K on 2026-11-12: the ten declared EuroLLM checkpoints
-        sum to 80,959 trailing-30-day Hugging Face downloads on the utter-project listing, which sets a level but
-        earns no date. The scheduled reconciliation of 2026-11-08 (PR 989) also measured level 2 on huggingface_model.downloads_30d.
-        The axis waits for the first scheduled reconciliation that measures the same level.'
-      since: '2026-11-12'
-      settled_by: scheduled_reconciliation
   evalplus:
     adoption:
       because: The reconciliation reads Semantic Scholar citations (level 2) because the product declares
@@ -681,16 +666,6 @@ held:
         usage claim found is app-level (Gemini app 750M+ monthly users, TechCrunch), which is not Pro-specific.
         Settling it needs a Pro-specific usage figure or claim from a fetched source, and then the date.'
       since: '2026-09-29'
-  gemma:
-    capability:
-      because: 'A same-version comparison on Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) puts Gemma
-        4 31B (Reasoning) at 4.4, just below Granite 4.2 8B at 5.1 and behind Inkling (Xhigh) at 12.5 and Mistral
-        Large 4 (High) at 26.1. Gemma leads Granite on five of the nine evaluations and trails it on AA-Omniscience,
-        which penalizes wrong answers. A move to 3 was considered and rejected (R-2026-11-12-n): the index orders
-        these models but does not locate the boundary between 3 and 4, and the model card''s MMLU Pro, GPQA Diamond
-        and LiveCodeBench figures point the other way. The cited Arena leaderboard returned HTTP 403 on that date.
-        Settled by the focused calibration of the 3/4 boundary on comparable evaluations under #1022.'
-      since: '2026-11-12'
   gigabrain:
     adoption:
       because: The initial level was set on 2026-11-12 from a hand-read count of Hugging Face downloads of the five declared GigaBrain checkpoints,
@@ -974,20 +949,14 @@ held:
       since: '2026-09-29'
   inkling:
     adoption:
-      because: 'Re-banded by hand from 100K-1M to 1M-10M on 2026-11-12: the two declared checkpoints sum to 1,676,430
-        trailing-30-day Hugging Face downloads (Inkling 1,642,037, Inkling-NVFP4 34,393), which sets a level but
-        earns no date. The scheduled reconciliation of 2026-11-08 (PR 989) also measured level 4 on huggingface_model.downloads_30d.
-        The axis waits for the first scheduled reconciliation that measures the same level.'
-      since: '2026-11-12'
+      because: The declared checkpoints were widened on 2026-11-13 to every first-party checkpoint of both generations,
+        adding Inkling-Small, Inkling-Small-NVFP4, Inkling-2-Small and Inkling-2-Small-MXFP8 beside Inkling and Inkling-NVFP4.
+        The six sum to 2,972,586 trailing-30-day Hugging Face downloads, the same 1M-10M level the 2026-11-08 scheduled
+        reconciliation measured on the first two, but a hand-read sets a level and earns no date. The axis waits for
+        the first scheduled reconciliation that measures the same level on the declared set. That run's re-dating
+        PR dates the axis and releases this hold.
+      since: '2026-11-13'
       settled_by: scheduled_reconciliation
-    capability:
-      because: 'On Artificial Analysis Intelligence Index v5.0.1 (2026-11-12) Kimi K3.1 Pro (46) and Mistral Large
-        4 (High, 26) both lead Inkling (Xhigh, 12) and Inkling Small (13) on all nine evaluations, most widely on
-        the agentic tasks, so one_below kimi is not confirmed on this version. A move to 3, one_below mistral-large,
-        was considered and rejected (R-2026-11-12-n): the index orders these models but does not locate the boundary
-        between 3 and 4, and the vendor''s SWE-bench Verified result (77.6 against 80.6 for DeepSeek V4 Pro) is unresolved
-        against it. Settled by the focused calibration of the 3/4 boundary under #1022, which also re-places the edge.'
-      since: '2026-11-12'
   instantmesh:
     adoption:
       because: The initial level was set on 2026-11-12 from a hand-read count of Hugging Face downloads of TencentARC/InstantMesh,
@@ -1610,6 +1579,22 @@ held:
         page carries a traction figure or claim behind it, and no reconciliation measures reported traction. Settling
         it needs a sourced traction claim for the moderation endpoint, and then the date.'
       since: '2026-10-07'
+  openclip:
+    openness:
+      because: 'Under the web-crawl corpus test (R-2026-11-13-d), DataComp-1B documents its terms (CC-BY-4.0 on the
+        URL-caption index; its research-use language is advisory and outside the license), its Common Crawl provenance,
+        and that ''The individual images are under their own copyrights''; LAION''s dataset-requests form takes removals
+        by sample uid. The recorded 5/open_source stands provisionally. Two points remain open, both evidence questions
+        rather than restrictions. First, recoverability: a sample-level index with hashes, selection metadata and
+        working reconstruction code can count as a released corpus, but how much of the DataComp-1B images the checkpoints
+        trained on can still be recovered has not been measured, and no fixed minimum applies; the question is whether
+        what remains faithfully reconstructs the governing training corpus. Second, opt-out handling during the original
+        2022-2023 collection: CCBot''s robots.txt check covered the pages the links came from, not the image hosts,
+        and the release does not say which img2dataset version or opt-out settings fetched the training images; the
+        current downloader''s default X-Robots-Tag noai handling does not show what the original collection honored.
+        Settled by a measured recoverability audit of a representative sample of DataComp-1B URLs and a record of
+        the original download configuration.'
+      since: '2026-11-13'
   opencompass:
     adoption:
       because: 'The GitHub repository no longer routes the band: R-2026-10-08-p keeps reported traction and declares
@@ -1844,14 +1829,6 @@ held:
         The band is placed one below LlamaIndex, whose own capability could not be confirmed in this
         pass, so the comparison cannot be dated until LlamaIndex is re-read.
       since: '2026-09-29'
-  pythia:
-    adoption:
-      because: 'Re-banded by hand from 10K-100K to <10K on 2026-11-12: the single declared checkpoint, EleutherAI/pythia-12b,
-        reads 7,136 trailing-30-day Hugging Face downloads, which sets a level but earns no date. The scheduled
-        reconciliation of 2026-11-08 (PR 989) also measured level 1 on huggingface_model.downloads_30d. The axis
-        waits for the first scheduled reconciliation that measures the same level.'
-      since: '2026-11-12'
-      settled_by: scheduled_reconciliation
   qualcomm-ai-engine-direct:
     openness:
       because: >-
@@ -2010,6 +1987,15 @@ held:
         blobs and retail were re-established, but without every component established the axis cannot be
         dated.
       since: '2026-09-29'
+  redpajama-data-v2:
+    openness:
+      because: 'R-2026-11-13-d removed CommonCrawl-ToU from the dataset ladder''s open_data licenses: Common Crawl''s
+        terms grant limited access to its service and preserve third-party rights, so they are not by themselves an
+        open license over the crawled documents. RedPajama-V2''s card (read 2026-11-13) offers the data only under
+        those terms, with Apache-2.0 for the code. The recorded 5/open stands provisionally, deferred in the training_synthetic_datasets
+        recipe. Settled by applying the web-crawl documentation test: a compilation license or other grant for the
+        data, named provenance, disclosed page rights and documented opt-out handling for its collection.'
+      since: '2026-11-13'
   refinedweb:
     capability:
       because: >-

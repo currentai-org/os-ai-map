@@ -400,6 +400,95 @@ synthetic half is described rather than listed, a two-stage mixture with one sta
 data-preparation documentation in place of a corpus listing. In each the enumeration exists and
 does not cover the corpus.
 
+### A released corpus is open only if its own terms permit open reuse
+
+Ruled in R-2026-11-13-b. For a pretrained model, `data: open` needs a corpus that is
+released or reproducible **and** under terms that permit open reuse, commercial use included.
+Being able to download it is not enough. The pretrained ladder's `license_tier` is the weights
+license, which `multi_sku_rule` resolves over the distributed SKUs, so it never reads the
+corpus's terms. The data dimension has to.
+
+A map meant to guide investment in open AI has to tell published training data apart from
+openly reusable training data. Two cases follow, beside the plain one where the corpus and every
+constituent are under open terms.
+
+- **A corpus that is non-commercial as a whole is `released-restricted`.** The corpus is out and
+  the run can be inspected and rebuilt, but nobody may reuse the data commercially, which the
+  Open Definition requires of open data. `lucie-7b` is the case: the Lucie-Training-Dataset is
+  published and ungated under CC-BY-NC-SA-4.0. Its card says most of its sources carry
+  permissive terms, but the corpus a reuser downloads carries the non-commercial license, and
+  that license is what this case reads. With open code it scores 4/`open_weights`, level
+  with a full release under a non-OSI weights license. Either way the whole pipeline is
+  published, and the terms of one part keep the product out of the `open` bucket.
+- **An openly licensed compilation whose constituents keep mixed terms needs disclosure and a
+  materiality assessment, and it is not downgraded automatically.** A corpus released under,
+  say, CC-BY-SA-4.0 whose card says each source keeps its own terms stays `open` once the record
+  names the restricted or unlicensed constituents and assesses whether they materially affect
+  lawful reuse of the corpus. Materiality weighs three things together: the legal restriction
+  itself, whether a reuser can identify and exclude the affected data, and how much of the
+  corpus it covers. Share alone does not decide it, because a small restriction that cannot be
+  separated from the rest still prevents lawful reuse of the whole. A small or uncertain
+  constituent that can be identified and excluded, such as a non-commercial dialogue subset at
+  a hundredth of a percent of the bytes or a source whose card states no license, does not by
+  itself move the corpus to `released-restricted`. A restriction that covers a substantial
+  share of the corpus, or that a reuser could not practically avoid, does.
+  `luciole` is the worked case, provisionally still `open`.
+
+`released-restricted` describes a corpus that is released. A corpus withheld for licensing
+reasons is still `documented-not-released` or `components-listed`, whatever its terms would have
+been. The value applies to the pretrained ladder only. `model.yaml` asks a tune's data question
+about its post-training mixture and is unchanged.
+
+### A web-crawl corpus is open when its release documents a basis for reuse
+
+R-2026-11-13-d, on the brief in `docs/briefs/2026-11-13-web-crawl-corpus-licenses.md`. Web-crawl
+corpora (C4, FineWeb, DCLM, Dolma, RefinedWeb, DataComp and their kin) publish an open license on
+the compilation while the crawled pages keep their authors' rights. An open compilation license
+does not establish that every page may be redistributed or reused commercially, and ordinary
+unresolved web copyright does not force every web-trained model down either. The test is whether
+the release offers a credible, documented basis for lawful reuse and discloses its material
+limits. A corpus that is wholly or mostly web crawl is `open` when the release, or the named crawl
+whose documented terms it binds the reuser to, documents all four of:
+
+1. **Open terms.** The compilation, or the output of its published reconstruction scripts, is
+   licensed for redistribution and commercial use, with no binding commercial or field-of-use bar
+   on the corpus or its crawl source. Conduct terms (comply with the law, respect third-party
+   rights) and advisory intended-use statements do not fail this unless they are incorporated into
+   enforceable license, access or contractual terms, but the record quotes them. Crawl terms of use
+   such as Common Crawl's grant limited access to a service and preserve third-party rights; they
+   are not by themselves an open license over the crawled documents, so this element needs a
+   compilation license or another grant.
+2. **Named provenance.** The crawl it came from and the processing applied, so a rights holder can
+   tell whether a page is in it.
+3. **Disclosed page rights.** A statement that the pages keep their own rights or terms, in the
+   release's own words or through crawl terms it binds the reuser to.
+4. **Opt-out handling.** How publisher opt-outs were honored during the collection that produced the
+   scored corpus: robots.txt at crawl time as the named crawler documents it, an opt-out form, or
+   retroactive filtering. Documentation of a later tool or a later rebuild is useful context but
+   does not show what happened in the original collection. This element records documented
+   practice. It is not proof that reuse of any page is lawful, and robots.txt compliance alone is
+   never treated as one.
+
+Documentation inherited from the named crawl counts: a release that binds the reuser to Common
+Crawl's Terms of Use and names CCBot as its crawler meets elements 3 and 4 through those documents.
+A removal route for rights holders or data subjects (a takedown process, an opt-out or PII form) is
+recorded and bears on confidence, not on the value.
+
+The outcomes: all four documented gives `open`. An affirmative legal restriction that fails
+element 1 gives `released-restricted`, the value R-2026-11-13-b defines. Missing evidence is not a
+restriction: where any element is undocumented in what was read, the dimension is held in
+`sources/verification_queue.yaml` with the missing element named, and it stays held until the
+evidence is found. A release that publishes URLs rather than content, such as DataComp-1B's URL and
+caption index, can count as a released corpus when a sample-level index with hashes, selection
+metadata and working reconstruction code make reconstruction materially possible; byte-for-byte
+archival preservation is not required, but how much of the governing corpus can still be recovered
+has to be shown rather than assumed, without a fixed minimum percentage. A corpus that cannot in
+practice be reconstructed is assessed against `components-listed` or `documented-not-released`, not
+`released-restricted`. `openclip` is the case under review.
+
+The dataset ladder applies the same four elements to its `open_data` tier, so a web corpus cannot be
+open as a dataset and not open as a model's training data on the same evidence.
+
 ### `self-host` and `core-gated` are one question
 
 The software ladder asks whether functionality is withheld from the published source for a

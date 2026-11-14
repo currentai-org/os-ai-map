@@ -23,6 +23,16 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   a detail no longer cuts an attribute in two
   ([#1043](https://github.com/currentai-org/os-ai-map/pull/1043)).
 
+### Changed
+
+- ColBERT and the MS MARCO cross-encoders moved from 5/open_source to 4/open_weights, because
+  their only training corpus, MS MARCO, is released for non-commercial research use only
+  (R-2026-11-13-b) ([#1051](https://github.com/currentai-org/os-ai-map/pull/1051)).
+- The pretrained openness ladder now requires a corpus's own terms to permit open reuse for full
+  data openness, with a new `released-restricted` value for a released corpus that is
+  non-commercial as a whole (R-2026-11-13-b). Lucie-7B moves from 5/open_source to
+  4/open_weights ([#1049](https://github.com/currentai-org/os-ai-map/pull/1049)).
+
 ## [0.6.0] - 2026-11-12
 
 ### Added

@@ -1,14 +1,16 @@
 product: colbert
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_weights
   components:
     weights:
       value: open
       detail: ungated MIT safetensors and ONNX on colbert-ir/colbertv2.0
     data:
-      value: open
-      detail: MS MARCO passage-ranking triples plus the released 64-way distillation examples at colbert-ir/colbertv2.0_msmarco_64way
+      value: released-restricted
+      detail: MS MARCO Passage Ranking queries and passages, with the 64-way distillation examples at colbert-ir/colbertv2.0_msmarco_64way
+        built from them; Microsoft releases MS MARCO for non-commercial research purposes only, without
+        extending any license
     code:
       value: open
       detail: the repository ships the ColBERTv2-style Trainer, the indexer and the evaluation utilities,
@@ -16,30 +18,34 @@ openness:
     license:
     - name: MIT
       detail: OSI
-  raw: weights:open(ungated MIT safetensors and ONNX on colbert-ir/colbertv2.0);data:open(MS MARCO passage-ranking
-    triples plus the released 64-way distillation examples at colbert-ir/colbertv2.0_msmarco_64way);code:open(the
-    repository ships the ColBERTv2-style Trainer, the indexer and the evaluation utilities, not just inference);license:MIT(OSI)
+  raw: weights:open(ungated MIT safetensors and ONNX on colbert-ir/colbertv2.0);data:released-restricted(MS
+    MARCO Passage Ranking queries and passages, with the 64-way distillation examples at colbert-ir/colbertv2.0_msmarco_64way
+    built from them; Microsoft releases MS MARCO for non-commercial research purposes only, without extending
+    any license);code:open(the repository ships the ColBERTv2-style Trainer, the indexer and the evaluation
+    utilities, not just inference);license:MIT(OSI)
   confidence: high
-  note: ColBERT ships MIT weights on the Hub, trains on a public benchmark corpus plus a published distillation
-    file, and documents its training entry point rather than leaving only inference code. That combination
-    is what a fully open score requires.
-  last_verified: '2026-11-10'
+  note: ColBERT publishes MIT weights on the Hub along with the trainer and indexer that produced them.
+    The checkpoint was trained for retrieval on MS MARCO Passage Ranking alone, through distillation examples
+    built from its queries and passages, and Microsoft releases MS MARCO for non-commercial research only
+    and without granting a license. The run can be rebuilt but the data cannot be openly reused, which keeps
+    ColBERT short of a fully open model.
+  last_verified: '2026-11-13'
   sources:
   - url: https://huggingface.co/colbert-ir/colbertv2.0/raw/main/README.md
     shows: '`license: mit` in the card front matter; card describes late interaction and links the ColBERTv2
       paper.'
-    accessed: '2026-11-10'
+    accessed: '2026-11-13'
     http_status: 200
     content_sha256: 44e68292037d4fac7db91b9b24ae36535ae5807eef2b323adcc83a615b91751d
     establishes:
     - weights
     - license
   - url: https://raw.githubusercontent.com/stanford-futuredata/ColBERT/main/README.md
-    shows: '''This checkpoint has been trained on the MS MARCO Passage Ranking task''; a Data section
-      naming triples.train.small.tar.gz, collection.tar.gz and qrels; and ''Basic Training (ColBERTv1-style)''
+    shows: '''This checkpoint has been trained on the MS MARCO Passage Ranking task''; a Data section naming
+      triples.train.small.tar.gz, collection.tar.gz and qrels; and ''Basic Training (ColBERTv1-style)''
       plus ''Advanced Training (ColBERTv2-style)'' sections that call `colbert.Trainer` with the published
       64-way examples.json from colbert-ir/colbertv2.0_msmarco_64way.'
-    accessed: '2026-11-10'
+    accessed: '2026-11-13'
     http_status: 200
     content_sha256: 40897ba2f2db6854660a62893fb299941bf54350ddaad6a4ecfdd151ef028110
     establishes:
@@ -47,11 +53,40 @@ openness:
     - code
   - url: https://raw.githubusercontent.com/stanford-futuredata/ColBERT/main/LICENSE
     shows: '''MIT License / Copyright (c) 2019, 2020 Stanford Future Data Systems''.'
-    accessed: '2026-11-10'
+    accessed: '2026-11-13'
     http_status: 200
     content_sha256: 641c1a7fc3e22f3ea8521617c690213f0d741bf95ff35eeba99b34ff2102e0ae
     establishes:
     - license
+  - url: https://arxiv.org/pdf/2112.01488v3
+    shows: 'ColBERTv2 paper, implementation details: "For the experiments reported in this paper, we train
+      on MS MARCO training set" and "We train on MS MARCO using 64-way tuples for distillation, sampling
+      them from the top-500 retrieved passages per query"; the teacher is "a 22M-parameter MiniLM (Wang
+      et al., 2020) crossencoder", footnoted to cross-encoder/ms-marco-MiniLM-L-6-v2.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 46e0a2712eabf9e0b9486120356a2110f65516fa7e0d75c35e9ee3eef9ea78c0
+    establishes:
+    - data
+  - url: https://huggingface.co/api/models/colbert-ir/colbertv2.0_msmarco_64way
+    shows: 'Hub record for the repository the README''s ColBERTv2-style training downloads from: one data
+      file, "examples.json", ungated and with no license tag. The README pairs it with MSMARCO/queries.train.tsv
+      and MSMARCO/collection.tsv, so the examples cannot be used without the MS MARCO corpus.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: ce2fa4fb30dfc8cb66e6ae110f07d33deb9191a9c929ccfb936cc7993868bd4b
+    establishes:
+    - data
+  - url: https://microsoft.github.io/msmarco/
+    shows: 'MS MARCO site, Terms and Conditions: "The MS MARCO datasets are intended for non-commercial
+      research purposes only to promote advancement in the field of artificial intelligence and related
+      areas, and is made available free of charge without extending any license or other intellectual property
+      rights." The page also says "we may not own the underlying rights in the documents."'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: ab69d6410caaa38b13c395e6d4e0d6b77bab27f2545185c5518d8597acc624c2
+    establishes:
+    - data
 adoption:
   level: 4
   reach: 1M-10M

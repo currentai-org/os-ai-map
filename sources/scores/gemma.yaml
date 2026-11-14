@@ -164,55 +164,76 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: Artificial Analysis Intelligence Index; model-card evaluation table
-  value: 'Artificial Analysis Intelligence Index v5.0.1, read 2026-11-12: Gemma 4 31B (Reasoning) 4, ninth
-    of ten small open-weight models (class median 8). Read on the same version and date: Granite 4.2 8B
-    5, Inkling (Xhigh) 12, Mistral Large 4 (High) 26. gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond
-    84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image
-    across all sizes, audio native only on E2B/E4B/12B'
+  basis_detail: Artificial Analysis Intelligence Index; Artificial Analysis, Epoch AI and LMArena evaluations;
+    model-card evaluation table
+  value: 'Artificial Analysis Intelligence Index v5.0.1, read 2026-11-13: Gemma 4 31B (Reasoning) 4, ninth
+    of ten small open-weight models (class median 8); Granite 4.2 8B 5, Inkling (Xhigh) 12, Mistral Large
+    4 (High) 26. Artificial Analysis evaluations outside the index: Gemma 4 31B (Reasoning) GPQA Diamond
+    85.7%, HLE 23.6%, IFBench 75.6% against Olmo 3.1 32B Think 59.1%, 6.3%, 66.0%; Gemma 4 31B (Non-reasoning)
+    76.3%, 11.8%, 53.5% against Phi-4 57.5%, 3.8%, 23.5%. Epoch AI runs: Gemma 4 31B at minimal reasoning
+    GPQA Diamond 75.8%, OTIS Mock AIME 73.3%, against Phi-4 56.1%, 13.8% and Mistral Large 4 (high) 88.1%,
+    98.3%. LMArena text, style control, 2026-11-11: Gemma 4 31B 1452, Inkling 1442, Mistral Large 4 1420,
+    Olmo 3.1 32B Think 1286, Phi-4 1256; non-English prompts 1438 against Mistral Large 4 1405. gemma-4-31B-it
+    model card: MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%,
+    MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native only on E2B/E4B/12B'
   confidence: medium
   note: Gemma 4 31B, the family's strongest model, scores 4 on version 5.0.1 of Artificial Analysis's Intelligence
-    Index, just below Granite 4.2 8B at 5 and well behind Inkling at 12 and Mistral Large 4 at 26. Gemma
-    leads Granite on five of the index's nine evaluations and trails it only on AA-Omniscience, which penalizes
-    wrong answers, while Inkling leads Gemma on seven. Its model card reports 85.2% on MMLU Pro, 84.3% on
-    GPQA Diamond and 80.0% on LiveCodeBench v6, strengths the index's agentic tasks, where Gemma scores
-    near zero, do not show.
+    Index, far behind Mistral Large 4 at 26, largely because it scores near zero on the index's agentic
+    tasks. In Artificial Analysis's and Epoch AI's own runs of science, math and instruction-following tests
+    it is well ahead of Phi-4 and OLMo 3.1 32B Think, and LMArena's human-preference ratings put it above
+    Mistral Large 4, including on non-English prompts.
+  last_verified: '2026-11-13'
   sources:
   - url: https://huggingface.co/google/gemma-4-31B-it
     shows: 'Rendered model card: "Gemma 4 models are multimodal, handling text and image input (with audio
       supported on E2B, E4B, and 12B) and generating text output"; the evaluation table, 31B column, lists
       MMLU Pro 85.2%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3% and MMMU Pro
       76.9%.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: dc2fe3123f502265a0a318798cd0cbd44412cbc2167856b0a9998d9623fc80e0
-  - url: https://arena.ai/leaderboard/text
-    shows: Text leaderboard entry "gemma-4-31b" linking to "https://aistudio.google.com/app/prompts/new_chat?model=gemma-4-31b-it"
-      from Google, license Apache 2.0, now rank 73 at a rating near 1453 among 409 listed models; fifteen
-      openly licensed models rank above it, including glm-5.3-max, deepseek-v4.1-flash-max and kimi-k3-max.
-    accessed: '2026-09-29'
+    content_sha256: 67703b0a84ebd8989235c79c98e83152eb11c28d309c52e6232f25ae1d06fb2d
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text_style_control/latest-00000-of-00001.parquet
+    shows: 'Arena''s own leaderboard dataset (lmarena-ai/leaderboard-dataset at revision 4ca698d9), text_style_control
+      latest split, leaderboard_publish_date 2026-11-11, category overall, rating with rating_lower and
+      rating_upper: "Gemma 4 31B" (google, Apache 2.0) 1451.8 (1444.4-1459.3), "Inkling" 1442.5 (1438.4-1446.6),
+      "Mistral Large 4" 1420.4 (1412.0-1428.9), "Olmo 3.1 32B Think" 1286.1 (1278.8-1293.4), "Granite 4.2
+      8B" 1289.3, "Phi-4" 1256.4 (1251.8-1261.0); category non_english: Gemma 4 31B 1437.8, Mistral Large
+      4 1404.6, Phi-4 1233.2. The full split shows Gemma 4 31B at 1452 on each of the seven snapshots since
+      2026-10-20.'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 9ed3f1d6b94f5bc78c54e42cfefc838b70732a1bcf8b9d75ba5bbb2700914cfe
+    content_sha256: 793403c62742af0da61f4e36392241c7df1e89436d85ac3aeaf679f318a8ea56
   - url: https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud
     shows: 'Google Cloud availability post: "Built from the same research as Gemini 3 and released under
       a commercially permissive Apache 2.0 license". It carries no benchmark figures and no Arena ranking.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 3ee88b422a5bb234847f3f85e87af23d20f73c525ea2aa1ae9dd0d7c79fd4140
+    content_sha256: 045d1b1ec915fa862fbf7ed8604996cd42fe7c1bdb95b32d246491b9f22b551c
   - url: https://artificialanalysis.ai/models/gemma-4-31b
     shows: 'Artificial Analysis page on Intelligence Index v5.0.1: "Gemma 4 31B (Reasoning) scores 4 on
       the Artificial Analysis Intelligence Index, placing it at the lower end among comparable models (median:
       8)", ranked "# 9 / 10" among open weights models of similar size (Small: 4B-40B parameters).'
-    accessed: '2026-11-12'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 5ab32692f1e99795f7794f8f551f9fc25a316ccf74c641cdeafe70a56d16d5c1
+    content_sha256: 577b4cbfd7c22b84744c51d4ab82414b201b4ce92c80d479ea6020f480191ec9
   - url: https://artificialanalysis.ai/leaderboards/models
     shows: 'Leaderboard model data on Intelligence Index v5.0.1, index score then the nine index evaluations
       (AA-Briefcase, AutomationBench-AA, Terminal-Bench 4.0, FrontierCode-AA 2.0, AA-Omniscience, GDP.pdf,
       HLE-Diamond, CritPt v2 (Hard Subset), Terminal-Bench-Science): Gemma 4 31B (Reasoning) 4.38 (368.6,
-      4.9%, 0.0%, 0.0%, -48.5, 6.0%, 7.2%, 4.0%, 0.0%); Granite 4.2 8B 5.10 (310.4, 2.1%, 0.0%, 0.0%, -16.7,
-      0.6%, 4.0%, 0.0%, 0.0%); Inkling (Xhigh) 12.48 (833.0, 5.0%, 1.0%, 3.9%, -1.5, 12.8%, 10.6%, 18.0%,
-      0.0%); Mistral Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%).'
-    accessed: '2026-11-12'
+      4.9%, 0.0%, 0.0%, -48.5, 6.0%, 7.2%, 4.0%, 0.0%); Granite 4.2 8B 5.10; Inkling (Xhigh) 12.48; Mistral
+      Large 4 (High) 26.12 (1347.7, 57.8%, 24.7%, 15.0%, 5.1, 17.6%, 17.3%, 27.0%, 4.3%). The same records
+      carry evaluations outside the index: gpqa-diamond, humanitys-last-exam and ifbench read 0.857, 0.236
+      and 0.756 for Gemma 4 31B (Reasoning) against 0.591, 0.063 and 0.660 for Olmo 3.1 32B Think, and 0.763,
+      0.118 and 0.535 for Gemma 4 31B (Non-reasoning) against 0.575, 0.038 and 0.235 for Phi-4; the Mistral
+      Large 4 (High) record carries none of the three.'
+    accessed: '2026-11-13'
     http_status: 200
-    content_sha256: 43332f8859634b19e73b4b6eb59f0b183fea55293a250e3bc4088e9576e85a5c
+    content_sha256: 650b4e6709a6639f123c130f723d0586978031db980e630659a4d0b2d4098aa1
+  - url: https://epoch.ai/data/benchmark_data.zip
+    shows: 'Epoch AI benchmarking hub archive. Epoch''s own runs, member gpqa_diamond.csv (Best score across
+      scorers, stderr): gemma-4-31b-it_minimal 0.758 (0.031), phi-4 0.561, mistral-large-4-0_high 0.881;
+      member otis_mock_aime_2024_2025.csv: gemma-4-31b-it_minimal 0.733, phi-4 0.138, mistral-large-4-0_high
+      0.983. No Gemma 4 run at a higher reasoning effort is listed.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: eb0b50dc148955936560d39f5844c0262b44c4a41362f1ffc64ff7bea0654657

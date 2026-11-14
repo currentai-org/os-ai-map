@@ -1,39 +1,82 @@
 product: ms-marco-cross-encoder
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_weights
   components:
-    weights: {value: open, detail: Apache-2.0 ungated safetensors for every checkpoint in the family}
-    data: {value: open, detail: MS MARCO Passage Ranking; the card front matter names sentence-transformers/msmarco}
-    code: {value: open, detail: SentenceTransformers ships the MS MARCO cross-encoder training scripts
-        the card links to}
+    weights:
+      value: open
+      detail: Apache-2.0 ungated safetensors for every checkpoint in the family
+    data:
+      value: released-restricted
+      detail: MS MARCO Passage Ranking via sentence-transformers/msmarco; Microsoft releases MS MARCO for
+        non-commercial research purposes only, without extending any license
+    code:
+      value: open
+      detail: SentenceTransformers ships the MS MARCO cross-encoder training scripts the card links to
     license:
-    - {name: Apache-2.0, detail: OSI}
-  raw: weights:open(Apache-2.0 ungated safetensors for every checkpoint in the family);data:open(MS MARCO
-    Passage Ranking; the card front matter names sentence-transformers/msmarco);code:open(SentenceTransformers
-    ships the MS MARCO cross-encoder training scripts the card links to);license:Apache-2.0(OSI)
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(Apache-2.0 ungated safetensors for every checkpoint in the family);data:released-restricted(MS
+    MARCO Passage Ranking via sentence-transformers/msmarco; Microsoft releases MS MARCO for non-commercial
+    research purposes only, without extending any license);code:open(SentenceTransformers ships the MS MARCO
+    cross-encoder training scripts the card links to);license:Apache-2.0(OSI)
   confidence: high
-  note: 'The whole chain is public: an Apache-2.0 ungated checkpoint, a training corpus named in the card''s
-    front matter, and the actual training scripts that produced it, shipped in the SentenceTransformers
-    examples tree. That is a fully open release earned on the evidence rather than assumed from reputation.'
-  last_verified: '2026-11-10'
+  note: The checkpoints are Apache-2.0 and ungated, and the SentenceTransformers scripts that train them
+    are public. Their ranking training data is MS MARCO Passage Ranking alone, which anyone can download
+    but which Microsoft releases for non-commercial research only and without granting a license. The whole
+    pipeline is published, but the data cannot be openly reused, and that keeps the family short of a fully
+    open model.
+  last_verified: '2026-11-13'
   sources:
   - url: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/raw/main/README.md
     shows: 'Front matter reads license: apache-2.0 and datasets: sentence-transformers/msmarco; the body
-      says the model was trained on MS MARCO Passage Ranking and links the SBERT.net MS MARCO training
-      code.'
-    accessed: '2026-11-10'
+      says the model was trained on MS MARCO Passage Ranking and links the SBERT.net MS MARCO training code.'
+    accessed: '2026-11-13'
     http_status: 200
     content_sha256: 7c0ec39941d0d1d766ccde671f592971d82fe45b7eea550a80d1ea864ebc3baa
-    establishes: [weights, data, code, license]
+    establishes:
+    - weights
+    - data
+    - code
+    - license
   - url: https://raw.githubusercontent.com/UKPLab/sentence-transformers/master/examples/cross_encoder/training/ms_marco/README.md
     shows: The cross_encoder/training/ms_marco directory of SentenceTransformers, listing training_ms_marco_bce.py,
-      training_ms_marco_cmnrl.py, training_ms_marco_listnet.py and training_ms_marco_lambda.py as the
-      scripts that train a CrossEncoder on MS MARCO.
-    accessed: '2026-11-10'
+      training_ms_marco_cmnrl.py, training_ms_marco_listnet.py and training_ms_marco_lambda.py as the scripts
+      that train a CrossEncoder on MS MARCO.
+    accessed: '2026-11-13'
     http_status: 200
     content_sha256: e76a3c4b5f7c30a41b850e8e421600598080cae86ae6aa426e62d21da33a8aab
-    establishes: [code, data]
+    establishes:
+    - code
+    - data
+  - url: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L12-v2/raw/main/README.md
+    shows: 'Front matter for the family''s 12-layer checkpoint reads license: apache-2.0, datasets: sentence-transformers/msmarco
+      and base_model: microsoft/MiniLM-L12-H384-uncased; the 6- and 4-layer cards name cross-encoder/ms-marco-MiniLM-L12-v2
+      as their base, so every MiniLM checkpoint descends from this MS MARCO run.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 3efb007e589b9155d6977f548d9d7be1e7067adff595ce2c5defb33648b2d0e3
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/sentence-transformers/msmarco/raw/main/README.md
+    shows: 'Dataset card for the corpus the checkpoints name: "This dataset consists of 4 separate datasets,
+      each using the MS MARCO Queries and passages"; the corpus subset''s collection strategy is "Reading
+      `collection.tar.gz` from MS MARCO". The front matter declares no license of its own.'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: 7b56d32f1991b726844050f81752e57124102e86e7dc5b4974c9bebd5ea8208f
+    establishes:
+    - data
+  - url: https://microsoft.github.io/msmarco/
+    shows: 'MS MARCO site, Terms and Conditions: "The MS MARCO datasets are intended for non-commercial
+      research purposes only to promote advancement in the field of artificial intelligence and related
+      areas, and is made available free of charge without extending any license or other intellectual property
+      rights." The page also says "we may not own the underlying rights in the documents."'
+    accessed: '2026-11-13'
+    http_status: 200
+    content_sha256: ab69d6410caaa38b13c395e6d4e0d6b77bab27f2545185c5518d8597acc624c2
+    establishes:
+    - data
 adoption:
   level: 5
   reach: '>10M'

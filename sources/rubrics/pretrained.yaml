@@ -16,12 +16,38 @@ openness:
       - '`pending` only where a release is announced with a date but not yet shipped'
       machine_signal: signal_huggingface.artifact_state (gated, private, files)
     data:
-      question: Is the pretraining corpus released, or reconstructible from released scripts?
+      question: >-
+        Is the pretraining corpus released, or reconstructible from released scripts, under
+        terms that permit open reuse?
       # Ruling: docs/reference/openness.md, "`components-listed`: naming every component is
       # not releasing the corpus" (issue #106). RWKV is the case it was written for.
-      values: [open, components-listed, documented-not-released, closed]
+      # `released-restricted` (R-2026-11-13-b): docs/reference/openness.md, "A released corpus
+      # is open only if its own terms permit open reuse".
+      values: [open, released-restricted, components-listed, documented-not-released, closed]
       evidence:
-      - a released dataset, or scripts that reconstruct the corpus end to end
+      - '`open`: a released dataset, or scripts that reconstruct the corpus end to end, AND
+        the corpus''s own terms permit open reuse, commercial use included. Download
+        availability alone is not enough; `license_tier` is the weights license and does not
+        answer this'
+      - '`released-restricted` where the corpus is released or reconstructible but its own
+        terms bar open reuse, e.g. a corpus licensed non-commercial as a whole (CC-BY-NC-SA-4.0)'
+      - 'a declared openly licensed compilation whose constituents keep mixed terms stays
+        `open` only after the record discloses the restricted constituents and assesses
+        whether they materially affect lawful reuse of the corpus, weighing the legal
+        restriction itself, whether the affected data can be identified and excluded, and how
+        much of the corpus it covers, not the share alone. An uncertain or minor constituent
+        does not downgrade it automatically; see docs/reference/openness.md'
+      - 'a corpus that is wholly or mostly web crawl is `open` when its release, or the named
+        crawl whose documented terms it binds the reuser to, documents four things: terms that
+        allow redistribution and commercial use with no binding commercial or field-of-use bar;
+        the crawl it came from and its processing; that the pages keep their own rights; and how
+        publisher opt-outs were honored during the collection that produced the scored corpus.
+        Opt-out handling is a documentation element, not proof of lawful reuse. A removal route is
+        recorded and affects confidence only. Crawl terms of use can document page rights but are
+        not by themselves an open license over the crawled documents. A binding bar makes it
+        `released-restricted`; a missing element holds the dimension, and a corpus that cannot in
+        practice be reconstructed is assessed as `components-listed` or
+        `documented-not-released` (R-2026-11-13-d; docs/reference/openness.md)'
       - '`components-listed` where the release publishes a LISTING of the corpus, one
         entry per component and each entry individually resolvable, while the mixture or
         the sampling is not published, so the corpus cannot be rebuilt. Prose naming the
@@ -230,6 +256,14 @@ openness:
       Full pipeline but a non-OSI license caps the score at 4. MOF would call this
       source-available rather than open, so it must not reach the `open` bucket; see
       docs/reference/openness.md.
+  - when: {data: released-restricted, code: open}
+    then: {score: 4, class: open_weights}
+    because: >-
+      The corpus and the code that consumed it are both published, but the corpus's own terms
+      bar open reuse, so a reader can inspect and rebuild the run without being free to reuse
+      the data. Level with a full release under a non-OSI weights license: either way the
+      pipeline is all there and one part's terms keep it out of the `open` bucket.
+      R-2026-11-13-b; Lucie-7B is the case it was written for.
   - when: {data: components-listed, code: open}
     then: {score: 4, class: open_weights}
     because: >-
