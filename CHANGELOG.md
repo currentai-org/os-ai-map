@@ -16,6 +16,13 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- `openness.components_parts` in the payload and a `components_parts` JSONB column in the site's
+  `openness` table: the recorded components as a list a reader never has to split, so a `;` inside
+  a detail no longer cuts an attribute in two
+  ([#1043](https://github.com/currentai-org/os-ai-map/pull/1043)).
+
 ### Changed
 
 - ColBERT and the MS MARCO cross-encoders moved from 5/open_source to 4/open_weights, because

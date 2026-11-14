@@ -175,7 +175,7 @@ Read the map's tables directly, or materialize a copy CMS-side.
 
 ### Where this departs from the designers' model
 
-Five places, all deliberate, all in `build/neon_schema.py`:
+Six places, all deliberate, all in `build/neon_schema.py`:
 
 | Departure | Why |
 |---|---|
@@ -183,6 +183,7 @@ Five places, all deliberate, all in `build/neon_schema.py`:
 | `categories.slug`, which the DBML omits | Every deep link is by slug, and so is every join from the warehouse's registry tables; it carries a `UNIQUE` for the same reason. |
 | `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | A positional id carries an ordering — the layer stack, the map's curated category order, the long tail's ranking, the stage number — and a hashed id carries none of it. The model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So each ordering gets a column of its own, and `ORDER BY sort_order` is the query that means what `ORDER BY id` would have. |
 | `groups`, and the `categories.group_id` that references it | The map's hierarchy is arc &rarr; group &rarr; category; the designers' model has only the layer above the category. A group gathers categories by function inside an arc and is what the taxonomy declares them under, so a serving layer with no group tier cannot render the hierarchy the repo publishes. The column is `group_id` rather than `group` because GROUP is a reserved word in Postgres. `groups.layer` denormalizes what each category in the group already carries, and the loader refuses a group whose categories disagree rather than picking one. |
+| `openness.components_parts`, a `jsonb` beside the `components` string | The string joins attributes with `;` and leaves a `;` inside a detail unescaped (`license:MIT(OSI; PyCaret 3.3.2, ...)`), so no reader can split it correctly every time. The column is the same evidence as a list built from the recorded mapping: `[{key, context, parts: [{value, detail?, raw?}]}]`, one part per license on a license key, `raw` only where `value (detail)` does not reproduce the record, keyless free text last with a null `key`. NULL when nothing was recorded. `build/check_rubric.py::components_parts` builds it; the rendered notebook leaves it out, since it reads the string. |
 | `gallery`, `gallery_products`, `gallery_gaps` and their three enums are absent | The CMS owns authored content; a schema rebuilt from source can only hold rows it produced. See below. |
 
 ### Two things the designers should know about the data

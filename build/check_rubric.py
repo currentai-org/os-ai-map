@@ -417,6 +417,50 @@ def components_string(openness: dict) -> str:
     return ";".join(f"{key}:{value}" for key, value in recompose(components or {}).items())
 
 
+def components_parts(openness: dict) -> list[dict]:
+    """The recorded components as a list a reader never has to split.
+
+    The flat string joins attributes with `;` and leaves a `;` inside a detail unescaped
+    (`license:MIT(OSI; PyCaret 3.3.2, ...)`), so no reader can split it correctly in every case.
+    This is the same evidence, read from the mapping rather than re-parsed from text:
+
+        [{"key": "license", "context": false,
+          "parts": [{"value": "MIT", "detail": "OSI; PyCaret 3.3.2, ..."}]}, ...]
+
+    One shape for every attribute: a license lists one part per `+`-joined license, anything
+    else has exactly one part. A part carries `raw` only where `value (detail)` does not
+    reproduce what was recorded (text after the closing paren, nested parens), and a reader
+    should show `raw` when it is there. `context` marks the keys the product's ladder does not
+    read. Keyless free text comes last with `key` null, because the verbatim string the payload
+    already publishes carries it too.
+    """
+    block = openness or {}
+    components = block.get("components")
+    if isinstance(components, str):
+        components = structure(components)
+    if not isinstance(components, dict):
+        return []
+    context = set(components.get(CONTEXT) or {})
+    out: list[dict] = []
+    for key, entry in entries(components).items():
+        if isinstance(entry, list):
+            parts = [_part(part.get("name", ""), part) for part in entry]
+        else:
+            parts = [_part(entry.get("value", ""), entry)]
+        out.append({"key": key, "context": key in context, "parts": parts})
+    for text in components.get(FREE_TEXT) or []:
+        out.append({"key": None, "context": False, "parts": [{"value": str(text).strip()}]})
+    return out
+
+
+def _part(value: object, entry: dict) -> dict:
+    part: dict = {"value": str(value)}
+    for field in ("detail", "raw"):
+        if entry.get(field):
+            part[field] = str(entry[field]).strip()
+    return part
+
+
 _RECORDED_ALIASES: dict[str, str] | None = None
 
 

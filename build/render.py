@@ -16,6 +16,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = str(ROOT / "notebooks" / "ai-stack-map.py")
 data = json.load(open(ROOT / "build" / "notebook_data.json"))
+# `openness.components_parts` is for the site's database; the notebook reads the flat
+# `components` string and would only carry the list as ~650 KB of dead weight in its literal.
+for _category in (data.get("categories") or {}).values():
+    for _product in _category.get("products") or []:
+        (_product.get("openness") or {}).pop("components_parts", None)
 data_json = json.dumps(data, ensure_ascii=False)
 DATA_LITERAL = repr(data_json)  # safe Python string literal for json.loads(...)
 
