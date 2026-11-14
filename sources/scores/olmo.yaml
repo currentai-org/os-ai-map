@@ -10,10 +10,14 @@ openness:
       value: open
       detail: Dolma 3, 9.3T tokens, all stages. Mostly Common Crawl text from 104 dumps, CC-MAIN-2013-20
         to CC-MAIN-2024-51, with the processing documented in the Olmo 3 paper and the dolma3 repository,
-        released under ODC-By. The cards add a research and educational use statement and link Ai2's Responsible
-        Use Guidelines outside the license grant, with no access gate. CCBot and Ai2's AI2Bot document robots.txt
-        checks at crawl time. Neither Dolma 3 card says the crawled pages keep their own rights or binds
-        the reuser to Common Crawl's terms
+        released under ODC-By. Page rights are disclosed through Dolma 3's own ODC-By grant, whose section
+        2.4 says the license does not cover rights in the individual contents (R-2026-11-14-a). CCBot and
+        Ai2's AI2Bot document robots.txt checks at crawl time. The cards call the corpus intended for research
+        and educational use and link Ai2's Responsible Use Guidelines, which say they "govern your use of
+        Ai2’s AI tools and artifacts, including models, datasets" and, except for research use, bar uses
+        including political manipulation, political campaigning or lobbying, automated social media posting
+        and profiling people by protected characteristics. ODC-By and Apache-2.0 remain the operative grants
+        unless incorporation of the guidelines is established (R-2026-11-14-b). No access gate applies
     code:
       value: open
       detail: training code+recipes+logs
@@ -28,10 +32,15 @@ openness:
     checkpoints, all ungated and downloadable, so the whole training run is open to inspection.
   raw: weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages. Mostly Common Crawl text from
     104 dumps, CC-MAIN-2013-20 to CC-MAIN-2024-51, with the processing documented in the Olmo 3 paper and
-    the dolma3 repository, released under ODC-By. The cards add a research and educational use statement
-    and link Ai2's Responsible Use Guidelines outside the license grant, with no access gate. CCBot and
-    Ai2's AI2Bot document robots.txt checks at crawl time. Neither Dolma 3 card says the crawled pages keep
-    their own rights or binds the reuser to Common Crawl's terms);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
+    the dolma3 repository, released under ODC-By. Page rights are disclosed through Dolma 3's own ODC-By
+    grant, whose section 2.4 says the license does not cover rights in the individual contents (R-2026-11-14-a).
+    CCBot and Ai2's AI2Bot document robots.txt checks at crawl time. The cards call the corpus intended
+    for research and educational use and link Ai2's Responsible Use Guidelines, which say they "govern your
+    use of Ai2’s AI tools and artifacts, including models, datasets" and, except for research use, bar uses
+    including political manipulation, political campaigning or lobbying, automated social media posting
+    and profiling people by protected characteristics. ODC-By and Apache-2.0 remain the operative grants
+    unless incorporation of the guidelines is established (R-2026-11-14-b). No access gate applies);code:open(training
+    code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/allenai/dolma
     shows: 'Hugging Face API record for the original Dolma corpus - "Dolma: an Open Corpus of Three Trillion
@@ -46,10 +55,12 @@ openness:
     shows: 'Ai2 release post: Olmo 3 is pretrained on Dolma 3, "a new ~9.3-trillion-token corpus drawn from
       web pages, science PDFs"; "Because the Olmo 3 data recipes, training pipeline, and checkpoints are
       open, independent teams can connect model behavior back to measurable properties"; fully open means
-      "where training data, code, and weights are all publicly available".'
-    accessed: '2026-11-12'
+      "where training data, code, and weights are all publicly available"; "we’re making every training
+      and fine-tuning dataset available for download without any license restrictions, allowing for custom
+      deployment and reuse".'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 14928aed87983010b73cdfe678f72e5552d2b7a126ad467f68827b8e9441cd27
+    content_sha256: fd6ae7681548d5e21453fd1f6819ad94ec14434a50c864f772094fe346c3a844
     establishes:
     - data
     - code
@@ -92,10 +103,12 @@ openness:
     - license
   - url: https://huggingface.co/allenai/Olmo-3-1025-7B/raw/main/README.md
     shows: 'OLMo 3 7B model card: "We are releasing all code, checkpoints, and associated training details";
-      "For pretraining, the naming convention is"; lists "Core repo (training, inference, fine-tuning etc.):
-      https://github.com/allenai/OLMo-core" and the pretraining launch script "OLMo-3-1025-7B-pretrain-1.py";
-      "The code and model are released under Apache 2.0."'
-    accessed: '2026-11-12'
+      "For pretraining, the naming convention is"; lists "Core repo (training, inference, fine-tuning etc.):"
+      https://github.com/allenai/OLMo-core and the pretraining launch script "OLMo-3-1025-7B-pretrain-1.py";
+      "The code and model are released under Apache 2.0." License section: "This model is licensed under
+      Apache 2.0. It is intended for research and educational use in accordance with [Ai2''s Responsible
+      Use Guidelines](https://allenai.org/responsible-use)." No acceptance, agreement or click-through language.'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: d9f4fad78dd34fac1faee26233a339784b2210fcdd2c22551a43628e5446a952
     establishes:
@@ -111,11 +124,13 @@ openness:
     establishes:
     - checkpoints
   - url: https://huggingface.co/datasets/allenai/dolma3_mix-6T/raw/main/README.md
-    shows: 'Dolma 3 Mix (6T) dataset card: ''is the collection of data used during the pretraining stage
-      to train the Olmo-3-1125-32B model''; ''The majority of this dataset comes from Common Crawl.'' ''Dolma
-      3 mix is licensed under the Open Data Commons Attribution License v1.0 (ODC-By). It is intended for
-      research and educational use. For more information, please see our Responsible Use Guidelines.'' It
-      names no Common Crawl terms and says nothing about rights in the crawled pages.'
+    shows: 'Dolma 3 Mix (6T) dataset card: "is the collection of data used during the pretraining stage
+      to train the Olmo-3-1125-32B model"; "The majority of this dataset comes from Common Crawl." Licensing
+      section: "Dolma 3 mix is licensed under the Open Data Commons Attribution License v1.0 (ODC-By). It
+      is intended for research and educational use. For more information, please see our [Responsible Use
+      Guidelines](https://allenai.org/responsible-use)." The front matter carries "license: odc-by" and
+      no extra_gated or other access-terms field, and nothing on the card asks the reader to accept the
+      guidelines. It names no Common Crawl terms.'
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: 901a231cdcae33ea8ce765d1bdef7606555780c4a108b0bcf046a65fa5d5adf9
@@ -123,19 +138,22 @@ openness:
     - data
   - url: https://huggingface.co/datasets/allenai/dolma3_mix-6T-1025-7B/raw/main/README.md
     shows: 'Dolma 3 Mix card for Olmo-3-1025-7B, the target of the model''s dataset:allenai/dolma3_mix-6T-1025
-      tag: common_crawl web pages 4.51T of 5.93T tokens, ''76.07%'' of the mix, every source listed as ODC-BY;
-      ''Some olmOCR science PDFs in the current dataset have been redacted following the training of Olmo
-      3 7B.'' The same licensing paragraph as the 6T card, with no Common Crawl terms and no page-rights
-      statement.'
+      tag: common_crawl web pages 4.51T of 5.93T tokens, "76.07%" of the mix, every source listed as ODC-BY;
+      "Some olmOCR science PDFs in the current dataset have been redacted following the training of Olmo
+      3 7B." The same licensing paragraph as the 6T card, ending "For more information, please see our [Responsible
+      Use Guidelines](https://allenai.org/responsible-use)."; front matter "license: odc-by" with no extra_gated
+      field, and no Common Crawl terms.'
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: 74eec1f55057f4905f83d778cb2124747e074e2b350fc2fb034114a8a38c0467
     establishes:
     - data
   - url: https://huggingface.co/datasets/allenai/dolma3_pool/raw/main/README.md
-    shows: 'Dolma 3 Pool card: Common Crawl ''8.14T'' of ''9.31T'' pool tokens; detailed documentation on
-      Dolma 3 processing is in the dolma3 GitHub repository; ''Dolma 3 is licensed under the Open Data Commons
-      Attribution License v1.0 (ODC-By). It is intended for research and educational use.'''
+    shows: 'Dolma 3 Pool card: Common Crawl "8.14T" of "9.31T" pool tokens; detailed documentation on Dolma
+      3 processing is in the dolma3 GitHub repository; "Dolma 3 is licensed under the Open Data Commons
+      Attribution License v1.0 (ODC-By). It is intended for research and educational use. For more information,
+      please see our [Responsible Use Guidelines](https://allenai.org/responsible-use)." Front matter "license:
+      odc-by" with no extra_gated field.'
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: 7a43fb286ca2d57f6e44fbc109b7208a778d59a7f6e3c8a52ccd4f172d4e0ab1
@@ -184,11 +202,16 @@ openness:
     establishes:
     - data
   - url: https://allenai.org/responsible-use
-    shows: Ai2 Responsible Use Guidelines 'govern your use of Ai2’s AI tools and artifacts, including models,
-      datasets'; 'These Guidelines do not restrict the use of the Ai2 Tools for the sole purpose of scientific
-      research and development'; outside research use they list disallowed use cases such as political campaigning
-      or lobbying. The Dolma 3 cards link them for more information, outside the ODC-By grant and behind
-      no access gate.
+    shows: 'Ai2 Responsible Use Guidelines, "Last Updated: June, 2024". They "govern your use of Ai2’s AI
+      tools and artifacts, including models, datasets, APIs, and applications" and add "In addition to these
+      Guidelines, your use of the Ai2 Tools is governed by Ai2’s Website" Terms and Conditions of Use. "These
+      Guidelines do not restrict the use of the Ai2 Tools for the sole purpose of scientific research and
+      development"; "Except for Research Use, the Ai2 Tools may not be used for any of the disallowed use
+      cases below", among them "Attempting to influence political decisions or opinions", "Posting content
+      to social platforms in an automated way", "Applications that classify and/or profile people based
+      on protected characteristics", "Tools that promote academic dishonesty" and "Political campaigning
+      or lobbying"; "Ai2 reserves the right to terminate access for harms that are not listed at our sole
+      discretion". The page has no acceptance step and names no dataset or model license.'
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: 518077f03c13d8b51e0c2cf28562a4ffdeefee1f62f2374e4d7ce4ae8526606c
@@ -221,6 +244,136 @@ openness:
     content_sha256: 4f606df61decb1f876ba66eddc8674c96f0c294c5710d3983ee81e7fa801a2dc
     establishes:
     - data
+  - url: https://huggingface.co/datasets/allenai/dolma3_dolmino_mix-100B-1125/raw/main/README.md
+    shows: 'Dolma 3 Dolmino mid-training card: "Dolma 3 Dolmino is licensed under the Open Data Commons
+      Attribution License v1.0 (ODC-By). It is intended for research and educational use. For more information,
+      please see our [Responsible Use Guidelines](https://allenai.org/responsible-use)." Front matter "license:
+      odc-by" with no extra_gated field.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 927836492a4d232522dbc444b66e7ffba220fac04b2077b00eb6b3222d2624d0
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/dolma3_longmino_mix-100B-1125/raw/main/README.md
+    shows: 'Dolma 3 Longmino long-context card: "Dolma 3 Longmino is licensed under the Open Data Commons
+      Attribution License v1.0 (ODC-By). It is intended for research and educational use. For more information,
+      please see our [Responsible Use Guidelines](https://allenai.org/responsible-use)." Front matter "license:
+      odc-by" with no extra_gated field.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2d669fbda6df2b736d12cc274962813257fb86617dfcb7edd6891a6df720c739
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/allenai/dolma3_mix-6T?expand%5B%5D=gated&expand%5B%5D=cardData
+    shows: 'Hugging Face API record for allenai/dolma3_mix-6T, expanded to gated and cardData: gated is
+      false, and cardData holds license odc-by, task_categories, language and configs only, with no extra_gated
+      prompt, fields or other access-terms key.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 3d6339c543ce4226bd9441482d2ba01c220b74b23b9d7e00a42f5fbfd2de6f45
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/allenai/dolma3_mix-6T-1025-7B?expand%5B%5D=gated&expand%5B%5D=cardData
+    shows: 'Hugging Face API record for allenai/dolma3_mix-6T-1025-7B, expanded to gated and cardData: gated
+      is false, and cardData holds license odc-by, task_categories, language and configs only, with no extra_gated
+      prompt, fields or other access-terms key.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 31f9964d5c5f9792379b9da2e3ae8cae9c35fcee3d8dec4e9ca5144410726ca9
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/allenai/dolma3_pool?expand%5B%5D=gated&expand%5B%5D=cardData
+    shows: 'Hugging Face API record for allenai/dolma3_pool, expanded to gated and cardData: gated is false,
+      and cardData holds license odc-by, task_categories, language and configs only, with no extra_gated
+      prompt, fields or other access-terms key.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8185365686434ce448deeb12b1a701f89564b11d63cc7dcdf16e607f9938c76c
+    establishes:
+    - data
+  - url: https://huggingface.co/allenai/Olmo-3-1125-32B/raw/main/README.md
+    shows: 'OLMo 3 32B model card: front matter "license: apache-2.0"; "The code and model are released
+      under Apache 2.0." License section: "This model is licensed under Apache 2.0. It is intended for research
+      and educational use in accordance with [Ai2''s Responsible Use Guidelines](https://allenai.org/responsible-use)."
+      No acceptance, agreement or click-through language.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8f227fd377065f4f93b50f9e14606224a021517f2315bcd537a22bb56ba8680f
+    establishes:
+    - license
+  - url: https://huggingface.co/allenai/Olmo-3.1-32B-Think/raw/main/README.md
+    shows: 'OLMo 3.1 32B Think model card: front matter "license: apache-2.0"; "This model is licensed under
+      Apache 2.0. It is intended for research and educational use in accordance with Ai2''s [Responsible
+      Use Guidelines](https://allenai.org/responsible-use)." No acceptance, agreement or click-through language.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 21de41172077e337ef50d25dd342c331954e228100d442da1a224427055dcfd6
+    establishes:
+    - license
+  - url: https://huggingface.co/allenai/Olmo-3.1-32B-Instruct/raw/main/README.md
+    shows: 'OLMo 3.1 32B Instruct model card: front matter "license: apache-2.0"; "This model is licensed
+      under Apache 2.0. It is intended for research and educational use in accordance with Ai2''s [Responsible
+      Use Guidelines](https://allenai.org/responsible-use)." and the License section "It is intended for
+      research and educational use in accordance with [Ai2''s Responsible Use Guidelines](https://allenai.org/responsible-use)."
+      No acceptance, agreement or click-through language.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 937c83504fc8c2d422922913af601feb6ec7b21415061d86d9e793c52359525b
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/allenai/Olmo-3.1-32B-Think
+    shows: Hugging Face API record for allenai/Olmo-3.1-32B-Think tagged "license:apache-2.0" and "dataset:allenai/Dolci-Think-RL";
+      gated and private are false, and cardData carries no extra_gated field.
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 97b31bd214eb8ddb3eb9f0a253ad5ef3b2f7897b8ecdbd39d615dd09eeaea88d
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/allenai/Olmo-3.1-32B-Instruct
+    shows: Hugging Face API record for allenai/Olmo-3.1-32B-Instruct tagged "license:apache-2.0" and "dataset:allenai/Dolci-Instruct-RL";
+      gated and private are false, and cardData carries no extra_gated field.
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 583035e0afe94391cae1c615c222de0c99198bb1145fab05ef0cb2e930f4f5e5
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/allenai/OLMo-core/main/LICENSE
+    shows: 'LICENSE of OLMo-core, the core repo the model cards name: the Apache License "Version 2.0, January
+      2004" text, unmodified, ending with the unfilled template "Copyright {yyyy} {name of copyright owner}".
+      It adds no terms and does not mention Ai2 or the Responsible Use Guidelines. The Hugging Face model
+      repos carry no LICENSE file.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3
+    establishes:
+    - code
+    - license
+  - url: https://raw.githubusercontent.com/allenai/dolma3/main/LICENSE
+    shows: 'LICENSE of the dolma3 reconstruction repository: the Apache License "Version 2.0, January 2004"
+      text, unmodified, ending with the unfilled template "Copyright [yyyy] [name of copyright owner]".
+      It adds no terms and does not mention Ai2 or the Responsible Use Guidelines.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - data
+  - url: https://allenai.org/terms
+    shows: 'Ai2 Terms and Conditions of Use, "Effective: September 25, 2024". They "govern your use of websites,
+      products, and services operated and provided by The Allen Institute for Artificial Intelligence",
+      including "content, documentation, and other materials or functionality that are incorporated or made
+      available by Ai2 under these Terms of Use"; "Ai2 is providing you access to the Services subject to;
+      (i) these Terms of Use (including the attached exhibits); (ii) our" Responsible Use Guidelines; "BY
+      USING OR ACCESSING THE SERVICES, YOU SIGNIFY YOUR PRIOR REVIEW, UNDERSTANDING, AND ACCEPTANCE OF THE
+      TERMS"; "Our software may also include open source software that is governed by its own licenses".
+      The terms do not name Dolma, Hugging Face distribution, or the ODC-By and Apache-2.0 grants.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8793c84e5159b709491d3896fc0b207779bbbc87c4ca771f9b7ea5c958c8e7d4
+    establishes:
+    - data
+    - license
 adoption:
   level: 3
   reach: 100K-1M

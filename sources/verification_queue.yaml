@@ -1214,19 +1214,16 @@ held:
       since: '2026-09-29'
   marin:
     openness:
-      because: 'Under the web-crawl corpus test (R-2026-11-13-d), most of Marin''s pretraining text is web crawl from
-        two releases. DCLM-Baseline, the main source of Marin 8B through 3.78T tokens, documents all four elements:
-        CC-BY-4.0, with the card''s research-use statement outside the grant; Common Crawl provenance and processing
-        in the DCLM paper; Common Crawl''s Terms of Use bound on the pool and its subsets, which leave the pages under
-        their owners'' terms; and robots.txt through CCBot. Nemotron-CC, the main web source of Marin 8B from 4.78T
-        tokens on and about 97% of Marin 32B''s main mix, documents provenance (99 Common Crawl crawls, CC-MAIN-2013-20
-        to CC-MAIN-2024-30, with processing in its paper), page rights through the Common Crawl terms it is released
-        under, and robots.txt through CCBot. Its terms element is undocumented: NVIDIA releases it ''under the Common
-        Crawl Terms of Use'', which are not by themselves an open license over the crawled documents, and no compilation
-        license or other grant was found; the Hugging Face copy nvidia/Nemotron-CC returned 401. This is a missing grant,
-        not a restriction: the Common Crawl terms carry no commercial or field-of-use bar. The recorded 5/open_source
-        stands provisionally. Settled by a documented license or grant from NVIDIA over Nemotron-CC, or a maintainer
-        ruling on a corpus whose dominant web source carries crawl terms alone.'
+      because: 'Under R-2026-11-14-c the governing corpus is assessed, not whichever constituent passes. Nemotron-CC is
+        the dominant web source of Marin 8B from 4.78T tokens on, 70% of its Starling cooldown, and about 97% of Marin
+        32B''s main mix, so it governs those training phases, and DCLM-Baseline''s documented CC-BY-4.0 license, which
+        covers Marin 8B through 3.78T tokens, cannot establish openness for them. Nemotron-CC documents provenance (99
+        Common Crawl crawls, CC-MAIN-2013-20 to CC-MAIN-2024-30, with processing in its paper), page rights through the
+        Common Crawl terms it is released under, and robots.txt through CCBot. No compilation license or other grant over
+        it was found: NVIDIA releases it "under the Common Crawl Terms of Use", which are not by themselves an open license
+        over the crawled documents, and the Hugging Face copy nvidia/Nemotron-CC returned 401. That is missing evidence,
+        not an affirmative restriction, so the recorded value is not lowered, and the axis stays held and undated. Settled
+        by a documented license or grant over Nemotron-CC, or a separate, explicit constituent-level ruling.'
       since: '2026-11-14'
   markllm:
     adoption:
@@ -1562,18 +1559,22 @@ held:
       since: '2026-10-07'
   olmo:
     openness:
-      because: 'Under the web-crawl corpus test (R-2026-11-13-d), Dolma 3, mostly Common Crawl, documents three of the
-        four elements: ODC-By terms with no binding commercial or field-of-use bar (the cards'' research and educational
-        use statement and the Responsible Use Guidelines they link sit outside the license grant, with no access gate);
-        named provenance, 104 Common Crawl dumps from CC-MAIN-2013-20 to CC-MAIN-2024-51 with the processing in the
-        Olmo 3 paper and the dolma3 repository; and opt-out handling, CCBot''s robots.txt check for the web text and
-        AI2Bot''s for the olmOCR science PDFs. Disclosed page rights is undocumented: neither Dolma 3 card says the
-        crawled pages keep their own rights or binds the reuser to Common Crawl''s terms. The original Dolma card binds
-        its users to the terms of the original data sources, but that clause covers the Dolma v1 releases, and ODC-By
-        section 2.4, which says the license does not cover rights in the individual contents, is a stock license clause
-        rather than a statement by the release. The recorded 5/open_source stands provisionally. Settled by a Dolma
-        3 statement on page rights or the Common Crawl terms, or a maintainer ruling that the Dolma v1 clause or ODC-By
-        section 2.4 meets the element.'
+      because: 'One question remains under R-2026-11-14-b: whether the Dolma 3 dataset terms or the OLMo 3 model distribution
+        terms expressly incorporate Ai2''s Responsible Use Guidelines. The guidelines say they "govern your use of Ai2’s
+        AI tools and artifacts, including models, datasets" and, "Except for Research Use", bar uses such as political
+        manipulation, political campaigning or lobbying, automated social media posting and profiling people by protected
+        characteristics. ODC-By and Apache-2.0 remain the operative grants unless incorporation is established. What the
+        distribution shows: the Dolma 3 cards (6T, 6T-1025-7B, pool, Dolmino, Longmino) carry front matter "license: odc-by"
+        with no extra_gated or other access-terms field, are not gated on Hugging Face, and link the guidelines "For more
+        information"; the OLMo 3 and 3.1 model cards say each model "is licensed under Apache 2.0" and is "intended for
+        research and educational use in accordance with" the guidelines, are not gated, and carry no acceptance, click-through
+        or licensing language for them; the model repos have no LICENSE file, and the OLMo-core and dolma3 LICENSE files
+        are unmodified Apache-2.0. Ai2''s release post says the datasets are available "without any license restrictions".
+        Ai2''s website Terms of Use provide access to the "Services" subject to the guidelines, accepted by use, and define
+        the Services to include content "made available by Ai2 under these Terms of Use"; no card or license file references
+        those Terms, and whether the Hugging Face downloads are made available under them has not been established. Page
+        rights are met through Dolma 3''s own ODC-By grant under R-2026-11-14-a. Settled by establishing whether the dataset
+        or model distribution terms expressly incorporate the guidelines.'
       since: '2026-11-14'
   omnigen:
     adoption:
