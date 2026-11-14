@@ -5,6 +5,7 @@ openness:
   components:
     license:
     - name: CommonCrawl-ToU
+      detail: data, no compilation license on the card
     - name: Apache-2.0
       detail: code
     ungated:
@@ -12,33 +13,112 @@ openness:
     dataset_card:
       value: 'yes'
   confidence: high
-  note: Publicly downloadable dataset. Data referred to Common Crawl's Terms of Use; Apache-2.0 covers processing
-    code only. No independent open-data grant established; openness held.
-  raw: license:CommonCrawl-ToU+Apache-2.0(code);ungated:yes;dataset_card:yes
+  note: 'RedPajama-V2 publishes over 100 billion web documents from 84 Common Crawl snapshots, with quality
+    signals and the scripts that rebuild it, as a public download. Its card grants no license over the data:
+    it points to Common Crawl''s terms of use, which leave page rights with their owners, and licenses only
+    the processing code under Apache-2.0. The paper describing it places the aggregate under ODC-By, which
+    neither dataset card repeats.'
+  raw: license:CommonCrawl-ToU(data, no compilation license on the card)+Apache-2.0(code);ungated:yes;dataset_card:yes
   sources:
   - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2
     shows: HF dataset page, public with no access-request gate (its embedded page data reports gated false),
       shows the card text "RedPajama-V2 is an open dataset for training large language models", "The code
       used to load and process the dataset is licensed under the Apache 2.0 license." and a pointer to the
       "Common Crawl Foundation Terms of Use" for the data.
-    accessed: '2026-09-29'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 8e28af386455dc276c1dac5df78395c17674e0cbe6955f43d823066bef23786e
+    content_sha256: 15cdf443ef2f774941b1c9d4d5d98864ba32741a8c3eeb88ab2574d0ea79ce16
     establishes:
     - availability
     - documentation
     - license
   - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2/raw/main/README.md
-    shows: 'Dataset card License section: "Please refer to the Common Crawl Foundation Terms of Use for
-      the data. The code used to load and process the dataset is licensed under the Apache 2.0 license."
-      No compilation license is stated for the data.'
-    accessed: '2026-11-13'
+    shows: 'Dataset card: "The dataset includes over 100B text documents coming from 84 CommonCrawl snapshots
+      and processed using the [CCNet]" pipeline; "A full set of scripts to recreate the dataset, including
+      the quality signals, can be found [here]". Its front matter declares no license, and its License section
+      reads "Please refer to the [Common Crawl Foundation Terms of Use]" for the data, while "The code used
+      to load and process the dataset is licensed under the Apache 2.0 license." It names no removal or
+      opt-out route, and its personal-information section reads "[More Information Needed]".'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: e3e85557294bab64e722346d2f11da1f1dc513bf39a9030d93a031cc4d81e7b7
     establishes:
     - availability
     - documentation
     - license
+  - url: https://huggingface.co/api/datasets/togethercomputer/RedPajama-Data-V2
+    shows: 'Hub API record: "gated":false, "private":false; the tags carry no license entry and the card
+      data holds only "task_categories", "language" and "pretty_name".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 91c9bcc987c340788c490a44075cac1d304ae05ab9ef820d10b66f32e0824b9a
+    establishes:
+    - availability
+    - license
+  - url: https://arxiv.org/html/2411.12372
+    shows: 'RedPajama paper (covering RedPajama-V1 and V2). Appendix E, Author Responsibility Statement:
+      "This aggregated dataset is licensed to you under the terms of the ODC-By-1.0, as well as any licenses
+      that may apply to its constituent parts." Appendix F, License: "For the datasets themselves, we refer
+      to the Common Crawl Foundation Terms of Use" for data derived from Common Crawl, and "We further request
+      from users that they abide by each individual license for the subset they use." The limitations note
+      no "analysis of personally identifiable information present in the dataset".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 1ac12a1584d1ad48e337113957ce76c5420c7409e7f3f5e13b4986497566c44f
+    establishes:
+    - license
+    - documentation
+  - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md
+    shows: 'RedPajama-Data repository README, License section: "Copyright 2023 Together Computer" under
+      the Apache License 2.0 for the code, then "For the dataset itself, please refer to" the "[Common Crawl
+      Foundation Terms of Use]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-1T/raw/main/README.md
+    shows: 'RedPajama-V1 card, for comparison: "Please refer to the licenses of the data subsets you use.",
+      listing the "[Common Crawl Foundation Terms of Use]" among them. Neither RedPajama card states the
+      ODC-By-1.0 grant the paper''s Appendix E describes.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 87c54ca0c82398e5747be1fd8c1487da9e3e34fe1583717a68f901a2167b678d
+    establishes:
+    - license
+  - url: https://www.together.ai/blog/redpajama-data-v2
+    shows: 'Release post: "30 trillion filtered and deduplicated tokens (100+ trillions raw) from 84 CommonCrawl
+      dumps covering 5 languages"; it states no license for the data.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: e1583c9845f127c6a0b227868d5782d9f3bb15e1f62ac05df63d23100f72d7ba
+    establishes:
+    - documentation
+  - url: https://commoncrawl.org/terms-of-use
+    shows: 'Common Crawl Terms of Use, "LAST UPDATED: March 7, 2024". CC grants "a limited, non-assignable,
+      non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service";
+      crawled material "may be subject to separate terms of use or terms of service from the owners of such
+      Crawled Content"; "your use of the Crawled Content signifies your binding acceptance of the ToU";
+      and "BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS
+      OF THIRD PARTIES". It sets no commercial or field-of-use bar and recommends counsel "before making
+      any use, including commercial use".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072
+    establishes:
+    - license
+    - documentation
+  - url: https://commoncrawl.org/faq
+    shows: 'Common Crawl FAQ: "CCBot is an automated crawler, checking first the robots.txt, and if crawling
+      a page is allowed, fetches pages using HTTP GET requests", and "You may also wish to be added to our
+      opt-out registry".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - license
+    - documentation
 adoption:
   level: 3
   reach: 10K-100K
