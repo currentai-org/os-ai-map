@@ -3255,17 +3255,17 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps its own terms, and the card lists the Claire dialogue sets as non-commercial and no license for a few small subsets);code:open(Luciole-Training pretraining + data-processing pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints released);license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps its own terms, and the card lists the Claire dialogue sets as non-commercial and no license for a few small subsets. The web share (FineWeb, FineWeb-2, DCLM, CulturaX, HPLT 2 and math web sets) comes from named Common Crawl and Internet Archive crawls; the card says documents may be copyrighted, applies robots.txt from CC-MAIN-2025-26 retroactively to FineWeb, DCLM and the math sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot's crawl-time robots.txt check, and HPLT 2's cleaned release keeps only robots.txt-compliant pages. CulturaX follows the mC4 and OSCAR terms. OSCAR, assessed separately: OSCAR licenses only its packaging, and its suspended gate says \"In France, for example, any use of OSCAR that does not fall within the framework of the so-called 'TDM' or the so-called 'research' exceptions to copyright has always been prohibited.\" That asserts a legal constraint, not a contractual field-of-use bar, and CulturaX's redistribution does not cure any underlying rights limitation. The affected text is identifiable and excludable: CulturaX enters only as the French-only Culturax config, each row tagged source culturax, with CulturaX's own mc4 or OSCAR-xxxx origin kept in its metadata. The card gives no per-source share; the Hub's size listing puts that config at about 3.8% of the Hub-hosted bytes, which exclude the English web data, and the OSCAR-derived part of it is not stated);code:open(Luciole-Training pretraining + data-processing pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints released);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Luciole ships Apache-2.0 weights with its full training stack: the Luciole-Training-Dataset, a GPL-3.0 training pipeline, and checkpoints from every training phase. Unlike Lucie's non-commercial corpus, the dataset is published under CC-BY-SA-4.0, which permits commercial reuse, but each source keeps its own terms: the card lists the bundled Claire dialogue sets as non-commercial, and states no license for a few others, such as the INSEE and YouTube subsets.",
-            "last_verified": "2026-11-12",
+            "note": "Luciole ships Apache-2.0 weights with its full training stack: the Luciole-Training-Dataset, a GPL-3.0 training pipeline, and checkpoints from every training phase. Unlike Lucie's non-commercial corpus, the dataset is published under CC-BY-SA-4.0, which permits commercial reuse, though crawled web pages keep their owners' rights and each source keeps its own terms: the card lists the bundled Claire dialogue sets as non-commercial, and states no license for a few others, such as the INSEE and YouTube subsets.",
+            "last_verified": "2026-11-14",
             "sources": [
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1",
                 "shows": "Model page: \"Luciole-23B-Instruct-1.1 is a fine-tuned and aligned version of\" Luciole-23B-Base; the card lists the license as \"Apache 2.0\" and the repo tags include \"license:apache-2.0\" and safetensors; the embedded repo data records gated and private as false. Searched the body for agree to share and access request: none.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "b261bc7a2ef5b1c787730a063aab2e5111f30cb2e884dbe23f96d61351571fe7",
+                "content_sha256": "664a9a9936e7afccdf48f0ef01f19bc63a588d14fc3697bb73080874af42a7ed",
                 "establishes": [
                   "weights",
                   "license"
@@ -3274,7 +3274,7 @@
               {
                 "url": "https://huggingface.co/api/datasets/OpenLLM-France/Luciole-Training-Dataset",
                 "shows": "Hugging Face API record for the pretraining corpus, \"Data card for The Luciole Training Dataset\", tagged \"license:cc-by-sa-4.0\"; gated and private are both false.",
-                "accessed": "2026-11-13",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "ac51af2d99b43c2dbec3d7eca83a99c9f4299b412089b611d6b93cde7fc1addd",
                 "establishes": [
@@ -3284,55 +3284,35 @@
               {
                 "url": "https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset",
                 "shows": "Dataset page: \"The Luciole Training Dataset contains only corpora under open licenses\" and \"The full dataset contains around 4.65 trillion tokens of multilingual data\"; the embedded repo data records gated as false. The same card notes some English web subsets are hosted on an external server and that OpenMathInstruct-1 is shared \"under an Nvidia license\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "690803f72a2dea711d8c02f4cf9ec2cd4b8912010c6ddf0e6483cfb00c39cbb8",
+                "content_sha256": "4ca446ab4f03e356f409ed649ba2eba8c81802f1d8748ae9fa902e2cdf6ab5fc",
                 "establishes": [
                   "data"
                 ]
               },
               {
-                "url": "https://api.github.com/repos/OpenLLM-France/Luciole-Training",
-                "shows": "`private: false`, `archived: false`, license `GPL-3.0`, last pushed 2026-07-31 - the pretraining and data-processing pipeline for the Luciole series.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "861deb8f269d5027985fba2729e17efce8a8e9efb19437b3f14404dc8a8fd104",
-                "establishes": [
-                  "code"
-                ]
-              },
-              {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base",
                 "shows": "Model page: \"Intermediate checkpoints are released under dedicated revision tags at regular intervals throughout training\", with \"All checkpoints are available at:\" the dl.labs.linagora.com mirror; the embedded repo data records gated as false. Searched for agree to share and access request: none.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "d20ce97144a4d2c34f073a2e65a36bd29f416805409e1a2ec9376da44d7e861a",
+                "content_sha256": "da54a449dab309fdd699ca8abb38fe5188c50d30bcbe90d960f6be023c0e19cf",
                 "establishes": [
                   "weights",
                   "license"
                 ]
               },
               {
-                "url": "https://github.com/OpenLLM-France/Luciole-Training",
-                "shows": "training pipeline for the Luciole series — data prep, training recipe, and configs (GPL-3.0)",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "e387cacbb996d711be5e26429d5e96a3539ec0868785bb6b63aff1a1e87451de",
-                "establishes": [
-                  "code"
-                ]
-              },
-              {
                 "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
                 "shows": "Official collection \"Luciole LLM - a OpenLLM-France Collection\" listing OpenLLM-France/Luciole-1B-Base, OpenLLM-France/Luciole-8B-Base, OpenLLM-France/Luciole-23B-Base, their Instruct-1.1 versions with FP8 and GGUF variants, and \"OpenLLM-France/Luciole-Training-Dataset\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "f8d6dffc6fe78cab4f51291342e267c1fd119a912360135b9db26a81d214ed5b"
+                "content_sha256": "2c3fa6b58712e6e42eb0f79a9da0fd1065d4f7cef4221a087d29d5b9a7e9bc61"
               },
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/raw/main/README.md",
                 "shows": "Raw base model card: front matter \"license: apache-2.0\"; \"The training code is available at\" the Luciole-Training GitHub repository; \"All checkpoints are available at:\" the Linagora download server, with per-phase links from \"phase1-step0001000\" through \"phase5-context-extension-131k-step0011920\". The card also says checkpoints sit under revision tags, but the Hub refs listing shows only main.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "3a6a746f6304075ca708b5ca69d809e8a1385c6cb266133282afb1f8b7e9a91f",
                 "establishes": [
@@ -3345,9 +3325,9 @@
               {
                 "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Base",
                 "shows": "Hugging Face API record tagged \"license:apache-2.0\" and \"dataset:OpenLLM-France/Luciole-Training-Dataset\", with weight shards such as \"model-00001-of-00010.safetensors\"; gated and private are false.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "7d5925df8b66a5949c7f1f2e838ae372324438c739c95a0e9007ea3bddaebd48",
+                "content_sha256": "b972597c7cf146b25a0041fa2cba119c7740a649effaec66941903436c6e4418",
                 "establishes": [
                   "weights",
                   "license"
@@ -3356,7 +3336,7 @@
               {
                 "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base/raw/main/LICENSE.md",
                 "shows": "LICENSE.md in the model repo carries the Apache License 2.0: \"title: Apache License 2.0\", \"spdx-id: Apache-2.0\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "4b07cb7bcf39c9f379866e25b0e3f6738a683511bd639a83b65969cf80b48925",
                 "establishes": [
@@ -3365,8 +3345,8 @@
               },
               {
                 "url": "https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset/raw/main/README.md",
-                "shows": "Raw dataset card: front matter \"license: cc-by-sa-4.0\"; \"The Luciole Training Dataset contains only corpora under open licenses\"; its License section says \"Each source corpus remains under its original licence\" and \"Released under CC-BY-SA-4.0\". The source list names the Claire dialogue sets with \"License: CC BY-NC-SA 4.0\", the only source it labels non-commercial; gives the original CroissantLLM source of the aligned data \"License: not specified\" and states no license for the INSEE and YouTube subsets; lists OpenMathInstruct-1 under \"Licence: NVIDIA\"; and says the English web subsets \"can instead be downloaded from our external server\".",
-                "accessed": "2026-11-13",
+                "shows": "Raw dataset card: front matter \"license: cc-by-sa-4.0\"; \"The Luciole Training Dataset contains only corpora under open licenses\"; its License section says \"Each source corpus remains under its original licence\" and \"Released under CC-BY-SA-4.0\". The source list names the Claire dialogue sets with \"License: CC BY-NC-SA 4.0\", the only source it labels non-commercial; gives the original CroissantLLM source of the aligned data \"License: not specified\" and states no license for the INSEE and YouTube subsets; lists OpenMathInstruct-1 under \"Licence: NVIDIA\"; and says the English web subsets \"can instead be downloaded from our external server\". On the web data: \"Robots.txt rules were applied retrospectively to all web-crawled datasets (FineWeb, DCLM, FineMath, InfiWebMath, and MegaMath)\", using robots.txt files from the \"[CommonCrawl dump CC-MAIN-2025-26]\", and \"Websites that did not appear in the CC-MAIN-2025-26 Common Crawl dump were excluded\"; \"it is possible that individual documents in those corpora are copyrighted\", with an \"[opt-out]\" form for copyrighted works and personal details. The source list gives HPLT 2 \"Licence: CC-0 1.0.\" and describes it as \"mostly Internet Archive with some additions from Common Crawl\"; CulturaX is listed under the mC4 and OSCAR licenses.",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "10eac1a67b32a8f83a488ca56f71a5e8df8ebd2ceadbf1017205d95a0cd69238",
                 "establishes": [
@@ -3375,15 +3355,15 @@
               },
               {
                 "url": "https://huggingface.co/api/models/OpenLLM-France/Luciole-23B-Base/refs",
-                "shows": "Refs listing for OpenLLM-France/Luciole-23B-Base: a single branch, main, at commit \"afda379f76a5a50ec726cfb93a3eb52c5fd2c963\", with an empty tags list. Searched for step or phase revision branches: none.",
-                "accessed": "2026-09-29",
+                "shows": "Refs listing for OpenLLM-France/Luciole-23B-Base: a single branch, main, at commit \"258bab249eb0155d4ebc3a97e750a307f1994db3\", with an empty tags list. Searched for step or phase revision branches: none.",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "46a77b2c2999f3bf5f37a68a321aa4d5765759e450cb10ff32bbd4d36e77d789"
+                "content_sha256": "023044627ec1091ec54ff6ffc4fb002edc85d39a15f826636be4838a182e3f3c"
               },
               {
                 "url": "https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset/raw/main/LICENSE.md",
                 "shows": "LICENSE.md in the dataset repo is the Creative Commons \"Attribution-ShareAlike 4.0 International\" public license text.",
-                "accessed": "2026-11-13",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
                 "establishes": [
@@ -3392,8 +3372,8 @@
               },
               {
                 "url": "https://huggingface.co/datasets/OpenLLM-France/Claire-Dialogue-English-0.1/raw/main/README.md",
-                "shows": "Claire English dialogue card: front matter \"license: cc-by-nc-sa-4.0\"; \"Given that some of the corpora used for training are only available under CC-BY-NC-SA licenses, Claire-Dialogue-English-0.1 is made available under the CC-BY-NC-SA 4.0 license\". Its source table gives each corpus its own terms, among them Apache License 2.0 for AirDialogue, MIT for ABCD and \"CC BY-NC-SA 4.0\" for DailyDialog.",
-                "accessed": "2026-11-13",
+                "shows": "Claire English dialogue card: front matter \"license: cc-by-nc-sa-4.0\"; \"Given that some of the corpora used for training are only available under CC-BY-NC-SA licenses, Claire-Dialogue-English-0.1 is made available under the [CC-BY-NC-SA 4.0 license]\". Its source table gives each corpus its own terms, among them Apache License 2.0 for AirDialogue and MIT for ABCD.",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "8a02470c5e54656700f312c63ab6e075ec6aea9e5672518166645afb048a8652",
                 "establishes": [
@@ -3402,10 +3382,140 @@
               },
               {
                 "url": "https://huggingface.co/datasets/nvidia/OpenMathInstruct-1/raw/main/README.md",
-                "shows": "OpenMathInstruct-1 card, the subset the Luciole card lists under an NVIDIA license: \"The use of this dataset is governed by the NVIDIA License which permits commercial usage.\"",
-                "accessed": "2026-11-13",
+                "shows": "OpenMathInstruct-1 card, the subset the Luciole card lists under an NVIDIA license: \"The use of this dataset is governed by the [NVIDIA License](LICENSE) which permits commercial usage.\"",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "5839c59deabebeca12291f74706f2cfd67d762948b979177a88700dac5978e75",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenLLM-France/Luciole-Training/main/README.md",
+                "shows": "Luciole-Training README: \"Training pipeline for the **Luciole** series of multilingual (French-English) large language models\"; \"This repository covers the full LLM lifecycle: data preparation, tokenizer training, pretraining, fine-tuning, and evaluation.\"",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "3e223f9bd9cfce2398729d85f26c744f5c013db38abcfc6204dd9d842351336b",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenLLM-France/Luciole-Training/main/LICENSE",
+                "shows": "LICENSE in OpenLLM-France/Luciole-Training: \"GNU GENERAL PUBLIC LICENSE\", \"Version 3, 29 June 2007\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md",
+                "shows": "FineWeb-2 card: \"license: odc-by\"; \"The data was sourced from 96 [CommonCrawl]\" snapshots; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\"; \"CommonCrawl respects robots.txt at crawl time, but if you are a webmaster and find your website in 🥂 FineWeb2 and would like to have it removed, you may also use the [PII removal/opt out form]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HPLT/HPLT2.0_cleaned/raw/main/README.md",
+                "shows": "HPLT 2.0 cleaned card: \"license: cc0-1.0\"; \"We do not own any of the text from which these text data has been extracted\"; \"We license the actual packaging of these text data under the [Creative Commons CC0 license\"; a notice and take down policy, \"We will comply to legitimate requests by removing the affected sources from the next release of the corpora\". The card itself says nothing about robots.txt.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "8c38b823150d89ca031bee43c835bda1bfff05886a84e00353557555c6336232",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/html/2503.10267",
+                "shows": "HPLT v2 paper: documents are annotated against robots.txt, \"which can be used to filter out documents explicitly forbidden for crawling by website owners\", and the cleaned variant keeps only robots.txt \"compliant documents\"; the pipeline uses \"records to identify patterns disallowing the crawlers we use\", naming CCBot and ia-archiver.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "b5cbe29072db669645d53b41f78f362c822f738ccf8e25727900dbf53d014a8f",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/uonlp/CulturaX",
+                "shows": "CulturaX page: \"As CulturaX is the cleaned version of the mC4 and OSCAR datasets, which were both extracted from CommonCrawl\"; \"The licence terms for CulturaX strictly follows those of\", linking the mC4 license to allenai/c4 and the OSCAR license to OSCAR-2301. Its Dataset Structure gives every document a \"source\" field valued \"mc4\" or \"OSCAR-xxxx\", and its language table lists French at \"363,754,348\" documents and \"319,332,674,695\" tokens.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "df2b10a0aa8fbd5c60e1e7dc6f17943b7ef403bb0f481ef14ee6a1dd92eab095",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/uonlp/CulturaX",
+                "shows": "Hub API record: \"gated\":\"auto\"; the gate asks users to confirm \"downloading CulturaX is legal in the country/region where I am located right now\" and to agree \"to not attempt to determine the identity of individuals in this dataset\". No commercial-use term.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "efa8daece1f826dd88f198c62e869f61287cc30f3dde100144ae3674bf329ff7",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/allenai/c4/raw/main/README.md",
+                "shows": "C4 card, which covers mC4: \"The C4 and mC4 datasets are collections text sourced from the public Common Crawl web scrape\"; \"We are releasing this dataset under the terms of [ODC-BY]\"; \"By using this, you are also bound by the [Common Crawl terms of use]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "bfa4b9d8af6f9d2955d39b7cb617d580763aad7fb9024e425be60738b69ea140",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/oscar-corpus/OSCAR-2301",
+                "shows": "OSCAR 23.01 page, licensing: \"We do not own any of the text from which these data has been extracted\" and \"We license the actual packaging, the metadata and the annotations of these data under the Creative Commons CC0 license\". Its gate now reads \"We are forced to temporarily suspend access to OSCAR\" and \"In France, for example, any use of OSCAR that does not fall within the framework of the so-called 'TDM' or the so-called 'research' exceptions to copyright has always been prohibited.\"",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "d616fe9115c77ba13afb8d3b768cd6b7cc24f31b83e86bb317d585ed607d6f5b",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/terms-of-use",
+                "shows": "Common Crawl Terms of Use, \"LAST UPDATED: March 7, 2024\". CC grants \"a limited, non-assignable, non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service\"; crawled material \"may be subject to separate terms of use or terms of service from the owners of such Crawled Content\"; \"your use of the Crawled Content signifies your binding acceptance of the ToU\"; and \"BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS OF THIRD PARTIES\". It sets no commercial or field-of-use bar and recommends counsel \"before making any use, including commercial use\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/faq",
+                "shows": "Common Crawl FAQ: \"CCBot is an automated crawler, checking first the robots.txt, and if crawling a page is allowed, fetches pages using HTTP GET requests\", and \"You may also wish to be added to our opt-out registry\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=OpenLLM-France/Luciole-Training-Dataset",
+                "shows": "Hub dataset-viewer size listing: the whole dataset has \"num_rows\":6470066608 and \"num_bytes_parquet_files\":13028062365268; the \"Culturax\" config has \"num_bytes_original_files\":493127197101 and \"num_rows\":242612479, about 3.8% of the bytes and 3.75% of the rows.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "bd0025e6b847b6059a1df11e530e91a35132c1d65bc48a942e236a10180a177c",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/rows?dataset=OpenLLM-France/Luciole-Training-Dataset&config=Culturax&split=fr&offset=0&length=5",
+                "shows": "Hub dataset-viewer rows from the Culturax config, split fr: the first row has source \"culturax\" and id \"fr_part_00000.parquet/69\", and the metadata string of each of the five rows returned records CulturaX's own origin field as \"OSCAR-2019\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "a02f37abdf892092762dd607394751cc741cb53956fd491083c65c155630451d",
                 "establishes": [
                   "data"
                 ]
@@ -3429,7 +3539,7 @@
                 "parts": [
                   {
                     "value": "open",
-                    "detail": "Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps its own terms, and the card lists the Claire dialogue sets as non-commercial and no license for a few small subsets"
+                    "detail": "Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps its own terms, and the card lists the Claire dialogue sets as non-commercial and no license for a few small subsets. The web share (FineWeb, FineWeb-2, DCLM, CulturaX, HPLT 2 and math web sets) comes from named Common Crawl and Internet Archive crawls; the card says documents may be copyrighted, applies robots.txt from CC-MAIN-2025-26 retroactively to FineWeb, DCLM and the math sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot's crawl-time robots.txt check, and HPLT 2's cleaned release keeps only robots.txt-compliant pages. CulturaX follows the mC4 and OSCAR terms. OSCAR, assessed separately: OSCAR licenses only its packaging, and its suspended gate says \"In France, for example, any use of OSCAR that does not fall within the framework of the so-called 'TDM' or the so-called 'research' exceptions to copyright has always been prohibited.\" That asserts a legal constraint, not a contractual field-of-use bar, and CulturaX's redistribution does not cure any underlying rights limitation. The affected text is identifiable and excludable: CulturaX enters only as the French-only Culturax config, each row tagged source culturax, with CulturaX's own mc4 or OSCAR-xxxx origin kept in its metadata. The card gives no per-source share; the Hub's size listing puts that config at about 3.8% of the Hub-hosted bytes, which exclude the English web data, and the OSCAR-derived part of it is not stated"
                   }
                 ]
               },
@@ -3626,6 +3736,7 @@
           "freshness": {
             "date": "2026-11-12",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-11-14",
             "unconfirmed_axes": [
               "adoption"
             ],
@@ -4882,27 +4993,17 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data. They rebuild the web share from FineWeb v1.3.0, FineWeb-2, FineWeb-Edu, DCLM-Edu and FineMath, which come from named Common Crawl snapshots, are released under ODC-By or CC-BY-4.0 and bind users to Common Crawl's terms, which leave page rights with their owners. Beyond CCBot's crawl-time robots.txt check, the scripts drop pages whose January 2025 robots.txt blocks AI crawlers, from published domain lists. The README says the pipelines were built for CSCS's Alps cluster and must be adapted to another environment, with dependencies defined in a Dockerfile; that is an environment dependency, not an obstacle to rebuilding the corpus. No removal route of its own; the upstream FineWeb form applies);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Apertus 1.0 publishes its pretraining-data reconstruction scripts, Megatron-LM training recipe, intermediate checkpoints and technical report under Apache-2.0, as OLMo and Pythia do. Its acceptable-use policy restricts conduct, not commercial use. Apertus 1.5, released 2026-07-24, continues training the 1.0 models under the same license behind an automatically approved click-through, and its report says the data preparation and training recipes are released too.",
-            "last_verified": "2026-11-12",
+            "note": "Apertus 1.0 publishes its pretraining-data reconstruction scripts, Megatron-LM training recipe, intermediate checkpoints and technical report under Apache-2.0, as OLMo and Pythia do. The scripts rebuild the corpus from openly licensed Common Crawl derivatives and drop pages from sites that opt out of AI crawling; the pages keep their owners' rights. Its acceptable-use policy restricts conduct, not commercial use. Apertus 1.5, released 2026-07-24, continues training under the same license behind an automatically approved click-through.",
+            "last_verified": "2026-11-14",
             "sources": [
-              {
-                "url": "https://api.github.com/repos/swiss-ai/pretrain-data",
-                "shows": "`private: false`, `archived: false`, license `Apache-2.0`, description \"Pretraining data reconstruction scripts for Apertus\". The reconstruction scripts are published, which is what satisfies data:open by reconstruction rather than by a released corpus.",
-                "accessed": "2026-08-14",
-                "http_status": 200,
-                "content_sha256": "4ddecf19dff644e1b5c05f298f7d94cd042d7bed86e9b4bb234016a8269471f8",
-                "establishes": [
-                  "data"
-                ]
-              },
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509",
                 "shows": "Apertus-70B-2509 model card, License: apache-2.0, describes a \"Fully open model\" with \"open weights + open data + full training details including all data and training recipes\", lists \"Training data reconstruction scripts\" under open resources, and states \"The training intermediate checkpoints are available on the different branches of this same repository\". BF16 safetensors shards are listed for download.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "0a80d5887eefc06041bea6c349801d46653392599f4c04c0c05b71eefd073c70",
+                "content_sha256": "68813dfcc773ea79e7877f0e96ee83327978a0f2a79c21c05ee2533d6440f4c7",
                 "establishes": [
                   "weights",
                   "license",
@@ -4914,26 +5015,16 @@
               {
                 "url": "https://ethz.ch/en/news-and-events/eth-news/news/2025/09/press-release-apertus-a-fully-open-transparent-multilingual-language-model.html",
                 "shows": "ETH Zurich press release titled \"Apertus: a fully open, transparent, multilingual language model\", opening \"On 2 September 2025, EPFL, ETH Zurich and the Swiss National Supercomputing Centre (CSCS) released Apertus\". Corroborates the release framing and establishes no dimension on its own.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "d786fadbe0a68c22dd19e4f1a2a7ed53b251f6ffea5f06a512a7ec96ce7cb4bb"
               },
               {
-                "url": "https://github.com/swiss-ai/pretrain-data",
-                "shows": "Repository page for the pretraining-data reconstruction scripts; \"reconstruction\" appears throughout the tree and README.",
-                "accessed": "2026-08-14",
-                "http_status": 200,
-                "content_sha256": "03241f3303116c1da493d34db84392a3d9bb5f7f2459f2b23b66db2b19d4538d",
-                "establishes": [
-                  "data"
-                ]
-              },
-              {
                 "url": "https://huggingface.co/swiss-ai/Apertus-v1.5-70B",
                 "shows": "Apertus-v1.5-70B model card, License: apache-2.0, describes a fully open model with \"Open weights + open data + open values + full training details including all data and training recipes\", the models \"handle contexts of up to 262,144 tokens\", and \"The technical report with further details along with benchmark results, training pipelines, and intermediate checkpoints will be published in the coming weeks\". The download now sits behind a click-through: \"you accept to share your contact information (email and username) with the repository authors\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "119b7d51da5ce524b196faa22f5e9e376754455c0eace0806e3b596e00f738dc",
+                "content_sha256": "e9660f6adb4ff619118ddb7828171d1f0e222588b98b732f9aff9058bbc30448",
                 "establishes": [
                   "weights",
                   "license"
@@ -4942,9 +5033,9 @@
               {
                 "url": "https://huggingface.co/api/models/swiss-ai/Apertus-70B-2509",
                 "shows": "Hub API record for Apertus-70B-2509 is not gated and not private, carries the license:apache-2.0 tag and 30 safetensors shards, and embeds the \"Apertus LLM Acceptable Use Policy\" text in its card data, a conduct and indemnity policy with no commercial or scale limit.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "a434221eeb4130e660ee566e649926c787e12d767905ecea7618bab63701b196",
+                "content_sha256": "26caaae176a6107fb055f374c9416f0b04276359457ca4536cf47b95f661c094",
                 "establishes": [
                   "weights",
                   "license"
@@ -4953,7 +5044,7 @@
               {
                 "url": "https://huggingface.co/api/models/swiss-ai/Apertus-70B-2509/refs",
                 "shows": "Hub refs listing for Apertus-70B-2509 shows intermediate-checkpoint branches from \"step25000-tokens210B\" through \"step1150000-tokens14920B\" plus the final step1155828-tokens15T, and a series of longctx-step branches.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "1027590463191057b349802be4156e2f890d3ab68913aa0ae1a0c691bf3172c1",
                 "establishes": [
@@ -4963,7 +5054,7 @@
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/LICENSE.txt",
                 "shows": "LICENSE.txt in the Apertus-70B-2509 repo opens \"Copyright 2025 - The Swiss AI team.\" followed by the unmodified \"Apache License Version 2.0, January 2004\" text.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "7f1e632ea726022e3f880d46aeb9b407a65131f44d8c563c15232e96aef50a4b",
                 "establishes": [
@@ -4972,8 +5063,8 @@
               },
               {
                 "url": "https://arxiv.org/html/2509.14233",
-                "shows": "Apertus technical report (HTML rendering): the pretraining codebase at github.com/swiss-ai/Megatron-LM \"is built on NVIDIA\" Megatron-LM and \"We extend the codebase with multiple functionalities\"; for data, the authors \"release the pipeline code\" at github.com/swiss-ai/pretrain-data \"to recreate all of the data that was used for training the models\".",
-                "accessed": "2026-11-12",
+                "shows": "Apertus technical report (HTML rendering): the pretraining codebase at github.com/swiss-ai/Megatron-LM \"is built on NVIDIA\" Megatron-LM and \"We extend the codebase with multiple functionalities\"; for data, the authors \"release the pipeline code\" at github.com/swiss-ai/pretrain-data \"to recreate all of the data that was used for training the models\". On compliance: the corpus respects robots.txt \"not only at crawl time (January 2025), but also retroactively applying January 2025 opt-out preferences to web scrapes from previous crawls\", and blocked content \"is removed retroactively from the entire 2013-2024 range of the training dataset\"; where a robots.txt file is unavailable, \"we consider the data usable for training\".",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "1566ac5f59e4f62cb30c7b0f972f8c6fa965068c99f7b93391a613465d79b7d9",
                 "establishes": [
@@ -4984,9 +5075,141 @@
               {
                 "url": "https://arxiv.org/abs/2610.15542",
                 "shows": "Apertus 1.5 report abstract: \"Continued pretraining of the Apertus 1.0 models, on 4T additional tokens for the 8B and 2T for the 70B\", and \"We release the model weights, data preparation and training recipes, and evaluation suites under permissive licenses\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "f7054c5696c20be7b42a55612652d838793b094c2fd8933ba5ed7f3903ba34b2"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/swiss-ai/pretrain-data/main/README.md",
+                "shows": "The pretrain-data README: \"This repository contains the pipelines generating the pretraining data used to train Apertus v1 and v1.5\". FineWeb-HQ starts from \"[FineWeb (v1.3.0)]\", FineWeb2-HQ from \"[FineWeb-2 (v1.0.2)]\", then \"[DCLM-Edu]\", \"[FineWeb-Edu]\" and \"[FineMath]\", each run with a \"filterrobots\" config; \"If you want to apply `robots.txt` filtering, first download the respective metadata\". It warns: \"Due to the infrastructure-specific nature of these pipelines (designed for CSCS on Alps), they are not directly runnable out of the box. You will need to adjust the scripts and configurations to your specific computing environment.\" and says \"The project's dependencies are defined in the `Dockerfile`\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "43a39083f999ee55f606abb45859f2e0c47542015cafb8037ed9d0a36a1ab8ee",
+                "establishes": [
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/swiss-ai/pretrain-data/main/LICENSE",
+                "shows": "LICENSE in swiss-ai/pretrain-data: \"Apache License\", \"Version 2.0, January 2004\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/swiss-ai/pretrain-data/main/pipelines/fineweb/main.py",
+                "shows": "The FineWeb pipeline defines a \"quality_33-filterrobots\" config with `\"robots_filter\": True`, and for each dump adds an `IdFilter` with `ids_to_filter=load_robots(f\"{ROBOTS_DIR}/{dump}\")` that writes the blocked documents to a separate \"robots\" output.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "f7227b1498da9bf3febaef17e80271ffd65b624d3a3838d49afc22f3dc3de529",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/swiss-ai/robots-txt-blocked-domains-english",
+                "shows": "Hub API record for swiss-ai/robots-txt-blocked-domains-english: not gated, \"license:apache-2.0\", with the file \"fw1_domains.txt\", the published list of domains the filter removes.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "93dceed3ffaeeb459a51faf0d9e259d6849ba55da1d57e9aa4a3617fb12b661e",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/abs/2509.14233",
+                "shows": "Apertus report abstract: \"Apertus models are pretrained exclusively on openly available data, retroactively respecting `robots.txt` exclusions and filtering for non-permissive, toxic, and personally identifiable content\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "708c422a40898842cec08532b4f86917f8648837d96e5a3149aca899b6168d2a",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb/raw/main/README.md",
+                "shows": "FineWeb card: \"license: odc-by\"; \"This dataset was created by processing 96 [CommonCrawl]\" dumps; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\"; v1.3.0 \"removed specific domains in response to a [C&D notice]\"; and a \"PII removal form\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "2fb3e49e8aa62a7429b07b557cc49d578292174843fb6aa561b5fbe6afbff01c",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md",
+                "shows": "FineWeb-2 card: \"license: odc-by\"; \"The data was sourced from 96 [CommonCrawl]\" snapshots; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\"; \"CommonCrawl respects robots.txt at crawl time, but if you are a webmaster and find your website in 🥂 FineWeb2 and would like to have it removed, you may also use the [PII removal/opt out form]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/raw/main/README.md",
+                "shows": "FineWeb-Edu card: \"license: odc-by\"; it \"includes all filtered CommonCrawl dumps since 2013\"; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "a0cc8998a20499432b28b6575f3046b714938eb8e11b8d59a1d25ddf3716061e",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceTB/dclm-edu/raw/main/README.md",
+                "shows": "DCLM-Edu card: \"license: cc-by-4.0\"; \"Following DCLM-Baseline, this dataset is licensed under CC-BY-4.0.\"",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "b34b8996b1aa7e72ee8622ae87f4b11d11a89e3ff50e26885a0cc7343f9ca256",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/html/2406.11794",
+                "shows": "DCLM paper, appendix on DCLM-Pool: \"The use of this dataset is also subject to CommonCrawl’s Terms of Use\"; Common Crawl respects robots.txt \"and thus our pool does so as well, giving content creators a mechanism to opt out of Common Crawl\"; \"Common Crawl does honor deletion requests and periodically redacts dumps\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "897704727d76af80402b5c265313b741097d20ac6d6c566a851c3e705b47b428",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceTB/finemath/raw/main/README.md",
+                "shows": "FineMath card: \"license: odc-by\"; content \"filtered from CommonCrawl\"; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "77b9162c99fc6b5944da8793f18fb99c3b520ab7cdce0cc67ec8a1e47871da61",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/terms-of-use",
+                "shows": "Common Crawl Terms of Use, \"LAST UPDATED: March 7, 2024\". CC grants \"a limited, non-assignable, non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service\"; crawled material \"may be subject to separate terms of use or terms of service from the owners of such Crawled Content\"; \"your use of the Crawled Content signifies your binding acceptance of the ToU\"; and \"BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS OF THIRD PARTIES\". It sets no commercial or field-of-use bar and recommends counsel \"before making any use, including commercial use\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/faq",
+                "shows": "Common Crawl FAQ: \"CCBot is an automated crawler, checking first the robots.txt, and if crawling a page is allowed, fetches pages using HTTP GET requests\", and \"You may also wish to be added to our opt-out registry\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa",
+                "establishes": [
+                  "data"
+                ]
               }
             ],
             "bucket": "open",
@@ -5007,7 +5230,7 @@
                 "parts": [
                   {
                     "value": "open",
-                    "detail": "full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data"
+                    "detail": "full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data. They rebuild the web share from FineWeb v1.3.0, FineWeb-2, FineWeb-Edu, DCLM-Edu and FineMath, which come from named Common Crawl snapshots, are released under ODC-By or CC-BY-4.0 and bind users to Common Crawl's terms, which leave page rights with their owners. Beyond CCBot's crawl-time robots.txt check, the scripts drop pages whose January 2025 robots.txt blocks AI crawlers, from published domain lists. The README says the pipelines were built for CSCS's Alps cluster and must be adapted to another environment, with dependencies defined in a Dockerfile; that is an environment dependency, not an obstacle to rebuilding the corpus. No removal route of its own; the upstream FineWeb form applies"
                   }
                 ]
               },
@@ -5122,7 +5345,7 @@
           "freshness": {
             "date": "2026-11-08",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-11-12",
+            "latest_axis_confirmation": "2026-11-14",
             "unconfirmed_axes": [
               "capability"
             ],
@@ -5145,17 +5368,17 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens);code:open(training+post-training recipe published);checkpoints:open(SmolLM3-3B-checkpoints, every 40k steps);license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens. The web share is FineWeb-Edu, DCLM, FineWeb-2 and FineWeb2-HQ, each built from named Common Crawl snapshots, released under ODC-By or CC-BY-4.0 and bound to Common Crawl's terms, which leave page rights with their owners; opt-outs follow CCBot's crawl-time robots.txt check, and FineWeb's PII and opt-out form takes removals. DCLM's research-use line is advisory. One constituent is non-commercial: the dataset facebook/natural_reasoning, licensed CC-BY-NC-4.0, enters at the third, decay stage at a weight of 0.001 of that stage's mix in the published stage-3 config, and the two long-context extension mixes carry it at about 0.0009. It is a separately published dataset that a reuser can drop from those mixes, so it is disclosed rather than disqualifying; this is not a claim that every training example is commercially reusable);code:open(training+post-training recipe published);checkpoints:open(SmolLM3-3B-checkpoints, every 40k steps);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "SmolLM3 publishes Apache-2.0 weights alongside a complete engineering blueprint: architecture details, exact data mixtures and training methodology for its 11-trillion-token run, built entirely from public datasets and training frameworks. The Hugging Face card is Apache-2.0 licensed and ungated.",
-            "last_verified": "2026-11-12",
+            "note": "SmolLM3 publishes Apache-2.0 weights alongside a complete engineering blueprint: architecture details, exact data mixtures and training methodology for its 11-trillion-token run, built from public datasets and training frameworks. Most of the data is filtered Common Crawl text released under open compilation licenses, while the crawled pages keep their owners' rights; one small reasoning set in the final stage is non-commercial. The Hugging Face card is Apache-2.0 licensed and ungated.",
+            "last_verified": "2026-11-14",
             "sources": [
               {
                 "url": "https://huggingface.co/blog/smollm3",
                 "shows": "The release post describes the published recipe - \"It includes architecture details, exact data mixtures showing how we progressively boost performance across domains in a three-stage pretraining approach\" - and says \"we're sharing exactly how we built it using public datasets and training frameworks\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "15fb578fa813e8391bacce55d33602a320cafce36e9e1fa80d900715f529e3b1",
+                "content_sha256": "b372e2f6cfc797a107d2e6a521c7f48b85b2fd2fbc2e4ae17c90c878608f53bd",
                 "establishes": [
                   "data",
                   "code"
@@ -5164,30 +5387,20 @@
               {
                 "url": "https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B",
                 "shows": "The Hub API record for the instruct checkpoint carries the tags \"license:apache-2.0\" and \"base_model:finetune:HuggingFaceTB/SmolLM3-3B-Base\"; its gated and private flags are both false, so the weights download without an access request.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "36145345c86b141f23af947bd0767bb7c5bc619baf70ae05007be7f166ec5d45",
+                "content_sha256": "c79d36fb78882eee3e09a174050ceee8770dbf96e9366c089eed5d9d05f7adf9",
                 "establishes": [
                   "weights",
                   "license"
                 ]
               },
               {
-                "url": "https://api.github.com/repos/huggingface/smollm",
-                "shows": "`private: false`, `archived: false`, license `Apache-2.0`, 3,868 stars, description \"Everything about the SmolLM and SmolVLM family of models\".",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "cc87c0928b131ac15199953372c2dbd7428de39ec64ff55cdc7b5723518703d5",
-                "establishes": [
-                  "code"
-                ]
-              },
-              {
                 "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
                 "shows": "The model page says \"SmolLM3 is a fully open model that offers strong performance at the 3B–4B scale\" and lists \"open weights + full training details including public data mixture and training configs\"; its License section reads \"Apache 2.0\". Searched the page for agree to share and access request: none.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "19c77ebc3cd563b2ab1e7b7382974bf1b9f0e9cc1c0fa580c2876299e33bbc2e",
+                "content_sha256": "ad9db274f8ae91c0d64389570fe8f21db9827079827098316fd323b55f519a0b",
                 "establishes": [
                   "weights",
                   "license"
@@ -5196,7 +5409,7 @@
               {
                 "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B/raw/main/README.md",
                 "shows": "The raw model card front matter declares \"license: apache-2.0\", and its Training section says \"The datasets used for pretraining can be found in this\" linked collection and \"The training and evaluation configs and code can be found in the\" huggingface/smollm repository, trained with nanotron.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "24f16f90b883af3618425a589783a944356a7fc2e3cfa69b579c9ff06963e178",
                 "establishes": [
@@ -5209,9 +5422,9 @@
               {
                 "url": "https://huggingface.co/collections/HuggingFaceTB/smollm3-pretraining-datasets-685a7353fdc01aecde51b1d9",
                 "shows": "The SmolLM3 pretraining datasets collection lists the public corpora used, including \"mlfoundations/dclm-baseline-1.0\", \"HuggingFaceTB/finemath\", \"bigcode/the-stack-v2\" and \"HuggingFaceTB/stackexchange_2025_md\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "ffa93a1c4b0e46166b25101e3b6e384f1ca81cd3889841271bdbd8ad740f019e",
+                "content_sha256": "64aa0525fc9d39471219d54331c861aa83d194cc661561f98ce1166b8c325c66",
                 "establishes": [
                   "data"
                 ]
@@ -5219,14 +5432,14 @@
               {
                 "url": "https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B-checkpoints",
                 "shows": "The Hub API record for \"HuggingFaceTB/SmolLM3-3B-checkpoints\" carries the tag \"license:apache-2.0\" and is neither gated nor private; the model card says it holds the intermediate training checkpoints, including mid-training and SFT.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "f6c8c6a4250b485489da9e3fe5167a1a7fa746eb340cd07fdf8342eddd6bf62c"
+                "content_sha256": "cd163936b9144aa4306b0dc4e775e38a70e64e48e58ba3159fc502160a3a5ecb"
               },
               {
                 "url": "https://cdn.jsdelivr.net/gh/huggingface/smollm@main/text/pretraining/",
                 "shows": "jsDelivr listing of the huggingface/smollm repository at main shows the pretraining tree \"/gh/huggingface/smollm@main/text/pretraining/smollm3/\", \"/gh/huggingface/smollm@main/text/pretraining/launch.slurm\" and \"/gh/huggingface/smollm@main/text/pretraining/continual-pretraining/\", so the SmolLM3 pretraining code is public.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "55fc3ae8067bb26ac648230f8befea3b5c9a0d881988483f17ae95ac35676e66",
                 "establishes": [
@@ -5236,7 +5449,7 @@
               {
                 "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B-checkpoints/raw/main/README.md",
                 "shows": "SmolLM3 checkpoints card, front matter \"license: apache-2.0\": \"We are releasing intermediate checkpoints of SmolLM3 to enable further research\", \"We release checkpoints every 40,000 steps, which equals 94.4B tokens\", with \"Stage 1:** Steps 0 to 3,450,000 (86 checkpoints)\", and it lists \"Pretraining scripts (nanotron)\" in the linked GitHub repo.",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "625660216feaeb13fead991ae9b428dc19940df60bd0d611adc5b2e96d29410c",
                 "establishes": [
@@ -5247,11 +5460,151 @@
               {
                 "url": "https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B-checkpoints/refs",
                 "shows": "Hugging Face refs API for HuggingFaceTB/SmolLM3-3B-checkpoints lists 133 branches, from \"stage1-step-320000\" and \"stage1-step-2600000\" through \"lc-32k-to-64k-step-20000\" and \"it-mid-training\".",
-                "accessed": "2026-11-12",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "19988c4dc3092c558d819fd29bebaa0ed77a8a802f7fa91400dbbb76ed82693f",
                 "establishes": [
                   "checkpoints"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/smollm/main/LICENSE",
+                "shows": "The huggingface/smollm repository serves its LICENSE publicly: \"Apache License\", \"Version 2.0, January 2004\", \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/collections/HuggingFaceTB/smollm3-pretraining-datasets-685a7353fdc01aecde51b1d9",
+                "shows": "The collection API lists \"HuggingFaceFW/fineweb-edu\", \"mlfoundations/dclm-baseline-1.0\", \"epfml/FineWeb2-HQ\", \"HuggingFaceFW/fineweb-2\", \"HuggingFaceTB/finemath\", \"bigcode/the-stack-v2\" and, under the note \"Stage 3 (decay) new datasets\", \"facebook/natural_reasoning\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "c6868e03b02e4942f484f7a0d2fec57aaf47a0d6eedec1f1ad9ca6f03383829d",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/raw/main/README.md",
+                "shows": "FineWeb-Edu card: \"license: odc-by\"; it \"includes all filtered CommonCrawl dumps since 2013\"; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "a0cc8998a20499432b28b6575f3046b714938eb8e11b8d59a1d25ddf3716061e",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0/raw/main/README.md",
+                "shows": "DCLM-Baseline card: \"license: cc-by-4.0\"; \"DCLM-Baseline is a subset of the DCLM-Pool, which is a corpus of 240 trillion tokens derived from Common Crawl\"; its out-of-scope section says \"the dataset is intended for research use only\", a statement outside the CC-BY-4.0 grant. Personal information: \"[More Information Needed]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "7836ae55a3a8decc25e1d5c15900f3b40e91a4d20f4d2bf4f048d86f1db2c4ff",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/html/2406.11794",
+                "shows": "DCLM paper, appendix on DCLM-Pool: \"The use of this dataset is also subject to CommonCrawl’s Terms of Use\"; Common Crawl respects robots.txt \"and thus our pool does so as well, giving content creators a mechanism to opt out of Common Crawl\"; \"Common Crawl does honor deletion requests and periodically redacts dumps\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "897704727d76af80402b5c265313b741097d20ac6d6c566a851c3e705b47b428",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md",
+                "shows": "FineWeb-2 card: \"license: odc-by\"; \"The data was sourced from 96 [CommonCrawl]\" snapshots; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\"; \"CommonCrawl respects robots.txt at crawl time, but if you are a webmaster and find your website in 🥂 FineWeb2 and would like to have it removed, you may also use the [PII removal/opt out form]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/epfml/FineWeb2-HQ/raw/main/README.md",
+                "shows": "FineWeb2-HQ card: \"license: odc-by\"; \"Like FineWeb2, this dataset is released under [Open Data Commons Attribution License (ODC-By) v1.0]\" and \"is subject to [CommonCrawl's Terms of Use]\"; \"CommonCrawl respects robots.txt at crawl time\", with the \"FineWeb2 PII removal/opt out form\" for removals.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "3382e62ff31050348de8a1cd5f1f09a643419aa8d8d70334e9d6fa80ff59b157",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceTB/finemath/raw/main/README.md",
+                "shows": "FineMath card: \"license: odc-by\"; content \"filtered from CommonCrawl\"; \"The use of this dataset is also subject to [CommonCrawl's Terms of Use]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "77b9162c99fc6b5944da8793f18fb99c3b520ab7cdce0cc67ec8a1e47871da61",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/terms-of-use",
+                "shows": "Common Crawl Terms of Use, \"LAST UPDATED: March 7, 2024\". CC grants \"a limited, non-assignable, non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service\"; crawled material \"may be subject to separate terms of use or terms of service from the owners of such Crawled Content\"; \"your use of the Crawled Content signifies your binding acceptance of the ToU\"; and \"BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS OF THIRD PARTIES\". It sets no commercial or field-of-use bar and recommends counsel \"before making any use, including commercial use\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/faq",
+                "shows": "Common Crawl FAQ: \"CCBot is an automated crawler, checking first the robots.txt, and if crawling a page is allowed, fetches pages using HTTP GET requests\", and \"You may also wish to be added to our opt-out registry\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/stage3_9T_11T.yaml",
+                "shows": "The stage-3 nanotron config's \"decay stage\" data stage (\"start_training_step: 4198001\", of \"train_steps: 4720000\") lists \"s3://smollm3/datasets/llama_tokenized_4097/natural_reasoning_fix/standard/\" among its dataset folders with the weight \"0.001 # Natural reasoning\", beside \"0.2\" and \"0.3\" for the FineWeb-Edu and DCLM folders; the stage's weights sum to about 1.0.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "ab6ce841d0d33b7d8e94eadec4a58578e408247ec86748025d2c53228cb16657",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/facebook/natural_reasoning",
+                "shows": "Hub API record for facebook/natural_reasoning: \"license:cc-by-nc-4.0\", not gated.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "a8796d091b939dbad693e5c6f647a00121390639bd3166c5773c8a567b274a18",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/long_context_4k_to_32k.yaml",
+                "shows": "The 4k-to-32k long-context config lists \"s3://smollm3/datasets/llama_tokenized_32769/natural_reasoning/standard/\" with the weight \"0.0008955 # Natural reasoning\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "7a8d75bcc5a6ca251ef11399dc770b2eddc0b81c5fce29872e7b9b823b6b6051",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/long_context_32k_to_64.yaml",
+                "shows": "The 32k-to-64k long-context config lists \"s3://smollm3/datasets/llama_tokenized_65537/natural_reasoning/tokenized/\" with the weight \"0.0008955 # Natural reasoning\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "8d11cdb8fcce23c432b1054ea6ae2ed8f7fdef7154a5c081db8b559a4d1e820d",
+                "establishes": [
+                  "data"
                 ]
               }
             ],
@@ -5273,7 +5626,7 @@
                 "parts": [
                   {
                     "value": "open",
-                    "detail": "public data mixtures, ~11T tokens"
+                    "detail": "public data mixtures, ~11T tokens. The web share is FineWeb-Edu, DCLM, FineWeb-2 and FineWeb2-HQ, each built from named Common Crawl snapshots, released under ODC-By or CC-BY-4.0 and bound to Common Crawl's terms, which leave page rights with their owners; opt-outs follow CCBot's crawl-time robots.txt check, and FineWeb's PII and opt-out form takes removals. DCLM's research-use line is advisory. One constituent is non-commercial: the dataset facebook/natural_reasoning, licensed CC-BY-NC-4.0, enters at the third, decay stage at a weight of 0.001 of that stage's mix in the published stage-3 config, and the two long-context extension mixes carry it at about 0.0009. It is a separately published dataset that a reuser can drop from those mixes, so it is disclosed rather than disqualifying; this is not a claim that every training example is commercially reusable"
                   }
                 ]
               },
@@ -5373,7 +5726,7 @@
           "freshness": {
             "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-12"
+            "latest_axis_confirmation": "2026-11-14"
           }
         },
         {
@@ -60299,16 +60652,16 @@
           "openness": {
             "score": 5,
             "class": "open",
-            "components": "license:CommonCrawl-ToU+Apache-2.0(code);ungated:yes;dataset_card:yes",
+            "components": "license:CommonCrawl-ToU(data, per the card and the paper's License section; the paper's ODC-By-1.0 grant to the aggregated dataset does not clearly extend to V2, held pending clarification)+Apache-2.0(code);ungated:yes;dataset_card:yes",
             "confidence": "high",
-            "note": "Publicly downloadable dataset. Data referred to Common Crawl's Terms of Use; Apache-2.0 covers processing code only. No independent open-data grant established; openness held.",
+            "note": "RedPajama-V2 publishes over 100 billion web documents from 84 Common Crawl snapshots, with quality signals and the scripts that rebuild it, as a public download. Its card licenses only the processing code, under Apache-2.0, and refers the data to Common Crawl's terms of use, which leave page rights with their owners. The paper describing both RedPajama releases grants the aggregated dataset under ODC-By, but then refers all Common Crawl-derived data, which is the whole of V2, to those same terms, so whether the grant reaches V2 is unclear.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2",
                 "shows": "HF dataset page, public with no access-request gate (its embedded page data reports gated false), shows the card text \"RedPajama-V2 is an open dataset for training large language models\", \"The code used to load and process the dataset is licensed under the Apache 2.0 license.\" and a pointer to the \"Common Crawl Foundation Terms of Use\" for the data.",
-                "accessed": "2026-09-29",
+                "accessed": "2026-11-14",
                 "http_status": 200,
-                "content_sha256": "8e28af386455dc276c1dac5df78395c17674e0cbe6955f43d823066bef23786e",
+                "content_sha256": "15cdf443ef2f774941b1c9d4d5d98864ba32741a8c3eeb88ab2574d0ea79ce16",
                 "establishes": [
                   "availability",
                   "documentation",
@@ -60317,8 +60670,8 @@
               },
               {
                 "url": "https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2/raw/main/README.md",
-                "shows": "Dataset card License section: \"Please refer to the Common Crawl Foundation Terms of Use for the data. The code used to load and process the dataset is licensed under the Apache 2.0 license.\" No compilation license is stated for the data.",
-                "accessed": "2026-11-13",
+                "shows": "Dataset card: \"The dataset includes over 100B text documents coming from 84 CommonCrawl snapshots and processed using the [CCNet]\" pipeline; \"A full set of scripts to recreate the dataset, including the quality signals, can be found [here]\". Its front matter declares no license, and its License section reads \"Please refer to the [Common Crawl Foundation Terms of Use]\" for the data, while \"The code used to load and process the dataset is licensed under the Apache 2.0 license.\" It names no removal or opt-out route, and its personal-information section reads \"[More Information Needed]\".",
+                "accessed": "2026-11-14",
                 "http_status": 200,
                 "content_sha256": "e3e85557294bab64e722346d2f11da1f1dc513bf39a9030d93a031cc4d81e7b7",
                 "establishes": [
@@ -60326,6 +60679,88 @@
                   "documentation",
                   "license"
                 ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/togethercomputer/RedPajama-Data-V2",
+                "shows": "Hub API record: \"gated\":false, \"private\":false; the tags carry no license entry and the card data holds only \"task_categories\", \"language\" and \"pretty_name\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "91c9bcc987c340788c490a44075cac1d304ae05ab9ef820d10b66f32e0824b9a",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/pdf/2411.12372",
+                "shows": "RedPajama paper (covering RedPajama-V1 and V2), read through pdftotext. Appendix E, Author Responsibility Statement: \"This aggregated dataset is licensed to you under the terms of the ODC-By-1.0, as well as any licenses that may apply to its constituent parts.\" Appendix F, License, immediately after it: \"For the datasets themselves, we refer to the Common Crawl Foundation Terms of Use\" \"for the datasets derived from the Common Crawl Archive. For the other datasets we refer to the license under which the dataset was originally distributed\", then per-source licenses for C4, GitHub, arXiv, Wikipedia and StackExchange (V1's non-crawl subsets), and \"We further request from users that they abide by each individual license for the subset they use.\" V2 is wholly Common Crawl-derived. The limitations note no \"analysis of personally identifiable information present in the dataset\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "f40ed61d29d59f2f26ffd8cf78ee8177e5e56eca2fd3beb7511d9ceaf53e9fbb",
+                "establishes": [
+                  "license",
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md",
+                "shows": "RedPajama-Data repository README, License section: \"Copyright 2023 Together Computer\" under the Apache License 2.0 for the code, then \"For the dataset itself, please refer to\" the \"[Common Crawl Foundation Terms of Use]\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169",
+                "establishes": [
+                  "license",
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/togethercomputer/RedPajama-Data-1T/raw/main/README.md",
+                "shows": "RedPajama-V1 card, for comparison: \"Please refer to the licenses of the data subsets you use.\", listing the \"[Common Crawl Foundation Terms of Use]\" among them. Neither RedPajama card states the ODC-By-1.0 grant the paper's Appendix E describes.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "87c54ca0c82398e5747be1fd8c1487da9e3e34fe1583717a68f901a2167b678d",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://www.together.ai/blog/redpajama-data-v2",
+                "shows": "Release post: \"30 trillion filtered and deduplicated tokens (100+ trillions raw) from 84 CommonCrawl dumps covering 5 languages\"; it states no license for the data.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "e1583c9845f127c6a0b227868d5782d9f3bb15e1f62ac05df63d23100f72d7ba",
+                "establishes": [
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/terms-of-use",
+                "shows": "Common Crawl Terms of Use, \"LAST UPDATED: March 7, 2024\". CC grants \"a limited, non-assignable, non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service\"; crawled material \"may be subject to separate terms of use or terms of service from the owners of such Crawled Content\"; \"your use of the Crawled Content signifies your binding acceptance of the ToU\"; and \"BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS OF THIRD PARTIES\". It sets no commercial or field-of-use bar and recommends counsel \"before making any use, including commercial use\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072",
+                "establishes": [
+                  "license",
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/faq",
+                "shows": "Common Crawl FAQ: \"CCBot is an automated crawler, checking first the robots.txt, and if crawling a page is allowed, fetches pages using HTTP GET requests\", and \"You may also wish to be added to our opt-out registry\".",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa",
+                "establishes": [
+                  "license",
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/abs/2411.12372",
+                "shows": "arXiv abstract page for \"RedPajama: an Open Dataset for Training Large Language Models\"; its submission history lists a single version, \"[v1]\", so the paper's licensing passages have not been revised.",
+                "accessed": "2026-11-14",
+                "http_status": 200,
+                "content_sha256": "0e2f6bb03b9b8422198d3112881812e692a2e96f252a55d69e1bfac94d26eab4"
               }
             ],
             "bucket": "open",
@@ -60335,7 +60770,8 @@
                 "context": false,
                 "parts": [
                   {
-                    "value": "CommonCrawl-ToU"
+                    "value": "CommonCrawl-ToU",
+                    "detail": "data, per the card and the paper's License section; the paper's ODC-By-1.0 grant to the aggregated dataset does not clearly extend to V2, held pending clarification"
                   },
                   {
                     "value": "Apache-2.0",
@@ -60430,7 +60866,7 @@
               {
                 "axis": "openness",
                 "since": "2026-11-13",
-                "reason": "R-2026-11-13-d removed CommonCrawl-ToU from the dataset ladder's open_data licenses: Common Crawl's terms grant limited access to its service and preserve third-party rights, so they are not by themselves an open license over the crawled documents. RedPajama-V2's card (read 2026-11-13) offers the data only under those terms, with Apache-2.0 for the code. The recorded 5/open stands provisionally, deferred in the training_synthetic_datasets recipe. Settled by applying the web-crawl documentation test: a compilation license or other grant for the data, named provenance, disclosed page rights and documented opt-out handling for its collection."
+                "reason": "R-2026-11-13-d removed CommonCrawl-ToU from the dataset ladder's open_data licenses: Common Crawl's terms grant limited access to its service and preserve third-party rights, so they are not by themselves an open license over the crawled documents. The web-crawl test was applied on 2026-11-14. RedPajama-V2 documents its provenance (84 named Common Crawl snapshots processed with CCNet, rebuild scripts published), page rights (the card sends the data to Common Crawl's terms, under which crawled content may carry its owners' terms) and opt-out handling (CCBot's crawl-time robots.txt check, inherited through the named crawl); it names no removal route. The card grants no license over the data, and no term bars commercial use, so released-restricted does not apply. The paper (arXiv 2411.12372, v1 the only version) says in its Author Responsibility Statement: \"This aggregated dataset is licensed to you under the terms of the ODC-By-1.0, as well as any licenses that may apply to its constituent parts.\" Its License section, immediately after, says: \"For the datasets themselves, we refer to the Common Crawl Foundation Terms of Use for the datasets derived from the Common Crawl Archive\", lists per-source licenses for V1's non-crawl subsets, and adds \"We further request from users that they abide by each individual license for the subset they use.\" V2 is entirely Common Crawl-derived, so the paper does not clearly extend the ODC-By grant to V2. Under R-2026-11-14-d a publisher's grant in a paper is affirmative licensing evidence, and the decisive question is whether its scope clearly covers the scored release; here that scope is unresolved, so the dimension stays held pending clarification. The recorded 5/open stands provisionally, deferred in the training_synthetic_datasets recipe. Settled by Together clarifying whether the ODC-By grant covers V2: if it does, the score cites the paper as the licensing source with the constituent-rights caveat."
               }
             ]
           },
