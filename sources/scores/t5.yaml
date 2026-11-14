@@ -8,8 +8,12 @@ openness:
       detail: Small, Base, Large, 3B and 11B checkpoints and the T5 1.1 set, ungated on Hugging Face
     data:
       value: open
-      detail: C4 is public and its TensorFlow Datasets builder recreates it from Common Crawl, and the
-        supervised tasks mixed into the original checkpoints are public benchmarks defined in the t5 library
+      detail: C4 is public and its TensorFlow Datasets builder recreates it from Common Crawl, and the supervised
+        tasks mixed into the original checkpoints are public benchmarks defined in the t5 library. C4 is
+        filtered from Common Crawl's April 2019 web extracted text, and Ai2's copy is released under ODC-BY
+        with the reuser bound by Common Crawl's terms of use for the page content, which leave the pages
+        under their owners' terms. CCBot documents a robots.txt check before fetching. No removal route
+        for C4 was found
     code:
       value: open
       detail: the t5 library pretrains, fine-tunes and evaluates from the command line
@@ -17,13 +21,16 @@ openness:
     - name: Apache-2.0
       detail: OSI
   governing_release: t5-base
-  confidence: high
+  confidence: medium
   note: T5's checkpoints and training code are published under Apache-2.0, and its C4 pretraining corpus
     is public, with a TensorFlow Datasets build that recreates it from Common Crawl. The supervised tasks
     mixed into the original checkpoints are public benchmarks, so the whole training run can be reproduced.
-  raw: weights:open(Small, Base, Large, 3B and 11B checkpoints and the T5 1.1 set, ungated on Hugging
-    Face);data:open(C4 is public and its TensorFlow Datasets builder recreates it from Common Crawl, and
-    the supervised tasks mixed into the original checkpoints are public benchmarks defined in the t5 library);code:open(the
+  raw: weights:open(Small, Base, Large, 3B and 11B checkpoints and the T5 1.1 set, ungated on Hugging Face);data:open(C4
+    is public and its TensorFlow Datasets builder recreates it from Common Crawl, and the supervised tasks
+    mixed into the original checkpoints are public benchmarks defined in the t5 library. C4 is filtered
+    from Common Crawl's April 2019 web extracted text, and Ai2's copy is released under ODC-BY with the
+    reuser bound by Common Crawl's terms of use for the page content, which leave the pages under their
+    owners' terms. CCBot documents a robots.txt check before fetching. No removal route for C4 was found);code:open(the
     t5 library pretrains, fine-tunes and evaluates from the command line);license:Apache-2.0(OSI)
   last_verified: '2026-11-12'
   sources:
@@ -86,6 +93,60 @@ openness:
     accessed: '2026-11-12'
     http_status: 200
     content_sha256: b218f2c660267f586d0c5cbd89ff0656d33bdd87d98cb9736f449e741d1ef736
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/c4/raw/main/README.md
+    shows: 'allenai/c4 card: ''A colossal, cleaned version of Common Crawl''s web crawl corpus''; ''This
+      is the processed version of Google''s C4 dataset''; ''The C4 and mC4 datasets are collections text
+      sourced from the public Common Crawl web scrape'', with the TensorFlow Datasets c4.py build code linked;
+      ''We are releasing this dataset under the terms of ODC-BY. By using this, you are also bound by the
+      Common Crawl terms of use in respect of the content contained in the dataset.'' No opt-out, PII or
+      removal route on the card.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: bfa4b9d8af6f9d2955d39b7cb617d580763aad7fb9024e425be60738b69ea140
+    establishes:
+    - data
+  - url: https://arxiv.org/pdf/1910.10683
+    shows: 'T5 paper, section 2.2: the heuristics for cleaning Common Crawl''s web extracted text, then
+      ''To assemble our base data set, we downloaded the web extracted text from April 2019 and applied
+      the aforementioned filtering'', released ''as part of TensorFlow Datasets''.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: ad07e47cedf437a4156419ce5d3076e08a3e59bbfd6dac7cc53df1009cdcbe7f
+    establishes:
+    - data
+  - url: https://commoncrawl.org/terms-of-use
+    shows: 'Common Crawl Terms of Use, ''LAST UPDATED: March 7, 2024''. Crawled Content ''may be subject
+      to separate terms of use or terms of service from the owners of such Crawled Content''; ''BY USING
+      THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS OF THIRD PARTIES
+      IN AND TO THE MATERIAL CONTAINED THEREIN.'' The grant is ''a limited, non-assignable, non-transferable,
+      non-sublicensable, non-exclusive, limited license to access and use the Service'', not a license over
+      the crawled pages; the prohibited uses are conduct terms with no commercial or field-of-use bar, and
+      ''CC strongly recommends that you obtain the advice of legal counsel before making any use, including
+      commercial use''. The allenai/c4 card binds the reuser to these terms for the page content.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072
+    establishes:
+    - data
+  - url: https://commoncrawl.org/faq
+    shows: '''CCBot is an automated crawler, checking first the robots.txt''; to block it, ''Add these lines
+      to your robots.txt file and our crawler will stop crawling your website: User-agent: CCBot Disallow:
+      /''; ''Our older bot identified itself with the UserAgent string'' CCBot/1.0. The crawler''s own documentation
+      of its robots.txt check, not proof that reuse of any page is lawful.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
+  - url: https://commoncrawl.org/ccbot
+    shows: '''CCBot identifies itself in its UserAgent string as: CCBot/2.0''; ''To prevent Common Crawl
+      from crawling your website, include the following in your robots.txt : User-agent: CCBot Disallow:
+      /''; links an Opt-out Registry.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 4f606df61decb1f876ba66eddc8674c96f0c294c5710d3983ee81e7fa801a2dc
     establishes:
     - data
 adoption:
