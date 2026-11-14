@@ -4172,3 +4172,135 @@ rulings:
     lands_in: [sources/rubrics/pretrained.yaml, sources/rubrics/dataset.yaml, docs/reference/openness.md,
       sources/categories/training_synthetic_datasets.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1054']
+
+  - id: R-2026-11-14-a
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1056", R-2026-11-13-d, olmo, pretrained, dataset]
+    question: >-
+      Under the web-crawl documentation test (R-2026-11-13-d), Dolma 3's card does not itself say that the crawled
+      pages keep their own rights, but the ODC-By license it adopts says in §2.4 that rights in the individual contents
+      may exist separately and are not covered. Does a provision of the adopted license count as the page-rights
+      disclosure?
+    ruling: >-
+      Yes. The provisions of a license a release expressly adopts count as release documentation, and they need not be
+      repeated on the dataset card. ODC-By §2.4 states that rights in individual contents may exist separately and are
+      not covered by the database license, which is precisely the page-rights disclosure the test intends. This
+      resolves olmo's page-rights element without weakening the rule. It does not establish that individual pages are
+      lawful to reuse; the rule never required that.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1056']
+
+  - id: R-2026-11-14-b
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1056", R-2026-11-13-d, olmo, pretrained]
+    question: >-
+      Ai2's Responsible Use Guidelines, on a separate page linked from the Dolma and OLMo cards, say they govern use of
+      Ai2's models and datasets and disallow some uses. Do they bind the corpus, so that olmo becomes
+      `released-restricted`? And does the original Dolma card's binding clause carry over to Dolma 3?
+    ruling: >-
+      Neither is established. Separate guidelines are treated as binding for scoring only when the release's license
+      or distribution terms expressly incorporate them, or affirmative acceptance is documented. This is an
+      evidentiary standard for scoring, not a legal determination of enforceability. Language saying guidelines "govern your use" deserves
+      scrutiny, but that word on a separate page, reached through a link labeled for more information and without
+      acceptance or licensing language incorporating the guidelines, is insufficient for an automatic downgrade.
+      ODC-By and Apache-2.0 remain the operative grants unless incorporation is established. The record quotes the
+      guidelines and their purported restrictions, and a narrowly scoped terms-verification question stays open until
+      it is confirmed whether the dataset or model distribution terms expressly incorporate them; the guidelines are
+      not declared categorically advisory. A link to an earlier release does not incorporate that release's
+      contractual conditions into a new one, so the original Dolma terms do not carry over to Dolma 3 automatically;
+      Dolma 3 is read on its own terms and its ODC-By grant.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1056']
+
+  - id: R-2026-11-14-c
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1056", R-2026-11-13-b, R-2026-11-13-d, marin, pretrained]
+    question: >-
+      Marin's training mixes are dominated in their later phases by Nemotron-CC, which is released under Common Crawl's
+      terms with no compilation license, while DCLM-Baseline, another constituent, passes the test. How is Marin's
+      data valued if no license for Nemotron-CC is found?
+    ruling: >-
+      Assess the governing corpus, not whichever constituent passes. The dominant Nemotron-CC contribution matters, and
+      DCLM's documented license cannot establish openness for the Nemotron-heavy training phases. The absence of a
+      compilation license is still missing evidence, not an affirmative legal restriction, so it does not give
+      `released-restricted`. Marin's openness stays held pending a documented grant or a separate, explicit
+      constituent-level ruling, and it is not marked verified because DCLM passes. Neither an unsupported downgrade nor
+      indefinite retention of a provisional score should be mistaken for verified evidence.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1056']
+
+  - id: R-2026-11-14-d
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1057", R-2026-11-13-d, redpajama-data-v2, dataset, training_synthetic_datasets]
+    question: >-
+      RedPajama-V2's dataset card points its data to Common Crawl's terms and licenses only its code, while the paper
+      describing the RedPajama releases says "this aggregated dataset" is licensed under ODC-By-1.0. Does the card's
+      deferral make it 4/open through `deferred_to_components`, or does the paper's grant keep it at 5?
+    ruling: >-
+      Do not approve 4/open. A publisher's explicit ODC-By-1.0 grant is affirmative licensing evidence even when a
+      dataset card fails to repeat it, and a paper's grant is not automatically subordinated to a dataset card. The key
+      question is whether the grant's scope clearly includes the scored release. If it does, the score stays at its
+      value, cites the paper as the licensing source, and documents the constituent-rights caveat; if it does not, the
+      existing hold stays pending clarification. `CommonCrawl-ToU` is not added to `deferred_to_components` merely to
+      make the score reproducibly become 4: Common Crawl's terms are not themselves a complete inventory of constituent
+      licenses, and doing so would turn an unresolved licensing question into a seemingly verified score.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1057']
+
+  - id: R-2026-11-14-e
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1057", "#1046", R-2026-11-13-b, smollm, luciole]
+    question: >-
+      Two constituent questions under the materiality rule (R-2026-11-13-b). SmolLM3's final-stage mix includes
+      facebook/natural_reasoning, licensed CC-BY-NC-4.0, at a 0.001 weight; does smollm keep 5? Luciole's CulturaX
+      source follows OSCAR's terms, and OSCAR's access gate says use in France outside the text-and-data-mining or
+      research exceptions has always been prohibited; does that downgrade luciole?
+    ruling: >-
+      smollm keeps 5. A separately identifiable CC-BY-NC-4.0 constituent at 0.001 of one training-stage mixture is not
+      automatically disqualifying under the constituent-materiality rule; the record names the dataset, the stage, the
+      mixture weight and the exclusion path explicitly. This is a defensible 5, not a claim that every training example
+      is commercially reusable. luciole keeps its provisional 5. OSCAR's statement about French copyright exceptions
+      describes an asserted legal constraint, not a new contractual field-of-use restriction, so it does not downgrade
+      luciole automatically, but CulturaX's redistribution does not cure any underlying rights limitation. The OSCAR
+      issue is recorded separately in luciole's constituent-materiality assessment, including whether the affected
+      French subset is identifiable and excludable, and it does not block acceptance of luciole's web-crawl
+      documentation evidence.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1057']
+
+  - id: R-2026-11-14-f
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1057", R-2026-11-13-d, apertus, pretrained]
+    question: >-
+      Apertus publishes scripts that rebuild its pretraining corpus, but they are written for its own compute
+      environment. Does that make the corpus unreconstructible under R-2026-11-13-d?
+    ruling: >-
+      No. Reconstruction scripts being environment-specific is not the same as the corpus being unreconstructible. The
+      disclosed dependencies and the documented pipeline are enough to support the existing score unless an actual
+      material reconstruction obstacle is demonstrated.
+    status: in-force
+    executor: agent
+    lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1057']
