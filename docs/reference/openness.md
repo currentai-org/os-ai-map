@@ -496,9 +496,12 @@ Five clarifications refine the test:
   ODC-By §2.4, which says rights in the individual contents may exist separately and are not
   covered, discloses page rights. It does not show that any page is lawful to reuse, which the
   test never asks.
-- **Separate terms bind only by incorporation** (R-2026-11-14-b). Guidelines on a separate page
-  that say they govern use bind the corpus only when its license or distribution terms expressly
-  incorporate them or the user affirmatively accepts them. A link for more information is not
+- **Separate guidelines count as binding only on documented incorporation or acceptance**
+  (R-2026-11-14-b). Separate guidelines are treated as binding for scoring only when the
+  release's license or distribution terms expressly incorporate them, or affirmative acceptance
+  is documented. This is an evidentiary standard for scoring, not a legal conclusion about
+  whether such terms are enforceable, which can depend on applicable law and how acceptance
+  happened. A link for more information is not
   enough for a downgrade, and the guidelines are not declared advisory either: the record quotes
   them and their restrictions, and the dimension is held on that narrow question until
   incorporation is confirmed or ruled out. The terms of an earlier release do not carry over to a
