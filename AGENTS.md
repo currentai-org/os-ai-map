@@ -139,6 +139,9 @@ Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it
                    review_queue gathers every open question (held axes, deferred rulings,
                    and with --live the contradiction sweep) and says what each one waits on:
                    a ruling, another evidence pass, a working fetch, or a scheduled run.
+                   recoverability_pilot samples a URL-only image corpus (DataComp-1B) with a
+                   fixed seed and measures how much still fetches with a matching hash; its
+                   result and brief live in docs/briefs/. Network-heavy, never in preflight.
 ```
 
 Proposers deliberately **print rather than write**. Matching artifacts by name measured 2

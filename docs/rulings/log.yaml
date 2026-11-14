@@ -4304,3 +4304,30 @@ rulings:
     executor: agent
     lands_in: [sources/rubrics/pretrained.yaml, docs/reference/openness.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1057']
+
+  - id: R-2026-11-14-g
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1059", R-2026-11-13-d, openclip]
+    question: >-
+      The OpenCLIP recoverability pilot over 1,000 DataComp-1B rows left three method questions: how to read a
+      robots.txt answered 401 or 403, whether its redirect and X-Robots-Tag handling is acceptable, and whether to
+      expand the random sample.
+    ruling: >-
+      robots.txt answered 401 or 403 imposes no rules, as RFC 9309 specifies, and the stricter urllib.robotparser
+      reading is kept as a sensitivity analysis. No robots.txt rules does not mean copyright permission or affirmative
+      consent, and that distinction stays explicit. The redirect and X-Robots-Tag handling is approved: opt-out
+      directives are honored, including those addressed to img2dataset, and each redirect destination's robots.txt
+      and the per-host limits apply throughout the chain. It is deliberately more conservative than the original
+      downloader and is documented as a difference, not an exact reproduction of DataComp's historical collection.
+      Do not run a larger random sample yet: the pilot establishes that recoverability is a material issue, and a
+      larger sample would not resolve whether hash mismatches are the same images or whether the original collection
+      honored publisher opt-outs. Prioritize a perceptual comparison of the hash-mismatched rows against DataComp's
+      published embeddings, without retaining image content, and establishing the original downloader version and
+      opt-out configuration. Report the Wilson intervals as approximate for the clustered design, or replace them with
+      shard-aware estimates. OpenCLIP stays at its recorded provisional 5 with the openness hold intact.
+    status: in-force
+    executor: agent
+    lands_in: [build/recoverability_pilot.py, docs/briefs/2026-11-14-openclip-recoverability-pilot.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1059']
