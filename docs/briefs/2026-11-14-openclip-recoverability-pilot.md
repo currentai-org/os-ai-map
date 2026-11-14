@@ -21,16 +21,18 @@ no image content), is `docs/briefs/2026-11-14-openclip-recoverability-pilot.json
 ## The short answer
 
 Of the 1,000 sampled DataComp-1B rows, 343 returned the exact bytes the metadata hashed
-(34.3%, 95% Wilson interval 31.4% to 37.3%). Another 265 returned an image whose hash differs
-(26.5%, 23.9% to 29.3%), most of them at the original pixel dimensions. 158 are gone in the
-plainest sense: 404, 410, or a host name that no longer resolves (15.8%, 13.7% to 18.2%). 87 were
-skipped because the publisher opts out through robots.txt or `X-Robots-Tag` (8.7%, 7.1% to 10.6%).
+(34.3%, shard-bootstrap 95% interval 31.2% to 37.5%). Another 265 returned an image whose hash
+differs (26.5%, 24.0% to 29.1%), most of them at the original pixel dimensions. 158 are gone in the
+plainest sense: 404, 410, or a host name that no longer resolves (15.8%, 13.7% to 17.9%). 87 were
+skipped because the publisher opts out through robots.txt or `X-Robots-Tag` (8.7%, 7.0% to 10.4%).
+Intervals in this brief are shard-bootstrap intervals unless marked Wilson; see
+[the design](#what-was-measured) for why.
 The rest split across access-controlled, transient, non-image and other client-error outcomes,
 each reported separately below.
 
 Read together: byte-exact recovery of the sampled frame, on this date, from this network, under
 these rules, is at least 34.3%, and at most about 56% even if every outcome that could change on
-another attempt or another network had matched. Some image comes back for 60.8% (57.7% to 63.8%).
+another attempt or another network had matched. Some image comes back for 60.8% (57.4% to 64.3%).
 Recovery is uneven by host type: e-commerce CDNs serve images for almost every sampled row but
 almost never the original bytes, and every Pinterest row is excluded by robots.txt. Whether what
 remains faithfully reconstructs the training corpus is the maintainer's question; this pilot gives
@@ -72,8 +74,18 @@ This is a two-stage cluster sample. Drawing the same number of rows from each dr
 row by the inverse of its file's size; because the largest drawn file is 8.5% larger than the smallest,
 the effect on these shares is small, but a row in one of the few small files would be overweighted
 if one were drawn. Rows within a file appear shuffled (adjacent rows share a host 0.3% of the time
-in one file inspected), so the clustering costs little precision. The intervals below are simple
-Wilson intervals that treat the sample as simple random.
+in one file inspected), so the clustering costs little precision.
+
+Because of that design, rows are not independent draws from the frame, and a Wilson interval, which
+assumes they are, is approximate here. The brief therefore reports a shard-aware bootstrap as its
+main interval: each of 10,000 replicates resamples the 50 drawn files with replacement, keeps every
+sampled row of each file drawn, and recomputes the share (seed `20261114:shard-bootstrap`, percentile
+95% interval). The Wilson intervals are kept beside them, labelled approximate. The two agree closely:
+the design effect, the bootstrap variance over the variance of a simple random sample of the same
+size, runs from 0.72 to 1.32 across the reported shares, so the Wilson intervals are a little narrow
+for some shares (hash match 1.14, failure 1.23, image returned 1.32) and a little wide for others.
+The JSON carries both under `shard_bootstrap` and the `ci95` fields, with a note that the latter are
+approximate. The bootstrap was computed from the saved manifest; nothing was fetched again.
 
 ## Method and constraints
 
@@ -110,19 +122,20 @@ including robots.txt from 830 origins.
 ### By reporting class
 
 Every class is separate; none is folded into an "unavailable" total. Shares are of all 1,000
-samples, with 95% Wilson intervals.
+samples. The shard-bootstrap interval respects the clustered design; the Wilson interval assumes a
+simple random sample and is approximate.
 
-| Class | Codes | Count | Share | 95% interval |
-|---|---|---:|---:|---|
-| Hash match | `hash_match` | 343 | 34.3% | 31.4% to 37.3% |
-| Image served, hash differs | `same_dims` 226, `different_dims` 39 | 265 | 26.5% | 23.9% to 29.3% |
-| Definitively gone | `http_404` 88, `dns_error` 63, `http_410` 7 | 158 | 15.8% | 13.7% to 18.2% |
-| Transient or environment | `tls_error` 15, `connection_reset` 6, `http_503` 3, `timeout` 2, `http_429` 1, `http_500` 1, `http_522` 1, `proxy_error` 1 | 30 | 3.0% | 2.1% to 4.3% |
-| Access-controlled | `http_403` 59, `http_401` 2 | 61 | 6.1% | 4.8% to 7.8% |
-| Non-image response | `non_image` 16 (15 `text/html`, 1 SVG) | 16 | 1.6% | 1.0% to 2.6% |
-| Other client error | `http_400` 18 | 18 | 1.8% | 1.1% to 2.8% |
-| Opt-out | `robots_disallow` 78, `x_robots_tag` 9 (8 `noindex`, 1 `noai`) | 87 | 8.7% | 7.1% to 10.6% |
-| robots.txt unreachable | `robots_unavailable` 22 (robots.txt answered 5xx or 429) | 22 | 2.2% | 1.5% to 3.3% |
+| Class | Codes | Count | Share | Shard-bootstrap 95% | Wilson 95% (approx.) |
+|---|---|---:|---:|---|---|
+| Hash match | `hash_match` | 343 | 34.3% | 31.2% to 37.5% | 31.4% to 37.3% |
+| Image served, hash differs | `same_dims` 226, `different_dims` 39 | 265 | 26.5% | 24.0% to 29.1% | 23.9% to 29.3% |
+| Definitively gone | `http_404` 88, `dns_error` 63, `http_410` 7 | 158 | 15.8% | 13.7% to 17.9% | 13.7% to 18.2% |
+| Transient or environment | `tls_error` 15, `connection_reset` 6, `http_503` 3, `timeout` 2, `http_429` 1, `http_500` 1, `http_522` 1, `proxy_error` 1 | 30 | 3.0% | 1.9% to 4.2% | 2.1% to 4.3% |
+| Access-controlled | `http_403` 59, `http_401` 2 | 61 | 6.1% | 4.7% to 7.6% | 4.8% to 7.8% |
+| Non-image response | `non_image` 16 (15 `text/html`, 1 SVG) | 16 | 1.6% | 0.9% to 2.4% | 1.0% to 2.6% |
+| Other client error | `http_400` 18 | 18 | 1.8% | 1.1% to 2.6% | 1.1% to 2.8% |
+| Opt-out | `robots_disallow` 78, `x_robots_tag` 9 (8 `noindex`, 1 `noai`) | 87 | 8.7% | 7.0% to 10.4% | 7.1% to 10.6% |
+| robots.txt unreachable | `robots_unavailable` 22 (robots.txt answered 5xx or 429) | 22 | 2.2% | 1.3% to 3.2% | 1.5% to 3.3% |
 
 A few of these need a word:
 
@@ -142,9 +155,9 @@ A few of these need a word:
   and the host answered with nginx's 444. It is the only environment exclusion, and it is not a
   policy refusal.
 
-The four-way split the pilot was first asked for: success 343 (34.3%, 31.4% to 37.3%); changed
-content 265 (26.5%, 23.9% to 29.3%); failure 282 (28.2%, 25.5% to 31.1%); excluded 110 (11.0%,
-9.2% to 13.1%). The excluded 110 are the 87 opt-outs, the 22 unreachable robots.txt and the one
+The four-way split the pilot was first asked for, with shard-bootstrap intervals: success 343
+(34.3%, 31.2% to 37.5%); changed content 265 (26.5%, 24.0% to 29.1%); failure 282 (28.2%, 25.1% to
+31.3%); excluded 110 (11.0%, 9.2% to 12.8%). The excluded 110 are the 87 opt-outs, the 22 unreachable robots.txt and the one
 proxy error.
 
 ### Environment exclusions
@@ -157,11 +170,16 @@ image hosts, so the pilot could measure what it set out to.
 ### The robots.txt 401 and 403 reading
 
 RFC 9309 treats a robots.txt answered with any 4xx, 401 and 403 included, as imposing no rules, and
-the script follows it. Python's `urllib.robotparser` reads 401 and 403 as full disallow. 102 samples
-were fetched from origins whose robots.txt answered 401 or 403 (49 matched, 19 changed, 34 failed).
-Under the stricter reading the shares would be: hash match 29.4% (26.7% to 32.3%), changed content
-24.6% (22.0% to 27.4%), failure 24.8% (22.2% to 27.6%), excluded 21.2% (18.8% to 23.8%). The JSON
-carries both, under `robots_401_403_not_excluded`.
+the script follows it; the maintainer adopted that reading for this measurement on review (R-2026-11-14-g).
+"No robots.txt rules" is a statement about the protocol only. It is not copyright permission and
+not affirmative consent to collection or reuse, and nothing here treats it as either.
+
+Python's `urllib.robotparser` reads 401 and 403 as full disallow, and that stricter reading is kept
+as a sensitivity analysis. 102 samples were fetched from origins whose robots.txt answered 401 or
+403 (49 matched, 19 changed, 34 failed). Under the stricter reading the shares would be: hash match
+29.4% (shard bootstrap 26.2% to 32.8%), changed content 24.6% (22.1% to 27.2%), failure 24.8% (21.8%
+to 27.7%), excluded 21.2% (18.5% to 23.8%). The JSON carries both, under
+`robots_401_403_not_excluded` and the `strict_robots_category` bootstrap estimates.
 
 ### Top hosts
 
@@ -208,15 +226,15 @@ By scheme: 758 HTTPS samples (251 match, 214 changed, 206 failed, 87 excluded) a
 
 **Can defend:**
 
-- *A lower bound on byte-exact recovery*: 34.3% (31.4% to 37.3%) of DataComp-1B rows return the
+- *A lower bound on byte-exact recovery*: 34.3% (31.2% to 37.5%) of DataComp-1B rows return the
   exact bytes the release hashed, on this date, from this network, under these rules.
-- *An upper bound on byte-exact recovery under the same rules*: at most 56.1% (53.0% to 59.2%). That
+- *An upper bound on byte-exact recovery under the same rules*: at most 56.1% (53.6% to 58.8%). That
   is 1,000 less the 158 gone, the 265 that served a different image and the 16 non-image responses,
   and it assumes that every transient, access-controlled, other-client-error, unreachable-robots and
   opt-out sample would have matched.
-- *A floor on loss*: at least 15.8% (13.7% to 18.2%) of rows point at a resource that is gone by the
+- *A floor on loss*: at least 15.8% (13.7% to 17.9%) of rows point at a resource that is gone by the
   plainest test: 404, 410 or a name that no longer resolves.
-- *A share of rows where some image is still served*: 60.8% (57.7% to 63.8%).
+- *A share of rows where some image is still served*: 60.8% (57.4% to 64.3%).
 - *That recovery is not uniform across the corpus*: it differs sharply by host type, and a rebuild
   from today's web would under-represent e-commerce images in their original bytes and drop
   Pinterest entirely under these rules.
@@ -244,8 +262,9 @@ By scheme: 758 HTTPS samples (251 match, 214 changed, 206 failed, 87 excluded) a
 
 ## Limitations
 
-- **Sample size and design.** 1,000 rows from 50 of 2,664 files. Simple Wilson intervals understate
-  uncertainty slightly for a cluster sample.
+- **Sample size and design.** 1,000 rows from 50 of 2,664 files. The shard bootstrap respects the
+  clustering, but with 50 clusters its own interval endpoints carry some Monte Carlo and
+  small-sample error; the Wilson intervals are approximate for this design.
 - **Time of day and day of week.** Hosts that throttle or fail under load may behave differently at
   other times.
 - **Network.** HTTPS went through the session's egress proxy, plain HTTP directly. The proxy refused
@@ -263,7 +282,34 @@ By scheme: 758 HTTPS samples (251 match, 214 changed, 206 failed, 87 excluded) a
   whether image hosts' robots.txt was read at all) is a question about that collection's records,
   and today's robots.txt and `X-Robots-Tag` answers say nothing about what the hosts said then.
 
-## What an expansion would need
+## Decisions on review, and what comes next
+
+The maintainer approved the pilot on review and ruled (R-2026-11-14-g):
+
+- **robots.txt 401 and 403** follow RFC 9309 (no rules), with the stricter reading kept as a
+  sensitivity analysis. No robots.txt rules does not imply legal permission.
+- **Redirects and `X-Robots-Tag`.** The handling above is approved: opt-out directives are honored
+  on every response in a redirect chain, including directives addressed to `img2dataset`, and each
+  redirect destination's robots.txt and the per-host limits apply throughout the chain. This is
+  deliberately more conservative than the original downloader, so the measurement is not an exact
+  reproduction of DataComp's historical collection. The differences from img2dataset 1.47.0, the
+  version read for this pilot (which version the 2022-2023 collection ran is under separate
+  investigation): img2dataset checks `X-Robots-Tag` only on the final response after `urllib`
+  follows redirects, honors by default only directives that name no user agent, does not read
+  robots.txt at all, and sends a Firefox User-Agent string. This script checks every hop, also
+  honors directives addressed to `img2dataset`, reads robots.txt per origin at every hop, and
+  identifies itself.
+- **No larger random sample for now.** The 1,000 rows establish that recoverability is a material
+  question. More rows would narrow the intervals but would not settle the two questions that matter
+  most: whether the hash mismatches are the same images, and what opt-outs the original collection
+  honored. The next work is targeted: a perceptual comparison of the 265 mismatched rows against the
+  embeddings DataComp publishes, without keeping any image, and the original img2dataset version and
+  configuration. Each reports its findings before any score or hold change is proposed.
+
+The options below were the pilot's own list before that review, kept for reference; the larger
+sample and repeat runs are not planned.
+
+### What an expansion would need
 
 - **A larger, stratified sample.** Stratify by file, or draw rows with probability proportional to
   file size, so the sample is self-weighting. A few thousand rows would halve the intervals, and
@@ -276,8 +322,8 @@ By scheme: 758 HTTPS samples (251 match, 214 changed, 206 failed, 87 excluded) a
 - **A perceptual check on changed content.** Embed each fetched image in memory with the same CLIP
   model and compare it with the image embedding the release precomputed in its `.npz` files. That
   would tell a re-encode of the same picture from a replacement without keeping any image.
-- **A decision on the robots.txt reading.** Whether 401 and 403 on robots.txt mean no rules (RFC 9309)
-  or disallow (`urllib.robotparser`) changes the excluded share by about ten points.
+- **A decision on the robots.txt reading.** Decided above: RFC 9309, with the stricter reading as a
+  sensitivity analysis. It changes the excluded share by about ten points.
 - **The original download configuration.** For the opt-out question, the DataComp authors' record of
   the img2dataset version and settings used for the 2022-2023 collection.
 

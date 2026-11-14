@@ -50,6 +50,7 @@ import platform
 import random
 import re
 import socket
+import statistics
 import struct
 import sys
 import threading
@@ -177,6 +178,48 @@ def share(k: int, n: int) -> dict:
     lo, hi = wilson(k, n)
     return {"count": k, "n": n, "share": round(k / n, 4) if n else None,
             "ci95": [round(lo, 4), round(hi, 4)]}
+
+
+BOOTSTRAP_REPS = 10_000
+BOOTSTRAP_SEED = "20261114:shard-bootstrap"
+
+
+def shard_bootstrap(manifest: list[dict], indicators: dict, reps: int = BOOTSTRAP_REPS,
+                    seed: str = BOOTSTRAP_SEED) -> dict:
+    """Percentile 95% intervals that respect the two-stage design.
+
+    The sample draws files, then rows within each file, so rows are not independent draws from
+    the frame. Each replicate resamples the drawn files with replacement, keeps every sampled row
+    of each file drawn, and recomputes each share as a ratio of row counts. `indicators` maps a
+    name to a predicate on a manifest row. The design effect compares the bootstrap variance with
+    the variance a simple random sample of the same size would have.
+    """
+    by_shard: dict[str, list[dict]] = collections.defaultdict(list)
+    for m in manifest:
+        by_shard[m["shard"]].append(m)
+    shards = sorted(by_shard)
+    counts = {s: (len(rows), {k: sum(1 for m in rows if f(m)) for k, f in indicators.items()})
+              for s, rows in by_shard.items()}
+    rng = random.Random(seed)
+    draws: dict[str, list[float]] = {k: [] for k in indicators}
+    for _ in range(reps):
+        picked = [rng.choice(shards) for _ in shards]
+        n = sum(counts[s][0] for s in picked)
+        for k in indicators:
+            draws[k].append(sum(counts[s][1][k] for s in picked) / n)
+    n = len(manifest)
+    out = {}
+    for k, f in indicators.items():
+        vals = sorted(draws[k])
+        p = sum(1 for m in manifest if f(m)) / n
+        var_boot = statistics.pvariance(vals)
+        var_srs = p * (1 - p) / n
+        out[k] = {"share": round(p, 4),
+                  "ci95": [round(vals[int(0.025 * reps)], 4), round(vals[int(0.975 * reps) - 1], 4)],
+                  "design_effect": round(var_boot / var_srs, 2) if var_srs else None}
+    return {"method": "shard bootstrap: resample the drawn files with replacement, keep each "
+                      "file's sampled rows, percentile 95% interval",
+            "replicates": reps, "seed": seed, "clusters": len(shards), "estimates": out}
 
 
 # ── selection ──────────────────────────────────────────────────────────────────────────────
@@ -712,8 +755,22 @@ def summarize(manifest: list[dict]) -> dict:
     classes: dict[str, collections.Counter] = {c: collections.Counter() for c in REPORT_CLASSES}
     for m in manifest:
         classes[report_class(m["code"])][m["code"]] += 1
+    indicators = {f"class:{c}": (lambda m, c=c: report_class(m["code"]) == c)
+                  for c in REPORT_CLASSES}
+    indicators.update({f"category:{c}": (lambda m, c=c: m["category"] == c) for c in CATEGORIES})
+    indicators["image_returned"] = lambda m: m["category"] in (SUCCESS, CHANGED)
+    indicators["byte_exact_upper_bound"] = lambda m: report_class(m["code"]) not in (
+        "definitive_gone", "image_hash_differs", "non_image")
+    indicators.update({f"strict_robots_category:{c}": (
+        lambda m, c=c: (EXCLUDED if m.get("robots_status") in (401, 403) else m["category"]) == c)
+        for c in CATEGORIES})
     return {
         "samples": n,
+        "interval_note": "ci95 fields are Wilson intervals, which assume a simple random sample. "
+                         "This is a two-stage cluster sample (files, then an equal number of rows "
+                         "per file), so they are approximate; shard_bootstrap gives intervals that "
+                         "respect the design.",
+        "shard_bootstrap": shard_bootstrap(manifest, indicators),
         "reporting_classes_of_all_samples": {
             c: {**share(sum(classes[c].values()), n), "codes": dict(classes[c].most_common())}
             for c in REPORT_CLASSES},

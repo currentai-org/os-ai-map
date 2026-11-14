@@ -260,6 +260,167 @@
  },
  "summary": {
   "samples": 1000,
+  "interval_note": "ci95 fields are Wilson intervals, which assume a simple random sample. This is a two-stage cluster sample (files, then an equal number of rows per file), so they are approximate; shard_bootstrap gives intervals that respect the design.",
+  "shard_bootstrap": {
+   "method": "shard bootstrap: resample the drawn files with replacement, keep each file's sampled rows, percentile 95% interval",
+   "replicates": 10000,
+   "seed": "20261114:shard-bootstrap",
+   "clusters": 50,
+   "estimates": {
+    "class:hash_match": {
+     "share": 0.343,
+     "ci95": [
+      0.312,
+      0.375
+     ],
+     "design_effect": 1.14
+    },
+    "class:image_hash_differs": {
+     "share": 0.265,
+     "ci95": [
+      0.24,
+      0.291
+     ],
+     "design_effect": 0.89
+    },
+    "class:definitive_gone": {
+     "share": 0.158,
+     "ci95": [
+      0.137,
+      0.179
+     ],
+     "design_effect": 0.84
+    },
+    "class:transient_or_environment": {
+     "share": 0.03,
+     "ci95": [
+      0.019,
+      0.042
+     ],
+     "design_effect": 1.23
+    },
+    "class:access_controlled": {
+     "share": 0.061,
+     "ci95": [
+      0.047,
+      0.076
+     ],
+     "design_effect": 0.98
+    },
+    "class:non_image": {
+     "share": 0.016,
+     "ci95": [
+      0.009,
+      0.024
+     ],
+     "design_effect": 0.97
+    },
+    "class:other_http_4xx": {
+     "share": 0.018,
+     "ci95": [
+      0.011,
+      0.026
+     ],
+     "design_effect": 0.97
+    },
+    "class:opt_out": {
+     "share": 0.087,
+     "ci95": [
+      0.07,
+      0.104
+     ],
+     "design_effect": 0.91
+    },
+    "class:robots_unreachable": {
+     "share": 0.022,
+     "ci95": [
+      0.013,
+      0.032
+     ],
+     "design_effect": 1.05
+    },
+    "category:success": {
+     "share": 0.343,
+     "ci95": [
+      0.312,
+      0.375
+     ],
+     "design_effect": 1.14
+    },
+    "category:changed_content": {
+     "share": 0.265,
+     "ci95": [
+      0.24,
+      0.291
+     ],
+     "design_effect": 0.89
+    },
+    "category:failure": {
+     "share": 0.282,
+     "ci95": [
+      0.251,
+      0.313
+     ],
+     "design_effect": 1.23
+    },
+    "category:excluded": {
+     "share": 0.11,
+     "ci95": [
+      0.092,
+      0.128
+     ],
+     "design_effect": 0.86
+    },
+    "image_returned": {
+     "share": 0.608,
+     "ci95": [
+      0.574,
+      0.643
+     ],
+     "design_effect": 1.32
+    },
+    "byte_exact_upper_bound": {
+     "share": 0.561,
+     "ci95": [
+      0.536,
+      0.588
+     ],
+     "design_effect": 0.72
+    },
+    "strict_robots_category:success": {
+     "share": 0.294,
+     "ci95": [
+      0.262,
+      0.328
+     ],
+     "design_effect": 1.33
+    },
+    "strict_robots_category:changed_content": {
+     "share": 0.246,
+     "ci95": [
+      0.221,
+      0.272
+     ],
+     "design_effect": 0.94
+    },
+    "strict_robots_category:failure": {
+     "share": 0.248,
+     "ci95": [
+      0.218,
+      0.277
+     ],
+     "design_effect": 1.19
+    },
+    "strict_robots_category:excluded": {
+     "share": 0.212,
+     "ci95": [
+      0.185,
+      0.238
+     ],
+     "design_effect": 1.13
+    }
+   }
+  },
   "reporting_classes_of_all_samples": {
    "hash_match": {
     "count": 343,
