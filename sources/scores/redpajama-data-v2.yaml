@@ -5,7 +5,8 @@ openness:
   components:
     license:
     - name: CommonCrawl-ToU
-      detail: data, no compilation license on the card
+      detail: data, per the card and the paper's License section; the paper's ODC-By-1.0 grant to the aggregated
+        dataset does not clearly extend to V2, held pending clarification
     - name: Apache-2.0
       detail: code
     ungated:
@@ -13,12 +14,14 @@ openness:
     dataset_card:
       value: 'yes'
   confidence: high
-  note: 'RedPajama-V2 publishes over 100 billion web documents from 84 Common Crawl snapshots, with quality
-    signals and the scripts that rebuild it, as a public download. Its card grants no license over the data:
-    it points to Common Crawl''s terms of use, which leave page rights with their owners, and licenses only
-    the processing code under Apache-2.0. The paper describing it places the aggregate under ODC-By, which
-    neither dataset card repeats.'
-  raw: license:CommonCrawl-ToU(data, no compilation license on the card)+Apache-2.0(code);ungated:yes;dataset_card:yes
+  note: RedPajama-V2 publishes over 100 billion web documents from 84 Common Crawl snapshots, with quality
+    signals and the scripts that rebuild it, as a public download. Its card licenses only the processing
+    code, under Apache-2.0, and refers the data to Common Crawl's terms of use, which leave page rights
+    with their owners. The paper describing both RedPajama releases grants the aggregated dataset under
+    ODC-By, but then refers all Common Crawl-derived data, which is the whole of V2, to those same terms,
+    so whether the grant reaches V2 is unclear.
+  raw: license:CommonCrawl-ToU(data, per the card and the paper's License section; the paper's ODC-By-1.0
+    grant to the aggregated dataset does not clearly extend to V2, held pending clarification)+Apache-2.0(code);ungated:yes;dataset_card:yes
   sources:
   - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2
     shows: HF dataset page, public with no access-request gate (its embedded page data reports gated false),
@@ -55,16 +58,19 @@ openness:
     establishes:
     - availability
     - license
-  - url: https://arxiv.org/html/2411.12372
-    shows: 'RedPajama paper (covering RedPajama-V1 and V2). Appendix E, Author Responsibility Statement:
-      "This aggregated dataset is licensed to you under the terms of the ODC-By-1.0, as well as any licenses
-      that may apply to its constituent parts." Appendix F, License: "For the datasets themselves, we refer
-      to the Common Crawl Foundation Terms of Use" for data derived from Common Crawl, and "We further request
-      from users that they abide by each individual license for the subset they use." The limitations note
-      no "analysis of personally identifiable information present in the dataset".'
+  - url: https://arxiv.org/pdf/2411.12372
+    shows: 'RedPajama paper (covering RedPajama-V1 and V2), read through pdftotext. Appendix E, Author Responsibility
+      Statement: "This aggregated dataset is licensed to you under the terms of the ODC-By-1.0, as well
+      as any licenses that may apply to its constituent parts." Appendix F, License, immediately after it:
+      "For the datasets themselves, we refer to the Common Crawl Foundation Terms of Use" "for the datasets
+      derived from the Common Crawl Archive. For the other datasets we refer to the license under which
+      the dataset was originally distributed", then per-source licenses for C4, GitHub, arXiv, Wikipedia
+      and StackExchange (V1''s non-crawl subsets), and "We further request from users that they abide by
+      each individual license for the subset they use." V2 is wholly Common Crawl-derived. The limitations
+      note no "analysis of personally identifiable information present in the dataset".'
     accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 1ac12a1584d1ad48e337113957ce76c5420c7409e7f3f5e13b4986497566c44f
+    content_sha256: f40ed61d29d59f2f26ffd8cf78ee8177e5e56eca2fd3beb7511d9ceaf53e9fbb
     establishes:
     - license
     - documentation
@@ -119,6 +125,13 @@ openness:
     establishes:
     - license
     - documentation
+  - url: https://arxiv.org/abs/2411.12372
+    shows: 'arXiv abstract page for "RedPajama: an Open Dataset for Training Large Language Models"; its
+      submission history lists a single version, "[v1]", so the paper''s licensing passages have not been
+      revised.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 0e2f6bb03b9b8422198d3112881812e692a2e96f252a55d69e1bfac94d26eab4
 adoption:
   level: 3
   reach: 10K-100K

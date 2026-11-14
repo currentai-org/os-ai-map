@@ -13,7 +13,10 @@ openness:
         named Common Crawl snapshots, are released under ODC-By or CC-BY-4.0 and bind users to Common Crawl's
         terms, which leave page rights with their owners. Beyond CCBot's crawl-time robots.txt check, the
         scripts drop pages whose January 2025 robots.txt blocks AI crawlers, from published domain lists.
-        No removal route of its own; the upstream FineWeb form applies
+        The README says the pipelines were built for CSCS's Alps cluster and must be adapted to another
+        environment, with dependencies defined in a Dockerfile; under R-2026-11-14-f that is an environment
+        dependency, not an obstacle to rebuilding the corpus. No removal route of its own; the upstream
+        FineWeb form applies
     code:
       value: open
       detail: Megatron-LM training recipe + reconstruction scripts
@@ -36,8 +39,11 @@ openness:
     DCLM-Edu and FineMath, which come from named Common Crawl snapshots, are released under ODC-By or CC-BY-4.0
     and bind users to Common Crawl's terms, which leave page rights with their owners. Beyond CCBot's crawl-time
     robots.txt check, the scripts drop pages whose January 2025 robots.txt blocks AI crawlers, from published
-    domain lists. No removal route of its own; the upstream FineWeb form applies);code:open(Megatron-LM
-    training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)
+    domain lists. The README says the pipelines were built for CSCS's Alps cluster and must be adapted to
+    another environment, with dependencies defined in a Dockerfile; under R-2026-11-14-f that is an environment
+    dependency, not an obstacle to rebuilding the corpus. No removal route of its own; the upstream FineWeb
+    form applies);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate
+    checkpoints on HF branches);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
     shows: 'Apertus-70B-2509 model card, License: apache-2.0, describes a "Fully open model" with "open
@@ -128,7 +134,10 @@ openness:
       data used to train Apertus v1 and v1.5". FineWeb-HQ starts from "[FineWeb (v1.3.0)]", FineWeb2-HQ
       from "[FineWeb-2 (v1.0.2)]", then "[DCLM-Edu]", "[FineWeb-Edu]" and "[FineMath]", each run with a
       "filterrobots" config; "If you want to apply `robots.txt` filtering, first download the respective
-      metadata". It warns the pipelines "are not directly runnable out of the box".'
+      metadata". It warns: "Due to the infrastructure-specific nature of these pipelines (designed for CSCS
+      on Alps), they are not directly runnable out of the box. You will need to adjust the scripts and configurations
+      to your specific computing environment." and says "The project''s dependencies are defined in the
+      `Dockerfile`".'
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: 43a39083f999ee55f606abb45859f2e0c47542015cafb8037ed9d0a36a1ab8ee

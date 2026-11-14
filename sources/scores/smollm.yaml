@@ -8,11 +8,15 @@ openness:
       detail: Apache-2.0
     data:
       value: open
-      detail: public data mixtures, ~11T tokens. The web share is FineWeb-Edu, DCLM, FineWeb-2 and FineWeb2-HQ,
+      detail: 'public data mixtures, ~11T tokens. The web share is FineWeb-Edu, DCLM, FineWeb-2 and FineWeb2-HQ,
         each built from named Common Crawl snapshots, released under ODC-By or CC-BY-4.0 and bound to Common
-        Crawl's terms, which leave page rights with their owners; opt-outs follow CCBot's crawl-time robots.txt
-        check, and FineWeb's PII and opt-out form takes removals. DCLM's research-use line is advisory.
-        The decay stage adds the non-commercial natural_reasoning set at a 0.001 weight
+        Crawl''s terms, which leave page rights with their owners; opt-outs follow CCBot''s crawl-time robots.txt
+        check, and FineWeb''s PII and opt-out form takes removals. DCLM''s research-use line is advisory.
+        One constituent is non-commercial: the dataset facebook/natural_reasoning, licensed CC-BY-NC-4.0,
+        enters at the third, decay stage at a weight of 0.001 of that stage''s mix in the published stage-3
+        config, and the two long-context extension mixes carry it at about 0.0009. It is a separately published
+        dataset that a reuser can drop from those mixes, so it is disclosed rather than disqualifying (R-2026-11-14-e);
+        this is not a claim that every training example is commercially reusable'
     code:
       value: open
       detail: training+post-training recipe published
@@ -29,13 +33,17 @@ openness:
     licenses, while the crawled pages keep their owners'' rights; one small reasoning set in the final stage
     is non-commercial. The Hugging Face card is Apache-2.0 licensed and ungated.'
   last_verified: '2026-11-14'
-  raw: weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens. The web share is FineWeb-Edu,
+  raw: 'weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens. The web share is FineWeb-Edu,
     DCLM, FineWeb-2 and FineWeb2-HQ, each built from named Common Crawl snapshots, released under ODC-By
-    or CC-BY-4.0 and bound to Common Crawl's terms, which leave page rights with their owners; opt-outs
-    follow CCBot's crawl-time robots.txt check, and FineWeb's PII and opt-out form takes removals. DCLM's
-    research-use line is advisory. The decay stage adds the non-commercial natural_reasoning set at a 0.001
-    weight);code:open(training+post-training recipe published);checkpoints:open(SmolLM3-3B-checkpoints,
-    every 40k steps);license:Apache-2.0(OSI)
+    or CC-BY-4.0 and bound to Common Crawl''s terms, which leave page rights with their owners; opt-outs
+    follow CCBot''s crawl-time robots.txt check, and FineWeb''s PII and opt-out form takes removals. DCLM''s
+    research-use line is advisory. One constituent is non-commercial: the dataset facebook/natural_reasoning,
+    licensed CC-BY-NC-4.0, enters at the third, decay stage at a weight of 0.001 of that stage''s mix in
+    the published stage-3 config, and the two long-context extension mixes carry it at about 0.0009. It
+    is a separately published dataset that a reuser can drop from those mixes, so it is disclosed rather
+    than disqualifying (R-2026-11-14-e); this is not a claim that every training example is commercially
+    reusable);code:open(training+post-training recipe published);checkpoints:open(SmolLM3-3B-checkpoints,
+    every 40k steps);license:Apache-2.0(OSI)'
   sources:
   - url: https://huggingface.co/blog/smollm3
     shows: The release post describes the published recipe - "It includes architecture details, exact data
@@ -217,9 +225,10 @@ openness:
     establishes:
     - data
   - url: https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/stage3_9T_11T.yaml
-    shows: 'The decay-stage nanotron config lists "s3://smollm3/datasets/llama_tokenized_4097/natural_reasoning_fix/standard/"
+    shows: 'The stage-3 nanotron config''s "decay stage" data stage ("start_training_step: 4198001", of
+      "train_steps: 4720000") lists "s3://smollm3/datasets/llama_tokenized_4097/natural_reasoning_fix/standard/"
       among its dataset folders with the weight "0.001 # Natural reasoning", beside "0.2" and "0.3" for
-      the FineWeb-Edu and DCLM folders.'
+      the FineWeb-Edu and DCLM folders; the stage''s weights sum to about 1.0.'
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: ab6ce841d0d33b7d8e94eadec4a58578e408247ec86748025d2c53228cb16657
@@ -230,6 +239,22 @@ openness:
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: a8796d091b939dbad693e5c6f647a00121390639bd3166c5773c8a567b274a18
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/long_context_4k_to_32k.yaml
+    shows: 'The 4k-to-32k long-context config lists "s3://smollm3/datasets/llama_tokenized_32769/natural_reasoning/standard/"
+      with the weight "0.0008955 # Natural reasoning".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 7a8d75bcc5a6ca251ef11399dc770b2eddc0b81c5fce29872e7b9b823b6b6051
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/long_context_32k_to_64.yaml
+    shows: 'The 32k-to-64k long-context config lists "s3://smollm3/datasets/llama_tokenized_65537/natural_reasoning/tokenized/"
+      with the weight "0.0008955 # Natural reasoning".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8d11cdb8fcce23c432b1054ea6ae2ed8f7fdef7154a5c081db8b559a4d1e820d
     establishes:
     - data
 adoption:

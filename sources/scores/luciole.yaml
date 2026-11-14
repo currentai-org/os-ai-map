@@ -8,15 +8,22 @@ openness:
       detail: Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1
     data:
       value: open
-      detail: Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps
-        its own terms, and the card lists the Claire dialogue sets as non-commercial and no license for
-        a few small subsets. The web share (FineWeb, FineWeb-2, DCLM, CulturaX, HPLT 2 and math web sets)
-        comes from named Common Crawl and Internet Archive crawls; the card says documents may be copyrighted,
-        applies robots.txt from CC-MAIN-2025-26 retroactively to FineWeb, DCLM and the math sets, and offers
-        an opt-out form. FineWeb-2 and CulturaX rely on CCBot's crawl-time robots.txt check, and HPLT 2's
-        cleaned release keeps only robots.txt-compliant pages. CulturaX follows the mC4 and OSCAR terms;
-        OSCAR licenses only its packaging, and its suspended gate says use in France must fit the text-and-data-mining
-        or research exceptions
+      detail: 'Luciole-Training-Dataset on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source
+        keeps its own terms, and the card lists the Claire dialogue sets as non-commercial and no license
+        for a few small subsets. The web share (FineWeb, FineWeb-2, DCLM, CulturaX, HPLT 2 and math web
+        sets) comes from named Common Crawl and Internet Archive crawls; the card says documents may be
+        copyrighted, applies robots.txt from CC-MAIN-2025-26 retroactively to FineWeb, DCLM and the math
+        sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot''s crawl-time robots.txt
+        check, and HPLT 2''s cleaned release keeps only robots.txt-compliant pages. CulturaX follows the
+        mC4 and OSCAR terms. OSCAR, assessed separately: OSCAR licenses only its packaging, and its suspended
+        gate says "In France, for example, any use of OSCAR that does not fall within the framework of the
+        so-called ''TDM'' or the so-called ''research'' exceptions to copyright has always been prohibited."
+        That asserts a legal constraint, not a contractual field-of-use bar, and CulturaX''s redistribution
+        does not cure any underlying rights limitation (R-2026-11-14-e). The affected text is identifiable
+        and excludable: CulturaX enters only as the French-only Culturax config, each row tagged source
+        culturax, with CulturaX''s own mc4 or OSCAR-xxxx origin kept in its metadata. The card gives no
+        per-source share; the Hub''s size listing puts that config at about 3.8% of the Hub-hosted bytes,
+        which exclude the English web data, and the OSCAR-derived part of it is not stated'
     code:
       value: open
       detail: Luciole-Training pretraining + data-processing pipeline on GitHub, GPL-3.0
@@ -34,17 +41,23 @@ openness:
     Claire dialogue sets as non-commercial, and states no license for a few others, such as the INSEE and
     YouTube subsets.'
   last_verified: '2026-11-14'
-  raw: weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset
+  raw: 'weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset
     on HF, ~4.65T tokens, published under CC-BY-SA-4.0; each source keeps its own terms, and the card lists
     the Claire dialogue sets as non-commercial and no license for a few small subsets. The web share (FineWeb,
     FineWeb-2, DCLM, CulturaX, HPLT 2 and math web sets) comes from named Common Crawl and Internet Archive
     crawls; the card says documents may be copyrighted, applies robots.txt from CC-MAIN-2025-26 retroactively
-    to FineWeb, DCLM and the math sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot's
-    crawl-time robots.txt check, and HPLT 2's cleaned release keeps only robots.txt-compliant pages. CulturaX
-    follows the mC4 and OSCAR terms; OSCAR licenses only its packaging, and its suspended gate says use
-    in France must fit the text-and-data-mining or research exceptions);code:open(Luciole-Training pretraining
-    + data-processing pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints
-    released);license:Apache-2.0(OSI)
+    to FineWeb, DCLM and the math sets, and offers an opt-out form. FineWeb-2 and CulturaX rely on CCBot''s
+    crawl-time robots.txt check, and HPLT 2''s cleaned release keeps only robots.txt-compliant pages. CulturaX
+    follows the mC4 and OSCAR terms. OSCAR, assessed separately: OSCAR licenses only its packaging, and
+    its suspended gate says "In France, for example, any use of OSCAR that does not fall within the framework
+    of the so-called ''TDM'' or the so-called ''research'' exceptions to copyright has always been prohibited."
+    That asserts a legal constraint, not a contractual field-of-use bar, and CulturaX''s redistribution
+    does not cure any underlying rights limitation (R-2026-11-14-e). The affected text is identifiable and
+    excludable: CulturaX enters only as the French-only Culturax config, each row tagged source culturax,
+    with CulturaX''s own mc4 or OSCAR-xxxx origin kept in its metadata. The card gives no per-source share;
+    the Hub''s size listing puts that config at about 3.8% of the Hub-hosted bytes, which exclude the English
+    web data, and the OSCAR-derived part of it is not stated);code:open(Luciole-Training pretraining + data-processing
+    pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints released);license:Apache-2.0(OSI)'
   sources:
   - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1
     shows: 'Model page: "Luciole-23B-Instruct-1.1 is a fine-tuned and aligned version of" Luciole-23B-Base;
@@ -224,10 +237,12 @@ openness:
   - url: https://huggingface.co/datasets/uonlp/CulturaX
     shows: 'CulturaX page: "As CulturaX is the cleaned version of the mC4 and OSCAR datasets, which were
       both extracted from CommonCrawl"; "The licence terms for CulturaX strictly follows those of", linking
-      the mC4 license to allenai/c4 and the OSCAR license to OSCAR-2301.'
+      the mC4 license to allenai/c4 and the OSCAR license to OSCAR-2301. Its Dataset Structure gives every
+      document a "source" field valued "mc4" or "OSCAR-xxxx", and its language table lists French at "363,754,348"
+      documents and "319,332,674,695" tokens.'
     accessed: '2026-11-14'
     http_status: 200
-    content_sha256: c54bc35ecc44684d22146381b3f0464804833f43f45b406669d0af48ddf528cb
+    content_sha256: df2b10a0aa8fbd5c60e1e7dc6f17943b7ef403bb0f481ef14ee6a1dd92eab095
     establishes:
     - data
   - url: https://huggingface.co/api/datasets/uonlp/CulturaX
@@ -279,6 +294,24 @@ openness:
     accessed: '2026-11-14'
     http_status: 200
     content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
+  - url: https://datasets-server.huggingface.co/size?dataset=OpenLLM-France/Luciole-Training-Dataset
+    shows: 'Hub dataset-viewer size listing: the whole dataset has "num_rows":6470066608 and "num_bytes_parquet_files":13028062365268;
+      the "Culturax" config has "num_bytes_original_files":493127197101 and "num_rows":242612479, about
+      3.8% of the bytes and 3.75% of the rows.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: bd0025e6b847b6059a1df11e530e91a35132c1d65bc48a942e236a10180a177c
+    establishes:
+    - data
+  - url: https://datasets-server.huggingface.co/rows?dataset=OpenLLM-France/Luciole-Training-Dataset&config=Culturax&split=fr&offset=0&length=5
+    shows: 'Hub dataset-viewer rows from the Culturax config, split fr: the first row has source "culturax"
+      and id "fr_part_00000.parquet/69", and the metadata string of each of the five rows returned records
+      CulturaX''s own origin field as "OSCAR-2019".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: a02f37abdf892092762dd607394751cc741cb53956fd491083c65c155630451d
     establishes:
     - data
 adoption:
