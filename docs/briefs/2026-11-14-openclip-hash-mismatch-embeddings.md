@@ -43,6 +43,12 @@ published bytes or, on this evidence, returned the same picture in different byt
 evidence of visual identity, not proof of it. The [limitations](#limitations) say what it cannot
 show.
 
+The 58.6% estimates current visual recoverability: how much of the sampled index can be fetched
+today as the published image or a visually equivalent copy. It is not an estimate of byte-for-byte
+reconstruction (34.3% in the pilot), of full training-set reproducibility, which would also need
+the lost, blocked and opted-out rows and the original bytes the checkpoints saw, or of lawful
+reuse, which no download measurement can establish.
+
 ## What DataComp publishes, and what it was computed on
 
 Each `<shard>.parquet` in
