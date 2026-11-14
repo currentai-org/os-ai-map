@@ -521,6 +521,24 @@ Five clarifications refine the test:
   scripts written for one compute environment, with their dependencies and pipeline documented,
   support a released corpus unless an actual material obstacle to reconstruction is shown.
 
+**How recoverability of a URL index is shown** (R-2026-11-14-h). A per-sample URL index released
+with published hashes and features, selection metadata and working reconstruction tooling can meet
+the reconstruction requirement when material recovery is demonstrated empirically, not assumed:
+a reproducible sample of the governing index, fetched under documented polite rules, with each
+outcome class reported separately, byte-exact matches counted against the published hashes, and
+visually equivalent copies identified against the published features with calibrated controls.
+Recovery at the image-content level counts. Exact replication of the original training bytes and
+complete coverage are not required, and the record does not claim either: it states the byte-exact
+and the equivalent figures side by side, the unavailable and opted-out shares, the limits of the
+calibration, and how unevenly recovery falls across source types. No fixed percentage applies,
+to this corpus or to any later one; materiality is judged on the evidence each time. A finding of
+recoverability settles only that question. It is not a finding that every training example is
+still available, that the training set can be reproduced, or that the recovered content may be
+reused lawfully, and it leaves the other elements of the test, including opt-out handling during
+the original collection, to be met on their own evidence. DataComp-1B is the first case: on a
+1,000-row sample, 34.3% byte-exact and about 58.6% exact or visually equivalent, it is treated as
+provisionally materially reconstructible at the image-content level.
+
 ### `self-host` and `core-gated` are one question
 
 The software ladder asks whether functionality is withheld from the published source for a
