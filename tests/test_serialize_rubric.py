@@ -1347,7 +1347,10 @@ def test_a_compound_license_publishes_every_part(real_rubric):
     assert license_parts("zed") == ["GPL-3.0-or-later", "GPL-3.0-or-later", "Apache-2.0"]
     assert license_parts("flan-collection") == ["Apache-2.0", "per-task"]
     assert license_parts("smoltalk") == ["apache-2.0", "per-component"]
-    assert license_parts("redpajama-data-v2") == ["CommonCrawl-ToU", "Apache-2.0"]
+    # redpajama-data-v2 was the fourth compound case until R-2026-11-13-d (2026-11-13) took
+    # `CommonCrawl-ToU` out of open_data: it is deferred now, and a deferred product publishes no
+    # openness evidence, so it carries no license parts.
+    assert license_parts("redpajama-data-v2") == []
     assert license_parts("culturax") == ["follows mC4 + OSCAR-2301 terms"]
 
 
