@@ -8,7 +8,15 @@ openness:
       detail: Apache-2.0
     data:
       value: open
-      detail: public data mixtures, ~11T tokens
+      detail: 'public data mixtures, ~11T tokens. The web share is FineWeb-Edu, DCLM, FineWeb-2 and FineWeb2-HQ,
+        each built from named Common Crawl snapshots, released under ODC-By or CC-BY-4.0 and bound to Common
+        Crawl''s terms, which leave page rights with their owners; opt-outs follow CCBot''s crawl-time robots.txt
+        check, and FineWeb''s PII and opt-out form takes removals. DCLM''s research-use line is advisory.
+        One constituent is non-commercial: the dataset facebook/natural_reasoning, licensed CC-BY-NC-4.0,
+        enters at the third, decay stage at a weight of 0.001 of that stage''s mix in the published stage-3
+        config, and the two long-context extension mixes carry it at about 0.0009. It is a separately published
+        dataset that a reuser can drop from those mixes, so it is disclosed rather than disqualifying; this
+        is not a claim that every training example is commercially reusable'
     code:
       value: open
       detail: training+post-training recipe published
@@ -20,47 +28,49 @@ openness:
       detail: OSI
   confidence: high
   note: 'SmolLM3 publishes Apache-2.0 weights alongside a complete engineering blueprint: architecture details,
-    exact data mixtures and training methodology for its 11-trillion-token run, built entirely from public
-    datasets and training frameworks. The Hugging Face card is Apache-2.0 licensed and ungated.'
-  last_verified: '2026-11-12'
-  raw: weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens);code:open(training+post-training
-    recipe published);checkpoints:open(SmolLM3-3B-checkpoints, every 40k steps);license:Apache-2.0(OSI)
+    exact data mixtures and training methodology for its 11-trillion-token run, built from public datasets
+    and training frameworks. Most of the data is filtered Common Crawl text released under open compilation
+    licenses, while the crawled pages keep their owners'' rights; one small reasoning set in the final stage
+    is non-commercial. The Hugging Face card is Apache-2.0 licensed and ungated.'
+  last_verified: '2026-11-14'
+  raw: 'weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens. The web share is FineWeb-Edu,
+    DCLM, FineWeb-2 and FineWeb2-HQ, each built from named Common Crawl snapshots, released under ODC-By
+    or CC-BY-4.0 and bound to Common Crawl''s terms, which leave page rights with their owners; opt-outs
+    follow CCBot''s crawl-time robots.txt check, and FineWeb''s PII and opt-out form takes removals. DCLM''s
+    research-use line is advisory. One constituent is non-commercial: the dataset facebook/natural_reasoning,
+    licensed CC-BY-NC-4.0, enters at the third, decay stage at a weight of 0.001 of that stage''s mix in
+    the published stage-3 config, and the two long-context extension mixes carry it at about 0.0009. It
+    is a separately published dataset that a reuser can drop from those mixes, so it is disclosed rather
+    than disqualifying; this is not a claim that every training example is commercially reusable);code:open(training+post-training
+    recipe published);checkpoints:open(SmolLM3-3B-checkpoints, every 40k steps);license:Apache-2.0(OSI)'
   sources:
   - url: https://huggingface.co/blog/smollm3
     shows: The release post describes the published recipe - "It includes architecture details, exact data
       mixtures showing how we progressively boost performance across domains in a three-stage pretraining
       approach" - and says "we're sharing exactly how we built it using public datasets and training frameworks".
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 15fb578fa813e8391bacce55d33602a320cafce36e9e1fa80d900715f529e3b1
+    content_sha256: b372e2f6cfc797a107d2e6a521c7f48b85b2fd2fbc2e4ae17c90c878608f53bd
     establishes:
     - data
     - code
   - url: https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B
     shows: The Hub API record for the instruct checkpoint carries the tags "license:apache-2.0" and "base_model:finetune:HuggingFaceTB/SmolLM3-3B-Base";
       its gated and private flags are both false, so the weights download without an access request.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 36145345c86b141f23af947bd0767bb7c5bc619baf70ae05007be7f166ec5d45
+    content_sha256: c79d36fb78882eee3e09a174050ceee8770dbf96e9366c089eed5d9d05f7adf9
     establishes:
     - weights
     - license
-  - url: https://api.github.com/repos/huggingface/smollm
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 3,868 stars, description "Everything
-      about the SmolLM and SmolVLM family of models".'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: cc87c0928b131ac15199953372c2dbd7428de39ec64ff55cdc7b5723518703d5
-    establishes:
-    - code
   - url: https://huggingface.co/HuggingFaceTB/SmolLM3-3B
     shows: 'The model page says "SmolLM3 is a fully open model that offers strong performance at the 3B–4B
       scale" and lists "open weights + full training details including public data mixture and training
       configs"; its License section reads "Apache 2.0". Searched the page for agree to share and access
       request: none.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 19c77ebc3cd563b2ab1e7b7382974bf1b9f0e9cc1c0fa580c2876299e33bbc2e
+    content_sha256: ad9db274f8ae91c0d64389570fe8f21db9827079827098316fd323b55f519a0b
     establishes:
     - weights
     - license
@@ -68,7 +78,7 @@ openness:
     shows: 'The raw model card front matter declares "license: apache-2.0", and its Training section says
       "The datasets used for pretraining can be found in this" linked collection and "The training and evaluation
       configs and code can be found in the" huggingface/smollm repository, trained with nanotron.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 24f16f90b883af3618425a589783a944356a7fc2e3cfa69b579c9ff06963e178
     establishes:
@@ -79,23 +89,23 @@ openness:
   - url: https://huggingface.co/collections/HuggingFaceTB/smollm3-pretraining-datasets-685a7353fdc01aecde51b1d9
     shows: The SmolLM3 pretraining datasets collection lists the public corpora used, including "mlfoundations/dclm-baseline-1.0",
       "HuggingFaceTB/finemath", "bigcode/the-stack-v2" and "HuggingFaceTB/stackexchange_2025_md".
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: ffa93a1c4b0e46166b25101e3b6e384f1ca81cd3889841271bdbd8ad740f019e
+    content_sha256: 64aa0525fc9d39471219d54331c861aa83d194cc661561f98ce1166b8c325c66
     establishes:
     - data
   - url: https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B-checkpoints
     shows: The Hub API record for "HuggingFaceTB/SmolLM3-3B-checkpoints" carries the tag "license:apache-2.0"
       and is neither gated nor private; the model card says it holds the intermediate training checkpoints,
       including mid-training and SFT.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: f6c8c6a4250b485489da9e3fe5167a1a7fa746eb340cd07fdf8342eddd6bf62c
+    content_sha256: cd163936b9144aa4306b0dc4e775e38a70e64e48e58ba3159fc502160a3a5ecb
   - url: https://cdn.jsdelivr.net/gh/huggingface/smollm@main/text/pretraining/
     shows: jsDelivr listing of the huggingface/smollm repository at main shows the pretraining tree "/gh/huggingface/smollm@main/text/pretraining/smollm3/",
       "/gh/huggingface/smollm@main/text/pretraining/launch.slurm" and "/gh/huggingface/smollm@main/text/pretraining/continual-pretraining/",
       so the SmolLM3 pretraining code is public.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 55fc3ae8067bb26ac648230f8befea3b5c9a0d881988483f17ae95ac35676e66
     establishes:
@@ -105,7 +115,7 @@ openness:
       checkpoints of SmolLM3 to enable further research", "We release checkpoints every 40,000 steps, which
       equals 94.4B tokens", with "Stage 1:** Steps 0 to 3,450,000 (86 checkpoints)", and it lists "Pretraining
       scripts (nanotron)" in the linked GitHub repo.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 625660216feaeb13fead991ae9b428dc19940df60bd0d611adc5b2e96d29410c
     establishes:
@@ -114,11 +124,138 @@ openness:
   - url: https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B-checkpoints/refs
     shows: Hugging Face refs API for HuggingFaceTB/SmolLM3-3B-checkpoints lists 133 branches, from "stage1-step-320000"
       and "stage1-step-2600000" through "lc-32k-to-64k-step-20000" and "it-mid-training".
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 19988c4dc3092c558d819fd29bebaa0ed77a8a802f7fa91400dbbb76ed82693f
     establishes:
     - checkpoints
+  - url: https://raw.githubusercontent.com/huggingface/smollm/main/LICENSE
+    shows: 'The huggingface/smollm repository serves its LICENSE publicly: "Apache License", "Version 2.0,
+      January 2004", "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - code
+  - url: https://huggingface.co/api/collections/HuggingFaceTB/smollm3-pretraining-datasets-685a7353fdc01aecde51b1d9
+    shows: The collection API lists "HuggingFaceFW/fineweb-edu", "mlfoundations/dclm-baseline-1.0", "epfml/FineWeb2-HQ",
+      "HuggingFaceFW/fineweb-2", "HuggingFaceTB/finemath", "bigcode/the-stack-v2" and, under the note "Stage
+      3 (decay) new datasets", "facebook/natural_reasoning".
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: c6868e03b02e4942f484f7a0d2fec57aaf47a0d6eedec1f1ad9ca6f03383829d
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/raw/main/README.md
+    shows: 'FineWeb-Edu card: "license: odc-by"; it "includes all filtered CommonCrawl dumps since 2013";
+      "The use of this dataset is also subject to [CommonCrawl''s Terms of Use]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: a0cc8998a20499432b28b6575f3046b714938eb8e11b8d59a1d25ddf3716061e
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0/raw/main/README.md
+    shows: 'DCLM-Baseline card: "license: cc-by-4.0"; "DCLM-Baseline is a subset of the DCLM-Pool, which
+      is a corpus of 240 trillion tokens derived from Common Crawl"; its out-of-scope section says "the
+      dataset is intended for research use only", a statement outside the CC-BY-4.0 grant. Personal information:
+      "[More Information Needed]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 7836ae55a3a8decc25e1d5c15900f3b40e91a4d20f4d2bf4f048d86f1db2c4ff
+    establishes:
+    - data
+  - url: https://arxiv.org/html/2406.11794
+    shows: 'DCLM paper, appendix on DCLM-Pool: "The use of this dataset is also subject to CommonCrawl’s
+      Terms of Use"; Common Crawl respects robots.txt "and thus our pool does so as well, giving content
+      creators a mechanism to opt out of Common Crawl"; "Common Crawl does honor deletion requests and periodically
+      redacts dumps".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 897704727d76af80402b5c265313b741097d20ac6d6c566a851c3e705b47b428
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md
+    shows: 'FineWeb-2 card: "license: odc-by"; "The data was sourced from 96 [CommonCrawl]" snapshots; "The
+      use of this dataset is also subject to [CommonCrawl''s Terms of Use]"; "CommonCrawl respects robots.txt
+      at crawl time, but if you are a webmaster and find your website in 🥂 FineWeb2 and would like to have
+      it removed, you may also use the [PII removal/opt out form]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/epfml/FineWeb2-HQ/raw/main/README.md
+    shows: 'FineWeb2-HQ card: "license: odc-by"; "Like FineWeb2, this dataset is released under [Open Data
+      Commons Attribution License (ODC-By) v1.0]" and "is subject to [CommonCrawl''s Terms of Use]"; "CommonCrawl
+      respects robots.txt at crawl time", with the "FineWeb2 PII removal/opt out form" for removals.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 3382e62ff31050348de8a1cd5f1f09a643419aa8d8d70334e9d6fa80ff59b157
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceTB/finemath/raw/main/README.md
+    shows: 'FineMath card: "license: odc-by"; content "filtered from CommonCrawl"; "The use of this dataset
+      is also subject to [CommonCrawl''s Terms of Use]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 77b9162c99fc6b5944da8793f18fb99c3b520ab7cdce0cc67ec8a1e47871da61
+    establishes:
+    - data
+  - url: https://commoncrawl.org/terms-of-use
+    shows: 'Common Crawl Terms of Use, "LAST UPDATED: March 7, 2024". CC grants "a limited, non-assignable,
+      non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service";
+      crawled material "may be subject to separate terms of use or terms of service from the owners of such
+      Crawled Content"; "your use of the Crawled Content signifies your binding acceptance of the ToU";
+      and "BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS
+      OF THIRD PARTIES". It sets no commercial or field-of-use bar and recommends counsel "before making
+      any use, including commercial use".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072
+    establishes:
+    - data
+  - url: https://commoncrawl.org/faq
+    shows: 'Common Crawl FAQ: "CCBot is an automated crawler, checking first the robots.txt, and if crawling
+      a page is allowed, fetches pages using HTTP GET requests", and "You may also wish to be added to our
+      opt-out registry".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/stage3_9T_11T.yaml
+    shows: 'The stage-3 nanotron config''s "decay stage" data stage ("start_training_step: 4198001", of
+      "train_steps: 4720000") lists "s3://smollm3/datasets/llama_tokenized_4097/natural_reasoning_fix/standard/"
+      among its dataset folders with the weight "0.001 # Natural reasoning", beside "0.2" and "0.3" for
+      the FineWeb-Edu and DCLM folders; the stage''s weights sum to about 1.0.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: ab6ce841d0d33b7d8e94eadec4a58578e408247ec86748025d2c53228cb16657
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/facebook/natural_reasoning
+    shows: 'Hub API record for facebook/natural_reasoning: "license:cc-by-nc-4.0", not gated.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: a8796d091b939dbad693e5c6f647a00121390639bd3166c5773c8a567b274a18
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/long_context_4k_to_32k.yaml
+    shows: 'The 4k-to-32k long-context config lists "s3://smollm3/datasets/llama_tokenized_32769/natural_reasoning/standard/"
+      with the weight "0.0008955 # Natural reasoning".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 7a8d75bcc5a6ca251ef11399dc770b2eddc0b81c5fce29872e7b9b823b6b6051
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/huggingface/smollm/main/text/pretraining/smollm3/long_context_32k_to_64.yaml
+    shows: 'The 32k-to-64k long-context config lists "s3://smollm3/datasets/llama_tokenized_65537/natural_reasoning/tokenized/"
+      with the weight "0.0008955 # Natural reasoning".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 8d11cdb8fcce23c432b1054ea6ae2ed8f7fdef7154a5c081db8b559a4d1e820d
+    establishes:
+    - data
 adoption:
   level: 3
   reach: 100K-1M
