@@ -142,6 +142,9 @@ Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it
                    recoverability_pilot samples a URL-only image corpus (DataComp-1B) with a
                    fixed seed and measures how much still fetches with a matching hash; its
                    result and brief live in docs/briefs/. Network-heavy, never in preflight.
+                   hash_mismatch_embeddings re-fetches the pilot's hash-mismatched rows and
+                   compares each image's CLIP embedding with the one DataComp published; it
+                   needs torch and open_clip as an ephemeral `uv run --with` overlay.
 ```
 
 Proposers deliberately **print rather than write**. Matching artifacts by name measured 2
