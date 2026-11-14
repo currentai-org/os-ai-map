@@ -8,7 +8,14 @@ openness:
       detail: Apache-2.0, BF16 safetensors
     data:
       value: open
-      detail: full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data
+      detail: full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data. They rebuild
+        the web share from FineWeb v1.3.0, FineWeb-2, FineWeb-Edu, DCLM-Edu and FineMath, which come from
+        named Common Crawl snapshots, are released under ODC-By or CC-BY-4.0 and bind users to Common Crawl's
+        terms, which leave page rights with their owners. Beyond CCBot's crawl-time robots.txt check, the
+        scripts drop pages whose January 2025 robots.txt blocks AI crawlers, from published domain lists.
+        The README says the pipelines were built for CSCS's Alps cluster and must be adapted to another
+        environment, with dependencies defined in a Dockerfile; that is an environment dependency, not an
+        obstacle to rebuilding the corpus. No removal route of its own; the upstream FineWeb form applies
     code:
       value: open
       detail: Megatron-LM training recipe + reconstruction scripts
@@ -20,33 +27,31 @@ openness:
       detail: OSI
   confidence: high
   note: Apertus 1.0 publishes its pretraining-data reconstruction scripts, Megatron-LM training recipe,
-    intermediate checkpoints and technical report under Apache-2.0, as OLMo and Pythia do. Its acceptable-use
-    policy restricts conduct, not commercial use. Apertus 1.5, released 2026-07-24, continues training the
-    1.0 models under the same license behind an automatically approved click-through, and its report says
-    the data preparation and training recipes are released too.
-  last_verified: '2026-11-12'
+    intermediate checkpoints and technical report under Apache-2.0, as OLMo and Pythia do. The scripts rebuild
+    the corpus from openly licensed Common Crawl derivatives and drop pages from sites that opt out of AI
+    crawling; the pages keep their owners' rights. Its acceptable-use policy restricts conduct, not commercial
+    use. Apertus 1.5, released 2026-07-24, continues training under the same license behind an automatically
+    approved click-through.
+  last_verified: '2026-11-14'
   raw: weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts,
-    github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate
-    checkpoints on HF branches);license:Apache-2.0(OSI)
+    github.com/swiss-ai/pretrain-data. They rebuild the web share from FineWeb v1.3.0, FineWeb-2, FineWeb-Edu,
+    DCLM-Edu and FineMath, which come from named Common Crawl snapshots, are released under ODC-By or CC-BY-4.0
+    and bind users to Common Crawl's terms, which leave page rights with their owners. Beyond CCBot's crawl-time
+    robots.txt check, the scripts drop pages whose January 2025 robots.txt blocks AI crawlers, from published
+    domain lists. The README says the pipelines were built for CSCS's Alps cluster and must be adapted to
+    another environment, with dependencies defined in a Dockerfile; that is an environment dependency, not
+    an obstacle to rebuilding the corpus. No removal route of its own; the upstream FineWeb form applies);code:open(Megatron-LM
+    training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)
   sources:
-  - url: https://api.github.com/repos/swiss-ai/pretrain-data
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Pretraining data reconstruction
-      scripts for Apertus". The reconstruction scripts are published, which is what satisfies data:open
-      by reconstruction rather than by a released corpus.'
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 4ddecf19dff644e1b5c05f298f7d94cd042d7bed86e9b4bb234016a8269471f8
-    establishes:
-    - data
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
     shows: 'Apertus-70B-2509 model card, License: apache-2.0, describes a "Fully open model" with "open
       weights + open data + full training details including all data and training recipes", lists "Training
       data reconstruction scripts" under open resources, and states "The training intermediate checkpoints
       are available on the different branches of this same repository". BF16 safetensors shards are listed
       for download.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 0a80d5887eefc06041bea6c349801d46653392599f4c04c0c05b71eefd073c70
+    content_sha256: 68813dfcc773ea79e7877f0e96ee83327978a0f2a79c21c05ee2533d6440f4c7
     establishes:
     - weights
     - license
@@ -57,17 +62,9 @@ openness:
     shows: 'ETH Zurich press release titled "Apertus: a fully open, transparent, multilingual language model",
       opening "On 2 September 2025, EPFL, ETH Zurich and the Swiss National Supercomputing Centre (CSCS)
       released Apertus". Corroborates the release framing and establishes no dimension on its own.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: d786fadbe0a68c22dd19e4f1a2a7ed53b251f6ffea5f06a512a7ec96ce7cb4bb
-  - url: https://github.com/swiss-ai/pretrain-data
-    shows: Repository page for the pretraining-data reconstruction scripts; "reconstruction" appears throughout
-      the tree and README.
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 03241f3303116c1da493d34db84392a3d9bb5f7f2459f2b23b66db2b19d4538d
-    establishes:
-    - data
   - url: https://huggingface.co/swiss-ai/Apertus-v1.5-70B
     shows: 'Apertus-v1.5-70B model card, License: apache-2.0, describes a fully open model with "Open weights
       + open data + open values + full training details including all data and training recipes", the models
@@ -75,9 +72,9 @@ openness:
       benchmark results, training pipelines, and intermediate checkpoints will be published in the coming
       weeks". The download now sits behind a click-through: "you accept to share your contact information
       (email and username) with the repository authors".'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: 119b7d51da5ce524b196faa22f5e9e376754455c0eace0806e3b596e00f738dc
+    content_sha256: e9660f6adb4ff619118ddb7828171d1f0e222588b98b732f9aff9058bbc30448
     establishes:
     - weights
     - license
@@ -85,9 +82,9 @@ openness:
     shows: Hub API record for Apertus-70B-2509 is not gated and not private, carries the license:apache-2.0
       tag and 30 safetensors shards, and embeds the "Apertus LLM Acceptable Use Policy" text in its card
       data, a conduct and indemnity policy with no commercial or scale limit.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
-    content_sha256: a434221eeb4130e660ee566e649926c787e12d767905ecea7618bab63701b196
+    content_sha256: 26caaae176a6107fb055f374c9416f0b04276359457ca4536cf47b95f661c094
     establishes:
     - weights
     - license
@@ -95,7 +92,7 @@ openness:
     shows: Hub refs listing for Apertus-70B-2509 shows intermediate-checkpoint branches from "step25000-tokens210B"
       through "step1150000-tokens14920B" plus the final step1155828-tokens15T, and a series of longctx-step
       branches.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 1027590463191057b349802be4156e2f890d3ab68913aa0ae1a0c691bf3172c1
     establishes:
@@ -103,7 +100,7 @@ openness:
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/LICENSE.txt
     shows: LICENSE.txt in the Apertus-70B-2509 repo opens "Copyright 2025 - The Swiss AI team." followed
       by the unmodified "Apache License Version 2.0, January 2004" text.
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 7f1e632ea726022e3f880d46aeb9b407a65131f44d8c563c15232e96aef50a4b
     establishes:
@@ -112,8 +109,12 @@ openness:
     shows: 'Apertus technical report (HTML rendering): the pretraining codebase at github.com/swiss-ai/Megatron-LM
       "is built on NVIDIA" Megatron-LM and "We extend the codebase with multiple functionalities"; for data,
       the authors "release the pipeline code" at github.com/swiss-ai/pretrain-data "to recreate all of the
-      data that was used for training the models".'
-    accessed: '2026-11-12'
+      data that was used for training the models". On compliance: the corpus respects robots.txt "not only
+      at crawl time (January 2025), but also retroactively applying January 2025 opt-out preferences to
+      web scrapes from previous crawls", and blocked content "is removed retroactively from the entire 2013-2024
+      range of the training dataset"; where a robots.txt file is unavailable, "we consider the data usable
+      for training".'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 1566ac5f59e4f62cb30c7b0f972f8c6fa965068c99f7b93391a613465d79b7d9
     establishes:
@@ -123,9 +124,133 @@ openness:
     shows: 'Apertus 1.5 report abstract: "Continued pretraining of the Apertus 1.0 models, on 4T additional
       tokens for the 8B and 2T for the 70B", and "We release the model weights, data preparation and training
       recipes, and evaluation suites under permissive licenses".'
-    accessed: '2026-11-12'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: f7054c5696c20be7b42a55612652d838793b094c2fd8933ba5ed7f3903ba34b2
+  - url: https://raw.githubusercontent.com/swiss-ai/pretrain-data/main/README.md
+    shows: 'The pretrain-data README: "This repository contains the pipelines generating the pretraining
+      data used to train Apertus v1 and v1.5". FineWeb-HQ starts from "[FineWeb (v1.3.0)]", FineWeb2-HQ
+      from "[FineWeb-2 (v1.0.2)]", then "[DCLM-Edu]", "[FineWeb-Edu]" and "[FineMath]", each run with a
+      "filterrobots" config; "If you want to apply `robots.txt` filtering, first download the respective
+      metadata". It warns: "Due to the infrastructure-specific nature of these pipelines (designed for CSCS
+      on Alps), they are not directly runnable out of the box. You will need to adjust the scripts and configurations
+      to your specific computing environment." and says "The project''s dependencies are defined in the
+      `Dockerfile`".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 43a39083f999ee55f606abb45859f2e0c47542015cafb8037ed9d0a36a1ab8ee
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/swiss-ai/pretrain-data/main/LICENSE
+    shows: 'LICENSE in swiss-ai/pretrain-data: "Apache License", "Version 2.0, January 2004".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/swiss-ai/pretrain-data/main/pipelines/fineweb/main.py
+    shows: 'The FineWeb pipeline defines a "quality_33-filterrobots" config with `"robots_filter": True`,
+      and for each dump adds an `IdFilter` with `ids_to_filter=load_robots(f"{ROBOTS_DIR}/{dump}")` that
+      writes the blocked documents to a separate "robots" output.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: f7227b1498da9bf3febaef17e80271ffd65b624d3a3838d49afc22f3dc3de529
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/swiss-ai/robots-txt-blocked-domains-english
+    shows: 'Hub API record for swiss-ai/robots-txt-blocked-domains-english: not gated, "license:apache-2.0",
+      with the file "fw1_domains.txt", the published list of domains the filter removes.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 93dceed3ffaeeb459a51faf0d9e259d6849ba55da1d57e9aa4a3617fb12b661e
+    establishes:
+    - data
+  - url: https://arxiv.org/abs/2509.14233
+    shows: 'Apertus report abstract: "Apertus models are pretrained exclusively on openly available data,
+      retroactively respecting `robots.txt` exclusions and filtering for non-permissive, toxic, and personally
+      identifiable content".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 708c422a40898842cec08532b4f86917f8648837d96e5a3149aca899b6168d2a
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb/raw/main/README.md
+    shows: 'FineWeb card: "license: odc-by"; "This dataset was created by processing 96 [CommonCrawl]" dumps;
+      "The use of this dataset is also subject to [CommonCrawl''s Terms of Use]"; v1.3.0 "removed specific
+      domains in response to a [C&D notice]"; and a "PII removal form".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2fb3e49e8aa62a7429b07b557cc49d578292174843fb6aa561b5fbe6afbff01c
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2/raw/main/README.md
+    shows: 'FineWeb-2 card: "license: odc-by"; "The data was sourced from 96 [CommonCrawl]" snapshots; "The
+      use of this dataset is also subject to [CommonCrawl''s Terms of Use]"; "CommonCrawl respects robots.txt
+      at crawl time, but if you are a webmaster and find your website in 🥂 FineWeb2 and would like to have
+      it removed, you may also use the [PII removal/opt out form]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 08d38a7e5cb7aae4b6fcc284fec4dd636ea653e4e5e74ef66a60d9616005b090
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu/raw/main/README.md
+    shows: 'FineWeb-Edu card: "license: odc-by"; it "includes all filtered CommonCrawl dumps since 2013";
+      "The use of this dataset is also subject to [CommonCrawl''s Terms of Use]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: a0cc8998a20499432b28b6575f3046b714938eb8e11b8d59a1d25ddf3716061e
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceTB/dclm-edu/raw/main/README.md
+    shows: 'DCLM-Edu card: "license: cc-by-4.0"; "Following DCLM-Baseline, this dataset is licensed under
+      CC-BY-4.0."'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: b34b8996b1aa7e72ee8622ae87f4b11d11a89e3ff50e26885a0cc7343f9ca256
+    establishes:
+    - data
+  - url: https://arxiv.org/html/2406.11794
+    shows: 'DCLM paper, appendix on DCLM-Pool: "The use of this dataset is also subject to CommonCrawl’s
+      Terms of Use"; Common Crawl respects robots.txt "and thus our pool does so as well, giving content
+      creators a mechanism to opt out of Common Crawl"; "Common Crawl does honor deletion requests and periodically
+      redacts dumps".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 897704727d76af80402b5c265313b741097d20ac6d6c566a851c3e705b47b428
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceTB/finemath/raw/main/README.md
+    shows: 'FineMath card: "license: odc-by"; content "filtered from CommonCrawl"; "The use of this dataset
+      is also subject to [CommonCrawl''s Terms of Use]".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 77b9162c99fc6b5944da8793f18fb99c3b520ab7cdce0cc67ec8a1e47871da61
+    establishes:
+    - data
+  - url: https://commoncrawl.org/terms-of-use
+    shows: 'Common Crawl Terms of Use, "LAST UPDATED: March 7, 2024". CC grants "a limited, non-assignable,
+      non-transferable, non-sublicensable, non-exclusive, limited license to access and use the Service";
+      crawled material "may be subject to separate terms of use or terms of service from the owners of such
+      Crawled Content"; "your use of the Crawled Content signifies your binding acceptance of the ToU";
+      and "BY USING THE CRAWLED CONTENT, YOU AGREE TO RESPECT THE COPYRIGHTS AND OTHER APPLICABLE RIGHTS
+      OF THIRD PARTIES". It sets no commercial or field-of-use bar and recommends counsel "before making
+      any use, including commercial use".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 2ffa806b46ea97481beac2d16b556603fb122d6763850a2fbe575a4177191072
+    establishes:
+    - data
+  - url: https://commoncrawl.org/faq
+    shows: 'Common Crawl FAQ: "CCBot is an automated crawler, checking first the robots.txt, and if crawling
+      a page is allowed, fetches pages using HTTP GET requests", and "You may also wish to be added to our
+      opt-out registry".'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
 adoption:
   level: 2
   reach: 10K-100K
