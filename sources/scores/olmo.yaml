@@ -8,7 +8,12 @@ openness:
       detail: Apache-2.0
     data:
       value: open
-      detail: Dolma 3, 9.3T tokens, all stages
+      detail: Dolma 3, 9.3T tokens, all stages. Mostly Common Crawl text from 104 dumps, CC-MAIN-2013-20
+        to CC-MAIN-2024-51, with the processing documented in the Olmo 3 paper and the dolma3 repository,
+        released under ODC-By. The cards add a research and educational use statement and link Ai2's Responsible
+        Use Guidelines outside the license grant, with no access gate. CCBot and Ai2's AI2Bot document robots.txt
+        checks at crawl time. Neither Dolma 3 card says the crawled pages keep their own rights or binds
+        the reuser to Common Crawl's terms
     code:
       value: open
       detail: training code+recipes+logs
@@ -21,8 +26,12 @@ openness:
   confidence: high
   note: OLMo publishes Apache-2.0 weights, the full Dolma 3 training corpus, training code and intermediate
     checkpoints, all ungated and downloadable, so the whole training run is open to inspection.
-  last_verified: '2026-11-12'
-  raw: weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
+  raw: weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages. Mostly Common Crawl text from
+    104 dumps, CC-MAIN-2013-20 to CC-MAIN-2024-51, with the processing documented in the Olmo 3 paper and
+    the dolma3 repository, released under ODC-By. The cards add a research and educational use statement
+    and link Ai2's Responsible Use Guidelines outside the license grant, with no access gate. CCBot and
+    Ai2's AI2Bot document robots.txt checks at crawl time. Neither Dolma 3 card says the crawled pages keep
+    their own rights or binds the reuser to Common Crawl's terms);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/allenai/dolma
     shows: 'Hugging Face API record for the original Dolma corpus - "Dolma: an Open Corpus of Three Trillion
@@ -102,12 +111,114 @@ openness:
     establishes:
     - checkpoints
   - url: https://huggingface.co/datasets/allenai/dolma3_mix-6T/raw/main/README.md
-    shows: 'Dolma 3 Mix (6T) dataset card: "is the collection of data used during the pretraining stage
-      to train the Olmo-3-1125-32B model"; "Dolma 3 mix is licensed under the Open Data Commons Attribution
-      License v1.0 (ODC-By)."'
-    accessed: '2026-11-12'
+    shows: 'Dolma 3 Mix (6T) dataset card: ''is the collection of data used during the pretraining stage
+      to train the Olmo-3-1125-32B model''; ''The majority of this dataset comes from Common Crawl.'' ''Dolma
+      3 mix is licensed under the Open Data Commons Attribution License v1.0 (ODC-By). It is intended for
+      research and educational use. For more information, please see our Responsible Use Guidelines.'' It
+      names no Common Crawl terms and says nothing about rights in the crawled pages.'
+    accessed: '2026-11-14'
     http_status: 200
     content_sha256: 901a231cdcae33ea8ce765d1bdef7606555780c4a108b0bcf046a65fa5d5adf9
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/dolma3_mix-6T-1025-7B/raw/main/README.md
+    shows: 'Dolma 3 Mix card for Olmo-3-1025-7B, the target of the model''s dataset:allenai/dolma3_mix-6T-1025
+      tag: common_crawl web pages 4.51T of 5.93T tokens, ''76.07%'' of the mix, every source listed as ODC-BY;
+      ''Some olmOCR science PDFs in the current dataset have been redacted following the training of Olmo
+      3 7B.'' The same licensing paragraph as the 6T card, with no Common Crawl terms and no page-rights
+      statement.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 74eec1f55057f4905f83d778cb2124747e074e2b350fc2fb034114a8a38c0467
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/dolma3_pool/raw/main/README.md
+    shows: 'Dolma 3 Pool card: Common Crawl ''8.14T'' of ''9.31T'' pool tokens; detailed documentation on
+      Dolma 3 processing is in the dolma3 GitHub repository; ''Dolma 3 is licensed under the Open Data Commons
+      Attribution License v1.0 (ODC-By). It is intended for research and educational use.'''
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 7a43fb286ca2d57f6e44fbc109b7208a778d59a7f6e3c8a52ccd4f172d4e0ab1
+    establishes:
+    - data
+  - url: https://arxiv.org/pdf/2512.13961
+    shows: 'Olmo 3 technical report: ''We start with 104 dumps, starting with CC-MAIN-2013-20 and ending
+      with CC-MAIN-2024-51'', text extracted with Resiliparse, partly from DCLM-pool, then heuristic filtering,
+      deduplication and quality and topic classification. The olmOCR science PDFs ''are crawled “politely”:
+      we identify our crawler as AI2Bot, we adhere to robots.txt, and do not bypass paywalls.'' It states
+      no page-rights or Common Crawl terms for the released corpus.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: f75208766c58a7eec434be61c93b5f7d904f2d2de31c02fca98dc9db0980fcae
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/allenai/dolma3/main/datasets/dolma3_mix/pools/9T/README.md
+    shows: 'dolma3 repository, 9T pool documentation: the processing recipe step by step from the 104 Common
+      Crawl dumps, and for the PDFs ''Documents were filtered based on legal deny lists to remove content
+      that should not be included for legal/copyright reasons.'''
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 30e6ffa107eb00c5eecaabb276bc49b9b3cea9025a5293f6a09ce45c366eb18d
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/allenai/dolma/raw/main/README.md
+    shows: 'Original Dolma card, which the Dolma 3 cards link as their original release: ''We are releasing
+      this dataset under the terms of ODC-BY. By using this dataset, you are also bound any license agreements
+      and terms of use of the original data sources.'' and ''Want to request removal of personal data? Use
+      this form''. Its versions table runs v1 to v1_7, so the binding clause covers those releases, not
+      Dolma 3.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 5379c6cbd2b567c0630578a27e0061346b6b89489e71039d9b2b1d176d414635
+    establishes:
+    - data
+  - url: https://opendatacommons.org/licenses/by/1-0/
+    shows: 'ODC-By 1.0, section 2.4: ''The individual items of the Contents contained in this Database may
+      be covered by other rights, including copyright, patent, data protection, privacy, or personality
+      rights, and this License does not cover any rights (other than Database Rights or in contract) in
+      individual Contents contained in the Database.'' Section 3.1 grants a worldwide, royalty-free license
+      with no commercial bar.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 7d7e622bbb4b5f21b1c5cb2dd7ce8b1b747ee2c3ab9fc8309c19082e12d13b2d
+    establishes:
+    - data
+  - url: https://allenai.org/responsible-use
+    shows: Ai2 Responsible Use Guidelines 'govern your use of Ai2’s AI tools and artifacts, including models,
+      datasets'; 'These Guidelines do not restrict the use of the Ai2 Tools for the sole purpose of scientific
+      research and development'; outside research use they list disallowed use cases such as political campaigning
+      or lobbying. The Dolma 3 cards link them for more information, outside the ODC-By grant and behind
+      no access gate.
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 518077f03c13d8b51e0c2cf28562a4ffdeefee1f62f2374e4d7ce4ae8526606c
+    establishes:
+    - data
+  - url: https://allenai.org/crawler
+    shows: 'Ai2 crawling notice: the crawler sends ''AI2Bot (+https://www.allenai.org/crawler)'' and ''If
+      you have any questions or concerns about our crawler, please contact us.'''
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 15ec6e0dbefbde8dfb42435d4f4d7e8276c0161a5c3131ff3660170c888cb2f9
+    establishes:
+    - data
+  - url: https://commoncrawl.org/faq
+    shows: '''CCBot is an automated crawler, checking first the robots.txt''; to block it, ''Add these lines
+      to your robots.txt file and our crawler will stop crawling your website: User-agent: CCBot Disallow:
+      /''; ''Our older bot identified itself with the UserAgent string'' CCBot/1.0. The crawler''s own documentation
+      of its robots.txt check, not proof that reuse of any page is lawful.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - data
+  - url: https://commoncrawl.org/ccbot
+    shows: '''CCBot identifies itself in its UserAgent string as: CCBot/2.0''; ''To prevent Common Crawl
+      from crawling your website, include the following in your robots.txt : User-agent: CCBot Disallow:
+      /''; links an Opt-out Registry.'
+    accessed: '2026-11-14'
+    http_status: 200
+    content_sha256: 4f606df61decb1f876ba66eddc8674c96f0c294c5710d3983ee81e7fa801a2dc
     establishes:
     - data
 adoption:
