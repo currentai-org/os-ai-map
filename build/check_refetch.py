@@ -172,6 +172,16 @@ USER_AGENT = (
 # 429s that stamps nothing, and a token only changes GitHub's rate-limit accounting — it
 # does not change what bytes a public repo serves, so it carries none of the drift risk the
 # rest of this comment warns about.
+#
+# A token GitHub does not accept is worse than none, though. raw.githubusercontent.com answers a
+# public file requested with an invalid bearer token with `404: Not Found` (14 bytes) instead of
+# the file, and api.github.com answers 401. Claude Code cloud sessions set GITHUB_TOKEN to a
+# placeholder, so every public GitHub source read from one was recorded as dead (#1048). An
+# authenticated GitHub request that comes back 401 or 404 is therefore retried once without
+# `Authorization`, and the rest of that URL's attempts stay unauthenticated. A public file serves
+# the same bytes either way, so no recorded digest moves; a genuinely missing file costs one extra
+# request and still reads 404.
+AUTH_REJECTED = {401, 404}
 
 # Statuses that mean "not now" rather than "not here" — a WAF, a rate limiter or a bad
 # gateway, none of which say anything about whether the page exists.
@@ -212,13 +222,14 @@ def canonical(url: str) -> str:
 GITHUB_HOSTS = {"github.com", "raw.githubusercontent.com", "api.github.com"}
 
 
-def _headers(url: str) -> dict[str, str]:
+def _headers(url: str, auth: bool = True) -> dict[str, str]:
     """`User-Agent` always; `Authorization` added only for GitHub hosts, only when
-    `GITHUB_TOKEN` is set. See the note above USER_AGENT for why this is scoped so narrowly.
+    `GITHUB_TOKEN` is set, and only when `auth` is true. See the note above USER_AGENT for why
+    this is scoped so narrowly, and AUTH_REJECTED for when `auth` is turned off.
     """
     headers = {"User-Agent": USER_AGENT}
     token = os.environ.get("GITHUB_TOKEN")
-    if token and urlparse(url).hostname in GITHUB_HOSTS:
+    if auth and token and urlparse(url).hostname in GITHUB_HOSTS:
         headers["Authorization"] = f"Bearer {token}"
     return headers
 
@@ -244,8 +255,8 @@ def _headers(url: str) -> dict[str, str]:
 # queue entry rather than a failure, and drift on a challenge-protected host is expected
 # anyway. Recording which mode produced a digest would close it properly, and that is a schema
 # change on every source rather than a fix belonging to this one.
-def _encoding_retry_headers(url: str) -> dict[str, str]:
-    return {**_headers(url), "Accept-Encoding": "gzip"}
+def _encoding_retry_headers(url: str, auth: bool = True) -> dict[str, str]:
+    return {**_headers(url, auth), "Accept-Encoding": "gzip"}
 
 
 def http_get(
@@ -271,17 +282,24 @@ def http_get(
     url = canonical(url)
     attempts = 0
     encoding_retried = False
+    auth = True
+    auth_dropped = False
     while True:
         attempts += 1
+        headers = _headers(url, auth)
         try:
-            response = requests.get(
-                url, timeout=timeout, headers=_headers(url), allow_redirects=True
-            )
+            response = requests.get(url, timeout=timeout, headers=headers, allow_redirects=True)
         except requests.RequestException:
             if attempts <= retries:
                 sleep(backoff * attempts)
                 continue
             raise
+        # A rejected token goes first: neither the encoding retry nor the backoff can fix it,
+        # and both would repeat the same bad header. See AUTH_REJECTED.
+        if "Authorization" in headers and response.status_code in AUTH_REJECTED:
+            auth = False
+            auth_dropped = True
+            continue
         # The encoding retry goes BEFORE the transient backoff, not after it. A header
         # fingerprint answers 403 to every attempt, so waiting three times to ask the same
         # question costs six requests and two sleeps to learn nothing.
@@ -291,7 +309,7 @@ def http_get(
                 retried = requests.get(
                     url,
                     timeout=timeout,
-                    headers=_encoding_retry_headers(url),
+                    headers=_encoding_retry_headers(url, auth),
                     allow_redirects=True,
                 )
             except requests.RequestException:
@@ -304,12 +322,14 @@ def http_get(
                 if retried.status_code not in TRANSIENT:
                     retried.attempts = attempts  # type: ignore[attr-defined]
                     retried.encoding_retry = True  # type: ignore[attr-defined]
+                    retried.auth_dropped = auth_dropped  # type: ignore[attr-defined]
                     return retried
                 response = retried
         if response.status_code in TRANSIENT and attempts <= retries:
             sleep(backoff * attempts)
             continue
         response.attempts = attempts  # type: ignore[attr-defined]
+        response.auth_dropped = auth_dropped  # type: ignore[attr-defined]
         return response
 
 
@@ -407,9 +427,15 @@ RAW = re.compile(r"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/(.+)$")
 
 
 def _api_get(url: str, timeout: float, params: dict | None = None):
-    """One GitHub API GET, or None on a network error."""
+    """One GitHub API GET, or None on a network error. A rejected token is retried once
+    without `Authorization`, as in `http_get` (see AUTH_REJECTED)."""
     try:
-        return requests.get(url, params=params, headers=_headers(url), timeout=timeout)
+        headers = _headers(url)
+        response = requests.get(url, params=params, headers=headers, timeout=timeout)
+        if "Authorization" in headers and response.status_code in AUTH_REJECTED:
+            response = requests.get(url, params=params, headers=_headers(url, False),
+                                    timeout=timeout)
+        return response
     except requests.RequestException:
         return None
 

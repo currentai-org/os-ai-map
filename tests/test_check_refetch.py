@@ -22,7 +22,14 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from build.check_refetch import Source, canonical, http_get, offline_failures, refetch
+from build.check_refetch import (
+    Source,
+    _api_get,
+    canonical,
+    http_get,
+    offline_failures,
+    refetch,
+)
 from build.check_refetch import bot_wall as pr_bot_wall
 
 DIGEST_A = "a" * 64
@@ -505,6 +512,81 @@ def test_github_host_gets_no_authorization_when_token_is_unset(monkeypatch):
     with patch("build.check_refetch.requests.get", return_value=_response(200)) as get:
         http_get("https://raw.githubusercontent.com/org/repo/main/LICENSE", timeout=5.0)
     assert "Authorization" not in get.call_args.kwargs["headers"]
+
+
+# --- A token GitHub rejects (#1048) ----------------------------------------------------
+# Cloud sessions set GITHUB_TOKEN to a placeholder. raw.githubusercontent.com answers a public
+# file requested with an invalid bearer token with 404, api.github.com with 401, so every public
+# GitHub source read from such a session was recorded as dead. A rejected authenticated request
+# is retried once without the header, and the rest of the URL's attempts stay anonymous.
+
+RAW_URL = "https://raw.githubusercontent.com/org/repo/main/README.md"
+
+
+def test_a_404_with_a_token_is_retried_without_authorization(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "placeholder")
+    responses = [_response(404, b"404: Not Found"), _response(200, b"readme")]
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = http_get(RAW_URL, timeout=5.0, sleep=lambda _: None)
+    assert response.status_code == 200
+    assert response.auth_dropped is True
+    assert get.call_count == 2
+    assert get.call_args_list[0].kwargs["headers"]["Authorization"] == "Bearer placeholder"
+    assert "Authorization" not in get.call_args_list[1].kwargs["headers"]
+
+
+def test_a_401_with_a_token_is_retried_without_authorization(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "placeholder")
+    responses = [_response(401), _response(200)]
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = http_get("https://api.github.com/repos/org/repo", timeout=5.0,
+                            sleep=lambda _: None)
+    assert response.status_code == 200
+    assert "Authorization" not in get.call_args_list[1].kwargs["headers"]
+
+
+def test_a_missing_file_still_reads_404_after_one_anonymous_retry(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "valid-token")
+    with patch("build.check_refetch.requests.get", return_value=_response(404)) as get:
+        response = http_get(RAW_URL, timeout=5.0, sleep=lambda _: None)
+    assert response.status_code == 404
+    assert get.call_count == 2
+
+
+def test_a_404_without_a_token_is_not_retried(monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    with patch("build.check_refetch.requests.get", return_value=_response(404)) as get:
+        response = http_get(RAW_URL, timeout=5.0, sleep=lambda _: None)
+    assert response.status_code == 404
+    assert response.auth_dropped is False
+    assert get.call_count == 1
+
+
+def test_a_404_off_github_is_not_retried_even_with_a_token(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "placeholder")
+    with patch("build.check_refetch.requests.get", return_value=_response(404)) as get:
+        http_get("https://example.com/gone", timeout=5.0, sleep=lambda _: None)
+    assert get.call_count == 1
+
+
+def test_later_attempts_stay_anonymous_after_the_token_is_dropped(monkeypatch):
+    """A 503 after the anonymous retry is backed off without putting the bad token back."""
+    monkeypatch.setenv("GITHUB_TOKEN", "placeholder")
+    responses = [_response(404), _response(503), _response(200)]
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = http_get(RAW_URL, timeout=5.0, sleep=lambda _: None)
+    assert response.status_code == 200
+    assert all("Authorization" not in c.kwargs["headers"] for c in get.call_args_list[1:])
+
+
+def test_the_branch_resolver_retries_a_rejected_token_without_authorization(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "placeholder")
+    responses = [_response(401), _response(200)]
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = _api_get("https://api.github.com/repos/org/repo/commits", timeout=5.0)
+    assert response.status_code == 200
+    assert get.call_args_list[0].kwargs["headers"]["Authorization"] == "Bearer placeholder"
+    assert "Authorization" not in get.call_args_list[1].kwargs["headers"]
 
 
 # --- The 403 encoding retry ----------------------------------------------------------
