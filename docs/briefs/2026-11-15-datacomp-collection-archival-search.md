@@ -25,9 +25,10 @@ all read today. No dataset image was fetched. Nothing was posted to any outside 
    match the paper's description of the collection: AWS, 512-pixel largest-side resize, sha256
    hashes, a `uid` column. Its readme says it reached "220,000 images/second on a cluster of 100
    m5.24xlarge", and the PR description says "consistently for 24 hours". **It never names DataComp
-   or CommonPool.** It is direct evidence of the configuration Shankar ran at scale in January 2023.
-   That this configuration is the CommonPool collection is an inference, not a finding. If it is,
-   it covers the collection from mid-January 2023 on, not December 2022.
+   or CommonPool.** It is direct evidence of a configuration Shankar published and reported running
+   at scale in January 2023. It is not evidence that this configuration processed CommonPool: the
+   match is strong circumstantial evidence, not confirmed collection provenance. If it is the
+   collection's configuration, it covers the collection from mid-January 2023 on, not December 2022.
 2. **One logged run in the window, not tied to CommonPool.** Romain Beaumont's public Weights &
    Biases project holds a run from 2022-12-12 to 2022-12-15 that fed a Common Crawl URL list
    (cc2dataset output in LAION's S3 bucket) into img2dataset and wrote to `s3://s-laion/rawcc400M`.
@@ -313,7 +314,9 @@ or opt-outs.
   distributor, passes no `disallowed_header_directives` or `user_agent_token`, and so drops images
   with an un-scoped `noai`, `noimageai`, `noindex` or `noimageindex` header. Its resize, hash, `uid`
   and AWS settings match the paper's description of the collection. Its author reports running it
-  at over 200,000 images a second for 24 hours on 100 `m5.24xlarge` nodes.
+  at over 200,000 images a second for 24 hours on 100 `m5.24xlarge` nodes. Nothing in it identifies
+  what it downloaded, so what is established is the published configuration and its reported use,
+  not that it processed CommonPool.
 - A LAION Common Crawl download by Beaumont from 2022-12-12 to 2022-12-15 attempted 877M URLs with
   the X-Robots-Tag check off. Its resize settings do not match Appendix H.
 - cc2dataset, which produced the URL lists, writes `uid`, `url` and `alt`, with `uid` an md5 of
@@ -350,10 +353,14 @@ or opt-outs.
 
 This section draws no scoring conclusion and proposes no hold change. The open point on
 `openclip.openness` was whether the original collection honored the one image-level opt-out its tool
-could honor. The search found a January 2023 configuration from the collection's lead that honored
-it by default, and a December 2022 LAION run that did not. Neither source says it is the CommonPool
-collection. What would settle the point is unchanged: the original run's configuration or per-shard
-statistics, or a statement from the DataComp maintainers. Nothing in this brief asks them for it.
+could honor. The search found a January 2023 configuration, published by the collection's lead and
+reported run at scale, that would have honored it by default, and a December 2022 LAION run that did
+not. Neither source says it is the CommonPool collection, and the original collection may have run
+different configurations across phases or workers. What would settle the point is a production
+artifact that links CommonPool output to a configuration: a run identifier, output path, original
+download manifest or contemporaneous log tying a CommonPool shard or sample to the January Ray
+configuration (or to another), the original run's per-shard statistics, or a statement from the
+DataComp maintainers. Nothing in this brief asks them for it.
 
 ## Sources
 
