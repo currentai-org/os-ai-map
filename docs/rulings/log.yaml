@@ -4331,3 +4331,32 @@ rulings:
     executor: agent
     lands_in: [build/recoverability_pilot.py, docs/briefs/2026-11-14-openclip-recoverability-pilot.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1059']
+
+  - id: R-2026-11-14-h
+    date: 2026-11-14
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1059", "#1060", "#1061", R-2026-11-13-d, R-2026-11-14-g, openclip, pretrained, dataset]
+    question: >-
+      R-2026-11-13-d lets a URL-only release count as a released corpus when reconstruction is materially possible and
+      recoverability is shown, with no fixed minimum. The DataComp-1B pilot found 34.3% of sampled rows byte-exact,
+      and the embedding comparison found 243 of the 265 hash mismatches to be the same picture in new bytes, about
+      58.6% exact or visually equivalent. Is DataComp-1B materially reconstructible, and how is recoverability shown?
+    ruling: >-
+      A released per-sample URL index, published hashes and features, selection metadata and working reconstruction
+      tooling may satisfy the reconstructibility requirement when material recovery is empirically demonstrated.
+      DataComp-1B is treated as materially reconstructible at the image-content level, provisionally: the original
+      image bytes are not reliably reconstructible, but a substantial portion of the corpus remains reconstructible as
+      visually equivalent images, and the released index, hashes, features, selection metadata and processing tools
+      give an unusually strong basis for auditing that reconstruction. This is a methodological judgment, not a
+      finding that every original training example remains available, and it does not assert exact replication of
+      the original training bytes, complete coverage, full training-set reproducibility or lawful reuse. The record
+      states the substantial unavailable and opted-out portions, the calibration limitations and the nonuniform
+      recovery across source types. No percentage threshold is introduced for future datasets. This resolves the
+      recoverability question only: openclip's openness stays held and undated, with its score and components
+      unchanged, until the original 2022-2023 image collection's opt-out configuration is established, and the next
+      evidence comes from the DataComp maintainers' configuration or logs rather than a larger crawl.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/openness.md]
+    applied_in: []
