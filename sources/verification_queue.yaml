@@ -58,13 +58,16 @@ held:
       since: '2026-09-28'
   alia-40b:
     capability:
-      because: No published evaluation places the released ALIA-40b beside Apertus, EuroLLM, Luciole or a Llama model
-        on one suite. On 2026-11-12 its card reports 5-shot results for ALIA-40b alone on BSC's own harness and says
-        comparisons with other baselines will come in a forthcoming technical report, which is not yet on arXiv; the
-        Salamandra technical report evaluates only an intermediate, un-annealed 40B checkpoint against 7B-class models.
-        The one_below apertus comparison was removed because no published evaluation supports it (R-2026-11-12-n).
-        Settled by the ALIA-40b technical report, or another table that evaluates ALIA-40b beside one of those peers
-        on the same benchmarks, shots and metric.
+      because: 'Re-read on 2026-11-15, no published evaluation places the released ALIA-40b beside Apertus, EuroLLM, Luciole
+        or a Llama model on one ranked suite. The base card still reports 5-shot results for ALIA-40b alone and defers
+        comparisons with other baselines to a forthcoming technical report, and an arXiv search finds no such report;
+        the ALIA-40b-instruct-2606 card and the undeclared ALIA-40b-fc-2607 card also report ALIA alone, and Artificial
+        Analysis lists no ALIA model. EuroEval has evaluated the ALIA-40b base checkpoint but leaves it unranked, with
+        no summarization, math, code or reasoning results and the evaluated revision unstated: on the tasks it shares
+        with other base models it leads Luciole-23B-Base on 24 of 28 across English, Spanish, Catalan, French, German
+        and Italian, leads EuroLLM-22B-2512 on 4 of 6 in English and trails it on 15 of 22 elsewhere. The one_below apertus
+        comparison was removed because no published evaluation supports it (R-2026-11-12-n). Settled by the ALIA-40b technical
+        report, or another table that evaluates ALIA-40b beside one of those peers on the same benchmarks, shots and metric.'
       since: '2026-09-29'
   amazon-bedrock-evaluations:
     adoption:
@@ -89,18 +92,6 @@ held:
         the two. Settling it needs the cited download source re-read for a date, or the counted artifact declared
         where a route can read it (update-product).
       since: '2026-10-07'
-  apertus:
-    capability:
-      because: 'Read on 2026-11-12, the pretraining-suite fallback finds no table that puts Apertus beside Llama 4
-        Maverick, which sets llama''s score. The tables that pair Apertus-70B with earlier Llama checkpoints put it
-        level on general understanding (67.5 against 67.3 for Llama 3.1 70B and 67.9 for Llama 4 Scout, Apertus report
-        Table 14), about 8 points behind on factual knowledge (58.9 against 66.7 and 67.0, Table 15), and behind Llama
-        3.3 70B base on the EuroLLM-22B report''s 3-shot suite (63.6 against 69.1, Table 21). A move to 2, one below
-        llama, was considered and rejected (R-2026-11-12-n): these are earlier checkpoints rather than the governing
-        releases, they measure English knowledge rather than the product''s multilingual, reasoning and long-context
-        capability, and smollm at 3 trails Apertus-70B on the same tables. Settled by a comparison of the current
-        Apertus release with a current Llama release on one suite, or by a v5.0.1 reading of both.'
-      since: '2026-09-29'
   apify:
     adoption:
       because: >-
@@ -599,11 +590,17 @@ held:
       settled_by: scheduled_reconciliation
   eurollm:
     capability:
-      because: 'The comparison relative_to apertus was re-attested on 2026-11-12: in the EuroLLM-22B report EuroLLM-22B
-        leads Apertus-70B on eight of ten English post-trained benchmarks (Table 3), while Apertus-70B-Base leads
-        EuroLLM-22B-Base on all three 3-shot base benchmarks (Table 21), which supports the two at the same score.
-        A move to 2 alongside apertus was considered and rejected (R-2026-11-12-n). The score cannot be confirmed
-        while apertus is held. Settled with apertus.'
+      because: 'Re-read on 2026-11-15. The strongest declared release is EuroLLM-22B-Instruct-2512; EuroLLM1.5-9B-SFT
+        is an undeclared preview whose own card puts it ahead of EuroLLM-22B-2512 on every row it reports. Artificial
+        Analysis lists no EuroLLM model. The comparison at apertus no longer holds on the governing releases: the Apertus
+        1.5 report puts Apertus 1.5 70B ahead of EuroLLM-22B on 17 of 19 rows of the main post-trained table, 11 of 12
+        multilingual rows and all five base-model averages, and EuroEval puts Apertus-v1.5-70B ahead in 22 of 28 shared
+        languages (English 1.61 against 1.80). EuroLLM-22B-Instruct-2512 in turn leads Luciole-23B-Instruct-1.1 in 23
+        of 24 languages and SmolLM3-3B in all 18 on EuroEval, and trails Llama 3.3 70B Instruct on 18 of 19 rows of the
+        Apertus table. That places it between luciole and apertus without deciding between their scores; a move to 2 was
+        considered and rejected on the earlier evidence (R-2026-11-12-n). Settled by a same-suite comparison of EuroLLM''s
+        strongest eligible release with a peer whose score is settled, or by a v5.0.1 reading; EuroLLM 1.5 counts once
+        it is released and declared on the product record.'
       since: '2026-11-12'
   evalplus:
     adoption:
