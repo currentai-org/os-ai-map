@@ -146,3 +146,22 @@ def test_a_plain_github_url_is_left_alone():
 
     for url in ("https://github.com/huggingface/trl", "https://pypi.org/project/trl/"):
         assert canonical(url) == url
+
+
+def test_a_rejected_github_token_records_the_anonymous_read(monkeypatch):
+    """#1048: a placeholder GITHUB_TOKEN made raw.githubusercontent.com answer 404."""
+    monkeypatch.setenv("GITHUB_TOKEN", "placeholder")
+    url = "https://raw.githubusercontent.com/org/repo/main/LICENSE"
+    responses = [response(b"404: Not Found", 404, url), response(BODY, 200, url)]
+    with patch("build.fetch_source.requests.get", side_effect=responses):
+        record = fetch(url, sleep=lambda _: None)
+    assert record["http_status"] == 200
+    assert record["content_sha256"] == hashlib.sha256(BODY).hexdigest()
+    assert record["unauthenticated_retry"] is True
+
+
+def test_an_accepted_request_carries_no_retry_flag(monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    with patch("build.fetch_source.requests.get", return_value=response()):
+        record = fetch("https://x.example/LICENSE")
+    assert "unauthenticated_retry" not in record
