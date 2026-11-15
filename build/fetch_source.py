@@ -18,8 +18,9 @@ Usage:
     uv run python -m build.fetch_source --body-dir /tmp/scratch <url> [<url> ...]
 
 Prints one JSON object per URL: url, http_status, content_sha256, bytes, content_type,
-final_url (after redirects), and body_path when --body-dir is given. Never raises on a dead
-source — an unreachable URL is a finding to record, not a crash.
+final_url (after redirects), and body_path when --body-dir is given. `unauthenticated_retry:
+true` means GitHub rejected GITHUB_TOKEN and the read recorded is the anonymous one. Never
+raises on a dead source — an unreachable URL is a finding to record, not a crash.
 """
 
 from __future__ import annotations
@@ -95,6 +96,9 @@ def fetch(
     attempts = getattr(response, "attempts", 1)
     record["http_status"] = response.status_code
     record["attempts"] = attempts
+    if getattr(response, "auth_dropped", False) is True:
+        # GitHub rejected GITHUB_TOKEN (#1048); what follows is the unauthenticated read.
+        record["unauthenticated_retry"] = True
 
     if response.status_code in TRANSIENT:
         # No digest, on purpose. See the docstring.
