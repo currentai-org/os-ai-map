@@ -33,6 +33,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   non-commercial as a whole (R-2026-11-13-b). Lucie-7B moves from 5/open_source to
   4/open_weights ([#1049](https://github.com/currentai-org/os-ai-map/pull/1049)).
 
+### Fixed
+
+- The seven v0.1.0 slugs retired by #114 without a redirect (`claude-sonnet-4`,
+  `claude-sonnet-4-6`, `claude-haiku-4-5`, `gemini-2-5-pro`, `gemini-3-pro`,
+  `gemini-3-1-pro-preview`, `grok-4-20-heavy`) are now aliases on `claude-sonnet`, `claude-haiku`,
+  `gemini-pro` and `grok`, so every retired slug in the dataset's `product_history` resolves to a
+  current product ([#1071](https://github.com/currentai-org/os-ai-map/pull/1071)).
+
 ## [0.6.0] - 2026-11-12
 
 ### Added
