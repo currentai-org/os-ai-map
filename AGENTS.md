@@ -145,6 +145,9 @@ Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it
                    hash_mismatch_embeddings re-fetches the pilot's hash-mismatched rows and
                    compares each image's CLIP embedding with the one DataComp published; it
                    needs torch and open_clip as an ephemeral `uv run --with` overlay.
+                   xrobots_natural_experiment counts CommonPool rows on hosts that publish an
+                   X-Robots-Tag opt-out, HEADs a seeded sample, and reads archived headers from
+                   the Wayback Machine; headers only, never in preflight.
 ```
 
 Proposers deliberately **print rather than write**. Matching artifacts by name measured 2
