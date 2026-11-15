@@ -22857,7 +22857,7 @@
               {
                 "axis": "openness",
                 "since": "2026-11-13",
-                "reason": "Under the web-crawl corpus test (R-2026-11-13-d), DataComp-1B documents its terms (CC-BY-4.0 on the URL-caption index; its research-use language is advisory and outside the license), its Common Crawl provenance, and that 'The individual images are under their own copyrights'; LAION's dataset-requests form takes removals by sample uid. The recorded 5/open_source stands provisionally. Two points remain open, both evidence questions rather than restrictions. First, recoverability: a sample-level index with hashes, selection metadata and working reconstruction code can count as a released corpus, but how much of the DataComp-1B images the checkpoints trained on can still be recovered has not been measured, and no fixed minimum applies; the question is whether what remains faithfully reconstructs the governing training corpus. Second, opt-out handling during the original 2022-2023 collection: CCBot's robots.txt check covered the pages the links came from, not the image hosts, and the release does not say which img2dataset version or opt-out settings fetched the training images; the current downloader's default X-Robots-Tag noai handling does not show what the original collection honored. Settled by a measured recoverability audit of a representative sample of DataComp-1B URLs and a record of the original download configuration."
+                "reason": "Under the web-crawl corpus test (R-2026-11-13-d), DataComp-1B documents its terms (CC-BY-4.0 on the URL-caption index; its research-use language is advisory and outside the license), its Common Crawl provenance, and that 'The individual images are under their own copyrights'; LAION's dataset-requests form takes removals by sample uid. Recoverability is resolved under R-2026-11-14-h: on a 1,000-row sample, 34.3% of rows return the published bytes and about 58.6% the published bytes or a visually equivalent copy, so the corpus is treated as provisionally materially reconstructible at the image-content level, which is not exact byte replication, complete coverage or lawful reuse. One point remains open, an evidence question rather than a restriction: opt-out handling during the original December 2022 to March 2023 collection. CCBot's robots.txt check covered the pages the links came from, not the image hosts; no img2dataset version checks image-host robots.txt; and img2dataset began honoring X-Robots-Tag opt-outs by default in 1.39.0 on 2022-12-19, partway through the collection window, while the version and the disallowed_header_directives setting the collection used are undocumented. The later reconstruction tooling's img2dataset 1.40.0 pin does not show what the original collection honored. The recorded 5/open_source stands provisionally. Settled by a record of the original collection's img2dataset version and opt-out configuration, from its configuration, logs or the collectors."
               }
             ]
           },
@@ -224110,7 +224110,7 @@
     }
   },
   "n_total": 1270,
-  "generated": "2026-11-14",
+  "generated": "2026-11-15",
   "version": "0.6.0",
   "released": "2026-11-12",
   "contract": 2,
