@@ -155,37 +155,135 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: Artificial Analysis Intelligence Index
-  value: 'Qwen3.5 35B A3B (Reasoning), the post-trained sibling of the largest Qwen3.5 Base checkpoint - AA
-    Intelligence Index 19 (estimated, v4.3.2), well above the median of 8 for open-weight models of similar
-    size. Qwen3.5 397B A17B scores 18. On the same index version Llama 4 Maverick (llama, 3) scores 10 and
-    DeepSeek-V4.1-Flash (deepseek, 5) scores 39.'
+  basis_detail: Artificial Analysis, Epoch AI and LMArena evaluations of the post-trained sibling
+  relative_to: gemma
+  relation: at
+  comparison:
+    last_attested: '2026-11-15'
+    sources:
+    - url: https://artificialanalysis.ai/leaderboards/models
+      shows: 'Leaderboard model record "Gemma 4 31B (Reasoning)", evaluations outside the index: gpqa-diamond
+        0.857, humanitys-last-exam 0.236, ifbench 0.756, mmmu-pro 0.734, tau2-bench 0.599, terminalbench-hard
+        0.364.'
+      accessed: '2026-11-15'
+      http_status: 200
+      content_sha256: dbc406b31190cf9c24458b4d0a84fa68f5e4817186e7b7c99b1f7cb7f51b437e
+    - url: https://epoch.ai/data/benchmark_data.zip
+      shows: 'Epoch AI''s own runs: gemma-4-31b-it_minimal 0.758 in member gpqa_diamond.csv and 0.733 in
+        member otis_mock_aime_2024_2025.csv, against qwen3.5-35b-a3b 0.835 and 0.544.'
+      accessed: '2026-11-15'
+      http_status: 200
+      content_sha256: 1738bfe2fd38e40e317be9396ad25b9211372764127a6d792b3ed6fd2eafee45
+    - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text_style_control/latest-00000-of-00001.parquet
+      shows: 'Arena''s leaderboard dataset at revision 4ca698d9, text_style_control latest split, leaderboard_publish_date
+        2026-11-11, category overall: "Gemma 4 31B" 1451.8 (1444.4-1459.3) against "Qwen3.5-35B-A3B" 1393.9
+        (1389.7-1398.2); category non_english 1437.8 against 1374.1.'
+      accessed: '2026-11-15'
+      http_status: 200
+      content_sha256: 793403c62742af0da61f4e36392241c7df1e89436d85ac3aeaf679f318a8ea56
+  value: 'Read on Qwen3.5 35B A3B, the post-trained sibling of Qwen3.5-35B-A3B-Base, the largest released
+    base checkpoint; read 2026-11-15. Qwen has released no base checkpoint newer than Qwen3.5. Artificial
+    Analysis Intelligence Index v5.0.1 scores no Qwen3.5 model (35B A3B, 397B A17B, 122B A10B, 27B, 9B,
+    4B, 2B and 0.8B read Unknown) and lists Qwen3.5 35B A3B as deprecated in favor of Qwen3.6 35B A3B. Artificial
+    Analysis evaluations outside the index, reasoning against reasoning: Qwen3.5 35B A3B (Reasoning) GPQA
+    Diamond 84.5%, HLE 21.0%, IFBench 72.5%, MMMU Pro 72.7%, tau2-bench 89.2%, Terminal-Bench Hard 26.5%
+    against Gemma 4 31B (Reasoning) (gemma, 4) 85.7%, 23.6%, 75.6%, 73.4%, 59.9%, 36.4%, and Olmo 3.1 32B
+    Think (olmo, 4) 59.1%, 6.3%, 66.0% on the first three and 0.0% on tau2-bench and Terminal-Bench Hard;
+    non-reasoning, Qwen3.5 35B A3B 81.9%, 13.4%, 44.5% against Phi-4 (phi, 3) 57.5%, 3.8%, 23.5%. Epoch
+    AI runs: qwen3.5-35b-a3b GPQA Diamond 83.5%, OTIS Mock AIME 54.4% (qwen3.5-35b-a3b_none 81.2%, 70.0%)
+    against Gemma 4 31B at minimal reasoning 75.8%, 73.3%, Mistral Large 4 (high) (mistral-large, 4) 88.1%,
+    98.3% and Phi-4 56.1%, 13.8%. LMArena text, style control, 2026-11-11: Qwen3.5-35B-A3B 1394 against
+    Gemma 4 31B 1452, Mistral Large 4 1420, Olmo 3.1 32B Think 1286 and Phi-4 1256; non-English prompts
+    1374 against 1438, 1405, 1231 and 1233.'
   confidence: medium
-  note: Artificial Analysis does not evaluate base checkpoints, so this record is read on its post-trained
-    sibling, as llama is read on Llama 4 Maverick. Qwen3.5 35B A3B, the chat model built on the largest
-    Qwen3.5 Base checkpoint, scored 19 on version 4.3.2 of Artificial Analysis's Intelligence Index, well
-    above the median of 8 for open-weight models of its size, and between the base records then read at
-    10 and at 39. Version 5 of the index, introduced in October 2026, does not score it, so the current
-    capability assessment is pending.
+  note: Artificial Analysis, Epoch AI and LMArena evaluate post-trained models, so this record is read on
+    Qwen3.5 35B A3B, the chat model built on the largest Qwen3.5 Base checkpoint. Version 5 of Artificial
+    Analysis's Intelligence Index scores no Qwen3.5 model. In Artificial Analysis's own science, reasoning
+    and instruction-following tests it is level with Gemma 4 31B and far ahead of OLMo 3.1 32B Think and
+    Phi-4. Epoch AI's runs put it behind Mistral Large 4, and LMArena's ratings place it between OLMo and
+    Mistral Large 4.
+  last_verified: '2026-11-15'
   sources:
   - url: https://artificialanalysis.ai/models/qwen3-5-35b-a3b
-    shows: 'Artificial Analysis page on Intelligence Index v4.3.2: "Qwen3.5 35B A3B (Reasoning) scores 19
-      (estimated) on the Artificial Analysis Intelligence Index, placing it well above average among other
-      open weight models of similar size (median: 8)".'
-    accessed: '2026-10-10'
+    shows: 'Model page under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence Index Unknown".
+      The page''s model data for "Qwen3.5 35B A3B (Reasoning)" ("isReasoning":true, "deprecated":true, "deprecatedTo":"qwen3-6-35b-a3b",
+      "intelligenceIndex":null, weights "https://huggingface.co/Qwen/Qwen3.5-35B-A3B") carries Artificial
+      Analysis''s own runs gpqa 0.845, hle 0.210, ifbench 0.725, mmmuPro 0.727, tau2 0.892, terminalbenchHard
+      0.265; "Qwen3.5 35B A3B (Non-reasoning)" gpqa 0.819, hle 0.134, ifbench 0.445.'
+    accessed: '2026-11-15'
     http_status: 200
-    content_sha256: b1515c0b5d0107e148364874bdbdaef74564013f5fa998a0ce353452d3d297cc
+    content_sha256: 3610ef9ca27b502d93613a371a1ca46418fc5600eeadf2022a8b6a659941ef6d
   - url: https://artificialanalysis.ai/models/qwen3-5-397b-a17b
-    shows: 'Artificial Analysis page for the larger Qwen3.5 post-trained model, which has no released base
-      checkpoint: "Qwen3.5 397B A17B (Reasoning) scores 18 on the Artificial Analysis Intelligence Index",
-      so the 35B A3B reading is the generation''s strongest.'
-    accessed: '2026-10-10'
+    shows: 'Model page for the largest Qwen3.5 post-trained model, which has no released base checkpoint,
+      under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence Index Unknown".'
+    accessed: '2026-11-15'
     http_status: 200
-    content_sha256: 7801874aa0fed8c1d028e3bfa38b07afb53db6ccae24a8b939abcca95da1167b
-  - url: https://artificialanalysis.ai/models/llama-4-maverick
-    shows: 'The llama record''s reading on the same index version, fetched the same day: "Llama 4 Maverick
-      scores 10 on the Artificial Analysis Intelligence Index", unchanged since 2026-09-29, so the two readings
-      are on one scale.'
-    accessed: '2026-10-10'
+    content_sha256: 4b655e30461b6d63ec43ccfcf186c0065760266634821f4997af9e155f131d88
+  - url: https://artificialanalysis.ai/models/qwen3-5-122b-a10b
+    shows: 'Model page for Qwen3.5 122B A10B under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence
+      Index Unknown".'
+    accessed: '2026-11-15'
     http_status: 200
-    content_sha256: 5b4a602a38c0244cd9f0a7002a50fdc76645e8d87499dcfe09a837406cb03fa2
+    content_sha256: 669654a3ff4dc5233ae58c5e88892e643da1da967a5ee2e5b8002b845968a7c0
+  - url: https://artificialanalysis.ai/models/qwen3-5-27b
+    shows: 'Model page for Qwen3.5 27B under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence
+      Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 58a2dfdd53a12f88c5611c3c35736f33a2306c2fcd9cae8eb0378f76747f60c8
+  - url: https://artificialanalysis.ai/models/qwen3-5-9b
+    shows: 'Model page for Qwen3.5 9B, the post-trained sibling of Qwen3.5-9B-Base, under index v5.0.1:
+      "Intelligence N/A Artificial Analysis Intelligence Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 9c687554bf0be1cbd37da84d759896e1bfa51bc7e69305172b9f8fe16a83add6
+  - url: https://artificialanalysis.ai/models/qwen3-5-4b
+    shows: 'Model page for Qwen3.5 4B under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence
+      Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: d106165be3639b4fc5d6400014e2ea3b7436d4f08410f587751f365ed11beeb0
+  - url: https://artificialanalysis.ai/models/qwen3-5-2b
+    shows: 'Model page for Qwen3.5 2B under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence
+      Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 7d1e0dc9b59c1570d5d8ff942e8abb2e40d389843cb6a6d6de6bcdfdbc9f183c
+  - url: https://artificialanalysis.ai/models/qwen3-5-0-8b
+    shows: 'Model page for Qwen3.5 0.8B under index v5.0.1: "Intelligence N/A Artificial Analysis Intelligence
+      Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: fd911f79c3ef620729847212062be5dedaceb98a2bed81ab01a1ff9f730e4314
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: 'Leaderboard model records, Artificial Analysis''s own runs outside the index: "Gemma 4 31B (Reasoning)"
+      gpqa-diamond 0.857, humanitys-last-exam 0.236, ifbench 0.756, mmmu-pro 0.734, tau2-bench 0.599, terminalbench-hard
+      0.364; "Olmo 3.1 32B Think" 0.591, 0.063, 0.660, tau2-bench 0, terminalbench-hard 0; "Phi-4" (non-reasoning)
+      0.575, 0.038, 0.235. Qwen3.5 35B A3B is not among the leaderboard''s current records.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: dbc406b31190cf9c24458b4d0a84fa68f5e4817186e7b7c99b1f7cb7f51b437e
+  - url: https://epoch.ai/data/benchmark_data.zip
+    shows: 'Epoch AI benchmarking hub archive, Epoch''s own runs (Model version, Best score across scorers).
+      gpqa_diamond.csv: qwen3.5-35b-a3b 0.835, qwen3.5-35b-a3b_none 0.812, gemma-4-31b-it_minimal 0.758,
+      mistral-large-4-0_high 0.881, phi-4 0.561. otis_mock_aime_2024_2025.csv: 0.544, 0.700, 0.733, 0.983,
+      0.138.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 1738bfe2fd38e40e317be9396ad25b9211372764127a6d792b3ed6fd2eafee45
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text_style_control/latest-00000-of-00001.parquet
+    shows: 'Arena''s own leaderboard dataset (lmarena-ai/leaderboard-dataset at revision 4ca698d9), text_style_control
+      latest split, leaderboard_publish_date 2026-11-11, category overall, rating (lower-upper): "Qwen3.5-35B-A3B"
+      (alibaba, Apache 2.0) 1393.9 (1389.7-1398.2), "Gemma 4 31B" 1451.8, "Mistral Large 4" 1420.4, "Olmo
+      3.1 32B Think" 1286.1, "Phi-4" 1256.4; category non_english: 1374.1, 1437.8, 1404.6, 1230.8, 1233.2.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 793403c62742af0da61f4e36392241c7df1e89436d85ac3aeaf679f318a8ea56
+  - url: https://huggingface.co/api/models?author=Qwen&search=Base&sort=createdAt&direction=-1&limit=20
+    shows: 'Hub listing of Qwen models matching "Base", newest first: after sparse-autoencoder repositories
+      built on existing bases ("Qwen/SAE-Res-Qwen3.5-35B-A3B-Base-W128K-L0_100" and others, created April
+      2026), the newest base checkpoints are "Qwen/Qwen3.5-0.8B-Base", "Qwen/Qwen3.5-2B-Base" and "Qwen/Qwen3.5-4B-Base",
+      created February 2026.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 43c70ecfccd7c8ec3d7d2348c4ec2bd2be926934a43bfe63d103763535eeea95
