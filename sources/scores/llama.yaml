@@ -151,43 +151,122 @@ adoption:
 capability:
   score: 3
   basis: benchmark
-  basis_detail: Artificial Analysis Intelligence Index
-  value: 'Llama 4 Maverick - AA Intelligence Index 10 (estimated, v4.3.2), ranked #25/45, below average
-    among open weight non-reasoning models of similar size (median 12); Llama 4 Scout 8 on the same index;
-    Behemoth is unreleased. Index v5.0.1 scores no Llama model. Pretraining-suite readings: on the Apertus-70B
-    card''s six-task average (ARC, HellaSwag, WinoGrande, XNLI, XCOPA, PIQA), Llama 4 Scout base 67.9 against
-    Apertus-70B 67.5, OLMo 2 32B 67.7, Qwen3-32B 67.8, Qwen2.5-72B 69.8 and SmolLM3-3B 61.6; on the Olmo
-    3 32B base card, Llama 3.1 70B base against Olmo 3 32B base reads math 62.0 vs 61.6, code 36.3 vs 40.0
-    and MC STEM 80.1 vs 74.5 (Marin 32B 49.3, 30.8, 75.9). Maverick is on neither table; Meta''s card puts
-    its base ahead of Scout''s on MMLU (85.5 vs 79.6), MMLU-Pro (62.9 vs 58.2) and MATH (61.2 vs 50.3).'
+  basis_detail: Artificial Analysis, Epoch AI and LMArena evaluations; pretraining-suite tables
+  relative_to: gemma
+  relation: one_below
+  comparison:
+    last_attested: '2026-11-15'
+    sources:
+    - url: https://artificialanalysis.ai/leaderboards/models
+      shows: 'Leaderboard model records, evaluations outside the index: "Gemma 4 31B (Non-reasoning)" gpqa-diamond
+        0.763, humanitys-last-exam 0.118, ifbench 0.535, tau2-bench 0.655, terminalbench-hard 0.303, against
+        "Llama 4 Maverick" 0.671, 0.049, 0.430, 0.178 and 0.068. Both records are non-reasoning ("isReasoning":false)
+        and carry no Intelligence Index score.'
+      accessed: '2026-11-15'
+      http_status: 200
+      content_sha256: dbc406b31190cf9c24458b4d0a84fa68f5e4817186e7b7c99b1f7cb7f51b437e
+    - url: https://epoch.ai/data/benchmark_data.zip
+      shows: 'Epoch AI''s own runs: member gpqa_diamond.csv, gemma-4-31b-it_minimal 0.758 against Llama-4-Maverick-17B-128E-Instruct-FP8
+        0.670; member otis_mock_aime_2024_2025.csv, 0.733 against 0.206.'
+      accessed: '2026-11-15'
+      http_status: 200
+      content_sha256: 1738bfe2fd38e40e317be9396ad25b9211372764127a6d792b3ed6fd2eafee45
+    - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text_style_control/latest-00000-of-00001.parquet
+      shows: 'Arena''s leaderboard dataset at revision 4ca698d9, text_style_control latest split, leaderboard_publish_date
+        2026-11-11, category overall: "Gemma 4 31B" 1451.8 (1444.4-1459.3) against "Llama 4 Maverick 17B
+        128E Instruct" 1327.0 (1322.8-1331.3); category non_english 1437.8 against 1311.2.'
+      accessed: '2026-11-15'
+      http_status: 200
+      content_sha256: 793403c62742af0da61f4e36392241c7df1e89436d85ac3aeaf679f318a8ea56
+  value: 'Governing release Llama 4 Maverick (17B active, 400B total parameters), the instruct model, which
+    has no reasoning mode; read 2026-11-15. Meta has released no newer Llama model and Behemoth is unreleased.
+    Artificial Analysis Intelligence Index v5.0.1 scores no Llama model (Maverick, Scout, Llama 3.1 Instruct
+    405B and Llama 3.3 Instruct 70B read Unknown). Artificial Analysis evaluations outside the index, non-reasoning
+    against non-reasoning: Maverick GPQA Diamond 67.1%, HLE 4.9%, IFBench 43.0%, LiveCodeBench 39.7%, tau2-bench
+    17.8% against Phi-4 (phi, 3) 57.5%, 3.8%, 23.5%, 23.1%, 0.0% and Gemma 4 31B (Non-reasoning) (gemma,
+    4) 76.3%, 11.8%, 53.5%, tau2-bench 65.5%. Epoch AI runs: Maverick GPQA Diamond 67.0%, OTIS Mock AIME
+    20.6%, MATH Level 5 73.0% against Phi-4 56.1%, 13.8%, 64.9%, GPT-4o (2024-11-20) (gpt-4o, 3) 47.9%,
+    6.3%, 49.8%, Gemma 4 31B at minimal reasoning 75.8%, 73.3% and Mistral Large 4 (high) (mistral-large,
+    4) 88.1%, 98.3%. LMArena text, style control, 2026-11-11: Maverick 1327, GPT-4o (2024-08-06) 1336, Phi-4
+    1256, Gemma 4 31B 1452, Mistral Large 4 1420; non-English prompts 1311 against Phi-4 1233, Gemma 4 31B
+    1438 and Mistral Large 4 1405. Across training stages only: Olmo 3.1 32B Think (olmo, 4) GPQA Diamond
+    59.1%, HLE 6.3%, IFBench 66.0%, LiveCodeBench 69.5%, LMArena 1286. Base checkpoints: Apertus-70B card
+    six-task average Llama 4 Scout 67.9 against Apertus-70B 67.5 and SmolLM3-3B 61.6; Olmo 3 32B base card
+    Llama 3.1 70B math 62.0, code 36.3, MC STEM 80.1 against Olmo 3 32B 61.6, 40.0, 74.5; Meta''s card puts
+    the Maverick base ahead of Scout on MMLU (85.5 vs 79.6), MMLU-Pro (62.9 vs 58.2) and MATH (61.2 vs 50.3).'
   confidence: medium
-  note: Llama 4 Maverick, the strongest released member of the family, scored 10 on version 4.3.2 of Artificial
-    Analysis's Intelligence Index, below the median of 12 for open-weight non-reasoning models of similar
-    size. Llama 4 Scout scored lower, and the larger Behemoth model was never released. Version 5 of the
-    index, introduced in October 2026, does not score either Llama 4 model, so the current capability assessment
-    is pending.
+  note: Llama 4 Maverick is the family's strongest released model; the larger Behemoth was never released,
+    and version 5 of Artificial Analysis's Intelligence Index does not score any Llama model. In Artificial
+    Analysis's and Epoch AI's own runs of science, math, coding and instruction-following tests, Maverick
+    is ahead of Phi-4 and GPT-4o and well behind Gemma 4 31B and Mistral Large 4. LMArena's human-preference
+    ratings agree, placing it close to GPT-4o, above Phi-4 and far below the other two.
+  last_verified: '2026-11-15'
   sources:
   - url: https://artificialanalysis.ai/models/llama-4-maverick
-    shows: 'Artificial Analysis page for Maverick on Intelligence Index v4.3.2: "Llama 4 Maverick scores
-      10 (estimated) on the Artificial Analysis Intelligence Index, placing it below average among other
-      open weight non-reasoning models of similar size (median: 12)", ranked 25th of 45 in the model summary.'
-    accessed: '2026-09-29'
+    shows: 'Model page under "Artificial Analysis Intelligence Index v5.0.1 incorporates 9 evaluations":
+      the model summary reads "Intelligence N/A Artificial Analysis Intelligence Index Unknown", and "Llama
+      4 Maverick supports text and image input, outputs text, and has a 1M tokens context window".'
+    accessed: '2026-11-15'
     http_status: 200
-    content_sha256: f04e805c7821a085b08822411af041328cdded1198a05c8bae5912890bf9031c
+    content_sha256: 1c587ea04f3c571d6f856664a00820d712c77df6b7bca9169bc575efd1938ea8
   - url: https://artificialanalysis.ai/models/llama-4-scout
-    shows: 'Artificial Analysis page for Scout, the family''s other released model: "Llama 4 Scout scores
-      8 (estimated) on the Artificial Analysis Intelligence Index", below Maverick''s 10, so Maverick remains
-      the family''s strongest reading.'
-    accessed: '2026-09-29'
+    shows: 'Model page for the family''s other Llama 4 release on index v5.0.1: "Intelligence N/A Artificial
+      Analysis Intelligence Index Unknown".'
+    accessed: '2026-11-15'
     http_status: 200
-    content_sha256: 1d32dc830fd24a903212e7ebbd4e09824ae24200ab8704f38c6baf7b35e544e2
+    content_sha256: 3008f112bf27f3870e539753b14c3c4fc19237858c29eba4159489d800f2eb0b
+  - url: https://artificialanalysis.ai/models/llama-3-1-instruct-405b
+    shows: 'Model page for Llama 3.1 Instruct 405B on index v5.0.1: "Intelligence N/A Artificial Analysis
+      Intelligence Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: f34f14873a32a0b9438abdb51d0f576b5d0d9bdf811c90cdbb1ef24a2de6bc0f
+  - url: https://artificialanalysis.ai/models/llama-3-3-instruct-70b
+    shows: 'Model page for Llama 3.3 Instruct 70B on index v5.0.1: "Intelligence N/A Artificial Analysis
+      Intelligence Index Unknown".'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 68f0edac92d9d7bfd5b1a06a8e57872ff5c9c4245529e616ab6b2c7bd81795f7
+  - url: https://artificialanalysis.ai/leaderboards/models
+    shows: 'Leaderboard model records, Artificial Analysis''s own runs outside the index. "Llama 4 Maverick"
+      ("isReasoning":false, "intelligenceIndex":null): gpqa-diamond 0.671, humanitys-last-exam 0.049, ifbench
+      0.430, livecodebench 0.397, tau2-bench 0.178. "Phi-4" (non-reasoning): 0.575, 0.038, 0.235, 0.231,
+      0. "Gemma 4 31B (Non-reasoning)": gpqa-diamond 0.763, humanitys-last-exam 0.118, ifbench 0.535, tau2-bench
+      0.655. "Olmo 3.1 32B Think" (reasoning): 0.591, 0.063, 0.660, livecodebench 0.695.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: dbc406b31190cf9c24458b4d0a84fa68f5e4817186e7b7c99b1f7cb7f51b437e
+  - url: https://epoch.ai/data/benchmark_data.zip
+    shows: 'Epoch AI benchmarking hub archive, Epoch''s own runs (Model version, Best score across scorers).
+      gpqa_diamond.csv: Llama-4-Maverick-17B-128E-Instruct-FP8 0.670, phi-4 0.561, gpt-4o-2024-11-20 0.479,
+      gemma-4-31b-it_minimal 0.758, mistral-large-4-0_high 0.881. otis_mock_aime_2024_2025.csv: 0.206, 0.138,
+      0.063, 0.733, 0.983. math_level_5.csv: Maverick 0.730, phi-4 0.649, gpt-4o-2024-11-20 0.498.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 1738bfe2fd38e40e317be9396ad25b9211372764127a6d792b3ed6fd2eafee45
+  - url: https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/4ca698d9bb5780db156459679d5c7e6dff4edbd3/text_style_control/latest-00000-of-00001.parquet
+    shows: 'Arena''s own leaderboard dataset (lmarena-ai/leaderboard-dataset at revision 4ca698d9), text_style_control
+      latest split, leaderboard_publish_date 2026-11-11, category overall, rating (lower-upper): "Llama
+      4 Maverick 17B 128E Instruct" 1327.0 (1322.8-1331.3), "GPT-4o (2024-08-06)" 1335.7, "Phi-4" 1256.4,
+      "Olmo 3.1 32B Think" 1286.1, "Gemma 4 31B" 1451.8, "Mistral Large 4" 1420.4; category non_english:
+      Maverick 1311.2, Phi-4 1233.2, Gemma 4 31B 1437.8, Mistral Large 4 1404.6.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 793403c62742af0da61f4e36392241c7df1e89436d85ac3aeaf679f318a8ea56
+  - url: https://huggingface.co/api/models?author=meta-llama&sort=createdAt&direction=-1&limit=20
+    shows: 'Hub listing of the meta-llama organization, newest first: the most recent language models are
+      "meta-llama/Llama-4-Maverick-17B-128E-Original" and its instruct variants, created April 2025, followed
+      only by Llama Guard 4 and Prompt Guard 2; no later Llama model is listed.'
+    accessed: '2026-11-15'
+    http_status: 200
+    content_sha256: 413198013e6712672a7c2be6723c5e8f85fe8e2a34ea6199d679969851b6a10a
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509/raw/main/README.md
     shows: 'Pretraining evaluation table, "Performance (%) of Apertus models on *general language understanding*
       tasks (higher is better) compared to other pretrained models", one six-task average (ARC, HellaSwag,
       WinoGrande, XNLI, XCOPA, PIQA): "| Llama4-Scout-16x17B | 67.9 |", "| Llama3.1-70B | 67.3 |", "| **Apertus-70B**
       | 67.5 |", "| OLMo2-32B | 67.7 |", "| Qwen3-32B | 67.8 |", "| Qwen2.5-72B | 69.8 |", "| SmolLM3-3B
       | 61.6 |", "| EuroLLM-9B | 62.8 |". Llama 4 Maverick is not in the table.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-15'
     http_status: 200
     content_sha256: a4fd59afccb1aa534dbc01145314085926ac8c1e5d102d8564cbd4933d7de2ee
   - url: https://huggingface.co/allenai/Olmo-3-1125-32B/raw/main/README.md
@@ -195,7 +274,7 @@ capability:
       3-Eval Math, Code, MC_STEM, MC_Non-STEM and GenQA: Llama-3.1-70B 62.0, 36.3, 80.1, 86.1, 81.6; Olmo
       3-32B 61.6, 40.0, 74.5, 85.6, 79.8; Marin-32B 49.3, 30.8, 75.9, 84.5, 80.3; Apertus-70B 39.7, 23.3,
       70.0, 78.5, 75.0. No Llama 4 model is in the table.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-15'
     http_status: 200
     content_sha256: 8f227fd377065f4f93b50f9e14606224a021517f2315bcd537a22bb56ba8680f
   - url: https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E
@@ -203,6 +282,6 @@ capability:
       MMLU 5-shot Llama 3.1 70B 79.3, Llama 3.1 405B 85.2, Llama 4 Scout 79.6, Llama 4 Maverick 85.5; MMLU-Pro
       53.8, 61.6, 58.2, 62.9; MATH 41.6, 53.5, 50.3, 61.2; MBPP 66.4, 74.4, 67.8, 77.6. No other vendor''s
       model is in the table.'
-    accessed: '2026-11-12'
+    accessed: '2026-11-15'
     http_status: 200
-    content_sha256: 3eb85dab4aeb392c25469f5153d301f676d32d7c8b6f44073a0a97d6ac817ef2
+    content_sha256: 1e199f8fc05fd181066f85ffff3bad4f8cf32bed8ca7e2f8ad53c6537c623e76
