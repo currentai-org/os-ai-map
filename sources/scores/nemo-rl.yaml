@@ -94,22 +94,25 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: 'Methods: GRPO, GSPO, DAPO, GDPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation, reward modeling;
-    backends DTensor (TP/SP/PP/CP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP);
-    SGLang backend, speculative decoding, long-context training.'
+  value: 'Methods: GRPO, GSPO, DAPO, GDPO, PPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation (MOPD),
+    X-Token off-policy distillation, reward modeling; backends Automodel (PyTorch-native TP/SP/CP/EP/FSDP2)
+    and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP); SGLang rollout support, a Megatron-native
+    inference backend, speculative decoding, Yarn long-context training.'
   confidence: high
-  note: NeMo-RL covers GRPO, GSPO, DAPO, PPO, DPO, SFT, on-policy distillation and reward modeling, and
-    trains through PyTorch FSDP2 or Megatron Core with tensor, pipeline, context, sequence and expert parallelism.
-    Its Megatron Core backend gives it the same large-scale parallelism as Megatron-LM, along with SGLang
-    rollout and speculative decoding for faster generation.
+  note: NeMo-RL covers GRPO, GSPO, DAPO, GDPO, PPO, DPO, SFT with LoRA, on-policy and off-policy distillation
+    and reward modeling. It trains through Automodel, with PyTorch-native tensor, sequence, context and
+    expert parallelism and FSDP2, or through Megatron Core with tensor, pipeline, context, sequence and
+    expert parallelism, and it offers SGLang rollout and speculative decoding for faster generation.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/NVIDIA-NeMo/RL/main/README.md
     shows: The README Features list includes "GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and On-policy distillation.",
-      "PyTorch FSDP2, TP, CP, and SP for efficient training", "Performant parallelisms with Megatron Core
-      (TP/PP/CP/SP/EP/FSDP)", "SGLang rollout support for optimized inference.", "Speculative Decoding support
-      for rollout acceleration and training", a "GDPO Support" news entry and an RM (reward modeling) section
-      in its Table of Contents. The README also newly names PPO, MOPD and X-Token off-policy distillation,
-      which the recorded value omits.
-    accessed: '2026-09-28'
+      "GDPO, LoRA support for RL(GRPO) and DPO", "X-Token Off-Policy Distillation", "Performant parallelisms
+      with Megatron Core (TP/PP/CP/SP/EP/FSDP)", "SGLang rollout support for optimized inference." and "Speculative
+      Decoding support for rollout acceleration and training". The backends section names Automodel with
+      "PyTorch-native TP, SP, CP, EP, and FSDP2" and a "Megatron-native inference backend"; the v0.7.0 news
+      line adds "PPO, MOPD", the v0.6.0 line "Yarn long-context training", and an RM section opens "We provide
+      a sample RM experiment".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 10d7760e13480e5701113529aab38b5d7c3e03faccd0243872016acf8f7660d0
+    content_sha256: e4e35af00013118946a5cb792258253a58e38df1f6b28c57a6662417ee07308e
