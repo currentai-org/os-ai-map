@@ -24579,14 +24579,14 @@
             ]
           },
           "capability": {
-            "score": 4,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Adaptation pathway, Landsat-Sentinel input, and demonstrated multi-resolution transfer; no scientific-output generation.",
+            "value": "Adaptation pathway and Landsat-Sentinel input at 30 m; the 0.1 m to 15 m benchmark span was reached by fine-tuning a model pretrained only on 30 m data; no scientific-output generation.",
             "relative_to": "terramind",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Prithvi-EO ships TerraTorch fine-tuning configurations and notebooks, takes Harmonized Landsat and Sentinel data at 30 m, and was benchmarked on tasks spanning 0.1 m to 15 m resolution. Its documented output is reconstruction of masked inputs rather than a scientific product, which keeps it a step below TerraMind, with its multimodal inputs and any-to-any generation.",
+            "note": "Prithvi-EO ships TerraTorch fine-tuning configurations and notebooks and takes Harmonized Landsat and Sentinel data at 30 m. Its results on tasks from 0.1 m to 15 m come from fine-tuning a model pretrained only on 30-meter data, which shows adaptation rather than one model taking several resolutions. Its documented output is reconstruction of masked inputs rather than a scientific product, which keeps it a step below TerraMind, with its any-to-any generation.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -24602,13 +24602,20 @@
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "12f9ab36f5be76a6c88abd0bdc091c93daa1eaf0d020ad043baa59273c6a8f01"
+              },
+              {
+                "url": "https://arxiv.org/html/2412.02732",
+                "shows": "The paper says \"Prithvi-EO-2.0 showed good performance on high-resolution tasks, despite being pretrained only with 30 m data\"; for the GEO-Bench comparison \"We added the GEO-Bench datasets to TerraTorch and used its companion library TerraTorch-iterate\" for hyperparameter tuning, and \"We highlight that all fine-tuning experiments conducted in this work require a single GPU.\"",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "382607a8cabd9d726d9224deee2536fe9cbb30bcbf27cde640d45f740414b019"
               }
             ]
           },
-          "overall_score": 3.1,
+          "overall_score": 2.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 3.1,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
@@ -24707,12 +24714,12 @@
             ]
           },
           "capability": {
-            "score": 5,
+            "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Fine-tunable; six input modalities; any-to-any generation; simultaneous pixel- and token-scale processing.",
+            "value": "Fine-tunable; six input modalities; any-to-any generation; pixel- and token-level processing of inputs that are all co-registered on one 10 m grid.",
             "confidence": "high",
-            "note": "TerraMind's model card documents configuration-driven fine-tuning through TerraTorch, six raw input modalities, any-to-any generation, and a dual-scale encoder-decoder that processes pixel- and token-level data together. The release comes in four sizes (tiny, small, base and large) with configuration and notebook examples for fine-tuning and generation.",
+            "note": "TerraMind's model card documents configuration-driven fine-tuning through TerraTorch, six raw input modalities and any-to-any generation. Its dual-scale encoder-decoder processes pixel- and token-level data together, but those are two internal views of inputs that are all co-registered on one 10-meter grid, and the paper names multi-resolution input as future work, so it is not counted as working across scales.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -24728,13 +24735,20 @@
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "089aae5d14f5f69997eab2673d12646511767f98225f7b53479790d9687d3a68"
+              },
+              {
+                "url": "https://arxiv.org/html/2504.11171",
+                "shows": "The paper says \"Each modality is precisely co-registered at a 10-meter resolution, primarily based on Sentinel-2 grids\", that \"DEM is extracted from the Copernicus DEM 30m dataset\", and that \"we expect that TerraMind-like models will expand to multi-temporal, multi-resolution, and hyperspectral data\". The 1 m NAIP result is a transfer test (\"In those experiments, there are no weight updates of any kind\") in which the model \"generalizes to high-resolution NAIP data with one order of magnitude higher resolution than the pre-training data\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "7babd2fe59f4165638819d32333adef042560a5dcf59762f5711d902c54a0ba0"
               }
             ]
           },
-          "overall_score": 3.8,
+          "overall_score": 3.1,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 3.8,
+          "maturity": 3.1,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
@@ -24846,10 +24860,10 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Configurable training path; one model accepting several satellite sensors (Sentinel-2, Landsat, Sentinel-1 radar, NAIP, LINZ and MODIS) with ground resolution from under 0.5 m to 500 m; no documented scientific generation.",
-            "relative_to": "prithvi-eo",
+            "relative_to": "terramind",
             "relation": "at",
             "confidence": "high",
-            "note": "Clay documents a configurable training path and takes inputs from several satellite sensors whose ground resolution runs from under half a meter to 500 meters, with position encoding scaled to each input's resolution. Fine-tuning for generative tasks appears only as a possible downstream use, and no generated scientific output is documented, so generation is not counted. It sits level with Prithvi-EO.",
+            "note": "Clay documents a configurable training path and takes inputs from several satellite sensors whose ground resolution runs from under half a meter to 500 meters, with position encoding scaled to each input's resolution. Fine-tuning for generative tasks appears only as a possible downstream use, and no generated scientific output is documented, so generation is not counted. It sits level with TerraMind.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -24997,8 +25011,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "An executable fine-tuning pathway and a medium/high-resolution span; a deterministic forecast target, and inputs that vary by dataset rather than one documented multi-instrument interface.",
-            "relative_to": "terramind",
-            "relation": "two_below",
+            "relative_to": "weathernext",
+            "relation": "one_below",
             "confidence": "high",
             "note": "Aurora ships an executable fine-tuning pathway: docs/finetuning.md provides a Docker image and a fine-tuning loop built on AuroraPretrained. It is not counted as generative, because it predicts a deterministic future state rather than generating one.",
             "sources": [
@@ -25034,7 +25048,7 @@
               {
                 "axis": "capability",
                 "since": "2026-11-16",
-                "reason": "This pass did not re-fetch Aurora's own capability sources (its fine-tuning guide and README), so the axis cannot be dated. terramind, the comparison peer, was re-confirmed on 2026-11-16 in the same pass, so the two_below terramind comparison is not what blocks it. Re-fetching Aurora's capability sources and confirming the recorded value (fine-tuning pathway, resolution span, deterministic target) settles it. No change to the value or the comparison is proposed."
+                "reason": "This pass did not re-fetch Aurora's own capability sources (its fine-tuning guide and README), so the axis cannot be dated. weathernext, the comparison peer since R-2026-11-16-b, was re-confirmed on 2026-11-16 in the same pass, so the one_below weathernext comparison is not what blocks it. Re-fetching Aurora's capability sources and confirming the recorded value (fine-tuning pathway, resolution span, deterministic target) settles it. No change to the value is proposed."
               }
             ]
           }
@@ -25139,14 +25153,14 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Task-specific adaptation and a variable regional/global and temporal scale; a deterministic future-state target, and one MERRA-2 input system.",
-            "relative_to": "terramind",
+            "value": "Task-specific downstream adaptation; global and regional runs and a flexible lead time on one MERRA-2 grid, which are extent rather than a second resolution; a deterministic future-state target, and one MERRA-2 input system.",
+            "relative_to": "weathernext",
             "relation": "two_below",
             "confidence": "high",
-            "note": "Prithvi WxC documents two readable capabilities: task-specific downstream adaptation and a variable regional-to-global, flexible-lead-time forecasting scale. Producing a future timestamp from two input timestamps is a deterministic forecast rather than a generated output, and the 160 MERRA-2 variables it ingests count as one input system, not several.",
+            "note": "Prithvi WxC documents task-specific downstream adaptation. Its global and regional runs and flexible lead time change how much area it covers and how far ahead it forecasts on one MERRA-2 grid rather than the resolution it works at, and its downscaling model is a separately released fine-tune. Producing a future timestamp from two input timestamps is a deterministic forecast rather than a generated output, and the 160 MERRA-2 variables it ingests count as one input system.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -25155,13 +25169,20 @@
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713"
+              },
+              {
+                "url": "https://huggingface.co/ibm-nasa-geospatial/Prithvi-WxC-1.0-2300M/raw/main/README.md",
+                "shows": "The card says \"The time delta between input timestamps is variable as is the forecast lead time\" and that in pretraining \"the forecast lead time was chosen from [0, 6, 12, 24] hours\"; it adds that Prithvi WxC \"has been fine-tuned for several tasks including climate downscaling\", released as part of the IBM Granite family.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "9eb1978782a865079baa619a4645e681585a808477411088dec8695c274ae459"
               }
             ]
           },
-          "overall_score": 2.4,
+          "overall_score": 1.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.4,
+          "maturity": 1.7,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
@@ -25273,8 +25294,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "LoRA adaptation and joint AIA-HMI multi-instrument input; local and global attention at a single native resolution, and a deterministic forecasting objective.",
-            "relative_to": "terramind",
-            "relation": "two_below",
+            "relative_to": "nasa-ibm-lunar-foundation-model",
+            "relation": "one_below",
             "confidence": "high",
             "note": "Surya documents LoRA adaptation and joint input from the Solar Dynamics Observatory's AIA and HMI sensors. Its local and global attention works at one native sampling resolution, so it is not counted as operating across scales, and its pretraining objective is forecasting a deterministic future state rather than generating a scientific output.",
             "last_verified": "2026-11-16",
@@ -25410,10 +25431,10 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Explicit fine-tuning pathway; the release does not document multi-instrument input, scientific generation, or multi-scale operation.",
-            "relative_to": "prithvi-eo",
-            "relation": "two_below",
+            "relative_to": "esm-3",
+            "relation": "one_below",
             "confidence": "high",
-            "note": "ESM-2 documents one readable capability, an explicit fine-tuning pathway, two fewer than Prithvi-EO documents. Its broad downstream applicability across protein tasks does not convert into additional documented features.",
+            "note": "ESM-2 documents one capability, an explicit fine-tuning pathway, a step below ESM3, which takes sequence, structure and function tracks and generates new proteins. Its broad downstream applicability across protein tasks does not convert into additional documented features.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -25540,8 +25561,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "A training and fine-tuning path and genuine DNA generation; one sequence modality, and a context window that varies in extent at a fixed single-nucleotide granularity.",
-            "relative_to": "terramind",
-            "relation": "two_below",
+            "relative_to": "alphagenome",
+            "relation": "at",
             "confidence": "high",
             "note": "Evo 2 documents two readable capabilities: an explicit training and fine-tuning pathway, and genuine DNA sequence generation rather than only prediction. Its context window scales from 8K to one million bases, but that is a longer window at the same single-nucleotide granularity throughout, not a second scale, and the range of model sizes offered does not count as an added capability either.",
             "last_verified": "2026-11-16",
@@ -25690,8 +25711,6 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Inputs: DNA sequence plus expression conditioning from the user's own single-cell RNA-seq data (up to 256 cells). Outputs at several sampling resolutions: RNA-seq and accessibility tracks at 1 bp, histone and transcription-factor ChIP-seq at 128 bp, and chromatin contact maps at 2,048 bp. Conditioning updates no weights; no fine-tuning or generative pathway is documented.",
-            "relative_to": "prithvi-eo",
-            "relation": "one_below",
             "confidence": "high",
             "note": "AlphaGenome 2 takes a DNA sequence together with expression conditioning from the user's own single-cell RNA-seq data, so it accepts more than one kind of measurement. Its outputs come at different sampling resolutions: single-base RNA-seq tracks, ChIP-seq signal in 128-base bins and chromatin contact maps in 2-kilobase bins. Conditioning shapes predictions without updating weights, so it is not a fine-tuning pathway, and no generative pathway is documented.",
             "last_verified": "2026-11-16",
@@ -25835,10 +25854,10 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Fine-tuning on arbitrary property data and unconditional or property-conditioned crystal generation; one structure modality and scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "one_below",
+            "relative_to": "uma",
+            "relation": "at",
             "confidence": "high",
-            "note": "MatterGen documents two readable capabilities, fine-tuning on arbitrary property data and unconditional or property-conditioned crystal generation, one fewer than Prithvi-EO documents. Its unusually complete open pipeline is a fact about openness, not capability.",
+            "note": "MatterGen documents two capabilities, fine-tuning on arbitrary property data and unconditional or property-conditioned crystal generation, level with UMA. Its unusually complete open pipeline is a fact about openness, not capability.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -25977,10 +25996,10 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Fine-tunable through TerraTorch with a documented few-shot workflow; one optical input product, a single regression output, and one spatial scale.",
-            "relative_to": "prithvi-eo",
+            "relative_to": "clay",
             "relation": "two_below",
             "confidence": "medium",
-            "note": "Granite Geospatial documents one capability: a TerraTorch fine-tuning workflow, demonstrated in zero- and few-shot notebooks. Its only input is HLS L30, the Landsat-only half of the Harmonized Landsat/Sentinel-2 product; GEDI lidar is a training label rather than a model input, the pretraining objective is masked reconstruction rather than generation, and the release covers one spatial scale.",
+            "note": "Granite Geospatial documents one capability: its getting-started notebook fine-tunes the released checkpoint with TerraTorch for a single biome, beside two zero-shot experiments that only run inference. Its only input is HLS L30, the Landsat-only half of the Harmonized Landsat/Sentinel-2 product; GEDI lidar is a training label rather than a model input, the pretraining objective is masked reconstruction rather than generation, and the release covers one spatial scale.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -25989,6 +26008,13 @@
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ibm-granite/granite-geospatial-biomass/main/notebooks/agb_getting_started.ipynb",
+                "shows": "The notebook's \"Few-shot for a single biome (Taiga)\" section downloads \"the full lightning checkpoint to finetune on\" and runs \"terratorch fit --config {finetune_config_path} --ckpt_path {full_lightning_ckpt_path}\"; the \"Zero-shot for all biomes\" and \"Zero-shot for a single biome (Taiga)\" sections run inference only.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "2f7073e0b5992da7c3c470dd64d8e0d34e632a4decb95980c3f5dc802900e04d"
               }
             ]
           },
@@ -26157,11 +26183,11 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Released linear-probing and segmentation fine-tuning workflows; one checkpoint accepts five satellite sensor modalities with any channel count.",
-            "relative_to": "prithvi-eo",
+            "value": "Released linear-probing and segmentation fine-tuning workflows; one checkpoint accepts five satellite sensor modalities with any channel count; images are resized to one size and only wavelength conditions the model.",
+            "relative_to": "clay",
             "relation": "one_below",
             "confidence": "high",
-            "note": "DOFA earns two capabilities directly: an adaptation pathway through linear-probing and segmentation fine-tuning, and a single checkpoint that accepts five different satellite sensors. Masked autoencoding, its pretraining objective, is not counted as generation, and that same sensor diversity is not counted a second time as multiple scales.",
+            "note": "DOFA documents an adaptation pathway through linear-probing and segmentation fine-tuning, and one checkpoint that accepts five different satellite sensors. Those sensors have different native resolutions, but every image is resized to one size and only wavelength conditions the model, so it does not take each input at its own resolution the way Clay does, which keeps it a step below Clay. Masked autoencoding, its pretraining objective, is not counted as generation.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -26177,6 +26203,13 @@
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "72db1a0a76ecc48a222d4e496685abf1f1a4321a1ef7f80fd86989f0e4e48d31"
+              },
+              {
+                "url": "https://arxiv.org/html/2403.15356",
+                "shows": "The paper says \"DOFA is pretrained on a large-scale multimodal EO dataset comprising approximately 11.5 million images from five different modalities: Sentinel-1, Sentinel-2, NAIP, Gaofen, and EnMAP\", conditions its patch embedding on wavelength (section \"Wavelength-conditioned dynamic patch embedding\"), and states that \"All images are resized to\" 224 by 224 pixels \"and normalized using modality-specific statistics\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "857467b047bf2fd2b00e9bef6c845a8df9a03512730ecc96a280d78b6c7cc2b4"
               }
             ]
           },
@@ -26326,7 +26359,7 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "A construct_finetuning_model call and a downstream-task notebook for adaptation; one model ingests Sentinel-1, Sentinel-2, ERA5, SRTM, and Dynamic World inputs together.",
-            "relative_to": "prithvi-eo",
+            "relative_to": "clay",
             "relation": "one_below",
             "confidence": "high",
             "note": "Presto documents fine-tuning through a construct_finetuning_model call and a downstream-task notebook, and one model ingests Sentinel-1, Sentinel-2, ERA5, SRTM and Dynamic World inputs together. Its encoder-decoder reconstructs masked inputs rather than generating outputs, and a variable number of monthly timesteps is one temporal scale rather than several.",
@@ -26474,7 +26507,7 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "One model assimilates Landsat, Sentinel-1, and Sentinel-2 measurements into a shared embedding field; no published adaptation pathway, no generated scientific output, and one 10-meter annual scale.",
-            "relative_to": "prithvi-eo",
+            "relative_to": "clay",
             "relation": "two_below",
             "confidence": "high",
             "note": "AlphaEarth Foundations combines Landsat, Sentinel-1 and Sentinel-2 measurements into one embedding. The embeddings are applied without retraining rather than adapted, an embedding is not a generated output, and the release fixes a single 10-meter annual grid rather than multiple scales.",
@@ -26603,10 +26636,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Documented gradient step for adaptation, probabilistic forecast generation, and 0.25-degree and 1-degree checkpoints; inputs are one reanalysis and analysis system.",
-            "relative_to": "terramind",
-            "relation": "one_below",
             "confidence": "high",
-            "note": "WeatherNext documents three readable capabilities, one fewer than TerraMind documents. Its list of model versions does not count as added breadth, and ERA5 with HRES initial conditions counts as one data system rather than several.",
+            "note": "WeatherNext documents three capabilities: a gradient step for adaptation, probabilistic forecast generation, and checkpoints at 0.25 and 1 degree. Its list of model versions does not count as added breadth, and ERA5 with HRES initial conditions counts as one data system rather than several.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -26744,8 +26775,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Per-task fine-tuning configs, and checkpoints at two grid resolutions spanning forecasting and climate projection; deterministic targets and one variable interface.",
-            "relative_to": "terramind",
-            "relation": "two_below",
+            "relative_to": "weathernext",
+            "relation": "one_below",
             "confidence": "high",
             "note": "ClimaX earns two capabilities: per-task fine-tuning configs, and checkpoints at two grid resolutions. It is not credited for combining multiple data sources, because its five CMIP6 datasets are simulation archives from one data system, and ERA5 only enters at fine-tuning, not pretraining.",
             "last_verified": "2026-11-16",
@@ -26901,8 +26932,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Stochastic atmospheric simulation, and checkpoints at three horizontal resolutions for both forecasts and long integrations; no supported adaptation path and one ERA5 input system.",
-            "relative_to": "terramind",
-            "relation": "two_below",
+            "relative_to": "weathernext",
+            "relation": "one_below",
             "confidence": "high",
             "note": "NeuralGCM ships checkpoints at three horizontal resolutions for both forecasts and long integrations, plus a stochastic model for simulation, all on ERA5 inputs. Its documentation says the team would like to support training, modifying and fine-tuning but that the current codebase makes this harder than it should be, and training is shipped only as pseudo-code. The checkpoint-modification recipe changes model outputs rather than learned parameters, so it is not an adaptation pathway.",
             "last_verified": "2026-11-16",
@@ -27172,27 +27203,27 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 1,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Four checkpoints spanning 1-, 3-, 6- and 24-hour lead times that chain into longer forecasts; deterministic outputs, one input system, and no released adaptation path.",
+            "value": "Four checkpoints at 1-, 3-, 6- and 24-hour lead times on one 0.25-degree grid that chain into longer forecasts; deterministic outputs, one input system, and no released adaptation path.",
             "confidence": "high",
-            "note": "Pangu-Weather's four checkpoints, with lead times of 1, 3, 6 and 24 hours, chain into longer forecasts. The repository offers pseudocode rather than an adaptation pathway, ERA5 and ECMWF HRES initial fields are one data system, and a deterministic forecast is a fixed target rather than a generated output.",
+            "note": "Pangu-Weather's four checkpoints, with lead times of 1, 3, 6 and 24 hours, chain into longer forecasts, but all four take and return the same 0.25-degree grid, so they differ in how far ahead they reach rather than in resolution. The repository offers pseudocode rather than an adaptation pathway, ERA5 and ECMWF HRES initial fields are one data system, and a deterministic forecast is a fixed target rather than a generated output.",
             "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md",
-                "shows": "Offers four models, \"The 1-hour model\", \"The 3-hour model\", \"The 6-hour model\" and \"The 24-hour model\"; inference_iterative.py \"shows an example to generate per-6-hour forecast within a week\"; supports \"ERA5 initial fields and ECMWF initial fields\" only; and offers \"the pseudocode that elaborates our main algorithm\" rather than training code. No deterministic-vs-probabilistic statement exists: grep for determin|ensemble|probab|stochastic finds nothing, so only point forecasts are documented.",
+                "shows": "Offers four models, \"The 1-hour model\", \"The 3-hour model\", \"The 6-hour model\" and \"The 24-hour model\"; inference_iterative.py \"shows an example to generate per-6-hour forecast within a week\"; supports \"ERA5 initial fields and ECMWF initial fields\" only; and offers \"the pseudocode that elaborates our main algorithm\" rather than training code. No deterministic-vs-probabilistic statement exists: grep for determin|ensemble|probab|stochastic finds nothing, so only point forecasts are documented. The documented input surface field is \"a numpy array shaped (4,721,1440)\" on a latitude-longitude grid where \"the spacing is 0.25 degrees\".",
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1"
               }
             ]
           },
-          "overall_score": 2.0,
+          "overall_score": 1.3,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.0,
+          "maturity": 1.3,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
@@ -27323,7 +27354,7 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Documented TerraTorch fine-tuning pathway, 11 input modalities drawn from several lunar instruments, and one set of weights covering a 100x resolution gap; generation is offered only as a qualitative probe.",
-            "relative_to": "prithvi-eo",
+            "relative_to": "clay",
             "relation": "at",
             "confidence": "high",
             "note": "The model card documents LoRA or full fine-tuning through TerraTorch with runnable configs, 11 input modalities drawn from several lunar sensors, and one set of weights covering a 100x resolution gap. It does not offer scientific-grade generation: the card calls any-to-any generation a qualitative probe and says the model is not a scientific-grade generative product.",
@@ -27482,8 +27513,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Sequence, structure and function as three input and output tracks, and generation of new proteins from a partial prompt; no documented fine-tuning pathway. The 98B, 7B and 1.4B model sizes, two of them hosted-only, are sizes of one model rather than a second scientific scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "one_below",
+            "relative_to": "openfold",
+            "relation": "at",
             "confidence": "high",
             "note": "ESM3 takes sequence, structure and function as joint input and output tracks and generates new proteins from a partial prompt. The repository's fine-tuning guidance covers ESMC rather than ESM3, so adaptation is not counted. The three sizes, two of them reachable only through the hosted platform, are sizes of one model rather than different scientific scales.",
             "last_verified": "2026-11-16",
@@ -27644,8 +27675,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Sequence together with genetic-search and template inputs; no adaptation pathway, no design surface, and one scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "two_below",
+            "relative_to": "openfold",
+            "relation": "one_below",
             "confidence": "high",
             "note": "AlphaFold 3 takes sequence with genetic-search and template inputs, and the repository ships inference only, with no training or fine-tuning entry point and no design surface. The breadth of entity types it handles, proteins, nucleic acids, ligands, ions and modified residues, widens a single prediction task rather than adding an adaptation pathway.",
             "last_verified": "2026-11-16",
@@ -27812,8 +27843,6 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "A published training and fine-tuning pathway, and sequence with MSA and template inputs; the model predicts structure rather than designing it, at one scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "one_below",
             "confidence": "high",
             "note": "OpenFold documents a full training and fine-tuning pathway: the README opens by calling it a trainable reproduction, and the docs carry a training guide rather than a fine-tuning notebook added to an inference release. It takes sequence with MSA and template inputs and predicts structure rather than designing it, at one scale.",
             "last_verified": "2026-11-16",
@@ -27975,8 +28004,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "A published retraining pathway, and sequence with MSA inputs and ligand specifications; structure and affinity are both predictions of fixed targets at one scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "one_below",
+            "relative_to": "openfold",
+            "relation": "at",
             "confidence": "high",
             "note": "Boltz publishes a retraining pathway with dataset download instructions and template configuration files, and takes sequence with MSA inputs and ligand specifications. Boltz-2 adds binding affinity to structure prediction, but both outputs are predictions of fixed targets at one scale, so the affinity head widens the outputs without adding a design surface.",
             "last_verified": "2026-11-16",
@@ -28123,8 +28152,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "Sequence with optional MSAs, templates, embeddings and experimental restraints as inputs; no adaptation pathway, no design surface, one scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "two_below",
+            "relative_to": "boltz",
+            "relation": "one_below",
             "confidence": "high",
             "note": "Chai-1 takes sequence with optional MSAs, templates, embeddings and experimental restraints; the restraints widen what can be fed in rather than what the model can be adapted to do. The CLI emits five sample predictions of a complex, which are samples of a prediction rather than generated designs, and no training or fine-tuning entry point is documented.",
             "last_verified": "2026-11-16",
@@ -28255,8 +28284,8 @@
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
             "value": "De novo generation of protein backbones, conditioned on motifs, hotspot residues, symmetry or an existing structure; no adaptation pathway, one input data system, one scale.",
-            "relative_to": "prithvi-eo",
-            "relation": "two_below",
+            "relative_to": "esm-3",
+            "relation": "one_below",
             "confidence": "high",
             "note": "RFdiffusion documents one readable capability that most of this category lacks: it designs new protein backbones rather than predicting a structure for an existing sequence. Its conditioning inputs, motifs, hotspot residues, symmetry, an existing structure, are varied but all derive from the same PDB structure format, so they count as one input system rather than several.",
             "last_verified": "2026-11-16",
@@ -28381,12 +28410,12 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 2,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Documented pretraining and fine-tuning path, and in silico perturbation and reprogramming of cell state; one transcriptomic modality and one scale.",
+            "value": "Documented pretraining and fine-tuning path; in silico perturbation and reprogramming output shifts in cell or gene embeddings, a prediction rather than a generated output; one transcriptomic modality and one scale.",
             "confidence": "high",
-            "note": "Geneformer documents a pretraining and fine-tuning path, and in silico perturbation and reprogramming of cell state. Its long list of downstream fine-tuning tasks is one capability rather than several, the three parameter sizes are sizes rather than scales, and gene-level and cell-level outputs are one modality rather than two.",
+            "note": "Geneformer documents a pretraining and fine-tuning path. Its in silico perturbation tool reports how deleting or overexpressing genes shifts cell or gene embeddings, a deterministic prediction rather than a generated cell state, expression profile or distribution. Its long list of downstream tasks is one capability rather than several, the three parameter sizes are sizes rather than scales, and gene-level and cell-level outputs are one modality.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -28395,13 +28424,20 @@
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8"
+              },
+              {
+                "url": "https://geneformer.readthedocs.io/en/latest/geneformer.in_silico_perturber.html",
+                "shows": "The InSilicoPerturber API \"Performs in silico perturbation (e.g. deletion or overexpression) of defined set of genes or all genes in sample of cells\" and \"Outputs impact of perturbation on cell or gene embeddings.\"",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "71264b6c0789a0c98753688628696421adbf374b86aa63879e3a7a16224bf8a3"
               }
             ]
           },
-          "overall_score": 2.4,
+          "overall_score": 1.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.4,
+          "maturity": 1.7,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
@@ -28510,12 +28546,12 @@
             ]
           },
           "capability": {
-            "score": 4,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles; one cellular scale.",
+            "value": "Fine-tuning scripts and tutorials, and multi-omic input; perturbation output is a predicted post-perturbation expression profile rather than a generated one, and cell generation is still listed as to-do; one cellular scale.",
             "confidence": "medium",
-            "note": "scGPT ships fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles. Tutorial_Multiomics.ipynb and Tutorial_Perturbation.ipynb both ship in the repository, even though the project's own to-do list still marks multi-omic support unfinished. Gene and cell representations are one scale, and the organ-specific checkpoints are separate models rather than a second scale.",
+            "note": "scGPT ships fine-tuning scripts and tutorials and takes multi-omic input; Tutorial_Multiomics.ipynb ships even though the to-do list still marks multi-omic support unfinished. Its perturbation tutorial predicts the expression values that follow a given perturbation, a deterministic prediction rather than a generated cell or distribution, and cell generation is still on that to-do list. Gene and cell representations are one scale, and the organ-specific checkpoints are separate models.",
             "last_verified": "2026-11-16",
             "sources": [
               {
@@ -28541,17 +28577,17 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Perturbation.ipynb",
-                "shows": "The shipped notebook is titled \"Fine-tuning Pre-trained Model for Perturbation Prediction\" and calls model.pred_perturb to produce predicted expression.",
+                "shows": "The shipped notebook is titled \"Fine-tuning Pre-trained Model for Perturbation Prediction\"; its predict function is documented as \"Predict the gene expression values for the given perturbations.\" and calls model.pred_perturb to produce predicted expression.",
                 "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "a997191d88e4c05969103e777f1323ebf4263238e64520877ae3a0f6aed4bdbb"
               }
             ]
           },
-          "overall_score": 3.4,
+          "overall_score": 2.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 3.4,
+          "maturity": 2.7,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
