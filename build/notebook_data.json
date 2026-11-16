@@ -24586,15 +24586,22 @@
             "relative_to": "terramind",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Three of the four capability attributes are established, one below TerraMind; masked pretraining reconstruction does not by itself count as a scientifically meaningful generative output.",
-            "last_verified": "2026-09-10",
+            "note": "Prithvi-EO ships TerraTorch fine-tuning configurations and notebooks, takes Harmonized Landsat and Sentinel data at 30 m, and was benchmarked on tasks spanning 0.1 m to 15 m resolution. Its documented output is reconstruction of masked inputs rather than a scientific product, which keeps it a step below TerraMind, with its multimodal inputs and any-to-any generation.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-EO-2.0/main/README.md",
-                "shows": "Documents HLS satellite time series, TerraTorch configurations and notebooks for downstream tasks, and evaluation from 0.1 m to 15 m resolution.",
-                "accessed": "2026-09-10",
+                "shows": "Documents TerraTorch fine-tuning with \"sample TerraTorch configuration files\" and \"sample notebooks for fine-tuning\", \"NASA’s Harmonized Landsat and Sentinel data at 30m resolution\", and benchmarking on tasks \"from 0.1m to 15m\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "f13bf62e35eac8890f88d3d5b42f96738f3d7cac9b2319207e6757b4fb07d616"
+              },
+              {
+                "url": "https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-600M/raw/main/README.md",
+                "shows": "The card describes an inference script for \"image reconstruction\" on HLS images and fine-tuning with TerraTorch; reconstruction is the only output documented.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "12f9ab36f5be76a6c88abd0bdc091c93daa1eaf0d020ad043baa59273c6a8f01"
               }
             ]
           },
@@ -24604,9 +24611,9 @@
           "maturity": 3.1,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -24705,20 +24712,20 @@
             "basis_detail": "scientific adaptation surface",
             "value": "Fine-tunable; six input modalities; any-to-any generation; simultaneous pixel- and token-scale processing.",
             "confidence": "high",
-            "note": "TerraMind sits at the top of the category's capability scale because one primary model card directly documents all four attributes the capability score tracks, rather than relying on a long list of downstream tasks to imply them.",
-            "last_verified": "2026-09-10",
+            "note": "TerraMind's model card documents configuration-driven fine-tuning through TerraTorch, six raw input modalities, any-to-any generation, and a dual-scale encoder-decoder that processes pixel- and token-level data together. The release comes in four sizes (tiny, small, base and large) with configuration and notebook examples for fine-tuning and generation.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md",
-                "shows": "Documents config-driven fine-tuning, six raw modalities, any-to-any generation, and a dual-scale encoder-decoder operating at pixel and token levels.",
-                "accessed": "2026-09-10",
+                "shows": "Model card states \"You can fine-tune TerraMind with a config using TerraTorch\", lists raw inputs \"S2L2A, S2L1C, S1GRD, S1RTC, DEM, RGB\", states \"TerraMind can perform any-to-any generation based on varying combinations of inputs.\", and describes an architecture \"simultaneously processing pixel-level and token-level data\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "1fac187c72dfbc20c5c4588885b96ed4c1a6d3ec307e8ec6a17993e5d5b9d9d7"
               },
               {
                 "url": "https://raw.githubusercontent.com/IBM/terramind/main/README.md",
-                "shows": "Provides fine-tuning configurations, multimodal generation notebooks, and tokenizer reconstruction examples for the released family.",
-                "accessed": "2026-09-10",
+                "shows": "Repository README says \"You can fine-tune TerraMind without any code using a Lightning config\", provides config examples and any-to-any generation notebooks, and notes \"TerraMind uses six tokenizer for pre-training and generation.\"",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "089aae5d14f5f69997eab2673d12646511767f98225f7b53479790d9687d3a68"
               }
@@ -24730,9 +24737,9 @@
           "maturity": 3.8,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -24843,7 +24850,6 @@
             "relation": "one_below",
             "confidence": "high",
             "note": "Clay documents two readable attributes, a configurable training path and sensor-, time- and location-aware inputs, one fewer than Prithvi-EO documents; capabilities the release page omits are not inferred from the architecture.",
-            "last_verified": "2026-09-10",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/Clay-foundation/model/main/README.md",
@@ -24860,9 +24866,19 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "date": "2026-11-08",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-11-11",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-11-16",
+                "reason": "The recorded README source does not itself show sensor, time, location or band metadata (grep of the fetched README finds none); that comes from the v1.5 release page, which also documents multi-sensor input at 0.5m to 500m ground resolution with GSD-scaled position encoding, any-size and any-band inputs, and fine-tuning for generative tasks. That may bear on the recorded 'no cross-scale span / no generation' reading and on the one_below edge to prithvi-eo (whose own capability date is also stale), and the attribute count needs a maintainer ruling before the date is earned."
+              }
+            ]
           }
         },
         {
@@ -24973,7 +24989,6 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "Aurora ships an executable fine-tuning pathway: docs/finetuning.md provides a Docker image and a fine-tuning loop built on AuroraPretrained. It is not counted as generative, because it predicts a deterministic future state rather than generating one.",
-            "last_verified": "2026-09-10",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/aurora/main/docs/finetuning.md",
@@ -24998,8 +25013,18 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-10",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-11-11",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-11-16",
+                "reason": "This pass did not re-fetch Aurora's own capability sources (its fine-tuning guide and README), so the axis cannot be dated. terramind, the comparison peer, was re-confirmed on 2026-11-16 in the same pass, so the two_below terramind comparison is not what blocks it. Re-fetching Aurora's capability sources and confirming the recorded value (fine-tuning pathway, resolution span, deterministic target) settles it. No change to the value or the comparison is proposed."
+              }
+            ]
           }
         },
         {
@@ -25110,12 +25135,12 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "Prithvi WxC documents two readable capabilities: task-specific downstream adaptation and a variable regional-to-global, flexible-lead-time forecasting scale. Producing a future timestamp from two input timestamps is a deterministic forecast rather than a generated output, and the 160 MERRA-2 variables it ingests count as one input system, not several.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-WxC/main/README.md",
-                "shows": "Documents downstream fine-tuning applications, masked reconstruction and forecasting, flexible lead times, and global and regional use.",
-                "accessed": "2026-09-10",
+                "shows": "States \"We have fine-tuned the model to a number of downstream tasks\", lists downscaling and gravity-wave applications (downstream data MERRA-2, EURO-CORDEX and ERA5), and adds \"zero-shot applications in masked reconstruction and forecasting\"; the Data section says \"Prithvi WxC used data from the MERRA-2 reanalysis for pretraining\"; the checkpoint table gives \"Flexible input and lead time\" and the text says the masking pattern makes it \"suitable for both global and regional applications\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713"
               }
@@ -25127,9 +25152,9 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -25239,8 +25264,7 @@
             "relative_to": "terramind",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Three of the four capability attributes are established. Generation is not credited because the pretraining objective is one-hour-ahead forecasting with autoregressive rollout -- a deterministic future state rather than a generated scientific output -- which leaves TerraMind alone at the top of the category.",
-            "last_verified": "2026-09-10",
+            "note": "Surya documents LoRA adaptation, joint input from the Solar Dynamics Observatory's AIA and HMI sensors, and local and global attention at the native resolution of the observations. Its pretraining objective is one-hour-ahead forecasting with autoregressive rollout, a deterministic future state rather than a generated scientific output.",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md",
@@ -25257,9 +25281,19 @@
           "maturity": 3.1,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "date": "2026-11-08",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-11-11",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-11-16",
+                "reason": "The evidence audit did not pass this axis: Mechanics clean: body_path exists, sha256 equals content_sha256, re-fetch digest identical (no drift), accessed 2026-11-16, http 200 with sha. Quotes verbatim and negatives accurate (grep generat hits only 'Generate 2-hour ahead forecasts' and 'Generate CSV index files'; HF body 0 hits). But the multi_scale attribute is not established under category ruling (e): README states 'Multi-scale representation learning' only as local/global attention inside a single native 4096x4096 sampling resolution (lines 27, 207-209), and no second sampling resolution exists in either source. The packet itself escalates this as borderline and says a strict reading drops Surya to 2 of 4 attributes (score 3), breaking one_below terramind. 'Confirmed' therefore asserts something the evidence contradicts under the ruling; no score change is allowed without a separate ruling, so do not date the axis: hold it pending a maintainer ruling on whether attention-window scale counts. Also record that sources disagree on rollout horizon (GitHub 2-5 hours, HF up to 12 hours) and that the stale 'two-hour forecasts' shows must be replaced regardless. Peer terramind date issue applies too."
+              }
+            ]
           }
         },
         {
@@ -25370,12 +25404,12 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "ESM-2 documents one readable capability, an explicit fine-tuning pathway, two fewer than Prithvi-EO documents. Its broad downstream applicability across protein tasks does not convert into additional documented features.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/facebook/esm2_t33_650M_UR50D/raw/main/README.md",
-                "shows": "Calls ESM-2 suitable for fine-tuning across protein-sequence tasks and links PyTorch and TensorFlow fine-tuning notebooks.",
-                "accessed": "2026-09-10",
+                "shows": "Model card says ESM-2 \"is suitable for fine-tuning on a wide range of tasks that take protein sequences as input\" and links PyTorch and TensorFlow notebooks which \"demonstrate how to fine-tune ESM-2 models on your tasks of interest.\"",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "462a2f24724e19c6be0efab926315c294a863c9a9770e2c8b3d859b2d81a07de"
               }
@@ -25387,9 +25421,9 @@
           "maturity": 2.6,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -25500,12 +25534,12 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "Evo 2 documents two readable capabilities: an explicit training and fine-tuning pathway, and genuine DNA sequence generation rather than only prediction. Its context window scales from 8K to one million bases, but that is a longer window at the same single-nucleotide granularity throughout, not a second scale, and the range of model sizes offered does not count as an added capability either.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md",
-                "shows": "Documents training and fine-tuning, prompted DNA generation, and checkpoints spanning 8K, 262K, and one-million-base contexts.",
-                "accessed": "2026-09-10",
+                "shows": "Training and fine-tuning path: \"To train or finetune Evo 2, you can use [Savanna]\". Generation: \"Evo 2 can generate DNA sequences based on prompts.\" Context: \"single-nucleotide resolution at up to 1 million base pair context length\", with checkpoints from \"Smaller 1B parameter model with 8K context\" to \"7B parameter model with 262K context\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89"
               }
@@ -25517,9 +25551,9 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -25650,7 +25684,6 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "AlphaGenome's strength is its resolution span: sequences up to one million bases are resolved to single-base outputs. Its only input is a DNA sequence, so it does not also count as accepting multiple sensors, and no adaptation or generative pathway is documented beyond a broad prediction surface.",
-            "last_verified": "2026-09-10",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md",
@@ -25668,8 +25701,18 @@
           "mature": false,
           "freshness": {
             "date": "2026-09-10",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-11-11",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-11-16",
+                "reason": "The recorded value says a single DNA-sequence input and no adaptation pathway, but the current README and docs describe AlphaGenome 2 with expression conditioning on up to 256 cells of the user's own scRNA-seq data and imputation of unobserved modalities. Whether this changes the score of 2 or the two_below edge to prithvi-eo needs a ruling; the 1 Mb input and single-base-pair output facts are still supported."
+              }
+            ]
           },
           "version_note": "The repository documents both API and local-checkpoint surfaces; the downloadable model remains subject to separate non-commercial terms."
         },
@@ -25781,12 +25824,12 @@
             "relation": "one_below",
             "confidence": "high",
             "note": "MatterGen documents two readable capabilities, fine-tuning on arbitrary property data and unconditional or property-conditioned crystal generation, one fewer than Prithvi-EO documents. Its unusually complete open pipeline is a fact about openness, not capability.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/mattergen/main/README.md",
-                "shows": "Documents unconditional and multi-property-conditioned crystal generation plus fine-tuning on built-in or user-supplied property data.",
-                "accessed": "2026-09-10",
+                "shows": "Documents \"### Unconditional generation\", conditional generation from fine-tuned checkpoints (\"With a fine-tuned model, you can generate materials conditioned on a target property.\"), \"#### Multi-property fine-tuning\", and \"#### Fine-tune on your own property data\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "4a0f0213ad5458046ef8ee59b86a1050a8adb1f0876c146712fdb9efd71a3e5e"
               }
@@ -25800,7 +25843,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -25923,12 +25966,12 @@
             "relation": "two_below",
             "confidence": "medium",
             "note": "Granite Geospatial documents one capability: a TerraTorch fine-tuning workflow, demonstrated in zero- and few-shot notebooks. Its only input is HLS L30, the Landsat-only half of the Harmonized Landsat/Sentinel-2 product; GEDI lidar is a training label rather than a model input, the pretraining objective is masked reconstruction rather than generation, and the release covers one spatial scale.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md",
-                "shows": "Documents TerraTorch inference and zero-shot/few-shot fine-tuning notebooks, with HLS L30 optical imagery as the model input and above-ground biomass regression as the output; the README's own Training Data link, however, points to the S30 product page.",
-                "accessed": "2026-09-10",
+                "shows": "Append: pretraining used \"SimMIM, a self-supervised learning strategy based on masking large parts of the input (HLS2) data which are then reconstructed by the model\", i.e. reconstruction not generation; no second spatial scale is documented (grep of the card for scale|resolution|GSD|meter matches only 'higher effective resolution' describing Swin patch size).",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00"
               }
@@ -25940,9 +25983,9 @@
           "maturity": 1.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The companion GitHub repository is archived and carries getting-started notebooks rather than training code, so the checkpoint and its TerraTorch configuration are the whole distributed surface."
         },
@@ -26104,21 +26147,21 @@
             "relation": "one_below",
             "confidence": "high",
             "note": "DOFA earns two capabilities directly: an adaptation pathway through linear-probing and segmentation fine-tuning, and a single checkpoint that accepts five different satellite sensors. Masked autoencoding, its pretraining objective, is not counted as generation, and that same sensor diversity is not counted a second time as multiple scales.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/zhu-xlab/DOFA/master/README.md",
-                "shows": "Documents GeoBench classification linear probing and UPerNet segmentation fine-tuning under downstream_tasks, and shows one loaded model run over Sentinel-1 SAR, Sentinel-2, and NAIP RGB inputs with arbitrary channel counts.",
-                "accessed": "2026-09-10",
+                "shows": "The README states \"DOFA supports input images with any number of channels\", gives load examples for Sentinel-1 (SAR), Sentinel-2 and NAIP RGB on one loaded model, and documents \"shows how to run image classification linear probing with DOFA\" and \"shows how to fine-tune DOFA for semantic segmentation with a UPerNet head\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "4799d981e18f302d47f169e9b0978754d2ece59bb7f12e2ac7c42b17c07f792b"
               },
               {
                 "url": "https://arxiv.org/abs/2403.15356",
-                "shows": "Describes a wavelength-conditioned dynamic hypernetwork processing inputs from five distinct satellite sensors and continual pretraining on five EO modalities.",
-                "accessed": "2026-09-10",
+                "shows": "The abstract describes a \"dynamic hypernetwork to process inputs from five distinct satellite sensors flexibly\" and continual pretraining across the EO modalities.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "f7ebf422dac91bfdf9053df9f6cb85803a1ab39ead39e514f23c433a5cfb1ff4"
+                "content_sha256": "72db1a0a76ecc48a222d4e496685abf1f1a4321a1ef7f80fd86989f0e4e48d31"
               }
             ]
           },
@@ -26130,7 +26173,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -26271,15 +26314,22 @@
             "relative_to": "prithvi-eo",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Two attributes are stated directly. The encoder-decoder reconstructs masked inputs, which the category does not count as generative, and a variable count of monthly timesteps is one temporal scale rather than several.",
-            "last_verified": "2026-09-10",
+            "note": "Presto documents fine-tuning through a construct_finetuning_model call and a downstream-task notebook, and one model ingests Sentinel-1, Sentinel-2, ERA5, SRTM and Dynamic World inputs together. Its encoder-decoder reconstructs masked inputs rather than generating outputs, and a variable number of monthly timesteps is one temporal scale rather than several.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/nasaharvest/presto/main/README.md",
-                "shows": "Shows construct_finetuning_model adding a linear head for finetuning and a jupyter notebook demonstrating finetuning on different downstream tasks, and specifies the input tensor as the S1, S2, ERA5, and SRTM bands plus Dynamic World classes and latitude and longitude.",
-                "accessed": "2026-09-10",
+                "shows": "Shows \"construct_finetuning_model(num_outputs=1, regression=True)\" adding a linear head for finetuning and a \"jupyter notebook\" demonstrating finetuning on downstream tasks; timesteps \"can be any value between 1 and 24 (2 years of data)\"; the encoder-decoder returns \"reconstructed_x, reconstructed_dynamic_world = encoder_decoder(\", and the inputs include Dynamic World classes and latitude and longitude.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/nasaharvest/presto/main/presto/dataops/pipelines/s1_s2_era5_srtm.py",
+                "shows": "Defines the model's input bands: Sentinel-1 \"S1_BANDS = [\"VV\", \"VH\"]\", Sentinel-2 S2_BANDS, \"ERA5_BANDS = [\"temperature_2m\", \"total_precipitation\"]\" and \"SRTM_BANDS = [\"elevation\", \"slope\"]\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "7f371255202450ba4a63a39c90665579252976d8cd127aa866f7391c2607aaf4"
               }
             ]
           },
@@ -26289,9 +26339,9 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-10"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -26300,7 +26350,7 @@
           "org_slug": "google",
           "org": "Google",
           "type": "model",
-          "description": "AlphaEarth Foundations is Google DeepMind's embedding field model for Earth observation. It assimilates spatial, temporal, and measurement context from Landsat, Sentinel-1, Sentinel-2, and other sources into a 64-dimensional embedding for every 10-meter pixel of terrestrial land and shallow coastal water, published as annual Satellite Embedding layers in Google Earth Engine covering 2017 onward.",
+          "description": "AlphaEarth Foundations is Google DeepMind's embedding field model for Earth observation. It assimilates spatial, temporal, and measurement context from Landsat, Sentinel-1, Sentinel-2, and other sources into a 64-dimensional embedding for every 10-meter pixel of terrestrial land and shallow coastal water, published as annual Satellite Embedding layers in Google Earth Engine covering 2017 onward. The release is the embedding dataset; no checkpoint or implementation is distributed.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -26392,15 +26442,15 @@
             "level": 1,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "No model artifact is distributed, so there is no download or star count to read and no reach word is recorded. DeepMind reports working with more than 50 organizations on the released embedding dataset, which is directional only.",
-            "last_verified": "2026-09-10",
+            "note": "DeepMind distributes the embedding dataset but no model artifact, so there is no download or star count to measure. Its announcement reports partner organizations testing the dataset, which shows interest but not measured use.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://deepmind.google/discover/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/",
-                "shows": "States that over the past year the team worked with more than 50 organizations to test the dataset on real-world applications.",
-                "accessed": "2026-09-10",
+                "shows": "Announcement says the team has been \"working with more than 50 organizations to test this dataset on their real-world applications\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "564682fe5d66182fab2a13d536aa24ed7ce5836d370a142b6d9abded208725a5"
+                "content_sha256": "26447b854b1db67a23b16c4f8c109301354eefff250fe83cb1329c1ae9fe95d9"
               }
             ]
           },
@@ -26412,20 +26462,20 @@
             "relative_to": "prithvi-eo",
             "relation": "two_below",
             "confidence": "high",
-            "note": "AlphaEarth Foundations combines Landsat, Sentinel-1 and Sentinel-2 measurements into one embedding, which is its only counted capability. The embeddings are applied without retraining rather than adapted, an embedding is not a generated output, and the release fixes a single 10-meter annual grid rather than multiple scales.",
-            "last_verified": "2026-09-10",
+            "note": "AlphaEarth Foundations combines Landsat, Sentinel-1 and Sentinel-2 measurements into one embedding. The embeddings are applied without retraining rather than adapted, an embedding is not a generated output, and the release fixes a single 10-meter annual grid rather than multiple scales.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2507.22291",
-                "shows": "Describes an embedding field model that assimilates spatial, temporal, and measurement contexts across multiple sources, and reports that its embeddings outperform other featurization approaches without re-training.",
-                "accessed": "2026-09-10",
+                "shows": "Abstract describes a model that \"assimilates spatial, temporal, and measurement contexts across multiple sources\" and reports embeddings tested on mapping evaluations \"without re-training\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "f279d00bb71133655ef3c1a6f24886a0fff350885ae0707b5332f97d2b15f3b7"
+                "content_sha256": "d3d25596abd3ad58a23663c32b4c621764977a0c258712cdb013b8badebf913e"
               },
               {
                 "url": "https://storage.googleapis.com/earthengine-stac/catalog/GOOGLE/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL.json",
-                "shows": "The collection's STAC record — a single 10-metre pixel size, one 64-dimensional embedding per pixel per calendar year, and the landsat-derived, sentinel1-derived and sentinel2-derived keywords. Cited in place of the rendered catalog page, whose body is nondeterministic and returned three different digests in three consecutive fetches, so it could never be re-confirmed.",
-                "accessed": "2026-09-10",
+                "shows": "The collection's STAC record says \"Each 10-meter pixel in this dataset is a 64-dimensional representation\" and carries the keywords \"annual\", \"landsat-derived\", \"sentinel1-derived\" and \"sentinel2-derived\" (collection id GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL). Cited in place of the rendered catalog page, whose body is nondeterministic.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "1c5fb2abdcbf6d12a9b6cfecf10ccc55cbfac7d009645536d4e4828f9a14e012"
               }
@@ -26437,9 +26487,9 @@
           "maturity": 1.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-11",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "What Google DeepMind released is the embedding dataset, not the model. There is no checkpoint, no implementation, and no license over weights, so the product is scored closed even though its outputs are freely usable."
         },
@@ -26542,12 +26592,12 @@
             "relation": "one_below",
             "confidence": "high",
             "note": "WeatherNext documents three readable capabilities, one fewer than TerraMind documents. Its list of model versions does not count as added breadth, and ERA5 with HRES initial conditions counts as one data system rather than several.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/weathernext/main/README.md",
-                "shows": "The demo notebook teaches computing the training loss on predictions and targets and taking a gradient step; WeatherNext 2 is the FGN joint probabilistic architecture and WeatherNext Gen is diffusion-based ensemble forecasting; checkpoints are published at 0.25-degree and, for Mini, 1-degree resolution.",
-                "accessed": "2026-09-10",
+                "shows": "Append: \"Full model training requires downloading the\" ERA5 dataset, and operational fine-tuning uses HRES data, i.e. one ECMWF reanalysis and analysis system; the 1-degree checkpoint is WeatherNext Cyclones Mini, WeatherNext 2 itself is 0.25 degree.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "9f0879fac17bda69b021bb8239241e488b91943d7c813c8727253ff9847853b1"
               }
@@ -26559,9 +26609,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-10"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The repository absorbed the former google-deepmind/graphcast, so GraphCast and GenCast are versions of this product line rather than separate products."
         },
@@ -26683,12 +26733,12 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "ClimaX earns two capabilities: per-task fine-tuning configs, and checkpoints at two grid resolutions. It is not credited for combining multiple data sources, because its five CMIP6 datasets are simulation archives from one data system, and ERA5 only enters at fine-tuning, not pretraining.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://microsoft.github.io/ClimaX/usage/",
-                "shows": "Gives fine-tuning commands and configs for global forecasting, regional forecasting, and climate projection, each loading a pretrained checkpoint, and publishes checkpoints at 5.625deg and 1.40625deg resolution.",
-                "accessed": "2026-09-10",
+                "shows": "Gives fine-tuning commands and configs for global forecasting, regional forecasting, and climate projection, each loading a pretrained checkpoint. Checkpoints: \"We provide two pretrained checkpoints\", one pretrained on 5.625deg data and the other on 1.40625deg data. \"Both checkpoints were pretrained using all 5 CMIP6 datasets.\"",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694"
               }
@@ -26702,7 +26752,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The repository README is a stub; the substantive documentation is the project docs site."
         },
@@ -26839,22 +26889,29 @@
             "relative_to": "terramind",
             "relation": "two_below",
             "confidence": "high",
-            "note": "Two attributes. Adaptation is explicitly uncounted because the documentation says training and fine-tuning are not supported and ship only as pseudo-code; the checkpoint-modification recipe changes outputs, not learned parameters.",
-            "last_verified": "2026-09-10",
+            "note": "NeuralGCM ships checkpoints at three horizontal resolutions for both forecasts and long integrations, plus a stochastic model for simulation, all on ERA5 inputs. Its documentation says the team would like to support training, modifying and fine-tuning but that the current codebase makes this harder than it should be, and training is shipped only as pseudo-code. The checkpoint-modification recipe changes model outputs rather than learned parameters, so it is not an adaptation pathway.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html",
-                "shows": "Distributes deterministic checkpoints at 0.7, 1.4 and 2.8 degrees plus a stochastic 1.4-degree model, and discusses long integrations and the stability of the simulated global mean surface pressure.",
-                "accessed": "2026-09-10",
+                "shows": "Offers v1/deterministic_0_7_deg.pkl, v1/deterministic_1_4_deg.pkl, v1/deterministic_2_8_deg.pkl and v1/stochastic_1_4_deg.pkl, and says \"the global mean surface pressure tends to drift in long integrations\" so the recipe fixes it to increase stability in long integrations.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f"
               },
               {
                 "url": "https://neuralgcm.readthedocs.io/en/latest/",
-                "shows": "Describes NeuralGCM as a hybrid ML and physics atmospheric model for weather and climate simulation built on the Dinosaur dynamical core, and says the maintainers \"would love to support training, modifying and fine-tuning NeuralGCM models\" but that the Haiku and Gin codebase makes it \"much trickier than it needs to be\", with pseudo-code for training in reference_code.",
-                "accessed": "2026-09-10",
+                "shows": "Says \"Pseudo-code for training NeuralGCM models\" can be found in the reference_code subdirectory; \"We would love to support training, modifying and fine-tuning NeuralGCM models\" but with the Haiku and Gin codebase this is \"much trickier than it needs\" to be.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "0ae8a5428933cc6be49fb1aeea9d3755593728d866344744cc25c236672bb741"
+                "content_sha256": "725df0f422b0b8fc15ac1d50e8f53614af942a28e1dbfc3fdc55adb517dee080"
+              },
+              {
+                "url": "https://neuralgcm.readthedocs.io/en/latest/data_preparation.html",
+                "shows": "Data preparation is worked through with the Zarr copy of ERA5 from the \"ARCO-ERA5\" project, the only input system the page documents.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "496c591aca645eac0d16ad231ea1514477aaf66d167c00c1a90cd64de83e72f1"
               }
             ]
           },
@@ -26864,9 +26921,9 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-06",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The repository README points to the documentation site, which is where the checkpoints, data preparation, and the limits of the released training code are described."
         },
@@ -26976,13 +27033,13 @@
             "basis_detail": "scientific adaptation surface",
             "value": "Published pretraining and fine-tuning stages with their configs; a single deterministic checkpoint at one resolution over ECMWF analysis inputs.",
             "confidence": "high",
-            "note": "One attribute. The MSE-trained model predicts a fixed forecast target rather than generating, thirteen pressure levels are vertical structure rather than a second scale, and ERA5 with operational IFS analyses is one data system.",
-            "last_verified": "2026-09-10",
+            "note": "AIFS publishes its pretraining and fine-tuning stages with their configs. The model is trained with mean squared error to predict a fixed forecast target rather than to generate, it ships as a single checkpoint at one resolution, its thirteen pressure levels are vertical structure rather than a second scale, and ERA5 with operational IFS analyses is one data system.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md",
-                "shows": "Documents a two-stage Anemoi pretraining and rollout fine-tuning path with shipped configs, and specifies a single ~31 km horizontal, 13-level atmosphere component producing 6-hour forecasts.",
-                "accessed": "2026-09-10",
+                "shows": "Training section: \"To train this model you can use the configuration files included in this repository\", with a pretraining command then fine-tuning \"for rollout\"; the model card lists one atmosphere component at ~31 km horizontal and 13 vertical levels, producing \"6-hour forecasts\" under an area-weighted mean squared error loss; the only inputs are ECMWF data, \"numerical weather prediction (NWP) analyses\" for fine-tuning after ERA5 pretraining, one data system.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09"
               }
@@ -26994,9 +27051,9 @@
           "maturity": 1.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -27105,13 +27162,13 @@
             "basis_detail": "scientific adaptation surface",
             "value": "Four checkpoints spanning 1-, 3-, 6- and 24-hour lead times that chain into longer forecasts; deterministic outputs, one input system, and no released adaptation path.",
             "confidence": "high",
-            "note": "One attribute, the temporal-scale span. Pseudocode is not an adaptation pathway, ERA5 and ECMWF HRES initial fields are one data system, and a deterministic forecast is a fixed target rather than a generated output.",
-            "last_verified": "2026-09-10",
+            "note": "Pangu-Weather's four checkpoints, with lead times of 1, 3, 6 and 24 hours, chain into longer forecasts. The repository offers pseudocode rather than an adaptation pathway, ERA5 and ECMWF HRES initial fields are one data system, and a deterministic forecast is a fixed target rather than a generated output.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md",
-                "shows": "Publishes 1-hour, 3-hour, 6-hour and 24-hour models and an iterative script that combines them into a week of forecasts; supports ERA5 and ECMWF initial fields only; and provides pseudocode rather than training code.",
-                "accessed": "2026-09-10",
+                "shows": "Offers four models, \"The 1-hour model\", \"The 3-hour model\", \"The 6-hour model\" and \"The 24-hour model\"; inference_iterative.py \"shows an example to generate per-6-hour forecast within a week\"; supports \"ERA5 initial fields and ECMWF initial fields\" only; and offers \"the pseudocode that elaborates our main algorithm\" rather than training code. No deterministic-vs-probabilistic statement exists: grep for determin|ensemble|probab|stochastic finds nothing, so only point forecasts are documented.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1"
               }
@@ -27123,9 +27180,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-10"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -27134,7 +27191,7 @@
           "org_slug": "nasa-impact",
           "org": "NASA IMPACT",
           "type": "model",
-          "description": "A ViT-B encoder-decoder pretrained from scratch on SomBench, roughly two million co-registered lunar tile bundles spanning 11 modalities at two spatial scales, LROC NAC at about 1 m/px and LROC WAC at about 100 m/px. It adapts TerraMind's masked-token recipe to the Moon by tokenizing acquisition geometry as explicit context and training both resolution families in one mixed-batch loop, and downstream adaptation runs through TerraTorch with runnable configs for crater detection, Irregular Mare Patch segmentation and ice prospectivity.",
+          "description": "The NASA-IBM Lunar Foundation Model is a ViT-B encoder-decoder pretrained on SomBench, about two million lunar tile bundles spanning 11 modalities at two spatial scales, LROC NAC at roughly 1 m/px and WAC at roughly 100 m/px. It adapts TerraMind's masked-token recipe to the Moon, tokenizing acquisition geometry as context and training both resolution families together. Downstream adaptation runs through TerraTorch, with configs for crater detection, Irregular Mare Patch segmentation and ice prospectivity.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -27254,20 +27311,20 @@
             "relative_to": "prithvi-eo",
             "relation": "at",
             "confidence": "high",
-            "note": "Three of the four attributes are stated outright. The fourth is refused by the publisher rather than missing - the card calls any-to-any generation a qualitative probe and says the model is not a scientific-grade generative product, which is the category's own test for what a generated output has to be.",
-            "last_verified": "2026-09-10",
+            "note": "The model card documents LoRA or full fine-tuning through TerraTorch with runnable configs, 11 input modalities drawn from several lunar sensors, and one set of weights covering a 100x resolution gap. It does not offer scientific-grade generation: the card calls any-to-any generation a qualitative probe and says the model is not a scientific-grade generative product.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model/raw/main/README.md",
-                "shows": "11 modalities from LROC NAC, LROC WAC, SLDEM2015, Diviner, LOLA, Mini-RF, Kaguya, GRAIL and Lunar Prospector; two spatial scales at ~1 m/px and ~100 m/px in a single mixed-batch loop, \"one set of weights covers both resolution families\" across a 100x scale gap; downstream adaptation through TerraTorch with LoRA and full fine-tuning guidance; and \"Not a scientific-grade generative product - generated fields are not calibrated predictions\".",
-                "accessed": "2026-09-10",
+                "shows": "Card describes \"11 modalities\" at two spatial scales, \"one set of weights covers both resolution families\" across a 100x gap, LoRA or full fine-tuning through TerraTorch, and \"Not a scientific-grade generative product\" because \"generated fields are not calibrated predictions\"; any-to-any generation is offered as a \"qualitative probe\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "336363107dbec10ee9da569360fda045af8a5b04d6a61fe96ab41d54a038ef5a"
+                "content_sha256": "8b19ff3221fcf45756a265f41883ce11145b3fdb18d5166b9b87393633abdae6"
               },
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/README.md",
-                "shows": "Every YAML under terratorch_integration/configs is a runnable `terratorch fit` target, grouped by downstream task.",
-                "accessed": "2026-09-10",
+                "shows": "Every YAML under terratorch_integration/configs/ \"is a runnable `terratorch fit` target\", grouped by downstream task.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "66c86f3cd0d3d4416edf1252aeb5ec16c3c5e0d7706823b3dd814d7834a05cc6"
               }
@@ -27279,11 +27336,11 @@
           "maturity": 3.1,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
-          "version_note": "GitHub's license endpoint reports NOASSERTION, but the repository LICENSE body is Apache-2.0 and both READMEs and the model card say the same. The companion repository states that pretraining code is not included, and the published SomBench dataset repo is a sample of the corpus rather than the corpus."
+          "version_note": "GitHub's license classifier reports NOASSERTION; the score was read from the LICENSE file body."
         },
         {
           "slug": "esm-3",
@@ -27414,7 +27471,6 @@
             "relation": "one_below",
             "confidence": "high",
             "note": "Two attributes are read directly off the publisher's description: three joint sequence, structure and function tracks, and generation from a partial prompt. Adaptation is not credited, because the release documents how to prompt and sample rather than how to fine-tune, and the repository's fine-tuning guidance targets ESMC rather than ESM-3.",
-            "last_verified": "2026-09-10",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md",
@@ -27438,9 +27494,19 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "date": "2026-11-08",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-11-11",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-11-16",
+                "reason": "The recorded value says 'no second scale', but the fetched ESM3 README table lists three sizes (98B, 7B, 1.4B), two of them hosted-only; a ruling is needed on whether only the open checkpoint counts, then the value wording can be fixed with the score of 3 and the one_below edge to prithvi-eo (4) unchanged. Separately, prithvi-eo capability was last verified 2026-09-10, so a new esm-3 date would postdate its peer; the cookbook tutorials listing (needed to fully settle 'no fine-tuning pathway') returned 403."
+              }
+            ]
           }
         },
         {
@@ -27449,7 +27515,7 @@
           "org_slug": "google",
           "org": "Google",
           "type": "model",
-          "description": "AlphaFold is Google DeepMind's biomolecular structure prediction line. AlphaFold 3, the current tier, predicts the joint structure of complexes of proteins, nucleic acids, ligands, ions and modified residues from sequence together with genetic-search and template inputs. The inference source is Apache-2.0 in both generations, but the model parameters are licensed separately, and separately in each generation.",
+          "description": "AlphaFold is Google DeepMind's biomolecular structure prediction line. AlphaFold 3 predicts the joint structure of complexes of proteins, nucleic acids, ligands, ions and modified residues from sequence together with genetic-search and template inputs.",
           "openness": {
             "score": 2,
             "class": "restricted",
@@ -27568,15 +27634,15 @@
             "relative_to": "prithvi-eo",
             "relation": "two_below",
             "confidence": "high",
-            "note": "One readable attribute. The breadth people associate with AlphaFold 3 is breadth of entity types in a single prediction task, and the category's note is explicit that a long task list is not an adaptation pathway - the repository ships inference only, and the model predicts a fixed target rather than designing anything.",
-            "last_verified": "2026-09-10",
+            "note": "AlphaFold 3 takes sequence with genetic-search and template inputs, and the repository ships inference only, with no training or fine-tuning entry point and no design surface. The breadth of entity types it handles, proteins, nucleic acids, ligands, ions and modified residues, widens a single prediction task rather than adding an adaptation pathway.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/alphafold3/main/README.md",
-                "shows": "Data pipeline runs genetic and template search alongside the input sequences; the package implements the inference pipeline only, with no training or fine-tuning entry point.",
-                "accessed": "2026-09-10",
+                "shows": "The repository \"provides an implementation of the inference pipeline\", and its data pipeline step is \"genetic and template search\" run alongside inference; no training or fine-tuning entry point is documented.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "cc16ba436ea8a967c764ac034a655d632b4c1ef8b4065868b8d07914c7cb88be"
+                "content_sha256": "0aff5538016f91aae06209319e4514e23a2fc6156854271f75873f8b78e0e44f"
               }
             ]
           },
@@ -27586,11 +27652,11 @@
           "maturity": 2.3,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
-          "version_note": "The slug covers the product line at the tier DeepMind ships, which is AlphaFold 3 in google-deepmind/alphafold3; the declared repository is the AlphaFold 2 codebase the line began with, and it is still the more widely starred of the two."
+          "version_note": "The entry covers the line at AlphaFold 3, whose code is in google-deepmind/alphafold3; the declared repository is the AlphaFold 2 codebase the line began with."
         },
         {
           "slug": "openfold",
@@ -27736,22 +27802,29 @@
             "relative_to": "prithvi-eo",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Two attributes, and the adaptation one is the whole point of the project - the README's first line is that this is a trainable reproduction, and the docs carry a training guide rather than a fine-tuning notebook bolted onto an inference release.",
-            "last_verified": "2026-09-10",
+            "note": "OpenFold documents a full training and fine-tuning pathway: the README opens by calling it a trainable reproduction, and the docs carry a training guide rather than a fine-tuning notebook added to an inference release. It takes sequence with MSA and template inputs and predicts structure rather than designing it, at one scale.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/aqlaboratory/openfold/main/README.md",
-                "shows": "\"A faithful but trainable PyTorch reproduction of DeepMind's AlphaFold 2\", with docs carrying instructions for installation and model inference and training.",
-                "accessed": "2026-09-10",
+                "shows": "\"A faithful but trainable PyTorch reproduction of DeepMind's\" AlphaFold 2, with docs carrying \"instructions for installation and model inference/training\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "985b6dc09144ea14378dd2c543b288e8d2a05cb342a77cbc56b7a39c5170f638"
               },
               {
                 "url": "https://raw.githubusercontent.com/aqlaboratory/openfold/main/docs/source/original_readme.md",
-                "shows": "Training data is MSAs and PDB70 template hit files alongside sequence; the repository ships train_openfold.py beside run_pretrained_openfold.py.",
-                "accessed": "2026-09-10",
+                "shows": "Training data is MSAs and PDB70 template hit files (\"We've publicly released model weights and our training data\"); the page gives a \"python3 train_openfold.py mmcif_dir/ alignment_dir/ template_mmcif_dir/ output_dir/\" command beside run_pretrained_openfold.py.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "aa0812608f4b4dca4b4d30b9e0eb6b7d08ca9d1596535419d6255c3ced48f36f"
+              },
+              {
+                "url": "https://openfold.readthedocs.io/en/latest/Training_OpenFold.html",
+                "shows": "\"This guide covers how to train an OpenFold model for monomers. Some additional instructions are provided at the end for fine-tuning your model.\"",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "46cc7e7906b12250665a83154d0890449f27c776a12d2249652e55fedb02ddb7"
               }
             ]
           },
@@ -27763,7 +27836,7 @@
           "freshness": {
             "date": "2026-09-10",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The OpenFold3 Hugging Face repository is Apache-2.0 but auto-gated behind a name-and-affiliation form, so its download counter reads zero and cannot carry the adoption signal."
         },
@@ -27773,7 +27846,7 @@
           "org_slug": "jwohlwend",
           "org": "Jeremy Wohlwend",
           "type": "model",
-          "description": "Boltz is a family of biomolecular interaction models. Boltz-1 was the first fully open-source model to approach AlphaFold 3 accuracy, and Boltz-2 jointly models complex structure and binding affinity, reporting a log10(IC50) value alongside a binder-versus-decoy probability. It runs from a YAML specification of the complex, optionally pulling MSAs from a ColabFold server.",
+          "description": "Boltz is a family of biomolecular interaction models. Boltz-1 predicts the structure of biomolecular complexes, and Boltz-2 jointly models complex structure and binding affinity, reporting a log10(IC50) value alongside a binder-versus-decoy probability. It runs from a YAML specification of the complex, optionally pulling MSAs from a ColabFold server.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27892,20 +27965,20 @@
             "relative_to": "prithvi-eo",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Two attributes. Adding binding affinity to structure prediction widens what Boltz-2 outputs without adding a scale or a design surface, so the second head is not a third attribute.",
-            "last_verified": "2026-09-10",
+            "note": "Boltz publishes a retraining pathway with dataset download instructions and template configuration files, and takes sequence with MSA inputs and ligand specifications. Boltz-2 adds binding affinity to structure prediction, but both outputs are predictions of fixed targets at one scale, so the affinity head widens the outputs without adding a design surface.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md",
-                "shows": "Inference takes a YAML specification of the biomolecules with an optional MSA server; the Training section documents retraining, and the affinity outputs are predicted values rather than generated molecules.",
-                "accessed": "2026-09-10",
+                "shows": "Inference runs \"boltz predict input_path --use_msa_server\" on a YAML file \"describing the biomolecules you want to model and the properties you want to predict\"; the Binding Affinity section says the output \"represents the predicted probability that the ligand is a binder\" and reports \"log10(IC50)\", predicted values rather than generated molecules; the Training section still reads \"Coming soon: updated training code for Boltz-2!\" with retraining available for Boltz-1. The README does not itself spell out the ligand input format.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2"
               },
               {
                 "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/docs/training.md",
-                "shows": "\"To run training, you will need to download a few pre-processed datasets\", covering both structures and MSAs, with configuration templates for the structure and confidence models.",
-                "accessed": "2026-09-10",
+                "shows": "\"To run training, you will need to download a few pre-processed datasets\", with \"a template configuration file analogous to the one we used for training the structure model\" and a confidence-model configuration; Boltz-2 training information is still marked \"Coming soon updated training information for Boltz-2!\"",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c"
               }
@@ -27917,9 +27990,9 @@
           "maturity": 2.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-06",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -27928,31 +28001,32 @@
           "org_slug": "chai-discovery",
           "org": "Chai Discovery",
           "type": "model",
-          "description": "Chai-1 is Chai Discovery's multi-modal model for molecular structure prediction, giving unified predictions over proteins, small molecules, DNA, RNA, glycosylations and modified residues. It runs from a FASTA file with optional MSAs and templates, and uniquely accepts user-specified experimental restraints, inter-chain contacts and covalent bonds at several resolutions, to guide the folding of a complex.",
+          "description": "Chai-1 is Chai Discovery's multi-modal model for molecular structure prediction, giving unified predictions over proteins, small molecules, DNA, RNA, glycosylations and modified residues. It runs from a FASTA file with optional MSAs and templates, and accepts user-specified experimental restraints, inter-chain contacts and covalent bonds at several resolutions to guide the folding of a complex.",
           "openness": {
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(downloaded automatically by the chai-lab package and covered by the repository's Apache-2.0 grant);data:closed(training data not released; the technical report is the only account of it);code:partial(inference CLI and feature-context API; no training pipeline);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "The repository license is Apache-2.0, which on its own would say nothing about the weights, and the check that matters here is that the README extends the same grant to them in as many words. Chai-1 is therefore commercially usable weights on a closed corpus, which is the category's centre of gravity.",
-            "last_verified": "2026-09-10",
+            "note": "Chai-1's repository is licensed Apache-2.0, and the README states that the same license covers the model weights, not just the code. The training data is not released and the repository provides an inference CLI without a training pipeline, so Chai-1 is an open-weights release rather than a fully open model.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/README.md",
-                "shows": "\"Chai-1 is released under an Apache 2.0 License (both code and model weights), which means it can be used for both academic and commerical purposes, including for drug discovery\"; weights are downloaded automatically into the package directory; the package runs inference only.",
-                "accessed": "2026-09-10",
+                "shows": "\"Chai-1 is released under an Apache 2.0 License (both code and model weights)\"; \"weights are automatically downloaded and stored in <package_root>/downloads\"; the model is run through \"chai_lab.chai1.run_inference\"; the README points to the \"technical report\" for performance and capabilities and links no training data.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f",
                 "establishes": [
                   "weights",
                   "code",
+                  "data",
                   "license"
                 ]
               },
               {
                 "url": "https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/LICENSE",
                 "shows": "Apache License Version 2.0 body, Copyright 2024 Chai Discovery.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "511edf51c5c6f47bae9ae19c59d98666a682e0ccc98e90c2de2a9a897c44c003",
                 "establishes": [
@@ -27960,13 +28034,13 @@
                 ]
               },
               {
-                "url": "https://api.github.com/repos/chaidiscovery/chai-lab",
-                "shows": "license spdx_id: Apache-2.0; archived: false; fork: false; no training entry point in the published surface.",
-                "accessed": "2026-09-10",
+                "url": "https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/pyproject.toml",
+                "shows": "the only console script is \"chai-lab = \"chai_lab.main:cli\"\", the inference CLI; no training entry point is declared.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "93d6b0291a77e40b714869a4ab842b209248749ee3b5d75faaf56e0cffd9b59d",
+                "content_sha256": "3ddbeed90f42acedd94113dc54bb099d5bc4ab68cfea16d271cd2c7c73bc7700",
                 "establishes": [
-                  "data"
+                  "code"
                 ]
               }
             ],
@@ -28039,13 +28113,13 @@
             "relative_to": "prithvi-eo",
             "relation": "two_below",
             "confidence": "high",
-            "note": "One attribute. Restraints are the genuinely distinctive input here and they count toward the same one - they widen what can be fed in, not what the model can be turned into, and the five sample predictions the CLI emits are samples of a prediction rather than generated designs.",
-            "last_verified": "2026-09-10",
+            "note": "Chai-1 takes sequence with optional MSAs, templates, embeddings and experimental restraints; the restraints widen what can be fed in rather than what the model can be adapted to do. The CLI emits five sample predictions of a complex, which are samples of a prediction rather than generated designs, and no training or fine-tuning entry point is documented.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/README.md",
-                "shows": "MSAs, templates, embeddings, covalent bonds and inter-chain restraints are all documented inputs; \"Chai-1 uniquely offers the ability to fold complexes with user-specified restraints\"; no fine-tuning or training documentation.",
-                "accessed": "2026-09-10",
+                "shows": "\"Chai-1 uniquely offers the ability to fold complexes with user-specified\" restraints as inputs; \"This allows users to specify their own templates, MSAs, embeddings, and constraints, including support for specifying covalent bonds\"; no fine-tuning or training documentation.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f"
               }
@@ -28057,9 +28131,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-08"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -28074,13 +28148,13 @@
             "class": "open_weights",
             "components": "weights:open(checkpoints downloaded from files.ipd.uw.edu and covered explicitly by the repository LICENSE);data:closed(training set not released; the model builds on RoseTTAFold's trained parameters);code:partial(inference scripts and hydra configs only; no training pipeline);license:BSD-3-Clause(OSI)",
             "confidence": "high",
-            "note": "GitHub reports NOASSERTION, which would have left this product looking unlicensed. The LICENSE body is BSD three-clause text under a University of Washington copyright, and it says outright that it covers the model weights as well as the source, which is the rarer and more useful of the two statements.",
-            "last_verified": "2026-09-10",
+            "note": "The LICENSE file is BSD three-clause text under a University of Washington copyright and states that it covers the model weights as well as the source code. The training set is not released, the model builds on RoseTTAFold's trained parameters, and the repository ships inference scripts and configs without a training pipeline, so this is an open-weights release rather than a fully open model.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/LICENSE",
-                "shows": "\"BSD License. Copyright (c) 2023 University of Washington ... This copyright and license covers both the source code and model weights referenced for download in the README file\", followed by the three standard BSD conditions.",
-                "accessed": "2026-09-10",
+                "shows": "\"BSD License\" with \"Copyright (c) 2023 University of Washington\" and a statement that the copyright and license \"covers both the source code and model\" weights referenced for download in the README file, followed by the three standard BSD conditions.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "eefc2ae77cb92b1414a6ac76b246642fae2189747b1b07747e92e5ddc696ec24",
                 "establishes": [
@@ -28089,22 +28163,13 @@
                 ]
               },
               {
-                "url": "https://api.github.com/repos/RosettaCommons/RFdiffusion",
-                "shows": "license spdx_id: NOASSERTION, key \"other\", url null - the endpoint does not recognise the BSD text in the LICENSE file.",
-                "accessed": "2026-09-10",
-                "http_status": 200,
-                "content_sha256": "3d2dec2da183e4ecf9636b3b4c4345fe0b57c1a3cc17b435da27be133f9317dd",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
                 "url": "https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/README.md",
-                "shows": "\"RFdiffusion is released under an open source BSD License (see LICENSE file). It is free for both non-profit and for-profit use.\" Weights are fetched with wget from files.ipd.uw.edu; the published code covers inference configuration only, and no training data or pipeline is released.",
-                "accessed": "2026-09-10",
+                "shows": "\"RFdiffusion is released under an open source BSD License (see LICENSE file). It is free for both non-profit and for-profit use.\" Checkpoints are fetched with wget from files.ipd.uw.edu; the README states \"RFdiffusion builds directly on the architecture and trained parameters of RoseTTAFold.\"; it documents inference runs only and names no released training data or training pipeline.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125",
                 "establishes": [
+                  "weights",
                   "data",
                   "code",
                   "license"
@@ -28181,12 +28246,12 @@
             "relation": "two_below",
             "confidence": "high",
             "note": "RFdiffusion documents one readable capability that most of this category lacks: it designs new protein backbones rather than predicting a structure for an existing sequence. Its conditioning inputs, motifs, hotspot residues, symmetry, an existing structure, are varied but all derive from the same PDB structure format, so they count as one input system rather than several.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/README.md",
-                "shows": "Documents unconditional monomer generation, motif scaffolding, binder design against a target with hotspot residues, symmetric oligomer design and partial diffusion of an existing backbone; conditioning comes from an input .pdb with contigs, secondary structure and block adjacency, and the repository publishes inference only.",
-                "accessed": "2026-09-10",
+                "shows": "Lists \"Motif Scaffolding\", \"Unconditional protein generation\", \"Symmetric unconditional generation (cyclic, dihedral and tetrahedral symmetries currently implemented, more coming!)\", \"Binder design\" and design diversification by partial diffusion (sampling around a design); binder design uses \"hotspot residues\" and conditioning on \"secondary structure and block adjacency\"; motifs come from a `.pdb` file.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125"
               }
@@ -28198,9 +28263,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-08"
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -28308,13 +28373,13 @@
             "basis_detail": "scientific adaptation surface",
             "value": "Documented pretraining and fine-tuning path, and in silico perturbation and reprogramming of cell state; one transcriptomic modality and one scale.",
             "confidence": "high",
-            "note": "Two attributes are established directly. The long list of downstream fine-tuning tasks is not converted into extra features, the three parameter sizes are not scales, and gene-level and cell-level outputs are treated as one modality rather than two.",
-            "last_verified": "2026-09-10",
+            "note": "Geneformer documents a pretraining and fine-tuning path, and in silico perturbation and reprogramming of cell state. Its long list of downstream fine-tuning tasks is one capability rather than several, the three parameter sizes are sizes rather than scales, and gene-level and cell-level outputs are one modality rather than two.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/ctheodoris/Geneformer/raw/main/README.md",
-                "shows": "Documents pretraining and fine-tuning examples in the repository, and names in silico perturbation, in silico treatment, in silico reprogramming, and in silico differentiation as applications of the pretrained model.",
-                "accessed": "2026-09-10",
+                "shows": "Documents pretraining and fine-tuning: \"functions for tokenizing and collating data specific to single cell transcriptomics, pretraining the model, fine-tuning the model, extracting and plotting cell embeddings, and performing in silico pertrubation with either the pretrained or fine-tuned models\". Applications listed include \"in silico reprogramming\", \"in silico differentiation\" and \"in silico treatment to determine candidate therapeutic targets\". Models are pretrained on \"human single cell transcriptomes\" only.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8"
               }
@@ -28326,9 +28391,9 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The weights, the code package, and the Genecorpus training data are all distributed from Hugging Face; there is no separate GitHub repository."
         },
@@ -28437,22 +28502,36 @@
             "basis_detail": "scientific adaptation surface",
             "value": "Fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles; one cellular scale.",
             "confidence": "medium",
-            "note": "scGPT establishes three capability attributes, including multi-omic input: tutorials/Tutorial_Multiomics.ipynb and Tutorial_Perturbation.ipynb both ship in the repository, even though the project's own to-do list still marks multi-omic support unfinished. Gene and cell representations count as one scale, and the organ-specific checkpoints are separate models rather than a second scale.",
-            "last_verified": "2026-09-10",
+            "note": "scGPT ships fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles. Tutorial_Multiomics.ipynb and Tutorial_Perturbation.ipynb both ship in the repository, even though the project's own to-do list still marks multi-omic support unfinished. Gene and cell representations are one scale, and the organ-specific checkpoints are separate models rather than a second scale.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/README.md",
-                "shows": "Ships examples/finetune_integration.py for fine-tuning a pretrained checkpoint and names the model a generative pre-trained foundation model for single-cell multi-omics.",
-                "accessed": "2026-09-10",
+                "shows": "Append: To-do list still has unchecked \"Finetuning examples for multi-omics integration, cell type annotation, perturbation prediction, cell generation\"; checkpoint table lists whole-human, pan-cancer and organ-specific models, and a grep for spatial|multi-scale|tissue-level|resolution finds no second scale.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83"
               },
               {
                 "url": "https://scgpt.readthedocs.io/en/latest/introduction.html",
-                "shows": "Describes generative pre-training on over 33 million cells, single-cell multi-omic data analysis, and downstream multi-omic integration and genetic perturbation prediction, with fine-tuning tutorials for each.",
-                "accessed": "2026-09-10",
+                "shows": "Describes generative pre-training on \"over 33 million cells\" and lists fine-tuning tutorials for batch integration, cell-type annotation, and \"Perturbation Prediction\"; downstream tasks include multi-omic integration.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "38b7f69436d90bab0b73ddaa3b90e3f96bfd96c6b6b929aabd30483e5a67bd05"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Multiomics.ipynb",
+                "shows": "The shipped notebook is titled \"Fine-tuning on Pre-trained Model for Multiomic Integration\" and works on RNA and protein abundance data from the BMMC dataset.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "617303e1495c376681d2a7de064d79d95f5364e30a30c163de70f860b6a8257d"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Perturbation.ipynb",
+                "shows": "The shipped notebook is titled \"Fine-tuning Pre-trained Model for Perturbation Prediction\" and calls model.pred_perturb to produce predicted expression.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "a997191d88e4c05969103e777f1323ebf4263238e64520877ae3a0f6aed4bdbb"
               }
             ]
           },
@@ -28462,9 +28541,9 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "Checkpoints are distributed as public Drive folders rather than on the Hugging Face Hub, which the repository still lists as an open to-do."
         },
@@ -28603,19 +28682,19 @@
             "value": "None of the four attributes is established; the paper states that new cells are embedded with no data labelling, model training, or fine-tuning.",
             "confidence": "high",
             "note": "The absent adaptation pathway is a positive claim by the publisher, not a gap in the evidence: UCE is built to embed new cells with no additional training or fine-tuning. It also emits embeddings rather than generated outputs, takes one transcriptomic modality, and works at one scale -- embedding cells from many species broadens coverage of that same modality rather than adding a second one.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://www.nature.com/articles/s41586-026-10689-z",
-                "shows": "States that UCE's universality means new cells can be embedded with no data labelling, model training or fine-tuning, and describes the output as a unified biological latent space.",
-                "accessed": "2026-09-10",
+                "shows": "States that \"new cells can be embedded with no data labelling, model training or fine-tuning\", and describes \"creating a unified biological latent space\" across tissues and species.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "f5fc0a2789728c2f2b2079292dfe514b3161de9c28b4c6c2852fb42cb98bc94a"
+                "content_sha256": "94f03df5a322b16306cd74d0200a3619bd81dbb9d26511419ccbaac5977bb7a0"
               },
               {
                 "url": "https://raw.githubusercontent.com/snap-stanford/UCE/main/README.md",
-                "shows": "Exposes a single embedding script whose output is UCE embeddings added to the input AnnData, with no training, fine-tuning, or generation entry point.",
-                "accessed": "2026-09-10",
+                "shows": "Describes an implementation \"to be used to embed individual anndata datasets\" through the single eval_single_anndata.py script, whose output is \"identical to the proccessed input anndata, but have UCE embeddings added\"; no training, fine-tuning or generation entry point.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "4454680cbe611ede29c2d19da3a000d874ec145ca3f36be9659545c0e5015101"
               }
@@ -28627,9 +28706,9 @@
           "maturity": 1.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The repository is an inference implementation; the pretraining corpus and the model's behavior are documented in the Nature paper rather than in the README."
         },
@@ -28739,13 +28818,13 @@
             "basis_detail": "scientific adaptation surface",
             "value": "A documented fine-tuning path to a desired level of theory or to direct structure-to-property prediction; one atomistic modality, no generation, one scale.",
             "confidence": "high",
-            "note": "One attribute. The model card rules out generation explicitly, the temperature and pressure ranges are conditions rather than scales, and the 1M and 5M checkpoints are sizes.",
-            "last_verified": "2026-09-10",
+            "note": "MatterSim documents a fine-tuning path to a desired level of theory or to direct structure-to-property prediction. The model card rules out generation explicitly, the temperature and pressure ranges are conditions rather than scales, and the 1M and 5M checkpoints are sizes of one model.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/microsoft/mattersim/main/MODEL_CARD.md",
-                "shows": "States the model can be fine-tuned for atomistic simulations at a desired level of theory or for direct structure-to-property predictions, and that it does not support generation of new materials.",
-                "accessed": "2026-09-10",
+                "shows": "States \"The model can be fine-tuned for atomistic simulations at a desired level of theory or for direct structure-to-property predictions with high data efficiency.\" and \"The model does not support generation of new materials as it is designed for materials simulation and property prediction only.\" Temperatures \"from 0 to 5000 K and pressures up to 1000 GPa\" are conditions, and the 1M and 5M checkpoints are sizes.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "9f48dffafb55f0700bbc2d180ce8f7b5bc28decac1de43c3058c323a7c0dc5b7"
               }
@@ -28757,9 +28836,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-06",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The pretrained checkpoints ship inside the repository and through the mattersim PyPI package; more advanced versions are held back behind Azure Quantum Elements."
         },
@@ -28769,7 +28848,7 @@
           "org_slug": "meta",
           "org": "Meta",
           "type": "model",
-          "description": "UMA is Meta FAIR's family of Universal Models for Atoms, trained on roughly half a billion DFT structures compiled from five chemical-domain datasets and routed at inference by a task embedding covering molecules, inorganic materials, catalysis, MOFs, and molecular crystals. Weights are distributed through a gated Hugging Face repository and run through the fairchem library's ASE calculator and multi-GPU simulation interfaces.",
+          "description": "UMA is Meta FAIR's family of Universal Models for Atoms, trained on roughly half a billion DFT structures compiled from five chemical-domain datasets and routed at inference by a task embedding covering molecules, inorganic materials, catalysis, MOFs, and molecular crystals. Weights are distributed through a Hugging Face repository that requires manual approval and registration of a legal name and organization, and run through the fairchem library's ASE calculator and multi-GPU simulation interfaces.",
           "openness": {
             "score": 4,
             "class": "open_weights",
@@ -28919,7 +28998,6 @@
             "value": "One model consuming five distinct DFT levels of theory, selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation, one scale.",
             "confidence": "high",
             "note": "UMA trains on five separate DFT datasets with different functionals and pseudopotentials, which counts as multiple distinct data sources rather than variables of one. It also documents a first-party fine-tuning pathway with a dataset-preparation script and templated configs, so the publisher's note that fine-tuning is usually unnecessary does not change that the pathway exists.",
-            "last_verified": "2026-09-10",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md",
@@ -28943,9 +29021,19 @@
           "maturity": 2.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "date": "2026-11-06",
+            "basis": "partial",
+            "latest_axis_confirmation": "2026-11-11",
+            "unconfirmed_axes": [
+              "capability"
+            ],
+            "verification_holds": [
+              {
+                "axis": "capability",
+                "since": "2026-11-16",
+                "reason": "The value's 'one scale' clause is contradicted by the two published sizes; the templated config directory itself returned 404 on raw (only the script that reads it was fetched), so that clause rests on the script. A maintainer should approve the value rewrite and confirm the score is unaffected. Proposed for maintainer review, not applied: Score stays 3 (no score change proposed). Recorded value says 'one scale', but the fairchem README lists two sizes, uma-s-1p2p1 and uma-m-1p1 (50M/1.4B active/total params); the five-dataset task-embedding and first-party fine-tuning claims are supported. Proposed value: 'One model family consuming five distinct DFT datasets (two more tasks in UMA-1.2), selected at inference by a task embedding, in small and medium sizes, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation.' Needs maintainer ruling before the date can move."
+              }
+            ]
           },
           "version_note": "Access is gated on manual approval and requires registering a full legal name and organization, which is a conduct and identity condition rather than a commercial bound."
         },
@@ -28955,7 +29043,7 @@
           "org_slug": "acesuit",
           "org": "ACEsuit",
           "type": "model",
-          "description": "MACE is ACEsuit's equivariant message-passing framework for machine-learning interatomic potentials, shipping a full data-preprocessing, training, and fine-tuning pipeline alongside a series of pretrained foundation models covering 89 elements. The foundation checkpoints span inorganic materials, organic molecules, electrostatics, and cross-domain models, and are released under different licences from the code.",
+          "description": "MACE is ACEsuit's equivariant message-passing framework for machine-learning interatomic potentials, shipping a full data-preprocessing, training, and fine-tuning pipeline alongside a series of pretrained foundation models covering 89 elements. The foundation checkpoints span inorganic materials, organic molecules, electrostatics, and cross-domain models.",
           "openness": {
             "score": 2,
             "class": "restricted",
@@ -29076,15 +29164,22 @@
             "basis_detail": "scientific adaptation surface",
             "value": "A documented finetuning path from any foundation checkpoint onto a new dataset, and in MACE-MH a single checkpoint carrying task heads across several DFT levels of theory; no generation, one scale.",
             "confidence": "high",
-            "note": "Most of the family is one checkpoint per domain, with small, medium and large as sizes rather than scales. MACE-MH is credited as a second attribute: a single checkpoint whose card claims unified cross-domain capability across inorganic crystals, molecular systems, surface chemistry and reactive organic chemistry, with separate heads for OMAT PBE, OMOL, OC20, SPICE, RGD1, MPTraj and MatPES.",
-            "last_verified": "2026-09-10",
+            "note": "MACE documents a finetuning path from any foundation checkpoint onto a new dataset. Most of the family is one checkpoint per domain, with small, medium and large as sizes rather than scales, and MACE-MH adds a second capability: a single checkpoint whose card claims unified cross-domain capability across inorganic crystals, molecular systems, surface chemistry and reactive organic chemistry, with separate heads for OMAT PBE, OMOL, OC20, SPICE, RGD1, MPTraj and MatPES.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/ACEsuit/mace/main/README.md",
-                "shows": "Documents finetuning a foundation model with mace_run_train --foundation_model, states the pretrained models can be used directly for inference or as a starting point for fine-tuning, and describes outputs as energies, forces and stresses.",
-                "accessed": "2026-09-10",
+                "shows": "States the foundation models \"can be used directly for inference, or as a starting point for fine-tuning on a new dataset\" and documents finetuning with the extra argument \"--foundation_model=model_type\" to mace_run_train.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "dd0baa36ac60651bf8de2783026124f4cd374a0ab2a90c71a7c384925d8bedcc"
+                "content_sha256": "ce86d53b18ca7b6167d4791fac5832c37deb680dd0534354575c837c16cfac89"
+              },
+              {
+                "url": "https://huggingface.co/mace-foundations/mace-mh-1/raw/main/README.md",
+                "shows": "MACE-MH-1 card claims \"Unified cross-domain capability\" spanning inorganic crystals, molecular systems, surface chemistry and reactive organic chemistry, and lists \"Multiple Heads\": OMAT PBE (main), OMOL, OC20, SPICE, RGD1, MPTraj, Matpes (r2scan), trained on different levels of theory.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "fa429ada8f55eae243549fd4c97d024a85a8f764c8b3e12c1e369ad70a0cc073"
               }
             ]
           },
@@ -29094,9 +29189,9 @@
           "maturity": 2.7,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-11",
             "basis": "partial",
-            "latest_axis_confirmation": "2026-11-11",
+            "latest_axis_confirmation": "2026-11-16",
             "unconfirmed_axes": [
               "adoption"
             ],
@@ -29231,13 +29326,13 @@
             "basis_detail": "scientific adaptation surface",
             "value": "A documented finetuning script and guide for adapting any released checkpoint to a custom dataset; one atomistic modality, no generation, one scale.",
             "confidence": "high",
-            "note": "One attribute. Periodic and non-periodic support is coverage rather than a second scale, the direct and conservative variants are separate checkpoints, and the models predict energies, forces and stresses rather than generating structures.",
-            "last_verified": "2026-09-10",
+            "note": "Orb ships a finetuning script and guide for adapting any released checkpoint to a custom dataset. Support for periodic and non-periodic systems is coverage rather than a second scale, the direct and conservative variants are separate checkpoints, and the models predict energies, forces and stresses rather than generating structures.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/orbital-materials/orb-models/main/README.md",
-                "shows": "Documents finetune.py against any model in ORB_PRETRAINED_MODELS with a dedicated finetuning guide, and describes the models as calculating energies, forces and stresses of atomic systems.",
-                "accessed": "2026-09-10",
+                "shows": "Documents a finetuning script: \"You can finetune the model using your custom dataset.\" with a link to the \"Finetuning Guide\", run as \"python finetune.py --dataset=\" against any model in ORB_PRETRAINED_MODELS, and a script that expects \"energy, forces, and stress\" data.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "6ee1f8fcda191b3d4a4d1716256af566c85d279a56352d5722439e9c28210938"
               }
@@ -29249,9 +29344,9 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-06",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "Checkpoints are loaded through the orb_models.forcefield.pretrained module rather than declared as a Hub artifact."
         },
@@ -29352,14 +29447,21 @@
             "value": "None of the four attributes is established; the repository publishes architectures and discovered structures rather than a runnable adaptation, generation, multi-instrument, or multi-scale surface.",
             "confidence": "high",
             "note": "Nothing here can be adapted, because no trained model ships and the training colabs are still upcoming. Discovery in the paper came from a substitution-and-filter pipeline around the model rather than from the model generating structures, so the generative attribute is not counted.",
-            "last_verified": "2026-09-10",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/materials_discovery/main/README.md",
-                "shows": "Describes GNoME as a simple message-passing architecture trained to predict energies, provides model definitions and exploration Colabs only, and lists model training colabs and configs as upcoming.",
-                "accessed": "2026-09-10",
+                "shows": "Provides \"We provide model definitions for the two sets of models used in the paper.\" and lists \"Model training colabs and configs\" as upcoming, with Colabs only for exploring the dataset; no trained model or runnable adaptation surface ships.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "67699d0d7928b23009b804b95dbfd7cd024487e3a6a76fff41b5bb3c2f468c21"
+              },
+              {
+                "url": "https://www.nature.com/articles/s41586-023-06735-9",
+                "shows": "Describes the pipeline as \"In a series of rounds, these graph networks for materials exploration (GNoME) are trained on available data and used to filter candidate structures.\" so the models filter candidates rather than generate structures.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "eab2191cd0b32ae8579c712be5cc9d3bdec3ee91096186544379fdb9f97404da"
               }
             ]
           },
@@ -29369,9 +29471,9 @@
           "maturity": 1.3,
           "mature": false,
           "freshness": {
-            "date": "2026-09-10",
+            "date": "2026-11-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-11-11"
+            "latest_axis_confirmation": "2026-11-16"
           }
         }
       ]
