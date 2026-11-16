@@ -45,17 +45,20 @@ adoption:
     http_status: 200
     content_sha256: 330d873cfab29956660bafe7616066beae3c6faaf1aadaa4191311036b6740ef
 capability:
-  score: 3
+  score: 2
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Task-specific adaptation and a variable regional/global and temporal scale; a deterministic future-state target, and one MERRA-2 input system.
-  relative_to: terramind
+  value: Task-specific downstream adaptation; global and regional runs and a flexible lead time on one MERRA-2
+    grid, which are extent rather than a second resolution; a deterministic future-state target, and one
+    MERRA-2 input system.
+  relative_to: weathernext
   relation: two_below
   confidence: high
-  note: 'Prithvi WxC documents two readable capabilities: task-specific downstream adaptation and a variable
-    regional-to-global, flexible-lead-time forecasting scale. Producing a future timestamp from two input
-    timestamps is a deterministic forecast rather than a generated output, and the 160 MERRA-2 variables
-    it ingests count as one input system, not several.'
+  note: Prithvi WxC documents task-specific downstream adaptation. Its global and regional runs and flexible
+    lead time change how much area it covers and how far ahead it forecasts on one MERRA-2 grid rather than
+    the resolution it works at, and its downscaling model is a separately released fine-tune. Producing
+    a future timestamp from two input timestamps is a deterministic forecast rather than a generated output,
+    and the 160 MERRA-2 variables it ingests count as one input system.
   last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-WxC/main/README.md
@@ -67,3 +70,11 @@ capability:
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: 189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713
+  - url: https://huggingface.co/ibm-nasa-geospatial/Prithvi-WxC-1.0-2300M/raw/main/README.md
+    shows: The card says "The time delta between input timestamps is variable as is the forecast lead time"
+      and that in pretraining "the forecast lead time was chosen from [0, 6, 12, 24] hours"; it adds that
+      Prithvi WxC "has been fine-tuned for several tasks including climate downscaling", released as part
+      of the IBM Granite family.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 9eb1978782a865079baa619a4645e681585a808477411088dec8695c274ae459

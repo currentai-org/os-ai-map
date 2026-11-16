@@ -106,14 +106,17 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Released linear-probing and segmentation fine-tuning workflows; one checkpoint accepts five satellite sensor modalities with any channel count.
-  relative_to: prithvi-eo
+  value: Released linear-probing and segmentation fine-tuning workflows; one checkpoint accepts five satellite
+    sensor modalities with any channel count; images are resized to one size and only wavelength conditions
+    the model.
+  relative_to: clay
   relation: one_below
   confidence: high
-  note: 'DOFA earns two capabilities directly: an adaptation pathway through linear-probing and segmentation
-    fine-tuning, and a single checkpoint that accepts five different satellite sensors. Masked autoencoding,
-    its pretraining objective, is not counted as generation, and that same sensor diversity is not counted
-    a second time as multiple scales.'
+  note: DOFA documents an adaptation pathway through linear-probing and segmentation fine-tuning, and one
+    checkpoint that accepts five different satellite sensors. Those sensors have different native resolutions,
+    but every image is resized to one size and only wavelength conditions the model, so it does not take
+    each input at its own resolution the way Clay does, which keeps it a step below Clay. Masked autoencoding,
+    its pretraining objective, is not counted as generation.
   last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/zhu-xlab/DOFA/master/README.md
@@ -130,3 +133,12 @@ capability:
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: 72db1a0a76ecc48a222d4e496685abf1f1a4321a1ef7f80fd86989f0e4e48d31
+  - url: https://arxiv.org/html/2403.15356
+    shows: 'The paper says "DOFA is pretrained on a large-scale multimodal EO dataset comprising approximately
+      11.5 million images from five different modalities: Sentinel-1, Sentinel-2, NAIP, Gaofen, and EnMAP",
+      conditions its patch embedding on wavelength (section "Wavelength-conditioned dynamic patch embedding"),
+      and states that "All images are resized to" 224 by 224 pixels "and normalized using modality-specific
+      statistics".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 857467b047bf2fd2b00e9bef6c845a8df9a03512730ecc96a280d78b6c7cc2b4

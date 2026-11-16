@@ -4396,3 +4396,66 @@ rulings:
       - sources/scores/surya-heliophysics.yaml
       - sources/categories/scientific_ai_models.yaml
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1077']
+
+  - id: R-2026-11-16-b
+    date: 2026-11-16
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1079", terramind, prithvi-eo, prithvi-wxc, pangu-weather, geneformer, scgpt, scientific_ai_models]
+    question: >-
+      The scientific_ai_models capability consistency audit (#1079) proposed a ruling (g) for multi_scale and six
+      corrections: terramind, prithvi-eo, prithvi-wxc and pangu-weather lose multi_scale, and geneformer and scgpt
+      lose generative. Does multi_scale read the sampling resolution a model is specified to take in or put out,
+      or does a resolution reached in a transfer test or after downstream fine-tuning also count; and is a
+      perturbation output that predicts an embedding shift or an expression profile generation under (d)?
+    ruling: >-
+      Adopt ruling (g) as written in the brief, with one wording change: replace "whose input carries each
+      sample's resolution" with "whose documented input specification supports samples at multiple native
+      sampling resolutions, with the necessary resolution information supplied to the model". Keep all four
+      exclusions: internal representation such as pixel/token streams, local/global attention or
+      patch/window/pyramid levels; sources resampled to one grid before they enter; coverage, window length or
+      forecast lead time, which are extent under (e); and a resolution met only in a transfer test or after
+      downstream fine-tuning, which is adaptation. The transfer/fine-tuning reading is rejected: it would reward
+      the availability of evaluations rather than a documented intrinsic capability. Apply the six corrections:
+      terramind 5 to 4, prithvi-eo 4 to 3, prithvi-wxc 3 to 2 and pangu-weather 2 to 1 (multi_scale not met),
+      geneformer 3 to 2 and scgpt 4 to 3 (generative not met). A level 5 with no qualifying product is
+      acceptable, and no substitute anchor is introduced to preserve the distribution. For the biology models
+      the test is the documented output capability, not whether the implementation contains generative
+      machinery; an MSE loss alone would not disqualify generation. Re-anchor the comparisons on the remaining
+      level-4 products, especially clay, rather than keeping prithvi-eo as the central reference, pointing each
+      at a same-domain peer and dropping a comparison where no meaningful peer remains. dofa's reason for
+      lacking multi_scale is corrected to the Clay standard (chips resized to one size, only wavelength enters
+      the model), and granite-geospatial's adaptation credit cites its fine-tuning notebook rather than the
+      SimMIM quote; neither score moves. Openness and adoption are untouched.
+    status: in-force
+    executor: agent
+    lands_in:
+      - sources/categories/scientific_ai_models.yaml
+      - sources/scores/terramind.yaml
+      - sources/scores/prithvi-eo.yaml
+      - sources/scores/prithvi-wxc.yaml
+      - sources/scores/pangu-weather.yaml
+      - sources/scores/geneformer.yaml
+      - sources/scores/scgpt.yaml
+      - sources/scores/dofa.yaml
+      - sources/scores/granite-geospatial.yaml
+      - sources/scores/alphaearth-foundations.yaml
+      - sources/scores/alphafold.yaml
+      - sources/scores/alphagenome.yaml
+      - sources/scores/aurora-weather.yaml
+      - sources/scores/boltz.yaml
+      - sources/scores/chai.yaml
+      - sources/scores/clay.yaml
+      - sources/scores/climax.yaml
+      - sources/scores/esm-2.yaml
+      - sources/scores/esm-3.yaml
+      - sources/scores/evo-2.yaml
+      - sources/scores/mattergen.yaml
+      - sources/scores/nasa-ibm-lunar-foundation-model.yaml
+      - sources/scores/neuralgcm.yaml
+      - sources/scores/openfold.yaml
+      - sources/scores/presto.yaml
+      - sources/scores/rfdiffusion.yaml
+      - sources/scores/surya-heliophysics.yaml
+      - sources/scores/weathernext.yaml
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1080']

@@ -48,15 +48,18 @@ adoption:
     http_status: 200
     content_sha256: f992689ecb0a039252a436903e3cd81713669b3605897d2da073980465bdde03
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles; one cellular scale.
+  value: Fine-tuning scripts and tutorials, and multi-omic input; perturbation output is a predicted post-perturbation
+    expression profile rather than a generated one, and cell generation is still listed as to-do; one cellular
+    scale.
   confidence: medium
-  note: scGPT ships fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation
-    expression profiles. Tutorial_Multiomics.ipynb and Tutorial_Perturbation.ipynb both ship in the repository,
-    even though the project's own to-do list still marks multi-omic support unfinished. Gene and cell representations
-    are one scale, and the organ-specific checkpoints are separate models rather than a second scale.
+  note: scGPT ships fine-tuning scripts and tutorials and takes multi-omic input; Tutorial_Multiomics.ipynb
+    ships even though the to-do list still marks multi-omic support unfinished. Its perturbation tutorial
+    predicts the expression values that follow a given perturbation, a deterministic prediction rather than
+    a generated cell or distribution, and cell generation is still on that to-do list. Gene and cell representations
+    are one scale, and the organ-specific checkpoints are separate models.
   last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/bowang-lab/scGPT/main/README.md
@@ -81,8 +84,9 @@ capability:
     http_status: 200
     content_sha256: 617303e1495c376681d2a7de064d79d95f5364e30a30c163de70f860b6a8257d
   - url: https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Perturbation.ipynb
-    shows: The shipped notebook is titled "Fine-tuning Pre-trained Model for Perturbation Prediction" and
-      calls model.pred_perturb to produce predicted expression.
+    shows: The shipped notebook is titled "Fine-tuning Pre-trained Model for Perturbation Prediction"; its
+      predict function is documented as "Predict the gene expression values for the given perturbations."
+      and calls model.pred_perturb to produce predicted expression.
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: a997191d88e4c05969103e777f1323ebf4263238e64520877ae3a0f6aed4bdbb
