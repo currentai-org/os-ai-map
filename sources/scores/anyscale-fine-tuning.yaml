@@ -12,43 +12,39 @@ openness:
         and no Anyscale-authored fine-tuning implementation is published
     context:
       built-on:
-        value: Ray+DeepSpeed+HF-Accelerate
-        detail: OSS deps) but LLMForge itself not redistributable
-        raw: Ray+DeepSpeed+HF-Accelerate(OSS deps) but LLMForge itself not redistributable
+        value: LLaMA-Factory+SkyRL+Ray-Train
+        detail: open-source frameworks Anyscale documents for post-training on its platform
       methods:
         value: LoRA+full-FT
       status:
-        value: deprecated
+        value: active
+        detail: current post-training guide and agent skill
   confidence: high
   note: Anyscale's fine-tuning platform is proprietary SaaS, delivered in object-code form only under its
-    terms of service, with no Anyscale-authored fine-tuning implementation published. LLMForge, its own
-    library, has been retired in favor of orchestrating open frameworks such as LLaMA-Factory, SkyRL and
-    Ray Train, but the platform wrapping them stays closed either way.
-  last_verified: '2026-09-23'
+    terms of service, and no Anyscale-authored fine-tuning implementation is published. The platform runs
+    open frameworks such as LLaMA-Factory, SkyRL and Ray Train, but the layer wrapping them stays closed.
   raw: license:proprietary(Anyscale-platform-only);source:closed(managed SaaS platform, Terms of Service
     deliver Platform Services in object code format only and no Anyscale-authored fine-tuning implementation
-    is published);built-on:Ray+DeepSpeed+HF-Accelerate(OSS deps) but LLMForge itself not redistributable;methods:LoRA+full-FT;status:deprecated
+    is published);built-on:LLaMA-Factory+SkyRL+Ray-Train(open-source frameworks Anyscale documents for post-training
+    on its platform);methods:LoRA+full-FT;status:active(current post-training guide and agent skill)
+  last_verified: '2026-11-16'
   sources:
   - url: https://www.anyscale.com/terms
-    shows: Terms of Service defines the delivered product, "Platform Services", as Anyscale's own proprietary
-      software-as-a-service platform, made available to customers in object code format only, with its associated
-      SDKs and APIs likewise object-code-only.
-    accessed: '2026-09-23'
+    shows: Terms of Service define "Platform Services" as Anyscale's "proprietary software-as-a-service
+      platform" with its SDKs and APIs provided "in object code format only".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 3546920927636489041dd6007b8d5bf97350cfe11eb2166d7701cfb52bc7fc8f
+    content_sha256: e3b69deaa524f3972f156430a950d783f2139bafc1628cb64ada6ff3a93fe6e3
     establishes:
     - source
     - license
   - url: https://docs.anyscale.com/llm/fine-tuning
-    shows: 'Describes Anyscale''s current LLM post-training capability as delivered through the managed
-      console orchestrating open frameworks on Ray clusters: the page states "Anyscale supports multiple
-      frameworks for LLM post-training, including LLaMA-Factory, SkyRL, and Ray Train", names no Anyscale-authored
-      library, and points at the Anyscale console for every workflow. A full-text search of the fetched
-      page for "LLMForge" finds zero occurrences, where the score''s prior evidence cited that library by
-      name. No self-hostable Anyscale fine-tuning implementation is offered.'
-    accessed: '2026-09-23'
+    shows: The page states "Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory,
+      SkyRL, and Ray Train" and "full fine-tuning and parameter-efficient methods (LoRA, QLoRA, freeze-tuning)";
+      no Anyscale-authored library is named.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 922291222df0bbc69d15d67e3e76e2dc69c4b740e49e247a1db0ab2ece5cb2bf
+    content_sha256: 79d084f812f7d112f8576d640de808081d28a477f3fb08e867e6f32fa5d850b1
     establishes:
     - source
 adoption:
@@ -58,15 +54,14 @@ adoption:
   confidence: low
   note: Anyscale publishes no usage figure for its fine-tuning feature, and the open frameworks it runs
     publish none that is specific to the platform, so the map leaves this product unscored.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.anyscale.com/llm/fine-tuning
-    shows: 'Searched the body for downloads, users and customers: none found, and the only "usage" is VRAM
-      usage; the page describes methods, frameworks and integrations but publishes no usage figure for the
-      fine-tuning capability, and states "Anyscale supports multiple frameworks for LLM post-training".'
-    accessed: '2026-09-28'
+    shows: Page describes methods, frameworks and integrations and states "Anyscale supports multiple frameworks
+      for LLM post-training"; it carries no figure for users, customers or downloads.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7
+    content_sha256: 79d084f812f7d112f8576d640de808081d28a477f3fb08e867e6f32fa5d850b1
 capability:
   score: 3
   basis: feature_matrix
@@ -80,19 +75,18 @@ capability:
     which places it one step below Axolotl.
   relative_to: axolotl
   relation: one_below
-  last_verified: '2026-09-28'
   sources:
   - url: https://docs.anyscale.com/llm/fine-tuning
-    shows: 'The page lists post-training capabilities: "algorithms such as PPO, DPO, KTO, and ORPO, or RLVR
-      with GRPO and DAPO" and "full fine-tuning and parameter-efficient methods (LoRA, QLoRA, freeze-tuning)",
-      with scaling "compatible with FSDP, DeepSpeed, and Megatron".'
-    accessed: '2026-09-28'
+    shows: The page lists "algorithms such as PPO, DPO, KTO, and ORPO, or RLVR with GRPO and DAPO", "full
+      fine-tuning and parameter-efficient methods (LoRA, QLoRA, freeze-tuning)" and scaling "compatible
+      with FSDP, DeepSpeed, and Megatron".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7
+    content_sha256: 79d084f812f7d112f8576d640de808081d28a477f3fb08e867e6f32fa5d850b1
   - url: https://docs.anyscale.com/llm/fine-tuning
     shows: The page states "Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory,
       SkyRL, and Ray Train" and cautions "Feature availability and exact configurations can vary by model
-      family and framework."
-    accessed: '2026-09-28'
+      family and framework".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7
+    content_sha256: 79d084f812f7d112f8576d640de808081d28a477f3fb08e867e6f32fa5d850b1

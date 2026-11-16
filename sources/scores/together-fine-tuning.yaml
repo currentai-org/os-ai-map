@@ -21,31 +21,38 @@ openness:
     there is no self-hostable implementation. Together's Terms of Service bar reverse-engineering the underlying
     source code and vest all IP in Together AI, granting users only a non-sublicensable right to use the
     service. (Together tunes open-weight base models, but the offering itself is closed.)
-  last_verified: '2026-09-23'
+  last_verified: '2026-11-16'
   raw: source:closed;training-pipeline:closed;runs-on:Together-cloud-only;license:Proprietary(managed service,
     per-token training pricing); base-weights:open-models(varies)
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
-    shows: '"Together AI handles the full lifecycle: data upload, training, hosting, and inference on a
-      dedicated endpoint." No self-hosted training pipeline or repository appears anywhere on the page;
-      deploying a tuned model is described only as "Serve your fine-tuned model on a dedicated endpoint
-      or download it for local use," which is about the resulting checkpoint, not the training engine.'
-    accessed: '2026-09-23'
+    shows: '"Together AI handles the full lifecycle: data upload, training, hosting, and inference" and
+      "Serve your fine-tuned model on a dedicated endpoint or download it for local use", which concerns
+      the resulting checkpoint, not the training engine. No self-hosted training pipeline or repository
+      is described.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: c5db4117d3599aba23205783d845b6fe65b2a017979512bdf042ae923c47f153
+    content_sha256: d905b3e461d320052e4a6f31d224e9b75bd13a4a4633209c25f7bf897c657f0c
     establishes:
     - source
   - url: https://www.together.ai/terms-of-service
-    shows: The Terms of Service prohibit a user from any "attempt to create, or derive, or permit or assist
-      any third party to create or derive, the source code underlying the Services," and state that the
-      Company "hereby grants you a non-exclusive, non-sublicensable right and license to use the Company
-      IP as permitted by this Agreement," while "Company reserves all of its intellectual property and other
-      proprietary rights not expressly granted to you herein."
-    accessed: '2026-09-23'
+    shows: The Terms of Service prohibit any "attempt to create, or derive, or permit or assist any third
+      party to create or derive, the source code underlying the Services", and state that the Company "hereby
+      grants you a non-exclusive, non-sublicensable right and license to use the Company IP as permitted
+      by this Agreement", while "Company reserves all of its intellectual property and other proprietary
+      rights not expressly granted to you herein".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 65a29b0a6910b0d39587cd00fded1175ac8c774523e458d4bb1ee7b8b8033820
+    content_sha256: dea418b1958b6d0b110b282b762898621d8c1aeb3466ebce15db5e833ab226cc
     establishes:
     - license
+  - url: https://docs.together.ai/docs/fine-tuning/supported-models
+    shows: The supported-models page lists open-weight base models for tuning, for example "deepseek-ai/DeepSeek-V4-Flash",
+      "Qwen/Qwen3.5-397B-A17B" and "meta-llama/Llama-3.3-70B-Instruct-Reference", which are the base-weights
+      the service tunes.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 2a2e0cc8b1bd47c9a4a9f1dc128647b4d33c17d4313a8873613d981623be4e1a
 adoption:
   level: null
   reach: null
@@ -54,22 +61,21 @@ adoption:
   note: Together publishes no usage figures for its fine-tuning service, such as jobs run, customers tuning
     or models fine-tuned. A vendor case study describes one customer's faster iteration and improved accuracy,
     but a single anecdote says little about how widely the service is used, so the map leaves it unscored.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
     shows: 'Managed fine-tuning overview: "Together AI handles the full lifecycle: data upload, training,
-      hosting, and inference" and "Serve your fine-tuned model on a dedicated endpoint or download it for
-      local use." Searched the body for jobs run, customers, developers, users and usage counts: none found.'
-    accessed: '2026-09-28'
+      hosting, and inference". The page states no usage figures.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9cb2836f5b4e1d219979a503b205073720586d51485661b786acf42e0f9c0f7c
+    content_sha256: d905b3e461d320052e4a6f31d224e9b75bd13a4a4633209c25f7bf897c657f0c
   - url: https://www.together.ai/fine-tuning
-    shows: 'Product page carries one customer testimonial, "move from weekly to daily iteration, cut costs
-      by 2–3×, and improve accuracy from 77% to 87%." Searched the body for customer counts, jobs run, models
-      fine-tuned and developer counts: none found.'
-    accessed: '2026-09-28'
+    shows: Product page carries one customer testimonial, "move from weekly to daily iteration, cut costs
+      by 2–3×, and improve accuracy from 77% to 87%." Its customers section is headed for inference in production,
+      not fine-tuning.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 0763c4b6744a71a778e78bc87ea62e1a15548f0ca1effa2e589d420019ef2cf9
+    content_sha256: 67ea144c06c97667ed09768054b1f7e2334ce13dedc42524819f05cd88b5b212
 capability:
   score: 4
   basis: feature_matrix
@@ -81,32 +87,29 @@ capability:
     reasoning and vision-language methods on open-weight models, with full-parameter tuning up to 70B-class
     models and LoRA on much larger ones. It runs as a managed service rather than exposing a training framework,
     so it offers breadth of methods without the parallelism and precision controls of Megatron-LM.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
-    shows: 'Managed fine-tuning overview: "Together AI handles the full lifecycle: data upload, training,
-      hosting, and inference" and lists supervised, "Align a model with rankings over preferred and dispreferred
-      responses using DPO.", vision-language, "Train a model to invoke tools and structured functions reliably."
-      and "Train a reasoning model with chain-of-thought data." methods, plus "Choose how much of the model
-      to update, and tune LoRA’s rank and target modules." Searched the body for jobs run, customers, developers
-      and usage counts: none.'
-    accessed: '2026-09-28'
+    shows: 'Overview lists "Align a model with rankings over preferred and dispreferred responses using
+      DPO.", "Train a model to invoke tools and structured functions reliably." and "Train a reasoning model
+      with chain-of-thought data.", plus "Choose how much of the model to update, and tune LoRA’s rank and
+      target modules." Lifecycle: "Together AI handles the full lifecycle: data upload, training, hosting,
+      and inference".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9cb2836f5b4e1d219979a503b205073720586d51485661b786acf42e0f9c0f7c
+    content_sha256: d905b3e461d320052e4a6f31d224e9b75bd13a4a4633209c25f7bf897c657f0c
   - url: https://www.together.ai/fine-tuning
     shows: The product page states "Fine-tune 100B+ models (DeepSeek-V3, Qwen3-235B) that break other platforms,
-      with the reliability to experiment rapidly." Reinforcement learning and quantization appear in an
-      "Advanced model shaping capabilities" block headed "For teams pushing models beyond standard fine-tuning",
-      which lists "Apply FP8 and NVFP4 quantization to push the limits of model efficiency" and "Leverage
-      PyTorch-based reinforcement learning to shape model policies". Multi-GPU and extended-context training
-      are named only in the page's structured-data description, not in its visible copy.
-    accessed: '2026-09-28'
+      with the reliability to experiment rapidly" and, under "Advanced model shaping capabilities", "Apply
+      FP8 and NVFP4 quantization to push the limits of model efficiency" and "Leverage PyTorch-based reinforcement
+      learning to shape model policies".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 0763c4b6744a71a778e78bc87ea62e1a15548f0ca1effa2e589d420019ef2cf9
+    content_sha256: 67ea144c06c97667ed09768054b1f7e2334ce13dedc42524819f05cd88b5b212
   - url: https://docs.together.ai/docs/fine-tuning/supported-models
-    shows: Supported-models page has separate LoRA and full fine-tuning tables; the LoRA table lists "deepseek-ai/DeepSeek-V4-Flash"
+    shows: Separate LoRA and full fine-tuning tables; the LoRA table lists "deepseek-ai/DeepSeek-V4-Flash"
       and "Qwen/Qwen3.5-397B-A17B", while the full fine-tuning table lists nothing larger than "meta-llama/Llama-3.3-70B-Instruct-Reference"
-      and Mixtral-8x7B.
-    accessed: '2026-09-28'
+      (plus Mixtral-8x7B and models of 31B or smaller).
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2c7295bebd2080b22e0033688b58d0416d83ed0a961ca8fc5e100bc98be8fd27
+    content_sha256: 2a2e0cc8b1bd47c9a4a9f1dc128647b4d33c17d4313a8873613d981623be4e1a

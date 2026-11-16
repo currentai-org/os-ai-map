@@ -19,61 +19,47 @@ openness:
   confidence: high
   note: Apache-2.0, an OSI license, with the full source of the training and deployment framework public
     and nothing held back for a paid tier.
-  last_verified: '2026-09-23'
+  last_verified: '2026-11-16'
   raw: license:Apache-2.0(OSI);source:public;maintainer:ModelScope(Alibaba);no feature-gated core;core-gated:ungated
   sources:
-  - url: https://github.com/modelscope/ms-swift
-    shows: Repository tree lists swift/, setup.py, requirements/, tests/, docs/ and LICENSE, and the README
-      install section gives 'git clone https://github.com/modelscope/ms-swift.git / cd ms-swift / pip install
-      -e .', so the running framework builds from the published repo. The README License section reads 'This
-      framework is licensed under the Apache License (Version 2.0)' and the sidebar Resources block lists
-      'Apache-2.0 license'. The README documents the complete pipeline (swift pt / sft / rlhf / infer /
-      app / deploy / sample / eval / export, plus 'swift web-ui') with no paid, premium, enterprise or commercial
-      edition; the only 'Enterprise', 'Premium' and 'Pricing' strings on the page sit in GitHub's own site
-      navigation above the repository header, not in project content. Header shows 3,549 commits, 15.1k
-      stars, 1.6k forks, no archive notice.
-    accessed: '2026-08-08'
+  - url: https://raw.githubusercontent.com/modelscope/ms-swift/main/README.md
+    shows: 'README install section gives "git clone https://github.com/modelscope/ms-swift.git" then "pip
+      install -e .", so the framework builds from the published repo. License section: "This framework is
+      licensed under the" Apache License (Version 2.0). Describes the full pipeline as "provided by the
+      ModelScope community" with no paid, enterprise or premium edition.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 3ebedde37c3a9b86af0ec620f17352ab2a83cd2fe5570a88944d7dfae7aea582
+    content_sha256: 0fdfc22f2e1987984d94800116842df0014391578ec40622123399e18253c3ae
     establishes:
     - source
     - core_gated
     - core-gated
     - license
   - url: https://raw.githubusercontent.com/modelscope/ms-swift/main/LICENSE
-    shows: '11,357 bytes of unmodified Apache License 2.0 text: opens ''Apache License / Version 2.0, January
-      2004 / http://www.apache.org/licenses/'' and closes with the stock appendix carrying the unfilled
-      placeholder ''Copyright [yyyy] [name of copyright owner]''. No custom copyright line, no added use
-      restriction, no field-of-use rider, so the OSI call is clean rather than depending on the GitHub classifier.'
-    accessed: '2026-09-23'
+    shows: Unmodified Apache License 2.0 text ("Version 2.0, January 2004") with the stock appendix placeholder
+      "Copyright [yyyy] [name of copyright owner]"; no custom copyright line or added use restriction.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
   - url: https://swift.readthedocs.io/en/latest/
-    shows: 'Full public documentation table of contents: Get Started (SWIFT Installation with ''Source Code
-      Installation'', Quick Start, Web-UI); Instruction (Command Line Parameters, Pre-training and Fine-tuning,
-      GRPO, Knowledge Distillation, RLHF, Inference and Deployment, Sampling, Evaluation, Export and Push,
-      Ray Support, Reinforced Fine-Tuning, Agent Support, Supported Models and Datasets, Using Tuners, FAQ);
-      Megatron-SWIFT; Customization; Best Practices. A case-insensitive scan of the rendered page returns
-      zero occurrences of ''enterprise'', ''premium'', ''pricing'', ''commercial'' or ''paid'' - every documented
-      capability is documented for the open package, with no tier withheld.'
-    accessed: '2026-09-23'
+    shows: Public documentation table of contents with "Source Code Installation", Command Line Parameters,
+      GRPO, RLHF, Inference and Deployment, Evaluation, Export and Push, and a Megatron-SWIFT section; no
+      tier is withheld.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 97088f05cf582e1fba7c8079029d7f02817b26ba7adbe07a9ae3364493f103af
+    content_sha256: 8b057e27a553401e31a0687bffa67fb943a0f7b777e7119ea61dee6661831497
     establishes:
     - core_gated
     - core-gated
   - url: https://pypi.org/project/ms-swift/
-    shows: 'Project page for ''ms-swift 4.4.2'', summary ''Swift: Scalable lightWeight Infrastructure for
-      Fine-Tuning'', author ''DAMO ModelScope teams''. Meta block gives License: ''Apache Software License
-      (Apache License 2.0)'' and the Classifiers block lists ''License :: OSI Approved :: Apache Software
-      License''. The rendered long description is the repository README verbatim (same Table of Contents,
-      same License section linking modelscope/ms-swift/blob/master/LICENSE), so the distributed package
-      is the same framework the repo publishes.'
-    accessed: '2026-09-23'
+    shows: 'PyPI page for ms-swift, summary "Swift: Scalable lightWeight Infrastructure for Fine-Tuning",
+      author "DAMO ModelScope teams", license "Apache Software License (Apache License 2.0)" with the OSI
+      Approved :: Apache Software License classifier.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a05d60719f82e4f1901da2dfb211dde5a63ffd6758ffbe24081864606860fb1d
+    content_sha256: 0adb2364c2265800e271e37044dd97666c90fe0f994c36a737c954464a054522
     establishes:
     - license
     - source
@@ -108,22 +94,20 @@ capability:
     preference tuning and pretraining across more than 600 text models, with quantization, evaluation and
     deployment built into one pipeline. It borrows its large-scale parallelism from Megatron-LM through
     the Megatron-SWIFT backend rather than developing its own, which places it a step below Megatron-LM.
-  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/modelscope/ms-swift/main/README.md
     shows: README says ms-swift supports "training (pre-training, fine-tuning, human alignment), inference,
-      evaluation, quantization, and deployment for 600+ text-only large models" and lists "LoRA, QLoRA,
-      DoRA, LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA", the GRPO family "GRPO, DAPO,
-      GSPO, SAPO, CISPO, CHORD, RLOO, Reinforce++", preference methods "DPO, KTO, RM, CPO, SimPO, ORPO",
-      and "Megatron parallelism techniques such as TP, PP, CP, EP to accelerate training"; evaluation uses
-      EvalScope with "100+ evaluation datasets" and quantization export covers "AWQ, GPTQ, FP8, and BNB".
-    accessed: '2026-09-28'
+      evaluation, quantization, and deployment for 600+ text-only large models", lists "LoRA, QLoRA, DoRA,
+      LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA", the GRPO family "GRPO, DAPO, GSPO,
+      SAPO, CISPO, CHORD, RLOO, Reinforce++", preference methods "DPO, KTO, RM, CPO, SimPO, ORPO", and "Megatron
+      parallelism techniques such as TP, PP, CP, EP to accelerate training"; evaluation covers "100+ evaluation
+      datasets" and export covers "AWQ, GPTQ, FP8, and BNB".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 1a0a46d0a85341cfee243d72c986b7a4d05cb5504a5dcc0a5e4b4b142ae4fb98
+    content_sha256: 0fdfc22f2e1987984d94800116842df0014391578ec40622123399e18253c3ae
   - url: https://swift.readthedocs.io/en/latest/
     shows: Documentation index has a Megatron-SWIFT section whose first page is "Megatron-SWIFT/Quick-start.html",
-      plus "Knowledge Distillation", "Ray Support" and "Reinforced Fine-Tuning" sections, corroborating
-      the README feature set with worked workflow pages.
-    accessed: '2026-09-28'
+      plus Knowledge Distillation, Ray Support and Reinforced Fine-Tuning sections.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 97088f05cf582e1fba7c8079029d7f02817b26ba7adbe07a9ae3364493f103af
+    content_sha256: 8b057e27a553401e31a0687bffa67fb943a0f7b777e7119ea61dee6661831497

@@ -26,50 +26,57 @@ openness:
   note: The core training service is a proprietary hosted API, and only the example cookbook is OSI-licensed,
     so the product is closed. It is not open core either, because no self-hostable engine exists to be the
     core.
-  last_verified: '2026-09-23'
+  last_verified: '2026-11-16'
   raw: license:Proprietary;source:closed;engine:closed(hosted distributed-training service on TML infra);cookbook:open(Apache-2.0,
     thinking-machines-lab/tinker-cookbook);api:public-but-proprietary(forward_backward/optim_step/sample/save_state);method:LoRA(+RL
     via sample);access:paid+account-gated
   sources:
   - url: https://thinkingmachines.ai/tinker/
-    shows: Describes Tinker as "a training API for researchers" where users "Control every aspect of model
-      training and fine-tuning while we handle the infrastructure." Offers sign-up/sign-in, docs, and per-token/per-GB-month
-      pricing; no self-host or download path exists for the training engine itself, only a link out to the
-      separate tinker-cookbook example repo.
-    accessed: '2026-09-23'
+    shows: 'Product page lists the four API calls (sample, forward_backward, optim_step, save_state) and
+      says "Pay for actual tokens used, not inactive time." with Get started and Sign in only; it offers
+      no self-host or engine download. FAQ: "Yes, we have an API endpoint that lets you download any checkpoint
+      you’ve saved."'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 662478ab45a1a5280bb79d5c049e2d5090762847c3f7a723f78cbef8c04a9bf1
+    content_sha256: b27e680ff1aedd7014c354fa152ae313710bcab02cccb0a0d364fb920b7bf031
     establishes:
     - source
+    - access
   - url: https://thinkingmachines.ai/legal/terms/
-    shows: The Service Terms of Use (last updated January 10, 2026) grants Authorized Users "a non-exclusive,
-      limited, non-transferable, non-sublicensable, worldwide right to access and use the Services" - a
-      proprietary terms-of-use grant over the hosted platform, not an open-source license to the underlying
-      engine.
-    accessed: '2026-09-23'
+    shows: Service Terms of Use (last updated January 10, 2026) grant Authorized Users a "non-exclusive,
+      limited, non-transferable, non-sublicensable, worldwide right to access and use the Services", a proprietary
+      terms-of-use grant over the hosted platform.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 973841fe73f33b693b53ce3e3817285370ccb39dc3640601a40d771f4300a88e
+    content_sha256: 9d6cbe21f32f45280224bbe25c4648087df367b02baa6b86b7d20b554aa4e73b
     establishes:
     - license
-  - url: https://github.com/thinking-machines-lab/tinker-cookbook/blob/main/LICENSE
-    shows: Full text of the Apache License, Version 2.0 - the tinker-cookbook repository's own license,
-      unchanged from the prior read (fetched via the raw.githubusercontent.com redirect).
-    accessed: '2026-08-09'
+  - url: https://raw.githubusercontent.com/thinking-machines-lab/tinker-cookbook/main/LICENSE
+    shows: Full text of the "Apache License" Version 2.0 in the tinker-cookbook repository (raw file).
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: d13899cd96d284a6d9f130dfcf19fb3ee5f7e3be3ec627cefa5ff9d9d6023136
-  - url: https://github.com/thinking-machines-lab/tinker-cookbook
-    shows: GitHub repository page for thinking-machines-lab/tinker-cookbook, described in its own metadata
-      as 'Post-training with Tinker' - example and recipe code that calls the hosted Tinker API rather than
-      the training engine itself.
-    accessed: '2026-08-09'
+  - url: https://raw.githubusercontent.com/thinking-machines-lab/tinker-cookbook/main/README.md
+    shows: 'README: "`tinker-cookbook` includes realistic examples of fine-tuning language models. It builds
+      on the Tinker API", and "`tinker` is a training SDK for researchers and developers to fine-tune language
+      models. You send API requests to us and we handle the complexities of distributed training."'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 66cb87d544eadb40705dc846e776ba14d32f6abad82b24a703aef8e5a31d7b1c
+    content_sha256: 407cc93130cac44f378b45798f8dfadbe36fb41fa8f85c7ec6fb8b86da9a443b
+    establishes:
+    - access
+  - url: https://tinker-docs.thinkingmachines.ai/tinker/models/
+    shows: Models and pricing page shows "39 models shown" and instructs passing the Tinker ID to "create_lora_training_client(base_model=...)",
+      so training is created through a LoRA client.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: df8a67c853aa5bef8fe3442755a2227a99400bd0728139ff12667b53c59c6268
   - url: https://thinkingmachines.ai/news/
-    shows: News archive lists "Oct 1, 2025 Announcing Tinker" as its own dated entry, confirming the product's
-      launch date cited in prose.
-    accessed: '2026-08-09'
+    shows: News archive lists "Announcing Tinker" dated "Oct 1, 2025" as its own entry, the launch date
+      cited in prose.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 3421e6a2ef0f216afb689c791d962d16cb24a511a37efdd5185599b54c96c769
+    content_sha256: 8ec065a4a700d9a9165719b3cc049be6ecd218b0e599fbeceb67dbcfdc67df3d
 adoption:
   level: 2
   signal_type: reported_traction
@@ -77,17 +84,18 @@ adoption:
   note: Thinking Machines names companies and research groups such as Glean, Chroma, MIT and Stanford as
     users of the API on its own product page. It publishes no download, seat or user count for the hosted
     service, so named adopters are the only public evidence of use.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://thinkingmachines.ai/tinker/
-    shows: 'Case-study section names Glean ("Waldo is an agentic search model that hands the reasoning model
-      the tool plan it needs for the job, fast."), Chroma, Lightning Rod Labs, Mantic and Trajectory, plus
-      research quotes from MIT, Stanford and Axiom Math ("AxiomProver is an AI mathematician that conjectures,
-      proves, and verifies its own work in Lean."). Searched the body for user count, download count, seat
-      count and revenue: none.'
-    accessed: '2026-09-28'
+    shows: 'Case-study section names companies and labs: "Bridgewater used Tinker to train Qwen3-235B",
+      "Glean used Tinker to train Waldo, an agentic search model built on NVIDIA Nemotron 3 Nano", "Chroma
+      used Tinker to turn gpt-oss-20b into Context-1", "Lightning Rod Labs used Tinker to train gpt-oss-120b",
+      "Mantic used Tinker to train gpt-oss-120b", plus "MIT researchers developed" and "Stanford researchers
+      developed" methods and "Axiom Math builds AI for formal mathematics". Searched the body for user,
+      customer, seat, download and revenue counts: none.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 074ebd24ce4f56602f179ce4c158a5faf082726a096c176b1d81afb8e8116f30
+    content_sha256: b27e680ff1aedd7014c354fa152ae313710bcab02cccb0a0d364fb920b7bf031
 capability:
   score: 4
   basis: feature_matrix
@@ -99,7 +107,6 @@ capability:
     RL sampling on open-weight models, up to very large mixture-of-experts checkpoints. The service is LoRA-only,
     with no full fine-tuning or full RL stack, which keeps it behind frameworks such as Megatron-LM and
     verl that train entire models at scale.
-  last_verified: '2026-09-28'
   sources:
   - url: https://thinkingmachines.ai/tinker/
     shows: 'FAQ states "Tinker is a flexible API for efficiently fine-tuning open source models with LoRA."

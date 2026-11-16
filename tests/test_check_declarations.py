@@ -120,10 +120,13 @@ def test_the_real_corpus_divergences_are_renames():
     `llama-factory` left the set on 2026-11-12. Its last citation of the old
     hiyouga/LLaMA-Factory page was replaced by raw files of the declared hiyouga/LlamaFactory
     repository, so the divergence was resolved by refreshing the citation, as above.
+
+    `torchtune` left the set on 2026-11-16, when the finetuning_code refresh re-read its
+    openness sources against the declared repository's raw files.
     """
     assert {f[0] for f in divergent_citations(ROOT)} == {
         "e2b-sandbox", "fastmcp", "giskard", "librechat", "nemo-guardrails",
-        "opencode", "sandbox-runtime", "torchtune", "verl",
+        "opencode", "sandbox-runtime", "verl",
     }
 
 

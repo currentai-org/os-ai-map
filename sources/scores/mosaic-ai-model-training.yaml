@@ -19,30 +19,35 @@ openness:
         detail: non-OSI
   confidence: high
   note: A proprietary managed fine-tuning service that runs only inside a Databricks workspace, with no
-    source published. Databricks' separate LLM Foundry and Composer libraries are open source, but they
-    are not this product.
-  last_verified: '2026-09-23'
+    source published. The documentation describes an SDK and a UI for submitting runs, not a self-hosted
+    build of the training engine.
+  last_verified: '2026-11-16'
   raw: source:closed;training-code:closed;runs-on:Databricks-workspace-only(AWS regions);license:Proprietary(managed
     service); base-weights:Llama-Community-License(non-OSI)
   sources:
   - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
-    shows: Foundation Model Fine-tuning requires a Databricks workspace in AWS us-east-1 or us-west-2 and
-      is used only through the databricks_genai SDK or its UI; the page publishes no repository or self-hosted
-      build of the training engine, and the only license text on the page covers the base Llama models being
-      fine-tuned, not the service itself.
-    accessed: '2026-09-23'
+    shows: Required "A Databricks workspace in one of the following AWS regions" (us-east-1 and us-west-2)
+      and was reached through the databricks_genai SDK or a UI; the page, now titled "Foundation Model Fine-tuning
+      (EoL)", says the service "has reached end of life (EoL) and is no longer supported" and that the package
+      and UI "are no longer available". It links no repository, download or self-hosted build of the training
+      engine, and its only license text is for the base Llama models ("LLAMA 3.2 Community License", "LLAMA
+      3.1 Community License").
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2f5d6ad8e67b51b6237f0560cd133d2d82d1ab4e35f3d25d3d0108625a289122
+    content_sha256: d9195150520a61b2dab8d88a04310cc1d3818263cb1f44770cb64ad0a906039f
     establishes:
     - source
     - license
   - url: https://www.databricks.com/product/machine-learning/mosaic-ai-training
-    shows: Databricks markets this capability as Databricks Model Training, describing it only as a way
-      to fine-tune an open source LLM on Databricks; the page offers no download, repository, or self-host
-      option for the training service itself, and never uses the name Mosaic AI Model Training.
-    accessed: '2026-09-09'
+    shows: Databricks Model Training is described only as a way to "Fine-tune an open source LLM or build
+      custom LLMs trained on your enterprise data with Databricks Model Training"; the page offers no download,
+      repository or self-host option for the service.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 45618187bdc6f853b10d61373f983331f20b250f2116bf499fd6e65c3e196b16
+    content_sha256: c9483cce7dbfd63c5faa8c124274621038d33391550d108c968032fe63d1aebc
+    establishes:
+    - source
+    - license
 adoption:
   level: null
   reach: null
@@ -51,23 +56,21 @@ adoption:
   note: 'Databricks published no usage figure for Mosaic AI Model Training: no jobs run and no customer
     count. Nothing Databricks publishes about its wider platform is specific to this service, so the map
     leaves adoption unscored rather than borrow a figure from the platform as a whole.'
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
-    shows: 'Searched the body of the Foundation Model Fine-tuning page for usage, job-count and customer
-      figures: none found; the only status statement is that the feature "has reached end of life (EoL)
-      and is no longer supported".'
-    accessed: '2026-09-28'
+    shows: 'Searched the body for usage, job-count and customer figures: none found. The only status statement
+      is that the feature "has reached end of life (EoL)" and "is no longer supported".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 815937801457741af7bfe6faf0aa632527c76c800d245ba6cbd4c477368d1057
+    content_sha256: d9195150520a61b2dab8d88a04310cc1d3818263cb1f44770cb64ad0a906039f
   - url: https://www.databricks.com/product/machine-learning/mosaic-ai-training
-    shows: 'Searched the body of the Databricks Model Training product page for customer counts, job counts
-      and usage figures specific to this fine-tuning capability: none found; it carries only marketing copy
-      such as "Fine-tune an open source LLM or build custom LLMs trained on your enterprise data with Databricks
-      Model Training".'
-    accessed: '2026-09-28'
+    shows: 'Searched the body for customer counts, job counts and usage figures specific to this fine-tuning
+      capability: none found; it carries marketing copy such as "Fine-tune an open source LLM or build custom
+      LLMs trained on your enterprise data with Databricks Model Training".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2d129d86656b965c9972e6c4151f9fc0e14959833ac504f3c25701f003958abb
+    content_sha256: c9483cce7dbfd63c5faa8c124274621038d33391550d108c968032fe63d1aebc
 capability:
   score: 2
   basis: feature_matrix
@@ -78,16 +81,21 @@ capability:
   note: Mosaic AI Model Training offered chat-completion and instruction fine-tuning and continued pre-training
     on Meta Llama models, with no preference or reinforcement-learning methods, no LoRA or QLoRA, and no
     parallelism, precision or scale controls. That left it behind the managed offerings from OpenAI, Vertex
-    and Together, which combine supervised, preference and reinforcement tuning.
-  last_verified: '2026-09-28'
+    and Together, which add preference tuning.
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
-    shows: 'The Foundation Model Fine-tuning page lists exactly three supported tasks, chat completion,
-      instruction fine-tuning and continued pre-training ("Train your model with additional text data" for
-      the last), and its supported models table lists only "meta-llama/Llama-3.3-70B-Instruct" and other
-      Meta Llama 3.1 and 3.2 checkpoints; searched the body for LoRA, QLoRA, DPO, RLHF and preference tuning:
-      none found. It also carries a warning that the feature "has reached end of life (EoL) and is no longer
-      supported".'
-    accessed: '2026-09-28'
+    shows: 'Lists three supported tasks, "Chat completion", "Instruction fine-tuning" and "Continued pre-training"
+      ("Train your model with additional text data"), and a models table of only Meta Llama checkpoints
+      starting with "meta-llama/Llama-3.3-70B-Instruct"; searched the body for LoRA, QLoRA, DPO, RLHF, preference
+      and reinforcement tuning: none found.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 815937801457741af7bfe6faf0aa632527c76c800d245ba6cbd4c477368d1057
+    content_sha256: d9195150520a61b2dab8d88a04310cc1d3818263cb1f44770cb64ad0a906039f
+  - url: https://www.databricks.com/product/machine-learning/mosaic-ai-training
+    shows: 'Describes the capability only in marketing terms ("Fine-tune an open source LLM or build custom
+      LLMs trained on your enterprise data"); searched the body for LoRA, QLoRA, DPO, RLHF, preference and
+      reinforcement tuning: none found, and no user-facing parallelism, precision or scale settings.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: c9483cce7dbfd63c5faa8c124274621038d33391550d108c968032fe63d1aebc

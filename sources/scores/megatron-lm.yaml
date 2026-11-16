@@ -19,93 +19,74 @@ openness:
   note: BSD-3-Clause for NVIDIA's own code and Apache-2.0 or MIT for vendored components, all OSI licenses,
     with the full source public. The only obligations are attribution and a notice of changes, and no functionality
     is held back for a paid tier.
-  last_verified: '2026-09-16'
+  last_verified: '2026-11-16'
   raw: license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;core-gated:ungated;restriction:attribution/change-notice
     only
   sources:
   - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/LICENSE
-    shows: 'Opens "The following applies to all files unless otherwise noted:" followed by a 2019-2025 NVIDIA
-      CORPORATION copyright and the three BSD-3-Clause conditions — retain the copyright notice in source,
-      reproduce it in binary distributions, and "Neither the name of NVIDIA CORPORATION nor the names of
-      its" contributors may be used to endorse derived products. Below that, section headers grant vendored
-      code separate terms: "-- LICENSE FOR Facebook, huggingface, Google Research, LLaVA, Mamba, TinyZero
-      and vLLM code  --" under the Apache License Version 2.0, whose clause 4(b) requires modified files
-      to carry notices "stating that You changed the files", plus two MIT License sections (one for Facebook/Meta/Microsoft/OpenGVLab-InternVL/Triton/DeepSeek,
-      one for Thinking Machines Lab). BSD-3-Clause for the NVIDIA core with Apache-2.0 and MIT vendored
-      components, all OSI, and the only obligations are attribution, no-endorsement and change notices.'
-    accessed: '2026-09-16'
+    shows: 'Opens "The following applies to all files unless otherwise noted:" followed by a "Copyright
+      (c) 2019-2025, NVIDIA CORPORATION" notice and the three BSD-3-Clause conditions, including "Neither
+      the name of NVIDIA CORPORATION nor the names of its" contributors may be used to endorse derived products.
+      Later sections give vendored code separate terms: the Apache License Version 2.0 (clause 4(b) requires
+      notices "stating that You changed the files"), several MIT License sections and one BSD License section.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 9d70d3ebc699d4c78ebe3f78dfb94b6dbae3529aea3dbc912e65e34a9f17667e
     establishes:
     - license
-  - url: https://github.com/NVIDIA/Megatron-LM
-    shows: 'The rendered README states the repository contains two components: Megatron-LM, which "is a
-      reference example that includes Megatron Core plus pre-configured training scripts", and Megatron
-      Core, which "is a composable library with GPU-optimized building blocks for custom training frameworks".
-      Getting Started offers both "Install from PyPI: uv pip install megatron-core" and a clone of this
-      repository followed by "uv pip install -e .", so the thing you run builds from the published source.
-      A dated news entry reads "[2025/12] Megatron Core development has moved to GitHub." with "All development
-      and CI now happen in the open, and community contributions are welcome." The top-level file listing
-      is .agents, .github, .gitlab, docker, docs, examples, experimental/agent_compose, images, megatron,
-      scripts, skills, tasks, tests, tools plus root files — no enterprise, commercial or paid-edition directory.
-      Sidebar shows 17.4k stars, 4.3k forks, 9,435 commits.'
-    accessed: '2026-08-08'
+  - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md
+    shows: 'The README states "This repository contains two components: **Megatron-LM** and **Megatron Core**."
+      and offers both "uv pip install megatron-core" and a clone followed by "uv pip install -e .", so the
+      installed library builds from the published source. Its project structure lists megatron/core, megatron/training,
+      megatron/post_training and examples, with no enterprise or paid-edition directory. The README badge
+      reads "license-Apache" while the LICENSE file is BSD-3-Clause for NVIDIA code.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3
+    content_sha256: 241f860a314ba3790d0161a52fe423be2779d6854829488b7fb8dbf15954ee14
     establishes:
     - source
     - core-gated
   - url: https://pypi.org/project/megatron-core/
-    shows: 'Project page headed "megatron-core 0.18.2", Author/Maintainer "NVIDIA", License "BSD License
-      (Apache 2.0)", classifier "OSI Approved :: BSD License", Released "Jul 21, 2026", Requires Python
-      >=3.12, 5 maintainers. The Provides-Extra list is training, mlm, dev, lts, te, ssm — pip extras, not
-      tiers. The library is published to a public index under an OSI license, which is what makes source:public
-      true for the artifact people actually install.'
-    accessed: '2026-09-16'
+    shows: 'Project page headed "megatron-core 0.20.0", Author/Maintainer NVIDIA, License "BSD License (Apache
+      2.0)", classifier "OSI Approved :: BSD License", released "Oct 29, 2026", 5 maintainers. The extras
+      (training, mlm, dev, inference, otel, lts, te, ssm) are pip extras, not paid tiers.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 7ee0e495e45b16dc894a342a7751a82121cce9405836ab551e294ba560eb0b0e
+    content_sha256: 2bff36b22a20047296586ee28d63a0960f3425e8565e8c1c6cae3997e152aa61
     establishes:
     - source
     - license
-  - url: https://files.pythonhosted.org/packages/0e/0d/765e06a494ec67a2641e282ea7663713a9c290d67951dc5066d12a87c999/megatron_core-0.18.2.tar.gz
-    shows: 'The published sdist, walked with Python''s tarfile: 585 members, 490 of them regular files,
-      479 under megatron/ plus megatron_core.egg-info, MANIFEST.in, PKG-INFO, README.md, pyproject.toml,
-      setup.cfg and setup.py. Every capability NVIDIA''s product page advertises ships in it — megatron/core/tensor_parallel
-      (8 files), pipeline_parallel (9), transformer/moe (13), dist_checkpointing (22), fp8_utils.py, post_training
-      (10) and inference (87 regular files). I then read the decoded bytes of all 490 files and ran case-insensitive
-      regex searches across them: 0 files matched ''enterprise'', 0 matched ''license[_ -]?key|entitlement|activation[_
-      -]?code'', 0 matched ''premium|paid tier|commercial edition|pro edition'', 0 matched ''contact sales'',
-      0 matched ''AI Enterprise''. Nothing in the shipped package gates a feature behind a paid tier.'
-    accessed: '2026-09-16'
+  - url: https://files.pythonhosted.org/packages/76/97/aac8cb7d5395f7d25229644a2ce1da1dbdff3a2916bfe4065870666b3549/megatron_core-0.20.0.tar.gz
+    shows: 'The published sdist for 0.20.0, walked with Python''s tarfile: 811 members, 693 regular files,
+      682 of them under megatron/, plus PKG-INFO, README.md, pyproject.toml, setup.cfg and setup.py. It
+      ships tensor_parallel (13 files), pipeline_parallel (9), context_parallel (9), distributed/fsdp (33),
+      transformer/moe (20), dist_checkpointing (18), fp8_utils.py, post_training (11) and inference (117).
+      Case-insensitive regex searches over the decoded bytes of all 693 files found no match for enterprise,
+      license key, entitlement, activation code, premium, paid tier, commercial edition, pro edition, contact
+      sales or AI Enterprise.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 911216b7ce161ffc196baecc4ef7ec39f4a33cf79b50f5e0c123235e42002cdc
+    content_sha256: 4805ac5e8225494f6130d06dcf2476d0bf53e908b4401642ec8dc6ec12c3c6c2
     establishes:
     - core-gated
     - source
   - url: https://developer.nvidia.com/megatron-core
-    shows: Redirects to developer.nvidia.com/cuda/cuda-x-libraries/megatron-core. NVIDIA's own product page
-      presents a single library — "NVIDIA Megatron Core is a composable training library for large-scale
-      generative AI" — with exactly two calls to action, "Go to GitHub" and "Get Started", and no purchase,
-      subscription, enterprise-edition or contact-sales path anywhere on it. Every feature block (parallelism
-      techniques, customizable building blocks, scalability and training resiliency, MoE, hybrid models,
-      multimodal training) links into the public repository or the public API documentation, and the page
-      describes Megatron-LM as an open-source training reference framework for exploring Megatron Core.
-      The vendor's own marketing withholds nothing from the published source.
-    accessed: '2026-09-16'
+    shows: NVIDIA's product page, which redirects to developer.nvidia.com/cuda/cuda-x-libraries/megatron-core,
+      opens "NVIDIA Megatron Core is a composable training library for large-scale generative AI" with two
+      calls to action, "Go to GitHub" and "Get Started". It describes Megatron-LM as an open-source training
+      reference framework for exploring Megatron Core. No purchase, subscription or enterprise-edition path
+      appears on it.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 3378626e8b1825689a4fd5efb70b1bbb15ea16630a7223a11ec1f8febf2abf58
+    content_sha256: 01a9ec23a307a23afd670bfc9201ec33591e402f0690a7830e064e32352c3117
     establishes:
     - core-gated
   - url: https://www.nvidia.com/en-us/data-center/products/ai-enterprise/
-    shows: NVIDIA's paid-suite page. It describes AI Enterprise as bringing together "microservices, frameworks,
-      and libraries for AI development with advanced GPU orchestration and infrastructure management in
-      a fully supported, production-ready, commercial software suite" whose pitch is to "Deploy leading
-      open source tools and AI models with confidence" - support and packaging around open source rather
-      than functionality withheld from it. A case-insensitive grep for 'megatron' over the saved 675KB body
-      returns 0 matches, so NVIDIA's commercial suite does not claim any Megatron capability of its own.
-    accessed: '2026-09-16'
+    shows: NVIDIA's AI Enterprise commercial-suite page. A case-insensitive grep for 'megatron' over the
+      saved body returns 0 matches, so the paid suite does not claim any Megatron capability of its own.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: bee87c13771b3ddc96beb0b61b9ca86f3c5728e9f901fcdcc0384d40b0727a5c
+    content_sha256: 8a1e4c6414777817bbd6a93a4a9c0e2c230f811fa064342f82fe44b2f1f9d8e6
     establishes:
     - core-gated
 adoption:
@@ -158,7 +139,6 @@ capability:
     data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4. NVIDIA's
     own benchmarks reach 462B parameters across thousands of H100 GPUs, though those results were measured
     without training to convergence.
-  last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md
     shows: 'The README describes Megatron Core as providing "transformer building blocks, advanced parallelism

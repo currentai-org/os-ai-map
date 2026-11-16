@@ -24,23 +24,27 @@ openness:
   confidence: high
   note: A fully managed, proprietary fine-tuning feature inside Snowflake, with no source published and
     no way to self-host. The base-model allowlist is a single model, llama3.1-8b.
-  last_verified: '2026-09-23'
+  last_verified: '2026-11-16'
   raw: license:Proprietary;service:fully-managed-proprietary(in-Snowflake);source:closed;method:PEFT(LoRA-class,
     not specified);base-models:fixed allowlist(narrowed to a single model, llama3.1-8b, per the current
     page);access:Snowflake-account+credits;data:user-data stays in account but engine closed
   sources:
   - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
-    shows: Cortex Fine-tuning is a fully managed service that runs entirely inside Snowflake via the FINETUNE
-      SQL function or the Snowsight AI Studio wizard; the page names no published repository, no self-host
-      option, and no license terms for the underlying engine. The base-models table now lists a single row,
-      "llama3.1-8b", with the expand/collapse controls disabled, confirming the table is complete; the page
-      still notes models available for fine-tuning may be added or removed in the future.
-    accessed: '2026-09-23'
+    shows: '"Cortex Fine-tuning is a fully managed service" run inside Snowflake, with training started
+      through the FINETUNE SQL function or the Snowsight AI Studio wizard; "Cortex Fine-tuning allows users
+      to leverage parameter-efficient fine-tuning (PEFT) to create customized adaptors" (technique not further
+      specified); the base-models list is a single row, "llama3.1-8b", and "Models available for fine-tuning
+      may be added or removed in the future". The page names no repository, license or self-host option,
+      and the feature runs on Snowflake accounts billed in credits. It also now carries a banner, "Cortex
+      Fine-tuning is scheduled for deprecation in Q1 2027".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a69e30fd7d6c42132f9d4bdcb19d59c7a9277e3bdf38d5c997f449136d4086fb
+    content_sha256: a3bd08dc37abf942a74da67225e6190245c236199d60787e6dc7a4c33b1f7e04
     establishes:
     - source
     - license
+    - access
+    - data
 adoption:
   level: null
   reach: null
@@ -49,14 +53,14 @@ adoption:
   note: Snowflake does not publish how many customers use this fine-tuning feature. Its documentation only
     describes a view for tracking an account's own usage, so there is no honest way to judge how widely
     it is used.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
-    shows: 'Documents the "CORTEX_FINE_TUNING_USAGE_HISTORY view" for tracking an account''s own consumption;
-      searched the body for customers, customer count, deployments and adoption figures: none found.'
-    accessed: '2026-09-28'
+    shows: Documents the "CORTEX_FINE_TUNING_USAGE_HISTORY" view for tracking an account's own consumption,
+      which is not a count of users.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: f720caaa43e1e4e37784d745658fd189afb14e39cf2ddaa406ae53fc1690bbfe
+    content_sha256: a3bd08dc37abf942a74da67225e6190245c236199d60787e6dc7a4c33b1f7e04
 capability:
   score: 2
   basis: feature_matrix
@@ -68,12 +72,12 @@ capability:
     base model, Llama 3.1 8B, with no full fine-tuning and no reinforcement or preference-based training.
     That makes it a convenience feature for Snowflake users, well short of managed services such as OpenAI's
     and Together's that add preference and reinforcement tuning on many more models.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
-    shows: 'Describes "parameter-efficient fine-tuning (PEFT) to create customized adaptors" and a base-models
-      table listing only "llama3.1-8b"; searched the body for LoRA, RLHF, DPO, full fine-tuning and mixtral:
-      none found.'
-    accessed: '2026-09-28'
+    shows: '"Cortex Fine-tuning allows users to leverage parameter-efficient fine-tuning (PEFT) to create
+      customized adaptors" and the only base model listed is "llama3.1-8b"; the page documents the FINETUNE
+      function and Snowsight wizard only.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: f720caaa43e1e4e37784d745658fd189afb14e39cf2ddaa406ae53fc1690bbfe
+    content_sha256: a3bd08dc37abf942a74da67225e6190245c236199d60787e6dc7a4c33b1f7e04

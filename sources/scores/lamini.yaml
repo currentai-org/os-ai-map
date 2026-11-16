@@ -24,40 +24,48 @@ openness:
   note: Proprietary managed fine-tuning platform; no source is published for the engine in any of the on-demand,
     reserved, or self-managed deployment tiers, and the only open artifact is a thin API client SDK, so
     the product itself remains closed.
-  last_verified: '2026-09-22'
+  last_verified: '2026-11-16'
   raw: license:Proprietary;source:closed;engine:closed(hosted memory-tuning/fine-tuning service on Lamini/AMD
     servers);client-sdk:open(Apache-2.0, lamini-ai/lamini);data:closed;training-code:closed;access:API-key-gated
   sources:
-  - url: https://github.com/lamini-ai/lamini
-    shows: Repo title/description read "The Official Python Client for Lamini's API"; GitHub's own repo
-      metadata records it public, not archived (isArchived:false), licensed Apache-2.0, with website field
-      pointing to https://lamini.ai/. No fine-tuning or inference engine code lives in the repo -- only
-      the API client.
-    accessed: '2026-09-22'
+  - url: https://raw.githubusercontent.com/lamini-ai/lamini/main/README.md
+    shows: The repository README says "This python package is a client + SDK compatible with the Lamini
+      API", and tells users to "log in to get your API key" at app.lamini.ai. Only the client is described.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: e0af1b4a3b4fb16e39c22980e1b9d3cb3dc26ec89ce98cdc5d34c2caa2c910ed
+    content_sha256: 2dc3d9d8d5ee1f60edac0a73fcf7f144a0eb03ae4d676b30db075dca5e3be713
+    establishes:
+    - access
+  - url: https://raw.githubusercontent.com/lamini-ai/lamini/main/LICENSE
+    shows: The client repository's LICENSE file is the Apache License, "Version 2.0, January 2004", followed
+      by notices for bundled third-party code.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: cc083bfdd9de75e192ba26b26fd4a2ec20417056c84163dca29e89d034b8c092
+    establishes:
+    - license
   - url: https://docs.lamini.ai/about/
-    shows: 'States "Lamini Platform is available in three different deployment models": On-Demand (fully-managed
-      training/inference at app.lamini.ai, pay-as-you-go), Reserved (dedicated GPUs on Lamini''s own infrastructure,
-      per-GPU pricing), and Self-Managed (run in the customer''s own environment/GPUs -- on premise, VPC,
-      or air-gapped -- per-GPU pricing). Every tier is a paid deployment of Lamini''s own platform; none
-      exposes a published repository for the engine.'
-    accessed: '2026-09-22'
+    shows: 'States Lamini Platform is offered in "three different deployment models": On-Demand ("fully-managed
+      training and inference at"), Reserved ("dedicated GPUs for your organization, hosted on Lamini") and
+      Self-Managed ("run Lamini Platform in your environment on your GPUs"), each with paid pricing and
+      no repository link for the engine.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: ae4e3cb6142e96a8d8d4834ec89c2ef8a8e466bc4f4ef037ea93de8408207cb1
     establishes:
     - source
     - license
+    - access
   - url: https://docs.lamini.ai/LICENSE/
-    shows: Lists only third-party open-source notices bundled into the self-managed distribution -- vLLM
-      (Apache-2.0), LlamaFactory (Apache-2.0, credited for supporting "MoME training"), litellm (MIT), and
-      Ray (Apache-2.0 modifications) -- with no license grant for Lamini's own platform code anywhere on
-      the page.
-    accessed: '2026-09-22'
+    shows: Lists third-party notices such as "Code for self-hosted inference models adapted from" vLLM and
+      LlamaFactory files added "to support MoME training", with no license grant for Lamini's own platform
+      code.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: a8ceab0171677fd21bed20dc0abdfa9491459b8e2a4e4d8c4429157d56f165da
     establishes:
     - license
+    - data
 adoption:
   level: null
   reach: null
@@ -66,13 +74,12 @@ adoption:
   note: Lamini publishes no usage, customer or download figure for its platform, and the founders' claim
     of large-scale production deployment describes their earlier careers rather than this product. The only
     public artifact is a thin API client, so adoption is left unscored rather than inferred from press coverage.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.lamini.ai/about/
-    shows: 'The About page says the founders "shipped LLMs in production to over 1 billion users" as a claim
-      about their prior careers, and gives no download, customer or active-user count for the Lamini platform;
-      searched the body for download, customers, users served and active users tied to the product: none.'
-    accessed: '2026-09-28'
+    shows: The About page says the team "shipped LLMs in production to over 1 billion users" as a claim
+      about their prior careers, and gives no download, customer or active-user count for the Lamini platform.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: ae4e3cb6142e96a8d8d4834ec89c2ef8a8e466bc4f4ef037ea93de8408207cb1
 capability:
@@ -83,24 +90,25 @@ capability:
   note: Lamini markets memory-tuning with claims of about 95% factual accuracy and 32x compression, but
     the arXiv paper behind those figures was withdrawn by its own authors, and the closed engine cannot
     be independently checked. No score is assigned rather than one built on an unverifiable claim.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://arxiv.org/abs/2406.17642
-    shows: The abstract page for the Lamini memory-tuning paper carries the notice "This paper has been
-      withdrawn by Gregory Diamos" and a submission history entry ending "(withdrawn)".
-    accessed: '2026-09-28'
+    shows: The abstract page for "Banishing LLM Hallucinations Requires Rethinking Generalization" (authors
+      include Sharon Zhou and Gregory Diamos) carries the notice "This paper has been withdrawn by Gregory
+      Diamos", a submission history entry ending "(withdrawn)", and an abstract describing "Lamini-1" built
+      on a mixture of memory experts. The page does not mention the 95% or 32x figures.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b5f8d63bd53850abed4b3b7e5f02aeb86de9823a9135e17e87d234febfb4d133
+    content_sha256: f04de420ff47d16e4ff4a3f0abf53f0ad913172dcd5952d57f6d5d8f036086c3
   - url: https://docs.lamini.ai/about/
     shows: The About page lists "95% accuracy on factual tasks" and "32x model compression" as vendor claims
       for memory tuning, with no benchmark harness or reproduction linked.
-    accessed: '2026-09-28'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: ae4e3cb6142e96a8d8d4834ec89c2ef8a8e466bc4f4ef037ea93de8408207cb1
   - url: https://raw.githubusercontent.com/lamini-ai/lamini/main/README.md
-    shows: 'The repository README says "This python package is a client + SDK compatible with the Lamini
-      API", so only the API client is public; searched for engine, training code and benchmark harness:
-      none.'
-    accessed: '2026-09-28'
+    shows: The repository README says "This python package is a client + SDK compatible with the Lamini
+      API", so only the API client is public.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 2dc3d9d8d5ee1f60edac0a73fcf7f144a0eb03ae4d676b30db075dca5e3be713

@@ -14,45 +14,47 @@ openness:
       runs-on:
         value: Azure-AI-Foundry-only
   confidence: high
-  note: 'A proprietary managed fine-tuning service inside Microsoft Foundry, with no source published. It
-    runs only on Azure, and tunes both closed OpenAI models, which are generally available, and open-weight
-    models in preview: Ministral, Qwen, Llama and gpt-oss.'
-  last_verified: '2026-09-23'
+  note: A proprietary managed fine-tuning service inside Microsoft Foundry, with no source published. It
+    runs only on Azure, and tunes both closed OpenAI models and open-weight models such as Llama, Qwen,
+    Ministral and gpt-oss.
+  last_verified: '2026-11-16'
   raw: source:closed;training-code:closed;runs-on:Azure-AI-Foundry-only;license:Proprietary(managed Azure
     service)
   sources:
-  - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
-    shows: Supported-models table lists gpt-4o-mini as SFT-only; gpt-4o and the gpt-4.1/mini/nano trio as
-      SFT+DPO; o4-mini and gpt-5 as RFT (gpt-5's RFT access gated by invitation); and public-preview SFT
-      for Ministral-3B, Qwen-32B, Llama-3.3-70B-Instruct, and gpt-oss-20b. Fine-tuning runs only inside
-      a Foundry project resource under the Foundry Owner/User RBAC roles; no repository or self-host path
-      is offered anywhere on the page.
-    accessed: '2026-09-23'
+  - url: https://learn.microsoft.com/en-us/azure/foundry/fine-tuning/overview
+    shows: '"Both use Foundry-managed training infrastructure; you don''t provision training GPUs." Training
+      runs as Managed Training or Programmed Training inside Foundry, with serverless, managed-compute and
+      Fireworks-on-Foundry deployment options; no source release or self-host path is described.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 7d8ab7670f7cac9be8268b6e68f0fa05badf8ace23666ab1f2a830bbf963c2c1
+    content_sha256: 20db38281cae31611c5da253a81d0875fadcbd2ebc04a6fa90b42512520c9600
+    establishes:
+    - source
+  - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
+    shows: Jobs are created in a Foundry resource or project, with "Foundry User" for training and "Foundry
+      Owner" for deploying the fine-tuned model; the page offers no repository or self-host path.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: e297e3974e6844f3b46eb6d9209296b8d518f63a897be9c73ea1eeb540d69055
     establishes:
     - source
   - url: https://www.microsoft.com/licensing/terms/product/ForOnlineServices/all
-    shows: Defines "Covered Product" as "any Azure OpenAI model in Microsoft Foundry Models or any Copilot
-      (excluding free Previews), in either case, that is available for a fee through Microsoft volume licensing
-      or used with a paid subscription to an Online Service," and bars use of the Online Service "to reverse
-      engineer any Online Service or exfiltrate the weights of any AI models or otherwise discover any underlying
-      components, algorithms or systems included in the Online Service."
-    accessed: '2026-09-23'
+    shows: Bars use of the Online Service "to reverse engineer any Online Service or exfiltrate the weights
+      of any AI models or otherwise discover any underlying components, algorithms or systems included in
+      the Online Service". The terms cover "any Azure OpenAI model in Microsoft Foundry Models".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 7bcb9032ace4c7ebeda7414dd75efebdbbbb01312e66ec9d55bd291d85fab5c6
+    content_sha256: 8669b3f0a79a2268416da3a181602f42aede4dff6abaf5c99910cc8b239608f9
     establishes:
     - source
     - license
   - url: https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy
-    shows: '"Your fine-tuned Models sold by Azure are available exclusively for your use." "Foundry is an
-      Azure service; Microsoft hosts the Models sold by Azure in Microsoft''s Azure environment and Models
-      sold by Azure do NOT interact with any services operated by providers of Models sold by Azure, for
-      example, OpenAI." Fine-tuned models ("base or fine-tuned") are deployed in the customer''s Foundry
-      resource and pass through the same real-time content-filtering pipeline as base models.'
-    accessed: '2026-09-23'
+    shows: '"Models sold by Azure do NOT interact with any services operated by providers of Models sold
+      by Azure" and "available exclusively for your use" for fine-tuned models, hosted in Microsoft''s Azure
+      environment.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: c2745cd05c03f99d36e6dc2e11f08dde812a0925043f01b42c4dd5c97bada2c0
+    content_sha256: 5f88284e05b6be00c8223e124e370e2e1933bdec864f02d0b22dcb4a15af1607
     establishes:
     - source
 adoption:
@@ -63,16 +65,19 @@ adoption:
   note: Microsoft publishes no usage figures for this service, such as jobs run or customers tuning models.
     Azure OpenAI is widely deployed, but nothing published is specific to fine-tuning, so the map leaves
     this product unscored rather than borrowing a figure from the umbrella service.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
-  - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
-    shows: 'The article carries no usage figure; searched the body for customers, users, downloads, jobs
-      run and adoption: the only hits are the sample training line "About 93 million miles. Just a quick
-      drive, really." and the advice "hundreds, if not thousands, of training examples", neither a usage
-      metric.'
-    accessed: '2026-09-28'
+  - url: https://learn.microsoft.com/en-us/azure/foundry/fine-tuning/overview
+    shows: The overview describes Managed Training and Programmed Training, the supported-models table and
+      deployment options, and carries no usage figure.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: c693a48e273962d379f39a2e524773e8ff3500646b91a6c04bac315c9c20f000
+    content_sha256: 20db38281cae31611c5da253a81d0875fadcbd2ebc04a6fa90b42512520c9600
+  - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
+    shows: The SFT how-to carries no usage figure.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: e297e3974e6844f3b46eb6d9209296b8d518f63a897be9c73ea1eeb540d69055
 capability:
   score: 4
   basis: feature_matrix
@@ -82,9 +87,8 @@ capability:
   confidence: medium
   note: Azure OpenAI Fine-Tuning offers supervised and preference tuning on OpenAI models such as gpt-4o,
     reinforcement fine-tuning on o4-mini, and supervised tuning of open-weight models such as Llama and
-    Qwen, but exposes only batch size, learning rate and epoch count as settings. That gives it managed
-    breadth rather than the deeper control over parallelism and precision that a training framework offers.
-  last_verified: '2026-09-28'
+    Qwen. Standard jobs expose only batch size, learning rate and epoch count, while an approval-gated Programmed
+    Training preview adds control over losses, rewards, rollouts and gradient accumulation.
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
     shows: 'Supported-models table lists gpt-4o with methods "SFT, DPO" and o4-mini with "RFT" (gpt-5 RFT
