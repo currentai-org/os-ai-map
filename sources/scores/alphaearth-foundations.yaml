@@ -37,16 +37,17 @@ adoption:
   level: 1
   signal_type: reported_traction
   confidence: medium
-  note: No model artifact is distributed, so there is no download or star count to read and no reach word
-    is recorded. DeepMind reports working with more than 50 organizations on the released embedding dataset,
-    which is directional only.
-  last_verified: '2026-09-10'
+  note: DeepMind distributes the embedding dataset but no model artifact, so there is no download or star
+    count to measure. Its announcement reports partner organizations testing the dataset, which shows interest
+    but not measured use.
+  last_verified: '2026-11-16'
   sources:
   - url: https://deepmind.google/discover/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/
-    shows: States that over the past year the team worked with more than 50 organizations to test the dataset on real-world applications.
-    accessed: '2026-09-10'
+    shows: Announcement says the team has been "working with more than 50 organizations to test this dataset
+      on their real-world applications".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 564682fe5d66182fab2a13d536aa24ed7ce5836d370a142b6d9abded208725a5
+    content_sha256: 26447b854b1db67a23b16c4f8c109301354eefff250fe83cb1329c1ae9fe95d9
 capability:
   score: 2
   basis: feature_matrix
@@ -55,19 +56,22 @@ capability:
   relative_to: prithvi-eo
   relation: two_below
   confidence: high
-  note: AlphaEarth Foundations combines Landsat, Sentinel-1 and Sentinel-2 measurements into one embedding,
-    which is its only counted capability. The embeddings are applied without retraining rather than adapted,
-    an embedding is not a generated output, and the release fixes a single 10-meter annual grid rather than
-    multiple scales.
-  last_verified: '2026-09-10'
+  note: AlphaEarth Foundations combines Landsat, Sentinel-1 and Sentinel-2 measurements into one embedding.
+    The embeddings are applied without retraining rather than adapted, an embedding is not a generated output,
+    and the release fixes a single 10-meter annual grid rather than multiple scales.
+  last_verified: '2026-11-16'
   sources:
   - url: https://arxiv.org/abs/2507.22291
-    shows: Describes an embedding field model that assimilates spatial, temporal, and measurement contexts across multiple sources, and reports that its embeddings outperform other featurization approaches without re-training.
-    accessed: '2026-09-10'
+    shows: Abstract describes a model that "assimilates spatial, temporal, and measurement contexts across
+      multiple sources" and reports embeddings tested on mapping evaluations "without re-training".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: f279d00bb71133655ef3c1a6f24886a0fff350885ae0707b5332f97d2b15f3b7
+    content_sha256: d3d25596abd3ad58a23663c32b4c621764977a0c258712cdb013b8badebf913e
   - url: https://storage.googleapis.com/earthengine-stac/catalog/GOOGLE/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL.json
-    shows: The collection's STAC record — a single 10-metre pixel size, one 64-dimensional embedding per pixel per calendar year, and the landsat-derived, sentinel1-derived and sentinel2-derived keywords. Cited in place of the rendered catalog page, whose body is nondeterministic and returned three different digests in three consecutive fetches, so it could never be re-confirmed.
-    accessed: '2026-09-10'
+    shows: The collection's STAC record says "Each 10-meter pixel in this dataset is a 64-dimensional representation"
+      and carries the keywords "annual", "landsat-derived", "sentinel1-derived" and "sentinel2-derived"
+      (collection id GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL). Cited in place of the rendered catalog page,
+      whose body is nondeterministic.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1c5fb2abdcbf6d12a9b6cfecf10ccc55cbfac7d009645536d4e4828f9a14e012

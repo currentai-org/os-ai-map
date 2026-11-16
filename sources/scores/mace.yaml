@@ -80,14 +80,24 @@ capability:
   basis_detail: scientific adaptation surface
   value: A documented finetuning path from any foundation checkpoint onto a new dataset, and in MACE-MH a single checkpoint carrying task heads across several DFT levels of theory; no generation, one scale.
   confidence: high
-  note: 'Most of the family is one checkpoint per domain, with small, medium and large as sizes rather than
-    scales. MACE-MH is credited as a second attribute: a single checkpoint whose card claims unified cross-domain
-    capability across inorganic crystals, molecular systems, surface chemistry and reactive organic chemistry,
-    with separate heads for OMAT PBE, OMOL, OC20, SPICE, RGD1, MPTraj and MatPES.'
-  last_verified: '2026-09-10'
+  note: 'MACE documents a finetuning path from any foundation checkpoint onto a new dataset. Most of the
+    family is one checkpoint per domain, with small, medium and large as sizes rather than scales, and MACE-MH
+    adds a second capability: a single checkpoint whose card claims unified cross-domain capability across
+    inorganic crystals, molecular systems, surface chemistry and reactive organic chemistry, with separate
+    heads for OMAT PBE, OMOL, OC20, SPICE, RGD1, MPTraj and MatPES.'
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/ACEsuit/mace/main/README.md
-    shows: Documents finetuning a foundation model with mace_run_train --foundation_model, states the pretrained models can be used directly for inference or as a starting point for fine-tuning, and describes outputs as energies, forces and stresses.
-    accessed: '2026-09-10'
+    shows: States the foundation models "can be used directly for inference, or as a starting point for
+      fine-tuning on a new dataset" and documents finetuning with the extra argument "--foundation_model=model_type"
+      to mace_run_train.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: dd0baa36ac60651bf8de2783026124f4cd374a0ab2a90c71a7c384925d8bedcc
+    content_sha256: ce86d53b18ca7b6167d4791fac5832c37deb680dd0534354575c837c16cfac89
+  - url: https://huggingface.co/mace-foundations/mace-mh-1/raw/main/README.md
+    shows: 'MACE-MH-1 card claims "Unified cross-domain capability" spanning inorganic crystals, molecular
+      systems, surface chemistry and reactive organic chemistry, and lists "Multiple Heads": OMAT PBE (main),
+      OMOL, OC20, SPICE, RGD1, MPTraj, Matpes (r2scan), trained on different levels of theory.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: fa429ada8f55eae243549fd4c97d024a85a8f764c8b3e12c1e369ad70a0cc073

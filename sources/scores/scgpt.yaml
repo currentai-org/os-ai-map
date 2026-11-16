@@ -53,19 +53,36 @@ capability:
   basis_detail: scientific adaptation surface
   value: Fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles; one cellular scale.
   confidence: medium
-  note: 'scGPT establishes three capability attributes, including multi-omic input: tutorials/Tutorial_Multiomics.ipynb
-    and Tutorial_Perturbation.ipynb both ship in the repository, even though the project''s own to-do list
-    still marks multi-omic support unfinished. Gene and cell representations count as one scale, and the
-    organ-specific checkpoints are separate models rather than a second scale.'
-  last_verified: '2026-09-10'
+  note: scGPT ships fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation
+    expression profiles. Tutorial_Multiomics.ipynb and Tutorial_Perturbation.ipynb both ship in the repository,
+    even though the project's own to-do list still marks multi-omic support unfinished. Gene and cell representations
+    are one scale, and the organ-specific checkpoints are separate models rather than a second scale.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/bowang-lab/scGPT/main/README.md
-    shows: Ships examples/finetune_integration.py for fine-tuning a pretrained checkpoint and names the model a generative pre-trained foundation model for single-cell multi-omics.
-    accessed: '2026-09-10'
+    shows: 'Append: To-do list still has unchecked "Finetuning examples for multi-omics integration, cell
+      type annotation, perturbation prediction, cell generation"; checkpoint table lists whole-human, pan-cancer
+      and organ-specific models, and a grep for spatial|multi-scale|tissue-level|resolution finds no second
+      scale.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83
   - url: https://scgpt.readthedocs.io/en/latest/introduction.html
-    shows: Describes generative pre-training on over 33 million cells, single-cell multi-omic data analysis, and downstream multi-omic integration and genetic perturbation prediction, with fine-tuning tutorials for each.
-    accessed: '2026-09-10'
+    shows: Describes generative pre-training on "over 33 million cells" and lists fine-tuning tutorials
+      for batch integration, cell-type annotation, and "Perturbation Prediction"; downstream tasks include
+      multi-omic integration.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 38b7f69436d90bab0b73ddaa3b90e3f96bfd96c6b6b929aabd30483e5a67bd05
+  - url: https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Multiomics.ipynb
+    shows: The shipped notebook is titled "Fine-tuning on Pre-trained Model for Multiomic Integration" and
+      works on RNA and protein abundance data from the BMMC dataset.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 617303e1495c376681d2a7de064d79d95f5364e30a30c163de70f860b6a8257d
+  - url: https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Perturbation.ipynb
+    shows: The shipped notebook is titled "Fine-tuning Pre-trained Model for Perturbation Prediction" and
+      calls model.pred_perturb to produce predicted expression.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: a997191d88e4c05969103e777f1323ebf4263238e64520877ae3a0f6aed4bdbb

@@ -81,11 +81,23 @@ capability:
   relative_to: prithvi-eo
   relation: one_below
   confidence: high
-  note: Two attributes are stated directly. The encoder-decoder reconstructs masked inputs, which the category does not count as generative, and a variable count of monthly timesteps is one temporal scale rather than several.
-  last_verified: '2026-09-10'
+  note: Presto documents fine-tuning through a construct_finetuning_model call and a downstream-task notebook,
+    and one model ingests Sentinel-1, Sentinel-2, ERA5, SRTM and Dynamic World inputs together. Its encoder-decoder
+    reconstructs masked inputs rather than generating outputs, and a variable number of monthly timesteps
+    is one temporal scale rather than several.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/nasaharvest/presto/main/README.md
-    shows: Shows construct_finetuning_model adding a linear head for finetuning and a jupyter notebook demonstrating finetuning on different downstream tasks, and specifies the input tensor as the S1, S2, ERA5, and SRTM bands plus Dynamic World classes and latitude and longitude.
-    accessed: '2026-09-10'
+    shows: Shows "construct_finetuning_model(num_outputs=1, regression=True)" adding a linear head for finetuning
+      and a "jupyter notebook" demonstrating finetuning on downstream tasks; timesteps "can be any value
+      between 1 and 24 (2 years of data)"; the encoder-decoder returns "reconstructed_x, reconstructed_dynamic_world
+      = encoder_decoder(", and the inputs include Dynamic World classes and latitude and longitude.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836
+  - url: https://raw.githubusercontent.com/nasaharvest/presto/main/presto/dataops/pipelines/s1_s2_era5_srtm.py
+    shows: 'Defines the model''s input bands: Sentinel-1 "S1_BANDS = ["VV", "VH"]", Sentinel-2 S2_BANDS,
+      "ERA5_BANDS = ["temperature_2m", "total_precipitation"]" and "SRTM_BANDS = ["elevation", "slope"]".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 7f371255202450ba4a63a39c90665579252976d8cd127aa866f7391c2607aaf4
