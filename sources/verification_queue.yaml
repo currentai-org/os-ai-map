@@ -2522,19 +2522,11 @@ held:
       because: 'The recorded peer openai-fine-tuning-api is being wound down: OpenAI''s fine-tuning docs now say "OpenAI
         is winding down the fine-tuning platform." and that it is closed to new users. The one_below edge and the
         note''s ''also offers'' wording need a maintainer ruling on whether a closing peer remains a valid comparison;
-        the AWS value itself (SFT, RFT with Lambda rewards, distillation) re-reads unchanged.'
+        the AWS value itself (SFT, RFT with Lambda rewards, distillation) re-reads unchanged. Maintainer ruling 2026-11-16
+        on #1073: scores are unchanged; this comparison is reconciled together with openai-fine-tuning-api''s supported
+        method set.'
       since: '2026-11-16'
   anyscale-fine-tuning:
-    openness:
-      because: 'The built-on and status context values cannot be confirmed as recorded; a curator should apply the
-        component rewrite (no score or class change), after which the axis can be re-dated. Proposed for maintainer
-        review, not applied: Score 1 / class closed stands (source closed, proprietary license, both re-established
-        today). The recorded context component built-on ''Ray+DeepSpeed+HF-Accelerate ... LLMForge itself not redistributable''
-        is no longer supported: the docs now name LLaMA-Factory, SkyRL and Ray Train, name no Anyscale-authored library,
-        and never mention LLMForge or HF Accelerate. Propose built-on = LLaMA-Factory+SkyRL+Ray Train (DeepSpeed,
-        FSDP, Megatron backends) and drop the LLMForge clause; status ''deprecated'' describes LLMForge, not a page-declared
-        product state, so reword or drop it. Methods LoRA+full-FT still hold.'
-      since: '2026-11-16'
     capability:
       because: Its comparison peer axolotl could not be re-confirmed in this pass, so this capability axis cannot
         be dated after it.
@@ -2556,29 +2548,22 @@ held:
       since: '2026-11-16'
   azure-openai-fine-tuning:
     capability:
-      because: The Foundry docs now add Programmed Training (preview, approval-gated), which exposes losses, rewards,
-        rollouts and gradient accumulation, and the recorded value and note (only batch size, learning rate and epoch
-        count) are out of date. Whether this lifts the score above 4 is a maintainer call; the value and note need
-        rewriting once settled.
+      because: 'Maintainer ruling 2026-11-16 on #1073: the score of 4 is retained; Programmed Training is an approval-gated
+        preview and does not change it. The recorded value (training tiers, the o4-mini and gpt-5 model line) was
+        not re-read against current Foundry documentation in this pass, so the axis stays held until it is.'
       since: '2026-11-16'
   fireworks-fine-tuning:
     openness:
-      because: The fetched pages no longer document the managed SFT/DPO service the record describes, and Fireworks
-        now publishes an Apache-2.0 cookbook (fw-ai-external/cookbook) of Training API recipes; whether that is part
-        of this product, and so whether source/license components change, needs a maintainer ruling. The closed, Fireworks-cloud-only,
-        open-models reading is otherwise unchanged.
+      because: 'Maintainer ruling 2026-11-16 on #1073: the Apache-2.0 cookbook (fw-ai-external/cookbook) is a separate
+        repository of Training API recipes and examples; its license does not attach to Fireworks'' proprietary training
+        engine, so the closed, Fireworks-cloud-only components stand. The axis stays undated because this pass did
+        not re-fetch its sources; a re-read of the Training API and terms pages settles it.'
       since: '2026-11-16'
     capability:
-      because: 'Managed SFT/DPO paused and serverless LoRA serving now exist; the recorded value text and note are
-        stale and the level needs a maintainer check against Tinker/Together. Proposed for maintainer review, not
-        applied: Recorded: score 4, feature_matrix, value describes managed SFT, DPO/ORPO and reinforcement jobs,
-        a Training API, and adapters served only from dedicated deployments. Evidence now: managed SFT and DPO no
-        longer accept new jobs (Managed Training is paused); training runs through the Training API, with serverless
-        LoRA training (GA, shared pooled GPUs) and dedicated training (full-parameter, by request); LoRAs on select
-        base models can be served on serverless. Proposed value: ''Training API with serverless LoRA training (SFT,
-        DPO, ORPO, RL, distillation, custom loops) on shared GPUs and dedicated training with full-parameter configurations
-        by request; managed SFT/DPO jobs paused; adapters served from dedicated deployments, or serverless on select
-        base models. Open base-model catalog.'' Score 4 appears to still hold but the maintainer should confirm.'
+      because: 'Maintainer ruling 2026-11-16 on #1073: the score of 4 is retained. Managed SFT and DPO jobs are paused,
+        with migration to the Training API; Serverless Training runs LoRA SFT, DPO, reinforcement learning and distillation,
+        and ORPO and full-parameter training require Dedicated Training. The recorded value and note still describe
+        the managed service, so the axis stays held until they are rewritten against those pages.'
       since: '2026-11-16'
   megatron-lm:
     capability:
@@ -2612,18 +2597,12 @@ held:
         is re-readable from the model-optimization guide but a partial refresh would not date the axis.
       since: '2026-11-16'
     capability:
-      because: 'Capability as recorded cannot be confirmed: the method set shrank (no RFT, no o4-mini) and the platform
-        is closed to new users with training marked Deprecated. A maintainer must decide whether the score stays 4
-        or drops and then re-check amazon-bedrock-custom-models-fine-tuning''s relative_to relation. Proposed for
-        maintainer review, not applied: Recorded: score 4, feature_matrix, value ''SFT, vision fine-tuning, DPO, reinforcement
-        fine-tuning (RFT) for reasoning models; tunes gpt-4.1 family, gpt-4o, o4-mini; managed end-to-end''. Evidence
-        today: the model-optimization methods table lists only SFT (gpt-4.1, gpt-4.1-mini, gpt-4.1-nano), vision fine-tuning
-        (gpt-4o-2024-08-06) and DPO (gpt-4.1 family); reinforcement fine-tuning and o4-mini no longer appear anywhere
-        on that page (0 matches for reinforcement/RFT/o4-mini in the body). The pricing page lists gpt-4.1 and gpt-4.1-mini
-        training as ''Deprecated'' and says fine-tuning is closed to new users; the deprecations page shows ft-o4-mini-2025-04-16
-        shutting down Oct 23, 2026 (already past). The value text must drop RFT and o4-mini and narrow to SFT, vision
-        and DPO on gpt-4.1/gpt-4o. Whether score 4 still stands is a maintainer ruling because the Amazon Bedrock
-        custom-models record is relative to this product.'
+      because: 'Maintainer ruling 2026-11-16 on #1073: the score of 4 is retained; a service winding down is not by
+        itself a reason to downgrade capability. The current documentation lists supervised fine-tuning on the gpt-4.1
+        family, vision fine-tuning on gpt-4o and DPO on the gpt-4.1 family; reinforcement fine-tuning on o4-mini is
+        historical (its fine-tuned models shut down on 2026-10-23), and existing customers can create jobs until 2027-01-06
+        (#959). The value now separates the two. Held until the supported method set and the Amazon Bedrock comparison
+        (amazon-bedrock-custom-models-fine-tuning records one_below this product) are reconciled.'
       since: '2026-11-16'
   openpipe:
     capability:
