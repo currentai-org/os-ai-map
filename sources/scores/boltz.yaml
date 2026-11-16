@@ -72,16 +72,27 @@ capability:
   relative_to: prithvi-eo
   relation: one_below
   confidence: high
-  note: Two attributes. Adding binding affinity to structure prediction widens what Boltz-2 outputs without adding a scale or a design surface, so the second head is not a third attribute.
-  last_verified: '2026-09-10'
+  note: Boltz publishes a retraining pathway with dataset download instructions and template configuration
+    files, and takes sequence with MSA inputs and ligand specifications. Boltz-2 adds binding affinity to
+    structure prediction, but both outputs are predictions of fixed targets at one scale, so the affinity
+    head widens the outputs without adding a design surface.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md
-    shows: Inference takes a YAML specification of the biomolecules with an optional MSA server; the Training section documents retraining, and the affinity outputs are predicted values rather than generated molecules.
-    accessed: '2026-09-10'
+    shows: 'Inference runs "boltz predict input_path --use_msa_server" on a YAML file "describing the biomolecules
+      you want to model and the properties you want to predict"; the Binding Affinity section says the output
+      "represents the predicted probability that the ligand is a binder" and reports "log10(IC50)", predicted
+      values rather than generated molecules; the Training section still reads "Coming soon: updated training
+      code for Boltz-2!" with retraining available for Boltz-1. The README does not itself spell out the
+      ligand input format.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2
   - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/docs/training.md
-    shows: '"To run training, you will need to download a few pre-processed datasets", covering both structures and MSAs, with configuration templates for the structure and confidence models.'
-    accessed: '2026-09-10'
+    shows: '"To run training, you will need to download a few pre-processed datasets", with "a template
+      configuration file analogous to the one we used for training the structure model" and a confidence-model
+      configuration; Boltz-2 training information is still marked "Coming soon updated training information
+      for Boltz-2!"'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c

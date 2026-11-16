@@ -89,16 +89,30 @@ capability:
   relative_to: terramind
   relation: two_below
   confidence: high
-  note: Two attributes. Adaptation is explicitly uncounted because the documentation says training and fine-tuning are not supported and ship only as pseudo-code; the checkpoint-modification recipe changes outputs, not learned parameters.
-  last_verified: '2026-09-10'
+  note: NeuralGCM ships checkpoints at three horizontal resolutions for both forecasts and long integrations,
+    plus a stochastic model for simulation, all on ERA5 inputs. Its documentation says the team would like
+    to support training, modifying and fine-tuning but that the current codebase makes this harder than
+    it should be, and training is shipped only as pseudo-code. The checkpoint-modification recipe changes
+    model outputs rather than learned parameters, so it is not an adaptation pathway.
+  last_verified: '2026-11-16'
   sources:
   - url: https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html
-    shows: Distributes deterministic checkpoints at 0.7, 1.4 and 2.8 degrees plus a stochastic 1.4-degree model, and discusses long integrations and the stability of the simulated global mean surface pressure.
-    accessed: '2026-09-10'
+    shows: Offers v1/deterministic_0_7_deg.pkl, v1/deterministic_1_4_deg.pkl, v1/deterministic_2_8_deg.pkl
+      and v1/stochastic_1_4_deg.pkl, and says "the global mean surface pressure tends to drift in long integrations"
+      so the recipe fixes it to increase stability in long integrations.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f
   - url: https://neuralgcm.readthedocs.io/en/latest/
-    shows: Describes NeuralGCM as a hybrid ML and physics atmospheric model for weather and climate simulation built on the Dinosaur dynamical core, and says the maintainers "would love to support training, modifying and fine-tuning NeuralGCM models" but that the Haiku and Gin codebase makes it "much trickier than it needs to be", with pseudo-code for training in reference_code.
-    accessed: '2026-09-10'
+    shows: Says "Pseudo-code for training NeuralGCM models" can be found in the reference_code subdirectory;
+      "We would love to support training, modifying and fine-tuning NeuralGCM models" but with the Haiku
+      and Gin codebase this is "much trickier than it needs" to be.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 0ae8a5428933cc6be49fb1aeea9d3755593728d866344744cc25c236672bb741
+    content_sha256: 725df0f422b0b8fc15ac1d50e8f53614af942a28e1dbfc3fdc55adb517dee080
+  - url: https://neuralgcm.readthedocs.io/en/latest/data_preparation.html
+    shows: Data preparation is worked through with the Zarr copy of ERA5 from the "ARCO-ERA5" project, the
+      only input system the page documents.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 496c591aca645eac0d16ad231ea1514477aaf66d167c00c1a90cd64de83e72f1

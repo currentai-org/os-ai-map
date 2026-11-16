@@ -10,27 +10,35 @@ openness:
     - {name: BSD-3-Clause, detail: OSI}
   raw: weights:open(checkpoints downloaded from files.ipd.uw.edu and covered explicitly by the repository LICENSE);data:closed(training set not released; the model builds on RoseTTAFold's trained parameters);code:partial(inference scripts and hydra configs only; no training pipeline);license:BSD-3-Clause(OSI)
   confidence: high
-  note: GitHub reports NOASSERTION, which would have left this product looking unlicensed. The LICENSE body is BSD three-clause text under a University of Washington copyright, and it says outright that it covers the model weights as well as the source, which is the rarer and more useful of the two statements.
-  last_verified: '2026-09-10'
+  note: The LICENSE file is BSD three-clause text under a University of Washington copyright and states
+    that it covers the model weights as well as the source code. The training set is not released, the model
+    builds on RoseTTAFold's trained parameters, and the repository ships inference scripts and configs without
+    a training pipeline, so this is an open-weights release rather than a fully open model.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/LICENSE
-    shows: '"BSD License. Copyright (c) 2023 University of Washington ... This copyright and license covers both the source code and model weights referenced for download in the README file", followed by the three standard BSD conditions.'
-    accessed: '2026-09-10'
+    shows: '"BSD License" with "Copyright (c) 2023 University of Washington" and a statement that the copyright
+      and license "covers both the source code and model" weights referenced for download in the README
+      file, followed by the three standard BSD conditions.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: eefc2ae77cb92b1414a6ac76b246642fae2189747b1b07747e92e5ddc696ec24
-    establishes: [weights, license]
-  - url: https://api.github.com/repos/RosettaCommons/RFdiffusion
-    shows: 'license spdx_id: NOASSERTION, key "other", url null - the endpoint does not recognise the BSD text in the LICENSE file.'
-    accessed: '2026-09-10'
-    http_status: 200
-    content_sha256: 3d2dec2da183e4ecf9636b3b4c4345fe0b57c1a3cc17b435da27be133f9317dd
-    establishes: [license]
+    establishes:
+    - weights
+    - license
   - url: https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/README.md
-    shows: '"RFdiffusion is released under an open source BSD License (see LICENSE file). It is free for both non-profit and for-profit use." Weights are fetched with wget from files.ipd.uw.edu; the published code covers inference configuration only, and no training data or pipeline is released.'
-    accessed: '2026-09-10'
+    shows: '"RFdiffusion is released under an open source BSD License (see LICENSE file). It is free for
+      both non-profit and for-profit use." Checkpoints are fetched with wget from files.ipd.uw.edu; the
+      README states "RFdiffusion builds directly on the architecture and trained parameters of RoseTTAFold.";
+      it documents inference runs only and names no released training data or training pipeline.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125
-    establishes: [data, code, license]
+    establishes:
+    - weights
+    - data
+    - code
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -63,10 +71,14 @@ capability:
     protein backbones rather than predicting a structure for an existing sequence. Its conditioning inputs,
     motifs, hotspot residues, symmetry, an existing structure, are varied but all derive from the same PDB
     structure format, so they count as one input system rather than several.'
-  last_verified: '2026-09-10'
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/README.md
-    shows: Documents unconditional monomer generation, motif scaffolding, binder design against a target with hotspot residues, symmetric oligomer design and partial diffusion of an existing backbone; conditioning comes from an input .pdb with contigs, secondary structure and block adjacency, and the repository publishes inference only.
-    accessed: '2026-09-10'
+    shows: Lists "Motif Scaffolding", "Unconditional protein generation", "Symmetric unconditional generation
+      (cyclic, dihedral and tetrahedral symmetries currently implemented, more coming!)", "Binder design"
+      and design diversification by partial diffusion (sampling around a design); binder design uses "hotspot
+      residues" and conditioning on "secondary structure and block adjacency"; motifs come from a `.pdb`
+      file.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125

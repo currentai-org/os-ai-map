@@ -54,11 +54,18 @@ capability:
   basis_detail: scientific adaptation surface
   value: Published pretraining and fine-tuning stages with their configs; a single deterministic checkpoint at one resolution over ECMWF analysis inputs.
   confidence: high
-  note: One attribute. The MSE-trained model predicts a fixed forecast target rather than generating, thirteen pressure levels are vertical structure rather than a second scale, and ERA5 with operational IFS analyses is one data system.
-  last_verified: '2026-09-10'
+  note: AIFS publishes its pretraining and fine-tuning stages with their configs. The model is trained with
+    mean squared error to predict a fixed forecast target rather than to generate, it ships as a single
+    checkpoint at one resolution, its thirteen pressure levels are vertical structure rather than a second
+    scale, and ERA5 with operational IFS analyses is one data system.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md
-    shows: Documents a two-stage Anemoi pretraining and rollout fine-tuning path with shipped configs, and specifies a single ~31 km horizontal, 13-level atmosphere component producing 6-hour forecasts.
-    accessed: '2026-09-10'
+    shows: 'Training section: "To train this model you can use the configuration files included in this
+      repository", with a pretraining command then fine-tuning "for rollout"; the model card lists one atmosphere
+      component at ~31 km horizontal and 13 vertical levels, producing "6-hour forecasts" under an area-weighted
+      mean squared error loss; the only inputs are ECMWF data, "numerical weather prediction (NWP) analyses"
+      for fine-tuning after ERA5 pretraining, one data system.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09
