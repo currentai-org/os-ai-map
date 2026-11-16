@@ -11,21 +11,24 @@ openness:
       detail: multi-stage weakly-supervised and synthetic mixture described in the paper, not released
     code:
       value: partial
-      detail: evaluation and inference examples in QwenLM/Qwen3-Embedding; no pretraining pipeline
+      detail: inference and MTEB evaluation code, plus docs for further training of the released checkpoints
+        with SWIFT, LoRA or full-parameter. No data preparation, original training recipe or configurations
+        for the pretrained checkpoints
     license:
     - name: Apache-2.0
       detail: OSI
   confidence: high
   governing_release: Qwen3-Embedding (0.6B/4B/8B)
   note: All three sizes are released under Apache-2.0. The paper describes the training corpus but does
-    not publish it, and the repository includes evaluation and usage code rather than the pipeline used
-    to produce the checkpoints. This makes Qwen3-Embedding an open-weights release rather than a fully open
-    model.
+    not publish it, and the repository's training docs cover further fine-tuning of the released checkpoints
+    with SWIFT rather than the recipe that produced them. This makes Qwen3-Embedding an open-weights release
+    rather than a fully open model.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Embedding-8B/raw/main/README.md
-    shows: 'license: apache-2.0 in the front matter; base_model Qwen/Qwen3-8B-Base; the three embedding sizes
-      and three reranker sizes listed as downloadable; no training data or pretraining code named.'
-    accessed: '2026-09-11'
+    shows: 'license: apache-2.0 in the front matter; base_model Qwen/Qwen3-8B-Base; the three embedding
+      sizes and three reranker sizes listed as downloadable; no training data or pretraining code named.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1fd6f3583d642a3319efb3eb8c22b6aa6320e6ab92263447bd84fd92615206d4
     establishes:
@@ -33,23 +36,45 @@ openness:
     - license
     - data
   - url: https://raw.githubusercontent.com/QwenLM/Qwen3-Embedding/main/README.md
-    shows: The product repository points at the Hugging Face and ModelScope collections, the blog, the arXiv paper
-      and the hosted API, and offers usage and evaluation material rather than a pretraining pipeline.
-    accessed: '2026-09-11'
+    shows: The product repository points at the Hugging Face and ModelScope collections, the blog, the arXiv
+      paper and the hosted API, offers usage and evaluation material, and says "The code and instructions
+      for training Qwen3-Embedding models can be found in the" training docs.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: cb77a65d92c429684ce41c839f959d151021b9fc37a40b9dfddfdb7449790599
     establishes:
     - code
   - url: https://huggingface.co/api/models/Qwen/Qwen3-Embedding-8B
     shows: 'gated: false; private: false; cardData license apache-2.0.'
-    accessed: '2026-09-11'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: c39b68dd8682214dd9f54e0a373a3c9a7bffbd4e83c3bdf1e6246ab578e286c4
+    content_sha256: 02138793c2630a38b233968e7b8d159f498cbac5221c62ca450101ccee651822
     establishes:
     - weights
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-Embedding/main/docs/training/SWIFT.md
+    shows: 'The training doc: "The Qwen3-Embedding series models can be further trained when needed (for
+      example, when users have domain-specific data)" with the SWIFT framework, which "Supports full-parameter
+      fine-tuning, LoRA, QLoRA, DoRA, and other techniques"; its example command starts from the released
+      Qwen/Qwen3-Embedding-0.6B. It gives no data preparation, recipe or configurations for the original
+      training run.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: ed7fdf9bdcf54784b0cd4d181bf6a2483004a30a1c73316857c5f264526b2fd5
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2506.05176
+    shows: The abstract describes a "multi-stage training pipeline combines large-scale unsupervised pre-training
+      with supervised fine-tuning on high-quality datasets", with the Qwen3 LLMs "synthesizing high-quality,
+      rich, and diverse training data".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f862c5fa8f76d3ef3fa2de7a42c43f2de2e279a4861215751b402340ba3fa080
+    establishes:
+    - data
   raw: weights:open(three ungated Apache-2.0 checkpoints, 0.6B/4B/8B);data:closed(multi-stage weakly-supervised
-    and synthetic mixture described in the paper, not released);code:partial(evaluation and inference examples
-    in QwenLM/Qwen3-Embedding; no pretraining pipeline);license:Apache-2.0(OSI)
+    and synthetic mixture described in the paper, not released);code:partial(inference and MTEB evaluation
+    code, plus docs for further training of the released checkpoints with SWIFT, LoRA or full-parameter.
+    No data preparation, original training recipe or configurations for the pretrained checkpoints);license:Apache-2.0(OSI)
 adoption:
   level: 5
   reach: '>10M'

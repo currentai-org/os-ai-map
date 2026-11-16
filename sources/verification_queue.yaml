@@ -1973,100 +1973,82 @@ held:
       since: '2026-11-16'
   all-minilm:
     openness:
-      because: 'Weights, code and license re-verified today, but the data value open sits uneasily with sources/rubrics/pretrained.yaml:
-        the 1.17B-pair corpus is about 62% Reddit comments plus Yahoo Answers, MS MARCO, WikiAnswers and S2ORC, with
-        no corpus-level license and no disclosure of restricted constituents. A maintainer needs to rule whether open
-        or released-restricted/components-listed applies.'
-      since: '2026-11-16'
-    capability:
-      because: Score 2 and the one_below edge to e5 (score 3) hold, and neither card publishes MTEB or BEIR results.
-        But the recorded value says the multilingual sibling has the same short context, while its card shows max_seq_length
-        128 against 256 for the headline checkpoint; the value text needs that correction by a maintainer.
+      because: 'Weights, code and license are re-verified, and data stays recorded open, undated. The training compilation
+        is named public datasets plus sampling weights (data_config.json): about 1.17B pairs, mostly Reddit comments,
+        with Yahoo Answers, MS MARCO, WikiAnswers, S2ORC and others. Named public datasets and sampling weights do not
+        establish a commercially reusable corpus, and no restriction has been shown either: this is missing evidence,
+        not an affirmative restriction. Settles with documented terms for the compilation, or a constituent-level assessment
+        of the named datasets under the mixed-terms rule (R-2026-11-13-b), per the ruling on #1081 review.'
       since: '2026-11-16'
   bge:
     openness:
-      because: Weights, code and licenses re-confirmed today, but nothing fetched documents the terms of the BAAI-MTP
-        pretraining corpus (data.baai.ac.cn is a script-only page with no license text) or the bge-m3-data set (no
-        license in its card, built from MS MARCO, NQ and other third-party sets), which the pretrained rubric requires
-        before data can be open. A maintainer ruling or a primary page stating the corpus terms would settle it.
+      because: 'Weights, code and licenses are re-confirmed; data stays recorded as is, undated. The model-weight license
+        does not extend to the training data, and nothing fetched states the governing corpus terms: data.baai.ac.cn has
+        no license text for BAAI-MTP, and the bge-m3-data card carries no license while drawing on MS MARCO, NQ and other
+        third-party sets. That is missing evidence, not a restriction. Settles when the governing corpus terms for BAAI-MTP
+        and the BGE-M3 data are obtained, per the ruling on #1081 review.'
       since: '2026-11-16'
   cohere-embed:
     openness:
-      because: Cohere's Embed 5 launch post says 'For private deployments in your own VPC or on-premises, both models
-        can be served with vLLM' and that quantized weights lower serving requirements there, so weights reach private-deployment
-        customers under a commercial agreement. That contradicts the recorded license detail ('a priced dedicated
-        instance, not a license over weights'), and the pricing page no longer carries the dedicated-instance prices
-        the recorded source cites. A maintainer needs to rule whether customer-held weights change the weights or
-        license component, and Cohere's private-deployment terms would settle what the license covers.
-      since: '2026-11-16'
-  cohere-rerank-api:
-    capability:
-      because: 'Recorded value and note describe Rerank 4 as the latest; a person should approve rewording to Rerank
-        5. An independent evaluation of Rerank 5 would settle whether the score should rise. Proposed for maintainer
-        review, not applied: Score 4 unchanged on current evidence. The recorded value text and note name Rerank 4
-        as the newest generation, but Rerank 5 (Pro and Fast) is now the flagship with a vendor-claimed lead (first
-        on 39 of 46 composite datasets, RCP-nDCG@10, Cohere-run). Proposed value: vendor-claimed SOTA on BEIR and
-        multilingual retrieval on 3.5, with Rerank 5 Pro now claimed to lead public benchmarks (BEIR, BRIGHT, ViDoRe
-        V3, nanoMTEB), 32K context and fast/pro variants. Independent Agentset leaderboard still lists only Rerank
-        4 Pro second behind Zerank 2.'
+      because: 'Ruled on #1081 review: Embed 5''s private VPC and on-premises deployments, served with vLLM and quantized
+        weights in customer-controlled infrastructure under a commercial agreement, are not a publicly downloadable release
+        and earn no openness credit; the components and note now say so, and the score is unchanged. Still held because
+        the rest of the axis describes Embed v4: the Embed docs source predates Embed 5, and the pricing page no longer
+        carries the dedicated-instance prices the license source cites. Re-reading the current Embed docs and Cohere''s
+        private-deployment terms would settle it.'
       since: '2026-11-16'
   colpali:
     openness:
-      because: 'Weights, code and the license mix re-read as recorded, but the training set is not cleanly open under
-        the pretrained rubric: the dataset card carries no license, and 37% of it is synthetic pseudo-questions over
-        web-crawled PDFs generated with Claude-3 Sonnet, plus academic datasets under their own terms. A maintainer
-        ruling on whether data is open, released-restricted or components-listed would settle it; no value is changed
-        here.'
+      because: 'Weights, code and the license mix re-read as recorded; data stays recorded as is, undated. The training
+        set''s card carries no license, about 37% of it is synthetic queries generated over web-crawled PDFs, and the
+        rest are academic datasets under their own terms. Settles with an audit of the training-set terms and of the synthetic
+        PDF constituents, including whether any restricted portion can be identified and excluded (the materiality test
+        in R-2026-11-13-b), per the ruling on #1081 review.'
       since: '2026-11-16'
   embeddinggemma:
     openness:
-      because: 'Whether embeddinggemma-2 becomes the governing release (and whether it is a new tier/line rather than
-        the same slug) is an identity call; the 2.x repo has no row in this slug''s artifacts yet. Proposed for maintainer
-        review, not applied: Recorded: governing_release embeddinggemma-300m; weights open but gated (manual click-through);
-        license Gemma-License; data closed; code partial; score 3 open_weights. Evidence: Google''s overview now leads
-        with EmbeddingGemma 2 (google/embeddinggemma-2, HF created 2026-09-14), "provided with open weights and licensed
-        under the Apache 2.0 License", ungated (gated false). Per identity.md the current release governs a family''s
-        openness, so governing_release should move to embeddinggemma-2, weights detail to ungated, license to Apache-2.0.
-        Data stays closed (modality categories only, no corpus) and code stays partial, so the score and class (3,
-        open_weights) look unchanged. Components, governing_release, note and description need a maintainer decision.'
+      because: 'EmbeddingGemma 2 is the governing release (ruled on #1081 review): ungated weights under Apache-2.0, training
+        data described by type only, a fine-tuning guide but no training pipeline. The pretrained ladder recomputes 3/open_weights,
+        matching the recorded score. Held on one narrow question: the card says "Deployments must adhere to the Gemma
+        Prohibited Use Policy" while the license link is plain Apache-2.0 and the repository is ungated, so whether that
+        policy is incorporated into the distribution terms needs confirming or ruling out (R-2026-11-14-b). Either reading
+        leaves the score at 3.'
       since: '2026-11-16'
     capability:
-      because: 'Value text and note depend on the governing-release/identity decision for embeddinggemma-2. Proposed
-        for maintainer review, not applied: Recorded: score 3, value 61.15 on MTEB (Multilingual, v2) at 768d (EmbeddingGemma
-        1), relative_to harrier-oss two_below. Evidence: capability is the max across a family''s releases, and EmbeddingGemma
-        2''s card reports 61.36 on the same benchmark (plus 78.68 on MTEB code v1 vs 68.76) with an 8K context. Score
-        3 and the two_below edge to harrier-oss (74.3, score 5) hold; only the value text and the note''s 2K-context
-        sentence are stale and should cite 61.36 and 8K.'
+      because: 'Value and note now describe EmbeddingGemma 2 under the family-maximum rule: 61.36 against 61.15 for EmbeddingGemma
+        1 on MTEB (Multilingual, v2), 78.68 on MTEB (Code, v1), and image, video and audio retrieval results. Score 3
+        is preserved. Held until a person re-checks the two_below comparison to harrier-oss (74.3 on the same benchmark)
+        against the family maximum, including whether EmbeddingGemma 2''s multimodal results call for a multimodal peer.'
       since: '2026-11-16'
+    adoption:
+      because: Level 4 stands provisionally. The 2026-11-08 reconciliation snapshot (d16c5435f7d3) measured only the
+        two EmbeddingGemma 1 checkpoints, embeddinggemma-300m and embeddinggemma-300m-qat-q8_0-unquantized; embeddinggemma-2
+        was declared afterwards, and the 2026-11-15 reconciliation also ran on the two-checkpoint definition. The
+        axis waits for the first scheduled reconciliation that measures all three declared checkpoints. That run's
+        re-dating PR dates the axis and releases this hold.
+      since: '2026-11-16'
+      settled_by: scheduled_reconciliation
   modernvbert:
     openness:
-      because: 'Recorded values (weights, code, checkpoints, license open; data open) are all still supported by fetched
-        sources, but the data dimension cannot be settled against pretrained.yaml: the paper''s blanket MIT statement
-        covers ''training data'', while the NatCap card carries no license field and its configs are built from third-party
-        image sets (Caltech, Food101, SUN397, VOC2007, FER2013 and others) whose own terms are not disclosed, and
-        the ColPali-derived document mix is likewise mixed. Settling it needs a ruling on whether the paper''s grant
-        plus undisclosed constituents meets the open bar.'
+      because: 'Weights, code, checkpoints and license are supported by fetched sources; data stays recorded open, undated.
+        The publisher''s MIT statement covering training data in the paper is affirmative evidence of a grant (R-2026-11-14-d).
+        Settles once its scope is confirmed to cover the released training compilation (the NatCap card carries no license
+        field) and the third-party constituent rights are assessed: Caltech, Food101, SUN397, VOC2007, FER2013 and the
+        ColPali-derived document mix. Per the ruling on #1081 review.'
       since: '2026-11-16'
   nomic-embed:
     openness:
-      because: 'The evidence audit did not pass this axis: Packet marks confirmed but its own escalation and negative
-        show no source states the corpus''s own terms (grep of contrastors README and both cards finds only code/model
-        Apache-2.0). pretrained.yaml requires data ''open'' to have corpus terms permitting open reuse; the recorded
-        ''open'' (and score 5 which depends on it) is therefore unsupported, and the corpus is served behind an Atlas
-        login. Sources otherwise verify (sha, quotes, v1.5 API drift benign). Do not date until a maintainer rules
-        (open vs released-restricted) or a corpus-terms source is found.'
-      since: '2026-11-16'
-  qwen3-embedding:
-    openness:
-      because: The product repository README says "The code and instructions for training Qwen3-Embedding models can
-        be found in the [training docs](docs/training).", which conflicts with the recorded code:partial detail "no
-        pretraining pipeline"; the docs/training page returned 404 at README.md and the GitHub contents API returned
-        403, so whether a training pipeline is released could not be read. Reading the QwenLM/Qwen3-Embedding docs/training
-        directory (a browser or authenticated listing) would settle code partial versus open.
+      because: 'The published contrastive corpus is stronger evidence than a component list, but no source states the
+        corpus''s own terms, and availability behind a free Atlas account does not establish reusable terms. This is missing
+        license evidence, not a restriction: the score remains a provisional 5 with data recorded open, undated. Settles
+        with a source stating terms for the corpus that permit open reuse, or a constituent-level assessment, per the
+        ruling on #1081 review.'
       since: '2026-11-16'
   voyage-embeddings:
     adoption:
-      because: Level 3 on reported traction is still supported (Atlas reach is restated today), but the recorded banded_quantity
-        cites 302,582 monthly voyage-4-nano downloads and the Hub now reports 118,355 over the trailing 30 days under
-        the new MongoDB/voyage-4-nano repo path; the figure needs a person to update before the axis is re-dated.
+      because: 'Level 3 rests on reported traction: native distribution through MongoDB Atlas, whose customer figure is
+        Atlas''s rather than the models''. The banded_quantity now carries a fresh measurement of the open SKU, MongoDB/voyage-4-nano
+        (where voyageai/voyage-4-nano redirects), at 118,355 downloads over the trailing 30 days, read 2026-11-16; it
+        covers one SKU of four and does not replace the reported-traction instrument. Settles with a usage figure for
+        the Voyage line itself, or a ruling that Atlas distribution supports level 3.'
       since: '2026-11-16'
