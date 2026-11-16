@@ -25,7 +25,6 @@ openness:
     of named public datasets, the sampling weights ship as data_config.json, and the training script sits
     beside the weights. The MLM pretraining of the underlying MiniLM encoder is Microsoft''s and is not
     part of this release.'
-  last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2
     shows: 'license: apache-2.0; gated: false; private: false; model.safetensors, pytorch_model.bin, tf_model.h5, ONNX and
@@ -91,10 +90,9 @@ capability:
   relative_to: e5
   relation: one_below
   confidence: high
-  note: 'All-MiniLM is narrow and dated: the headline checkpoint is English-only, truncates at 256 word
-    pieces, and is an early distillation model. It sits a step below E5, which reaches the same short context
-    but publishes multilingual retrieval numbers.'
-  last_verified: '2026-09-11'
+  note: The headline all-MiniLM-L6-v2 checkpoint is English-only and truncates input at 256 word pieces,
+    while the multilingual sibling truncates at 128. Neither card publishes retrieval benchmark results.
+    It sits a step below E5, which accepts a longer input and publishes multilingual retrieval numbers.
   sources:
   - url: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/main/README.md
     shows: States "By default, input text longer than 256 word pieces is truncated", describes English contrastive fine-tuning

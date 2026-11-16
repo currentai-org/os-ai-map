@@ -68,15 +68,35 @@ capability:
     at 32K context with an instruction-aware interface. The Qwen3-VL-Reranker results are excluded with
     the VL line itself.
   confidence: high
-  note: Qwen3 Reranker is current-generation, multilingual and long-context, with strong published retrieval
-    numbers across both text and visual-document tasks. It sits a step below Harrier-OSS, which holds a
-    measured first place on the public MMTEB v2 leaderboard on the benchmark this category treats as primary.
-  last_verified: '2026-09-11'
+  note: Qwen3 Reranker is a multilingual, long-context cross-encoder with published retrieval results on
+    both text and visual-document tasks. Harrier-OSS reports a higher result on Multilingual MTEB v2, but
+    that is an embedder benchmark, so the two are compared only indirectly.
+  last_verified: '2026-11-16'
   sources:
-  - {url: 'https://huggingface.co/Qwen/Qwen3-VL-Reranker-2B/raw/main/README.md', shows: 'Model performance
-      table reports Qwen3-VL-Reranker-8B at 79.2 MMEB-v2 retrieval average, 74.9 MMTEB retrieval, 83.6
-      JinaVDR and 66.7 ViDoRe v3, ahead of jina-reranker-m0 on VisDoc and ViDoRe.', accessed: '2026-09-11',
-    http_status: 200, content_sha256: f5b8fb5e489fffb19561a523e081d28d2d46187079199ba2326c374efa662272}
-  - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Third-party comparison
-      table on the jina-reranker-v3 card places Qwen3-Reranker-4B at 61.16 BEIR, 67.52 MIRACL, 67.52 MKQA
-      and 73.91 CoIR.', accessed: '2026-09-11', http_status: 200, content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e}
+  - url: https://huggingface.co/Qwen/Qwen3-VL-Reranker-2B/raw/main/README.md
+    shows: Model performance table lists Qwen3-VL-Reranker-8B at "| Qwen3-VL-Reranker-8B | 8B | 79.2 | 80.7
+      | 55.8 | 86.3 | 74.9 | 83.6 | 66.7 |" (MMEB-v2 retrieval average, MMTEB retrieval, JinaVDR, ViDoRe
+      v3), above jina-reranker-m0.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f5b8fb5e489fffb19561a523e081d28d2d46187079199ba2326c374efa662272
+  - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
+    shows: Third-party comparison table on the jina-reranker-v3 card lists "| Qwen3-Reranker-4B | 4.0B |
+      61.16 | 67.52 | 67.52 | 73.91 |" under BEIR, MIRACL, MKQA and CoIR.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e
+  - url: https://huggingface.co/Qwen/Qwen3-Reranker-4B/raw/main/README.md
+    shows: 'Model card states "Supported Languages: 100+ Languages" and "Context Length: 32k", and its table
+      lists "| Text Reranking   | [Qwen3-Reranker-4B](https://huggingface.co/Qwen/Qwen3-Reranker-4B)   |
+      4B   | 36     | 32K             | -                   | -           | Yes            |" with Instruction
+      Aware = Yes.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: b7cf82b30d5e38cd1a02ca7cfd60c26c0e3664cb31b2c4b661550a93c9281bee
+  - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
+    shows: Peer card states "The models achieve state-of-the-art results on the [Multilingual MTEB v2](https://huggingface.co/spaces/mteb/leaderboard)
+      benchmark as of the release date." with the 27b at 74.3.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110

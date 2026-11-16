@@ -23,34 +23,33 @@ openness:
   note: 'Jina''s current text models are non-commercial: v3 and the v5-text line ship under CC-BY-NC-4.0,
     with commercial use routed to a sales conversation rather than granted. Only the older v1 and v2 encoders
     carry Apache-2.0, and because CC-BY-NC-4.0 governs what ships today, that is the license the score reflects.'
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/jinaai/jina-embeddings-v3/raw/main/README.md
-    shows: 'Front matter reads license: cc-by-nc-4.0, and the License section says the model is licensed under CC
-      BY-NC 4.0 beyond the AWS and Azure listings and directs commercial usage inquiries to contact sales. Training
-      is described against the arXiv report with no corpus released; the usage sections ship inference code only,
-      via trust_remote_code and ONNX.'
-    accessed: '2026-09-11'
+    shows: 'Front matter reads license: cc-by-nc-4.0, and the card says "the models is licensed under CC
+      BY-NC 4.0" with "commercial usage inquiries" routed to contact sales. Usage sections ship inference
+      code via trust_remote_code and ONNX, with training described only by the arXiv citation.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: e573f7395798fe3d78d2e3e92da64814a6ec130494280f7b91ea8b0acb0284ed
     establishes:
+    - license
     - data
     - code
-    - license
   - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v3
-    shows: 'license cc-by-nc-4.0 in cardData; gated: false; private: false; model.safetensors and an onnx/ folder
-      among the files.'
-    accessed: '2026-09-11'
+    shows: API record lists license cc-by-nc-4.0, gated false, private false, with model.safetensors and
+      an onnx/ folder among the files.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: d3cb34bf8d8b134ccdb90938b78eb7c4cb27e7710cd659660ec432242859afc2
+    content_sha256: b9069e27f88d07a1c8548c7f4c52e9d33b863d252faa729d39a10de42978b4c9
     establishes:
     - weights
     - license
   - url: https://huggingface.co/jinaai/jina-embeddings-v5-text-small/raw/main/README.md
-    shows: 'Front matter reads license: cc-by-nc-4.0 and the License section states the model is licensed under CC
-      BY-NC 4.0 with commercial use routed to sales. Training and evaluation detail is deferred to arXiv 2602.15547
-      with no corpus released, and the usage sections cover inference only.'
-    accessed: '2026-09-11'
+    shows: 'Front matter reads license: cc-by-nc-4.0 and the card says "jina-embeddings-v5-text-small is
+      licensed under CC BY-NC 4.0" with commercial use routed to sales. Training detail is deferred to the
+      technical report and the usage sections cover inference only.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 6de95ed33265814ec833706d81764f0cc3529a417e41382f81f1dd3d59b5640a
     establishes:
@@ -58,19 +57,34 @@ openness:
     - code
     - license
   - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v5-text-small
-    shows: 'license cc-by-nc-4.0 in cardData; gated: false; private: false; task adapter safetensors present, confirming
-      the v5-text line ships on the same non-commercial terms as v3.'
-    accessed: '2026-09-11'
+    shows: API record lists license cc-by-nc-4.0, gated false, private false, with model.safetensors and
+      per-task adapter safetensors among the files.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a39f62ca56038bacdf2b8c53858e8d4c6226cc511799df78a69c0edfdb59e17f
+    content_sha256: 8921b3879533f0f2f78e385d8e764d4b09e1cdde430c452a40e0c5e8dbd647c3
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/jinaai/jina-embeddings-v2-base-en/raw/main/README.md
+    shows: 'Front matter reads license: apache-2.0 for jina-embeddings-v2-base-en.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 3ffb3d200e9f837467a6709d10c54467b17d96485f154b76c078884029c0e78e
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v2-base-en
+    shows: API record lists license apache-2.0, gated false, private false, with model.safetensors and ONNX
+      files among the files.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 578563d12bde770c37a18229de5b105f698e0bc3aff6b047c4e1e4f9a9128c38
     establishes:
     - weights
     - license
   - url: https://huggingface.co/jinaai/jina-embeddings-v4/raw/main/README.md
-    shows: License section reads "This model was initially released under cc-by-nc-4.0 due to an error. The correct
-      license is the Qwen Research License, as this model is derived from Qwen-2.5-VL-3B which is governed by that
-      license."
-    accessed: '2026-09-11'
+    shows: License section reads "This model was initially released under cc-by-nc-4.0 due to an error."
+      and "The correct license is the Qwen Research License", so v4 is treated separately.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: bb2acfda378af37aee4260b2f37554a75d4b62871050a1d41a1d5fcf3b1c7aa3
 adoption:
@@ -113,15 +127,20 @@ capability:
   value: 'v5-text-small: 71.7 MTEB English v2 and 67.7 MMTEB at 677M parameters, 119+ languages and a 32K context,
     distilled from Qwen3-Embedding-4B.'
   confidence: high
-  note: Jina-embeddings-v5-text-small is current-generation, multilingual and long-context, scoring 67.7
-    on MMTEB against Harrier-OSS's 74.3 on the same benchmark — a step behind the category leader rather
-    than level with it.
-  last_verified: '2026-09-11'
+  note: Jina-embeddings-v5-text-small is multilingual and long-context, scoring 67.7 on MMTEB against Harrier-OSS's
+    74.3 on the same benchmark, so it sits a step behind Harrier-OSS.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/jinaai/jina-embeddings-v5-text-small/raw/main/README.md
-    shows: Card states jina-embeddings-v5-text-small scores 71.7 average on MTEB English v2 and 67.7 on MMTEB with
-      677M parameters, the highest among multilingual embedding models under 1B, supporting 119+ languages at up to
-      32K tokens and built on Qwen3-0.6B-Base by distillation from Qwen3-Embedding-4B.
-    accessed: '2026-09-11'
+    shows: Card states "scores 71.7 average on MTEB English v2 and 67.7 on MMTEB with 677M parameters",
+      supporting "119+ languages with up to 32K tokens", built on Qwen3-0.6B-Base with "embedding distillation
+      from Qwen3-Embedding-4B".
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 6de95ed33265814ec833706d81764f0cc3529a417e41382f81f1dd3d59b5640a
+  - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
+    shows: Harrier-OSS card lists harrier-oss-v1-27b at 74.3 on the Multilingual MTEB v2 table, the peer
+      figure the comparison is held against.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110

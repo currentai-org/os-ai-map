@@ -26,39 +26,45 @@ openness:
     and neither ships);code:partial(the unilm/e5 subtree
     publishes MTEB and BEIR evaluation scripts and the cards give inference code; no training pipeline);license:MIT(OSI)
   confidence: high
-  note: An MIT release with an unusually well-documented corpus and no way to rebuild it. The card names every weak-supervision
-    source with its pair count, which is more than most of this category offers, but the filtering pipeline is described only
-    in the paper and the public repository stops at evaluation.
-  last_verified: '2026-09-11'
+  note: E5's weights are released under MIT, and the card names every weak-supervision source with its pair
+    count. The filtering pipeline is described only in the paper and the public repository stops at evaluation,
+    so the corpus cannot be rebuilt.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/api/models/intfloat/multilingual-e5-large
-    shows: 'license: mit; gated: false; private: false; downloadable checkpoint files present.'
-    accessed: '2026-09-11'
+    shows: The Hub API record for multilingual-e5-large reports "gated":false, "private":false, "license:mit"
+      tags and downloadable "model.safetensors" and "pytorch_model.bin" files.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 608bc654f556f53b5c40466d1fc393a11e08506177e27736bd951f12bfe23ee2
+    content_sha256: 6f3970aeb082a10937071099bd285a49d77913e17714e35411cb27666c1179c6
     establishes:
     - weights
     - license
   - url: https://huggingface.co/api/models/intfloat/e5-mistral-7b-instruct
-    shows: 'license: mit; gated: false; private: false; the 7B decoder checkpoint is distributed under the same MIT terms.'
-    accessed: '2026-09-11'
+    shows: The Hub API record for e5-mistral-7b-instruct reports "gated":false, "private":false, "license:mit"
+      and "model-00001-of-00002.safetensors" shards.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 56120408d3a5910b8a52317cfe38dc8fa2b7f784fd1cdfe35197f17855230615
+    content_sha256: 388f460bbc39550b6854b0cfc36d5cc2aed3d3767dc88308b9a1106c7faebc13
     establishes:
+    - weights
     - license
   - url: https://huggingface.co/intfloat/multilingual-e5-large/raw/main/README.md
-    shows: Itemizes the first-stage weak-supervision mixture - filtered mC4 1B pairs, CC News 400M, NLLB 2.4B, Wikipedia 150M,
-      filtered Reddit 800M, S2ORC 100M, StackExchange 50M, xP3 80M - without releasing the filtered corpus or the filtering
-      scripts.
-    accessed: '2026-09-11'
+    shows: The card lists a first stage "contrastive pre-training with weak supervision" itemized per dataset
+      with pair counts (mC4 "1B", CC News "400M", NLLB "2.4B", xP3 "80M", plus "Miscellaneous unsupervised
+      SBERT data") and a "Second stage" of twelve supervised sets (MS MARCO "500k", MIRACL "40k"); it also
+      gives usage code with max_length=512.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 7d7af14813a22388e183b0ac3276e13887c7eb644d0a13af7c6252217066e43f
     establishes:
     - data
+    - code
   - url: https://raw.githubusercontent.com/microsoft/unilm/master/e5/README.md
-    shows: The e5 subtree documents eval_mteb_beir.sh and eval_mteb_except_retrieval.sh and a synthetic passkey dataset; it
-      publishes no training entry point.
-    accessed: '2026-09-11'
+    shows: The unilm e5 subtree documents "bash scripts/eval_mteb_beir.sh intfloat/e5-small-v2" and "bash
+      scripts/eval_mteb_except_retrieval.sh intfloat/e5-small-v2" evaluation entry points and the passkey
+      dataset; it lists model checkpoints, with no training script.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 4930b1d912bf86b69d9b8722d1382ad8678cc6c3ec9d590059df0281ca31c120
     establishes:
@@ -105,16 +111,29 @@ capability:
   note: 'E5 is a workhorse embedding model, not a frontier one: its MTEB average matches today''s small
     encoders, but the multilingual tier stops at roughly 512 tokens and the family has shipped no newer
     generation, unlike the longer-context, more recent models now ahead of it.'
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
-    shows: MTEB leaderboard table lists multilingual-e5-large-instruct at 560M parameters, 1024 dimensions, 514 maximum sequence
-      length and an MTEB English average of 64.41.
-    accessed: '2026-09-11'
+    shows: The MTEB table (header "Average (56)") lists "multilingual-e5-large-instruct" at 560M parameters,
+      1024 dimensions, "514" sequence length and "64.41" average.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
   - url: https://huggingface.co/intfloat/multilingual-e5-large/raw/main/README.md
-    shows: Documents 100-language support from the XLM-RoBERTa initialization and tokenizes usage examples at max_length=512.
-    accessed: '2026-09-11'
+    shows: The card says the model "is initialized from [xlm-roberta-large]" and "supports 100 languages
+      from xlm-roberta", with usage at max_length=512.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 7d7af14813a22388e183b0ac3276e13887c7eb644d0a13af7c6252217066e43f
+  - url: https://raw.githubusercontent.com/microsoft/unilm/master/e5/README.md
+    shows: The e5 subtree lists the English v2 and multilingual families ("multilingual-e5-large-instruct"
+      is the newest row, BEIR "52.5") with no later generation.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 4930b1d912bf86b69d9b8722d1382ad8678cc6c3ec9d590059df0281ca31c120
+  - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
+    shows: 'Peer check: the harrier-oss-v1 table lists "harrier-oss-v1-27b" with a "32,768" context and
+      "74.3" on Multilingual MTEB v2, well above e5.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110

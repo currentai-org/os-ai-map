@@ -19,48 +19,51 @@ openness:
     cards point at the mGTE paper for the training mixture and release no corpus);code:partial(a gte_embedding.py inference
     script ships in the model repository; no training pipeline is published);license:Apache-2.0(OSI)
   confidence: high
-  note: 'The category center of gravity: an OSI license over ungated weights with the corpus and the training run kept in
-    the paper. The Qwen2-derived checkpoints carry Apache-2.0 rather than the Qwen license, so no restrictive SKU pulls the
-    family down.'
-  last_verified: '2026-09-11'
+  note: GTE's weights are released under OSI-approved licenses and are ungated, while the corpus and the
+    training run are described only in the paper. The Qwen2-derived checkpoints carry Apache-2.0 rather
+    than the Qwen license, so no checkpoint carries a more restrictive license.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/api/models/Alibaba-NLP/gte-multilingual-base
-    shows: 'license: apache-2.0; gated: false; private: false; downloadable checkpoint files present.'
-    accessed: '2026-09-11'
+    shows: 'Hub metadata for the multilingual checkpoint: "license:apache-2.0", "gated":false, "private":false,
+      and a model.safetensors weights file plus scripts/gte_embedding.py in the file list.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 07ea7d94735290ba08c206052fa4d15036149892c231ba500020b06b3f2d63e4
+    content_sha256: 7fddd390695d572d7e22ca8023d5ad48a8953abb39eab0502ed53a8d504ab3f8
     establishes:
     - weights
     - license
+    - code
   - url: https://huggingface.co/api/models/Alibaba-NLP/gte-modernbert-base
-    shows: 'license: apache-2.0; gated: false; private: false.'
-    accessed: '2026-09-11'
+    shows: 'Hub metadata for the ModernBERT checkpoint: "license:apache-2.0", "gated":false, "private":false,
+      with a model.safetensors weights file.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 56a908d409ae3d618ae4d6671b0cb06732e46dbcd0c8823d6ae929c9dd99b2d1
+    content_sha256: f9f62be2a554edff6134ffa83d02c4d25dadd0e078cb8ebc3284700903fca8f0
     establishes:
     - license
   - url: https://huggingface.co/api/models/Alibaba-NLP/gte-Qwen2-7B-instruct
-    shows: 'license: apache-2.0; gated: false; private: false - the Qwen2-derived tier is distributed under Apache-2.0 rather
-      than the Qwen license.'
-    accessed: '2026-09-11'
+    shows: 'Hub metadata for the Qwen2-based checkpoint: "license:apache-2.0", "gated":false, "private":false,
+      with sharded safetensors weights; the Qwen2-derived tier is Apache-2.0 rather than the Qwen license.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 04ff251b7cd129881b8c1b4a5b304310e06bf02a8204c2a54787ff546abc850d
+    content_sha256: 453ce6b8cce310aaa8e91c42d34385151331663419303555b32e2a78d53ae847
     establishes:
     - license
   - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-base/raw/main/README.md
-    shows: Describes the training architecture and points to the mGTE paper for detail, releases no corpus, and ships scripts/gte_embedding.py
-      as inference code for dense and sparse output.
-    accessed: '2026-09-11'
+    shows: 'The multilingual card links the paper ("mGTE: Generalized Long-Context Text Representation and
+      Reranking Models for Multilingual Text Retrieval") and points to the inference script ("You can find
+      the script gte_embedding.py in"); it releases no training corpus.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 7bc40a3d4b2ae520f7c50d40d0c56fca61d13973e3f022b464f325939b7fff68
     establishes:
     - data
     - code
   - url: https://huggingface.co/Alibaba-NLP/gte-modernbert-base/raw/main/README.md
-    shows: The embedding checkpoint's own card - BEIR average 55.33, LoCo long-context and CoIR code-retrieval results at
-      8,192 tokens, and the statement that the series follows the previous GTE training scheme with ModernBERT as the base,
-      referring readers to the mGTE paper for training details.
-    accessed: '2026-09-11'
+    shows: The ModernBERT card says the series "follows the training scheme of the previous" GTE models
+      and refers readers to the paper for training details; no corpus or training code is released.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 97d40aa325f0e6eaddf77edc7187b7bba6fd3e31a555be3b5766f015c6c27550
     establishes:
@@ -110,17 +113,18 @@ capability:
   note: GTE has the highest BEIR average among sub-1B models in its own published table, with long context
     throughout and a multilingual encoder alongside the English one. It falls short of the leader, which
     is measured on MMTEB rather than BEIR.
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/Alibaba-NLP/gte-modernbert-base/raw/main/README.md
-    shows: The embedding checkpoint's own card gives gte-modernbert-base MTEB-en 64.38 and BEIR 55.33 at 8,192 maximum
-      sequence length, with LoCo long-context and CoIR code-retrieval results on the same table.
-    accessed: '2026-09-11'
+    shows: 'The ModernBERT card gives gte-modernbert-base "Max Input Length: 8192 tokens" and a MTEB-en
+      64.38, BEIR 55.33 row in which it is the bold best of the compared models; the LoCo table lists it
+      at 88.88 and the CoIR table at 79.31.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 97d40aa325f0e6eaddf77edc7187b7bba6fd3e31a555be3b5766f015c6c27550
   - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-base/raw/main/README.md
-    shows: States support for over 70 languages, 8192-token input, elastic dense output and sparse vectors, with retrieval
-      validated on MIRACL, MLDR, MKQA, BEIR and LoCo.
-    accessed: '2026-09-11'
+    shows: The multilingual card states "Supports over **70** languages", "Supports text lengths up to **8192**
+      tokens" and "Sparse Vectors", and reports retrieval on MIRACL, MLDR, MKQA, BEIR and LoCo.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 7bc40a3d4b2ae520f7c50d40d0c56fca61d13973e3f022b464f325939b7fff68

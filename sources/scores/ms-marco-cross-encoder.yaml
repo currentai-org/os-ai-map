@@ -107,13 +107,26 @@ capability:
   value: 74.30 NDCG@10 (TREC DL 19) and 39.01 MRR@10 (MS MARCO dev) for MiniLM-L6-v2, English only, 512-token
     inputs.
   confidence: high
-  note: The v2 checkpoints are an older generation, cover English only, and cap at 512 tokens, which is
-    a narrow and dated scope rather than a comment on quality. Its published numbers are credible and it
-    remains the default self-hosted reranker, but popularity isn't what the score measures; it sits one
-    step below bge-reranker, which is multilingual, longer-context and a generation newer.
-  last_verified: '2026-09-11'
+  note: The v2 checkpoints are an older generation, cover English only and cap at 512 tokens, a narrow and
+    dated scope rather than a comment on quality. The family sits a step below bge-reranker, which is multilingual,
+    longer-context and a generation newer.
+  last_verified: '2026-11-16'
   sources:
-  - {url: 'https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/raw/main/README.md', shows: 'Performance
-      table gives cross-encoder/ms-marco-MiniLM-L6-v2 at 74.30 NDCG@10 on TREC DL 19 and 39.01 MRR@10
-      on MS MARCO dev, with the family spanning TinyBERT-L2 at 69.84 to MiniLM-L12 at 74.31; language
-      front matter is en.', accessed: '2026-09-11', http_status: 200, content_sha256: 7c0ec39941d0d1d766ccde671f592971d82fe45b7eea550a80d1ea864ebc3baa}
+  - url: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/raw/main/README.md
+    shows: Performance table gives cross-encoder/ms-marco-MiniLM-L6-v2 at "74.30 | 39.01" (NDCG@10 on TREC
+      DL 19, MRR@10 on MS MARCO dev), with the family spanning TinyBERT-L2 at 69.84 to MiniLM-L12 at "74.31
+      | 39.02"; language front matter lists "- en" only.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 7c0ec39941d0d1d766ccde671f592971d82fe45b7eea550a80d1ea864ebc3baa
+  - url: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/raw/main/config.json
+    shows: Model config sets "max_position_embeddings" to 512, the 512-token input cap.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 380e02c93f431831be65d99a4e7e5f67c133985bf2e77d9d4eba46847190bacc
+  - url: https://huggingface.co/BAAI/bge-reranker-v2-m3/raw/main/README.md
+    shows: Peer model list describes bge-reranker-v2-m3 as "Lightweight reranker model, possesses strong
+      multilingual capabilities", supporting the one-step-below edge on language coverage.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: c887aa6dd2598f908bf0582ca7068cc816585c7a1b6a07df305b631ede0cb174

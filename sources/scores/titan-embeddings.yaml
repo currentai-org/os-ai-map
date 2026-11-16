@@ -26,28 +26,26 @@ openness:
   note: Titan Text Embeddings V2 is API-only, reachable only through Bedrock. Its Hugging Face repository
     looks like a weights release but holds only a model card and a config file, so its license field governs
     a README rather than a checkpoint.
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/api/models/amazon/Titan-text-embeddings-v2
-    shows: 'amazon/Titan-text-embeddings-v2: gated false, tags include ''license:other'', and the file
-      list is [''.gitattributes'', ''README.md'', ''config.json''] — no weight shards. Last modified 2024-04-30.'
-    accessed: '2026-09-11'
+    shows: The Hub record for amazon/Titan-text-embeddings-v2 is ungated, tags it "license:other", and lists
+      only the files ".gitattributes", "README.md" and "config.json", with no weight shards; last modified
+      2024-04-30.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2611d499b944655448e5d922ab12bd0f39bdb8866c463ff9299938f4fddb689e
+    content_sha256: ee25d6cc79b2bf430b7fad8b850b8b749e163410ddd42bf5c74f7a024b5a9d2b
     establishes:
     - weights
     - license
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.html
-    shows: >-
-      The Bedrock model card gives model ID amazon.titan-embed-text-v2:0, an 8K context window, a
-      2024-04-30 launch date and 'Model lifecycle: Active'. Access is through the Bedrock runtime and
-      the page offers no download. It is also the whole of Amazon's product documentation for this
-      model, and it says nothing about the corpus - the strings "training data", "training corpus",
-      "trained on" and "dataset" appear nowhere on it - which is what establishes data as closed
-      rather than merely undocumented.
-    accessed: '2026-09-11'
+    shows: 'The Bedrock model card gives model ID "amazon.titan-embed-text-v2:0" and a runtime example that
+      calls the Bedrock runtime API; it offers no download and links "End User License Agreements and Terms
+      of Use". It names no training data: none of "training data", "training corpus", "trained on" or "dataset"
+      appears on the page.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 32c5cf3aad2a31999bead6ec88cf0d268c3a26dc729e7bf7ea92e69088fe112e
+    content_sha256: 7559185916a967f5600a85770252fb427b47d3752855a948de7f39b073836eaa
     establishes:
     - weights
     - code
@@ -59,24 +57,25 @@ adoption:
   banded_quantity: Amazon Bedrock first-party catalog presence and an Active lifecycle; the Hub card's
     518 monthly downloads are cited only to reject them, since that repo holds no weights
   confidence: medium
-  note: Amazon publishes no download or call-volume figure for Titan; the Hub card's downloads measure a
-    README, not the model. Adoption is read instead from its standing as a first-party Bedrock model with
-    an active lifecycle and its role as the default embedder for Bedrock Knowledge Bases, which is broad
-    but single-platform distribution, below models Microsoft and Google resell too.
-  last_verified: '2026-09-11'
+  note: Amazon publishes no download or call-volume figure for Titan, and the Hugging Face card's downloads
+    measure a README, not the model. Adoption is read instead from its standing as a first-party Bedrock
+    model that AWS still sells and lists as Active. Distribution is limited to one platform, while other
+    models are resold by several clouds.
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.html
-    shows: '''Model lifecycle: Active'' with a stated EOL no sooner than 2024-04-30 and a legacy period
-      of at least six months, so AWS still sells it rather than winding it down.'
-    accessed: '2026-09-11'
+    shows: The card describes the model as a "second-generation text embeddings model with configurable
+      output dimensions and improved accuracy for retrieval tasks", with model lifecycle Active, EOL no
+      sooner than Apr 30, 2025 and a legacy period of at least 6 months, so AWS still sells it.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 32c5cf3aad2a31999bead6ec88cf0d268c3a26dc729e7bf7ea92e69088fe112e
+    content_sha256: 7559185916a967f5600a85770252fb427b47d3752855a948de7f39b073836eaa
   - url: https://aws.amazon.com/bedrock/pricing/
-    shows: The Bedrock pricing page carries per-token list prices for both Titan Text Embeddings and Titan
-      Text Embeddings V2, so both are still generally available and billed.
-    accessed: '2026-09-11'
+    shows: The Bedrock pricing page lists both "Amazon Titan Text Embeddings" and "Amazon Titan Text Embeddings
+      V2" with per-token list prices, so both remain billed.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 997f61dadd44687a67170875a68f0c023a9b096c1db5f1a850e8efdb688a7f4d
+    content_sha256: a91f595a9cabad3142caa5d5c4af7587f690d1f3419fb1b4032a978ec605bcd5
 capability:
   score: 2
   basis: benchmark
@@ -88,20 +87,21 @@ capability:
   relative_to: mistral-embed
   relation: at
   confidence: high
-  note: Titan Text Embeddings V2's evaluation is unusually complete for a closed model -- 329 MTEB results
-    published by the vendor at release, with nothing newer since -- but it is short-context, text-only and
-    roughly two generations behind the frontier. It is scored level with mistral-embed, another 8K-token,
-    text-only model of the same generation still sold unchanged.
-  last_verified: '2026-09-11'
+  note: Amazon published 329 MTEB results for Titan Text Embeddings V2 at release and nothing newer since.
+    It is short-context at 8K tokens and text-only, which places it alongside Mistral Embed, another 8K-token,
+    text-only model of the same generation.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/api/models/amazon/Titan-text-embeddings-v2
-    shows: The card's model-index carries 329 MTEB results, 27 of them Retrieval; NDCG@10 is 70.52 on
-      MTEB SciFact, 51.31 on MTEB ArguAna, 44.80 on MTEB FiQA2018 and 33.94 on MTEB NFCorpus.
-    accessed: '2026-09-11'
+    shows: The card carries 329 MTEB model-index results, 27 of them Retrieval; NDCG@10 is 70.52 on MTEB
+      SciFact, 51.31 on MTEB ArguAna, 44.80 on MTEB FiQA2018 and 33.94 on MTEB NFCorpus. Last modified 2024-04-30,
+      so nothing newer has been added.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2611d499b944655448e5d922ab12bd0f39bdb8866c463ff9299938f4fddb689e
+    content_sha256: ee25d6cc79b2bf430b7fad8b850b8b749e163410ddd42bf5c74f7a024b5a9d2b
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.html
-    shows: 'Context window 8K tokens; the sample call sets ''dimensions'': 1024. Launch date 2024-04-30.'
-    accessed: '2026-09-11'
+    shows: Context window "8K tokens"; the sample call sets dimensions to 1024. Model launch date Apr 30,
+      2024.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 32c5cf3aad2a31999bead6ec88cf0d268c3a26dc729e7bf7ea92e69088fe112e
+    content_sha256: 7559185916a967f5600a85770252fb427b47d3752855a948de7f39b073836eaa

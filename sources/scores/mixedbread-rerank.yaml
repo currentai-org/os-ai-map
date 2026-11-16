@@ -67,15 +67,26 @@ capability:
     languages, 8K-token documents, 0.89s latency on an A100.
   confidence: medium
   note: mxbai-rerank-large-v2 covers multilingual and code retrieval and ships with an inference package,
-    but its own reported BEIR average trails the current frontier. It is placed level with Jina Reranker
-    instead, on a third-party comparison table that scores the two models closer together than either publisher's
-    own benchmark does.
-  last_verified: '2026-09-11'
+    but its own reported BEIR average trails the current frontier. A third-party comparison table scores
+    it close to Jina Reranker, closer than either publisher's own benchmark does.
+  last_verified: '2026-11-16'
   sources:
-  - {url: 'https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2/raw/main/README.md', shows: 'Benchmark
-      Results table gives mxbai-rerank-large-v2 57.49 BEIR average, 29.79 multilingual, 84.16 Chinese,
-      32.05 code search and 0.89s latency, against 55.57 and 49.32 BEIR for base-v2 and large-v1.', accessed: '2026-09-11',
-    http_status: 200, content_sha256: b007d71631da165ee3a702ea21401199a4607692fbafe3314b0e7422cd70512b}
-  - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Third-party table
-      on the jina-reranker-v3 card places mxbai-rerank-large-v2 at 61.44 BEIR and mxbai-rerank-base-v2
-      at 58.40, below jina-reranker-v3 at 61.94.', accessed: '2026-09-11', http_status: 200, content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e}
+  - url: https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2/raw/main/README.md
+    shows: Benchmark Results table gives mxbai-rerank-large-v2 "| mxbai-rerank-large-v2 | 57.49 | 29.79
+      | 84.16 | 32.05 | 0.89 |" (BEIR average, multilingual, Chinese, code search, latency), against 55.57
+      and 49.32 BEIR for base-v2 and large-v1; "*Latency measured on A100 GPU".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: b007d71631da165ee3a702ea21401199a4607692fbafe3314b0e7422cd70512b
+  - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
+    shows: Third-party table on the jina-reranker-v3 card lists "| mxbai-rerank-large-v2 | 1.5B | 61.44
+      |" against "| **jina-reranker-v3** | 0.6B | **61.94** |" on BEIR, with mxbai-rerank-base-v2 at 58.40.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e
+  - url: https://www.mixedbread.com/blog/mxbai-rerank-v2
+    shows: Announcement states the v2 models "support **long contexts up to 8k tokens**" (32k-compatible)
+      and handle "100+ languages".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 0758efbc93d0c59284a22263fa539d37445c8f31cb61d5d19e2dc11f21e99790

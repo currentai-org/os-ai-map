@@ -17,16 +17,19 @@ openness:
       detail: OSI
   confidence: high
   governing_release: granite-embedding R2
-  note: Every R2 checkpoint ships under Apache-2.0, ungated. The training mixture -- permissively licensed
-    public sources plus proprietary IBM data -- is described only by category and ships no dataset or script,
-    and the public repository holds documentation and usage examples rather than a training pipeline.
-  last_verified: '2026-09-11'
+  note: Every R2 checkpoint ships under Apache-2.0, ungated. The model card lists permissively licensed
+    public datasets, proprietary IBM data and web-scraped title-body pairs as training sources but ships
+    no dataset or script, and the public repository holds documentation and usage examples rather than a
+    training pipeline.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-embedding-english-r2/raw/main/README.md
-    shows: 'license: apache-2.0 in the front matter and named again under Model Details; training data described
-      as permissively licensed open-source plus select proprietary data, with no dataset listing; the repository
-      is given as ibm-granite/granite-embedding-models.'
-    accessed: '2026-09-11'
+    shows: 'Front matter reads "license: apache-2.0" and Model Details lists "Apache 2.0". Training data
+      is described as "Publicly available paired with permissive, enterprise-friendly license" plus IBM-internal
+      and IBM-generated data, and the card says it "leverages both permissively licensed open-source and
+      select proprietary data", with no dataset listing. The first listed source is "Unsupervised title-body
+      paired data scraped from the web".'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 33d4e07d3547d1a0110fddc5838986c7ffbb2f8b04573e04b75cfb0d8b19f277
     establishes:
@@ -34,20 +37,51 @@ openness:
     - data
     - license
   - url: https://raw.githubusercontent.com/ibm-granite/granite-embedding-models/main/README.md
-    shows: The repository introduces the collection, links the Hugging Face models and IBM documentation, and
-      states the Apache-2.0 offer; it carries no pretraining or contrastive-training pipeline.
-    accessed: '2026-09-11'
+    shows: The repository README says the models are "offered under the Apache 2.0 license for both research
+      and commercial innovation", lists the four R2 checkpoints (149M, 47M, 311M, 97M parameters) and links
+      the Hugging Face models; its usage section is pip install and from_pretrained examples, with no training
+      pipeline.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: cb4139b7ab10774b2733038f1f2230d95908382b475c317da64abb891d58b2f7
     establishes:
     - code
+    - license
   - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-english-r2
-    shows: 'gated: false; private: false; cardData license apache-2.0.'
-    accessed: '2026-09-11'
+    shows: Hub API record for granite-embedding-english-r2 reports "gated":false, "private":false and "license":"apache-2.0".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a72e1e4789a1476b0a71c5bf3205181635ffd82053b580e0d5381bf16c8d7de4
+    content_sha256: 1ac0067a17b28e1fc53abc53cc55f91c32ccc4473ae2c04d3817179bc52c542c
     establishes:
     - weights
+    - license
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-small-english-r2
+    shows: Hub API record for granite-embedding-small-english-r2 reports "gated":false, "private":false
+      and "license":"apache-2.0".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 4f7d97b465bb9e851b885fd2106210928d28f0ff730eca909e2309cac4f833ea
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-311m-multilingual-r2
+    shows: Hub API record for granite-embedding-311m-multilingual-r2 reports "gated":false, "private":false
+      and "license":"apache-2.0".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 51f7af2ae555f6bf8a2ec90c5c745239950f0f0c041b9798b469b2bb587b25ac
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-97m-multilingual-r2
+    shows: Hub API record for granite-embedding-97m-multilingual-r2 reports "gated":false, "private":false
+      and "license":"apache-2.0".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: e6822de707b37436a16b94a0c0451ff1e717156bac978ff43ca7c14617341aef
+    establishes:
+    - weights
+    - license
   raw: weights:open(four ungated Apache-2.0 R2 embedding checkpoints, 47M to 311M);data:closed(permissively licensed public datasets plus select proprietary IBM data, neither enumerated nor shipped);code:partial(usage and documentation in ibm-granite/granite-embedding-models; no training pipeline);license:Apache-2.0(OSI)
 adoption:
   level: 4
@@ -93,16 +127,16 @@ capability:
   value: 62.8 on MTEB-v2 (41 tasks) and 53.1 on BEIR retrieval (15) for granite-embedding-english-r2; 61.1 and
     50.9 for the 47M small variant.
   confidence: high
-  note: 'Granite Embedding R2 leads its size class on the enterprise-shaped tasks IBM built it for -- table
-    retrieval, long documents and conversational multi-turn -- but its scope stays narrow: the strongest
-    checkpoint is 149M parameters and English-only, scoring 62.8 on a 41-task benchmark, and the multilingual
-    checkpoints are smaller still.'
-  last_verified: '2026-09-11'
+  note: 'IBM reports that Granite Embedding R2 leads its size class on the enterprise-shaped tasks it was
+    built for: table retrieval, long documents and conversational multi-turn. Its scope stays narrow, though:
+    the best-scoring checkpoint is the 149M English model, at 62.8 on a 41-task benchmark.'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-embedding-english-r2/raw/main/README.md
-    shows: Evaluation table reports granite-embedding-english-r2 at 53.1 BEIR retrieval (15), 62.8 MTEB-v2 (41),
-      55.3 CoIR and 56.7 MTRAG, with the small-english-r2 variant at 50.9 / 61.1, and a second table showing it
-      ahead of gte-modernbert-base and snowflake-arctic-embed-m-v2.0 on the enterprise-shaped average.
-    accessed: '2026-09-11'
+    shows: Evaluation table reports granite-embedding-english-r2 at 53.1 BEIR retrieval (15), 62.8 MTEB-v2
+      (41), 55.3 CoIR and 56.7 MTRAG, and granite-embedding-small-english-r2 at 50.9 and 61.1 on the first
+      two. The enterprise-shaped table puts english-r2 at an average of 59.5 against 57.5 for gte-modernbert-base
+      and 51.4 for snowflake-arctic-embed-m-v2.0.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 33d4e07d3547d1a0110fddc5838986c7ffbb2f8b04573e04b75cfb0d8b19f277
