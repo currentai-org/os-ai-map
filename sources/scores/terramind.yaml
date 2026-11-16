@@ -39,15 +39,17 @@ adoption:
     http_status: 200
     content_sha256: 52adb27ef453c92010e9d3aedb0c4e6794ee616c56b89553e1cef71dd0f09903
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Fine-tunable; six input modalities; any-to-any generation; simultaneous pixel- and token-scale processing.
+  value: Fine-tunable; six input modalities; any-to-any generation; pixel- and token-level processing of
+    inputs that are all co-registered on one 10 m grid.
   confidence: high
   note: TerraMind's model card documents configuration-driven fine-tuning through TerraTorch, six raw input
-    modalities, any-to-any generation, and a dual-scale encoder-decoder that processes pixel- and token-level
-    data together. The release comes in four sizes (tiny, small, base and large) with configuration and
-    notebook examples for fine-tuning and generation.
+    modalities and any-to-any generation. Its dual-scale encoder-decoder processes pixel- and token-level
+    data together, but those are two internal views of inputs that are all co-registered on one 10-meter
+    grid, and the paper names multi-resolution input as future work, so it is not counted as working across
+    scales.
   last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md
@@ -65,3 +67,13 @@ capability:
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: 089aae5d14f5f69997eab2673d12646511767f98225f7b53479790d9687d3a68
+  - url: https://arxiv.org/html/2504.11171
+    shows: The paper says "Each modality is precisely co-registered at a 10-meter resolution, primarily
+      based on Sentinel-2 grids", that "DEM is extracted from the Copernicus DEM 30m dataset", and that
+      "we expect that TerraMind-like models will expand to multi-temporal, multi-resolution, and hyperspectral
+      data". The 1 m NAIP result is a transfer test ("In those experiments, there are no weight updates
+      of any kind") in which the model "generalizes to high-resolution NAIP data with one order of magnitude
+      higher resolution than the pre-training data".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 7babd2fe59f4165638819d32333adef042560a5dcf59762f5711d902c54a0ba0

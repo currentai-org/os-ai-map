@@ -39,17 +39,19 @@ adoption:
     http_status: 200
     content_sha256: 4fd547e71cd7b04e86fbf84a63fdff58de91ae3b6d7933d9d2fbb920b40178b9
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Adaptation pathway, Landsat-Sentinel input, and demonstrated multi-resolution transfer; no scientific-output generation.
+  value: Adaptation pathway and Landsat-Sentinel input at 30 m; the 0.1 m to 15 m benchmark span was reached
+    by fine-tuning a model pretrained only on 30 m data; no scientific-output generation.
   relative_to: terramind
   relation: one_below
   confidence: high
-  note: Prithvi-EO ships TerraTorch fine-tuning configurations and notebooks, takes Harmonized Landsat and
-    Sentinel data at 30 m, and was benchmarked on tasks spanning 0.1 m to 15 m resolution. Its documented
-    output is reconstruction of masked inputs rather than a scientific product, which keeps it a step below
-    TerraMind, with its multimodal inputs and any-to-any generation.
+  note: Prithvi-EO ships TerraTorch fine-tuning configurations and notebooks and takes Harmonized Landsat
+    and Sentinel data at 30 m. Its results on tasks from 0.1 m to 15 m come from fine-tuning a model pretrained
+    only on 30-meter data, which shows adaptation rather than one model taking several resolutions. Its
+    documented output is reconstruction of masked inputs rather than a scientific product, which keeps it
+    a step below TerraMind, with its any-to-any generation.
   last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-EO-2.0/main/README.md
@@ -65,3 +67,11 @@ capability:
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: 12f9ab36f5be76a6c88abd0bdc091c93daa1eaf0d020ad043baa59273c6a8f01
+  - url: https://arxiv.org/html/2412.02732
+    shows: The paper says "Prithvi-EO-2.0 showed good performance on high-resolution tasks, despite being
+      pretrained only with 30 m data"; for the GEO-Bench comparison "We added the GEO-Bench datasets to
+      TerraTorch and used its companion library TerraTorch-iterate" for hyperparameter tuning, and "We highlight
+      that all fine-tuning experiments conducted in this work require a single GPU."
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 382607a8cabd9d726d9224deee2536fe9cbb30bcbf27cde640d45f740414b019

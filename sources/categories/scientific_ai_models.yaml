@@ -121,9 +121,10 @@ scoring_recipe:
       instruments, masked reconstruction is not a scientifically meaningful generated output,
       and parameter sizes are not scientific scales.
 
-      Six rulings settle the close calls, and they are rules rather than habits. (a) to (c) came
-      out of the promotion, (d) to (f) out of re-verification, and each is applied to the whole
-      roster rather than only to the product that prompted it.
+      Seven rulings settle the close calls, and they are rules rather than habits. (a) to (c) came
+      out of the promotion, (d) to (f) out of re-verification, and (g) out of the capability
+      consistency audit reviewed in #1079 (R-2026-11-16-b); each is applied to the whole roster rather
+      than only to the product that prompted it.
       (a) A resolution span counts as multi_scale even where the smaller member is motivated by
       compute, so weathernext's 0.25-degree and 1-degree Mini count the way neuralgcm's
       0.7/1.4/2.8-degree checkpoints do; a parameter count alone still does not.
@@ -144,33 +145,62 @@ scoring_recipe:
       (f) `multi_instrument` asks what the model ACCEPTS. Output diversity does not earn it -
       alphagenome takes DNA sequence and emits many assay tracks - and neither does a label
       source, which is why granite-geospatial's GEDI lidar is excluded.
+      (g) `multi_scale` reads the sampling resolution of the data a model is specified to take in or
+      put out: ground sampling distance, grid spacing, bin width or cadence. It is met by one
+      checkpoint whose documented input specification supports samples at multiple native sampling
+      resolutions, with the necessary resolution information supplied to the model, so data at more
+      than one resolution enter at their own; by one checkpoint whose documented outputs come at more
+      than one resolution; or by checkpoints at different resolutions in the product's own release,
+      under (a). It is not met by how the model represents data internally (pixel- and token-level
+      streams, local and global attention, patch, window or pyramid levels), by sources resampled to
+      one grid before they enter, by coverage, window length or forecast lead time, which are extent
+      under (e), or by a resolution the model meets only in a transfer test or after fine-tuning on a
+      downstream dataset, which is adaptation and is counted there. Counting a transfer or fine-tuned
+      result would reward the availability of evaluations rather than a documented intrinsic
+      capability. So clay (ground sampling distance carried into the model with each sensor),
+      nasa-ibm-lunar-foundation-model (NAC and WAC tiles at native resolution, footprint as input) and
+      alphagenome (outputs at 1, 128 and 2,048 bp) count, as do weathernext, neuralgcm, climax and
+      aurora-weather on checkpoints at different grid spacings; terramind (pixel and token streams
+      over inputs co-registered at 10 m, its 1 m NAIP result a transfer test), prithvi-eo (pretrained
+      on 30 m data, 0.1-15 m reached by fine-tuning), dofa (chips resized to one size, only
+      wavelength enters the model), prithvi-wxc and pangu-weather (coverage and lead time),
+      surya-heliophysics (attention ranges at one native resolution), and presto and
+      alphaearth-foundations (sources resampled to one grid) do not.
 
-      Distribution over the full 34 after R-2026-11-16-a: 2/10/16/5/1 across levels 1/2/3/4/5,
-      or 6/29/47/15/3 percent. It has moved three times - 35 percent on level 2 after the first
-      pass, 38 percent on level 3 after the second, 44 percent once rulings (d), (e) and (f) were
-      applied to the whole roster rather than to the products that prompted them, and 47 percent
-      after R-2026-11-16-a moved alphagenome and surya-heliophysics onto level 3 and clay onto
-      level 4. Each move followed evidence, and no product has ever been moved to improve the shape.
-      TerraMind is now the only 5.
+      Distribution over the full 34 after R-2026-11-16-b: 3/11/16/4/0 across levels 1/2/3/4/5,
+      or 9/32/47/12/0 percent. It has moved with each evidence pass - 35 percent on level 2 after the
+      first pass, 38 percent on level 3 after the second, 44 percent once rulings (d), (e) and (f)
+      were applied to the whole roster rather than to the products that prompted them, 47 percent
+      after R-2026-11-16-a moved alphagenome and surya-heliophysics onto level 3 and clay onto level 4,
+      and level 3 stayed at 47 percent when R-2026-11-16-b moved terramind to 4, prithvi-eo and scgpt
+      to 3, prithvi-wxc and geneformer to 2, and pangu-weather to 1. Each move followed evidence, and
+      no product has ever been moved to improve the shape. No product currently meets all four
+      attributes, so level 5 is empty. That is acceptable, and no substitute is introduced to keep
+      the rung occupied.
 
-      On the rung distribution: the worst rung here is level
-      3 at 47 percent. Measured against the rest of the map that is unremarkable: nineteen of the twenty-one
-      categories with a banded roster put more than a third of their products on one rung, the median
-      widest rung is 50 percent, and safeguards puts 21 of 26 on a single one, so this category remains
-      mid-pack rather than an outlier - though being normal across the map is context, not evidence that
-      this rubric is right. The third-of-a-category RULE this paragraph was written against was withdrawn
-      on 2026-09-16, and capability.md now asks which of two cases a wide rung is: a definition that
-      generalized, or products that genuinely cluster. This is the second, for the reason below. All five rungs
-      stay occupied, which three categories in the whole map manage. The fat middle is where the observed
-      attribute combinations fall rather than a loose definition: bands come from a four-boolean count,
-      and the products that record two or three of the four outnumber those recording none, one or all
-      four. Rewording cannot move that, because there is no wording to loosen - the count is deterministic
-      from the recorded value. A fifth attribute or a weighting could, and that is a rubric edit rather
-      than anything this roster should force.
+      On the rung distribution: the widest rung here is level 3, with 16 of 34 products (47
+      percent). Measured on 2026-11-16 across the 34 published categories with a banded roster, 29 put
+      more than a third of their products on one rung and the median widest rung is 47 percent, so
+      this category sits at the median - though being normal across the map is context, not evidence
+      that this rubric is right. capability.md asks which of two cases a wide rung is: a definition
+      that generalized, or products that genuinely cluster. This is the second. The fat middle is
+      where the observed attribute combinations fall rather than a loose definition: bands come from
+      a four-boolean count, and the products that record two or three of the four outnumber those
+      recording none, one or all four. Rewording cannot move that, because there is no wording to
+      loosen - the count is deterministic from the recorded value. A fifth attribute or a weighting
+      could, and that is a rubric edit rather than anything this roster should force.
 
       Bands are placed by the attribute count, which is deterministic from the recorded value, so
-      relative_to is recorded where a peer corroborates the placement rather than as the
-      instrument itself. TerraMind is the top anchor.
+      relative_to is recorded where a peer in the same domain corroborates the placement rather than
+      as the instrument itself. No product is a category-wide reference. The Earth-observation
+      products compare with clay (dofa, presto, granite-geospatial, alphaearth-foundations,
+      nasa-ibm-lunar-foundation-model), clay sits at terramind, and prithvi-eo stays one_below
+      terramind; surya-heliophysics is one_below nasa-ibm-lunar-foundation-model, which differs from
+      it only on multi_scale; the weather models compare with weathernext; the protein models compare
+      with openfold, boltz or esm-3; evo-2 sits at alphagenome; mattergen sits at uma. terramind,
+      weathernext, alphagenome and openfold record no comparison: terramind is the peer clay points
+      at, weathernext is the only weather model at level 4, and no genomics or protein product remains
+      at level 4 for alphagenome or openfold to point at.
 
   confidence_rule:
     high: a primary source states the fact directly or publishes the measured result

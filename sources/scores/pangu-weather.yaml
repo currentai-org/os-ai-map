@@ -46,14 +46,17 @@ adoption:
     http_status: 200
     content_sha256: 62aa759fc4ab43954f617468cc721e567df5a2f801a81ce7437dd4e57b30671b
 capability:
-  score: 2
+  score: 1
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Four checkpoints spanning 1-, 3-, 6- and 24-hour lead times that chain into longer forecasts; deterministic outputs, one input system, and no released adaptation path.
+  value: Four checkpoints at 1-, 3-, 6- and 24-hour lead times on one 0.25-degree grid that chain into longer
+    forecasts; deterministic outputs, one input system, and no released adaptation path.
   confidence: high
-  note: Pangu-Weather's four checkpoints, with lead times of 1, 3, 6 and 24 hours, chain into longer forecasts.
-    The repository offers pseudocode rather than an adaptation pathway, ERA5 and ECMWF HRES initial fields
-    are one data system, and a deterministic forecast is a fixed target rather than a generated output.
+  note: Pangu-Weather's four checkpoints, with lead times of 1, 3, 6 and 24 hours, chain into longer forecasts,
+    but all four take and return the same 0.25-degree grid, so they differ in how far ahead they reach rather
+    than in resolution. The repository offers pseudocode rather than an adaptation pathway, ERA5 and ECMWF
+    HRES initial fields are one data system, and a deterministic forecast is a fixed target rather than
+    a generated output.
   last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md
@@ -61,7 +64,9 @@ capability:
       model"; inference_iterative.py "shows an example to generate per-6-hour forecast within a week"; supports
       "ERA5 initial fields and ECMWF initial fields" only; and offers "the pseudocode that elaborates our
       main algorithm" rather than training code. No deterministic-vs-probabilistic statement exists: grep
-      for determin|ensemble|probab|stochastic finds nothing, so only point forecasts are documented.'
+      for determin|ensemble|probab|stochastic finds nothing, so only point forecasts are documented. The
+      documented input surface field is "a numpy array shaped (4,721,1440)" on a latitude-longitude grid
+      where "the spacing is 0.25 degrees".'
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1

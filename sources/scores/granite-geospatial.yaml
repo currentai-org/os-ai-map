@@ -56,13 +56,14 @@ capability:
   basis: feature_matrix
   basis_detail: scientific adaptation surface
   value: Fine-tunable through TerraTorch with a documented few-shot workflow; one optical input product, a single regression output, and one spatial scale.
-  relative_to: prithvi-eo
+  relative_to: clay
   relation: two_below
   confidence: medium
-  note: 'Granite Geospatial documents one capability: a TerraTorch fine-tuning workflow, demonstrated in
-    zero- and few-shot notebooks. Its only input is HLS L30, the Landsat-only half of the Harmonized Landsat/Sentinel-2
-    product; GEDI lidar is a training label rather than a model input, the pretraining objective is masked
-    reconstruction rather than generation, and the release covers one spatial scale.'
+  note: 'Granite Geospatial documents one capability: its getting-started notebook fine-tunes the released
+    checkpoint with TerraTorch for a single biome, beside two zero-shot experiments that only run inference.
+    Its only input is HLS L30, the Landsat-only half of the Harmonized Landsat/Sentinel-2 product; GEDI
+    lidar is a training label rather than a model input, the pretraining objective is masked reconstruction
+    rather than generation, and the release covers one spatial scale.'
   last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md
@@ -73,3 +74,10 @@ capability:
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00
+  - url: https://raw.githubusercontent.com/ibm-granite/granite-geospatial-biomass/main/notebooks/agb_getting_started.ipynb
+    shows: The notebook's "Few-shot for a single biome (Taiga)" section downloads "the full lightning checkpoint
+      to finetune on" and runs "terratorch fit --config {finetune_config_path} --ckpt_path {full_lightning_ckpt_path}";
+      the "Zero-shot for all biomes" and "Zero-shot for a single biome (Taiga)" sections run inference only.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 2f7073e0b5992da7c3c470dd64d8e0d34e632a4decb95980c3f5dc802900e04d
