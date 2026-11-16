@@ -5,8 +5,9 @@ openness:
   components:
     weights:
       value: closed
-      detail: embed-v4.0 is served through the Embed endpoint and cloud marketplaces; no weight files
-        are published for any SKU
+      detail: no weight files are publicly downloadable for any SKU. Embed 5 private deployments run the
+        model with vLLM and quantized weights inside a customer's own VPC or on premises, under a commercial
+        agreement
     data:
       value: closed
       detail: training corpus not released or described
@@ -15,24 +16,25 @@ openness:
       detail: no training or inference implementation; client SDKs only
     license:
     - name: proprietary
-      detail: hosted API; the private-deployment option is a priced dedicated instance, not a license
-        over weights
-  raw: weights:closed(embed-v4.0 is served through the Embed endpoint and cloud marketplaces; no weight
-    files are published for any SKU);data:closed(training corpus not released or described);code:closed(no
-    training or inference implementation; client SDKs only);license:proprietary(hosted API; the private-deployment
-    option is a priced dedicated instance, not a license over weights)
+      detail: hosted API, plus private VPC or on-premises deployment under a commercial agreement, with
+        no public license over the weights
+  raw: weights:closed(no weight files are publicly downloadable for any SKU. Embed 5 private deployments
+    run the model with vLLM and quantized weights inside a customer's own VPC or on premises, under a commercial
+    agreement);data:closed(training corpus not released or described);code:closed(no training or inference
+    implementation; client SDKs only);license:proprietary(hosted API, plus private VPC or on-premises deployment
+    under a commercial agreement, with no public license over the weights)
   confidence: high
-  note: 'Embed 5 is API-only: no weights, training data or code are published for any model in the family.
-    Cohere''s launch post says private deployments in a customer''s own VPC or on premises can be served
-    with vLLM, so weights reach those customers under a commercial agreement, but nothing is available to
-    download.'
+  note: No weights, training data or code are published for any Embed model, which Cohere sells as a hosted
+    API. Its launch post says Embed 5 can also be served with vLLM and quantized weights in a customer's
+    own VPC or on premises, but that is a private deployment under a commercial agreement, not a release
+    anyone can download.
   sources:
   - url: https://docs.cohere.com/docs/cohere-embed
     shows: The Embed model table lists embed-v4.0 as the latest model with a 128k context and Matryoshka
       dimensions '[256, 512, 1024, 1536 (default)]', reached through the Embed endpoint. No weight download,
-      self-hosted build is offered for it or for any v3.0 SKU. Two Hub repositories do exist under
-      CohereLabs for the v3.0 embed models, but both ship only a config and a tokenizer - no weight
-      file - so neither is a distribution of the model.
+      self-hosted build is offered for it or for any v3.0 SKU. Two Hub repositories do exist under CohereLabs
+      for the v3.0 embed models, but both ship only a config and a tokenizer - no weight file - so neither
+      is a distribution of the model.
     accessed: '2026-09-11'
     http_status: 200
     content_sha256: 3bc6190057e73c202a248015e5251db6dc1bd21cf347c8e77f730ed210b31109
@@ -43,12 +45,21 @@ openness:
     - license
   - url: https://cohere.com/pricing
     shows: Prices Embed 4 as hosted usage and as dedicated instances — 'Embed 4 Small $4.00 hourly / $2,500
-      monthly per instance', 'Embed 4 Medium $5.00 / $3,250' — which is rented capacity, not a weights
-      license.
+      monthly per instance', 'Embed 4 Medium $5.00 / $3,250'.
     accessed: '2026-09-11'
     http_status: 200
     content_sha256: 1226278b244a97d3b9725a4e551c67a1ef3733c036ec8174b2e6c1d3f9cde3af
     establishes:
+    - license
+  - url: https://cohere.com/blog/embed-5
+    shows: 'Embed 5 launch post: "For private deployments in your own VPC or on-premises, both models can
+      be served with vLLM", and "quantized weights lower serving requirements for private deployments".
+      The post offers no weight download and names no public license.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 9781714148a9444770d9a6ef899952d4846f4de3164daa5acc09b2916459fadc
+    establishes:
+    - weights
     - license
 adoption:
   level: 3
