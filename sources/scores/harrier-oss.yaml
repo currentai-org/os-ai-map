@@ -20,13 +20,14 @@ openness:
   note: Harrier-OSS ships ungated weights under MIT, and Microsoft describes the training pipeline and synthetic-data
     generation step in prose, but neither the corpus nor the code that produced it is released. That keeps
     it at open weights rather than a fully open release.
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
-    shows: 'license: mit in the card front matter; three downloadable checkpoints listed; training described as
-      contrastive learning on a large-scale multilingual mixture with distillation, naming no dataset and no training
-      code; usage snippets and an evaluation-prompt file only.'
-    accessed: '2026-09-11'
+    shows: 'Front matter reads "license: mit". Training is described only as "All models are trained with
+      contrastive learning objectives on a large-scale mixture of multilingual datasets covering diverse
+      tasks." with no dataset named. The only code is usage snippets and "The evaluation prompts used for
+      each task are also available at" mteb_v2_eval_prompts.json.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110
     establishes:
@@ -35,20 +36,35 @@ openness:
     - code
     - license
   - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-27b
-    shows: 'gated: false; private: false; disabled: false; cardData license mit; sharded safetensors weight files
-      present.'
-    accessed: '2026-09-11'
+    shows: '"gated":false, "private":false, "disabled":false; "license:mit" tag; sharded model-0000N-of-00011.safetensors
+      files listed.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: f629f2b545e0fe92041bacc079ab433bfba41fad9061904feef85937f5f368e7
+    content_sha256: ea841f140940a76f2dc7cfe15e9d8a51e94c45fd8d83778155c69b655a4e612b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-0.6b
+    shows: '"gated":false, "private":false, "disabled":false; "license:mit" tag; safetensors weights present.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: fd11af739bd7e88ea777049977d2674e260f57c7172b80dc5a3cefbfff2ce816
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-270m
+    shows: '"gated":false, "private":false, "disabled":false; "license:mit" tag; safetensors weights present.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 23a396765b6a2f105e9cde4a55ac920398497edd864f51def26af4d5e647ee49
     establishes:
     - weights
   - url: https://blogs.bing.com/search/April-2026/Microsoft-Open-Sources-Industry-Leading-Embedding-Model
-    shows: Microsoft describes a data pipeline producing more than 2 billion weakly-supervised examples and over
-      10 million high-quality fine-tuning examples, with GPT-5 used to synthesize multilingual pairs; none of
-      it is offered for download.
-    accessed: '2026-09-11'
+    shows: Microsoft describes a pipeline that "uses GPT-5 to generate a wide range of synthetic data",
+      resulting in "more than 2 billion weakly-supervised data examples for contrastive pre-training" and
+      "over 10 million high-quality examples for fine-tuning"; no download of the data is offered.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 97732e59fdd3d9d80c594ac5ddc6d401e0d5191e548c6e26f09421a52c0bdb36
+    content_sha256: 7629ca5c95cec81a3b130349e98441e67b505475b1f8a691cbfafa13668d8d19
     establishes:
     - data
   raw: weights:open(three ungated MIT safetensors checkpoints);data:closed(over 2B weakly-supervised pairs plus
@@ -91,21 +107,21 @@ capability:
   basis_detail: Multilingual MTEB v2 (MMTEB), mean over tasks
   value: 74.3 on Multilingual MTEB v2 for harrier-oss-v1-27b; 69.0 for the 0.6b and 66.5 for the 270m.
   confidence: high
-  note: Harrier-OSS-v1-27B reports the strongest Multilingual MTEB v2 result claimed in this category --
-    74.3, across more than 100 languages at a 32k context -- and every other product here is measured against
-    that figure. It is Microsoft's own claim rather than an independent leaderboard reading, since the card
-    and the announcement are the same publisher.
-  last_verified: '2026-09-11'
+  note: Harrier-OSS-v1-27B reports 74.3 on Multilingual MTEB v2 across more than 100 languages at a 32k
+    context, and Microsoft's announcement describes it as ranking first on that benchmark. The card and
+    the announcement are both Microsoft's own, so this is the publisher's claim rather than an independent
+    leaderboard reading.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
-    shows: Model table gives MTEB v2 scores of 66.5 (270m), 69.0 (0.6b) and 74.3 (27b) at 32,768 max tokens each,
-      and states the models achieve state-of-the-art results on Multilingual MTEB v2 as of the release date.
-    accessed: '2026-09-11'
+    shows: Model table lists 66.5 (270m), 69.0 (0.6b) and "**74.3**" (27b) at 32,768 max tokens, and says
+      "achieve state-of-the-art results on the".
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110
   - url: https://blogs.bing.com/search/April-2026/Microsoft-Open-Sources-Industry-Leading-Embedding-Model
-    shows: Harrier is described as ranking 1st on the multilingual MTEB-v2 benchmark as of April 6, 2026, supporting
-      more than 100 languages with a 32k context window.
-    accessed: '2026-09-11'
+    shows: Describes Harrier as "ranking 1" on the multilingual MTEB-v2 benchmark "(as of April 6, 2026)"
+      and says it "supports more than 100 languages, offers a 32k context window".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 97732e59fdd3d9d80c594ac5ddc6d401e0d5191e548c6e26f09421a52c0bdb36
+    content_sha256: 7629ca5c95cec81a3b130349e98441e67b505475b1f8a691cbfafa13668d8d19

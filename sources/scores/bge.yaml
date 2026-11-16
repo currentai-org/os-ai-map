@@ -20,10 +20,9 @@ openness:
       detail: use_bounded; bge-multilingual-gemma2
   raw: weights:open(ungated safetensors and PyTorch checkpoints across the v1.5 encoders and bge-m3);data:open(the BAAI-MTP pretraining corpus, the bge-m3-data fine-tuning set and the MLDR long-document set are all published);code:open(FlagEmbedding ships embedder and reranker fine-tuning, unified fine-tuning, evaluation and inference pipelines under MIT);license:MIT(OSI; bge-m3 and the v1.5 encoders)+Gemma-License(use_bounded; bge-multilingual-gemma2)
   confidence: high
-  note: The training data and code pipeline are fully published, so the license is what limits the score.
-    Most of the family ships under MIT or Apache-2.0, but bge-multilingual-gemma2 carries the more restrictive
-    Gemma license from Gemma 2, and that shipped checkpoint sets the score.
-  last_verified: '2026-09-11'
+  note: BGE publishes its training data and code pipeline. Most of the family ships under MIT or Apache-2.0,
+    but bge-multilingual-gemma2 carries the more restrictive Gemma 2 license, so the family as a whole is
+    only as open as that checkpoint.
   sources:
   - url: https://huggingface.co/api/models/BAAI/bge-m3
     shows: 'license: mit; gated: false; private: false; pytorch_model.bin and an ONNX export present.'
@@ -109,19 +108,20 @@ capability:
   relative_to: harrier-oss
   relation: one_below
   confidence: high
-  note: 'Competitive frontier rather than leader: multilingual, long-context, and the best MIRACL figure in the comparison
-    that ranks it, but its BEIR average trails the newer encoders and the family has not shipped a successor to m3.'
-  last_verified: '2026-09-11'
+  note: BGE is multilingual and long-context, and posts the highest MIRACL figure in the third-party comparison
+    that ranks it. Its BEIR average trails the newer encoders, and the family has not shipped a successor
+    to m3.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/Snowflake/snowflake-arctic-embed-l-v2.0/raw/main/README.md
-    shows: Comparison table gives bge-m3 (BAAI) BEIR (15) 48.8, MIRACL (4) 56.8, CLEF (Focused) 40.8 and CLEF (Full) 41.3,
-      all average NDCG@10.
-    accessed: '2026-09-11'
+    shows: Comparison table lists bge-m3 (BAAI) with BEIR (15) 48.8, MIRACL (4) 56.8, CLEF (Focused) 40.8
+      and CLEF (Full) 41.3, all average NDCG@10.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 59952ebef3dd21ee3fe3c2f2fb1b0c37f780d7730b1f6efc11ed5086ea299945
   - url: https://huggingface.co/BAAI/bge-m3/raw/main/README.md
-    shows: States support for more than 100 working languages and inputs up to 8192 tokens, with dense, sparse and ColBERT-style
-      multi-vector retrieval from one model.
-    accessed: '2026-09-11'
+    shows: States "It can support more than 100 working languages." and long documents "up to 8192 tokens",
+      with dense, sparse and multi-vector retrieval from one model.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 0b81ccf9134e5874d620a86e6905062ea999e779c34eb1a7e65eaeb7fe00e450

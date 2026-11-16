@@ -10,29 +10,60 @@ openness:
     - {name: proprietary, detail: 'hosted API, billed in search units, also resold through Azure, AWS and Oracle'}
   raw: weights:closed(no weights download, Hub card or self-hosted build for any model in the line);data:closed(no training corpus published);code:closed(hosted API only; the cloud-marketplace deployments serve the same closed model);license:proprietary(hosted API, billed in search units, also resold through Azure, AWS and Oracle)
   confidence: high
-  note: Cohere Rerank is offered only as a hosted API and through cloud marketplaces, with no downloadable
-    weights, no published training data and no way to run it outside Cohere's service. That closes off every
-    higher reading regardless of the license terms attached to any tier.
-  last_verified: '2026-09-11'
+  note: Cohere Rerank is sold as a hosted API and through cloud marketplaces, under proprietary terms that
+    bar reverse engineering. No weights or training data are published for any Rerank model, and the only
+    way to run it outside Cohere's service is a contracted private deployment of Cohere's own stack.
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.cohere.com/docs/rerank-overview
-    shows: 'Model lineup - "Rerank 4.0 (both ''fast'' and ''pro''): A single multilingual model (rerank-v4.0-pro
-      and rerank-v4.0-fast). Rerank 3.5: A single multilingual model (rerank-v3.5). Rerank 3.0: Separate
-      English-only and multilingual models." Calls are billed in search_units. No weights download, hub model
-      card or self-hosted build for any of them.'
-    accessed: '2026-09-11'
+    shows: 'Rerank docs overview listing the model lineup: "A single multilingual model" for each of Rerank
+      5, 4.0 and 3.5, and "Separate English-only and multilingual models" for Rerank 3.0, all reached through
+      the API. Searched the body for weights, Hugging Face and self-host: none.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 841a8fa4c7d50f80f85e5d47a51c441c8823648f2d222ad0623090900cf1b4d9
+    content_sha256: 09f4fc96d8a90101378fc8c3c48cf148d96b73f36d7d8b091cc2f8e0ad97aada
+    establishes:
+    - weights
+    - data
+  - url: https://docs.cohere.com/docs/deployment-options
+    shows: 'Deployment options: "The models are hosted on Cohere infrastructure and available on our public
+      SaaS platform", plus "Private deployments on-premises (on-prem) allow enterprises to deploy the Cohere
+      stack privately on their own compute." These are contracted enterprise deployments; no public weights
+      or source release is described.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 80123b71cc58d930c2925c11c1e325a21c3739932803618299c3d6b72a9f4da8
+    establishes:
+    - code
+    - weights
+  - url: https://cohere.com/terms-of-use
+    shows: 'Terms of use: the service is "Cohere’s proprietary application programming interface" and users
+      get a "non-exclusive, non-transferable, non-sublicensable and revocable licence to use the Cohere
+      Solution". Users may not "reverse engineer, reverse assemble, disassemble, or decompile the Cohere
+      Solution or any part thereof or otherwise attempt to discover any source code".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 2bc71a7e092391cefe580aa77ba4d13a8492b0d8ea6645ca5166130f816ccbfd
     establishes:
     - license
     - code
-    - weights
-  - url: https://docs.cohere.com/changelog/rerank-v3.5
-    shows: Release notes for Rerank 3.5 as a hosted model reached through the API, with a context length of
-      4096. No weights release accompanies it.
-    accessed: '2026-09-11'
+  - url: https://cohere.com/pricing
+    shows: 'Pricing FAQ: "A single search unit is defined as one query with up to 100 documents to be ranked."
+      Rerank is metered per search unit. The Hugging Face weight downloads on the page are for other Cohere
+      models, none for Rerank.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 1a201f66acef35b03a2c73a9f78f76853c0fd4285b5de62a2ba68873df13cab5
+    content_sha256: d5788a107eedc4ebae41aa250387706f2349d895b3701ff0c401a4c90da11620
+    establishes:
+    - license
+    - weights
+  - url: https://cohere.com/blog/rerank-5
+    shows: 'Rerank 5 launch post: "Rerank 5 Pro and Rerank 5 Fast are generally available through the" Cohere
+      API and partners. Searched the body for training data, corpus and a weights download: no Rerank release
+      of either.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 8d164653d800a03054376fcfbd29e82503a65a69502b14ab69faf9ec1f5b1b4f
     establishes:
     - weights
     - data
@@ -44,22 +75,34 @@ adoption:
     the API is offered directly and resold as a managed service on Azure AI Foundry, AWS SageMaker JumpStart
     and Oracle GenAI. The `cohere` PyPI package bundles chat, embedding, classification and reranking together,
     so its downloads are not a proxy for Rerank alone.'
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://aws.amazon.com/blogs/big-data/enhancing-search-relevancy-with-cohere-rerank-3-5-and-amazon-opensearch-service/
-    shows: AWS Big Data Blog post "Enhancing Search Relevancy with Cohere Rerank 3.5 and Amazon OpenSearch
-      Service", on wiring the model in through "OpenSearch Service ML connectors which facilitate access
-      to models hosted on third-party ML platforms". It carries no usage figure.
-    accessed: '2026-09-28'
+    shows: AWS Big Data Blog post on wiring Cohere Rerank 3.5 into Amazon OpenSearch Service through "OpenSearch
+      Service ML connectors which facilitate access to models hosted on third-party ML platforms". It carries
+      no usage figure.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 47e74638deee23dfcced4d8c64cd3894b7fbe368e915c37df59bf94c413489bf
+    content_sha256: a2e4b776f89d6b075fc169a393202a29b01df2922127f0c0ecddf401da54f220
   - url: https://ai.azure.com/catalog/models/Cohere-rerank-v3.5
     shows: 'Azure AI Foundry catalog, Cohere provider entry: "high‑precision Rerank APIs, Cohere focuses
-      on enterprise and regulated‑industry use cases" and "with Azure AI Search, store embeddings in Azure
-      Vector DBs". It establishes availability and carries no usage figure.'
-    accessed: '2026-09-28'
+      on enterprise and regulated‑industry use cases". It establishes availability and carries no usage
+      figure.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 95192dc9a71cf7ced0c38bb13a0cbbe4c77cf81419a629e2249e8daf90dffae7
+    content_sha256: bae9973088cc116e061a57832b5ca583ce839560186bd9d036dc496476f8088a
+  - url: https://docs.cohere.com/docs/cohere-on-openrouter
+    shows: 'Cohere on OpenRouter: "You can use Cohere’s Command, Embed, Rerank, and North models through
+      OpenRouter with an OpenRouter API key." Availability only, no usage figure.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: a6e2631793a5f43fe346e99e49d7586f345b74311bb7be814d2178aa73d920c4
+  - url: https://cohere.com/blog/rerank-5
+    shows: 'Rerank 5 launch post: "available through frameworks including LangChain, Haystack, Elasticsearch
+      and Weaviate". Availability only, no usage figure.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 8d164653d800a03054376fcfbd29e82503a65a69502b14ab69faf9ec1f5b1b4f
 capability:
   score: 4
   basis: benchmark
@@ -70,12 +113,11 @@ capability:
     by nDCG@10 over an in-house 18-language suite; trained across 100+ languages, with Rerank 4 shipping
     fast and pro variants, a 32K context and a vendor-claimed lead over Voyage and Jina rerankers
   confidence: medium
-  note: Cohere reports state-of-the-art BEIR and multilingual results for Rerank 3.5 and says Rerank 4 beats
-    Voyage and Jina rerankers on its own benchmarks, and Agentset's independent leaderboard places Rerank
-    4 Pro second, just behind Zerank 2 and ahead of Voyage rerank-2.5. That leaderboard ranks models by
-    LLM-judged head-to-head wins on only three datasets, so it places Rerank 4 at the competitive frontier
-    alongside those rerankers rather than clearly ahead of them.
-  last_verified: '2026-09-28'
+  note: Cohere reports state-of-the-art BEIR and multilingual results for Rerank 3.5, and its Rerank 5 Pro
+    is now claimed to lead public benchmarks in Cohere-run evaluations. The only independent evidence is
+    Agentset's leaderboard, which still lists Rerank 4 Pro second, just behind Zerank 2 and ahead of Voyage
+    rerank-2.5. It ranks by LLM-judged head-to-head wins on only three datasets, so it shows Rerank 4 level
+    with those rerankers rather than clearly ahead.
   sources:
   - url: https://cohere.com/blog/rerank-3pt5
     shows: 'Rerank 3.5 launch post: "Multilingual performance is measured by nDCG@10" over "external datasets

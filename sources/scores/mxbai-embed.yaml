@@ -20,23 +20,47 @@ openness:
   note: 'Every checkpoint ships under Apache-2.0, ungated. The training corpus is the gap: the card''s only
     claim about the data is that it does not overlap MTEB, which is about evaluation hygiene rather than
     disclosure, and neither the corpus nor training code is published.'
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1/raw/main/README.md
-    shows: The card documents sentence-transformers and transformers usage plus binary and Matryoshka quantization,
-      and says of training data only that the model was trained with no overlap of the MTEB data; no corpus or
-      training pipeline is named.
-    accessed: '2026-09-11'
+    shows: Of training data the card says only "Our model was trained with no overlap of the MTEB data";
+      it documents sentence-transformers, transformers and API usage plus Matryoshka and binary quantization,
+      and its License section reads "Apache 2.0".
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1e229c497c2a21e1e3bf1942b3eb55af61305e74667e2a2afd3584e86ca9f485
     establishes:
     - data
     - code
   - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-large-v1
-    shows: 'gated: false; private: false; cardData license apache-2.0.'
-    accessed: '2026-09-11'
+    shows: Model API record reports gated false, private false and cardData license apache-2.0.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 5f1d8d511808a1e86151957efbb1a0471d5c8297efb373511aaf80dc9ace935b
+    content_sha256: af09f38f3a87920a17ac1d1eccbdd84e372865be528e700f11e971e613deedb2
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-2d-large-v1
+    shows: Model API record reports gated false, private false and cardData license apache-2.0.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f520304d2bc065e8e9fbb2f6ba3559db611c39d4002ea7cd81ca51057dcb4596
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-xsmall-v1
+    shows: Model API record reports gated false, private false and cardData license apache-2.0.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 15759920052535b96ebd54d2bb992e308e91f5f267d2703e9d671b3d077006ba
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/mixedbread-ai/deepset-mxbai-embed-de-large-v1
+    shows: Model API record reports gated false, private false and cardData license apache-2.0.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 2a6cd792c0fe8903a10303dc9e4738752277bba826ec2c25298e1db27dc64ca3
     establishes:
     - weights
     - license
@@ -88,16 +112,22 @@ capability:
   confidence: high
   relative_to: granite-embedding
   relation: at
-  note: 'mxbai-embed-large-v1 is an earlier-generation model — English-only, a 512-token window — with an
-    MTEB v1 average that has never been re-run on v2, so it cannot be measured against newer embedding models
-    on the same benchmark. It is scored level with Granite Embedding, the nearest comparable peer: a similarly
-    compact bi-encoder, one generation newer, with sixteen times the context.'
-  last_verified: '2026-09-11'
+  note: mxbai-embed-large-v1 is an earlier-generation, English-only model with a 512-token window, and its
+    MTEB v1 average has not been re-run on v2, so it cannot be compared with newer models on the same benchmark.
+    It is placed alongside Granite Embedding, a similarly compact bi-encoder that is one generation newer
+    and has a context sixteen times longer.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1/raw/main/README.md
-    shows: 'Evaluation section: 64.68 average across 56 MTEB datasets, ahead of bge-large-en-v1.5 at 64.23, described
-      as SOTA for BERT-large sized models as of March 2024, with the card noting known limitations to be fixed
-      in v2.'
-    accessed: '2026-09-11'
+    shows: 'Evaluation section: "As of March 2024, our model archives SOTA performance for Bert-large sized
+      models", with 64.68 average over 56 datasets against 64.23 for bge-large-en-v1.5, and "We know there
+      are some limitations with this model, which will be fixed in v2."'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1e229c497c2a21e1e3bf1942b3eb55af61305e74667e2a2afd3584e86ca9f485
+  - url: https://huggingface.co/ibm-granite/granite-embedding-english-r2/raw/main/README.md
+    shows: 'Peer card: a "dense biencoder embedding model" with "context length of upto 8192 tokens", reporting
+      62.8 on MTEB-v2 (41 tasks) and 53.1 on BEIR retrieval.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 33d4e07d3547d1a0110fddc5838986c7ffbb2f8b04573e04b75cfb0d8b19f277

@@ -25,24 +25,73 @@ openness:
   note: Jina Reranker's current v2, v3 and v3.5 checkpoints are licensed CC-BY-NC-4.0, which forbids commercial
     use beyond a narrow AWS and Azure listing without contacting sales; only the older v1-turbo-en and v1-tiny-en
     checkpoints carry Apache-2.0.
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
-    shows: 'Front matter reads license: cc-by-nc-4.0; the License section says the model is licensed under
-      CC BY-NC 4.0 for use beyond the AWS and Azure listings and directs commercial usage inquiries to
-      contact sales. Weights are ungated, inference is via trust_remote_code with no training pipeline
-      or corpus named.'
-    accessed: '2026-09-11'
+    shows: 'Front matter reads "license: cc-by-nc-4.0" and the License section says "the model is licensed
+      under CC BY-NC 4.0" beyond the AWS and Azure listings, directing commercial inquiries to contact sales.
+      Loading uses "trust_remote_code=True"; no training pipeline or corpus is named.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e
-    establishes: [weights, data, code, license]
-  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v2-base-multilingual
-    shows: license cc-by-nc-4.0 recorded in cardData for jinaai/jina-reranker-v2-base-multilingual, confirming
-      the non-commercial terms are not unique to v3.
-    accessed: '2026-09-11'
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/jinaai/jina-reranker-v3.5/raw/main/README.md
+    shows: The successor card states "`jina-reranker-v3.5` is licensed under CC BY-NC 4.0" and loads with
+      "trust_remote_code=True".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2b415a0fa6987e8278dc479a3bee5a99ae4469e424ad3ab59c5fc08589677d23
-    establishes: [license]
+    content_sha256: da4fd1e360aef1139a5e0dc12cee19093e1fb7958a46682df062430a2a990ffc
+    establishes:
+    - weights
+    - license
+    - code
+  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v2-base-multilingual
+    shows: Hub metadata records license cc-by-nc-4.0 for v2-base-multilingual, an ungated repo with model.safetensors
+      and modeling code but no training code.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: b1aef65dee3f78c91e12de9f124d443fd6c022d5b640b660ca6e35607d2d5467
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v1-turbo-en
+    shows: Hub metadata records license apache-2.0 for v1-turbo-en, an ungated repo with model.safetensors.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: da6000e572a33e9e5cea29a0e407163622b79012618521a1b5cde9909b5d2f28
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v1-tiny-en
+    shows: Hub metadata records license apache-2.0 for v1-tiny-en, an ungated repo with model.safetensors.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 4d3942ccff7023967b69a5380d4d97aee799e88848027d2a088876a7fc0e439f
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v3
+    shows: Hub metadata for v3 records license cc-by-nc-4.0, ungated, with model.safetensors and modeling.py.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 4820571996f138c7a55059906eff0aade1408ebc9c95f81e9c6bf6d7f63ac246
+    establishes:
+    - license
+    - weights
+    - code
+  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v3.5
+    shows: Hub metadata for v3.5 records license cc-by-nc-4.0, ungated, with model.safetensors and modeling.py.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: fd53f98a7b3df0fcea4188c4ded31a4e7afa861c46e049331e9c58a08faca486
+    establishes:
+    - license
+    - weights
+    - code
 adoption:
   level: 4
   reach: 1M-10M
@@ -76,9 +125,18 @@ capability:
   note: Jina Reranker v3 scores 61.94 BEIR nDCG@10, level with Qwen3-Reranker-4B's 61.16 on the same table
     despite using a sixth of the parameters, and both are multilingual with a long context. The comparison
     comes from Jina's own published table, the only one that reports both models together.
-  last_verified: '2026-09-11'
+  last_verified: '2026-11-16'
   sources:
-  - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Card reports jina-reranker-v3
-      at 61.94 BEIR, 66.83 MIRACL, 67.92 MKQA and 70.64 CoIR at 0.6B parameters, in a table that also
-      lists Qwen3-Reranker-4B at 61.16 BEIR and bge-reranker-v2-m3 at 56.51; describes 64 documents within
-      a 131K context window.', accessed: '2026-09-11', http_status: 200, content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e}
+  - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
+    shows: Card reports jina-reranker-v3 at 61.94 BEIR, 66.83 MIRACL, 67.92 MKQA and 70.64 CoIR at 0.6B
+      in a table that also lists Qwen3-Reranker-4B at 61.16 BEIR; it describes "up to 64 documents simultaneously
+      within 131K token context".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e
+  - url: https://huggingface.co/jinaai/jina-reranker-v3.5/raw/main/README.md
+    shows: The v3.5 card lists jina-reranker-v3.5 at 63.20 BEIR against 62.28 for Qwen3-Reranker-4B, though
+      Qwen3-Reranker-4B leads on MIRACL (76.56 vs 74.11) and RTEB.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: da4fd1e360aef1139a5e0dc12cee19093e1fb7958a46682df062430a2a990ffc

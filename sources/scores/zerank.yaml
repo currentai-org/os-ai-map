@@ -71,14 +71,16 @@ capability:
   value: 0.6714 average NDCG@10 across web, conversational, STEM, code, legal, biomedical and finance,
     against 0.5847 for Cohere rerank-3.5 and 0.5999 for Gemini 2.5 Flash listwise.
   confidence: medium
-  note: Zerank-2 is a current 4B model that beats the named proprietary rerankers on ZeroEntropy's own seven-domain
-    suite, putting it at the frontier alongside jina-reranker, the other current-generation line here. Confidence
-    stays medium because that evaluation is a vendor-built suite with no public leaderboard behind it, unlike
-    BEIR or MMTEB.
-  last_verified: '2026-09-11'
+  note: Zerank-2 is a 4B model that beats the proprietary rerankers it names, including Cohere rerank-3.5,
+    on ZeroEntropy's own seven-domain suite. That suite is vendor-built with no public leaderboard behind
+    it, unlike BEIR or MMTEB, so the result is the publisher's claim. It is comparable to Jina Reranker.
+  last_verified: '2026-11-16'
   sources:
-  - {url: 'https://huggingface.co/zeroentropy/zerank-2-reranker/raw/main/README.md', shows: 'Evaluations
-      table gives zerank-2 an average NDCG@10 of 0.6714 across seven domains against 0.6456 for zerank-1,
-      0.5999 for Gemini 2.5 Flash listwise, 0.5847 for Cohere rerank-3.5 and 0.4509 for the OpenAI embedding
-      retriever alone; 4B parameters, 32,768-token context.', accessed: '2026-09-11', http_status: 200,
-    content_sha256: a296c356d2484632efcefb3d4e447d609e81174b8c9a325ab6398d871d242013}
+  - url: https://huggingface.co/zeroentropy/zerank-2-reranker/raw/main/README.md
+    shows: Evaluations table gives zerank-2 an Average NDCG@10 of 0.6714 across seven domains against 0.6456
+      for zerank-1, 0.5999 for Gemini 2.5 Flash (Listwise), 0.5847 for Cohere rerank-3.5 and 0.4509 for
+      the OpenAI embeddings retriever, which supplies the "Top 100 candidate documents"; the model details
+      list 4B parameters and a 32,768-token context.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: a296c356d2484632efcefb3d4e447d609e81174b8c9a325ab6398d871d242013

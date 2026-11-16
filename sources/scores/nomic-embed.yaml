@@ -26,7 +26,6 @@ openness:
     Apache-2.0, and the v2 paper states that reproducing the training run is the point of the release. The
     corpus is fetched from a Nomic bucket after registering for a free Atlas account, which is friction
     at the download gate rather than data withheld.
-  last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v1.5
     shows: 'license: apache-2.0; gated: false; private: false; downloadable checkpoint files present.'
@@ -109,20 +108,27 @@ capability:
   relative_to: harrier-oss
   relation: two_below
   confidence: high
-  note: Solid and widely used, and measurably behind the frontier encoders on the same leaderboard table - 62.28 against 64.38
-    for a model of similar size. The v2 mixture of experts claims parity only within its parameter class, and gives up the
-    long-context window the v1 line was known for.
-  last_verified: '2026-09-11'
+  note: Nomic Embed is behind current frontier encoders such as Harrier-OSS, though the two report different
+    benchmarks, English MTEB for Nomic and multilingual MTEB v2 for Harrier, so there is no head-to-head
+    reading. The v2 mixture of experts claims parity only within its parameter class and gives up the long-context
+    window the v1 line was known for.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
-    shows: MTEB leaderboard table lists nomic-embed-text-v1.5 at 768 dimensions, 8192 maximum sequence length and an MTEB
-      English average of 62.28, against 64.38 for gte-modernbert-base.
-    accessed: '2026-09-11'
+    shows: MTEB table row for nomic-embed-text-v1.5 gives 768 dimensions, 8192 max sequence length and an
+      English average of 62.28; gte-modernbert-base is listed at 64.38.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
   - url: https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe/raw/main/README.md
-    shows: Claims state-of-the-art multilingual performance compared with ~300M parameter models on BEIR and MIRACL, and states
-      a maximum sequence length of 512 tokens.
-    accessed: '2026-09-11'
+    shows: 'Card says "SoTA Multilingual performance compared to ~300M parameter models", "Supports ~100
+      languages" and "Maximum Sequence Length**: 512 tokens".'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 5a5cbb6e82247892faeb200b529cdec5c538c382b80eb9717ba3de645946a6cd
+  - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
+    shows: Peer model table lists harrier-oss-v1-27b at 32,768 tokens with a Multilingual MTEB v2 score
+      of "**74.3**", and says the models "achieve state-of-the-art results on the [Multilingual MTEB v2]".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110

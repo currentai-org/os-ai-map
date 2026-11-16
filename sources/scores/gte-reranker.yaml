@@ -19,42 +19,44 @@ openness:
     one);data:closed(both cards defer the training mixture to the mGTE paper and release no corpus);code:partial(inference
     usage through transformers, TEI and Infinity ships on the cards; no training pipeline is published);license:Apache-2.0(OSI)
   confidence: high
-  note: 'The same resolution as the gte embedders, on the same evidence: an OSI license over ungated weights, with
-    the corpus and the training run left in the mGTE paper. No reranker SKU carries a more restrictive license, so
-    nothing pulls the line down.'
-  last_verified: '2026-09-11'
+  note: Both checkpoints ship Apache-2.0 weights with no gate, which makes the family open-weights. The
+    training corpus is not released, the cards point to the mGTE paper for training details, and only inference
+    usage is documented, with no training pipeline.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/api/models/Alibaba-NLP/gte-reranker-modernbert-base
-    shows: 'license: apache-2.0; gated: false; private: false; model.safetensors and an onnx/ folder present.'
-    accessed: '2026-09-11'
+    shows: Model API reports "license":"apache-2.0", "gated":false, "private":false, with model.safetensors
+      and an onnx/ folder in the file list.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 0610e8f94c45f661c3e8a0a8405daf59549a0c025d0cf5ed4f6707540b755e8f
+    content_sha256: ecf359449ad83c62d7be5fd81687a68744e75cff1554f26225c43b0375ffe1e8
     establishes:
     - weights
     - license
   - url: https://huggingface.co/api/models/Alibaba-NLP/gte-multilingual-reranker-base
-    shows: 'license: apache-2.0; gated: false; private: false; model.safetensors present.'
-    accessed: '2026-09-11'
+    shows: Model API reports "license":"apache-2.0", "gated":false, "private":false, with model.safetensors
+      in the file list.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b7a2d0cb3a991f769061d623f4829b4db856f6502976e1dacc7df5603794f2e8
+    content_sha256: be160af9dbf2c63438fce11513c967d025ad94a71c2fb10cee224e62fe792c25
     establishes:
     - weights
     - license
   - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
-    shows: States the gte-modernbert series follows the previous GTE training scheme with ModernBERT as the base and
-      refers readers to the mGTE paper for training details; the usage sections cover transformers, Transformers.js
-      and TEI inference only.
-    accessed: '2026-09-11'
+    shows: 'Front matter reads "license: apache-2.0". The training section says "For more training details,
+      please refer to our paper" (mGTE); usage sections cover "Use with `transformers`", "Use with `transformers.js`"
+      and "Text Embeddings Inference (TEI)".'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
     establishes:
     - data
     - code
   - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base/raw/main/README.md
-    shows: 'Front matter reads license: apache-2.0. Evaluation is a figure with detail deferred to the mGTE paper
-      (arXiv 2407.19669), no corpus is released, and the usage sections cover transformers, Infinity and TEI inference
-      only.'
-    accessed: '2026-09-11'
+    shows: 'Front matter reads "license: apache-2.0". Usage covers "Using Huggingface transformers", "Usage
+      with infinity:" and "Usage with [Text Embeddings Inference (TEI)]"; results are a chart with "More
+      detailed experimental results can be found in the" paper.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 3d010454d2949f8188bb3496951594e19c35076652e04d203cbd7e20ef3a3871
     establishes:
@@ -98,20 +100,21 @@ capability:
     evaluated in the mGTE paper.'
   confidence: high
   note: GTE Reranker's ModernBERT cross-encoder scores 56.19 BEIR nDCG@10, a step below Jina Reranker's
-    61.94 on the same benchmark, and it is English-only where the frontier rerankers are multilingual. The
-    multilingual sibling covers 70-plus languages but is an older generation model; the GTE embedding checkpoints
-    are scored separately, and this reading covers only the reranking half of the family.
-  last_verified: '2026-09-11'
+    61.94 on the same benchmark, and it is English-only where the leading rerankers are multilingual. The
+    multilingual sibling covers 70-plus languages, but its card shows results only as a chart and defers
+    detail to the paper. The GTE embedders are scored separately.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
-    shows: Model table gives gte-reranker-modernbert-base BEIR 56.19, LoCo 90.68 and CoIR 79.99 at 149M parameters,
-      8192 maximum sequence length and primary language English.
-    accessed: '2026-09-11'
+    shows: 'Model table lists gte-reranker-modernbert-base at "56.19 | 90.68 | 79.99" (BEIR, LoCo, CoIR)
+      with "Primary Language: English", "Model Size: 149M" and "Max Input Length: 8192 tokens".'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
   - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base/raw/main/README.md
-    shows: Describes a 306M encoder-only reranker supporting over 70 languages at 8192 tokens, claiming state-of-the-art
-      multilingual retrieval among rerankers of similar size, with results detailed in the mGTE paper.
-    accessed: '2026-09-11'
+    shows: 'Describes "Model Size: 306M", "Max Input Tokens: 8192" and "Supports over **70** languages",
+      claiming "Achieves state-of-the-art (SOTA) results in multilingual retrieval tasks" against rerankers
+      of similar size.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 3d010454d2949f8188bb3496951594e19c35076652e04d203cbd7e20ef3a3871
