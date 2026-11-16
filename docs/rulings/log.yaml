@@ -4375,13 +4375,17 @@ rulings:
     ruling: >-
       alphagenome moves from 2 to 3, one_below prithvi-eo: AlphaGenome 2 accepts DNA plus scRNA-seq conditioning,
       which establishes multi-instrument input, and conditioning without weight updates is not an adaptation
-      pathway. clay moves from 3 to 4, at prithvi-eo: credit multi_scale for input across the documented sensor
-      resolutions, and do not credit generative output merely from downstream fine-tuning possibilities. esm-3
-      retains 3 and uma retains 3; the model-size wording is corrected and the holds are released, because a
-      parameter count is not a scientific scale. surya-heliophysics moves from 4 to 3, two_below terramind: local
-      and global attention at a single sampling resolution does not satisfy multi_scale, and the forecast-horizon
-      citation is corrected to what each source says (the GitHub README says 2-5 hours, the Hugging Face card up
-      to 12 hours). alphagenome's openness and every adoption axis are untouched.
+      pathway. Its multi_scale credit rests on distinct output sampling resolutions in Google's model output
+      metadata (RNA-seq tracks at 1 bp, ChIP-seq at 128 bp, chromatin contact maps at 2,048 bp); a 1 Mb input
+      window with single-base outputs is extent, not a second sampling resolution, under rule (e), and does not
+      by itself earn multi_scale. clay moves from 3 to 4, at prithvi-eo: credit multi_scale for input across the
+      documented sensor resolutions, and do not credit generative output merely from downstream fine-tuning
+      possibilities. esm-3 retains 3 and uma retains 3; the model-size wording is corrected and the holds are
+      released, because a parameter count is not a scientific scale. surya-heliophysics moves from 4 to 3,
+      two_below terramind: local and global attention at a single sampling resolution does not satisfy
+      multi_scale, and the forecast-horizon citation is corrected to what each source says (the GitHub README
+      says 2-5 hours, the Hugging Face card up to 12 hours). alphagenome's openness and every adoption axis are
+      untouched.
     status: in-force
     executor: agent
     lands_in:
@@ -4390,4 +4394,5 @@ rulings:
       - sources/scores/esm-3.yaml
       - sources/scores/uma.yaml
       - sources/scores/surya-heliophysics.yaml
+      - sources/categories/scientific_ai_models.yaml
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1077']

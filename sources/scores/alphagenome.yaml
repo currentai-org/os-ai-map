@@ -81,15 +81,18 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: DNA sequence plus the user's own single-cell RNA-seq data as conditioning input, and one-million-base
-    input resolved to single-base outputs; no adaptation pathway and no generative-design pathway.
+  value: 'Inputs: DNA sequence plus expression conditioning from the user''s own single-cell RNA-seq data
+    (up to 256 cells). Outputs at several sampling resolutions: RNA-seq and accessibility tracks at 1 bp,
+    histone and transcription-factor ChIP-seq at 128 bp, and chromatin contact maps at 2,048 bp. Conditioning
+    updates no weights; no fine-tuning or generative pathway is documented.'
   relative_to: prithvi-eo
   relation: one_below
   confidence: high
-  note: AlphaGenome 2 takes a DNA sequence together with expression conditioning from the user's own single-cell
-    RNA-seq data, so it accepts more than one kind of input, and it resolves sequences up to one million
-    bases to single-base outputs. Conditioning shapes predictions without updating any weights, so it is
-    not an adaptation pathway, and no fine-tuning or generative pathway is documented.
+  note: 'AlphaGenome 2 takes a DNA sequence together with expression conditioning from the user''s own single-cell
+    RNA-seq data, so it accepts more than one kind of measurement. Its outputs come at different sampling
+    resolutions: single-base RNA-seq tracks, ChIP-seq signal in 128-base bins and chromatin contact maps
+    in 2-kilobase bins. Conditioning shapes predictions without updating weights, so it is not a fine-tuning
+    pathway, and no generative pathway is documented.'
   last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md
@@ -104,9 +107,11 @@ capability:
     accessed: '2026-11-16'
     http_status: 200
     content_sha256: f81e9e91ea8e7784a391c4fb81c0b931e9f897846eaa2a05db9f1b76560db74f
-  - url: https://raw.githubusercontent.com/google-deepmind/alphagenome_research/main/README.md
-    shows: The research code README says the model analyzes DNA "sequences of up to 1 million base pairs"
-      and predicts at single "base-pair resolution across diverse modalities".
+  - url: https://google-deepmind-alphagenome.readthedocs-hosted.com/exploring_model_metadata.html
+    shows: The model output metadata page lists, for AlphaGenome 2, "Bulk RNA-seq coverage (polyA+ and total
+      RNA, stranded and unstranded)" at "1 bp", "Histone modification ChIP-seq" as "Fold-change over control"
+      "summed per 128 bp bin", and chromatin contact maps ("Pairwise 3D chromatin contact frequency (Micro-C
+      and Hi-C), normalized for") at "2048 bp".
     accessed: '2026-11-16'
     http_status: 200
-    content_sha256: c715b22c31bd4f69e9b76236de0ab6a26c96fa0f384ad56a2f9d2cb65e262681
+    content_sha256: 835a5f14f599be7fa2dff45c091fa12c0a752c29317232f789f2a86ad7bb4c36
