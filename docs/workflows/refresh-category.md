@@ -85,6 +85,33 @@ The unit is the product, not the axis, because prose and scores come from the sa
 6. **Stamp `last_verified` only once every recorded dimension has an establishing source.**
    Otherwise `deferred` with a real reason. Never both, never silently absent.
 
+### Successor check
+When a re-read finds a product **deprecated, discontinued, renamed or replaced**, the pass looks
+for the successor the vendor names before it records anything else about the product. Read the
+vendor's own announcement or documentation page, not a third party's, and fetch it through
+`build.fetch_source` like any other source. Record, in the PR and not in a score note:
+
+- the successor's **name** and **URL**, as the vendor writes them;
+- the vendor's words that name it (a quote, with the page's `content_sha256`), including whether
+  the vendor calls it a replacement or only recommends it;
+- a judgment: the **same product renamed**, or a **substantively different product**. Compare what
+  each does that the other does not, and its release status. A shared vendor, category or
+  purpose is not evidence of sameness.
+
+Then escalate, because the pass does not decide it:
+
+- **Same product renamed:** the rename follows the alias rules in
+  [`../reference/identity.md`](../reference/identity.md), including its rule on when a rename owes
+  no alias. Hand it to [`update-product.md`](update-product.md).
+- **Substantively different successor:** a candidate for a **new product record**, through
+  [`add-product.md`](add-product.md) or [`discover-candidates.md`](discover-candidates.md). Never
+  an alias. The old product keeps its own record and lifecycle, including `end_of_life` while it
+  still runs; whether and when it is retired is not settled by finding a successor.
+- **No successor named:** record that, and do not infer one from a neighboring product.
+
+A refresh pass adds no alias, product or score for a successor. A vendor recommending another
+product as where to go next is not a statement that the two are one product.
+
 ### Four rules a pass may not bend
 Each is a defect this project shipped, not a precaution against one.
 
