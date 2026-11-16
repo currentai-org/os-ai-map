@@ -102774,44 +102774,52 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Methods: SFT, DPO/IPO/KTO/ORPO, PPO, GRPO, reward modeling; parallelism via HF Accelerate (DeepSpeed/FSDP); precision BF16/FP8 via Accelerate; broad method coverage but relies on Accelerate for scale rather than native frontier-scale parallelism like Megatron-LM (the C5 anchor).",
+            "value": "Methods: SFT, DPO (IPO via loss_type), KTO, GRPO, RLOO, reward modeling and distillation as stable trainers; PPO, ORPO, CPO, online DPO and GKD experimental; scale-out via torchrun, including multi-node, with DDP, DeepSpeed ZeRO and FSDP (Accelerate under the hood); PEFT LoRA/QLoRA; mixed precision bf16/fp16; no tensor or pipeline parallelism documented.",
             "confidence": "high",
-            "note": "TRL covers a broad set of post-training methods: supervised fine-tuning, DPO, KTO and ORPO preference training, GRPO and other online methods, PPO, and reward modeling. It hands large-scale distributed training to Hugging Face Accelerate and DeepSpeed rather than implementing its own parallelism, which leaves it a tier behind Megatron-LM.",
+            "note": "TRL's stable trainers cover supervised fine-tuning, DPO (including the IPO loss), KTO, GRPO, RLOO, reward modeling and distillation, while PPO, ORPO, CPO, online DPO and GKD are still experimental. Large runs scale out through torchrun with DDP, DeepSpeed ZeRO or FSDP, with Accelerate underneath, and the documentation describes no tensor or pipeline parallelism of its own.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://huggingface.co/docs/trl/index",
-                "shows": "The stable docs index opens its trainer overview with \"Below is an overview of TRL trainers, organized by maturity and method type\" and lists GRPOTrainer, RLOOTrainer, RewardTrainer, SFTTrainer, DPOTrainer, KTOTrainer and DistillationTrainer as stable, with OnlineDPOTrainer, CPOTrainer, ORPOTrainer and GKDTrainer under Experimental. Searched the body for PPOTrainer, FP8 and BF16: none.",
-                "accessed": "2026-09-28",
+                "shows": "The trainer overview, \"organized by maturity and method type\", lists AsyncGRPOTrainer, GRPOTrainer, RLOOTrainer, RewardTrainer, SFTTrainer, DPOTrainer, KTOTrainer and DistillationTrainer ahead of an \"Experimental\" group that holds OnlineDPOTrainer, CPOTrainer, ORPOTrainer and GKDTrainer among others. PPOTrainer does not appear.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "af0e4b732308d05936499ef6fb3e41aaf58d0a7df171f70b84d66fd986fd1489"
+                "content_sha256": "bfd02c9d61a2eb41c85114ee9855b0ab8c589e0089565da851b383b14eaf5ca9"
               },
               {
                 "url": "https://raw.githubusercontent.com/huggingface/trl/main/README.md",
-                "shows": "The README states each trainer \"natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP\" and that TRL \"Leverages [🤗 Accelerate](https://github.com/huggingface/accelerate) to scale from single GPU to multi-node clusters\", with PEFT LoRA/QLoRA and SFTTrainer, GRPOTrainer, DPOTrainer, KTOTrainer and RewardTrainer examples. Searched the body for FP8 and BF16: none.",
-                "accessed": "2026-09-28",
+                "shows": "The README says each trainer \"natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP\", that TRL scales \"from single GPU to multi-node clusters\" through Accelerate, and that PEFT integration enables \"training on large models with modest hardware via quantization and LoRA/QLoRA\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "dcca5a59d5978ef5185fd08e7ca513a7218cbc76db9b8db4f20bd5a9d674a20d"
+                "content_sha256": "9a788536f5ed9a21646040cc999a00aa79674f716744d1c799d0b20ac65d2301"
               },
               {
                 "url": "https://huggingface.co/docs/trl/dpo_trainer",
-                "shows": "The DPO trainer page documents preference-loss variants and says \"TRL exposes this as <code>loss_type=\"ipo\"</code>\" for the IPO variant.",
-                "accessed": "2026-09-28",
+                "shows": "The DPO trainer page documents the IPO variant of the loss, noting \"TRL exposes this as\" its loss type ipo.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "a14c13f9f5a87cea9ffa73c2b7254b35e817fc242d12c6a546f42305d9291064"
+                "content_sha256": "026f0a7f33de94ff5f056531cb6c2f35c1d6c2723c330e9e9c0ad5b25cc60bd5"
               },
               {
                 "url": "https://huggingface.co/docs/trl/distributing_training",
-                "shows": "The distributed-training guide has a \"Multi-Node Training\" section with an \"Accelerate Configuration\" subsection and says to launch distributed training \"by running\" after \"accelerate config\", so scale-out goes through Accelerate.",
-                "accessed": "2026-09-28",
+                "shows": "The guide says \"The trainers in TRL are launched with\" torchrun, scales to multiple nodes with torchrun and SLURM, and says \"Under the hood\" Accelerate creates one model per GPU. For large models it points to DeepSpeed, which \"provides optimizations like model sharding, Zero Redundancy Optimizer, mixed precision training, and offloading to CPU or NVMe\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "a6343b6d713739d1e14b567ac97aaadd42a85ce3745a0cf12c304cbddbb64bc2"
+                "content_sha256": "54783d0fea5af1833b4db8c429e9b7bbce0dabad3f0410d2464b66036fac4bae"
               },
               {
                 "url": "https://huggingface.co/docs/trl/main/en/ppo_trainer",
-                "shows": "The main-branch PPO page describes \"Trainer for Proximal Policy Optimization (PPO)\" and documents the class at \"trl.experimental.ppo.PPOTrainer\", so PPO is available as an experimental trainer.",
-                "accessed": "2026-09-28",
+                "shows": "The main-branch PPO page documents PPOTrainer under the trl.experimental.ppo module, so PPO is an experimental trainer.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "d0bb2920b732d70897a3d457efd8fa8e92f188a0b2ce7e84906a7ecab014a69b"
+                "content_sha256": "6c5a8defbeadcbe1f60a5b6a11b8dfd708c5312956b09dcd9b91feabe07f48ae"
+              },
+              {
+                "url": "https://huggingface.co/docs/trl/speeding_up_training",
+                "shows": "\"Mixed precision training using bf16 or fp16 can speed up training\" and \"Mixed precision training is supported across all TRL trainers\". FP8 is not mentioned.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "26e8aa89e89960cbaf195db972af3274f2f1b2a4a733cd18dcde8d5ba9873adf"
               }
             ]
           },
@@ -102822,18 +102830,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-16",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Score 4 is unchanged, but the recorded value text asserts FP8 precision and an Accelerate-config scale-out path that today's sources do not show; a person should approve the corrected value text and recording the Megatron-LM comparison. Megatron-LM's own capability record was not re-read here. Proposed for maintainer review, not applied: Recorded value text claims PPO among methods, 'precision BF16/FP8 via Accelerate' and scale-out through Accelerate configuration. Evidence today: score 4 and the Megatron-LM tier gap still hold, but FP8 is not mentioned anywhere in the fetched TRL docs (bf16/fp16 only, set per trainer config), PPO is experimental-only, ORPO/CPO/online DPO/GKD are experimental, and the distributing-training guide now launches through torchrun with Accelerate under the hood (the 'Accelerate Configuration' section is gone). Proposed value: 'Methods: SFT, DPO (IPO via loss_type), KTO, GRPO, RLOO, reward modeling and distillation as stable trainers; PPO, ORPO, CPO, online DPO and GKD experimental; parallelism via torchrun with DDP, DeepSpeed ZeRO and FSDP (Accelerate under the hood); mixed precision bf16/fp16; no native tensor or pipeline parallelism, a tier behind Megatron-LM (the C5 anchor).' Score stays 4."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The documentation marks PPO, ORPO, CPO, online DPO, and the GKD distillation trainer experimental, so the method list is not uniformly stable API."
         },
@@ -103129,16 +103127,31 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Methods: full FT, LoRA, QLoRA, GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism: FSDP1/FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP); precision: BF16/4-8bit. Broadest single-tool method+parallelism matrix in this batch.",
+            "value": "Methods: full FT, LoRA, QLoRA, GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism: FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP) + Expert Parallelism; precision: BF16 and 4/8-bit loading.",
             "confidence": "high",
-            "note": "Axolotl runs full fine-tuning, LoRA, QLoRA and quantization-aware training, preference methods such as DPO, KTO and ORPO, GRPO reinforcement learning and reward modeling from one configuration file, with FSDP2, DeepSpeed, sequence and expert parallelism and multi-node training through Torchrun or Ray. It trails Megatron-LM on demonstrated scale, publishing no training run near the size of Megatron-LM's multi-thousand-GPU benchmarks.",
+            "note": "Axolotl runs full fine-tuning, LoRA, QLoRA and quantization-aware training, preference methods such as DPO, KTO and ORPO, GRPO reinforcement learning and reward modeling from a single YAML configuration, with FSDP2, DeepSpeed, sequence, N-D and expert parallelism and multi-node training through Torchrun or Ray. The README reports no training run at a large GPU count, so its demonstrated scale is not shown.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md",
-                "shows": "The README lists the training methods \"Full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4)\" and \"Preference Tuning (DPO, IPO, KTO, ORPO), RL (GRPO, GDPO), and Reward Modelling (RM) / Process Reward Modelling (PRM)\", plus \"Multi-GPU training (FSDP2, DeepSpeed)\" and \"Multi-node training (Torchrun, Ray)\", Sequence Parallelism, ND Parallelism and Expert Parallelism.",
-                "accessed": "2026-09-28",
+                "shows": "The README lists \"Full fine-tuning, LoRA, QLoRA, GPTQ, QAT\", \"Preference Tuning (DPO, IPO, KTO, ORPO)\", \"RL (GRPO, GDPO)\" and \"Reward Modelling (RM)\", with \"Multi-GPU training (FSDP2, DeepSpeed)\" and \"Multi-node training (Torchrun, Ray)\". News items cover \"Sequence Parallelism (SP) support\", ND parallelism that composes \"Context Parallelism (CP), Tensor Parallelism (TP), and Fully Sharded Data Parallelism (FSDP)\", and \"Expert Parallelism (EP)\". It reports no training run at a large GPU count.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "e568efa58c664035bc770403b1adad578fe43e33e06debbfc8b70f7bdd7fb9a3"
+                "content_sha256": "1825693d733e9129427d64ac17168f93bd17bcbdca38d82d7224316a1fd67807"
+              },
+              {
+                "url": "https://docs.axolotl.ai/docs/multi-gpu.html",
+                "shows": "The multi-GPU guide says \"Only FSDP2 is supported. FSDP1 has been removed\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "839371cb099c57b23ec5bc8d171011719dae67a933b09d57a7e8719863d233c6"
+              },
+              {
+                "url": "https://docs.axolotl.ai/docs/config-reference.html",
+                "shows": "The config reference documents \"Use CUDA bf16.\" and the load_in_4bit and load_in_8bit options.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "f86a51ffd09fae096080700f4b6754e92d0a668bcfb976a8edf3c58916146c10"
               }
             ]
           },
@@ -103149,18 +103162,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-16",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The capability feature matrix is re-derived today from the README and docs, but the score of 4 rests on a comparison with Megatron-LM that this record names only in prose (no relative_to/relation recorded), and Megatron-LM's own evidence was not read in this pass. Because anyscale-fine-tuning is recorded relative_to axolotl, the anchor's score is NOT confirmed today as a placement; a person should either record the Megatron-LM comparison or re-read it, and apply the value correction before the axis is re-dated. Proposed for maintainer review, not applied: Score 4 and basis feature_matrix stay as recorded. The recorded value text is wrong on one item and must be corrected: it lists 'FSDP1/FSDP2', but the current docs state 'FSDP1 has been removed, and setting fsdp_version: 1 raises an error' (FSDP2 only). Proposed value: 'Methods: full FT, LoRA, QLoRA, GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism: FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP) + Expert Parallelism; precision: BF16 and 4/8-bit loading.' The trailing 'Broadest single-tool method+parallelism matrix in this batch' is an unsourced superlative that none of today's sources settle; drop it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -103330,6 +103333,7 @@
             "value": "Methods: full FT, LoRA, QLoRA, plus preference/RL tuning; 100+ LLM/VLM architectures; CLI + web UI; multimodal (VLM) support. Broad model coverage and a no-code WebUI distinguish it; parallelism present but headline scale below Megatron-LM anchor.",
             "confidence": "medium",
             "note": "LlamaFactory fine-tunes more than 100 LLM and vision-language models with full-parameter tuning, LoRA and QLoRA, preference and reinforcement methods such as PPO and DPO, and a CLI or the zero-code LLaMA Board web UI. It trails Megatron-LM on scale: it reaches large models through FSDP with QLoRA and an optional Megatron-core backend, while Megatron-LM composes tensor, pipeline, context and expert parallelism and reports pretraining a 671B-parameter model on 256 GPUs.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/hiyouga/LlamaFactory/main/README.md",
@@ -103354,18 +103358,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-12",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Its comparison peer megatron-lm could not be re-confirmed in this pass, so this capability axis cannot be dated after it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The project renamed itself from LLaMA-Factory to LlamaFactory in 2026, and the old repository URL redirects to hiyouga/LlamaFactory."
         },
@@ -103479,16 +103473,24 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Methods: full FT, LoRA/QLoRA, RL (GRPO, FP8 RL), pretraining, embedding FT; custom Triton kernels delivering ~2x faster / up to 70% less VRAM, MoE training ~12x faster / 35% less VRAM; 500+ supported models; multiple quant formats. Single-node memory/speed optimization is its frontier edge; less focused on multi-node frontier-scale parallelism than Megatron-LM.",
+            "value": "Methods: LoRA, QLoRA, full fine-tuning, pretraining, RL (GRPO), DPO and FP8, with embedding-model training; reported 2x faster training with 70% less VRAM; MoE training about 12x faster with over 35% less VRAM using Triton kernels; export to GGUF, NVFP4 and FP8.",
             "confidence": "high",
-            "note": "Unsloth's custom Triton kernels make training faster and cut VRAM use, with the largest gains the project reports coming on mixture-of-experts models. Method coverage is broad, spanning full fine-tuning, LoRA, QLoRA, pretraining, GRPO reinforcement learning, DPO preference tuning and embedding fine-tuning.",
+            "note": "Unsloth reports 2x faster training with 70% less VRAM across LLMs, diffusion, text-to-speech and embedding models, and about 12x faster training with over 35% less VRAM for mixture-of-experts models through new Triton kernels. Method coverage is broad, spanning LoRA, QLoRA, full fine-tuning, pretraining, GRPO reinforcement learning, DPO and FP8.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/unslothai/unsloth/main/README.md",
-                "shows": "README states \"Train LLMs, diffusion, TTS, and embedding models 2× faster with 70% less VRAM\" and \"Supports [reinforcement learning](https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide), LoRA, QLoRA, full fine tuning, pretraining, RL, GRPO, DPO, and FP8.\" and \"Train **MoE LLMs 12x faster** with 35% less VRAM\", plus \"Multi GPU setups\" support.",
-                "accessed": "2026-09-28",
+                "shows": "The README says \"Train LLMs, diffusion, decision, TTS, and embedding models 2× faster with 70% less VRAM\" and supports \"LoRA, QLoRA, full fine tuning, pretraining, RL, GRPO, DPO, and FP8.\" It lists export formats as \"NVFP4, FP8 and more formats\" after GGUF.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "e763fe1699169d57ba2f1516399824e807a52d51f6872d52157de6b3318f01f6"
+                "content_sha256": "266f6599cfaeec6762372281b3749b78399e99b2f4a8a12d55430dc14a11472f"
+              },
+              {
+                "url": "https://unsloth.ai/docs/new/faster-moe",
+                "shows": "The MoE page announces \"~12x faster Mixture of Experts (MoE) LLM training\" with over 35% less VRAM, from \"our new MoE Triton kernels and new mathematical optimizations\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "4b93a26d81dbee442ae6227e9fa673f4b89441a7dd8feea2b62b6135220adb88"
               }
             ]
           },
@@ -103500,16 +103502,11 @@
           "freshness": {
             "date": "2026-11-06",
             "basis": "partial",
+            "latest_axis_confirmation": "2026-11-16",
             "unconfirmed_axes": [
-              "capability",
               "openness"
             ],
             "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The 2x faster / 70% less VRAM figure, the method list (LoRA, QLoRA, full fine tuning, pretraining, GRPO, DPO, FP8), the MoE 12x / 35% claim and the Triton kernels are re-established today, but the recorded '500+ supported models' count no longer appears in the README (grep for 500 found nothing) and the multi-node contrast with Megatron-LM is not established by any fetched source. Settling it needs a models-list page that gives a count and a Megatron-LM source, or a decision to trim those phrases from the recorded value."
-              },
               {
                 "axis": "openness",
                 "since": "2026-09-28",
@@ -103920,6 +103917,7 @@
             "note": "verl supports a wide range of reinforcement-learning algorithms, including PPO, GRPO, RLOO, ReMax, REINFORCE++, GSPO, PRIME, DAPO and DrGRPO alongside supervised fine-tuning. It is built on the HybridFlow hybrid controller with FSDP and Megatron training backends and vLLM or SGLang rollout, scales to 671B-parameter models, and was used to train ByteDance's Seed-Thinking-v1.5, which puts it level with Megatron-LM.",
             "relative_to": "megatron-lm",
             "relation": "at",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
@@ -103937,18 +103935,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-16",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Its comparison peer megatron-lm could not be re-confirmed in this pass, so this capability axis cannot be dated after it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The repository moved from volcengine/verl to the verl-project organization; the original path is still used for evidence."
         },
@@ -104089,6 +104077,7 @@
             "value": "Methods: full FT, LoRA/QLoRA/DoRA, SFT, GRPO family (GRPO/DAPO/GSPO/SAPO/CISPO/CHORD/RLOO/Reinforce++), preference (DPO/KTO/RM/CPO/SimPO/ORPO), pretraining; 600+ models; integrated quantization/eval/deploy.",
             "confidence": "high",
             "note": "SWIFT covers full fine-tuning, LoRA, QLoRA and DoRA, the GRPO family of reinforcement learning methods, preference tuning and pretraining across more than 600 text models, with quantization, evaluation and deployment built into one pipeline. It borrows its large-scale parallelism from Megatron-LM through the Megatron-SWIFT backend rather than developing its own, which places it a step below Megatron-LM.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/modelscope/ms-swift/main/README.md",
@@ -104113,18 +104102,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-16",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Its comparison peer megatron-lm could not be re-confirmed in this pass, so this capability axis cannot be dated after it."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The maintainer is named as the ModelScope community on GitHub and the DAMO ModelScope team on PyPI."
         },
@@ -104415,16 +104394,17 @@
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": "Methods: GRPO, GSPO, DAPO, GDPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation, reward modeling; backends DTensor (TP/SP/PP/CP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP); SGLang backend, speculative decoding, long-context training.",
+            "value": "Methods: GRPO, GSPO, DAPO, GDPO, PPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation (MOPD), X-Token off-policy distillation, reward modeling; backends Automodel (PyTorch-native TP/SP/CP/EP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP); SGLang rollout support, a Megatron-native inference backend, speculative decoding, Yarn long-context training.",
             "confidence": "high",
-            "note": "NeMo-RL covers GRPO, GSPO, DAPO, PPO, DPO, SFT, on-policy distillation and reward modeling, and trains through PyTorch FSDP2 or Megatron Core with tensor, pipeline, context, sequence and expert parallelism. Its Megatron Core backend gives it the same large-scale parallelism as Megatron-LM, along with SGLang rollout and speculative decoding for faster generation.",
+            "note": "NeMo-RL covers GRPO, GSPO, DAPO, GDPO, PPO, DPO, SFT with LoRA, on-policy and off-policy distillation and reward modeling. It trains through Automodel, with PyTorch-native tensor, sequence, context and expert parallelism and FSDP2, or through Megatron Core with tensor, pipeline, context, sequence and expert parallelism, and it offers SGLang rollout and speculative decoding for faster generation.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/RL/main/README.md",
-                "shows": "The README Features list includes \"GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and On-policy distillation.\", \"PyTorch FSDP2, TP, CP, and SP for efficient training\", \"Performant parallelisms with Megatron Core (TP/PP/CP/SP/EP/FSDP)\", \"SGLang rollout support for optimized inference.\", \"Speculative Decoding support for rollout acceleration and training\", a \"GDPO Support\" news entry and an RM (reward modeling) section in its Table of Contents. The README also newly names PPO, MOPD and X-Token off-policy distillation, which the recorded value omits.",
-                "accessed": "2026-09-28",
+                "shows": "The README Features list includes \"GRPO/GSPO/DAPO, SFT(with LoRA), DPO, and On-policy distillation.\", \"GDPO, LoRA support for RL(GRPO) and DPO\", \"X-Token Off-Policy Distillation\", \"Performant parallelisms with Megatron Core (TP/PP/CP/SP/EP/FSDP)\", \"SGLang rollout support for optimized inference.\" and \"Speculative Decoding support for rollout acceleration and training\". The backends section names Automodel with \"PyTorch-native TP, SP, CP, EP, and FSDP2\" and a \"Megatron-native inference backend\"; the v0.7.0 news line adds \"PPO, MOPD\", the v0.6.0 line \"Yarn long-context training\", and an RM section opens \"We provide a sample RM experiment\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "10d7760e13480e5701113529aab38b5d7c3e03faccd0243872016acf8f7660d0"
+                "content_sha256": "e4e35af00013118946a5cb792258253a58e38df1f6b28c57a6662417ee07308e"
               }
             ]
           },
@@ -104435,18 +104415,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-16",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Value wording needs an editor's update to name Automodel instead of DTensor; no score change. The fetch confirms every listed method except that 'DTensor' no longer appears anywhere in the README. Proposed for maintainer review, not applied: Score 5 holds. The recorded value text is out of date: it names a DTensor backend and omits PPO and MOPD. The README now calls the PyTorch backend Automodel (TP/SP/CP/EP/FSDP2, no PP) and the v0.7.0 line adds PPO and MOPD. Proposed value: Methods: GRPO, GSPO, DAPO, GDPO, PPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation (MOPD), X-Token off-policy distillation, reward modeling; backends Automodel (PyTorch-native TP/SP/CP/EP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP); SGLang and Megatron inference backends, speculative decoding, long-context training."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "NeMo-RL ships from source or NVIDIA's NGC container; the PyPI listing is not used for installation."
         },
@@ -106355,6 +106325,7 @@
             "note": "Anyscale runs full fine-tuning, LoRA and QLoRA, preference methods such as DPO, KTO and ORPO, and GRPO reinforcement learning by running open frameworks, LLaMA-Factory, SkyRL and Ray Train, on Ray clusters. That matches most of Axolotl's method coverage but not its quantization-aware training or sequence parallelism, which places it one step below Axolotl.",
             "relative_to": "axolotl",
             "relation": "one_below",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://docs.anyscale.com/llm/fine-tuning",
@@ -106379,17 +106350,7 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-16",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Its comparison peer axolotl could not be re-confirmed in this pass, so this capability axis cannot be dated after it."
-              }
-            ]
+            "basis": "verified"
           },
           "version_note": "Anyscale's own fine-tuning library, LLMForge, no longer appears in its documentation, which now describes the platform through the open frameworks it runs."
         },
@@ -106897,23 +106858,24 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Methods: LoRA training + sampling for RL/eval; broad model breadth (1B-550B incl. large MoE like Qwen3-235B-A22B, DeepSeek, Nemotron); abstracts distributed multi-GPU training behind 4-function API. Largest demonstrated: 550B-class MoE fine-tuning.",
+            "value": "Methods: LoRA adapter training plus sampling, for supervised and reinforcement learning; open-weight models from 4B dense to multi-trillion-parameter MoE (Inkling 975B, Kimi-K3.1-Pro 2.8T total parameters, Nemotron-3-Ultra 550B); the API exposes gradient, weight-update and sampling calls while Tinker runs the work on managed GPU clusters.",
             "confidence": "medium",
-            "note": "Tinker hides distributed multi-GPU training behind four functions and supports LoRA training and RL sampling on open-weight models, up to very large mixture-of-experts checkpoints. The service is LoRA-only, with no full fine-tuning or full RL stack, which keeps it behind frameworks such as Megatron-LM and verl that train entire models at scale.",
+            "note": "Tinker runs LoRA training and sampling on open-weight models from 4B dense up to Kimi-K3.1-Pro at 2.8 trillion total parameters, with the user's own code controlling the training loop and Tinker scheduling the work across managed GPU clusters. Training uses LoRA adapters: the models page names create_lora_training_client as the way to start a run, and the documentation describes no full-parameter alternative.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://thinkingmachines.ai/tinker/",
-                "shows": "FAQ states \"Tinker is a flexible API for efficiently fine-tuning open source models with LoRA.\" and argues that \"LoRA matches the learning performance of full fine-tuning\". The supported-models list runs from \"Qwen3.5-4B\" up to \"Nemotron-3-Ultra-550B-A55B-BF16\". Searched the body for a full fine-tuning or full RL stack offering: the only full fine-tuning mention is that LoRA comparison.",
-                "accessed": "2026-09-28",
+                "shows": "The FAQ says \"LoRA matches the learning performance of full fine-tuning\" and that the API provides \"simple functions to compute gradients, update the weights, and sample outputs from the trained model\". The feature list reads \"Managed GPU clusters\" and \"Open weights, dense and MoE, from 4B to 1T parameters\"; the models page lists larger entries. Its only mention of full fine-tuning is that LoRA comparison.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "074ebd24ce4f56602f179ce4c158a5faf082726a096c176b1d81afb8e8116f30"
+                "content_sha256": "17c02ef35a2c93340779f15288fa78aa39353d54a12d131ae88f74b268d2dc97"
               },
               {
                 "url": "https://tinker-docs.thinkingmachines.ai/tinker/models/",
-                "shows": "Model table reads \"29 models shown\" and lists Inkling at 975B total parameters and \"Nemotron-3-Ultra-550B-A55B\" at 550B, with a \":peft:\" suffix on the 256K-context Tinker IDs, plus a Retired Models section. Searched the body for full fine-tuning: none.",
-                "accessed": "2026-09-28",
+                "shows": "The training model table reads \"39 models shown\" and lists Qwen3.5-4B, Inkling at 975B total parameters, Nemotron-3-Ultra-550B-A55B at 550B and Kimi-K3.1-Pro at 2.8T total parameters (104B active). It describes the Tinker ID as \"The exact string to pass to\" create_lora_training_client. A search of the page for full-parameter training finds nothing.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "e292f61dda4944506e06d50cda05310fbd2b4f4bffaea84ac8577a9ed930b617"
+                "content_sha256": "5e0ded3103f22b76438b978dd8a8eec9f3363ff653cec08d2bf1b5522863da13"
               }
             ]
           },
@@ -106924,17 +106886,7 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-16",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The value text no longer matches the sources, so the axis cannot be confirmed as recorded; a maintainer should approve the value rewrite (and the product page's own '1T' versus the docs' 2.8T). Score itself is unchanged. Proposed for maintainer review, not applied: Score 4 and basis feature_matrix stay (LoRA-only service, no full fine-tuning offering found, very large MoE support). The recorded value text is out of date: it says models run 1B-550B with 550B-class MoE the largest demonstrated. The docs table now lists 4B dense models up to Kimi-K3.1-Pro at 2.8T total parameters (104B active) and Inkling at 975B; the product page says 4B to 1T. Proposed value: 'Methods: LoRA training + sampling for RL/eval; open-weight models from 4B dense to multi-trillion-parameter MoE (Inkling 975B, Kimi-K3.1-Pro 2.8T, Nemotron-3-Ultra 550B); abstracts distributed multi-GPU training behind a 4-function API.'"
-              }
-            ]
+            "basis": "verified"
           },
           "version_note": "The supported-model roster changes often, so the linked product page is the current list rather than this entry."
         },
@@ -107096,30 +107048,31 @@
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": "Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4; weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a ~175B GPT-3 from 96 to 4,608 H100 GPUs.",
+            "value": "Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4; NVIDIA reports weak scaling of GPT models from 2B to 462B parameters up to 6,144 H100 GPUs, near-linear strong scaling of a 177B GPT-3 from 96 to 4,608 H100 GPUs, and 1,648 TFLOPs/s per GPU for DeepSeek-V3 671B on 256 GB300 GPUs.",
             "confidence": "high",
-            "note": "Megatron-LM provides reference-grade infrastructure for large-scale transformer training, composing data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4. NVIDIA's own benchmarks reach 462B parameters across thousands of H100 GPUs, though those results were measured without training to convergence.",
+            "note": "NVIDIA describes Megatron-LM as a reference training framework for Megatron Core, which composes data, tensor, pipeline, context, expert and fully sharded data parallelism with mixed precision down to FP8 and FP4. NVIDIA's published benchmarks cover GPT models up to 462 billion parameters on thousands of H100 GPUs and DeepSeek-V3 on 256 GB300 GPUs, measured under stated conditions such as force-balanced expert routing.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md",
-                "shows": "The README describes Megatron Core as providing \"transformer building blocks, advanced parallelism strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)\". Under Performance Benchmarking: \"The codebase efficiently trains models from 2B to 462B parameters across thousands of GPUs\", and \"Successfully benchmarked 462B parameter model training.\" on 6,144 H100 GPUs; the strong-scaling test takes \"from 96 H100 GPUs to 4,608 GPUs\" on a GPT-3 model of slightly more than 175 billion parameters.",
-                "accessed": "2026-09-28",
+                "shows": "The README says Megatron Core provides \"transformer building blocks, advanced parallelism strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)\", lists \"Megatron FSDP, DDP\" under distributed training, and reports \"Megatron Core achieves 1,648 TFLOPs/s per GPU for DeepSeek-V3 671B on 256 GPUs\" in an item titled \"DeepSeek-V3 pretraining on GB300 NVL72\". Its benchmark note says \"MoE benchmarks use force-balanced expert routing and do not drop tokens\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "9da0af3c6ccb7fb9dae98930e369293d5872dce1ca9fc22e506d302a83d5f91f"
+                "content_sha256": "241f860a314ba3790d0161a52fe423be2779d6854829488b7fb8dbf15954ee14"
               },
               {
                 "url": "https://developer.nvidia.com/megatron-core",
-                "shows": "NVIDIA product page: \"Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs\" on GPT models from 2 billion to 462 billion parameters, and \"near linear scaling from 96 to 4608 H100 GPUs\" for a 177 billion parameter GPT-3 model. Feature text lists \"automatic restart, fault/hang detection\" resiliency and \"FP8 mixed precision and advanced parallelism\".",
-                "accessed": "2026-09-28",
+                "shows": "NVIDIA product page: \"Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs\" on GPT models from 2 billion to 462 billion parameters, and \"Megatron-Core demonstrates near linear scaling from 96 to 4608 H100 GPUs\" for a 177 billion parameter GPT-3 model. It describes Megatron-LM as a \"training reference framework for exploring Megatron Core\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "a01d49ee9e7309373a691ecc455e4a92b63f1feb90c63806a882d794e3b066b7"
+                "content_sha256": "a720f03cad61b9b22fb2442404dc66c82be1cf5aa9ec7b5bc45cb2232b1c8326"
               },
               {
                 "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html",
-                "shows": "The Parallelism Strategies Guide opens \"Megatron Core supports multiple parallelism strategies that can be combined to efficiently train models from billions to tr\" and its overview table lists Fully-Sharded Data Parallelism (Megatron-FSDP) alongside data, tensor, pipeline, context and expert parallelism; the flag \"--sequence-parallel\" is documented as required when combining TP with EP.",
-                "accessed": "2026-09-28",
+                "shows": "The Parallelism Strategies Guide opens \"Megatron Core supports multiple parallelism strategies that can be combined to efficiently train models from billions to trillions of parameters across thousands of GPUs\", and its overview table lists data, tensor, pipeline, context, expert and \"Fully-Sharded Data Parallelism (Megatron-FSDP)\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "693c481667ce97084369d0ae72c577d362284ad9edb4ad59f9d311138db9aab0"
+                "content_sha256": "d41b08f31bd5793605199191f569b6639a1fa68e87a18ee588317dfbf0a916bb"
               }
             ]
           },
@@ -107130,18 +107083,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-16",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "Capability value cannot be confirmed as recorded because the 47-48% MFU figure and the README 462B benchmark sentence are gone. A maintainer must accept the revised value text before the axis can be re-dated; the score itself is supported. Proposed for maintainer review, not applied: Score stays 5 (feature_matrix; anchor for llama-factory, verl, swift, openpipe, xtuner, colossal-ai, torchtitan). The recorded value text should change, not the score: today's sources do not support 'a 462B-parameter GPT on 6,144 H100 GPUs at 47-48% MFU' (the product page gives 462B and 6144 H100 only in prose, its table's top row is 509B at 43-50% MFU, and the README dropped the 462B sentence). Supported replacement: 'Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4; weak scaling of GPT models from 2B to 462B parameters up to 6,144 H100 GPUs and near-linear strong scaling of a 177B GPT-3 from 96 to 4,608 H100 GPUs (NVIDIA product page); DeepSeek-V3 671B at 1,648 TFLOPs/s per GPU on 256 GB300 GPUs (README).'"
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "This entry covers both components shipped from the NVIDIA/Megatron-LM repository, and the scores are read against that repository rather than the Megatron Core package alone."
         },
