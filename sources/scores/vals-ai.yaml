@@ -27,77 +27,50 @@ openness:
   raw: license:proprietary(the Vals Index and its held-out test sets)+AGPL-3.0(OSI, vals-ai/Valkyrie)+MIT(OSI,
     vals-ai/model-library);source:partial(harness repos public, held-out test sets not published);benchmarks:proprietary/private-held-out(Vals
     Index on non-public datasets);eval-harness:published(Valkyrie AGPL-3.0 + model-library MIT)
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   sources:
-  - url: https://www.vals.ai
-    shows: proprietary SaaS eval platform, 'proprietary benchmarks' require contact, no GitHub/self-host
-      option
-    accessed: '2026-06-04'
   - url: https://www.vals.ai/about
-    shows: runs evaluations in-house on private/held-out datasets as neutral third party
-    accessed: '2026-06-04'
-  - url: https://www.vals.ai/about
-    shows: Vals describes itself as 'the independent evaluator of artificial intelligence' running evaluations
-      in-house on 'privately held test sets'. It ALSO states it has open-sourced Valkyrie, a distributed
-      system for running agentic benchmarks, and a model library offering a free standard API for calling
-      models, both linked to GitHub.
-    accessed: '2026-08-13'
+    shows: Vals says "Scores are based on our privately held test sets to preserve the integrity and signal
+      of our results." and "We have built, and even open-sourced, the infrastructure we rely on to run these
+      evaluations reproducibly and at scale across labs." The harness ships; the test sets do not.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: deb010de89092a2071bc5e3e8168d9b85e7bfa3887d7105476aba611c90234fc
-  - url: https://api.github.com/repos/vals-ai/valkyrie
-    shows: Repo metadata for vals-ai/Valkyrie - license spdx_id AGPL-3.0, public, not archived, 31 stars,
-      pushed 2026-08-14, described as 'Scalable, cloud-native infrastructure for evaluating AI agents across
-      any benchmark'. A live published harness rather than an abandoned mirror.
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 6d480b6159ce4afd19ac71b172d88324af29308273bca24f45f25d047eb8f540
-    establishes:
-    - license
-    - source
-  - url: https://api.github.com/repos/vals-ai/model-library
-    shows: Repo metadata for vals-ai/model-library - license spdx_id MIT, public, not archived, 21 stars,
-      pushed 2026-07-30, 'Simple provider agnostic LLM gateway'.
-    accessed: '2026-08-14'
-    http_status: 200
-    content_sha256: 10bd99910f93875f3779f9bbc24e8e8778cc6278fb66499ce753ef3cbfc8894e
-    establishes:
-    - license
-    - source
-  - url: https://www.vals.ai/about
-    shows: 'The About page says the evaluations run on held-out sets and that the run infrastructure is
-      public: "Scores are based on our privately held test sets to preserve the integrity and signal of
-      our results." and "We have built, and even open-sourced, the infrastructure we rely on to run these
-      evaluations reproducibly and at scale across labs." The harness ships; the test sets do not.'
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: 642675dd3ff13e5bcdb5a1dd1863036223117bd35fc104b9654cb0cf3f2e0df7
+    content_sha256: ec7473242203b67c021fb927f55efc5cf751f168098c7031fd10060bf9b51d89
     establishes:
     - source
     - license
   - url: https://www.vals.ai/benchmarks
-    shows: 'The benchmarks page tags the Vals Index "Proprietary" and describes its own sets as private:
-      "Private question-answer benchmark over Canadian court-cases." and "A private benchmark evaluating
-      understanding of long-context credit agreements".'
-    accessed: '2026-09-29'
+    shows: 'The benchmarks page tags suites "Proprietary" and describes its own sets as private: "Private
+      question-answer benchmark over Canadian court-cases." and "A private benchmark evaluating understanding
+      of long-context credit agreements".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e
+    content_sha256: 775174eac0355070a6eb5a74da98951c902bf662dd784fcf39cd5b1d5ed73813
     establishes:
     - license
     - source
   - url: https://raw.githubusercontent.com/vals-ai/Valkyrie/main/LICENSE
     shows: Raw LICENSE of vals-ai/Valkyrie is the full text of "GNU AFFERO GENERAL PUBLIC LICENSE" "Version
       3, 19 November 2007", so the harness is AGPL-3.0.
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b
     establishes:
     - license
     - source
+  - url: https://raw.githubusercontent.com/vals-ai/Valkyrie/main/README.md
+    shows: The Valkyrie README describes it as "Benchmark orchestration platform for testing AI agents against
+      standardized benchmarks."
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 9ed45ca8980eea6d6066f4aecb748ecef1387f4bda14a99c1171aead4088aa3d
+    establishes:
+    - source
   - url: https://raw.githubusercontent.com/vals-ai/Valkyrie/main/docs/HOSTED_MODE.md
-    shows: 'Valkyrie docs describe a self-hosted mode that needs no Vals service: "Run your own infrastructure
-      end-to-end, including your own tracker service deployment." Hosted mode is an option that uses "a
-      Descope API key" from Vals; self-hosting is the alternative.'
-    accessed: '2026-09-29'
+    shows: 'Valkyrie docs describe a self-hosted mode: "Run your own infrastructure end-to-end, including
+      your own tracker service deployment." Hosted mode is an option that uses a "Descope API key" from
+      Vals.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 517810d897e108b3a97364f36a073b4eb08b220a3e639dafcbbbd3b5acd8225c
     establishes:
@@ -105,11 +78,19 @@ openness:
   - url: https://raw.githubusercontent.com/vals-ai/model-library/main/LICENSE
     shows: Raw LICENSE of vals-ai/model-library is the "MIT License" with "Copyright (c) 2025 Vals AI, Inc.",
       so the model library is MIT.
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: c7a99fe28ed4ff01da6aa71fc6853ed11eae6092dba8bfd336ea142cfddab1a0
     establishes:
     - license
+    - source
+  - url: https://raw.githubusercontent.com/vals-ai/model-library/main/README.md
+    shows: The model-library README calls it an "Open-source model library for interacting with a variety
+      of LLM providers."
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 22306db30057d4585692640843b22bdabdb88d9e234ca143f1f0bf4d4ec3e4af
+    establishes:
     - source
 adoption:
   level: 3
@@ -147,43 +128,30 @@ capability:
     test sets; agentic evaluation (Finance Agent v2); composite indices (Vals Index, RSI Index, Multimodal
     Index).'
   confidence: medium
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: Vals AI covers finance, legal, healthcare, math, science, education, coding, security and games
     suites, plus the Vals Index, RSI Index and Multimodal Index. Many of them run on privately held test
     sets that outsiders cannot rerun, though the Valkyrie and model-library repositories are published.
   sources:
-  - url: https://www.vals.ai
-    shows: Vals Index + Multimodal Index + domain benchmarks (finance/law/healthcare/coding/math/education)
-      incl TaxEval, CorpFin, MedCode, LegalBench
-    accessed: '2026-06-04'
-  - url: https://www.vals.ai
-    shows: Vals Index and Vals Multimodal Index over finance (CorpFin v2, Finance Agent v2, TaxEval v2),
-      legal (LegalBench, Case Law v2, Legal Research Bench), healthcare (MedCode, MedScribe, MedQA), coding
-      (SWE-bench Verified, Terminal-Bench, Vibe Code Bench, IOI, LiveCodeBench), math (ProofBench, AIME,
-      GPQA Diamond) and education (SAGE, MMLU Pro, MMMU). 'We run all of our own evaluations and create
-      many of our benchmarks in-house'.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 303bde67a1b32448cbe8de1ef60414a71472450740363231f8cdda41ef4423db
   - url: https://www.vals.ai/benchmarks
     shows: The benchmarks page covers finance ("Evaluating agents on core financial analyst tasks", "A private
       benchmark evaluating understanding of long-context credit agreements"), healthcare ("Can models support
       the medical billing process?"), legal ("Evaluating agents on legal research tasks across diverse areas
-      of US law"), math, science, education, coding, security ("Can AI agents find security bugs and patch
-      them?") and games, alongside the composite Vals Index, RSI Index and Multimodal Index, and lists the
-      suites "CorpFin v2", "MedCode", "LegalBench" and "Finance Agent v2".
-    accessed: '2026-09-29'
+      of US law"), security ("Can AI agents find security bugs and patch them?"), alongside the Vals Index,
+      RSI Index and Multimodal Index, and lists "CorpFin v2", "MedCode", "LegalBench" and "Finance Agent
+      v2".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9f0c8a1af3ff07fe5423377eed9ef3e2bd7993a33667fe96fef8370fa1bc5c6e
+    content_sha256: 775174eac0355070a6eb5a74da98951c902bf662dd784fcf39cd5b1d5ed73813
   - url: https://www.vals.ai
     shows: The home page states "run all of our own evaluations and create many of our benchmarks" and shows
-      new model releases from several labs each "evaluated across our benchmark suite".
-    accessed: '2026-09-29'
+      new model releases each "evaluated across our benchmark suite".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 69231c016623c2d4263edd27fc7cb34c0fdb8c4c1aba507398ef8cf6632b8e3c
+    content_sha256: ee5506110db4428f491715c1070f5473c6b4e53184af05d888b35d4855951270
   - url: https://www.vals.ai/about
     shows: The About page says "Scores are based on our privately held test sets to preserve the integrity
       and signal of our results." and "This prevents training to the test set, unlike in open-source benchmarks."
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 642675dd3ff13e5bcdb5a1dd1863036223117bd35fc104b9654cb0cf3f2e0df7
+    content_sha256: ec7473242203b67c021fb927f55efc5cf751f168098c7031fd10060bf9b51d89

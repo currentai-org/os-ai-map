@@ -22,7 +22,7 @@ openness:
         detail: automatic LLM eval, highest correlation to LMArena
         raw: Arena-Hard-Auto Apache-2.0 (automatic LLM eval, highest correlation to LMArena)
   confidence: medium
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: Chatbot Arena runs as the hosted arena.ai platform, where the live ranking pipeline and vote data
     are closed. FastChat, its original Apache-2.0 implementation, has had no release since February 2024,
     and Arena-Hard-Auto is a separate Apache-2.0 automatic-eval companion, so the open code is real but
@@ -33,60 +33,58 @@ openness:
     2024, 39.5k stars); aux-OSS:Arena-Hard-Auto Apache-2.0 (automatic LLM eval, highest correlation to LMArena);
     ranking methodology + crowd-vote dataset not fully open
   sources:
-  - url: https://github.com/lm-sys/FastChat
-    shows: Apache-2.0; 'FastChat powers Chatbot Arena (lmarena.ai), serving over 10M chat requests for 70+
-      LLMs'; latest release v0.2.36 Feb 2024
-    accessed: '2026-06-04'
-  - url: https://github.com/lmarena/arena-hard-auto
-    shows: Apache-2.0 automatic LLM eval tool, highest correlation to LMArena
-    accessed: '2026-06-04'
-  - url: https://arena.ai/
-    shows: hosted 'Official AI Ranking & LLM Leaderboard' with Battle Mode; conversations disclosed to providers
-      (proprietary platform)
-    accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/README.md
     shows: README says "FastChat powers Chatbot Arena" and "Currently, Chatbot Arena is powered by FastChat.
-      Here is how you can launch an instance of Chatbot Arena locally." with the launch command for the
-      side-by-side battle UI.
-    accessed: '2026-09-29'
+      Here is how you can launch an instance of Chatbot Arena locally." Its news list records "a dataset
+      containing 33k conversations with human preferences" as the released vote data.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: fba2bace33da09a922bfb8f2f49463f958c7cecfdb77a98a07c04e758a09b694
     establishes:
     - source
   - url: https://arena.ai/
-    shows: 'Hosted ranking and battle platform titled "Arena AI: The Official AI Ranking" that invites visitors
-      to compare and vote on models. Searched the body for open source, repository, self-host, license and
-      FastChat: none, so the page offers no repository or license for the ranking pipeline.'
-    accessed: '2026-09-29'
+    shows: 'Hosted platform titled "Arena AI: The Official AI Ranking & LLM Leaderboard" that invites visitors
+      to compare and vote on models. Searched the body for open source, repository, self-host, license,
+      FastChat and github: none, so the page offers no repository or license for the ranking pipeline.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 38e14b657bd8ff71030544e33c84ff12401feb4e722a84cd275d8117af99553f
+    content_sha256: 6e9bf476ff3e3186f698c0f7134daac44a55dde0f29ff11e25c16c4c51f44f39
     establishes:
     - source
   - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/pyproject.toml
     shows: 'pyproject.toml declares version = "0.2.36" and the classifier "License :: OSI Approved :: Apache
       Software License".'
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 413be30fdc6b5c94746acc86197c447c5ce75d240013e08d9aa57c1766196cbe
-    establishes:
-    - source
   - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/LICENSE
     shows: The LICENSE file is the Apache License, "Version 2.0, January 2004", so the FastChat code is
       Apache-2.0.
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://pypi.org/pypi/fschat/json
+    shows: PyPI metadata for fschat lists "version":"0.2.36" as current and an upload of "upload_time":"2024-02-11T15:42:24",
+      so the last package release is February 2024.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 698855a3bf883f366c87b79008738d57723e3889d8df05601f358115e2bd8b35
   - url: https://raw.githubusercontent.com/lmarena/arena-hard-auto/main/LICENSE
     shows: The LICENSE file is the Apache License, "Version 2.0, January 2004", so Arena-Hard-Auto is Apache-2.0.
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/lmarena/arena-hard-auto/main/README.md
+    shows: '"Arena-Hard-Auto is an automatic evaluation tool for instruction-tuned LLMs" with "the highest
+      correlation and separability to LMArena (Chatbot Arena) among popular open-ended LLM benchmarks".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f0563c344399179df0fb7abbb2503762b0446584ace78039f1f792058e0ab0dc
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  last_verified: '2026-09-29'
   note: Chatbot Arena's reach is taken from the chat-request volume its FastChat README reports for the
     hosted platform. That figure predates the current arena.ai platform and has not been updated, so it
     is a dated, conservative measure rather than current usage.
@@ -116,8 +114,7 @@ capability:
     70+ LLMs, multimodal/vision/coding arenas; agentic-eval: limited (preference-based, not task-execution);
     reproducibility: Arena-Hard-Auto provides an automatic-judge approximation'
   confidence: medium
-  last_verified: '2026-09-29'
-  note: The hosted arena runs blind pairwise human-preference battles across many models, and Arena-Hard-Auto
+  note: The hosted arena runs pairwise human-preference battles across many models, and Arena-Hard-Auto
     adds an automatic-judge companion built from hard real-world queries and creative-writing prompts. The
     evaluation code is largely closed and hosted, and it covers agentic and task-execution work less than
     harnesses built around running tasks.

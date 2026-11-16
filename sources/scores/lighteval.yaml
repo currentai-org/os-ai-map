@@ -16,39 +16,39 @@ openness:
     - multi-backend (Accelerate/vLLM/SGLang/TGI/LiteLLM/inspect-ai)
     - 1000+ tasks
   confidence: high
-  last_verified: '2026-09-29'
-  note: Fully OSI-licensed (MIT), full source public, no managed/commercial tier gating the eval engine.
+  last_verified: '2026-11-16'
+  note: Lighteval is released under the MIT license with its full source public. Nothing is sold beside
+    it, and no commercial tier gates the evaluation engine.
   raw: license:MIT(OSI);source:public(github.com/huggingface/lighteval);no feature-gated core; multi-backend
     (Accelerate/vLLM/SGLang/TGI/LiteLLM/inspect-ai); 1000+ tasks;core-gated:ungated
   sources:
-  - url: https://github.com/huggingface/lighteval
-    shows: MIT license, public source, v0.13.0 (Nov 2025), 1000+ tasks, multi-backend support
-    accessed: '2026-06-04'
-  - url: https://api.github.com/repos/huggingface/lighteval/license
-    shows: GitHub's license endpoint reports spdx_id MIT for huggingface/lighteval and returns the MIT text
-      as the LICENSE body.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/huggingface/lighteval/main/LICENSE
+    shows: The LICENSE file in the main branch opens "MIT License" with "Copyright (c) 2024 Hugging Face"
+      and grants "Permission is hereby granted, free of charge", the standard MIT text; the file is publicly
+      readable from the repository.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 1ac1ffb3c88d2fb0a5dc70c064a785075d599a364a6788572506782982f7ec4a
+    content_sha256: b4f939c0e5ce513b22a42b233294b56c226a27936e7708f51ed137c602e8eb0f
     establishes:
     - license
+    - source
   - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
-    shows: README carries the MIT badge and documents running the whole toolkit locally through `lighteval
-      eval`, `lighteval vllm`, `lighteval sglang` and `lighteval endpoint`, with the 1000+ tasks shipping
-      in the package. The optional endpoints are third-party inference providers, not a paid edition of
-      lighteval. No pricing, enterprise tier or license key appears in it.
-    accessed: '2026-08-13'
+    shows: The README carries the MIT badge and bills the project as "from Hugging Face's Leaderboard and
+      Evals Team", documenting the whole toolkit through entry points such as `lighteval eval` and `lighteval
+      vllm`. The optional endpoint backends are third-party inference providers. No pricing, enterprise
+      tier or license key appears in it.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
     establishes:
     - source
     - core-gated
   - url: https://pypi.org/pypi/lighteval/json
-    shows: 'The PyPI-packaged README installs the whole toolkit with pip install lighteval and runs it on
-      local hardware: "Evaluate models on CPU or one or more GPUs using" Accelerate, plus vLLM, SGLang and
-      Nanotron entry points; searched the body for enterprise, license key, pricing, subscription and paid:
-      none, and the endpoint backends are third-party inference providers.'
-    accessed: '2026-09-29'
+    shows: 'PyPI metadata lists the package as MIT and the classifier "License :: OSI Approved :: MIT License";
+      its README says "Lighteval supports **1000+ evaluation tasks** across multiple domains and" languages
+      and installs with pip. Searched the body for enterprise, license key, pricing, subscription and paid:
+      none.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 26971735fd748867156cfab6e1db1b14a1d20dffca48e112ee36b2326c4299a1
     establishes:
@@ -98,32 +98,36 @@ capability:
   confidence: high
   relative_to: lm-evaluation-harness
   relation: one_below
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: lighteval ships more than a thousand tasks, runs on many model backends including vLLM, SGLang and
     hosted endpoints, supports custom tasks and metrics, and reaches agentic evaluation through its inspect-ai
     backend. It sits a step below lm-evaluation-harness, which has been used to report results in hundreds
     of papers and is the more established reference.
   sources:
-  - url: https://github.com/huggingface/lighteval
-    shows: 1000+ tasks, 8+ model backends, reproduces Open LLM Leaderboard evals
-    accessed: '2026-06-04'
   - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
-    shows: '''Lighteval supports 1000+ evaluation tasks across multiple domains''; backends invoked as `lighteval
-      eval` (inspect-ai, preferred), `vllm`, `sglang` and `endpoint` including HF inference providers; custom
-      task and custom metric authoring documented.'
-    accessed: '2026-08-13'
+    shows: '"Lighteval supports **1000+ evaluation tasks** across multiple domains and" languages; entry
+      points `lighteval eval` (inspect-ai, "as a backend (prefered)"), `lighteval vllm`, `lighteval sglang`,
+      `lighteval nanotron` and `lighteval custom`, with custom task and custom metric authoring linked.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
   - url: https://pypi.org/pypi/lighteval/json
-    shows: The PyPI metadata README says "Lighteval supports **1000+ evaluation tasks** across multiple
+    shows: The PyPI metadata README repeats "Lighteval supports **1000+ evaluation tasks** across multiple
       domains and" languages, listing MMLU, GPQA, GSM8K, MATH, LiveCodeBench, IFEval and MT-Bench.
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 26971735fd748867156cfab6e1db1b14a1d20dffca48e112ee36b2326c4299a1
   - url: https://huggingface.co/docs/lighteval/index
     shows: The Hugging Face docs home describes Lighteval as "your all-in-one toolkit for evaluating Large
-      Language Models" with backends including inspect-ai, vllm, sglang, litellm and Text Generation Inference,
-      plus "1000s pre-built evaluation tasks" and custom tasks and metrics.
-    accessed: '2026-09-29'
+      Language Models" with "1000s pre-built evaluation tasks", custom task creation, and backends including
+      vllm, SGLang, litellm and Text Generation Inference.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 8375495ed9574884c87d2ed1cc01905bedc30f52514c2ac0205286de5c1fc4fa
+    content_sha256: 7e4a366b1e647899dcdc6651e9946b7105f04cd13ae7517279d4dfdf83d75377
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md
+    shows: 'Peer comparison: lm-evaluation-harness says "Over 60 standard academic benchmarks for LLMs,
+      with hundreds of subtasks and variants implemented", and that it "has been used in [hundreds of papers]",
+      which is why lighteval is placed one step below it.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 57c5cf1db6edb20393ca70851de820898bd8d10424a5a7574f9f566a6f8d70bd

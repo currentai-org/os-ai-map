@@ -559,6 +559,23 @@ held:
         OpenAI, DeepMind). Settle with a third-party count of citations or downstream users of Epoch
         benchmark data, or warehouse metrics, then confirm or re-band level 3.
       since: '2026-09-29'
+    openness:
+      because: github.com/epoch-research and api.github.com/orgs/epoch-research/repos both returned HTTP 403 after
+        6 attempts, so the org repo inventory behind 'no end-to-end harness published' and the licensed-versus-unlicensed
+        split could not be re-read today. Re-fetch the org repo list (or each repo tree) when GitHub answers to settle
+        it; the fetched epoch.ai pages and three raw MIT LICENSE files raise no contradiction.
+      since: '2026-11-16'
+    capability:
+      because: 'capability.value restates tracked-benchmark and model counts that have changed (86/401 recorded, 99/428
+        live); the packet cannot edit value. Peer lm-evaluation-harness capability is last_verified 2026-09-29, older
+        than today, so check_capability''s peer-recency rule needs that peer refreshed or the edge attested before
+        this axis can be re-dated. Proposed for maintainer review, not applied: Score 4 and relative_to lm-evaluation-harness
+        one_below are unchanged and still supported. Only the recorded value text is out of date: it says 86 benchmarks
+        tracked across 401 models, while the dashboard stat tiles now read 99 benchmarks and 428 models. Update those
+        two figures in capability.value; the remaining value text (Epoch-run FrontierMath, GPQA Diamond, MATH Level
+        5, Mock AIME; Inspect-based runs; published Inspect logs) still matches the page. Not dated until the value
+        is corrected.'
+      since: '2026-11-16'
   ernie:
     capability:
       because: 'ERNIE 5.1 remains Baidu''s flagship. Re-read 2026-11-15: Baidu''s ERNIE research page lists no flagship after
@@ -1634,6 +1651,16 @@ held:
         so that figure could not be confirmed. Settling it needs the star count re-read beside the README, and
         then the date.'
       since: '2026-10-08'
+    capability:
+      because: 'The evidence audit did not pass this axis: sha256/accessed(2026-11-16)/http_status(200) all consistent,
+        every body re-fetched: digest identical; the cited quotes are verbatim, but outcome ''confirmed'' is false:
+        the recorded value still says ''100+ datasets (70+ with ~400k questions); 20+ HF models pre-supported'' and
+        none of 70+, 400k, 20+ HF models appears in any fetched body (the packet''s own escalation concedes this).
+        A date would assert unconfirmed value text; do not date until an editor trims the value to ''over 100 datasets''
+        and the HF/LMDeploy/vLLM and API backends actually shown. Also the datasets.md source only contains an include
+        directive for dataset_statistics.inc, not the list its shows claims it ''includes''. The one_below edge to
+        lm-evaluation-harness additionally requires that peer''s capability to be dated this run.'
+      since: '2026-11-16'
   opendataloader-pdf:
     adoption:
       because: The initial level was set on 2026-11-12 from a hand-read count of PyPI downloads of opendataloader-pdf,
@@ -1742,6 +1769,13 @@ held:
         answers 401; only Lynx, GLIDER and Percival are re-established from the homepage and Percival page.
         Settled by a fetchable docs feature page or llms.txt.
       since: '2026-09-29'
+    adoption:
+      because: github.com and api.github.com returned 403 after six attempts, so the SDK star-count citations could
+        not be re-fetched. A later fetch of both, or a direct star count from a reachable route, would settle it.
+        The homepage and pricing page also changed (pricing now redirects to /contact, and the homepage no longer
+        contains the previously cited contributor count), so those extracts need re-reading when the GitHub sources
+        are reachable.
+      since: '2026-11-16'
   perception-encoder:
     adoption:
       because: The initial level was set on 2026-11-12 from a hand-read count of Hugging Face downloads of the PE Core checkpoints, which sets a level but earns
@@ -2569,4 +2603,113 @@ held:
         the two_below terramind comparison is not what blocks it. Re-fetching Aurora's capability sources and confirming
         the recorded value (fine-tuning pathway, resolution span, deterministic target) settles it. No change to the
         value or the comparison is proposed.
+      since: '2026-11-16'
+  artificial-analysis-intelligence-index:
+    capability:
+      because: 'Score 4 is still supported, but the recorded value text names a superseded Index version and evaluation
+        list; an editor should approve the replacement value text (the packet has no field for it). Proposed for maintainer
+        review, not applied: Score unchanged at 4 (feature_matrix), but the recorded value text is stale and contradicted
+        by today''s evidence. Recorded: Index v4.3.2, 10 evaluations (AA-Briefcase v1.1, GDPval-AA v2.1, AutomationBench-AA,
+        Terminal-Bench 4.0, SciCode, AA-LCR v1.1, AA-Omniscience, HLE, GDP.pdf, CritPt), Agents/Coding/Scientific
+        Reasoning/General, agentic support via AA-Briefcase and GDPval-AA, ''several hundred models''. Fetched today:
+        v5.0.1 with 9 evaluations (AA-Briefcase v1.1, AutomationBench-AA, GDP.pdf, FrontierCode-AA 2.0, Terminal-Bench
+        4.0, AA-Omniscience v1.1, HLE-Diamond, CritPt v2 Hard Subset, Terminal-Bench-Science 0.1.0) in four equally
+        weighted categories Knowledge Work/Coding/Science/General (25% each); GDPval-AA, SciCode and AA-LCR are no
+        longer in the Index; agentic evaluations run on Stirrup (AA-Briefcase, FrontierCode-AA 2.0, CritPt) or mini-swe-agent
+        (Terminal-Bench 4.0, Terminal-Bench-Science); leaderboard lists 741 models; datasets remain internal copies.
+        Proposed value: ''benchmark/task coverage: 9-eval composite (v5.0.1) across Knowledge Work/Coding/Science/General
+        (AA-Briefcase v1.1, AutomationBench-AA, GDP.pdf, FrontierCode-AA 2.0, Terminal-Bench 4.0, AA-Omniscience v1.1,
+        HLE-Diamond, CritPt v2 Hard Subset, Terminal-Bench-Science 0.1.0); model-backend breadth: hundreds of models
+        listed on the leaderboard (741); agentic-eval support: yes (AA-Briefcase, FrontierCode-AA 2.0 and CritPt via
+        Stirrup, AutomationBench-AA, Terminal-Bench 4.0 and Terminal-Bench-Science via mini-swe-agent); reproducibility:
+        standardized params + internal dataset copies but not externally reproducible''. Score 4 appears still supported.'
+      since: '2026-11-16'
+  bigcodebench:
+    openness:
+      because: 'The evidence audit did not pass this axis: Hashes, refetch digests, dates and quotes check out, and
+        license (Apache-2.0 LICENSE + PyPI classifier), source and core-gated are established. But the published note
+        and product comments assert the repo is ''archived and read-only''; the packet itself says github.com and
+        api.github.com returned 403 and the statement was not re-verified (I re-tried both: 403 after 6 attempts;
+        README and PyPI bodies contain no ''archiv'' text). A date means everything in the score was confirmed, so
+        this axis must not be dated this pass; leave it held/undated until a reachable source shows the archived flag,
+        or a maintainer drops the claim from the note.'
+      since: '2026-11-16'
+    capability:
+      because: Its comparison peer opencompass could not be re-confirmed in this pass, so this capability axis cannot
+        be dated after it.
+      since: '2026-11-16'
+  chatbot-arena:
+    adoption:
+      because: The only count is the FastChat README line 'serving over 10 million chat requests for 70+ LLMs', an
+        undated vendor-reported request volume rather than a registry download count, so the usage_volume instrument
+        looks misfiled (reported_traction fits) and the level cannot be re-dated by a hand-read. A maintainer should
+        rule on the instrument; arena.ai publishes no user or request figure.
+      since: '2026-11-16'
+    capability:
+      because: 'Fetched today: pairwise comparison and crowdsourcing (arXiv abstract), side-by-side battles feeding
+        an Elo leaderboard (FastChat README), image and code models (arena.ai). Not found in any fetched body: that
+        votes are blind and that ranking uses Bradley-Terry (grep for blind and bradley returned zero in all three),
+        so the recorded value cannot be fully confirmed today. Fetching the arXiv full text or the LMArena methodology
+        page would settle it. No evidence contradicts score 4, so no change is proposed. compar-ia depends on this
+        anchor and stays as recorded.'
+      since: '2026-11-16'
+  compar-ia:
+    capability:
+      because: 'The evidence audit did not pass this axis: compar-ia''s own evidence is sound (README, arXiv abstract,
+        homepage quotes verbatim, byte-identical re-fetch; README states blind votes, Bradley-Terry, EcoLogits, datasets,
+        Docker self-host). But the axis records relative_to chatbot-arena relation at, and the chatbot-arena packet
+        in this same run holds its capability axis (blind voting and Bradley-Terry not found in its fetched bodies)
+        so that peer will carry no confirmation dated on or after this run; check_capability transitive freshness
+        would reject a compar-ia capability date, and a comparison attestation is not a way around the anchor in a
+        refresh run. The packet''s escalation is also inaccurate: chatbot-arena''s evidence WAS fetched in this run
+        and did not confirm. Do not date compar-ia capability unless chatbot-arena capability is dated in the same
+        run; do not substitute a different peer.'
+      since: '2026-11-16'
+  open-llm-leaderboard:
+    openness:
+      because: 'Apache-2.0 license, public source and ungated core re-read today, but the recorded context backend
+        ''lm-eval-harness/lighteval'' is only half established: the v2 docs name the Eleuther AI Language Model Evaluation
+        Harness (and a lm_eval fork), while no fetched body (Space README, docker-compose.yml, backend/pyproject.toml,
+        backend/README.md, docs pages) names lighteval, and the Space''s backend declares no eval dependency. A person
+        should decide whether the backend value becomes lm-eval-harness only, or cite a source tying lighteval to
+        the leaderboard.'
+      since: '2026-11-16'
+  openai-evals:
+    capability:
+      because: The feature-matrix facts re-read cleanly today, but the recorded value also says maintenance has slowed,
+        and the GitHub repo page and API both returned 403 so push activity could not be re-derived. A fetch of the
+        repo state (pushed_at, commits) would settle it, and the two_below edge to lm-evaluation-harness stands unless
+        that or the peer's own re-read contradicts it.
+      since: '2026-11-16'
+  openai-evals-api-dashboard:
+    capability:
+      because: 'Evidence contradicts the recorded value text ''no multi-backend support'' (third-party models via
+        OpenRouter and custom endpoints are supported); a maintainer must rule whether the score of 2 holds. A corrected
+        value would drop that clause and add third-party and custom-endpoint model support. Proposed for maintainer
+        review, not applied: Recorded score 2 (feature_matrix) with a value stating ''Tied to OpenAI models; no multi-backend
+        support''. The external-models guide shows evals can run on non-OpenAI models, so that clause is false and
+        the value and note need correcting; the score itself is left at 2 for a maintainer ruling, since the page
+        still shows no benchmark library and the product is deprecated, but whether multi-backend support lifts it
+        is a rubric call.'
+      since: '2026-11-16'
+  yylo-benchmark:
+    capability:
+      because: 'The recorded value text is factually out of date, and whether score 2 still holds for the narrower
+        v3 feature set is a judgment for a person. No peer comparison is recorded; none was added. Proposed for maintainer
+        review, not applied: Recorded value describes a retired design (isolated v2 attempts, selective filesystem
+        sandbox, governed-workflow lane with hash-pinned boundary and typed locks, blinded per-step judging, hash-verified
+        evidence chain, fail-closed doctor/report). The README now says the v1/v2 APIs, plan/recover/doctor/regrade/rejudge
+        commands, plugin registry and governed-production workflow boundary are retired, and the runner gives ''workspace/context
+        hygiene, not filesystem/account/network isolation''. Proposed value: Thin trusted-host experiment runner for
+        coding agents - reviewed reusable cases, independent fresh-repository attempts per model/harness/configuration
+        treatment (Pi, Workflow Runner or generic command adapter), later independent evaluation by command checks,
+        LLM judges or human assessments over retained output, optional frozen project/task checklists with deterministic
+        loss (failed/total), and checksum-based integrity reporting and disqualification, with no automatic winner.
+        Score 2 (feature_matrix) is unchanged on this reading, but the feature set shrank materially, so a person
+        should confirm 2 rather than a hand-edit carrying it forward.'
+      since: '2026-11-16'
+  languagebench:
+    capability:
+      because: Its comparison peer euroeval could not be re-confirmed in this pass, so this capability axis cannot
+        be dated after it.
       since: '2026-11-16'

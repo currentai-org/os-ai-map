@@ -14,51 +14,47 @@ openness:
     free_text:
     - no managed/gated tier
   confidence: high
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: The whole framework is released under the MIT license and public, with no proprietary core.
   raw: license:MIT(OSI);source:public(full framework, 200+ evals); no managed/gated tier;core-gated:ungated
   sources:
-  - url: https://github.com/UKGovernmentBEIS/inspect_ai
-    shows: MIT license; framework for LLM evals with 200+ pre-built evals; UK AISI maintainer; 2.2k stars,
-      5,886 commits
-    accessed: '2026-06-04'
-  - url: https://api.github.com/repos/UKGovernmentBEIS/inspect_ai/license
-    shows: GitHub's license endpoint reports spdx_id MIT for UKGovernmentBEIS/inspect_ai and returns the
-      MIT text as the LICENSE body.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/UKGovernmentBEIS/inspect_ai/main/LICENSE
+    shows: The LICENSE file opens "MIT License" and reads "Copyright (c) 2024 UK AI Security Institute",
+      granting "Permission is hereby granted, free of charge, to any person obtaining a copy" of the software.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 06df7177dede41e1d2949700e98e6e099fdaea893798c5f93ba95ceae6ef2415
+    content_sha256: c593c2afc81388521eaeb03f0d1a4b01bc3e5147ed9cb16c1f129e5be353b6af
     establishes:
     - license
   - url: https://raw.githubusercontent.com/UKGovernmentBEIS/inspect_ai/main/README.md
-    shows: README is a build-from-source guide - clone the repo, `pip install -e ".[dev]"`, build the React
-      web UI from the checked-in submodule, render the docs locally. It names UK AISI as the creator and
-      points at 'over 200 pre-built evaluations ready to run on any model'. There is no pricing, no hosted
-      tier, no enterprise edition and no license key anywhere in it.
-    accessed: '2026-08-13'
+    shows: README says "Inspect provides many built-in components, including facilities for prompt engineering,
+      tool usage, multi-turn dialog, and model graded evaluations" and "a collection of over 200 pre-built
+      evaluations ready to run on any model". Development setup is "git clone https://github.com/UKGovernmentBEIS/inspect_ai.git".
+      It has no pricing, hosted tier, enterprise edition or license key.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a9a1e07b955d869137d8ad109f1c238268f361dcdfac30cfcc94983a51a99b17
+    content_sha256: 49b6450e8262583fe8c86446c537fdc791b1540305a66235e946b03cf59f88bf
     establishes:
     - source
     - core-gated
   - url: https://pypi.org/pypi/inspect-ai/json
-    shows: 'The MIT-licensed package description says "Inspect provides many built-in components, including
-      facilities for prompt engineering, tool usage, multi-turn dialog, and model graded evaluations" and
-      that the evals collection is "ready to run on any model". Searched the whole JSON body for pricing,
-      enterprise, license key, subscription and paid: zero matches.'
-    accessed: '2026-09-29'
+    shows: 'The PyPI metadata carries the classifier "License :: OSI Approved :: MIT License" and the package
+      description repeats the README, including "over 200 pre-built evaluations ready to run on any model".
+      Searching the whole JSON body for pricing, enterprise, license key, subscription and paid gave zero
+      matches.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9742511994f671be3da80324b4e583de40017af3c212bf29deb4a5718b2f1838
+    content_sha256: 1c06c5e2549abf800400abe8501f2364364fb960cfc7608324f27d0e3b78e240
     establishes:
     - license
     - source
     - core-gated
   - url: https://inspect.aisi.org.uk/
-    shows: Docs home says Inspect is built by the "UK AI Security Institute" and "Meridian Labs" and ships
-      "A collection of over 200 pre-built evaluations ready to run on any model".
-    accessed: '2026-09-29'
+    shows: Docs home says Inspect is built by the UK AI Security Institute and Meridian Labs and lists "A
+      collection of over 200 pre-built evaluations ready to run on any model."
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 41faa1ad1448b73180511df57b8c3b67d60d7fbc7de03b31a68ca70af3575a8a
+    content_sha256: ef24b08a12d908081154f9301db2c2b9d6334482ca4be98b2ef8f226b16efc59
 adoption:
   level: 4
   signal_type: reported_traction
@@ -96,52 +92,44 @@ capability:
     model-graded scoring; wide model-backend abstraction (OpenAI/Anthropic/Google/Groq/Mistral/xAI/Bedrock/Azure/Together/Cloudflare
     + local vLLM/Ollama/llama-cpp); reproducibility tooling for large-scale frontier evals.
   confidence: high
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: Inspect runs evaluations through one interface over lab APIs, cloud APIs and local servers, and
     its models page also lists DeepSeek, Moonshot, Perplexity, SageMaker, Fireworks, SambaNova, SGLang and
     TransformerLens. First-class support for agent and tool-use evaluation and more than 200 built-in evaluations
     put it among the leaders of the category.
   sources:
   - url: https://inspect.aisi.org.uk/models.html
-    shows: Models page tabulates providers by class, with cloud APIs "AWS Bedrock", "AWS SageMaker" and
-      "Azure AI", hosted open models and local backends "vLLM", "SGLang", "TransformerLens", and says "If
-      the provider you are using is not listed above, you may still be able to use it if" it is added as
-      an extension.
-    accessed: '2026-09-29'
+    shows: Models page tabulates "Lab APIs", cloud providers "AWS Bedrock", "AWS SageMaker" and "Azure AI",
+      hosted and local backends "vLLM", "SGLang" and "TransformerLens", also "Moonshot AI" and "Fireworks
+      AI", and says "If the provider you are using is not listed above, you may still be able to use it
+      if" an extension supplies it.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 885def645ccd23c45d3b35498c6dab7fb3ef71cb30b101389c269d4bad4eaaba
-  - url: https://github.com/UKGovernmentBEIS/inspect_ai
-    shows: 200+ pre-built evals; tool use, multi-turn, model-graded eval components
-    accessed: '2026-06-04'
-  - url: https://inspect.aisi.org.uk/models.html
-    shows: Models page groups backends into Lab APIs ("OpenAI", "Anthropic", "Google", "Grok", "DeepSeek",
-      "Moonshot AI", "Perplexity"), Open (Hosted) ("Groq", "Together AI", "Fireworks AI", "Cloudflare",
-      "SambaNova") and local ones; it says "If the provider you are using is not listed above, you may still
-      be able to use it if" an extension supplies it.
-    accessed: '2026-09-29'
-    http_status: 200
-    content_sha256: 885def645ccd23c45d3b35498c6dab7fb3ef71cb30b101389c269d4bad4eaaba
+    content_sha256: 4c427ea721d24868fe356b59f7daa2368976e2091d50c63337d56ad3ca1feff0
   - url: https://raw.githubusercontent.com/UKGovernmentBEIS/inspect_ai/main/README.md
-    shows: 'README: built-in components for prompt engineering, tool usage, multi-turn dialog and model-graded
-      evaluations, plus ''a collection of over 200 pre-built evaluations ready to run on any model''.'
-    accessed: '2026-08-13'
+    shows: 'README: "Inspect provides many built-in components, including facilities for prompt engineering,
+      tool usage, multi-turn dialog, and model graded evaluations", plus "a collection of over 200 pre-built
+      evaluations ready to run on any model".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a9a1e07b955d869137d8ad109f1c238268f361dcdfac30cfcc94983a51a99b17
+    content_sha256: 49b6450e8262583fe8c86446c537fdc791b1540305a66235e946b03cf59f88bf
   - url: https://inspect.aisi.org.uk/
-    shows: Docs home says "Agents" combine "planning, memory, and tool use for longer-horizon tasks" and
-      lists "over 20 model providers".
-    accessed: '2026-09-29'
+    shows: Docs home says "Inspect has built-in support for over 20 model providers", that Agents "combine
+      planning, memory, and tool use for longer-horizon tasks", and lists "A collection of over 200 pre-built
+      evaluations ready to run on any model." The sidebar navigation lists Running, Eval Sets, Log Files
+      and Tracing sections; the page body makes no explicit reproducibility or large-scale-evaluation claim.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 41faa1ad1448b73180511df57b8c3b67d60d7fbc7de03b31a68ca70af3575a8a
+    content_sha256: ef24b08a12d908081154f9301db2c2b9d6334482ca4be98b2ef8f226b16efc59
   - url: https://inspect.aisi.org.uk/agents.html
     shows: Agents page says "Inspect supports a variety of approaches to agent evaluations, including" the
-      built-in "ReAct Agent" and the "Deep Agent" for long-horizon tasks.
-    accessed: '2026-09-29'
+      built-in ReAct agent and a Deep Agent.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: ded76fc78e960ebb8e94a4f8472c1182ac81a89e1b7f21d24a7e1ce2fd90b13b
+    content_sha256: 328540b84adb392cb997588014627aedb81539f01a86f20e3cc207d60b856116
   - url: https://pypi.org/pypi/inspect-ai/json
     shows: The package description says Inspect also includes "a collection of over 200 pre-built evaluations
       ready to run on any model".
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9742511994f671be3da80324b4e583de40017af3c212bf29deb4a5718b2f1838
+    content_sha256: 1c06c5e2549abf800400abe8501f2364364fb960cfc7608324f27d0e3b78e240
