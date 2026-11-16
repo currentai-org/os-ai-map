@@ -86,20 +86,26 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Methods: full FT, LoRA/QLoRA, RL (GRPO, FP8 RL), pretraining, embedding FT; custom Triton kernels
-    delivering ~2x faster / up to 70% less VRAM, MoE training ~12x faster / 35% less VRAM; 500+ supported
-    models; multiple quant formats. Single-node memory/speed optimization is its frontier edge; less focused
-    on multi-node frontier-scale parallelism than Megatron-LM.'
+  value: 'Methods: LoRA, QLoRA, full fine-tuning, pretraining, RL (GRPO), DPO and FP8, with embedding-model
+    training; reported 2x faster training with 70% less VRAM; MoE training about 12x faster with over 35%
+    less VRAM using Triton kernels; export to GGUF, NVFP4 and FP8.'
   confidence: high
-  note: Unsloth's custom Triton kernels make training faster and cut VRAM use, with the largest gains the
-    project reports coming on mixture-of-experts models. Method coverage is broad, spanning full fine-tuning,
-    LoRA, QLoRA, pretraining, GRPO reinforcement learning, DPO preference tuning and embedding fine-tuning.
+  note: Unsloth reports 2x faster training with 70% less VRAM across LLMs, diffusion, text-to-speech and
+    embedding models, and about 12x faster training with over 35% less VRAM for mixture-of-experts models
+    through new Triton kernels. Method coverage is broad, spanning LoRA, QLoRA, full fine-tuning, pretraining,
+    GRPO reinforcement learning, DPO and FP8.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/unslothai/unsloth/main/README.md
-    shows: README states "Train LLMs, diffusion, TTS, and embedding models 2× faster with 70% less VRAM"
-      and "Supports [reinforcement learning](https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide),
-      LoRA, QLoRA, full fine tuning, pretraining, RL, GRPO, DPO, and FP8." and "Train **MoE LLMs 12x faster**
-      with 35% less VRAM", plus "Multi GPU setups" support.
-    accessed: '2026-09-28'
+    shows: The README says "Train LLMs, diffusion, decision, TTS, and embedding models 2× faster with 70%
+      less VRAM" and supports "LoRA, QLoRA, full fine tuning, pretraining, RL, GRPO, DPO, and FP8." It lists
+      export formats as "NVFP4, FP8 and more formats" after GGUF.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: e763fe1699169d57ba2f1516399824e807a52d51f6872d52157de6b3318f01f6
+    content_sha256: 266f6599cfaeec6762372281b3749b78399e99b2f4a8a12d55430dc14a11472f
+  - url: https://unsloth.ai/docs/new/faster-moe
+    shows: The MoE page announces "~12x faster Mixture of Experts (MoE) LLM training" with over 35% less
+      VRAM, from "our new MoE Triton kernels and new mathematical optimizations".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 4b93a26d81dbee442ae6227e9fa673f4b89441a7dd8feea2b62b6135220adb88
