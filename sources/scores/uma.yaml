@@ -86,20 +86,39 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: One model consuming five distinct DFT levels of theory, selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation, one scale.
+  value: One model family, in small and medium sizes, consuming five DFT datasets at distinct levels of
+    theory selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation
+    script and templated configs; no generation.
   confidence: high
-  note: UMA trains on five separate DFT datasets with different functionals and pseudopotentials, which
-    counts as multiple distinct data sources rather than variables of one. It also documents a first-party
-    fine-tuning pathway with a dataset-preparation script and templated configs, so the publisher's note
-    that fine-tuning is usually unnecessary does not change that the pathway exists.
+  note: UMA trains on five separate DFT datasets with different functionals and pseudopotentials, and one
+    model serves all of them through a task embedding chosen at inference, so it takes multiple distinct
+    data sources rather than variables of one. A first-party script and templated configs let users fine-tune
+    it on their own data. The small and medium releases are sizes of one model, not different scientific
+    scales.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md
-    shows: States UMA is trained on five different DFT datasets with different levels of theory, learns a per-task embedding, and requires the user to select a task at inference; tabulates the functional and pseudopotentials for each.
-    accessed: '2026-09-10'
+    shows: States "UMA is trained on 5 different DFT datasets with different levels of theory" and that
+      "the user must specify which one of the 5 embeddings they want to use"; its task table adds oc25 and
+      oc22 as UMA-1.2 tasks.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 072f4d1e77358dfd7ad3e1d5c97318a6b4848c566510c5b5b2db26b09d839c62
-  - url: https://arxiv.org/abs/2506.23971
-    shows: Describes training on half a billion 3D atomic structures compiled across multiple chemical domains and reports that a single model without any fine-tuning matches or beats specialized models.
-    accessed: '2026-09-10'
+    content_sha256: de7834ede4c2ce52175a9cff80d06a94d50c83eb0dec5d2101a2da957c316736
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/README.md
+    shows: The model table lists two released sizes, "uma-s-1p2p1" and "uma-m-1p1", alongside two fine-tuned
+      variants for molecules and materials.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b61d36f1da79d58e1d8a0919a1fdddf7528a484cbdbd36758d2ee27b950520c7
+    content_sha256: f5c86bcd1d7291e1eb66ecf3b7b84244031090f0371b0410f3db6209a4787243
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/src/fairchem/core/scripts/create_uma_finetune_dataset.py
+    shows: First-party dataset script that prepares user structures and training configs, and logs "To run
+      finetuning, run fairchem -c" followed by the generated uma_sm_finetune_template.yaml.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: c925b40994b5560f3c8f673230f203776ac8d5145385f4ff29ad7bfd4190edc1
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/configs/uma/finetune/uma_sm_finetune_template.yaml
+    shows: 'Templated fine-tuning config setting "base_model_name: uma-s-1p1" with learning rate, batch
+      size, epochs and checkpoint cadence for a run on user data.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 38642049a4aabc4c5deab9a9834d488cbc7a6faa3ef995b88060e49f31a372ad

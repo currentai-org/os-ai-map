@@ -78,19 +78,35 @@ adoption:
     http_status: 200
     content_sha256: 2f18f112d784520176179727f253ed7105c443868e26df3eeba465ac17e74a6d
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: One-million-base input resolved to single-base outputs, a genuine resolution span; a single DNA-sequence input modality, and no adaptation or generative-design pathway.
+  value: DNA sequence plus the user's own single-cell RNA-seq data as conditioning input, and one-million-base
+    input resolved to single-base outputs; no adaptation pathway and no generative-design pathway.
   relative_to: prithvi-eo
-  relation: two_below
+  relation: one_below
   confidence: high
-  note: 'AlphaGenome''s strength is its resolution span: sequences up to one million bases are resolved
-    to single-base outputs. Its only input is a DNA sequence, so it does not also count as accepting multiple
-    sensors, and no adaptation or generative pathway is documented beyond a broad prediction surface.'
+  note: AlphaGenome 2 takes a DNA sequence together with expression conditioning from the user's own single-cell
+    RNA-seq data, so it accepts more than one kind of input, and it resolves sequences up to one million
+    bases to single-base outputs. Conditioning shapes predictions without updating any weights, so it is
+    not an adaptation pathway, and no fine-tuning or generative pathway is documented.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md
-    shows: Documents gene-expression, splicing, chromatin, and contact-map output modalities over sequences up to one million bases, mostly at single-base resolution.
-    accessed: '2026-09-10'
+    shows: Describes AlphaGenome 2 as "Our latest multimodal DNA sequence model" with "generalization to
+      your own human scRNA-seq data", and a quick start that sends a 1 Mb interval.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b897f19e9c93864d3f3fa76b432fcaaf1d1615e219f4145c0051013f013b9453
+    content_sha256: 9a2c79cd5bb946cba758d79d614ae7f02270bf4b7b7a25eac01770ca97dc9b10
+  - url: https://www.alphagenomedocs.com/getting_started.html
+    shows: 'Each AlphaGenome 2 call predicts for one condition: a reference condition, or "expression conditioning
+      given up to 256 cells" "from your own scRNA-seq data".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f81e9e91ea8e7784a391c4fb81c0b931e9f897846eaa2a05db9f1b76560db74f
+  - url: https://raw.githubusercontent.com/google-deepmind/alphagenome_research/main/README.md
+    shows: The research code README says the model analyzes DNA "sequences of up to 1 million base pairs"
+      and predicts at single "base-pair resolution across diverse modalities".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: c715b22c31bd4f69e9b76236de0ab6a26c96fa0f384ad56a2f9d2cb65e262681

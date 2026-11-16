@@ -45,20 +45,31 @@ adoption:
     http_status: 200
     content_sha256: 6bcac25f4f08857e25d3a274b180a51b56a8e5af4e2faadc92ba2c639bf14ab1
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: LoRA adaptation, AIA-HMI multi-instrument input, and explicit local/global multi-scale representation learning; a deterministic forecasting objective.
+  value: LoRA adaptation and joint AIA-HMI multi-instrument input; local and global attention at a single
+    native resolution, and a deterministic forecasting objective.
   relative_to: terramind
-  relation: one_below
+  relation: two_below
   confidence: high
-  note: Surya documents LoRA adaptation, joint input from the Solar Dynamics Observatory's AIA and HMI sensors,
-    and local and global attention at the native resolution of the observations. Its pretraining objective
-    is one-hour-ahead forecasting with autoregressive rollout, a deterministic future state rather than
-    a generated scientific output.
+  note: Surya documents LoRA adaptation and joint input from the Solar Dynamics Observatory's AIA and HMI
+    sensors. Its local and global attention works at one native sampling resolution, so it is not counted
+    as operating across scales, and its pretraining objective is forecasting a deterministic future state
+    rather than generating a scientific output.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md
-    shows: Documents LoRA fine-tuning, 13 channels from AIA and HMI, two-hour forecasts, and local/global attention described as multi-scale representation learning.
-    accessed: '2026-09-10'
+    shows: 'Lists "Parameter-efficient LoRA adaptation for diverse downstream tasks" and "Trained on 13
+      channels from SDO''s AIA (8 channels) and HMI (5 channels)"; local and global attention are called
+      "Multi-scale representation learning" at "Native 4096×4096 pixel resolution with 12-minute cadence".
+      Rollout: "Autoregressive rollout tuning (2-5 hour horizons)".'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873
+  - url: https://huggingface.co/nasa-ibm-ai4science/Surya-1.0/raw/main/README.md
+    shows: Pretraining objectives are "one-hour-ahead forecasting + autoregressive rollout tuning up to
+      12 hours", "trained at SDO’s native resolution (4096×4096)".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: e402c7ac9fe712f1dd755d4169bd69c790d6078e674bc386712d5304c9810b70
