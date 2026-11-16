@@ -23,11 +23,11 @@ openness:
         value: partial-open
         detail: Stirrup MIT, used for the agentic AA-Briefcase and GDPval-AA evals
   confidence: high
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: Artificial Analysis publishes its full methodology and releases Stirrup, an MIT-licensed agent harness
-    that runs two of the Index's ten evaluations, as an open component. But the Index pipeline itself and
-    its internal copies of every evaluation dataset are not published, which keeps it source-available rather
-    than fully open source.
+    that runs several of the Index's evaluations, including AA-Briefcase, FrontierCode-AA and CritPt, as
+    an open component. The Index pipeline itself is not published, and Artificial Analysis keeps internal
+    copies of every evaluation dataset.
   raw: platform:closed(proprietary benchmarking site + methodology); source:partial(Stirrup covers two of
     the ten evals (AA-Briefcase, GDPval-AA); the Index pipeline does not ship); methodology:documented(public
     methodology page, per-eval breakdown, temp/token params); datasets:closed(maintains internal copies
@@ -35,79 +35,69 @@ openness:
     evals); the full Intelligence Index harness is not open
   sources:
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: 'Methodology v4.3.2: "We maintain internal copies of all evaluation datasets" and "All models
-      are run using our open source agentic harness" for agentic evals; the Index pipeline itself is not
-      published. Searched the body for a pipeline repository: none.'
-    accessed: '2026-09-29'
+    shows: 'Methodology v5.0.1: "We maintain internal copies of all evaluation datasets" and "All models
+      are run using our open source agentic harness" for the agentic evaluations; the FrontierCode-AA 2.0
+      section says "We run the agent in our Stirrup harness", while Terminal-Bench 4.0 and Terminal-Bench-Science
+      run on "mini-swe-agent harness". The Index "incorporates 9 evaluations: AA-Briefcase v1.1, AutomationBench-AA,
+      GDP.pdf, FrontierCode-AA 2.0, Terminal-Bench 4.0, AA-Omniscience v1.1, HLE-Diamond, CritPt v2 (Hard
+      Subset), and Terminal-Bench-Science 0.1.0". The only Artificial Analysis repository linked is Stirrup.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
+    content_sha256: 730b559ed6b294294cb7e63c9c1ff0a989c7df90263a5b204da9f26b348918f1
     establishes:
     - source
-  - url: https://github.com/ArtificialAnalysis/Stirrup
-    shows: Stirrup MIT-licensed agent harness, 413 stars (the only open component)
-    accessed: '2026-06-04'
-  - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: 'Artificial Analysis Intelligence Index v4.3.2 "incorporates 10 evaluations: AA-Briefcase v1.1,
-      GDPval-AA v2.1, AutomationBench-AA, Terminal-Bench 4.0, SciCode, AA-LCR v1.1, AA-Omniscience, Humanity"
-      and is a weighted average across four categories: "Agents (30%), Coding (20%), Scientific Reasoning
-      (20%) and General (30%)".'
-    accessed: '2026-09-29'
+  - url: https://raw.githubusercontent.com/ArtificialAnalysis/Stirrup/main/LICENSE
+    shows: The Stirrup LICENSE file begins "MIT License" with "Copyright (c) 2025 Artificial Analysis" and
+      includes "Permission is hereby granted, free of charge".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
+    content_sha256: 06b15284cce5761591c0a89c91208ba9f85845f1cef9452a97b97891003ea378
     establishes:
     - source
-  - url: https://api.github.com/repos/ArtificialAnalysis/Stirrup/license
-    shows: GitHub's license endpoint reports spdx_id MIT for ArtificialAnalysis/Stirrup - the one open component
-      - and returns the MIT text as the LICENSE body. 546 stars.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/ArtificialAnalysis/Stirrup/main/README.md
+    shows: The Stirrup README states "Licensed under the [MIT LICENSE](LICENSE)."
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b12e30fb50593e509e2cdf8b84a1b1b606ae70afd8bc0ae9ba9aa5827ec1d569
+    content_sha256: 76fc50fcc1b2e428136eabac534a70ea7c3e209e97025f47895db719641be854
     establishes:
     - source
   - url: https://pypi.org/pypi/stirrup/json
-    shows: 'PyPI metadata for the stirrup package (Artificial Analysis) carries the classifier "License
-      :: OSI Approved :: MIT License" and a license text beginning "MIT License  Copyright (c) 2025 Artificial
-      Analysis".'
-    accessed: '2026-09-29'
+    shows: 'PyPI metadata for the stirrup package carries the classifier "License :: OSI Approved :: MIT
+      License".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: d75cafa40f46b3799b2b9348222d8f6e0c5353333760bae397411fb99dfcf859
+    content_sha256: 305ba61180a7cefa79856630a38b039b1461db3ea4b1f33e7ce7048ca591b1b8
     establishes:
     - source
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: The Intelligence Index is widely cited in frontier model coverage, and Artificial Analysis says
     it is publicly referenced by leading AI labs, publications and institutions. It publishes no unique-visitor
     or subscriber count, so this reflects citation reach rather than a usage figure.
   sources:
   - url: https://artificialanalysis.ai/
-    shows: live Intelligence Index leaderboard positioned as the cross-model standard reference
-    accessed: '2026-06-04'
-  - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: independent standardized index cited as the reference methodology
-    accessed: '2026-06-04'
-  - url: https://artificialanalysis.ai/
     shows: 'The live leaderboard headed "Independent analysis of AI" ranks models on Intelligence Index
-      v4.3.2 with "28 of 679 models" shown. Searched the body for unique visitors, subscribers and monthly
+      v5.0.1 with "29 of 741 models" shown. Searched the body for unique visitors, subscribers and monthly
       active users: none.'
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 58edc16109f09b494ac1af4547c4f33df69f53df3bb461f62e92b4d75804cd2b
+    content_sha256: 4aff98f5dfc15e753e3906c35a5cbbd7337ed768b6847fbb0e5c4ce3b34fcf53
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
-    shows: 'Methodology v4.3.2 describes an index that is "a helpful synthesis of overall language model
-      intelligence" with standardized parameters and internal dataset copies. Searched the body for unique
-      visitors, subscribers and monthly active users: none.'
-    accessed: '2026-09-29'
+    shows: 'Methodology v5.0.1 describes the Index as a weighted average across "Knowledge Work (25%), Coding
+      (25%), Science (25%), and General (25%)". Searched the body for unique visitors, subscribers and monthly
+      active users: none.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 8693dd77d484226f5f9e031bd49f9bd809c770989415171f22cb7cca6fb3e724
+    content_sha256: 730b559ed6b294294cb7e63c9c1ff0a989c7df90263a5b204da9f26b348918f1
   - url: https://artificialanalysis.ai/about
     shows: The company describes itself as "the independent benchmarking company for AI" and says it is
       "Publicly referenced by the leading AI labs, publications, and institutions".
-    accessed: '2026-09-29'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 8da90d5c12a5fd9fa3a9daa2e223c3ecc2df0fe8a2e2b8782502822ff1cc7dfe
+    content_sha256: 37e64df167b0437d960c53ab56fef119bfcb00e8d002ea34c95da1dffe9d8aa7
 capability:
   score: 4
   basis: feature_matrix
@@ -118,11 +108,10 @@ capability:
     4.0, AutomationBench-AA); reproducibility: standardized params + internal dataset copies (contamination-resistant)
     but not externally reproducible'
   confidence: high
-  last_verified: '2026-09-29'
-  note: The Intelligence Index spans agentic, coding, general and scientific evaluations, run with standardized
-    parameters on internal dataset copies that resist contamination. It is a curated methodology rather
-    than an open harness, and because Artificial Analysis runs every evaluation privately, outsiders cannot
-    reproduce the scores.
+  note: The Intelligence Index spans knowledge-work, coding, science and general evaluations, including
+    agentic ones, run with standardized parameters on internal dataset copies. It is a curated methodology
+    rather than an open harness, and because Artificial Analysis runs the evaluations itself, outsiders
+    cannot reproduce the scores.
   sources:
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
     shows: Methodology v4.3.2 lists 10 evaluations weighted "Agents (30%), Coding (20%), Scientific Reasoning

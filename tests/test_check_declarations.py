@@ -172,11 +172,18 @@ def test_the_real_corpus_holds_at_its_known_count():
     aws/amazon-q-developer-cli, the MIT client of a closed AWS service, as the open part that makes
     it source-available. The same shape: declaring the client would read its stars as the service's
     adoption.
+
+    Raised to 13 on 2026-11-16 by the evaluation_code refresh: artificial-analysis-intelligence-index
+    already cited ArtificialAnalysis/Stirrup, its open agent harness, to show what of the index is
+    published; the github.com page returns 403 to the fetcher, so the citation moved to the
+    repository's raw files, which this check counts. The same shape: declaring the harness would read
+    its stars as the index's adoption.
     """
     findings = undeclared_citations(ROOT)
-    assert len(findings) == 12, [f[0] for f in findings]
+    assert len(findings) == 13, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "amazon-q-developer", "apify", "aws-neuron", "chatbot-arena", "cloudflare-sandboxes",
+        "amazon-q-developer", "apify", "artificial-analysis-intelligence-index", "aws-neuron",
+        "chatbot-arena", "cloudflare-sandboxes",
         "google-cloud-run", "patronus-evaluation-platform", "predibase", "qualcomm-ai-engine-direct",
         "the-cancer-imaging-archive", "vals-ai",
     }

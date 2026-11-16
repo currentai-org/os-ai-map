@@ -14,40 +14,35 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-16'
   note: Apache-2.0 and fully public, and Apache-2.0 is an OSI license, so this is open source.
   raw: license:Apache-2.0(OSI);source:public(GitHub);no feature-gated core;core-gated:ungated
   sources:
-  - url: https://github.com/open-compass/opencompass
-    shows: Apache-2.0 license, public source, v0.5.2 (Feb 2026)
-    accessed: '2026-06-04'
-  - url: https://api.github.com/repos/open-compass/opencompass/license
-    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for open-compass/opencompass and returns
-      the Apache-2.0 text as the LICENSE body.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/open-compass/opencompass/main/LICENSE
+    shows: The repository LICENSE file is the Apache License, Version 2.0 text, with the standard appendix
+      notice "Licensed under the Apache License, Version 2.0 (the "License");".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 4c98cbd9e68d93f3b5ad7b08688d170d9f10d2f02578441432ad6e439a12610d
+    content_sha256: ba92da766daca067645bd126edb60c63ff55079316bacc91d4831e61fed6d7b0
     establishes:
     - license
   - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
-    shows: README installs the platform with `pip install -U opencompass` or editable from a clone and runs
-      evaluations locally against local weights or model APIs; all dataset and model configs ship inside
-      the package. CompassRank and CompassHub are free public leaderboard and dataset sites beside it. No
-      pricing, enterprise edition, paid tier or license key appears in the README.
-    accessed: '2026-08-13'
+    shows: The README, served from the public GitHub repository, installs with "pip install -U opencompass"
+      or from a clone with "pip install -e ." and describes a single open platform with no edition, pricing
+      or license-key wording.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9c9258560278da5596691646e561998a38f663b67ec448a34ada47a5f2b4119c
+    content_sha256: 494f04df6b96a922832a902f4415fee5e240c8a6dba18e999405fde93ebca5e6
     establishes:
     - source
     - core-gated
   - url: https://pypi.org/pypi/opencompass/json
-    shows: PyPI metadata for opencompass 0.5.4 lists the license as "Apache License 2.0"; the packaged README
-      offers a source install via "git clone https://github.com/open-compass/opencompass opencompass" and
-      a plain "pip install -U opencompass" with no enterprise, pricing, paid tier or license key wording
-      anywhere in the body.
-    accessed: '2026-09-29'
+    shows: PyPI metadata for opencompass lists the license as "Apache License 2.0", and the packaged README
+      offers "git clone https://github.com/open-compass/opencompass opencompass" and a plain "pip install
+      -U opencompass".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: ea5f881389d153a7211d1684d5137e331e376f8bd54f3bfae1b8bd60b845f4e1
+    content_sha256: e6f62034e423c8bb9ab6e29fd74906d364f18818b2e38eb2913e2ba974637283
     establishes:
     - license
     - source
@@ -84,9 +79,8 @@ capability:
   confidence: medium
   relative_to: lm-evaluation-harness
   relation: one_below
-  last_verified: '2026-09-29'
-  note: OpenCompass documents well over a hundred supported datasets and runs models through Hugging Face,
-    LMDeploy, vLLM or hosted APIs, with both objective and subjective scoring. It sits a step below lm-evaluation-harness,
+  note: OpenCompass documents over a hundred supported datasets and runs models through Hugging Face, LMDeploy,
+    vLLM or hosted APIs, with rule-based and LLM-as-judge evaluation. It sits a step below lm-evaluation-harness,
     which has been used to report results in hundreds of papers and is the more established reference.
   sources:
   - url: https://github.com/open-compass/opencompass
