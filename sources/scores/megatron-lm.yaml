@@ -132,36 +132,39 @@ capability:
   score: 5
   basis: feature_matrix
   value: 'Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4;
-    weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a
-    ~175B GPT-3 from 96 to 4,608 H100 GPUs.'
+    NVIDIA reports weak scaling of GPT models from 2B to 462B parameters up to 6,144 H100 GPUs, near-linear
+    strong scaling of a 177B GPT-3 from 96 to 4,608 H100 GPUs, and 1,648 TFLOPs/s per GPU for DeepSeek-V3
+    671B on 256 GB300 GPUs.'
   confidence: high
-  note: Megatron-LM provides reference-grade infrastructure for large-scale transformer training, composing
-    data, tensor, pipeline, context and expert parallelism with mixed precision down to FP8 and FP4. NVIDIA's
-    own benchmarks reach 462B parameters across thousands of H100 GPUs, though those results were measured
-    without training to convergence.
+  note: NVIDIA describes Megatron-LM as a reference training framework for Megatron Core, which composes
+    data, tensor, pipeline, context, expert and fully sharded data parallelism with mixed precision down
+    to FP8 and FP4. NVIDIA's published benchmarks cover GPT models up to 462 billion parameters on thousands
+    of H100 GPUs and DeepSeek-V3 on 256 GB300 GPUs, measured under stated conditions such as force-balanced
+    expert routing.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md
-    shows: 'The README describes Megatron Core as providing "transformer building blocks, advanced parallelism
-      strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)". Under Performance
-      Benchmarking: "The codebase efficiently trains models from 2B to 462B parameters across thousands
-      of GPUs", and "Successfully benchmarked 462B parameter model training." on 6,144 H100 GPUs; the strong-scaling
-      test takes "from 96 H100 GPUs to 4,608 GPUs" on a GPT-3 model of slightly more than 175 billion parameters.'
-    accessed: '2026-09-28'
+    shows: The README says Megatron Core provides "transformer building blocks, advanced parallelism strategies
+      (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4)", lists "Megatron FSDP,
+      DDP" under distributed training, and reports "Megatron Core achieves 1,648 TFLOPs/s per GPU for DeepSeek-V3
+      671B on 256 GPUs" in an item titled "DeepSeek-V3 pretraining on GB300 NVL72". Its benchmark note says
+      "MoE benchmarks use force-balanced expert routing and do not drop tokens".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 9da0af3c6ccb7fb9dae98930e369293d5872dce1ca9fc22e506d302a83d5f91f
+    content_sha256: 241f860a314ba3790d0161a52fe423be2779d6854829488b7fb8dbf15954ee14
   - url: https://developer.nvidia.com/megatron-core
     shows: 'NVIDIA product page: "Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs" on
-      GPT models from 2 billion to 462 billion parameters, and "near linear scaling from 96 to 4608 H100
-      GPUs" for a 177 billion parameter GPT-3 model. Feature text lists "automatic restart, fault/hang detection"
-      resiliency and "FP8 mixed precision and advanced parallelism".'
-    accessed: '2026-09-28'
+      GPT models from 2 billion to 462 billion parameters, and "Megatron-Core demonstrates near linear scaling
+      from 96 to 4608 H100 GPUs" for a 177 billion parameter GPT-3 model. It describes Megatron-LM as a
+      "training reference framework for exploring Megatron Core".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a01d49ee9e7309373a691ecc455e4a92b63f1feb90c63806a882d794e3b066b7
+    content_sha256: a720f03cad61b9b22fb2442404dc66c82be1cf5aa9ec7b5bc45cb2232b1c8326
   - url: https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html
     shows: The Parallelism Strategies Guide opens "Megatron Core supports multiple parallelism strategies
-      that can be combined to efficiently train models from billions to tr" and its overview table lists
-      Fully-Sharded Data Parallelism (Megatron-FSDP) alongside data, tensor, pipeline, context and expert
-      parallelism; the flag "--sequence-parallel" is documented as required when combining TP with EP.
-    accessed: '2026-09-28'
+      that can be combined to efficiently train models from billions to trillions of parameters across thousands
+      of GPUs", and its overview table lists data, tensor, pipeline, context, expert and "Fully-Sharded
+      Data Parallelism (Megatron-FSDP)".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 693c481667ce97084369d0ae72c577d362284ad9edb4ad59f9d311138db9aab0
+    content_sha256: d41b08f31bd5793605199191f569b6639a1fa68e87a18ee588317dfbf0a916bb

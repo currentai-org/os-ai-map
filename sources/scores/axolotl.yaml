@@ -84,20 +84,31 @@ capability:
   score: 4
   basis: feature_matrix
   value: 'Methods: full FT, LoRA, QLoRA, GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism:
-    FSDP1/FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP);
-    precision: BF16/4-8bit. Broadest single-tool method+parallelism matrix in this batch.'
+    FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP) + Expert
+    Parallelism; precision: BF16 and 4/8-bit loading.'
   confidence: high
   note: Axolotl runs full fine-tuning, LoRA, QLoRA and quantization-aware training, preference methods such
-    as DPO, KTO and ORPO, GRPO reinforcement learning and reward modeling from one configuration file, with
-    FSDP2, DeepSpeed, sequence and expert parallelism and multi-node training through Torchrun or Ray. It
-    trails Megatron-LM on demonstrated scale, publishing no training run near the size of Megatron-LM's
-    multi-thousand-GPU benchmarks.
+    as DPO, KTO and ORPO, GRPO reinforcement learning and reward modeling from a single YAML configuration,
+    with FSDP2, DeepSpeed, sequence, N-D and expert parallelism and multi-node training through Torchrun
+    or Ray. The README reports no training run at a large GPU count, so its demonstrated scale is not shown.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
-    shows: The README lists the training methods "Full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4)"
-      and "Preference Tuning (DPO, IPO, KTO, ORPO), RL (GRPO, GDPO), and Reward Modelling (RM) / Process
-      Reward Modelling (PRM)", plus "Multi-GPU training (FSDP2, DeepSpeed)" and "Multi-node training (Torchrun,
-      Ray)", Sequence Parallelism, ND Parallelism and Expert Parallelism.
-    accessed: '2026-09-28'
+    shows: The README lists "Full fine-tuning, LoRA, QLoRA, GPTQ, QAT", "Preference Tuning (DPO, IPO, KTO,
+      ORPO)", "RL (GRPO, GDPO)" and "Reward Modelling (RM)", with "Multi-GPU training (FSDP2, DeepSpeed)"
+      and "Multi-node training (Torchrun, Ray)". News items cover "Sequence Parallelism (SP) support", ND
+      parallelism that composes "Context Parallelism (CP), Tensor Parallelism (TP), and Fully Sharded Data
+      Parallelism (FSDP)", and "Expert Parallelism (EP)". It reports no training run at a large GPU count.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: e568efa58c664035bc770403b1adad578fe43e33e06debbfc8b70f7bdd7fb9a3
+    content_sha256: 1825693d733e9129427d64ac17168f93bd17bcbdca38d82d7224316a1fd67807
+  - url: https://docs.axolotl.ai/docs/multi-gpu.html
+    shows: The multi-GPU guide says "Only FSDP2 is supported. FSDP1 has been removed".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 839371cb099c57b23ec5bc8d171011719dae67a933b09d57a7e8719863d233c6
+  - url: https://docs.axolotl.ai/docs/config-reference.html
+    shows: The config reference documents "Use CUDA bf16." and the load_in_4bit and load_in_8bit options.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f86a51ffd09fae096080700f4b6754e92d0a668bcfb976a8edf3c58916146c10

@@ -99,27 +99,31 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Methods: LoRA training + sampling for RL/eval; broad model breadth (1B-550B incl. large MoE
-    like Qwen3-235B-A22B, DeepSeek, Nemotron); abstracts distributed multi-GPU training behind 4-function
-    API. Largest demonstrated: 550B-class MoE fine-tuning.'
+  value: 'Methods: LoRA adapter training plus sampling, for supervised and reinforcement learning; open-weight
+    models from 4B dense to multi-trillion-parameter MoE (Inkling 975B, Kimi-K3.1-Pro 2.8T total parameters,
+    Nemotron-3-Ultra 550B); the API exposes gradient, weight-update and sampling calls while Tinker runs
+    the work on managed GPU clusters.'
   confidence: medium
-  note: Tinker hides distributed multi-GPU training behind four functions and supports LoRA training and
-    RL sampling on open-weight models, up to very large mixture-of-experts checkpoints. The service is LoRA-only,
-    with no full fine-tuning or full RL stack, which keeps it behind frameworks such as Megatron-LM and
-    verl that train entire models at scale.
+  note: 'Tinker runs LoRA training and sampling on open-weight models from 4B dense up to Kimi-K3.1-Pro
+    at 2.8 trillion total parameters, with the user''s own code controlling the training loop and Tinker
+    scheduling the work across managed GPU clusters. Training uses LoRA adapters: the models page names
+    create_lora_training_client as the way to start a run, and the documentation describes no full-parameter
+    alternative.'
+  last_verified: '2026-11-16'
   sources:
   - url: https://thinkingmachines.ai/tinker/
-    shows: 'FAQ states "Tinker is a flexible API for efficiently fine-tuning open source models with LoRA."
-      and argues that "LoRA matches the learning performance of full fine-tuning". The supported-models
-      list runs from "Qwen3.5-4B" up to "Nemotron-3-Ultra-550B-A55B-BF16". Searched the body for a full
-      fine-tuning or full RL stack offering: the only full fine-tuning mention is that LoRA comparison.'
-    accessed: '2026-09-28'
+    shows: The FAQ says "LoRA matches the learning performance of full fine-tuning" and that the API provides
+      "simple functions to compute gradients, update the weights, and sample outputs from the trained model".
+      The feature list reads "Managed GPU clusters" and "Open weights, dense and MoE, from 4B to 1T parameters";
+      the models page lists larger entries. Its only mention of full fine-tuning is that LoRA comparison.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 074ebd24ce4f56602f179ce4c158a5faf082726a096c176b1d81afb8e8116f30
+    content_sha256: 17c02ef35a2c93340779f15288fa78aa39353d54a12d131ae88f74b268d2dc97
   - url: https://tinker-docs.thinkingmachines.ai/tinker/models/
-    shows: 'Model table reads "29 models shown" and lists Inkling at 975B total parameters and "Nemotron-3-Ultra-550B-A55B"
-      at 550B, with a ":peft:" suffix on the 256K-context Tinker IDs, plus a Retired Models section. Searched
-      the body for full fine-tuning: none.'
-    accessed: '2026-09-28'
+    shows: The training model table reads "39 models shown" and lists Qwen3.5-4B, Inkling at 975B total
+      parameters, Nemotron-3-Ultra-550B-A55B at 550B and Kimi-K3.1-Pro at 2.8T total parameters (104B active).
+      It describes the Tinker ID as "The exact string to pass to" create_lora_training_client. A search
+      of the page for full-parameter training finds nothing.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: e292f61dda4944506e06d50cda05310fbd2b4f4bffaea84ac8577a9ed930b617
+    content_sha256: 5e0ded3103f22b76438b978dd8a8eec9f3363ff653cec08d2bf1b5522863da13
