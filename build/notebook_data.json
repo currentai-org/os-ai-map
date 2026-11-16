@@ -24842,43 +24842,55 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Trainable adaptation path and sensor-aware inputs; no documented scientific generation or cross-scale span in the primary release page.",
+            "value": "Configurable training path; one model accepting several satellite sensors (Sentinel-2, Landsat, Sentinel-1 radar, NAIP, LINZ and MODIS) with ground resolution from under 0.5 m to 500 m; no documented scientific generation.",
             "relative_to": "prithvi-eo",
-            "relation": "one_below",
+            "relation": "at",
             "confidence": "high",
-            "note": "Clay documents two readable attributes, a configurable training path and sensor-, time- and location-aware inputs, one fewer than Prithvi-EO documents; capabilities the release page omits are not inferred from the architecture.",
+            "note": "Clay documents a configurable training path and takes inputs from several satellite sensors whose ground resolution runs from under half a meter to 500 meters, with position encoding scaled to each input's resolution. Fine-tuning for generative tasks appears only as a possible downstream use, and no generated scientific output is documented, so generation is not counted. It sits level with Prithvi-EO.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/Clay-foundation/model/main/README.md",
-                "shows": "Documents a configurable training path and sensor, time, location, and band metadata consumed by the model interface.",
-                "accessed": "2026-09-10",
+                "shows": "Trains with \"python trainer.py fit --model ClayMAEModule --data ClayDataModule --config configs/config.yaml\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e"
+              },
+              {
+                "url": "https://clay-foundation.github.io/model/release-notes/specification.html",
+                "shows": "Clay v1.5 is \"designed to handle inputs from a variety of satellite sensors\" and \"can process stacks of geospatial data from different sensors with various resolutions and bands\"; position encoding \"is scaled according to the Ground Sampling Distance (GSD)\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "192ffac7ff1ba4be73c044966d283784ff618cb70d9dd8534e346d8a6a26e891"
+              },
+              {
+                "url": "https://clay-foundation.github.io/model/release-notes/data_sampling.html",
+                "shows": "Tabulates ground sampling distance by platform, from MODIS at 500 m to LINZ under 0.5 m, for a model \"capable of accepting inputs of diverse spectral bands and resolutions in different sizes\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "e2d44fcbe7c9be824021becbfbc34d080494fff2e77de6845cac02cfcf1b3df9"
+              },
+              {
+                "url": "https://clay-foundation.github.io/model/index.html",
+                "shows": "Lists fine-tuning for downstream tasks \"such as classification, regression, and generative tasks\" as a possible use.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "fcbd01310b6b581690ba9bf23d9644910eab091b87a0ceb07bdafab42389caf9"
               }
             ]
           },
-          "overall_score": 2.4,
+          "overall_score": 3.1,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.4,
+          "maturity": 3.1,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The recorded README source does not itself show sensor, time, location or band metadata (grep of the fetched README finds none); that comes from the v1.5 release page, which also documents multi-sensor input at 0.5m to 500m ground resolution with GSD-scaled position encoding, any-size and any-band inputs, and fine-tuning for generative tasks. That may bear on the recorded 'no cross-scale span / no generation' reading and on the one_below edge to prithvi-eo (whose own capability date is also stale), and the attribute count needs a maintainer ruling before the date is earned."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -25257,43 +25269,41 @@
             ]
           },
           "capability": {
-            "score": 4,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "LoRA adaptation, AIA-HMI multi-instrument input, and explicit local/global multi-scale representation learning; a deterministic forecasting objective.",
+            "value": "LoRA adaptation and joint AIA-HMI multi-instrument input; local and global attention at a single native resolution, and a deterministic forecasting objective.",
             "relative_to": "terramind",
-            "relation": "one_below",
+            "relation": "two_below",
             "confidence": "high",
-            "note": "Surya documents LoRA adaptation, joint input from the Solar Dynamics Observatory's AIA and HMI sensors, and local and global attention at the native resolution of the observations. Its pretraining objective is one-hour-ahead forecasting with autoregressive rollout, a deterministic future state rather than a generated scientific output.",
+            "note": "Surya documents LoRA adaptation and joint input from the Solar Dynamics Observatory's AIA and HMI sensors. Its local and global attention works at one native sampling resolution, so it is not counted as operating across scales, and its pretraining objective is forecasting a deterministic future state rather than generating a scientific output.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md",
-                "shows": "Documents LoRA fine-tuning, 13 channels from AIA and HMI, two-hour forecasts, and local/global attention described as multi-scale representation learning.",
-                "accessed": "2026-09-10",
+                "shows": "Lists \"Parameter-efficient LoRA adaptation for diverse downstream tasks\" and \"Trained on 13 channels from SDO's AIA (8 channels) and HMI (5 channels)\"; local and global attention are called \"Multi-scale representation learning\" at \"Native 4096×4096 pixel resolution with 12-minute cadence\". Rollout: \"Autoregressive rollout tuning (2-5 hour horizons)\".",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873"
+              },
+              {
+                "url": "https://huggingface.co/nasa-ibm-ai4science/Surya-1.0/raw/main/README.md",
+                "shows": "Pretraining objectives are \"one-hour-ahead forecasting + autoregressive rollout tuning up to 12 hours\", \"trained at SDO’s native resolution (4096×4096)\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "e402c7ac9fe712f1dd755d4169bd69c790d6078e674bc386712d5304c9810b70"
               }
             ]
           },
-          "overall_score": 3.1,
+          "overall_score": 2.4,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 3.1,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The evidence audit did not pass this axis: Mechanics clean: body_path exists, sha256 equals content_sha256, re-fetch digest identical (no drift), accessed 2026-11-16, http 200 with sha. Quotes verbatim and negatives accurate (grep generat hits only 'Generate 2-hour ahead forecasts' and 'Generate CSV index files'; HF body 0 hits). But the multi_scale attribute is not established under category ruling (e): README states 'Multi-scale representation learning' only as local/global attention inside a single native 4096x4096 sampling resolution (lines 27, 207-209), and no second sampling resolution exists in either source. The packet itself escalates this as borderline and says a strict reading drops Surya to 2 of 4 attributes (score 3), breaking one_below terramind. 'Confirmed' therefore asserts something the evidence contradicts under the ruling; no score change is allowed without a separate ruling, so do not date the axis: hold it pending a maintainer ruling on whether attention-window scale counts. Also record that sources disagree on rollout horizon (GitHub 2-5 hours, HF up to 12 hours) and that the stale 'two-hour forecasts' shows must be replaced regardless. Peer terramind date issue applies too."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -25676,43 +25686,48 @@
             ]
           },
           "capability": {
-            "score": 2,
+            "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "One-million-base input resolved to single-base outputs, a genuine resolution span; a single DNA-sequence input modality, and no adaptation or generative-design pathway.",
+            "value": "Inputs: DNA sequence plus expression conditioning from the user's own single-cell RNA-seq data (up to 256 cells). Outputs at several sampling resolutions: RNA-seq and accessibility tracks at 1 bp, histone and transcription-factor ChIP-seq at 128 bp, and chromatin contact maps at 2,048 bp. Conditioning updates no weights; no fine-tuning or generative pathway is documented.",
             "relative_to": "prithvi-eo",
-            "relation": "two_below",
+            "relation": "one_below",
             "confidence": "high",
-            "note": "AlphaGenome's strength is its resolution span: sequences up to one million bases are resolved to single-base outputs. Its only input is a DNA sequence, so it does not also count as accepting multiple sensors, and no adaptation or generative pathway is documented beyond a broad prediction surface.",
+            "note": "AlphaGenome 2 takes a DNA sequence together with expression conditioning from the user's own single-cell RNA-seq data, so it accepts more than one kind of measurement. Its outputs come at different sampling resolutions: single-base RNA-seq tracks, ChIP-seq signal in 128-base bins and chromatin contact maps in 2-kilobase bins. Conditioning shapes predictions without updating weights, so it is not a fine-tuning pathway, and no generative pathway is documented.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md",
-                "shows": "Documents gene-expression, splicing, chromatin, and contact-map output modalities over sequences up to one million bases, mostly at single-base resolution.",
-                "accessed": "2026-09-10",
+                "shows": "Describes AlphaGenome 2 as \"Our latest multimodal DNA sequence model\" with \"generalization to your own human scRNA-seq data\", and a quick start that sends a 1 Mb interval.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "b897f19e9c93864d3f3fa76b432fcaaf1d1615e219f4145c0051013f013b9453"
+                "content_sha256": "9a2c79cd5bb946cba758d79d614ae7f02270bf4b7b7a25eac01770ca97dc9b10"
+              },
+              {
+                "url": "https://www.alphagenomedocs.com/getting_started.html",
+                "shows": "Each AlphaGenome 2 call predicts for one condition: a reference condition, or \"expression conditioning given up to 256 cells\" \"from your own scRNA-seq data\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "f81e9e91ea8e7784a391c4fb81c0b931e9f897846eaa2a05db9f1b76560db74f"
+              },
+              {
+                "url": "https://google-deepmind-alphagenome.readthedocs-hosted.com/exploring_model_metadata.html",
+                "shows": "The model output metadata page lists, for AlphaGenome 2, \"Bulk RNA-seq coverage (polyA+ and total RNA, stranded and unstranded)\" at \"1 bp\", \"Histone modification ChIP-seq\" as \"Fold-change over control\" \"summed per 128 bp bin\", and chromatin contact maps (\"Pairwise 3D chromatin contact frequency (Micro-C and Hi-C), normalized for\") at \"2048 bp\".",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "835a5f14f599be7fa2dff45c091fa12c0a752c29317232f789f2a86ad7bb4c36"
               }
             ]
           },
-          "overall_score": 2.0,
+          "overall_score": 2.7,
           "overall_basis": "adoption_and_capability",
           "tier": null,
-          "maturity": 2.0,
+          "maturity": 2.7,
           "mature": false,
           "freshness": {
             "date": "2026-09-10",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The recorded value says a single DNA-sequence input and no adaptation pathway, but the current README and docs describe AlphaGenome 2 with expression conditioning on up to 256 cells of the user's own scRNA-seq data and imputation of unobserved modalities. Whether this changes the score of 2 or the two_below edge to prithvi-eo needs a ruling; the 1 Mb input and single-base-pair output facts are still supported."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "The repository documents both API and local-checkpoint surfaces; the downloadable model remains subject to separate non-commercial terms."
         },
@@ -27466,25 +27481,33 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "Sequence, structure and function as three input and output tracks, and generation of new proteins from a partial prompt; no documented fine-tuning pathway and no second scale.",
+            "value": "Sequence, structure and function as three input and output tracks, and generation of new proteins from a partial prompt; no documented fine-tuning pathway. The 98B, 7B and 1.4B model sizes, two of them hosted-only, are sizes of one model rather than a second scientific scale.",
             "relative_to": "prithvi-eo",
             "relation": "one_below",
             "confidence": "high",
-            "note": "Two attributes are read directly off the publisher's description: three joint sequence, structure and function tracks, and generation from a partial prompt. Adaptation is not credited, because the release documents how to prompt and sample rather than how to fine-tune, and the repository's fine-tuning guidance targets ESMC rather than ESM-3.",
+            "note": "ESM3 takes sequence, structure and function as joint input and output tracks and generates new proteins from a partial prompt. The repository's fine-tuning guidance covers ESMC rather than ESM3, so adaptation is not counted. The three sizes, two of them reachable only through the hosted platform, are sizes of one model rather than different scientific scales.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md",
-                "shows": "\"able to jointly reason across three fundamental biological properties of proteins: sequence, structure, and function ... represented as tracks of discrete tokens at the input and output\"; \"ESM3 is a generative masked language model. You can prompt it with partial sequence, structure, and function keywords, and iteratively sample masked positions\".",
-                "accessed": "2026-09-10",
+                "shows": "\"able to jointly reason across three fundamental biological properties of proteins: sequence, structure, and function\"; \"You can prompt it with partial sequence, structure, and function keywords, and iteratively sample masked positions until all positions are unmasked\". The family table lists 98B, 7B and 1.4B models; \"Other weights are available when the model is accessed through Biohub.\"",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6"
               },
               {
                 "url": "https://huggingface.co/biohub/esm3-sm-open-v1/raw/main/README.md",
                 "shows": "\"a generative model capable of designing proteins conditioned on partial prompts of sequence, structure and function\"; usage points to the esm repository notebooks, with no fine-tuning entry point.",
-                "accessed": "2026-09-10",
+                "accessed": "2026-11-16",
                 "http_status": 200,
                 "content_sha256": "4aedacc49eff2fb6b90b926b5252076818a888884ac34d8a6701cd74421903d5"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Biohub/esm/main/README.md",
+                "shows": "Routes ESM3 users to the ESM3 README; its only customizing sentence sits in the ESMC section: \"Users interested in customizing or fine-tuning ESM models can use the models from Hugging Face.\"",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "c4eacae9f367f1f941fa3140d43e62f952b6d67f53a6983b8f6472f88c2f3630"
               }
             ]
           },
@@ -27495,18 +27518,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-08",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The recorded value says 'no second scale', but the fetched ESM3 README table lists three sizes (98B, 7B, 1.4B), two of them hosted-only; a ruling is needed on whether only the open checkpoint counts, then the value wording can be fixed with the score of 3 and the one_below edge to prithvi-eo (4) unchanged. Separately, prithvi-eo capability was last verified 2026-09-10, so a new esm-3 date would postdate its peer; the cookbook tutorials listing (needed to fully settle 'no fine-tuning pathway') returned 403."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           }
         },
         {
@@ -28995,23 +29008,38 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "scientific adaptation surface",
-            "value": "One model consuming five distinct DFT levels of theory, selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation, one scale.",
+            "value": "One model family, in small and medium sizes, consuming five DFT datasets at distinct levels of theory selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation.",
             "confidence": "high",
-            "note": "UMA trains on five separate DFT datasets with different functionals and pseudopotentials, which counts as multiple distinct data sources rather than variables of one. It also documents a first-party fine-tuning pathway with a dataset-preparation script and templated configs, so the publisher's note that fine-tuning is usually unnecessary does not change that the pathway exists.",
+            "note": "UMA trains on five separate DFT datasets with different functionals and pseudopotentials, and one model serves all of them through a task embedding chosen at inference, so it takes multiple distinct data sources rather than variables of one. A first-party script and templated configs let users fine-tune it on their own data. The small and medium releases are sizes of one model, not different scientific scales.",
+            "last_verified": "2026-11-16",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md",
-                "shows": "States UMA is trained on five different DFT datasets with different levels of theory, learns a per-task embedding, and requires the user to select a task at inference; tabulates the functional and pseudopotentials for each.",
-                "accessed": "2026-09-10",
+                "shows": "States \"UMA is trained on 5 different DFT datasets with different levels of theory\" and that \"the user must specify which one of the 5 embeddings they want to use\"; its task table adds oc25 and oc22 as UMA-1.2 tasks.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "072f4d1e77358dfd7ad3e1d5c97318a6b4848c566510c5b5b2db26b09d839c62"
+                "content_sha256": "de7834ede4c2ce52175a9cff80d06a94d50c83eb0dec5d2101a2da957c316736"
               },
               {
-                "url": "https://arxiv.org/abs/2506.23971",
-                "shows": "Describes training on half a billion 3D atomic structures compiled across multiple chemical domains and reports that a single model without any fine-tuning matches or beats specialized models.",
-                "accessed": "2026-09-10",
+                "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/README.md",
+                "shows": "The model table lists two released sizes, \"uma-s-1p2p1\" and \"uma-m-1p1\", alongside two fine-tuned variants for molecules and materials.",
+                "accessed": "2026-11-16",
                 "http_status": 200,
-                "content_sha256": "b61d36f1da79d58e1d8a0919a1fdddf7528a484cbdbd36758d2ee27b950520c7"
+                "content_sha256": "f5c86bcd1d7291e1eb66ecf3b7b84244031090f0371b0410f3db6209a4787243"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/src/fairchem/core/scripts/create_uma_finetune_dataset.py",
+                "shows": "First-party dataset script that prepares user structures and training configs, and logs \"To run finetuning, run fairchem -c\" followed by the generated uma_sm_finetune_template.yaml.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "c925b40994b5560f3c8f673230f203776ac8d5145385f4ff29ad7bfd4190edc1"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/configs/uma/finetune/uma_sm_finetune_template.yaml",
+                "shows": "Templated fine-tuning config setting \"base_model_name: uma-s-1p1\" with learning rate, batch size, epochs and checkpoint cadence for a run on user data.",
+                "accessed": "2026-11-16",
+                "http_status": 200,
+                "content_sha256": "38642049a4aabc4c5deab9a9834d488cbc7a6faa3ef995b88060e49f31a372ad"
               }
             ]
           },
@@ -29022,18 +29050,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-11-06",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-11-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-11-16",
-                "reason": "The value's 'one scale' clause is contradicted by the two published sizes; the templated config directory itself returned 404 on raw (only the script that reads it was fetched), so that clause rests on the script. A maintainer should approve the value rewrite and confirm the score is unaffected. Proposed for maintainer review, not applied: Score stays 3 (no score change proposed). Recorded value says 'one scale', but the fairchem README lists two sizes, uma-s-1p2p1 and uma-m-1p1 (50M/1.4B active/total params); the five-dataset task-embedding and first-party fine-tuning claims are supported. Proposed value: 'One model family consuming five distinct DFT datasets (two more tasks in UMA-1.2), selected at inference by a task embedding, in small and medium sizes, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation.' Needs maintainer ruling before the date can move."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-11-16"
           },
           "version_note": "Access is gated on manual approval and requires registering a full legal name and organization, which is a conduct and identity condition rather than a commercial bound."
         },
