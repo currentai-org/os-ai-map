@@ -20,7 +20,6 @@ openness:
   note: The managed fine-tuning service and its training pipeline are proprietary and run only on Fireworks'
     cloud, with no source published. Fireworks does publish an open-source reinforcement-fine-tuning toolkit,
     reward-kit, but it has not been confirmed as part of this product.
-  last_verified: '2026-09-23'
   raw: source:closed;training-pipeline:closed;runs-on:Fireworks-cloud-only;license:Proprietary(managed service);
     base-weights:open-models(varies)
   sources:
@@ -44,15 +43,21 @@ adoption:
     or models fine-tuned. The platform serves substantial inference volume overall, but none of it is specific
     to fine-tuning, so the map leaves this product unscored rather than borrowing a figure from the wider
     platform.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
-    shows: 'Searched the body for customers, developers, trillion, jobs run, monthly active and users: no
-      usage figure for fine-tuning is published; the only "million" is a dataset limit of "3 million dataset
-      examples".'
-    accessed: '2026-09-28'
+    shows: 'Searched the body for customers, developers, trillion, jobs run, monthly active, users, billion
+      and companies: no usage figure for fine-tuning; the only "million" is a dataset limit of "3 million
+      dataset examples".'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 8088b094cd7309ecad53d9bb94a6d0bdec7fed3391a144ffcac7010ec13b5036
+    content_sha256: cc59fc90015f57ec69fc8d412915741676b60862fa580c9c01957225abe18789
+  - url: https://docs.fireworks.ai/fine-tuning/training-api/serverless.md
+    shows: The only count-like text is pricing "per 1 million tokens"; no jobs run, customers tuning or
+      models fine-tuned figure appears.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: cf9b63f680890b665d79a028839df718175f6a6444295877f3ba4caa6bb3b932
 capability:
   score: 4
   basis: feature_matrix
@@ -61,12 +66,9 @@ capability:
     full-parameter training on dedicated capacity by request; adapters served from dedicated deployments.
     Open base-model catalog.'
   confidence: medium
-  note: Fireworks offers managed supervised, preference and reinforcement fine-tuning that produces LoRA
-    adapters, plus a Training API for custom training loops, with full-parameter training on dedicated GPUs
-    by request. It runs only on Fireworks' cloud and serves trained adapters only from dedicated deployments,
-    which puts it level with managed services such as Tinker and Together rather than with Megatron-LM and
-    the large-scale training frameworks.
-  last_verified: '2026-09-28'
+  note: Fireworks runs fine-tuning through a Training API for custom loops, with serverless LoRA training
+    on shared GPUs and dedicated training for full-parameter work on request. It runs only on Fireworks'
+    cloud, with adapters served from dedicated deployments or, on select base models, serverless.
   sources:
   - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
     shows: The page documents supervised, DPO/ORPO and reinforcement fine-tuning jobs, continued training

@@ -1818,6 +1818,12 @@ held:
         Predibase's own documentation is possible, so the capability value cannot be re-confirmed.
         The prior fetch failures say nothing about whether the feature claims are true.
       since: '2026-09-28'
+    openness:
+      because: The archived docs capture (web.archive.org, 2026-01-07) reset the connection on every attempt and docs.predibase.com
+        returns 403, so the SaaS-or-VPC and closed-platform dimensions (core-platform, runs-on) have no source fetched
+        today. Fetching that capture or another primary Predibase deployment page would settle it; the PyPI JSON,
+        sdist and LoRAX LICENSE fetched fine and showed nothing contradicting the recorded values.
+      since: '2026-11-16'
   presidio:
     adoption:
       because: Promoted from the registry on 2026-11-12. The level was read from a hand-fetched count of PyPI downloads of
@@ -2400,6 +2406,13 @@ held:
         multi-GPU support is still to be announced, which is consistent with the recorded gate and
         does not contradict it.
       since: '2026-09-28'
+    capability:
+      because: The 2x faster / 70% less VRAM figure, the method list (LoRA, QLoRA, full fine tuning, pretraining,
+        GRPO, DPO, FP8), the MoE 12x / 35% claim and the Triton kernels are re-established today, but the recorded
+        '500+ supported models' count no longer appears in the README (grep for 500 found nothing) and the multi-node
+        contrast with Megatron-LM is not established by any fetched source. Settling it needs a models-list page that
+        gives a count and a Megatron-LM source, or a decision to trim those phrases from the recorded value.
+      since: '2026-11-16'
   vals-ai:
     adoption:
       because: The benchmarks page publishes no user, traffic or customer count, only per-benchmark model
@@ -2504,3 +2517,162 @@ held:
         releases this hold.
       since: '2026-11-12'
       settled_by: scheduled_reconciliation
+  amazon-bedrock-custom-models-fine-tuning:
+    capability:
+      because: 'The recorded peer openai-fine-tuning-api is being wound down: OpenAI''s fine-tuning docs now say "OpenAI
+        is winding down the fine-tuning platform." and that it is closed to new users. The one_below edge and the
+        note''s ''also offers'' wording need a maintainer ruling on whether a closing peer remains a valid comparison;
+        the AWS value itself (SFT, RFT with Lambda rewards, distillation) re-reads unchanged.'
+      since: '2026-11-16'
+  anyscale-fine-tuning:
+    openness:
+      because: 'The built-on and status context values cannot be confirmed as recorded; a curator should apply the
+        component rewrite (no score or class change), after which the axis can be re-dated. Proposed for maintainer
+        review, not applied: Score 1 / class closed stands (source closed, proprietary license, both re-established
+        today). The recorded context component built-on ''Ray+DeepSpeed+HF-Accelerate ... LLMForge itself not redistributable''
+        is no longer supported: the docs now name LLaMA-Factory, SkyRL and Ray Train, name no Anyscale-authored library,
+        and never mention LLMForge or HF Accelerate. Propose built-on = LLaMA-Factory+SkyRL+Ray Train (DeepSpeed,
+        FSDP, Megatron backends) and drop the LLMForge clause; status ''deprecated'' describes LLMForge, not a page-declared
+        product state, so reword or drop it. Methods LoRA+full-FT still hold.'
+      since: '2026-11-16'
+    capability:
+      because: Its comparison peer axolotl could not be re-confirmed in this pass, so this capability axis cannot
+        be dated after it.
+      since: '2026-11-16'
+  axolotl:
+    capability:
+      because: 'The capability feature matrix is re-derived today from the README and docs, but the score of 4 rests
+        on a comparison with Megatron-LM that this record names only in prose (no relative_to/relation recorded),
+        and Megatron-LM''s own evidence was not read in this pass. Because anyscale-fine-tuning is recorded relative_to
+        axolotl, the anchor''s score is NOT confirmed today as a placement; a person should either record the Megatron-LM
+        comparison or re-read it, and apply the value correction before the axis is re-dated. Proposed for maintainer
+        review, not applied: Score 4 and basis feature_matrix stay as recorded. The recorded value text is wrong on
+        one item and must be corrected: it lists ''FSDP1/FSDP2'', but the current docs state ''FSDP1 has been removed,
+        and setting fsdp_version: 1 raises an error'' (FSDP2 only). Proposed value: ''Methods: full FT, LoRA, QLoRA,
+        GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism: FSDP2, DeepSpeed, multi-node Torchrun/Ray,
+        Sequence Parallelism + ND Parallelism (CP+TP+FSDP) + Expert Parallelism; precision: BF16 and 4/8-bit loading.''
+        The trailing ''Broadest single-tool method+parallelism matrix in this batch'' is an unsourced superlative
+        that none of today''s sources settle; drop it.'
+      since: '2026-11-16'
+  azure-openai-fine-tuning:
+    capability:
+      because: The Foundry docs now add Programmed Training (preview, approval-gated), which exposes losses, rewards,
+        rollouts and gradient accumulation, and the recorded value and note (only batch size, learning rate and epoch
+        count) are out of date. Whether this lifts the score above 4 is a maintainer call; the value and note need
+        rewriting once settled.
+      since: '2026-11-16'
+  fireworks-fine-tuning:
+    openness:
+      because: The fetched pages no longer document the managed SFT/DPO service the record describes, and Fireworks
+        now publishes an Apache-2.0 cookbook (fw-ai-external/cookbook) of Training API recipes; whether that is part
+        of this product, and so whether source/license components change, needs a maintainer ruling. The closed, Fireworks-cloud-only,
+        open-models reading is otherwise unchanged.
+      since: '2026-11-16'
+    capability:
+      because: 'Managed SFT/DPO paused and serverless LoRA serving now exist; the recorded value text and note are
+        stale and the level needs a maintainer check against Tinker/Together. Proposed for maintainer review, not
+        applied: Recorded: score 4, feature_matrix, value describes managed SFT, DPO/ORPO and reinforcement jobs,
+        a Training API, and adapters served only from dedicated deployments. Evidence now: managed SFT and DPO no
+        longer accept new jobs (Managed Training is paused); training runs through the Training API, with serverless
+        LoRA training (GA, shared pooled GPUs) and dedicated training (full-parameter, by request); LoRAs on select
+        base models can be served on serverless. Proposed value: ''Training API with serverless LoRA training (SFT,
+        DPO, ORPO, RL, distillation, custom loops) on shared GPUs and dedicated training with full-parameter configurations
+        by request; managed SFT/DPO jobs paused; adapters served from dedicated deployments, or serverless on select
+        base models. Open base-model catalog.'' Score 4 appears to still hold but the maintainer should confirm.'
+      since: '2026-11-16'
+  megatron-lm:
+    capability:
+      because: 'Capability value cannot be confirmed as recorded because the 47-48% MFU figure and the README 462B
+        benchmark sentence are gone. A maintainer must accept the revised value text before the axis can be re-dated;
+        the score itself is supported. Proposed for maintainer review, not applied: Score stays 5 (feature_matrix;
+        anchor for llama-factory, verl, swift, openpipe, xtuner, colossal-ai, torchtitan). The recorded value text
+        should change, not the score: today''s sources do not support ''a 462B-parameter GPT on 6,144 H100 GPUs at
+        47-48% MFU'' (the product page gives 462B and 6144 H100 only in prose, its table''s top row is 509B at 43-50%
+        MFU, and the README dropped the 462B sentence). Supported replacement: ''Parallelism: DP, TP, PP, CP, EP and
+        Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4; weak scaling of GPT models from 2B to 462B parameters
+        up to 6,144 H100 GPUs and near-linear strong scaling of a 177B GPT-3 from 96 to 4,608 H100 GPUs (NVIDIA product
+        page); DeepSeek-V3 671B at 1,648 TFLOPs/s per GPU on 256 GB300 GPUs (README).'''
+      since: '2026-11-16'
+  nemo-rl:
+    capability:
+      because: 'Value wording needs an editor''s update to name Automodel instead of DTensor; no score change. The
+        fetch confirms every listed method except that ''DTensor'' no longer appears anywhere in the README. Proposed
+        for maintainer review, not applied: Score 5 holds. The recorded value text is out of date: it names a DTensor
+        backend and omits PPO and MOPD. The README now calls the PyTorch backend Automodel (TP/SP/CP/EP/FSDP2, no
+        PP) and the v0.7.0 line adds PPO and MOPD. Proposed value: Methods: GRPO, GSPO, DAPO, GDPO, PPO, SFT (+LoRA),
+        DPO (+LoRA), on-policy distillation (MOPD), X-Token off-policy distillation, reward modeling; backends Automodel
+        (PyTorch-native TP/SP/CP/EP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP); SGLang and
+        Megatron inference backends, speculative decoding, long-context training.'
+      since: '2026-11-16'
+  openai-fine-tuning-api:
+    openness:
+      because: The license component (Proprietary, paid API service) is established only by the OpenAI Services Agreement,
+        which returned HTTP 403 after 6 attempts on openai.com/policies/services-agreement/ (and on the row-terms-of-use
+        and business-terms pages). Retry from a host the openai.com policy pages answer to; the source component alone
+        is re-readable from the model-optimization guide but a partial refresh would not date the axis.
+      since: '2026-11-16'
+    capability:
+      because: 'Capability as recorded cannot be confirmed: the method set shrank (no RFT, no o4-mini) and the platform
+        is closed to new users with training marked Deprecated. A maintainer must decide whether the score stays 4
+        or drops and then re-check amazon-bedrock-custom-models-fine-tuning''s relative_to relation. Proposed for
+        maintainer review, not applied: Recorded: score 4, feature_matrix, value ''SFT, vision fine-tuning, DPO, reinforcement
+        fine-tuning (RFT) for reasoning models; tunes gpt-4.1 family, gpt-4o, o4-mini; managed end-to-end''. Evidence
+        today: the model-optimization methods table lists only SFT (gpt-4.1, gpt-4.1-mini, gpt-4.1-nano), vision fine-tuning
+        (gpt-4o-2024-08-06) and DPO (gpt-4.1 family); reinforcement fine-tuning and o4-mini no longer appear anywhere
+        on that page (0 matches for reinforcement/RFT/o4-mini in the body). The pricing page lists gpt-4.1 and gpt-4.1-mini
+        training as ''Deprecated'' and says fine-tuning is closed to new users; the deprecations page shows ft-o4-mini-2025-04-16
+        shutting down Oct 23, 2026 (already past). The value text must drop RFT and o4-mini and narrow to SFT, vision
+        and DPO on gpt-4.1/gpt-4o. Whether score 4 still stands is a maintainer ruling because the Amazon Bedrock
+        custom-models record is relative to this product.'
+      since: '2026-11-16'
+  openpipe:
+    capability:
+      because: The recorded note says ART's documentation describes no tensor, pipeline or expert parallelism, but
+        the new multi-node deployment page installs openpipe-art[megatron], builds ART's HybridEP and runs a two-host
+        DP2 SFT step, so a Megatron-based multi-node training path now exists and the 3 / two_below megatron-lm reading
+        may be too low. What would settle it is the ART docs or source stating which parallelism modes (tensor, pipeline,
+        expert) the Megatron backend exposes for training, plus whether the multi-node path is generally available
+        rather than experimental.
+      since: '2026-11-16'
+  tinker:
+    capability:
+      because: 'The value text no longer matches the sources, so the axis cannot be confirmed as recorded; a maintainer
+        should approve the value rewrite (and the product page''s own ''1T'' versus the docs'' 2.8T). Score itself
+        is unchanged. Proposed for maintainer review, not applied: Score 4 and basis feature_matrix stay (LoRA-only
+        service, no full fine-tuning offering found, very large MoE support). The recorded value text is out of date:
+        it says models run 1B-550B with 550B-class MoE the largest demonstrated. The docs table now lists 4B dense
+        models up to Kimi-K3.1-Pro at 2.8T total parameters (104B active) and Inkling at 975B; the product page says
+        4B to 1T. Proposed value: ''Methods: LoRA training + sampling for RL/eval; open-weight models from 4B dense
+        to multi-trillion-parameter MoE (Inkling 975B, Kimi-K3.1-Pro 2.8T, Nemotron-3-Ultra 550B); abstracts distributed
+        multi-GPU training behind a 4-function API.'''
+      since: '2026-11-16'
+  trl:
+    capability:
+      because: 'Score 4 is unchanged, but the recorded value text asserts FP8 precision and an Accelerate-config scale-out
+        path that today''s sources do not show; a person should approve the corrected value text and recording the
+        Megatron-LM comparison. Megatron-LM''s own capability record was not re-read here. Proposed for maintainer
+        review, not applied: Recorded value text claims PPO among methods, ''precision BF16/FP8 via Accelerate'' and
+        scale-out through Accelerate configuration. Evidence today: score 4 and the Megatron-LM tier gap still hold,
+        but FP8 is not mentioned anywhere in the fetched TRL docs (bf16/fp16 only, set per trainer config), PPO is
+        experimental-only, ORPO/CPO/online DPO/GKD are experimental, and the distributing-training guide now launches
+        through torchrun with Accelerate under the hood (the ''Accelerate Configuration'' section is gone). Proposed
+        value: ''Methods: SFT, DPO (IPO via loss_type), KTO, GRPO, RLOO, reward modeling and distillation as stable
+        trainers; PPO, ORPO, CPO, online DPO and GKD experimental; parallelism via torchrun with DDP, DeepSpeed ZeRO
+        and FSDP (Accelerate under the hood); mixed precision bf16/fp16; no native tensor or pipeline parallelism,
+        a tier behind Megatron-LM (the C5 anchor).'' Score stays 4.'
+      since: '2026-11-16'
+  llama-factory:
+    capability:
+      because: Its comparison peer megatron-lm could not be re-confirmed in this pass, so this capability axis cannot
+        be dated after it.
+      since: '2026-11-16'
+  verl:
+    capability:
+      because: Its comparison peer megatron-lm could not be re-confirmed in this pass, so this capability axis cannot
+        be dated after it.
+      since: '2026-11-16'
+  swift:
+    capability:
+      because: Its comparison peer megatron-lm could not be re-confirmed in this pass, so this capability axis cannot
+        be dated after it.
+      since: '2026-11-16'

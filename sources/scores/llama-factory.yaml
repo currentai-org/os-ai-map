@@ -127,15 +127,21 @@ capability:
     LoRA and QLoRA, preference and reinforcement methods such as PPO and DPO, and a CLI or the zero-code
     LLaMA Board web UI. It trails Megatron-LM on scale: it reaches large models through FSDP with QLoRA
     and an optional Megatron-core backend, while Megatron-LM composes tensor, pipeline, context and expert
-    parallelism and reports training a 462B-parameter model on thousands of GPUs.'
-  last_verified: '2026-09-28'
+    parallelism and reports pretraining a 671B-parameter model on 256 GPUs.'
   sources:
   - url: https://raw.githubusercontent.com/hiyouga/LlamaFactory/main/README.md
     shows: The README headline reads "Easily fine-tune 100+ large language models with zero-code" through
       a CLI and the LLaMA Board web UI, and lists "(Continuous) pre-training, (multimodal) supervised fine-tuning,
       reward modeling, PPO, DPO, KTO, ORPO" plus "16-bit full-tuning, freeze-tuning, LoRA". Its news notes
-      "fine-tunes a 70B model on 2x24GB GPUs" with FSDP+QLoRA and "We support Megatron-core training backend
-      with" an external adapter.
-    accessed: '2026-09-28'
+      FSDP+QLoRA "fine-tunes a 70B model on 2x24GB GPUs" and "We support Megatron-core training backend"
+      with an external adapter.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 2d61d3ee9a0b7a099800b17b0be7a8ef034ed9b08f43cb32bdac17642cc823dd
+    content_sha256: afa9f07accadf3521cd7f2521626f433843bb91b4b1ecfaf75979f902342b433
+  - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/README.md
+    shows: The Megatron-LM README describes Megatron Core with "advanced parallelism strategies (TP, PP,
+      DP, EP, and CP)" and reports "Megatron Core achieves 1,648 TFLOPs/s per GPU for DeepSeek-V3 671B on
+      256 GPUs".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 241f860a314ba3790d0161a52fe423be2779d6854829488b7fb8dbf15954ee14

@@ -14,33 +14,29 @@ openness:
       runs-on:
         value: Google-Cloud-Vertex-AI-only
   confidence: high
-  note: Proprietary managed tuning service inside Google Cloud's Vertex AI generative-AI docs (now also
-    mirrored under 'Gemini Enterprise Agent Platform' branding); no source, runs only on Google Cloud against
-    closed Gemini models.
-  last_verified: '2026-09-22'
+  note: Vertex AI Tuning is a proprietary managed service with no published source. It runs only on Google
+    Cloud, against closed Gemini models.
+  last_verified: '2026-11-16'
   raw: source:closed;training-code:closed;runs-on:Google-Cloud-Vertex-AI-only;license:Proprietary(managed
     GCP service)
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: 'The tuning introduction page (redirected today to the canonical docs.cloud.google.com/gemini-enterprise-agent-platform/models/tuning)
-      describes Gemini tuning entirely as a hosted capability: supervised fine-tuning, preference tuning,
-      tuning checkpoints and continuous tuning are all run and served by Google, opening with "Agent Platform
-      supports supervised fine-tuning to customize foundational models." No client library, SDK source,
-      or self-hostable runtime is offered anywhere on the page.'
-    accessed: '2026-09-22'
+    shows: 'The tuning introduction page (redirected to the canonical docs.cloud.google.com/gemini-enterprise-agent-platform/models/tuning)
+      describes tuning as a hosted capability: "supports supervised fine-tuning, preference tuning, and"
+      reinforcement learning fine-tuning, plus checkpoints and continuous tuning, all run on Agent Platform.
+      No SDK source, training code or self-hostable runtime is offered.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: f38f080070765404923c44467c205b20a87668e9bfe173b16c9dc5e010a1b791
+    content_sha256: e0c17dc536fa3f62d47be2006740465f5a5a44d77ee78d4cb8fb1342d4a18f8b
     establishes:
     - source
   - url: https://cloud.google.com/terms/
-    shows: Section 3.3 "Restrictions" of the Google Cloud Platform Terms of Service states Customer will
-      not, and will not allow End Users to, "copy, modify, or create a derivative work of the Services",
-      "reverse engineer, decompile, translate, disassemble, or otherwise attempt to extract any or all of
-      the source code of, the Services", or "sell, resell, sublicense, transfer, or distribute any or all
-      of the Services" — the standard proprietary-SaaS terms this closed, managed feature is offered under.
-    accessed: '2026-09-22'
+    shows: 'Section 3.3 "Restrictions" bars the customer from creating a "derivative work of the Services",
+      and the same list includes "reverse engineer," and "(c) sell, resell," the Services: standard proprietary
+      managed-service terms.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: ddee94baa376c5fc6e594956e0bf455c397edd0def7abd44ee27eab2ae990336
+    content_sha256: ee2113feb0a31917030e3a3fbc66c9e6f04d47bc63438df2fbef3623cdb8759a
     establishes:
     - license
 adoption:
@@ -48,44 +44,44 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: Google publishes no usage figures for Gemini tuning, and its pricing page lists only per-token tuning
+  note: Google publishes no usage figures for Gemini tuning, and its pricing page lists only per-unit tuning
     rates. The Gemini app's monthly active users belong to a different product and cannot be attributed
     to this service, so the map leaves it unscored.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: 'The tuning guide is a how-to and reference page for Gemini tuning: it says "Agent Platform supports
-      supervised fine-tuning to customize foundational models." Searched the body for customers, monthly
-      active, downloads, MAU and tuning jobs: none, so no count of customers, developers, jobs or tokens
-      tuned is published.'
-    accessed: '2026-09-28'
+    shows: The tuning introduction page is a how-to and reference page for supervised, preference and reinforcement
+      learning fine-tuning; a text search of the body for customers, monthly active, downloads, MAU and
+      tuning jobs found none, so no count of customers, developers, jobs or tokens tuned is published.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 1d5e5d6c11603e7b6798ebb1dad59fda9e3e29af57e8f58538638c1a42302932
+    content_sha256: e0c17dc536fa3f62d47be2006740465f5a5a44d77ee78d4cb8fb1342d4a18f8b
   - url: https://cloud.google.com/vertex-ai/generative-ai/pricing
-    shows: 'The pricing page prices tuning per model: Gemini 3.5 Flash "Reinforcement Learning fine-tuning"
-      is listed at "$0.01 / 1,000 count", and the per-1M-token table for "Gemini 2.0 Flash Lite" has a "Tuning
-      for training tokens" row at "$0.001". A search of the body for monthly active, MAU, downloads and
-      tuning jobs found none, so it publishes no adoption or usage figure for tuning.'
-    accessed: '2026-09-28'
+    shows: 'The pricing page (redirected to cloud.google.com/model-garden/pricing) prices tuning per unit:
+      "Reinforcement Learning fine-tuning" for Gemini 3.5 Flash is "$0.01 / 1,000 count", and the "Gemini
+      2.0 Flash Lite" table has a "Tuning for training tokens" row at $0.001. A search of the body for monthly
+      active, MAU, downloads and tuning jobs found none.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: fc3c0eea68a9190bcc6866386882e5138778f95ab61011aad18747915e42884e
+    content_sha256: 53149d1b5c53c08f4cfa8e84910c882ed1725c1b05e407a946a7585e43eadd46
 capability:
   score: 4
   basis: feature_matrix
   value: 'Methods: supervised fine-tuning and preference tuning (DPO-style) for Gemini; multimodal tuning
     across text/document/image/audio/video plus function-calling tuning; checkpoint management.'
   confidence: medium
-  note: Vertex AI Tuning offers supervised, preference and preview reinforcement fine-tuning on Gemini models,
-    with continuous tuning, checkpoints and function-calling tuning. Google exposes no controls over parallelism,
+  note: Vertex AI Tuning offers supervised, preference and reinforcement fine-tuning on Gemini models, with
+    continuous tuning, checkpoints and function-calling tuning. Google exposes no controls over parallelism,
     precision or training scale and publishes no training benchmark, so it offers managed breadth rather
     than the deeper control of a training framework such as Megatron-LM.
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: 'Confirms Gemini tuning methods: "Gemini Enterprise Agent Platform preference tuning builds on
-      supervised fine-tuning by letting you tune your Gemini models with human feedback data"; also a nav-listed
-      "Reinforcement learning fine-tuning" section with a "Preview" badge, plus "Tuning checkpoints", "Continuous
-      tuning" and "Tune function calling".'
-    accessed: '2026-09-28'
+    shows: 'Methods: "preference tuning builds on supervised fine-tuning by" letting you tune Gemini with
+      human feedback data (pairwise chosen vs rejected responses); a "Reinforcement learning fine-tuning"
+      section; "Tuning checkpoints let you save tuning progress, compare checkpoint performance"; "Continuous
+      tuning lets you continue tuning an already tuned model"; and "Tune function calling". Supervised fine-tuning
+      links separate pages for text, image, audio, video and document data types.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 1d5e5d6c11603e7b6798ebb1dad59fda9e3e29af57e8f58538638c1a42302932
+    content_sha256: e0c17dc536fa3f62d47be2006740465f5a5a44d77ee78d4cb8fb1342d4a18f8b

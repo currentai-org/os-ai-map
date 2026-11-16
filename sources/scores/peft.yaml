@@ -17,64 +17,48 @@ openness:
       managed-tier:
         value: none
   confidence: high
-  note: Apache-2.0, an OSI license, with the full source public and no proprietary tier.
-  last_verified: '2026-09-23'
+  note: PEFT's LICENSE file is the standard, unmodified Apache 2.0 text, and the package installs from the
+    public repository with no paid or enterprise extra. Hugging Face's paid plans cover Hub storage, access
+    and support features, not the library.
+  last_verified: '2026-11-16'
   raw: license:Apache-2.0(OSI);source:public(huggingface/peft);no feature-gated core;managed-tier:none;core-gated:ungated
   sources:
   - url: https://raw.githubusercontent.com/huggingface/peft/main/LICENSE
-    shows: Full unmodified Apache License, Version 2.0 text, opening "Apache License / Version 2.0, January
-      2004 / http://www.apache.org/licenses/" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION",
-      closing with the standard APPENDIX carrying the unfilled template placeholder "Copyright [yyyy] [name
-      of copyright owner]". No added use restriction or field-of-use clause.
-    accessed: '2026-09-23'
+    shows: Full Apache License, Version 2.0 text, opening "Apache License" and "TERMS AND CONDITIONS FOR
+      USE, REPRODUCTION, AND DISTRIBUTION", closing with the standard APPENDIX and the unfilled placeholder
+      "Copyright [yyyy] [name of copyright owner]". No added use restriction.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
     establishes:
     - license
-  - url: https://github.com/huggingface/peft
-    shows: 'Repository metadata reports "license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"} and
-      "isArchived":false, with description "🤗 PEFT: State-of-the-art Parameter-Efficient Fine-Tuning." The
-      only occurrences of "enterprise" or "premium" in the page are GitHub''s own site-wide navigation chrome
-      (Copilot/Enterprise nav links to github.com/enterprise and github.com/pricing) — none reference peft
-      itself, and the page names no gated feature or paid edition of the library.'
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: 2e586a33e2f6c45a9bd8702c08f41fdf16a86d64c7c929728da26a06bd689a83
-    establishes:
-    - source
-    - core-gated
   - url: https://raw.githubusercontent.com/huggingface/peft/main/setup.py
-    shows: 'setup() declares name="peft", license="Apache", license_files=["LICENSE"], and classifiers including
-      "License :: OSI Approved :: Apache Software License". extras_require is limited to quality, docs_specific,
-      dev and test — no commercial or enterprise extra — and package_dir/packages point at the same src/peft
-      tree the repo ships, so the installable package builds from the published source with nothing withheld.'
-    accessed: '2026-09-16'
+    shows: 'setup() declares license declared as Apache with license_files pointing at LICENSE and "License
+      :: OSI Approved :: Apache Software License". The extras are quality, docs_specific, dev and test,
+      with no commercial or enterprise extra.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 43b31fd7374c7fc5d779e201d8e5cd75838fecec4ac1157166843d1bcb0b6012
+    content_sha256: 3720608cbb4c61eeeafa7751c6e6ceb201b1ce28139bb53317419e1dc35d5435
     establishes:
+    - license
     - source
     - core-gated
-    - license
   - url: https://pypi.org/project/peft/
-    shows: 'Project page headed "peft 0.20.0". Sidebar License reads "Apache Software License (Apache)"
-      and the classifier list carries "License :: OSI Approved :: Apache Software License". Provides Extra
-      lists exactly dev, docs-specific, quality and test, matching setup.py — no paid or enterprise extra
-      on the distributed wheel.'
-    accessed: '2026-09-23'
+    shows: Project page for "peft 0.21.3" with License "Apache Software License (Apache)". "Provides Extra"
+      lists quality, docs-specific, dev and test, matching setup.py, and the project links to github.com/huggingface/peft.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: a1026b185450cc10ec5809706f7ae0ebb6f84e4cc809014561cd3962ac6f0b2a
+    content_sha256: 369ece8c18e5a92028a32333b13ddd11cf236830b79900dd5e795d4b98fd4fa0
     establishes:
     - license
     - source
     - core-gated
   - url: https://huggingface.co/pricing
-    shows: 'Hugging Face''s paid plans: PRO at "$9" per month, Team at "$20", Enterprise at "$50", plus
-      per-TB Hub storage and hourly Spaces/inference hardware. Every listed benefit is Hub- or account-scoped
-      (storage, inference credits, SSO, audit logs); a case-insensitive search of the body for "peft" returns
-      zero matches, so no PEFT feature is gated behind a plan.'
-    accessed: '2026-09-23'
+    shows: Hugging Face plans at "$9" (PRO), "$20" (Team) and "$50" (Enterprise) per month, with benefits
+      such as "SSO support" and storage. All are account- or Hub-scoped, and the page never mentions PEFT.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: cb1a439eb6dfb7053f694ca12caf834a797bc53d2134de03e220fc1e583ad923
+    content_sha256: 2b3970fdccfc1e4252d5297bbbe62a7c9e707214c9f7f521abfd510842c9aea2
     establishes:
     - core-gated
 adoption:
@@ -116,31 +100,28 @@ capability:
     LoKr, IA3 and prefix or prompt tuning -- with 4- and 8-bit quantization, BF16, and parallelism inherited
     from Accelerate. Its scope stops at adapters: it does not orchestrate full RLHF the way TRL and OpenRLHF
     do, and it does not train at frontier scale the way Megatron-LM does.'
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/huggingface/peft/main/README.md
-    shows: Quickstart wraps a base model with get_peft_model and a LoraConfig, and the integrations section
-      covers Transformers ("PEFT is directly integrated with [Transformers]"), Diffusers ("conveniently
-      managing different adapters"), Accelerate ("distributed training and inference for really big models")
-      and TRL ("PEFT can also be applied to training LLMs with RLHF components such as the ranker and policy").
-      The memory table lists a 12B model as "OOM GPU" for full fine-tuning against "56GB GPU / 3GB CPU"
-      with LoRA, and a Stable Diffusion LoRA checkpoint at "only 8.8MB".
-    accessed: '2026-09-28'
+    shows: PEFT is "directly integrated with [Transformers]", with Diffusers "for conveniently managing
+      different adapters" and Accelerate "for distributed training and inference for really big models".
+      "PEFT can also be applied to training LLMs with RLHF components such as the ranker and policy". The
+      table lists a 12B model as "OOM GPU" for full fine-tuning against "56GB GPU / 3GB CPU" with LoRA;
+      a Stable Diffusion checkpoint is "only 8.8MB".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 65958fdf047de668cb2abd1c34dace3082d46680b98ae781b8bd2db38486e13e
+    content_sha256: bded606f05727a975a03625a7b0b561be8b048ffacafd78874e80242d981f2d2
   - url: https://raw.githubusercontent.com/huggingface/peft/main/src/peft/utils/peft_types.py
-    shows: The PeftType enum, documented as "Enum class for the different types of adapters in PEFT.", lists
-      45 method identifiers, among them "LORA", "ADALORA", "IA3", "PROMPT_TUNING", "PREFIX_TUNING", "P_TUNING",
-      "LOHA", "LOKR", "OFT", "VERA" and "BOFT", plus newer additions such as "DELORA", "GRALORA" and "CARTRIDGE".
-      All are adapter-family techniques; none add full-model training orchestration or frontier-scale parallelism.
-    accessed: '2026-09-28'
+    shows: The enum documented as "Enum class for the different types of adapters in PEFT." lists method
+      identifiers including "LORA", "ADALORA", "IA3", "PROMPT_TUNING", "PREFIX_TUNING", "P_TUNING", "LOHA",
+      "LOKR", "OFT", "VERA", "BOFT", "DELORA", "GRALORA" and "CARTRIDGE". All are adapter-family techniques.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 44c67b60562eec2ccd5f3a18d5c2c6c00bd7752919710e45eeb751a5ebf5633f
+    content_sha256: a393961ae2189d8da372ef8a907f64c3ced760f28d7189803cde9d1d9fcacb4f
   - url: https://raw.githubusercontent.com/huggingface/peft/main/docs/source/developer_guides/quantization.md
-    shows: The Quantization guide combines PEFT LoRA with bitsandbytes 4-bit quantization, AWQ, GPTQ and
-      AQLM, describing QLoRA as a method "that quantizes a model to 4-bits and then trains it with LoRA"
-      and noting "This method allows you to finetune a 65B parameter model on a single 48GB GPU!". Its worked
-      example sets "bnb_4bit_compute_dtype=torch.bfloat16".
-    accessed: '2026-09-28'
+    shows: Combines PEFT with bitsandbytes 4-bit, "AWQ", "GPTQ" and "AQLM"; QLoRA is "a method that quantizes
+      a model to 4-bits and then trains it with LoRA" and "allows you to finetune a 65B parameter model
+      on a single 48GB GPU!". The example sets "bnb_4bit_compute_dtype=torch.bfloat16".
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: e9425bb1f20db3e8f0ba37a24c6559a688cb8d7a5571e06ddb65b70373e46aa9
+    content_sha256: 2cfbfd012e2ab47041af2ad83412d4e90df75f57a1e73546a1abb8568ceac88e

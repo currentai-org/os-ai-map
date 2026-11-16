@@ -14,24 +14,36 @@ openness:
       runs-on:
         value: AWS-Bedrock-only
   confidence: high
-  note: Proprietary managed customization service inside AWS Bedrock, no source, runs only on AWS against
-    Bedrock-hosted foundation models.
-  last_verified: '2026-09-23'
+  note: Amazon Bedrock Custom Models is a proprietary managed service with no published source. It runs
+    only on AWS, against foundation models hosted on Bedrock.
+  last_verified: '2026-11-16'
   raw: source:closed;training-code:closed;runs-on:AWS-Bedrock-only;license:Proprietary(managed AWS service,
     token+storage billed)
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
-    shows: Lists supervised fine-tuning, reinforcement fine-tuning, and distillation as the three customization
-      methods, delivered entirely inside Bedrock via console/API with no repository, download, or self-hostable
-      engine referenced anywhere on the page. A billing note states training is charged by tokens processed
-      "and model storage charged per month per model," a metered AWS commercial arrangement rather than
-      any code license -- consistent with the recorded source:closed and license:Proprietary components.
-    accessed: '2026-09-23'
+    shows: Customization is offered as three methods, "Supervised fine-tuning", "Reinforcement fine-tuning"
+      and "Distillation", through Bedrock itself, with no repository or download referenced. A billing note
+      charges for tokens processed and "model storage charged per month per model", a metered AWS arrangement
+      rather than a code license.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc
+    content_sha256: 9dbbde356b049fcb8a46662a6b1e44fb448bc391239f0bc9a4db9cf4438aa98a
     establishes:
     - source
     - license
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-model-supported.html
+    shows: Under "Supported models and Regions for fine-tuning", the page says "foundation models that you
+      can fine-tune" and lists Bedrock model IDs such as Amazon Nova and Meta Llama entries, each tied to
+      specific AWS Regions.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 225f5b6ecaaf17500a27ed8e82672aa3e17f5e85ea3a1127fe5b26192d8bb883
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html
+    shows: '"Amazon Bedrock is a fully managed service" giving access to foundation models, which is the
+      only place customization runs.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 0aa86346507b5190049cb8512a6150bc6bb6fa1b8b37a40ead34540dc055e944
 adoption:
   level: null
   reach: null
@@ -40,15 +52,19 @@ adoption:
   note: 'AWS publishes no usage figure for Amazon Bedrock Custom Models: no jobs run and no count of customers
     customizing models. Nothing AWS publishes about Bedrock as a whole is specific to model customization,
     so the map leaves adoption unscored rather than borrow a figure from the wider platform.'
-  last_verified: '2026-09-28'
+  last_verified: '2026-11-16'
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
-    shows: 'The page lists three customization methods and a billing note that training is charged by "the
-      number of" tokens processed and "model storage charged per month per model", and reports no usage
-      figure. Searched the body for customers, jobs run, models customized and usage counts: none.'
-    accessed: '2026-09-28'
+    shows: Lists three customization methods and a billing note; reports no usage figure, customer count
+      or job count.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc
+    content_sha256: 9dbbde356b049fcb8a46662a6b1e44fb448bc391239f0bc9a4db9cf4438aa98a
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html
+    shows: Bedrock overview page; offers model availability news but no usage figure for model customization.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 0aa86346507b5190049cb8512a6150bc6bb6fa1b8b37a40ead34540dc055e944
 capability:
   score: 3
   basis: feature_matrix
@@ -61,7 +77,6 @@ capability:
     fine-tuning and direct preference optimization on OpenAI's own models.
   relative_to: openai-fine-tuning-api
   relation: one_below
-  last_verified: '2026-09-28'
   sources:
   - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
     shows: 'The page lists "Supervised fine-tuning", "Reinforcement fine-tuning" with reward functions defined

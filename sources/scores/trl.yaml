@@ -17,88 +17,65 @@ openness:
       managed-tier:
         value: none
   confidence: high
-  note: Apache-2.0 throughout, an OSI license, with the full source public. There is no proprietary core
-    and no paid managed-training service that withholds features from the published package.
-  last_verified: '2026-09-23'
+  note: TRL's trainers, CLI and distributed-training integration all ship in the published package and repository.
+    Nothing in the README, docs or package metadata points to a paid edition, and Hugging Face's paid plans
+    cover Hub features such as private storage rather than TRL functionality.
+  last_verified: '2026-11-16'
   raw: license:Apache-2.0(OSI);source:public(huggingface/trl);no feature-gated core;managed-tier:none;core-gated:ungated
   sources:
-  - url: https://github.com/huggingface/trl/blob/main/LICENSE
-    shows: 'Rendered blob of the repository LICENSE. Body carries the full Apache License text: the heading
-      block "Apache License / Version 2.0, January 2004 / http://www.apache.org/licenses/", the section
-      "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION" with "1. Definitions." following it,
-      and the appendix notice "Copyright 2020-2026 The HuggingFace Team". No added use restriction or field-of-use
-      clause.'
-    accessed: '2026-08-08'
-    http_status: 200
-    content_sha256: 7f556f600e06ff5d980a548a0d4caf23e4f54bd798b22ad8da1c1681d618c8dc
-    establishes:
-    - license
   - url: https://raw.githubusercontent.com/huggingface/trl/main/LICENSE
-    shows: 11,355-byte plain-text Apache License Version 2.0 (January 2004), 201 lines, unmodified through
-      section 9 and the appendix, closing with "Copyright 2020-2026 The HuggingFace Team" and the standard
-      "Licensed under the Apache License, Version 2.0" notice. Stable plain-text form of the same file the
-      cited blob URL renders.
-    accessed: '2026-09-23'
+    shows: Plain-text Apache License, "Version 2.0, January 2004", closing with "Copyright 2020-2026 The
+      HuggingFace Team". No added use restriction.
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1bf614b1fdc40fbd344aa58d00d17d5fd0d252ea333a05be018a38959c8b2998
     establishes:
     - license
   - url: https://raw.githubusercontent.com/huggingface/trl/main/README.md
-    shows: 'Installation section gives three routes to the running product from the published repo: "pip
-      install trl", "pip install git+https://github.com/huggingface/trl.git", and "git clone https://github.com/huggingface/trl.git;
-      cd trl/; pip install -e .[dev]". Highlights name SFTTrainer, GRPOTrainer, DPOTrainer and KTOTrainer,
-      Accelerate scaling "from single GPU to multi-node clusters" via DDP and DeepSpeed, and PEFT LoRA/QLoRA.
-      The CLI section shows "trl sft", "trl dpo", "trl kto" invocations. The file offers no paid, premium
-      or enterprise edition and names no feature that the published source cannot build.'
-    accessed: '2026-09-23'
+    shows: Installs with "pip install trl" or "pip install git+https://github.com/huggingface/trl.git";
+      the CLI section runs "trl sft --model_name_or_path" and equivalents for DPO and KTO. Describes no
+      paid or enterprise edition.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: dcca5a59d5978ef5185fd08e7ca513a7218cbc76db9b8db4f20bd5a9d674a20d
+    content_sha256: 9a788536f5ed9a21646040cc999a00aa79674f716744d1c799d0b20ac65d2301
     establishes:
     - source
     - core-gated
   - url: https://raw.githubusercontent.com/huggingface/trl/main/pyproject.toml
-    shows: '[project] declares name = "trl", license = "Apache-2.0", license-files = ["LICENSE"], requires-python
-      = ">=3.10", and [project.scripts] trl = "trl.cli:main" - the CLI entry point ships in the same package.
-      [project.optional-dependencies] lists bco, deepspeed, kernels, liger and further extras, all pulling
-      open packages (scikit-learn, deepspeed, liger-kernel, transformers); there is no commercial, enterprise
-      or premium extra and no reference to a separate closed distribution.'
-    accessed: '2026-09-23'
+    shows: Declares license = "Apache-2.0", license-files = ["LICENSE"] and the CLI entry point trl = "trl.cli:main".
+      The optional extras (deepspeed, harbor, kernels, liger, math_verify, openreward, peft, quantization,
+      vllm, vlm and others) are plain pip dependency lists; none names or describes a paid or enterprise
+      TRL edition.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 6f4d0dacac442868e6d817af61897f4e80178b4bb684b2987080e25e2482c33d
+    content_sha256: 779c694902e821a1f76e73782277d76dbe240a35ccf8ef37b69f6e2e5c7c6959
     establishes:
     - license
     - source
     - core-gated
   - url: https://huggingface.co/docs/trl/index
-    shows: 'The "Taxonomy" section prints the complete trainer set of the installed library - online: GRPOTrainer,
-      RLOOTrainer, OnlineDPOTrainer, NashMDTrainer, PPOTrainer, XPOTrainer; reward modeling: RewardTrainer,
-      PRMTrainer; offline: SFTTrainer, DPOTrainer, KTOTrainer, BCOTrainer, CPOTrainer, ORPOTrainer; knowledge
-      distillation: GKDTrainer, MiniLLMTrainer. The only per-trainer markers are the legend''s own two (vLLM
-      support and experimental); no trainer is marked as belonging to a paid or hosted tier.'
-    accessed: '2026-09-23'
+    shows: '"Below is an overview of TRL trainers, organized by maturity and method type"; the only split
+      is stable versus Experimental, and no trainer is marked as paid or hosted.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: dd68687611155d25637f16447214fa697136fb2a481684aa7617a32d3d638c59
+    content_sha256: 6b381774cefbf605980e454b923dfb827a4d3946a970423b85c2fb27c74c53ed
     establishes:
     - core-gated
   - url: https://huggingface.co/pricing
-    shows: Hugging Face's paid offering, read for the core-gated question. The plans are PRO ($9/month),
-      Team ($20/month per user) and Enterprise ($50/month per user), plus per-TB Hub storage ($8-18/TB/mo)
-      and hourly Spaces hardware. Every listed benefit is Hub/account scoped - private storage, inference
-      credits, ZeroGPU quota, SSO, audit logs, resource groups. The page does not mention TRL at all (zero
-      occurrences of the string in the body) and gates no TRL trainer or feature behind a plan.
-    accessed: '2026-09-23'
+    shows: 'Hugging Face plans (PRO, Team, Enterprise: "Custom onboarding and enterprise features") are
+      Hub and account scoped, such as private repositories and storage capacity. The body contains no mention
+      of TRL.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 47fb697c35c1d66d61a1318b43557ff275de1ea0909c34b1fe294bde1573aecb
+    content_sha256: 3c174c7fe900177fbf9c68e4cc378ae906c2f26cc7843f64a89dc158957e7ef6
     establishes:
     - core-gated
   - url: https://pypi.org/project/trl/
-    shows: 'Package page for trl. "License expression: Apache-2.0" with a link to the SPDX License List;
-      Author: Leandro von Werra; "Requires Python >=3.10"; "Provides Extra: bco, deepspeed, kernels, liger,
-      peft, quality, quantization, scikit, test, vllm, vlm, math" - no commercial or enterprise extra. Confirms
-      the distributed wheel carries the same Apache-2.0 terms as the repository.'
-    accessed: '2026-09-23'
+    shows: Package page lists "License expression" Apache-2.0 and a "Provides Extra" list (deepspeed, harbor,
+      kernels, liger, peft, quantization, vllm, vlm, dev and others) with no commercial or enterprise extra.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 03913aebe1ce0fa31d4dd419b35002dc5040e682431e5e620527d99a69b210e5
+    content_sha256: 501b52d311b3dfe67011a3cec51ffbf7006f3299d2f5148b1693a91ed04dc733
     establishes:
     - license
     - core-gated
@@ -144,7 +121,6 @@ capability:
     training, GRPO and other online methods, PPO, and reward modeling. It hands large-scale distributed
     training to Hugging Face Accelerate and DeepSpeed rather than implementing its own parallelism, which
     leaves it a tier behind Megatron-LM.'
-  last_verified: '2026-09-28'
   sources:
   - url: https://huggingface.co/docs/trl/index
     shows: 'The stable docs index opens its trainer overview with "Below is an overview of TRL trainers,
