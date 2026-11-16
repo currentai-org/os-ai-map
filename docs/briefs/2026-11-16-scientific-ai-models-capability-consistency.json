@@ -1,0 +1,2453 @@
+{
+ "brief": "docs/briefs/2026-11-16-scientific-ai-models-capability-consistency.md",
+ "snapshot": "origin/main at bf66c237 (after #1077)",
+ "note": "Proposals only. No score, value, note, comparison, hold or recipe is changed by this record.",
+ "verdict_codes": {
+  "consistent": "credit or absence matches rulings (a)-(f) and R-2026-11-16-a",
+  "inconsistent": "credit contradicts a ruling or the treatment of a peer; see proposals",
+  "consistent-evidence-gap": "credit holds, but the cited quote does not itself show it",
+  "consistent-reason-wrong": "outcome holds, but the record's stated reason contradicts a ruling",
+  "open": "cannot be settled from the assembled evidence; left to an existing hold"
+ },
+ "quote_verification": "Every quote with a source was checked as a substring of the saved body whose sha256 equals the record's content_sha256 (HTML stripped, whitespace collapsed).",
+ "matrix": [
+  {
+   "product": "prithvi-eo",
+   "score": 4,
+   "relative_to": "terramind",
+   "relation": "one_below",
+   "value": "Adaptation pathway, Landsat-Sentinel input, and demonstrated multi-resolution transfer; no scientific-output generation.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "TerraTorch configs and notebooks; executable under (b).",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-EO-2.0/main/README.md",
+     "content_sha256": "f13bf62e35eac8890f88d3d5b42f96738f3d7cac9b2319207e6757b4fb07d616",
+     "quote": "sample notebooks for fine-tuning",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "HLS carries Landsat OLI and Sentinel-2 MSI; consistent with granite-geospatial's exclusion for the Landsat-only L30 half.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-EO-2.0/main/README.md",
+     "content_sha256": "f13bf62e35eac8890f88d3d5b42f96738f3d7cac9b2319207e6757b4fb07d616",
+     "quote": "Harmonized Landsat and Sentinel data at 30m resolution",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Masked reconstruction is not generation (rubric note).",
+     "url": "https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-600M/raw/main/README.md",
+     "content_sha256": "12f9ab36f5be76a6c88abd0bdc091c93daa1eaf0d020ad043baa59273c6a8f01",
+     "quote": "run the image reconstruction on a set of HLS images",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "inconsistent",
+     "comment": "The span is a GEO-Bench evaluation reached by fine-tuning a backbone pretrained only on 30 m HLS (paper: 'despite being pretrained only with 30 m data'). The checkpoint's own input is one resolution; Clay and the lunar model are credited for inputs the checkpoint itself takes at several resolutions.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-EO-2.0/main/README.md",
+     "content_sha256": "f13bf62e35eac8890f88d3d5b42f96738f3d7cac9b2319207e6757b4fb07d616",
+     "quote": "from 0.1m to 15m",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 3,
+   "level_from_count": 4
+  },
+  {
+   "product": "terramind",
+   "score": 5,
+   "relative_to": null,
+   "relation": null,
+   "value": "Fine-tunable; six input modalities; any-to-any generation; simultaneous pixel- and token-scale processing.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Config-driven TerraTorch fine-tuning.",
+     "url": "https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md",
+     "content_sha256": "1fac187c72dfbc20c5c4588885b96ed4c1a6d3ec307e8ec6a17993e5d5b9d9d7",
+     "quote": "You can fine-tune TerraMind with a config using TerraTorch",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Sentinel-1, Sentinel-2, DEM and land cover are distinct instruments and products.",
+     "url": "https://raw.githubusercontent.com/IBM/terramind/main/README.md",
+     "content_sha256": "089aae5d14f5f69997eab2673d12646511767f98225f7b53479790d9687d3a68",
+     "quote": "TerraMind uses six tokenizer for pre-training and generation",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Publisher claims generation and evaluates it; the lunar model's generation was declined only because its publisher disclaims it. Tension noted, no change proposed.",
+     "url": "https://raw.githubusercontent.com/IBM/terramind/main/README.md",
+     "content_sha256": "089aae5d14f5f69997eab2673d12646511767f98225f7b53479790d9687d3a68",
+     "quote": "TerraMind can perform any-to-any generation based on varying combinations of inputs.",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "inconsistent",
+     "comment": "Pixel- and token-level streams are internal representation of data that all enter co-registered at 10 m (TerraMesh: 'pixel-aligned 10 m cubes'). Same defect R-2026-11-16-a removed from Surya.",
+     "url": "https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md",
+     "content_sha256": "1fac187c72dfbc20c5c4588885b96ed4c1a6d3ec307e8ec6a17993e5d5b9d9d7",
+     "quote": "simultaneously processing pixel-level and token-level data",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 4,
+   "level_from_count": 5
+  },
+  {
+   "product": "clay",
+   "score": 4,
+   "relative_to": "prithvi-eo",
+   "relation": "at",
+   "value": "Configurable training path; one model accepting several satellite sensors (Sentinel-2, Landsat, Sentinel-1 radar, NAIP, LINZ and MODIS) with ground resolution from under 0.5 m to 500 m; no documented scientific generation.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/Clay-foundation/model/main/README.md",
+     "content_sha256": "1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e",
+     "quote": "python trainer.py fit --model ClayMAEModule --data ClayDataModule --config configs/config.yaml",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://clay-foundation.github.io/model/release-notes/specification.html",
+     "content_sha256": "192ffac7ff1ba4be73c044966d283784ff618cb70d9dd8534e346d8a6a26e891",
+     "quote": "designed to handle inputs from a variety of satellite sensors",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Downstream possibility only; R-2026-11-16-a.",
+     "url": "https://clay-foundation.github.io/model/index.html",
+     "content_sha256": "fcbd01310b6b581690ba9bf23d9644910eab091b87a0ceb07bdafab42389caf9",
+     "quote": "generative tasks",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "The category's standard for input-side multi_scale: one checkpoint takes each sensor at its own GSD and is told that GSD.",
+     "url": "https://clay-foundation.github.io/model/release-notes/specification.html",
+     "content_sha256": "192ffac7ff1ba4be73c044966d283784ff618cb70d9dd8534e346d8a6a26e891",
+     "quote": "scaled according to the Ground Sampling Distance (GSD)",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 3,
+   "level_from_count": 4
+  },
+  {
+   "product": "aurora-weather",
+   "score": 3,
+   "relative_to": "terramind",
+   "relation": "two_below",
+   "value": "An executable fine-tuning pathway and a medium/high-resolution span; a deterministic forecast target, and inputs that vary by dataset rather than one documented multi-instrument interface.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Executable fine-tuning guide.",
+     "url": "https://raw.githubusercontent.com/microsoft/aurora/main/docs/finetuning.md",
+     "content_sha256": "5fad3320c86f2f5149abbfeee1489f98bfc51cbf25267e7f2a5109abbe88905c",
+     "quote": "you should build on the pretrained version",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Record: inputs vary by dataset rather than one multi-instrument interface."
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "open",
+     "comment": "Record reads Aurora as deterministic under (d). The Hugging Face file list saved in the #1076 packet names 'aurora-0.25-v1.5-ensemble.ckpt'; whether that is a probabilistic output is for the open capability hold's re-fetch to settle."
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "0.25-degree and 0.1-degree checkpoints in Aurora's own release; ruling (a).",
+     "url": "https://raw.githubusercontent.com/microsoft/aurora/main/README.md",
+     "content_sha256": "73535361d411738555fba1054f88e97aed8a746b6174391e0feb11db08c04c92",
+     "quote": "one for high-resolution weather prediction",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "prithvi-wxc",
+   "score": 3,
+   "relative_to": "terramind",
+   "relation": "two_below",
+   "value": "Task-specific adaptation and a variable regional/global and temporal scale; a deterministic future-state target, and one MERRA-2 input system.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Linked fine-tuning repositories; the quote itself is descriptive, so the executable entry point is worth citing on the next refresh.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-WxC/main/README.md",
+     "content_sha256": "189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713",
+     "quote": "We have fine-tuned the model to a number of downstream tasks",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "One reanalysis system.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-WxC/main/README.md",
+     "content_sha256": "189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713",
+     "quote": "Prithvi WxC used data from the MERRA-2 reanalysis for pretraining",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Deterministic forecast under (d)."
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "inconsistent",
+     "comment": "Global versus regional is spatial extent on one MERRA-2 grid, and the card's flexible lead time ([0, 6, 12, 24] hours) is forecast horizon; both are extent under (e). Surya's 2-12 hour horizons are not credited.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-WxC/main/README.md",
+     "content_sha256": "189a67cd59990516831cca4d6dcc556764c18b17919cfefc2bbcaa4e15715713",
+     "quote": "suitable for both global and regional applications",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "surya-heliophysics",
+   "score": 3,
+   "relative_to": "terramind",
+   "relation": "two_below",
+   "value": "LoRA adaptation and joint AIA-HMI multi-instrument input; local and global attention at a single native resolution, and a deterministic forecasting objective.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md",
+     "content_sha256": "5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873",
+     "quote": "Parameter-efficient LoRA adaptation for diverse downstream tasks",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Two instruments.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md",
+     "content_sha256": "5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873",
+     "quote": "Trained on 13 channels from SDO's AIA (8 channels) and HMI (5 channels)",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Deterministic forecast under (d).",
+     "url": "https://huggingface.co/nasa-ibm-ai4science/Surya-1.0/raw/main/README.md",
+     "content_sha256": "e402c7ac9fe712f1dd755d4169bd69c790d6078e674bc386712d5304c9810b70",
+     "quote": "one-hour-ahead forecasting + autoregressive rollout tuning up to 12 hours",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "R-2026-11-16-a: local and global attention at one sampling resolution is not multi_scale.",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md",
+     "content_sha256": "5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873",
+     "quote": "Native 4096×4096 pixel resolution with 12-minute cadence",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "esm-2",
+   "score": 2,
+   "relative_to": "prithvi-eo",
+   "relation": "two_below",
+   "value": "Explicit fine-tuning pathway; the release does not document multi-instrument input, scientific generation, or multi-scale operation.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/facebook/esm2_t33_650M_UR50D/raw/main/README.md",
+     "content_sha256": "462a2f24724e19c6be0efab926315c294a863c9a9770e2c8b3d859b2d81a07de",
+     "quote": "fine-tune ESM-2 models on your tasks of interest",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Sequence only."
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Model sizes are not scales."
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "evo-2",
+   "score": 3,
+   "relative_to": "terramind",
+   "relation": "two_below",
+   "value": "A training and fine-tuning path and genuine DNA generation; one sequence modality, and a context window that varies in extent at a fixed single-nucleotide granularity.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md",
+     "content_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89",
+     "quote": "To train or finetune Evo 2, you can use",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "DNA sequence only."
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md",
+     "content_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89",
+     "quote": "Evo 2 can generate DNA sequences based on prompts.",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Context length is extent under (e).",
+     "url": "https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md",
+     "content_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89",
+     "quote": "single-nucleotide resolution at up to 1 million base pair context length",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "alphagenome",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "Inputs: DNA sequence plus expression conditioning from the user's own single-cell RNA-seq data (up to 256 cells). Outputs at several sampling resolutions: RNA-seq and accessibility tracks at 1 bp, histone and transcription-factor ChIP-seq at 128 bp, and chromatin contact maps at 2,048 bp. Conditioning updates no weights; no fine-tuning or generative pathway is documented.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Conditioning updates no weights; R-2026-11-16-a.",
+     "url": "https://www.alphagenomedocs.com/getting_started.html",
+     "content_sha256": "f81e9e91ea8e7784a391c4fb81c0b931e9f897846eaa2a05db9f1b76560db74f",
+     "quote": "expression conditioning given up to 256 cells",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "DNA plus scRNA-seq conditioning; R-2026-11-16-a.",
+     "url": "https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md",
+     "content_sha256": "9a2c79cd5bb946cba758d79d614ae7f02270bf4b7b7a25eac01770ca97dc9b10",
+     "quote": "generalization to your own human scRNA-seq data",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Track prediction of fixed targets."
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Distinct output sampling resolutions (1 bp, 128 bp, 2,048 bp) emitted by one model; the 1 Mb window is extent. R-2026-11-16-a.",
+     "url": "https://google-deepmind-alphagenome.readthedocs-hosted.com/exploring_model_metadata.html",
+     "content_sha256": "835a5f14f599be7fa2dff45c091fa12c0a752c29317232f789f2a86ad7bb4c36",
+     "quote": "summed per 128 bp bin",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "mattergen",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "Fine-tuning on arbitrary property data and unconditional or property-conditioned crystal generation; one structure modality and scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/microsoft/mattergen/main/README.md",
+     "content_sha256": "4a0f0213ad5458046ef8ee59b86a1050a8adb1f0876c146712fdb9efd71a3e5e",
+     "quote": "Fine-tune on your own property data",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "One structure modality."
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/microsoft/mattergen/main/README.md",
+     "content_sha256": "4a0f0213ad5458046ef8ee59b86a1050a8adb1f0876c146712fdb9efd71a3e5e",
+     "quote": "Unconditional generation",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "granite-geospatial",
+   "score": 2,
+   "relative_to": "prithvi-eo",
+   "relation": "two_below",
+   "value": "Fine-tunable through TerraTorch with a documented few-shot workflow; one optical input product, a single regression output, and one spatial scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent-evidence-gap",
+     "comment": "The record's only source quotes SimMIM pretraining; the getting-started notebook (fetched for this audit) runs 'terratorch fit --config {finetune_config_path} --ckpt_path {full_lightning_ckpt_path}', a weight-updating fine-tune. The credit holds; the citation should move to the notebook."
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "HLS L30 only; GEDI is a label (ruling (f))."
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md",
+     "content_sha256": "c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00",
+     "quote": "SimMIM, a self-supervised learning strategy based on masking large parts of the input (HLS2) data which are then reconstructed by the model",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "One HLS 30 m input."
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "dofa",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "Released linear-probing and segmentation fine-tuning workflows; one checkpoint accepts five satellite sensor modalities with any channel count.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/zhu-xlab/DOFA/master/README.md",
+     "content_sha256": "4799d981e18f302d47f169e9b0978754d2ece59bb7f12e2ac7c42b17c07f792b",
+     "quote": "shows how to fine-tune DOFA for semantic segmentation with a UPerNet head",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://arxiv.org/abs/2403.15356",
+     "content_sha256": "72db1a0a76ecc48a222d4e496685abf1f1a4321a1ef7f80fd86989f0e4e48d31",
+     "quote": "process inputs from five distinct satellite sensors flexibly",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Masked autoencoding."
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent-reason-wrong",
+     "comment": "Not credited, which matches the Clay standard: the checkpoint is pretrained on Sentinel-1, Sentinel-2, NAIP, Gaofen and EnMAP, but its patch embedding is conditioned on wavelength only, no GSD or footprint enters the model, and every chip is resized to 224 x 224 pixels. The record's stated reason ('not counted a second time') is wrong: Clay and the lunar model earn multi_instrument and multi_scale from the same sensors."
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "presto",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "A construct_finetuning_model call and a downstream-task notebook for adaptation; one model ingests Sentinel-1, Sentinel-2, ERA5, SRTM, and Dynamic World inputs together.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/nasaharvest/presto/main/README.md",
+     "content_sha256": "b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836",
+     "quote": "construct_finetuning_model(num_outputs=1, regression=True)",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Sentinel-1, Sentinel-2, ERA5, SRTM.",
+     "url": "https://raw.githubusercontent.com/nasaharvest/presto/main/presto/dataops/pipelines/s1_s2_era5_srtm.py",
+     "content_sha256": "7f371255202450ba4a63a39c90665579252976d8cd127aa866f7391c2607aaf4",
+     "quote": "ERA5_BANDS = [\"temperature_2m\", \"total_precipitation\"]",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Masked reconstruction."
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Timesteps are extent (e); each instance is one pixel's band vector ('[batch_size, num_timesteps, bands]') after resample_and_flatten_tif, so the sensors' native resolutions do not survive into the model.",
+     "url": "https://raw.githubusercontent.com/nasaharvest/presto/main/README.md",
+     "content_sha256": "b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836",
+     "quote": "can be any value between 1 and 24 (2 years of data)",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "alphaearth-foundations",
+   "score": 2,
+   "relative_to": "prithvi-eo",
+   "relation": "two_below",
+   "value": "One model assimilates Landsat, Sentinel-1, and Sentinel-2 measurements into a shared embedding field; no published adaptation pathway, no generated scientific output, and one 10-meter annual scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "No released model to adapt.",
+     "url": "https://arxiv.org/abs/2507.22291",
+     "content_sha256": "d3d25596abd3ad58a23663c32b4c621764977a0c258712cdb013b8badebf913e",
+     "quote": "without re-training",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://arxiv.org/abs/2507.22291",
+     "content_sha256": "d3d25596abd3ad58a23663c32b4c621764977a0c258712cdb013b8badebf913e",
+     "quote": "assimilates spatial, temporal, and measurement contexts across multiple sources",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Embeddings."
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "The paper resamples every raster source to 10 m before it enters ('channels resampled to the same spatial resolution'); its STP pyramid is internal architecture.",
+     "url": "https://storage.googleapis.com/earthengine-stac/catalog/GOOGLE/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL.json",
+     "content_sha256": "1c5fb2abdcbf6d12a9b6cfecf10ccc55cbfac7d009645536d4e4828f9a14e012",
+     "quote": "Each 10-meter pixel in this dataset is a 64-dimensional representation",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "weathernext",
+   "score": 4,
+   "relative_to": "terramind",
+   "relation": "one_below",
+   "value": "Documented gradient step for adaptation, probabilistic forecast generation, and 0.25-degree and 1-degree checkpoints; inputs are one reanalysis and analysis system.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Record cites a gradient step; the quoted README line is the nearest verbatim anchor.",
+     "url": "https://raw.githubusercontent.com/google-deepmind/weathernext/main/README.md",
+     "content_sha256": "9f0879fac17bda69b021bb8239241e488b91943d7c813c8727253ff9847853b1",
+     "quote": "Operational fine-tuning data is available via",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "ERA5 and HRES are one ECMWF system."
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Probabilistic ensemble under (d).",
+     "url": "https://raw.githubusercontent.com/google-deepmind/weathernext/main/README.md",
+     "content_sha256": "9f0879fac17bda69b021bb8239241e488b91943d7c813c8727253ff9847853b1",
+     "quote": "Skillful joint probabilistic weather forecasting from marginals",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "0.25-degree WeatherNext 2 and 1-degree Cyclones Mini in one release; ruling (a).",
+     "url": "https://raw.githubusercontent.com/google-deepmind/weathernext/main/README.md",
+     "content_sha256": "9f0879fac17bda69b021bb8239241e488b91943d7c813c8727253ff9847853b1",
+     "quote": "1° resolution",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 3,
+   "level_from_count": 4
+  },
+  {
+   "product": "climax",
+   "score": 3,
+   "relative_to": "terramind",
+   "relation": "two_below",
+   "value": "Per-task fine-tuning configs, and checkpoints at two grid resolutions spanning forecasting and climate projection; deterministic targets and one variable interface.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://microsoft.github.io/ClimaX/usage/",
+     "content_sha256": "010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694",
+     "quote": "To finetune ClimaX for global forecasting",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "One simulation archive family.",
+     "url": "https://microsoft.github.io/ClimaX/usage/",
+     "content_sha256": "010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694",
+     "quote": "Both checkpoints were pretrained using all 5 CMIP6 datasets.",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Deterministic targets (d)."
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "5.625-degree and 1.40625-degree checkpoints; ruling (a).",
+     "url": "https://microsoft.github.io/ClimaX/usage/",
+     "content_sha256": "010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694",
+     "quote": "We provide two pretrained checkpoints",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "neuralgcm",
+   "score": 3,
+   "relative_to": "terramind",
+   "relation": "two_below",
+   "value": "Stochastic atmospheric simulation, and checkpoints at three horizontal resolutions for both forecasts and long integrations; no supported adaptation path and one ERA5 input system.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Ruling (b).",
+     "url": "https://neuralgcm.readthedocs.io/en/latest/",
+     "content_sha256": "725df0f422b0b8fc15ac1d50e8f53614af942a28e1dbfc3fdc55adb517dee080",
+     "quote": "We would love to support training, modifying and fine-tuning NeuralGCM models",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "ERA5 only."
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Stochastic model under (d).",
+     "url": "https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html",
+     "content_sha256": "a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f",
+     "quote": "v1/stochastic_1_4_deg.pkl",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "0.7/1.4/2.8-degree checkpoints; ruling (a).",
+     "url": "https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html",
+     "content_sha256": "a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f",
+     "quote": "v1/deterministic_0_7_deg.pkl",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "aifs",
+   "score": 2,
+   "relative_to": null,
+   "relation": null,
+   "value": "Published pretraining and fine-tuning stages with their configs; a single deterministic checkpoint at one resolution over ECMWF analysis inputs.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md",
+     "content_sha256": "2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09",
+     "quote": "To train this model you can use the configuration files included in this repository",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "ECMWF analyses and ERA5, one system."
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Deterministic (d).",
+     "url": "https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md",
+     "content_sha256": "2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09",
+     "quote": "AIFS is trained to produce 6-hour forecasts.",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "One checkpoint; IFS fields are interpolated to one grid; 13 levels are vertical structure (e)."
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "pangu-weather",
+   "score": 2,
+   "relative_to": null,
+   "relation": null,
+   "value": "Four checkpoints spanning 1-, 3-, 6- and 24-hour lead times that chain into longer forecasts; deterministic outputs, one input system, and no released adaptation path.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md",
+     "content_sha256": "b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1",
+     "quote": "the pseudocode that elaborates our main algorithm",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md",
+     "content_sha256": "b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1",
+     "quote": "ERA5 initial fields and ECMWF initial fields",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Deterministic (d)."
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "inconsistent",
+     "comment": "The four checkpoints differ only in lead time. Every one takes and returns the same 721 x 1440 grid ('the spacing is 0.25 degrees'), so the span is forecast horizon, which is extent under (e), as Surya's horizons are.",
+     "url": "https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md",
+     "content_sha256": "b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1",
+     "quote": "The 24-hour model",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "nasa-ibm-lunar-foundation-model",
+   "score": 4,
+   "relative_to": "prithvi-eo",
+   "relation": "at",
+   "value": "Documented TerraTorch fine-tuning pathway, 11 input modalities drawn from several lunar instruments, and one set of weights covering a 100x resolution gap; generation is offered only as a qualitative probe.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/README.md",
+     "content_sha256": "66c86f3cd0d3d4416edf1252aeb5ec16c3c5e0d7706823b3dd814d7834a05cc6",
+     "quote": "is a runnable `terratorch fit` target",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model/raw/main/README.md",
+     "content_sha256": "8b19ff3221fcf45756a265f41883ce11145b3fdb18d5166b9b87393633abdae6",
+     "quote": "11 modalities",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Publisher disclaims generation.",
+     "url": "https://huggingface.co/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model/raw/main/README.md",
+     "content_sha256": "8b19ff3221fcf45756a265f41883ce11145b3fdb18d5166b9b87393633abdae6",
+     "quote": "Not a scientific-grade generative product",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "NAC ~1 m/px and WAC ~100 m/px tiles enter at native resolution with tile footprint as an encoder input; meets the Clay standard.",
+     "url": "https://huggingface.co/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model/raw/main/README.md",
+     "content_sha256": "8b19ff3221fcf45756a265f41883ce11145b3fdb18d5166b9b87393633abdae6",
+     "quote": "one set of weights covers both resolution families",
+     "quote_verified": true
+    }
+   },
+   "attributes_credited": 3,
+   "level_from_count": 4
+  },
+  {
+   "product": "esm-3",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "Sequence, structure and function as three input and output tracks, and generation of new proteins from a partial prompt; no documented fine-tuning pathway. The 98B, 7B and 1.4B model sizes, two of them hosted-only, are sizes of one model rather than a second scientific scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "That sentence sits in the ESMC section.",
+     "url": "https://raw.githubusercontent.com/Biohub/esm/main/README.md",
+     "content_sha256": "c4eacae9f367f1f941fa3140d43e62f952b6d67f53a6983b8f6472f88c2f3630",
+     "quote": "Users interested in customizing or fine-tuning ESM models can use the models from Hugging Face.",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md",
+     "content_sha256": "2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6",
+     "quote": "sequence, structure, and function",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/biohub/esm3-sm-open-v1/raw/main/README.md",
+     "content_sha256": "4aedacc49eff2fb6b90b926b5252076818a888884ac34d8a6701cd74421903d5",
+     "quote": "a generative model capable of designing proteins conditioned on partial prompts of sequence, structure and function",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Sizes are not scales; R-2026-11-16-a."
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "alphafold",
+   "score": 2,
+   "relative_to": "prithvi-eo",
+   "relation": "two_below",
+   "value": "Sequence together with genetic-search and template inputs; no adaptation pathway, no design surface, and one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/google-deepmind/alphafold3/main/README.md",
+     "content_sha256": "0aff5538016f91aae06209319e4514e23a2fc6156854271f75873f8b78e0e44f",
+     "quote": "provides an implementation of the inference pipeline",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Sequence with MSA and structural templates.",
+     "url": "https://raw.githubusercontent.com/google-deepmind/alphafold3/main/README.md",
+     "content_sha256": "0aff5538016f91aae06209319e4514e23a2fc6156854271f75873f8b78e0e44f",
+     "quote": "genetic and template search",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "openfold",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "A published training and fine-tuning pathway, and sequence with MSA and template inputs; the model predicts structure rather than designing it, at one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://openfold.readthedocs.io/en/latest/Training_OpenFold.html",
+     "content_sha256": "46cc7e7906b12250665a83154d0890449f27c776a12d2249652e55fedb02ddb7",
+     "quote": "Some additional instructions are provided at the end for fine-tuning your model.",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Sequence with MSA and template inputs.",
+     "url": "https://raw.githubusercontent.com/aqlaboratory/openfold/main/docs/source/original_readme.md",
+     "content_sha256": "aa0812608f4b4dca4b4d30b9e0eb6b7d08ca9d1596535419d6255c3ced48f36f",
+     "quote": "python3 train_openfold.py mmcif_dir/ alignment_dir/ template_mmcif_dir/ output_dir/",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "boltz",
+   "score": 3,
+   "relative_to": "prithvi-eo",
+   "relation": "one_below",
+   "value": "A published retraining pathway, and sequence with MSA inputs and ligand specifications; structure and affinity are both predictions of fixed targets at one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/docs/training.md",
+     "content_sha256": "4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c",
+     "quote": "To run training, you will need to download a few pre-processed datasets",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Sequence with MSA and ligand specifications.",
+     "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md",
+     "content_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2",
+     "quote": "boltz predict input_path --use_msa_server",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md",
+     "content_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2",
+     "quote": "represents the predicted probability that the ligand is a binder",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "chai",
+   "score": 2,
+   "relative_to": "prithvi-eo",
+   "relation": "two_below",
+   "value": "Sequence with optional MSAs, templates, embeddings and experimental restraints as inputs; no adaptation pathway, no design surface, one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "No training or fine-tuning entry point."
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/README.md",
+     "content_sha256": "ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f",
+     "quote": "This allows users to specify their own templates, MSAs, embeddings, and constraints",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Five diffusion samples of one prediction; (d) credits a calibrated ensemble of a stochastic future, which this is not. Tension noted, no change proposed."
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "rfdiffusion",
+   "score": 2,
+   "relative_to": "prithvi-eo",
+   "relation": "two_below",
+   "value": "De novo generation of protein backbones, conditioned on motifs, hotspot residues, symmetry or an existing structure; no adaptation pathway, one input data system, one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "All conditioning is PDB-derived."
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/RosettaCommons/RFdiffusion/main/README.md",
+     "content_sha256": "d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125",
+     "quote": "Unconditional protein generation",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "geneformer",
+   "score": 3,
+   "relative_to": null,
+   "relation": null,
+   "value": "Documented pretraining and fine-tuning path, and in silico perturbation and reprogramming of cell state; one transcriptomic modality and one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/ctheodoris/Geneformer/raw/main/README.md",
+     "content_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8",
+     "quote": "pretraining the model, fine-tuning the model",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://huggingface.co/ctheodoris/Geneformer/raw/main/README.md",
+     "content_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8",
+     "quote": "human single cell transcriptomes",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "inconsistent",
+     "comment": "The perturbation tool 'Outputs impact of perturbation on cell or gene embeddings' (Geneformer API docs): a deterministic shift in an embedding, not a generated profile or a distribution. Under (d) that is prediction.",
+     "url": "https://huggingface.co/ctheodoris/Geneformer/raw/main/README.md",
+     "content_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8",
+     "quote": "in silico reprogramming",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "scgpt",
+   "score": 4,
+   "relative_to": null,
+   "relation": null,
+   "value": "Fine-tuning scripts and tutorials, multi-omic input, and generated post-perturbation expression profiles; one cellular scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Perturbation.ipynb",
+     "content_sha256": "a997191d88e4c05969103e777f1323ebf4263238e64520877ae3a0f6aed4bdbb",
+     "quote": "Fine-tuning Pre-trained Model for Perturbation Prediction",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "RNA and protein abundance.",
+     "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Multiomics.ipynb",
+     "content_sha256": "617303e1495c376681d2a7de064d79d95f5364e30a30c163de70f860b6a8257d",
+     "quote": "Fine-tuning on Pre-trained Model for Multiomic Integration",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": true,
+     "verdict": "inconsistent",
+     "comment": "The shipped notebook trains with 'criterion = masked_mse_loss' and documents 'Predict the gene expression values for the given perturbations.': a deterministic post-perturbation state from a control state, the cellular analogue of the forecast (d) excludes. 'cell generation' is still unchecked on the README's to-do list.",
+     "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/main/tutorials/Tutorial_Perturbation.ipynb",
+     "content_sha256": "a997191d88e4c05969103e777f1323ebf4263238e64520877ae3a0f6aed4bdbb",
+     "quote": "pred_perturb",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 3,
+   "level_from_count": 4
+  },
+  {
+   "product": "uce",
+   "score": 1,
+   "relative_to": null,
+   "relation": null,
+   "value": "None of the four attributes is established; the paper states that new cells are embedded with no data labelling, model training, or fine-tuning.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://www.nature.com/articles/s41586-026-10689-z",
+     "content_sha256": "94f03df5a322b16306cd74d0200a3619bd81dbb9d26511419ccbaac5977bb7a0",
+     "quote": "new cells can be embedded with no data labelling, model training or fine-tuning",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 0,
+   "level_from_count": 1
+  },
+  {
+   "product": "mattersim",
+   "score": 2,
+   "relative_to": null,
+   "relation": null,
+   "value": "A documented fine-tuning path to a desired level of theory or to direct structure-to-property prediction; one atomistic modality, no generation, one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent-evidence-gap",
+     "comment": "The cited sentence describes rather than executes; ruling (b) wants the runnable entry point cited on the next refresh.",
+     "url": "https://raw.githubusercontent.com/microsoft/mattersim/main/MODEL_CARD.md",
+     "content_sha256": "9f48dffafb55f0700bbc2d180ce8f7b5bc28decac1de43c3058c323a7c0dc5b7",
+     "quote": "The model can be fine-tuned for atomistic simulations at a desired level of theory or for direct structure-to-property predictions with high data efficiency.",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/microsoft/mattersim/main/MODEL_CARD.md",
+     "content_sha256": "9f48dffafb55f0700bbc2d180ce8f7b5bc28decac1de43c3058c323a7c0dc5b7",
+     "quote": "The model does not support generation of new materials",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Temperature and pressure ranges are conditions; 1M and 5M are sizes."
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "uma",
+   "score": 3,
+   "relative_to": null,
+   "relation": null,
+   "value": "One model family, in small and medium sizes, consuming five DFT datasets at distinct levels of theory selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/src/fairchem/core/scripts/create_uma_finetune_dataset.py",
+     "content_sha256": "c925b40994b5560f3c8f673230f203776ac8d5145385f4ff29ad7bfd4190edc1",
+     "quote": "To run finetuning, run fairchem -c",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "Ruling (c).",
+     "url": "https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md",
+     "content_sha256": "de7834ede4c2ce52175a9cff80d06a94d50c83eb0dec5d2101a2da957c316736",
+     "quote": "UMA is trained on 5 different DFT datasets with different levels of theory",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Sizes; R-2026-11-16-a."
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "mace",
+   "score": 3,
+   "relative_to": null,
+   "relation": null,
+   "value": "A documented finetuning path from any foundation checkpoint onto a new dataset, and in MACE-MH a single checkpoint carrying task heads across several DFT levels of theory; no generation, one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/ACEsuit/mace/main/README.md",
+     "content_sha256": "ce86d53b18ca7b6167d4791fac5832c37deb680dd0534354575c837c16cfac89",
+     "quote": "--foundation_model=model_type",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "MACE-MH heads; ruling (c).",
+     "url": "https://huggingface.co/mace-foundations/mace-mh-1/raw/main/README.md",
+     "content_sha256": "fa429ada8f55eae243549fd4c97d024a85a8f764c8b3e12c1e369ad70a0cc073",
+     "quote": "Unified cross-domain capability",
+     "quote_verified": true
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 2,
+   "level_from_count": 3
+  },
+  {
+   "product": "orb",
+   "score": 2,
+   "relative_to": null,
+   "relation": null,
+   "value": "A documented finetuning script and guide for adapting any released checkpoint to a custom dataset; one atomistic modality, no generation, one scale.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": true,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://raw.githubusercontent.com/orbital-materials/orb-models/main/README.md",
+     "content_sha256": "6ee1f8fcda191b3d4a4d1716256af566c85d279a56352d5722439e9c28210938",
+     "quote": "You can finetune the model using your custom dataset.",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Periodic and non-periodic is coverage."
+    }
+   },
+   "attributes_credited": 1,
+   "level_from_count": 2
+  },
+  {
+   "product": "gnome",
+   "score": 1,
+   "relative_to": null,
+   "relation": null,
+   "value": "None of the four attributes is established; the repository publishes architectures and discovered structures rather than a runnable adaptation, generation, multi-instrument, or multi-scale surface.",
+   "attributes": {
+    "adaptation_pathway": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "Listed as upcoming.",
+     "url": "https://raw.githubusercontent.com/google-deepmind/materials_discovery/main/README.md",
+     "content_sha256": "67699d0d7928b23009b804b95dbfd7cd024487e3a6a76fff41b5bb3c2f468c21",
+     "quote": "Model training colabs and configs",
+     "quote_verified": true
+    },
+    "multi_instrument": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    },
+    "generative": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": "",
+     "url": "https://www.nature.com/articles/s41586-023-06735-9",
+     "content_sha256": "eab2191cd0b32ae8579c712be5cc9d3bdec3ee91096186544379fdb9f97404da",
+     "quote": "used to filter candidate structures",
+     "quote_verified": true
+    },
+    "multi_scale": {
+     "credited": false,
+     "verdict": "consistent",
+     "comment": ""
+    }
+   },
+   "attributes_credited": 0,
+   "level_from_count": 1
+  }
+ ],
+ "proposals": [
+  {
+   "product": "terramind",
+   "attribute": "multi_scale",
+   "from": 5,
+   "to": 4,
+   "basis": "pixel- and token-level processing is internal representation; all modalities enter co-registered at 10 m"
+  },
+  {
+   "product": "prithvi-eo",
+   "attribute": "multi_scale",
+   "from": 4,
+   "to": 3,
+   "basis": "0.1 m to 15 m is a fine-tuned benchmark span from 30 m-only pretraining"
+  },
+  {
+   "product": "prithvi-wxc",
+   "attribute": "multi_scale",
+   "from": 3,
+   "to": 2,
+   "basis": "regional versus global and flexible lead time are extent under (e)"
+  },
+  {
+   "product": "pangu-weather",
+   "attribute": "multi_scale",
+   "from": 2,
+   "to": 1,
+   "basis": "the four checkpoints differ only in lead time on one 0.25-degree grid; extent under (e)"
+  },
+  {
+   "product": "geneformer",
+   "attribute": "generative",
+   "from": 3,
+   "to": 2,
+   "basis": "in silico perturbation outputs a deterministic embedding shift; prediction under (d)"
+  },
+  {
+   "product": "scgpt",
+   "attribute": "generative",
+   "from": 4,
+   "to": 3,
+   "basis": "perturbation output is an MSE-trained deterministic expression prediction; prediction under (d)"
+  }
+ ],
+ "scenarios": {
+  "terramind_only": {
+   "changes": {
+    "terramind": 4
+   },
+   "distribution": {
+    "1": 2,
+    "2": 10,
+    "3": 16,
+    "4": 6,
+    "5": 0
+   },
+   "percent": {
+    "1": 6,
+    "2": 29,
+    "3": 47,
+    "4": 18,
+    "5": 0
+   },
+   "edges": [
+    {
+     "from": "prithvi-eo",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "clay",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "aurora-weather",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "prithvi-wxc",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "surya-heliophysics",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "esm-2",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "evo-2",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphagenome",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "mattergen",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "granite-geospatial",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "dofa",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "presto",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphaearth-foundations",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "weathernext",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "climax",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "neuralgcm",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "nasa-ibm-lunar-foundation-model",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "esm-3",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphafold",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "openfold",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "boltz",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "chai",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "rfdiffusion",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    }
+   ],
+   "edges_broken": 8
+  },
+  "terramind_and_prithvi_eo": {
+   "changes": {
+    "terramind": 4,
+    "prithvi-eo": 3
+   },
+   "distribution": {
+    "1": 2,
+    "2": 10,
+    "3": 17,
+    "4": 5,
+    "5": 0
+   },
+   "percent": {
+    "1": 6,
+    "2": 29,
+    "3": 50,
+    "4": 15,
+    "5": 0
+   },
+   "edges": [
+    {
+     "from": "prithvi-eo",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "clay",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_above"
+    },
+    {
+     "from": "aurora-weather",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "prithvi-wxc",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "surya-heliophysics",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "esm-2",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "evo-2",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphagenome",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "mattergen",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "granite-geospatial",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "dofa",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "presto",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "alphaearth-foundations",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "weathernext",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "climax",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "neuralgcm",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "nasa-ibm-lunar-foundation-model",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_above"
+    },
+    {
+     "from": "esm-3",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "alphafold",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "openfold",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "boltz",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "chai",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "rfdiffusion",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    }
+   ],
+   "edges_broken": 22
+  },
+  "primary_proposal": {
+   "changes": {
+    "terramind": 4,
+    "prithvi-eo": 3,
+    "prithvi-wxc": 2,
+    "pangu-weather": 1,
+    "geneformer": 2,
+    "scgpt": 3
+   },
+   "distribution": {
+    "1": 3,
+    "2": 11,
+    "3": 16,
+    "4": 4,
+    "5": 0
+   },
+   "percent": {
+    "1": 9,
+    "2": 32,
+    "3": 47,
+    "4": 12,
+    "5": 0
+   },
+   "edges": [
+    {
+     "from": "prithvi-eo",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "clay",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_above"
+    },
+    {
+     "from": "aurora-weather",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "prithvi-wxc",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "surya-heliophysics",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "esm-2",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "evo-2",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphagenome",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "mattergen",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "granite-geospatial",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "dofa",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "presto",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "alphaearth-foundations",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "weathernext",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "climax",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "neuralgcm",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "nasa-ibm-lunar-foundation-model",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_above"
+    },
+    {
+     "from": "esm-3",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "alphafold",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "openfold",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "boltz",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "chai",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "rfdiffusion",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 3,
+     "holds": false,
+     "arithmetic_relation": "one_below"
+    }
+   ],
+   "edges_broken": 21
+  },
+  "alternative_reading": {
+   "changes": {
+    "prithvi-wxc": 2,
+    "pangu-weather": 1,
+    "geneformer": 2,
+    "scgpt": 3,
+    "dofa": 4
+   },
+   "distribution": {
+    "1": 3,
+    "2": 11,
+    "3": 14,
+    "4": 5,
+    "5": 1
+   },
+   "percent": {
+    "1": 9,
+    "2": 32,
+    "3": 41,
+    "4": 15,
+    "5": 3
+   },
+   "edges": [
+    {
+     "from": "prithvi-eo",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "clay",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "aurora-weather",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "prithvi-wxc",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 5,
+     "holds": false,
+     "arithmetic_relation": "delta -3"
+    },
+    {
+     "from": "surya-heliophysics",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "esm-2",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "evo-2",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "alphagenome",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "mattergen",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "granite-geospatial",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "dofa",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": false,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "presto",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphaearth-foundations",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "weathernext",
+     "to": "terramind",
+     "relation": "one_below",
+     "from_score": 4,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "climax",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "neuralgcm",
+     "to": "terramind",
+     "relation": "two_below",
+     "from_score": 3,
+     "to_score": 5,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "nasa-ibm-lunar-foundation-model",
+     "to": "prithvi-eo",
+     "relation": "at",
+     "from_score": 4,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "at"
+    },
+    {
+     "from": "esm-3",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "alphafold",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "openfold",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "boltz",
+     "to": "prithvi-eo",
+     "relation": "one_below",
+     "from_score": 3,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "one_below"
+    },
+    {
+     "from": "chai",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    },
+    {
+     "from": "rfdiffusion",
+     "to": "prithvi-eo",
+     "relation": "two_below",
+     "from_score": 2,
+     "to_score": 4,
+     "holds": true,
+     "arithmetic_relation": "two_below"
+    }
+   ],
+   "edges_broken": 2
+  }
+ },
+ "current_distribution": {
+  "distribution": {
+   "1": 2,
+   "2": 10,
+   "3": 16,
+   "4": 5,
+   "5": 1
+  },
+  "percent": {
+   "1": 6,
+   "2": 29,
+   "3": 47,
+   "4": 15,
+   "5": 3
+  }
+ },
+ "additional_fetches": [
+  {
+   "url": "https://arxiv.org/abs/2504.11171",
+   "http_status": 200,
+   "content_sha256": "e5a216861f93d671d100b3ecb02d75cb3e05acf5ffab26df18d5017287398704",
+   "question": "terramind"
+  },
+  {
+   "url": "https://huggingface.co/datasets/ibm-esa-geospatial/TerraMesh/raw/main/README.md",
+   "http_status": 200,
+   "content_sha256": "e3b3cc93aea873e434ed44200cec16a133d19dd8bdad1df6d6ec8e870e7cceea",
+   "question": "terramind"
+  },
+  {
+   "url": "https://arxiv.org/html/2504.11171",
+   "http_status": 200,
+   "content_sha256": "7babd2fe59f4165638819d32333adef042560a5dcf59762f5711d902c54a0ba0",
+   "question": "terramind"
+  },
+  {
+   "url": "https://terrastackai.github.io/terratorch/stable/guide/terramind/",
+   "http_status": 404,
+   "content_sha256": "70d613e3acfba24fd2876fcbacaf639e1e111ef4d54baf70761c47673f37d6a3",
+   "question": "terramind (dead link, not used)"
+  },
+  {
+   "url": "https://arxiv.org/html/2403.15356",
+   "http_status": 200,
+   "content_sha256": "857467b047bf2fd2b00e9bef6c845a8df9a03512730ecc96a280d78b6c7cc2b4",
+   "question": "dofa"
+  },
+  {
+   "url": "https://arxiv.org/html/2507.22291",
+   "http_status": 200,
+   "content_sha256": "6cc8998c146464311bb3aa670c11746a204b30c5edc6bf2791f3f6a9e1939b24",
+   "question": "alphaearth-foundations"
+  },
+  {
+   "url": "https://raw.githubusercontent.com/ibm-granite/granite-geospatial-biomass/main/notebooks/agb_getting_started.ipynb",
+   "http_status": 200,
+   "content_sha256": "2f7073e0b5992da7c3c470dd64d8e0d34e632a4decb95980c3f5dc802900e04d",
+   "question": "granite-geospatial"
+  },
+  {
+   "url": "https://arxiv.org/html/2412.02732",
+   "http_status": 200,
+   "content_sha256": "382607a8cabd9d726d9224deee2536fe9cbb30bcbf27cde640d45f740414b019",
+   "question": "prithvi-eo"
+  },
+  {
+   "url": "https://geneformer.readthedocs.io/en/latest/geneformer.in_silico_perturber.html",
+   "http_status": 200,
+   "content_sha256": "71264b6c0789a0c98753688628696421adbf374b86aa63879e3a7a16224bf8a3",
+   "question": "geneformer"
+  }
+ ]
+}
