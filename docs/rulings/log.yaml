@@ -4459,3 +4459,57 @@ rulings:
       - sources/scores/surya-heliophysics.yaml
       - sources/scores/weathernext.yaml
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1080']
+
+  - id: R-2026-11-16-c
+    date: 2026-11-16
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1081", all-minilm, bge, colpali, modernvbert, nomic-embed, cohere-embed, qwen3-embedding, embeddinggemma,
+      cohere-rerank-api, voyage-embeddings, titan-embeddings, embeddings_retrieval]
+    question: >-
+      The embeddings_retrieval refresh (#1081) held twelve axes for a person: five corpus-license questions on
+      the training data of all-minilm, bge, colpali, modernvbert and nomic-embed; whether Cohere's private
+      Embed 5 deployments change cohere-embed's openness; whether Qwen3-Embedding's training docs make its code
+      open; whether EmbeddingGemma 2 is the same product and governs it; and the wording of cohere-rerank-api's
+      and all-minilm's capability values, voyage-embeddings' stale download figure and titan-embeddings'
+      unsourced Bedrock claim.
+    ruling: >-
+      Governing principle: distinguish a missing license grant, an affirmative use restriction, and evidence that a
+      release provides more open functionality. Missing license evidence is not evidence of a restriction, but it is
+      insufficient to verify data: open. Nothing is silently downgraded or marked verified, and no score, level,
+      class or category changes. The five corpus-license holds stay held and undated with their scores unchanged,
+      each naming what closes it: for all-minilm, named public datasets and sampling weights do not establish a
+      commercially reusable corpus, and it settles with documented terms for the compilation or a constituent-level
+      assessment; for bge, obtain the governing corpus terms for BAAI-MTP and the BGE-M3 data, since the model-weight
+      license does not extend to training data; for colpali, audit the training-set terms and the synthetic PDF
+      constituents, including whether restricted portions are identifiable and excludable; for modernvbert, the
+      publisher's MIT statement is affirmative evidence, so confirm its scope covers the released training
+      compilation and assess third-party constituent rights; for nomic-embed, its published corpus is stronger
+      evidence than a component list, but availability behind a free account does not establish reusable terms, so
+      it remains a provisional 5, undated. cohere-embed keeps its score and hold; customer-controlled private
+      deployment with vLLM and quantized weights is distinguished from a publicly downloadable release and earns no
+      public-openness credit, and record text saying weights cannot reach customers is corrected. qwen3-embedding
+      keeps code: partial, because further training with SWIFT, LoRA or full-parameter, is an adaptation pathway, not
+      the data preparation, original training recipe and configurations needed to reproduce the pretrained
+      checkpoints. EmbeddingGemma 2 belongs to the existing embeddinggemma family as the successor to EmbeddingGemma
+      1 and becomes the governing release, with the EmbeddingGemma 1 artifacts kept declared for adoption
+      measurement and Apache-2.0 replacing the Gemma Terms for the governing release; the license change does not
+      by itself earn a higher rung, the recorded capability level is preserved, and the capability axis stays held
+      until its harrier-oss comparison is re-checked. cohere-rerank-api keeps capability 4, rewritten for Rerank 5
+      Pro and Fast with Cohere's benchmark claims labeled vendor-reported. all-minilm keeps capability 2, with the
+      multilingual sibling's 128-token limit set against the headline model's 256. voyage-embeddings keeps level 3
+      and its hold; a fresh download count for the open SKU may replace the stale one but does not substitute for
+      the reported-traction instrument. titan-embeddings' description drops the unsupported default-embedder claim.
+      An axis is dated only where every claim is sourced on the day.
+    status: in-force
+    executor: agent
+    lands_in:
+      - sources/verification_queue.yaml
+      - sources/products/embeddinggemma.yaml
+      - sources/scores/embeddinggemma.yaml
+      - sources/scores/cohere-embed.yaml
+      - sources/scores/qwen3-embedding.yaml
+      - sources/scores/cohere-rerank-api.yaml
+      - sources/scores/all-minilm.yaml
+      - sources/scores/voyage-embeddings.yaml
+    applied_in: []

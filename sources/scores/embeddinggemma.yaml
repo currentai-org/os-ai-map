@@ -5,62 +5,96 @@ openness:
   components:
     weights:
       value: open
-      detail: 'downloadable but gated: the Hub repo requires manual acceptance of the Gemma terms'
+      detail: 'EmbeddingGemma 2: ungated safetensors weights on Hugging Face'
     data:
       value: closed
-      detail: approximately 320B tokens of web documents, code and synthetic text, characterized by type only
+      detail: web documents, code, images, video and audio described by type only, no corpus released
     code:
       value: partial
-      detail: inference and fine-tuning guides; no pretraining pipeline
+      detail: inference quick start and a fine-tuning guide, no pretraining pipeline
     license:
-    - name: Gemma-License
-      detail: Gemma Terms of Use, use bounded
+    - name: Apache-2.0
+      detail: OSI, EmbeddingGemma 2
+    context:
+      prior-release:
+        value: distributed
+        detail: EmbeddingGemma 1, the 308M text model and its QAT checkpoint, downloadable after a manual
+          click-through for the Gemma Terms of Use
   confidence: high
-  governing_release: embeddinggemma-300m
-  note: The Gemma Terms of Use permit commercial use but require every downstream copy to carry the same
-    prohibited-use policy, a real bound almost no user hits; the click-through acceptance gate is friction,
-    not a further restriction. The training corpus is described only by category, not published, which keeps
-    the score at open weights.
+  governing_release: embeddinggemma-2
+  note: EmbeddingGemma 2 ships ungated weights under Apache-2.0, while the earlier EmbeddingGemma 1 checkpoints
+    remain gated under the Gemma Terms of Use. Google describes the training data only by type and links
+    no training pipeline, so the release is open weights rather than a fully open model.
   sources:
-  - url: https://ai.google.dev/gemma/docs/embeddinggemma/model_card
-    shows: Google's model card gives the 2K input context, 768-dimension output with MRL truncation, and a training
-      dataset of approximately 320 billion tokens described by component type - web documents, code, synthetic
-      - with no dataset released.
-    accessed: '2026-09-11'
+  - url: https://huggingface.co/api/models/google/embeddinggemma-2
+    shows: 'Hub record for google/embeddinggemma-2: gated false, private false, the tag "license:apache-2.0",
+      and model.safetensors in the file list.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b5446d45cbdeb589a91b9ae325530a9bec2d5f820287f5647ab4f542dd655ff9
-    establishes:
-    - data
-    - code
-  - url: https://ai.google.dev/gemma/terms
-    shows: The Gemma Terms of Use grant a non-exclusive, royalty-free right to use and distribute the model, subject
-      to the Prohibited Use Policy which must be passed on to every downstream recipient, and reserve Google's
-      right to restrict use it believes violates those terms.
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: 355bd2cd3eaa74a28623116663a2aa202ea9fcf21342d0cd2825a462536cd305
-    establishes:
-    - license
-  - url: https://huggingface.co/api/models/google/embeddinggemma-300m
-    shows: 'gated: manual; private: false; cardData license gemma - the weights are downloadable after accepting
-      the terms.'
-    accessed: '2026-09-11'
-    http_status: 200
-    content_sha256: e04b6c37dd5e1230fade158ec50fec6d88d8f877655a520402b20cc16a4584e8
+    content_sha256: 210d552fb7d6d4a663cb07faf1b916ec5e85fc7755930cdd8b6b0c3c92df58ab
     establishes:
     - weights
     - license
-  raw: 'weights:open(downloadable but gated: the Hub repo requires manual acceptance of the Gemma terms);data:closed(approximately
-    320B tokens of web documents, code and synthetic text, characterized by type only);code:partial(inference
-    and fine-tuning guides; no pretraining pipeline);license:Gemma-License(Gemma Terms of Use, use bounded)'
+  - url: https://huggingface.co/google/embeddinggemma-2/raw/main/README.md
+    shows: 'Card front matter "license: apache-2.0". The training data is described by type only, "Our pre-training
+      dataset is a large-scale, diverse collection of data encompassing a wide range of domains and modalities",
+      covering web documents, code, images, video and audio, with no dataset released and no training code
+      linked. The card also states "Deployments must adhere to the" Gemma Prohibited Use Policy.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 2c058c304c68221f1de80979594036eff3972b2bce686bb7b0f43621a6b0b011
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://ai.google.dev/gemma/docs/embeddinggemma
+    shows: 'Google''s EmbeddingGemma page: "EmbeddingGemma 2 is provided with open weights and licensed
+      under the" Apache 2.0 License, with a "Fine-tune EmbeddingGemma 2" guide; under previous versions,
+      "EmbeddingGemma 1 is a 308M parameter multilingual text embedding model based on Gemma 3".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 6479ee22338e462ca43713b60cef286c7c7eaa0a2077794d21f09872303b0100
+    establishes:
+    - weights
+    - license
+    - code
+  - url: https://ai.google.dev/gemma/docs/gemma_4_license
+    shows: The card's license link redirects to ai.google.dev/gemma/apache_2, titled "Apache License 2.0
+      | Gemma | Google AI for Developers" and carrying the standard Apache License 2.0 text; the Prohibited
+      Use Policy appears only as a site navigation link.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: e0ba25988259324cbaf97b453227d9e4abe4b48aad4d2322f9c56734b1842f8c
+    establishes:
+    - license
+  - url: https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2
+    shows: 'Google''s launch post, 2026-10-06, introduces the release as the successor to the first EmbeddingGemma:
+      "Today, we’re launching EmbeddingGemma 2", "Built on the Gemma 4 architecture and released under a
+      commercially permissive Apache 2.0 license".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 0501033e2f1eca7e05325620f5c9c63d1c17f53b008c7fcdf0ea0fcb93937da5
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/google/embeddinggemma-300m
+    shows: 'EmbeddingGemma 1 Hub record: gated manual, the tag "license:gemma", with the access heading
+      "Access EmbeddingGemma on Hugging Face".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: f1aa1ae369b0a748f8962faf0fec6ae9e0d0752a70f082374bc30971b04efaa1
+  raw: 'weights:open(EmbeddingGemma 2: ungated safetensors weights on Hugging Face);data:closed(web documents,
+    code, images, video and audio described by type only, no corpus released);code:partial(inference quick
+    start and a fine-tuning guide, no pretraining pipeline);license:Apache-2.0(OSI, EmbeddingGemma 2);prior-release:distributed(EmbeddingGemma
+    1, the 308M text model and its QAT checkpoint, downloadable after a manual click-through for the Gemma
+    Terms of Use)'
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Adoption is measured as Hugging Face downloads across the two shipped checkpoints, almost all for
-    embeddinggemma-300m rather than the QAT variant. The volume is notable because the repository is gated,
-    so every download passed through a click-through license.
+  note: 'Adoption is measured as Hugging Face downloads across the declared checkpoints: EmbeddingGemma
+    2 and the two EmbeddingGemma 1 checkpoints, which still draw most of the volume. The EmbeddingGemma
+    1 repositories are gated, so each of their downloads passed through a click-through license.'
   last_verified: '2026-11-08'
   derived_from:
     observation_snapshot_id: d16c5435f7d3e101bf6430dcfe978d1bf623c8d0a130082636c90f19d5c74f06
@@ -79,29 +113,43 @@ adoption:
     accessed: '2026-09-11'
     http_status: 200
     content_sha256: 0e280354f99dd258369602137a97c2e7965d4d6aedffb28be92e1cd753716734
+  - url: https://huggingface.co/api/models/google/embeddinggemma-2
+    shows: 'downloads: 562840; gated: false; private: false.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 210d552fb7d6d4a663cb07faf1b916ec5e85fc7755930cdd8b6b0c3c92df58ab
 capability:
   score: 3
   basis: benchmark
-  basis_detail: MTEB (Multilingual, v2), mean over tasks, at 768 dimensions
-  value: 61.15 mean on MTEB (Multilingual, v2) at 768d, falling to 58.23 at 128d; 69.67 on MTEB (English, v2)
-    at 768d.
+  basis_detail: MTEB (Multilingual, v2), mean over tasks, at 768 dimensions, family maximum (EmbeddingGemma
+    2)
+  value: 61.36 mean on MTEB (Multilingual, v2) at 768d for EmbeddingGemma 2, against 61.15 for EmbeddingGemma
+    1; 78.68 on MTEB (Code, v1); and multimodal retrieval new with EmbeddingGemma 2, including 67.84 NDCG@5
+    on MMEB v2 visual documents and 69.54 MRR@10 on MSEB retrieval, at an 8K-token context.
   confidence: high
   relative_to: harrier-oss
   relation: two_below
-  note: EmbeddingGemma is strong for a 308M-parameter model and the best on-device multilingual option,
-    but capability here reflects retrieval quality rather than efficiency, and its 61.15 on MMTEB v2 is
-    well behind Harrier-OSS's 74.3 on the same benchmark. Its 2K context window is also a sixteenth of Harrier-OSS's,
-    ruling out the long-document retrieval frontier models are built for.
+  note: EmbeddingGemma 2 adds image, video and audio input to a small on-device model and edges past its
+    predecessor on multilingual text retrieval, 61.36 against 61.15 on MMTEB v2. That is still well behind
+    Harrier-OSS's 74.3 on the same benchmark, and its 8K-token context is a quarter of Harrier-OSS's 32K.
   sources:
+  - url: https://huggingface.co/google/embeddinggemma-2/raw/main/README.md
+    shows: 'Overall results at 768d, EmbeddingGemma 2 against 1: "Mean(Task), Multiple | 61.36 | 61.15"
+      on MTEB (multilingual, v2) and "Mean(Task), NDCG@10 | 78.68 | 68.76" on MTEB (code, v1); multimodal
+      rows include "Mean(Task), NDCG@5 | 67.84" on MMEB v2 VisDoc and "Mean(Task), MRR@10 | 69.54" on MSEB
+      retrieval; "8K token context window".'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 2c058c304c68221f1de80979594036eff3972b2bce686bb7b0f43621a6b0b011
   - url: https://ai.google.dev/gemma/docs/embeddinggemma/model_card
-    shows: 'Full-precision checkpoint results: MTEB (Multilingual, v2) mean 61.15 at 768d, 60.71 at 512d, 59.68
-      at 256d and 58.23 at 128d; MTEB (English, v2) mean 69.67 at 768d.'
-    accessed: '2026-09-11'
+    shows: The EmbeddingGemma 1 card gives a "Maximum input context length of 2K" and a full-precision MTEB
+      (Multilingual, v2) mean of 61.15 at 768d.
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: b5446d45cbdeb589a91b9ae325530a9bec2d5f820287f5647ab4f542dd655ff9
+    content_sha256: 9844c996e341d75b06df2c9a88582ad9b932d288aa72e8e5cb8079f01ce4b229
   - url: https://ai.google.dev/gemma/docs/embeddinggemma
-    shows: Overview describes a 308M-parameter multilingual embedding model based on Gemma 3, optimized for everyday
-      devices such as phones, laptops and tablets.
-    accessed: '2026-09-11'
+    shows: 'Google''s overview: "EmbeddingGemma 2 introduces major improvements over EmbeddingGemma 1",
+      among them native multimodality and up to 8,192 tokens of context.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 1f96c3b9dde2033b6cebd346c5b6ccfb61030505038fe6d420b1cacb2b4e93c2
+    content_sha256: 6479ee22338e462ca43713b60cef286c7c7eaa0a2077794d21f09872303b0100

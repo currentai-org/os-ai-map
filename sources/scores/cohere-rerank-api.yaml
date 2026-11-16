@@ -106,58 +106,72 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: nDCG@10 over Cohere's in-house 18-language suite and BEIR; Voyage's in-house 93-dataset
-    run; Agentset's ELO leaderboard (FiQA, SciFact, PG)
-  value: vendor-claimed SOTA on BEIR and on multilingual retrieval, plus reasoning capability and a 4096-token
-    context, on the 3.5 release; +26.4% on cross-lingual search against the previous Rerank 3, measured
-    by nDCG@10 over an in-house 18-language suite; trained across 100+ languages, with Rerank 4 shipping
-    fast and pro variants, a 32K context and a vendor-claimed lead over Voyage and Jina rerankers
+  basis_detail: Cohere's own RCP-nDCG@10 runs on ViDoRe V3, BEIR, BRIGHT and nanoMTEB for Rerank 5; Cohere's
+    18-language suite and BEIR claims for Rerank 3.5; Voyage's in-house 93-dataset run; Agentset's ELO leaderboard
+    (FiQA, SciFact, PG)
+  value: 'Rerank 5, in Pro and Fast tiers, is the current generation: Cohere reports that Rerank 5 Pro ranks
+    first on 39 of 46 composite datasets across ViDoRe V3, BEIR, BRIGHT and nanoMTEB, scored with its own
+    RCP-nDCG@10 method (vendor-reported). Earlier generations: Rerank 4 in fast and pro variants with a
+    32K context and a vendor-claimed lead over Voyage and Jina rerankers; Rerank 3.5 with vendor-claimed
+    SOTA on BEIR and multilingual retrieval at a 4096-token context and +26.4% on cross-lingual search over
+    Rerank 3. Trained across 100+ languages.'
   confidence: medium
-  note: Cohere reports state-of-the-art BEIR and multilingual results for Rerank 3.5, and its Rerank 5 Pro
-    is now claimed to lead public benchmarks in Cohere-run evaluations. The only independent evidence is
-    Agentset's leaderboard, which still lists Rerank 4 Pro second, just behind Zerank 2 and ahead of Voyage
-    rerank-2.5. It ranks by LLM-judged head-to-head wins on only three datasets, so it shows Rerank 4 level
-    with those rerankers rather than clearly ahead.
+  note: Cohere reports that Rerank 5 Pro leads ViDoRe V3, BEIR, BRIGHT and nanoMTEB, but those are vendor-reported
+    results, scored with Cohere's own method, and no independent evaluation of Rerank 5 has been published.
+    The only independent comparison, Agentset's leaderboard, ranks the previous Rerank 4 Pro second, just
+    behind Zerank 2 and ahead of Voyage rerank-2.5, on LLM-judged head-to-head wins over three datasets,
+    which shows Cohere level with those rerankers rather than clearly ahead.
+  last_verified: '2026-11-16'
   sources:
   - url: https://cohere.com/blog/rerank-3pt5
     shows: 'Rerank 3.5 launch post: "Multilingual performance is measured by nDCG@10" over "external datasets
       covering 18 different languages in a variety of monolingual and cross-lingual settings", and against
       Rerank 3 it reports a "+26.4% improvement on cross-lingual search". Searched the body for BEIR: none.'
-    accessed: '2026-09-28'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: d2207e8cfd6847dddb0951a1a170b92c26bf2b63edf151f4a3ef1e97ca854552
+    content_sha256: 9e298347b6c3762c251dcc8ef34b2442d5019e123fda796a16e86d6033b56c8d
   - url: https://docs.cohere.com/changelog/rerank-v3.5
     shows: 'Changelog entry: "Rerank 3.5 has a context length of 4096, SOTA performance on Multilingual
       Retrieval tasks and Reasoning Capabilities" and "Rerank 3.5 has SOTA performance on BEIR and domains
       such as Finance, E-commerce, Hospitality". No nDCG figure is given here.'
-    accessed: '2026-09-28'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 0265f6f2b4471e8d6f09437d5721327ac468e58b6c7aef22b53e1d3cda3517cb
+    content_sha256: 3e7496a64b005b3570ee100c96693e4f109cd805f820ecbc8486473957569016
   - url: https://cohere.com/blog/rerank-4
     shows: 'Rerank 4 launch post: a 32K context window, "the largest of our Rerank series to date and a
       four-fold increase over the previous generation", with Cohere claiming it is "outperforming the likes
       of MongoDB’s Voyage models and ElasticSearch’s Jina rerankers in overall search relevance". The comparison
       is Cohere''s own.'
-    accessed: '2026-09-28'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: ef454b57fec1eefa83dec60db7c7f5a6c8a270b496791ffca4cffb74f4708a14
+    content_sha256: 98df2b38ebf6898fa4cd5ba9c0a74e9d46f48a7ec528354eefa5619a16b48ca8
   - url: https://docs.cohere.com/docs/rerank-overview
     shows: 'Rerank docs overview: "Cohere’s Rerank models have been trained for performance across 100+
-      languages." The lineup lists Rerank 4.0 in "(both ‘fast’ and ‘pro’)" variants alongside Rerank 3.5.'
-    accessed: '2026-09-28'
+      languages." The lineup lists Rerank 5 and Rerank 4.0, each "(both ‘fast’ and ‘pro’)", ahead of Rerank
+      3.5.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: 4f8606bddee9f5363c3439c2a6090814d2d1f1e0b8cb2157e915d0d9386f6425
+    content_sha256: 09f4fc96d8a90101378fc8c3c48cf148d96b73f36d7d8b091cc2f8e0ad97aada
   - url: https://blog.voyageai.com/2025/08/11/rerank-2-5/
     shows: 'Voyage rerank-2.5 launch post: "On our standard suite of 93 retrieval datasets spanning multiple
       domains, rerank-2.5 and rerank-2.5-lite improve retrieval accuracy by 7.94% and 7.16% over Cohere
       Rerank v3.5". It predates Rerank 4.'
-    accessed: '2026-09-28'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: cbad3e643dd15dd7c741e229a2951fba322b70cc23c555fea6142aa860aad234
+    content_sha256: d15bd3f659c690af0571195ff23b025ed06a475ce772e040274235b45cde9903
   - url: https://agentset.ai/rerankers
-    shows: 'Agentset reranker leaderboard, last updated February 15, 2026: Cohere Rerank 4 Pro ranks second
-      on ELO, behind Zerank 2 and ahead of Voyage AI Rerank 2.5, over "FiQA (finance), SciFact (science),
-      and PG (long-form content)", with PG "evaluated only with ELO-based LLM judgments".'
-    accessed: '2026-09-28'
+    shows: 'Agentset reranker leaderboard, last updated February 15, 2026: "Zerank 2 leads with 1638 ELO"
+      and "Cohere Rerank v4.0 Pro follows at 1629 ELO", ahead of Voyage AI Rerank 2.5, over "FiQA (finance),
+      SciFact (science), and PG (long-form content)", with PG "evaluated only with ELO-based LLM judgments".
+      It lists no Rerank 5 entry.'
+    accessed: '2026-11-16'
     http_status: 200
-    content_sha256: ebf90b0e72cae201279c86fd57327beb19549b4d12cdf6cdf395648771f21529
+    content_sha256: c6bf3e5360be632517e3bf26b27993c77248715bd4195328a043a80de5572b95
+  - url: https://cohere.com/blog/rerank-5
+    shows: 'Cohere''s Rerank 5 launch post: "Rerank 5 Pro leads on major public benchmarks, while Rerank
+      5 Fast delivers near-leading performance at lower cost." "Of the 46 composite datasets evaluated,
+      Rerank 5 Pro ranked first on 39 and placed at least second in 43", scored with "a Cohere-developed
+      methodology designed to address limitations in traditional nDCG". Vendor-run.'
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: b77547d1942d3b631ba2cb78292047bb0e6f7a5985f5f35c746145d1e9c35e57

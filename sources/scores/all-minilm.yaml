@@ -85,23 +85,24 @@ capability:
   basis: feature_matrix
   basis_detail: no MTEB or BEIR result published on either card; placed on the card-stated 256 word-piece truncation and English-only
     contrastive training
-  value: English-only 384-dimensional encoder truncating input at 256 word pieces; the multilingual sibling covers 50+ languages
-    at the same short context.
+  value: English-only 384-dimensional encoder truncating input at 256 word pieces; the multilingual sibling,
+    paraphrase-multilingual-MiniLM-L12-v2, covers 50+ languages but truncates at 128.
   relative_to: e5
   relation: one_below
   confidence: high
   note: The headline all-MiniLM-L6-v2 checkpoint is English-only and truncates input at 256 word pieces,
     while the multilingual sibling truncates at 128. Neither card publishes retrieval benchmark results.
     It sits a step below E5, which accepts a longer input and publishes multilingual retrieval numbers.
+  last_verified: '2026-11-16'
   sources:
   - url: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/main/README.md
     shows: States "By default, input text longer than 256 word pieces is truncated", describes English contrastive fine-tuning
       of nreimers/MiniLM-L6-H384-uncased, and publishes no retrieval benchmark table.
-    accessed: '2026-09-11'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: dcd602d2fd35c203a247304a06fec6654a12f7941b739f9221a064fe8dc3b7f0
   - url: https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/raw/main/README.md
-    shows: Declares 50+ language codes and a 384-dimensional sentence-similarity output, with no retrieval benchmark table.
-    accessed: '2026-09-11'
+    shows: 'Declares 50+ language codes, a "384 dimensional dense vector space" and "Transformer({''max_seq_length'': 128, ''do_lower_case'': False})", with no retrieval benchmark table.'
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1e98ea05b0de579fcaad3d625b62ea55647142ed674d5f5ebf1440e4bbbb6f23
