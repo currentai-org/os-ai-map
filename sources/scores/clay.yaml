@@ -66,19 +66,42 @@ adoption:
     http_status: 200
     content_sha256: 064c94e34b50d1aeefa63298848521309146678dece7725155a58d037900081a
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Trainable adaptation path and sensor-aware inputs; no documented scientific generation or cross-scale span in the primary release page.
+  value: Configurable training path; one model accepting several satellite sensors (Sentinel-2, Landsat,
+    Sentinel-1 radar, NAIP, LINZ and MODIS) with ground resolution from under 0.5 m to 500 m; no documented
+    scientific generation.
   relative_to: prithvi-eo
-  relation: one_below
+  relation: at
   confidence: high
-  note: Clay documents two readable attributes, a configurable training path and sensor-, time- and location-aware
-    inputs, one fewer than Prithvi-EO documents; capabilities the release page omits are not inferred from
-    the architecture.
+  note: Clay documents a configurable training path and takes inputs from several satellite sensors whose
+    ground resolution runs from under half a meter to 500 meters, with position encoding scaled to each
+    input's resolution. Fine-tuning for generative tasks appears only as a possible downstream use, and
+    no generated scientific output is documented, so generation is not counted. It sits level with Prithvi-EO.
+  last_verified: '2026-11-16'
   sources:
   - url: https://raw.githubusercontent.com/Clay-foundation/model/main/README.md
-    shows: Documents a configurable training path and sensor, time, location, and band metadata consumed by the model interface.
-    accessed: '2026-09-10'
+    shows: Trains with "python trainer.py fit --model ClayMAEModule --data ClayDataModule --config configs/config.yaml".
+    accessed: '2026-11-16'
     http_status: 200
     content_sha256: 1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e
+  - url: https://clay-foundation.github.io/model/release-notes/specification.html
+    shows: Clay v1.5 is "designed to handle inputs from a variety of satellite sensors" and "can process
+      stacks of geospatial data from different sensors with various resolutions and bands"; position encoding
+      "is scaled according to the Ground Sampling Distance (GSD)".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: 192ffac7ff1ba4be73c044966d283784ff618cb70d9dd8534e346d8a6a26e891
+  - url: https://clay-foundation.github.io/model/release-notes/data_sampling.html
+    shows: Tabulates ground sampling distance by platform, from MODIS at 500 m to LINZ under 0.5 m, for
+      a model "capable of accepting inputs of diverse spectral bands and resolutions in different sizes".
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: e2d44fcbe7c9be824021becbfbc34d080494fff2e77de6845cac02cfcf1b3df9
+  - url: https://clay-foundation.github.io/model/index.html
+    shows: Lists fine-tuning for downstream tasks "such as classification, regression, and generative tasks"
+      as a possible use.
+    accessed: '2026-11-16'
+    http_status: 200
+    content_sha256: fcbd01310b6b581690ba9bf23d9644910eab091b87a0ceb07bdafab42389caf9

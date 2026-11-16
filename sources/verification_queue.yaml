@@ -2562,57 +2562,6 @@ held:
         expert) the Megatron backend exposes for training, plus whether the multi-node path is generally available
         rather than experimental.
       since: '2026-11-16'
-  uma:
-    capability:
-      because: 'The value''s ''one scale'' clause is contradicted by the two published sizes; the templated config
-        directory itself returned 404 on raw (only the script that reads it was fetched), so that clause rests on
-        the script. A maintainer should approve the value rewrite and confirm the score is unaffected. Proposed for
-        maintainer review, not applied: Score stays 3 (no score change proposed). Recorded value says ''one scale'',
-        but the fairchem README lists two sizes, uma-s-1p2p1 and uma-m-1p1 (50M/1.4B active/total params); the five-dataset
-        task-embedding and first-party fine-tuning claims are supported. Proposed value: ''One model family consuming
-        five distinct DFT datasets (two more tasks in UMA-1.2), selected at inference by a task embedding, in small
-        and medium sizes, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs;
-        no generation.'' Needs maintainer ruling before the date can move.'
-      since: '2026-11-16'
-  clay:
-    capability:
-      because: The recorded README source does not itself show sensor, time, location or band metadata (grep of the
-        fetched README finds none); that comes from the v1.5 release page, which also documents multi-sensor input
-        at 0.5m to 500m ground resolution with GSD-scaled position encoding, any-size and any-band inputs, and fine-tuning
-        for generative tasks. That may bear on the recorded 'no cross-scale span / no generation' reading and on the
-        one_below edge to prithvi-eo (whose own capability date is also stale), and the attribute count needs a maintainer
-        ruling before the date is earned.
-      since: '2026-11-16'
-  alphagenome:
-    capability:
-      because: The recorded value says a single DNA-sequence input and no adaptation pathway, but the current README
-        and docs describe AlphaGenome 2 with expression conditioning on up to 256 cells of the user's own scRNA-seq
-        data and imputation of unobserved modalities. Whether this changes the score of 2 or the two_below edge to
-        prithvi-eo needs a ruling; the 1 Mb input and single-base-pair output facts are still supported.
-      since: '2026-11-16'
-  esm-3:
-    capability:
-      because: The recorded value says 'no second scale', but the fetched ESM3 README table lists three sizes (98B,
-        7B, 1.4B), two of them hosted-only; a ruling is needed on whether only the open checkpoint counts, then the
-        value wording can be fixed with the score of 3 and the one_below edge to prithvi-eo (4) unchanged. Separately,
-        prithvi-eo capability was last verified 2026-09-10, so a new esm-3 date would postdate its peer; the cookbook
-        tutorials listing (needed to fully settle 'no fine-tuning pathway') returned 403.
-      since: '2026-11-16'
-  surya-heliophysics:
-    capability:
-      because: 'The evidence audit did not pass this axis: Mechanics clean: body_path exists, sha256 equals content_sha256,
-        re-fetch digest identical (no drift), accessed 2026-11-16, http 200 with sha. Quotes verbatim and negatives
-        accurate (grep generat hits only ''Generate 2-hour ahead forecasts'' and ''Generate CSV index files''; HF
-        body 0 hits). But the multi_scale attribute is not established under category ruling (e): README states ''Multi-scale
-        representation learning'' only as local/global attention inside a single native 4096x4096 sampling resolution
-        (lines 27, 207-209), and no second sampling resolution exists in either source. The packet itself escalates
-        this as borderline and says a strict reading drops Surya to 2 of 4 attributes (score 3), breaking one_below
-        terramind. ''Confirmed'' therefore asserts something the evidence contradicts under the ruling; no score change
-        is allowed without a separate ruling, so do not date the axis: hold it pending a maintainer ruling on whether
-        attention-window scale counts. Also record that sources disagree on rollout horizon (GitHub 2-5 hours, HF
-        up to 12 hours) and that the stale ''two-hour forecasts'' shows must be replaced regardless. Peer terramind
-        date issue applies too.'
-      since: '2026-11-16'
   aurora-weather:
     capability:
       because: This pass did not re-fetch Aurora's own capability sources (its fine-tuning guide and README), so the
