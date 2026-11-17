@@ -309,6 +309,24 @@ collections:
   - id: samanantar
     description: Samanantar's English-Indic parallel sentence pairs, whose Indic side Naamapadam annotates
       for named entities.
+  - id: in22-gen-english
+    description: The 1,024 English source sentences of IN22-Gen, selected for IN22 from Wikipedia articles
+      (512) and from Government of India websites and digital libraries (512), filtered for length and
+      for 4-gram overlap with the FLORES-200 test set.
+  - id: in22-conv-english
+    description: The 1,503 English sentences of IN22-Conv, from multi-turn conversations written for IN22
+      by in-house experts from conversation prompts across 16 domains.
+  - id: indicifeval-ground-prompts
+    description: IndicIFEval-Ground's prompts in 14 Indic languages, which Gemini 2.5 generated from text segments
+      mined from sangraha-verified to carry a stated IFEval constraint, and which native speakers checked.
+    sources:
+      - url: https://arxiv.org/pdf/2602.22125
+        shows: '"LLM-based generations grounded in Indic contexts from sangraha-verified"; "We use Gemini-2.5 (Comanici
+          et al., 2025) to generate a user prompt based on the provided context that requires satisfying the given
+          IFEval constraint"'
+        accessed: '2026-11-17'
+        http_status: 200
+        content_sha256: 59772b5b10492168eec64da8e52c82530bc5c0accc56276e4dec5a23a91f6c3b
 components:
   - id: flores-plus
     curation: curated
@@ -2245,4 +2263,85 @@ components:
         accessed: '2026-11-03'
         http_status: 200
         content_sha256: ccd4fdc95ba32546f941b403aa494a074411e79b190d5c15fd548535627ed7fb
+  - id: in22-gen
+    curation: curated
+    origin: original
+    collections:
+      - in22-gen-english
+    parents: []
+    effort: in22-translation
+    domains:
+      - wikipedia
+      - web
+    notes: The English side is source-original; each sentence was translated into the 22 languages by AI4Bharat's
+      in-house translators, with machine translation disabled in the annotation tool.
+    sources:
+      - url: https://arxiv.org/pdf/2305.16307
+        shows: '"It is an n-way parallel test set containing 2527 original English sentences translated into 22
+          Indic languages with high-quality translations done by in-house translators from scratch without recourse
+          to any existing MT system"; "Sentences were filtered based on length (less than 6 words or more than 80
+          words were discarded) and overlap with the FLORES-200 test set (4-gram overlap)"; "The Web Sources subset
+          focused on Indian topics and used Government of India websites and digital libraries as sources"'
+        accessed: '2026-11-17'
+        http_status: 200
+        content_sha256: 53211571f644faaaa1226d86ad0a1f3496d1c919a254493abfa14403accfe474
+  - id: in22-conv
+    curation: curated
+    origin: original
+    collections:
+      - in22-conv-english
+    parents: []
+    effort: in22-translation
+    domains:
+      - conversation
+    notes: Shares its translation effort with in22-gen, so the two are dependent on one another; both are
+      IN22's own components.
+    sources:
+      - url: https://arxiv.org/pdf/2305.16307
+        shows: '"The Conversation subset involved creating English conversations with predefined prompts and
+          scenarios, which were then translated into 22 Indic languages"; "It is an n-way parallel test set containing
+          2527 original English sentences translated into 22 Indic languages with high-quality translations done
+          by in-house translators from scratch without recourse to any existing MT system"'
+        accessed: '2026-11-17'
+        http_status: 200
+        content_sha256: 53211571f644faaaa1226d86ad0a1f3496d1c919a254493abfa14403accfe474
+  - id: indicifeval-trans
+    curation: curated
+    origin: derived
+    collections:
+      - ifeval
+    parents: []
+    effort: indicifeval-trans-translation
+    notes: IFEval's English prompts, localized by the IndicIFEval authors, machine-translated with Sarvam-Translate and
+      judged correct or incorrect by one native-speaker annotator per language. SEA-HELM's SEA-IFEval translates the
+      same collection, so the two are dependent where their languages overlap.
+    sources:
+      - url: https://arxiv.org/pdf/2602.22125
+        shows: '"In this section we detail the process of obtaining the translations based on the English IFEval dataset
+          (Zhou et al., 2023)"; "We use Sarvam-Translate (Sarvam, 2025) for the translations"; "In total, we arrive at
+          490 from the original 541 examples"'
+        accessed: '2026-11-17'
+        http_status: 200
+        content_sha256: 59772b5b10492168eec64da8e52c82530bc5c0accc56276e4dec5a23a91f6c3b
+      - url: https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+        shows: '"IndicIFEval-Trans, translated prompts from IFEval carefully localized for Indic contexts"'
+        accessed: '2026-11-17'
+        http_status: 200
+        content_sha256: 52e84d1ce1b5121ca461e1a4845fe4b6ef76606c9cec6b60d12d2bef0bca31fb
+  - id: indicifeval-ground
+    curation: curated
+    origin: original
+    collections:
+      - indicifeval-ground-prompts
+    parents: []
+    effort: indicifeval-ground-generation
+    notes: The prompts are model-generated, so the coverage entries record provenance generated and the component adds
+      no qualifying depth; the record exists so its pairs are not read as unverified.
+    sources:
+      - url: https://arxiv.org/pdf/2602.22125
+        shows: '"LLM-based generations grounded in Indic contexts from sangraha-verified"; "We use Gemini-2.5 (Comanici
+          et al., 2025) to generate a user prompt based on the provided context"'
+        accessed: '2026-11-17'
+        http_status: 200
+        content_sha256: 59772b5b10492168eec64da8e52c82530bc5c0accc56276e4dec5a23a91f6c3b
 relationships: []

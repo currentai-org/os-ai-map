@@ -4513,3 +4513,37 @@ rulings:
       - sources/scores/all-minilm.yaml
       - sources/scores/voyage-embeddings.yaml
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1083']
+
+  - id: R-2026-11-17-a
+    date: 2026-11-17
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1089", in22, indicifeval, language_specific_eval_sets, R-2026-11-07-b, R-2026-11-11-e]
+    question: >-
+      IN22 (AI4Bharat's IN22-Gen and IN22-Conv translation test sets) and IndicIFEval (AI4Bharat's Indic
+      instruction-following benchmark), found through AI Singapore's ATLAS catalog, target Indic languages
+      below the high written-material class. Do they join language_specific_eval_sets?
+    ruling: >-
+      Yes, both join through add-product, subject to their evidence and to validation on the depth ladder.
+      IN22 is a product of its own rather than part of bpcc, because BPCC is the training corpus and IN22 the
+      test set.
+    status: in-force
+    executor: agent
+    lands_in: [docs/sweeps/2026-11-17-atlas-candidates.md, sources/categories/language_specific_eval_sets.yaml,
+      docs/reference/capability.md, tests/test_depth_ladder.py]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1089']
+
+  - id: R-2026-11-17-b
+    date: 2026-11-17
+    by: ccerv1
+    venue: pr-review
+    refs: ["#1089", language_specific_eval_sets, language_specific_datasets]
+    question: >-
+      SEASafeguardBench and SEA-Safeguard-Train (AI Singapore) would fill a gap in Southeast Asian safety
+      evaluation, but the Hub shows no license and access needs manual approval. Are they added?
+    ruling: >-
+      Not yet. They stay off the map until AI Singapore confirms their license.
+    status: in-force
+    executor: maintainer
+    lands_in: [docs/sweeps/2026-11-17-atlas-candidates.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1089']

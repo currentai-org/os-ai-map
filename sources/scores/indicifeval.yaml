@@ -1,0 +1,483 @@
+product: indicifeval
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and API tag; the GitHub code, including the evaluation harness configs, is MIT
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+      detail: card describes both subsets, the fields, the translation-quality tags and how to reproduce the paper's
+        numbers, and links the paper and code
+  confidence: high
+  note: The prompts download freely under CC BY 4.0, and the code that built and scores them is MIT. The card and
+    the paper describe how each part was made and checked.
+  raw: license:cc-by-4.0(card metadata and API tag; the GitHub code, including the evaluation harness configs, is
+    MIT);access:public(ungated on the Hub);dataset_card:present(card describes both subsets, the fields, the translation-quality
+    tags and how to reproduce the paper's numbers, and links the paper and code)
+  last_verified: '2026-11-17'
+  sources:
+  - url: https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+    shows: 'Card metadata "license: cc-by-4.0"; body: "IndicIFEval-Trans, translated prompts from IFEval carefully
+      localized for Indic contexts, and IndicIFEval-Ground, synthetically generated instructions grounded in native
+      Indic content".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 52e84d1ce1b5121ca461e1a4845fe4b6ef76606c9cec6b60d12d2bef0bca31fb
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicIFEval
+    shows: 'API JSON: "gated":false; tag license:cc-by-4.0.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: af63a2170135f81da46602b92d535468fb51b0c852e3acaa261972b269c134fe
+    establishes:
+    - availability
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicIFEval/main/LICENSE
+    shows: MIT License, Copyright (c) 2026 Thanmay Jayakumar.
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 1bff713bf26aea2b388b0f8cc1883fb734db18a909a1518cfdf13c01a209ca5c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicIFEval/main/README.md
+    shows: '"This repository contains the complete codebase for the IndicIFEval benchmark from Data Creation to
+      Benchmark Evaluation"; "This dataset is released under the CC BY 4.0".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: a64d48338b796ea2e47fa94b8a66a4d0270b344d16fa51217c24af9c61a3c051
+    establishes:
+    - documentation
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the Hub repository over the trailing month. A download count does not say who
+    downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use,
+    not a count of users or organizations.
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicIFEval
+    shows: '"downloads":855 for ai4bharat/IndicIFEval.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: af63a2170135f81da46602b92d535468fb51b0c852e3acaa261972b269c134fe
+capability:
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target languages,
+    14 of 14 measured, across 1 task. Face value 3; best original band 3.'
+  confidence: medium
+  note: In each of its 14 target languages, IndicIFEval has between 440 and 490 translated prompts that native speakers
+    marked correct, and those are the items that count toward depth. Its model-generated prompts were checked as
+    well, but generated items do not count. An item count says how much a set can test, not how precisely it ranks
+    models.
+  last_verified: '2026-11-17'
+  sources:
+  - url: https://arxiv.org/pdf/2602.22125
+    shows: '"We use Sarvam-Translate (Sarvam, 2025) for the translations"; "In total, we arrive at 490 from the
+      original 541 examples"; "We use Gemini-2.5 (Comanici et al., 2025) to generate a user prompt based on the
+      provided context"; "we implement a human-in-the-loop verification process for both INDICIFEVAL-TRANS and INDICIFEVAL-GROUND
+      subsets. We employ qualified, native speakers for each of the target languages as the annotators"; "For every
+      prompt, annotators assessed three aspects"; Table 7, correct translations of 490: Assamese 440, Bengali 454,
+      Gujarati 482, Hindi 487, Kannada 457, Malayalam 490, Marathi 483, Nepali 468, Odia 473, Punjabi 474, Sanskrit
+      450, Tamil 489, Telugu 488, Urdu 486; "our annotations were produced by a single annotator".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 59772b5b10492168eec64da8e52c82530bc5c0accc56276e4dec5a23a91f6c3b
+  - url: https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+    shows: '"For indicifeval-trans, every row carries exactly one of correct/incorrect (human translation-quality
+      verdict)"; "To reproduce paper-reported numbers, filter to rows tagged correct"; IndicIFEval-Ground: "Synthetically
+      generated instructions grounded in native Indic topics and content, manually verified by native speakers".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 52e84d1ce1b5121ca461e1a4845fe4b6ef76606c9cec6b60d12d2bef0bca31fb
+  - url: https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    shows: 'The Hub''s row counts, complete ("partial":false): indicifeval-trans 490 rows in each of 15 language
+      splits including en; indicifeval-ground as 257, bn 409, gu 377, hi 457, kn 340, ml 384, mr 350, ne 341, or
+      366, pa 405, sa 336, ta 430, te 375, ur 337.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: dda09dd91ea957c52c271949dca2e4ac386f00d76c5cb184c519988ae42676d4
+  pivot_languages:
+  - eng
+  language_coverage:
+  - language: asm
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 257
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: asm
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 440
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: ben
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 409
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: ben
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 454
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: guj
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 377
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: guj
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 482
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: hin
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 457
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: hin
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 487
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: kan
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 340
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: kan
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 457
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: mal
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 384
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: mal
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 490
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: mar
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 350
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: mar
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 483
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: nep
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 341
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: nep
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 468
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: ori
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 366
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: ori
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 473
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: pan
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 405
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: pan
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 474
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: san
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 336
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: san
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 450
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: tam
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 430
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: tam
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 489
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: tel
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 375
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: tel
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 488
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  - language: urd
+    task: instruction_following
+    component: indicifeval-ground
+    split: official_eval
+    official_eval: true
+    count: 337
+    unit: items
+    provenance: generated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval
+    - https://arxiv.org/pdf/2602.22125
+  - language: urd
+    task: instruction_following
+    component: indicifeval-trans
+    split: official_eval
+    official_eval: true
+    count: 486
+    unit: items
+    provenance: machine_translated
+    human_validated: true
+    review_scope: all_items
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+    - https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md
+  own_components:
+  - component: indicifeval-ground
+    cites:
+    - https://arxiv.org/pdf/2602.22125
+  - component: indicifeval-trans
+    cites:
+    - https://arxiv.org/pdf/2602.22125

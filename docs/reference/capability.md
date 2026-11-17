@@ -724,7 +724,8 @@ computes the band from the record's `language_coverage`, `own_components`, the l
 [Own components](#own-components). The roster was frozen at publication to the 22 calibrated sets
 (R-2026-11-07-b). It changes only by a recorded membership ruling, read from the per-language
 classification: IndoNLU moved to `benchmark_eval_data` on 2026-11-11 (R-2026-11-11-b), and KMMLU
-joined through add-product the same day (R-2026-11-11-e), so the roster holds 22.
+(R-2026-11-11-e), IN22 and IndicIFEval (R-2026-11-17-a) joined through add-product.
+`tests/test_depth_ladder.py` names every ruled move.
 
 ### Three things the band is not the same as
 

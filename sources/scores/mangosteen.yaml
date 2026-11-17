@@ -1,0 +1,138 @@
+product: mangosteen
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: odc-by
+      detail: card metadata and API tag on both repositories; ODC-By 2.4 leaves rights in the individual pages with
+        their owners. The web share is Thai Common Crawl and FineWeb2 text, and Common Crawl's CCBot checks robots.txt
+        before fetching; the curated share was checked for permissive content licenses
+    access:
+      value: public
+      detail: both repositories ungated on the Hub
+    dataset_card:
+      value: present
+      detail: the web card describes the sources and cleaning pipeline and links the paper; the curated card lists
+        sources by domain with document and word counts
+  confidence: high
+  note: 'Both parts download without a gate under ODC-By, and the paper and cards name where the text came from:
+    Thai Common Crawl and FineWeb2 for the web share, with the curated sources listed one by one. As with any web
+    corpus, the license covers the compilation, and each page keeps its own rights.'
+  raw: license:odc-by(card metadata and API tag on both repositories; ODC-By 2.4 leaves rights in the individual
+    pages with their owners. The web share is Thai Common Crawl and FineWeb2 text, and Common Crawl's CCBot checks
+    robots.txt before fetching; the curated share was checked for permissive content licenses);access:public(both
+    repositories ungated on the Hub);dataset_card:present(the web card describes the sources and cleaning pipeline
+    and links the paper; the curated card lists sources by domain with document and word counts)
+  last_verified: '2026-11-17'
+  sources:
+  - url: https://huggingface.co/datasets/aisingapore/WangchanLION-Web/raw/main/README.md
+    shows: '"license: odc-by"; table "CC-Derived Dataset | 29.7 M | 45.9" billion tokens; "We adopt the data collection
+      of Dolma by applying five major components" (language identity, URL deduplication, quality filters, content
+      filters, text-overlap deduplication).'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: c0eb3d78e83046e3e941581991bbc0b9aaf6b0152ff40dcc402dfb8c30e0513e
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/aisingapore/WangchanLION-Web
+    shows: '"gated":false; tag license:odc-by; tag language:th.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: eba258acc94d745febda58489d9601107c6398ffb3adbebc5db7879574db40c6
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/aisingapore/WangchanLION-Curated/raw/main/README.md
+    shows: '"license: odc-by"; train split 397,488 and validation split 4,044 examples; per-source table beginning
+      "encyclopedic | th.wikibooks.org".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: a60eb39c383689b8302b13876daefd71893e30ba6bf5d47f6265881032cc613e
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/aisingapore/WangchanLION-Curated
+    shows: '"gated":false; tag license:odc-by; tag language:th.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 2a57483d45e7349ab67adb5b71ab212cd5c401910d12057ff672197f0652aad1
+    establishes:
+    - availability
+    - license
+  - url: https://arxiv.org/pdf/2507.14664
+    shows: '"We merged two sources, both Thai Common Crawl and FineWeb2"; "All sources were verified to ensure the
+      use of permissive content licenses. The full list of text sources can be found in https://github.com/vistec-AI/Mangosteen.";
+      "YouTube: We collect Thai YouTube subtitles from videos with the CC BY 3.0 license."'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 7a0d6ec67f1a1c827d87c1d484d08063553fa09c361c7ab4331c0935d0b7eb39
+    establishes:
+    - documentation
+  - url: https://commoncrawl.org/faq
+    shows: 'Common Crawl FAQ: "CCBot is an automated crawler, checking first the robots.txt, and if crawling a page
+      is allowed, fetches pages using HTTP GET requests."'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa
+    establishes:
+    - documentation
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the web and curated repositories, most of them for the web share. A pretraining
+    corpus is typically fetched once and reused, so repeat downloads understate how widely a copy is used.
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/WangchanLION-Web
+    shows: '"downloads":868 for aisingapore/WangchanLION-Web.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: eba258acc94d745febda58489d9601107c6398ffb3adbebc5db7879574db40c6
+  - url: https://huggingface.co/api/datasets/aisingapore/WangchanLION-Curated
+    shows: '"downloads":281 for aisingapore/WangchanLION-Curated.'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 2a57483d45e7349ab67adb5b71ab212cd5c401910d12057ff672197f0652aad1
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Thai pretraining text, bounded by the size cap
+  value: 'About 47.4 billion Thai tokens: 45.9 billion of filtered Common Crawl and FineWeb2 text and 1.5 billion
+    from curated non-web sources, documented in a paper and two cards, and used to train WangchanLION v3. Thai has
+    the reference resource profile, so ten billion tokens is the size cap''s step to 3 and a hundred billion the
+    step to 4.'
+  confidence: medium
+  note: 'Mangosteen is the largest open Thai pretraining corpus here, several times the Thai share of SEA-PILE,
+    it is documented in a paper that releases its cleaning pipeline, and WangchanLION v3 was trained on it. Its
+    size keeps it at 3: Thai is measured on the same yardstick as English, and forty-seven billion tokens is well
+    short of the hundred billion the next step needs.'
+  last_verified: '2026-11-17'
+  sources:
+  - url: https://arxiv.org/abs/2507.14664
+    shows: 'Abstract: "We introduce Mangosteen: a 47 billion-token Thai corpus built through a Thai-adapted Dolma
+      pipeline"; "an 8B-parameter SEA-LION model continually pre-trained on Mangosteen then surpasses SEA-LION-v3
+      and Llama-3.1 by about four points on Thai benchmarks".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: d61188c09ee06ecb6220321b957dd1ac34a03849fea89a831c17d86b831657b6
+  - url: https://raw.githubusercontent.com/vistec-AI/Mangosteen/main/README.md
+    shows: 'Table: "Common Crawl-Derived | 29.7M | 45.9", "Curated Non-Common Crawl | 425,304 | 1.5", "Total | 30.1M
+      | 47.4" (documents, billions of tokens).'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 58c3414e0ec1a59fc4f779cc059f82dacd3a1b68c7a1257c190db2734ebb3829
+  - url: https://huggingface.co/aisingapore/WangchanLION-v3
+    shows: 'WangchanLION-v3 model card, tagged arxiv:2507.14664 ("Mangosteen: An Open Thai Corpus for Language Model
+      Pretraining"), lists under Resources "Pre-training data (web): https://huggingface.co/datasets/aisingapore/WangchanLION-Web"
+      and "Pre-training data (curated)".'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 3d7c318508420532e0f9b405caa6b9dc05aa4af8a9b0cc42d9fbaed938402f19
+  - url: https://huggingface.co/datasets/aisingapore/SEA-PILE-v2/raw/main/README.md
+    shows: Token table row "Thai | th | 6.5" billion tokens.
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 220cc11d5b41f8b0e33acce402c8ce4704332e2de05928be41c047fbe84690c5

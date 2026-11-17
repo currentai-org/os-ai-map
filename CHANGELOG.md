@@ -18,6 +18,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- IN22 and IndicIFEval in Language-specific evaluation sets, and the Multilingual Indic RAG Suite and
+  Mangosteen in Language-specific datasets, found through AI Singapore's ATLAS catalog (R-2026-11-17-a)
+  ([#1089](https://github.com/currentai-org/os-ai-map/pull/1089)).
 - `openness.components_parts` in the payload and a `components_parts` JSONB column in the site's
   `openness` table: the recorded components as a list a reader never has to split, so a `;` inside
   a detail no longer cuts an attribute in two
