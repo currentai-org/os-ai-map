@@ -72,8 +72,8 @@ it costs four integers per row.
 
 **Neon serves the site's tables, and nothing else.** The target model from CLEVER FRANKE,
 with Carl's amendments: `products`, `organizations`, `categories`, `groups`, `layers`, `stages`, `gaps`,
-`gaps_categories`, `openness`, `adoption`, `capability`, `sources`, `product_lineage`,
-`aliases`, `long_tail_top`, `long_tail_counts`. Every row is derived from
+`gaps_categories`, `openness`, `adoption`, `capability`, `capability_languages`, `sources`,
+`product_lineage`, `aliases`, `long_tail_top`, `long_tail_counts`. Every row is derived from
 `build/notebook_data.json`, so what Postgres serves is what the repo published.
 
 The registry tables were loaded here too for a while, prefixed `registry_`, so Neon and the
@@ -102,7 +102,7 @@ The natural key per table: `products.slug`, `categories.slug`, `layers` and `gap
 label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
 `(product_slug, relation, target)`, `sources` by
 `(product_slug, metric, url, shows, accessed)`. Organizations key on `slug` and aliases on
-`alias`, with no surrogate at all.
+`alias`, with no surrogate at all, and `capability_languages` on `(product_id, language)`.
 
 A source's key carries `shows` and `accessed` because the URL alone does not identify the row.
 One source list can hold the same URL twice on the same axis, and every such pair is a
@@ -175,7 +175,7 @@ Read the map's tables directly, or materialize a copy CMS-side.
 
 ### Where this departs from the designers' model
 
-Six places, all deliberate, all in `build/neon_schema.py`:
+Seven places, all deliberate, all in `build/neon_schema.py`:
 
 | Departure | Why |
 |---|---|
@@ -184,6 +184,7 @@ Six places, all deliberate, all in `build/neon_schema.py`:
 | `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | A positional id carries an ordering — the layer stack, the map's curated category order, the long tail's ranking, the stage number — and a hashed id carries none of it. The model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So each ordering gets a column of its own, and `ORDER BY sort_order` is the query that means what `ORDER BY id` would have. |
 | `groups`, and the `categories.group_id` that references it | The map's hierarchy is arc &rarr; group &rarr; category; the designers' model has only the layer above the category. A group gathers categories by function inside an arc and is what the taxonomy declares them under, so a serving layer with no group tier cannot render the hierarchy the repo publishes. The column is `group_id` rather than `group` because GROUP is a reserved word in Postgres. `groups.layer` denormalizes what each category in the group already carries, and the loader refuses a group whose categories disagree rather than picking one. |
 | `openness.components_parts`, a `jsonb` beside the `components` string | The string joins attributes with `;` and leaves a `;` inside a detail unescaped (`license:MIT(OSI; PyCaret 3.3.2, ...)`), so no reader can split it correctly every time. The column is the same evidence as a list built from the recorded mapping: `[{key, context, parts: [{value, detail?, raw?}]}]`, one part per license on a license key, `raw` only where `value (detail)` does not reproduce the record, keyless free text last with a null `key`. NULL when nothing was recorded. `build/check_rubric.py::components_parts` builds it; the rendered notebook leaves it out, since it reads the string. |
+| `capability_languages`, which the model does not have | An evaluation set's capability band is a median over its target languages, and the figures it is the median of are published beside it (`capability.md`, "The per-language bands"). One row per `(product_id, language)`, every target language included: an unmeasured one has a NULL `band`. `best_original` is NULL both for an unmeasured language and where the payload says `unavailable`, and a non-NULL `band` tells the two apart. `tasks` is a `varchar[]`. Rows come from the payload's `capability.depth.per_language`, so a product outside the depth ladder has none. |
 | `gallery`, `gallery_products`, `gallery_gaps` and their three enums are absent | The CMS owns authored content; a schema rebuilt from source can only hold rows it produced. See below. |
 
 ### Two things the designers should know about the data

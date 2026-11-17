@@ -172,8 +172,10 @@ def _overall_basis(row: dict) -> str | None:
 def _depth_block(result: dict) -> dict:
     """The depth ladder's companion figures as the payload carries them (R-2026-11-02-o).
 
-    The per-language bands stay out: they ship with the per-language data asset
-    (R-2026-11-01-f), not in this payload.
+    `per_language` carries each target language's band and its figures, an unmeasured target
+    language as `band: null` (#953). Those are results the ladder computed, and the set's band is
+    their median, so they ship here beside it. The per-language EVIDENCE they were computed from,
+    `language_coverage`, stays out of this payload (R-2026-11-01-f; `_without_language_coverage`).
     """
     reason = result.get("unresolved_reason")
     return {
@@ -186,6 +188,7 @@ def _depth_block(result: dict) -> dict:
         "completeness": result["completeness"],
         "cap": result["cap"],
         "sensitivity": result["sensitivity"],
+        "per_language": result["per_language"],
     }
 
 

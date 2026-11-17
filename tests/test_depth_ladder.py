@@ -170,8 +170,116 @@ def test_every_depth_row_carries_its_companion_figures(payload):
         depth = r["capability"]["depth"]
         assert set(depth) == {"status", "unresolved_reason", "unresolved_reason_text", "face_value",
                               "best_original", "task_count", "completeness", "cap",
-                              "sensitivity"}, slug
+                              "sensitivity", "per_language"}, slug
         assert r["capability"]["basis"] == "evaluation_depth"
+
+
+# --- the per-language bands (#953) --------------------------------------------------------------
+
+
+def _targets(sources, slug):
+    """A set's target languages from the source records: `languages` less `pivot_languages`."""
+    pivots = set(sources["scores"][slug]["capability"].get("pivot_languages") or [])
+    return sorted(set(sources["products"][slug].get("languages") or []) - pivots)
+
+
+def _reproduce(languages: dict) -> str | None:
+    """The set band from published per-language bands, read as `set_band` reads a set: measured
+    bands as they are, every unmeasured target language filled at 0 and at 5."""
+    measured = [e["band"] for e in languages.values() if e["band"] is not None]
+    return dl.set_band(measured, len(languages) - len(measured))
+
+
+def test_the_per_language_bands_reproduce_every_recorded_band(payload, sources):
+    """The acceptance check for #953: for every set on the roster, the per-language bands the
+    payload publishes give back the band the score record states, exactly. A band that stands is
+    that integer; one that does not (no evidence, or a median the unmeasured languages could move)
+    is the record's null. Derived from the roster, so a set joining, leaving or moving band is
+    checked the same way and nothing here names a band."""
+    roster = dl.category_roster()
+    published = rows(payload)
+    assert roster and set(published) == set(roster)
+    checked = 0
+    for slug in roster:
+        languages = published[slug]["capability"]["depth"]["per_language"]
+        result = _reproduce(languages)
+        implied = int(result) if result is not None and not result.startswith("unresolved") else None
+        recorded = sources["scores"][slug]["capability"]["score"]
+        assert implied == recorded, (slug, result, recorded)
+        assert dl.band_from_languages(languages) == recorded, slug
+        assert published[slug]["capability"]["score"] == recorded, slug
+        checked += 1
+    assert checked == len(roster)
+
+
+def test_every_target_language_is_listed_and_an_unmeasured_one_is_explicit(payload, sources):
+    """One entry per target language, measured or not (R-2026-11-01-a, -f): an unmeasured
+    language is `band: null` with nothing else filled, never a missing key and never a zero."""
+    for slug, r in rows(payload).items():
+        depth = r["capability"]["depth"]
+        languages = depth["per_language"]
+        assert sorted(languages) == _targets(sources, slug), slug
+        unmeasured = [code for code, e in languages.items() if e["band"] is None]
+        assert len(languages) - len(unmeasured) == depth["completeness"]["measured"], slug
+        assert len(languages) == depth["completeness"]["targets"], slug
+        for code in unmeasured:
+            assert languages[code] == {"band": None, "face_value": None, "best_original": None,
+                                       "set_by": None, "tasks": []}, (slug, code)
+
+
+def test_the_set_figures_are_the_medians_of_the_per_language_figures(payload):
+    """The face value and the best original band beside the set band are the same median over
+    the per-language figures, so the table explains every number the row publishes."""
+    for slug, r in rows(payload).items():
+        depth = r["capability"]["depth"]
+        languages = depth["per_language"]
+        measured = [e for e in languages.values() if e["band"] is not None]
+        unknown = len(languages) - len(measured)
+        assert depth["face_value"] == dl.set_band([e["face_value"] for e in measured], unknown), slug
+        own = [e["best_original"] for e in measured if e["best_original"] != "unavailable"]
+        expected = dl.set_band(own, len(languages) - len(own)) if own else "unavailable"
+        assert depth["best_original"] == expected, slug
+        assert depth["task_count"] == len({t for e in measured for t in e["tasks"]}), slug
+
+
+def test_a_capped_language_shows_the_cap_in_its_own_figures(payload):
+    """Every language the cap binds in has a corroborated band below its face value, and every
+    language it does not bind in has the two equal."""
+    for slug, r in rows(payload).items():
+        depth = r["capability"]["depth"]
+        capped = set(depth["cap"]["detail"])
+        for code, e in depth["per_language"].items():
+            if e["band"] is None:
+                continue
+            assert (e["band"] < e["face_value"]) == (code in capped), (slug, code)
+
+
+def test_band_from_languages_reads_unmeasured_languages_as_set_band_does():
+    one = lambda b: {"band": b}  # noqa: E731
+    assert dl.band_from_languages({"aaa": one(3), "bbb": one(3), "ccc": one(1)}) == 3
+    # One measured 5 and one unknown: filled at 0 the median is 2, at 5 it is 5, so it does not stand.
+    assert dl.band_from_languages({"aaa": one(5), "bbb": one(None)}) is None
+    # Enough measured agreement that the unknown cannot move the median.
+    assert dl.band_from_languages({"aaa": one(4), "bbb": one(4), "ccc": one(4), "ddd": one(None)}) == 4
+    # No evidence at all, and no languages at all.
+    assert dl.band_from_languages({"aaa": one(None)}) is None
+    assert dl.band_from_languages({}) is None
+
+
+def test_the_site_table_carries_one_row_per_target_language(payload):
+    """`capability_languages` in the Neon load is the per-language mapping at a queryable grain,
+    and its bands reproduce each set's recorded band the same way."""
+    from build.neon_schema import build_site_tables, product_ids
+
+    ids = product_ids(payload)
+    by_product: dict[int, dict] = {}
+    for row in build_site_tables(payload)["capability_languages"]:
+        by_product.setdefault(row["product_id"], {})[row["language"]] = row
+    for slug, r in rows(payload).items():
+        table = by_product[ids[slug]]
+        assert sorted(table) == sorted(r["capability"]["depth"]["per_language"]), slug
+        assert dl.band_from_languages(table) == r["capability"]["score"], slug
+    assert set(by_product) == {ids[slug] for slug in rows(payload)}
 
 
 @pytest.mark.parametrize("slug", sorted(UNRESOLVED))

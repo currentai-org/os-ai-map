@@ -8,12 +8,17 @@ Every branch below either confirms one invariant or refuses to judge the payload
 missing top-level block, `None` where a dict belongs, an empty product set, or a malformed
 row must never read as "fine". A gate that goes green when it cannot understand its input
 is worse than no gate at all: it looks like protection nobody is actually getting.
+
+One numeric invariant sits here too, because the payload is the only place both halves of it
+appear: a depth-ladder row's per-language bands must reproduce the set band beside them
+(`_check_depth_languages`).
 """
 import json
 import re
 import sys
 from pathlib import Path
 
+from build.depth_ladder import band_from_languages
 from build.vocabulary import axes, is_iso_date
 
 # The same regex as the `pattern` on every URL field in docs/schemas/ (#525): an http(s)
@@ -141,6 +146,58 @@ def _check_end_of_life(slug: str, eol: object) -> None:
         )
 
 
+_LANGUAGE_FIGURES = ("band", "face_value", "best_original", "set_by", "tasks")
+
+
+def _is_band(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= 5
+
+
+def _check_depth_languages(slug: str, capability: dict) -> None:
+    """A depth-ladder row's per-language bands must reproduce the band it publishes (#953).
+
+    `capability.depth.per_language` carries one entry per target language, an unmeasured one as
+    `band: null`. Read the way `set_band` reads them, measured bands as they are and unmeasured
+    languages at 0 and at 5, they must give back `capability.score` exactly, and their counts must
+    be the `completeness` the row states. A per-language table that disagrees with the band beside
+    it would let the map show one number and explain it with another, so it fails here.
+    """
+    depth = capability.get("depth")
+    if not isinstance(depth, dict):
+        raise PayloadError(f"{slug!r} has a capability.depth that is not an object")
+    languages = depth.get("per_language")
+    if not isinstance(languages, dict):
+        raise PayloadError(f"{slug!r} has a depth block with no per_language mapping")
+    for code, entry in languages.items():
+        if not (isinstance(code, str) and len(code) == 3 and code.islower() and code.isalpha()):
+            raise PayloadError(f"{slug!r} has a per_language key that is not an ISO 639-3 code: {code!r}")
+        if not isinstance(entry, dict) or set(entry) != set(_LANGUAGE_FIGURES):
+            raise PayloadError(f"{slug!r} per_language {code!r} does not carry exactly "
+                               f"{', '.join(_LANGUAGE_FIGURES)}")
+        band = entry["band"]
+        if band is None:
+            if any(entry[k] for k in _LANGUAGE_FIGURES):
+                raise PayloadError(f"{slug!r} per_language {code!r} is unmeasured but fills a figure")
+        elif not (_is_band(band) and _is_band(entry["face_value"])
+                  and (entry["best_original"] == "unavailable" or _is_band(entry["best_original"]))
+                  and isinstance(entry["tasks"], list)):
+            raise PayloadError(f"{slug!r} per_language {code!r} has a figure that is not a band: {entry!r}")
+    measured = sum(1 for e in languages.values() if e["band"] is not None)
+    completeness = depth.get("completeness") or {}
+    if (measured, len(languages)) != (completeness.get("measured"), completeness.get("targets")):
+        raise PayloadError(
+            f"{slug!r} per_language has {measured} measured of {len(languages)} target languages, "
+            f"but completeness says {completeness.get('measured')} of {completeness.get('targets')}")
+    implied = band_from_languages(languages)
+    if implied != capability.get("score"):
+        raise PayloadError(
+            f"{slug!r} per_language bands give a set band of {implied!r}, but capability.score "
+            f"is {capability.get('score')!r}")
+    if (implied is None) != (depth.get("status") == "unresolved"):
+        raise PayloadError(f"{slug!r} per_language bands give {implied!r}, which disagrees with "
+                           f"depth status {depth.get('status')!r}")
+
+
 def check(payload: dict) -> None:
     if not isinstance(payload, dict):
         raise PayloadError(f"payload is not an object (got {type(payload).__name__})")
@@ -194,6 +251,9 @@ def check(payload: dict) -> None:
         if "end_of_life" in row:
             _check_end_of_life(slug, row["end_of_life"])
         _check_identity_attributes(slug, row, orgs)
+        capability = row.get("capability")
+        if isinstance(capability, dict) and "depth" in capability:
+            _check_depth_languages(slug, capability)
 
     dates = {row["freshness"]["date"] for row in rows}
     if len(dates) <= 1:

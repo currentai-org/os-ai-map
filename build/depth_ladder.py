@@ -31,6 +31,10 @@ Three different things, kept apart (R-2026-11-02-b, -k):
 - The published capability band is the corroborated depth of the set, with the face-value band,
   the best original band, task count, completeness, cap status, evidence status and the
   unverified-lineage sensitivity beside it.
+
+Every target language's own band is published beside the set's (`per_language`), and
+`band_from_languages` reproduces the set band from those figures alone, so a reader can check the
+median without the evidence behind it.
 """
 from __future__ import annotations
 
@@ -228,6 +232,44 @@ def unresolved_reason(loaded: dict, measured: int) -> str:
     return reasons.most_common(1)[0][0] if reasons else "evidence_incomplete"
 
 
+def per_language(targets: list[str], per: dict[str, dict]) -> dict[str, dict]:
+    """Every target language's published figures, keyed by ISO 639-3 code (#953).
+
+    One entry per target language, measured or not, so the unknowns are explicit rather than
+    absent (R-2026-11-01-a, -f). A measured language carries its corroborated `band`, its
+    `face_value` before the cap, its `best_original` band (`unavailable` when none of the set's
+    own components covers it, never zero; R-2026-11-02-o), the component that `set_by` the band,
+    and the `tasks` with a band above zero. An unmeasured target language carries `band: null`
+    and nothing else filled: the set's median reads it the way `set_band` does, at 0 and at 5.
+    """
+    out: dict[str, dict] = {}
+    for lang in sorted(targets):
+        d = per.get(lang)
+        out[lang] = {
+            "band": d["band"],
+            "face_value": d["face_value"],
+            "best_original": "unavailable" if d["own_band"] is None else d["own_band"],
+            "set_by": d["set_by"],
+            "tasks": list(d["tasks"]),
+        } if d is not None else {
+            "band": None, "face_value": None, "best_original": None, "set_by": None, "tasks": [],
+        }
+    return out
+
+
+def band_from_languages(languages: dict[str, dict]) -> int | None:
+    """The set band a published `per_language` mapping implies, or None where it does not stand.
+
+    Reads only the published figures: measured languages are the entries with a band, and every
+    entry without one is an unmeasured target language, filled at 0 and at 5 by `set_band`. This
+    is how a consumer, `build/check_payload.py` and the tests reproduce a set's `capability.score`
+    from its per-language bands without the evidence behind them.
+    """
+    bands = [d["band"] for d in languages.values() if d.get("band") is not None]
+    result = set_band(bands, len(languages) - len(bands))
+    return int(result) if result is not None and not result.startswith("unresolved") else None
+
+
 def compute(doc: dict, slug: str, *, claims: list[dict] | None = None, root: Path = ROOT) -> dict:
     """One set's published depth result: the band and every companion figure (R-2026-11-02-o)."""
     claims = record_claims(slug, root) if claims is None else claims
@@ -262,7 +304,7 @@ def compute(doc: dict, slug: str, *, claims: list[dict] | None = None, root: Pat
         "distribution": dict(sorted(Counter(bands).items())),
         "status_tally": dict(sorted(loaded["tally"].items())),
         "score_recorded": loaded["score"],
-        "per_language": {lang: d["band"] for lang, d in sorted(per.items())},
+        "per_language": per_language(targets, per),
     }
     if not resolved:
         out["unresolved_reason"] = unresolved_reason(loaded, len(per))

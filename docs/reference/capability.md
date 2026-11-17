@@ -485,8 +485,8 @@ A task the list does not name is a schema change, not a new spelling.
   structured data asset that the per-language view loads (R-2026-11-01-f), exposing language,
   task, evaluation split, count and unit, provenance, source references, the observed-coverage
   fraction, and unknowns marked explicitly. That asset is not built. What the depth ladder
-  computes from the record is in the payload, as `capability.depth`
-  ([The depth ladder](#the-depth-ladder)).
+  computes from the record is in the payload, as `capability.depth`, including each target
+  language's band ([The per-language bands](#the-per-language-bands)).
 
 ### How the depth ladder reads it
 
@@ -763,9 +763,44 @@ Each row in the category carries `capability.depth` with the companion figures D
 | `completeness` | measured target languages out of all target languages, for example 18 of 20. |
 | `cap` | whether the cap binds in any target language, in how many, and for each such language which component set the face value, which independent component backs it, and which components were dependent or unverified. |
 | `sensitivity` | the band if every `unverified` lineage pair were read as independent (R-2026-11-02-m). |
+| `per_language` | every target language's own figures, keyed by ISO 639-3 code. See [The per-language bands](#the-per-language-bands). |
 
 The record's `value` states the band, its status, completeness, task count, face value and best
 original band in prose, and its `note` says whether the cap binds.
+
+### The per-language bands
+
+The published band is a median over the set's target languages, so `capability.depth.per_language`
+publishes the values it is the median of. There is one entry per target language (`languages` less
+`pivot_languages`), measured or not, so an unknown is explicit rather than absent
+(R-2026-11-01-a):
+
+| field | a measured language | an unmeasured target language |
+|---|---|---|
+| `band` | its corroborated depth band, 0 to 5 | `null` |
+| `face_value` | its band before the corroboration cap | `null` |
+| `best_original` | the best band among the set's own components in that language, or `unavailable` | `null` |
+| `set_by` | the component that supplied its band, or null when none rises above zero | `null` |
+| `tasks` | the tasks with a band above zero in that language | `[]` |
+
+A language's band sits below its face value exactly where the cap binds in it, and `cap.detail`
+says why. The set's companion figures come from the same table: `face_value` is the robust median
+of the face values, `best_original` the robust median of the original bands with every language
+that has none counted as unmeasured (`unavailable` when no language has one), and `task_count` the
+number of distinct tasks across the languages.
+
+**The set band reproduces from this table alone.** Take the measured bands as they are and read
+every `null` band the way `set_band` reads an unmeasured target language, at 0 and at 5: where both
+medians agree, that is `capability.score`; where they differ, or nothing is measured, the score is
+null and the status `unresolved`. `build/depth_ladder.py::band_from_languages` is that reading.
+`build/check_payload.py` refuses a payload where it disagrees with the row's `score`, `status` or
+`completeness`, and `tests/test_depth_ladder.py` checks it for every set on the roster.
+
+These are results the ladder computed, not the evidence behind them. The coverage entries, their
+counts, provenance and cited sources stay out of the payload, for the separate per-language asset
+above. The rendered notebook drops `per_language` from its literal, since it shows only the set's
+band. The site's Neon load carries the same figures as `capability_languages`, one row per
+`(product_id, language)` (`where-scores-live.md`).
 
 ### An unresolved band
 
