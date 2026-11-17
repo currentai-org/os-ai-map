@@ -32,9 +32,10 @@ UNRESOLVED = {
 # Calibrated sets that a ruling has since moved out of the category, with their destination, and
 # sets a ruling has since added, with the ruling. The calibration roster stays the historical 22
 # (build/depth_calibration.py); membership moves only by a recorded ruling (R-2026-11-11-b: IndoNLU
-# targets only Indonesian, which is high; R-2026-11-11-e: KMMLU targets Korean, which is mid).
+# targets only Indonesian, which is high; R-2026-11-11-e: KMMLU targets Korean, which is mid;
+# R-2026-11-17-a: IN22 and IndicIFEval target Indic languages below the line).
 MOVED_OUT = {"indonlu": "benchmark_eval_data"}
-ADDED = {"kmmlu": "R-2026-11-11-e"}
+ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-2026-11-17-a"}
 CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 
