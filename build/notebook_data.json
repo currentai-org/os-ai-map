@@ -85300,7 +85300,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-10-25"
           },
-          "version_note": "The IN22 test sets released with BPCC live in their own repositories and are not scored here. The IndicTrans2 README says newer BPCC-Seed releases are published on the AI4Bharat website."
+          "version_note": "The IN22 test sets released with BPCC are scored as their own product, IN22. The IndicTrans2 README says newer BPCC-Seed releases are published on the AI4Bharat website."
         },
         {
           "slug": "indicalign",
@@ -85793,6 +85793,173 @@
             "date": "2026-09-24",
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-11"
+          }
+        },
+        {
+          "slug": "indic-rag-suite",
+          "product": "Multilingual Indic RAG Suite",
+          "org_slug": "ai4bharat",
+          "org": "AI4Bharat",
+          "type": "dataset",
+          "languages": [
+            "asm",
+            "ben",
+            "eng",
+            "guj",
+            "hin",
+            "kan",
+            "kas",
+            "mai",
+            "mal",
+            "mar",
+            "mni",
+            "nep",
+            "ori",
+            "pan",
+            "sat",
+            "tam",
+            "tel",
+            "urd"
+          ],
+          "description": "The Multilingual Indic RAG Suite is a synthetic question-answering dataset of about 21.4 million examples in 17 Indian languages and English, built for retrieval-augmented generation. Llama 3.3 70B wrote each question, answer and reasoning trace from a Wikipedia paragraph, which is kept in the row with its title and URL. AI4Bharat publishes it on Hugging Face as one configuration per language.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:mit(card metadata and API tag; the rows carry Wikipedia paragraphs, which Wikipedia publishes under CC BY-SA, and answers written by Llama 3.3 70B);access:public(ungated on the Hub);dataset_card:present(card lists the languages, fields, sample count and the generator model; no paper)",
+            "confidence": "medium",
+            "note": "The suite downloads without a gate under MIT, and its card says what each row holds and which model wrote it. The MIT label sits over Wikipedia text, whose own license asks for attribution and share-alike, so a reuser should treat the paragraphs as Wikipedia content rather than as MIT-licensed.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/Indic-Rag-Suite/raw/main/README.md",
+                "shows": "\"license: mit\"; \"Total Samples: 21,439,886\"; \"Source: Wikipedia + Llama 3.3 70B\"; fields \"paragraph: Source Wikipedia paragraph\", \"wiki_id\", \"url\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "e2a44baa7e03ee0c517e8f3fab469a2bfac064aa8cdaa692edab30912d9a1f9d",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/Indic-Rag-Suite",
+                "shows": "\"gated\":false; tag license:mit; tags for 18 languages from language:as to language:ur.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "adcbcbec99af9824282c37be80ec1e81ca3a35a2aead0e309b4890ef15d7f15b",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open",
+            "components_parts": [
+              {
+                "key": "license",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "mit",
+                    "detail": "card metadata and API tag; the rows carry Wikipedia paragraphs, which Wikipedia publishes under CC BY-SA, and answers written by Llama 3.3 70B"
+                  }
+                ]
+              },
+              {
+                "key": "access",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "public",
+                    "detail": "ungated on the Hub"
+                  }
+                ]
+              },
+              {
+                "key": "dataset_card",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "present",
+                    "detail": "card lists the languages, fields, sample count and the generator model; no paper"
+                  }
+                ]
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads of the one repository over the trailing month. Users who load a single language configuration are counted the same as those who load all of them.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/Indic-Rag-Suite",
+                "shows": "\"downloads\":454 for ai4bharat/Indic-Rag-Suite.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "adcbcbec99af9824282c37be80ec1e81ca3a35a2aead0e309b4890ef15d7f15b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "basis_detail": "how the content was made and downstream use, for Indic question-answering data",
+            "value": "About 21.4 million question, answer and reasoning rows in 17 Indian languages and English, every one written by Llama 3.3 70B from a Wikipedia paragraph. Documented by its card only, with no paper, and two community models on the Hub list it as training data.",
+            "confidence": "medium",
+            "note": "The suite is large and covers low-resource languages such as Santali, Manipuri and Kashmiri, but every question and answer is model-written and nothing beyond its card describes how they were made or checked. Updesh is judged the same way, for the same reason.",
+            "relative_to": "updesh",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-11-17",
+              "sources": [
+                {
+                  "url": "https://arxiv.org/abs/2509.21294",
+                  "shows": "Updesh still described as \"a high-quality large-scale synthetic instruction-following dataset comprising 9.5M data points across 13 Indian languages and English\", generated by \"large open-source LLMs (>= 235B parameters) grounded in language-specific Wikipedia content\": model-written Indic data of the same kind",
+                  "accessed": "2026-11-17",
+                  "http_status": 200,
+                  "content_sha256": "390ee528d42322b4454e150e63eb69410f66f16d860cfc7006ce3d5272654114"
+                }
+              ]
+            },
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/Indic-Rag-Suite/raw/main/README.md",
+                "shows": "\"A comprehensive multilingual question-answering dataset covering 18 Indian languages with 21,439,886 total samples\"; \"Source: Wikipedia + Llama 3.3 70B\"; \"Task: Question Answering with Reasoning\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "e2a44baa7e03ee0c517e8f3fab469a2bfac064aa8cdaa692edab30912d9a1f9d"
+              },
+              {
+                "url": "https://huggingface.co/api/models?filter=dataset:ai4bharat/Indic-Rag-Suite",
+                "shows": "Two models list the dataset: jangedoo/all-MiniLM-L6-v3-nepali-rag and karmx/Llama-Karmx-Indic-Embedding-bge-m3.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "1d51031424a3ddb2d3abb2ca03020808d68aba164515373542b189885fa52411"
+              }
+            ]
+          },
+          "overall_score": 1.7,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 1.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-17",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-17",
+                "reason": "The initial level was set on 2026-11-17 from a hand-read count of Hugging Face downloads of ai4bharat/Indic-Rag-Suite, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
           }
         },
         {
@@ -89489,7 +89656,7 @@
             "reach": "<1K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is Hugging Face downloads of the single repository. Training runs typically fetch it once, so the count cannot show how many fine-tunes used it.",
+            "note": "Adoption is Hugging Face downloads summed over the full release and its smaller sample. Training runs typically fetch a dataset once, so the count cannot show how many fine-tunes used it.",
             "last_verified": "2026-11-15",
             "sources": [
               {
@@ -89498,6 +89665,13 @@
                 "accessed": "2026-09-24",
                 "http_status": 200,
                 "content_sha256": "619324b498b5ad76cd14b1a119227d2c59536f8f83a643733d0f8989679819d3"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/Small-SEA-Instruct-2602",
+                "shows": "556 downloads in the trailing 30 days for aisingapore/Small-SEA-Instruct-2602",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "cd1b7b19263418923ba1299af940815af25a0ab61ba22a138bfc15dc6eb8eedd"
               }
             ]
           },
@@ -89537,7 +89711,8 @@
             "date": "2026-09-24",
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-15"
-          }
+          },
+          "version_note": "Small-SEA-Instruct-2602 is a 28,000-row sample of the release, 4,000 rows in each of seven languages, that AI Singapore published as training data for its DuDi distillation paper. Its downloads count toward this product."
         },
         {
           "slug": "cendol-collection",
@@ -90307,6 +90482,206 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-11"
           }
+        },
+        {
+          "slug": "mangosteen",
+          "product": "Mangosteen",
+          "org_slug": "vistec",
+          "org": "VISTEC",
+          "type": "dataset",
+          "languages": [
+            "tha"
+          ],
+          "description": "Mangosteen is an open Thai pretraining corpus of about 47 billion tokens. Most of it is Thai Common Crawl and FineWeb2 text passed through a Dolma pipeline adapted for Thai, with rule-based language identification, revised quality filters and filters for gambling and adult content. About 1.5 billion tokens come from curated non-web sources such as Wikipedia, Royal Gazette texts, OCR-extracted books and CC-licensed YouTube subtitles. VISTEC and AI Singapore researchers built it for the WangchanLION v3 model.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:odc-by(card metadata and API tag on both repositories; ODC-By 2.4 leaves rights in the individual pages with their owners. The web share is Thai Common Crawl and FineWeb2 text, and Common Crawl's CCBot checks robots.txt before fetching; the curated share was checked for permissive content licenses);access:public(both repositories ungated on the Hub);dataset_card:present(the web card describes the sources and cleaning pipeline and links the paper; the curated card lists sources by domain with document and word counts)",
+            "confidence": "high",
+            "note": "Both parts download without a gate under ODC-By, and the paper and cards name where the text came from: Thai Common Crawl and FineWeb2 for the web share, with the curated sources listed one by one. As with any web corpus, the license covers the compilation, and each page keeps its own rights.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/aisingapore/WangchanLION-Web/raw/main/README.md",
+                "shows": "\"license: odc-by\"; table \"CC-Derived Dataset | 29.7 M | 45.9\" billion tokens; \"We adopt the data collection of Dolma by applying five major components\" (language identity, URL deduplication, quality filters, content filters, text-overlap deduplication).",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "c0eb3d78e83046e3e941581991bbc0b9aaf6b0152ff40dcc402dfb8c30e0513e",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/WangchanLION-Web",
+                "shows": "\"gated\":false; tag license:odc-by; tag language:th.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "eba258acc94d745febda58489d9601107c6398ffb3adbebc5db7879574db40c6",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/aisingapore/WangchanLION-Curated/raw/main/README.md",
+                "shows": "\"license: odc-by\"; train split 397,488 and validation split 4,044 examples; per-source table beginning \"encyclopedic | th.wikibooks.org\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "a60eb39c383689b8302b13876daefd71893e30ba6bf5d47f6265881032cc613e",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/WangchanLION-Curated",
+                "shows": "\"gated\":false; tag license:odc-by; tag language:th.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "2a57483d45e7349ab67adb5b71ab212cd5c401910d12057ff672197f0652aad1",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/pdf/2507.14664",
+                "shows": "\"We merged two sources, both Thai Common Crawl and FineWeb2\"; \"All sources were verified to ensure the use of permissive content licenses. The full list of text sources can be found in https://github.com/vistec-AI/Mangosteen.\"; \"YouTube: We collect Thai YouTube subtitles from videos with the CC BY 3.0 license.\"",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "7a0d6ec67f1a1c827d87c1d484d08063553fa09c361c7ab4331c0935d0b7eb39",
+                "establishes": [
+                  "documentation"
+                ]
+              },
+              {
+                "url": "https://commoncrawl.org/faq",
+                "shows": "Common Crawl FAQ: \"CCBot is an automated crawler, checking first the robots.txt, and if crawling a page is allowed, fetches pages using HTTP GET requests.\"",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "6cb85bf9331e700a551fadd5ef373376c36141e263d6403c8f379fa30f068ffa",
+                "establishes": [
+                  "documentation"
+                ]
+              }
+            ],
+            "bucket": "open",
+            "components_parts": [
+              {
+                "key": "license",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "odc-by",
+                    "detail": "card metadata and API tag on both repositories; ODC-By 2.4 leaves rights in the individual pages with their owners. The web share is Thai Common Crawl and FineWeb2 text, and Common Crawl's CCBot checks robots.txt before fetching; the curated share was checked for permissive content licenses"
+                  }
+                ]
+              },
+              {
+                "key": "access",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "public",
+                    "detail": "both repositories ungated on the Hub"
+                  }
+                ]
+              },
+              {
+                "key": "dataset_card",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "present",
+                    "detail": "the web card describes the sources and cleaning pipeline and links the paper; the curated card lists sources by domain with document and word counts"
+                  }
+                ]
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads summed over the web and curated repositories, most of them for the web share. A pretraining corpus is typically fetched once and reused, so repeat downloads understate how widely a copy is used.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/WangchanLION-Web",
+                "shows": "\"downloads\":868 for aisingapore/WangchanLION-Web.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "eba258acc94d745febda58489d9601107c6398ffb3adbebc5db7879574db40c6"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/WangchanLION-Curated",
+                "shows": "\"downloads\":281 for aisingapore/WangchanLION-Curated.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "2a57483d45e7349ab67adb5b71ab212cd5c401910d12057ff672197f0652aad1"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "coverage and downstream use for Thai pretraining text, bounded by the size cap",
+            "value": "About 47.4 billion Thai tokens: 45.9 billion of filtered Common Crawl and FineWeb2 text and 1.5 billion from curated non-web sources, documented in a paper and two cards, and used to train WangchanLION v3. Thai has the reference resource profile, so ten billion tokens is the size cap's step to 3 and a hundred billion the step to 4.",
+            "confidence": "medium",
+            "note": "Mangosteen is the largest open Thai pretraining corpus here, several times the Thai share of SEA-PILE, it is documented in a paper that releases its cleaning pipeline, and WangchanLION v3 was trained on it. Its size keeps it at 3: Thai is measured on the same yardstick as English, and forty-seven billion tokens is well short of the hundred billion the next step needs.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2507.14664",
+                "shows": "Abstract: \"We introduce Mangosteen: a 47 billion-token Thai corpus built through a Thai-adapted Dolma pipeline\"; \"an 8B-parameter SEA-LION model continually pre-trained on Mangosteen then surpasses SEA-LION-v3 and Llama-3.1 by about four points on Thai benchmarks\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "d61188c09ee06ecb6220321b957dd1ac34a03849fea89a831c17d86b831657b6"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vistec-AI/Mangosteen/main/README.md",
+                "shows": "Table: \"Common Crawl-Derived | 29.7M | 45.9\", \"Curated Non-Common Crawl | 425,304 | 1.5\", \"Total | 30.1M | 47.4\" (documents, billions of tokens).",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "58c3414e0ec1a59fc4f779cc059f82dacd3a1b68c7a1257c190db2734ebb3829"
+              },
+              {
+                "url": "https://huggingface.co/aisingapore/WangchanLION-v3",
+                "shows": "WangchanLION-v3 model card, tagged arxiv:2507.14664 (\"Mangosteen: An Open Thai Corpus for Language Model Pretraining\"), lists under Resources \"Pre-training data (web): https://huggingface.co/datasets/aisingapore/WangchanLION-Web\" and \"Pre-training data (curated)\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "3d7c318508420532e0f9b405caa6b9dc05aa4af8a9b0cc42d9fbaed938402f19"
+              },
+              {
+                "url": "https://huggingface.co/datasets/aisingapore/SEA-PILE-v2/raw/main/README.md",
+                "shows": "Token table row \"Thai | th | 6.5\" billion tokens.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "220cc11d5b41f8b0e33acce402c8ce4704332e2de05928be41c047fbe84690c5"
+              }
+            ]
+          },
+          "overall_score": 2.7,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-17",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-17",
+                "reason": "The initial level was set on 2026-11-17 from a hand-read count of Hugging Face downloads of aisingapore/WangchanLION-Web and aisingapore/WangchanLION-Curated, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "AI Singapore publishes the corpus on the Hub as WangchanLION-Web and WangchanLION-Curated. The cleaning pipeline and the full list of curated sources are in the vistec-AI/Mangosteen repository on GitHub."
         },
         {
           "slug": "typhoon-s-sovereign-capability",
@@ -97485,6 +97860,254 @@
           }
         },
         {
+          "slug": "in22",
+          "product": "IN22",
+          "org_slug": "ai4bharat",
+          "org": "AI4Bharat",
+          "type": "dataset",
+          "languages": [
+            "asm",
+            "ben",
+            "brx",
+            "doi",
+            "eng",
+            "gom",
+            "guj",
+            "hin",
+            "kan",
+            "kas",
+            "mai",
+            "mal",
+            "mar",
+            "mni",
+            "npi",
+            "ory",
+            "pan",
+            "san",
+            "sat",
+            "snd",
+            "tam",
+            "tel",
+            "urd"
+          ],
+          "description": "IN22 is a machine translation test set for English and all 22 scheduled Indian languages, n-way parallel so that any pair of its languages can be evaluated. IN22-Gen holds 1,024 sentences from Wikipedia and Indian web sources across 13 domains, and IN22-Conv holds 1,503 sentences from English conversations written for the set. In-house translators translated every sentence without machine translation. AI4Bharat built it with the BPCC corpus and the IndicTrans2 models.",
+          "openness": {
+            "score": 3,
+            "class": "gated",
+            "components": "license:cc-by-4.0(card metadata and the IndicTrans2 README's license table);access:auto(Hugging Face gate that approves anyone who agrees to share their contact information);dataset_card:present(cards give domains, fields and sentence counts and point to the dataset card appendix of the paper)",
+            "confidence": "high",
+            "note": "The sentences carry CC BY 4.0, and the Hugging Face copies need an access request that is approved automatically. The cards and the paper describe how the sentences were chosen and translated.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/IN22-Gen",
+                "shows": "Card: \"You need to agree to share your Hugging Face information to access this dataset\"; \"License: cc-by-4.0\"; \"The evaluation subset consists of 1024 sentences translated across 22 Indic languages\"; \"Please refer to the Appendix E: Dataset Card of the preprint\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "f85185fd34d546bb8611bae1b181af3fde51812d280bb826bb0b5fc2e06064b4",
+                "establishes": [
+                  "availability",
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/IN22-Conv",
+                "shows": "Card: \"You need to agree to share your Hugging Face information to access this dataset\"; \"License: cc-by-4.0\"; \"The evaluation subset consists of 1503 sentences translated across 22 Indic languages\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "d2f695db8da0da0a988a342415f1e6f43534341eac0080b5a58666ca0b62f9f5",
+                "establishes": [
+                  "availability",
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/IN22-Gen",
+                "shows": "API JSON: \"gated\":\"auto\"; card metadata \"license\":\"cc-by-4.0\", split \"test\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "85395ce416794db288dd875acc0fb151fa2d3eba9413f5ef3978c862df3c8315",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/IN22-Conv",
+                "shows": "API JSON: \"gated\":\"auto\"; card metadata \"license\":\"cc-by-4.0\", split \"test\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "ed896903829e40b2ac2aeef00906edc2ccd4ac54aa5c8891b54adc662d79eebe",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/AI4Bharat/IndicTrans2/main/README.md",
+                "shows": "License table: \"Newly Created IN-22 test set (IN22-Gen & IN22-Conv) | CC-BY-4.0\"; \"IN22-Gen (IN22-Wiki + IN22-Web) | 1024 sentences\"; \"IN22-Conv | 1503 sentences\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "be2736641ba492bbd0fa15daceee6c4381542ce572d01187983f8368f73be8cb",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish",
+            "components_parts": [
+              {
+                "key": "license",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "cc-by-4.0",
+                    "detail": "card metadata and the IndicTrans2 README's license table"
+                  }
+                ]
+              },
+              {
+                "key": "access",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "auto",
+                    "detail": "Hugging Face gate that approves anyone who agrees to share their contact information"
+                  }
+                ]
+              },
+              {
+                "key": "dataset_card",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "present",
+                    "detail": "cards give domains, fields and sentence counts and point to the dataset card appendix of the paper"
+                  }
+                ]
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads of the IN22-Gen and IN22-Conv repositories over the trailing month. Evaluation harnesses can fetch a test set repeatedly, so the figure is a rough measure of use, not a count of users; copies taken from the archive in the BPCC repository are not counted.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/IN22-Gen",
+                "shows": "\"downloads\":1495 for ai4bharat/IN22-Gen.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "85395ce416794db288dd875acc0fb151fa2d3eba9413f5ef3978c862df3c8315"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/IN22-Conv",
+                "shows": "\"downloads\":1123 for ai4bharat/IN22-Conv.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "ed896903829e40b2ac2aeef00906edc2ccd4ac54aa5c8891b54adc662d79eebe"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "evaluation_depth",
+            "basis_detail": "depth ladder: corroborated median of per-language task bands, count-based and provisional",
+            "value": "Depth band 3 of 5, provisional and count-based: the median corroborated band over its target languages, 22 of 22 measured, across 1 task. Face value 3; best original band 3.",
+            "confidence": "medium",
+            "note": "In every language IN22 targets, its deeper test, the human-translated conversation sentences of IN22-Conv, has four hundred to sixteen hundred items that count toward depth. An item count says how much a set can test, not how precisely it ranks models.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2305.16307",
+                "shows": "Abstract: \"Our second contribution is the release of the first n-way parallel benchmark covering all 22 Indian languages, featuring diverse domains, Indian-origin content, and source-original test sets.\"",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "aca7923845a55d841ee178fbc100521da56ce9fd9012e40a47fa15e20fe038dd"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2305.16307",
+                "shows": "\"It is an n-way parallel test set containing 2527 original English sentences translated into 22 Indic languages with high-quality translations done by in-house translators from scratch without recourse to any existing MT system\"; Table 2: \"IN22-Wiki 512 22\", \"IN22-Web 512 22\", \"IN22-Conv 1503 22\"; \"we merge Wikipedia and Web Sources subsets, to create a consolidated set referred to as IN22-Gen\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "53211571f644faaaa1226d86ad0a1f3496d1c919a254493abfa14403accfe474"
+              },
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/IN22-Gen",
+                "shows": "\"The evaluation subset consists of 1024 sentences translated across 22 Indic languages\"; split \"test\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "f85185fd34d546bb8611bae1b181af3fde51812d280bb826bb0b5fc2e06064b4"
+              },
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/IN22-Conv",
+                "shows": "\"The evaluation subset consists of 1503 sentences translated across 22 Indic languages\"; split \"test\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "d2f695db8da0da0a988a342415f1e6f43534341eac0080b5a58666ca0b62f9f5"
+              }
+            ],
+            "own_components": [
+              {
+                "component": "in22-conv",
+                "cites": [
+                  "https://arxiv.org/pdf/2305.16307"
+                ]
+              },
+              {
+                "component": "in22-gen",
+                "cites": [
+                  "https://arxiv.org/pdf/2305.16307"
+                ]
+              }
+            ],
+            "depth": {
+              "status": "provisional",
+              "unresolved_reason": null,
+              "unresolved_reason_text": null,
+              "face_value": "3",
+              "best_original": "3",
+              "task_count": 1,
+              "completeness": {
+                "measured": 22,
+                "targets": 22
+              },
+              "cap": {
+                "binds": false,
+                "languages": 0,
+                "detail": {}
+              },
+              "sensitivity": {
+                "unverified_as_independent": "3"
+              }
+            }
+          },
+          "overall_score": 2.7,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-17",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-17",
+                "reason": "The initial level was set on 2026-11-17 from a hand-read count of Hugging Face downloads of ai4bharat/IN22-Gen and ai4bharat/IN22-Conv, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          }
+        },
+        {
           "slug": "indicgenbench",
           "product": "IndicGenBench",
           "org_slug": "google-research",
@@ -97804,6 +98427,219 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-15"
           }
+        },
+        {
+          "slug": "indicifeval",
+          "product": "IndicIFEval",
+          "org_slug": "ai4bharat",
+          "org": "AI4Bharat",
+          "type": "dataset",
+          "languages": [
+            "asm",
+            "ben",
+            "eng",
+            "guj",
+            "hin",
+            "kan",
+            "mal",
+            "mar",
+            "nep",
+            "ori",
+            "pan",
+            "san",
+            "tam",
+            "tel",
+            "urd"
+          ],
+          "description": "IndicIFEval tests whether language models follow instructions whose constraints a program can check, such as a word count, a required keyword or an output format, in 14 Indic languages. It has two parts. IndicIFEval-Trans adapts 490 prompts from the English IFEval benchmark to Indian contexts, machine-translates them, and has native speakers mark each translation correct or incorrect. IndicIFEval-Ground holds new prompts that Gemini 2.5 wrote from Indic web text, kept only where native speakers judged them clear and correct. AI4Bharat released it in 2026 with its evaluation harness.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:cc-by-4.0(card metadata and API tag; the GitHub code, including the evaluation harness configs, is MIT);access:public(ungated on the Hub);dataset_card:present(card describes both subsets, the fields, the translation-quality tags and how to reproduce the paper's numbers, and links the paper and code)",
+            "confidence": "high",
+            "note": "The prompts download freely under CC BY 4.0, and the code that built and scores them is MIT. The card and the paper describe how each part was made and checked.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md",
+                "shows": "Card metadata \"license: cc-by-4.0\"; body: \"IndicIFEval-Trans, translated prompts from IFEval carefully localized for Indic contexts, and IndicIFEval-Ground, synthetically generated instructions grounded in native Indic content\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "52e84d1ce1b5121ca461e1a4845fe4b6ef76606c9cec6b60d12d2bef0bca31fb",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/IndicIFEval",
+                "shows": "API JSON: \"gated\":false; tag license:cc-by-4.0.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "af63a2170135f81da46602b92d535468fb51b0c852e3acaa261972b269c134fe",
+                "establishes": [
+                  "availability",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/AI4Bharat/IndicIFEval/main/LICENSE",
+                "shows": "MIT License, Copyright (c) 2026 Thanmay Jayakumar.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "1bff713bf26aea2b388b0f8cc1883fb734db18a909a1518cfdf13c01a209ca5c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/AI4Bharat/IndicIFEval/main/README.md",
+                "shows": "\"This repository contains the complete codebase for the IndicIFEval benchmark from Data Creation to Benchmark Evaluation\"; \"This dataset is released under the CC BY 4.0\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "a64d48338b796ea2e47fa94b8a66a4d0270b344d16fa51217c24af9c61a3c051",
+                "establishes": [
+                  "documentation",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open",
+            "components_parts": [
+              {
+                "key": "license",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "cc-by-4.0",
+                    "detail": "card metadata and API tag; the GitHub code, including the evaluation harness configs, is MIT"
+                  }
+                ]
+              },
+              {
+                "key": "access",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "public",
+                    "detail": "ungated on the Hub"
+                  }
+                ]
+              },
+              {
+                "key": "dataset_card",
+                "context": false,
+                "parts": [
+                  {
+                    "value": "present",
+                    "detail": "card describes both subsets, the fields, the translation-quality tags and how to reproduce the paper's numbers, and links the paper and code"
+                  }
+                ]
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face downloads of the Hub repository over the trailing month. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/ai4bharat/IndicIFEval",
+                "shows": "\"downloads\":855 for ai4bharat/IndicIFEval.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "af63a2170135f81da46602b92d535468fb51b0c852e3acaa261972b269c134fe"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "evaluation_depth",
+            "basis_detail": "depth ladder: corroborated median of per-language task bands, count-based and provisional",
+            "value": "Depth band 3 of 5, provisional and count-based: the median corroborated band over its target languages, 14 of 14 measured, across 1 task. Face value 3; best original band 3.",
+            "confidence": "medium",
+            "note": "In each of its 14 target languages, IndicIFEval has between 440 and 490 translated prompts that native speakers marked correct, and those are the items that count toward depth. Its model-generated prompts were checked as well, but generated items do not count. An item count says how much a set can test, not how precisely it ranks models.",
+            "last_verified": "2026-11-17",
+            "sources": [
+              {
+                "url": "https://arxiv.org/pdf/2602.22125",
+                "shows": "\"We use Sarvam-Translate (Sarvam, 2025) for the translations\"; \"In total, we arrive at 490 from the original 541 examples\"; \"We use Gemini-2.5 (Comanici et al., 2025) to generate a user prompt based on the provided context\"; \"we implement a human-in-the-loop verification process for both INDICIFEVAL-TRANS and INDICIFEVAL-GROUND subsets. We employ qualified, native speakers for each of the target languages as the annotators\"; \"For every prompt, annotators assessed three aspects\"; Table 7, correct translations of 490: Assamese 440, Bengali 454, Gujarati 482, Hindi 487, Kannada 457, Malayalam 490, Marathi 483, Nepali 468, Odia 473, Punjabi 474, Sanskrit 450, Tamil 489, Telugu 488, Urdu 486; \"our annotations were produced by a single annotator\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "59772b5b10492168eec64da8e52c82530bc5c0accc56276e4dec5a23a91f6c3b"
+              },
+              {
+                "url": "https://huggingface.co/datasets/ai4bharat/IndicIFEval/raw/main/README.md",
+                "shows": "\"For indicifeval-trans, every row carries exactly one of correct/incorrect (human translation-quality verdict)\"; \"To reproduce paper-reported numbers, filter to rows tagged correct\"; IndicIFEval-Ground: \"Synthetically generated instructions grounded in native Indic topics and content, manually verified by native speakers\".",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "52e84d1ce1b5121ca461e1a4845fe4b6ef76606c9cec6b60d12d2bef0bca31fb"
+              },
+              {
+                "url": "https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicIFEval",
+                "shows": "The Hub's row counts, complete (\"partial\":false): indicifeval-trans 490 rows in each of 15 language splits including en; indicifeval-ground as 257, bn 409, gu 377, hi 457, kn 340, ml 384, mr 350, ne 341, or 366, pa 405, sa 336, ta 430, te 375, ur 337.",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "dda09dd91ea957c52c271949dca2e4ac386f00d76c5cb184c519988ae42676d4"
+              }
+            ],
+            "own_components": [
+              {
+                "component": "indicifeval-ground",
+                "cites": [
+                  "https://arxiv.org/pdf/2602.22125"
+                ]
+              },
+              {
+                "component": "indicifeval-trans",
+                "cites": [
+                  "https://arxiv.org/pdf/2602.22125"
+                ]
+              }
+            ],
+            "depth": {
+              "status": "provisional",
+              "unresolved_reason": null,
+              "unresolved_reason_text": null,
+              "face_value": "3",
+              "best_original": "3",
+              "task_count": 1,
+              "completeness": {
+                "measured": 14,
+                "targets": 14
+              },
+              "cap": {
+                "binds": false,
+                "languages": 0,
+                "detail": {}
+              },
+              "sensitivity": {
+                "unverified_as_independent": "3"
+              }
+            }
+          },
+          "overall_score": 2.4,
+          "overall_basis": "adoption_and_capability",
+          "tier": null,
+          "maturity": 2.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-11-17",
+            "basis": "partial",
+            "unconfirmed_axes": [
+              "adoption"
+            ],
+            "verification_holds": [
+              {
+                "axis": "adoption",
+                "since": "2026-11-17",
+                "reason": "The initial level was set on 2026-11-17 from a hand-read count of Hugging Face downloads of ai4bharat/IndicIFEval, which sets a level but earns no date. The axis waits for the first scheduled reconciliation that measures the same level. That run's re-dating PR dates the axis and releases this hold."
+              }
+            ]
+          },
+          "version_note": "The released translated prompts include those reviewers marked incorrect, tagged as such; the paper's scores use only the ones marked correct."
         },
         {
           "slug": "indicxtreme",
@@ -99257,7 +100093,7 @@
             "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Adoption is Hugging Face downloads summed over the sixteen task repositories. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations. Runs from local copies are not counted.",
+            "note": "Adoption is Hugging Face downloads summed over the eighteen task repositories. A download count does not say who downloaded, and evaluation harnesses can fetch a benchmark repeatedly, so the figure is a rough measure of use, not a count of users or organizations. Runs from local copies are not counted.",
             "last_verified": "2026-11-15",
             "sources": [
               {
@@ -99371,6 +100207,20 @@
                 "accessed": "2026-09-24",
                 "http_status": 200,
                 "content_sha256": "c3fd08586817d427d99476b840175e5cea7e1b0d95cf01a9fc40a4f93bb27c9f"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/kalahi",
+                "shows": "44 downloads in the trailing 30 days for aisingapore/kalahi",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "ccf55097d11c9fcd35cd660d746e6e0dd07382d5bf0a8d773353c0308126e1de"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/aisingapore/seahelm-audio",
+                "shows": "344 downloads in the trailing 30 days for aisingapore/seahelm-audio",
+                "accessed": "2026-11-17",
+                "http_status": 200,
+                "content_sha256": "b492456f23d896dbcbcc2b9c1d4e000a5e3b6bc67d8b5fcc8de6980c91fdd478"
               }
             ]
           },
@@ -99613,7 +100463,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-11-15"
           },
-          "version_note": "The suite's code lives on GitHub and its test sets on Hugging Face; many of those test sets are samples of existing public datasets."
+          "version_note": "The suite's code lives on GitHub and its test sets on Hugging Face; many of those test sets are samples of existing public datasets. Kalahi's original repository, published before the suite renamed its task repositories, and SEA-HELM Audio, which reads two SEA-HELM tasks aloud in synthesized speech, are listed with the suite. Neither adds to the per-language depth below, since Kalahi's items are already counted and speech has no measurement model."
         },
         {
           "slug": "seaexam",
@@ -215316,8 +216166,11 @@
       "products": [
         "aksharantar",
         "bpcc",
+        "in22",
+        "indic-rag-suite",
         "indicalign",
         "indiccorp-v2",
+        "indicifeval",
         "indicvoices",
         "indicvoices-r",
         "indicxtreme",
@@ -223461,6 +224314,7 @@
       "github": [],
       "country": "TH",
       "products": [
+        "mangosteen",
         "wangchan-thai-instruct",
         "wangchanx-flan"
       ]
@@ -224091,22 +224945,22 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 1270,
-  "generated": "2026-11-16",
+  "n_total": 1274,
+  "generated": "2026-11-17",
   "version": "0.6.0",
   "released": "2026-11-12",
   "contract": 2,
   "long_tail": {
     "counts": {
-      "repos": 19787,
-      "models": 34884,
-      "packages": 5942,
-      "total": 60613,
-      "matched": 1366,
-      "overlap": 673,
-      "scored": 1270,
-      "scored_outside": 597,
-      "uncategorized": 59247
+      "repos": 22599,
+      "models": 36286,
+      "packages": 7511,
+      "total": 66396,
+      "matched": 1690,
+      "overlap": 791,
+      "scored": 1274,
+      "scored_outside": 483,
+      "uncategorized": 64706
     },
     "top": [
       {
@@ -224272,6 +225126,6 @@
         "description": "PyPI package"
       }
     ],
-    "measured_on": "2026-11-02"
+    "measured_on": "2026-11-16"
   }
 }
