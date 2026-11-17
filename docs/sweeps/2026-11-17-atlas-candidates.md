@@ -28,8 +28,8 @@ no depth.
 The corpus ATLAS lists as WangchanLION is published under that name on the Hub
 (`aisingapore/WangchanLION-Web` and `-Curated`), but its paper (arXiv 2507.14664), its cards and its
 pipeline repository (`vistec-AI/Mangosteen`) all call it Mangosteen, so that is its slug. VISTEC
-researchers led the paper; AI Singapore publishes the data and funded the work, and owns the product
-here. Its 47.4 billion Thai tokens put it at the size cap's 3.
+researchers led the paper and VISTEC hosts the pipeline, so VISTEC owns the product here, alongside
+its other Wangchan datasets; AI Singapore publishes the data on the Hub and funded the work. Its 47.4 billion Thai tokens put it at the size cap's 3.
 
 ## Added as links on existing products
 
@@ -60,7 +60,8 @@ task repository. It is a candidate product in its own right once its card can be
 
 - The 269 individual SEACrowd datasets: the SEACrowd collection is already a product, and a hub's
   members are not separate rows.
-- Mesolitica's 67 Malay datasets: three are open and ungated.
+- Mesolitica's 67 Malay datasets: only three are open and ungated, and those three are left for a
+  separate Malay check rather than assessed here.
 - ViLM's Vietnamese VLSP evaluation sets: license unknown.
 - OpenOrca-Viet: a translated distillation set from 2023.
 - StingrayBench: not built for one language or a set of related ones.
