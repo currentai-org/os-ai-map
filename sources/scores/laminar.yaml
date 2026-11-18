@@ -34,7 +34,7 @@ openness:
     and Slack alerts on a self-hosted instance need an enterprise license key;tracing, evals, datasets,
     SQL query and dashboards run on the Apache-2.0 self-hosted build without a key;managed Laminar Cloud
     is hosting
-  last_verified: '2026-09-29'
+  last_verified: '2026-11-18'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
     shows: Repository page. The license sidebar resolves LICENSE.md to Apache-2.0 (spdxId "Apache-2.0"),
@@ -51,23 +51,23 @@ openness:
     shows: Self-hosting options page, whose note says "Signals, signal event clusters, and email and Slack
       alerts require an enterprise license key" and whose Helm plus license option "Unlocks Signals, signal
       event clusters, and email and Slack alerts".
-    accessed: '2026-09-29'
+    accessed: '2026-11-18'
     http_status: 200
-    content_sha256: 81c40030ba1d64de9e5afec74e473845de4bb12f0b40c1fad9bbacdd07975597
+    content_sha256: 4439e92e3ac408931f1db98f4721fe563f1da2374c9ddcb1c5922c3dbae90919
     establishes:
     - core-gated
   - url: https://docs.laminar.sh/self-hosting/configuration
     shows: Self-hosting configuration reference, whose Slack section says the instance "authenticates to
       the broker with an" enterprise license key set in laminar.yaml.
-    accessed: '2026-09-29'
+    accessed: '2026-11-18'
     http_status: 200
-    content_sha256: 2b4280f8b1f45dadcfb9b6603c56158113734aecb39204ef4cc39e329157a7c6
+    content_sha256: 3e9161ad3a50d7fadf7725cc37d652b347741f8078db1e91cd7f5037a2dcb94c
     establishes:
     - core-gated
   - url: https://raw.githubusercontent.com/lmnr-ai/lmnr/main/LICENSE.md
     shows: The repository LICENSE.md is the unmodified text of the "Apache License" "Version 2.0, January
       2004", with no separate enterprise license text in the file.
-    accessed: '2026-09-29'
+    accessed: '2026-11-18'
     http_status: 200
     content_sha256: 1a685639e91804f1cd605a42f27b7440d5db02ba63daa289a1854f8ac87e6bdf
     establishes:
@@ -75,17 +75,18 @@ openness:
   - url: https://raw.githubusercontent.com/lmnr-ai/lmnr/main/README.md
     shows: README self-hosting section, which tells readers to "clone the repo and start the services with
       docker compose".
-    accessed: '2026-09-29'
+    accessed: '2026-11-18'
     http_status: 200
-    content_sha256: bb0c1b4fc91768417baed12e52d4c2580bbacb1307024f1f328c428cba4a5d3f
+    content_sha256: 95a38ff315a30518f181aa4361c596af2d7bd42b9261eb17a173dfc6b7089c25
     establishes:
     - source
   - url: https://raw.githubusercontent.com/lmnr-ai/lmnr/main/frontend/lib/features/features.ts
-    shows: Feature-flag source in the public frontend; the Slack broker path is enabled only when "process.env.SLACK_BROKER_URL
-      && !!process.env.LMNR_LICENSE_KEY" holds.
-    accessed: '2026-09-29'
+    shows: The Slack feature flag now enables the self-hosted broker path whenever SLACK_BROKER_URL is set;
+      a comment states the license key check moved into getBrokerLicenseKey, read by the connect UI itself,
+      rather than inline here.
+    accessed: '2026-11-18'
     http_status: 200
-    content_sha256: 915234fa2470919402cca74aa7b2ffc7c168e9897285521cf091dfe0a27a6edc
+    content_sha256: 27087cb5366b8e6569b24f759629311df167483cadb52bb47168edf78094e1f0
     establishes:
     - core-gated
 adoption:
