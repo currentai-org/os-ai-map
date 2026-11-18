@@ -384,6 +384,15 @@ consolidations rather than renames: `google-deepmind` into `google`, `alibaba` i
 `alibaba-cloud`. `org_slug` is emitted into the payload and joined in the registry, so a rename
 with no forwarding address breaks a join rather than a link.
 
+### Publisher and owner are different facts
+
+A row's organization is the account that publishes it: the Hugging Face or GitHub account the
+artifacts live under. Institutional ownership is a separate fact, and it stays unknown until a
+paper, an about page or the account's own profile ties the account to the institution
+(R-2026-11-18-u). An organization created for a publishing account records `type: unknown` and
+says in its comments that the institution is not verified, so a later pass can attach the owner
+with a citation rather than having to unpick a guess.
+
 ### Handles are ownership evidence, not adoption evidence
 
 `sources/org_handles.yaml` (`registry.org_handles` when published) records which platform
@@ -701,6 +710,15 @@ within a category, so such an edge groups nothing in either category.
 The edge is descriptive everywhere except the stage count, where a suite and its members count
 once. That rule, and what it leaves untouched (every row's own scores, tier and visibility), is in
 [`gap-analysis.md`](gap-analysis.md#counting-rule-a-suite-and-its-members-count-once).
+
+**Importing is not membership.** A suite that imports another dataset's items, as SEA-HELM imports
+IndicQA's and IndicSentiment's Tamil questions, does not make that dataset its member: the import
+is recorded in the suite's coverage and lineage, and the imported dataset gets no `part_of` edge
+to the importer (R-2026-11-18-t). Membership needs the suite to publish the member as one of its
+own parts. A dataset a hub or suite carries that is also published under its own publisher, with
+its own release, card or paper, gets a row of its own when that independent release meets the
+product identity criteria above (R-2026-11-18-r); the hub's loader alone is not that release.
+Joining a frozen roster still takes a named membership ruling per suite (R-2026-11-18-a, -d, -e).
 
 ## Where the graph lives
 

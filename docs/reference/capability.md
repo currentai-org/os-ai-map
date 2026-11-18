@@ -319,7 +319,7 @@ value means.
 | `provenance` | how the items came to be in this language (below). Required on every entry except a documented zero, which has no items to describe and so carries none. |
 | `qualifying_count` | optional, on a `mixed` entry only: how many of its items the source documents as native, human-translated, post-edited, or machine-translated and then reviewed by people. In the entry's unit and no more than `count`. Absent means the source does not separate that portion. |
 | `human_validated` | optional: `true` when the cited source states that people reviewed the items after they were made, `false` when it states they were not. Absent means the source does not say. On a `machine_translated` entry, `true` makes the items count toward depth when `review_scope` is `all_items` (R-2026-11-03-b, -h). |
-| `review_scope` | optional, with `human_validated: true`: `all_items` when the cited source says the review covered every item, `unstated` when it describes a review without saying how many items it covered. Absent reads as `unstated`. |
+| `review_scope` | optional, with `human_validated: true`: `all_items` when the cited source says the review covered every item, `unstated` when it describes a review without saying how many items it covered. Absent reads as `unstated`. A review of a sample is quality assurance, not item-level human review: record the sampling effort in the entry's sweep record or the score's evidence, and do not extend reviewed status to the entire dataset (R-2026-11-18-i). |
 | `subset_of` | optional: the `component` of another entry, for the same language, task and split, whose items contain this entry's. Absent means the source presents the items as distinct. |
 | `precision` | optional: a statistical estimate of the evaluation's precision under an approved method, which makes the entry's band estimated rather than provisional. Absent on every entry until a method is approved by ruling; see [Evidence status](#evidence-status). |
 | `cites` | the `url` of each `capability.sources` entry that states this entry's figures, `human_validated` and `qualifying_count` included. |
@@ -338,12 +338,15 @@ not what its entries are worth.
 third column (R-2026-11-03-b, replacing R-2026-11-01-h). Provenance is never guessed: a source that does not say is
 `unknown`. Three readings follow from that:
 
-- **`native` needs an explicit statement about the items.** Record it only where a cited source
+- **`native` needs a statement about the items or their material.** Record it where a cited source
   states that the evaluated items, the text, questions or references being scored, were written by
-  people in that language. A source that describes the corpus as news articles, tweets or reviews in
-  the language says what genre the text is, not how it came to be in the language; it is enough only
-  when the source also states the items are original text written in the language and describes no
-  translation or generation.
+  people in that language, or that the items are naturally occurring text collected in the
+  language, such as tweets, news or posts, with no translation or generation described.
+  Naturally occurring text is native material (R-2026-11-18-f). Native-speaker validation
+  establishes language authenticity, but does not necessarily establish the quality of the
+  evaluation annotations, and the ladder's provenance describes the items, not their labels. A
+  source that does not say the text was collected in the language, or that describes translation,
+  generation or mined parallel pairs without saying which side is original, gives no reading.
 - **The other qualifying values need the same.** `human_translated` and `post_edited` need a cited
   source that says people translated or corrected the items. A source that says only that the items
   were translated is `unknown`.
@@ -382,7 +385,7 @@ datasets have been examined (R-2026-11-01-e).
 |---|---|
 | `knowledge_exam` | subject or exam knowledge, usually multiple choice (MMLU-style sets, national exams) |
 | `question_answering` | answering a question with no passage supplied |
-| `reading_comprehension` | answering from a supplied passage |
+| `reading_comprehension` | answering from a supplied passage, including cross-lingual reading comprehension, where the question is in the target language and the passage or answer in another (R-2026-11-18-j) |
 | `reasoning` | mathematical, logical or commonsense reasoning |
 | `natural_language_inference` | whether one text entails, contradicts or is neutral to another |
 | `text_classification` | assigning a label to a text: topic, sentiment, hate speech |
