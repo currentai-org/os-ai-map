@@ -1,0 +1,234 @@
+product: sea-ifeval
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and API tag
+    access:
+      value: auto
+      detail: Hugging Face gate that approves anyone who agrees to share their contact information
+    dataset_card:
+      value: present
+      detail: card lists the source, license, languages and split statistics
+  confidence: high
+  note: The prompts carry CC BY 4.0, and the Hugging Face copy needs an access request that is approved automatically.
+    The card names IFEval as the source and says the translations were made by native speakers.
+  raw: license:cc-by-4.0(card metadata and API tag);access:auto(Hugging Face gate that approves anyone who agrees
+    to share their contact information);dataset_card:present(card lists the source, license, languages and split
+    statistics)
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    shows: 'API JSON: "gated":"auto"; tag license:cc-by-4.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: ef5f73c07dcd4513be59bc8ca7a3c0796b9660e3efd5f9f86587ded4d8b9db8f
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    shows: 'Card: "It is based on IFEval and was manually translated by native speakers for Indonesian, Javanese,
+      Sundanese, Thai, Tagalog, and Vietnamese"; a data-source table with licenses and a per-split statistics table.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: a09ba519950fe2b1724462ada052ba81709bc6f67e651d10157f51cb7f545d39
+    establishes:
+    - documentation
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the repository over the trailing month. Evaluation harnesses, SEA-HELM's among
+    them, can fetch a test set repeatedly, so the figure is a rough measure of use, not a count of users.
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    shows: '"downloads":2693 for aisingapore/Instruction-Following-IFEval.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: ef5f73c07dcd4513be59bc8ca7a3c0796b9660e3efd5f9f86587ded4d8b9db8f
+capability:
+  score: 2
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 2 of 5, provisional and count-based: the median corroborated band over its target languages, 10 of 11 measured, across 1 task. Face value 2; best original band 2.'
+  confidence: medium
+  note: In every language SEA-IFEval targets, its one test has one to four hundred hand-translated prompts. Tamil
+    has a split, but no source says how it was made, so it does not count. An item count says how much a set can
+    test, not how precisely it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    shows: 'the card''s dataset_info: 105 "eval" examples in each of "en", "id", "jv", "km", "lo", "ms", "my", "su",
+      "ta", "th", "tl" and "vi"; tag license:cc-by-4.0; "gated":"auto"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: ef5f73c07dcd4513be59bc8ca7a3c0796b9660e3efd5f9f86587ded4d8b9db8f
+  - url: https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    shows: 'Card: "It is based on IFEval and was manually translated by native speakers for Indonesian, Javanese,
+      Sundanese, Thai, Tagalog, and Vietnamese".'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: a09ba519950fe2b1724462ada052ba81709bc6f67e651d10157f51cb7f545d39
+  - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+    shows: '"Filipino, Indonesian, Vietnamese, Malay, Burmese, Lao, Khmer | SEA-IFEval | Human translation"; "Thai
+      | IFEval-Th | Human translation | General | Apache 2.0"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
+  - url: https://arxiv.org/abs/2502.14301
+    shows: 'arXiv 2502.14301, SEA-HELM: Southeast Asian Holistic Evaluation of Language Models, which introduces
+      SEA-IFEval.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 710e7fc16c436a8e2f4023a6a7f7935dfc9e252a6a4a395f534c48a9b934d006
+  pivot_languages:
+  - eng
+  language_coverage:
+  - language: eng
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: unknown
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: fil
+    source_language: tgl
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: ind
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: jav
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: khm
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: lao
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: mya
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: sun
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tam
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: unknown
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tha
+    task: instruction_following
+    component: ifeval-th
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: vie
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: zsm
+    task: instruction_following
+    component: sea-ifeval
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://huggingface.co/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md

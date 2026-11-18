@@ -724,7 +724,10 @@ computes the band from the record's `language_coverage`, `own_components`, the l
 [Own components](#own-components). The roster was frozen at publication to the 22 calibrated sets
 (R-2026-11-07-b). It changes only by a recorded membership ruling, read from the per-language
 classification: IndoNLU moved to `benchmark_eval_data` on 2026-11-11 (R-2026-11-11-b), and KMMLU
-(R-2026-11-11-e), IN22 and IndicIFEval (R-2026-11-17-a) joined through add-product.
+(R-2026-11-11-e), IN22 and IndicIFEval (R-2026-11-17-a) joined through add-product, and SEA-HELM's
+independently published members, Kalahi, LINDSEA, SEA-IFEval and SEA-MTBench, joined as rows linked to
+their suite (R-2026-11-18-a, which applies R-2026-10-30-f to this roster). Each member's lineage
+record shares its suite's collections and effort, so the two never corroborate each other.
 `tests/test_depth_ladder.py` names every ruled move.
 
 ### Three things the band is not the same as

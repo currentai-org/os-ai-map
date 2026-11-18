@@ -805,6 +805,30 @@ def test_lineage_is_relational_and_carries_every_edge():
     assert {row["relation"] for row in rows} <= set(ENUMS["lineage_relation"])
 
 
+def test_part_of_reaches_the_lineage_relation_enum_the_load_creates():
+    """#993 waited on the Neon `lineage_relation` enum gaining `part_of`. There is no migration to
+    write: the enum is created inside the staging schema on every load, from the product schema's
+    lineage edges, and swapped in with the tables. So the first load after a product sets
+    `part_of` carries the value, and these assertions are what stand in for a migration."""
+    assert "part_of" in ENUMS["lineage_relation"]
+    ddl = next(s for s in create_enum_sql("os-ai-map_staging") if '"lineage_relation"' in s)
+    assert "'part_of'" in ddl
+    assert enum_value("lineage_relation", "part_of", column="product_lineage.relation") == "part_of"
+
+
+def test_a_member_rows_part_of_edge_becomes_a_product_lineage_row():
+    """A suite member's edge lands in `product_lineage` like the display-only edges do."""
+    import copy
+
+    payload = copy.deepcopy(load_payload())
+    cid = payload["order"][0]
+    member, suite = payload["categories"][cid]["products"][:2]
+    member["lineage"] = {**(member.get("lineage") or {}), "part_of": [suite.get("display_name", "suite")]}
+    rows = SITE_TABLES["product_lineage"].rows(payload)
+    assert any(row["relation"] == "part_of" for row in rows)
+    assert {row["relation"] for row in rows} <= set(ENUMS["lineage_relation"])
+
+
 def test_aliases_carry_their_kind():
     payload = load_payload()
     rows = SITE_TABLES["aliases"].rows(payload)

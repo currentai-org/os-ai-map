@@ -1,0 +1,152 @@
+product: lindsea
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and API tag on both repositories
+    access:
+      value: auto
+      detail: Hugging Face gate that approves anyone who agrees to share their contact information, on both repositories
+    dataset_card:
+      value: present
+      detail: cards name the BHASA source, license, languages and split statistics
+  confidence: high
+  note: Both parts carry CC BY 4.0, and the Hugging Face copies need an access request that is approved automatically.
+    The BHASA paper describes how the items were written.
+  raw: license:cc-by-4.0(card metadata and API tag on both repositories);access:auto(Hugging Face gate that approves
+    anyone who agrees to share their contact information, on both repositories);dataset_card:present(cards name
+    the BHASA source, license, languages and split statistics)
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    shows: 'API JSON: "gated":"auto"; tag license:cc-by-4.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 99ccc5da07215a4ae0f73ee1cd56e3a2d4ebf5ad92dd7b4ce5d8808cf9b30c9b
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    shows: 'API JSON: "gated":"auto"; tag license:cc-by-4.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 42c2f86839b3edc47c90cd91c9656cca23afceccbfe826746b1143f02111ea18
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    shows: 'Card: "LINDSEA Syntax is a linguistic diagnostic from BHASA that evaluates a model''s understanding
+      of linguistic phenomena, syntax in particular"; a data-source table naming BHASA and CC BY 4.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 003ba0ae460fb7c971be5e5b4f9694dec40081f635abe9a397bf5a996e94a2cb
+    establishes:
+    - documentation
+  - url: https://huggingface.co/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    shows: 'Card: "LINDSEA Pragmatics is a linguistic diagnostic from BHASA that evaluates a model''s understanding
+      of linguistic phenomena, pragmatics in particular"; a data-source table naming BHASA and CC BY 4.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: f1bf65042206f1676f68ad5abeeb1eaf58a96474ce89e80df8abbaa50b9c596f
+    establishes:
+    - documentation
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the syntax and pragmatics repositories over the trailing month. Evaluation
+    harnesses, SEA-HELM's among them, can fetch a test set repeatedly, so the figure is a rough measure of use,
+    not a count of users.
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    shows: '"downloads":1597 for aisingapore/Linguistic-Diagnostics-Syntax.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 99ccc5da07215a4ae0f73ee1cd56e3a2d4ebf5ad92dd7b4ce5d8808cf9b30c9b
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    shows: '"downloads":1300 for aisingapore/Linguistic-Diagnostics-Pragmatics.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 42c2f86839b3edc47c90cd91c9656cca23afceccbfe826746b1143f02111ea18
+capability:
+  score: 2
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 2 of 5, provisional and count-based: the median corroborated band over its target languages, 2 of 2 measured, across 2 tasks. Face value 2; best original band 2.'
+  confidence: medium
+  note: LINDSEA's deepest test, syntax, has four hundred to sixteen hundred items in Tamil and one to four hundred
+    in Indonesian, all written for the set by linguists and native speakers. An item count says how much a set can
+    test, not how precisely it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    shows: 'the card''s dataset_info: 380 "eval" examples in "id" and 470 in "ta"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 99ccc5da07215a4ae0f73ee1cd56e3a2d4ebf5ad92dd7b4ce5d8808cf9b30c9b
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    shows: 'the card''s dataset_info: 100 "eval" examples in "id_single", 84 in "id_pair", 80 in "ta_single" and
+      84 in "ta_pair"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 42c2f86839b3edc47c90cd91c9656cca23afceccbfe826746b1143f02111ea18
+  - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+    shows: '"Indonesian, Tamil | LINDSEA | Native"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
+  - url: https://arxiv.org/abs/2309.06085
+    shows: 'Abstract: BHASA "comprises three components", among them "LINDSEA, a linguistic diagnostic toolkit that
+      spans the gamut of linguistic phenomena including syntax, semantics and pragmatics".'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 235741e7e6011e6b1d6d59a07558e3c097545f4aef7b80c64d60959e17280091
+  pivot_languages: []
+  language_coverage:
+  - language: ind
+    task: natural_language_inference
+    component: lindsea
+    split: official_eval
+    official_eval: true
+    count: 100
+    unit: items
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: ind
+    task: text_classification
+    component: lindsea
+    split: official_eval
+    official_eval: true
+    count: 380
+    unit: items
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tam
+    task: natural_language_inference
+    component: lindsea
+    split: official_eval
+    official_eval: true
+    count: 80
+    unit: items
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tam
+    task: text_classification
+    component: lindsea
+    split: official_eval
+    official_eval: true
+    count: 470
+    unit: items
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
