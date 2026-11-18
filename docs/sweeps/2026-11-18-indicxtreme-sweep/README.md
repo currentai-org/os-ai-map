@@ -138,7 +138,7 @@ which counts up to one band above the independent IndicCOPA test beside it (band
 text classification, which has one; the seven unresolved MASSIVE entries are its slot-filling task,
 filed as sequence labeling.
 
-## IndicXTREME's separately published members (#PR2)
+## IndicXTREME's separately published members (#1101)
 
 Four sets that AI4Bharat made for IndicXTREME and publishes on their own Hub repositories are
 proposed as rows in `language_specific_eval_sets`, linked by `lineage.part_of: [indicxtreme]`, under
@@ -221,8 +221,8 @@ open licenses on the same rung, so the score does not depend on which applies, a
 
 | Product | Axis | Before | After | PR |
 |---|---|---|---|---|
-| IndicXTREME | capability | 4 | 4 (task count 4 to 3) | #PR1 |
-| IndicCOPA (proposed) | openness / adoption / capability | | 4 / 1 / 3 | #PR2 |
-| IndicQA (proposed) | openness / adoption / capability | | 5 / 2 / 4 | #PR2 |
-| IndicSentiment (proposed) | openness / adoption / capability | | 2 / 2 / 3 | #PR2 |
-| IndicXParaphrase (proposed) | openness / adoption / capability | | 2 / 1 / 4 | #PR2 |
+| IndicXTREME | capability | 4 | 4 (task count 4 to 3) | #1100 |
+| IndicCOPA (proposed) | openness / adoption / capability | | 4 / 1 / 3 | #1101 |
+| IndicQA (proposed) | openness / adoption / capability | | 5 / 2 / 4 | #1101 |
+| IndicSentiment (proposed) | openness / adoption / capability | | 2 / 2 / 3 | #1101 |
+| IndicXParaphrase (proposed) | openness / adoption / capability | | 2 / 1 / 4 | #1101 |
