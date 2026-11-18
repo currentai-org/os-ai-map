@@ -39,6 +39,15 @@ the new digest and today's date.
 | MasakhaNER-X | 2 | 0 | 2 | MasakhaNER's Table 2 gives "DW & BBC" for Amharic and "Ramogi FM news" for Luo, with "Our data was obtained from local news sources". A source, not a statement about how the text was written. |
 | **Total** | **62** | **14** | **48** | |
 
+One entry moved the other way. AfroBench's Swahili AfriXNLI entry was recorded `human_translated` on
+IrokoBench's abstract, but IrokoBench's text says it translated XNLI "into the 15 African languages
+(excluding Swahili)": its Swahili items are XNLI's own. XNLI's paper says professional translators
+translated it "into our ten target languages" while listing fourteen, so whether its Swahili is among
+them is not stated, and the entry is now `unknown`. Its Swahili AfriMGSM entry keeps
+`human_translated`, now cited to MGSM's paper, which says paid professional translators translated
+each of its languages; IrokoBench says that Swahili set is MGSM's. Swahili stays at 5 through OpenAI's
+MMMLU. That brings the unresolved count to 49.
+
 The MasakhaPOS resolutions move no band, since part-of-speech tagging has no measurement model.
 The AfriADR ones do: AfriADR is AfroBench's own task, so it counts in full, and it puts Ghomálá'
 (previously unmeasured) and Fon at 3.
