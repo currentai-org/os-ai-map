@@ -76,12 +76,16 @@ What IndicXTREME publishes points at the machine translation:
 
 So one first-party source says part of the test set was checked by people, and the data the
 benchmark's own script runs has not changed since before that check. Under the provenance rule,
-sources that disagree give `unknown`, citing both. The eight entries are now `unknown`; Gujarati,
-Punjabi and Tamil stay `machine_translated`, since every source agrees there.
+sources that disagree would give `unknown`, citing both. But these eight entries are settled by an
+in-force ruling, R-2026-11-03-d, which sets each qualifying count to the paper's verified column, and
+a sweep applying existing rulings does not overturn one. The entries keep `mixed` with the ruling's
+counts, they now also cite the sources above, and the conflict is held on IndicXTREME's capability
+axis in `sources/verification_queue.yaml` for the maintainer (question 1). Gujarati, Punjabi and
+Tamil stay `machine_translated`, since every source agrees there.
 
-No language's band moves: IndicXNLI was an import that set no language's band, and every one of the
-eight is at 4 through IndicQA or IndicXParaphrase. The NLI task no longer has a band in any language,
-so the task count falls from 4 to 3.
+No language's band depends on the answer: IndicXNLI is an import that sets no language's band, and
+every one of the eight is at 4 through IndicQA or IndicXParaphrase. Read as `unknown`, the NLI task
+would have no band in any language and the task count would fall from 4 to 3.
 
 ### Urdu NLI is XNLI's own Urdu
 
@@ -127,9 +131,8 @@ From `build/depth_ladder.py`. Every target language's band is the same before an
 | **IndicXTREME** | **4** | **4** |
 
 Face value 4, best original band 4, bonus 4.47, completeness 19 of 21, unverified-lineage
-sensitivity 4, and no capped language, before and after. The task count falls from 4 to 3. The
-entry statuses move from 67 provisional count-model entries and 7 depth-unknown to 59 and 18 (the
-eight IndicXNLI entries and the three new Naamapadam ones). The full-roster calibration figures
+sensitivity 4, no capped language and 4 tasks, before and after. Depth-unknown entries move from 7
+to 10, the three new Naamapadam ones; the 67 provisional count-model entries are unchanged. The full-roster calibration figures
 (`tests/test_depth_calibration.py`) do not change.
 
 Urdu's 4 is worth knowing about: it comes from MASSIVE's intent task, an import of 2,974 utterances,
@@ -190,8 +193,8 @@ open licenses on the same rung, so the score does not depend on which applies, a
 ## Questions for the maintainer
 
 1. **IndicXNLI's verified items.** Should IndicXTREME's IndicXNLI entries keep the paper's verified
-   counts (R-2026-11-03-d), read the published split as unreviewed machine translation, or stay
-   `unknown` as here? Proposed: `unknown` until AI4Bharat publishes the verified test set, then the
+   counts (R-2026-11-03-d, as recorded here, with the conflict held), read the published split as
+   unreviewed machine translation, or become `unknown`? Proposed: `unknown` until AI4Bharat publishes the verified test set, then the
    verified counts, since R-2026-11-03-d presumed the verified items were the ones evaluated.
 2. **Urdu NLI.** Is Table 2's "MT" label a statement about XNLI's Urdu? Proposed: no. Section 3.2
    limits IndicXNLI to 11 languages and the script loads human-translated XNLI for Urdu, so the entry
@@ -221,7 +224,7 @@ open licenses on the same rung, so the score does not depend on which applies, a
 
 | Product | Axis | Before | After | PR |
 |---|---|---|---|---|
-| IndicXTREME | capability | 4 | 4 (task count 4 to 3) | #1100 |
+| IndicXTREME | capability | 4 | 4 (unchanged; IndicXNLI conflict held) | #1100 |
 | IndicCOPA (proposed) | openness / adoption / capability | | 4 / 1 / 3 | #1101 |
 | IndicQA (proposed) | openness / adoption / capability | | 5 / 2 / 4 | #1101 |
 | IndicSentiment (proposed) | openness / adoption / capability | | 2 / 2 / 3 | #1101 |
