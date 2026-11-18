@@ -14,15 +14,20 @@ openness:
     dataset_card:
       value: present
       detail: card lists the sources, licenses, languages and split statistics
-  confidence: high
-  note: The translated questions carry CC BY 4.0 and the Thai split Apache 2.0, and the Hugging Face copy needs
-    an access request that is approved automatically. The card names MT-Bench and MT-Bench Thai as the sources.
+  confidence: low
+  note: The Hub card and tags give CC BY 4.0 for the translated questions and Apache 2.0 for the Thai split, and
+    the copy needs an access request that is approved automatically. SEA-HELM's own dataset tables give CC BY-NC-SA
+    4.0 for SEA MT-Bench, so the two first-party statements disagree and the reading is held.
   raw: license:cc-by-4.0(card metadata and API tag, for the translated splits)+apache-2.0(card metadata and API
     tag, for the Thai split from MT-Bench Thai);access:auto(Hugging Face gate that approves anyone who agrees to
     share their contact information);dataset_card:present(card lists the sources, licenses, languages and split
     statistics)
-  last_verified: '2026-11-18'
   sources:
+  - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+    shows: '"SEA MT-Bench | Human Translation | General | CC BY-NC-SA 4.0", which disagrees with the Hub tags.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
   - url: https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
     shows: 'API JSON: "gated":"auto"; tags license:cc-by-4.0 and license:apache-2.0.'
     accessed: '2026-11-18'
@@ -45,8 +50,9 @@ adoption:
   reach: <1K
   signal_type: usage_volume
   confidence: high
-  note: Hugging Face downloads of the repository over the trailing month. SEA-HELM's leaderboard runs read a separate
-    judged copy of the questions, and those downloads are counted on SEA-HELM.
+  note: Hugging Face downloads of the repository over the trailing month. SEA-HELM declares the same repository,
+    so these downloads also count toward SEA-HELM's figure, and the runs that read its separate judged copy count
+    only there.
   sources:
   - url: https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
     shows: '"downloads":87 for aisingapore/MultiTurn-Chat-MT-Bench.'
@@ -70,8 +76,15 @@ capability:
     accessed: '2026-11-18'
     http_status: 200
     content_sha256: fe870f8bda787cbe57ef5321eb75e0e3c26cb26a149f650aed3932d0d75b1644
+  - url: https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    shows: 'Card: "manually translated by native speakers for Indonesian (id), Javanese (jv), Sundanese (su), and
+      Vietnamese (vi). The Thai split of this dataset uses MT-Bench Thai".'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 64dd2a40c2f195aa7c704079124645059770cd26ec016afd18458234eea3503f
   - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
-    shows: '"Filipino, Indonesian, Thai, Vietnamese, Malay, Burmese, Lao, Khmer | SEA MT-Bench | Human Translation"'
+    shows: '"Filipino, Indonesian, Thai, Vietnamese, Malay, Burmese, Lao, Khmer | SEA MT-Bench | Human Translation
+      | General | CC BY-NC-SA 4.0"'
     accessed: '2026-11-18'
     http_status: 200
     content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
@@ -93,8 +106,9 @@ capability:
     count: 58
     unit: items
     provenance: unknown
-    cites: &id001
+    cites:
     - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
     - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: fil
     source_language: tgl
@@ -105,7 +119,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: ind
     task: text_generation
     component: sea-mtbench
@@ -114,7 +131,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: jav
     task: text_generation
     component: sea-mtbench
@@ -123,7 +143,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: khm
     task: text_generation
     component: sea-mtbench
@@ -132,7 +155,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: lao
     task: text_generation
     component: sea-mtbench
@@ -141,7 +167,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: mya
     task: text_generation
     component: sea-mtbench
@@ -150,7 +179,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: sun
     task: text_generation
     component: sea-mtbench
@@ -159,7 +191,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: tam
     task: text_generation
     component: sea-mtbench
@@ -168,7 +203,10 @@ capability:
     count: 58
     unit: items
     provenance: unknown
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: tha
     task: text_generation
     component: mt-bench-thai
@@ -177,7 +215,10 @@ capability:
     count: 91
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: vie
     task: text_generation
     component: sea-mtbench
@@ -186,7 +227,10 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: zho
     task: text_generation
     component: sea-mtbench
@@ -195,7 +239,10 @@ capability:
     count: 58
     unit: items
     provenance: unknown
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: zsm
     task: text_generation
     component: sea-mtbench
@@ -204,4 +251,7 @@ capability:
     count: 58
     unit: items
     provenance: human_translated
-    cites: *id001
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
