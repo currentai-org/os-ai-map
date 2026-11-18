@@ -35,7 +35,11 @@ UNRESOLVED = {
 # targets only Indonesian, which is high; R-2026-11-11-e: KMMLU targets Korean, which is mid;
 # R-2026-11-17-a: IN22 and IndicIFEval target Indic languages below the line).
 MOVED_OUT = {"indonlu": "benchmark_eval_data"}
-ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-2026-11-17-a"}
+ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-2026-11-17-a",
+         # SEA-HELM's independently published members, each with a row linked to the suite
+         # (R-2026-10-30-f; #993). Each targets languages below the line.
+         "kalahi": "R-2026-10-30-f", "lindsea": "R-2026-10-30-f", "sea-ifeval": "R-2026-10-30-f",
+         "sea-mtbench": "R-2026-10-30-f"}
 CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 

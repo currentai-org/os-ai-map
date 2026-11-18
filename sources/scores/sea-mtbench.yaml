@@ -1,0 +1,207 @@
+product: sea-mtbench
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and API tag, for the translated splits
+    - name: apache-2.0
+      detail: card metadata and API tag, for the Thai split from MT-Bench Thai
+    access:
+      value: auto
+      detail: Hugging Face gate that approves anyone who agrees to share their contact information
+    dataset_card:
+      value: present
+      detail: card lists the sources, licenses, languages and split statistics
+  confidence: high
+  note: The translated questions carry CC BY 4.0 and the Thai split Apache 2.0, and the Hugging Face copy needs
+    an access request that is approved automatically. The card names MT-Bench and MT-Bench Thai as the sources.
+  raw: license:cc-by-4.0(card metadata and API tag, for the translated splits)+apache-2.0(card metadata and API
+    tag, for the Thai split from MT-Bench Thai);access:auto(Hugging Face gate that approves anyone who agrees to
+    share their contact information);dataset_card:present(card lists the sources, licenses, languages and split
+    statistics)
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    shows: 'API JSON: "gated":"auto"; tags license:cc-by-4.0 and license:apache-2.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: fe870f8bda787cbe57ef5321eb75e0e3c26cb26a149f650aed3932d0d75b1644
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    shows: 'Card: "It is based on MT-Bench and was manually translated by native speakers for Indonesian (id), Javanese
+      (jv), Sundanese (su), and Vietnamese (vi). The Thai split of this dataset uses MT-Bench Thai"; a data-source
+      table with licenses.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 64dd2a40c2f195aa7c704079124645059770cd26ec016afd18458234eea3503f
+    establishes:
+    - documentation
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the repository over the trailing month. SEA-HELM's leaderboard runs read a separate
+    judged copy of the questions, and those downloads are counted on SEA-HELM.
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    shows: '"downloads":87 for aisingapore/MultiTurn-Chat-MT-Bench.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: fe870f8bda787cbe57ef5321eb75e0e3c26cb26a149f650aed3932d0d75b1644
+capability:
+  score: 1
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 1 of 5, provisional and count-based: the median corroborated band over its target languages, 10 of 11 measured, across 1 task. Face value 1; best original band 1.'
+  confidence: medium
+  note: In every language SEA-MTBench targets, its one test has fewer than a hundred questions, as MT-Bench itself
+    does. Tamil has a split, but no source says how it was made, so it does not count. An item count says how much
+    a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    shows: 'the card''s dataset_info: 58 "eval" examples in each of "en", "id", "jv", "km", "lo", "ms", "my", "su",
+      "ta", "tl", "vi" and "zh", and 91 in "th"; tags license:cc-by-4.0 and license:apache-2.0'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: fe870f8bda787cbe57ef5321eb75e0e3c26cb26a149f650aed3932d0d75b1644
+  - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+    shows: '"Filipino, Indonesian, Thai, Vietnamese, Malay, Burmese, Lao, Khmer | SEA MT-Bench | Human Translation"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
+  - url: https://arxiv.org/abs/2502.14301
+    shows: 'arXiv 2502.14301, SEA-HELM: Southeast Asian Holistic Evaluation of Language Models, which introduces
+      SEA-MTBench.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 710e7fc16c436a8e2f4023a6a7f7935dfc9e252a6a4a395f534c48a9b934d006
+  pivot_languages:
+  - eng
+  - zho
+  language_coverage:
+  - language: eng
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: unknown
+    cites: &id001
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: fil
+    source_language: tgl
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: ind
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: jav
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: khm
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: lao
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: mya
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: sun
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: tam
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: unknown
+    cites: *id001
+  - language: tha
+    task: text_generation
+    component: mt-bench-thai
+    split: official_eval
+    official_eval: true
+    count: 91
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: vie
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
+  - language: zho
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: unknown
+    cites: *id001
+  - language: zsm
+    task: text_generation
+    component: sea-mtbench
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites: *id001
