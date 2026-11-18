@@ -37,9 +37,9 @@ UNRESOLVED = {
 MOVED_OUT = {"indonlu": "benchmark_eval_data"}
 ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-2026-11-17-a",
          # SEA-HELM's independently published members, each with a row linked to the suite
-         # (R-2026-10-30-f; #993). Each targets languages below the line.
-         "kalahi": "R-2026-10-30-f", "lindsea": "R-2026-10-30-f", "sea-ifeval": "R-2026-10-30-f",
-         "sea-mtbench": "R-2026-10-30-f"}
+         # (R-2026-11-18-a; #993). Each targets languages below the line.
+         "kalahi": "R-2026-11-18-a", "lindsea": "R-2026-11-18-a", "sea-ifeval": "R-2026-11-18-a",
+         "sea-mtbench": "R-2026-11-18-a"}
 CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 
