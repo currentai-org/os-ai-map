@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- Rows for six evaluation sets AfroBench runs and their publishers also release on their own: AfriMMLU,
+  AfriXNLI and AfriMGSM (IrokoBench), InjongoIntent, Uhura-ARC-Easy and NaijaRC, each linked to AfroBench,
+  which counts once with them toward the stage (R-2026-11-18-d)
+  ([#1105](https://github.com/currentai-org/os-ai-map/pull/1105)).
 - Kalahi, LINDSEA, SEA-IFEval and SEA-MTBench in Language-specific evaluation sets, the first suite
   members with rows of their own, each linked to SEA-HELM by `lineage.part_of` (R-2026-11-18-a)
   ([#1094](https://github.com/currentai-org/os-ai-map/pull/1094)).

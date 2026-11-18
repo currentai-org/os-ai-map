@@ -129,6 +129,9 @@ collections:
   - id: afriqa-questions
     description: AfriQA's questions, elicited in each African language by native speakers for the dataset,
       with answers labeled in English or French passages.
+  - id: wassce-comprehension
+    description: The comprehension passages and questions of past WASSCE Hausa, Igbo and Yoruba language
+      papers, which NaijaRC digitized.
   - id: thai-exam-questions
     description: 'Questions from five Thai examinations: ONET, IC, TGAT, TPAT-1 and A-Level.'
   - id: tydi-qa
@@ -561,6 +564,16 @@ components:
       - xnli-english
     parents: []
     effort: irokobench-translation
+    overrides:
+      - languages:
+          - swa
+        effort: xnli-translation
+        sources:
+          - url: https://arxiv.org/html/2406.03368
+            shows: '"we human translate the English portion of XNLI (a multilingual dataset comprising 15 languages, including Swahili) into the 15 African languages (excluding Swahili)"'
+            accessed: '2026-11-18'
+            http_status: 200
+            content_sha256: 8d5940c1e236940dece89ef505c206ccd3f0dd8724e93d73ff7f0cac8e56e698
     sources:
       - url: https://arxiv.org/html/2406.03368
         shows: '"The datasets were created by human translating a subset of English cross-lingual NLI
@@ -576,6 +589,16 @@ components:
       - mgsm
     parents: []
     effort: irokobench-translation
+    overrides:
+      - languages:
+          - swa
+        effort: mgsm-translation
+        sources:
+          - url: https://arxiv.org/html/2406.03368
+            shows: '"AfriMGSM expands the original MGSM dataset (Shi et al., 2023), which contains 250 QA pairs and 11 languages (including Swahili), to 15 more languages."'
+            accessed: '2026-11-18'
+            http_status: 200
+            content_sha256: 8d5940c1e236940dece89ef505c206ccd3f0dd8724e93d73ff7f0cac8e56e698
     sources:
       - url: https://arxiv.org/html/2406.03368
         shows: '"AfriMGSM expands the original MGSM dataset ( Shi et al., 2023 ) , which contains 250
@@ -858,6 +881,23 @@ components:
         accessed: '2026-11-18'
         http_status: 200
         content_sha256: 0cc925494619bd8326dbe6d7de20c421d747632030914ae05e10ef5f6b732609
+  - id: naijarc
+    curation: curated
+    origin: original
+    collections:
+      - wassce-comprehension
+    parents: []
+    effort: waec-examiners
+    notes: NaijaRC's passages and questions are taken from past West African Senior School Certificate
+      Examination papers in Hausa, Igbo and Yoruba. No source says whether the passages were written in
+      those languages, so the coverage entries carry unknown provenance.
+    sources:
+      - url: https://arxiv.org/html/2308.09768
+        shows: '"We source past questions from the Hausa, Igbo, and Yorùbá language subjects of the West
+          African Senior School Certificate Examination (WASSCE)."'
+        accessed: '2026-11-18'
+        http_status: 200
+        content_sha256: aed9928c8494678fe24f5aba39a2ede8139d5fbcf9c8e7f3b2e18659e8002fd0
   - id: thai-exam
     curation: curated
     origin: original

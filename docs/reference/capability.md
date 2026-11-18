@@ -733,8 +733,11 @@ computes the band from the record's `language_coverage`, `own_components`, the l
 classification: IndoNLU moved to `benchmark_eval_data` on 2026-11-11 (R-2026-11-11-b), and KMMLU
 (R-2026-11-11-e), IN22 and IndicIFEval (R-2026-11-17-a) joined through add-product, and SEA-HELM's
 independently published members, Kalahi, LINDSEA, SEA-IFEval and SEA-MTBench, joined as rows linked to
-their suite (R-2026-11-18-a, which applies R-2026-10-30-f to this roster). Each member's lineage
-record shares its suite's collections and effort, so the two never corroborate each other.
+their suite (R-2026-11-18-a, which applies R-2026-10-30-f to this roster). AfroBench's
+independently published members AfriMMLU, AfriXNLI, AfriMGSM, InjongoIntent, Uhura-ARC-Easy and NaijaRC
+joined the same way (R-2026-11-18-d, the per-suite ruling under R-2026-11-18-a). Each member's lineage
+record shares its suite's collections and effort, or is the very record the suite's import names, so
+the two never corroborate each other.
 `tests/test_depth_ladder.py` names every ruled move.
 
 ### Three things the band is not the same as
@@ -826,7 +829,7 @@ its reason (R-2026-11-08-a). No interim score is kept. The reasons in the roster
   and Lahaja.
 - `no_official_split`: no source states the size of the official evaluation split
   (R-2026-11-02-r). VMLU.
-- `provenance_unknown`: the sources do not say who wrote the items. IndoNLU.
+- `provenance_unknown`: the sources do not say who wrote the items. IndoNLU, NaijaRC.
 - `review_scope_unstated`: machine-translated items with a human review whose extent no source
   states (R-2026-11-03-h). DarijaMMLU.
 - `evidence_incomplete`: enough target languages are unmeasured that filling them at the lowest and
