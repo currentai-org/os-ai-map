@@ -126,6 +126,9 @@ collections:
   - id: salt-sentences
     description: SALT's core set of sentences on topics of local relevance, translated into every SALT
       language.
+  - id: afriqa-questions
+    description: AfriQA's questions, elicited in each African language by native speakers for the dataset,
+      with answers labeled in English or French passages.
   - id: thai-exam-questions
     description: 'Questions from five Thai examinations: ONET, IC, TGAT, TPAT-1 and A-Level.'
   - id: tydi-qa
@@ -802,6 +805,59 @@ components:
         accessed: '2026-11-02'
         http_status: 200
         content_sha256: f488da444ac3cacc35fd93c7cda0db9883e8a0a79ca055004d08242d9d8aab4c
+  - id: mafand-mt
+    curation: curated
+    origin: derived
+    collections:
+      - mafand-mt
+    parents: []
+    effort: mafand-translation
+    domains:
+      - news
+    notes: Recorded for the eleven languages MAFAND-MT translated itself from French or English news (bam, bbj,
+      ewe, fon, lug, luo, mos, pcm, tsn, twi, wol). Its Hausa, Igbo, Swahili, Yoruba and isiZulu splits come from
+      existing corpora, and the paper does not say who translated them, so the coverage record has no entry
+      for them. AfriADR and MasakhaPOS reuse the same sentences, so they are dependent on this component.
+    sources:
+      - url: https://arxiv.org/pdf/2205.02022
+        shows: 'Table 1 gives the news source and data splits for "six languages (bam, bbj, ewe, fon, mos, wol)
+          spoken predominantly in Francophone Africa and five languages (lug, luo, pcm, tsn, twi)"; "Translation
+          of 5k–8k sentences by professional translators"'
+        accessed: '2026-11-18'
+        http_status: 200
+        content_sha256: 2a94370d9b65fbef240ddaf8398e412c7b825ef85260304d826063f908601508
+  - id: afriqa
+    curation: curated
+    origin: original
+    collections:
+      - afriqa-questions
+    parents: []
+    effort: afriqa-elicitation
+    notes: The questions are written in the African language and the passages are English or French
+      Wikipedia, so the items in the language are the questions. Swahili reuses unanswered TyDi QA questions
+      (the override).
+    overrides:
+      - languages:
+          - swa
+        origin: derived
+        collections:
+          - tydi-qa
+        sources:
+          - url: https://arxiv.org/html/2305.06897
+            shows: '"For Swahili, questions elicited in TyDi QA, which remained unanswered in the original dataset
+              were used with light curation from the Swahili team for correctness."'
+            accessed: '2026-11-18'
+            http_status: 200
+            content_sha256: 0cc925494619bd8326dbe6d7de20c421d747632030914ae05e10ef5f6b732609
+    sources:
+      - url: https://arxiv.org/html/2305.06897
+        shows: '"The annotation pipeline consisted of 4 distinct stages: 1) question elicitation in an African
+          language; 2) translation of questions into a pivot language"; "For Swahili, questions elicited in TyDi
+          QA, which remained unanswered in the original dataset were used with light curation from the Swahili
+          team for correctness."'
+        accessed: '2026-11-18'
+        http_status: 200
+        content_sha256: 0cc925494619bd8326dbe6d7de20c421d747632030914ae05e10ef5f6b732609
   - id: thai-exam
     curation: curated
     origin: original

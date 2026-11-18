@@ -27,7 +27,12 @@ UNRESOLVED = {
     "lahaja": "no_measurement_model",
     "vmlu": "no_official_split",
     "darijammlu": "review_scope_unstated",
+    # Five of its 64 target languages are unmeasured, enough to move the median between 1 and 3.
+    "afrobench": "evidence_incomplete",
 }
+# An unresolved set whose own components qualify in some languages: AfroBench's AfriADR counts in
+# Ghomala, Fon and Wolof, so its best original band is itself unresolved rather than unavailable.
+UNRESOLVED_OWN = {"afrobench": "unresolved (0-5)"}
 
 # Calibrated sets that a ruling has since moved out of the category, with their destination, and
 # sets a ruling has since added, with the ruling. The calibration roster stays the historical 22
@@ -77,7 +82,7 @@ def test_the_category_roster_is_the_calibrated_22_with_ruled_moves():
 def test_unresolved_sets_publish_null_with_their_reason(doc, slug, reason):
     r = dl.compute(doc, slug)
     assert (r["band"], r["status"], r["unresolved_reason"]) == (None, "unresolved", reason)
-    assert r["best_original"] == "unavailable"
+    assert r["best_original"] == UNRESOLVED_OWN.get(slug, "unavailable")
 
 
 def test_resolved_sets_are_provisional_with_no_reason(doc):
@@ -91,7 +96,7 @@ def test_resolved_sets_are_provisional_with_no_reason(doc):
 
 def test_the_cap_says_why_it_binds(doc):
     r = dl.compute(doc, "afrobench")
-    assert r["cap"]["binds"] and r["cap"]["languages"] == 37
+    assert r["cap"]["binds"] and r["cap"]["languages"] == 29
     aeb = r["cap"]["detail"]["aeb"]
     # Tunisian Arabic: its face value is FLORES+, and SIB-200, its only other evidence, shares
     # FLORES's text, so nothing independent backs it.
@@ -101,7 +106,7 @@ def test_the_cap_says_why_it_binds(doc):
 
 def test_absent_original_evidence_is_unavailable_not_zero(doc):
     """R-2026-11-02-o, D8: a set with no qualifying own items shows `unavailable`."""
-    assert dl.compute(doc, "afrobench")["best_original"] == "unavailable"
+    assert dl.compute(doc, "darijammlu")["best_original"] == "unavailable"
 
 
 # --- the record gate ----------------------------------------------------------------------------
@@ -372,9 +377,13 @@ def test_overall_basis_on_every_row(payload):
 
 
 def stage_with(sources, part_of: dict[str, list[str]]):
-    """Build the payload with four open eval sets made mature, and the given suite edges."""
+    """Build the payload with four open eval sets made mature, and the given suite edges.
+
+    The four must have a band that stands: an unresolved row is left out of the stage whatever its
+    recorded score. AfroBench was one of them until its band became unresolved on 2026-11-18, so
+    FLORES+ takes its place."""
     src = copy.deepcopy(sources)
-    for slug in ("afrobench", "belebele", "sib-200", "include-benchmark"):
+    for slug in ("flores-plus", "belebele", "sib-200", "include-benchmark"):
         sc = src["scores"][slug]
         sc["openness"] = {**sc["openness"], "class": "open"}
         sc["adoption"] = {**sc["adoption"], "level": 5}
@@ -392,8 +401,8 @@ def test_four_mature_open_sets_reach_stage_5(sources):
 
 def test_a_suite_and_its_members_count_once_in_the_migrated_category(sources):
     """The suite/member rule (R-2026-10-30-e) on the real roster: with Belebele and SIB-200
-    declared members of AfroBench, the four mature rows are two units, so the stage is 4."""
-    assert stage_with(sources, {"belebele": ["afrobench"], "sib-200": ["afrobench"]}) == 4
+    declared members of FLORES+, the four mature rows are two units, so the stage is 4."""
+    assert stage_with(sources, {"belebele": ["flores-plus"], "sib-200": ["flores-plus"]}) == 4
 
 
 def test_a_suite_in_another_category_groups_nothing(sources):

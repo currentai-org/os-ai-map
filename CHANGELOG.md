@@ -35,6 +35,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- AfroBench's capability moved from 1 to unresolved (between 1 and 3): its coverage record now
+  includes the MAFAND-MT, AfriQA and further Belebele splits its task configurations run, and
+  MAFAND-MT's professional translation is recorded for its diacritics task, leaving five of 64
+  languages unmeasured ([#1102](https://github.com/currentai-org/os-ai-map/pull/1102)).
 - A model host is a product in `inference_code` when it is an independently identifiable inference
   service with its own public endpoint, documentation and terms; serving several models is now
   supporting evidence rather than a requirement, and "public" is defined (R-2026-11-18-c, replacing

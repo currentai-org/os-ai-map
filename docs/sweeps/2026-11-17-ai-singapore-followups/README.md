@@ -107,7 +107,10 @@ the same position would be treated the same way.
   provenance is recorded as unknown. Establishing it is the same kind of correction as this one,
   and it would move AfroBench itself: with Kirundi's alone established, the median no longer stands
   and the band becomes unresolved between 1 and 3. It is left as follow-up work, and it is the
-  next correction to make for the rule to be applied evenly.
+  next correction to make for the rule to be applied evenly. That correction was made on 2026-11-18
+  (docs/sweeps/2026-11-18-afrobench-sweep/README.md): the news and sentiment tests' provenance
+  still could not be established, but the suite's task configurations added MAFAND-MT and more
+  Belebele languages, and AfroBench is now unresolved between 1 and 3.
 
 ## SEA-HELM's separately published members (#1094)
 

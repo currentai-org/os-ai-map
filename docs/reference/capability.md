@@ -829,6 +829,8 @@ its reason (R-2026-11-08-a). No interim score is kept. The reasons in the roster
 - `provenance_unknown`: the sources do not say who wrote the items. IndoNLU.
 - `review_scope_unstated`: machine-translated items with a human review whose extent no source
   states (R-2026-11-03-h). DarijaMMLU.
+- `evidence_incomplete`: enough target languages are unmeasured that filling them at the lowest and
+  at the highest band gives different medians. AfroBench, between 1 and 3.
 
 An unresolved band is not a zero, and it is not evidence of maturity. Its overall score is the
 category's usual weighted mean over the axes that have a value, which leaves adoption alone, so the
