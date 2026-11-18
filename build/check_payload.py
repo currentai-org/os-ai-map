@@ -11,14 +11,16 @@ is worse than no gate at all: it looks like protection nobody is actually gettin
 
 One numeric invariant sits here too, because the payload is the only place both halves of it
 appear: a depth-ladder row's per-language bands must reproduce the set band beside them
-(`_check_depth_languages`).
+(`_check_depth_languages`). That check also reads the set's target-language roster from
+`sources/` through the ladder, because `pivot_languages` does not ship in the payload.
 """
 import json
 import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
-from build.depth_ladder import band_from_languages
+from build.depth_ladder import band_from_languages, per_language, set_targets
 from build.vocabulary import axes, is_iso_date
 
 # The same regex as the `pattern` on every URL field in docs/schemas/ (#525): an http(s)
@@ -146,21 +148,30 @@ def _check_end_of_life(slug: str, eol: object) -> None:
         )
 
 
-_LANGUAGE_FIGURES = ("band", "face_value", "best_original", "set_by", "tasks")
+# An unmeasured target language exactly as the ladder publishes it, taken from the ladder rather
+# than restated: `band: null` and every other figure empty. Compared by value, so a `0`, an `""`
+# or a missing `tasks` list is a filled figure and not a quiet stand-in for "unmeasured".
+_UNMEASURED = per_language(["und"], {})["und"]
+_LANGUAGE_FIGURES = tuple(_UNMEASURED)
 
 
 def _is_band(value: object) -> bool:
     return isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= 5
 
 
-def _check_depth_languages(slug: str, capability: dict) -> None:
+def _check_depth_languages(slug: str, capability: dict, targets: Callable[[str], list[str]]) -> None:
     """A depth-ladder row's per-language bands must reproduce the band it publishes (#953).
 
     `capability.depth.per_language` carries one entry per target language, an unmeasured one as
-    `band: null`. Read the way `set_band` reads them, measured bands as they are and unmeasured
-    languages at 0 and at 5, they must give back `capability.score` exactly, and their counts must
-    be the `completeness` the row states. A per-language table that disagrees with the band beside
-    it would let the map show one number and explain it with another, so it fails here.
+    `band: null` with every other figure empty. Its keys must be the set's target-language roster
+    as the ladder derives it (`targets`, by default `depth_ladder.set_targets`), not merely the
+    right number of well-shaped codes. A measured language's companion figures must sit in the
+    order the ladder builds them: the corroborated band never above the face value, and a numeric
+    best original band never above the corroborated band. Read the way `set_band` reads them,
+    measured bands as they are and unmeasured languages at 0 and at 5, they must give back
+    `capability.score` exactly, and their counts must be the `completeness` the row states. A
+    per-language table that disagrees with the band beside it would let the map show one number
+    and explain it with another, so it fails here.
     """
     depth = capability.get("depth")
     if not isinstance(depth, dict):
@@ -176,12 +187,34 @@ def _check_depth_languages(slug: str, capability: dict) -> None:
                                f"{', '.join(_LANGUAGE_FIGURES)}")
         band = entry["band"]
         if band is None:
-            if any(entry[k] for k in _LANGUAGE_FIGURES):
-                raise PayloadError(f"{slug!r} per_language {code!r} is unmeasured but fills a figure")
-        elif not (_is_band(band) and _is_band(entry["face_value"])
-                  and (entry["best_original"] == "unavailable" or _is_band(entry["best_original"]))
-                  and isinstance(entry["tasks"], list)):
+            if entry != _UNMEASURED:
+                raise PayloadError(f"{slug!r} per_language {code!r} is unmeasured but fills a figure: "
+                                   f"{entry!r}; an unmeasured language is exactly {_UNMEASURED!r}")
+            continue
+        best = entry["best_original"]
+        if not (_is_band(band) and _is_band(entry["face_value"])
+                and (best == "unavailable" or _is_band(best))
+                and isinstance(entry["tasks"], list)):
             raise PayloadError(f"{slug!r} per_language {code!r} has a figure that is not a band: {entry!r}")
+        # Both hold by construction in `depth_ladder.language_detail`: the band is the best own
+        # band or a capped import, a cap never raises a component above its own band, and the face
+        # value is the highest component band of all. A row that breaks either was not built by
+        # the ladder.
+        if band > entry["face_value"]:
+            raise PayloadError(f"{slug!r} per_language {code!r} has band {band} above its face value "
+                               f"{entry['face_value']}; the corroboration cap never raises a band")
+        if best != "unavailable" and best > band:
+            raise PayloadError(f"{slug!r} per_language {code!r} has best_original {best} above its band "
+                               f"{band}; the band is at least the set's own best band")
+    try:
+        roster = targets(slug)
+    except (OSError, KeyError, TypeError) as exc:
+        raise PayloadError(f"{slug!r} carries per_language bands, but its target-language roster "
+                           f"cannot be read from the source records ({exc!r})") from exc
+    if sorted(languages) != sorted(roster):
+        missing, extra = sorted(set(roster) - set(languages)), sorted(set(languages) - set(roster))
+        raise PayloadError(f"{slug!r} per_language keys are not its target languages: missing "
+                           f"{missing}, not a target {extra}")
     measured = sum(1 for e in languages.values() if e["band"] is not None)
     completeness = depth.get("completeness") or {}
     if (measured, len(languages)) != (completeness.get("measured"), completeness.get("targets")):
@@ -198,7 +231,9 @@ def _check_depth_languages(slug: str, capability: dict) -> None:
                            f"depth status {depth.get('status')!r}")
 
 
-def check(payload: dict) -> None:
+def check(payload: dict, *, targets: Callable[[str], list[str]] = set_targets) -> None:
+    """Gate `payload`. `targets` gives a depth-ladder set's target-language roster by slug; it
+    defaults to the ladder's own derivation from `sources/`, and a test passes its own."""
     if not isinstance(payload, dict):
         raise PayloadError(f"payload is not an object (got {type(payload).__name__})")
 
@@ -253,7 +288,7 @@ def check(payload: dict) -> None:
         _check_identity_attributes(slug, row, orgs)
         capability = row.get("capability")
         if isinstance(capability, dict) and "depth" in capability:
-            _check_depth_languages(slug, capability)
+            _check_depth_languages(slug, capability, targets)
 
     dates = {row["freshness"]["date"] for row in rows}
     if len(dates) <= 1:

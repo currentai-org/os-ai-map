@@ -794,7 +794,12 @@ every `null` band the way `set_band` reads an unmeasured target language, at 0 a
 medians agree, that is `capability.score`; where they differ, or nothing is measured, the score is
 null and the status `unresolved`. `build/depth_ladder.py::band_from_languages` is that reading.
 `build/check_payload.py` refuses a payload where it disagrees with the row's `score`, `status` or
-`completeness`, and `tests/test_depth_ladder.py` checks it for every set on the roster.
+`completeness`, and `tests/test_depth_ladder.py` checks it for every set on the roster. The same gate
+holds the table's keys to the set's target languages as `build/depth_ladder.py::set_targets` derives
+them from `sources/` (`languages` less `pivot_languages`), requires an unmeasured language to be
+exactly the null row above (a `0` or `""` in its place is a filled figure), and requires each
+measured language's figures to keep the order the ladder builds them in: `best_original` at or
+below `band`, and `band` at or below `face_value`.
 
 These are results the ladder computed, not the evidence behind them. The coverage entries, their
 counts, provenance and cited sources stay out of the payload, for the separate per-language asset
