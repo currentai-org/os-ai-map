@@ -71,18 +71,28 @@ the tier a vendor sells rather than at a release.
 
 ### A model host: a product, or an edge on the model it serves
 
-A service that runs models for others is a product in `inference_code` when it is a **distinct
-public service, with its own endpoint, documentation and terms, that serves more than one model**.
-Mistral Studio is the reference case: `api.mistral.ai`, its own API reference and its own commercial
-terms, serving a catalog of models. The test is the same for a national or regional host as for a
-global provider. Who runs the host, and which region it serves, do not enter into it.
+A service that runs models for others is a product in `inference_code` when it is an
+**independently identifiable inference service with its own public endpoint, documentation and
+applicable terms** (R-2026-11-18-c, replacing R-2026-11-17-c). Mistral Studio is the reference case:
+`api.mistral.ai`, its own API reference and its own commercial terms. Serving several models is
+supporting evidence that a host is a product of its own, not a requirement: a single-model service
+with its own endpoint, documentation and terms passes too. The test is the same for a national or
+regional host as for a global provider. Who runs the host, and which region it serves, do not enter
+into it.
 
-A host that serves a **single model** on a gateway's behalf is not a product. It is an edge on that
-model's row, recording that the model is served there, and it stays parked until the map has a
-many-to-many `served_by` relationship between models and hosts. A scalar attribute on the model
-cannot hold it, because one model can have several hosts and one host can serve several models. A
-host with no public anchor, no page a reader can open to see the service, is parked whatever it
-serves, because there is nothing to test.
+**Public** means available under generally applicable eligibility and signup conditions, without
+discretionary institutional approval. Payment, ordinary account verification and geographic
+restrictions do not disqualify a service on their own. A service reached only through a grant,
+a membership decision or an institution's approval is not public, which is why PLGrid's LLMLab,
+open to PLGrid grant holders, stays parked.
+
+What fails the test is a **distribution relationship**: a model exposed through someone else's
+gateway, with no endpoint, documentation and terms of its own. That is an edge on the model's row,
+recording that the model is served there, and it stays parked until the map has a many-to-many
+`served_by` relationship between models and hosts. A scalar attribute on the model cannot hold it,
+because one model can have several hosts and one host can serve several models. A host with no
+public anchor, no page a reader can open to see the service, is parked whatever it serves, because
+there is nothing to test.
 
 Passing the test makes a host a product. It does not decide the tier. A qualifying host is scored
 like any other product, and whether it sits in the head or the tail follows

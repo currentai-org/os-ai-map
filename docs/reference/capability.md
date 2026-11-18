@@ -327,6 +327,13 @@ value means.
 The key is `(language, task, component, split)`. Each key appears once, and entries are sorted by
 language, then task, then component, then split, each in plain character order.
 
+**Which languages a set covers.** A language counts when the set publishes an official evaluation
+split for it and a supported evaluation configuration that runs it, whether or not the set's
+default run includes it (R-2026-11-18-b). SEA-HELM's default run leaves out Khmer, Lao, Javanese and
+Sundanese, and each still counts, because each has a published split and a task configuration. The
+evidence and provenance rules below still apply: counting a language decides that it is a target,
+not what its entries are worth.
+
 **Provenance.** The seven values and their definitions are ruled (R-2026-11-01-e), and so is the
 third column (R-2026-11-03-b, replacing R-2026-11-01-h). Provenance is never guessed: a source that does not say is
 `unknown`. Three readings follow from that:

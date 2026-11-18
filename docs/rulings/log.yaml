@@ -4572,10 +4572,11 @@ rulings:
       The test has to apply equally to regional and global providers. Serving several models
       through a public surface of its own is what makes Mistral Studio a product. R-2026-10-12-a
       treated the SEA-LION API as serving one model, and it serves several.
-    status: in-force
+    status: replaced
     executor: agent
     lands_in: [docs/reference/identity.md, sources/registry/inference_code.yaml]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1093']
+    replaced_by: R-2026-11-18-c
 
   - id: R-2026-11-18-a
     date: 2026-11-18
@@ -4595,3 +4596,43 @@ rulings:
     executor: agent
     lands_in: [docs/reference/capability.md, sources/categories/language_specific_eval_sets.yaml, tests/test_depth_ladder.py]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1094']
+
+  - id: R-2026-11-18-b
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1091", sea-helm, language_specific_eval_sets]
+    question: >-
+      SEA-HELM's default run configuration leaves out languages, among them Khmer, Lao, Javanese and
+      Sundanese, for which the suite publishes official evaluation splits and task configurations. Do
+      those languages count among the languages an evaluation set covers?
+    ruling: >-
+      Count a language when the suite publishes an official evaluation split and a supported evaluation
+      configuration for it, regardless of whether the default run includes it. Existing evidence and
+      provenance requirements still apply.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1091', 'https://github.com/currentai-org/os-ai-map/pull/1097']
+
+  - id: R-2026-11-18-c
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: [R-2026-11-17-c, R-2026-10-12-a, "#1093", "#1095", inference_code, sea-lion-api, ADR-005]
+    question: >-
+      R-2026-11-17-c made serving more than one model a condition of a host being a product in
+      inference_code, and left "public" undefined, which the LLMLab case needed. Should serving several
+      models be required, and what does public access mean?
+    ruling: >-
+      Supersede R-2026-11-17-c. Serving multiple models is supporting evidence of distinct product
+      identity, not a requirement. The defining criterion is an independently identifiable inference
+      service with its own public endpoint, documentation and applicable terms, rather than merely a
+      distribution relationship. Public access means availability under generally applicable
+      eligibility and signup conditions, without discretionary institutional approval. Payment,
+      ordinary account verification and geographic restrictions do not inherently disqualify a
+      service.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1097']

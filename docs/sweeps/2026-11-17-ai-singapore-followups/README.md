@@ -154,6 +154,18 @@ of 4, so the placement stands (#1095). LLMLab does not clearly qualify, since it
 is open only to PLGrid grant holders. SEA-Guard and the SEA-LION ModernBERT and E5 embedding models
 join the tail as candidates.
 
+## Rulings of 2026-11-18
+
+- **R-2026-11-18-a** admits the four SEA-HELM members to the eval-set roster (#1094).
+- **R-2026-11-18-b** records the coverage rule #1091 applied: a set covers a language when it
+  publishes an official evaluation split and a supported evaluation configuration for it, whether
+  or not its default run includes it.
+- **R-2026-11-18-c** replaces R-2026-11-17-c. Serving several models is supporting evidence of a
+  host's identity, not a requirement, and "public" means generally applicable eligibility and
+  signup without discretionary institutional approval. No product moves: the SEA-LION API still
+  qualifies and stays in the tail, LLMLab is still not public, and NextBit still has no public
+  anchor.
+
 ## Score changes
 
 | Product | Axis | Before | After | PR |

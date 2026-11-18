@@ -35,6 +35,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- A model host is a product in `inference_code` when it is an independently identifiable inference
+  service with its own public endpoint, documentation and terms; serving several models is now
+  supporting evidence rather than a requirement, and "public" is defined (R-2026-11-18-c, replacing
+  R-2026-11-17-c). No product moves.
+- An evaluation set covers a language when it publishes an official split and a supported evaluation
+  configuration for it, whether or not its default run includes it (R-2026-11-18-b).
 - ColBERT and the MS MARCO cross-encoders moved from 5/open_source to 4/open_weights, because
   their only training corpus, MS MARCO, is released for non-commercial research use only
   (R-2026-11-13-b) ([#1051](https://github.com/currentai-org/os-ai-map/pull/1051)).
