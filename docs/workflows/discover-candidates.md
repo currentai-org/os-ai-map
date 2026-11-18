@@ -243,6 +243,24 @@ candidate; every unique candidate is either accepted (emitted as a row) or parke
 the summary with its reason). Publish all five numbers. If either equation does not balance,
 some signal was dropped without a trace — find it before opening the PR.
 
+## Reconciling a catalog
+
+A third-party catalog, AI Singapore's ATLAS for example, is reconciled the same way each time
+(R-2026-11-18-v):
+
+- **Match the whole catalog every pass.** Resolve every Hugging Face and GitHub id through the
+  platform API first, on both sides, so a renamed repository matches on its canonical id; a shared
+  paper or shared repository is a relation, not an identity.
+- **Triage by region in separate passes.** Declare the triage cutoff before triaging, and mark what
+  falls outside it as not triaged rather than out of scope.
+- **Keep the record reproducible, not exhaustive.** The sweep record keeps the source snapshot
+  reference, a content digest for each snapshot, the triage logic and the aggregate counts by
+  status. The entry-level table keeps only what was triaged or matched; raw dumps stay out of the
+  repo.
+- **A catalog's assertions are discovery evidence.** A license or owner the catalog states can
+  place a tail row; promotion cites the publisher's own terms (R-2026-11-18-n), and a row's
+  organization is its publishing account (R-2026-11-18-u).
+
 ## Rules that hold throughout
 
 **Do not invent a scoring or legitimacy rule mid-sweep.** If a signal looks implausible — an

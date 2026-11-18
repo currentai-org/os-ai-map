@@ -661,6 +661,19 @@ has re-examined, unsettling foundation projects on evidence that was never in qu
 Sweeping the back catalogue against the new standard is a separate, deliberate migration, not
 something a category promotion does on the side.
 
+### A license is read from the released artifact, and never inferred
+
+The terms that count are the ones governing the actual released artifact, not those a paper
+describes (R-2026-11-18-m). A paper's licensing paragraph is evidence about intent; where the
+released files carry no terms, or different ones, the artifact's own state is what the record
+reads, and a conflict between the two is held. A license is never inferred from a sibling
+release, a catalog, the publisher's habits or the absence of a restriction: a candidate with no
+stated license stays held (R-2026-11-18-s). A catalog's assertion of a license, ATLAS's for
+example, is sufficient for discovery, not verified openness: it can place a tail row, and a
+promotion cites the publisher's own terms (R-2026-11-18-n). Where two sources disagree on a license
+and no reading moves the score, the discrepancy is documented in the record and not held; a hold is
+for a conflict that is material to scoring (R-2026-11-18-l).
+
 ### A product is scored on the artifact it ships, not on what it can load
 
 A harness that runs against a model you supply is scored on the harness. The model it happens to

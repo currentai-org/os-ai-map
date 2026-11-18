@@ -4636,3 +4636,267 @@ rulings:
     executor: agent
     lands_in: [docs/reference/identity.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1097']
+
+  - id: R-2026-11-18-f
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", language_specific_eval_sets, afrobench, R-2026-11-01-e]
+    question: >-
+      AfriSenti and AfriHate collected tweets, and MasakhaNEWS crawled broadcaster news, without
+      describing any translation. Do collected texts like these count as native items, and does native-
+      speaker validation establish more than that?
+    ruling: >-
+      Naturally occurring text is native material. Native-speaker validation establishes language
+      authenticity, but does not necessarily establish the quality of the evaluation annotations. Apply
+      this consistently to tweets, news and other collected text.
+    reasoning: >-
+      The provenance of an evaluation item is distinct from the provenance of its underlying material.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: []
+
+  - id: R-2026-11-18-g
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", afrobench, R-2026-11-03-i, R-2026-11-02-h]
+    question: >-
+      AfriADR's items are MAFAND-MT's sentences with their diacritics removed. Are they AfroBench's own
+      items?
+    ruling: >-
+      No. Removing diacritics does not constitute an independent collection effort.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-18-h
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", indicxtreme, xnli]
+    question: >-
+      IndicXTREME evaluates Urdu NLI on XNLI's own Urdu items, which its Table 2 labels machine
+      translation while XNLI's paper describes professional translators. Do they read human_translated?
+    ruling: >-
+      Yes, provided there is affirmative evidence of human translation.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-18-i
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", indicxtreme, R-2026-11-03-b, R-2026-11-03-h]
+    question: >-
+      IndicXNLI's own release had people score a sample of 100 sentences per language. Does a sampled
+      quality check give the dataset reviewed status?
+    ruling: >-
+      No. Sampling is quality assurance, not item-level human review. Record the sampling effort without
+      extending reviewed status to the entire dataset.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: []
+
+  - id: R-2026-11-18-j
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", afrobench, afriqa]
+    question: >-
+      AfriQA's questions are written natively but its passages and answers are English or French. Is
+      cross-lingual reading comprehension evidence for the question's language?
+    ruling: >-
+      Yes. Cross-lingual reading comprehension is a legitimate evaluation task.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/capability.md]
+    applied_in: []
+
+  - id: R-2026-11-18-k
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", sources/rubrics, masakhanews, afrisenti]
+    question: >-
+      AFL-3.0 (MasakhaNEWS) and CC BY-NC-SA 2.0 (AfriSenti) map to no tier on the dataset ladder. How do
+      they read?
+    ruling: >-
+      AFL-3.0 maps to open_data and CC BY-NC-SA 2.0 to noncommercial. Both mappings are appropriate.
+    status: in-force
+    executor: agent
+    lands_in: []
+    applied_in: []
+
+  - id: R-2026-11-18-l
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", indiccopa, indicqa]
+    question: >-
+      IndicCOPA and IndicQA state CC BY 4.0 on the Hub and CC0 in the IndicBERT README, and both sit on
+      the same rung. Is the conflict held?
+    ruling: >-
+      No. Document the discrepancy even if it is immaterial to scoring.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/openness.md]
+    applied_in: []
+
+  - id: R-2026-11-18-m
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103", R-2026-11-17-b, seasafeguardbench]
+    question: >-
+      SEASafeguardBench's paper states terms per subset, while its Hub release carries no license and
+      needs manual approval. Does the paper settle the hold?
+    ruling: >-
+      Conditional approval: verify the terms governing the actual released artifacts, not just those
+      described in the paper.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/openness.md]
+    applied_in: []
+
+  - id: R-2026-11-18-n
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103", atlas-data]
+    question: >-
+      For data only ATLAS hosts, such as AI Singapore's SEALD sets, is ATLAS's license field enough
+      evidence?
+    ruling: >-
+      A catalog assertion is sufficient for discovery, not verified openness.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/openness.md, docs/workflows/discover-candidates.md]
+    applied_in: []
+
+  - id: R-2026-11-18-o
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", language_specific_datasets, mafand-mt, salt, masakhapos, masakhaner, nollysenti, naamapadam]
+    question: >-
+      AfroBench and IndicXTREME carry MAFAND-MT, SALT, MasakhaPOS, MasakhaNER, NollySenti and
+      Naamapadam. Are they all corpora for language_specific_datasets?
+    ruling: >-
+      Conditional approval: distinguish training corpora from evaluation sets based on intended use and
+      published splits. Don't automatically classify them all as corpora.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: []
+
+  - id: R-2026-11-18-p
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", "#1103", benchmark_eval_data, massive, R-2026-11-11-b]
+    question: >-
+      Do MASSIVE and single-language benchmarks for languages above the line belong in
+      benchmark_eval_data as candidates?
+    ruling: >-
+      Yes, subject to the existing language and category tests.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/benchmark_eval_data.yaml]
+    applied_in: []
+
+  - id: R-2026-11-18-q
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103", language_specific_datasets]
+    question: >-
+      Are vision datasets (VQA, OCR, captioning) defined by an underrepresented language in
+      language_specific_datasets?
+    ruling: >-
+      Yes. Language-dependent multimodal capabilities are explicitly in scope.
+    status: in-force
+    executor: agent
+    lands_in: [sources/categories/language_specific_datasets.yaml]
+    applied_in: []
+
+  - id: R-2026-11-18-r
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103", seacrowd]
+    question: >-
+      Should members of a hub such as SEACrowd that are also published under their own publisher get
+      tail rows?
+    ruling: >-
+      Yes, provided the independent release meets our product identity criteria.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-11-18-s
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103"]
+    question: >-
+      Should candidates with no stated license be emitted?
+    ruling: >-
+      No. Don't infer licenses.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/openness.md]
+    applied_in: []
+
+  - id: R-2026-11-18-t
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1098", sea-helm, indicqa, indicsentiment]
+    question: >-
+      SEA-HELM imports IndicQA's and IndicSentiment's Tamil items. Do those rows take part_of: [sea-
+      helm]?
+    ruling: >-
+      No. Importing a dataset is not the same as that dataset being a member of the suite.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-11-18-u
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103"]
+    question: >-
+      Who owns a row found through a catalog: the publishing account, or the institution the catalog
+      names?
+    ruling: >-
+      Distinguish publisher from owner. Record the publishing account, but leave institutional ownership
+      unknown until verified.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md]
+    applied_in: []
+
+  - id: R-2026-11-18-v
+    date: 2026-11-18
+    by: ccerv1
+    venue: session
+    refs: ["#1103", atlas-data]
+    question: >-
+      How should future catalog reconciliations be run and recorded?
+    ruling: >-
+      Match the whole catalog each time and triage by region in separate passes; make this the standard
+      catalog reconciliation workflow. Retain the source snapshot reference, digest, triage logic and
+      aggregate reconciliation counts for reproducibility.
+    status: in-force
+    executor: agent
+    lands_in: [docs/workflows/discover-candidates.md]
+    applied_in: []
