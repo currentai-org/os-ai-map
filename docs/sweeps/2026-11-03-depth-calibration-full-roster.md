@@ -112,7 +112,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 1 |
 | IndicXTREME | 4 | 4 | 4 | 4 | 4.47 | 19 / 21 | 0 |
 | Lahaja | 3 | unresolved (0-5) | same | unresolved | | 0 / 1 | 0 |
-| SEA-HELM | 5 | 2 | 2 | 3 | 2.45 | 11 / 11 | 4 |
+| SEA-HELM | 5 | 3 | 3 | 3 | 3.45 | 11 / 11 | 0 |
 | SeaExam | 3 | 3 | 3 | 3 | 3.38 | 4 / 4 | 1 |
 | ThaiExam | 4 | 3 | 3 | 3 | 3.00 | 1 / 1 | 0 |
 | VMLU | 4 | unresolved (0-5) | same | unresolved | | 0 / 1 | 0 |
@@ -162,8 +162,11 @@ as its own here. Treated as imported, all ten fall to 1 with the two above, and 
 with the same bonus.
 
 **Where corroboration caps.** A language is capped when its corroborated band sits below its face
-value. Six sets have capped languages, and three of them lose depth at the set level. AfroBench (37
-capped languages) and SEA-HELM (4) were described in the depth brief and the lineage audit.
+value. Five sets have capped languages, and two of them lose depth at the set level. AfroBench (37
+capped languages) was described in the depth brief and the lineage audit. SEA-HELM had four
+(Khmer, Lao, Burmese and Malay) until 2026-11-17, when its coverage was brought up to the data the
+suite publishes and a separately built test in each of the four backed its FLORES items, so it now
+has none and stands at 3 (docs/sweeps/2026-11-17-ai-singapore-followups/README.md).
 SeaExam (1): its Chinese, whose qualifying items are imported M3Exam questions, falls from 3 to 1,
 and the set stays 3. IndicGenBench (1): Nepali falls from 3 to 1, and the set stays 3. INCLUDE
 (2): Arabic and Turkish fall from 3 to 1, since nothing independent of the parent benchmarks backs

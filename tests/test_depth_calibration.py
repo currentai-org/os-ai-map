@@ -37,7 +37,7 @@ EXPECTED = {
     "indicgenbench": ("3", "3", 3.48, 29, 29, 1),
     "indicxtreme": ("4", "4", 4.47, 19, 21, 0),
     "lahaja": ("unresolved (0-5)", "unresolved (0-5)", None, 0, 1, 0),
-    "sea-helm": ("2", "3", 2.45, 11, 11, 4),
+    "sea-helm": ("3", "3", 3.45, 11, 11, 0),  # coverage brought up to the v1.2 data, 2026-11-17
     "seaexam": ("3", "3", 3.38, 4, 4, 1),
     "thai-exam": ("3", "3", 3.0, 1, 1, 0),
     "vmlu": ("unresolved (0-5)", "unresolved (0-5)", None, 0, 1, 0),
