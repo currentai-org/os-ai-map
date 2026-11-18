@@ -27,8 +27,8 @@ suite's own dataset tables (`datasets_and_prompts.md` in the SEA-HELM repository
 | Lao | SEA MT-Bench | 58 | human translation | yes |
 | Lao | Belebele | 895 | human translation | no |
 | Burmese | SEA-IFEval | 105 | human translation of IFEval | yes |
-| Burmese | XNLI (`xnli`) | 600 | human translation | yes |
-| Burmese | XCOPA (`xcopa`) | 400 | human translation | yes |
+| Burmese | XNLI, translated (`xnli-sea-translation`) | 600 | human translation | yes |
+| Burmese | XCOPA, translated (`xcopa-sea-translation`) | 400 | human translation | yes |
 | Burmese | XL-Sum (`xl-sum`) | 100 | native | yes |
 | Burmese | SEA MT-Bench | 58 | human translation | yes |
 | Burmese | Belebele | 120 | human translation | no |
@@ -47,7 +47,8 @@ as well. The margin is thin for Khmer and Lao, since 105 items clears the band-2
 **What changed.** `sources/scores/sea-helm.yaml` gains 26 coverage entries: the table above, plus
 Belebele in every target language that has a split, SEA-IFEval, SEA MT-Bench, XNLI and XCOPA for
 Malay, SEA MT-Bench for Filipino, and LINDSEA for Tamil. Each one rests on both a split count and a
-provenance row. `sources/lineage.yaml` extends SEA-HELM's SEA-IFEval, SEA MT-Bench and LINDSEA
+provenance row. XNLI and XCOPA have no Burmese or Malay of their own, so those items get their own
+lineage components, derived from the English sets, with the translator unknown. `sources/lineage.yaml` extends SEA-HELM's SEA-IFEval, SEA MT-Bench and LINDSEA
 records with the tables' rows, since the cards those records cited name only the first release's
 languages.
 
@@ -82,9 +83,11 @@ The full-roster calibration record (`docs/sweeps/2026-11-03-depth-calibration-fu
 category's strapline no longer names SEA-HELM among the suites that fall below 3.
 
 **One caveat for review.** SEA-HELM's default run configuration (`seahelm_tasks/task_config.yaml`)
-lists Burmese but not Khmer, Lao, Javanese or Sundanese, although each has published splits and
-task configurations. Main already counted Javanese and Sundanese on the same basis, so this record
-counts Khmer and Lao the same way.
+leaves out Khmer, Lao, Javanese and Sundanese entirely, leaves out Malay's NLI and causal-reasoning
+tasks, and comments out Burmese MT-Bench, although each has published splits and task
+configurations. Main already counted Javanese and Sundanese on the same basis, so this record
+counts the rest the same way. Read the other way, counting only the default run, Khmer and Lao
+fall back to 1 and Javanese and Sundanese stay at 2, and SEA-HELM still stands at 3.
 
 ### Is the correction even-handed?
 
@@ -95,13 +98,16 @@ the same position would be treated the same way.
 - **FLORES+** is the original source, not an import, so no cap binds; it stays 3.
 - **INCLUDE** caps two languages (Arabic and Turkish), on imported exam questions, not FLORES; it
   stays 3.
-- **AfroBench** caps 37 languages and stays at 1. In 23 of them its only tests are FLORES and
+- **AfroBench** caps 37 languages and stays at 1, which sits exactly on its median: 32 languages
+  at 1, 24 above and 7 unmeasured. In 21 of the capped languages its only tests are FLORES and
   SIB-200, which is itself built on FLORES sentences, so there is nothing independent in the suite
   to find. Most of its natively annotated tests elsewhere are part-of-speech and named-entity
-  tagging, which the ladder has no measurement model for. A few languages (Kirundi, Tsonga,
-  Moroccan Arabic, Fon) carry an independent news, sentiment or diacritics test whose provenance is
-  recorded as unknown. Establishing it would be the same kind of correction as this one, and would
-  lift those languages but not AfroBench's band. It is left as follow-up work.
+  tagging, which the ladder has no measurement model for. Five capped languages (Kirundi, Somali,
+  Tsonga, Moroccan Arabic, Fon) carry an independent news, sentiment or diacritics test whose
+  provenance is recorded as unknown. Establishing it is the same kind of correction as this one,
+  and it would move AfroBench itself: with Kirundi's alone established, the median no longer stands
+  and the band becomes unresolved between 1 and 3. It is left as follow-up work, and it is the
+  next correction to make for the rule to be applied evenly.
 
 ## SEA-HELM's separately published members (#1094)
 
@@ -110,7 +116,7 @@ every Neon load creates its enum types inside the staging schema from the produc
 edges, which have included `part_of` since #949, and the site reads the relation as plain text. A
 test now pins that.
 
-Four members that AI Singapore publishes on their own as well as inside SEA-HELM have rows in
+Four members that AI Singapore publishes on their own as well as inside SEA-HELM are proposed as rows in
 `language_specific_eval_sets`, linked by `lineage.part_of: [sea-helm]` and scored under the normal
 rules: Kalahi (openness 5, capability 2), LINDSEA (3, 2), SEA-IFEval (3, 2) and SEA-MTBench (3, 1).
 A suite and its members count once toward the stage, which does not move. SEA-NLI is the next
@@ -150,10 +156,13 @@ candidates.
 | Product | Axis | Before | After | PR |
 |---|---|---|---|---|
 | SEA-HELM | capability | 2 | 3 | #1091 |
-| Kalahi (new) | openness / adoption / capability | | 5 / 1 / 2 | #1094 |
-| LINDSEA (new) | openness / adoption / capability | | 3 / 2 / 2 | #1094 |
-| SEA-IFEval (new) | openness / adoption / capability | | 3 / 2 / 2 | #1094 |
-| SEA-MTBench (new) | openness / adoption / capability | | 3 / 1 / 1 | #1094 |
+| Kalahi (proposed) | openness / adoption / capability | | 5 / 1 / 2 | #1094 |
+| LINDSEA (proposed) | openness / adoption / capability | | 3 / 2 / 2 | #1094 |
+| SEA-IFEval (proposed) | openness / adoption / capability | | 3 / 2 / 2 | #1094 |
+| SEA-MTBench (proposed) | openness / adoption / capability | | 3 / 1 / 1 | #1094 |
+
+The four member rows wait on a membership ruling for the eval-set roster, so their figures are
+proposed until #1094 merges.
 
 The SEA-LION API, SEA-Guard and the embedding model are unscored tail rows. The new rows'
 adoption levels are held until the weekly reconciliation measures them.
