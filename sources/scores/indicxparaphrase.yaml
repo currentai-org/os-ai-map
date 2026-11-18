@@ -1,0 +1,204 @@
+product: indicxparaphrase
+openness:
+  score: 2
+  class: restricted
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: no card and no license in the Hub API metadata; the IndicBERT README says the sets made for the benchmark
+        are released under CC0
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: 'no'
+      detail: the repository holds a loading script and data files and no card
+  confidence: low
+  note: The test set downloads without a gate, but the Hub repository has no card and states no license. The IndicBERT
+    README says the sets made for the benchmark are released under CC0, and the reading is held until the data itself
+    carries a license.
+  raw: license:not-clearly-stated-on-card(no card and no license in the Hub API metadata; the IndicBERT README says
+    the sets made for the benchmark are released under CC0);access:public(ungated on the Hub);dataset_card:no(the
+    repository holds a loading script and data files and no card)
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicXParaphrase
+    shows: 'API JSON: "gated":false; no cardData and no license tag; the files are "IndicXParaphrase.py" and "data/as.tsv"
+      to "data/te.tsv".'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 1662eab8c885e78642e8151c12b3fdea42622788670d6976c18deefce785dfdb
+    establishes:
+    - availability
+    - license
+    - documentation
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    shows: '"All the datasets created as part of this work will be released under a CC-0 license"; the task list
+      describes IndicXParaphrase as "A new, multilingual, and n-way parallel dataset for paraphrase detection in
+      10 Indic languages"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 311e34d655f447993299b9f4f0e2b8d739b233b0abfd747439aaa02031f71816
+    establishes:
+    - license
+    - documentation
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of IndicXParaphrase's own repository over the trailing month. IndicXTREME declares
+    the same repository among its task repositories, so these downloads also count toward IndicXTREME's figure.
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicXParaphrase
+    shows: '"downloads":333 for ai4bharat/IndicXParaphrase.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 1662eab8c885e78642e8151c12b3fdea42622788670d6976c18deefce785dfdb
+capability:
+  score: 4
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 4 of 5, provisional and count-based: the median corroborated band over its target languages,
+    10 of 10 measured, across 1 task. Face value 4; best original band 4.'
+  confidence: medium
+  note: In every language IndicXParaphrase targets, its one test has sixteen hundred to sixty-four hundred items,
+    machine translations that annotators checked and corrected, paired with paraphrases they wrote. An item count
+    says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://arxiv.org/pdf/2212.05409
+    shows: '"We randomly choose 1001 English sentences from the dataset introduced in Kumar et al. (2022)"; "we
+      machine-translate these sentences into the required languages using the IndicTrans model"; "verify and correct
+      the translations, if required, and (ii) create one paraphrase and a non-paraphrase for each sentence"; Table
+      2: IndicXPara, |Test| 2002, |Lang.| 10; Table 18 names its languages "as bn gu hi kn ml mr or pa te"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - url: https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+    shows: '"test" split sizes of 2002 rows in each of "as", "bn", "gu", "hi", "kn", "ml", "mr", "or", "pa" and
+      "te"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: ad8ff8d584f781ea4e934caaa8302e2f118108b44e33d1fc634a4fba1471f9d3
+  pivot_languages: []
+  language_coverage:
+  - language: asm
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: ben
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: guj
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: hin
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: kan
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: mal
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: mar
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: ori
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: pan
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase
+  - language: tel
+    task: text_classification
+    component: indicxparaphrase
+    split: test
+    official_eval: true
+    count: 2002
+    unit: items
+    provenance: mixed
+    qualifying_count: 2002
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/IndicXParaphrase

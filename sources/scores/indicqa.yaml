@@ -1,0 +1,208 @@
+product: indicqa
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and API tag
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+      detail: card describes the task, fields and languages
+  confidence: medium
+  note: IndicQA downloads without a gate, and its card describes the set and gives CC BY 4.0, while the IndicBERT
+    README says the sets made for the benchmark are released under CC0; both readings permit open reuse.
+  raw: license:cc-by-4.0(card metadata and API tag);access:public(ungated on the Hub);dataset_card:present(card
+    describes the task, fields and languages)
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicQA
+    shows: 'API JSON: "gated":false; cardData license ["cc-by-4.0"].'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: d0117b9fba0c61298bd0b1a97e2a5da282b3f1352ea8e78a3a545107ab91c397
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/ai4bharat/IndicQA/raw/main/README.md
+    shows: card metadata "license:" "cc-by-4.0", "annotations_creators:" "expert-generated"; "The Indic QA dataset
+      is designed for question answering tasks, with a focus on Indic languages. It contains questions paired with
+      corresponding contexts and answers."
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 384a9d2d2ef7e2a17dc6ed5665a486c7544e6ad586a45d766aefc634fefa2f3f
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    shows: '"All the datasets created as part of this work will be released under a CC-0 license"; the task list
+      describes IndicQA and links its Hub repository'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 311e34d655f447993299b9f4f0e2b8d739b233b0abfd747439aaa02031f71816
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of IndicQA's own repository over the trailing month. IndicXTREME declares the same
+    repository among its task repositories, so these downloads also count toward IndicXTREME's figure.
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicQA
+    shows: '"downloads":3043 for ai4bharat/IndicQA.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: d0117b9fba0c61298bd0b1a97e2a5da282b3f1352ea8e78a3a545107ab91c397
+capability:
+  score: 4
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 4 of 5, provisional and count-based: the median corroborated band over its target languages,
+    11 of 11 measured, across 1 task. Face value 4; best original band 4.'
+  confidence: medium
+  note: In every language IndicQA targets, its one test has sixteen hundred to sixty-four hundred questions, which
+    annotators wrote in that language. An item count says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://arxiv.org/pdf/2212.05409
+    shows: '"We introduce IndicQA, a manually curated cloze-style reading comprehension dataset that can be used
+      for evaluating question-answering models in 11 Indic languages"; "The annotators are asked to create questions
+      (in an Indic language)"; Table 7, IndicQA questions per language: as 1789, bn 1763, gu 2017, hi 1547, kn 1517,
+      ml 1589, mr 1604, or 1680, pa 1542, ta 1804, te 1734'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicQA
+    shows: tags language:pa, ta, te, as, bn, hi, or, ml, mr, kn and gu; one file per language, "data/indicqa.as.json"
+      to "data/indicqa.te.json"
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: d0117b9fba0c61298bd0b1a97e2a5da282b3f1352ea8e78a3a545107ab91c397
+  pivot_languages: []
+  language_coverage:
+  - language: asm
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1789
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: ben
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1763
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: guj
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 2017
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: hin
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1547
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: kan
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1517
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: mal
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1589
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: mar
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1604
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: ori
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1680
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: pan
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1542
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: tam
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1804
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
+  - language: tel
+    task: reading_comprehension
+    component: indicqa
+    split: test
+    official_eval: true
+    count: 1734
+    unit: questions
+    provenance: native
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicQA
