@@ -146,10 +146,13 @@ on 2026-11-08. Its distribution is now the category's own on 2026-11-17: 77 band
 Ruling R-2026-11-17-c replaces R-2026-10-12-a: a host is a product in `inference_code` when it is
 a distinct public service, with its own endpoint, documentation and terms, that serves more than
 one model. The SEA-LION API meets the test (four models documented, a free tier under AI
-Singapore's terms). ADR-005 places it in the tail: openness 1, adoption abstains for want of any
-cited usage figure, and capability 2 is below the line. LLMLab does not clearly qualify, since it
-is open only to PLGrid grant holders. SEA-Guard and the SEA-LION embedding model join the tail as
-candidates.
+Singapore's terms). ADR-005 places it in the tail: openness 1 and capability 2. #1093 recorded
+adoption as abstaining for want of a usage figure, but AI Singapore's models page reports "180k +
+Monthly API endpoint calls", a vendor figure that would read as reported traction at a low level.
+At capability 2, with adoption and capability weighted equally, no adoption level reaches the line
+of 4, so the placement stands (#PRNUM). LLMLab does not clearly qualify, since it
+is open only to PLGrid grant holders. SEA-Guard and the SEA-LION ModernBERT and E5 embedding models
+join the tail as candidates.
 
 ## Score changes
 
