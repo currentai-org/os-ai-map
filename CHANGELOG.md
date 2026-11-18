@@ -43,7 +43,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Fixed
 
 - SEA-HELM's capability rose from 2 to 3: its coverage record now includes the Khmer, Lao, Burmese and
-  other tests the suite has published since its v1.2 release, which back its FLORES items.
+  other tests the suite has published since its v1.2 release, which back its FLORES items
+  ([#1091](https://github.com/currentai-org/os-ai-map/pull/1091)).
 - The seven v0.1.0 slugs retired by #114 without a redirect (`claude-sonnet-4`,
   `claude-sonnet-4-6`, `claude-haiku-4-5`, `gemini-2-5-pro`, `gemini-3-pro`,
   `gemini-3-1-pro-preview`, `grok-4-20-heavy`) are now aliases on `claude-sonnet`, `claude-haiku`,
