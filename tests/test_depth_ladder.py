@@ -46,9 +46,10 @@ ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-
          "kalahi": "R-2026-11-18-a", "lindsea": "R-2026-11-18-a", "sea-ifeval": "R-2026-11-18-a",
          "sea-mtbench": "R-2026-11-18-a",
          # IndicXTREME's independently published members, linked to the suite the same way
-         # (R-2026-11-18-a applied to a second suite; #1098). Each targets languages below the line.
-         "indiccopa": "R-2026-11-18-a", "indicqa": "R-2026-11-18-a", "indicsentiment": "R-2026-11-18-a",
-         "indicxparaphrase": "R-2026-11-18-a"}
+         # (R-2026-11-18-e, the per-suite ruling under R-2026-11-18-a; #1098). Each targets
+         # languages below the line.
+         "indiccopa": "R-2026-11-18-e", "indicqa": "R-2026-11-18-e", "indicsentiment": "R-2026-11-18-e",
+         "indicxparaphrase": "R-2026-11-18-e"}
 CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 
