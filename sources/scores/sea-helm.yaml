@@ -172,17 +172,17 @@ adoption:
     http_status: 200
     content_sha256: b492456f23d896dbcbcc2b9c1d4e000a5e3b6bc67d8b5fcc8de6980c91fdd478
 capability:
-  score: 2
+  score: 3
   basis: evaluation_depth
   basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
-  value: 'Depth band 2 of 5, provisional and count-based: the median corroborated band over its target
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target
     languages, 11 of 11 measured, across 9 tasks. Face value 3; best original band 2.'
   confidence: medium
-  note: In the typical language SEA-HELM targets, its deepest test has four hundred to sixteen hundred items,
-    but in 4 of its 11 languages that test comes from another dataset with nothing independent in the language
-    to back it. Counting only what can be corroborated, the typical language has one to four hundred. An item
-    count says how much a set can test, not how precisely it ranks models.
-  last_verified: '2026-11-08'
+  note: In the typical language SEA-HELM targets, its deepest test has four hundred to sixteen hundred items.
+    Where that test comes from another dataset, as the FLORES translation test does in Khmer, Lao and Burmese,
+    a separately built test in the same language backs it, so the corroborated count is the same. An item count
+    says how much a set can test, not how precisely it ranks models.
+  last_verified: '2026-11-17'
   sources:
   - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/README.md
     shows: '"This suite consist of 5 core pillars: NLP Classics, LLM-specifics, SEA Linguistics, SEA Culture,
@@ -200,8 +200,15 @@ capability:
       Thai Exam; the sentiment table marks "Javanese" and "Sudanese" "Native" with no dataset named, and the
       metaphor table marks "Javanese, Sudanese" "Native"; the translation table reads "Indonesian, Tamil, Thai,
       Vietnamese, Lao, Malay, Burmese | FLORES | Human translations" and "Filipino | Batayan | Human
-      translations | Wikinews, Wikijunior, and Wikivoyage"
-    accessed: '2026-11-08'
+      translations | Wikinews, Wikijunior, and Wikivoyage"; the tables also name the languages added later, in
+      "Filipino, Indonesian, Vietnamese, Malay, Burmese, Lao, Khmer | SEA-IFEval | Human translation", "Filipino,
+      Indonesian, Thai, Vietnamese, Malay, Burmese, Lao, Khmer | SEA MT-Bench | Human Translation", "Malay, Burmese,
+      Lao, Javanese, Sundanese | Belebele | Human translation", "Thai, Vietnamese, Malay, Burmese | XNLI | Human
+      translation", "Indonesian, Tamil, Thai, Vietnamese, Malay, Burmese | XCOPA | Human translation", "Indonesian,
+      Tamil, Thai, Vietnamese, Burmese | XL-Sum | Native" and "Indonesian, Tamil | LINDSEA | Native"; the sentiment
+      table marks "Malay", "Burmese" and "Lao" "Native" and the toxicity table "Burmese" and "Malay" "Native", each
+      with no dataset named
+    accessed: '2026-11-17'
     http_status: 200
     content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
   - url: https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis
@@ -326,6 +333,54 @@ capability:
     accessed: '2026-11-08'
     http_status: 200
     content_sha256: 4807d538486a3ff6cddf0be6c796025e47074b13a857f86101059b7c3d3c3969
+  - url: https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    shows: 'the card''s dataset_info, which the data files follow: "eval" splits of 895 examples for "id", "jv",
+      "km", "lo", "ms", "su", "ta", "th" and "vi", 120 for "my"; the README''s prose names none of them'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 49ecac939b26b882656cebf1e7c24d040c3338c4563a28b13799b80fcb2f2abe
+  - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+    shows: 'the belebele-qa-mc task maps "id", "jv", "km", "lo", "my", "su", "ta", "th" and "vi" each to "filepath:
+      aisingapore/NLU-Belebele-MCQA"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 6178c440bad157fe367e1f1325af1caab0f6568c74cbeb54262a55d4bd4fe3c0
+  - url: https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    shows: 'the card''s dataset_info: 105 "eval" examples in each of "km", "lo", "ms" and "my", as in the
+      languages the README names'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: ef5f73c07dcd4513be59bc8ca7a3c0796b9660e3efd5f9f86587ded4d8b9db8f
+  - url: https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    shows: 'the card''s dataset_info: 58 "eval" examples in each of "km", "lo", "ms", "my" and "tl"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: fe870f8bda787cbe57ef5321eb75e0e3c26cb26a149f650aed3932d0d75b1644
+  - url: https://huggingface.co/api/datasets/aisingapore/NLR-NLI
+    shows: 'the card''s dataset_info: 1000 "eval" examples in "ms" and 600 in "my"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: f5653f9ec2f54004ef1dcec6e58e1df7369ad0af9d289113b4d78df956efc860
+  - url: https://huggingface.co/api/datasets/aisingapore/NLR-Causal-Reasoning
+    shows: 'the card''s dataset_info: 500 "eval" examples in "ms" and 400 in "my"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 72b4c50ee9c02061480f97f8ef4e4bc547a29d3aa3c4e3e596610d34642eedde
+  - url: https://huggingface.co/api/datasets/aisingapore/NLG-Abstractive-Summarization
+    shows: 'the card''s dataset_info: 100 "eval" examples in "my"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 9917852a4f660ca1cc2fcc722d80b0900175cbdbd60694a5a4191938c35084a2
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    shows: 'the card''s dataset_info: 470 "eval" examples in "ta"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 99ccc5da07215a4ae0f73ee1cd56e3a2d4ebf5ad92dd7b4ce5d8808cf9b30c9b
+  - url: https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    shows: 'the card''s dataset_info: 80 "eval" examples in "ta_single" and 84 in "ta_pair"'
+    accessed: '2026-11-17'
+    http_status: 200
+    content_sha256: 42c2f86839b3edc47c90cd91c9656cca23afceccbfe826746b1143f02111ea18
   pivot_languages: [eng, zho]
   language_coverage:
   - language: eng
@@ -408,6 +463,18 @@ capability:
   - language: fil
     source_language: tgl
     task: text_generation
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: fil
+    source_language: tgl
+    task: text_generation
     component: sea-mt-bench-judge
     split: official_eval
     official_eval: true
@@ -459,6 +526,17 @@ capability:
     cites:
     - https://arxiv.org/html/2502.14301
     - https://huggingface.co/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+  - language: ind
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
   - language: ind
     task: reading_comprehension
     component: tydi-qa-goldp
@@ -578,6 +656,18 @@ capability:
     - https://aclanthology.org/2023.eacl-main.57.pdf
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
   - language: jav
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: jav
     task: reasoning
     component: multilingual-fig-qa
     split: official_eval
@@ -611,6 +701,17 @@ capability:
     cites:
     - https://huggingface.co/datasets/aisingapore/MultiTurn-Chat-MT-Bench
   - language: khm
+    task: instruction_following
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: khm
     task: machine_translation
     component: flores-plus
     split: official_eval
@@ -621,6 +722,39 @@ capability:
     cites:
     - https://arxiv.org/abs/2207.04672
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
+  - language: khm
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+  - language: khm
+    task: text_generation
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: lao
+    task: instruction_following
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: lao
     task: machine_translation
     component: flores-plus
@@ -632,6 +766,40 @@ capability:
     cites:
     - https://arxiv.org/abs/2207.04672
     - https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: lao
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: lao
+    task: text_generation
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: mya
+    task: instruction_following
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
     - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: mya
     task: machine_translation
@@ -645,6 +813,62 @@ capability:
     - https://arxiv.org/abs/2207.04672
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
     - https://huggingface.co/api/datasets/aisingapore/NLG-Machine-Translation
+  - language: mya
+    task: natural_language_inference
+    component: xnli
+    split: official_eval
+    official_eval: true
+    count: 600
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLR-NLI
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: mya
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 120
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: mya
+    task: reasoning
+    component: xcopa
+    split: official_eval
+    official_eval: true
+    count: 400
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLR-Causal-Reasoning
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: mya
+    task: summarization
+    component: xl-sum
+    split: official_eval
+    official_eval: true
+    count: 100
+    unit: documents
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLG-Abstractive-Summarization
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: mya
+    task: text_generation
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: sun
     task: instruction_following
     component: sea-helm
@@ -666,6 +890,18 @@ capability:
     cites:
     - https://aclanthology.org/2023.eacl-main.57.pdf
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
+  - language: sun
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: sun
     task: reasoning
     component: multilingual-fig-qa
@@ -722,6 +958,28 @@ capability:
     - https://arxiv.org/html/2502.14301
     - https://huggingface.co/datasets/aisingapore/NLR-NLI
   - language: tam
+    task: natural_language_inference
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 80
+    unit: items
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Pragmatics
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tam
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+  - language: tam
     task: reading_comprehension
     component: indicqa
     split: official_eval
@@ -766,6 +1024,17 @@ capability:
     - https://arxiv.org/html/2502.14301
     - https://huggingface.co/datasets/aisingapore/NLU-Sentiment-Analysis
   - language: tam
+    task: text_classification
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 470
+    unit: items
+    provenance: native
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Linguistic-Diagnostics-Syntax
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: tam
     task: text_generation
     component: sea-mt-bench-judge
     split: official_eval
@@ -807,6 +1076,17 @@ capability:
     cites:
     - https://arxiv.org/html/2502.14301
     - https://huggingface.co/datasets/aisingapore/NLR-NLI
+  - language: tha
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
   - language: tha
     task: reading_comprehension
     component: xquad
@@ -917,6 +1197,17 @@ capability:
     - https://huggingface.co/datasets/aisingapore/NLR-NLI
   - language: vie
     task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+  - language: vie
+    task: reading_comprehension
     component: xquad
     split: official_eval
     official_eval: true
@@ -1002,6 +1293,17 @@ capability:
     - https://arxiv.org/abs/2207.04672
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
   - language: zsm
+    task: instruction_following
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 105
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/Instruction-Following-IFEval
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: zsm
     task: machine_translation
     component: flores-plus
     split: official_eval
@@ -1012,6 +1314,51 @@ capability:
     cites:
     - https://arxiv.org/abs/2207.04672
     - https://huggingface.co/datasets/aisingapore/NLG-Machine-Translation
+  - language: zsm
+    task: natural_language_inference
+    component: xnli
+    split: official_eval
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLR-NLI
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: zsm
+    task: reading_comprehension
+    component: belebele
+    split: official_eval
+    official_eval: true
+    count: 895
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLU-Belebele-MCQA
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/seahelm_tasks/nlu/belebele_mcqa/config.yaml
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: zsm
+    task: reasoning
+    component: xcopa
+    split: official_eval
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/NLR-Causal-Reasoning
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+  - language: zsm
+    task: text_generation
+    component: sea-helm
+    split: official_eval
+    official_eval: true
+    count: 58
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://huggingface.co/api/datasets/aisingapore/MultiTurn-Chat-MT-Bench
+    - https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
   - language: zsm
     source_language: msa
     task: text_generation
