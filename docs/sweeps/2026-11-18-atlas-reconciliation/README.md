@@ -89,7 +89,7 @@ bcl pag tsg mdh kyk krj cps akl msb mbb suc yka tdt abz urk mnw cja cjm hmn mww 
 | Status | ATLAS-Data | ATLAS-Eval | Meaning |
 |---|---|---|---|
 | `on_map` | 26 | 97 | the entry is a row on the map, or a subset that row declares |
-| `component` | 298 | 58 | part of, or related through a shared artifact to, another row (271 are SEACrowd loaders) |
+| `component` | 298 | 58 | part of, or related through a shared artifact to, another row (255 are SEACrowd hub loaders, 11 more load IndoNLU tasks) |
 | `added_to_tail` | 6 | 14 | a new tail row in this PR (plus `bhasaanuvaad`, assembled from eight entries) |
 | `eval_candidate_needs_ruling` | 13 | 24 | an evaluation set that passes the language test; the eval-set roster needs a ruling |
 | `fails_language_test` | 1 | 9 | every target language is high at both ends; listed for the category it would go to |
@@ -276,7 +276,7 @@ as `component`:
 - Samanantar is drawn into BPCC (the `bpcc` record lists "BPCC-Mined (Samanantar 19.4M, ...)") and has
   its own paper and repository, so it is a candidate member row.
 - One tail row carries a renamed repository: `arena-hard-auto` declares `lmarena/arena-hard-auto`,
-  which GitHub now serves as `Arena-OSS/arena-hard-auto`. It is corrected in a separate PR.
+  which GitHub now serves as `Arena-OSS/arena-hard-auto`. It is corrected in #1104.
 
 ## Questions for the maintainer
 
@@ -308,9 +308,9 @@ Each has a proposed answer; none was acted on.
 
 ## Pull requests
 
-- This one: the record, `entries.csv`, the 21 tail rows, 13 organizations, their handles and the
+- #1103 (this one): the record, `entries.csv`, the 21 tail rows, 13 organizations, their handles and the
   country ledger.
-- A separate PR corrects `arena-hard-auto`'s repository to its canonical name.
+- #1104 corrects `arena-hard-auto`'s repository to its canonical name.
 
 ## Evidence
 
