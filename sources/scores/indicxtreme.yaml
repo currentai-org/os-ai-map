@@ -128,7 +128,7 @@ capability:
   basis: evaluation_depth
   basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
   value: 'Depth band 4 of 5, provisional and count-based: the median corroborated band over its target
-    languages, 19 of 21 measured, across 4 tasks. Face value 4; best original band 4.'
+    languages, 19 of 21 measured, across 3 tasks. Face value 4; best original band 4.'
   confidence: medium
   note: In the typical language IndicXTREME targets, its deepest test has sixteen hundred to sixty-four
     hundred items that count toward depth. Of its 21 target languages, 19 have a countable test. An item count
@@ -137,8 +137,11 @@ capability:
   sources:
   - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
     shows: '"IndicXTREME benchmark includes 9 tasks"; "a human-supervised benchmark, IndicXTREME, consisting
-      of nine diverse NLU tasks covering 20 languages ... 105 evaluation sets, of which 52 are new"'
-    accessed: '2026-11-08'
+      of nine diverse NLU tasks covering 20 languages ... 105 evaluation sets, of which 52 are new"; the task
+      list links the NLI set to "https://huggingface.co/datasets/Divyanshu/indicxnli" as "Automatically translated
+      version of XNLI in 11 Indic languages", and Naamapadam as "NER dataset with manually curated testsets for
+      9 Indic languages"'
+    accessed: '2026-11-18'
     http_status: 200
     content_sha256: 311e34d655f447993299b9f4f0e2b8d739b233b0abfd747439aaa02031f71816
   - url: https://huggingface.co/datasets/ai4bharat/IndicCOPA
@@ -169,8 +172,14 @@ capability:
       and a non-paraphrase for each sentence"; "The annotators are asked to create questions (in an Indic language)";
       "1012 sentences manually translated into 18 Indic languages"; "we only create test sets"; the per-task
       results tables (15 to 23) name each task''s languages, IndicSentiment''s including "bd", which the paper
-      uses for Bodo ("low-resource languages like bd and dg"; Table 14 "brx Bodo")'
-    accessed: '2026-11-08'
+      uses for Bodo ("low-resource languages like bd and dg"; Table 14 "brx Bodo"); Table 2 marks IndicXNLI with
+      "ζ - Human verification is in progress, please refer to Appendix I", and Appendix I reads "Our effort to
+      manually correct all the translations in the IndicXNLI (Aggarwal et al., 2022) dataset is currently ongoing"
+      and "Once the complete test set is verified and cleaned, we plan to update IndicXTREME with the additional
+      data"; Table 2 gives the NLI task 12 languages, and Section 3.2 describes IndicXNLI as "an automatically translated
+      version of XNLI (Conneau et al., 2018) in 11 Indic languages"; Table 16 adds "ur"; Table 20, Naamapadam''s
+      results, covers "bn gu hi kn ml mr pa ta te"'
+    accessed: '2026-11-18'
     http_status: 200
     content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
   - url: https://arxiv.org/abs/2204.08582
@@ -187,6 +196,45 @@ capability:
     accessed: '2026-11-08'
     http_status: 200
     content_sha256: ccd4fdc95ba32546f941b403aa494a074411e79b190d5c15fd548535627ed7fb
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    shows: 'IndicXTREME''s NLI evaluation script loads Urdu from XNLI and every other language from IndicXNLI: "if
+      args.eval_data == "ur":", "dataset = load_dataset("xtreme", "XNLI")", "dataset = dataset.filter(lambda x: x[''language''].startswith(''ur''))",
+      and otherwise "dataset = load_dataset("Divyanshu/indicxnli", f"{args.eval_data}", use_auth_token=True)"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: ded6f77d74baed62354a4ce6888c1dc45ebd81a7d28bc2c2517325777c73afe4
+  - url: https://arxiv.org/pdf/1809.05053
+    shows: '"XNLI consists of 7500 human-annotated development and test examples in NLI three-way classification format
+      in English, French, Spanish, German, Greek, Bulgarian, Russian, Turkish, Arabic, Vietnamese, Thai, Chinese,
+      Hindi, Swahili and Urdu"; "we create the full XNLI corpus by employing professional translators to translate
+      it into our ten target languages"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 220fe6b9bf048b4b9fb9016db10bddd2752fe2b2aa34519af20bc727efdf81e5
+  - url: https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    shows: card metadata "annotations_creators:" "machine-generated" and "language_creators:" "machine-generated";
+      "INDICXNLI include NLI data for eleven major Indic languages", which it lists without Urdu
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 5daecbef0eb7dc98d1815da548091caf1467db5e452739870778462279254bcc
+  - url: https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    shows: the repository's newest commit is "Update README.md" on 2022-10-06, and the data was last added in "add
+      split dataset" on 2022-08-26
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 94abd7d959e99cceefb33a52aa8e7d2c5a89269f55682c1eb911fc62e128f836
+  - url: https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
+    shows: 'split sizes: "test" 5010 rows in each of "as", "bn", "gu", "hi", "kn", "ml", "mr", "or", "pa", "ta" and
+      "te"; "validation" 2490 rows in each except "ta", which has 3238'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 554332363f591af8216d2829ee9dd9add02ba74952fd518a15aa044c0dbeea41
+  - url: https://datasets-server.huggingface.co/size?dataset=ai4bharat/naamapadam
+    shows: '"test" split sizes: "bn" 607, "gu" 1076, "hi" 867, "kn" 1019, "ml" 974, "mr" 1080, "pa" 993, "ta" 758
+      and "te" 847, beside "as" 51 and "or" 994'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: bc59c819c18ce30636edaa3b6b7fe17927425b50eac61d839fe18eab31087c7e
   pivot_languages: [eng]
   language_coverage:
   - language: asm
@@ -206,10 +254,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 3000
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: asm
     task: reading_comprehension
     component: indicqa
@@ -288,10 +340,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 1510
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: ben
     task: reading_comprehension
     component: indicqa
@@ -489,6 +545,18 @@ capability:
     cites:
     - https://arxiv.org/pdf/2212.05409
   - language: guj
+    task: sequence_labeling
+    component: naamapadam
+    split: test
+    official_eval: true
+    count: 1076
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://arxiv.org/pdf/2212.10168
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/naamapadam
+  - language: guj
     task: text_classification
     component: indicsentiment
     split: dev
@@ -536,10 +604,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 4000
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: hin
     task: reading_comprehension
     component: indicqa
@@ -673,10 +745,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 1370
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: kan
     task: reading_comprehension
     component: indicqa
@@ -729,6 +805,18 @@ capability:
     cites:
     - https://arxiv.org/pdf/2212.05409
     - https://arxiv.org/abs/2204.08582
+  - language: kan
+    task: sequence_labeling
+    component: naamapadam
+    split: test
+    official_eval: true
+    count: 1019
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://arxiv.org/pdf/2212.10168
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/naamapadam
   - language: kan
     task: text_classification
     component: indicsentiment
@@ -829,10 +917,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 3200
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: mal
     task: reading_comprehension
     component: indicqa
@@ -966,10 +1058,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 1648
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: mar
     task: reading_comprehension
     component: indicqa
@@ -1000,6 +1096,18 @@ capability:
     provenance: human_translated
     cites:
     - https://arxiv.org/pdf/2212.05409
+  - language: mar
+    task: sequence_labeling
+    component: naamapadam
+    split: test
+    official_eval: true
+    count: 1080
+    unit: sentences
+    provenance: unknown
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://arxiv.org/pdf/2212.10168
+    - https://datasets-server.huggingface.co/size?dataset=ai4bharat/naamapadam
   - language: mar
     task: text_classification
     component: indicsentiment
@@ -1078,10 +1186,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 2107
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: ori
     task: reading_comprehension
     component: indicqa
@@ -1290,11 +1402,13 @@ capability:
     component: indicxnli
     split: dev
     official_eval: false
-    count: 2490
+    count: 3238
     unit: items
     provenance: machine_translated
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: tam
     task: natural_language_inference
     component: indicxnli
@@ -1427,10 +1541,14 @@ capability:
     official_eval: true
     count: 5010
     unit: items
-    provenance: mixed
-    qualifying_count: 872
+    provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://huggingface.co/datasets/Divyanshu/indicxnli/raw/main/README.md
+    - https://huggingface.co/api/datasets/Divyanshu/indicxnli/commits/main
+    - https://datasets-server.huggingface.co/size?dataset=Divyanshu/indicxnli
   - language: tel
     task: reading_comprehension
     component: indicqa
@@ -1549,7 +1667,7 @@ capability:
     - https://arxiv.org/abs/2204.08582
   - language: urd
     task: natural_language_inference
-    component: indicxnli
+    component: xnli
     split: dev
     official_eval: false
     count: 2490
@@ -1557,9 +1675,11 @@ capability:
     provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://arxiv.org/pdf/1809.05053
   - language: urd
     task: natural_language_inference
-    component: indicxnli
+    component: xnli
     split: test
     official_eval: true
     count: 5010
@@ -1567,6 +1687,8 @@ capability:
     provenance: unknown
     cites:
     - https://arxiv.org/pdf/2212.05409
+    - https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/fine-tuning/xnli/xnli.py
+    - https://arxiv.org/pdf/1809.05053
   - language: urd
     task: reasoning
     component: indiccopa
