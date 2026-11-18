@@ -5,29 +5,34 @@ openness:
   components:
     license:
     - name: mixed-per-subset
-      detail: code is MIT; the README says all datasets are under their respective licenses (task repos range
-        from cc-by-4.0 and cc-by-sa-4.0 to cc-by-nc-sa-4.0 and research-only sources)
+      detail: code is MIT; the README says all datasets are under their respective licenses (task repos
+        range from cc-by-4.0 and cc-by-sa-4.0 to cc-by-nc-sa-4.0 and research-only sources)
     access:
-      value: auto
-      detail: task repos use Hugging Face's auto-approved gate with contact sharing
+      value: manual
+      detail: 'the most restrictive declared repository governs: Cultural-Evaluation-Kalahi-Judge needs
+        a maintainer''s approval, fifteen task repositories use Hugging Face''s auto-approved gate with
+        contact sharing, and kalahi and seahelm-audio are ungated'
     dataset_card:
       value: present
       detail: each task card lists sources, licenses, languages and split statistics; docs/datasets_and_prompts.md
         covers the whole suite
   confidence: high
-  note: The evaluation code is MIT, and the task data is available through automatically approved Hugging Face
-    gates. Each task keeps the license of the dataset it samples, so some subsets are non-commercial or restricted
-    to research use, including the Vietnamese hate-speech source.
-  raw: license:mixed-per-subset(code is MIT; the README says all datasets are under their respective licenses
-    (task repos range from cc-by-4.0 and cc-by-sa-4.0 to cc-by-nc-sa-4.0 and research-only sources));access:auto(task
-    repos use Hugging Face's auto-approved gate with contact sharing);dataset_card:present(each task card lists
-    sources, licenses, languages and split statistics; docs/datasets_and_prompts.md covers the whole suite)
-  last_verified: '2026-09-24'
+  note: Most task data is available through automatically approved Hugging Face gates, but one task repository,
+    the judged Kalahi set, needs a maintainer's approval, and the most restrictive gate is the one recorded.
+    The evaluation code is MIT. Each task keeps the license of the dataset it samples, so some subsets are
+    non-commercial or restricted to research use, including the Vietnamese hate-speech source.
+  raw: 'license:mixed-per-subset(code is MIT; the README says all datasets are under their respective licenses
+    (task repos range from cc-by-4.0 and cc-by-sa-4.0 to cc-by-nc-sa-4.0 and research-only sources));access:manual(the
+    most restrictive declared repository governs: Cultural-Evaluation-Kalahi-Judge needs a maintainer''s
+    approval, fifteen task repositories use Hugging Face''s auto-approved gate with contact sharing, and
+    kalahi and seahelm-audio are ungated);dataset_card:present(each task card lists sources, licenses, languages
+    and split statistics; docs/datasets_and_prompts.md covers the whole suite)'
+  last_verified: '2026-11-18'
   sources:
   - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/README.md
     shows: '"The codes for SEA-HELM is licensed under the MIT license. All datasets are licensed under their
       respective licenses."'
-    accessed: '2026-09-24'
+    accessed: '2026-11-18'
     http_status: 200
     content_sha256: 9739ddc4df04eb4b54c1005625549ae11143ed62651474102c4122e551c5d2b3
     establishes:
@@ -35,7 +40,7 @@ openness:
     - license
   - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/LICENSE
     shows: MIT License, Copyright (c) 2025 AI Singapore
-    accessed: '2026-09-24'
+    accessed: '2026-11-18'
     http_status: 200
     content_sha256: ec295a61e86d2b9b0c7e380f96541b5cd3cfec10236031e71bc714d3115b26ea
     establishes:
@@ -43,7 +48,7 @@ openness:
   - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
     shows: Per-task tables of dataset, nativeness, domain and license, e.g. ViHSD "Research purposes only",
       XL-Sum "CC BY-NC-SA 4.0"
-    accessed: '2026-09-24'
+    accessed: '2026-11-18'
     http_status: 200
     content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
     establishes:
@@ -65,6 +70,24 @@ openness:
     content_sha256: a212cfda972e46c221bd9bced33ac08d9261c242fd03b5712159a1f6ae5bcfed
     establishes:
     - documentation
+  - url: https://huggingface.co/api/datasets/aisingapore/Cultural-Evaluation-Kalahi-Judge
+    shows: 'API JSON: "gated":"manual"; tag license:cc-by-4.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 8fed4ef935fb178ac3ab14effafc4c9127227d05d2ccc79dcfea11f855dad2ff
+    establishes:
+    - availability
+  - url: https://huggingface.co/api/datasets?author=aisingapore&limit=200
+    shows: 'The Hub listing of AI Singapore''s datasets gives "gated":"auto" for fifteen of the suite''s declared
+      task repositories, "gated":"manual" for Cultural-Evaluation-Kalahi-Judge and "gated":false for kalahi and
+      seahelm-audio, with license tags from cc-by-4.0 and cc-by-sa-4.0 to cc-by-nc-sa-4.0, and none on
+      NLU-Belebele-MCQA.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: c1c49e3af719a8ad28e3ea0df5bc942327561baea962fdbd8ca3d7a4aecec7c5
+    establishes:
+    - availability
+    - license
 adoption:
   level: 3
   reach: 10K-100K
