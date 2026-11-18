@@ -674,8 +674,10 @@ def _capability_languages(payload: dict) -> list[dict]:
     The grain is `(product_id, language)`, and every target language has a row, so an unmeasured
     language is present with a NULL `band` rather than missing (R-2026-11-01-a). `best_original`
     is NULL both for an unmeasured language and for a measured one that `unavailable` (none of the
-    set's own components covers it); `band IS NULL` tells the two apart. A product without a
-    depth block contributes no rows.
+    set's own components covers it); `band IS NULL` tells the two apart. `set_by` is written as
+    "" where there is none, which is NULL on load (an unquoted empty CSV field), the same
+    convention as every other nullable text column here. A product without a depth block
+    contributes no rows.
     """
     ids = product_ids(payload)
     out = []

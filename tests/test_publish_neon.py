@@ -1485,5 +1485,35 @@ def test_the_per_language_bands_reach_their_own_table_one_row_per_target_languag
     assert build.neon_schema.primary_key("capability_languages") == ("product_id", "language")
 
 
+def test_a_missing_set_by_reaches_postgres_as_null_not_an_empty_string(tmp_path):
+    """`capability_languages.set_by` is nullable text, and a language with no `set_by` (every
+    unmeasured one, and a measured zero no component lifted) must load as SQL NULL. It follows the
+    convention every nullable text column here uses, `steward` included: the row carries "", the
+    CSV writer emits it as an unquoted empty field, and `COPY ... (FORMAT csv)` reads an unquoted
+    empty field as NULL. A quoted `""` would load as an empty string instead, so the raw CSV line
+    is what this pins, not the parsed value (csv.reader reads both spellings as '')."""
+    from build.neon_schema import write_site_csvs
+
+    payload = _fixture_payload()
+    mid = payload["categories"]["a_category"]["products"][0]
+    mid["capability"] = {"score": 0, "basis": "evaluation_depth", "depth": {"per_language": {
+        "khm": {"band": None, "face_value": None, "best_original": None, "set_by": None,
+                "tasks": []},
+        "lao": {"band": 0, "face_value": 0, "best_original": "unavailable", "set_by": None,
+                "tasks": []},
+        "tha": {"band": 0, "face_value": 0, "best_original": 0, "set_by": "own-set", "tasks": []},
+    }}}
+    write_site_csvs(payload, tmp_path)
+    mid_id = stable_id("products", "mid-product")
+    lines = (tmp_path / "capability_languages.csv").read_text(encoding="utf-8").splitlines()
+    assert lines[0] == ",".join(SITE_TABLES["capability_languages"].column_names)
+    assert lines[1:] == [f"{mid_id},khm,,,,,{{}}", f"{mid_id},lao,0,0,,,{{}}",
+                         f"{mid_id},tha,0,0,0,own-set,{{}}"]
+    assert copy_sql("s", plan_table(tmp_path / "capability_languages.csv",
+                                    declared=SITE_TABLES["capability_languages"].columns,
+                                    constraints=SITE_TABLES["capability_languages"].constraints)
+                    ).endswith("WITH (FORMAT csv, HEADER true)")
+
+
 def test_the_schema_version_records_the_per_language_table():
     assert SCHEMA_VERSION >= 7

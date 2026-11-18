@@ -121,13 +121,29 @@ def record_claims(slug: str, root: Path = ROOT) -> list[dict]:
     return list((rec.get("capability") or {}).get("own_components") or [])
 
 
+def target_languages(languages: list[str] | None, pivot_languages: list[str] | None) -> list[str]:
+    """A set's target languages: the product's `languages` less its `capability.pivot_languages`.
+
+    The one derivation of the roster the median runs over. `load_set` reads it for the band and
+    `build/check_payload.py` (through `set_targets`) holds the published `per_language` keys to it.
+    """
+    pivots = set(pivot_languages or [])
+    return [lang for lang in languages or [] if lang not in pivots]
+
+
+def set_targets(slug: str, root: Path = ROOT) -> list[str]:
+    """`target_languages` for one set, read from its product and score records."""
+    rec = _read_yaml(root / "sources/scores" / f"{slug}.yaml")
+    prod = _read_yaml(root / "sources/products" / f"{slug}.yaml")
+    return target_languages(prod.get("languages"), (rec.get("capability") or {}).get("pivot_languages"))
+
+
 def load_set(slug: str, root: Path = ROOT) -> dict:
     """A set's targets, countable components per language, entry-status tally and raw entries."""
     rec = _read_yaml(root / "sources/scores" / f"{slug}.yaml")
     prod = _read_yaml(root / "sources/products" / f"{slug}.yaml")
     cap = rec["capability"]
-    pivots = set(cap.get("pivot_languages") or [])
-    targets = [lang for lang in prod.get("languages") or [] if lang not in pivots]
+    targets = target_languages(prod.get("languages"), cap.get("pivot_languages"))
     comps: dict[str, list[dict]] = {}
     tally: Counter = Counter()
     entries = [e for e in cap.get("language_coverage") or [] if isinstance(e, dict)]

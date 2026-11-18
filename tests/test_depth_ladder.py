@@ -282,6 +282,44 @@ def test_the_site_table_carries_one_row_per_target_language(payload):
     assert set(by_product) == {ids[slug] for slug in rows(payload)}
 
 
+def test_the_payload_gate_passes_the_built_payload_against_the_source_rosters(payload):
+    """`build/check_payload.py` reads each set's target-language roster from `sources/` through
+    `dl.set_targets`, and holds every measured language to band <= face value and best original
+    band <= band. Every row of the payload built from the same sources passes all of it. (The
+    in-test payload carries no freshness records, so the depth check is called row by row.)"""
+    from build.check_payload import _check_depth_languages
+
+    checked = 0
+    for slug, r in rows(payload).items():
+        _check_depth_languages(slug, r["capability"], dl.set_targets)
+        checked += 1
+    assert checked == len(dl.category_roster())
+
+
+def test_the_payload_gate_fails_a_language_that_is_not_a_target(payload):
+    """Rename one measured language to a well-formed code the set does not target. The count, the
+    shape and the median are unchanged, so only the roster check sees it."""
+    from build.check_payload import PayloadError, _check_depth_languages
+
+    slug, r = next((slug, r) for slug, r in rows(payload).items()
+                   if any(e["band"] is not None
+                          for e in r["capability"]["depth"]["per_language"].values()))
+    capability = copy.deepcopy(r["capability"])
+    languages = capability["depth"]["per_language"]
+    code = next(c for c, e in languages.items() if e["band"] is not None)
+    stand_in = next(c for c in ("qaa", "qab", "qac") if c not in languages)
+    languages[stand_in] = languages.pop(code)
+    with pytest.raises(PayloadError, match="per_language keys are not its target languages"):
+        _check_depth_languages(slug, capability, dl.set_targets)
+
+
+def test_set_targets_is_the_roster_load_set_scores(sources):
+    """The gate's roster and the ladder's are one derivation, not two copies."""
+    for slug in dl.category_roster():
+        assert dl.set_targets(slug) == dl.load_set(slug)["targets"], slug
+        assert sorted(dl.set_targets(slug)) == _targets(sources, slug), slug
+
+
 @pytest.mark.parametrize("slug", sorted(UNRESOLVED))
 def test_an_unresolved_row_is_labeled_adoption_only_with_no_tier(payload, slug):
     r = rows(payload)[slug]

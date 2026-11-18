@@ -251,53 +251,62 @@ def _with_depth(score=3, languages=None, status="provisional", measured=None, ta
     return p
 
 
+def _check(p, roster=None):
+    """`check` with the set's target-language roster supplied, as `set_targets` would read it from
+    `sources/`. By default the roster is the per_language keys the payload already carries, so a
+    test about some other invariant is not also a test of the roster."""
+    if roster is None:
+        roster = list(p["categories"]["c"]["products"][0]["capability"]["depth"].get("per_language") or {})
+    check(p, targets=lambda slug: {"a": roster}[slug])
+
+
 def test_passes_per_language_bands_that_reproduce_the_band():
-    check(_with_depth())
+    _check(_with_depth())
 
 
 def test_passes_an_unresolved_set_whose_languages_are_all_unmeasured():
-    check(_with_depth(score=None, status="unresolved",
+    _check(_with_depth(score=None, status="unresolved",
                       languages={"aaa": dict(_UNMEASURED), "bbb": dict(_UNMEASURED)}))
 
 
 def test_passes_an_unmeasured_language_the_median_absorbs():
     langs = {"aaa": _measured(4), "bbb": _measured(4), "ccc": _measured(4), "ddd": dict(_UNMEASURED)}
-    check(_with_depth(score=4, languages=langs))
+    _check(_with_depth(score=4, languages=langs))
 
 
 def test_fails_when_the_per_language_bands_give_another_band():
     with pytest.raises(PayloadError, match="give a set band of 3, but capability.score is 4"):
-        check(_with_depth(score=4))
+        _check(_with_depth(score=4))
 
 
 def test_fails_when_an_unmeasured_language_would_move_the_median():
     """Filled at 0 and at 5 the median differs, so the band does not stand and a recorded 5 is
     not what the languages say."""
     with pytest.raises(PayloadError, match="give a set band of None"):
-        check(_with_depth(score=5, languages={"aaa": _measured(5), "bbb": dict(_UNMEASURED)}))
+        _check(_with_depth(score=5, languages={"aaa": _measured(5), "bbb": dict(_UNMEASURED)}))
 
 
 def test_fails_when_the_status_disagrees_with_the_languages():
     with pytest.raises(PayloadError, match="depth status 'unresolved'"):
-        check(_with_depth(status="unresolved"))
+        _check(_with_depth(status="unresolved"))
 
 
 def test_fails_when_completeness_disagrees_with_the_languages():
     with pytest.raises(PayloadError, match="completeness says 2 of 3"):
-        check(_with_depth(measured=2))
+        _check(_with_depth(measured=2))
 
 
 def test_fails_a_depth_block_with_no_per_language_mapping():
     p = _with_depth()
     del p["categories"]["c"]["products"][0]["capability"]["depth"]["per_language"]
     with pytest.raises(PayloadError, match="no per_language mapping"):
-        check(p)
+        _check(p)
 
 
 def test_fails_an_unmeasured_language_that_fills_a_figure():
     langs = {"aaa": _measured(3), "bbb": {**_UNMEASURED, "set_by": "some-component"}}
     with pytest.raises(PayloadError, match="unmeasured but fills a figure"):
-        check(_with_depth(languages=langs, score=None, status="unresolved"))
+        _check(_with_depth(languages=langs, score=None, status="unresolved"))
 
 
 @pytest.mark.parametrize("bad", [{"band": 6}, {"band": True}, {"best_original": 0.5},
@@ -305,12 +314,79 @@ def test_fails_an_unmeasured_language_that_fills_a_figure():
 def test_fails_a_measured_language_figure_that_is_not_a_band(bad):
     langs = {"aaa": {**_measured(3), **bad}}
     with pytest.raises(PayloadError, match="not a band"):
-        check(_with_depth(languages=langs))
+        _check(_with_depth(languages=langs))
 
 
 def test_fails_a_language_key_that_is_not_an_iso_code():
     with pytest.raises(PayloadError, match="not an ISO 639-3 code"):
-        check(_with_depth(languages={"Thai": _measured(3)}))
+        _check(_with_depth(languages={"Thai": _measured(3)}))
+
+
+
+# --- hardening the per-language gate (follow-up to #1090) --------------------------------------
+
+
+@pytest.mark.parametrize("filled", [{"face_value": 0}, {"best_original": 0}, {"set_by": ""},
+                                    {"tasks": None}])
+def test_fails_an_unmeasured_language_with_a_falsy_figure(filled):
+    """An unmeasured language is exactly `band: null` with null figures and an empty task list.
+    A `0`, an `""` or a missing list is a filled figure, never a quiet stand-in for "unmeasured"."""
+    langs = {"aaa": _measured(3), "bbb": _measured(3), "ccc": _measured(3),
+             "ddd": {**_UNMEASURED, **filled}}
+    with pytest.raises(PayloadError, match="unmeasured but fills a figure"):
+        _check(_with_depth(score=3, languages=langs))
+
+
+def test_passes_a_measured_zero():
+    """A band of 0 is a measurement (a measured zero), not an unmeasured language. The ladder can
+    also publish no `set_by` for it, when no component lifted the language above zero."""
+    langs = {"aaa": {"band": 0, "face_value": 0, "best_original": 0, "set_by": None, "tasks": []},
+             "bbb": {"band": 0, "face_value": 0, "best_original": "unavailable", "set_by": None,
+                     "tasks": []}}
+    _check(_with_depth(score=0, languages=langs))
+
+
+def test_fails_per_language_keys_that_are_not_the_target_roster():
+    """Three well-formed codes, three targets, three measured: the count and the shape agree, but
+    `ccc` is not one of the set's target languages and `ddd` is missing."""
+    with pytest.raises(PayloadError, match=r"not its target languages: missing \['ddd'\], not a "
+                                           r"target \['ccc'\]"):
+        _check(_with_depth(), roster=["aaa", "bbb", "ddd"])
+
+
+def test_fails_a_pivot_language_published_as_a_target():
+    """The roster is `languages` less `pivot_languages`; a pivot carried as a target fails."""
+    with pytest.raises(PayloadError, match=r"not a target \['ccc'\]"):
+        _check(_with_depth(), roster=["aaa", "bbb"])
+
+
+def test_fails_when_the_roster_cannot_be_read():
+    def unreadable(slug):
+        raise FileNotFoundError(f"sources/scores/{slug}.yaml")
+    with pytest.raises(PayloadError, match="roster cannot be read"):
+        check(_with_depth(), targets=unreadable)
+
+
+def test_fails_a_band_above_its_face_value():
+    """The corroboration cap only lowers a band, so a band above the face value was not built by
+    the ladder. The set band still reproduces, so only this check sees it."""
+    langs = {"aaa": _measured(3, face=2), "bbb": _measured(3, best=2), "ccc": _measured(1, face=3)}
+    with pytest.raises(PayloadError, match="band 3 above its face value 2"):
+        _check(_with_depth(languages=langs))
+
+
+def test_fails_a_best_original_band_above_the_band():
+    """The band is the larger of the set's own best band and its capped imports, so it is never
+    below the best original band."""
+    langs = {"aaa": _measured(3), "bbb": _measured(3, best=4, face=4), "ccc": _measured(1, face=3)}
+    with pytest.raises(PayloadError, match="best_original 4 above its band 3"):
+        _check(_with_depth(languages=langs))
+
+
+def test_passes_a_best_original_equal_to_the_band_and_an_unavailable_one():
+    langs = {"aaa": _measured(3, best=3), "bbb": _measured(3, face=5, best="unavailable"),
+             "ccc": _measured(1, face=3, best=0)}
+    _check(_with_depth(languages=langs))
 
 
 def test_a_row_without_a_depth_block_is_unaffected():
