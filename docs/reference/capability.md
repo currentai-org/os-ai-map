@@ -735,8 +735,9 @@ classification: IndoNLU moved to `benchmark_eval_data` on 2026-11-11 (R-2026-11-
 independently published members, Kalahi, LINDSEA, SEA-IFEval and SEA-MTBench, joined as rows linked to
 their suite (R-2026-11-18-a, which applies R-2026-10-30-f to this roster). AfroBench's
 independently published members AfriMMLU, AfriXNLI, AfriMGSM, InjongoIntent, Uhura-ARC-Easy and NaijaRC
-joined the same way, under the same ruling. Each member's lineage record shares its suite's collections
-and effort, or is the very record the suite's import names, so the two never corroborate each other.
+joined the same way (R-2026-11-18-d, the per-suite ruling under R-2026-11-18-a). Each member's lineage
+record shares its suite's collections and effort, or is the very record the suite's import names, so
+the two never corroborate each other.
 `tests/test_depth_ladder.py` names every ruled move.
 
 ### Three things the band is not the same as

@@ -1,10 +1,10 @@
 # AfroBench's separately published members, 2026-11-18
 
 Part of #1098, alongside the coverage and provenance pass in this directory's README (#1102). It
-applies R-2026-11-18-a, which applied R-2026-10-30-e and -f to SEA-HELM's members in #1094: a member a
-suite also publishes on its own qualifies for a row of its own, linked by `lineage.part_of`, if it
-meets the category's inclusion criteria. The suite and its members count once toward the stage, and
-shared evidence never corroborates. No rule changed.
+applies R-2026-11-18-d, the per-suite ruling under R-2026-11-18-a, which applied R-2026-10-30-e and
+-f to SEA-HELM's members in #1094: a member a suite also publishes on its own qualifies for a row of
+its own, linked by `lineage.part_of`, if it meets the category's inclusion criteria. The suite and
+its members count once toward the stage, and shared evidence never corroborates. No rule changed.
 
 ## The tests applied
 
@@ -92,7 +92,7 @@ licensing conflict came up among the rows added: every card and API tag agree.
 
 ## The ruling cited
 
-`tests/test_depth_ladder.py` `ADDED` cites R-2026-11-18-a for all six rows. That ruling names
-SEA-HELM's four members, and its text is general ("Independently published members qualify for their
-own rows if they meet the category's inclusion criteria"), so it is cited provisionally. The
-maintainer may prefer a ruling that names AfroBench's members. No ruling was added to the log.
+The maintainer ruled **R-2026-11-18-d**, one named membership ruling per suite under the general rule
+in R-2026-11-18-a: the six rows join `language_specific_eval_sets` linked to AfroBench, and AfriHate is
+linked to it. `tests/test_depth_ladder.py` `ADDED`, `docs/reference/capability.md`, the category
+comment and the changelog cite it.

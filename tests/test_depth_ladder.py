@@ -46,12 +46,12 @@ ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-
          # (R-2026-11-18-a; #993). Each targets languages below the line.
          "kalahi": "R-2026-11-18-a", "lindsea": "R-2026-11-18-a", "sea-ifeval": "R-2026-11-18-a",
          "sea-mtbench": "R-2026-11-18-a",
-         # AfroBench's independently published members, under the same ruling read provisionally
-         # (#1098); the maintainer may prefer a ruling that names them. Each targets languages
-         # below the line.
-         "afrimmlu": "R-2026-11-18-a", "afrixnli": "R-2026-11-18-a", "afrimgsm": "R-2026-11-18-a",
-         "injongo-intent": "R-2026-11-18-a", "uhura-arc-easy": "R-2026-11-18-a",
-         "naijarc": "R-2026-11-18-a"}
+         # AfroBench's independently published members, each with a row linked to the suite
+         # (R-2026-11-18-d, the per-suite ruling under R-2026-11-18-a; #1098). Each targets
+         # languages below the line.
+         "afrimmlu": "R-2026-11-18-d", "afrixnli": "R-2026-11-18-d", "afrimgsm": "R-2026-11-18-d",
+         "injongo-intent": "R-2026-11-18-d", "uhura-arc-easy": "R-2026-11-18-d",
+         "naijarc": "R-2026-11-18-d"}
 CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 
