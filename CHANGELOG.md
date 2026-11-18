@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- `capability.depth.per_language` in the payload and a `capability_languages` table in the site's
+  Neon load: every target language's band behind an evaluation set's depth band, with unmeasured
+  languages listed as null, and a payload gate that the bands reproduce the published band
+  ([#1090](https://github.com/currentai-org/os-ai-map/pull/1090)).
 - IN22 and IndicIFEval in Language-specific evaluation sets, and the Multilingual Indic RAG Suite and
   Mangosteen in Language-specific datasets, found through AI Singapore's ATLAS catalog (R-2026-11-17-a)
   ([#1089](https://github.com/currentai-org/os-ai-map/pull/1089)).

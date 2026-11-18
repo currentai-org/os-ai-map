@@ -600,6 +600,7 @@ def test_every_id_column_is_a_bigint(table):
         ("openness", "product_id"),
         ("adoption", "product_id"),
         ("capability", "product_id"),
+        ("capability_languages", "product_id"),
         ("sources", "product_id"),
         ("product_lineage", "product_id"),
     ],
@@ -1197,6 +1198,12 @@ _DBML_CONSTRAINTS: dict[str, set[str]] = {
         'PRIMARY KEY ("product_id")',
         'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
     },
+    # Not in the DBML: the per-language bands behind an evaluation set's capability band
+    # (#953). Recorded as a departure in docs/reference/where-scores-live.md.
+    "capability_languages": {
+        'PRIMARY KEY ("product_id", "language")',
+        'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
+    },
     "sources": {
         'PRIMARY KEY ("id")',
         'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
@@ -1222,6 +1229,8 @@ _DBML_NOT_NULL: tuple[tuple[str, str], ...] = (
     ("sources", "product_id"),
     ("sources", "metric_type"),
     ("product_lineage", "product_id"),
+    ("capability_languages", "product_id"),
+    ("capability_languages", "language"),
     ("gaps_categories", "cat_id"),
     ("gaps_categories", "gap_id"),
 )
@@ -1446,3 +1455,35 @@ def test_the_structured_components_reach_the_openness_table_as_json_text_and_nul
     assert json.loads(rows[stable_id("products", "mid-product")]["components_parts"]) == parts
     assert rows[stable_id("products", "zeta-product")]["components_parts"] is None
     assert ("components_parts", "JSONB") in SITE_TABLES["openness"].columns
+
+
+def test_the_per_language_bands_reach_their_own_table_one_row_per_target_language():
+    """`capability.depth.per_language` lands in `capability_languages` at `(product_id,
+    language)`. An unmeasured target language is a row with a NULL band, not a missing row, and
+    `unavailable` original evidence is a NULL `best_original` beside a band. A product with no
+    depth block contributes nothing (#953)."""
+    payload = _fixture_payload()
+    mid = payload["categories"]["a_category"]["products"][0]
+    mid["capability"] = {"score": 3, "basis": "evaluation_depth", "depth": {"per_language": {
+        "tha": {"band": 3, "face_value": 4, "best_original": 2, "set_by": "own-set",
+                "tasks": ["knowledge_exam", "reading_comprehension"]},
+        "lao": {"band": 3, "face_value": 3, "best_original": "unavailable",
+                "set_by": "flores-plus", "tasks": ["machine_translation"]},
+        "khm": {"band": None, "face_value": None, "best_original": None, "set_by": None,
+                "tasks": []},
+    }}}
+    rows = build_site_tables(payload)["capability_languages"]
+    mid_id = stable_id("products", "mid-product")
+    assert [(r["product_id"], r["language"]) for r in rows] == [
+        (mid_id, "khm"), (mid_id, "lao"), (mid_id, "tha")]
+    by_lang = {r["language"]: r for r in rows}
+    assert by_lang["tha"] == {"product_id": mid_id, "language": "tha", "band": 3, "face_value": 4,
+                              "best_original": 2, "set_by": "own-set",
+                              "tasks": '{"knowledge_exam","reading_comprehension"}'}
+    assert by_lang["lao"]["best_original"] is None and by_lang["lao"]["band"] == 3
+    assert by_lang["khm"]["band"] is None and by_lang["khm"]["tasks"] == "{}"
+    assert build.neon_schema.primary_key("capability_languages") == ("product_id", "language")
+
+
+def test_the_schema_version_records_the_per_language_table():
+    assert SCHEMA_VERSION >= 7

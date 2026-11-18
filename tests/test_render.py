@@ -133,3 +133,19 @@ def test_the_eval_sets_summary_names_evaluation_depth():
                                                    "capability": {"basis": "evaluation_depth"}}]}}}
     summary = _helpers_namespace(data)["_cap_summary"]("evals")
     assert summary.startswith("evaluation depth") and "unresolved" in summary
+
+
+def test_the_notebook_literal_leaves_the_per_language_bands_out():
+    """`capability.depth.per_language` (#953) is for the site and other payload readers. The
+    notebook shows each set's band and never the languages behind it, so the literal drops them,
+    as it drops `openness.components_parts`, rather than carrying them as dead weight. The depth
+    block itself stays: the capability cell reads its status."""
+    from build import render
+
+    assert '"per_language"' not in render.DATA_LITERAL
+    assert '"components_parts"' not in render.DATA_LITERAL
+    for category in render.data["categories"].values():
+        for product in category["products"]:
+            depth = (product.get("capability") or {}).get("depth")
+            if depth is not None:
+                assert "per_language" not in depth and "status" in depth

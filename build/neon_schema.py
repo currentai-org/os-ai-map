@@ -34,7 +34,8 @@ The natural key per table: `products.slug`, `categories.slug`, `layers` and `gap
 label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
 `(product_slug, relation, target)`, `sources` by
 `(product_slug, metric, url, shows, accessed)`. Organizations key on `slug` and aliases on
-`alias` directly, with no surrogate at all.
+`alias` directly, with no surrogate at all, and `capability_languages` on
+`(product_id, language)`.
 
 The ids are 63-bit, so the columns are `BIGINT` where the designers' model says `integer`.
 Postgres has no unsigned integer type, which is why 63 bits and not 64: the top bit would
@@ -188,7 +189,10 @@ PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
 #   6: `products.steward` (an org slug, foreign key to `organizations`) and `products.languages`
 #      (ISO 639-3 codes) added; `organizations.country` holds an ISO 3166-1 alpha-2 code where it
 #      held free text, and `organizations` now includes steward-only orgs (#684).
-SCHEMA_VERSION = 6
+#   7: `capability_languages` added: one row per target language of each evaluation set the depth
+#      ladder scores, keyed by `(product_id, language)`, from the payload's
+#      `capability.depth.per_language` (#953).
+SCHEMA_VERSION = 7
 
 class UnmappedValue(ValueError):
     """A payload value with no place in the target enum. Fails the load, names the value."""
@@ -664,6 +668,37 @@ def _capability(payload: dict) -> list[dict]:
     return out
 
 
+def _capability_languages(payload: dict) -> list[dict]:
+    """One row per target language of every depth-ladder row, from `capability.depth.per_language`.
+
+    The grain is `(product_id, language)`, and every target language has a row, so an unmeasured
+    language is present with a NULL `band` rather than missing (R-2026-11-01-a). `best_original`
+    is NULL both for an unmeasured language and for a measured one that `unavailable` (none of the
+    set's own components covers it); `band IS NULL` tells the two apart. A product without a
+    depth block contributes no rows.
+    """
+    ids = product_ids(payload)
+    out = []
+    for slug, _cid, product in _by_slug(payload):
+        depth = _axis(product, "capability").get("depth")
+        if not isinstance(depth, dict):
+            continue
+        for language, entry in sorted((depth.get("per_language") or {}).items()):
+            best = entry.get("best_original")
+            out.append(
+                {
+                    "product_id": ids[slug],
+                    "language": language,
+                    "band": entry.get("band"),
+                    "face_value": entry.get("face_value"),
+                    "best_original": best if isinstance(best, int) else None,
+                    "set_by": entry.get("set_by") or "",
+                    "tasks": _pg_array(entry.get("tasks")),
+                }
+            )
+    return out
+
+
 def _source_key(slug: str, metric: str, source: dict) -> str:
     """`(product_slug, metric, url, shows, accessed)` — the natural key of one source row.
 
@@ -1105,6 +1140,24 @@ SITE_TABLES: dict[str, SiteTable] = {
         ),
         _capability,
         constraints=('PRIMARY KEY ("product_id")', references("product_id", "products", "id")),
+    ),
+    # Not in the designers' model: the per-language bands behind an evaluation set's capability
+    # band (#953). Recorded as a departure in docs/reference/where-scores-live.md.
+    "capability_languages": SiteTable(
+        (
+            ("product_id", "BIGINT NOT NULL"),
+            ("language", "VARCHAR NOT NULL"),
+            ("band", "INTEGER"),
+            ("face_value", "INTEGER"),
+            ("best_original", "INTEGER"),
+            ("set_by", "VARCHAR"),
+            ("tasks", "VARCHAR[]"),
+        ),
+        _capability_languages,
+        constraints=(
+            'PRIMARY KEY ("product_id", "language")',
+            references("product_id", "products", "id"),
+        ),
     ),
     "sources": SiteTable(
         (
