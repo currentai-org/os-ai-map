@@ -32,7 +32,8 @@ EXPECTED = {
     "belebele": ("3", "3", 3.5, 114, 114, 0),
     "sib-200": ("2", "2", 2.5, 194, 195, 0),
     "include-benchmark": ("3", "3", 3.49, 44, 44, 2),
-    "afrobench": ("1", "3", 1.49, 56, 63, 37),
+    # coverage re-read against the suite's task configs and MAFAND-MT's provenance read, 2026-11-18
+    "afrobench": ("unresolved (1-3)", "3", None, 59, 64, 29),
     "milu": ("4", "4", 4.45, 10, 10, 0),
     "indicgenbench": ("3", "3", 3.48, 29, 29, 1),
     "indicxtreme": ("4", "4", 4.47, 19, 21, 0),
@@ -133,7 +134,7 @@ def test_the_record_s_table_matches_the_calibration(results):
 def test_the_headline_figures(results):
     s = dc.summary(results)
     assert s["band_5"] == ["arabicmmlu", "turkishmmlu", "kazmmlu", "khayyam-challenge"]
-    assert s["resolved"] == 17
+    assert s["resolved"] == 16
     # R-2026-11-02-c: the review trigger fires at one third of the roster.
     assert len(s["band_5"]) < s["sets"] / 3
     # R-2026-11-02-i: no band depends on treating unverified lineage as independent.

@@ -107,7 +107,7 @@ estimated (R-2026-11-02-d, -e). No estimation method is approved, so nothing is 
 | Belebele | 5 | 3 | 3 | 3 | 3.50 | 114 / 114 | 0 |
 | SIB-200 | 3 | 2 | 2 | 2 | 2.50 | 194 / 195 | 0 |
 | INCLUDE | 4 | 3 | 3 | 3 | 3.49 | 44 / 44 | 2 |
-| AfroBench | 5 | 1 | 1 | 3 | 1.49 | 56 / 63 | 37 |
+| AfroBench | 5 | unresolved (1-3) | same | 3 | | 59 / 64 | 29 |
 | MILU | 3 | 4 | 4 | 4 | 4.45 | 10 / 10 | 0 |
 | IndicGenBench | 3 | 3 | 3 | 3 | 3.48 | 29 / 29 | 1 |
 | IndicXTREME | 4 | 4 | 4 | 4 | 4.47 | 19 / 21 | 0 |
@@ -135,7 +135,7 @@ two-language), as R-2026-11-02-q anticipated. That is 18%, below the one-third r
 method takes the strongest single task per language and gives no credit for task breadth beyond
 the bonus inside a band.
 
-**Resolved.** 17 of 22 sets resolve. The five that do not:
+**Resolved.** 16 of 22 sets resolve. The six that do not:
 
 - FLEURS and Lahaja are speech sets. Speech has no measurement model (R-2026-11-02-l), so every entry
   is unresolved, as ruled.
@@ -145,6 +145,10 @@ the bonus inside a band.
   wrote the text, so every entry's provenance is unknown and its depth is unknown.
 - DarijaMMLU: its machine translation was reviewed to an extent no source states, so its depth is
   unknown (R-2026-11-03-h). A source saying every item was reviewed would make it 5.
+- AfroBench: resolved at 1 until 2026-11-18, when its coverage was re-read against the suite's task
+  configurations and MAFAND-MT's paper established who translated its news sentences. Five of its 64
+  target languages are still unmeasured, enough to move the median between 1 and 3
+  (docs/sweeps/2026-11-18-afrobench-sweep/README.md).
 
 **Sensitivity to lineage.** Runs (a) and (b) agree for all 22 sets. No set's band depends on
 treating unverified lineage as independent.
@@ -162,8 +166,9 @@ as its own here. Treated as imported, all ten fall to 1 with the two above, and 
 with the same bonus.
 
 **Where corroboration caps.** A language is capped when its corroborated band sits below its face
-value. Five sets have capped languages, and two of them lose depth at the set level. AfroBench (37
-capped languages) was described in the depth brief and the lineage audit. SEA-HELM had four
+value. Five sets have capped languages, and two of them lose depth at the set level. AfroBench had 37
+capped languages, described in the depth brief and the lineage audit, and has 29 since the
+2026-11-18 re-read, with its band unresolved between 1 and 3. SEA-HELM had four
 (Khmer, Lao, Burmese and Malay) until 2026-11-17, when its coverage was brought up to the data the
 suite publishes and a separately built test in each of the four backed its FLORES items, so it now
 has none and stands at 3 (docs/sweeps/2026-11-17-ai-singapore-followups/README.md).
