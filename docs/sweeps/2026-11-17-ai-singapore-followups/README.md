@@ -150,7 +150,7 @@ Singapore's terms). ADR-005 places it in the tail: openness 1 and capability 2. 
 adoption as abstaining for want of a usage figure, but AI Singapore's models page reports "180k +
 Monthly API endpoint calls", a vendor figure that would read as reported traction at a low level.
 At capability 2, with adoption and capability weighted equally, no adoption level reaches the line
-of 4, so the placement stands (#PRNUM). LLMLab does not clearly qualify, since it
+of 4, so the placement stands (#1095). LLMLab does not clearly qualify, since it
 is open only to PLGrid grant holders. SEA-Guard and the SEA-LION ModernBERT and E5 embedding models
 join the tail as candidates.
 
