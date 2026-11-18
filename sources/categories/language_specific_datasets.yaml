@@ -53,10 +53,9 @@ scoring_recipe:
     readings aligned to their prompts count as transcribed (R-2026-11-12-c). Where a source gives
     only per-part figures, their sum from that one source counts as its stated total, and where a
     source contradicts itself the figure its own tables and counts support is used (R-2026-11-12-b,
-    -d). Evaluation sets, the SEACrowd hub
-    and task annotations such as NCHLT carry no cap, because their size is a count of items
-    rather than a measure of how much of a language they hold, and ArabicMMLU already
-    outnumbers English MMLU. Instruction data carries its own cap, set out below. The caps are the category's central finding rather than a
+    -d). The SEACrowd hub and task annotations
+    such as NCHLT carry no cap, because their size is a count of items rather than a measure of
+    how much of a language they hold. Instruction data carries its own cap, set out below. The caps are the category's central finding rather than a
     penalty: no open corpus here reaches the scale a frontier English or Chinese model is
     trained on, and the only one that does, Sarvam-2T, is withheld.
 
@@ -96,24 +95,15 @@ scoring_recipe:
     track's top step, so its rungs, not its size, set its 4. The counts and the four options
     compared are in docs/sweeps/2026-11-11-instruction-cap-dry-run.md.
 
-    Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
-    at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
-    over the one-third review trigger; it is where the caps put most national corpora and speech
-    collections of a few thousand hours, which is the category's shape rather than loose
-    wording, and two review passes and the caps moved bands in both directions before this
-    count. Top rows per modality: Sangraha (pretraining text), Common Voice (speech), BPCC
-    (parallel text), FLORES+ (evaluation), WangchanThaiInstruct (instruction data).
-
-    On 2026-11-08 the 22 evaluation sets moved to language_specific_eval_sets with depth-ladder
-    bands (R-2026-11-07-b), so the distribution above, taken at promotion, is history. The 75
-    that remain: 10 at 4, 27 at 3, 24 at 2, 14 at 1, none at 5. The six at 5 were all evaluation
-    sets, and no corpus here reaches 5 under the size caps.
-    The language-adjusted caps of 2026-11-11 moved nine single-language corpora up (Icelandic
-    Gigaword, Korpus Malti, CorpusNós, Latxa, Nepali Text Corpus, the Khmer ASR Cultural
-    Dataset, Kazakh Speech Corpus 2, the Northern Sámi web corpus and ViXSD): 12 at 4, 31 at 3,
-    21 at 2, 11 at 1. Rung 3 now holds 31 of 75, over the one-third review trigger, because the
-    caps that held national corpora at 1 and 2 against English now let most of them reach the
-    rungs' 3; the rungs, not size, are what separate them there.
+    The category holds corpora, speech collections, instruction data and task annotations, and
+    no evaluation sets: those moved to language_specific_eval_sets on 2026-11-08 with
+    depth-ladder bands (R-2026-11-07-b). Distribution on 2026-11-17 (77 banded): 13 at 4, 31 at
+    3, 21 at 2, 12 at 1, none at 5. No corpus here reaches 5 under the size caps. Rung 3 holds
+    31 of 77, over the one-third review trigger, because the language-adjusted caps of
+    2026-11-11 let most national corpora that the English yardstick held at 1 and 2 reach the
+    rungs' 3; the rungs, not size, are what separate them there. Top rows per modality:
+    Sangraha (pretraining text), Common Voice (speech), BPCC (parallel text),
+    WangchanThaiInstruct (instruction data).
 
     The category carries three corpora held back from open release - Meta's unreleased MMS
     recordings, Sarvam-2T, and Te Hiku Media's te reo Māori corpus, which is granted on request
@@ -236,12 +226,15 @@ comments: >-
   Language-targeted evaluation sets lived here until 2026-11-08 and now live in
   language_specific_eval_sets, scored by the depth ladder (R-2026-11-07-b); the purpose test that
   follows still decides which many-language sets are language-targeted at all. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200
-  and FLEURS were built to give underrepresented languages a test set and belong here, while
-  a general benchmark machine- or human-translated into the major languages (Global-MMLU)
+  and FLEURS were built to give underrepresented languages a test set and are language-targeted,
+  so they sit in language_specific_eval_sets, while a general benchmark machine- or human-translated into the major languages (Global-MMLU)
   is defined by its task and stays in benchmark_eval_data. The same purpose test separates
   Glot500-c, assembled from existing low-resource sources, from a crawl such as GlotCC,
   which sits with MADLAD-400. A benchmark suite that redistributes other datasets is the
-  product, and the datasets it carries are not separate rows: AfroBench carries IrokoBench,
+  product, and the datasets it carries are described in its record rather than counted again. A
+  member published on its own, with its own release, card or paper, may also have a row of its
+  own linked to the suite, and the suite and its members count once (R-2026-10-30-e, -f,
+  R-2026-11-08-j). AfroBench carries IrokoBench,
   AfriSenti, MasakhaNER, MasakhaNEWS, MasakhaPOS, AfriQA, MAFAND-MT, SALT, Uhura and
   InjongoIntent, IndicXTREME carries IndicSentiment, and SEACrowd carries NusaX and PhoMT. A suite's
   record describes its members, including the training splits several of them ship. The
