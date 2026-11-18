@@ -1,0 +1,272 @@
+product: afrimmlu
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata and API tag
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+      detail: card describes the translation, languages, fields and splits, and names IrokoBench
+  confidence: high
+  note: AfriMMLU downloads without a gate under Apache 2.0, and its card describes what it holds.
+  raw: license:apache-2.0(card metadata and API tag);access:public(ungated on the Hub);dataset_card:present(card describes
+    the translation, languages, fields and splits, and names IrokoBench)
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/masakhane/afrimmlu
+    shows: 'API JSON: "gated":false; tag license:apache-2.0.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 87be8fd439e176604b2e245d2b0239e9bf5cc6ad019a19fe5a02cc0bb34eac5b
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/masakhane/afrimmlu/raw/main/README.md
+    shows: 'Card metadata "license: apache-2.0".'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 82d1523e3f705fa5c47d274225e18f8f76fa8ae2037fbedfa994a4fd58563ee8
+    establishes:
+    - documentation
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of AfriMMLU's own repository over the trailing month. AfroBench declares the same repository
+    as a channel that does not measure runs of the suite, so these downloads count here and not on AfroBench. Evaluation
+    harnesses can fetch a test set repeatedly, so the figure is a rough measure of use, not a count of users.
+  sources:
+  - url: https://huggingface.co/api/datasets/masakhane/afrimmlu
+    shows: '"downloads":2738 for masakhane/afrimmlu.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 87be8fd439e176604b2e245d2b0239e9bf5cc6ad019a19fe5a02cc0bb34eac5b
+capability:
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target languages,
+    16 of 16 measured, across 1 task. Face value 3; best original band 3.'
+  confidence: medium
+  note: In every language AfriMMLU targets, its test has four hundred to sixteen hundred questions, all
+    translated by professional translators for the set. An item count says how much a set can test, not
+    how precisely it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://arxiv.org/abs/2406.03368
+    shows: '"we introduce IrokoBench -- a human-translated benchmark dataset for 17 typologically-diverse low-resource
+      African languages covering three tasks: natural language inference~(AfriXNLI), mathematical reasoning~(AfriMGSM),
+      and multi-choice knowledge-based question answering~(AfriMMLU)"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 53df52b2305ce9322362d95a290fc44871149d7211bf434eb8557ea8bc89f1a5
+  - url: https://arxiv.org/html/2406.03368
+    shows: '"The datasets were created by human translating a subset of English cross-lingual NLI (XNLI) (Conneau et
+      al., 2018), English Multilingual Grade School Math (MGSM) (Shi et al., 2023), and Massive Multitask Language Understanding
+      (MMLU) (Hendrycks et al., 2021a), evaluation datasets into each of the 16 languages using professional translators.";
+      "we human translate the English portion of XNLI (a multilingual dataset comprising 15 languages, including Swahili)
+      into the 15 African languages (excluding Swahili)"; "AfriMGSM expands the original MGSM dataset (Shi et al., 2023),
+      which contains 250 QA pairs and 11 languages (including Swahili), to 15 more languages."; Table 1 gives AfriMGSM
+      "17 (excl. Swahili, inc. Vai)" languages and AfriMMLU "17 (incl. French)"; "We extend our gratitude to Charles
+      Riley for facilitating our connection with the Vai translator for the MGSM data translation."'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 8d5940c1e236940dece89ef505c206ccd3f0dd8724e93d73ff7f0cac8e56e698
+  - url: https://huggingface.co/datasets/masakhane/afrimmlu/raw/main/README.md
+    shows: '"AFRIMMLU is an evaluation dataset comprising translations of a subset of the MMLU dataset into 15 African
+      languages."'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 82d1523e3f705fa5c47d274225e18f8f76fa8ae2037fbedfa994a4fd58563ee8
+  - url: https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+    shows: 'the Hub''s split sizes for masakhane/afrimmlu: 500 test questions in each language config'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: e4e410834742531869b211e091d27684359f60ffc706769d426ec665c6d25492
+  pivot_languages:
+  - eng
+  - fra
+  language_coverage:
+  - language: amh
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: ewe
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: hau
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: ibo
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: kin
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: lin
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: lug
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: orm
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: sna
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: sot
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: swa
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: twi
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: wol
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: xho
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: yor
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu
+  - language: zul
+    task: knowledge_exam
+    component: afrimmlu
+    split: test
+    official_eval: true
+    count: 500
+    unit: questions
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/html/2406.03368
+    - https://datasets-server.huggingface.co/size?dataset=masakhane/afrimmlu

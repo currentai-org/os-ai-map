@@ -29,6 +29,7 @@ UNRESOLVED = {
     "darijammlu": "review_scope_unstated",
     # Five of its 64 target languages are unmeasured, enough to move the median between 1 and 3.
     "afrobench": "evidence_incomplete",
+    "naijarc": "provenance_unknown",
 }
 # An unresolved set whose own components qualify in some languages: AfroBench's AfriADR counts in
 # Ghomala, Fon and Wolof, so its best original band is itself unresolved rather than unavailable.
@@ -44,7 +45,13 @@ ADDED = {"kmmlu": "R-2026-11-11-e", "in22": "R-2026-11-17-a", "indicifeval": "R-
          # SEA-HELM's independently published members, each with a row linked to the suite
          # (R-2026-11-18-a; #993). Each targets languages below the line.
          "kalahi": "R-2026-11-18-a", "lindsea": "R-2026-11-18-a", "sea-ifeval": "R-2026-11-18-a",
-         "sea-mtbench": "R-2026-11-18-a"}
+         "sea-mtbench": "R-2026-11-18-a",
+         # AfroBench's independently published members, under the same ruling read provisionally
+         # (#1098); the maintainer may prefer a ruling that names them. Each targets languages
+         # below the line.
+         "afrimmlu": "R-2026-11-18-a", "afrixnli": "R-2026-11-18-a", "afrimgsm": "R-2026-11-18-a",
+         "injongo-intent": "R-2026-11-18-a", "uhura-arc-easy": "R-2026-11-18-a",
+         "naijarc": "R-2026-11-18-a"}
 CURRENT = tuple(slug for slug in ROSTER if slug not in MOVED_OUT) + tuple(ADDED)
 
 
