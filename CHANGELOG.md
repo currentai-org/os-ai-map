@@ -19,7 +19,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Added
 
 - IndicCOPA, IndicQA, IndicSentiment and IndicXParaphrase in Language-specific evaluation sets, each
-  linked to IndicXTREME by `lineage.part_of` (R-2026-11-18-a) (PRLINK).
+  linked to IndicXTREME by `lineage.part_of` (R-2026-11-18-a). The category's capability gap no longer
+  fires, because IndicQA, open and at band 4, is now its best fully open product
+  ([#1101](https://github.com/currentai-org/os-ai-map/pull/1101)).
 - Kalahi, LINDSEA, SEA-IFEval and SEA-MTBench in Language-specific evaluation sets, the first suite
   members with rows of their own, each linked to SEA-HELM by `lineage.part_of` (R-2026-11-18-a)
   ([#1094](https://github.com/currentai-org/os-ai-map/pull/1094)).
