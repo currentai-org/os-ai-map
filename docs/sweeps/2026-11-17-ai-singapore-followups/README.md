@@ -102,3 +102,58 @@ the same position would be treated the same way.
   Moroccan Arabic, Fon) carry an independent news, sentiment or diacritics test whose provenance is
   recorded as unknown. Establishing it would be the same kind of correction as this one, and would
   lift those languages but not AfroBench's band. It is left as follow-up work.
+
+## SEA-HELM's separately published members (#1094)
+
+Issue #993 waited on the Neon `lineage_relation` enum gaining `part_of`. It needed no migration:
+every Neon load creates its enum types inside the staging schema from the product schema's lineage
+edges, which have included `part_of` since #949, and the site reads the relation as plain text. A
+test now pins that.
+
+Four members that AI Singapore publishes on their own as well as inside SEA-HELM have rows in
+`language_specific_eval_sets`, linked by `lineage.part_of: [sea-helm]` and scored under the normal
+rules: Kalahi (openness 5, capability 2), LINDSEA (3, 2), SEA-IFEval (3, 2) and SEA-MTBench (3, 1).
+A suite and its members count once toward the stage, which does not move. SEA-NLI is the next
+member once its per-language counts can be read; its repository requires manual approval.
+
+Suites whose separately published members still have no rows: AfroBench (IrokoBench's three
+sets, AfriSenti, MasakhaNER, MasakhaNEWS, MasakhaPOS, AfriQA, MAFAND-MT, SALT, Uhura,
+InjongoIntent, NaijaRC, NollySenti, NTREX African, AfriADR), IndicXTREME (IndicCOPA, IndicQA,
+IndicXParaphrase, IndicSentiment, Naamapadam, IndicXNLI, MASSIVE), SEACrowd (its hub datasets;
+IndoNLU has a row but no link) and the AmericasNLP shared-task data (AmericasNLI).
+
+## Per-language bands for test sets (#1090)
+
+Each evaluation set's per-language bands, the figures its published band is the median of, are
+now in the payload (`capability.depth.per_language`) and in a new site table,
+`capability_languages`. A test recomputes every set's band from the published per-language bands
+alone and checks it against the recorded score, for every set on the roster.
+
+## Stale category comments (#1092)
+
+`language_specific_datasets` no longer describes its top rung as evaluation sets, which moved out
+on 2026-11-08. Its distribution is now the category's own on 2026-11-17: 77 banded, 13 at 4, 31 at
+3, 21 at 2, 12 at 1, none at 5.
+
+## Model hosts (#1093)
+
+Ruling R-2026-11-17-c replaces R-2026-10-12-a: a host is a product in `inference_code` when it is
+a distinct public service, with its own endpoint, documentation and terms, that serves more than
+one model. The SEA-LION API meets the test (four models documented, a free tier under AI
+Singapore's terms). ADR-005 places it in the tail: openness 1, adoption abstains for want of any
+cited usage figure, and capability 2 is below the line. LLMLab does not clearly qualify, since it
+is open only to PLGrid grant holders. SEA-Guard and the SEA-LION embedding model join the tail as
+candidates.
+
+## Score changes
+
+| Product | Axis | Before | After | PR |
+|---|---|---|---|---|
+| SEA-HELM | capability | 2 | 3 | #1091 |
+| Kalahi (new) | openness / adoption / capability | | 5 / 1 / 2 | #1094 |
+| LINDSEA (new) | openness / adoption / capability | | 3 / 2 / 2 | #1094 |
+| SEA-IFEval (new) | openness / adoption / capability | | 3 / 2 / 2 | #1094 |
+| SEA-MTBench (new) | openness / adoption / capability | | 3 / 1 / 1 | #1094 |
+
+The SEA-LION API, SEA-Guard and the embedding model are unscored tail rows. The new rows'
+adoption levels are held until the weekly reconciliation measures them.
