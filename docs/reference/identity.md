@@ -69,6 +69,27 @@ other, and its target sits beside a still-live `github-copilot`.
 **Once links exist, a rename costs an alias forever**, which is the reason the slug is pitched at
 the tier a vendor sells rather than at a release.
 
+### A model host: a product, or an edge on the model it serves
+
+A service that runs models for others is a product in `inference_code` when it is a **distinct
+public service, with its own endpoint, documentation and terms, that serves more than one model**.
+Mistral Studio is the reference case: `api.mistral.ai`, its own API reference and its own commercial
+terms, serving a catalog of models. The test is the same for a national or regional host as for a
+global provider. Who runs the host, and which region it serves, do not enter into it.
+
+A host that serves a **single model** on a gateway's behalf is not a product. It is an edge on that
+model's row, recording that the model is served there, and it stays parked until the map has a
+many-to-many `served_by` relationship between models and hosts. A scalar attribute on the model
+cannot hold it, because one model can have several hosts and one host can serve several models. A
+host with no public anchor, no page a reader can open to see the service, is parked whatever it
+serves, because there is nothing to test.
+
+Passing the test makes a host a product. It does not decide the tier. A qualifying host is scored
+like any other product, and whether it sits in the head or the tail follows
+[`../architecture/adr-005-closed-product-inclusion.md`](../architecture/adr-005-closed-product-inclusion.md)
+with no exception for being a host. Most hosts are closed managed services, so the best-in-class
+test there usually decides it.
+
 ## A product that is ending
 
 Between live and retired there is a third state: the product still works, still has users, and

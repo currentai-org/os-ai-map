@@ -1069,10 +1069,11 @@ rulings:
       parked. Longer term, model hosting as a many-to-many served_by relationship, not as a scalar
       attribute on the model, since one model can have several hosts and one host can serve several
       models. That is outside the sweep.
-    status: in-force
+    status: replaced
     executor: none
     lands_in: []
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/907']
+    replaced_by: R-2026-11-17-c
 
   - id: R-2026-10-12-b
     date: 2026-10-12
@@ -4547,3 +4548,31 @@ rulings:
     executor: maintainer
     lands_in: [docs/sweeps/2026-11-17-atlas-candidates.md]
     applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1089']
+
+  - id: R-2026-11-17-c
+    date: 2026-11-17
+    by: ccerv1
+    venue: session
+    refs: [R-2026-10-12-a, "#903", "#907", inference_code, sea-lion, bielik, alia-40b, mistral-studio, ADR-005]
+    question: >-
+      R-2026-10-12-a parked AI Singapore's SEA-LION API, PLGrid's LLMLab and NextBit as
+      distribution relationships for a single model product. The SEA-LION API serves several
+      models, among them chat, reasoning, safety and embedding models, through its own endpoint,
+      documentation and terms, which is the shape that makes Mistral Studio a product in
+      inference_code. When is a model host a product rather than an edge on the model it serves?
+    ruling: >-
+      A host is a product in inference_code when it is a distinct public service, with its own
+      endpoint, documentation and terms, that serves more than one model. A host that serves a
+      single model on a gateway's behalf stays an edge on that model's row, parked until a
+      many-to-many served_by relationship exists. Emit the SEA-LION API if the evidence confirms
+      it meets the test. Assess LLMLab under the same test. NextBit stays parked because it has no
+      public anchor. A host that qualifies is scored like any other product, and whether it sits in
+      the head or the tail follows ADR-005 with no exception.
+    reasoning: >-
+      The test has to apply equally to regional and global providers. Serving several models
+      through a public surface of its own is what makes Mistral Studio a product. R-2026-10-12-a
+      treated the SEA-LION API as serving one model, and it serves several.
+    status: in-force
+    executor: agent
+    lands_in: [docs/reference/identity.md, sources/registry/inference_code.yaml]
+    applied_in: ['https://github.com/currentai-org/os-ai-map/pull/1093']
