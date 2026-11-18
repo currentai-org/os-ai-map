@@ -1,0 +1,290 @@
+product: indiccopa
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and API tag
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: partial
+      detail: card metadata names the languages and license, and every section of its body is an empty template;
+        the IndicBERT README and the paper describe the set
+  confidence: medium
+  note: IndicCOPA downloads without a gate, and its Hub metadata gives CC BY 4.0, while the IndicBERT README says
+    the sets made for the benchmark are released under CC0; both readings permit open reuse. The card body is an
+    unfilled template, so the set is described only in the README and the paper.
+  raw: license:cc-by-4.0(card metadata and API tag);access:public(ungated on the Hub);dataset_card:partial(card
+    metadata names the languages and license, and every section of its body is an empty template; the IndicBERT
+    README and the paper describe the set)
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+    shows: 'API JSON: "gated":false; cardData license ["cc-by-4.0"].'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: a01c5cfed061169f00b3d0066a3bf942a7c6fc9c8ad5a8eda8d5d76e452c0da4
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/ai4bharat/IndicCOPA/raw/main/README.md
+    shows: 'card metadata "license:" "cc-by-4.0" and "pretty_name: IndicXCOPA"; every body section reads "[More
+      Information Needed]"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: ee64a19d94167a3a34797419df777442ba05e470538f9c44c591c247e21e0332
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    shows: '"All the datasets created as part of this work will be released under a CC-0 license"; the task list
+      describes IndicCOPA and links its Hub repository'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 311e34d655f447993299b9f4f0e2b8d739b233b0abfd747439aaa02031f71816
+    establishes:
+    - documentation
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of IndicCOPA's own repository over the trailing month. IndicXTREME declares the same
+    repository among its task repositories, so these downloads also count toward IndicXTREME's figure.
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+    shows: '"downloads":878 for ai4bharat/IndicCOPA.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: a01c5cfed061169f00b3d0066a3bf942a7c6fc9c8ad5a8eda8d5d76e452c0da4
+capability:
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target languages,
+    18 of 18 measured, across 1 task. Face value 3; best original band 3.'
+  confidence: medium
+  note: In every language IndicCOPA targets, its one test has four hundred to sixteen hundred items, all translated
+    by hand from the English COPA test set. An item count says how much a set can test, not how precisely it ranks
+    models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://arxiv.org/pdf/2212.05409
+    shows: '"We manually translate the COPA (Roemmele et al., 2011) test set into 18 Indic languages to create IndicCOPA";
+      "The premise and the choices from the original dataset are randomized and assigned to translators to avoid
+      any bias"; Table 2: IndicCOPA, Reasoning, |Test| 500, Method HA, |Lang.| 18; Table 17 names its languages
+      "as bn gom gu hi kn mai ml mr ne or pa sa sat sd ta te ur"'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+    shows: tags language:as, bn, en, gom, gu, hi, kn, mai, ml, mr, ne, or, pa, sa, sat, sd, ta, te and ur; one test
+      file per language, "data/test.as.jsonl" to "data/test.ur.jsonl"
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: a01c5cfed061169f00b3d0066a3bf942a7c6fc9c8ad5a8eda8d5d76e452c0da4
+  pivot_languages:
+  - eng
+  language_coverage:
+  - language: asm
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: ben
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: gom
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: guj
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: hin
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: kan
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: mai
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: mal
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: mar
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: nep
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: ori
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: pan
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: san
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: sat
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: snd
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: tam
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: tel
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA
+  - language: urd
+    task: reasoning
+    component: indiccopa
+    split: test
+    official_eval: true
+    count: 500
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicCOPA

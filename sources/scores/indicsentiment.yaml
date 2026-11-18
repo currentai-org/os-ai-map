@@ -1,0 +1,234 @@
+product: indicsentiment
+openness:
+  score: 2
+  class: restricted
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: no license in the card or the Hub API metadata; the IndicBERT README says the sets made for the benchmark
+        are released under CC0
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+      detail: card describes the review fields, categories and labels
+  confidence: low
+  note: The test set downloads without a gate and has a card, but neither the card nor the Hub metadata states a
+    license. The IndicBERT README says the sets made for the benchmark are released under CC0, and the reading is
+    held until the data itself carries a license.
+  raw: license:not-clearly-stated-on-card(no license in the card or the Hub API metadata; the IndicBERT README says
+    the sets made for the benchmark are released under CC0);access:public(ungated on the Hub);dataset_card:present(card
+    describes the review fields, categories and labels)
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+    shows: 'API JSON: "gated":false; no license in cardData or tags.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: d08c3529d2c10497ce28709dedbb4b031807da2221c74e48f476c967710c460f
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/ai4bharat/IndicSentiment/raw/main/README.md
+    shows: '"The Indic Sentiment Analysis dataset contains reviews from various categories and sub-categories in
+      multiple Indic languages"; a field list ending "INDIC REVIEW: The review text translated into various Indic
+      languages."; no license'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: cb2a4719f4d8fe6d0b1d8edae442511f474e0455a2a9bedd48d83b0eab185a00
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    shows: '"All the datasets created as part of this work will be released under a CC-0 license"; the task list
+      describes IndicSentiment and links its Hub repository'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 311e34d655f447993299b9f4f0e2b8d739b233b0abfd747439aaa02031f71816
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of IndicSentiment's own repository over the trailing month. IndicXTREME declares
+    the same repository among its task repositories, so these downloads also count toward IndicXTREME's figure.
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+    shows: '"downloads":1290 for ai4bharat/IndicSentiment.'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: d08c3529d2c10497ce28709dedbb4b031807da2221c74e48f476c967710c460f
+capability:
+  score: 3
+  basis: evaluation_depth
+  basis_detail: 'depth ladder: corroborated median of per-language task bands, count-based and provisional'
+  value: 'Depth band 3 of 5, provisional and count-based: the median corroborated band over its target languages,
+    13 of 13 measured, across 1 task. Face value 3; best original band 3.'
+  confidence: medium
+  note: In every language IndicSentiment targets, its one test has four hundred to sixteen hundred reviews, written
+    in English by annotators and translated by hand. An item count says how much a set can test, not how precisely
+    it ranks models.
+  last_verified: '2026-11-18'
+  sources:
+  - url: https://arxiv.org/pdf/2212.05409
+    shows: '"we ask annotators to create synthetic reviews for real products"; "All the reviews are first written
+      in English and then manually translated to 13 Indic languages"; Table 2: IndicSentiment, |Dev| 156, |Test|
+      1000, Method HA, |Lang.| 13; Table 15 names its languages "as bd bn gu hi kn ml mr or pa ta te ur", "bd" being
+      the paper''s code for Bodo ("low-resource languages like bd and dg")'
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: 8557a53823518382dec3a2b9fbccfa8eafe5e7a3707e80b1fec6b0a1298b3437
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+    shows: one test file per language, "data/test/as.json", "data/test/bd.json", "data/test/bn.json", "data/test/gu.json",
+      "data/test/hi.json", "data/test/kn.json", "data/test/ml.json", "data/test/mr.json", "data/test/or.json", "data/test/pa.json",
+      "data/test/ta.json", "data/test/te.json" and "data/test/ur.json"
+    accessed: '2026-11-18'
+    http_status: 200
+    content_sha256: d08c3529d2c10497ce28709dedbb4b031807da2221c74e48f476c967710c460f
+  pivot_languages: []
+  language_coverage:
+  - language: asm
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: ben
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: brx
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: guj
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: hin
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: kan
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: mal
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: mar
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: ori
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: pan
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: tam
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: tel
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment
+  - language: urd
+    task: text_classification
+    component: indicsentiment
+    split: test
+    official_eval: true
+    count: 1000
+    unit: items
+    provenance: human_translated
+    cites:
+    - https://arxiv.org/pdf/2212.05409
+    - https://huggingface.co/api/datasets/ai4bharat/IndicSentiment

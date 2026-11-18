@@ -733,7 +733,8 @@ computes the band from the record's `language_coverage`, `own_components`, the l
 classification: IndoNLU moved to `benchmark_eval_data` on 2026-11-11 (R-2026-11-11-b), and KMMLU
 (R-2026-11-11-e), IN22 and IndicIFEval (R-2026-11-17-a) joined through add-product, and SEA-HELM's
 independently published members, Kalahi, LINDSEA, SEA-IFEval and SEA-MTBench, joined as rows linked to
-their suite (R-2026-11-18-a, which applies R-2026-10-30-f to this roster). Each member's lineage
+their suite (R-2026-11-18-a, which applies R-2026-10-30-f to this roster), and so did IndicXTREME's,
+IndicCOPA, IndicQA, IndicSentiment and IndicXParaphrase, under the same ruling. Each member's lineage
 record shares its suite's collections and effort, so the two never corroborate each other.
 `tests/test_depth_ladder.py` names every ruled move.
 
