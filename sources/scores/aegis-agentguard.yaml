@@ -1,0 +1,126 @@
+product: aegis-agentguard
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: MIT
+      detail: 'whole repository: gateway, Compliance Cockpit, SDKs and desktop app'
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: packages/gateway-mcp/src/config.ts maps features to paid tiers (LLM judge, DSL editor and OIDC on
+        Pro; cryptographic audit, witness cosignature, SAML, SCIM and RBAC on Team; SOC 2 evidence and audit-log
+        export on Enterprise) and enforces policy on one agent in the free tier; LicenseService validates keys against
+        aegistraces.com, though the tier can also be set by the AEGIS_LICENSE_TIER environment variable
+    context:
+      commercial:
+        value: AEGIS hosted service and Pro, Team and Enterprise license tiers
+  confidence: medium
+  note: 'Aegis is MIT-licensed and its whole source is public and self-hostable. The gateway checks a license key,
+    though: without one it enforces policy on a single agent, and features such as the LLM judge, cryptographic
+    audit and SAML sign-in switch on only for paid tiers. The project''s draft commercial terms say it plans no
+    open-core split, but its code and pricing page gate these features.'
+  last_verified: '2026-11-20'
+  raw: 'license:MIT(whole repository: gateway, Compliance Cockpit, SDKs and desktop app);source:public;core-gated:gated(packages/gateway-mcp/src/config.ts
+    maps features to paid tiers (LLM judge, DSL editor and OIDC on Pro; cryptographic audit, witness cosignature,
+    SAML, SCIM and RBAC on Team; SOC 2 evidence and audit-log export on Enterprise) and enforces policy on one agent
+    in the free tier; LicenseService validates keys against aegistraces.com, though the tier can also be set by
+    the AEGIS_LICENSE_TIER environment variable);commercial:AEGIS hosted service and Pro, Team and Enterprise license
+    tiers'
+  sources:
+  - url: https://raw.githubusercontent.com/Justin0504/Aegis/main/LICENSE
+    shows: The root LICENSE is the plain MIT License text, "Copyright (c) 2024 AgentGuard".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 74d5e66420f3af4154d022dc4ac510610ea8f219c8b663e01ab2c8e4dde5e6c9
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Justin0504/Aegis/main/README.md
+    shows: The README says the repository holds the "gateway, cascade, DSL, dashboard, audit trail, approvals —
+      in one repo" and runs the Gateway API and Compliance Cockpit locally.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ff49144dbb70fdadf37977454c77159834b5faf22d0d2a1d2c86323173da21c4
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/Justin0504/Aegis/main/packages/gateway-mcp/src/config.ts
+    shows: FEATURE_GATES lists "judge", "dsl-editor" and "oidc-sso" for pro and above, "crypto-audit", "saml-sso"
+      and "rbac" for team and above, and "audit-log" for enterprise only; AGENT_ENFORCEMENT_LIMITS sets community
+      to 1.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 393c206ec848e5684ad8f962bd8612475af226282d3b3bd744b1dab92b577133
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/Justin0504/Aegis/main/packages/gateway-mcp/src/services/license-service.ts
+    shows: LicenseService activates a pasted license key against https://aegistraces.com/api/desktop/validate-license
+      and falls back to the AEGIS_LICENSE_TIER env var, which "defaults to 'community'".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9f887fbe01a99219ec7113f7a7588600ab9ef0ea71e4d29e8cf0e39bbd3e8dac
+    establishes:
+    - core-gated
+  - url: https://aegistraces.com/pricing
+    shows: Pricing sells Pro ($29/month), Team ($99/month) and Enterprise; Team includes "License-gated EE features
+      unlock in your on-prem binary", and the self-host column says "Everything above unlocks with a license key
+      (SSO, LLM-judge, cryptographic audit, priority support)."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8c8e40a3b0f20056c71e7c5be1dc37bae16cb67510664c8c9c009469c7014fe3
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/Justin0504/Aegis/main/COMMERCIAL.md
+    shows: A draft "for review by counsel" says "We do not plan an open-core split" and, under "What's not gated
+      behind a commercial agreement", lists the policy engine, every SDK and "The audit-chain integrity verification
+      path".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 00217cb78ba95c075f174ab7f91450a9bc647ccddf4e343ef84ac02e60219334
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: The Python and npm SDKs that Aegis's README links carry no link back to this repository in their registry
+    metadata, so their downloads are not counted and GitHub stars are the only signal. A star is not a use, so this
+    shows attention rather than deployments.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:Justin0504/Aegis
+    shows: 'Justin0504/Aegis: stargazers_count 524, license MIT, not archived, not a fork, pushed 2026-10-31.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 73fa5533e84525b2133d95d5bc04b13bf68d27fdd27ffc9c0e58ba4bacece6d2
+  - url: https://pypi.org/pypi/agentguard-aegis/json
+    shows: agentguard-aegis 1.2.2 lists no author, home page or project URLs pointing at a repository.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b469d819d6a179b975c9d369e00b462f720efa00c153e0e134e07058dd2cd767
+  - url: https://registry.npmjs.org/@justinnn/agentguard
+    shows: '@justinnn/agentguard 1.2.4 has no repository field, and its homepage is https://github.com/agentguard/agentguard,
+      not this repository.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d6e057129b51d0ffb4e496fbff8226549eb6da1871ec088f1b49e2ca1ed91d8a
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: agent registry with per-agent status, tool scope and optional Ed25519 or shared-secret authentication;
+    per-call allow, pending or block decision from a five-stage classifier and policy DSL; calls held in the Cockpit
+    approval queue until a person allows or rejects them; Ed25519-signed decision receipts and an RFC 6962 Merkle
+    transparency log; no delegation between agents
+  confidence: medium
+  note: Aegis registers agents with their own keys, decides each tool call before it runs, holds risky calls for
+    a person and signs a receipt for every allowed call. It has no way to pass narrowed authority from one agent
+    or user to another.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/Justin0504/Aegis/main/README.md
+    shows: The README describes "Agent registry + identity" with "optional Ed25519 / shared-secret authentication",
+      a pipeline that "Emits allow / pending / block", pending calls where "a human clicks Approve or Reject", and
+      "an Ed25519-signed receipt" on every allow.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ff49144dbb70fdadf37977454c77159834b5faf22d0d2a1d2c86323173da21c4

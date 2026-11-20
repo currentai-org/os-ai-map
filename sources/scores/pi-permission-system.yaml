@@ -1,0 +1,84 @@
+product: pi-permission-system
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: whole repository
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 52-path tree at 9affcc9 is the extension source, tests and a JSON schema under one MIT LICENSE,
+        with no paid tier, license key or hosted service; the README links only a Ko-fi donation page
+  confidence: medium
+  note: pi-permission-system is a single MIT-licensed extension maintained by one developer, with nothing sold beside
+    it.
+  last_verified: '2026-11-20'
+  raw: license:MIT(whole repository);source:public;core-gated:ungated(the 52-path tree at 9affcc9 is the extension
+    source, tests and a JSON schema under one MIT LICENSE, with no paid tier, license key or hosted service; the
+    README links only a Ko-fi donation page)
+  sources:
+  - url: https://raw.githubusercontent.com/MasuRii/pi-permission-system/main/LICENSE
+    shows: The LICENSE is the MIT License text, "Copyright (c) 2026 MasuRii".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7d9473dcd84975a7191bc13dcc744f3b4d6578c937c879cc73e31e0107fa4d46
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/MasuRii/pi-permission-system/main/package.json
+    shows: 'pi-permission-system 0.8.0 declares "license": "MIT", author MasuRii and repository git+https://github.com/MasuRii/pi-permission-system.git.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6f60d89e0dba82ccb0410505d77121c7713c7cac76bb4af6c4e4c2c6e5fec4bb
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/MasuRii/pi-permission-system/main/README.md
+    shows: The README describes the whole extension and its configuration, and links a Ko-fi donation button; it
+      names no paid edition or hosted service.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c9d9789598e0ed4e75ba258fd09270c76b89c7a7b3416cb475ae8c339e98a0e1
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of pi-permission-system, the package Pi installs the extension from.
+    The figure includes automated installs and cannot show how many people keep the extension enabled.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/pi-permission-system
+    shows: 4,599 downloads of pi-permission-system between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9f2d471ebbbaa8c7be8119e7166961c7f7cb93152a12ac9ca86b527e06ae85e7
+  - url: https://registry.npmjs.org/pi-permission-system
+    shows: pi-permission-system latest 0.8.0, repository git+https://github.com/MasuRii/pi-permission-system.git,
+      maintainer masurii; last modified 2026-07-03.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4c93193d9b658e998ee7edbe3f8138a55c8eda6061980cbf6b1c5ac87b61f211
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: allow, ask or deny decision on every tool, bash, MCP, skill and special operation before it runs; ask prompts
+    with Allow Once, Allow Always and Reject, forwarded from subagents to the main session; no agent identity beyond
+    the agent name; no delegation narrowed across hops; plain JSONL debug log rather than a tamper-evident record
+  confidence: medium
+  note: The extension decides every tool call in a Pi session before it runs and pauses ask-rated calls for a person,
+    including calls from subagents. It identifies agents only by name, passes no narrowed authority between them,
+    and its debug log is plain JSONL rather than a tamper-evident record.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/MasuRii/pi-permission-system/main/README.md
+    shows: '"Runtime Enforcement — Blocks/asks/allows at tool call time with UI confirmation dialogs"; "Subagent
+      Permission Forwarding — Forwards ask confirmations from non-UI subagents back to the main interactive session";
+      debug logging writes "permission request/denial review entries" to a JSONL file.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c9d9789598e0ed4e75ba258fd09270c76b89c7a7b3416cb475ae8c339e98a0e1

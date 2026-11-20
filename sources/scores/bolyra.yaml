@@ -1,0 +1,104 @@
+product: bolyra
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: gateway, SDKs, circuits, contracts and integrations
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 3,873-path tree at f4475fa carries the root Apache-2.0 LICENSE and 16 package LICENSE files, all
+        Apache-2.0, with no ee/, enterprise/, commercial/ or proprietary/ path; the vendor sells a paid acceptance
+        exercise, not an edition
+    context:
+      commercial:
+        value: acceptance exercise and managed-revocation pilot
+        detail: services around the self-hosted gateway
+  confidence: high
+  note: Bolyra's gateway, SDKs, circuits, contracts and integrations are all Apache-2.0 code in one public repository.
+    ZKProva says the gateway is self-hosted inside a customer's own network, and what it sells is a paid acceptance
+    exercise and pilots, services rather than a withheld edition.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(gateway, SDKs, circuits, contracts and integrations);source:public;core-gated:ungated(the
+    3,873-path tree at f4475fa carries the root Apache-2.0 LICENSE and 16 package LICENSE files, all Apache-2.0,
+    with no ee/, enterprise/, commercial/ or proprietary/ path; the vendor sells a paid acceptance exercise, not
+    an edition);commercial:acceptance exercise and managed-revocation pilot(services around the self-hosted gateway)
+  sources:
+  - url: https://raw.githubusercontent.com/bolyra/bolyra/main/LICENSE
+    shows: The LICENSE is the Apache License 2.0 text with "Copyright 2026 Viswanadha Pratap Kondoju".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1fafa343ae8ccbccd3672c1e004531212a141cb13e935aa2305b132b16c11792
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/bolyra/bolyra/main/package.json
+    shows: 'The root manifest declares "author": "ZKProva Inc." and "license": "Apache-2.0".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 633fa4cda1a2c36c5d7aa9e6ed648416945f3544e5a895a2633b9e64ef7828b8
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/bolyra/bolyra/main/README.md
+    shows: 'The README lists the circuits, contracts, TypeScript and Python SDKs, integrations and spec in the repository
+      and states "License: Apache-2.0".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cb219d0bd16b4c319dfb2856a41f2d491e24f6cbad842a0e847194694894f6bf
+    establishes:
+    - source
+  - url: https://bolyra.ai
+    shows: The homepage offers a "Self-hosted gateway — deploy inside your customer's VPC. Open-core protocol, Apache-2.0."
+      and sells "$5,000 for a two-week acceptance exercise" that "requires no Bolyra-hosted service".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3ff17b143a904f32fa06d218222607ecfccce6c1b1e7b0a37d8bf551100f533e
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of the Bolyra TypeScript SDK and the MCP gateway. The Python package,
+    a thin bridge to the TypeScript code, is not counted, and downloads cannot show how many gateways guard a live
+    server.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@bolyra/sdk
+    shows: 859 downloads of @bolyra/sdk between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e882fcb7df872e6d5b11efdafa0a50b9422b3f8877e149490b4b2e652686449c
+  - url: https://api.npmjs.org/downloads/point/last-month/@bolyra/gateway
+    shows: 398 downloads of @bolyra/gateway between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: af52d198e24b87d616da21c55fcca8d4823c0a0a93f2246b8c1b5e86a91c14ba
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: agent credentials checked against a registry in the core tier and EdDSA-signed proofs in the zero-knowledge
+    tier; per-tool policy checked on every call at the gateway; delegation that narrows permissions one way; ES256K-signed,
+    hash-chained receipts for every allow and deny; no step that holds a call for a person
+  confidence: medium
+  note: Bolyra verifies the agent's own credential, applies per-tool policy to every call, narrows delegated permissions
+    one way and signs a hash-chained receipt for each decision. Its gateway does not hold a call while a person
+    reviews it.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/bolyra/bolyra/main/README.md
+    shows: The README says every tool call gets "credential verification, per-tool policy, replay protection, and
+      a signed audit receipt", and that "a delegation circuit narrows scope one-way (permissions can only drop,
+      never widen)".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cb219d0bd16b4c319dfb2856a41f2d491e24f6cbad842a0e847194694894f6bf
+  - url: https://raw.githubusercontent.com/bolyra/bolyra/main/integrations/receipts/README.md
+    shows: The receipts README documents "Hash-chained logs", where each signed payload carries a sequence number
+      and the previous receipt hash.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 30c8c655de9cd2c89220573322bbdb8bf3d676ff90355e23d28b610f8e456637

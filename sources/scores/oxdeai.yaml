@@ -1,0 +1,116 @@
+product: oxdeai
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: decision core, enforcement gateway, SDK and framework adapters
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 884-path tree at b58468b carries the root Apache-2.0 LICENSE and Apache-2.0 LICENSE files in each
+        package, with no ee/, enterprise/, commercial/ or proprietary/ path; the project is solo-maintained and
+        sells no edition
+  confidence: high
+  note: OxDeAI's decision engine, enforcement gateway and adapters are all Apache-2.0 code in one public repository,
+    and its demo runs entirely on a local machine with no outside service. A single maintainer runs the project,
+    and no company sells a paid edition beside it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(decision core, enforcement gateway, SDK and framework adapters);source:public;core-gated:ungated(the
+    884-path tree at b58468b carries the root Apache-2.0 LICENSE and Apache-2.0 LICENSE files in each package, with
+    no ee/, enterprise/, commercial/ or proprietary/ path; the project is solo-maintained and sells no edition)
+  sources:
+  - url: https://raw.githubusercontent.com/oxdeai/oxdeai/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text, followed by the notice "OxDeAI Copyright 2026 OxDeAI
+      contributors".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f6fb3fe59166130140e8c4c0c8cf4279b77df19f000664a1109f942f24101840
+    establishes:
+    - license
+  - url: https://registry.npmjs.org/@oxdeai%2Fcore/latest
+    shows: 'The npm record for @oxdeai/core declares "license": "Apache-2.0" and points to the oxdeai/oxdeai repository,
+      directory packages/core.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1876f37613dcd8947d7d727ac3b47fb8c35a66e89e6bd06937a2b7f31db1e7be
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/oxdeai/oxdeai/main/README.md
+    shows: The README says the demo "Runs entirely on localhost with a test key. No external services or production
+      credentials." and builds it from a clone of the repository.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e1cfc84b2407223d640612af76a68fc77fd9eaa382f90a4022ac6b8bd59c99b9
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/oxdeai/oxdeai/main/GOVERNANCE.md
+    shows: The governance file describes the project as "solo-maintained, Apache-2.0 licensed, no foundation governance
+      yet", maintained by Ange Yobo, and separate from Oxalio Labs.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9ed2c5574cc9558ccf4423a3374221fc7bbebdd62b57e0e8f9a190a7f839fd99
+    establishes:
+    - core-gated
+  - url: https://www.oxdeai.dev
+    shows: The website says "OxDeAI is open source and Apache-2.0 licensed. Start integrating OxDeAI from source
+      today." and offers no paid plan.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 330c940c3fd7e6366e7a93ec9437a36960e9e2495b9390c97db78b02053dbf8a
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of @oxdeai/core and @oxdeai/guard, the decision and enforcement packages.
+    The guard depends on the core, so one install can count in both, and downloads cannot show how many deployments
+    put the gateway in front of a real tool.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@oxdeai/core
+    shows: 645 downloads of @oxdeai/core between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7e0aa09ae3c8445d6e7806b6fbccd65f8fd1f3a91a8da220ecba8223ba13fcba
+  - url: https://api.npmjs.org/downloads/point/last-month/@oxdeai/guard
+    shows: 553 downloads of @oxdeai/guard between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 35890471b936c38e4846c25e25480e0dba35cf426bb74b49ec7685d5015388bf
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: per-action allow or deny from a deterministic policy engine, issuing a signed single-use authorization
+    bound to the exact action; single-hop delegation whose scope can only narrow; hash-chained, tamper-evident audit
+    log; no identity issued to the agent itself; no human approval step
+  confidence: medium
+  note: OxDeAI decides each action before it runs, hands narrower authority to a second agent and keeps a hash-chained
+    record of its decisions. Agents are named only by an identifier in the request rather than holding a credential
+    of their own, and nothing waits for a person to approve an action.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/oxdeai/oxdeai/main/README.md
+    shows: The README says "Every protected action needs a signed, single-use authorization for that exact action,
+      verified at the execution boundary before anything runs", and that a parent authorization "can hand a narrower
+      scope to another agent through a single-hop DelegationV1".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e1cfc84b2407223d640612af76a68fc77fd9eaa382f90a4022ac6b8bd59c99b9
+  - url: https://raw.githubusercontent.com/oxdeai/oxdeai/main/packages/core/README.md
+    shows: The core package README lists that it "produces hash-chained, tamper-evident audit logs" and "emits signed
+      AuthorizationV1 artifacts"; intents carry an agent_id string.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 726e789ae24aa276fafd6877a863eb75f2a8b43b721287f449133e86e4c33f38
+  - url: https://raw.githubusercontent.com/oxdeai/oxdeai/main/docs/spec/artifacts/delegation-v1.md
+    shows: The DelegationV1 specification is "Strictly narrowing - scope may only be equal to or more restrictive
+      than the parent", and "Multi-hop is out of scope."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 29187bcaf342e125d49472575759b8f7592b4aae923e12819b5ffc9acdd5cbdd
