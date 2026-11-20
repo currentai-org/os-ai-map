@@ -1,0 +1,122 @@
+product: kontext
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: MIT
+      detail: daemon, hooks, CLI and local Guard runtime
+    - name: MIT
+      detail: bundled step-safety model, copyright Microsoft Corporation
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: the local-only kontext guard path runs hooks in observe mode, and Cedar enforcement comes only through
+        the managed daemon, which enrolls with an install token from the hosted workspace and fetches its policies
+        there; no policy service is published, and the workspace is free to 5,000 transactions a month and paid
+        beyond
+    context:
+      commercial:
+        value: Kontext hosted workspace
+        detail: policy authoring and rollout, dashboards, risk and cost review; Free, Team and Enterprise plans
+  confidence: medium
+  note: The Kontext daemon that evaluates policy and records decisions is MIT-licensed and runs on the user's machine,
+    but on its own it only observes. Blocking an action needs the managed daemon, which enrolls with a token from
+    Kontext's hosted workspace and fetches its policies there, and that workspace is free only up to a monthly allowance.
+  last_verified: '2026-11-20'
+  raw: license:MIT(daemon, hooks, CLI and local Guard runtime)+MIT(bundled step-safety model, copyright Microsoft
+    Corporation);source:public;core-gated:gated(the local-only kontext guard path runs hooks in observe mode, and
+    Cedar enforcement comes only through the managed daemon, which enrolls with an install token from the hosted
+    workspace and fetches its policies there; no policy service is published, and the workspace is free to 5,000
+    transactions a month and paid beyond);commercial:Kontext hosted workspace(policy authoring and rollout, dashboards,
+    risk and cost review; Free, Team and Enterprise plans)
+  sources:
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/LICENSE
+    shows: The root LICENSE is the MIT License, "Copyright (c) 2026 Kontext contributors".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1415acd8fb5c20809374300f43c603c03fd04630f1cf68f15fef78c19f95123f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/internal/guard/stepsafety/model/LICENSE
+    shows: The bundled step-safety model directory carries an MIT License, "Copyright (c) Microsoft Corporation".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 646f8936b8ddcd14e13e578ff6857e368780b0d1a4f6066bee89211923a373e2
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/docs/guard.md
+    shows: The Guard page says "kontext guard ... is the standalone, local-only path" with no login, and that the
+      managed daemon "uses its install token to fetch managed configuration"; its public/private boundary puts the
+      daemon and Cedar policy in the public CLI.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1e691f62fc17fc9e7f9d32dc8e005534225b450a0cdbe2875a12fba29f4ef3d8
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/internal/guard/cli/cli.go
+    shows: The standalone Guard command prints "Local hooks run in observe mode. Cedar enforcement is provided by
+      the managed daemon configured through kontext setup or MDM."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f4b965b686104bde360e48aeef45263fe523f68d27074bdf22129f5ca1a74808
+    establishes:
+    - core-gated
+  - url: https://docs.kontext.security/guides/how-decisions-work.md
+    shows: The docs say "The workspace sends policy to the endpoint and receives records afterward", and that the
+      endpoint keeps the last policy it received while offline.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c2f5ed2402ab1d4787dfa1de5a4a0ed743e14ebc35f783cee0dd0b79a682fdaf
+    establishes:
+    - core-gated
+  - url: https://kontext.security
+    shows: The site's pricing lists Free at $0 with 5,000 transactions a month, Team at $500 a month with 100,000
+      transactions, and custom Enterprise pricing.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4ef093e439267b81ac21429ee848f323628b8e428e43a120a055a4d4355bf842
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K installs
+  signal_type: install_volume
+  confidence: low
+  note: Adoption is read from Homebrew installs of the kontext package in homebrew-core over the trailing month.
+    The README's first install route is a self-updating cask from Kontext's own tap, which Homebrew's analytics
+    do not cover, and Windows builds are zip downloads, so most installs fall outside this figure.
+  sources:
+  - url: https://formulae.brew.sh/api/formula/kontext.json
+    shows: Homebrew's kontext package ("Identity, credentials, and governance for AI agents", homepage kontext.security,
+      MIT) builds from github.com/kontext-security/kontext v1.24.1 and reports 106 installs in 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 801da18983ad7ce24d4ff79e37c3fa2c9664703cdbd3c82e9f6ad9ec584c9b13
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: Cedar policy evaluated locally on each supported pre-tool-use hook, denying in enforce mode; an authorization
+    ledger of receipts with hash links and optional Ed25519 signatures; actions attributed to the agent and session,
+    with no credential issued to the agent; no delegation between agents; no human approval step
+  confidence: medium
+  note: Kontext decides supported tool calls against policy before they run and keeps a hash-linked, optionally
+    signed ledger of those decisions. It attributes actions to an agent without giving it an identity of its own,
+    and it has no delegation chain or step where a person approves a held action.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/README.md
+    shows: The README says Kontext "evaluates policy before consequential actions run, and records the decision
+      and outcome in an authorization ledger", denying in enforce mode at supported synchronous hooks.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3e1f401c7425637bdacfbbeaa7f2974f81b8c725849a21dc67eec0e5bee40963
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/docs/guard.md
+    shows: The Guard page says Ed25519 receipt signatures can be enabled with KONTEXT_GUARD_LEDGER_SIGNING=1 and
+      that VerifyReceipts "checks receipt hashes, previous-hash links, and local Ed25519 signatures".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1e691f62fc17fc9e7f9d32dc8e005534225b450a0cdbe2875a12fba29f4ef3d8

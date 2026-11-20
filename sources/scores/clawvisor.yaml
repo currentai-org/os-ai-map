@@ -1,0 +1,91 @@
+product: clawvisor
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Elastic-License-2.0
+      detail: gateway, dashboard, CLI and Cowork plugin
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,726-path tree at 1f2d070 has no ee/ or enterprise/ path and no license-key check outside the
+        two Elastic License texts; the pricing page says self-hosting gets the same gateway as the cloud, which
+        adds longer retention and organization accounts
+    context:
+      commercial:
+        value: Clawvisor cloud
+        detail: hosted at app.clawvisor.com, metered by protected calls
+  confidence: high
+  note: Clawvisor's gateway source is public, but under the Elastic License 2.0, which forbids offering the software
+    to others as a hosted or managed service. Self-hosting it is free and gets the same gateway as Clawvisor's own
+    cloud, which adds longer log retention and organization accounts.
+  last_verified: '2026-11-20'
+  raw: license:Elastic-License-2.0(gateway, dashboard, CLI and Cowork plugin);source:public;core-gated:ungated(the
+    1,726-path tree at 1f2d070 has no ee/ or enterprise/ path and no license-key check outside the two Elastic License
+    texts; the pricing page says self-hosting gets the same gateway as the cloud, which adds longer retention and
+    organization accounts);commercial:Clawvisor cloud(hosted at app.clawvisor.com, metered by protected calls)
+  sources:
+  - url: https://raw.githubusercontent.com/clawvisor/clawvisor/main/LICENSE
+    shows: 'The root LICENSE is the Elastic License 2.0: "You may not provide the software to third parties as a
+      hosted or managed service".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8b5892e505f615aa7e1e3f4edea10b53ebe109c9eb34cccbc08251454942d962
+    establishes:
+    - license
+  - url: https://clawvisor.com/terms
+    shows: The terms say "The self-hosted Software is licensed under the Elastic License 2.0 (ELv2)" and offer Clawvisor
+      both as a hosted service at app.clawvisor.com and as self-hosted software.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f10f409514d36d4c5bb8bd55e8a9a6a427b8df86c8a5ce40e3edfc3e5fa8a2b9
+    establishes:
+    - license
+    - source
+  - url: https://clawvisor.com/pricing
+    shows: Pricing says "The gateway source is public under the Elastic License 2.0, with no seat caps and no call
+      limits" and that self-hosting "gets the same purpose verification, risk scoring, vault, and audit trail";
+      cloud "adds longer retention and org accounts".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 56b45697b0cf65377210d97851506a10e2c63dc926fcdeb9cc4297f63540f4a4
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: Clawvisor ships as a binary from its own install script and as a hosted service, with no package on a public
+    registry, so GitHub stars are the only signal. A star is not a use, so this shows attention rather than deployments.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:clawvisor/clawvisor
+    shows: 'clawvisor/clawvisor: stargazers_count 286, license reported as NOASSERTION, not archived, not a fork,
+      last pushed 2026-10-31.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5f1da82e5c23f9d380f987649c48dbb523dceddbc0dcbff7a167466f3b9d543a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: a bearer token per registered agent; every gateway request checked against the approved task scope, with
+    hard restrictions blocking actions outright; task scopes and out-of-scope requests held for the user's approval
+    in the dashboard, Telegram or a phone; a per-request audit log without signatures or hash links; no delegation
+    of narrowed authority between agents
+  confidence: medium
+  note: Clawvisor registers each agent with its own token, checks every request against the task a person approved,
+    and holds anything outside that task for approval. Its audit trail is an ordinary database log rather than a
+    signed or chained record, and it has no way for one agent to hand narrower authority to another.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/clawvisor/clawvisor/main/README.md
+    shows: The README says agents "declare tasks", "the user approves the scope", "Any request that isn't covered
+      by a task scope goes to the approval queue", "agent create" prints a bearer token, and "Every gateway request
+      is logged with a unique request_id".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e946a31209825c041ffdf0933097185a4f40eabd88f01ee24e93e2033ceccba6

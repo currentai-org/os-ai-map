@@ -1,0 +1,129 @@
+product: caracal
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: 'Community Edition: policy service, gateway, coordinator, audit service, console and SDKs'
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: the NOTICE says the repository holds the Community Edition only and that Enterprise features are developed,
+        licensed and distributed separately; the Enterprise Edition adds managed multi-tenancy, a hosted management
+        UI and SAML and OIDC single sign-on with SCIM provisioning
+    context:
+      commercial:
+        value: Caracal Enterprise Edition
+        detail: a managed deployment sold under a written commercial agreement
+  confidence: high
+  note: Caracal's published code is a complete Community Edition, with the policy service, gateway, audit service
+    and SDKs all running on the user's own infrastructure. Garudex Labs keeps its Enterprise Edition outside the
+    repository under separate terms, and that edition adds managed multi-tenancy, a hosted console and single sign-on
+    with SCIM provisioning.
+  last_verified: '2026-11-20'
+  raw: 'license:Apache-2.0(Community Edition: policy service, gateway, coordinator, audit service, console and SDKs);source:public;core-gated:gated(the
+    NOTICE says the repository holds the Community Edition only and that Enterprise features are developed, licensed
+    and distributed separately; the Enterprise Edition adds managed multi-tenancy, a hosted management UI and SAML
+    and OIDC single sign-on with SCIM provisioning);commercial:Caracal Enterprise Edition(a managed deployment sold
+    under a written commercial agreement)'
+  sources:
+  - url: https://raw.githubusercontent.com/Garudex-Labs/caracal/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright [2026] [Garudex Labs]".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c3ee08d34414731573dd4ef6443e96fc7b455be3ad8acb5de18dcf79188496f6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Garudex-Labs/caracal/main/NOTICE
+    shows: The NOTICE says "This repository contains the Caracal Community Edition" and "Enterprise features are
+      developed, licensed, and distributed separately and are not part of this repository."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 40fff2b1711c8917dcdd2b28c522234ad6815743ca428a9b5efd3257478d7322
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://caracal.run/pricing
+    shows: The Community Edition is free under Apache 2.0 and self-hosts every service; the Enterprise Edition,
+      priced on request, lists "Managed multi-tenancy", a "Hosted management UI" and "SAML and OIDC SSO with SCIM
+      provisioning".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9409e7cf63e76668d0a31c5cc9e61063b74b5e9eb861c9d450f684f791fd098d
+    establishes:
+    - core-gated
+  - url: https://caracal.run/legal
+    shows: The legal page says "Enterprise features are developed and licensed separately under a written commercial
+      agreement and are not part of this codebase."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9a1727eb097e2604cc0f1bdf0492e90a17a3c6485285208cce157bdf8b38528a
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly downloads of Caracal's Python and TypeScript SDKs, caracalai-sdk on PyPI and
+    @caracalai/sdk on npm, which agents use to obtain and present mandates. The services themselves install from
+    Docker images through an install script, which no registry counts, so the figure shows SDK use rather than running
+    deployments.
+  sources:
+  - url: https://pypistats.org/api/packages/caracalai-sdk/recent
+    shows: 137 downloads of caracalai-sdk in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9dd396bff45848296bca6e83dc829361e13c4f8d8b934f6467b50f5450534703
+  - url: https://api.npmjs.org/downloads/point/last-month/@caracalai/sdk
+    shows: 147 downloads of @caracalai/sdk between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4fe0429752cdc9124a5378007363eebaad5e9ad1edd5f9ceac8d35a1f6cdf94d
+  - url: https://pypi.org/pypi/caracalai-sdk/json
+    shows: caracalai-sdk 1.0.0, Apache-2.0, describes itself as "Part of Caracal" and links https://github.com/Garudex-Labs/caracal
+      as its source.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2af538218e0bba3ace64ba3c23c07adc55f951eea887c56090d8b5fb3f1dda33
+  - url: https://registry.npmjs.org/@caracalai/sdk
+    shows: '@caracalai/sdk 1.0.0 names its repository as github.com/Garudex-Labs/caracal, directory packages/sdk/ts.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7ef56b93981c14484933a733bf9ba75552475d3e1e32fe1ce10b2453025b4874
+  - url: https://pypi.org/pypi/caracal/json
+    shows: The PyPI name caracal belongs to a different project, Containerized Automated Radio Astronomy Calibration,
+      from github.com/caracal-pipeline/caracal.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b87d43a8b23a6f222885b29cf1cfd2205763a5f543fdddc81484da9eeca0ea49
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: a separate identity for every agent run under one credential; default-deny policy decision on every request
+    before it reaches a resource; mandates that can only narrow when delegated to sub-agents, through OAuth 2.0
+    token exchange; approval gates that hold high-risk operations for an authenticated approver; an append-only,
+    hash-chained audit trail with signed event ingestion
+  confidence: medium
+  note: 'Caracal implements every part of agent authorization itself: each agent run gets its own identity, every
+    request is decided against policy before it runs, delegation can only narrow, risky actions wait for an approver,
+    and decisions are kept in a tamper-evident chain.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/Garudex-Labs/caracal/main/README.md
+    shows: The README lists "Delegation that only narrows", "Decisions before actions" under a default-deny policy,
+      "Human approval for risky actions" and "An append-only, tamper-evident trail of every decision", and names
+      OAuth 2.0 token exchange (RFC 8693).
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 55d0795093b07b88643cc0d2314b71c7aba4584ef5cecede987a9bdd1a4a19b2
+  - url: https://caracal.run
+    shows: The site says "Every agent run gets its own identity", "Sensitive actions pause for approval", and that
+      the audit service provides "Signed event ingestion" and a "Tamper-evident hash chain".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bb87e1fb727fde09c0e50a2b63cfcd4025696edd0253057f9b80a68ef7eea620
