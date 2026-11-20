@@ -422,7 +422,11 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 7 on 2026-11-13: R-2026-11-13-d removed `CommonCrawl-ToU` from the dataset ladder's
     # open_data examples, so redpajama-data-v2, whose data carries only Common Crawl's terms, maps to
     # no tier and training_synthetic_datasets defers it while its openness is held.
-    assert len(deferred) == 7
+    # 7 -> 11 on 2026-11-20, when agent_authorization published with four licenses no tier names:
+    # grantex's Orchestrum Personal Use License, the OpenID Foundation copyright license on
+    # authzen-authorization-api, and the IETF Trust Legal Provisions on the two IETF drafts. Each is
+    # deferred in that category's recipe until a maintainer tiers the license.
+    assert len(deferred) == 11
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
