@@ -1,0 +1,111 @@
+product: wimse-ai-identity-management
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: IETF-Trust-Legal-Provisions
+      detail: 'the draft text under BCP 78 and TLP 5: copy, distribute and translate it unmodified; no license to
+        modify it outside the IETF Standards Process; not on the software tier list'
+    - name: BSD-3-Clause
+      detail: Code Components extracted from the draft, under the Revised BSD License (TLP 5, section 4)
+    source:
+      value: public
+      detail: revision 01 in the IETF draft archive, edited in ietf-wg-wimse/draft-ietf-wimse-aims
+    core-gated:
+      value: ungated
+      detail: an IETF working group document on the IETF stream; the working group holds the text, and no vendor
+        sells an edition of it
+  confidence: medium
+  note: The draft is published in full, anyone may copy and distribute it unmodified, and code extracted from it
+    comes under the Revised BSD License. The IETF Trust grants no license to modify the text outside the IETF standards
+    process, so the document itself cannot be reworked the way an openly licensed specification can.
+  raw: 'license:IETF-Trust-Legal-Provisions(the draft text under BCP 78 and TLP 5: copy, distribute and translate
+    it unmodified; no license to modify it outside the IETF Standards Process; not on the software tier list)+BSD-3-Clause(Code
+    Components extracted from the draft, under the Revised BSD License (TLP 5, section 4));source:public(revision
+    01 in the IETF draft archive, edited in ietf-wg-wimse/draft-ietf-wimse-aims);core-gated:ungated(an IETF working
+    group document on the IETF stream; the working group holds the text, and no vendor sells an edition of it)'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://www.ietf.org/archive/id/draft-ietf-wimse-aims-01.txt
+    shows: 'Copyright Notice: "This document is subject to BCP 78 and the IETF Trust''s Legal Provisions Relating
+      to IETF Documents"; "Code Components extracted from this document must include Revised BSD License text".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e841af4c870fc83770e65d9c2c3affe3f879099f5135f13fbc13bb0b750578b7
+    establishes:
+    - license
+    - source
+  - url: https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/
+    shows: TLP 5, section 3.c grants rights "to copy, publish, display and distribute IETF Contributions and IETF
+      Documents in full and without modification"; 3.d grants no "license to modify" them "in any context outside
+      the IETF Standards Process"; section 4 offers Code Components under the Revised BSD License.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7b1b21e9e781d42ea1cbf278a3b1fda76269847c61345e0e73d35ff17b7bc2b5
+    establishes:
+    - license
+  - url: https://datatracker.ietf.org/doc/draft-ietf-wimse-aims/
+    shows: 'Datatracker: "Active Internet-Draft", stream "Internet Engineering Task Force (IETF)", WG state "WG
+      Document", with the working group''s GitHub repository linked.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c4c0d5b584ce2f7e1cfa3608137f90359e3ec4b25e2049c9a1356cfea03f2d00
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/search/repositories?q=repo:ietf-wg-wimse/draft-ietf-wimse-aims
+    shows: 'ietf-wg-wimse/draft-ietf-wimse-aims: public, not archived, not a fork, no license detected.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d8b0c72006bc24bb8d8501d12dea4f628ebc0c3d358a45356f183412e10e1051
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: The draft has no package of its own, so GitHub stars on the working group's editing repository are the only
+    signal. A star is not a use, and deployments that follow the practices it describes are not counted.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:ietf-wg-wimse/draft-ietf-wimse-aims
+    shows: 'ietf-wg-wimse/draft-ietf-wimse-aims: 24 stargazers.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d8b0c72006bc24bb8d8501d12dea4f628ebc0c3d358a45356f183412e10e1051
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: a WIMSE identifier and cryptographically bound credentials required for every agent; resource servers required
+    to decide each request from the agent and delegated-subject identities and local policy, optionally through
+    an AuthZEN decision point; OAuth delegation with downscoped transaction tokens and cross-domain token exchange;
+    CIBA user approval for sensitive requests; tamper-evident audit records of each authorization decision required
+  confidence: low
+  note: AIMS requires every agent to hold its own workload identifier and credentials, has resource servers decide
+    each request against local policy, delegates authority through OAuth with downscoped transaction tokens, sends
+    sensitive requests to the user for approval and requires tamper-evident audit records of each decision. It composes
+    existing standards rather than defining new mechanisms, and as an informational draft it states practices, not
+    a protocol.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://www.ietf.org/archive/id/draft-ietf-wimse-aims-01.txt
+    shows: '"An agent participating in this framework MUST be assigned exactly one WIMSE identifier"; these identifiers
+      "MUST be used by resource servers ... to determine if access to a resource should be allowed"; transaction
+      tokens yield "a downscoped token that is bound to a specific transaction".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e841af4c870fc83770e65d9c2c3affe3f879099f5135f13fbc13bb0b750578b7
+  - url: https://www.ietf.org/archive/id/draft-ietf-wimse-aims-01.txt
+    shows: 'Section 10.8: an agent "can use the OpenID Client Initiated Backchannel Authentication (CIBA) protocol"
+      so the user can "approve or deny the requested operation"; section 11: "Audit records MUST be tamper-evident".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e841af4c870fc83770e65d9c2c3affe3f879099f5135f13fbc13bb0b750578b7
+  - url: https://datatracker.ietf.org/doc/draft-ietf-wimse-aims/
+    shows: 'draft-ietf-wimse-aims-01, "Intended status: Informational"; abstract: "Rather than defining new protocols,
+      this document describes how existing and widely deployed standards can be applied".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c4c0d5b584ce2f7e1cfa3608137f90359e3ec4b25e2049c9a1356cfea03f2d00

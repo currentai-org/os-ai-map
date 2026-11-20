@@ -1,0 +1,147 @@
+product: mcp-auth
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: Node.js SDK (mcp-auth/js) and Python SDK (mcp-auth/python)
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the trees at 8e1b349 (mcp-auth/js, 49 paths) and 4234fed (mcp-auth/python, 45 paths) each carry one
+        MIT LICENSE with no ee/, enterprise/, commercial/ or proprietary/ path; Silverhand sells Logto Cloud, a
+        separate identity service, and the library works with any compliant OAuth or OpenID Connect provider
+    context:
+      commercial:
+        value: Logto-Cloud
+  confidence: high
+  note: 'Both SDKs are MIT licensed, and the published code is the whole library: it verifies tokens locally against
+    whichever provider the server trusts. Silverhand''s paid product is Logto Cloud, a separate identity service
+    that MCP Auth does not require.'
+  raw: license:MIT(Node.js SDK (mcp-auth/js) and Python SDK (mcp-auth/python));source:public;core-gated:ungated(the
+    trees at 8e1b349 (mcp-auth/js, 49 paths) and 4234fed (mcp-auth/python, 45 paths) each carry one MIT LICENSE
+    with no ee/, enterprise/, commercial/ or proprietary/ path; Silverhand sells Logto Cloud, a separate identity
+    service, and the library works with any compliant OAuth or OpenID Connect provider);commercial:Logto-Cloud
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/mcp-auth/js/master/LICENSE
+    shows: MIT License, "Copyright (c) 2025 Silverhand, Inc."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: feecc1fac7367785ff2cbe8f175f0426150e37a19b34b298ce017cfebd9b49b8
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mcp-auth/python/master/LICENSE
+    shows: The same MIT License text, "Copyright (c) 2025 Silverhand, Inc."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: feecc1fac7367785ff2cbe8f175f0426150e37a19b34b298ce017cfebd9b49b8
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mcp-auth/js/master/packages/mcp-auth/package.json
+    shows: 'The npm package manifest declares "name": "mcp-auth" and "license": "MIT", built from the packages/mcp-auth
+      directory of the repository.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: caa6b007ed5814e783d34c99c5cd532c09e5bc2cff0535e5456ff8af38b8fd22
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/mcp-auth/python/master/pyproject.toml
+    shows: name = "mcpauth", license = "MIT", authors "Silverhand Inc.", repository "https://github.com/mcp-auth/python".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a8bbc103543b64effe7678218e906bd9c6ffae2722488c6b93a72bf205db7838
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/search/repositories?q=repo:mcp-auth/js
+    shows: 'mcp-auth/js: public, not archived, not a fork, license MIT, pushed 2026-08-31, "Plug-and-play auth for
+      Node.js MCP servers."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 391fd0fa7d726c646bc5a07011030c3acd09bde2cf879bf7f78c85c0c59547a0
+    establishes:
+    - source
+  - url: https://api.github.com/search/repositories?q=repo:mcp-auth/python
+    shows: 'mcp-auth/python: public, not archived, not a fork, license MIT, pushed 2025-08-11.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2e6a753dad54f9e288dbe07d63ad57028677ea835ccad7ef6e54e5e1c5d68f88
+    establishes:
+    - source
+  - url: https://mcp-auth.dev/docs
+    shows: '"MCP Auth implements the authorization requirements of the latest MCP specification and works with any
+      OAuth 2.0 / OpenID Connect provider that meets them."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e72173e686fe47c0561ec5b7f5077b633cd40e150db955ffd0f14ef6a3de2e45
+    establishes:
+    - core-gated
+  - url: https://logto.io/about
+    shows: 'Silverhand''s about page: "Silverhand Inc. focuses on creating well-designed technological solutions
+      that are open-source" and "Now, Logto Cloud is available for everyone to use"; the footer lists MCP Auth among
+      its free developer resources.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4b07160971c0b156933243d68dbd8c55034d74733d43e9fd63ab2b9b38706b96
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as npm downloads of mcp-auth and PyPI downloads of mcpauth over the trailing month,
+    the two SDKs' own packages, most of them for the Node.js SDK. Downloads include build and CI installs and cannot
+    show how many MCP servers run behind the library.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/mcp-auth
+    shows: '"downloads":27948 for "mcp-auth" between "2026-10-20" and "2026-11-18".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 668c5cbcaef7e23a73253aecc9f6892cbe24c7f11e75c2a736b83d0bea97f87a
+  - url: https://pypistats.org/api/packages/mcpauth/recent
+    shows: '"last_month":11795 for "mcpauth".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b2c4e08e4c93f5db8a32f22af38da406b23086232e3d1536055a8583885cad19
+  - url: https://registry.npmjs.org/mcp-auth/latest
+    shows: 'mcp-auth 1.0.0-beta.1, "license": "MIT", repository "git+https://github.com/mcp-auth/js.git", directory
+      "packages/mcp-auth".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: dae3dd7006810724c06d2d3d6c15429434648630df41a59f4a5178eb1159aaad
+  - url: https://pypi.org/pypi/mcpauth/json
+    shows: 'mcpauth on PyPI: license MIT, summary "Plug-and-play auth for Python MCP servers.", repository "https://github.com/mcp-auth/python".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 41c087f2b6dac712f81e7f845163dde9f1d99b901926aa9703e1f064acb8284d
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: per-request token verification and per-tool required-scope checks before an MCP handler runs; no agent
+    identity (the verified token names the user); no delegation across hops; no human approval step; no signed decision
+    record
+  confidence: medium
+  note: MCP Auth checks the token on every request and, where a server asks for it, the scopes a single tool requires
+    before the tool runs. The identity it verifies is the user's rather than the agent's, and it has no delegation
+    chain, approval step or signed record of its decisions.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://mcp-auth.dev/docs
+    shows: 'The token verifier checks "signature, issuer, audience, expiration, and the claims MCP servers need";
+      tool callbacks take "{ requiredScopes: [...] }" "for per-tool authorization"; the subject is "the sub claim,
+      typically the user ID".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e72173e686fe47c0561ec5b7f5077b633cd40e150db955ffd0f14ef6a3de2e45
+  - url: https://raw.githubusercontent.com/mcp-auth/js/master/README.md
+    shows: The Node.js SDK implements "RFC 9728 Protected Resource Metadata and RFC 8707 audience-bound token validation
+      — for any OAuth 2.0 / OpenID Connect provider."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 800e7645959bfd5f1308cd5dc46be5aaa0b884ab22915ee522ff591ad796dad4
