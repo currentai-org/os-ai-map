@@ -1,0 +1,148 @@
+product: agent-governance-toolkit
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; root LICENSE and every package LICENSE, including the vendored Agent Control Specification policy
+        runtime
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 4,989-path tree at f85abe1 carries only MIT license files; its one enterprise/ path, agent-compliance/docs/enterprise,
+        holds deployment guides rather than code under other terms; the charter establishes the project as a Series
+        of LF Projects, LLC
+  confidence: high
+  note: Every package in the repository, the vendored policy engine included, is MIT licensed, and nothing is sold
+    beside it. The one directory named enterprise holds deployment guides rather than withheld code, and the project's
+    charter places it under LF Projects.
+  raw: license:MIT(OSI; root LICENSE and every package LICENSE, including the vendored Agent Control Specification
+    policy runtime);source:public;core-gated:ungated(the 4,989-path tree at f85abe1 carries only MIT license files;
+    its one enterprise/ path, agent-compliance/docs/enterprise, holds deployment guides rather than code under other
+    terms; the charter establishes the project as a Series of LF Projects, LLC)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/LICENSE
+    shows: MIT License, "Copyright (c) Microsoft Corporation."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7df20dcdf9197e9945c14858d41c60f11b52b93e5b69e2b63416b874d598d322
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/policy-engine/LICENSE.acs
+    shows: The vendored Agent Control Specification runtime carries an MIT License, "Copyright (c) 2026 responsibleai".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d41b96971bfbb135a454d012c82d03323cec67dee3bdd447cc2b327bc56fc754
+    establishes:
+    - license
+  - url: https://api.github.com/search/repositories?q=repo:microsoft/agent-governance-toolkit
+    shows: 'microsoft/agent-governance-toolkit: public, not archived, not a fork, license MIT, pushed 2026-11-18.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d5b4cd3d4b6b51044d28f5450601cd59115fbaf3e5ba6c8b4061614b31989a33
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/README.md
+    shows: Packages for Python, TypeScript, .NET, Rust and Go are built from the repository; "This project is licensed
+      under the [MIT License](LICENSE)." No paid tier or license key is named.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 85a9d0ba947eff53cf5ba345b4470b563afa8d197d90a694a4d647f3906e9d25
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/docs/CHARTER.md
+    shows: The project "has been established as Agent Governance Toolkit a Series of LF Projects, LLC", with a Technical
+      Steering Committee responsible for technical oversight.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 801ca84b89ec335ccdb79fef427277f25a3b06ae02a3857e87af327ceb845e3d
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/agent-governance-python/agent-compliance/docs/enterprise/README.md
+    shows: 'The "Enterprise Deployment Guide": reference architecture, Kubernetes, security hardening and scaling
+      guides, installed from "pip install agent-governance-toolkit[full]".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2812bd2b3d1be0c4bb2c2310d420237d842a2e02b30b737465b4c43703adc821
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as downloads of the toolkit's PyPI meta-package, its TypeScript SDK on npm and its Rust
+    crate over the trailing month, most of them on PyPI, with the crate's 90-day figure taken as a third. The core
+    distribution the meta-package pulls in is left out so the same install is not counted twice, and the .NET and
+    Go SDKs have no figure here.
+  sources:
+  - url: https://pypistats.org/api/packages/agent-governance-toolkit/recent
+    shows: '"last_month":119718 for "agent-governance-toolkit".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a39ba0f49316cc775517ecb26f3a8580abd6a9df8e31783bfd06ea697630ef5d
+  - url: https://api.npmjs.org/downloads/point/last-month/@microsoft/agent-governance-sdk
+    shows: '"downloads":12518 for "@microsoft/agent-governance-sdk" between "2026-10-20" and "2026-11-18".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8555fcee650efcdad8aaccfcf652fe6c4717249211a61a58dea85ab75fc927b3
+  - url: https://crates.io/api/v1/crates/agent-governance
+    shows: 'crate agent-governance: recent_downloads (90 days) 2,030, 2,062 all-time; repository github.com/microsoft/agent-governance-toolkit.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 06d194b03536ec13a6d389214078c9d1747eaab084cd9b4a8f49da1a529b8e9c
+  - url: https://pypi.org/pypi/agent-governance-toolkit/json
+    shows: agent_governance_toolkit 4.1.0, license MIT, repository github.com/microsoft/agent-governance-toolkit;
+      the "full" extra requires agent-governance-toolkit-core, -cli, -integrations and -protocols.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 93aefe2c5db7a5507106414b9bd76fdd1534152ac871a8c1e03499f7ea9cf9fc
+  - url: https://pypistats.org/api/packages/agent-governance-toolkit-core/recent
+    shows: '"last_month":44612 for "agent-governance-toolkit-core", the distribution the meta-package''s full extra
+      installs; not added to the sum.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: fd62e21448ec951679a4dafd5df01e8e96e4742d1e70216c1d962a418cb13852
+  - url: https://registry.npmjs.org/@microsoft/agent-governance-sdk/latest
+    shows: '@microsoft/agent-governance-sdk 5.0.0, "license": "MIT", repository microsoft/agent-governance-toolkit,
+      directory "agent-governance-typescript".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7bfbcf1b462071378d98619ec7d5a04863b55564dfe068eec36f642d0fa51325
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: did:mesh agent identifiers bound to Ed25519 keys; a policy check on every tool call, message and delegation
+    that allows, denies or raises GovernanceDenied; scope chains whose delegated capabilities only narrow; require_approval
+    rules that hold an action for named approvers; a Merkle hash-chained audit log of decisions
+  confidence: medium
+  note: Agent Governance Toolkit gives each agent a decentralized identifier with its own key, checks every call
+    against policy, lets delegation chains only narrow, holds chosen actions for human approval and writes decisions
+    to a hash-chained audit log. Enforcement runs inside the agent's own process, so its README recommends a separate
+    container per agent for isolation.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/README.md
+    shows: '"Every tool call, message send, and delegation is intercepted in deterministic application code *before*
+      the model''s intent reaches the wire"; a rule with "action: require_approval" names "approvers"; "The policy
+      engine and agents share the same process boundary."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 85a9d0ba947eff53cf5ba345b4470b563afa8d197d90a694a4d647f3906e9d25
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/docs/specs/AGENTMESH-IDENTITY-TRUST-1.0.md
+    shows: Identity binds "a DID, Ed25519 keypair, human sponsor, capabilities, and status"; "Scope chains only
+      narrow. Delegation can never grant more"; DIDs take the form did:mesh:<unique-id>.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 11bf4b09ca0ad4a8619d7ecaca9a5f42e58f5b68162b8012536460fbc06319e3
+  - url: https://raw.githubusercontent.com/microsoft/agent-governance-toolkit/main/docs/specs/AUDIT-COMPLIANCE-1.0.md
+    shows: Defines a "Merkle Audit Chain", "A hash-linked chain of audit entries providing cryptographic integrity
+      verification"; "Audit chains MUST be tamper-evident through hash-linking."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: acd363188fd76c21eec5f0076e9d5f2b50ad8cdc742cde590ac453d870cba7e3

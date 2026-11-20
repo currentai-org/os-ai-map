@@ -1,0 +1,126 @@
+product: workers-oauth-provider
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 85-path tree at dbd149a carries one MIT LICENSE.txt with no ee/, enterprise/, commercial/ or proprietary/
+        path; Cloudflare Access is offered as a separate sign-in option beside the library
+    context:
+      deployment:
+        value: Workers runtime
+        detail: needs a Workers runtime and a KV namespace; workerd, Cloudflare's Apache-2.0 runtime, self-hosts
+          Workers applications and serves KV namespaces
+  confidence: high
+  note: The library is MIT licensed, and its repository holds the whole authorization server and resource server.
+    It needs the Workers runtime, which Cloudflare sells as a hosted platform but also publishes as workerd for
+    self-hosting, and Cloudflare Access is a separate paid sign-in option rather than a part withheld from the code.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(the 85-path tree at dbd149a carries one MIT LICENSE.txt
+    with no ee/, enterprise/, commercial/ or proprietary/ path; Cloudflare Access is offered as a separate sign-in
+    option beside the library);deployment:Workers runtime(needs a Workers runtime and a KV namespace; workerd, Cloudflare's
+    Apache-2.0 runtime, self-hosts Workers applications and serves KV namespaces)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/cloudflare/workers-oauth-provider/main/LICENSE.txt
+    shows: MIT License, "Copyright (c) 2025 Cloudflare, Inc."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5514f48637fa1d8fed2256d12d322009a75962e6111370755fc5b20773db67ad
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/cloudflare/workers-oauth-provider/main/package.json
+    shows: 'The package manifest for @cloudflare/workers-oauth-provider declares "license": "MIT".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f5286ec45dff5855bf1a031333f1f4d1b2b93f0c4da18b9c1e27ffca4439141a
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/search/repositories?q=repo:cloudflare/workers-oauth-provider
+    shows: 'cloudflare/workers-oauth-provider: public, not archived, not a fork, license MIT, pushed 2026-11-17,
+      "OAuth provider library for Cloudflare Workers".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f8beb0e510264cb0699325fb0b5cc53dbbcb7db477942163818146f76e65f386
+    establishes:
+    - source
+  - url: https://developers.cloudflare.com/agents/model-context-protocol/authorization/
+    shows: '"Cloudflare''s Workers OAuth Provider implements both sides of MCP authorization on Workers"; separately,
+      "Cloudflare Access can sign users in to your MCP server" if they "match your Access policies".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d4a4d9812425d11e4a358e461b4b956cb5619987e77593d4f5ee8f0ae5753090
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/cloudflare/workerd/main/README.md
+    shows: workerd can be used "As an application server, to self-host applications designed for Cloudflare Workers";
+      with --experimental it accepts kv_namespaces.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ba4416d215741aa297bc9103e44f7cfba293ab8952cf450cb14313d6bac9908a
+    establishes:
+    - core-gated
+  - url: https://api.github.com/search/repositories?q=repo:cloudflare/workerd
+    shows: 'cloudflare/workerd: license Apache-2.0, "The JavaScript / Wasm runtime that powers Cloudflare Workers".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3e6be4928d548e1af320d40f3bfcb211eac1075adc8597b934de657f37303882
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as npm downloads of @cloudflare/workers-oauth-provider over the trailing month, the
+    library's only package. Downloads include build and CI installs and cannot show how many authorization servers
+    run on it.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare/workers-oauth-provider
+    shows: '"downloads":4713247 for "@cloudflare/workers-oauth-provider" between "2026-10-20" and "2026-11-18".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 45a8483b171e08a0aa73c19c2a7c79607be17a22e0e97d8dc5288c506e00a02e
+  - url: https://registry.npmjs.org/@cloudflare/workers-oauth-provider/latest
+    shows: '@cloudflare/workers-oauth-provider 1.2.4, "license": "MIT", repository "git+https://github.com/cloudflare/workers-oauth-provider.git".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ba810fdf486d56edb48d6911e4aa28838b6b3eb81ab74c3c0a91f1195d8f1925
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: a client identity for each MCP client through pre-registration, Client ID Metadata Documents or dynamic
+    registration, with private_key_jwt client authentication; RFC 8693 token exchange that can only narrow scope
+    or lifetime; no per-action decision (scope checks are left to the handler); no approval step beyond the sign-in
+    consent page; no signed decision record
+  confidence: medium
+  note: Workers OAuth Provider gives each MCP client an identity of its own and lets a token be exchanged only for
+    one with narrower scopes or a shorter life. Whether a given request or tool call is allowed is left to the developer's
+    handler, and the library keeps no signed record of its decisions.
+  relative_to: aembit-iam-for-agentic-ai
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/cloudflare/workers-oauth-provider/main/README.md
+    shows: 'The handler "owns authorization beyond that: scopes, ownership, tenancy"; "the library advertises the
+      required scopes but doesn''t enforce them".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7990cb5368714c8f6ad9223c48b66f38634e8d35fae3a0218156c5214d69918b
+  - url: https://raw.githubusercontent.com/cloudflare/workers-oauth-provider/main/docs/authorization-server.md
+    shows: 'Client registration "defines three ways for a client to obtain a client ID": pre-registration, CIMD
+      and DCR; the provider implements none and private_key_jwt for CIMD clients.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 693e4603ac8d3564f63de3d72efff40ee650d6164458cf70eaca0ba584e8769e
+  - url: https://raw.githubusercontent.com/cloudflare/workers-oauth-provider/main/docs/advanced-configuration.md
+    shows: '"Clients can exchange an existing access token for a token with narrower scopes or a shorter lifetime";
+      "The new token cannot exceed the subject token''s scope ceiling or remaining lifetime."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e3d09e8328e72a39fc3736eaeedff0e40c74807b4e3144481b538eb3d5614be4

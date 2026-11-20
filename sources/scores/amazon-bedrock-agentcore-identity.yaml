@@ -1,0 +1,133 @@
+product: amazon-bedrock-agentcore-identity
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: a managed AWS service used under the AWS Service Terms
+    source:
+      value: closed
+      detail: the agent identity directory, token vault and credential providers run inside AWS, and no repository
+        publishes them
+    context:
+      clients:
+        value: Apache-2.0
+        detail: aws/bedrock-agentcore-sdk-python publishes the AgentCore SDK, whose @requires_access_token and @requires_api_key
+          decorators call the hosted service
+  confidence: high
+  note: AgentCore Identity is a managed AWS service billed per token or key request, with no published source or
+    downloadable build. The AgentCore SDK that agents use to fetch credentials is open under Apache-2.0, but it
+    only calls the service and covers every AgentCore service, not Identity alone.
+  raw: license:Proprietary(a managed AWS service used under the AWS Service Terms);source:closed(the agent identity
+    directory, token vault and credential providers run inside AWS, and no repository publishes them);clients:Apache-2.0(aws/bedrock-agentcore-sdk-python
+    publishes the AgentCore SDK, whose @requires_access_token and @requires_api_key decorators call the hosted service)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://aws.amazon.com/service-terms/
+    shows: The AWS Service Terms page states that "The Service Terms below govern your use of the Services" and
+      includes service-specific sections for Amazon Bedrock AgentCore, a service agreement rather than a software
+      license.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ad11a228995e76bd8b0cef622f253fadc0bd6ec369953ad75e615f5d33107fda
+    establishes:
+    - license
+  - url: https://aws.amazon.com/bedrock/agentcore/pricing/
+    shows: Identity is billed at "$0.010 per 1,000 token or API keys requested by the agent", and "is available
+      at no additional charge to customers when they use it through either AgentCore Runtime or AgentCore Gateway".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3ebe609bfb25fd28026cdb2a863e94d8a5e2f4329be1666b8777eec7dc24f81d
+    establishes:
+    - license
+    - source
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/key-features-and-benefits.html
+    shows: '"The token vault provides security for storing OAuth 2.0 tokens, OAuth client credentials, and API keys
+      with comprehensive encryption at rest and in transit", using customer-managed or service-managed AWS KMS keys.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4714f1205e415c80e10b7b32c3dd2428370f9e017821d42dacc6f83615bce320
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/bedrock-agentcore/json
+    shows: PyPI describes bedrock-agentcore as "An SDK for using Bedrock AgentCore", Apache-2.0, homepage github.com/aws/bedrock-agentcore-sdk-python.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b7e90fa3d889785477271608ca79baf7617f9a5f5959e617b33a22edee0ba964
+  - url: https://raw.githubusercontent.com/aws/bedrock-agentcore-sdk-python/main/LICENSE.txt
+    shows: The repository LICENSE.txt is the Apache License, Version 2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9cd3ce3229e2b5876d7db85d420b0f833d54a300739d4e9054ddd7b34a524ca5
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: AWS publishes no customer, agent or request count for AgentCore Identity. The bedrock-agentcore SDK is downloaded
+    for every AgentCore service, from Runtime to Memory, so its downloads cannot be attributed to Identity.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://pypi.org/pypi/bedrock-agentcore/json
+    shows: bedrock-agentcore is "An SDK for using Bedrock AgentCore" as a whole, not a package for Identity alone.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b7e90fa3d889785477271608ca79baf7617f9a5f5959e617b33a22edee0ba964
+  - url: https://aws.amazon.com/bedrock/agentcore/pricing/
+    shows: The pricing page prices Identity per token request and gives worked examples but no count of customers,
+      agents or requests.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3ebe609bfb25fd28026cdb2a863e94d8a5e2f4329be1666b8777eec7dc24f81d
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: agent identities as workload identities with their own ARNs in an agent identity directory, on-behalf-of
+    token exchange to scoped-down tokens carrying both user and agent identity, 3LO user consent; no per-action
+    policy decision, no human approval of an action, no tamper-evident decision record
+  confidence: medium
+  note: AgentCore Identity gives each agent an identity of its own and lets it act for a user with a token scoped
+    down to one resource and bound to both identities. It decides who may hold which credential, not whether each
+    tool call may run; that per-action check is sold separately as AgentCore Policy, and Identity has no approval
+    step or signed decision record.
+  relative_to: aembit-iam-for-agentic-ai
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/identity.html
+    shows: '"Amazon Bedrock AgentCore Identity is an identity and credential management service designed specifically
+      for AI agents and automated workloads." "Agent identities are implemented as workload identities with specialized
+      attributes".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: fe625f6df8732b3b0cc27d36fbaef32b3e33bec626e28550d31ca01143f097a5
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/key-features-and-benefits.html
+    shows: '"Each agent identity receives a unique ARN"; the service supports the client credentials grant and the
+      authorization code grant, and "All operations are logged with detailed context for security monitoring and
+      compliance reporting".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4714f1205e415c80e10b7b32c3dd2428370f9e017821d42dacc6f83615bce320
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/identity-terminology.html
+    shows: Defines an agent access token as "An AWS-signed token that contains both workload identity and user identity
+      information, enabling downstream services to make authorization decisions based on both identities", created
+      "through the token exchange process".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 19cf146ae15261ff05ae498e14311f08029aab7db46621a21e09d8225f0c6339
+  - url: https://aws.amazon.com/about-aws/whats-new/2026/04/amazon-bedrock-agentcore/
+    shows: 'On-Behalf-Of token exchange is generally available: developers "can exchange an access token for a new
+      scoped-down access token that carries both the original user identity and the agent identity", targeted to
+      one outbound resource.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 543897259b94c186e50081ee8d83f40315fb65bbdd332313c5afa3c3d6889430
+  - url: https://aws.amazon.com/bedrock/agentcore/pricing/
+    shows: 'Per-action checks are a separate service: "Each time an agent calls a tool through AgentCore Gateway,
+      Policy checks the action against your rules to determine whether it is allowed or denied", billed as AgentCore
+      Policy, not Identity.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3ebe609bfb25fd28026cdb2a863e94d8a5e2f4329be1666b8777eec7dc24f81d

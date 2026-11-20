@@ -1,0 +1,90 @@
+product: agntcy-identity
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: whole repository
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 629-path tree at 8f7c1b5 carries only the root Apache-2.0 LICENSE, with no ee/, enterprise/, commercial/
+        or proprietary/ path; AGNTCY is a Series of LF Projects, LLC, with no vendor edition
+  confidence: high
+  note: AGNTCY Identity is Apache-2.0 licensed, and its issuer CLI and node backend both build and run from the
+    public repository. It is governed as a Linux Foundation project, and nothing is sold beside it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(whole repository);source:public;core-gated:ungated(the 629-path tree at 8f7c1b5 carries
+    only the root Apache-2.0 LICENSE, with no ee/, enterprise/, commercial/ or proprietary/ path; AGNTCY is a Series
+    of LF Projects, LLC, with no vendor edition)
+  sources:
+  - url: https://raw.githubusercontent.com/agntcy/identity/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 17e8e31c464301b5d2359a79a573e53b9c7e7704ddd81daca72493e65d1ea55b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/agntcy/identity/main/sdk/python/pyproject.toml
+    shows: agntcy-identity-sdk 0.0.26 declares license "Apache-2.0" and Homepage https://github.com/agntcy/identity.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 39e3bc12aaa2d0c30fd49423c816600760c8d0ab6dfe5dab4e2501334f7a19c5
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/agntcy/identity/main/README.md
+    shows: The README installs the Issuer CLI with "go install github.com/agntcy/identity/cmd/issuer@latest" and
+      starts the Node Backend from the cloned repository with Docker or a Helm chart.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a86cda0d0a37d9c265298bf4821ca9502115620a91e74506d4e89386f9ee22ea
+    establishes:
+    - source
+  - url: https://agntcy.org
+    shows: The footer reads "Copyright © AGNTCY a Series of LF Projects, LLC" and lists Identity among the stack's
+      open-source components.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 53175e2a9d37b117fde9f6d20a9e7b63c9c9b7538d1bcd4f8977af80d8cc9cef
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is read from PyPI downloads of agntcy-identity-sdk, the Python SDK published from this repository.
+    The issuer CLI and node backend ship as release binaries and container images, which are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/agntcy-identity-sdk/recent
+    shows: 'agntcy-identity-sdk: last_month 123, last_week 33 downloads.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7249a76cbf56542779fdc9465cd0752d359db52f5064cf31d34f7801dc41fea0
+  - url: https://pypi.org/pypi/agntcy-identity-sdk/json
+    shows: agntcy-identity-sdk 0.0.26, "Identity SDK for Python", with Homepage and Bug Tracker on github.com/agntcy/identity.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 46606b23b1ddc436d5d959d888c0654b7dd6b6b31d357dc0f4cd556cfc335cfe
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: unique identifiers for agents and MCP servers, as W3C DIDs or IdP-issued IDs, with badges carrying signed
+    verifiable credentials and badge verification; no per-action decision; no delegation; no human approval; no
+    decision record
+  confidence: medium
+  note: AGNTCY Identity establishes who an agent or MCP server is and lets others verify it through signed badges.
+    Deciding what that agent may then do is left to other systems.
+  relative_to: attestix
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/agntcy/identity/main/README.md
+    shows: '"Each agent is assigned a universally unique identifier, backed by verifiable credentials (VCs)"; features
+      are "Identity creation", "Existing identity onboarding" and "Badges creation & verification".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a86cda0d0a37d9c265298bf4821ca9502115620a91e74506d4e89386f9ee22ea

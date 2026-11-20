@@ -1,0 +1,99 @@
+product: identity-assertion-authz-grant
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: IETF-Trust-Legal-Provisions
+      detail: 'the draft text under BCP 78 and TLP 5: copy, distribute and translate it unmodified; no license to
+        modify it outside the IETF Standards Process; not on the software tier list'
+    - name: BSD-3-Clause
+      detail: Code Components extracted from the draft, under the Revised BSD License, TLP 5 section 4
+    source:
+      value: public
+      detail: revision 06 in the IETF draft archive, edited in oauth-wg/oauth-identity-assertion-authz-grant
+    core-gated:
+      value: ungated
+      detail: an IETF working group document on the IETF stream; the working group holds the text, and no vendor
+        sells an edition of it
+  confidence: medium
+  note: The draft is published in full, anyone may copy and distribute it unmodified, and code extracted from it
+    comes under the Revised BSD License. The IETF Trust grants no license to modify the text outside the IETF standards
+    process, so the document itself cannot be reworked the way an openly licensed specification can.
+  raw: 'license:IETF-Trust-Legal-Provisions(the draft text under BCP 78 and TLP 5: copy, distribute and translate
+    it unmodified; no license to modify it outside the IETF Standards Process; not on the software tier list)+BSD-3-Clause(Code
+    Components extracted from the draft, under the Revised BSD License, TLP 5 section 4);source:public(revision
+    06 in the IETF draft archive, edited in oauth-wg/oauth-identity-assertion-authz-grant);core-gated:ungated(an
+    IETF working group document on the IETF stream; the working group holds the text, and no vendor sells an edition
+    of it)'
+  sources:
+  - url: https://www.ietf.org/archive/id/draft-ietf-oauth-identity-assertion-authz-grant-06.txt
+    shows: 'Copyright Notice: "This document is subject to BCP 78 and the IETF Trust''s Legal Provisions Relating
+      to IETF Documents"; "Code Components extracted from this document must include Revised BSD License text".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1699586519ecb5333fb48ee0443f57d56e95f0b745e25b70e925fb85a6efcfc0
+    establishes:
+    - license
+    - source
+  - url: https://trustee.ietf.org/documents/trust-legal-provisions/tlp-5/
+    shows: TLP 5, section 3.c grants rights "to copy, publish, display and distribute IETF Contributions and IETF
+      Documents in full and without modification"; 3.d grants no "license to modify" them "in any context outside
+      the IETF Standards Process"; section 4 offers Code Components under the Revised BSD License.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7b1b21e9e781d42ea1cbf278a3b1fda76269847c61345e0e73d35ff17b7bc2b5
+    establishes:
+    - license
+  - url: https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/
+    shows: 'Datatracker: "Active Internet-Draft", stream "Internet Engineering Task Force (IETF)", WG state "WG
+      Document", with the working group''s GitHub repository linked.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bd203654d2df7ee3ce13d704ac3bc257d2e82d8606fed79fcfae28712a93409a
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/search/repositories?q=repo:oauth-wg/oauth-identity-assertion-authz-grant
+    shows: 'oauth-wg/oauth-identity-assertion-authz-grant: public, not archived, not a fork, no license detected.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5aef5214f3c71faf7752866e46a2910b19141465120d155d8781777e7574ba07
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: The draft has no package of its own, so GitHub stars on the working group's editing repository are the only
+    signal. A star is not a use, and the identity providers and applications that implement Cross-App Access are
+    not counted.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:oauth-wg/oauth-identity-assertion-authz-grant
+    shows: 'oauth-wg/oauth-identity-assertion-authz-grant: 10 stargazers.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5aef5214f3c71faf7752866e46a2910b19141465120d155d8781777e7574ba07
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: delegation of a user's authority to an application across trust domains through token exchange, where the
+    identity provider and the resource authorization server may each grant a subset of the requested scopes; no
+    agent identity beyond the OAuth client ID; no per-action decision; no human approval step; no decision record
+  confidence: medium
+  note: ID-JAG defines how an identity provider brokers a user's authority to an agent or other application for
+    another domain's API, with each hop free to grant fewer scopes than requested. It leaves actor identity to future
+    extensions and says nothing about individual tool calls, approvals or decision records.
+  relative_to: oxdeai
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://www.ietf.org/archive/id/draft-ietf-oauth-identity-assertion-authz-grant-06.txt
+    shows: At the IdP and again at the Resource Authorization Server, "The granted scopes MAY be a subset"; section
+      9.10 leaves actor_token processing to "Future profiles or extensions"; appendix A.4, "AI Agent using External
+      Tools", has the agent as an OAuth client acting for users.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1699586519ecb5333fb48ee0443f57d56e95f0b745e25b70e925fb85a6efcfc0

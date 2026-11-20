@@ -1,0 +1,113 @@
+product: aembit-iam-for-agentic-ai
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: Aembit Terms of Service forbid deriving the source code
+    source:
+      value: closed
+      detail: the MCP Authorization Server runs in Aembit Cloud and the MCP Identity Gateway ships as a closed Linux
+        virtual machine; no repository publishes either
+    context:
+      deployment:
+        value: Aembit Cloud plus a customer-run gateway
+        detail: the gateway VM runs in the customer environment under the same terms
+  confidence: high
+  note: Aembit sells this as a subscription service, and its terms forbid decompiling the service or deriving its
+    source. The gateway can run inside the customer's own network, but it is delivered as a closed virtual machine,
+    and Aembit's public repositories hold only SDKs, Terraform modules and examples.
+  raw: license:Proprietary(Aembit Terms of Service forbid deriving the source code);source:closed(the MCP Authorization
+    Server runs in Aembit Cloud and the MCP Identity Gateway ships as a closed Linux virtual machine; no repository
+    publishes either);deployment:Aembit Cloud plus a customer-run gateway(the gateway VM runs in the customer environment
+    under the same terms)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://aembit.io/terms-of-service/
+    shows: Aembit grants a "limited, worldwide, non-exclusive, non-transferable" right to use the Services and "one
+      object code copy of any downloadable software"; the customer may not "de-compile, reverse engineer, or otherwise
+      attempt to derive the source code".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 895a1825b242594b3ec4341a7fbb466588e1a2b73395e1971db3d297e78a000c
+    establishes:
+    - license
+    - source
+  - url: https://aembit.io/iam-for-agentic-ai/
+    shows: The MCP Authorization Service "Runs as a fully managed capability in Aembit Cloud"; the MCP Identity
+      Gateway "Deploys as a Linux virtual machine in your own environment".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 29f0ae63a7d86a23b93ada257a55dd5de0ba6cc9f5c295852bd07768fc42c1ab
+    establishes:
+    - source
+  - url: https://aembit.io/pricing/
+    shows: Agentic AI plans run from a free Starter tier with 3 AI agents to Teams at "$20 /agent/mo".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 797222df1a4573c4b4147a175d6f8e3fd27a2e487c4bbb456b5897f71930fca1
+  - url: https://api.github.com/search/repositories?q=org:Aembit
+    shows: The Aembit GitHub organization lists edge-sdks, a Terraform provider and modules, a GitHub Action, a
+      Lambda layer, small utility crates and an agentic-AI security starter kit; none is the authorization server
+      or gateway.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d2afc9206c3fe6f5cddab49bf102c2f8bcc55407d3fd12338800960fcb0d152f
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Aembit publishes no customer, agent or request count for IAM for Agentic AI, and it has no package whose
+    downloads would measure it. Its public repositories are SDKs and infrastructure modules for the wider Aembit
+    platform, not the agent product.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://aembit.io/blog/aembit-iam-for-agentic-ai-is-now-generally-available/
+    shows: The general-availability post cites industry survey figures but gives no count of Aembit customers, agents
+      or requests.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 32670b0cc844a9bacc8adf062c6f4f4d86f42bbd8c47cee2d490053935daca09
+  - url: https://api.github.com/search/repositories?q=org:Aembit
+    shows: The organization's repositories are SDKs, Terraform modules, a GitHub Action and examples, none of them
+      a distribution of the agent product.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d2afc9206c3fe6f5cddab49bf102c2f8bcc55407d3fd12338800960fcb0d152f
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: blended identity binding a verified agent identity to the user it acts for, gateway policy check on every
+    MCP request including per-tool filtering, per-user token exchange to short-lived scoped credentials; no human
+    approval of an action, no tamper-evident decision record
+  confidence: medium
+  note: Aembit gives each agent a verified identity tied to the user it acts for, checks every MCP request and tool
+    against policy at its gateway, and swaps in short-lived credentials scoped to that user. It logs each decision
+    for a SIEM but does not sign or chain those logs, and it has no step that holds an action for a person to approve.
+  relative_to: agent-governance-toolkit
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://aembit.io/iam-for-agentic-ai/
+    shows: Blended Identity combines "an AI agent's identity with the identity of the person it acts for"; policies
+      define "which tools they can use"; the gateway issues "short-lived, scoped credentials that expire when the
+      task is done".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 29f0ae63a7d86a23b93ada257a55dd5de0ba6cc9f5c295852bd07768fc42c1ab
+  - url: https://aembit.io/blog/aembit-iam-for-agentic-ai-is-now-generally-available/
+    shows: The MCP Identity Gateway "validates tokens and enforces policy on every MCP request, then exchanges credentials
+      on the agent's behalf"; each access event records the user, the agent, the resource and "what policy decision
+      was made".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 32670b0cc844a9bacc8adf062c6f4f4d86f42bbd8c47cee2d490053935daca09
+  - url: https://aembit.io/iam-for-agentic-ai/
+    shows: '"Every MCP request is logged with agent identity, user identity, target server, and policy decision"
+      and "Logs integrate with your SIEM"; the page names no signed or tamper-evident log.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 29f0ae63a7d86a23b93ada257a55dd5de0ba6cc9f5c295852bd07768fc42c1ab

@@ -1,0 +1,82 @@
+product: ovid-me
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: mandate engine, audit store, dashboard and AuthZEN server
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 60-path tree at dd154c3 carries one Apache-2.0 LICENSE and holds the whole engine in src/, with
+        no ee/, enterprise/, commercial/ or proprietary/ path; no paid offering is named anywhere
+  confidence: medium
+  note: OVID-ME is a small Apache-2.0 library, and its whole source, including the audit store, dashboard and AuthZEN
+    server, is in one public repository.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(mandate engine, audit store, dashboard and AuthZEN server);source:public;core-gated:ungated(the
+    60-path tree at dd154c3 carries one Apache-2.0 LICENSE and holds the whole engine in src/, with no ee/, enterprise/,
+    commercial/ or proprietary/ path; no paid offering is named anywhere)
+  sources:
+  - url: https://raw.githubusercontent.com/clawdreyhepburn/ovid-me/main/LICENSE
+    shows: The LICENSE is the Apache License 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 96a79968b2d3159670bdcb2ebf1ef0e957ca6a04707871aa8d6fee6e5391e56e
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/clawdreyhepburn/ovid-me/main/package.json
+    shows: 'The manifest for @clawdreyhepburn/ovid-me declares "license": "Apache-2.0" and the repository github.com/clawdreyhepburn/ovid-me.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 028b3a0b7f990562ab6031bcba551a0d37cea3fcb6568e1a8e69f664f6aade4f
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/clawdreyhepburn/ovid-me/main/README.md
+    shows: The README installs the library from npm, documents the MandateEngine, AuditLogger, dashboard and AuthZEN
+      server, and closes "License Apache-2.0".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c8b2b9e9dbcf1c26616ff854465f6e1ce008e9ad078bcfd1e64b3deb9d269fe9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of @clawdreyhepburn/ovid-me, which also counts installs pulled in by
+    the OpenClaw plugin built on it. Downloads cannot show how many installs enforce mandates in production.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@clawdreyhepburn/ovid-me
+    shows: 57 downloads of @clawdreyhepburn/ovid-me between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: be477573d2086957563d84c0aaf12dbd46aa64be6c2e3187c819501eaa50852e
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: verifies the signed OVID token chain that identifies each sub-agent; Cedar evaluation of every tool call
+    against the mandate, with enforce, dry-run and shadow modes; subset proof that a child's mandate is narrower
+    than its parent's; no human approval step, as denials escalate to the parent agent; plain append-only JSONL
+    and SQLite audit log, not tamper-evident
+  confidence: medium
+  note: OVID-ME verifies each sub-agent's signed identity token, evaluates every tool call against the Cedar mandate
+    it carries and can prove a child's mandate is narrower than its parent's. A denial escalates to the parent agent
+    rather than to a person, and its audit log is an ordinary append-only file without signatures or hash chaining.
+  relative_to: agent-governance-toolkit
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/clawdreyhepburn/ovid-me/main/README.md
+    shows: The README shows OVID-ME evaluating each tool call by "Verify OVID signature chain", extracting the Cedar
+      mandate and returning ALLOW or "DENY → escalate to parent"; it says "Permissions can only narrow" with a subset
+      proof at issuance, and describes an "Append-only JSONL audit log + optional SQLite database".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c8b2b9e9dbcf1c26616ff854465f6e1ce008e9ad078bcfd1e64b3deb9d269fe9

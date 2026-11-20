@@ -1,0 +1,81 @@
+product: besa
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: library, command-line tool, dashboard and verifier server
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 206-path tree at 9864be3 carries the root MIT LICENSE and an n8n node LICENSE, with no ee/, enterprise/,
+        commercial/ or proprietary/ path; the README states there is no Besa-operated service
+  confidence: high
+  note: Besa is one MIT-licensed repository holding the library, command-line tool, local dashboard and self-hostable
+    verifier. Its README says there is no hosted Besa service, and nothing is sold beside it.
+  last_verified: '2026-11-20'
+  raw: license:MIT(library, command-line tool, dashboard and verifier server);source:public;core-gated:ungated(the
+    206-path tree at 9864be3 carries the root MIT LICENSE and an n8n node LICENSE, with no ee/, enterprise/, commercial/
+    or proprietary/ path; the README states there is no Besa-operated service)
+  sources:
+  - url: https://raw.githubusercontent.com/dorigjo/besa/main/LICENSE
+    shows: The LICENSE is the MIT License, "Copyright (c) 2026 dorigjo".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5feb8b1e8863481329c7de0ddf5c7f3a2c67450e8f969b71f088ff6e23fc3c3a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/dorigjo/besa/main/package.json
+    shows: 'The manifest for @dorigjo/besa declares "license": "MIT" and the repository github.com/dorigjo/besa.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 587a58e3ddf01a66bf679b7ae11e615a258052dd505d69b6e58756b7ba5381ae
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/dorigjo/besa/main/README.md
+    shows: The README says "v1.1 ships no public Besa-operated instance" and that there is no "hosted retention,
+      public cloud service, or global replay database".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9ede48db9967664ce687b529440adce5be84abfe1c9bb206f923b3e6a9ccd1e7
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of @dorigjo/besa, the one package that carries the library, command-line
+    tool and verifier server. Downloads cannot show how many installs guard a real action.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@dorigjo/besa
+    shows: 111 downloads of @dorigjo/besa between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8a19a0bf3279d65b356f47100d473a7d817e705e82621b53f4218eaaad268462
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: per-action admission against a signed exact-action contract before the handler runs; signed delegation
+    that cannot broaden its parent; signed evidence for every allow and deny; no agent identity of its own; no human
+    approval step
+  confidence: medium
+  note: Besa admits or refuses each consequential action before it runs, accepts only delegations that narrow authority,
+    and signs evidence of every decision. It takes the agent's identity from an existing identity system rather
+    than issuing one, and has no step that waits for a person.
+  relative_to: agent-governance-toolkit
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/dorigjo/besa/main/README.md
+    shows: The README says the wrapper "validates the action, verifies issuer trust and the exact capability, checks
+      optional delegation" before the handler, that DelegationV1 is "Signed, narrowing authority ... A child cannot
+      broaden its parent", that "Success and handler failure both generate signed evidence", and that Besa does
+      not replace "agent identity".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9ede48db9967664ce687b529440adce5be84abfe1c9bb206f923b3e6a9ccd1e7

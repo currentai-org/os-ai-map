@@ -1,0 +1,120 @@
+product: halofy
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: or later; kernel and console
+    - name: Apache-2.0
+      detail: driver kit in kernel/src/driver, MCP server in kernel/src/mcp and integrations in kernel/integrations
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 543-path tree at 3763e64 carries AGPL-3.0 at the root and Apache-2.0 in the three subtrees NOTICE
+        names, with no ee/, enterprise/ or license-key path; the AI gateway, managed channels, hosted connector
+        catalogue, tuned extraction prompts and cross-organization federation are sold as a separate managed service
+    context:
+      commercial:
+        value: Halofy managed service and commercial license
+        detail: the commercial license removes the AGPL obligation for the same code
+  confidence: high
+  note: Halofy's kernel and console are AGPL-3.0 and its MCP server, driver kit and integrations Apache-2.0, and
+    the open build carries the whole identity, access, audit and erasure layer with no license key. Halofy sells
+    a managed service around it, with model routing, hosted connectors, federation across organizations and a tuned
+    extraction prompt set that is not published.
+  last_verified: '2026-11-20'
+  raw: license:AGPL-3.0(or later; kernel and console)+Apache-2.0(driver kit in kernel/src/driver, MCP server in
+    kernel/src/mcp and integrations in kernel/integrations);source:public;core-gated:ungated(the 543-path tree at
+    3763e64 carries AGPL-3.0 at the root and Apache-2.0 in the three subtrees NOTICE names, with no ee/, enterprise/
+    or license-key path; the AI gateway, managed channels, hosted connector catalogue, tuned extraction prompts
+    and cross-organization federation are sold as a separate managed service);commercial:Halofy managed service
+    and commercial license(the commercial license removes the AGPL obligation for the same code)
+  sources:
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/LICENSE
+    shows: The root LICENSE is the GNU Affero General Public License, Version 3, 19 November 2007.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/LICENSING.md
+    shows: Kernel and console are "AGPL-3.0-or-later"; "kernel/src/driver/, kernel/src/mcp/, kernel/integrations/"
+      are Apache-2.0; the commercial licence "is not a different, better build, and it does not unlock features".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 43850b7cdb428e099f5adbb56a2547ca2dfc0a4118e1edd1370e8e0c1f8ad8f2
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/kernel/src/mcp/LICENSE
+    shows: '"Halofy — Model Context Protocol server and tool definitions", "SPDX-License-Identifier: Apache-2.0".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: da7fb6a25b663952890464322429d5b914eb5fdb8c6afae8f34cac4e733a9c44
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/docs/commercial/open-vs-managed.md
+    shows: '"The open build is not a trial. There is no licence key, no edition flag, no seat cap"; model routing,
+      spend attribution, the hosted connector catalogue, federated live query and the tuned extraction prompt pack
+      are listed as managed-only.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 98acdb4e423f59cf16403652197ab82f2b67d157e7f2753861d1407bc5d77ee9
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/OPEN-SOURCE-SCOPE.md
+    shows: '"Everything required to resolve identity, enforce access, store, govern, audit, erase, and retrieve
+      organizational context on your own infrastructure is in the open build."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9922658d9a9a35123918b0bd9e9b9857ccf7839b88bf114a03cc3348966afd97
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: Halofy is installed from its repository, and the kernel's package name is not published on npm, so GitHub
+    stars are the only signal. A star is not a use, so this shows attention rather than deployments.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:halofyai/halofy
+    shows: 'halofyai/halofy: stargazers_count 318, license AGPL-3.0, not archived, not a fork, pushed 2026-11-17.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: de39747fd0b2b70213da6c030c6e95f01898c38f7296ad8f7ce2a931c7480703
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/kernel/package.json
+    shows: The kernel manifest is named "halomem-kernel", version 0.1.0, license "AGPL-3.0-or-later", repository
+      github.com/halofyai/halofy.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f4b9cbc804c923643dc3a7ff6eac43ebdbc12909191dfedd915802a58d1d2e81
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: per-agent API keys resolving namespace, actor and role server-side; namespace ACL and role checks on every
+    read and write before it runs; no delegation narrowed across agents; no human approval step; append-only audit
+    log that is neither hash-chained nor signed
+  confidence: medium
+  note: Halofy gives each agent a credential that the server resolves into its namespace and role, and checks every
+    read and write of organizational context against them before it runs. It has no delegation between agents and
+    no human approval step, and its audit log is append-only but not hash-chained or signed.
+  relative_to: oxdeai
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/README.md
+    shows: '"Identity is server-owned. Namespace, actor, role, and source scope come from the credential"; "credentials
+      resolve actor, role, namespace, and source scope server-side before any read or write"; "Every outcome audits."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f9b9875257cc2d6354f7a9b67e40ccdb327459be99a896f1f39ff98df056b3d8
+  - url: https://raw.githubusercontent.com/halofyai/halofy/main/docs/architecture.md
+    shows: '"Syscalls take a resolved Identity, never a caller-supplied namespace or actor"; "audit_log is append-only
+      by construction", a table with seq, actor, agent_id, op and result columns and no hash column.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f1dff91e9eaa00e2608ecd7bb09ec122ca784d6ee81e3d58626c2ef656039d59

@@ -1,0 +1,106 @@
+product: emilia-protocol
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: protocol formats, Gate runtime, verifiers and integration packages
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 7,663-path tree at 611483b carries the root Apache-2.0 LICENSE and 21 package and integration
+        LICENSE files, all Apache-2.0, with no ee/ or proprietary/ path (the enterprise/ paths are website pages
+        under app/); the vendor lists the self-operated protocol and Gate runtime at no cost
+    context:
+      commercial:
+        value: pilots, Gate implementation and operated Gate deployments
+        detail: priced engagements around the open code
+  confidence: high
+  note: EMILIA's protocol formats, Gate runtime, verifiers and integration packages are published together under
+    Apache-2.0, and the vendor's own pricing lists the self-operated protocol at no cost. What EMILIA Protocol,
+    Inc. sells is pilots, implementation work and operated deployments around the same code, not features withheld
+    from it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(protocol formats, Gate runtime, verifiers and integration packages);source:public;core-gated:ungated(the
+    7,663-path tree at 611483b carries the root Apache-2.0 LICENSE and 21 package and integration LICENSE files,
+    all Apache-2.0, with no ee/ or proprietary/ path (the enterprise/ paths are website pages under app/); the vendor
+    lists the self-operated protocol and Gate runtime at no cost);commercial:pilots, Gate implementation and operated
+    Gate deployments(priced engagements around the open code)
+  sources:
+  - url: https://raw.githubusercontent.com/emiliaprotocol/emilia-protocol/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 45fc137a08906f0113dfe911a6fb9820829eb0bfd0ed7d792b8e76af3de9c87a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/emiliaprotocol/emilia-protocol/main/packages/gate/package.json
+    shows: 'The manifest for @emilia-protocol/gate, "Executor-side consequence control", declares "license": "Apache-2.0"
+      and points to the repository directory packages/gate.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c20b5016cabad717379002ad669d1074682a311b1604cf37d50cdda0a52a8ee1
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/emiliaprotocol/emilia-protocol/main/README.md
+    shows: The README says "EMILIA Protocol is open and Apache-2.0" and that "The managed Gate and Assurance Plane
+      add mandate operations, integrations, evidence operations, re-performance, support, and service levels around
+      the open protocol."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f662bba8ec5e2d8eb240120777af7fa891e98f775efee3562ac381deb9e380fc
+    establishes:
+    - source
+  - url: https://www.emiliaprotocol.ai/pricing
+    shows: The pricing page lists "Open Protocol", "Apache 2.0 · self-operated", including the "Gate runtime" and
+      "Self-hosted under your own trust policy", beside a $25K pilot, Gate implementation and an "Operated Gate"
+      priced per deployment.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 003eefe778485a92c3b1a2ae08f79b83c72387864815d326605d61c58e4e2ad5
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from npm downloads of @emilia-protocol/gate and @emilia-protocol/verify, the enforcement
+    runtime and the receipt verifier. Several smaller packages from the same repository are not counted, and downloads
+    cannot show how many protected workflows run in production.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@emilia-protocol/gate
+    shows: 752 downloads of @emilia-protocol/gate between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3fa596f31045fe2d44abfdf40d71eef292313d90665dbda7f2faa3766e7f2818
+  - url: https://api.npmjs.org/downloads/point/last-month/@emilia-protocol/verify
+    shows: 2,344 downloads of @emilia-protocol/verify between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 867adb995544371e3dbca600e6591a50f97f9a7b98a25a72f552627e9dbeabec
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: per-call admission at the Gate against the owner's mandate; authority that local code can narrow but not
+    widen; passkey human approval bound to the exact action when policy requires it; signed receipts verifiable
+    offline; no agent identity of its own, relying on the customer's identity provider
+  confidence: medium
+  note: EMILIA's Gate checks each protected tool call against the owner's mandate, can hold it for a passkey approval
+    bound to that exact action, and signs a receipt anyone can verify offline. It deliberately issues no identity
+    for the agent, leaving that to the customer's existing identity provider.
+  relative_to: agent-governance-toolkit
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/emiliaprotocol/emilia-protocol/main/README.md
+    shows: The README says "EMILIA Gate checks authority before a protected tool runs", "Local code may narrow that
+      authority; it cannot invent or widen it", "A policy can require a WebAuthn/passkey decision bound to the exact
+      action", "A signed record can be verified offline", and "Keep your existing identity provider".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f662bba8ec5e2d8eb240120777af7fa891e98f775efee3562ac381deb9e380fc

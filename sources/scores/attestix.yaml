@@ -1,0 +1,102 @@
+product: attestix
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: whole repository
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 571-path tree at dcf823e carries only the root Apache-2.0 LICENSE, with no ee/, enterprise/, commercial/
+        or proprietary/ path; the pricing page lists hosted Cloud plans only as proposals beside the open toolkit
+    context:
+      commercial:
+        value: Attestix Cloud
+        detail: proposed hosted plans, not yet offered
+  confidence: high
+  note: Attestix is Apache-2.0 licensed, and the published toolkit runs on the user's own machine without calling
+    home. VibeTensor's pricing page describes hosted plans only as proposals separate from the open toolkit, not
+    as features cut from it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(whole repository);source:public;core-gated:ungated(the 571-path tree at dcf823e carries
+    only the root Apache-2.0 LICENSE, with no ee/, enterprise/, commercial/ or proprietary/ path; the pricing page
+    lists hosted Cloud plans only as proposals beside the open toolkit);commercial:Attestix Cloud(proposed hosted
+    plans, not yet offered)
+  sources:
+  - url: https://raw.githubusercontent.com/VibeTensor/attestix/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text ending "Copyright 2026 VibeTensor Inc."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8640a127d4925edfd746048b68788a1ad510828b41a9542ef7f2d0feb72953c3
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/VibeTensor/attestix/main/pyproject.toml
+    shows: The attestix package manifest takes its license from the LICENSE file and names https://github.com/VibeTensor/attestix
+      as Homepage and Repository.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 84c5241de199ff143e4739b53e186707a188aab36a68266b9e4c6b56835dead8
+    establishes:
+    - license
+    - source
+  - url: https://attestix.io/pricing
+    shows: '"The Python toolkit is open source under Apache 2.0"; the OSS column includes the "Python library, CLI,
+      MCP and REST", while "Hosted plans are proposals, subject to availability and operating acceptance".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d729c396e49a7606b51c9871246c8e2337b3c0342f2ef0d8f3a588b914c038a2
+    establishes:
+    - core-gated
+  - url: https://attestix.io
+    shows: The homepage says "Open source. Runs as a Python library, a CLI, or an MCP server." and "No call home
+      required."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bb038f8f9f31d736e5306767325cd1cec3d8177fa8daf96acac3bf452cba2f4e
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from PyPI downloads of attestix, the package the README installs. The JavaScript, Go, Rust,
+    Java and R verifiers ship from separate repositories and are not counted, and the download figure includes mirrors
+    and automated installs.
+  sources:
+  - url: https://pypistats.org/api/packages/attestix/recent
+    shows: 'attestix: last_month 432, last_week 41 downloads.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ebbf65e93675086c73d09e2cf7c559fd3fd4ce0050f3a35ab18fd3a08e4a5353
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: Unified Agent Identity Tokens with did:key and did:web identifiers and Ed25519-signed W3C credentials;
+    UCAN-style delegation tokens whose capabilities must be a subset of the parent token's; SHA-256 hash-chained
+    audit trail of logged agent actions; no per-action policy decision; no human approval step
+  confidence: medium
+  note: Attestix issues agent identities, narrows delegated capabilities across hops and keeps a hash-chained record
+    of logged actions, but it never decides whether an action may run, so it proves authority rather than enforcing
+    it. It has no human approval step.
+  relative_to: besa
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/VibeTensor/attestix/main/README.md
+    shows: Modules include Identity ("Unified Agent Identity Tokens"), DID ("did:key, did:web"), Delegation ("UCAN-style
+      capability delegation with EdDSA-signed JWT tokens") and an Audit Trail as a "Hash-chained log"; "Cryptographic
+      validity is separate from issuer trust, authorization, revocation and replay policy."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 46cb950555247cb0ff239ae583d8f0331df8b6dfd8b5048d09240e3433fb9d43
+  - url: https://raw.githubusercontent.com/VibeTensor/attestix/main/attestix/services/delegation_service.py
+    shows: When a parent token is given, "The requested capabilities must also be a subset of the parent's att (UCAN
+      capability attenuation). This prevents chain forgery and capability escalation attacks."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: eaa20770b0f6abded0d0c5fca63b56081c9f84037d55204d2aea8187b0232018

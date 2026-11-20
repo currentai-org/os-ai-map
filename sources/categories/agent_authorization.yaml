@@ -2,9 +2,11 @@ name: agent_authorization
 display_name: Agent identity & authorization
 description: Software and standards that determine who an agent may act as, what authority it may
   exercise, and what resources and actions it may access or delegate.
-strapline: Open supply, thin adoption. The agent-native authorization layer is a young cluster of open
-  projects, most of them started in 2026 and none yet dominant, and the standards that would let them
-  interoperate are still working-group drafts apart from AuthZEN 1.0.
+strapline: Open supply, thin adoption. Three of the four most complete agent-authorization products publish
+  their code under OSI licenses (Microsoft's Agent Governance Toolkit, Tenuo and Caracal), while the fourth, Grantex,
+  restricts its server to personal use, and the hyperscalers' agent-identity services issue identities and narrow
+  delegation but leave the per-action decision to something else. Only Cloudflare's Workers OAuth Provider is
+  downloaded at scale, and it authenticates MCP clients rather than deciding what an agent may do.
 weights:
   adopt: 0.6
   cap: 0.4
@@ -25,8 +27,102 @@ scoring_recipe:
     build-rubric: how many of five parts a product implements (identity issued to the agent
     instance, a per-action decision against policy, delegation narrowed across hops, human approval
     before a consequential action, and a verifiable record of the decision), with the per-action
-    decision required for band 3 and above. It has not been checked against the seed.
-products: []
+    decision required for band 3 and above. CAPABILITY, as adopted at promotion on 2026-11-20: the
+    band is the number of five parts the product implements itself, each one it has or has not, read
+    from its README, documentation or specification text. (A1) agent identity: issues or verifies an
+    identity for the agent itself (a credential, DID, workload identity, or signed token or key
+    bound to the agent or agent instance), distinct from the user's. (A2) per-action decision:
+    evaluates each tool call or action against policy before it runs, and allows or denies it. (A3)
+    delegation narrowed across hops: passes authority from a user to an agent, or agent to agent,
+    with scope that can only narrow (attenuated tokens or warrants, token exchange with reduced
+    scope, on-behalf-of chains). (A4) human approval: pauses a consequential action until a human
+    approves it. (A5) verifiable decision record: a tamper-evident record of each decision (signed
+    receipts, a hash-chained or signed audit log), not plain logs. Band 3 or above requires A2: a
+    product without a per-action decision is capped at 2. A specification is read for the parts it
+    defines itself. TOP ANCHOR: `agent-governance-toolkit`, which implements all five in published
+    MIT code (did:mesh agent identities, a policy check on every call, scope chains that only
+    narrow, require_approval gates, a Merkle hash-chained audit log). The other 5s are recorded
+    `at`, the 4s `one_below` and the 3s `two_below` it, except `aembit-iam-for-agentic-ai`, also
+    `two_below`, which in turn is the nearer peer for the 2s that issue identities and narrow
+    delegation without deciding per action (`workers-oauth-provider`, `microsoft-entra-agent-id`,
+    `amazon-bedrock-agentcore-identity`). The other 2s and 1s are recorded against the nearest 2 or
+    3 that shares their shape.
+    SAME RELEASE ON BOTH AXES. Where openness reads an open release that withholds features behind a
+    paid license or a hosted-only service, capability reads that same release: a part counts only
+    if the published build performs it without the license or the service. A closed product is read
+    as the service it sells. Adopted in review of the promotion PR, with an audit of every top-band
+    and gated product against implementation files rather than README bullets: `cordum` fell from 5
+    to 3 (agent identities, and so in practice delegation between them, need an Enterprise license
+    file); `kontext` from 2 to 1 (standalone guard only records; denying needs a policy fetched from
+    the hosted workspace); `aegis-agentguard` kept 4 (its signed receipts and Merkle log run in the
+    free build, though blocking covers one agent without a license); `caracal` kept 5 (its Enterprise
+    Edition locks organization, integration, analytics and governance screens, none of the five
+    parts). A SPECIFICATION is read for the mechanisms it defines itself, not those it references:
+    `authzen-authorization-api` defines the access evaluation (A2) and
+    `identity-assertion-authz-grant` the cross-domain grant (A3), each band 1;
+    `wimse-ai-identity-management` is an informational draft that, by its own abstract, applies
+    existing standards rather than defining protocols, so it abstains (null, `n/a`).
+    DISTRIBUTION, counted 2026-11-20 over 27 banded products: 5 holds 4, 4 holds 5, 3 holds 7, 2
+    holds 6, 1 holds 5. The widest rung is a quarter of the category, so no rung triggered the width
+    review.
+  deferred:
+    grantex:
+      because: >-
+        Grantex moved its server, portal and specification text from Apache-2.0 to the
+        Orchestrum Personal Use License 1.0 on 2026-10-21, which lets only an individual use them for
+        personal purposes and requires written permission for any organization. No tier names it.
+        The recorded 2/source_available reads it as `noncommercial`; adding it to that tier's
+        examples is a shared license ruling for a maintainer.
+    authzen-authorization-api:
+      because: >-
+        The Final Specification carries the OpenID Foundation's copyright license (royalty-free, to
+        reproduce, prepare derivative works from and distribute it solely for developing and
+        implementing specifications, with attribution), which no tier names. The recorded
+        3/source_available reads it as `permissive_non_osi`. Whether a standards body's
+        purpose-limited copyright grant is permissive, and on which tier, is a shared ruling for a
+        maintainer; it reaches every specification on the map that a standards body other than
+        the IETF publishes.
+    identity-assertion-authz-grant:
+      because: >-
+        An IETF working-group draft, under BCP 78 and the IETF Trust Legal Provisions: the text may
+        be copied and distributed unmodified but not modified outside the IETF process, and its
+        code components are under the Revised BSD License. No tier names the Legal Provisions. The
+        recorded 2/source_available reads them as no-derivatives; `permissive_non_osi` at 3 is the
+        alternative. A shared ruling for a maintainer, and the first IETF document on the map.
+    wimse-ai-identity-management:
+      because: >-
+        The same license question as identity-assertion-authz-grant: the IETF Trust Legal
+        Provisions map to no license tier, so the ladder abstains, and the recorded
+        2/source_available reads them as no-derivatives on the same reasoning.
+products:
+- agent-governance-toolkit
+- tenuo
+- caracal
+- grantex
+- auth0-for-ai-agents
+- emilia-protocol
+- openfirma
+- bolyra
+- aegis-agentguard
+- cordum
+- oxdeai
+- besa
+- permit0
+- clawvisor
+- ovid-me
+- aembit-iam-for-agentic-ai
+- workers-oauth-provider
+- pi-permission-system
+- halofy
+- attestix
+- microsoft-entra-agent-id
+- amazon-bedrock-agentcore-identity
+- kontext
+- mcp-auth
+- agntcy-identity
+- authzen-authorization-api
+- identity-assertion-authz-grant
+- wimse-ai-identity-management
 comments: >-
   Created 2026-10-09 as a preliminary category by maintainer ruling R-2026-10-09-a, on the
   agent-authorization sweep in docs/sweeps/2026-10-09-agent-authorization/ (#878, issue #723).
@@ -38,39 +134,57 @@ comments: >-
   WIMSE WG) are seeded; an individual Internet-Draft has no standing in the IETF process and does
   not pass. ADJACENT, NOT HERE (R-2026-10-09-b): general-purpose identity and authorization systems
   that ship an agent or MCP feature, among them Open Policy Agent, OpenFGA, SpiceDB, Cedar, Cerbos,
-  Keycloak, Pomerium, Casdoor, Logto, Better Auth and ThunderID. They are authorization software that
-  happens to support agents, and admitting them would bury the agent-native cluster inside mature IAM
-  infrastructure. One enters only if its product identity itself becomes agent-first, read from what
-  the project now leads with, not from a new docs page. Neighbors. agent_protocols (R-2026-10-09-c):
-  the line is functional. Protocols govern how agents communicate and interoperate; this category
-  governs authority, delegation, identity and policy. The authorization section of a wire protocol
-  stays part of that protocol (MCP's authorization spec is part of `model-context-protocol`, A2A's
-  security scheme part of `agent2agent-protocol`), and so does agent payment authorization (x402,
-  AP2; R-2026-10-08-h). A library that implements only the authorization half of a protocol (MCP
-  Auth, Workers OAuth Provider) is here; an MCP server framework with auth as one feature (FastMCP,
-  golf) or a stdio-to-remote bridge that handles the client side of OAuth (mcp-remote) stays there,
-  and so does an agent-communication framework whose identity layer serves its transport (Bindu,
-  R-2026-10-09-g). Gateways (R-2026-10-09-d): MCP and agent gateways (agentgateway, IBM
-  ContextForge, Docker MCP Gateway, Obot, Jarvis Registry, casbin-gateway, OctoBus) stay parked
-  until a gateway-specific pass. A gateway that enforces authorization is not thereby an
-  authorization product, any more than a connector that uses OAuth is. Closed services
-  (R-2026-10-09-f, consistent with #863): an open client or SDK whose decision is made by a closed
-  hosted service (Auth0's AI SDKs, AgentSafe, Quirna, Ziffer, permit-mcp) is not an open
-  authorization product and waits for a closed-product pass. Kontext was kept because its policy is
-  evaluated locally, though setup needs a token from its hosted dashboard. agent_tools_connectors:
-  credential custody inside an adapter stays there, where that ladder already rewards it (Composio,
-  Arcade, Open Connector, Pipedream, Nango). A standalone authorization server, policy point or
-  approval gate that adapts no system is here; Clawvisor is the edge case, since it injects
-  credentials but adapts nothing. safeguards: that category decides by content, whether an input or
-  output is harmful; this one decides by authority, whether this principal may take this action.
-  Prompt-injection and content guardrails stay there (Arcjet, Invariant, agentshield,
-  LlamaFirewall). agent-governance-toolkit moved here from the safeguards registry under
-  R-2026-10-09-e, because its README leads with the per-action policy decision, agent identity and
-  the decision record, and states that it does not work at the prompt. orchestration_agents keeps the
-  permission prompts built into a harness or framework; a plugin whose only job is to add permission
-  enforcement to one harness (pi-permission-system) is here. assurance_evidence keeps evidence about
-  systems handed to an outside party; a record of an authorization decision emitted by the product
-  that made it is part of this category's function. agent_memory: Halofy also keeps durable context,
-  but its README leads with identity, policy and audit, so it is seeded here. Seed roster in
-  sources/registry/agent_authorization.yaml: the 21 agent-specific accepted candidates and the three
-  standards from the sweep's rows.yaml, plus agent-governance-toolkit.
+  Keycloak, Pomerium, Casdoor, Logto, Better Auth and ThunderID. They are authorization software
+  that happens to support agents, and admitting them would bury the agent-native cluster inside
+  mature IAM infrastructure. One enters only if its product identity itself becomes agent-first,
+  read from what the project now leads with, not from a new docs page. Neighbors. agent_protocols
+  (R-2026-10-09-c): the line is functional. Protocols govern how agents communicate and
+  interoperate; this category governs authority, delegation, identity and policy. The authorization
+  section of a wire protocol stays part of that protocol (MCP's authorization spec is part of
+  `model-context-protocol`, A2A's security scheme part of `agent2agent-protocol`), and so does agent
+  payment authorization (x402, AP2; R-2026-10-08-h). A library that implements only the
+  authorization half of a protocol (MCP Auth, Workers OAuth Provider) is here; an MCP server
+  framework with auth as one feature (FastMCP, golf) or a stdio-to-remote bridge that handles the
+  client side of OAuth (mcp-remote) stays there, and so does an agent-communication framework whose
+  identity layer serves its transport (Bindu, R-2026-10-09-g). Gateways (R-2026-10-09-d): MCP and
+  agent gateways (agentgateway, IBM ContextForge, Docker MCP Gateway, Obot, Jarvis Registry,
+  casbin-gateway, OctoBus) stay parked until a gateway-specific pass. A gateway that enforces
+  authorization is not thereby an authorization product, any more than a connector that uses OAuth
+  is. Closed services (R-2026-10-09-f, consistent with #863): an open client or SDK whose decision
+  is made by a closed hosted service (Auth0's AI SDKs, AgentSafe, Quirna, Ziffer, permit-mcp) is not
+  an open authorization product and waits for a closed-product pass. Kontext was kept because its
+  policy is evaluated locally, though setup needs a token from its hosted dashboard.
+  agent_tools_connectors: credential custody inside an adapter stays there, where that ladder
+  already rewards it (Composio, Arcade, Open Connector, Pipedream, Nango). A standalone
+  authorization server, policy point or approval gate that adapts no system is here; Clawvisor is
+  the edge case, since it injects credentials but adapts nothing. safeguards: that category decides
+  by content, whether an input or output is harmful; this one decides by authority, whether this
+  principal may take this action. Prompt-injection and content guardrails stay there (Arcjet,
+  Invariant, agentshield, LlamaFirewall). agent-governance-toolkit moved here from the safeguards
+  registry under R-2026-10-09-e, because its README leads with the per-action policy decision, agent
+  identity and the decision record, and states that it does not work at the prompt.
+  orchestration_agents keeps the permission prompts built into a harness or framework; a plugin
+  whose only job is to add permission enforcement to one harness (pi-permission-system) is here.
+  assurance_evidence keeps evidence about systems handed to an outside party; a record of an
+  authorization decision emitted by the product that made it is part of this category's function.
+  agent_memory: Halofy also keeps durable context, but its README leads with identity, policy and
+  audit, so it is seeded here. Seed roster in sources/registry/agent_authorization.yaml: the 21
+  agent-specific accepted candidates and the three standards from the sweep's rows.yaml, plus
+  agent-governance-toolkit. PROMOTED 2026-11-20 (record:
+  docs/sweeps/2026-11-20-agent-authorization-promotion/). Twenty-eight head products: 24 of the 25
+  seed rows, and the closed-product pass R-2026-10-09-f deferred, which adds the leading closed
+  agent surfaces to mark the frontier (ADR-005): Auth0 for AI Agents (Okta), Microsoft Entra Agent
+  ID, Amazon Bedrock AgentCore Identity and Aembit IAM for Agentic AI. Each is scored as the hosted
+  service; their open SDKs are recorded as clients in openness context, as R-2026-10-09-f says an
+  open SDK does not make an open authorization product. Aembit took the fourth place over Keycard,
+  which leads as purely with agent authorization but was not generally available, and over Descope
+  and Stytch, customer-identity platforms that add an agent feature and so fail the built-for-agents
+  test. Okta Cross App Access is the ID-JAG protocol already seeded as a standard. Amazon Bedrock
+  AgentCore Policy (Cedar allow or deny on each tool call at the AgentCore Gateway) is a separate
+  surface a later pass could add. REJECTED: phantasm (edwinkys/phantasm), no commit since
+  2024-11-25. POLICY AND TENANCY: which team's agents may reach which models and tools is an
+  authorization question, and this category answers it where deciding it is the product's primary
+  function, as for Halofy (an organization-wide access layer resolving each agent to a namespace and
+  role) and Cordum. LLM and MCP gateways that enforce per-team access as one feature stay parked
+  under R-2026-10-09-d, and general-purpose IAM stays adjacent under R-2026-10-09-b; neither moves
+  because a tenancy page exists.

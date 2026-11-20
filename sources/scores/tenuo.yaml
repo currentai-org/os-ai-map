@@ -1,0 +1,140 @@
+product: tenuo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: Rust core, Python and TypeScript libraries, WebAssembly build and authorizer sidecar
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,146-path tree at ee729db carries Apache-2.0 LICENSE files at the root and in tenuo-core, tenuo-python
+        and tenuo-wasm, with no ee/, enterprise/, commercial/ or proprietary/ path; the optional tenuo[cloud] extra
+        installs a proprietary client for Tenuo Cloud, which the core does not need
+    context:
+      commercial:
+        value: Tenuo Cloud
+        detail: a managed control plane for issuance, key rotation, revocation, approvals and observability
+  confidence: high
+  note: Tenuo's Rust core, its Python and TypeScript libraries and its authorizer sidecar are published under Apache-2.0,
+    and they issue, delegate and verify warrants on the user's own machines with no call to Tenuo. Tenuo Cloud is
+    sold beside them as a managed control plane, and warrants an agent already holds keep verifying without it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(Rust core, Python and TypeScript libraries, WebAssembly build and authorizer sidecar);source:public;core-gated:ungated(the
+    1,146-path tree at ee729db carries Apache-2.0 LICENSE files at the root and in tenuo-core, tenuo-python and
+    tenuo-wasm, with no ee/, enterprise/, commercial/ or proprietary/ path; the optional tenuo[cloud] extra installs
+    a proprietary client for Tenuo Cloud, which the core does not need);commercial:Tenuo Cloud(a managed control
+    plane for issuance, key rotation, revocation, approvals and observability)
+  sources:
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text, with the appendix's placeholder copyright line.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/tenuo/json
+    shows: PyPI lists tenuo 0.3.7 with license expression Apache-2.0 and a Repository link to https://github.com/tenuo-ai/tenuo.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6fe6b749b957e1213cef14fcd04a3306885c6ed3bc9b80bec2f852e289965cbd
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/README.md
+    shows: The README says "The self-hosted core and sidecar are Apache-2.0 and run entirely in your infrastructure,
+      with no external calls at verification time" and calls Tenuo Cloud "an optional managed control plane"; it
+      lists tenuo[cloud] as a "proprietary control-plane client".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ec79e941812ca411b47716aecad44990e6a423a3935ef12664b02e6df1c63a1e
+    establishes:
+    - source
+    - core-gated
+  - url: https://tenuo.ai/pricing
+    shows: Pricing sells Tenuo Cloud plans (Developer free, Production $499/month, Enterprise) and says "The open-source
+      library is free, always. Warrants are checked by the open-source Tenuo library in your own process."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 543795c2a0c50e7e8b25d4c506e05cb128f849e66ff00acc4d534e0093a0a56f
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the sum of monthly downloads of the tenuo package on PyPI, @tenuo/core on npm and the tenuo
+    crate, all three published from the Tenuo repository, with the Python package carrying most of it. Downloads
+    include automated installs and cannot show how many teams enforce warrants in production.
+  sources:
+  - url: https://pypistats.org/api/packages/tenuo/recent
+    shows: 13,598 downloads of tenuo in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 381b6a92dc68b40dc9c34a5b1c9be77e762df89f1db6667affbc26d7b65c24ff
+  - url: https://api.npmjs.org/downloads/point/last-month/@tenuo/core
+    shows: 1,733 downloads of @tenuo/core between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 191f5e261c4f386cb298ca7287fe32113ed59ba602b8a2a59c9db027f9f223f9
+  - url: https://crates.io/api/v1/crates/tenuo/downloads
+    shows: Daily downloads of the tenuo crate sum to 1,104 between 2026-10-21 and 2026-11-19.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 54dd0374340428ac5ec8913c00174e9a9f14a6960b882d041ec5474e3ad4311b
+  - url: https://registry.npmjs.org/@tenuo/core/latest
+    shows: '@tenuo/core 0.3.6-beta.0 names its repository as github.com/tenuo-ai/tenuo, directory tenuo-ts/packages/core.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 89458b5304afa1c3ca252c2901620d4b3766a429373188c9c12ff521d83c1560
+  - url: https://crates.io/api/v1/crates/tenuo
+    shows: The tenuo crate, version 0.3.7, names https://github.com/tenuo-ai/tenuo as its repository and https://tenuo.ai
+      as its homepage.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7724c37e17f9b2ea5a6f24d48e9949898848a59eb6ab577b5b9674454b83d313
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: warrants bound to the holder agent's public key, with every call signed by that key; each tool call and
+    its arguments checked against the warrant before it runs; delegation by child warrants that can only narrow
+    tools, constraints and expiry; approval gates that need signed human approvals; opt-in signed authorization
+    receipts
+  confidence: medium
+  note: 'Tenuo implements every part of agent authorization itself: an agent proves possession of the key its warrant
+    names, each call is checked before it runs, delegated warrants can only shrink, sensitive calls wait for a signed
+    human approval, and allow or deny decisions can be issued as signed receipts.'
+  relative_to: agent-governance-toolkit
+  relation: at
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/README.md
+    shows: The README says "Every warrant names a public key. Every call carries a signature from that key",
+      "Calls outside that limit are blocked before the function executes", "No delegated warrant can exceed
+      its parent", and "Signed authorization receipts are opt-in".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ec79e941812ca411b47716aecad44990e6a423a3935ef12664b02e6df1c63a1e
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/docs/approvals.md
+    shows: 'The Human Approvals page describes "Cryptographically verified human-in-the-loop authorization
+      for AI agent tool calls": gates, required approvers and a threshold set on the warrant, satisfied
+      by SignedApproval signatures.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 695f26ae65193d0d37c3e8636e8d5c990762b7c247b4e073a3572af13cc7afd5
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/tenuo-core/src/warrant.rs
+    shows: 'The warrant module describes "a cryptographically-signed token of authority" with a parent_hash
+      linking each warrant to its parent and "Monotonic Attenuation: Capabilities only shrink when delegated,
+      never expand".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: dba7e4009a915a417d5e75128cb6ffb531ebf903a719a611635e22b2a5a5b3be
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/tenuo-core/src/receipt.rs
+    shows: The receipt module defines "a self-contained, signed record of one authorization decision" that
+      carries the public key it was signed under, so a verifier can check it with no directory lookup.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 38f19943c04944c5d06c29353a659355e332dc85712cc9a2dfe76f9b666a3523

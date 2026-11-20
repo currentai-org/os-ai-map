@@ -1,0 +1,114 @@
+product: authzen-authorization-api
+openness:
+  score: 3
+  class: source_available
+  components:
+    license:
+    - name: OpenID-Foundation-Copyright-License
+      detail: 'Notices appendix of the Final Specification: a non-exclusive, royalty-free, worldwide license to
+        reproduce, prepare derivative works from and distribute it solely for developing specifications and implementing
+        them, with attribution to the OIDF; not on the software tier list'
+    source:
+      value: public
+      detail: the Final Specification on openid.net and its markdown source in openid/authzen
+    core-gated:
+      value: ungated
+      detail: an OpenID Foundation working group holds the specification under the Foundation's IPR Policy, with
+        a contributor patent non-assertion; the repository holds the specification sources, draft profiles and an
+        interop harness, and no vendor sells an edition of the standard
+  confidence: medium
+  note: The Final Specification is published in full, and the OpenID Foundation lets anyone copy it, build on it
+    and implement it royalty-free, with attribution, while contributors promise not to assert patents against implementers.
+    That grant is the Foundation's own rather than an OSI-approved license, and it limits use of the text to developing
+    and implementing specifications.
+  raw: 'license:OpenID-Foundation-Copyright-License(Notices appendix of the Final Specification: a non-exclusive,
+    royalty-free, worldwide license to reproduce, prepare derivative works from and distribute it solely for developing
+    specifications and implementing them, with attribution to the OIDF; not on the software tier list);source:public(the
+    Final Specification on openid.net and its markdown source in openid/authzen);core-gated:ungated(an OpenID Foundation
+    working group holds the specification under the Foundation''s IPR Policy, with a contributor patent non-assertion;
+    the repository holds the specification sources, draft profiles and an interop harness, and no vendor sells an
+    edition of the standard)'
+  sources:
+  - url: https://openid.net/specs/authorization-api-1_0.html
+    shows: 'Appendix C, Notices: "Copyright (c) 2026 The OpenID Foundation." OIDF "grants to any Contributor, developer,
+      implementer, or other interested party a non-exclusive, royalty free, worldwide copyright license" "solely
+      for the purposes of (i) developing specifications, and (ii) implementing".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f0ee89cc4a688f9f409dc323c8342579d74c45dc776a6b04a622ba9738de82bc
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/search/repositories?q=repo:openid/authzen
+    shows: 'openid/authzen: public, not archived, not a fork, no license detected, pushed 2026-11-19, "Proposed
+      standard for an Authorization API".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 23d93ff3dcfba21ae630cb008b11a6acb023cf18067072242d9e3b88535a8732
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/openid/authzen/main/README.md
+    shows: '"This repository contains the output of the OpenID AuthZEN working group"; the API spec "is versioned
+      in markdown at api/authorization-api-1_0.md".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7cb1037907c92760efb49859dd04e013097bb20d3e98be4edb60664b99594b00
+    establishes:
+    - source
+    - core-gated
+  - url: https://openid.net/intellectual-property/
+    shows: The OpenID IPR Policy "includes a grant to the Foundation and others of a copyright license in all Contributions"
+      and "a patent non-assertion agreement", so contributors have no basis "for bringing a legal claim against
+      others for implementing OpenID specifications".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 49219327395f51c4fc3491d11acc64bb6eb97d096205d9f724f93f1b58791c0f
+    establishes:
+    - core-gated
+  - url: https://openid.net/wg/authzen/
+    shows: The working group page records "Authorization API 1.0 Final Specification Approved (January 2026)" and
+      the agent-era working group drafts that followed.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0a7f902842fdf4f73b6f89ac67754f51918b76770600c9367c7b9b3b8ff059e3
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: The specification has no package of its own, so GitHub stars on the working group's repository are the only
+    signal. A star is not a use, and the policy engines that implement the API are not counted.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:openid/authzen
+    shows: 'openid/authzen: 172 stargazers.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 23d93ff3dcfba21ae630cb008b11a6acb023cf18067072242d9e3b88535a8732
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: an access evaluation request in which a subject, action, resource and context go to a decision point and
+    an allow or deny comes back, with batch evaluation and subject, resource and action search; no agent identity,
+    delegation chain, approval step or signed decision record in the Final Specification
+  confidence: medium
+  note: 'The specification defines the per-request decision itself: a subject, action, resource and context go in
+    and an allow or deny comes out. The working group''s profiles for approval workflows and token-exchange delegation
+    are still drafts and are not part of the Final Specification.'
+  relative_to: oxdeai
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://openid.net/specs/authorization-api-1_0.html
+    shows: 'Authorization API 1.0, "Status: Final", published 11 January 2026: it "enables Policy Decision Points
+      (PDPs) and Policy Enforcement Points (PEPs) to communicate authorization requests and decisions", with evaluation
+      and search endpoints.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f0ee89cc4a688f9f409dc323c8342579d74c45dc776a6b04a622ba9738de82bc
+  - url: https://raw.githubusercontent.com/openid/authzen/main/README.md
+    shows: Lists the draft COAZ-MCP binding, a draft Access Request and Approval Profile and a draft OAuth 2.0 Token
+      Exchange Binding covering delegation, beside the API spec.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7cb1037907c92760efb49859dd04e013097bb20d3e98be4edb60664b99594b00

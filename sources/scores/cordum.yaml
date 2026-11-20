@@ -1,0 +1,146 @@
+product: cordum
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: BSL-1.1
+      detail: 'non-OSI: the Additional Use Grant allows any use, production and self-hosting included, except providing
+        a Competitive Offering; each version converts to Apache-2.0 on 2029-01-01 or four years after its release,
+        whichever comes first'
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: core/licensing verifies an Ed25519-signed license file; without one the control plane runs Community
+        limits (3 workers, 3 concurrent jobs, 7-day audit retention, single approver, no custom policy bundles),
+        and SSO/SAML, SCIM, SIEM export, legal hold, velocity rules and agent identity unlock only under Enterprise
+        entitlements shipped in the same source
+    context:
+      commercial:
+        value: Cordum Team and Enterprise licenses
+        detail: licensed capacity, multi-approver gates, identity, audit and support entitlements
+  confidence: high
+  note: Cordum's full source is published under the Business Source License 1.1, which allows production and self-hosted
+    use but not offering Cordum as a competing product until each version converts to Apache-2.0. The free build
+    also runs under capacity limits, and agent identities, SSO and SIEM export switch on only with a paid license
+    file.
+  last_verified: '2026-11-20'
+  raw: 'license:BSL-1.1(non-OSI: the Additional Use Grant allows any use, production and self-hosting included,
+    except providing a Competitive Offering; each version converts to Apache-2.0 on 2029-01-01 or four years after
+    its release, whichever comes first);source:public;core-gated:gated(core/licensing verifies an Ed25519-signed
+    license file; without one the control plane runs Community limits (3 workers, 3 concurrent jobs, 7-day audit
+    retention, single approver, no custom policy bundles), and SSO/SAML, SCIM, SIEM export, legal hold, velocity
+    rules and agent identity unlock only under Enterprise entitlements shipped in the same source);commercial:Cordum
+    Team and Enterprise licenses(licensed capacity, multi-approver gates, identity, audit and support entitlements)'
+  sources:
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/LICENSE
+    shows: Business Source License 1.1 with Licensor "Cordum"; the Additional Use Grant permits "any purpose, including
+      production use and self-hosted deployments, provided that you do not use the Licensed Work to provide a Competitive
+      Offering"; Change Date 2029-01-01, Change License Apache 2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4f332e94b88cd7d23a2e3684f5170a91481d1a18979a59a48af3bb3d00de3310
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/README.md
+    shows: The README calls Cordum "The Source-Available Agent Control Plane" and stands up the full stack (API
+      gateway, scheduler, safety kernel, workflow engine, context engine, dashboard) from source with one quickstart
+      script.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9fba7f859d1b5f170fd5e3b1f4fd9928e8b06b8b068c90c0faefd2c7d1f3a78f
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/core/licensing/tiers.go
+    shows: TierDefaults gives PlanCommunity MaxWorkers 3, AuditRetentionDays 7, MaxPolicyBundles 0 and single approval,
+      while only PlanEnterprise sets RBAC, SSO, SAML, SCIM, SIEMExport, LegalHold and AgentIdentity to true.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9efd24729ac7b4448f671796ad53159e1034b95eba1235965742228c6f6a8415
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/docs/enterprise.md
+    shows: '"Enterprise features ship in cordum core behind signed license entitlements"; the licensing system "uses
+      Ed25519 signature verification and enforces tiers (Community/Team/Enterprise)" and degrades to Community on
+      expiry.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a8db43bdfbb60cbecc952b982a49d75fad0f64ea29c56aa9ffad3b03ecb9cd3f
+    establishes:
+    - core-gated
+  - url: https://cordum.io/pricing
+    shows: '"Community includes the self-hosted core. Team adds licensed capacity and multi-approver gates. Enterprise
+      adds identity, audit, and contracted support entitlements."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 65557a1c5ebf55cca1f0b452de3a83f8e5729d574466f2d80a528f63dd93ebcd
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: Cordum ships as container images and a Helm chart rather than a language package, and Docker Hub reports
+    only a lifetime pull count, so GitHub stars are the only signal read here. A star is not a use, so this shows
+    attention rather than deployments.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:cordum-io/cordum
+    shows: 'cordum-io/cordum: stargazers_count 507, license NOASSERTION, not archived, not a fork, pushed 2026-11-19.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 380efaf5476cbc222565568bb0920eb02b580ec911aa4a4759dc2a8b1fff8c6d
+  - url: https://hub.docker.com/v2/repositories/cordum/api-gateway/
+    shows: cordum/api-gateway reports a lifetime pull_count of 4,659, last updated 2026-11-11; Docker Hub gives
+      no monthly figure.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5dfd0856a991e5ed093a70a0e6f76a41dcd665f61876f38bdba2472fa4f8d4ee
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: per-action ALLOW, DENY, REQUIRE_APPROVAL, THROTTLE and ALLOW_WITH_CONSTRAINTS verdicts from the
+    Safety Kernel; human approvals bound to the action hash, with a single approver in the unlicensed Community
+    tier; SHA-256 hash-chained audit log with optional HMAC; agent identities are an Enterprise entitlement,
+    and the Ed25519-signed delegation tokens whose scope can only narrow are issued only between those identities
+  confidence: medium
+  note: Cordum decides each action against policy before it runs, holds risky actions until a person approves
+    that exact action, and chains its audit records so tampering shows. Agent identities need a paid Enterprise
+    license, and so does delegation in practice, because its narrowing tokens pass only between those identities.
+  relative_to: agent-governance-toolkit
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/README.md
+    shows: Policy evaluation "yields ALLOW, DENY, REQUIRE_APPROVAL, THROTTLE or ALLOW_WITH_CONSTRAINTS";
+      an approval whose action_hash differs is rejected; "Agent identities, which carry the risk tier that
+      agent_risk_tiers rules match, require an Enterprise license."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9fba7f859d1b5f170fd5e3b1f4fd9928e8b06b8b068c90c0faefd2c7d1f3a78f
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/core/licensing/tiers.go
+    shows: 'The Community tier, which runs without a license file, sets "ApprovalMode: ApprovalModeSingle"
+      and "Audit: true"; "AgentIdentity: true" appears only under PlanEnterprise.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9efd24729ac7b4448f671796ad53159e1034b95eba1235965742228c6f6a8415
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/core/controlplane/gateway/handlers_agents.go
+    shows: Creating, reading, updating and deleting agent identities each first call requireFeatureEntitlement(w,
+      agentIdentityFeature, "agent identity requires an Enterprise license").
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: db6399f0cc0cf03f0f7a8b3062e435126925220c1cb8174c55e187ab6effa638
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/docs/auth/delegation.md
+    shows: Delegation tokens "let one agent identity delegate a reduced, time-bounded scope to another agent
+      identity"; issuance and verification "enforce scope monotonicity" and reject chains deeper than CORDUM_DELEGATION_MAX_DEPTH.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4166f8d9d3d874729bec229f6572750463f9d2188137295eac3a1a455cb6d7e0
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/docs/audit-chain.md
+    shows: '"Tamper-evident, append-only audit logging": "each event''s hash includes its predecessor''s
+      hash", with optional HMAC-SHA256 signing of each event.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d6d8ddb16e6abd24a295cd711d1527354d129b86c49edcd1006bf087138289e9

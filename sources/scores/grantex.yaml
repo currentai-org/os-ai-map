@@ -1,0 +1,123 @@
+product: grantex
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Orchestrum-Personal-Use-License-1.0
+      detail: auth service and developer portal (apps/), specification text, documentation and website; free only
+        for an individual's personal use, and any organization needs written permission
+    - name: Apache-2.0
+      detail: SDKs and client packages in packages/, examples, and the specification test vectors and JSON schemas
+    source:
+      value: public
+      detail: the auth service and portal are published in apps/
+    core-gated:
+      value: ungated
+      detail: the 3,418-path tree at 09e5d93 has no ee/, enterprise/, commercial/ or proprietary/ path, and the
+        vendor offers the entire stack for self-hosting
+    context:
+      managed-tier:
+        value: hosted Grantex service at grantex.dev
+        detail: commercial use of it also needs an agreement with Orchestrum
+  confidence: high
+  note: Grantex's auth service, developer portal and specification text are published, but their license lets only
+    an individual use them for personal purposes. Any company, school, charity or public body needs Orchestrum's
+    written permission, even to evaluate or self-host it, while the SDKs that call the service stay under Apache-2.0.
+  raw: license:Orchestrum-Personal-Use-License-1.0(auth service and developer portal (apps/), specification text,
+    documentation and website; free only for an individual's personal use, and any organization needs written permission)+Apache-2.0(SDKs
+    and client packages in packages/, examples, and the specification test vectors and JSON schemas);source:public(the
+    auth service and portal are published in apps/);core-gated:ungated(the 3,418-path tree at 09e5d93 has no ee/,
+    enterprise/, commercial/ or proprietary/ path, and the vendor offers the entire stack for self-hosting);managed-tier:hosted
+    Grantex service at grantex.dev(commercial use of it also needs an agreement with Orchestrum)
+  sources:
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/LICENSE
+    shows: 'The root LICENSE is the "Orchestrum Personal Use License 1.0": an individual may use it for personal
+      purposes, and "Any use other than Personal Use ... requires prior written permission from Orchestrum Technologies
+      LLP"; packages/ and examples/ are excepted under Apache-2.0.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bd2631c6d360e7bec2333f55473fb93aca178284b76b8f6b1a2f53bc75fe86d7
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/LICENSING.md
+    shows: The licensing table puts "apps/ (auth service, developer portal and the other apps)" under LicenseRef-Orchestrum-Personal-Use-1.0
+      and every SDK and client package in packages/ under Apache-2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e042172ac1b94058d275cc286f04848737c52a5d05b8cb7a481bb12af291e4cc
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/COMMERCIAL-LICENSE.md
+    shows: The commercial licensing page says the platform license applies "from 21 October 2026, including every
+      update", and that any organization needs a signed agreement "before using, evaluating, self-hosting or deploying
+      the Grantex platform".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ecfaabdf63ef6c60378380f2f0ba4a7936979c887172ccf20bb20ac590e59f70
+    establishes:
+    - license
+  - url: https://grantex.dev
+    shows: The homepage names Orchestrum Technologies LLP as owner and says "Self-host the entire stack with our
+      production Docker Compose configuration."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b832749bc0a2e184b0b7e43f48d256437210cb492ee753643ef1baf84df5bb21
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is read from downloads of the TypeScript SDK on npm and the Python SDK on PyPI, the clients applications
+    use to request and verify Grantex grants. The counts include automated installs and cannot separate use of the
+    hosted service from self-hosted servers.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@grantex/sdk
+    shows: 5,001 downloads of @grantex/sdk between 2026-10-20 and 2026-11-18
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 705b0db58b6da8fae065118c5b311fdb8bdcbb9feee685a9130baaa7fea2f244
+  - url: https://pypistats.org/api/packages/grantex/recent
+    shows: 6,525 downloads of grantex from PyPI in the last month
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a2a3270403edda6d761ae7dd0f73038e87d3b55b1d6e48c4b8a97a7a9b54c343
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: agent DIDs and signed grant tokens; built-in policy engine with OPA and Cedar backends, and scope checks
+    on each token use; sub-agent grants that must be a strict subset of the parent's scopes; passkey-bound human
+    consent and exact human approvals for wallet spends; hash-chained audit trail and W3C verifiable credentials
+  confidence: medium
+  note: 'Grantex covers every part of the chain: agents get their own identities, requests are checked against granted
+    scopes and policy, delegated grants can only narrow, consequential spends can wait for an exact human approval,
+    and the audit trail is hash-chained. Some of these features, such as passkey enrollment, are off by default
+    on a self-hosted server.'
+  relative_to: agent-governance-toolkit
+  relation: at
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/README.md
+    shows: The README says Grantex "gives each agent a verifiable identity and scoped, time-limited, revocable
+      authority", that "Sub-agent scopes must be a strict subset of the parent's scopes", that wallet policy
+      can "require an exact human approval", that it supports OPA and Cedar policy backends, and lists an
+      audit-trail example with "hash chain integrity verification".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d12431e11bf6e3cd19144c449ba318d8336df78bcd255e1c6bcbc07c5e57ca5b
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/apps/auth-service/src/routes/delegate.ts
+    shows: The delegation route rejects a request with "Requested scopes exceed parent grant scopes" and
+      enforces a maximum chain depth ("Delegation depth limit reached").
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 109c856aff2a5c256d467d122cea04a236c22fb07ea342643c9ef233350ee62a
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/apps/auth-service/src/lib/audit-chain.ts
+    shows: The auth service appends platform-written entries to "one chain per developer, each entry hashing
+      the one before it".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 79fb688f58a462278f10827e088002147fb1699c79c4e57a9cae163eaa33ad71

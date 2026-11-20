@@ -1,0 +1,99 @@
+product: permit0
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: engine, command-line tool, dashboard, taxonomy and email pack
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 342-path public tree at c5e8f7d has one Apache-2.0 LICENSE and no ee/ or enterprise/ path,
+        and permit0.com, which names no paid edition, offers the full SDK free with no rate limits; docs/enterprise-strategy.md
+        only plans a private enterprise fork, which no gate in the published code anticipates
+    context:
+      commercial:
+        value: planned permit0-enterprise edition
+        detail: a private fork with commercially licensed crates, described in the public repository
+  confidence: medium
+  note: Permit0's engine, command-line tool, dashboard and email pack are published under Apache-2.0 and
+    run offline on the user's own machine, and nothing in the published code is held back for a paid tier.
+    The project's planning document sketches a private enterprise edition with SAML sign-on, fine-grained
+    roles and multi-tenancy, but no such edition exists or is sold, so it withholds nothing today.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(engine, command-line tool, dashboard, taxonomy and email pack);source:public;core-gated:ungated(the
+    342-path public tree at c5e8f7d has one Apache-2.0 LICENSE and no ee/ or enterprise/ path, and permit0.com,
+    which names no paid edition, offers the full SDK free with no rate limits; docs/enterprise-strategy.md
+    only plans a private enterprise fork, which no gate in the published code anticipates);commercial:planned
+    permit0-enterprise edition(a private fork with commercially licensed crates, described in the public
+    repository)
+  sources:
+  - url: https://raw.githubusercontent.com/permit0-ai/permit0/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright 2025 permit0 contributors".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 33c11966da93eed706f5ea4b959ed04d18f18d2d4488b020514ea017a1204c70
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/permit0-ai/permit0/main/README.md
+    shows: The README says "The deterministic path (steps 1–6, 8) runs in-process" and that the default install
+      "uses SQLite and in-memory storage, no external dependencies"; it ends "Apache 2.0".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5260691b0f3a9f5e57b7fd4811fa46ab5153a12f4a25fe3be62a8d09e5551202
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/permit0-ai/permit0/main/docs/enterprise-strategy.md
+    shows: A Chinese-language planning document puts a public Apache-2.0 permit0 beside a private permit0-enterprise
+      fork whose enterprise-* crates (S3 and QLDB audit, SSO and RBAC, multi-tenancy) fall under a commercial LICENSE-ENTERPRISE.txt.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c9e2d5f7286a696614bfd00edb51aac20b0bdcef35cd2e25d8c4c0f531f5af49
+    establishes:
+    - core-gated
+  - url: https://permit0.com
+    shows: The site, marked BETA, calls the platform "Open source at the core", runs a free design-partner program
+      and offers "Free forever for OSS — full SDK, no rate limits"; it names no paid edition.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 47f759b4c5439569161de1a09c8edce3fc9569d91457893b2b0754fe97b4b78f
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: Permit0 publishes no package on PyPI, npm or crates.io, so GitHub stars are the only signal. A star is not
+    a use, so this shows attention rather than deployments.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:permit0-ai/permit0
+    shows: 'permit0-ai/permit0: stargazers_count 192, license Apache-2.0, not archived, not a fork, last pushed
+      2026-06-22.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2822498c57215fc2a6c13e375df6e1b439fcb3bf528f0c4f37eb5c46506e7199
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: every tool call normalized to a canonical action and allowed, denied or escalated by deterministic risk
+    policy before it runs; medium- and high-risk actions and unknown actions held for human approval in the dashboard;
+    an Ed25519-signed hash-chained audit trail; no identity issued to the agent; no delegation of authority between
+    users and agents
+  confidence: medium
+  note: Permit0 decides each agent action against policy before it runs, routes risky or unrecognized actions to
+    a person, and signs its audit trail. It gives agents no identity of their own and has no way to pass narrowed
+    authority from one agent or user to another.
+  relative_to: agent-governance-toolkit
+  relation: two_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/permit0-ai/permit0/main/README.md
+    shows: The README describes normalization, risk scoring and tier routing to "Allow", "Deny" or "Human review",
+      says "unknown actions queue for human approval", and lists "Signed audit" as an "ed25519 hash chain".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5260691b0f3a9f5e57b7fd4811fa46ab5153a12f4a25fe3be62a8d09e5551202

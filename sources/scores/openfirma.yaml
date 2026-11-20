@@ -1,0 +1,126 @@
+product: openfirma
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-3.0
+      detail: root LICENSE; the Cargo workspace declares GPL-3.0-only
+    - name: Apache-2.0
+      detail: firma-protobuf crate
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,235-path tree at 1d79361 has no ee/, enterprise/, commercial/ or proprietary/ path and holds
+        the sidecar, the Mini Authority, the sandbox runner and the CLI; the hosted Firma Team control plane at
+        app.firma.ai is a separate service the CLI can log in to, and the README says the Mini Authority or an operator's
+        own implementation of the authority interface can serve
+    context:
+      commercial:
+        value: Firma Team control plane
+        detail: a hosted SaaS with workspaces and an agent registry, also offered for on-premise deployment
+  confidence: medium
+  note: OpenFirma's sidecar, authority, sandbox runner and command-line tool are published under GPL-3.0, and the
+    whole enforcement path runs locally without an account. Firma AI's hosted Team control plane, which adds shared
+    workspaces and an agent registry, is a separate service; the published authority can take its place, or an operator
+    can write their own.
+  last_verified: '2026-11-20'
+  raw: license:GPL-3.0(root LICENSE; the Cargo workspace declares GPL-3.0-only)+Apache-2.0(firma-protobuf crate);source:public;core-gated:ungated(the
+    1,235-path tree at 1d79361 has no ee/, enterprise/, commercial/ or proprietary/ path and holds the sidecar,
+    the Mini Authority, the sandbox runner and the CLI; the hosted Firma Team control plane at app.firma.ai is a
+    separate service the CLI can log in to, and the README says the Mini Authority or an operator's own implementation
+    of the authority interface can serve);commercial:Firma Team control plane(a hosted SaaS with workspaces and
+    an agent registry, also offered for on-premise deployment)
+  sources:
+  - url: https://raw.githubusercontent.com/Firma-AI/openfirma/main/LICENSE
+    shows: The root LICENSE is the GNU General Public License version 3 text, with "openfirma Copyright (C) 2026
+      Firma AI" in its notice.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4e7ea094fb78b97883bf50c94a915beea0396e8586ee44da61a76bc4e10e205b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Firma-AI/openfirma/main/Cargo.toml
+    shows: The workspace manifest sets license = "GPL-3.0-only", publish = false and repository https://github.com/Firma-AI/openfirma.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3a5d58e26341e0e3bee88af24437e47599b2b3d517e34ed38e6dc8086de35521
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Firma-AI/openfirma/main/README.md
+    shows: The README says "firma ships as a single precompiled static binary, no build toolchain or API keys required"
+      and "The Authority can be the Mini Authority included in this repo or your own implementation of the FirmaAuthority
+      gRPC interface"; it ends "GPL 3.0".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 19538e0fde3ce70fe191ba6d55a9c78bc5490556e989ca3ab482e0d375213502
+    establishes:
+    - source
+    - core-gated
+  - url: https://firma-ai.github.io/openfirma/guides/native-login/
+    shows: The login guide says firma login "connects to the Firma SaaS Control Plane at https://app.firma.ai" or
+      another control plane such as an on-premise deployment, for Firma Team workspaces.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e15304f048bcea4c39de4b145c2d64ce816c860f250ded5100deb4004dbbd723
+    establishes:
+    - core-gated
+  - url: https://openfirma.ai
+    shows: The project site says the quickstart wraps an agent session with "no SDK, no code changes, no account";
+      its footer reads "Apache-2.0", which the repository LICENSE does not match.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a6ee978e6650c76fcaa182ca2671387dfe1ce52a6c4336bd77c5d2a8fb12e2e4
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: OpenFirma ships through its own install script and Homebrew tap, neither of which publishes install counts,
+    and its Rust crates are not published to crates.io, so GitHub stars are the only signal. A star is not a use,
+    so this shows attention rather than deployments.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:Firma-AI/openfirma
+    shows: 'Firma-AI/openfirma: stargazers_count 144, license GPL-3.0, not archived, not a fork, last pushed 2026-10-30.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 207688fd7400aab1162f8f2f74483ad97aed97e0f045f6b4e63b6aa366d3299f
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: PASETO capability tokens signed by the authority and naming the agent_id, verified by the sidecar; every
+    outbound call classified and checked against Cedar policy before it goes out; local-execution governance tokens
+    that a person approves or revokes; ECDSA-signed audit events with a hash-chain provenance anchor; no delegation
+    of narrowed authority between agents
+  confidence: medium
+  note: OpenFirma gives each agent a signed capability token, checks every outbound call against policy before it
+    runs, lets a person approve local execution, and signs every decision it records. Its authority grants each
+    agent a policy-narrowed set of actions, but there is no chain for one agent to hand narrower authority to another.
+  relative_to: agent-governance-toolkit
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/Firma-AI/openfirma/main/README.md
+    shows: The README says the sidecar "validates the capability token, and checks the policy" on every outbound
+      call, lists "firma token approve" for "local-execution governance tokens (HITL)", and says "every decision
+      emits a signed execution event".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 19538e0fde3ce70fe191ba6d55a9c78bc5490556e989ca3ab482e0d375213502
+  - url: https://firma-ai.github.io/openfirma/concepts/capabilities/
+    shows: Capabilities are "PASETO v4 tokens that prove an agent was authorized"; the claims carry agent_id, the
+      token is signed by the Authority and verified by the Sidecar, and issuance grants the subset of requested
+      action classes that policy allows.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 80f1ea83af485673197f537a1417ccdc6bdae7f754cddb98d0086cb5c682b95e
+  - url: https://firma-ai.github.io/openfirma/guides/audit-log/
+    shows: The audit guide says "The audit signature is your tamper-evidence" and describes a provenance field that
+      hashes the previous record into a tamper-evident chain.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 22c548472780fc5c1b50bd8e6ca14141e98924a6007ac0540e54a637ec0869fa
