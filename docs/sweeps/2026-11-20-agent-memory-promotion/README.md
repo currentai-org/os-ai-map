@@ -48,9 +48,12 @@ boundary keep their #413 verdicts; the category comments say why for each.
    open-core gating (4).
 3. `memori`: read as `source: partial` because its extraction engine runs only as Memori's hosted
    service, even in bring-your-own-database mode; `public` plus `gated` (4) is the alternative.
-4. `mem0`: capability read from Mem0 Platform while openness reads the open library.
-5. MIRIX: excluded because its README leads with a personal-assistant app; its self-hosted memory
-   backend could argue for inclusion.
+4. Settled in review of #1109: `mem0`'s capability now reads the open library, as its openness does
+   (band 2; the Platform's consolidation, decay and graph are named, not counted), and MIRIX is in,
+   judged on its documented function rather than its README heading.
+5. MIRIX's CLA.md names a project owner and says signing contributors get no right to commercially
+   use the project except as permitted in writing; it cannot narrow the Apache-2.0 grant in LICENSE,
+   on which the record is scored.
 6. Redis Agent Memory, the closed successor to the deprecated Redis Agent Memory Server, was not
    added.
 7. `memobase` is quiet (last commit 2026-01-11, its hosted cloud unreachable) but not archived.
