@@ -1,0 +1,87 @@
+product: a-mem
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: the agentic_memory package
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 19-path tree at ceffb86 holds the agentic_memory package, tests, an example and the root MIT LICENSE,
+        with no ee/, enterprise/, commercial/ or proprietary/ path; a research group's release with nothing sold
+        beside it
+  confidence: high
+  note: A-MEM is published under the MIT license, and the whole memory system installs from the repository and runs
+    against the user's own OpenAI or Ollama models. It is a research group's release of a paper's method, with no
+    hosted service or paid edition beside it.
+  last_verified: '2026-11-20'
+  raw: license:MIT(the agentic_memory package);source:public;core-gated:ungated(the 19-path tree at ceffb86 holds
+    the agentic_memory package, tests, an example and the root MIT LICENSE, with no ee/, enterprise/, commercial/
+    or proprietary/ path; a research group's release with nothing sold beside it)
+  sources:
+  - url: https://raw.githubusercontent.com/agiresearch/A-mem/main/LICENSE
+    shows: The LICENSE is the MIT License, "Copyright (c) 2025 AGI Research".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c8a51c83455b8afc3a11b085ce57c7b9b34c6725d6b2329ce3dd9a273f0add6d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/agiresearch/A-mem/main/README.md
+    shows: The README says "This repository provides a memory system to facilitate agent construction", points paper
+      reproduction to WujiangXu/AgenticMemory, installs with "pip install ." and lists OpenAI and Ollama backends;
+      "This project is licensed under the MIT License."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6f7185bb241d8ed5f7c0b8c4716b4f5e5cf1e9a3c630c3a1a92e54c3f5fb88b0
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/WujiangXu/A-mem-sys/main/README.md
+    shows: The A-mem-sys README describes the same Agentic Memory system and tells readers to "git clone https://github.com/agiresearch/A-mem.git".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2fad6a907f19fa7a592e810d751a1919607c2dafd03980923d72b7be199ac248
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: A-MEM installs from source and has no package on PyPI under its own name, so GitHub stars are the only signal.
+    A star is not a use, and stars on a paper's companion repository mostly record interest in the research.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:agiresearch/A-mem
+    shows: 'agiresearch/A-mem: 1,216 stars, license MIT, not archived, last pushed 2025-12-12.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4724b14fb90440a21e16773feb4b2100d31815baa603e0dd245b9aa02ef2873b
+  - url: https://pypi.org/pypi/agentic-memory/json
+    shows: The agentic-memory package on PyPI belongs to ARYAN2302/ContextOS, a different project, so it is not
+      this repository's release.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: dfb918b5ec16539544d7312fb7ea2d1a987bab54a1f3cbd423b99c82916c7d84
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: semantic and agentic search over stored notes; memory evolution that links each new note to related ones
+    and rewrites their context and tags; no extraction, since notes are stored as given and only annotated; no time-based
+    forgetting; a single linked note store
+  confidence: medium
+  note: 'A-MEM''s distinguishing step is evolution: each new note makes a model revisit its neighbors, link them
+    and rewrite their context. It does not decide what to remember from a conversation, though, storing whatever
+    text the agent hands it, and nothing in it expires or fades over time.'
+  relative_to: lightmem
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/agiresearch/A-mem/main/README.md
+    shows: '"When a new memory is added to the system: Generates comprehensive notes with structured attributes
+      ... Analyzes historical memories for relevant connections ... Enables dynamic memory evolution and updates";
+      the API adds notes with add_note and searches with search_agentic.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6f7185bb241d8ed5f7c0b8c4716b4f5e5cf1e9a3c630c3a1a92e54c3f5fb88b0

@@ -1,0 +1,113 @@
+product: mempalace
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: the whole repository, including the Claude Code plugin
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 880-path tree at 358e25c carries the root MIT LICENSE and an identical plugin LICENSE, with no
+        ee/, enterprise/, commercial/ or proprietary/ path; the project offers no paid tier or hosted service
+  confidence: high
+  note: 'MemPalace is MIT licensed, and its public repository holds the whole system: the miner, storage backends,
+    knowledge graph, MCP server and hooks. Nothing is sold beside it, and the memory runs on the user''s own machine
+    without an account or API key.'
+  last_verified: '2026-11-20'
+  raw: license:MIT(the whole repository, including the Claude Code plugin);source:public;core-gated:ungated(the
+    880-path tree at 358e25c carries the root MIT LICENSE and an identical plugin LICENSE, with no ee/, enterprise/,
+    commercial/ or proprietary/ path; the project offers no paid tier or hosted service)
+  sources:
+  - url: https://raw.githubusercontent.com/MemPalace/mempalace/develop/LICENSE
+    shows: The root LICENSE is the MIT License, "Copyright (c) 2026 MemPalace Contributors".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 81dc6cc278d80f0f1b028ecd86af30d61e441b9ae53d9d9a2ed19389ba657a5d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/MemPalace/mempalace/develop/pyproject.toml
+    shows: The package manifest for mempalace declares license = "MIT" and points Homepage and Repository at github.com/MemPalace/mempalace.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 90354eadf3d5fdedf3412e9222f7ec89e0eb3675a7f112eb954cc932c79cff44
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/MemPalace/mempalace/develop/README.md
+    shows: The README says the "only official sources are this GitHub repository, the PyPI package, and the docs
+      at mempalaceofficial.com" and "Nothing leaves your machine unless you opt in."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 85007328bb01176e160590dbde44365642fb31195779b01db1c8dcded673b4f0
+    establishes:
+    - source
+    - core-gated
+  - url: https://mempalaceofficial.com/
+    shows: The project site describes "Four pieces. No cloud. No keys.", with ChromaDB and SQLite on disk and nothing
+      uploaded or synced; it offers an update mailing list and no pricing.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 574d8c88047b0ff1db7d46bc2d0ad6570702c7845a40b78ba374831380063cf7
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly PyPI downloads of mempalace, the package the install instructions use. Pulls
+    of the container image from GitHub's registry are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/mempalace/recent
+    shows: last_month downloads = 55,363 for mempalace.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4c60cee01e89ad048d282cb4c9e294147eeb46649ad93c56107c921bc8dedf31
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: semantic search scoped by wing and room, with a bounded wake-up context; wings, rooms and drawers beside
+    a temporal entity-relationship graph and per-agent diaries; no extraction, since content is stored verbatim;
+    no automatic consolidation; graph facts end only when the caller invalidates them
+  confidence: medium
+  note: MemPalace recalls verbatim conversation chunks through scoped search and keeps a temporal knowledge graph
+    beside them, but by design it extracts nothing from what it stores. Updating or ending a fact is a call the
+    agent makes, and contradiction detection is documented as planned rather than shipped.
+  relative_to: lightmem
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/MemPalace/mempalace/develop/README.md
+    shows: The README says MemPalace "stores your conversation history as verbatim text and retrieves it with semantic
+      search. It does not summarize, extract, or paraphrase."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 85007328bb01176e160590dbde44365642fb31195779b01db1c8dcded673b4f0
+  - url: https://mempalaceofficial.com/concepts/the-palace.html
+    shows: Conversations are filed into wings, rooms, halls and drawers, and wing and room become metadata filters
+      at query time.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ca1fcf3ddc8c976d372b7e218d60b4ca9a93a44b0c9a03a5a52e0dfa40d85282
+  - url: https://mempalaceofficial.com/concepts/knowledge-graph.html
+    shows: The knowledge graph stores triples with valid_from and valid_to; facts end through kg.invalidate() or
+      kg.supersede(), exposed as the mempalace_kg_invalidate and mempalace_kg_supersede tools.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a5e9f7842618f4ad310e7e6e92e9c2da7af1377a7d7be519cc45566e59d06ca1
+  - url: https://mempalaceofficial.com/concepts/contradiction-detection.html
+    shows: '"Contradiction detection is a planned capability, not a shipped end-to-end feature in the current MCP
+      workflow."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bfdbdfeab68ca9b2e6fdd81de8414d276b64575f566a2e9fee82e75aa1e6ad75
+  - url: https://mempalaceofficial.com/concepts/memory-stack.html
+    shows: A four-layer stack loads an identity file and an essential story built from the highest-importance drawers
+      at wake-up, then room recall and deep semantic search on demand.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 39249e4d2d7d06d606a1ddd9d62876dd2a6818decdb6ec13d544c3ad8995f347

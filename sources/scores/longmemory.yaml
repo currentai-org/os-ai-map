@@ -1,0 +1,136 @@
+product: longmemory
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: engine, CLI, server, dashboard, Python client and agent integrations
+    - name: MIT
+      detail: n8n community node
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 566-path tree at aec98ce carries the root Apache-2.0 LICENSE and per-integration Apache-2.0 or
+        MIT files, with no ee/, enterprise/, commercial/ or proprietary/ path; the README offers no hosted edition
+        or paid tier
+  confidence: high
+  note: LongMemory's engine, server, clients and integrations are published under permissive licenses, and the README
+    presents the whole system as local-first and self-hosted, built from source or run from the published container.
+    Nothing in the repository or its documentation describes a hosted edition or a paid feature held back from the
+    code.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(engine, CLI, server, dashboard, Python client and agent integrations)+MIT(n8n community
+    node);source:public;core-gated:ungated(the 566-path tree at aec98ce carries the root Apache-2.0 LICENSE and
+    per-integration Apache-2.0 or MIT files, with no ee/, enterprise/, commercial/ or proprietary/ path; the README
+    offers no hosted edition or paid tier)
+  sources:
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/LICENSE
+    shows: 'The root LICENSE is the Apache License 2.0 text, ending "LongMemory: Durable Memory Engine for AI Systems
+      / Copyright 2026 CaviraOSS and nullure".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f34bece2de63bf21dfea3bf034231beda315c10631f2174b539225746719420c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/integrations/n8n-nodes-longmemory/LICENSE
+    shows: The n8n node carries its own MIT License, "Copyright (c) 2026 CaviraOSS and nullure".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2fe02fd07260a2cef25afd5eca38104d9474ce14403ced9ab92680c453947cc2
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/package.json
+    shows: 'The manifest names the package longmemory, "license": "Apache-2.0", repository CaviraOSS/LongMemory,
+      and describes it as "library, CLI, self-hosted API server, and benchmark harness".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: deacf7d53e2e567fee271c13ab5323edc2894cb37510a85e9900a4e3f7cd4210
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/README.md
+    shows: The README calls LongMemory "Local-first and self-hosted", builds and starts the service "From source"
+      with pnpm or runs ghcr.io/caviraoss/longmemory, and says the Python package is an HTTP client while "The Hydrograph
+      engine remains in the self-hosted TypeScript service".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9e8a8b28039b9ace327738bad86316717466e1a4ec8745a98e9fdfc23f8c69c0
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/CaviraOSS/OpenMemory/main/README.md
+    shows: The old CaviraOSS/OpenMemory path serves the LongMemory README byte for byte, so the repository was renamed
+      rather than replaced.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9e8a8b28039b9ace327738bad86316717466e1a4ec8745a98e9fdfc23f8c69c0
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is read from npm downloads of longmemory, the package the README installs. The legacy openmemory-js
+    package, the container image and the VS Code extension are not counted, and the published package carries the
+    earlier OpenMemory engine rather than the current one.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/longmemory
+    shows: 135 downloads of longmemory between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a40e96520b4634475aeb7fda802b0a62a8538891110ffc2e16e7396f707d6361
+  - url: https://registry.npmjs.org/longmemory
+    shows: The registry entry lists one version, 1.3.3, authored by caviraoss, whose readme installs longmemory
+      and links the license to CaviraOSS/LongMemory.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 91901117c3d7a6c91ab9e9dd4345393dfb0aab50c87c0b13a7177205bed8b2cf
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: strict, historical, associative and world-grounded recall scoped to tenant, user and project; rule-based
+    extraction of entities, claims, preferences and procedures at ingest; consolidation of repeated episodes into
+    semantic, procedural and reflective memories, with supersede and contradict edges; bitemporal validity that
+    closes superseded facts, plus decay; typed episodic, semantic and procedural facets over an entity graph
+  confidence: medium
+  note: LongMemory performs every part of the cycle itself, including retiring a fact once a later statement supersedes
+    it and keeping the old one for historical questions. Its extraction is rule-based rather than model-driven,
+    which keeps ingest deterministic but reads less from a conversation than the language-model pipelines of Memori
+    or ReMe.
+  relative_to: graphiti
+  relation: at
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/README.md
+    shows: 'The README lists "Temporal truth: recorded time and valid time are separate", "Lifecycle: deterministic
+      decay, explicit reinforcement, consolidation, compression, and reconsolidation" and strict, historical, associative
+      and world-grounded recall modes.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9e8a8b28039b9ace327738bad86316717466e1a4ec8745a98e9fdfc23f8c69c0
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/docs/ingest.md
+    shows: Ingest step 3 parses "entities, claims, preferences, actions, procedures, emotions, reflections"; a changed
+      preference creates "new --supersedes--> old" and "The handler closes the old valid-time and marks it superseded."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7c10a3154faab1ef53692669c3fdfb7356ada8c0bd08f5fec3ac2241825e6835
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/docs/consolidation.md
+    shows: Consolidation "converts clusters of raw episodic memories into higher-order semantic, procedural, reflective,
+      or corrected grounded memories", linking each to its sources.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bae72b72b739f38d5cfd2e2372b14536a50a3fc66a2fc53e0456ede4187e960f
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/docs/temporal.md
+    shows: Every durable fact is stored bitemporally; strict recall "uses only current truth, so superseded facts
+      are excluded", while historical recall can still reach them.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3b122defa9f18af52ca7f2c8f829259e2e065254c5a24ae15f133433b273763f
+  - url: https://raw.githubusercontent.com/CaviraOSS/LongMemory/main/docs/entities.md
+    shows: The entity resolver merges only under high confidence, creates merge candidates when uncertain and records
+      semantic drift as a new edge instead of overwriting.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c48612dd739694a551ecadda996d8905677a0e06f94c6f167b284d368c1cc1c5

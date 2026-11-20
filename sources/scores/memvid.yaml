@@ -1,0 +1,154 @@
+product: memvid
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: memvid-core, the Rust library and file format
+    source:
+      value: public
+      detail: memvid/memvid publishes the Rust core; the Python and Node.js SDK bindings and the CLI ship as compiled
+        packages, and no public memvid repository holds their source
+    core-gated:
+      value: gated
+      detail: the core embeds Memvid's ticket public key and caps a new file at the 50 MB free tier; larger capacity
+        needs a ticket signed by Memvid's control plane for a paid Starter, Pro or Enterprise plan
+    context:
+      commercial:
+        value: Memvid dashboard and capacity plans
+  confidence: medium
+  note: Memvid's Rust core is published under Apache-2.0, but it limits each memory file to a small free capacity
+    and raises that limit only with tickets signed by Memvid's servers for paying plans. The Python and Node.js
+    SDKs and the command-line tool are distributed as compiled packages whose native code has no published source.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(memvid-core, the Rust library and file format);source:public(memvid/memvid publishes the
+    Rust core; the Python and Node.js SDK bindings and the CLI ship as compiled packages, and no public memvid repository
+    holds their source);core-gated:gated(the core embeds Memvid's ticket public key and caps a new file at the 50
+    MB free tier; larger capacity needs a ticket signed by Memvid's control plane for a paid Starter, Pro or Enterprise
+    plan);commercial:Memvid dashboard and capacity plans
+  sources:
+  - url: https://raw.githubusercontent.com/memvid/memvid/main/LICENSE
+    shows: The root LICENSE is the Apache License, Version 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: fd64d7380c9889373ec5e3d99ee0e154c8f1707c036054090dc2437eb765cb98
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/memvid/memvid/main/Cargo.toml
+    shows: The manifest names the crate memvid-core, "Core library for Memvid v2, a crash-safe, deterministic, single-file
+      AI memory", with license = "Apache-2.0" and repository github.com/memvid/memvid.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 57ebd4a661792c7e30380fc2edf350d6e7fb926684627b01e5ae6ab13c298795
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/search/repositories?q=org:memvid&per_page=50
+    shows: The memvid organization's public repositories are memvid, example apps, a benchmark tool, a Homebrew
+      tap and memory-cli, "A simple Rust CLI used to test Homebrew, Winget, and APT release pipelines"; none holds
+      the SDK bindings or the memvid CLI.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6df6cdfa1feadff868d5707ee424082c1bd59ab7debfe3765a75a2c27c428126
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/memvid/memvid/main/src/memvid/ticket.rs
+    shows: 'apply_signed_ticket verifies a ticket against the embedded MEMVID_TICKET_PUBKEY before raising capacity:
+      "Only tickets signed by the official Memvid control plane will be accepted."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4cf00bf40ebdf010c4aa9807cf9175d2061d259b3af82a66832e8bf97caf1fa4
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/memvid/memvid/main/src/types/common.rs
+    shows: Tier::Free has a capacity of 50 * 1024 * 1024 bytes, commented as 50 MB.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 80fe25dc4bf1bf1aed13c92e12cbe6bee1c288f434eb1e67965b7df0e7051073
+    establishes:
+    - core-gated
+  - url: https://docs.memvid.com/concepts/capacity-and-plans.md
+    shows: The plans table lists Free at 50 MB, Starter at 25 GB for $9.99/mo, Pro at 125 GB for $49.99/mo and Enterprise
+      unlimited; to increase capacity, get an API key from the dashboard and sync tickets to the local file.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 37e4afc27f19f64cdaba39429702b843fbf77bd1bb71e376ba810a86544e3a1b
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly downloads of Memvid's four packages, the Node.js SDK and command-line tool
+    on npm, the Python SDK on PyPI and the Rust crate, with the crate's 90-day count converted to a monthly rate.
+    The older memvid package on PyPI is the retired video-based first version and is left out.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@memvid/sdk
+    shows: 30,899 downloads of @memvid/sdk between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1bd75c6241ae66dfc97bbe19665c81e8266396851c0a70e69bba27099fb1cb7a
+  - url: https://api.npmjs.org/downloads/point/last-month/memvid-cli
+    shows: 8,865 downloads of memvid-cli between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e567dbb15c1917e98ba6d574d968a9d19de9cb702bfa9593f1afaef9117f15d1
+  - url: https://pypistats.org/api/packages/memvid-sdk/recent
+    shows: last_month downloads = 1,868 for memvid-sdk.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b57bd24bc3755a7e33de5aaf671b460339e38d89839f55d7adda7df2b6c2005f
+  - url: https://crates.io/api/v1/crates/memvid-core
+    shows: 'crate memvid-core: 26,813 downloads all-time and 17,318 recent_downloads (trailing 90 days); repository
+      github.com/memvid/memvid; latest version 2.0.140.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 47ed5fd5b543ded980317960b2b014fb069aed134be3a771bb5be2856f2116dd
+  - url: https://pypi.org/pypi/memvid/json
+    shows: The memvid package on PyPI is version 0.1.3, "Video-based AI memory library for fast semantic search
+      and retrieval", with its homepage at github.com/olow304/memvid.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6f3cf93c83c83c7605d7a9b015be19195761ca30289699bb096625a5863b970d
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: lexical, vector and time-filtered search over a memory file; memory-card extraction by rule, local-model
+    or hosted-LLM engines; fact versions that update or retract earlier values, with the current state per entity;
+    typed memory cards beside an entity-relation graph and the source frames; no time-based forgetting
+  confidence: medium
+  note: 'Memvid extracts entity facts from stored content, records when a new value replaces an older one, and keeps
+    those facts as typed cards beside an entity graph and the original documents. It does not retire or expire memories
+    on its own: old frames stay in the file until someone deletes them.'
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/memvid/memvid/main/README.md
+    shows: The README describes "a single-file memory layer for AI agents with instant retrieval and long-term memory",
+      with BM25 full-text search, HNSW vector search and a time index inside one .mv2 file.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3a2f6a0fea87ed03b4b5a21de90a166ed005627c897a26807c33cd2fd854ce77
+  - url: https://docs.memvid.com/concepts/memory-cards.md
+    shows: Enrichment extracts entity-slot-value memory cards of kinds fact, preference, event, profile, relationship
+      and goal, using rules, a local Phi-3.5-mini model or hosted LLMs; fact history marks later values "UPDATES
+      previous" and state returns the current value.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 07563589ec3c69e14a42f28884107612da4fe3c0b41d37854bd1f42c55a88d9c
+  - url: https://docs.memvid.com/introduction/the-memvid-approach
+    shows: Each file carries lexical, vector, SimHash, time and Logic Mesh indexes, the last an entity-relationship
+      triple store queried with memvid follow traverse.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 96bff93c64206ade31d2b28454363180a326fcec90ab9e43fe0af05a64f4313b
+  - url: https://docs.memvid.com/cli/index
+    shows: The CLI reference groups commands into creation, data, search (find, ask, vec-search, timeline), enrichment
+      (enrich, memories, state, facts), maintenance and sessions; deletion is a delete command the user runs.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6d2e299d5d0a2d2454656ee940d8bfcd3516f81a7812e1978c7073adcace3166

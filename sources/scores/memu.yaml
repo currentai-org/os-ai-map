@@ -1,0 +1,147 @@
+product: memu
+openness:
+  score: 3
+  class: source_available
+  components:
+    license:
+    - name: memU-Modified-Apache-2.0
+      detail: LICENSE.txt is the Apache License 2.0 text with the section 2 copyright grant rewritten in MIT wording
+        and an added notice-retention condition, and other clauses reworded
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 340-path tree at 12d144c holds the memory service, storage backends, embedding providers and every
+        host adapter with no ee/, enterprise/, commercial/ or proprietary/ path, and memU Cloud is a free hosted
+        backend for the same three operations
+    context:
+      commercial:
+        value: memU Cloud hosted backend at memu.so
+  confidence: medium
+  note: memU's whole memory pipeline, from the session-log adapters to the storage and retrieval service, is in
+    the public repository and runs locally with the user's own storage and embedding provider. Its LICENSE file
+    is the Apache 2.0 text with the copyright grant rewritten in MIT-style wording, so it is not the approved Apache
+    license the project names elsewhere, though nothing in it limits who may use the software or at what scale.
+  raw: license:memU-Modified-Apache-2.0(LICENSE.txt is the Apache License 2.0 text with the section 2 copyright
+    grant rewritten in MIT wording and an added notice-retention condition, and other clauses reworded);source:public;core-gated:ungated(the
+    340-path tree at 12d144c holds the memory service, storage backends, embedding providers and every host adapter
+    with no ee/, enterprise/, commercial/ or proprietary/ path, and memU Cloud is a free hosted backend for the
+    same three operations);commercial:memU Cloud hosted backend at memu.so
+  sources:
+  - url: https://raw.githubusercontent.com/NevaMind-AI/memU/main/LICENSE.txt
+    shows: LICENSE.txt is headed "Apache License Version 2.0" but its section 2 grants a "license to use, reproduce,
+      modify, merge, publish, distribute, sublicense, and/or sell copies of the Work" subject to keeping the copyright
+      and permission notice, with other clauses reworded; it ends "Copyright 2024 MemU Team".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0e2bcb97222f1ba09e333c70ecef4845470e16fdea953a1d0882d5ef2213d25a
+    establishes:
+    - license
+  - url: https://www.apache.org/licenses/LICENSE-2.0.txt
+    shows: The canonical Apache License 2.0 section 2 grants a "copyright license to reproduce, prepare Derivative
+      Works of, publicly display, publicly perform, sublicense, and distribute the Work".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NevaMind-AI/memU/main/pyproject.toml
+    shows: The package manifest builds memu-cli from src/memu; its license line, license = {file = "LICENSE"}, is
+      commented out.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4ccf486cbb019865b59d484252431ccd3d1846a828cbacc0bfd84ee9c0442929
+    establishes:
+    - source
+  - url: https://memu.pro/faq
+    shows: The FAQ says "memU is available on GitHub under the Apache-2.0 license. The repository contains the Python
+      package, CLI, installation skill, and host adapters", and that self-hosting needs only an embedding provider
+      and local storage.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a4e9ca5eef7b42e7d5300d8fd910c0d2e02e3b494d5720f76ced95fa19f44600
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/NevaMind-AI/memU/main/docs/adr/0012-cloud-backed-agentic-backend.md
+    shows: The cloud-backend design record says the hosted memU service exposes the same three operations as the
+      local MemoryService, selected by MEMU_MEMORY_MODE, with local remaining the default.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 95e40803523f283c9544c27dd10a75207f92cb18f07e1c39dde1f396fae4185b
+    establishes:
+    - core-gated
+  - url: https://memu.pro
+    shows: The product site offers memU Cloud as "100% free" and an enterprise option of "managed cloud or a supported
+      self-hosted pilot".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7475cb14d46e8d65bd3291dcf03084205faa16a7cbfc31a03a113a2500de292c
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly downloads of memu-cli on PyPI and its npm launcher, the package every memU
+    host adapter installs whether it stores memory locally or in memU Cloud. The memu-py package from the project's
+    earlier framework line is left out, and installs say nothing about how many agents keep using it.
+  sources:
+  - url: https://pypistats.org/api/packages/memu-cli/recent
+    shows: 455 downloads of memu-cli on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 042031e147891989e3cf2ed4a9cdbb08461dce38402cd23bf6558c899cce0e06
+  - url: https://api.npmjs.org/downloads/point/last-month/memu-cli
+    shows: 20 downloads of memu-cli on npm between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 023733ebde6f2065772f40626b8e57e839e3ff41188f74a43a9f67c458d38eb2
+  - url: https://pypi.org/pypi/memu-cli/json
+    shows: PyPI lists memu-cli, "Personal memory as files", with homepage and bug tracker at github.com/NevaMind-AI/MemU.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 45bc2d47a036750095598bd3dc2ff55c4c664851b719b251ad2957498159bf34
+  - url: https://registry.npmjs.org/memu-cli/latest
+    shows: The npm memu-cli is a "Thin launcher for the PyPI package memu-cli", published from the npm/ directory
+      of NevaMind-AI/MemU.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d3fb0bebdc31596389fcfc020665a9a3f93dbc2732046a5096e0f5b67a1f83e8
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: retrieval of the most relevant memory and skill files before a task, scoped to the user; separate
+    chat memory, workspace index and skill stores; extraction and merging written as job instructions that
+    the host agent's own model carries out, since the memory service itself makes no model calls; no time-based
+    expiry or decay
+  confidence: medium
+  note: memU retrieves across three separate stores of memory, workspace and skill files, and it supplies
+    the instructions for distilling session logs into them. The distilling and merging are done by the host
+    agent's model, not by memU, whose memory service makes no model calls of its own, so memU organizes
+    and serves memory rather than deciding what to keep.
+  relative_to: lightmem
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/NevaMind-AI/memU/main/README.md
+    shows: The README says a scheduled bridging task "slices new session logs into self-contained job files; the
+      agent itself distills them into memory/skill Markdown", which memU commits, indexes and retrieves before answering,
+      and that "MemoryService makes no LLM or chat calls".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f17efd006ba8943aa7f3658f5b9571df59b418b8128cff53c3c818fa4df125a8
+  - url: https://raw.githubusercontent.com/NevaMind-AI/memU/main/src/memu/hosts/bridging/instructions.py
+    shows: The job templates tell the agent to read existing memory or skill files, then do nothing, patch an existing
+      file with the merged content, or create a new one.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9387ee9a8daa2ee9f43917487ad154d8bf013f840434ca94e64f894e16279673
+  - url: https://raw.githubusercontent.com/NevaMind-AI/memU/main/docs/adr/0007-three-independent-memory-lines-wiki-graph.md
+    shows: The design record splits memory into three lines, chat to MEMORY.md, workspace files to INDEX.md and
+      execution traces to SKILL.md, each with its own store and hybrid embedding and BM25 retrieval.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 08abf916b00d503715d4b3651ff1f5dfa6771caadfc8ea3f895ba075f9c994ce

@@ -1,0 +1,137 @@
+product: honcho
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: the Honcho server
+    - name: Apache-2.0
+      detail: the Python and TypeScript SDKs
+    - name: MIT
+      detail: honcho-cli
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,329-path tree at 4b9e27b holds the server, deriver and dreamer workers, SDKs and CLI with no
+        ee/, enterprise/, commercial/ or proprietary/ path, and the managed service is metered on stored tokens
+        and queries
+    context:
+      commercial:
+        value: Honcho managed service at api.honcho.dev
+  confidence: high
+  note: Honcho's server, including the background workers that derive and consolidate conclusions about users and
+    agents, is published in full and self-hosts from the repository. Plastic Labs sells a managed service metered
+    on stored tokens and reasoning queries, not features held back from the code.
+  last_verified: '2026-11-20'
+  raw: license:AGPL-3.0(the Honcho server)+Apache-2.0(the Python and TypeScript SDKs)+MIT(honcho-cli);source:public;core-gated:ungated(the
+    1,329-path tree at 4b9e27b holds the server, deriver and dreamer workers, SDKs and CLI with no ee/, enterprise/,
+    commercial/ or proprietary/ path, and the managed service is metered on stored tokens and queries);commercial:Honcho
+    managed service at api.honcho.dev
+  sources:
+  - url: https://raw.githubusercontent.com/plastic-labs/honcho/main/LICENSE
+    shows: The root LICENSE is the GNU Affero General Public License, Version 3.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/plastic-labs/honcho/main/sdks/python/pyproject.toml
+    shows: The Python SDK manifest declares name "honcho-ai" and license "Apache-2.0".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c057401c9804967cd065b1ddc44c3d8d98d35fd276fb09e3bc3fe825b77f9b2b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/plastic-labs/honcho/main/sdks/typescript/package.json
+    shows: The TypeScript SDK manifest declares "@honcho-ai/sdk" with license "Apache-2.0".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1bdaf98513ecfaefc07d04be9b78b88aa80bb8d8c30173bb5361e7fcc06fe328
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/plastic-labs/honcho/main/honcho-cli/pyproject.toml
+    shows: The CLI manifest declares name "honcho-cli" and license "MIT".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 53fcc15e487d9616385547cb4b5ad95318a8bfce2e062f7311c7ec37a140897a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/plastic-labs/honcho/main/README.md
+    shows: The README says this repository hosts "the core service logic", that Honcho can be used "managed at api.honcho.dev",
+      run locally, or self-hosted as a FastAPI server, and that "Honcho is open source under AGPL-3.0."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0099c26fb9688c48b1340c0f2add07b9659217fea0f7f11ff7a379f0c709e516
+    establishes:
+    - source
+    - core-gated
+  - url: https://honcho.dev
+    shows: The homepage pricing charges $2.00 per million tokens stored and $0.001 to $0.50 per reasoning query
+      on the managed service, with enterprise custom plans for support; no plan names a feature absent from the
+      repository.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3774a78622e9d8c495fe073839f2071ff7f9dfb4eb0afb93dadf7b6ba2ebb2ba
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal, because the Honcho server ships as source and a Docker Compose
+    setup rather than through a package registry. The honcho-ai and @honcho-ai/sdk packages are clients
+    that reach either the managed service or a self-hosted server, so their downloads count client installs
+    rather than Honcho deployments and are left out. A star is not a deployment.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:plastic-labs/honcho
+    shows: plastic-labs/honcho has 8,201 stars, license AGPL-3.0, not archived, last pushed 2026-11-19.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: eee95b7a0041e0c43980c7069d4e75a006d5f4afde98526b425e53eb802e7895
+  - url: https://pypistats.org/api/packages/honcho-ai/recent
+    shows: 287,852 downloads of the honcho-ai client SDK on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c7b6e601413c3cff14758317c91008ada6789e0585f97ad66f5aef8062c98dc3
+  - url: https://api.npmjs.org/downloads/point/last-month/@honcho-ai/sdk
+    shows: 133,165 downloads of the @honcho-ai/sdk client on npm between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: acf936510ebc04bc2cd64eb32ed05149905ff82674819cbd1f63dc02a291871d
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: search, context and representations scoped to a peer, session or scope; conclusions derived from messages
+    by a background deriver; dreaming that deletes outdated conclusions, resolves contradictions and draws inductive
+    patterns; per-peer conclusions, peer cards and session summaries; no time-based decay or expiry
+  confidence: medium
+  note: Honcho extracts conclusions about each user or agent from raw messages, revisits them in periodic dream
+    cycles that replace outdated facts, and serves them as peer cards, representations and summaries. Nothing in
+    it retires memories because of their age.
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/plastic-labs/honcho/main/README.md
+    shows: The README lists conclusions extracted about a peer, representations, peer cards and session summaries,
+      hybrid search scoped to peers, sessions or scopes, and a deriver worker that builds representations in the
+      background.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0099c26fb9688c48b1340c0f2add07b9659217fea0f7f11ff7a379f0c709e516
+  - url: https://honcho.dev/docs/v3/documentation/features/advanced/dreaming
+    shows: The dreaming page says that when a fact changes "it deletes the outdated conclusion and creates a new
+      one reflecting the current state", resolves contradictions, and induces patterns across conclusions.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 12260be7566d98764faf8c5d5b1f81a6ed4175a442a27c595aae2c4f9d1e77a1
+  - url: https://honcho.dev/docs/v3/documentation/core-concepts/architecture
+    shows: The architecture page says the Dreamer revisits existing conclusions, "removing redundant or stale ones,
+      drawing inductive conclusions across patterns", and updates peer cards.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 244f86601657b863e30165e661e22377317407f8f647578b41ef2c7383d214d6

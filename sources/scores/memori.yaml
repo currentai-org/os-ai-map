@@ -1,0 +1,142 @@
+product: memori
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: 'Python and TypeScript SDKs and the Rust core: storage, embeddings and recall'
+    - name: Proprietary
+      detail: the Advanced Augmentation extraction service
+    source:
+      value: partial
+      detail: the published core sends each conversation to Memori's hosted sdk/augmentation endpoint and writes
+        back what it returns; the engine that extracts facts, preferences and triples is in no repository
+    context:
+      managed-tier:
+        value: Memori Cloud
+        detail: managed storage and dashboard; production plans sell managed, single-tenant or on-prem deployments
+  confidence: medium
+  note: 'Memori''s SDKs and core, which store memories in the developer''s database and recall them, are published
+    under Apache 2.0. The step that decides what to remember is not: the SDK sends each conversation to Memori''s
+    hosted service to extract facts and relationships, metered by a free quota, so the memory logic can be neither
+    read nor run locally.'
+  last_verified: '2026-11-20'
+  raw: 'license:Apache-2.0(Python and TypeScript SDKs and the Rust core: storage, embeddings and recall)+Proprietary(the
+    Advanced Augmentation extraction service);source:partial(the published core sends each conversation to Memori''s
+    hosted sdk/augmentation endpoint and writes back what it returns; the engine that extracts facts, preferences
+    and triples is in no repository);managed-tier:Memori Cloud(managed storage and dashboard; production plans sell
+    managed, single-tenant or on-prem deployments)'
+  sources:
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/LICENSE
+    shows: The LICENSE is the Apache License 2.0 text with the appendix boilerplate "Copyright [2025] [Memori Team]".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 68f534038937a461ff428a7463558274ea5eb175cd64bd145afb3bbb1d6d41be
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/memori/json
+    shows: PyPI lists memori, "Memori Python SDK", license Apache-2.0, repository MemoriLabs/Memori.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cddaab28fb17c5bf1784f19b7ee617050aa1a31420daf9952f2376430bb5b9ad
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/core/src/augmentation/pipeline.rs
+    shows: 'run_advanced_augmentation logs "augmentation calling Memori API: sdk/augmentation" and builds the database
+      write batch from that API''s response.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0fa884459f089a6a4256c497331df9b2cb74656c342221917760655c5cfc0da3
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/docs/memori-byodb/concepts/advanced-augmentation.mdx
+    shows: Advanced Augmentation "turns raw conversations and agent trace into structured, searchable memories"
+      and "All extracted data is stored directly in your database."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 212b79a1680e3703c1a7921c6e8896cb507736a9cfa65252c0a47b125ba3b88d
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/docs/memori-byodb/support/faq.mdx
+    shows: '"No, the open-source version works without one. An API key only unlocks higher Advanced Augmentation
+      quotas (5,000/month with a free key)."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2a5afed2536b4fcb1002d37ed4a0faee5e674f903ed3a740217e10f9e1e6b5c5
+    establishes:
+    - source
+  - url: https://memorilabs.ai/pricing
+    shows: Pricing says "Start free and open. Bring your own database." and sells Team, Business and Enterprise
+      production plans with managed, single-tenant or customer-VPC deployment.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0f3fd58d1d3dfef5e0b8380a2bb756dfc7d9eb45fd347da3f54a44eb2d540b4b
+  - url: https://raw.githubusercontent.com/GibsonAI/memori/main/README.md
+    shows: The old GibsonAI/memori path serves the MemoriLabs/Memori README byte for byte, so the repository moved
+      rather than forked.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2461bae179e10e0178ca0dca8e20404f8d68e39a6c97ea7c79abfa3297bff18e
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is the sum of monthly downloads of memori and memorisdk on PyPI and @memorilabs/memori on npm,
+    the three packages that ship the SDK, most of it the memori package. Memori Cloud usage, the hosted MCP endpoint
+    and the agent-host plugins are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/memori/recent
+    shows: 16,978 downloads of memori in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7bf55199279e79b5d29c07d6a1e78f357b43647ed7675c5ffdc13029b8a70c12
+  - url: https://pypistats.org/api/packages/memorisdk/recent
+    shows: 769 downloads of memorisdk in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a1724263659416258fdd8e281775dba1ae4aee42dd36567f50207f288c125028
+  - url: https://api.npmjs.org/downloads/point/last-month/@memorilabs/memori
+    shows: 408 downloads of @memorilabs/memori between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 148e2806d832ed982e9e70e9b2b053582a67640e148f77b8131a07329bf7fccf
+  - url: https://pypi.org/pypi/memorisdk/json
+    shows: memorisdk is the "Memori Python SDK" with repository MemoriLabs/Memori.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: af2114026595a0717db31978ea157f69ff523f0fb56bae2851c66d5158f6dea0
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: automatic and manual recall scoped to entity, process and session; background extraction of facts, preferences,
+    skills, rules, events and agent traces; deduplication of repeated knowledge-graph triples; typed entity facts,
+    process attributes and a triple graph; no time-based forgetting
+  confidence: medium
+  note: Memori extracts typed memories from conversations and agent traces, keeps a knowledge graph beside them
+    and merges repeated facts, all without changes to the calling code. Nothing in it retires a memory over time,
+    and the extraction itself runs on Memori's hosted service.
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/docs/memori-byodb/concepts/advanced-augmentation.mdx
+    shows: The engine "Identifies facts, preferences, skills, attributes, and events" and "Extracts semantic triples";
+      "Memori automatically deduplicates triples", incrementing the mention count and timestamp.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 212b79a1680e3703c1a7921c6e8896cb507736a9cfa65252c0a47b125ba3b88d
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/docs/memori-byodb/concepts/how-memory-works.mdx
+    shows: Every memory is attributed to an entity, process and session; recall runs automatically on each call
+      or through mem.recall(), over facts, preferences, skills, rules, events and agent traces.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c4b731ade92e8ab00300dcbf3d0a5d16473c50d11eae6e84ab36daea118cc99d
+  - url: https://raw.githubusercontent.com/MemoriLabs/Memori/main/README.md
+    shows: The README says Memori "automatically captures structured memory from conversation and agent execution
+      after each turn - including tool calls, decisions, and outcomes".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2461bae179e10e0178ca0dca8e20404f8d68e39a6c97ea7c79abfa3297bff18e

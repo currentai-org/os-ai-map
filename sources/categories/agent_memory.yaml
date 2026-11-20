@@ -2,6 +2,10 @@ name: agent_memory
 display_name: Agent memory & context stores
 description: Software that gives an agent persistent memory across sessions, deciding what to store,
   consolidate, update and forget about facts, episodes and users, and serving it back as context.
+strapline: The open engines match the hosted ones on what they do. Graphiti, MemOS, Hindsight and MemoryOS perform the
+  whole remember, consolidate, recall and forget cycle in published code, as Zep and Supermemory do behind an
+  API, but adoption sits with Mem0, whose open library only adds memories and keeps consolidation, graph
+  memory and decay for its hosted platform.
 weights:
   adopt: 0.6
   cap: 0.4
@@ -18,11 +22,89 @@ scoring_recipe:
     is the satellite and the product reads source closed.
     Weighted 0.6 adoption to 0.4 capability, as storage and the agent-interop categories are:
     nearly every candidate ships a PyPI or npm package, so adoption is measurable on the same
-    instruments, and capability, which has no ladder of its own yet, is the thinner read. The
-    capability quantity is for the promotion PR to derive from the seed; the likely axis is how much
-    of the remember, consolidate, recall and forget cycle the product performs itself, as opposed to
-    leaving it to the host agent or the store beneath it.
-products: []
+    instruments, and capability is the thinner read.
+    CAPABILITY counts how much of the remember, consolidate, recall and forget cycle the product
+    performs itself, as opposed to leaving it to the host agent or the store beneath it. Five
+    parts, each one a product has or has not, read from its README and documentation: (P1) recall,
+    serving stored memories back as context through a retrieval call scoped to a user, agent or
+    session; (P2) extraction, deriving memories itself from raw interactions (messages,
+    transcripts, documents, tool traces) rather than storing only what the host passes in; (P3)
+    consolidation, updating what is stored when new information arrives (merging duplicates,
+    resolving contradictions, rewriting summaries or profiles, reflecting over episodes), where an
+    LLM-decided update or delete of a conflicting memory counts; (P4) time-aware forgetting, the
+    product itself retiring or weakening memories as they age or are superseded in time, through
+    temporal validity windows with invalidation or decay of memory strength with age, where a fixed
+    retention period or time to live the developer configures does not count and neither does a
+    delete the caller invokes; (P5) structured memory, organizing memory into more than one typed
+    store or a structured graph (episodic, semantic and procedural memory, a profile plus events,
+    an entity-relation graph) and retrieving across them. The band is the number of parts present,
+    and band 3 or above requires P2: a product that stores only what it is handed is capped at 2,
+    however well it organizes it. TOP ANCHOR: `graphiti`, which performs all five in published
+    Apache-2.0 code (LLM extraction from episodes, deduplication and invalidation of contradicted
+    facts, bi-temporal validity windows, a graph of entities, facts, episodes and communities). The
+    other 5s are recorded `at graphiti`, the 4s `one_below graphiti`; `lightmem` (3) is recorded
+    against `langmem`, and the three 2s against `lightmem`, the nearer peer.
+    SAME RELEASE ON BOTH AXES. Where openness reads an open release that withholds features for a
+    paid tier, capability reads that same release: a part counts only if the published build
+    performs it without a paid license or a hosted-only service. A closed product is read as the
+    service it sells, and a source-partial one as the whole product, since its open part cannot run
+    alone. So `mem0` is read on its open library, which extracts and recalls but only ever adds
+    memories, with no graph and no decay (band 2); the Platform's Dream consolidation, decay and
+    entity graph are named in its value and note and not counted. This was adopted in review of the
+    promotion PR (#1109), which had first read Mem0's capability from the Platform.
+    WIDE-RUNG REVIEW (capability.md, "Writing the rungs"), counted 2026-11-20 over 25 banded
+    products: 5 holds 8, 4 holds 11, 3 holds 1, 2 holds 5, 1 holds 0. Both 5 (32%) and 4 (44%) are
+    wide, 76% together. Three rewordings and re-reads moved products down: P4 first read "expiry or
+    TTL policies" and admitted any retention period a developer configures, and its time-aware
+    reading moved cognee, amazon-bedrock-agentcore-memory and vertex-ai-agent-engine-memory-bank to
+    4; the same-release rule moved mem0 from 5 to 2; and "performs itself" read strictly moved memu
+    to 2, because its extraction and merging are instructions the host agent's model carries out.
+    What remains is a cluster and a selection effect, not a loose definition. The membership test
+    admits only products that decide what an agent remembers, so nearly every member extracts and
+    consolidates; the lower rungs exist for the stores beside them (MemPalace, Engram, A-MEM, memU,
+    Mem0's open library). The 4s share one documented design (an LLM extracts facts or episodes, a
+    consolidation pass merges and corrects them, typed stores or profiles hold the result), and what
+    separates the 5s from them is one checkable capability, a notion of when a memory stopped being
+    true or relevant (Graphiti's and Zep's validity windows, Hindsight's observation invalidation,
+    MemOS's and MemoryOS's heat decay, agentmemory's decay curve, LongMemory's bitemporal facts,
+    Supermemory's expiring temporary facts). The ladder reads which parts a product performs, not
+    how well or how maturely; MemoryOS and LongMemory reach 5 on documented features with little
+    measured use, and the adoption axis, not this one, is where that difference shows.
+  deferred:
+    memu:
+      because: >-
+        memU's LICENSE.txt is headed Apache License 2.0, but section 2's copyright grant is
+        rewritten in MIT wording and other clauses are reworded, so it is a modified text no tier
+        names. The vendor calls it Apache-2.0 throughout (README badge, FAQ, npm license field),
+        which would read 5/open_source; the recorded 3/source_available reads it, by analogy with
+        Crawl4AI-Attribution-License, as permissive but not OSI-approved. Whether a reworded Apache
+        text is `osi` or `permissive_non_osi` is a shared license-tier ruling for a maintainer.
+products:
+- mem0
+- zep
+- graphiti
+- supermemory
+- cognee
+- langmem
+- hindsight
+- memos
+- reme
+- agentmemory
+- memori
+- honcho
+- everos
+- mirix
+- memvid
+- memoryos
+- longmemory
+- memobase
+- memu
+- amazon-bedrock-agentcore-memory
+- vertex-ai-agent-engine-memory-bank
+- lightmem
+- mempalace
+- engram
+- a-mem
 comments: >-
   Proposed in issue #846 and created 2026-10-08 as a preliminary category, by the maintainer's
   decision on that issue, so that the cluster the #413 sweep parked under the resolution-ledger
@@ -33,21 +115,45 @@ comments: >-
   what qualifies; the store under it does not. Neighbors. storage keeps the databases and indexes
   these products are built on (Qdrant, pgvector, Chroma, Redis as a database): a vector store with a
   "memory" page in its docs is still storage, and a memory server a database vendor ships as its own
-  product (Redis Agent Memory Server) is here. orchestration_agents keeps the frameworks and harnesses
-  that plan and execute; a framework's built-in memory module is part of that framework, not a row
-  here, and Letta, the MemGPT line, stays a head product there by the #855 ruling, which this
-  category does not reopen. A memory toolkit published by a framework's vendor as its own package
-  (LangMem) is here. embeddings_retrieval keeps the models that produce vectors and relevance scores
-  a memory layer calls. search_retrieval keeps retrieval from live external surfaces (web search,
-  crawling); recalling what the agent itself was told is memory, fetching what the world says is
-  search. agent_tools_connectors and agent_protocols keep the adapters and protocols an agent calls:
-  an MCP server whose function is persistent memory is a surface of the memory product behind it,
-  and a generic MCP memory adapter with no memory policy of its own stays with the connectors. Code
-  and repository indexes built for coding agents (code graphs, codebase context servers) are a
-  boundary case the ledger also parked under this cluster; they decide what a coding agent can look
-  up about a codebase rather than what it remembers from its own work, and they are to be ruled on
-  when their ledger entries are re-ruled, not admitted by the existence of this category. Seed:
-  mem0, whose ledger entry was re-ruled in the creating PR, plus the rows of the first
-  discover-candidates sweep. The other repositories under the ledger boundary (Zep, Graphiti,
-  Supermemory, Honcho, memU, Hindsight and the rest) stay held by their #413 entries until a person
-  re-rules them, as issue #846 asks.
+  product (Redis Agent Memory Server, before Redis deprecated it) belongs here. orchestration_agents
+  keeps the frameworks and harnesses that plan and execute; a framework's built-in memory module is
+  part of that framework, not a row here, and Letta, the MemGPT line, stays a head product there by
+  the #855 ruling, which this category does not reopen. A memory toolkit published by a framework's
+  vendor as its own package (LangMem) is here. embeddings_retrieval keeps the models that produce
+  vectors and relevance scores a memory layer calls. search_retrieval keeps retrieval from live
+  external surfaces (web search, crawling); recalling what the agent itself was told is memory,
+  fetching what the world says is search. agent_tools_connectors and agent_protocols keep the
+  adapters and protocols an agent calls: an MCP server whose function is persistent memory is a
+  surface of the memory product behind it, and a generic MCP memory adapter with no memory policy of
+  its own stays with the connectors. Code and repository indexes built for coding agents (code
+  graphs, codebase context servers) are a boundary case the ledger also parked under this cluster;
+  they decide what a coding agent can look up about a codebase rather than what it remembers from
+  its own work, and they are to be ruled on when their ledger entries are re-ruled, not admitted by
+  the existence of this category. Seed: mem0, whose ledger entry was re-ruled in the creating PR,
+  plus the rows of the first discover-candidates sweep. PROMOTED 2026-11-20 (record:
+  docs/sweeps/2026-11-20-agent-memory-promotion/). Twenty-five head products. Eleven repositories
+  held under the #413 boundary were re-ruled into the category on the promotion's own read of each
+  README: Graphiti, Zep (whose repository is now its examples; Zep is scored as the hosted service),
+  Supermemory, Honcho, memU, Hindsight, EverOS, Memvid, MemPalace, agentmemory and Engram, plus
+  MemOS, whose #413 entry had filed it as authored agent content. From outside both the seed and the
+  ledger came Memori, ReMe, MemoryOS, LightMem, MIRIX and the two hyperscaler services, Amazon
+  Bedrock AgentCore Memory and Vertex AI Agent Engine Memory Bank, which with Zep and Supermemory
+  mark the closed frontier. The membership test as applied: the product itself decides something
+  beyond storage, by extracting, consolidating or forgetting memories or by assembling what a new
+  session loads; a store the agent writes notes into, however well organized, is not here. REJECTED,
+  with reasons: redis-agent-memory-server, deprecated by Redis (its README says it "is not the
+  supported production path"; its successor, Redis Agent Memory, is a closed product needing a
+  license key and is not added); memary, no commit since 2024-10; contextos, a three-star
+  single-author prototype with no LICENSE file; basicmachines-co/basic-memory, a Markdown knowledge
+  base reached over MCP whose notes the assistant writes, with no extraction, consolidation or
+  forgetting of its own, so it sits with the generic memory adapters; unicity-aos/capsule-memory, a
+  read-only module of the Astrid agent OS that injects a memory file into the system prompt;
+  getmetal/motorhead, whose README marks it deprecated. MIRIX (Mirix-AI/MIRIX) was first left out
+  because its README heading still leads with a multi-agent personal assistant; on review it is in,
+  judged on function: since 0.1.6 its main branch is a memory system other agents call, its
+  documentation says so, and the desktop assistant is deprecated to a branch. Still held by their
+  #413 entries and not ruled here: the code and repository indexes named above, mksglu/context-mode
+  (keeps tool output out of the context window, which is context management rather than memory),
+  holaboss-ai/holaOS (an agentic workspace), and the archived byterover-cli and gsd-2. Letta stays
+  in orchestration_agents: its scored artifact is now Letta Code, an agent harness, so the #855
+  placement still describes it.

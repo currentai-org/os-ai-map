@@ -1,0 +1,142 @@
+product: memos
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: the MemOS service, scheduler and memory modules
+    - name: MIT
+      detail: the memos-local-plugin agent memory core
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 2,061-path tree at 3a16e5f holds the Python service, scheduler, memory modules, Docker and Helm
+        deployment and the local plugin with no ee/, enterprise/, commercial/ or proprietary/ path; the one cloud
+        plugin in it is a client of MemOS Cloud
+    context:
+      commercial:
+        value: MemOS Cloud and MemMate Enterprise
+  confidence: high
+  note: MemOS's memory service, scheduler and local agent plugin are published in full, and the service self-hosts
+    with Docker beside its graph and vector stores. MemTensor sells MemOS Cloud and an enterprise agent platform
+    as separate hosted products rather than features withheld from the code.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(the MemOS service, scheduler and memory modules)+MIT(the memos-local-plugin agent memory
+    core);source:public;core-gated:ungated(the 2,061-path tree at 3a16e5f holds the Python service, scheduler, memory
+    modules, Docker and Helm deployment and the local plugin with no ee/, enterprise/, commercial/ or proprietary/
+    path; the one cloud plugin in it is a client of MemOS Cloud);commercial:MemOS Cloud and MemMate Enterprise
+  sources:
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright 2025 - Present MemTensor Research".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 154f9be8df2d55ceddcd4646c8d8d4206d48867ae1da2b81ce2ab86b51a5f075
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/pyproject.toml
+    shows: The manifest builds the MemoryOS package with license "Apache-2.0".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ffbd0df7277778e34eebd9f32c140e084068a64f495ecc62572779d8f6329dc7
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/apps/memos-local-plugin/package.json
+    shows: The local plugin manifest declares "@memtensor/memos-local-plugin" with license "MIT" and ships its core,
+      server and adapters as TypeScript source.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 08788a4f9d0d5eed9abc97916c3aa4522913dc0ad3ac70da86a39604028c011e
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/README.md
+    shows: The README's quick start offers four entry points, the hosted Cloud API, a self-hosted service started
+      with docker compose, a Cloud plugin and a local plugin, and documents self-hosting as "Teams on own infra"
+      with data on "Your servers".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 01ea4a4be61b7e4742c8411e2373f84d9383aa058f9f267845e52414c3480bcc
+    establishes:
+    - source
+    - core-gated
+  - url: https://memos.openmem.net
+    shows: The homepage lists MemOS Cloud, MemOS Lite, the "MemOS Official Open Source" service, MemMate Enterprise
+      and the Memmy personal assistant as separate products.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7c6d27612d14f1ef78328deaddb3b61153611608819450dceb185e5a25816bba
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is read from monthly downloads of MemoryOS on PyPI and @memtensor/memos-local-plugin on
+    npm, the two packages that install MemOS itself, most of them for the local plugin. Docker deployments,
+    MemOS Cloud and the cloud plugin pass through neither package and are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/memoryos/recent
+    shows: 1,742 downloads of MemoryOS on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 04b40304ed5582cb520ffd5c597e258a74c3872097a045e3d6124c27752a314e
+  - url: https://api.npmjs.org/downloads/point/last-month/@memtensor/memos-local-plugin
+    shows: 11,394 downloads of @memtensor/memos-local-plugin on npm between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 25c0771d6d1c439b3818e785c73da62db29647c3598ef40b9ea0c4a44db5e83b
+  - url: https://pypi.org/pypi/MemoryOS/json
+    shows: PyPI lists MemoryOS, "Intelligence Begins with Memory", with its repository, documentation and issues
+      at github.com/MemTensor/MemOS.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 513af243576ed0e2b75fa3324e6e5c24ac037090a67da94a2741a33b1043e37a
+  - url: https://registry.npmjs.org/@memtensor/memos-local-plugin/latest
+    shows: The npm package is the Reflect2Evolve memory plugin with layered memory, skill crystallization and three-tier
+      retrieval for OpenClaw, Hermes Agent and DeepSeek Harness; it declares no repository field.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c345f76e8434aaca240073de77ef23f87edf1e262f4482f25dedf74b03664c59
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: search scoped to a user and readable memory cubes; LLM extraction of structured memories from conversations,
+    documents and tool traces; scheduler-driven reorganization and merging, preference deduplication and conflict
+    detection, and feedback-based correction; forgetting in the scheduler and temporal decay of preferences; working,
+    long-term, user and preference memory in a graph with activated, merged and archived states
+  confidence: medium
+  note: 'MemOS performs every part of the cycle itself: it extracts memories from raw input, merges and corrects
+    them in the background, forgets and decays them over time, and keeps several typed memories in a graph.'
+  relative_to: graphiti
+  relation: at
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/docs/en/open_source/modules/memories/overview.md
+    shows: The memory module overview describes automatic extraction, organizing and linking, and lists preference
+      memory with "Preference deduplication and conflict detection" and "Temporal decay support".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8b2ca8a5e1db86c25320ebc395785a06936905c57332453e042addf4334b4c2e
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/docs/en/open_source/modules/mem_scheduler.md
+    shows: The scheduler guide says it "Executes read/write, compression, forgetting, and type conversion operations
+      on three-layer memory (Working/Long-term/User)" and runs reorganization and merge tasks.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cf174a5e64c853861a247d129526a741a82e5eb5a393866f09fefa894c92425a
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/docs/en/open_source/modules/memories/tree_textual_memory.md
+    shows: The tree textual memory guide extracts structured memories with an LLM into graph nodes typed WorkingMemory,
+      LongTermMemory or UserMemory, each activated, archived or deleted.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7c55c3c217ead7d45a7e68c2225d585efd2ac92c83e46dd6ffb12ef00679cae1
+  - url: https://raw.githubusercontent.com/MemTensor/MemOS/main/README.md
+    shows: The README describes a unified memory API structured as a graph, multi-cube knowledge bases isolated
+      across users and agents, asynchronous ingestion via MemScheduler, and memory feedback and correction.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 01ea4a4be61b7e4742c8411e2373f84d9383aa058f9f267845e52414c3480bcc

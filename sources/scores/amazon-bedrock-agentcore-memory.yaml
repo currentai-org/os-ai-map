@@ -1,0 +1,135 @@
+product: amazon-bedrock-agentcore-memory
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: AWS managed service used under the AWS Service Terms
+    source:
+      value: closed
+      detail: extraction, consolidation and retrieval run inside AWS, and no repository publishes the service
+    context:
+      clients:
+        value: Apache-2.0
+        detail: the bedrock-agentcore Python SDK, a client for every AgentCore service, calls the hosted APIs
+      deployment:
+        value: cloud-only
+        detail: billed per event ingested, stored and retrieved and per long-term record stored and retrieved
+  confidence: high
+  note: AgentCore Memory runs only inside AWS, which bills it by the event and the memory record, and the code that
+    extracts and consolidates memories is not published or offered for self-hosting. The Python SDK AWS publishes
+    under Apache-2.0 calls the hosted service without letting anyone run it.
+  raw: license:Proprietary(AWS managed service used under the AWS Service Terms);source:closed(extraction, consolidation
+    and retrieval run inside AWS, and no repository publishes the service);clients:Apache-2.0(the bedrock-agentcore
+    Python SDK, a client for every AgentCore service, calls the hosted APIs);deployment:cloud-only(billed per event
+    ingested, stored and retrieved and per long-term record stored and retrieved)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html
+    shows: The developer guide says "AgentCore Memory is a fully managed service that gives your AI agents the ability
+      to remember past interactions" without "the need to build or manage complex infrastructure".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1ca82e3e373a82fe08ad5273ce05409c4970d9cbbc5344061299acd9f502dff3
+    establishes:
+    - source
+  - url: https://aws.amazon.com/service-terms/
+    shows: The AWS Service Terms state that "The Service Terms below govern your use of the Services", so AgentCore
+      is used under AWS service terms rather than a published software license.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: fb585d12324e41606a4eaba617939d5190f39b2c28b88742838cfb94a1c395ad
+    establishes:
+    - license
+  - url: https://aws.amazon.com/bedrock/agentcore/pricing/
+    shows: 'Under Memory: short-term memory is priced on "ingestion of raw events, storage of those events over
+      their time to live (TTL), and retrieval of events"; long-term records on "the number of memories processed
+      and stored each month and the number of memory record retrieval calls".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b355b008272923063ece0ce53b069430aac926f7722b79438c40de1ff862e4b1
+    establishes:
+    - source
+  - url: https://pypi.org/pypi/bedrock-agentcore/json
+    shows: 'PyPI metadata for bedrock-agentcore: summary "An SDK for using Bedrock AgentCore", classifier "License
+      :: OSI Approved :: Apache Software License", homepage github.com/aws/bedrock-agentcore-sdk-python.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b7e90fa3d889785477271608ca79baf7617f9a5f5959e617b33a22edee0ba964
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: AWS publishes no customer, memory or request count for AgentCore Memory itself; its documentation, pricing
+    page and feature announcements were searched for one. The bedrock-agentcore SDK's downloads cannot stand for
+    it, because that one package serves every AgentCore service, not memory alone.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://pypi.org/pypi/bedrock-agentcore/json
+    shows: The bedrock-agentcore package describes itself as "An SDK for using Bedrock AgentCore" and its README
+      opens "Deploy your local AI agent to Bedrock AgentCore with zero infrastructure", covering all of AgentCore.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b7e90fa3d889785477271608ca79baf7617f9a5f5959e617b33a22edee0ba964
+  - url: https://pypistats.org/api/packages/bedrock-agentcore/recent
+    shows: 7,382,429 downloads of bedrock-agentcore in the trailing 30 days, across every AgentCore service.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 97167cb329fc5709125a84379e8ea83164f19acc12377ea425e2de5943d5d665
+  - url: https://aws.amazon.com/about-aws/whats-new/2026/09/agentcore-memory-direct-ingest/
+    shows: The announcement of the IngestData API for direct long-term memory ingestion describes the feature and
+      gives no customer, record or request count.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9383f97417167d2e1b50cbbac7ffb2dd09a385957ab82983e6c8e9c5a44121f9
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: semantic retrieval of long-term records within actor and session namespaces; LLM extraction of
+    facts, preferences, summaries and episodes from raw events; consolidation into new or existing records,
+    with reflections across episodes; separate semantic, user-preference, summary and episodic stores; no
+    aging of records beyond a retention period the developer configures
+  confidence: medium
+  note: AgentCore Memory extracts records from raw events with a managed model, consolidates them against
+    what is already stored, and adds reflections across past episodes, keeping facts, preferences, summaries
+    and episodes as separate kinds of record. Records leave only when a retention period set on the memory
+    runs out; the service does not itself judge a memory stale or weaken it with age.
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory-types.html
+    shows: Long-term memory generation "automatically extracts insights" and performs "Extraction" and "Consolidation";
+      records are read with RetrieveMemoryRecords, which "performs a semantic search to find memory records that
+      are most relevant to the query".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b56e2f156d60ff2d56945860820290d2450477601a7a1020750c5f6e2db43f71
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/built-in-strategies.html
+    shows: Built-in strategies run "Extraction", "Consolidation – Determines whether to write useful information
+      to a new record or an existing record" and "Reflection – Insights are generated across episodes"; the strategies
+      are semantic, user preference, summary and episodic.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a104ea80853dd9083e2b8f9c742eba8ed79585087e8b137289b5b43b1094c4a3
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/episodic-memory-strategy.html
+    shows: The episodic strategy "automatically detects episode completion" and stores episodes and reflections
+      under namespaces such as /strategy/{memoryStrategyId}/actor/{actorId}/session/{sessionId}/.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 915ee900b9246262fa8fe3d56209ed2cea07468b8f589ac4dc34b688f8eafd1e
+  - url: https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_CreateMemory.html
+    shows: CreateMemory requires eventExpiryDuration, "The number of days after which memory events expire, between
+      7 and 3650 days"; each strategy in the response carries recordExpiryDurationDays.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7b3d5fd0ff2a8f63cb3fc2d747b942c1be65fd68fc81b561190d90bb14c163c6
+  - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory-terminology.html
+    shows: Defines a namespace as "a structured path used to logically group and organize long-term memories" and
+      says "A unique actorId maintains that memory records are correctly associated with the individual or system."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 34a4347aa46db7645b2e1da8036243837fb91248f70924d82aa77f9bccb42d33

@@ -1,0 +1,145 @@
+product: zep
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: Zep Cloud is used under Zep's terms of service, which forbid deriving its source
+    source:
+      value: closed
+      detail: the Context Lake, graph construction service and Konig graph database run only as Zep's service; getzep/zep
+        says it is "not Zep's product or service" and holds examples and integrations
+    context:
+      clients:
+        value: Apache-2.0
+        detail: getzep/zep-python and getzep/zep-js publish the zep-cloud and @getzep/zep-cloud SDKs, clients of
+          the hosted service
+      deployment:
+        value: Zep Cloud by default
+        detail: own-key encryption and bring-your-own-cloud deployment in a customer VPC are Enterprise arrangements
+      open-engine:
+        value: Graphiti
+        detail: the Apache-2.0 temporal graph framework inside Zep, scored as its own entry
+  confidence: high
+  note: Zep runs as a hosted service, or inside a customer's cloud under an Enterprise agreement, and its service
+    code is not published; its terms forbid deriving the source. What Zep publishes under Apache-2.0 is the SDKs
+    that call the service, example code, and Graphiti, the graph framework inside Zep, which is listed separately.
+    The self-hostable Zep Community Edition is no longer maintained.
+  last_verified: '2026-11-20'
+  raw: license:Proprietary(Zep Cloud is used under Zep's terms of service, which forbid deriving its source);source:closed(the
+    Context Lake, graph construction service and Konig graph database run only as Zep's service; getzep/zep says
+    it is "not Zep's product or service" and holds examples and integrations);clients:Apache-2.0(getzep/zep-python
+    and getzep/zep-js publish the zep-cloud and @getzep/zep-cloud SDKs, clients of the hosted service);deployment:Zep
+    Cloud by default(own-key encryption and bring-your-own-cloud deployment in a customer VPC are Enterprise arrangements);open-engine:Graphiti(the
+    Apache-2.0 temporal graph framework inside Zep, scored as its own entry)
+  sources:
+  - url: https://www.getzep.com/legal/terms/
+    shows: '"Zep Software, Inc., a Delaware corporation", "operates a cloud-based long-term memory and context-engineering
+      software platform"; customers may not "derive or determine the source code" of the Zep Technology.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 14ff4ef67f3546b4e2fbab985466a31221b15ce4e403f8fa54e11a1d3d96d015
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/getzep/zep/main/README.md
+    shows: '"This repository is not Zep''s product or service. It contains example code, agent harnesses, framework
+      integrations, and tools for agents that use Zep Cloud"; the official SDKs are zep-cloud, @getzep/zep-cloud
+      and zep-go.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 410c2ff5b7a6488603590f0471d76af09ac7be5dcf82bdcc110d6623b8c9aba0
+  - url: https://www.getzep.com/pricing
+    shows: Self-serve Flex plans are credit based; Enterprise adds "Deploy to Zep Cloud (with your encryption keys)
+      or your VPC"; deployment options are Managed Cloud, BYOK and BYOC, the last through Contact Sales.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f81916ba5b462af5a9987fd658fd8f42e8790c6adbd48c3e30bbf53c3c03b21e
+    establishes:
+    - source
+  - url: https://blog.getzep.com/announcing-a-new-direction-for-zeps-open-source-strategy/
+    shows: '"we''ve decided to stop maintaining and releasing Zep Community Edition"; the repository stays Apache
+      2.0 but "we will no longer provide updates or active support".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b347d28a92a6b8a08cb36291c9bc95e2029f7cf2f7a172a44c34125fb5806a70
+  - url: https://raw.githubusercontent.com/getzep/zep-python/main/LICENSE
+    shows: The Python SDK repository's LICENSE is the Apache License 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+  - url: https://raw.githubusercontent.com/getzep/zep-js/main/LICENSE
+    shows: The TypeScript SDK repository's LICENSE is the Apache License 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as monthly downloads of Zep's own SDKs, zep-cloud on PyPI and @getzep/zep-cloud on npm,
+    which exist only to call the hosted service. The Go SDK is not counted, and use of the open Graphiti framework
+    is measured on its own entry.
+  sources:
+  - url: https://pypistats.org/api/packages/zep-cloud/recent
+    shows: 324,599 downloads of zep-cloud in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ad4634dc9e15bf663ac8849331903d0bce191a68a8c4452cfd846675b6e9db93
+  - url: https://api.npmjs.org/downloads/point/last-month/@getzep/zep-cloud
+    shows: 752,199 downloads of @getzep/zep-cloud between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ead008783d94bc61ca7f8e9881958903c78789a8a52b66113aac3dc1380f00c8
+  - url: https://pypi.org/pypi/zep-cloud/json
+    shows: zep-cloud is "The Python SDK for Zep, the context layer for AI agents.", repository https://github.com/getzep/zep-python.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5d44bb1ab9ace2371a43c74f035e946c7df3d0605d867f6ca479eca83678e3e6
+  - url: https://registry.npmjs.org/@getzep/zep-cloud/latest
+    shows: '@getzep/zep-cloud is "The TypeScript SDK for Zep, the context layer for AI agents.", repository github.com/getzep/zep-js.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3422eeea5f96218db77f5be143855a0717a7cf07ae4312ac360f55aae6598c8a
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: LLM extraction of entities and facts from messages and business data; duplicate merging and invalidation
+    of contradicted facts; bi-temporal fact validity and retention policies that delete idle context; user graphs
+    with facts, entities, episodes, observations and thread summaries; a Context Block retrieved per user and thread
+  confidence: medium
+  note: Zep extracts facts from each user's messages and business data, merges duplicates, invalidates facts that
+    newer information contradicts and returns a prompt-ready Context Block for the next turn. It runs on the same
+    temporal graph design as Graphiti and adds per-user observations, summaries and retention policies as a hosted
+    service.
+  relative_to: graphiti
+  relation: at
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://help.getzep.com/v4/how-graph-creation-works.md
+    shows: An "LLM-driven pipeline" extracts entities and facts from each episode; when resolving facts, "duplicates
+      merge, and contradictions invalidate older facts"; observations and thread summaries are derived over time.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3f7ff743d7d8d652b79879f464cebf71148048b48b2fc11077c1c868a890d105
+  - url: https://help.getzep.com/v4/facts.md
+    shows: Each fact carries valid_at, invalid_at and expired_at timestamps, and Zep "attempts to invalidate" a
+      fact that newer data contradicts.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 710199f0d884c95fecd67efdfc59ef0f577112f3d22e233c76a57c4217f3824d
+  - url: https://help.getzep.com/v4/agent-memory-solution.md
+    shows: '"A Zep user owns a user Context Graph. Threads group conversations for that user"; "thread.get_context"
+      retrieves a Context Block for the next model request.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d4112a833a459e5ac6c243a6c366776d33171131a0c71eccc0bda6dc06b678a3
+  - url: https://help.getzep.com/v4/context-retention.md
+    shows: Context is removed by a caller, by account deletion, or when "A retention policy deletes the context";
+      the page describes "how retention policies delete idle context".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1e36480999affd04a4d714ea44165de465d04e4a5bfe9fe9f83eb2b99a2af2fc
