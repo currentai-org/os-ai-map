@@ -1,0 +1,118 @@
+product: vertex-ai-agent-engine-memory-bank
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: Google Cloud service under the Service Specific Terms for generative AI services
+    source:
+      value: closed
+      detail: memory generation, consolidation and retrieval run inside Google Cloud, and no repository publishes
+        the service
+    context:
+      clients:
+        value: ADK and Agent Platform SDK
+        detail: ADK's VertexAiMemoryBankService and the Agent Platform SDK call the hosted API
+      deployment:
+        value: cloud-only
+        detail: billed for stored data, including revisions, and for read and write requests
+  confidence: high
+  note: Memory Bank runs only inside Google Cloud, which bills it for storage and requests, and the code that generates
+    and consolidates memories is not published or offered for self-hosting. Agents built with ADK or other frameworks
+    reach it through Google's client libraries, which call the service rather than run it.
+  raw: license:Proprietary(Google Cloud service under the Service Specific Terms for generative AI services);source:closed(memory
+    generation, consolidation and retrieval run inside Google Cloud, and no repository publishes the service);clients:ADK
+    and Agent Platform SDK(ADK's VertexAiMemoryBankService and the Agent Platform SDK call the hosted API);deployment:cloud-only(billed
+    for stored data, including revisions, and for read and write requests)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank
+    shows: 'The overview says "Agent Platform Memory Bank is a generative AI feature, subject to the Generative
+      AI Service Specific Terms" and lists "Managed storage and retrieval: Benefit from a fully managed, persistent,
+      and accessible memory store"; ADK agents use "the VertexAiMemoryBankService".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5254a0927e1a604b2770040e9177d098d09f57d1889b2a347929ff64a1f7b8d0
+    establishes:
+    - license
+    - source
+  - url: https://cloud.google.com/terms/service-terms
+    shows: The Service Specific Terms "are incorporated into the agreement under which Google has agreed to provide
+      Google Cloud Platform" services and cover "Gemini Enterprise Agent Platform (formerly Generative AI on Vertex
+      AI)".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cbacc6fdd85cce6182d4136cf98e6cbcc14073d6f8bf3003a8bf6e2f927d76e4
+    establishes:
+    - license
+  - url: https://cloud.google.com/vertex-ai/pricing
+    shows: The pricing page (redirected to the Gemini Enterprise Agent Platform pricing) says "Memory Bank is a
+      fully managed service for agent memory generation, storage, retrieval and embedding", billed for storage "including
+      revisions" and for read and write API requests.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 626076f56bb0799c72f8e669d5a3fb604ecfdb0da4b4614f48a7cf9b45c273e8
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: 'Google publishes no count of Memory Bank instances, memories or customers; the documentation and pricing
+    page were searched for one. The service has no package of its own: agents reach it through the general Agent
+    Platform SDK or ADK, whose downloads count every user of those libraries, not users of Memory Bank.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank
+    shows: The overview describes features, quickstarts and governance, and names ADK and "Other frameworks" as
+      the ways to call Memory Bank; it gives no customer, instance or memory count.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5254a0927e1a604b2770040e9177d098d09f57d1889b2a347929ff64a1f7b8d0
+  - url: https://cloud.google.com/vertex-ai/pricing
+    shows: The Memory Bank pricing entry lists storage and per-request charges and gives no usage or customer figure.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 626076f56bb0799c72f8e669d5a3fb604ecfdb0da4b4614f48a7cf9b45c273e8
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: similarity-search retrieval scoped to a user or other identity; LLM extraction of facts on configured topics
+    from conversations and multimodal input; consolidation that creates, updates or deletes memories when new information
+    duplicates or contradicts them; automatic expiry on a configurable time to live; natural-language fact memories
+    alongside schema-defined structured profiles
+  confidence: medium
+  note: 'Memory Bank runs the whole cycle itself: a model extracts facts from conversations, consolidation updates
+    or deletes stored memories that the new facts duplicate or contradict, and a time to live retires memories automatically.
+    Beside free-text facts it maintains structured user profiles against schemas the developer defines, all isolated
+    per user.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank
+    shows: 'Features include "Memory extraction", "Memory consolidation", "Similarity search: Retrieve memories
+      using similarity search that is scoped to a specific identity" and "Automatic expiration: Set a time to live
+      (TTL) on memories to ensure stale information is automatically deleted".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5254a0927e1a604b2770040e9177d098d09f57d1889b2a347929ff64a1f7b8d0
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank/generate-memories
+    shows: Consolidation "Identifies if existing memories with the same scope should be deleted or updated"; a memory
+      is "DELETED" when "its information was contradictory to new information extracted from the conversation".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 214bdf7c0a50dc2d0c20a0c5056c73b21b8d1185a6ede134f4ecbd53f2a26696
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank/fetch-memories
+    shows: RetrieveMemories returns memories for one scope, either all of them or by similarity search; "Only memories
+      that have the exact same scope" as the request are returned.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f679997d97ac342e94acc7f0219f78636ef7bf4eff47d0866c6dab20f86f78db
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank/profiles
+    shows: Memory Bank can "generate structured profiles, which are data structures with static schemas populated
+      and updated using LLMs", stored as memories of type STRUCTURED_PROFILE beside natural-language memories.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0c1ff42b1b5665824913e93f052609a9797592e7a50453c8b4632d8cbd4db92b
