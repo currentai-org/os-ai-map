@@ -22,7 +22,6 @@ openness:
     the public repository and runs locally with the user's own storage and embedding provider. Its LICENSE file
     is the Apache 2.0 text with the copyright grant rewritten in MIT-style wording, so it is not the approved Apache
     license the project names elsewhere, though nothing in it limits who may use the software or at what scale.
-  last_verified: '2026-11-20'
   raw: license:memU-Modified-Apache-2.0(LICENSE.txt is the Apache License 2.0 text with the section 2 copyright
     grant rewritten in MIT wording and an added notice-retention condition, and other clauses reworded);source:public;core-gated:ungated(the
     340-path tree at 12d144c holds the memory service, storage backends, embedding providers and every host adapter
@@ -111,18 +110,19 @@ adoption:
     http_status: 200
     content_sha256: d3fb0bebdc31596389fcfc020665a9a3f93dbc2732046a5096e0f5b67a1f83e8
 capability:
-  score: 4
+  score: 2
   basis: feature_matrix
   basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
-  value: retrieval of the most relevant memory and skill files before a task, scoped to the user; extraction jobs
-    built from raw session transcripts and tool traces under memU's own instructions, run on the host agent's model;
-    patching of existing memory and skill files in place instead of adding duplicates; separate chat memory, workspace
-    index and skill stores; no time-based expiry or decay
+  value: retrieval of the most relevant memory and skill files before a task, scoped to the user; separate
+    chat memory, workspace index and skill stores; extraction and merging written as job instructions that
+    the host agent's own model carries out, since the memory service itself makes no model calls; no time-based
+    expiry or decay
   confidence: medium
-  note: memU mines session logs and tool traces itself, has the host agent's model distill them under its own instructions,
-    merges new knowledge into existing memory and skill files, and retrieves across three separate stores. It does
-    not retire memories as they age.
-  relative_to: graphiti
+  note: memU retrieves across three separate stores of memory, workspace and skill files, and it supplies
+    the instructions for distilling session logs into them. The distilling and merging are done by the host
+    agent's model, not by memU, whose memory service makes no model calls of its own, so memU organizes
+    and serves memory rather than deciding what to keep.
+  relative_to: lightmem
   relation: one_below
   last_verified: '2026-11-20'
   sources:
