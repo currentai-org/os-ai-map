@@ -41,12 +41,16 @@ deferrals, and the closed-product pass, the one rejection and the Policy and Ten
 1. Four licenses no tier names (deferred in the recipe): the Orchestrum Personal Use License
    (`grantex`), the OpenID Foundation copyright license (`authzen-authorization-api`) and the IETF
    Trust Legal Provisions (`identity-assertion-authz-grant`, `wimse-ai-identity-management`).
-2. Gating calls: `permit0` is read gated on a planned private enterprise fork that is not yet on
-   sale; `aegis-agentguard`'s gates can be switched on by an unvalidated environment variable;
-   `kontext` is read public and gated because enforcement needs a hosted workspace's policy (the
-   alternative is source partial); `halofy`'s managed-only subsystems are read as a separate service.
-3. `wimse-ai-identity-management` bands 5 at low confidence: the draft composes existing standards,
-   and a strict reading of "defines" would cap it at 2.
+2. Settled in review of #1110: `permit0` is scored on its current Apache-2.0 release (5), because
+   its enterprise edition is only planned; capability reads the same release openness reads, which
+   moved `cordum` to 3 and `kontext` to 1 after an audit against implementation files;
+   `wimse-ai-identity-management` abstains on capability, since it defines no mechanism of its own;
+   and the openness of the four license-deferred products carries no date and is held in
+   `sources/verification_queue.yaml`. Still open: `aegis-agentguard`'s gates can be switched on by an
+   unvalidated environment variable, `kontext` could be read source partial rather than public and
+   gated, and `halofy`'s managed-only subsystems are read as a separate service.
+3. `caracal`'s locked-feature file carries an "All Rights Reserved" header inside the Apache-2.0
+   repository; the root LICENSE governs, and the file describes screens the Community Edition locks.
 4. `agntcy-identity`: the PyPI authors are at Cisco; owner `linux-foundation` was kept from the seed.
 5. Keycard (agent authorization, not yet generally available) and Amazon Bedrock AgentCore Policy
    are the natural next closed entries.

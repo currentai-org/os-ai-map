@@ -98,37 +98,49 @@ adoption:
     http_status: 200
     content_sha256: 5dfd0856a991e5ed093a70a0e6f76a41dcd665f61876f38bdba2472fa4f8d4ee
 capability:
-  score: 5
+  score: 3
   basis: feature_matrix
   basis_detail: parts of agent authorization the product implements itself
-  value: agent identities carrying risk tiers (Enterprise entitlement) and signed worker trust; per-action ALLOW,
-    DENY, REQUIRE_APPROVAL, THROTTLE and ALLOW_WITH_CONSTRAINTS verdicts from the Safety Kernel; Ed25519-signed
-    delegation tokens whose scope can only narrow, to a configurable chain depth; human approvals bound to the action
-    hash; SHA-256 hash-chained audit log with optional HMAC
+  value: per-action ALLOW, DENY, REQUIRE_APPROVAL, THROTTLE and ALLOW_WITH_CONSTRAINTS verdicts from the
+    Safety Kernel; human approvals bound to the action hash, with a single approver in the unlicensed Community
+    tier; SHA-256 hash-chained audit log with optional HMAC; agent identities are an Enterprise entitlement,
+    and the Ed25519-signed delegation tokens whose scope can only narrow are issued only between those identities
   confidence: medium
-  note: 'Cordum covers every part of agent authorization itself: it identifies agents, decides each action before
-    it runs, narrows delegated scope across hops, holds risky actions for a person and chains its audit records
-    so tampering shows. Agent identities, which the delegation tokens are issued between, need a paid license.'
+  note: Cordum decides each action against policy before it runs, holds risky actions until a person approves
+    that exact action, and chains its audit records so tampering shows. Agent identities need a paid Enterprise
+    license, and so does delegation in practice, because its narrowing tokens pass only between those identities.
   relative_to: agent-governance-toolkit
-  relation: at
+  relation: two_below
   last_verified: '2026-11-20'
   sources:
   - url: https://raw.githubusercontent.com/cordum-io/cordum/main/README.md
-    shows: Policy evaluation "yields ALLOW, DENY, REQUIRE_APPROVAL, THROTTLE or ALLOW_WITH_CONSTRAINTS"; an approval
-      whose action_hash differs is rejected; "Agent identities, which carry the risk tier that agent_risk_tiers
-      rules match, require an Enterprise license."
+    shows: Policy evaluation "yields ALLOW, DENY, REQUIRE_APPROVAL, THROTTLE or ALLOW_WITH_CONSTRAINTS";
+      an approval whose action_hash differs is rejected; "Agent identities, which carry the risk tier that
+      agent_risk_tiers rules match, require an Enterprise license."
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: 9fba7f859d1b5f170fd5e3b1f4fd9928e8b06b8b068c90c0faefd2c7d1f3a78f
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/core/licensing/tiers.go
+    shows: 'The Community tier, which runs without a license file, sets "ApprovalMode: ApprovalModeSingle"
+      and "Audit: true"; "AgentIdentity: true" appears only under PlanEnterprise.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9efd24729ac7b4448f671796ad53159e1034b95eba1235965742228c6f6a8415
+  - url: https://raw.githubusercontent.com/cordum-io/cordum/main/core/controlplane/gateway/handlers_agents.go
+    shows: Creating, reading, updating and deleting agent identities each first call requireFeatureEntitlement(w,
+      agentIdentityFeature, "agent identity requires an Enterprise license").
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: db6399f0cc0cf03f0f7a8b3062e435126925220c1cb8174c55e187ab6effa638
   - url: https://raw.githubusercontent.com/cordum-io/cordum/main/docs/auth/delegation.md
-    shows: Delegation tokens "let one agent identity delegate a reduced, time-bounded scope to another agent identity";
-      issuance and verification "enforce scope monotonicity" and reject chains deeper than CORDUM_DELEGATION_MAX_DEPTH.
+    shows: Delegation tokens "let one agent identity delegate a reduced, time-bounded scope to another agent
+      identity"; issuance and verification "enforce scope monotonicity" and reject chains deeper than CORDUM_DELEGATION_MAX_DEPTH.
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: 4166f8d9d3d874729bec229f6572750463f9d2188137295eac3a1a455cb6d7e0
   - url: https://raw.githubusercontent.com/cordum-io/cordum/main/docs/audit-chain.md
-    shows: '"Tamper-evident, append-only audit logging": "each event''s hash includes its predecessor''s hash",
-      with optional HMAC-SHA256 signing of each event.'
+    shows: '"Tamper-evident, append-only audit logging": "each event''s hash includes its predecessor''s
+      hash", with optional HMAC-SHA256 signing of each event.'
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: d6d8ddb16e6abd24a295cd711d1527354d129b86c49edcd1006bf087138289e9

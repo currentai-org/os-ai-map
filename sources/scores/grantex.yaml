@@ -102,10 +102,22 @@ capability:
   last_verified: '2026-11-20'
   sources:
   - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/README.md
-    shows: The README says Grantex "gives each agent a verifiable identity and scoped, time-limited, revocable authority",
-      that "Sub-agent scopes must be a strict subset of the parent's scopes", that wallet policy can "require an
-      exact human approval", that it supports OPA and Cedar policy backends, and lists an audit-trail example with
-      "hash chain integrity verification".
+    shows: The README says Grantex "gives each agent a verifiable identity and scoped, time-limited, revocable
+      authority", that "Sub-agent scopes must be a strict subset of the parent's scopes", that wallet policy
+      can "require an exact human approval", that it supports OPA and Cedar policy backends, and lists an
+      audit-trail example with "hash chain integrity verification".
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: d12431e11bf6e3cd19144c449ba318d8336df78bcd255e1c6bcbc07c5e57ca5b
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/apps/auth-service/src/routes/delegate.ts
+    shows: The delegation route rejects a request with "Requested scopes exceed parent grant scopes" and
+      enforces a maximum chain depth ("Delegation depth limit reached").
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 109c856aff2a5c256d467d122cea04a236c22fb07ea342643c9ef233350ee62a
+  - url: https://raw.githubusercontent.com/mishrasanjeev/grantex/main/apps/auth-service/src/lib/audit-chain.ts
+    shows: The auth service appends platform-written entries to "one chain per developer, each entry hashing
+      the one before it".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 79fb688f58a462278f10827e088002147fb1699c79c4e57a9cae163eaa33ad71

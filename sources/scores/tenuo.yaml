@@ -112,16 +112,29 @@ capability:
   last_verified: '2026-11-20'
   sources:
   - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/README.md
-    shows: The README says "Every warrant names a public key. Every call carries a signature from that key", "Calls
-      outside that limit are blocked before the function executes", "No delegated warrant can exceed its parent",
-      and "Signed authorization receipts are opt-in".
+    shows: The README says "Every warrant names a public key. Every call carries a signature from that key",
+      "Calls outside that limit are blocked before the function executes", "No delegated warrant can exceed
+      its parent", and "Signed authorization receipts are opt-in".
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: ec79e941812ca411b47716aecad44990e6a423a3935ef12664b02e6df1c63a1e
   - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/docs/approvals.md
-    shows: 'The Human Approvals page describes "Cryptographically verified human-in-the-loop authorization for AI
-      agent tool calls": gates, required approvers and a threshold set on the warrant, satisfied by SignedApproval
-      signatures.'
+    shows: 'The Human Approvals page describes "Cryptographically verified human-in-the-loop authorization
+      for AI agent tool calls": gates, required approvers and a threshold set on the warrant, satisfied
+      by SignedApproval signatures.'
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: 695f26ae65193d0d37c3e8636e8d5c990762b7c247b4e073a3572af13cc7afd5
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/tenuo-core/src/warrant.rs
+    shows: 'The warrant module describes "a cryptographically-signed token of authority" with a parent_hash
+      linking each warrant to its parent and "Monotonic Attenuation: Capabilities only shrink when delegated,
+      never expand".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: dba7e4009a915a417d5e75128cb6ffb531ebf903a719a611635e22b2a5a5b3be
+  - url: https://raw.githubusercontent.com/tenuo-ai/tenuo/main/tenuo-core/src/receipt.rs
+    shows: The receipt module defines "a self-contained, signed record of one authorization decision" that
+      carries the public key it was signed under, so a verifier can check it with no directory lookup.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 38f19943c04944c5d06c29353a659355e332dc85712cc9a2dfe76f9b666a3523

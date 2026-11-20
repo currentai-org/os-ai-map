@@ -117,15 +117,28 @@ capability:
   last_verified: '2026-11-20'
   sources:
   - url: https://raw.githubusercontent.com/Garudex-Labs/caracal/main/README.md
-    shows: The README lists "Delegation that only narrows", "Decisions before actions" under a default-deny policy,
-      "Human approval for risky actions" and "An append-only, tamper-evident trail of every decision", and names
-      OAuth 2.0 token exchange (RFC 8693).
+    shows: The README lists "Delegation that only narrows", "Decisions before actions" under a default-deny
+      policy, "Human approval for risky actions" and "An append-only, tamper-evident trail of every decision",
+      and names OAuth 2.0 token exchange (RFC 8693).
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: 55d0795093b07b88643cc0d2314b71c7aba4584ef5cecede987a9bdd1a4a19b2
   - url: https://caracal.run
-    shows: The site says "Every agent run gets its own identity", "Sensitive actions pause for approval", and that
-      the audit service provides "Signed event ingestion" and a "Tamper-evident hash chain".
+    shows: The site says "Every agent run gets its own identity", "Sensitive actions pause for approval",
+      and that the audit service provides "Signed event ingestion" and a "Tamper-evident hash chain".
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: bb87e1fb727fde09c0e50a2b63cfcd4025696edd0253057f9b80a68ef7eea620
+  - url: https://raw.githubusercontent.com/Garudex-Labs/caracal/main/services/audit/internal/pg.go
+    shows: The audit service is an "Append-only PostgreSQL writer with per-zone hash chain, HMAC, and forensic
+      helpers", in the published Community Edition.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a61a3f03febf21014e2965804b804f3ffdf2804173291d14901dea8916c9338c
+  - url: https://raw.githubusercontent.com/Garudex-Labs/caracal/main/apps/web/src/platform/edition/lockedFeatures.ts
+    shows: 'The file lists the "enterprise capabilities shown as locked upgrade surfaces in Community Edition":
+      Organization, Integrations, Analytics and Governance. None of them is the identity, policy decision,
+      delegation, approval hold or audit chain.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b2104de589aa670d6394fe17781f3ef80c7f561e216d5e8c9331e045fcb98b26

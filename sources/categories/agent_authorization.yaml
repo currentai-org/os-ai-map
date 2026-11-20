@@ -2,11 +2,11 @@ name: agent_authorization
 display_name: Agent identity & authorization
 description: Software and standards that determine who an agent may act as, what authority it may
   exercise, and what resources and actions it may access or delegate.
-strapline: Open supply, thin adoption. The most complete agent-authorization products publish their code,
-  led by Microsoft's Agent Governance Toolkit, Tenuo and Caracal, while the hyperscalers' agent-identity services
-  issue identities and narrow delegation but leave the per-action decision to something else. Only Cloudflare's
-  Workers OAuth Provider is downloaded at scale, and it authenticates MCP clients rather than deciding what an
-  agent may do.
+strapline: Open supply, thin adoption. Three of the four most complete agent-authorization products publish
+  their code under OSI licenses (Microsoft's Agent Governance Toolkit, Tenuo and Caracal), while the fourth, Grantex,
+  restricts its server to personal use, and the hyperscalers' agent-identity services issue identities and narrow
+  delegation but leave the per-action decision to something else. Only Cloudflare's Workers OAuth Provider is
+  downloaded at scale, and it authenticates MCP clients rather than deciding what an agent may do.
 weights:
   adopt: 0.6
   cap: 0.4
@@ -46,9 +46,25 @@ scoring_recipe:
     `two_below`, which in turn is the nearer peer for the 2s that issue identities and narrow
     delegation without deciding per action (`workers-oauth-provider`, `microsoft-entra-agent-id`,
     `amazon-bedrock-agentcore-identity`). The other 2s and 1s are recorded against the nearest 2 or
-    3 that shares their shape. DISTRIBUTION, counted 2026-11-20 over 28 banded products: 5 holds 6,
-    4 holds 5, 3 holds 6, 2 holds 7, 1 holds 4. The widest rung is a quarter of the category, so no
-    rung triggered the width review.
+    3 that shares their shape.
+    SAME RELEASE ON BOTH AXES. Where openness reads an open release that withholds features behind a
+    paid license or a hosted-only service, capability reads that same release: a part counts only
+    if the published build performs it without the license or the service. A closed product is read
+    as the service it sells. Adopted in review of the promotion PR, with an audit of every top-band
+    and gated product against implementation files rather than README bullets: `cordum` fell from 5
+    to 3 (agent identities, and so in practice delegation between them, need an Enterprise license
+    file); `kontext` from 2 to 1 (standalone guard only records; denying needs a policy fetched from
+    the hosted workspace); `aegis-agentguard` kept 4 (its signed receipts and Merkle log run in the
+    free build, though blocking covers one agent without a license); `caracal` kept 5 (its Enterprise
+    Edition locks organization, integration, analytics and governance screens, none of the five
+    parts). A SPECIFICATION is read for the mechanisms it defines itself, not those it references:
+    `authzen-authorization-api` defines the access evaluation (A2) and
+    `identity-assertion-authz-grant` the cross-domain grant (A3), each band 1;
+    `wimse-ai-identity-management` is an informational draft that, by its own abstract, applies
+    existing standards rather than defining protocols, so it abstains (null, `n/a`).
+    DISTRIBUTION, counted 2026-11-20 over 27 banded products: 5 holds 4, 4 holds 5, 3 holds 7, 2
+    holds 6, 1 holds 5. The widest rung is a quarter of the category, so no rung triggered the width
+    review.
   deferred:
     grantex:
       because: >-

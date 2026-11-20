@@ -96,18 +96,21 @@ adoption:
     http_status: 200
     content_sha256: 801da18983ad7ce24d4ff79e37c3fa2c9664703cdbd3c82e9f6ad9ec584c9b13
 capability:
-  score: 2
+  score: 1
   basis: feature_matrix
   basis_detail: parts of agent authorization the product implements itself
-  value: Cedar policy evaluated locally on each supported pre-tool-use hook, denying in enforce mode; an authorization
-    ledger of receipts with hash links and optional Ed25519 signatures; actions attributed to the agent and session,
-    with no credential issued to the agent; no delegation between agents; no human approval step
+  value: Cedar policy evaluated locally on each supported pre-tool-use hook, but denying needs a managed
+    policy fetched from the hosted workspace, so the standalone guard only records would-be decisions; an
+    authorization ledger of receipts with hash links and optional Ed25519 signatures; actions attributed
+    to the agent and session, with no credential issued to the agent; no delegation between agents; no human
+    approval step
   confidence: medium
-  note: Kontext decides supported tool calls against policy before they run and keeps a hash-linked, optionally
-    signed ledger of those decisions. It attributes actions to an agent without giving it an identity of its own,
-    and it has no delegation chain or step where a person approves a held action.
+  note: Kontext keeps a hash-linked, optionally signed ledger of the policy decisions it reaches on an agent's
+    tool calls. Run on its own, it only records what policy would have blocked, because denying a call needs
+    a policy fetched from Kontext's hosted workspace. It gives the agent no identity of its own, and has
+    no delegation chain or step where a person approves a held action.
   relative_to: oxdeai
-  relation: one_below
+  relation: two_below
   last_verified: '2026-11-20'
   sources:
   - url: https://raw.githubusercontent.com/kontext-security/kontext/main/README.md
@@ -117,8 +120,26 @@ capability:
     http_status: 200
     content_sha256: 3e1f401c7425637bdacfbbeaa7f2974f81b8c725849a21dc67eec0e5bee40963
   - url: https://raw.githubusercontent.com/kontext-security/kontext/main/docs/guard.md
-    shows: The Guard page says Ed25519 receipt signatures can be enabled with KONTEXT_GUARD_LEDGER_SIGNING=1 and
-      that VerifyReceipts "checks receipt hashes, previous-hash links, and local Ed25519 signatures".
+    shows: The Guard page says Ed25519 receipt signatures can be enabled with KONTEXT_GUARD_LEDGER_SIGNING=1
+      and that VerifyReceipts "checks receipt hashes, previous-hash links, and local Ed25519 signatures".
     accessed: '2026-11-20'
     http_status: 200
     content_sha256: 1e691f62fc17fc9e7f9d32dc8e005534225b450a0cdbe2875a12fba29f4ef3d8
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/internal/runtimehost/host.go
+    shows: 'Start refuses any mode other than observe without a managed policy source: "enforce and remote
+      modes require a managed Cedar policy source".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 34b3575d4fcd8bae43c221fa22bcc3a5f2ac344a567740ea9a066c104b17f37e
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/internal/managedobserve/daemon.go
+    shows: The managed daemon takes its mode from managed.json ("observe records would-decisions, enforce
+      returns real denies") and builds its Cedar policy client from the configured cloud URL.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c652e7a28a034302fa3c91546920a2df363315e590431f1878721c86420a89d3
+  - url: https://raw.githubusercontent.com/kontext-security/kontext/main/internal/guard/store/sqlite/receipt_signing.go
+    shows: VerifyReceipts walks the local receipt chain, checking each receipt hash, its previous-hash link
+      and, when signing is on, its Ed25519 signature.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: de21a69f4d68fdd4a766e52d36d14bb7b57cad090960a497671f66365500d197
