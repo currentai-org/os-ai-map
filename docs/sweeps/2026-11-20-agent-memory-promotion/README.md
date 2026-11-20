@@ -57,3 +57,20 @@ boundary keep their #413 verdicts; the category comments say why for each.
 6. Redis Agent Memory, the closed successor to the deprecated Redis Agent Memory Server, was not
    added.
 7. `memobase` is quiet (last commit 2026-01-11, its hosted cloud unreachable) but not archived.
+
+## The identity pass fixture
+
+The twelve ledger re-rulings lifted `equivalence` truth from 16 to 27 rulings on declared
+candidates, past `MIN_TRUTH` (20), so `identity_eval --floors` graded the relation for the first
+time and failed recall at 0.259. The fixture's equivalence block had stayed at the 16 edges it was
+written with while the ledger grew: nine rulings already on main (instructor, outlines, paddleocr,
+bindu, deepseek-ocr, nemotron-asr, glm, glm-ocr and mem0) had no edge, and main's recall of 0.438
+went unreported only because it sat under the minimum. `warehouse/models/identity/equivalence_edges.sql`
+emits a `resolution_ledger` edge at confidence 1.0 for every `existing_product` ruling, so the
+fixture now carries that edge for each ruling on a declared candidate (20 added), with the
+declaring tier as `candidate_tier`. No floor or minimum changed.
+
+For declared candidates, the relation's recall is therefore measured on edges the graph emits
+because a person ruled, which the module docstring names as a one-sided guard for pool truth. It
+was already so for the seven edges the fixture carried before; it is a question about the
+relation's design for a maintainer, not something this promotion settles.
