@@ -1,0 +1,131 @@
+product: microsoft-entra-agent-id
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: a Microsoft Entra service, with its security features sold through Microsoft Agent 365
+    source:
+      value: closed
+      detail: agent identities, blueprints and token issuance live in Microsoft Entra ID, and no repository publishes
+        that service
+    context:
+      clients:
+        value: MIT
+        detail: AzureAD/microsoft-identity-web publishes the Microsoft.Identity.Web.AgentIdentities library and
+          the Entra ID Auth SDK sidecar, both clients that acquire tokens from Entra
+  confidence: high
+  note: Agent ID is part of Microsoft Entra ID, a hosted Microsoft service, and its security features are sold through
+    Microsoft Agent 365. Microsoft publishes the .NET library and the token sidecar that agents use to get tokens
+    under the MIT license, but they only talk to Entra and cannot issue an agent identity themselves.
+  raw: license:Proprietary(a Microsoft Entra service, with its security features sold through Microsoft Agent 365);source:closed(agent
+    identities, blueprints and token issuance live in Microsoft Entra ID, and no repository publishes that service);clients:MIT(AzureAD/microsoft-identity-web
+    publishes the Microsoft.Identity.Web.AgentIdentities library and the Entra ID Auth SDK sidecar, both clients
+    that acquire tokens from Entra)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-agent-id
+    shows: The product page offers Entra Agent ID "in Agent 365 or Microsoft 365 E7", with Agent 365 at "$15.00
+      user/month, paid yearly" and a link to its terms; no source code or open license is offered.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c22e3260159d2e634434b45b07186b9fa86a7984fad03346849777f6764b9dc2
+    establishes:
+    - license
+    - source
+  - url: https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id
+    shows: '"Microsoft Entra Agent ID is a product within Microsoft Entra that provides the platform for creating
+      and managing agent identities and agent identity blueprints. Agent ID is available for all Microsoft Entra
+      customers."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 096165e5ccfd402dff0b4f333620c138e7f6a1eaab0077e7b8d071d5c14953a5
+    establishes:
+    - source
+  - url: https://learn.microsoft.com/en-us/entra/msidweb/agent-id-sdk/overview
+    shows: The Microsoft Entra ID Auth SDK (sidecar) "is a containerized web service that handles token acquisition,
+      validation, and secure downstream API calls"; its architecture runs "Your Web API → Microsoft Entra ID Auth
+      SDK (sidecar) → Microsoft Entra ID".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ad6db14bb0ef7d848bc5e9d725c22a582152738f95a4798755f1a9e49d809fff
+  - url: https://raw.githubusercontent.com/AzureAD/microsoft-identity-web/master/src/Microsoft.Identity.Web.AgentIdentities/README.AgentIdentities.md
+    shows: The Microsoft.Identity.Web.AgentIdentities package "enables applications to securely authenticate and
+      acquire tokens for agent applications, agent identities, and agent user identities".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cc79471d130d76cd5be98db7cb7527bbf4fb89ce15e07a4c176b2025f7afd918
+  - url: https://raw.githubusercontent.com/AzureAD/microsoft-identity-web/master/LICENSE
+    shows: The repository LICENSE is the MIT License, "Copyright (c) Microsoft Corporation".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9906940f61b1f0b533fa7d99baf55178b2808fbe113ea51dfbfad8572ccd5f2b
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: 'Microsoft publishes no count of agent identities, tenants or token requests for Agent ID, so there is no
+    figure that measures this product. The client libraries are not a usable stand-in: the .NET package ships on
+    NuGet, which the map does not count, and the sidecar is a container image.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-agent-id
+    shows: 'The product page gives pricing and scenarios but no count of agents, tenants or customers; searched
+      the body for "million": none.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c22e3260159d2e634434b45b07186b9fa86a7984fad03346849777f6764b9dc2
+  - url: https://learn.microsoft.com/en-us/entra/agent-id/whats-new-agent-id
+    shows: '"Microsoft Entra Agent ID is now generally available." The release notes list features with no usage
+      figures.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 73a4a33a727b5db139fdf6a8da9d2ae7069cdb3beb593b635aba760e21abd1a2
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: agent identities created from agent identity blueprints, on-behalf-of token exchange limited to the user's
+    consented delegated permissions; no per-action decision (Conditional Access runs at token issuance), no human
+    approval of an action, no tamper-evident decision record
+  confidence: medium
+  note: Agent ID gives each agent its own identity and lets it act for a user only within the permissions that user
+    and the agent were granted. Its policy checks run when Entra issues or refreshes a token, so the decision about
+    each individual tool call is left to the resource, and it has no approval step or signed decision record.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id
+    shows: '"The Microsoft Entra Agent identity platform enables developers to create and manage agent identities,
+      which are specialized identity constructs built for AI agents. Agent identity blueprints serve as templates
+      for creating individual agent identities".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 096165e5ccfd402dff0b4f333620c138e7f6a1eaab0077e7b8d071d5c14953a5
+  - url: https://learn.microsoft.com/en-us/entra/agent-id/security-for-ai-overview
+    shows: '"Delegated permissions limit access to the permissions granted to the client and the user''s own access."
+      A hosted agent "uses the on-behalf-of (OBO) flow to call a downstream API as that user"; autonomous agents
+      use "their agent identity and the client credentials flow".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d25630d1f0248614f832331b45fe05c1a51899763ea8fd413c05e38617bbd585
+  - url: https://learn.microsoft.com/en-us/entra/agent-id/agent-on-behalf-of-oauth-flow
+    shows: 'The agent on-behalf-of flow: the blueprint "receives a user token from a client application and then
+      performs an OBO token exchange", and "The agent identity needs delegated permissions and user or administrator
+      consent to access the downstream API."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 798dec7d3eff2f353f9f3f8c17a18d7626ca0057b066a8d59fee9d0a4f96822f
+  - url: https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id
+    shows: Conditional Access for agents "evaluates policies when Microsoft Entra ID issues or refreshes an access
+      token", after which "The target resource validates the token and uses its claims to make authorization decisions."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ec196c12539bc469880e0d23616f4ca8bf07b828d597d8a874d3255fe3254dfd
+  - url: https://learn.microsoft.com/en-us/entra/agent-id/sign-in-audit-logs-agents
+    shows: Agent activity appears in the Entra audit and sign-in logs as application, service principal and user
+      events; the page describes no signed or tamper-evident record.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 11f5bcdc46d483a23d643e6725fe3465ab4711ecc200968a2fef130cb702d418

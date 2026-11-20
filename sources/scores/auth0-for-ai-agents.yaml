@@ -1,0 +1,163 @@
+product: auth0-for-ai-agents
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: the Auth0 service is sold under Okta subscription agreements
+    source:
+      value: closed
+      detail: Token Vault, CIBA approval and Auth0 FGA run on Auth0's hosted service, and no repository publishes
+        them
+    context:
+      clients:
+        value: Apache-2.0
+        detail: auth0/auth0-ai-js and auth0/auth0-ai-python publish the Auth0 AI SDKs and framework integrations,
+          all clients of the hosted service
+  confidence: high
+  note: Auth0 for AI Agents runs as part of Auth0's hosted identity service, sold under Okta's subscription terms,
+    and the service's code is not published. Okta publishes the AI SDKs and framework integrations under Apache-2.0,
+    but they only call the hosted Token Vault, approval and authorization endpoints and cannot replace them.
+  raw: license:Proprietary(the Auth0 service is sold under Okta subscription agreements);source:closed(Token Vault,
+    CIBA approval and Auth0 FGA run on Auth0's hosted service, and no repository publishes them);clients:Apache-2.0(auth0/auth0-ai-js
+    and auth0/auth0-ai-python publish the Auth0 AI SDKs and framework integrations, all clients of the hosted service)
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://www.okta.com/agreements/
+    shows: Okta's legal page lists the Master Subscription Agreement, Auth0 Support Program Terms and the "Auth0
+      Product Specific Schedule for Self Service" as the terms for Okta and Auth0 products; no open source license
+      is offered for the service.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: bd6c3f113223a3751d4ca65dd99652265dacad0b4bd83f8df1650cb77c02c25e
+    establishes:
+    - license
+  - url: https://auth0.com/ai/docs/intro/asynchronous-authorization
+    shows: 'Describes the approval flow as calls to Auth0''s own endpoints: "The agent''s backend identifies a need
+      for user approval and sends a CIBA request to the Auth0 /bc-authorize endpoint", then polls "the Auth0 /token
+      endpoint".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d5dea4243d9d7eead0d139311a6b0b7233c8a36b8b0e3de20748b317692b529e
+    establishes:
+    - source
+  - url: https://auth0.com/ai/docs/intro/delegated-authorization
+    shows: '"Use Token Vault to connect your agent to external APIs like Google, Slack, or GitHub. Token Vault handles
+      obtaining, storing, and refreshing API tokens so your agent never handles third-party credentials directly."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8d116d8711b6b14c50378538d5ba37fe7ad1e047dbe0d9858e63b41d047aafcd
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/auth0/auth0-ai-js/main/README.md
+    shows: The README of the Auth0 AI SDK for JavaScript lists the packages @auth0/ai, @auth0/ai-genkit, @auth0/ai-llamaindex,
+      @auth0/ai-langchain, @auth0/ai-vercel, @auth0/ai-redis and @auth0/ai-components, client libraries for the
+      hosted service.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f3ea27921f51ee8366ab4fe1b768bb11bf88b704dba996f1d658a0d0365ef267
+  - url: https://raw.githubusercontent.com/auth0/auth0-ai-js/main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2eeff6607d282bc6ff5558ac021350d9621db7063ca525363cb6e597ecba0a3f
+  - url: https://raw.githubusercontent.com/auth0/auth0-ai-python/main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2eeff6607d282bc6ff5558ac021350d9621db7063ca525363cb6e597ecba0a3f
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is counted as monthly npm and PyPI downloads of Auth0's base AI SDK packages, which the LangChain,
+    LlamaIndex, Vercel AI and Genkit integrations depend on. The figure understates use, because Token Vault, CIBA
+    approval and FGA can also be reached through Auth0's general SDKs and APIs without these packages.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@auth0/ai
+    shows: 4,527 npm downloads of @auth0/ai between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ead6766cdd21cdc022ae8f536a8c9a249289bef57071c496d7f9cb607b257165
+  - url: https://pypistats.org/api/packages/auth0-ai/recent
+    shows: 1,864 PyPI downloads of auth0-ai in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 97af9ccd1afad8cb3ac608328a79be3de6759e85aa4fe4db01991d45b2f38667
+  - url: https://registry.npmjs.org/@auth0/ai
+    shows: The npm registry entry for @auth0/ai, "Auth0AI SDK for JavaScript", points at git+https://github.com/auth0/auth0-ai-js.git.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 10280ca2bf9819857a70f54becd4e225e3a5c51a45f6832686108617727b9da0
+  - url: https://pypi.org/pypi/auth0-ai/json
+    shows: PyPI describes auth0-ai as "base abstractions for authentication and authorization in AI applications",
+      Apache-2.0, homepage auth0.com.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 883d4fbe5400a38117500e714cadaef365d30989dfa3bef731f1422eded74ec9
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of agent authorization the product implements itself
+  value: agent identities distinct from the users they serve (Agent as Principal, client credentials, private key
+    JWT), Auth0 FGA checks on each tool call through the SDK tool authorizers, user-consented scoped tokens with
+    on-behalf-of token exchange and Token Vault, CIBA approval before sensitive actions; no tamper-evident decision
+    record
+  confidence: medium
+  note: 'Auth0 for AI Agents covers most of the job: agents get identities of their own, FGA can refuse a tool call
+    the user is not entitled to, delegated tokens carry only what the user consented to, and CIBA holds a sensitive
+    action until the user approves it on another device. What it does not produce is a signed or hash-chained record
+    of each decision; its audit trail is ordinary logs.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://auth0.com/ai/docs/overview
+    shows: '"Secure your AI agents with user authentication, delegated authorization, human-in-the-loop controls
+      with CIBA, and fine-grained authorization in RAG pipelines."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0a6a78c47579987828b126d8eff4b92e839777f449591dd027609a48072c992c
+  - url: https://www.okta.com/newsroom/articles/auth0-may-2026-product-innovations/
+    shows: 'Okta''s May 2026 announcement: "With Agent as Principal, developers can assign unique identities to
+      AI agents—distinct from the users they serve", and "On-Behalf-Of Token Exchange ... trade user access tokens
+      for correctly scoped downstream tokens".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 563e37d4b0da7e23b6b35cd9e5a1bd7a5fee53f7bab4b67e6eafbde86ca5916a
+  - url: https://auth0.com/ai/docs/intro/user-authentication
+    shows: '"For AI agents or backend services, use the Client Credentials Flow, mutual TLS (mTLS), or Private Key
+      JWT to authenticate directly with APIs."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3f82062515d6eb6e4838a2daa81de1dc0cd0e7777af411f32aaa70146a10e6b8
+  - url: https://auth0.com/ai/docs/sdks/overview
+    shows: The SDKs provide "Tools for implementing asynchronous user authentication allowing human-in-the-loop
+      approval for critical actions" and "OpenFGA-based tool authorizers".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 13c2da0da61b3b8aac83bab6ca1178a20c592ea53d74009bc28683b89742ff68
+  - url: https://raw.githubusercontent.com/auth0/auth0-ai-js/main/examples/authorization-for-tools/README.md
+    shows: '"Authorization Check: Auth0 FGA verifies the user''s permissions, erroring when the user is not authorized
+      to execute certain action", with examples that "enforce authorization checks during tool execution".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 25b17e668c6212b8eb4f47e6acb6283177964eb79c9ce20d11eae0201371fddc
+  - url: https://auth0.com/ai/docs/intro/delegated-authorization
+    shows: '"Auth0 implements delegated authorization using access tokens that define the scope of permissions the
+      user has explicitly granted to the agent."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8d116d8711b6b14c50378538d5ba37fe7ad1e047dbe0d9858e63b41d047aafcd
+  - url: https://auth0.com/ai/docs/intro/asynchronous-authorization
+    shows: Agents work in the background, "seeking user consent for sensitive or critical actions only when necessary";
+      "The user then approves or denies the request on a separate, trusted authentication device".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d5dea4243d9d7eead0d139311a6b0b7233c8a36b8b0e3de20748b317692b529e
+  - url: https://auth0.com/ai-identity/b2b
+    shows: The AI Identity for B2B page promises to "maintain comprehensive audit logs across tool calls"; it names
+      no signed or tamper-evident record.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6574f0779ae45ce0057eac1238a4d05b5da746e24a031303f93d9cfec3aa591c
