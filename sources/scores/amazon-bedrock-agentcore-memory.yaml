@@ -85,18 +85,20 @@ adoption:
     http_status: 200
     content_sha256: 9383f97417167d2e1b50cbbac7ffb2dd09a385957ab82983e6c8e9c5a44121f9
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
-  value: semantic retrieval of long-term records within actor and session namespaces; LLM extraction of facts, preferences,
-    summaries and episodes from raw events; consolidation into new or existing records, with reflections across
-    episodes; events that expire after a configured number of days; separate semantic, user-preference, summary
-    and episodic stores
+  value: semantic retrieval of long-term records within actor and session namespaces; LLM extraction of
+    facts, preferences, summaries and episodes from raw events; consolidation into new or existing records,
+    with reflections across episodes; separate semantic, user-preference, summary and episodic stores; no
+    aging of records beyond a retention period the developer configures
   confidence: medium
-  note: 'AgentCore Memory runs the whole cycle itself: built-in strategies extract records from raw events with
-    a managed model, consolidate them against what is already stored, and add reflections across past episodes,
-    while stored events expire after a retention period set on the memory. Facts, preferences, summaries and episodes
-    are kept as separate kinds of record, each in its own namespace.'
+  note: AgentCore Memory extracts records from raw events with a managed model, consolidates them against
+    what is already stored, and adds reflections across past episodes, keeping facts, preferences, summaries
+    and episodes as separate kinds of record. Records leave only when a retention period set on the memory
+    runs out; the service does not itself judge a memory stale or weaken it with age.
+  relative_to: graphiti
+  relation: one_below
   last_verified: '2026-11-20'
   sources:
   - url: https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory-types.html

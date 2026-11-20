@@ -91,17 +91,20 @@ adoption:
     http_status: 200
     content_sha256: fa22bf036eb35b51d0502bf2e59448c2760eb374313bc08e3acc709f38196182
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
   value: remember with graph and entity extraction by an LLM or a local GLiNER model; recall scoped by dataset,
-    user and session; an improve step that reviews conflicting facts by source date, distills sessions and updates
-    user preferences; session memory that expires after a set time-to-live; a permanent knowledge graph beside short-term
-    session memory
+    user and session; an improve step that reviews conflicting facts by source date, distills sessions and
+    updates user preferences; a permanent knowledge graph beside short-term session memory; no aging of
+    stored facts beyond a configured session time-to-live
   confidence: medium
-  note: Cognee extracts a knowledge graph from documents, code and conversations, recalls from it by dataset or
-    session, and its improve step settles conflicting facts and distills sessions into lasting lessons. Session
-    memory expires on its own after a set period, while the permanent graph keeps what was promoted into it.
+  note: 'Cognee extracts a knowledge graph from documents, code and conversations, recalls from it by dataset
+    or session, and its improve step settles conflicting facts and distills sessions into lasting lessons.
+    What it lacks is a sense of time over the permanent graph: session memory expires after a period the
+    developer sets, but stored facts are never marked out of date or weakened with age.'
+  relative_to: graphiti
+  relation: one_below
   last_verified: '2026-11-20'
   sources:
   - url: https://raw.githubusercontent.com/topoteretes/cognee/main/README.md

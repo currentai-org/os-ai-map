@@ -77,18 +77,20 @@ adoption:
     http_status: 200
     content_sha256: 626076f56bb0799c72f8e669d5a3fb604ecfdb0da4b4614f48a7cf9b45c273e8
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
-  value: similarity-search retrieval scoped to a user or other identity; LLM extraction of facts on configured topics
-    from conversations and multimodal input; consolidation that creates, updates or deletes memories when new information
-    duplicates or contradicts them; automatic expiry on a configurable time to live; natural-language fact memories
-    alongside schema-defined structured profiles
+  value: similarity-search retrieval scoped to a user or other identity; LLM extraction of facts on configured
+    topics from conversations and multimodal input; consolidation that creates, updates or deletes memories
+    when new information duplicates or contradicts them; natural-language fact memories alongside schema-defined
+    structured profiles; no aging of memories beyond a configurable time to live
   confidence: medium
-  note: 'Memory Bank runs the whole cycle itself: a model extracts facts from conversations, consolidation updates
-    or deletes stored memories that the new facts duplicate or contradict, and a time to live retires memories automatically.
-    Beside free-text facts it maintains structured user profiles against schemas the developer defines, all isolated
-    per user.'
+  note: Memory Bank has a model extract facts from conversations and consolidates them, updating or deleting
+    stored memories that new facts duplicate or contradict, and it keeps structured user profiles beside
+    free-text facts. Memories leave on a time to live the developer sets; the service does not itself mark
+    a memory out of date or weaken it with age, as Graphiti and Zep do.
+  relative_to: graphiti
+  relation: one_below
   last_verified: '2026-11-20'
   sources:
   - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale/memory-bank
