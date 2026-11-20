@@ -1,0 +1,109 @@
+product: memoryos
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: library, MCP server, ChromaDB variant and playground
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 73-path tree at 587ed77 carries one root Apache-2.0 LICENSE over the library, MCP, ChromaDB, playground
+        and evaluation directories, with no ee/, enterprise/, commercial/ or proprietary/ path; an academic lab's
+        release
+  confidence: high
+  note: MemoryOS is published under Apache 2.0, and every variant, the library, MCP server, ChromaDB build and playground,
+    runs from the published source against the user's own model keys. It is a university lab's research release,
+    and its hosted platform is an invitation-only demo of the same open playground.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(library, MCP server, ChromaDB variant and playground);source:public;core-gated:ungated(the
+    73-path tree at 587ed77 carries one root Apache-2.0 LICENSE over the library, MCP, ChromaDB, playground and
+    evaluation directories, with no ee/, enterprise/, commercial/ or proprietary/ path; an academic lab's release)
+  sources:
+  - url: https://raw.githubusercontent.com/BAI-LAB/MemoryOS/main/LICENSE
+    shows: The LICENSE is the Apache License 2.0 text with the appendix line "Copyright [2025] [BAITING]".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 68c3ba87a6d623bd47ea90449ca54e7bf5e247cee799eb54e8bd094fb9878c29
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/BAI-LAB/MemoryOS/main/README.md
+    shows: The README carries an Apache 2.0 badge, lists PyPI, MCP, ChromaDB, Docker and playground set-ups, and
+      announces "Open-sourced the Playground platform"; the hosted MemoryOS Platform asks for an invitation code.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1580d664129c9804fa59b1327952ec11bd504ec85672b214b76dc2a8fe1df151
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://baijia.online/memoryos/
+    shows: The project site gives the contact address baiting@bupt.edu.cn and links the GitHub repository and the
+      research paper.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: db617eb0ad3b606a62a8e36702e3ef4db29b02bc143e5e44f339d9e5fe847a10
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is read from PyPI downloads of memoryos-pro, the package the README installs; the similarly named
+    memoryos package belongs to MemTensor's MemOS and is not counted. Installs from source, the MCP server and the
+    Docker set-up do not appear in this figure.
+  sources:
+  - url: https://pypistats.org/api/packages/memoryos-pro/recent
+    shows: 89 downloads of memoryos-pro in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 32d1dbb7205c4dfe7308b6ba65dda7d3d9f0e85a1a217b49b71bf1967e4d1a26
+  - url: https://pypi.org/pypi/memoryos-pro/json
+    shows: memoryos-pro has a single 0.1.0 release from 2025-07-09 whose metadata still carries the packaging template's
+      placeholder author and project links.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d4d15a3990ca5284a74d136d12bac2d2bdb103545c87b407778b155307c11ecd
+  - url: https://pypi.org/pypi/memoryos/json
+    shows: The memoryos package on PyPI is "Intelligence Begins with Memory" by MemTensor, repository MemTensor/MemOS.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 513af243576ed0e2b75fa3324e6e5c24ac037090a67da94a2741a33b1043e37a
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: retrieval across short-term history, mid-term segments, the user profile and user and assistant knowledge,
+    per user; language-model extraction of profile traits and facts from dialogue; consolidation of dialogue into
+    topic segments and rewrites of the profile; segment heat with time decay and least-frequently-used eviction;
+    short, mid and long-term tiers with separate profile and knowledge stores
+  confidence: medium
+  note: 'MemoryOS covers the whole cycle: it summarizes dialogue into segments, promotes the ones a user keeps returning
+    to into a profile and knowledge base, and lets cold segments cool and drop out as capacity fills. Its forgetting
+    is driven by access and recency rather than by any check that a fact is still true.'
+  relative_to: graphiti
+  relation: at
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/BAI-LAB/MemoryOS/main/README.md
+    shows: Short-term dialogue is consolidated "into meaningful segments" in mid-term memory; segments accumulate
+      "heat" and, past a threshold, "User profile insights are extracted" and facts added to user and assistant
+      knowledge; the retriever reads all layers.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1580d664129c9804fa59b1327952ec11bd504ec85672b214b76dc2a8fe1df151
+  - url: https://raw.githubusercontent.com/BAI-LAB/MemoryOS/main/memoryos-pypi/mid_term.py
+    shows: Segment heat adds a recency term from compute_time_decay with a 24-hour tau, and evict_lfu removes the
+      session with the lowest access frequency when capacity is reached.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4f6968d6dffae0c9521076ad638222ad4510d6d17181bd046a38d7c9cf4de6e9
+  - url: https://raw.githubusercontent.com/BAI-LAB/MemoryOS/main/memoryos-pypi/updater.py
+    shows: process_short_term_to_mid_term takes the QA pairs evicted from short-term memory, asks the model whether
+      each continues the previous page, and summarizes them into mid-term memory.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 17c34d45db6ba7c95d4f11122b6ae0e37cccb5b60d5dc4fa3434930f59f7dde3

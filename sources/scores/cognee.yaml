@@ -1,0 +1,133 @@
+product: cognee
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: cognee engine, API and MCP servers, connectors and local UI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 5,513-path tree at c8a0943 has no ee/, enterprise/, commercial/ or proprietary/ path and holds
+        conflict review, temporal retrieval, sessions and forgetting; Cognee Cloud, Premium auto-ontology and BYOC
+        engagements with a proprietary runtime and fine-tuned models are sold beside it
+    context:
+      commercial:
+        value: Cognee-Cloud
+        detail: hosted workspaces, a Premium auto-ontology editor and BYOC Enterprise engagements
+  confidence: medium
+  note: Cognee's memory engine, API and MCP servers and local UI are Apache-2.0 and run on the user's own machine
+    without an account, and Cognee's pricing page calls the open release the full memory engine. Cognee Cloud, a
+    Premium ontology editor and enterprise deployments with a proprietary runtime and fine-tuned models are sold
+    beside it, while the conflict review and temporal retrieval the enterprise plan advertises are already in the
+    public code.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(cognee engine, API and MCP servers, connectors and local UI);source:public;core-gated:ungated(the
+    5,513-path tree at c8a0943 has no ee/, enterprise/, commercial/ or proprietary/ path and holds conflict review,
+    temporal retrieval, sessions and forgetting; Cognee Cloud, Premium auto-ontology and BYOC engagements with a
+    proprietary runtime and fine-tuned models are sold beside it);commercial:Cognee-Cloud(hosted workspaces, a Premium
+    auto-ontology editor and BYOC Enterprise engagements)
+  sources:
+  - url: https://raw.githubusercontent.com/topoteretes/cognee/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright 2024 Topoteretes UG".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a471e34908f50c3f120e9a56f3c30cb34e133e4ede01a9cbd5ce718fc358ecd4
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/cognee/json
+    shows: PyPI metadata for cognee declares license_expression Apache-2.0 and names https://github.com/topoteretes/cognee
+      as its repository.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4ef5fc1e7dd67f9adc494d646d9dacc6d7c0c2d3510c20e64038c9a2b79f0198
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/topoteretes/cognee/main/README.md
+    shows: '"Cognee is a free open-source AI memory platform"; "Runs locally for free — no API key required."; a
+      managed service is listed separately as Cognee Cloud.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 371945db13ce593ecb6298ad1188c57bfb1a6e89a8435f4bc421abfa427c09f2
+    establishes:
+    - source
+    - core-gated
+  - url: https://www.cognee.ai/pricing
+    shows: '"Cognee is open source. Run the full memory engine locally or on your own stack — free, forever." Premium
+      sells auto-ontology; Enterprise BYOC tiers list a "Proprietary Cognee runtime" and a "Small-model runtime
+      with our finetuned models".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d212e889dc9bc0929f814c4174928aeff6bc038b7023dd11aae86c0f20dae672
+    establishes:
+    - core-gated
+  - url: https://docs.cognee.ai/cognee-cloud/overview
+    shows: Cognee Cloud is "hosted, shared memory"; "You can also run the same UI and pipelines on your own machine
+      for free, with no account".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b5d681371fe39f82de09aa9dd41557870133e2d442c3942d4707f08f8598182e
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/topoteretes/cognee/main/NOTICE.md
+    shows: '"Copyright © 2024 Topoteretes UG. (haftungsbeschränkt), Schonehauser Allee 163, Berlin."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e8bdec68fde44a97229e03b10e1f921a3312f0663bf51961d9d04d2da3b4a397
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as monthly PyPI downloads of cognee, the package that carries the engine. Cognee Cloud
+    workspaces and the TypeScript and Rust SDKs are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/cognee/recent
+    shows: 172,379 downloads of cognee in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: fa22bf036eb35b51d0502bf2e59448c2760eb374313bc08e3acc709f38196182
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: remember with graph and entity extraction by an LLM or a local GLiNER model; recall scoped by dataset,
+    user and session; an improve step that reviews conflicting facts by source date, distills sessions and
+    updates user preferences; a permanent knowledge graph beside short-term session memory; no aging of
+    stored facts beyond a configured session time-to-live
+  confidence: medium
+  note: 'Cognee extracts a knowledge graph from documents, code and conversations, recalls from it by dataset
+    or session, and its improve step settles conflicting facts and distills sessions into lasting lessons.
+    What it lacks is a sense of time over the permanent graph: session memory expires after a period the
+    developer sets, but stored facts are never marked out of date or weakened with age.'
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/topoteretes/cognee/main/README.md
+    shows: remember, recall, improve and forget operations; "Text becomes entities, relationships, and searchable
+      chunks" and "Session distillation curates accepted lessons into permanent memory."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 371945db13ce593ecb6298ad1188c57bfb1a6e89a8435f4bc421abfa427c09f2
+  - url: https://docs.cognee.ai/core-concepts/main-operations/improve
+    shows: improve moves session memory into the permanent graph, adjusts importance from feedback, and by default
+      "reviews entity facts that disagree, using the documents and dates they came from".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 11ee22565f7aaecb31cd80dc8f5418cdd7e15e2189449ae17a0a2196649bfe57
+  - url: https://docs.cognee.ai/core-concepts/main-operations/recall
+    shows: 'recall is "Session-aware": with session_id it searches session entries first and falls through to the
+      permanent graph; datasets scope results to a knowledge base.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7ae26b20cdf4d43b6c88bb4ec99680ab4734dba8e620e7f40b3988a0655f0b57
+  - url: https://docs.cognee.ai/core-concepts/sessions-and-caching
+    shows: Session memory is keyed by (user_id, session_id) and "Expires roughly SESSION_TTL_SECONDS (default 7
+      days) after the session's last write".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f0b467b7c6a4355a6a1d89bbbf7a95d4da887415aa4e9f52c6ff1b7278ec38f1

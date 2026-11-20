@@ -1,0 +1,102 @@
+product: engram
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: the whole repository, including the cloud sync server
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,109-path tree at 3574363 carries one root MIT LICENSE, with no ee/, enterprise/, commercial/
+        or proprietary/ path; the cloud server under internal/cloud is part of the same tree and is run by the user
+  confidence: high
+  note: Engram is MIT licensed, and its public repository holds everything, including the cloud sync server, which
+    users host on their own infrastructure. The project is funded through GitHub Sponsors and says it locks no features
+    behind a paywall.
+  last_verified: '2026-11-20'
+  raw: license:MIT(the whole repository, including the cloud sync server);source:public;core-gated:ungated(the 1,109-path
+    tree at 3574363 carries one root MIT LICENSE, with no ee/, enterprise/, commercial/ or proprietary/ path; the
+    cloud server under internal/cloud is part of the same tree and is run by the user)
+  sources:
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/LICENSE
+    shows: The root LICENSE is the MIT License, "Copyright (c) 2026 Alan Buscaglia".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 09608597ddda4e5f9033ac407a0d401986d96376c47f6d46789ca38db672dc15
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/go.mod
+    shows: The Go module is github.com/Gentleman-Programming/engram/v3, built from the repository source.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c8945eee749d3414c64594c6aae30b70c05aca6f7e0856d33dc8b0723919594b
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/README.md
+    shows: The README says "No investors, no paywalls" and "no features locked behind paywalls", with donations
+      through GitHub Sponsors; Engram names and logos are trademarks of Alan Buscaglia.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8d559f460ff7bc9d0256ffe6486ddbcf85a2c7a47dd0d0d074d38367ed3dbc85
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/docs/engram-cloud/README.md
+    shows: 'Engram Cloud is a "Self-hosted cloud runtime: engram cloud serve on infrastructure you control", published
+      as an official container image.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3a9f4c05301399462d097ddc0d22a6e498f10727ae20677c5dbb85f652c22507
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: Engram is installed from GitHub releases, a Homebrew tap or Go source, none of which publishes a download
+    count, so GitHub stars are the only signal. A star is not an install, so this cannot show how many agents run
+    it.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:Gentleman-Programming/engram
+    shows: 'Gentleman-Programming/engram: 8,241 stars, MIT, not archived, not a fork, last pushed 2026-11-17.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8f10a08b3951d6009293ae1620b695e8dc7d3b1400abc0bab0afecc7f41ec13e
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: full-text search and session context scoped to the current project; exact-duplicate suppression and topic-key
+    upserts that update a memory in place; memories written by the agent rather than extracted; review dates that
+    flag stale memories without retiring them; one typed observation store
+  confidence: medium
+  note: Engram serves saved memories back by project and keeps them tidy on its own, folding repeated saves into
+    one record and updating a topic in place. What to remember is written by the agent rather than extracted by
+    Engram, and overdue memories are flagged for review rather than retired.
+  relative_to: lightmem
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/README.md
+    shows: The agent contract says to "Save significant knowledge deliberately" with mem_save and to search with
+      mem_search and mem_context; consolidation of observations runs after preview and explicit confirmation.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8d559f460ff7bc9d0256ffe6486ddbcf85a2c7a47dd0d0d074d38367ed3dbc85
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/docs/ARCHITECTURE.md
+    shows: A topic_key turns mem_save into an upsert of the existing memory; exact dedupe prevents repeated inserts
+      in a rolling window; "Overdue memories remain searchable" with state needs_review, and "Hard expiry remains
+      deferred."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 13e450afe1a32640348cf56c9275caa70d25698dbfa2e1a323f31caec1431d96
+  - url: https://raw.githubusercontent.com/Gentleman-Programming/engram/main/DOCS.md
+    shows: Passive capture scans submitted text and persists only structured learnings its parser recognizes; "General
+      or raw text is not saved as an observation."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 515f2b20345b96954fcf14cb3d32387d956cceaf34aec58350c23cf63c5c6381

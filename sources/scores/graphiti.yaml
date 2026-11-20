@@ -1,0 +1,117 @@
+product: graphiti
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: graphiti-core framework and the reference MCP and REST servers
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 434-path tree at 9b8a463 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/
+        or proprietary/ path; Zep sells its managed context platform, with its own graph database, users, threads
+        and governance, as a separate product built on the framework
+    context:
+      commercial:
+        value: Zep
+  confidence: high
+  note: Graphiti is Apache-2.0, and the whole framework, from extraction and fact invalidation to hybrid search,
+    is in the public repository. Zep sells a managed context platform built on Graphiti, with its own graph database,
+    user and thread management and governance, as a separate product rather than as features cut from the framework.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(graphiti-core framework and the reference MCP and REST servers);source:public;core-gated:ungated(the
+    434-path tree at 9b8a463 carries one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+    path; Zep sells its managed context platform, with its own graph database, users, threads and governance, as
+    a separate product built on the framework);commercial:Zep
+  sources:
+  - url: https://raw.githubusercontent.com/getzep/graphiti/main/LICENSE
+    shows: The root LICENSE is the unmodified Apache License 2.0 text, ending with the appendix template "Copyright
+      [yyyy] [name of copyright owner]".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 2825300b20d7b951209835a4a331f29e24725a39d65168e4b831df53aa372650
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/graphiti-core/json
+    shows: PyPI metadata for graphiti-core declares license_expression Apache-2.0 and names https://github.com/getzep/graphiti
+      as its repository.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 40492b0e9d4f4198682a30e6bcf7717cd0a5552fc7f93a83f459ba134d042611
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/getzep/graphiti/main/README.md
+    shows: The README's "Zep vs Graphiti" table calls Graphiti "An open-source framework for building temporal context
+      graphs", deployed "Self-hosted only", and Zep the product with Konig, built-in users and threads, and "Fully
+      managed or in your cloud (BYOC)" deployment.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9ce191cedfc99840b78e2be24fe1be9a1f71937d62244ee72bca1d0d039069d3
+    establishes:
+    - source
+    - core-gated
+  - url: https://help.getzep.com/graphiti/graphiti/overview
+    shows: '"Graphiti is the open-source temporal knowledge graph framework" covering "entity and edge extraction,
+      the bi-temporal model, fact invalidation, and hybrid retrieval"; "Zep uses Graphiti" for its managed service.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b9f0d37a425a2f58ed5e9c542a4e5aa80da8386ecf35ac08a0daf133f61d1722
+    establishes:
+    - core-gated
+  - url: https://blog.getzep.com/announcing-a-new-direction-for-zeps-open-source-strategy/
+    shows: Zep's CEO writes that the team "felt uneasy about the common practice in open-core of intentionally limiting
+      features" and that Graphiti "powers Zep's commercial service" while not competing with it.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b347d28a92a6b8a08cb36291c9bc95e2029f7cf2f7a172a44c34125fb5806a70
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as monthly PyPI downloads of graphiti-core, the framework's only package. The reference
+    MCP server, which runs from Docker, is not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/graphiti-core/recent
+    shows: 912,297 downloads of graphiti-core in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1c1ed5bf6b6bd350988e61823b715d2e5274d81fb6452114382b67705a6e0020
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: LLM extraction of entities and facts from episodes; entity resolution and duplicate merging; invalidation
+    of contradicted facts with bi-temporal validity windows; a graph of entities, facts, episodes and communities;
+    hybrid semantic, keyword and graph search scoped by group_id
+  confidence: medium
+  note: 'Graphiti performs the whole cycle itself: it extracts entities and facts from each episode, merges duplicates,
+    invalidates facts that newer data contradicts while keeping their history, and searches the resulting graph
+    within a namespace. Users, threads and serving are left to the application that embeds it, which is what Zep
+    adds as a hosted service.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/getzep/graphiti/main/README.md
+    shows: Facts have validity windows and "When information changes, old facts are invalidated — not deleted";
+      the graph holds entities, facts, episodes and custom types, queried by "Hybrid Retrieval" of semantic, BM25
+      and graph traversal.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9ce191cedfc99840b78e2be24fe1be9a1f71937d62244ee72bca1d0d039069d3
+  - url: https://help.getzep.com/graphiti/core-concepts/graph-namespacing
+    shows: '"every node and edge can be associated with a group_id", and namespaces support "Search scoping: Limit
+      a search to one or more namespaces."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 54502ff675f5dedbb6875bd24e2181c4669efc05dbe81e95ec1a2889a06437e3
+  - url: https://help.getzep.com/graphiti/graphiti/overview
+    shows: Graphiti "ingests both unstructured and structured data" as episodes with "incremental entity and relationship
+      extraction" and tracks "changes in facts and relationships over time".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b9f0d37a425a2f58ed5e9c542a4e5aa80da8386ecf35ac08a0daf133f61d1722

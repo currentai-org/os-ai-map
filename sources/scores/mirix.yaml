@@ -1,0 +1,152 @@
+product: mirix
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: the MIRIX server, memory agents, dashboard and Python client
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 656-path tree at 9077e4b holds the FastAPI server, memory agents, Auto-Dream, graph memory, dashboard
+        and client with one root LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path; the hosted API
+        at app.mirix.io is a separate service the same client reaches
+    context:
+      commercial:
+        value: hosted MIRIX API at app.mirix.io
+  confidence: high
+  note: The MIRIX memory server, including its memory agents, Auto-Dream consolidation and graph memory, is published
+    in full and self-hosts with Docker Compose beside PostgreSQL and an optional Neo4j. MIRIX AI also runs a hosted
+    API that the same client reaches, and nothing in the repository is held back for it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(the MIRIX server, memory agents, dashboard and Python client);source:public;core-gated:ungated(the
+    656-path tree at 9077e4b holds the FastAPI server, memory agents, Auto-Dream, graph memory, dashboard and client
+    with one root LICENSE and no ee/, enterprise/, commercial/ or proprietary/ path; the hosted API at app.mirix.io
+    is a separate service the same client reaches);commercial:hosted MIRIX API at app.mirix.io
+  sources:
+  - url: https://raw.githubusercontent.com/Mirix-AI/MIRIX/main/LICENSE
+    shows: The root LICENSE is the unmodified Apache License 2.0 text; its appendix notice reads "Copyright 2023,
+      Letta authors", from the Letta code MIRIX was built on.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f1f3abb7cb7ef4b6ff44a51aff19a3d7f6d5cdb6e5b861171115927cceeb5df6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Mirix-AI/MIRIX/main/pyproject.toml
+    shows: The manifest builds the mirix package with license "Apache License 2.0", the OSI Apache classifier, and
+      the FastAPI, PostgreSQL, Redis and Kafka dependencies of the server.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 61c3d8400cb4b9b5b180d438e292de36048a59c583f3a4a79c709ee62ccfff3b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/Mirix-AI/MIRIX/main/scripts/packaging/setup_server.py
+    shows: The server packaging script says it packages "the full Mirix server" with the FastAPI REST API, PostgreSQL
+      integration, Redis, all memory agent implementations, queue management and system prompts.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 40a153a2b288824e47d2ac8cc2632992bc02526c54948551320b3b6ba848d17e
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/Mirix-AI/MIRIX/main/README.md
+    shows: The README quick start runs the backend and dashboard with "docker compose up -d", creates an API key
+      in the local dashboard and points the client at http://localhost:8531, and says Mirix is released under the
+      Apache License 2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f4da4a648afedb4c632c6a35392e1bd2b97c9d9a00d85430abb8c908bf164d56
+    establishes:
+    - source
+    - core-gated
+  - url: https://docs.mirix.io/getting-started/overview/
+    shows: The overview says Mirix is "a memory system you can plug into any agent stack", with a "Pluggable client
+      API that works with hosted or self-hosted backends", and that from 0.1.6 it is no longer a desktop personal
+      assistant.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 3a604901b3d2b2427eb09b9b48c5122bd10b4eaae52e089560c1f6ef736d467f
+    establishes:
+    - core-gated
+  - url: https://docs.mirix.io/getting-started/quickstart/
+    shows: The quickstart uses the hosted API with a key from app.mirix.io, then documents a self-hosted setup that
+      starts the backend with scripts/start_server.py on SQLite or PostgreSQL and the dashboard with npm.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e219f148e54ac1ed976046e9fd5be484ac82b2ba5f5bf481ec4b1d45acdc2828
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal, because the MIRIX server ships as source and Docker images rather than
+    through a package registry. The mirix package on PyPI is the client that reaches a hosted or self-hosted server,
+    so its downloads count client installs rather than MIRIX deployments and are left out. A star is not a deployment.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:Mirix-AI/MIRIX
+    shows: Mirix-AI/MIRIX has 3,508 stars, license Apache-2.0, not archived, not a fork, last pushed 2026-11-11.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 655152bb8daba32dd352eb15974d72c2f904cf0d320faa75a102a303c46bb838
+  - url: https://pypi.org/pypi/mirix/json
+    shows: PyPI lists mirix as "Mirix Client - Lightweight Python client for Mirix server", with its source at github.com/Mirix-AI/MIRIX.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a3f6d356e3ec5622cb73bb8857d9aa09e392f0c8e3d6cede17c988bb0f9495a5
+  - url: https://pypistats.org/api/packages/mirix/recent
+    shows: 255 downloads of the mirix client on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d767f853d3895e3380740023cbc722671b107b89352e49332211ca15e2d79360
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: search and conversation-based retrieval scoped to a user; memory agents that extract typed memories from
+    messages and tool traces with an LLM; core-block rewriting and Auto-Dream passes that merge duplicates and resolve
+    stale or conflicting entries, with LLM-decided merges on the graph; core, episodic, semantic, procedural, resource
+    and knowledge-vault stores plus an optional provenance hypergraph; no forgetting of its own beyond fade and
+    expiry periods the developer sets
+  confidence: medium
+  note: MIRIX extracts six kinds of memory from raw messages with dedicated agents, merges and corrects them in
+    Auto-Dream passes, and retrieves across the typed stores and an optional graph. Its only forgetting is a fade
+    and expiry period the developer sets, so nothing retires a memory because it stopped being true.
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/Mirix-AI/MIRIX/main/README.md
+    shows: The README lists six memory components managed by dedicated agents, an optional Neo4j provenance hypergraph
+      of n-ary facts, client.add and retrieve_with_conversation calls keyed by user_id, and an Auto-Dream endpoint
+      that "merges duplicates, resolves stale/conflicting entries where possible".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f4da4a648afedb4c632c6a35392e1bd2b97c9d9a00d85430abb8c908bf164d56
+  - url: https://raw.githubusercontent.com/Mirix-AI/MIRIX/main/docs/ARCHITECTURE.md
+    shows: The architecture page traces POST /memory/add through a meta agent whose sub-agents "extract typed memories
+      via tools", and retrieval through BM25, pgvector and fuzzy search across the core, episodic, semantic, procedural,
+      resource and knowledge-vault stores.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6191f8dd44b462c53a8a1049ac3196b559f95d4da8253cd1aa05af79742340ba
+  - url: https://docs.mirix.io/architecture/memory-components/
+    shows: The memory components page says core memory "Rewrites blocks when approaching capacity" and semantic
+      memory "Merges duplicate concepts".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 143be984bbea656bf4d2a7b13b8002cfdc91a138b6af09c97277d5da92e3872a
+  - url: https://docs.mirix.io/memory-search/search/
+    shows: The search page shows client.search scoped to a user_id across all memory types or one type and field.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5f78acd02bc5f3aac6c6e26d33275c23125b103e741312708ef4ac28f8eda73c
+  - url: https://docs.mirix.io/memory-write/configuration/
+    shows: The configuration page sets memory.decay.fade_after_days, after which memories are excluded from retrieval,
+      and expire_after_days, after which they are deleted, as fixed day counts in the developer's config.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 27d5993858a48e03d492048956f7fc72a2fefebe5e18c51452cd5ae7ae843995

@@ -1,0 +1,107 @@
+product: langmem
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: langmem library
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 91-path tree at 4beb9c3 holds one MIT LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+        path, and its dependencies are LangChain's open libraries; LangChain's paid products are the LangSmith platform
+    context:
+      commercial:
+        value: LangSmith
+  confidence: high
+  note: LangMem is a small MIT-licensed Python library, and all of it is in the public repository. Its memory primitives
+    work with any storage system, including LangGraph's open in-memory and Postgres stores, and LangChain sells
+    its hosted LangSmith platform as a separate product.
+  last_verified: '2026-11-20'
+  raw: license:MIT(langmem library);source:public;core-gated:ungated(the 91-path tree at 4beb9c3 holds one MIT LICENSE
+    and no ee/, enterprise/, commercial/ or proprietary/ path, and its dependencies are LangChain's open libraries;
+    LangChain's paid products are the LangSmith platform);commercial:LangSmith
+  sources:
+  - url: https://raw.githubusercontent.com/langchain-ai/langmem/main/LICENSE
+    shows: The root LICENSE is the MIT License with "Copyright (c) 2025 LangChain".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 98af1351ea856e008c835bc89a312905960a318072f950732bf346c741027c7d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/langchain-ai/langmem/main/pyproject.toml
+    shows: The manifest names the package langmem, takes its license from the LICENSE file, and depends only on
+      langchain, langgraph, langsmith, trustcall and provider packages.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8fcfd63d312ea0f1bd679d70c6b9a7c10e3d1f6a4cb557500a59758fd02e9901
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/langchain-ai/langmem/main/README.md
+    shows: LangMem "offers both functional primitives you can use with any storage system and native integration
+      with LangGraph's storage layer"; examples use InMemoryStore and AsyncPostgresStore.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e1edd000d263bfea842c34273add82421340c2caf2d7b87edd285daf02156ca3
+    establishes:
+    - source
+    - core-gated
+  - url: https://www.langchain.com/pricing
+    shows: The pricing page sells LangSmith Platform products such as Observability, Evaluation, Agent Server and
+      Fleet, and lists deepagents, langgraph and langchain under "Open Source Agent Frameworks"; it does not mention
+      LangMem.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d5f4a49c10f4d1bfe0b5e03d0026904f3c455f12fbaafa5d2dd707c3612e2cd8
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as monthly PyPI downloads of langmem, the library's only package. A download is an install,
+    often an automated one, rather than an agent running in production.
+  sources:
+  - url: https://pypistats.org/api/packages/langmem/recent
+    shows: 841,033 downloads of langmem in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9b8848ce72618542969d80784a895db1d2b0b48f15eb10a34128cd28c4eb879a
+  - url: https://pypi.org/pypi/langmem/json
+    shows: PyPI's langmem 0.0.30 is "Prebuilt utilities for memory management and retrieval.", with the repository
+      README as its description.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b279c62ffed8ae8b6980e9640634d26711a69a540c0390189112805aad4b80d5
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: LLM memory managers that extract memories from conversations; update, removal and consolidation of existing
+    memories; semantic collections and profiles, episodic memories and procedural prompt optimization; search tools
+    scoped by namespace, such as per user; no time-based expiry or decay of its own
+  confidence: medium
+  note: LangMem extracts memories from conversations, consolidates or removes outdated ones with an LLM, and keeps
+    semantic, episodic and procedural memory in namespaces an agent can search per user. It has no time-based forgetting
+    of its own and leaves expiry to the store beneath it.
+  relative_to: graphiti
+  relation: one_below
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/langchain-ai/langmem/main/README.md
+    shows: Memory management tools let agents "record and search information during active conversations", and a
+      "Background memory manager" "automatically extracts, consolidates, and updates agent knowledge".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e1edd000d263bfea842c34273add82421340c2caf2d7b87edd285daf02156ca3
+  - url: https://langchain-ai.github.io/langmem/concepts/conceptual_guide/
+    shows: Memory types are semantic (collections and profiles), episodic and procedural; memory managers "update
+      or remove outdated memories, and consolidate"; memories sit in multi-level namespaces such as per user. The
+      guide names no expiry or decay setting.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9fb1062ea629efb77107e393174961c2d3a5f0dfbd8b8842feb0ad8fd7b30f7a
