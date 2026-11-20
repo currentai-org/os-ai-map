@@ -1,0 +1,126 @@
+product: everos
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: EverOS and the EverAlgo extraction, ranking and clustering packages it installs
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,283-path tree at bc50821 has no ee/, enterprise/, commercial/ or proprietary/ path, and the
+        eight everalgo packages pinned as dependencies are published from the public EverMind-AI/EverAlgo repository
+        with source distributions
+    context:
+      commercial:
+        value: EverOS Cloud
+  confidence: high
+  note: EverOS and the EverAlgo libraries that hold its extraction and ranking algorithms are both published in
+    full, and the memory runtime runs entirely on a user's machine. EverMind sells EverOS Cloud as a managed deployment
+    of the same engine and memory format, not a version with more features.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(EverOS and the EverAlgo extraction, ranking and clustering packages it installs);source:public;core-gated:ungated(the
+    1,283-path tree at bc50821 has no ee/, enterprise/, commercial/ or proprietary/ path, and the eight everalgo
+    packages pinned as dependencies are published from the public EverMind-AI/EverAlgo repository with source distributions);commercial:EverOS
+    Cloud
+  sources:
+  - url: https://raw.githubusercontent.com/EverMind-AI/EverOS/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright 2025 EverMind AI".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 748007f17980117469390a385c37423c4bea2b0627cb6be00be315f9e64fc020
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/EverMind-AI/EverOS/main/pyproject.toml
+    shows: The everos manifest declares license "Apache-2.0" and pins eight everalgo packages, among them everalgo-user-memory,
+      everalgo-agent-memory and everalgo-rank, as dependencies.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4b56c8ed041a8c7292e3b24250ba16a8afcb30e26b82297dc8f59316df8541d5
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/EverMind-AI/EverAlgo/main/LICENSE
+    shows: The EverAlgo repository's LICENSE is the same Apache License 2.0 text, copyright EverMind AI.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 748007f17980117469390a385c37423c4bea2b0627cb6be00be315f9e64fc020
+    establishes:
+    - license
+    - core-gated
+  - url: https://api.github.com/search/repositories?q=repo:EverMind-AI/EverAlgo
+    shows: EverMind-AI/EverAlgo is a public, non-archived repository licensed Apache-2.0, last pushed 2026-11-20.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 4ef8c577b5f18791e242375f65ab676f0886bb21a7bf42dc460579ca4dbaf576
+    establishes:
+    - core-gated
+  - url: https://evermind.ai/everos
+    shows: The product page offers "Cloud or self-hosted. No lock-in. Same SDK. Same retrieval engine. Same memory
+      format." and answers "Is EverOS open source? Yes. The EverOS repository is on GitHub under the Apache 2.0
+      license."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b633fce0f63e83532e0f54745fc75eb731a36128ceeee228978baa5142f6942d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly PyPI downloads of everos, the package that carries the library, server and
+    command-line tool. EverOS Cloud and the separate MCP server package are not counted, and the evermemos package
+    on PyPI is a client for the earlier EverMemOS hosted API rather than this code.
+  sources:
+  - url: https://pypistats.org/api/packages/everos/recent
+    shows: 20,969 downloads of everos on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 52952c27b199d0106a3b6aede1bc749e47cc32348e246c35bb8745e9cb6aac09
+  - url: https://pypi.org/pypi/everos/json
+    shows: PyPI lists everos, a "local-first markdown memory framework for AI agents", with its repository at github.com/EverMind-AI/EverOS.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 07607221751eae335799af94c24f2e9acf2d0bcb07723b74b6c254b11c69cc92
+  - url: https://pypi.org/pypi/evermemos/json
+    shows: PyPI lists evermemos as "The official Python library for the EverMemOS API", published from evermemos/evermemos-python.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f9a2f5e0a00a5952f52b2bcced028ae00b7f176af0e558dee0b952a5eac634e6
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: search by user, agent, app, project and session; LLM extraction of episodes, atomic facts, profiles, agent
+    cases and skills from conversations; offline reflection that merges episode clusters, resolves contradictions
+    by keeping the latest state and archives what it replaces, with single-file profile rewrites; user episodes
+    and profiles, agent cases and skills, and a knowledge wiki as separate stores; no time-based decay or expiry
+  confidence: medium
+  note: EverOS extracts several kinds of memory from raw conversations, consolidates them offline into merged narratives
+    and rewritten profiles, and retrieves across separate user, agent and knowledge stores. Old memories leave search
+    only when a newer narrative replaces them, never because of their age.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/EverMind-AI/EverOS/main/README.md
+    shows: The README lists separate user episodes and profile and agent cases and skills, search by user_id, agent_id,
+      app_id, project_id and session_id, a knowledge wiki, and reflection that merges episode clusters; it calls
+      the project "EverOS (formerly called EverMemOS)".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: fd793600b777cd42b7d2b4ae174888ba280e16e5f990224fae5c0b6db06d146d
+  - url: https://raw.githubusercontent.com/EverMind-AI/EverOS/main/docs/how-memory-works.md
+    shows: The memory guide tables eight memory kinds, episode, atomic_fact, profile, agent_case, agent_skill and
+      knowledge documents and topics, each produced by extraction or by the background engine.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1b161143a72155ba5418ca2e7b2cae0d95d7829ef6f907ba05217b07210cc077
+  - url: https://raw.githubusercontent.com/EverMind-AI/EverOS/main/docs/reflection.md
+    shows: The reflection guide says it merges the episodes in a similarity cluster, "resolves stale information
+      by keeping the latest state, and soft-archives the originals it replaces".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8d6571251ea54866180100f1d62c80d404fce1c8bd621ac41173555bc38923ad

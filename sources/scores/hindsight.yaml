@@ -1,0 +1,122 @@
+product: hindsight
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: engine, API server, control plane, clients and integrations
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 5,403-path tree at 55dde52 holds the engine, API server, control plane, extensions and clients
+        with no ee/, enterprise/, commercial/ or proprietary/ path, and Memory Defense and audit logs, listed on
+        the Enterprise plan, ship in the open engine; Enterprise adds private deployment, support and the separate
+        Memlake storage product
+    context:
+      commercial:
+        value: Hindsight Cloud and Hindsight Enterprise
+  confidence: high
+  note: Hindsight's memory engine, API server, control plane and clients are all in the public repository, and Vectorize
+    says self-hosting carries no usage limits or restrictions. Its paid offerings are a managed cloud billed on
+    usage and an enterprise deployment with private hosting, support and a separate storage product, not features
+    cut from the open engine.
+  last_verified: '2026-11-20'
+  raw: license:MIT(engine, API server, control plane, clients and integrations);source:public;core-gated:ungated(the
+    5,403-path tree at 55dde52 holds the engine, API server, control plane, extensions and clients with no ee/,
+    enterprise/, commercial/ or proprietary/ path, and Memory Defense and audit logs, listed on the Enterprise plan,
+    ship in the open engine; Enterprise adds private deployment, support and the separate Memlake storage product);commercial:Hindsight
+    Cloud and Hindsight Enterprise
+  sources:
+  - url: https://raw.githubusercontent.com/vectorize-io/hindsight/main/LICENSE
+    shows: The root LICENSE is the MIT License text, "Copyright (c) 2025 Vectorize AI, Inc.".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 01fde0bedf83bdc185065d7af524a61690efe576a67f922eaff3a1280c17b63a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-api-slim/pyproject.toml
+    shows: The engine package manifest declares name "hindsight-api-slim" and license "MIT".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 14d831464f1ea9f6a9998cb0d6ab140779a69d26ceb405d398dc482d3a1835bd
+    establishes:
+    - license
+    - source
+  - url: https://vectorize.io/pricing
+    shows: The pricing page says "Hindsight is MIT licensed with no usage limits, no telemetry, and no restrictions",
+      sells Hindsight Cloud on token usage, and sells Enterprise for private cloud, BYOC or on-premises deployment,
+      SSO, Memlake and support.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 7cd375324770929ff4d2f51ea1298f29d9a88f0c2729181e2bdaea7fd768aa9a
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/vectorize-io/hindsight/main/README.md
+    shows: The README installs the server by Docker, pip install hindsight-api or Helm, documents Memory Defense
+      as an opt-in per-bank policy and webhooks in the open server, and offers Hindsight Cloud as the hosted option;
+      it ends "MIT — see LICENSE".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 376d145ac7faf769c40c1314f3eaf8a8f392edeb90ac4a33463cc32e66078269
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: low
+  note: Adoption is read from monthly PyPI downloads of hindsight-api-slim, the engine package that both hindsight-api
+    and the hindsight-all bundle install. The recommended Docker image is published on GitHub's registry, which
+    reports no download count, and the client packages count connections to any Hindsight server including the hosted
+    cloud, so this understates use of the engine.
+  sources:
+  - url: https://pypistats.org/api/packages/hindsight-api-slim/recent
+    shows: 98,470 downloads of hindsight-api-slim on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1f017324dfff6b31be0b690301363368d23167f654ed548bbd46c6c10e669486
+  - url: https://raw.githubusercontent.com/vectorize-io/hindsight/main/hindsight-api/pyproject.toml
+    shows: The hindsight-api package depends on "hindsight-api-slim[all]==1.2.3", the engine package.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b95fd1a1ea88d309f5640eda2832c9a85a71b46680552afe15f2e5464224dcda
+  - url: https://pypi.org/pypi/hindsight-api-slim/json
+    shows: 'PyPI lists hindsight-api-slim, "Hindsight: Agent Memory That Learns", under the MIT license.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 80692d953eadc59894e6a1538c1570b4bcd63af837c207cf26d69806dc89773c
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: recall within an isolated memory bank per user, agent or project; LLM extraction of facts, entities, relationships
+    and time data on retain; background consolidation into observations that are refined, weakened or contradicted
+    by new evidence; a recency decay on ranking with observation invalidation; world facts, experiences, observations
+    and mental models linked in an entity, temporal and causal graph
+  confidence: medium
+  note: Hindsight performs every part of the cycle itself, from extracting facts and entities to consolidating them
+    into observations, decaying older memories in ranking and retrieving across several typed stores and a graph.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/vectorize-io/hindsight/main/README.md
+    shows: The README says retain "uses an LLM to extract key facts, temporal data, entities, and relationships",
+      lists world facts, experiences, observations and mental models, and describes isolated banks and four parallel
+      recall strategies.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 376d145ac7faf769c40c1314f3eaf8a8f392edeb90ac4a33463cc32e66078269
+  - url: https://hindsight.vectorize.io/developer/observations
+    shows: The observations page describes deduplicated beliefs that evolve as new evidence supports, contradicts
+      or extends them, and a section on observation lifecycle and invalidation.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: af1fb734e109496bee56da96385bfe2b1f3a80341fd23c0092af138837c6e8ee
+  - url: https://hindsight.vectorize.io/developer/retrieval
+    shows: The retrieval page applies a recency boost with "Linear decay over 365 days from the memory's occurrence
+      date" alongside temporal proximity and evidence strength.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a91afa6a059ca1d26831003602c152299229f00c104538d9f36f8b3187441f54

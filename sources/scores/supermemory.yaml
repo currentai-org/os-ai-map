@@ -1,0 +1,128 @@
+product: supermemory
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: the memory engine and server source are not published
+    source:
+      value: closed
+      detail: the engine runs on Supermemory's cloud or as a downloadable server binary built from a non-public
+        codebase, and no repository publishes it
+    context:
+      clients:
+        value: MIT and Apache-2.0
+        detail: the main repository with the MCP server, plugins and framework wrappers is MIT, and the TypeScript
+          and Python SDKs are Apache-2.0, all clients of the engine
+      deployment:
+        value: Supermemory cloud by default
+        detail: a free local server binary limited to 10,000 stored documents, and self-hosting in a customer's
+          own cloud on the Scale and Enterprise plans
+  confidence: high
+  note: Supermemory's memory engine is not published. It runs on Supermemory's cloud, as a free downloadable server
+    binary built from a private codebase, or in a customer's own infrastructure on paid plans. What the company
+    publishes openly is the code around the engine, such as the MCP server, plugins, framework wrappers and SDKs,
+    which call it without letting anyone build or run it from source.
+  last_verified: '2026-11-20'
+  raw: license:Proprietary(the memory engine and server source are not published);source:closed(the engine runs
+    on Supermemory's cloud or as a downloadable server binary built from a non-public codebase, and no repository
+    publishes it);clients:MIT and Apache-2.0(the main repository with the MCP server, plugins and framework wrappers
+    is MIT, and the TypeScript and Python SDKs are Apache-2.0, all clients of the engine);deployment:Supermemory
+    cloud by default(a free local server binary limited to 10,000 stored documents, and self-hosting in a customer's
+    own cloud on the Scale and Enterprise plans)
+  sources:
+  - url: https://supermemory.ai/pricing
+    shows: 'The FAQ answers "Is supermemory open source? Partly." The main repository, MCP server and plugins are
+      MIT and the SDKs Apache 2.0, while "The memory engine is not open source: it runs in our cloud, as the free
+      supermemory local binary, or in your own infrastructure on Scale and Enterprise."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1fd61ab91a33bd7fb4855dc0052bbb3b8cb50f8a80abc3f111b22cc18cfb2240
+    establishes:
+    - license
+    - source
+  - url: https://supermemory.ai/docs/self-hosting/overview
+    shows: The self-hosting page says "the downloadable self-hosted server binary is built from a separate, non-public
+      codebase" and "The server binary is not open source"; it is free within a lite license limit of 10,000 stored
+      documents.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 214b50c8d640cdde8a82e10e190635581b17ce9129608c1d9c692642a922b42d
+    establishes:
+    - source
+  - url: https://supermemory.ai/docs/self-hosting/local-vs-enterprise
+    shows: The local-versus-Enterprise page says of the self-hosted binary "Its server source is not in the public
+      repository" and sells Enterprise as the managed platform with proprietary extraction models.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a7b7d99fc539c3fb2a2858e22f4d259c8dcee1b18668b9471a5586d2f7b37b9d
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/supermemoryai/supermemory/main/LICENSE
+    shows: The public repository's LICENSE is the MIT License text, "Copyright (c) 2025 supermemory".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 9ce388a89cce6a2dc109579d044f7f16e1397d8ee6fdb1f3bd3b980d365a07ae
+  - url: https://raw.githubusercontent.com/supermemoryai/supermemory/main/README.md
+    shows: 'The README says the plugins "are implementations of the supermemory API" and that the local server installs
+      as a binary or a prebuilt Docker image: "You don''t need to build or clone the server source."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1b3e6d9804718bc94c6309e29a870ce6eabe3fedabb2739152ab85910a29b5f9
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly downloads of the supermemory SDKs on npm and PyPI, the official clients for
+    Supermemory's API, which reach both the hosted service and the local server. The figure counts installs, automated
+    ones included, rather than active accounts, and leaves out the plugins and the hosted MCP server.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/supermemory
+    shows: 820,440 downloads of supermemory on npm between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 752250bc8c563e15d80d01c9cb5c88fb91de11d9552d3d4b9ddcd0e94584e09b
+  - url: https://pypistats.org/api/packages/supermemory/recent
+    shows: 153,138 downloads of supermemory on PyPI in the trailing 30 days.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d5b8432a7c3fae0930d1eeb0c79eb6a8d171aa924c75be3c5cc56167565698dc
+  - url: https://registry.npmjs.org/supermemory/latest
+    shows: The npm package is "The official TypeScript library for the Supermemory API", published from supermemoryai/sdk-ts.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5e7583589317743e11512a8c249f2ce41ad730f0586bc2e2303bb7367399a6c4
+  - url: https://pypi.org/pypi/supermemory/json
+    shows: The PyPI package is "The official Python library for the Supermemory API", with its repository at supermemoryai/python-sdk
+      and homepage supermemory.ai.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c5c3fce76ace93c61ab6ead402a420e996ab4d80eee7df4e37df876b7af2fbe3
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: user- and project-scoped search over memories and documents; fact extraction from conversations and files;
+    updates, extensions and derived facts linked in a memory graph with contradictions resolved; automatic expiry
+    of temporary facts; a static and dynamic profile per user beside the fact graph and the document store
+  confidence: medium
+  note: 'Supermemory performs the whole cycle itself: it extracts facts, links each new one to what it already holds
+    so later facts supersede earlier ones, expires time-bound facts on its own, and serves a user profile beside
+    the fact graph.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/supermemoryai/supermemory/main/README.md
+    shows: The README says it "extracts facts, builds user profiles, handles knowledge updates and contradictions,
+      forgets expired information", and that temporary facts "expire after the date passes"; memory is scoped by
+      container tags.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1b3e6d9804718bc94c6309e29a870ce6eabe3fedabb2739152ab85910a29b5f9
+  - url: https://supermemory.ai/docs/concepts/graph-memory
+    shows: The graph memory page describes "a living knowledge graph of facts" in which memories connect through
+      updates, extends and derives relations, separate from the documents they came from.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b2b513df87fd5ffce5c9ef57f64c7c7b50d6763c5b2b69b5ddf94bc0b0c82c41
