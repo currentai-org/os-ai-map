@@ -1,0 +1,89 @@
+product: lightmem
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: root LICENSE over the repository
+    - name: Apache-2.0
+      detail: declared in pyproject.toml; also the bundled VLM2Vec embedder
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 610-path tree at 8021186 carries the root MIT LICENSE and an Apache-2.0 LICENSE for the vendored
+        VLM2Vec code, with no ee/, enterprise/, commercial/ or proprietary/ path; an academic lab's release
+  confidence: high
+  note: LightMem's repository is MIT licensed while its package manifest names Apache 2.0, and either license allows
+    any use. The whole framework runs from the published source against hosted or local models, and the university
+    lab that publishes it sells nothing beside it.
+  last_verified: '2026-11-20'
+  raw: license:MIT(root LICENSE over the repository)+Apache-2.0(declared in pyproject.toml; also the bundled VLM2Vec
+    embedder);source:public;core-gated:ungated(the 610-path tree at 8021186 carries the root MIT LICENSE and an
+    Apache-2.0 LICENSE for the vendored VLM2Vec code, with no ee/, enterprise/, commercial/ or proprietary/ path;
+    an academic lab's release)
+  sources:
+  - url: https://raw.githubusercontent.com/zjunlp/LightMem/main/LICENSE
+    shows: The LICENSE is the MIT License, "Copyright (c) 2025 ZJUNLP".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5ec1877dbe08c6d6ee2213e44a64bc011bd21819b50b4172e3bca4acab4bf4e8
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zjunlp/LightMem/main/pyproject.toml
+    shows: The manifest names the package lightmem with license = {text = "Apache-2.0"} and repository zjunlp/LightMem.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 632334023335283070abb2eebfc5bece3eea11387724eaccb7aeda40732b97bb
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zjunlp/LightMem/main/README.md
+    shows: The README installs from source with "pip install -e .", marks "pip install lightmem" as "Coming soon",
+      and supports OpenAI, DeepSeek, Ollama, vLLM and Transformers backends.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 15baa878856a0a612663005171c89a21a787ccccf2c513127f094895500224b3
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: LightMem installs from source and the README marks its PyPI release as coming soon, so GitHub stars are
+    the only signal. A star is not a use, and on a repository that also carries a paper's benchmark scripts many
+    record interest in the research.
+  sources:
+  - url: https://api.github.com/search/repositories?q=repo:zjunlp/LightMem
+    shows: 'zjunlp/LightMem: 1,227 stars, license MIT, not archived, last pushed 2026-11-17.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: af78d8da50b887d5182518e8fcdbcbedf4e06b69b2955a14a060bfb3635b2b73
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: filtered retrieval over Qdrant, FAISS or BM25; language-model extraction of memory entries from compressed,
+    topic-segmented dialogue; an offline pass in which a model updates or deletes conflicting entries; no time-based
+    forgetting; a single entry store beside optional topic summaries
+  confidence: medium
+  note: LightMem extracts memories from dialogue itself and later lets a model update or delete entries that newer
+    ones contradict. It keeps one store of entries with no profile or graph, and nothing in it ages memories out
+    on its own.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/zjunlp/LightMem/main/README.md
+    shows: The examples call add_memory with extraction forced, then "Offline Update" through construct_update_queue_all_entries
+      and offline_update_all_entries, then retrieve(question, limit=5); RetrieverConfig supports qdrant, FAISS and
+      BM25.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 15baa878856a0a612663005171c89a21a787ccccf2c513127f094895500224b3
+  - url: https://raw.githubusercontent.com/zjunlp/LightMem/main/src/lightmem/memory/lightmem.py
+    shows: offline_update_all_entries calls the update model for each entry with high-scoring candidates and, by
+      its returned action, deletes the entry or rewrites its memory text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 239edb3fa5c85e0ab82edf09d5301b61df4ce6737c3bfe98a7c1619042786f6a

@@ -1,0 +1,90 @@
+product: reme
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: ReMe, ReMe Studio, integrations and plugins
+    - name: MIT
+      detail: two bundled benchmark judge plugins
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,592-path tree at 3db84c7 carries the root Apache-2.0 LICENSE, Apache-2.0 files for Studio and
+        plugins and MIT files for the memlens and mobilemem judges, with no ee/, enterprise/, commercial/ or proprietary/
+        path
+  confidence: high
+  note: ReMe and its Studio, integrations and plugins are published under Apache 2.0, apart from two MIT-licensed
+    benchmark judges, and the complete system runs locally from pip, source or Docker against the user's own model
+    keys. No hosted edition or paid tier is offered beside it.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(ReMe, ReMe Studio, integrations and plugins)+MIT(two bundled benchmark judge plugins);source:public;core-gated:ungated(the
+    1,592-path tree at 3db84c7 carries the root Apache-2.0 LICENSE, Apache-2.0 files for Studio and plugins and
+    MIT files for the memlens and mobilemem judges, with no ee/, enterprise/, commercial/ or proprietary/ path)
+  sources:
+  - url: https://raw.githubusercontent.com/agentscope-ai/ReMe/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: cc54d679aaced751c096f120b666355c106d9394d28f93f6df353973f6cd7dbe
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/reme-ai/json
+    shows: PyPI lists reme-ai, "Remember Me, Refine Me.", license expression Apache-2.0, repository agentscope-ai/ReMe.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: e5e03dac25f997a115ed7c276d3ec0efa6b74a1f4e9f0b3a36f3bb822b872efd
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/agentscope-ai/ReMe/main/README.md
+    shows: The README describes "A local-first, self-evolving personal knowledge base for AI agents", installs from
+      pip or source or starts it with docker compose, and says "The complete workspace persists in ./.reme".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 00d01026a29fdec71ab222dcd4cc7ce7a0d3b0d13a3d727d8e546c9d52380dc4
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly PyPI downloads of reme-ai, the package every install path uses. Downloads
+    pulled in by host plugins are not separated from direct installs, and the retired MemoryScope package is left
+    out.
+  sources:
+  - url: https://pypistats.org/api/packages/reme-ai/recent
+    shows: 306,436 downloads of reme-ai in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5a00a4849d2f752e3a5c0a80a39f84d051b4162588e196be95f08ddc7e7911ca
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: line-level search over Markdown memory with BM25, optional embeddings and wikilink expansion; language-model
+    distillation of conversations and resources into daily notes; scheduled consolidation that creates, corroborates,
+    refines or corrects long-term digest nodes; daily and digest layers holding facts, preferences and procedures
+    linked by wikilinks; no time-based forgetting of memories
+  confidence: medium
+  note: ReMe distills conversations into daily notes and later folds them into long-term pages, correcting a page
+    when new material contradicts it. Memories never expire or fade by age; only raw resource folders can be given
+    a retention period.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/agentscope-ai/ReMe/main/README.md
+    shows: The pipeline table lists auto_memory, which "Distills useful conversation facts", and auto_dream, which
+      "creates, corroborates, refines, or corrects digest nodes"; daily/ holds "daily facts, conversation summaries"
+      and digest/ holds "personal facts, procedural experience, knowledge nodes".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 00d01026a29fdec71ab222dcd4cc7ce7a0d3b0d13a3d727d8e546c9d52380dc4
+  - url: https://raw.githubusercontent.com/agentscope-ai/ReMe/main/docs/en/auto_dream.md
+    shows: Integration has four actions, CREATE, CORROBORATE, REFINE and CORRECT, where CORRECT means "New material
+      corrects errors, omissions, or conflicts in the existing node".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1e1a5fa70d9d433acf0f657c0c21f2c65ef69bd0b5f791774af2444f737bf98b
