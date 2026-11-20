@@ -1,0 +1,100 @@
+product: basic-memory
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: the application and the Hermes and Pi integrations
+    - name: MIT
+      detail: the OpenClaw plugin
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 1,932-path tree at de9adb8 carries AGPL-3.0 LICENSEs and one MIT plugin LICENSE, with no ee/,
+        enterprise/, commercial/ or proprietary/ path; its cloud commands are clients of the hosted service
+    context:
+      commercial:
+        value: Basic Memory Cloud
+  confidence: high
+  note: Basic Memory is licensed under the AGPL-3.0, and its public repository is the complete local application.
+    Basic Machines sells Basic Memory Cloud, a hosted version with cross-device sync, snapshots, shared workspaces
+    and agents that run in the cloud, and says the full app stays free and open source to self-host.
+  last_verified: '2026-11-20'
+  raw: license:AGPL-3.0(the application and the Hermes and Pi integrations)+MIT(the OpenClaw plugin);source:public;core-gated:ungated(the
+    1,932-path tree at de9adb8 carries AGPL-3.0 LICENSEs and one MIT plugin LICENSE, with no ee/, enterprise/, commercial/
+    or proprietary/ path; its cloud commands are clients of the hosted service);commercial:Basic Memory Cloud
+  sources:
+  - url: https://raw.githubusercontent.com/basicmachines-co/basic-memory/main/LICENSE
+    shows: The root LICENSE is the GNU Affero General Public License, Version 3 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/basicmachines-co/basic-memory/main/integrations/openclaw/LICENSE
+    shows: The OpenClaw plugin carries the MIT License, "Copyright (c) 2026 Basic Machines".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5c5f54ccc1a593c7ce7037ff1a3d77b90a7e7872df5ff711c1ffb445cc62db77
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/basicmachines-co/basic-memory/main/pyproject.toml
+    shows: The manifest for basic-memory declares license "AGPL-3.0-or-later", authored by Basic Machines.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 49e7faf710d75cade114a79ec2a0a35e7b5c97ff2552df93f82c09dd19abc579
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/basicmachines-co/basic-memory/main/README.md
+    shows: The cloud-versus-local table lists AGPL-3.0 source for both, and "Both paths use the same OSS engine
+      and the same Markdown files."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d1e6ea5b089808d747e2828814bc686ed5be4415838c8e99defdbb9ec3be4f2f
+    establishes:
+    - source
+    - core-gated
+  - url: https://basicmemory.com/pricing
+    shows: Pricing sells Cloud ($19), Pro ($99) and Business ($249) workspaces with credits, members, API keys and
+      hosted agents, and says "Prefer to self-host? The full app is free and open source (AGPL-3.0)."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 376257872351b53845c87297dcdb0c257c8b21759fcb1b042deccf93c78e9cd1
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly PyPI downloads of basic-memory, the package local installs use. Subscribers
+    who use only the hosted cloud version never install it, so they are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/basic-memory/recent
+    shows: last_month downloads = 62,910 for basic-memory.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 647a7786a2b5258811b7982b00337d4fe37de69ac2a6c1aeb4f5e06b670726e1
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: full-text and semantic search and graph context scoped to a project; notes as entities with categorized
+    observations and typed relations forming a knowledge graph; no extraction, since the assistant or user writes
+    each note; no automatic consolidation or forgetting
+  confidence: medium
+  note: Basic Memory recalls notes by search and by following their relations, over a graph built from the categories
+    and links written into each note. The assistant or the user decides what to write and when to edit it; Basic
+    Memory does not extract, merge or retire memories itself.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/basicmachines-co/basic-memory/main/README.md
+    shows: Each file is an Entity with Observations ("facts about them", categorized in brackets) and Relations
+      (wiki-style links that form the graph); MCP tools include bm_write, bm_edit, bm_search and bm_context, and
+      the example has the user ask the LLM to "Make a note".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d1e6ea5b089808d747e2828814bc686ed5be4415838c8e99defdbb9ec3be4f2f

@@ -1,0 +1,123 @@
+product: agentmemory
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: agentmemory's server, CLI, MCP shim and plugins
+    - name: Elastic-License-2.0
+      detail: the iii engine, the runtime the agentmemory CLI downloads and starts by default
+    source:
+      value: public
+      detail: github.com/rohitg00/agentmemory, with the iii engine source at github.com/iii-hq/iii
+    core-gated:
+      value: ungated
+      detail: the 1,169-path tree at 5c9e2e6 carries the root Apache-2.0 LICENSE and identical LICENSEs in packages/mcp
+        and integrations/pi, with no ee/, enterprise/, commercial/ or proprietary/ path; no paid tier is offered
+  confidence: medium
+  note: agentmemory's own code is Apache-2.0 licensed and published in full, with nothing held back for a paid tier.
+    It runs on the iii engine, which its command-line tool downloads and starts automatically, and that engine is
+    under the Elastic License 2.0, which forbids offering it to others as a hosted service.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(agentmemory's server, CLI, MCP shim and plugins)+Elastic-License-2.0(the iii engine, the
+    runtime the agentmemory CLI downloads and starts by default);source:public(github.com/rohitg00/agentmemory,
+    with the iii engine source at github.com/iii-hq/iii);core-gated:ungated(the 1,169-path tree at 5c9e2e6 carries
+    the root Apache-2.0 LICENSE and identical LICENSEs in packages/mcp and integrations/pi, with no ee/, enterprise/,
+    commercial/ or proprietary/ path; no paid tier is offered)
+  sources:
+  - url: https://raw.githubusercontent.com/rohitg00/agentmemory/main/LICENSE
+    shows: The root LICENSE is the Apache License, Version 2.0 text.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 76c8d49ab42216a2533f603fbafa20a1bf71b56de136a401be52da034dcc012c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/rohitg00/agentmemory/main/package.json
+    shows: 'The manifest for @agentmemory/agentmemory declares "license": "Apache-2.0", author Rohit Ghumare, and
+      depends on iii-sdk and @iii-dev/helpers 0.25.1.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6dee4d68d7fc4cce11e37089e0ccc87e22be116ab87b6ab74abd263f983ad279
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/rohitg00/agentmemory/main/docs/upgrades/iii-0.25.md
+    shows: The runtime upgrade guide says the release pins the engine to iii 0.25 and that on macOS and Linux the
+      CLI "installs the verified engine under ~/.agentmemory/bin".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 05010b4bcc9fbf8c4fa0ca256d6bd071bf67bae83fc5a9a9fe1bd9b83aee58bd
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/iii-hq/iii/main/LICENSE.spdx
+    shows: 'The iii SPDX document, supplied by Motia LLC, declares "PackageLicenseDeclared: Apache-2.0 AND Elastic-2.0".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f5eeed47258c8dc14e7b07a11697a15a24137fc22ac1b972cf26a8dd51d0b079
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/iii-hq/iii/main/engine/LICENSE
+    shows: 'The engine LICENSE is the Elastic License 2.0: "You may not provide the software to third parties as
+      a hosted or managed service".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: aa94db7315d297192247f2254026cacbdb433a7742d841f27506a4d974c42c85
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/rohitg00/agentmemory/main/README.md
+    shows: The README says "Lessons, actions, versioned memories and import/export ship in the Apache-2.0 project;
+      keyword recall needs no account or model API key."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ce5f1ed3ddca1b79d29502fc0123fd7286ae71e5a41ab07ca7be4dc9f22e34a0
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is read from monthly npm downloads of @agentmemory/agentmemory, the package the setup command runs.
+    The separate @agentmemory/mcp shim is left out because every install of it also pulls the main package, so counting
+    both would count one install twice.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@agentmemory/agentmemory
+    shows: 92,801 downloads of @agentmemory/agentmemory between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1bdce414e125fc0bd26eafad8b9007898c815e86a8fa893f1b67e2499a1def79
+  - url: https://registry.npmjs.org/@agentmemory/mcp/latest
+    shows: '@agentmemory/mcp 0.9.33 is a "thin shim that re-exposes @agentmemory/agentmemory''s MCP entrypoint"
+      and depends on @agentmemory/agentmemory 0.9.33.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c015387f61f5446d688b4605c37f3b4ab63522603a7bda0d4bb378cf88d2e613
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: hybrid BM25, vector and graph recall scoped by project and agent; LLM-written session summaries, compressed
+    observations and knowledge-graph extraction; consolidation that supersedes old versions and resolves contradictions;
+    Ebbinghaus-style decay, TTL expiry and importance eviction; working, episodic, semantic and procedural tiers
+    beside a knowledge graph
+  confidence: medium
+  note: agentmemory captures coding-agent activity itself, condenses it with a language model into summaries, facts
+    and procedures, supersedes outdated versions and lets unused memories decay and expire. Its extraction and consolidation
+    run only once a model provider is configured; without one it stores observations and recalls them by keyword.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://raw.githubusercontent.com/rohitg00/agentmemory/main/README.md
+    shows: The README's memory pipeline runs session summaries, knowledge-graph extraction and slot reflection at
+      session end; its consolidation tiers are working, episodic, semantic and procedural, and "Memories decay over
+      time (Ebbinghaus curve)... Stale memories auto-evict. Contradictions are detected and resolved."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ce5f1ed3ddca1b79d29502fc0123fd7286ae71e5a41ab07ca7be4dc9f22e34a0
+  - url: https://www.agent-memory.dev/docs
+    shows: The documentation home calls AgentMemory "a local memory server for coding agents" that "records what
+      your agent does, keeps the decisions and lessons that matter, and gives them back in the next session."
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 36336fc3fa0b7cadf7e41964a38749d479667a4038186cfd98c544b1d1b43c4a

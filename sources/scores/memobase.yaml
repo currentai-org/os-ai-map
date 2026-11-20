@@ -1,0 +1,125 @@
+product: memobase
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: server, Python, TypeScript and Go clients and MCP server
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the 338-path tree at 358c16b holds one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/
+        or proprietary/ path; the README offers the dockerized server for local use and Memobase Cloud only as a
+        way to skip running it
+  confidence: medium
+  note: Memobase's server and its Python, TypeScript and Go clients are Apache-2.0 and in the public repository,
+    and the server runs locally with Docker, Postgres and Redis. The README presents the hosted Memobase Cloud only
+    as a way to skip running the server yourself.
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(server, Python, TypeScript and Go clients and MCP server);source:public;core-gated:ungated(the
+    338-path tree at 358c16b holds one root Apache-2.0 LICENSE and no ee/, enterprise/, commercial/ or proprietary/
+    path; the README offers the dockerized server for local use and Memobase Cloud only as a way to skip running
+    it)
+  sources:
+  - url: https://raw.githubusercontent.com/memodb-io/memobase/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright 2024 Memobase".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ad79127bef564bb5b553d630958ea64212a8a29ef3960d4b407cc1ad781b56a7
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/memobase/json
+    shows: PyPI's memobase is the "Client library of Memobase", license Apache-2.0, homepage https://github.com/memodb-io/memobase.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0d82793270713af2126e0474cc7d0e473f94ce866e2e90b2337408bc488b5662
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/memodb-io/memobase/main/readme.md
+    shows: The README says to "Start your Memobase server locally"; "If you don't want to be bothered, Memobase
+      Cloud provides a free tier", and calls the server "Fully dockerized".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 165358fb6d152f03da71bb9c09a0391c29abd047841e8e530b3802f4f5af1595
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/memodb-io/memobase/main/src/server/readme.md
+    shows: '"The server-side of Memobase" is configured from one config.yaml with LLM, embedding and memory settings
+      and run with Docker.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 62ab14b425035f7746b5002471d759c9f8fb350a797d3885d92fb9601aa507e8
+    establishes:
+    - source
+    - core-gated
+  - url: https://docs.memobase.io/references/local_config.md
+    shows: The self-hosted configuration reference documents the server's memory settings, such as max_profile_subtopics,
+      for local deployments.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 82f075e478351a6bca22447e7ef9d7f5854972c8db02f6ce819957df506aeb12
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as monthly downloads of the Memobase Python and TypeScript clients on PyPI and npm.
+    Self-hosted servers run from the Docker image are not counted, and the Go client has no download figure.
+  sources:
+  - url: https://pypistats.org/api/packages/memobase/recent
+    shows: 1,570 downloads of memobase in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 65275a5a6961ebd53e2cd3da495a7f5e15ed3025aa4366307024efd2cdec94b6
+  - url: https://api.npmjs.org/downloads/point/last-month/@memobase/memobase
+    shows: 929 downloads of @memobase/memobase between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 24b22fae6bfd933914816bdebf1ff87cce2b6db4b5c9ce5a73e279bea68f5031
+  - url: https://registry.npmjs.org/@memobase/memobase/latest
+    shows: '@memobase/memobase 0.0.18, license Apache-2.0, repository git+https://github.com/memodb-io/memobase.git.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: ff46dc5e5280deba32d91065b0965a67732b7a9beb81d346f838b33f0229b939
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: LLM extraction of user profiles and event gists from buffered chats; profile merging and re-organization
+    of crowded topics; a user profile plus an event timeline with tag and time-window search; a per-user context
+    API; no time-based expiry or decay of memory
+  confidence: medium
+  note: Memobase extracts a structured profile and an event timeline from each user's chats, merges new details
+    into the profile, and returns both through a per-user context call. Nothing in it expires or fades memory over
+    time; old events are only filtered out by a time window at retrieval.
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.memobase.io/features.md
+    shows: Memobase "analyzes user interactions to build rich, structured profiles" organized by topic and subtopic;
+      recent data is buffered "before being processed and integrated into the long-term user profile".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 5cc8016226c7edcfc635a38cb00ae75e4c4b9c3b49db16b8947e3af3f79aa9ea
+  - url: https://docs.memobase.io/features/context.md
+    shows: 'The context API returns a user''s profile and events for a prompt, with "time_range_in_days: Filter
+      events to a specific time window."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1591d9bd4824d79d8bad3f815f782b64d85addf229a34d1abe3a1590737541f7
+  - url: https://docs.memobase.io/references/local_config.md
+    shows: 'max_profile_subtopics: "When a topic has more than this, it will trigger a re-organization"; the only
+      time-to-live setting, cache_user_profiles_ttl, applies to a profile cache.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 82f075e478351a6bca22447e7ef9d7f5854972c8db02f6ce819957df506aeb12
+  - url: https://raw.githubusercontent.com/memodb-io/memobase/main/Changelog.md
+    shows: Release 0.0.40 (2025/8/28) uses "YOLO profile merge instead of multiple profile merges"; 0.0.37 adds
+      "fine-grained event gists in context api".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: c43f290c65ddb29e08599a5d0e417732aab6ec0d66bb3ecda22053f409e4fea4

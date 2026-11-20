@@ -1,0 +1,150 @@
+product: mem0
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: mem0 Python library, mem0-ts TypeScript SDK and self-hosted server
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: graph memory, memory decay, temporal reasoning and Dream consolidation exist only in the hosted Mem0
+        Platform, and the open SDK raises "not supported by the OSS Memory SDK" for decay, timestamp and reference_date;
+        the 1,844-path tree at fff8a64 has no ee/ or enterprise/ path, because the withheld features are not shipped
+        at all
+    context:
+      commercial:
+        value: Mem0-Platform
+        detail: hosted service with graph memory, decay, temporal reasoning, Dream, webhooks and org and project
+          scoping
+  confidence: high
+  note: 'Mem0''s memory library, TypeScript SDK and self-hosted server are published under Apache-2.0 and run without
+    a Mem0 account. Several memory features exist only in the hosted Mem0 Platform, though: the entity graph, decay
+    of stale memories, temporal reasoning and Dream background consolidation, and the open SDK returns an error
+    when asked for decay or temporal parameters. A paid service holding back part of the memory engine makes this
+    open core.'
+  last_verified: '2026-11-20'
+  raw: license:Apache-2.0(mem0 Python library, mem0-ts TypeScript SDK and self-hosted server);source:public;core-gated:gated(graph
+    memory, memory decay, temporal reasoning and Dream consolidation exist only in the hosted Mem0 Platform, and
+    the open SDK raises "not supported by the OSS Memory SDK" for decay, timestamp and reference_date; the 1,844-path
+    tree at fff8a64 has no ee/ or enterprise/ path, because the withheld features are not shipped at all);commercial:Mem0-Platform(hosted
+    service with graph memory, decay, temporal reasoning, Dream, webhooks and org and project scoping)
+  sources:
+  - url: https://raw.githubusercontent.com/mem0ai/mem0/main/LICENSE
+    shows: The root LICENSE is the Apache License 2.0 text with "Copyright [2023] [Taranjeet Singh]".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0bbcbe931c353293a2fafce08326181dfeea0e568c566afd4ce8337a70f5e219
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mem0ai/mem0/main/pyproject.toml
+    shows: The mem0ai package manifest declares license = "Apache-2.0" and builds from the repository's mem0 directory.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d4bc078a05cc7b9d677bbf4d0b262cfc532495b5aadeded053ac84fd90b6e974
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/mem0ai/mem0/main/README.md
+    shows: The README offers a library ("pip install mem0ai"), a self-hosted server ("docker compose up") and the
+      Cloud Platform, marks Advanced Features as "Teasers" on the self-hosted server and "All included" on the Platform,
+      and says benchmark scores "reflect Mem0's managed platform, which includes proprietary optimizations not available
+      in the open-source SDK".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: f72db3426438dbdf6879a2b50583fbee8e7e2dde5d01308c6295bcd09fd3db86
+    establishes:
+    - source
+    - core-gated
+  - url: https://docs.mem0.ai/platform/platform-vs-oss
+    shows: The comparison page lists Graph Memory as "Removed" from open source, Memory Decay and Temporal Reasoning
+      as "Not supported", and Dream (background consolidation), webhooks, memory export and batch operations as
+      "Not available" outside the Platform.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0a7669212c0b61d0079b866a92c835d64eccfc908446ab4f2686c3200f0514c2
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/mem0ai/mem0/main/mem0/memory/notices.py
+    shows: The open SDK's notices module defines "The decay parameter is not supported by the OSS Memory SDK." and
+      the same message for the timestamp and reference_date parameters.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 1b6fb1d780559886d7f7aae485c3516915ec8ac053b6d7bbc36ebe8028680188
+    establishes:
+    - core-gated
+  - url: https://mem0.ai/pricing
+    shows: Pricing offers a Free plan and a Custom plan; the Custom plan adds "Graph memory (entity linking)", "User
+      profiles", "Dream (memory consolidation)" and "On-prem deployment".
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: b15038a23135215c2bd9a30c3a08207194c4888c2ec8147c723f65befbd2717a
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is counted as monthly downloads of the mem0ai package on PyPI and on npm. Each package carries
+    both the self-hosted library and the client for the hosted Platform, so the count cannot separate open-source
+    use from Platform use.
+  sources:
+  - url: https://pypistats.org/api/packages/mem0ai/recent
+    shows: 2,544,949 downloads of mem0ai in the last month.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: d4a7021d74e89c997478a7824f0cc32853869f5a0f7a853696d0a3451da692e8
+  - url: https://api.npmjs.org/downloads/point/last-month/mem0ai
+    shows: 1,041,937 downloads of mem0ai between 2026-10-20 and 2026-11-18.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: a2f81eb0ac4cdfd0a8ab1fce038c4210b1b24625a49c7e8a47eb13d6e88f4f8b
+  - url: https://registry.npmjs.org/mem0ai/latest
+    shows: The npm package's repository is git+https://github.com/mem0ai/mem0.git, directory mem0-ts, license Apache-2.0.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 8760c82c26dbc908d2e7dec6c511db29b59cbcdd2a08c23e9f2d563a9d41bae3
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: parts of the remember, consolidate, recall and forget cycle the product performs itself
+  value: LLM extraction of facts from messages; search by user, agent or run with semantic, keyword and entity signals;
+    expiration dates that hide memories after a set day; on the hosted Platform, Dream supersede, merge and synthesis,
+    memory decay and a native entity graph
+  confidence: medium
+  note: 'Mem0 extracts facts from conversations and serves them back by user, agent or session, and its hosted Platform
+    adds background consolidation, decay of stale memories and an entity graph. The open library on its own does
+    less: its extraction only adds memories, and it has no graph, decay or Dream.'
+  last_verified: '2026-11-20'
+  sources:
+  - url: https://docs.mem0.ai/core-concepts/how-it-works
+    shows: '"An LLM extracts preferences, decisions, plans, and other details"; searches are scoped by user_id,
+      agent_id or run_id; "The automatic extraction path is additive", and OSS retrieval "has no graph memory".'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 89cdcb17ddd6065e6c77ccd09312fba42c6890d07d1745b7e5283491f1e29cc0
+  - url: https://docs.mem0.ai/platform/features/dream
+    shows: Dream "synthesizes higher-order patterns, supersedes outdated facts, and merges duplicates"; Supersede
+      and Merge are "Always on, all plans" of the Platform.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 491298124b064231157677d04d5d5b0511980c99ad6d316ce8d9f6ab1fd6e515
+  - url: https://docs.mem0.ai/platform/features/graph-memory
+    shows: '"Mem0 Platform automatically organizes your memories into a graph": entities become nodes and memories
+      that share an entity are connected, boosting search ranking.'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 6ab65a4eae0e727264c1eecc576085157d1ed98a41ac21386db18f767727cd2b
+  - url: https://docs.mem0.ai/platform/features/memory-expiration
+    shows: '"Set an expiration date on a Mem0 memory and it stops surfacing in search once that date passes." "Works
+      on Platform and Open Source."'
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 01e5bfa78dbaa602a1bdffe44a08eadbd119687648857488ddec731f7c3b5e16
+  - url: https://docs.mem0.ai/platform/platform-vs-oss
+    shows: Memory Decay "reinforces recently-used memories and gently dampens stale ones at search time" on the
+      Platform and is not supported in open source.
+    accessed: '2026-11-20'
+    http_status: 200
+    content_sha256: 0a7669212c0b61d0079b866a92c835d64eccfc908446ab4f2686c3200f0514c2
