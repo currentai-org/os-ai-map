@@ -96,16 +96,17 @@ about the platform.
 A history release staged any other way (the MCP tool, the web interface) has no stage record, and
 this tool will not commit it.
 
-### Datasets the platform cannot stage
+### A dataset the platform cannot stage
 
-For `language_live` (35 models) and `ai_ddos` (28), `stageDatasetRelease` returns `timeout
-exceeded when trying to connect` on every attempt, about 24 seconds in, while datasets of ten
-models or fewer stage. The likely cause, from reading the platform's code and not from its logs,
-is that staging runs the whole dataset check on the API's ten-connection pool with no bound on
-the per-model queries it runs at once. Retrying from here does not get past it. Do not work around
-it by staging part of the dataset: the first partial commit marks the whole dataset migrated while
-most of its models are still on unversioned releases. Both stay unmigrated until the platform
-bounds that concurrency, and are staged whole and re-tested then.
+On 2026-11-21, `stageDatasetRelease` returned `timeout exceeded when trying to connect` on every
+attempt, about 24 seconds in, for datasets of 28 and 35 models, while datasets of ten models or
+fewer staged. The likely cause, from reading the platform's code and not from its logs, is that
+staging runs the whole dataset check on the API's ten-connection pool with no bound on the
+per-model queries it runs at once. `scores`, the largest dataset released from here, has ten
+models. If one grows past that limit, retrying from here does not get past it, and staging part of the dataset is not a way
+round it (ruling R-2026-11-21-k): the first partial commit marks the whole dataset migrated while
+most of its models are still on unversioned releases. The dataset is staged whole once the
+platform bounds that concurrency.
 
 `tools/deploy_udm.py` in `currentai-org/` wraps the revision, the one-model release and the run
 for the scoring chain. Its release step is the call a versioned organization refuses, so release
