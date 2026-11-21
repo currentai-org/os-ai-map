@@ -49,6 +49,11 @@ so the log remains the one place to check before asking.
   replaced_by:                # the id of the ruling that replaced it, when status is replaced
 ```
 
+One `refs` value is read by a tool. A ruling that resolves how a product's declared scoring
+deferral counts toward Phase 7 lists `phase-7-deferral:<product-slug>` there, one entry per
+product, and `build.trace_generations` then reports that deferral as adjudicated while the ruling
+is in force. There is no form that covers several products at once.
+
 Rules the gate (`tests/test_rulings.py`) enforces:
 
 - Entries are appended in date order and never deleted. A ruling that is changed gets a new

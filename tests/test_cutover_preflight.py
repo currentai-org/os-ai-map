@@ -225,3 +225,15 @@ def test_an_undatable_generation_stops_the_comparison_instead_of_guessing():
     rows = [_generation("old", "aaa1111", "p"), _generation("new", "bbb2222", "p")]
     with pytest.raises(RuntimeError, match="cannot date"):
         CP.newest_generation("axis_results", rows, lambda sha: {"committed_at": None})
+
+
+def test_two_generations_from_commits_made_at_the_same_time_are_not_ordered_by_accident():
+    rows = [_generation("one", "aaa1111", "p"), _generation("two", "bbb2222", "p")]
+    same = "2026-11-16T07:00:00+00:00"
+    with pytest.raises(RuntimeError, match="cannot be chosen"):
+        CP.newest_generation("axis_results", rows, lambda sha: {"committed_at": same})
+
+
+def test_a_null_from_pandas_compares_equal_to_an_empty_csv_cell():
+    assert CP._canonical_scalar(float("nan")) == "" == CP._canonical_scalar(None)
+    assert CP._canonical_scalar(True) == "True" and CP._canonical_scalar(4) == "4"

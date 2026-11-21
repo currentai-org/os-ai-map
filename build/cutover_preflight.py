@@ -18,7 +18,10 @@ safe, and this module is both — as PURE functions plus an offline CLI, with no
   bump policy forbids without its own justified generation.
 
 The scoring-trace tables hold one generation per publish, so for those the deployed side of the
-comparison is the newest generation alone, chosen by the commit date of its `source_git_sha`.
+comparison is one generation: the one built from the latest source revision, by the commit time of
+its `source_git_sha`. That is the latest source revision the tables hold, which need not be the one
+published last, since an older commit can be published again. Two generations whose commits share a
+commit time cannot be ordered, and the comparison stops there.
 
 The semantic comparison is a pure multiset over canonicalized rows, so the deployed rows can come from
 an exported CSV (offline, the reviewed path) or from a read-only `pyoso` query (`--live`). Neither
@@ -38,6 +41,8 @@ import csv
 import sys
 from collections import Counter
 from pathlib import Path
+
+from build.trace_generations import canonical_scalar
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "evaluation"
@@ -117,14 +122,9 @@ def single_identity_problems(candidates: dict[str, list[dict]]) -> list[str]:
     return problems
 
 
-def _canonical_scalar(value) -> str:
-    """One canonical string per cell, so a candidate CSV string ("4", "True", "") and the loader's
-    typed round-trip (4, True, None) compare equal. bool is handled before int (a bool IS an int)."""
-    if value is None:
-        return ""
-    if isinstance(value, bool):
-        return "True" if value else "False"
-    return str(value)
+# One canonical string per cell, so a candidate CSV string and the loader's typed round-trip compare
+# equal. Owned by build.trace_generations, which the scoring-trace publisher compares rows with too.
+_canonical_scalar = canonical_scalar
 
 
 def _canonical_multiset(rows: list[dict], keep: set[str]) -> Counter:
@@ -206,11 +206,14 @@ def newest_generation(table: str, rows: list[dict], facts_for=None) -> list[dict
     """The rows of the most recently committed generation, for a table that holds several.
 
     The scoring-trace tables hold one generation per publish (`build/publish_scoring_trace.py`), and
-    the cutover compares its candidate with the latest of them. Generations are ordered by the commit
-    time of their `source_git_sha`, read from git in UTC by `build.trace_generations.commit_facts`. A table
-    with no `source_git_sha` column, or holding a single generation, is returned whole. A generation
-    whose commit this checkout cannot date raises: picking one anyway would compare the candidate
-    with an arbitrary release.
+    the cutover compares its candidate with the one built from the latest source revision. That is
+    not the generation published last: an older commit can be published again, and which publish
+    came last is the loader's load time, which this does not read. Generations are ordered by the
+    commit time of their `source_git_sha`, read from git in UTC by
+    `build.trace_generations.commit_facts`. A table with no `source_git_sha` column, or holding a
+    single generation, is returned whole. A generation whose commit this checkout cannot date, or
+    two generations whose commits share a time, raise: picking one anyway would compare the
+    candidate with an arbitrary release.
     """
     if not rows or SOURCE_SHA_COLUMN not in rows[0]:
         return rows
@@ -231,7 +234,13 @@ def newest_generation(table: str, rows: list[dict], facts_for=None) -> list[dict
                 "generation cannot be chosen (fetch full history)"
             )
         dated.append((committed_at, generation))
-    return by_generation[max(dated)[1]]
+    latest = max(dated)
+    if sum(1 for committed_at, _generation in dated if committed_at == latest[0]) > 1:
+        raise RuntimeError(
+            f"{table}: two generations come from commits made at {latest[0]}, so the latest source "
+            "revision cannot be chosen"
+        )
+    return by_generation[latest[1]]
 
 
 def _report(header: str, problems: list[str]) -> None:

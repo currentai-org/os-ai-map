@@ -17,7 +17,13 @@
 # carrying that publish's `declaration_version_id`, so the three tables hold the trace of every
 # commit they were published from. `build/trace_generations.py` reports the agreement per
 # generation, and ruling R-2026-11-08-t says which generations count. A re-run of the same
-# commit appends nothing: the publisher skips a table that already holds the generation.
+# commit appends nothing: the publisher skips a table once it has compared the stored rows with
+# the candidate's and found the same generation, and stops on anything else under that id.
+#
+# One writer. The check and the append are two steps, so this workflow's concurrency group is the
+# lock that keeps one generation from being appended twice, and the publisher refuses to append
+# anywhere else without `--outside-workflow`. Do not rename the workflow or its group without
+# changing `writer_problems` in the publisher, which matches on the name.
 # Retiring the warehouse computation is still a separate, authorized step; see #384.
 #
 # The trace keys on `declaration_version_id` and carries no `release_id` and no
@@ -118,3 +124,21 @@ jobs:
             uv run python -m build.trace_generations
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify the two latest generations against a rebuild at their commits
+        # Fails the run, unlike the report above. Each generation is rebuilt at its own commit and
+        # all three tables must store exactly those rows, each once: the generation just appended,
+        # and the one before it, which an append must leave as it was.
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          status=0
+          uv run python -m build.trace_generations --verify --last 2 > verify.txt || status=$?
+          {
+            echo "## Scoring-trace verification"
+            echo
+            echo '```'
+            cat verify.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          cat verify.txt
+          exit "$status"

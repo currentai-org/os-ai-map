@@ -41,10 +41,21 @@ reader that wants one evaluation selects a `declaration_version_id`; nothing her
 current.
 
 Appending the same file twice would double its rows, so before any upload the publisher reads which
-generations each table already holds. A table that holds this generation at the candidate's row
-count is skipped, which makes a re-run and a publish resumed after a failure safe. A table that
-holds it at any other row count stops the publish: that is a partial or foreign load, and appending
-to it would break the table's grain.
+generations each table already holds. A table is skipped only when what it holds is established to
+be this generation: the same `declaration_version_id`, the same `source_git_sha`, and exactly the
+candidate's rows, each once. That makes a re-run and a publish resumed after a failure safe. A
+table that holds the id under another commit, at another row count, or with other rows stops the
+publish: that is a partial or foreign load, and appending to it would break the table's grain.
+After an append the same row-for-row comparison is the read-back, so a generation that landed
+twice is caught by the run that wrote it.
+
+## One writer at a time
+
+Reading what a table holds and appending to it are two steps, and the platform has no uniqueness
+constraint on a static model, so two publishers running at once could both append one generation.
+The single writer is the `scoring-trace` workflow: its concurrency group runs one publish at a
+time. A publish from anywhere else has to pass `--outside-workflow`, and it then asks GitHub
+whether a `scoring-trace` run is queued or in progress and refuses if one is, or if it cannot tell.
 
 `--replace` is the other write: it overwrites all three tables with the candidate and DISCARDS
 every generation they hold. `--rollback` restores archived bytes that way, so it requires
@@ -82,8 +93,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 from build import deployment_archive as archive
@@ -312,13 +326,24 @@ def generation_id(out_dir: Path = OUT_DIR) -> str:
     return dvid
 
 
-def append_plan(receipt: dict, deployed: dict[str, dict[str, dict]], generation: str) -> tuple[list[str], list[str]]:
+def source_sha(out_dir: Path = OUT_DIR) -> str:
+    """The `source_git_sha` the candidate carries."""
+    _header, rows = _read_rows(out_dir / "axis_results.csv")
+    return rows[0]["source_git_sha"]
+
+
+def append_plan(receipt: dict, deployed: dict[str, dict[str, dict]], generation: str, sha: str,
+                content: dict[str, list[str]]) -> tuple[list[str], list[str]]:
     """Which tables still need this generation appended, and what stops the append.
 
-    `deployed` is `{table: {declaration_version_id: {"rows": n, ...}}}`, what each table holds now.
-    Returns `(pending, problems)`. A table that already holds the generation at the candidate's row
-    count is left out of `pending`; one that holds it at a different count is a problem, because an
-    append on top of a partial or foreign load repeats rows on the table's grain.
+    `deployed` is `{table: {declaration_version_id: {"source_git_sha": ..., "rows": n}}}`, what
+    each table holds now. `content` is `{table: problems}` from comparing the candidate's rows with
+    the rows a table stores for this generation, for the tables where that comparison was made.
+
+    Returns `(pending, problems)`. A table is left out of `pending` only when it holds the
+    generation under the same commit, at the candidate's row count, and its stored rows were
+    compared with the candidate's and found identical. Holding the id any other way is a problem,
+    because an append on top of a partial or foreign load repeats rows on the table's grain.
     """
     pending: list[str] = []
     problems: list[str] = []
@@ -326,16 +351,90 @@ def append_plan(receipt: dict, deployed: dict[str, dict[str, dict]], generation:
         held = deployed[table].get(generation)
         if held is None:
             pending.append(table)
+            continue
+        short = generation[:12]
+        if held["source_git_sha"] != sha:
+            problems.append(
+                f"{table} holds generation {short} under commit {str(held['source_git_sha'])[:12]}, and the "
+                f"candidate was built from {sha[:12]}"
+            )
         elif held["rows"] != receipt[table]["rows"]:
             problems.append(
-                f"{table} already holds generation {generation[:12]} with {held['rows']} row(s), and the "
+                f"{table} already holds generation {short} with {held['rows']} row(s), and the "
                 f"candidate has {receipt[table]['rows']}; appending would repeat rows on the grain"
             )
+        elif table not in content:
+            problems.append(f"{table} holds generation {short}, and its rows were not compared with the candidate's")
+        else:
+            problems.extend(content[table])
     return pending, problems
 
 
+def held_content(dataset_name: str, src_dir: Path, receipt: dict, deployed: dict[str, dict[str, dict]],
+                 generation: str, sha: str) -> dict[str, list[str]]:
+    """Compare the candidate with the stored rows, for each table that appears to hold the generation.
+
+    Only tables that hold the id under the candidate's commit and at its row count are read: any
+    other state is already a refusal, and reading it would add nothing.
+    """
+    content: dict[str, list[str]] = {}
+    for table in TRACE_TABLES:
+        held = deployed[table].get(generation)
+        if held is None or held["source_git_sha"] != sha or held["rows"] != receipt[table]["rows"]:
+            continue
+        _header, candidate_rows = _read_rows(src_dir / f"{table}.csv")
+        stored = trace_generations.stored_generation_rows(dataset_name, table, generation)
+        content[table] = trace_generations.content_problems(table, candidate_rows, stored)
+    return content
+
+
+RUNS_API = "https://api.github.com/repos/currentai-org/os-ai-map/actions/workflows/scoring-trace.yml/runs"
+
+
+def workflow_runs_in_flight() -> list[str] | None:
+    """URLs of `scoring-trace` runs that are queued or in progress, or None when GitHub cannot say."""
+    in_flight: list[str] = []
+    for status in ("queued", "in_progress"):
+        request = urllib.request.Request(f"{RUNS_API}?status={status}&per_page=20",
+                                         headers={"Accept": "application/vnd.github+json",
+                                                  "User-Agent": "os-ai-map-publish-scoring-trace"})
+        token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+        if token:
+            request.add_header("Authorization", f"Bearer {token}")
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                runs = json.load(response).get("workflow_runs")
+        except (urllib.error.URLError, ValueError, TimeoutError):
+            return None
+        if runs is None:
+            return None
+        in_flight += [run.get("html_url", "") for run in runs]
+    return in_flight
+
+
+def writer_problems(outside_workflow: bool, in_flight=workflow_runs_in_flight) -> list[str]:
+    """Why this process may not append, as the single writer rule stands (empty = it may).
+
+    Inside the `scoring-trace` workflow the concurrency group is the lock. Anywhere else the caller
+    has to say so with `--outside-workflow`, and no run of the workflow may be queued or in progress.
+    """
+    if os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("GITHUB_WORKFLOW") == "scoring-trace":
+        return []
+    if not outside_workflow:
+        return ["an append outside the scoring-trace workflow needs --outside-workflow; the workflow's "
+                "concurrency group is what keeps two publishers from appending one generation twice, so "
+                "dispatch the workflow where you can"]
+    runs = in_flight()
+    if runs is None:
+        return ["could not ask GitHub whether a scoring-trace run is in flight, so a second writer cannot be ruled out"]
+    if runs:
+        return [f"a scoring-trace run is queued or in progress ({runs[0]}); wait for it to finish"]
+    return []
+
+
 def deployed_generation_state(dataset: str, table: str, generation: str, expected_rows: int,
-                              timeout: float = 300.0, interval: float = 15.0) -> dict:
+                              timeout: float = 300.0, interval: float = 15.0,
+                              candidate_rows: list[dict] | None = None) -> dict:
     """Row count and column set of ONE generation in a deployed table, read via pyoso.
 
     The appended rows are not always visible the instant the run reports SUCCESS, and a table
@@ -347,6 +446,9 @@ def deployed_generation_state(dataset: str, table: str, generation: str, expecte
     column any earlier generation wrote, so a column this generation leaves null is another
     generation's and says nothing about this load. `_dlt_*` columns are the loader's bookkeeping
     and are left out, as in `deployed_table_state`.
+
+    With `candidate_rows`, `content_problems` says why the stored rows are not exactly those rows,
+    each once. That is the check that a generation was appended one time and whole.
     """
     import time
 
@@ -371,7 +473,10 @@ def deployed_generation_state(dataset: str, table: str, generation: str, expecte
         column for row in rows for column, value in row.items()
         if not column.startswith("_dlt_") and _has_value(value)
     }
-    return {"rows": len(rows), "columns": sorted(columns)}
+    state: dict = {"rows": len(rows), "columns": sorted(columns)}
+    if candidate_rows is not None:
+        state["content_problems"] = trace_generations.content_problems(table, candidate_rows, rows)
+    return state
 
 
 def _has_value(value: object) -> bool:
@@ -412,6 +517,7 @@ def deployment_mismatches(expected: dict, deployed: dict) -> list[str]:
             problems.append(f"{table}: deployed table is missing candidate columns with data: {sorted(missing)}")
         if extra:
             problems.append(f"{table}: deployed table has undeclared columns: {sorted(extra)}")
+        problems.extend(got.get("content_problems") or [])
     return problems
 
 
@@ -441,6 +547,10 @@ def main() -> int:
     parser.add_argument("--replace", action="store_true",
                         help="overwrite the three tables with this candidate instead of appending its "
                              "generation. DISCARDS every generation the tables hold")
+    parser.add_argument("--outside-workflow", action="store_true",
+                        help="append from outside the scoring-trace workflow, which is the single writer. "
+                             "The publisher then asks GitHub that no scoring-trace run is queued or in "
+                             "progress, and refuses if one is or if it cannot tell")
     parser.add_argument("--rollback", metavar="ARTIFACT_ID",
                         help="re-upload an already-archived artifact by its artifact_id; verifies its "
                              "recorded hashes and records a rollback, not a deploy. Overwrites the "
@@ -564,7 +674,10 @@ def main() -> int:
         print(f"dataset {dataset_name} = {dataset_id}")
         pending = list(TRACE_TABLES)
         if not args.replace:
-            pending, problems = append_plan(receipt, held_generations(dataset_name), generation_id(src_dir))
+            generation, sha = generation_id(src_dir), source_sha(src_dir)
+            deployed = held_generations(dataset_name)
+            content = held_content(dataset_name, src_dir, receipt, deployed, generation, sha)
+            pending, problems = append_plan(receipt, deployed, generation, sha, content)
             for problem in problems:
                 print(f"  ! {problem}", file=sys.stderr)
             if problems:
@@ -595,8 +708,12 @@ def main() -> int:
         if materialize(dataset_id, models, TRACE_TABLES, src_dir, token, dataset_name, receipt, deployment_mismatches):
             return 2
     else:
-        generation = generation_id(src_dir)
-        pending, problems = append_plan(receipt, held_generations(dataset_name), generation)
+        generation, sha = generation_id(src_dir), source_sha(src_dir)
+        deployed = held_generations(dataset_name)
+        content = held_content(dataset_name, src_dir, receipt, deployed, generation, sha)
+        pending, problems = append_plan(receipt, deployed, generation, sha, content)
+        if pending and not problems:
+            problems = writer_problems(args.outside_workflow)
         if problems:
             print("cannot append this generation:", file=sys.stderr)
             for problem in problems:
@@ -615,7 +732,9 @@ def main() -> int:
             return 0
 
         def generation_state(dataset: str, table: str) -> dict:
-            return deployed_generation_state(dataset, table, generation, receipt[table]["rows"])
+            _header, candidate_rows = _read_rows(src_dir / f"{table}.csv")
+            return deployed_generation_state(dataset, table, generation, receipt[table]["rows"],
+                                             candidate_rows=candidate_rows)
 
         if materialize(dataset_id, models, tuple(pending), src_dir, token, dataset_name, receipt,
                        deployment_mismatches, write_disposition="APPEND", state_fn=generation_state):

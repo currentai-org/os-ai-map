@@ -385,6 +385,8 @@ def _wire(monkeypatch, requested):
     monkeypatch.setattr(PE, "upload", lambda path, url: None)
     # The tables hold no generation yet, so a default publish appends to all three.
     monkeypatch.setattr(P, "held_generations", lambda dataset: {t: {} for t in P.TRACE_TABLES})
+    # These tests run outside the scoring-trace workflow; the single-writer rule has its own tests.
+    monkeypatch.setattr(P, "writer_problems", lambda outside_workflow: [])
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
 
@@ -395,7 +397,7 @@ def test_load_run_is_requested_once_per_model_with_static_model_id(tmp_path, mon
     _wire(monkeypatch, requested)
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
     monkeypatch.setattr(P, "deployed_generation_state",
-                        lambda dataset, table, generation, expected_rows: {"rows": 0, "columns": []})
+                        lambda dataset, table, generation, expected_rows, **kw: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
@@ -420,7 +422,7 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
 
     monkeypatch.setattr(PE, "poll_run_group", record_poll)
     monkeypatch.setattr(P, "deployed_generation_state",
-                        lambda dataset, table, generation, expected_rows: {"rows": 0, "columns": []})
+                        lambda dataset, table, generation, expected_rows, **kw: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
@@ -434,7 +436,7 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     _wire(monkeypatch, requested)
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "FAILED")
 
-    def boom(dataset, table, generation, expected_rows):
+    def boom(dataset, table, generation, expected_rows, **kw):
         raise AssertionError("must not read deployed state when a run failed")
 
     monkeypatch.setattr(P, "deployed_generation_state", boom)
@@ -507,7 +509,7 @@ def test_deploy_artifact_deploys_the_archived_bytes_bound_to_the_id(tmp_path, mo
     _wire(monkeypatch, requested)
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
     monkeypatch.setattr(P, "deployed_generation_state",
-                        lambda dataset, table, generation, expected_rows: deployed[table])
+                        lambda dataset, table, generation, expected_rows, **kw: deployed[table])
     uploaded: dict[str, bytes] = {}
     monkeypatch.setattr(PE, "upload",
                         lambda path, url: uploaded.__setitem__(P.Path(path).name, P.Path(path).read_bytes()))
@@ -555,28 +557,61 @@ def _receipt(rows: int) -> dict:
     return {t: {"rows": rows} for t in P.TRACE_TABLES}
 
 
+def _held(rows=3, sha=SHA):
+    return {DVID: {"source_git_sha": sha, "rows": rows}}
+
+
 def test_append_plan_appends_to_every_table_that_lacks_the_generation():
     held = {t: {"e" * 64: {"source_git_sha": "abc1234", "rows": 9}} for t in P.TRACE_TABLES}
-    assert P.append_plan(_receipt(3), held, DVID) == (list(P.TRACE_TABLES), [])
+    assert P.append_plan(_receipt(3), held, DVID, SHA, {}) == (list(P.TRACE_TABLES), [])
 
 
-def test_append_plan_skips_a_table_that_already_holds_the_generation():
+def test_append_plan_skips_a_table_only_when_its_contents_were_compared_and_match():
     """A publish that failed after its first table resumes with the other two, and a publish run
     twice appends nothing the second time."""
     held = {t: {} for t in P.TRACE_TABLES}
-    held["axis_facts"] = {DVID: {"source_git_sha": SHA, "rows": 3}}
-    pending, problems = P.append_plan(_receipt(3), held, DVID)
+    held["axis_facts"] = _held()
+    pending, problems = P.append_plan(_receipt(3), held, DVID, SHA, {"axis_facts": []})
     assert pending == ["axis_rule_matches", "axis_results"] and problems == []
 
-    everywhere = {t: {DVID: {"source_git_sha": SHA, "rows": 3}} for t in P.TRACE_TABLES}
-    assert P.append_plan(_receipt(3), everywhere, DVID) == ([], [])
+    everywhere = {t: _held() for t in P.TRACE_TABLES}
+    assert P.append_plan(_receipt(3), everywhere, DVID, SHA, {t: [] for t in P.TRACE_TABLES}) == ([], [])
+
+
+def test_a_matching_row_count_alone_never_skips_a_table():
+    """The id and the count can both match while the rows differ, or come from another commit."""
+    held = {t: {} for t in P.TRACE_TABLES}
+    held["axis_results"] = _held()
+    _pending, uncompared = P.append_plan(_receipt(3), held, DVID, SHA, {})
+    assert len(uncompared) == 1 and "not compared" in uncompared[0]
+
+    _pending, differing = P.append_plan(_receipt(3), held, DVID, SHA, {"axis_results": ["axis_results: 1 candidate row(s) are not stored"]})
+    assert differing == ["axis_results: 1 candidate row(s) are not stored"]
+
+    held["axis_results"] = _held(sha="0ther5ha0000")
+    _pending, foreign = P.append_plan(_receipt(3), held, DVID, SHA, {"axis_results": []})
+    assert len(foreign) == 1 and "under commit 0ther5ha0000" in foreign[0]
 
 
 def test_append_plan_refuses_a_generation_held_at_another_row_count():
     held = {t: {} for t in P.TRACE_TABLES}
-    held["axis_results"] = {DVID: {"source_git_sha": SHA, "rows": 2}}
-    pending, problems = P.append_plan(_receipt(3), held, DVID)
+    held["axis_results"] = _held(rows=2)
+    pending, problems = P.append_plan(_receipt(3), held, DVID, SHA, {})
     assert len(problems) == 1 and "axis_results" in problems[0] and "2 row(s)" in problems[0]
+
+
+def test_held_content_reads_only_tables_that_look_like_this_generation(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    read: list[str] = []
+
+    def stored(dataset, table, generation):
+        read.append(table)
+        return P._read_rows(tmp_path / f"{table}.csv")[1]
+
+    monkeypatch.setattr(P.trace_generations, "stored_generation_rows", stored)
+    deployed = {"axis_facts": _held(rows=1), "axis_rule_matches": _held(rows=9), "axis_results": {}}
+    content = P.held_content("evaluation", tmp_path, P.build_receipt(tmp_path), deployed, DVID, SHA)
+    assert read == ["axis_facts"] and content == {"axis_facts": []}
 
 
 def test_a_default_publish_appends_and_never_replaces(tmp_path, monkeypatch):
@@ -586,9 +621,10 @@ def test_a_default_publish_appends_and_never_replaces(tmp_path, monkeypatch):
     monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
     seen: list[tuple] = []
 
-    def state(dataset, table, generation, expected_rows):
+    def state(dataset, table, generation, expected_rows, candidate_rows=None):
         seen.append((table, generation, expected_rows))
-        return {"rows": expected_rows, "columns": sorted(P.EXPECTED_HEADERS[table])}
+        assert candidate_rows == P._read_rows(tmp_path / f"{table}.csv")[1], "the read-back compares contents"
+        return {"rows": expected_rows, "columns": sorted(P.EXPECTED_HEADERS[table]), "content_problems": []}
 
     monkeypatch.setattr(P, "deployed_generation_state", state)
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
@@ -605,6 +641,9 @@ def test_a_generation_the_tables_already_hold_is_not_appended_again(tmp_path, mo
     _wire(monkeypatch, requested)
     monkeypatch.setattr(P, "held_generations", lambda dataset: {
         t: {DVID: {"source_git_sha": SHA, "rows": 1}} for t in P.TRACE_TABLES})
+    monkeypatch.setattr(P.trace_generations, "stored_generation_rows",
+                        lambda dataset, table, generation: P._read_rows(tmp_path / f"{table}.csv")[1])
+    monkeypatch.setattr(P, "writer_problems", lambda outside_workflow: pytest.fail("nothing is appended, so no writer check"))
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 0
@@ -704,3 +743,90 @@ def test_a_column_only_an_older_generation_filled_is_not_this_generations(monkey
     expected = {"axis_results": {"rows": 1, "columns": ["declaration_version_id", "product_slug", "result_score", "license_tier"],
                                  "all_null_columns": ["license_tier"]}}
     assert P.deployment_mismatches(expected, {"axis_results": state}) == []
+
+
+# --- identity and contents before a skip; one writer; a load that landed twice --------------------
+
+
+def test_a_held_generation_with_other_rows_stops_the_publish(tmp_path, monkeypatch):
+    """Same id, same commit, same row count, different rows: not this generation."""
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    monkeypatch.setattr(P, "held_generations", lambda dataset: {
+        t: {DVID: {"source_git_sha": SHA, "rows": 1}} for t in P.TRACE_TABLES})
+
+    def other_rows(dataset, table, generation):
+        rows = P._read_rows(tmp_path / f"{table}.csv")[1]
+        return [{**rows[0], "product_slug": "someone-else"}]
+
+    monkeypatch.setattr(P.trace_generations, "stored_generation_rows", other_rows)
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+    assert P.main() == 2
+    assert requested == []
+
+
+def test_a_generation_that_landed_twice_fails_the_run_that_wrote_it(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+
+    def doubled(dataset, table, generation, expected_rows, candidate_rows=None):
+        stored = candidate_rows + candidate_rows
+        return {"rows": len(stored), "columns": sorted(P.EXPECTED_HEADERS[table]),
+                "content_problems": P.trace_generations.content_problems(table, candidate_rows, stored)}
+
+    monkeypatch.setattr(P, "deployed_generation_state", doubled)
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+    assert P.main() == 2
+    assert P.archive.current_live(tmp_path / "archive") is None, "a doubled load records no occurrence"
+
+
+def _outside_workflow(monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_WORKFLOW", raising=False)
+
+
+def test_the_workflow_is_the_single_writer(monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_WORKFLOW", "scoring-trace")
+    assert P.writer_problems(False, in_flight=lambda: pytest.fail("the concurrency group is the lock")) == []
+    monkeypatch.setenv("GITHUB_WORKFLOW", "validate")
+    assert P.writer_problems(False, in_flight=lambda: [])
+
+
+def test_an_append_from_a_terminal_has_to_say_so(monkeypatch):
+    _outside_workflow(monkeypatch)
+    (problem,) = P.writer_problems(False, in_flight=lambda: pytest.fail("refused before asking"))
+    assert "--outside-workflow" in problem
+
+
+def test_an_append_from_a_terminal_waits_for_the_workflow_and_refuses_when_it_cannot_tell(monkeypatch):
+    _outside_workflow(monkeypatch)
+    assert P.writer_problems(True, in_flight=lambda: []) == []
+    (running,) = P.writer_problems(True, in_flight=lambda: ["https://github.com/x/actions/runs/1"])
+    assert "queued or in progress" in running
+    (unknown,) = P.writer_problems(True, in_flight=lambda: None)
+    assert "cannot be ruled out" in unknown
+
+
+def test_a_refused_writer_appends_nothing(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    monkeypatch.setattr(P, "writer_problems", lambda outside_workflow: ["a scoring-trace run is queued or in progress"])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
+    assert P.main() == 2
+    assert requested == []
+
+
+def test_the_read_back_compares_contents_when_given_the_candidate(monkeypatch):
+    stored = [{"declaration_version_id": DVID, "product_slug": "p", "_dlt_load_id": "1"}]
+    monkeypatch.setattr("build.warehouse.query", lambda sql: stored)
+    candidate = [{"declaration_version_id": DVID, "product_slug": "p"}]
+    state = P.deployed_generation_state("evaluation", "axis_results", DVID, expected_rows=1, candidate_rows=candidate)
+    assert state["content_problems"] == []
+    other = [{"declaration_version_id": DVID, "product_slug": "q"}]
+    state = P.deployed_generation_state("evaluation", "axis_results", DVID, expected_rows=1, candidate_rows=other)
+    assert state["content_problems"]
