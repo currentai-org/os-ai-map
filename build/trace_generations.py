@@ -9,15 +9,21 @@ That history is what ADR-001 asks for before the duplicate warehouse computation
 (`scores.openness_facts`, `scores.openness_computed`) can be retired: the repository-owned evaluator
 has to reproduce the recorded score across several releases, and the ruling R-2026-11-08-t in
 `docs/rulings/log.yaml` says which generations may count. This module makes the count readable.
-A generation counts when all of these hold:
+A generation is complete when all of these hold:
 
   * every row is `scored`, and every scored row has `reproduces_recorded` true. A row in any
     other status is a product the evaluator did not score, so the generation agrees on fewer
-    products than it covers. The report lists those rows by product, because the ruling asks for
-    each one to be reconciled or adjudicated and not waved through;
+    products than it covers;
   * its `source_git_sha` is a commit reachable from the checked-out history, which is what ties
     the generation to a real state of this repository. A shallow clone cannot answer that and
     the report says so rather than guessing.
+
+Unscored rows are of two kinds, and the report keeps them apart. A `deferred` row is a product
+its category's `scoring_recipe` declines to score, with the reason written in `sources/`; the
+report prints that reason. Any other status means the ladder reached no result. The ruling
+treats a deferred row as a difference to reconcile or adjudicate, so it keeps a generation from
+being complete, and the report also counts the generations that are complete apart from their
+declared deferrals. That second count is what a ruling adjudicating the deferrals would admit.
 
 Generations are ordered by the commit date of their `source_git_sha`, read from git. The rows
 carry no timestamp of their own: the trace is a deterministic function of the declarations.
@@ -99,20 +105,25 @@ def summarize(rows: list[dict]) -> list[dict]:
     """One summary per generation from `axis_results` rows (any order, any number of generations).
 
     Each input row needs `declaration_version_id`, `source_git_sha`, `product_slug`,
-    `category_slug`, `status` and `reproduces_recorded`. `unscored` names every row whose status is
-    not `scored`, and `disagreeing` every scored row that does not reproduce the recorded score.
+    `category_slug`, `status` and `reproduces_recorded`; `deferral_reason` is read when present.
+    `deferred` names every declared deferral with its reason, `undecided` every other row whose
+    status is not `scored`, and `disagreeing` every scored row that does not reproduce the
+    recorded score.
     """
     by_generation: dict[str, dict] = {}
     for row in rows:
         summary = by_generation.setdefault(row["declaration_version_id"], {
             "declaration_version_id": row["declaration_version_id"],
             "source_git_sha": row["source_git_sha"],
-            "rows": 0, "scored": 0, "agreeing": 0, "disagreeing": [], "unscored": [],
+            "rows": 0, "scored": 0, "agreeing": 0, "disagreeing": [], "deferred": [], "undecided": [],
         })
         summary["rows"] += 1
         product = f"{row['product_slug']} [{row['category_slug']}]"
-        if row["status"] != "scored":
-            summary["unscored"].append(f"{product}: {row['status']}")
+        if row["status"] == "deferred":
+            reason = str(row.get("deferral_reason") or "").strip() or "no reason recorded"
+            summary["deferred"].append(f"{product}: {reason}")
+        elif row["status"] != "scored":
+            summary["undecided"].append(f"{product}: {row['status']}")
         elif _is_true(row["reproduces_recorded"]):
             summary["scored"] += 1
             summary["agreeing"] += 1
@@ -120,8 +131,8 @@ def summarize(rows: list[dict]) -> list[dict]:
             summary["scored"] += 1
             summary["disagreeing"].append(product)
     for summary in by_generation.values():
-        summary["disagreeing"].sort()
-        summary["unscored"].sort()
+        for key in ("disagreeing", "deferred", "undecided"):
+            summary[key].sort()
     return list(by_generation.values())
 
 
@@ -149,20 +160,26 @@ def commit_facts(sha: str, root: Path = ROOT) -> dict:
 
 
 def assess(summaries: list[dict], facts_for=commit_facts) -> list[dict]:
-    """Attach commit facts and the `complete` verdict, oldest commit first.
+    """Attach commit facts and the two verdicts, oldest commit first.
 
-    A generation whose commit date is unknown sorts last: it cannot be placed, and it does not count.
+    `complete_apart_from_deferrals` holds for every complete generation and for one whose only
+    unscored rows are declared deferrals. A generation whose commit date is unknown sorts last: it
+    cannot be placed, and it does not count.
     """
     assessed = []
     for summary in summaries:
         facts = facts_for(summary["source_git_sha"])
-        complete = (
+        apart_from_deferrals = (
             summary["rows"] > 0
             and not summary["disagreeing"]
-            and not summary["unscored"]
+            and not summary["undecided"]
             and facts["identity"] == "reachable"
         )
-        assessed.append({**summary, **facts, "complete": complete})
+        assessed.append({
+            **summary, **facts,
+            "complete": apart_from_deferrals and not summary["deferred"],
+            "complete_apart_from_deferrals": apart_from_deferrals,
+        })
     assessed.sort(key=lambda g: (g["committed_at"] is None, g["committed_at"] or "", g["declaration_version_id"]))
     return assessed
 
@@ -170,10 +187,9 @@ def assess(summaries: list[dict], facts_for=commit_facts) -> list[dict]:
 def read_generations(dataset: str = DEFAULT_DATASET, run_query=_default_query) -> list[dict]:
     """Every generation in `axis_results`, summarized. An absent table holds none."""
     try:
-        rows = run_query(
-            "SELECT declaration_version_id, source_git_sha, product_slug, category_slug, status, "
-            f"reproduces_recorded FROM currentai.{dataset}.axis_results"
-        )
+        # Every column, not a named list: the loader drops a column that is null in every row,
+        # so `deferral_reason` is absent from a table that has never held a deferral.
+        rows = run_query(f"SELECT * FROM currentai.{dataset}.axis_results")
     except Exception as exc:
         if "TablesNotFound" in str(exc):
             return []
@@ -189,30 +205,34 @@ def render(generations: list[dict], dataset: str = DEFAULT_DATASET) -> str:
         return "\n".join(lines)
     lines.append("")
     lines.append(f"  {'committed':10}  {'commit':12}  {'declaration':12}  {'rows':>6}  {'agree':>6}  "
-                 f"{'disagree':>8}  {'unscored':>8}  identity")
+                 f"{'disagree':>8}  {'deferred':>8}  {'undecided':>9}  identity")
     for gen in generations:
         committed = (gen["committed_at"] or "unknown")[:10]
         lines.append(
             f"  {committed:10}  {gen['source_git_sha'][:12]:12}  {gen['declaration_version_id'][:12]:12}  "
             f"{gen['rows']:>6}  {gen['agreeing']:>6}  {len(gen['disagreeing']):>8}  "
-            f"{len(gen['unscored']):>8}  {gen['identity']}"
+            f"{len(gen['deferred']):>8}  {len(gen['undecided']):>9}  {gen['identity']}"
         )
     for gen in generations:
         handle = gen["source_git_sha"][:12]
         for product in gen["disagreeing"]:
             lines.append(f"  ~ {handle}: {product} is scored and does not reproduce the recorded score")
-        for product in gen["unscored"]:
-            lines.append(f"  ~ {handle}: {product}")
+        for product in gen["undecided"]:
+            lines.append(f"  ~ {handle}: {product} (the ladder reached no result)")
+        for product in gen["deferred"]:
+            lines.append(f"  ~ {handle}: deferred {product}")
     complete = sum(1 for gen in generations if gen["complete"])
+    apart = sum(1 for gen in generations if gen["complete_apart_from_deferrals"])
     lines.append("")
     lines.append(
-        f"{len(generations)} generation(s), {complete} complete. A complete generation scores every "
-        "row, reproduces every recorded score, and comes from a commit in this history."
+        f"{len(generations)} generation(s): {complete} complete, {apart} complete apart from declared "
+        "deferrals. A complete generation scores every row, reproduces every recorded score, and "
+        "comes from a commit in this history."
     )
     lines.append(
         f"R-2026-11-08-t accepts {REQUIRED_GENERATIONS} complete generations as agreement across "
-        "releases. Each unscored row above keeps its generation incomplete until it is reconciled "
-        "or adjudicated by a ruling."
+        "releases, and asks for each remaining difference to be reconciled or adjudicated. A "
+        "declared deferral is such a difference until a ruling adjudicates it."
     )
     return "\n".join(lines)
 

@@ -36,8 +36,15 @@ The report lists each generation oldest first, with its row count, how many rows
 recorded score, and every row that is not scored. A generation is **complete** when every row is
 scored, every scored row reproduces, and its commit is in this repository's history. Ruling
 R-2026-11-08-t (`docs/rulings/log.yaml`) accepts four complete generations as the agreement Phase 7
-needs, and asks for each unscored row to be reconciled or adjudicated, not waved through. Reaching
-that count does not retire anything: dropping `scores.openness_facts` and
+needs, and asks for each remaining difference to be reconciled or adjudicated, not waved through.
+
+A **declared deferral** is such a difference. The product's category recipe declines to score it
+and says why in `sources/`, so the evaluator has nothing to reproduce. The report prints each
+deferral with its reason and counts, beside the complete generations, those that are complete
+apart from their declared deferrals. A ruling that adjudicates the deferrals is what moves a
+generation from the second count to the first.
+
+Reaching the count does not retire anything: dropping `scores.openness_facts` and
 `scores.openness_computed` keeps its own authorization (#384).
 
 A reader that wants one evaluation selects a `declaration_version_id`. The rows carry no timestamp,

@@ -16,9 +16,10 @@ DVID_A = "a" * 64
 DVID_B = "b" * 64
 
 
-def _row(dvid, sha, product, status="scored", reproduces="True", category="c"):
+def _row(dvid, sha, product, status="scored", reproduces="True", category="c", reason=None):
     return {"declaration_version_id": dvid, "source_git_sha": sha, "product_slug": product,
-            "category_slug": category, "status": status, "reproduces_recorded": reproduces}
+            "category_slug": category, "status": status, "reproduces_recorded": reproduces,
+            "deferral_reason": reason}
 
 
 def _reachable(sha):
@@ -32,13 +33,31 @@ def test_a_generation_scoring_and_reproducing_every_row_is_complete():
     assert gen["complete"]
 
 
-def test_a_deferred_row_keeps_its_generation_incomplete_and_is_named():
-    """R-2026-11-08-t: 1,117 of 1,118 is not complete agreement."""
-    rows = [_row(DVID_A, "aaaaaa01", "p"), _row(DVID_A, "aaaaaa01", "held-one", status="deferred", reproduces=None)]
+def test_a_deferred_row_keeps_its_generation_incomplete_and_is_named_with_its_reason():
+    """R-2026-11-08-t: 1,117 of 1,118 is not complete agreement. The deferral is declared in
+    `sources/`, so the generation is complete apart from it, and that is counted separately."""
+    rows = [_row(DVID_A, "aaaaaa01", "p"),
+            _row(DVID_A, "aaaaaa01", "held-one", status="deferred", reproduces=None, reason="license unsettled")]
     (gen,) = T.assess(T.summarize(rows), _reachable)
     assert not gen["complete"]
-    assert gen["unscored"] == ["held-one [c]: deferred"]
-    assert gen["disagreeing"] == []
+    assert gen["complete_apart_from_deferrals"]
+    assert gen["deferred"] == ["held-one [c]: license unsettled"]
+    assert gen["undecided"] == [] and gen["disagreeing"] == []
+
+
+def test_a_row_the_ladder_could_not_decide_is_not_a_deferral():
+    rows = [_row(DVID_A, "aaaaaa01", "p"), _row(DVID_A, "aaaaaa01", "stuck", status="undecided", reproduces=None)]
+    (gen,) = T.assess(T.summarize(rows), _reachable)
+    assert gen["undecided"] == ["stuck [c]: undecided"]
+    assert not gen["complete"] and not gen["complete_apart_from_deferrals"]
+
+
+def test_a_deferral_with_no_reason_column_still_reads():
+    """The loader drops an all-null column, so a row may arrive without `deferral_reason`."""
+    row = _row(DVID_A, "aaaaaa01", "held-one", status="deferred", reproduces=None)
+    del row["deferral_reason"]
+    (gen,) = T.summarize([row])
+    assert gen["deferred"] == ["held-one [c]: no reason recorded"]
 
 
 def test_a_scored_row_that_does_not_reproduce_is_a_disagreement():
@@ -51,7 +70,7 @@ def test_a_scored_row_that_does_not_reproduce_is_a_disagreement():
 def test_a_generation_from_a_commit_this_history_cannot_vouch_for_does_not_count(identity):
     rows = [_row(DVID_A, "aaaaaa01", "p")]
     (gen,) = T.assess(T.summarize(rows), lambda sha: {"identity": identity, "committed_at": None})
-    assert not gen["complete"]
+    assert not gen["complete"] and not gen["complete_apart_from_deferrals"]
 
 
 def test_generations_are_ordered_by_commit_date_with_undatable_ones_last():
@@ -71,10 +90,13 @@ def test_the_report_counts_complete_generations_and_lists_every_unscored_row():
         _row(DVID_A, "aaaaaa01", "p"),
         _row(DVID_B, "bbbbbb02", "p"),
         _row(DVID_B, "bbbbbb02", "waiting", status="blocked_on_tier", reproduces=None),
+        _row("c" * 64, "cccccc03", "p"),
+        _row("c" * 64, "cccccc03", "held", status="deferred", reproduces=None, reason="terms under review"),
     ]
     text = T.render(T.assess(T.summarize(rows), _reachable))
-    assert "2 generation(s), 1 complete." in text
-    assert "~ bbbbbb02: waiting [c]: blocked_on_tier" in text
+    assert "3 generation(s): 1 complete, 2 complete apart from declared deferrals." in text
+    assert "~ bbbbbb02: waiting [c]: blocked_on_tier (the ladder reached no result)" in text
+    assert "~ cccccc03: deferred held [c]: terms under review" in text
     assert f"accepts {T.REQUIRED_GENERATIONS} complete generations" in text
 
 
